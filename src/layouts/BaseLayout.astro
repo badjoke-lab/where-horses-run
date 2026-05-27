@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'ja';
+}
+
+const { title, description, lang = 'en' } = Astro.props;
+const isJapanese = lang === 'ja';
+const homeHref = isJapanese ? '/ja/' : '/';
+const alternateHref = isJapanese ? '/' : '/ja/';
+const alternateLabel = isJapanese ? 'English' : '日本語';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header" aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}>
+        <div class="site-header__inner">
+          <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
+          <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+            <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
+            <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
+            <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Tracks'}</a>
+            <a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
+            <a href={alternateHref}>{alternateLabel}</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div class="site-footer__inner">
+          <p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, tracks, and sources.'}</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
