@@ -2,9 +2,12 @@
 
 Research notes and source surveys live here.
 
-Planned:
+## Current
+
+- [alpha-sources.md](alpha-sources.md)
+
+## Planned
 
 - country tier survey
 - timetable feasibility notes
-- alpha source registry
 - source notes
