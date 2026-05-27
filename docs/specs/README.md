@@ -10,7 +10,4 @@ Formal project specifications live here.
 - [ui-css-policy.md](ui-css-policy.md)
 - [image-policy.md](image-policy.md)
 - [data-use-policy.md](data-use-policy.md)
-
-## Planned
-
-- `operations-policy.md`
+- [operations-policy.md](operations-policy.md)
