@@ -8,9 +8,9 @@ Formal project specifications live here.
 - [data-model.md](data-model.md)
 - [page-map.md](page-map.md)
 - [ui-css-policy.md](ui-css-policy.md)
+- [image-policy.md](image-policy.md)
 
 ## Planned
 
-- `image-policy.md`
 - `data-use-policy.md`
 - `operations-policy.md`
