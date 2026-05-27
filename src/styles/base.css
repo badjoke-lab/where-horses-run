@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--whr-font-family);
+  background: var(--whr-color-bg);
+  color: var(--whr-color-text);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--whr-color-bg);
+  color: var(--whr-color-text);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration-thickness: 0.14em;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
