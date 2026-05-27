@@ -2,7 +2,10 @@
 
 Planned implementation sequences live here.
 
-Planned:
+## Current
 
-- MVP PR plan
+- [mvp-pr-plan.md](mvp-pr-plan.md)
+
+## Planned
+
 - full roadmap PR plan
