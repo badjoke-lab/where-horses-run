@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { siteData, getCountries } from '../../../lib/data';
+
+const sources = siteData.sources;
+const countries = getCountries();
+const countryNames = new Map(countries.map((country) => [country.id, country.name_ja]));
+---
+
+<BaseLayout
+  title="ソース | 競馬どこ？"
+  description="競馬どこ？ で参照する公式・参考ソースを一覧できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Sources</p>
+    <h1 id="page-title">ソース</h1>
+    <p class="hero__summary">
+      国・地域や開催情報の確認に使うソース項目を一覧できます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="ソース一覧">
+    {sources.map((source) => (
+      <article class="card">
+        <h2><a href={source.url}>{source.id}</a></h2>
+        <p>{countryNames.get(source.country_id) ?? source.country_id}</p>
+        <p><strong>種別:</strong> {source.source_type}</p>
+        <p><strong>データ:</strong> {source.data_type}</p>
+        <p><strong>自動化:</strong> {source.auto_level}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
