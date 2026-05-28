@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRacecourses, getCountryBySlug, getCountries } from '../../lib/data';
+
+const tracks = getRacecourses();
+const countries = getCountries();
+const countryNames = new Map(countries.map((country) => [country.id, country.name_en]));
+---
+
+<BaseLayout
+  title="Tracks | Where Horses Run"
+  description="Browse racecourses and track entries with country, racing type, and source context."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Racecourses & tracks</p>
+    <h1 id="page-title">Tracks</h1>
+    <p class="hero__summary">
+      Browse racecourse entries. Each track page shows the current static profile and links back to the country context.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Track list">
+    {tracks.map((track) => (
+      <article class="card">
+        <h2><a href={`/tracks/${track.slug}/`}>{track.name_en}</a></h2>
+        <p>{countryNames.get(track.country_id) ?? track.country_id}</p>
+        <p><strong>City:</strong> {track.city}</p>
+        <p><strong>Types:</strong> {track.racing_types.join(', ')}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
