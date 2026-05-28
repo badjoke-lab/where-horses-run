@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCountries } from '../../../lib/data';
+
+const countries = getCountries();
+---
+
+<BaseLayout
+  title="国・地域 | 競馬どこ？"
+  description="世界の競馬開催国・地域と公式ソースのカバー状況を確認できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Countries & regions</p>
+    <h1 id="page-title">国・地域</h1>
+    <p class="hero__summary">
+      競馬開催国・地域を一覧できます。各ページでは公式ソースへの導線と現在のカバー状況を確認できます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="国・地域一覧">
+    {countries.map((country) => (
+      <article class="card">
+        <h2><a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a></h2>
+        <p>{country.summary_ja}</p>
+        <p><strong>状態:</strong> {country.status}</p>
+        <p><strong>カバー:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
