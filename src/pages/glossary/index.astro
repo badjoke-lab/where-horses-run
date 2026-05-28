@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getGlossaryEntries } from '../../lib/data';
+
+const entries = getGlossaryEntries();
+---
+
+<BaseLayout
+  title="Glossary | Where Horses Run"
+  description="Browse racing terms used in calendars, timetables, source pages, and track profiles."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary</p>
+    <h1 id="page-title">Glossary</h1>
+    <p class="hero__summary">
+      Browse key racing terms used across this site.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Glossary list">
+    {entries.map((entry) => (
+      <article class="card">
+        <h2><a href={`/glossary/${entry.slug}/`}>{entry.term_en}</a></h2>
+        <p>{entry.summary_en}</p>
+        <p><strong>Category:</strong> {entry.category}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
