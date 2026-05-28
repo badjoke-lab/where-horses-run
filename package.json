@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "validate:data": "node scripts/validate-data.mjs",
-    "check": "npm run validate:data && npm run build"
+    "check": "npm run validate:data && npm run validate:fixtures && npm run build",
+    "validate:fixtures": "node scripts/validate-parser-fixtures.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
