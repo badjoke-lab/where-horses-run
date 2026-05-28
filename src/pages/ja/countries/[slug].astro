@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getCountries, getCountryBySlug } from '../../../lib/data';
+import {
+  getCountries,
+  getCountryBySlug,
+  getRacecoursesByCountryId,
+  getSourcesByCountryId,
+  siteData
+} from '../../../lib/data';
 
 export function getStaticPaths() {
   return getCountries().map((country) => ({ params: { slug: country.slug } }));
@@ -12,6 +18,12 @@ const country = getCountryBySlug(slug ?? '');
 if (!country) {
   return Astro.redirect('/ja/countries/');
 }
+
+const racecourses = getRacecoursesByCountryId(country.id);
+const sources = getSourcesByCountryId(country.id);
+const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
+const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
+const isHongKongAlpha = country.id === 'hong-kong';
 ---
 
 <BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
@@ -28,9 +40,78 @@ if (!country) {
       <p><strong>Status:</strong> {country.status}</p>
       <p><strong>Coverage:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
     </article>
+
     <article class="card">
       <h2>Racing types</h2>
       <p>{country.racing_types.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>公式ソース確認</h2>
+      <p>開催詳細、出走表、オッズ、結果、払戻は公式または許諾済みソースで確認してください。</p>
+    </article>
+  </section>
+
+  {isHongKongAlpha && (
+    <section class="section-grid" aria-label="alpha timetable coverage">
+      <article class="card">
+        <h2>Alpha timetable coverage</h2>
+        <p><strong>Mode:</strong> link-first / dry-run</p>
+        <p><strong>Live fetching:</strong> disabled</p>
+        <p><strong>Current scope:</strong> 公式ソース案内、fixture test、parser harness確認、generated status表示。</p>
+      </article>
+
+      <article class="card">
+        <h2>FetchStatus coverage</h2>
+        {countryFetchStatuses.length > 0 ? (
+          <ul>
+            {countryFetchStatuses.map((status) => (
+              <li>
+                <strong>{status.source_id}</strong>: {status.status} — {status.message}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>この国のFetchStatusはまだありません。</p>
+        )}
+      </article>
+
+      <article class="card">
+        <h2>Alpha limitation</h2>
+        <p>このページでは出走表、オッズ、結果、払戻、予想情報を再掲載しません。</p>
+      </article>
+    </section>
+  )}
+
+  <section class="section-grid" aria-label="racecourses and sources">
+    <article class="card">
+      <h2>Racecourses</h2>
+      {racecourses.length > 0 ? (
+        <ul>
+          {racecourses.map((racecourse) => <li>{racecourse.name_ja} — {racecourse.city}</li>)}
+        </ul>
+      ) : (
+        <p>競馬場データはまだありません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Official sources</h2>
+      {sources.length > 0 ? (
+        <ul>
+          {sources.map((source) => (
+            <li>
+              <a href={source.url}>{source.id}</a>
+              <br />
+              <span>{source.data_type} / Auto {source.auto_level}</span>
+              <br />
+              <span>{source.notes}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>公式ソースデータはまだありません。</p>
+      )}
     </article>
   </section>
 

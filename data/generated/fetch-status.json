@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-28T00:00:00Z",
-  "status": "placeholder",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "status": "partial",
   "sources": [
     {
       "source_id": "japan-jra-home",
@@ -12,14 +12,14 @@
     {
       "source_id": "hong-kong-hkjc-home",
       "country_id": "hong-kong",
-      "status": "not_started",
-      "checked_at": "2026-05-28T00:00:00Z",
-      "message": "Manual placeholder entry. Live fetching has not started."
+      "status": "skipped",
+      "checked_at": "2026-05-29T00:00:00Z",
+      "message": "M3 alpha coverage candidate. Link-first and dry-run only. Live fetching is not enabled."
     }
   ],
   "notes": [
-    "Generated schedule files currently use manual placeholder data.",
-    "Official sources should be used for final confirmation.",
-    "Live fetching and parser workflows have not started."
+    "M3 alpha timetable coverage has started with Hong Kong as the first link-first candidate.",
+    "Hong Kong coverage is dry-run only. Live fetching remains disabled.",
+    "Official sources should be used for final confirmation."
   ]
 }
