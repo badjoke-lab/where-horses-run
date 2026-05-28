@@ -8,12 +8,13 @@
     "build": "astro build",
     "preview": "astro preview",
     "validate:data": "node scripts/validate-data.mjs",
-    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run build",
+    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run validate:safe-source-pipeline && npm run build",
     "validate:fixtures": "node scripts/validate-parser-fixtures.mjs",
     "validate:normalizer": "node scripts/check-normalizer-foundation.mjs",
     "validate:fixture-parser": "node scripts/check-fixture-parser-harness.mjs",
     "validate:source-fetch": "node scripts/check-source-fetch-abstraction.mjs",
-    "validate:generated-dry-run": "node scripts/check-generated-update-dry-run.mjs"
+    "validate:generated-dry-run": "node scripts/check-generated-update-dry-run.mjs",
+    "validate:safe-source-pipeline": "node scripts/check-safe-source-pipeline-candidate.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
