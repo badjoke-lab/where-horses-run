@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { siteData } from '../../../lib/data';
+
+const latest = siteData.generated.latest;
+const fetchStatus = siteData.generated.fetchStatus;
+---
+
+<BaseLayout
+  title="カレンダー | 競馬どこ？"
+  description="競馬どこ？ の静的カレンダーページです。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Calendar</p>
+    <h1 id="page-title">カレンダー</h1>
+    <p class="hero__summary">
+      実データ連携前の静的fallbackページです。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="カレンダー状態">
+    <article class="card">
+      <h2>状態</h2>
+      <p>{fetchStatus.status}</p>
+      <p><strong>生成日時:</strong> {fetchStatus.generated_at}</p>
+    </article>
+    <article class="card">
+      <h2>ファイル</h2>
+      <p>{latest.today_file}</p>
+      <p>{latest.tomorrow_file}</p>
+      <p>{latest.calendar_30d_file}</p>
+    </article>
+    <article class="card">
+      <h2>注意</h2>
+      <p>レース詳細は公式ソースで確認してください。</p>
+    </article>
+  </section>
+</BaseLayout>
