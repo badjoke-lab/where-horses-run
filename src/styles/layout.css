@@ -39,4 +39,16 @@
     align-items: flex-start;
     flex-direction: column;
   }
+
+  .main-content {
+    padding-block: var(--whr-space-4) var(--whr-space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header__inner,
+  .site-footer__inner,
+  .main-content {
+    padding-inline: var(--whr-space-2);
+  }
 }
