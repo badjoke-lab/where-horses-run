@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCountries, getCountryBySlug, getRacecoursesByCountryId, getSourcesByCountryId } from '../../lib/data';
+
+export function getStaticPaths() {
+  return getCountries().map((country) => ({
+    params: { slug: country.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+const country = getCountryBySlug(slug ?? '');
+
+if (!country) {
+  return Astro.redirect('/countries/');
+}
+
+const racecourses = getRacecoursesByCountryId(country.id);
+const sources = getSourcesByCountryId(country.id);
+---
+
+<BaseLayout
+  title={`${country.name_en} | Countries | Where Horses Run`}
+  description={country.summary_en}
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Country profile</p>
+    <h1 id="page-title">{country.name_en}</h1>
+    <p class="hero__summary">{country.summary_en}</p>
+  </section>
+
+  <section class="section-grid" aria-label="Country details">
+    <article class="card">
+      <h2>Coverage</h2>
+      <p><strong>Status:</strong> {country.status}</p>
+      <p><strong>Region:</strong> {country.region}</p>
+      <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+      <p><strong>Auto level:</strong> {country.auto_level}</p>
+    </article>
+
+    <article class="card">
+      <h2>Racing types</h2>
+      <p>{country.racing_types.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>Official-source boundary</h2>
+      <p>Race details, entries, odds, results, and payouts should be confirmed on official or licensed source pages.</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Racecourses and sources">
+    <article class="card">
+      <h2>Racecourses</h2>
+      {racecourses.length > 0 ? (
+        <ul>
+          {racecourses.map((racecourse) => <li>{racecourse.name_en} — {racecourse.city}</li>)}
+        </ul>
+      ) : (
+        <p>No racecourse entries are listed yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Official sources</h2>
+      {sources.length > 0 ? (
+        <ul>
+          {sources.map((source) => <li><a href={source.url}>{source.id}</a></li>)}
+        </ul>
+      ) : (
+        <p>No source entries are listed yet.</p>
+      )}
+    </article>
+  </section>
+
+  <p><a href="/countries/">Back to countries</a></p>
+</BaseLayout>

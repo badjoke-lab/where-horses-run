@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCountries } from '../../lib/data';
+
+const countries = getCountries();
+---
+
+<BaseLayout
+  title="Countries | Where Horses Run"
+  description="Browse horse racing countries and regions with official source coverage notes."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Countries & regions</p>
+    <h1 id="page-title">Countries</h1>
+    <p class="hero__summary">
+      Browse racing jurisdictions by country or region. Each page links toward official sources and shows the current coverage level.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Country list">
+    {countries.map((country) => (
+      <article class="card">
+        <h2><a href={`/countries/${country.slug}/`}>{country.name_en}</a></h2>
+        <p>{country.summary_en}</p>
+        <p><strong>Status:</strong> {country.status}</p>
+        <p><strong>Coverage:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
