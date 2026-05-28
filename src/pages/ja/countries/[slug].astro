@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCountries, getCountryBySlug } from '../../../lib/data';
+
+export function getStaticPaths() {
+  return getCountries().map((country) => ({ params: { slug: country.slug } }));
+}
+
+const { slug } = Astro.params;
+const country = getCountryBySlug(slug ?? '');
+
+if (!country) {
+  return Astro.redirect('/ja/countries/');
+}
+---
+
+<BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Country profile</p>
+    <h1 id="page-title">{country.name_ja}</h1>
+    <p class="hero__summary">{country.summary_ja}</p>
+  </section>
+
+  <section class="section-grid" aria-label="profile">
+    <article class="card">
+      <h2>Profile</h2>
+      <p><strong>Region:</strong> {country.region}</p>
+      <p><strong>Status:</strong> {country.status}</p>
+      <p><strong>Coverage:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
+    </article>
+    <article class="card">
+      <h2>Racing types</h2>
+      <p>{country.racing_types.join(', ')}</p>
+    </article>
+  </section>
+
+  <p><a href="/ja/countries/">Back</a></p>
+</BaseLayout>
