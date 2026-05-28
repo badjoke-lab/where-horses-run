@@ -19,7 +19,7 @@ The site must not imply live coverage when no live process exists.
 
 ```text
 data/generated/fetch-status.json
-````
+```
 
 ---
 
