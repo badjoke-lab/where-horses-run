@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteData } from '../../lib/data';
+
+const latest = siteData.generated.latest;
+const fetchStatus = siteData.generated.fetchStatus;
+---
+
+<BaseLayout
+  title="Calendar | Where Horses Run"
+  description="Calendar fallback page for Where Horses Run."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Calendar</p>
+    <h1 id="page-title">Calendar</h1>
+    <p class="hero__summary">
+      This page is a static fallback until generated schedule data is available.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Calendar status">
+    <article class="card">
+      <h2>Status</h2>
+      <p>{fetchStatus.status}</p>
+      <p><strong>Generated:</strong> {fetchStatus.generated_at}</p>
+    </article>
+    <article class="card">
+      <h2>Files</h2>
+      <p>{latest.today_file}</p>
+      <p>{latest.tomorrow_file}</p>
+      <p>{latest.calendar_30d_file}</p>
+    </article>
+    <article class="card">
+      <h2>Note</h2>
+      <p>Always confirm race details with official sources.</p>
+    </article>
+  </section>
+</BaseLayout>
