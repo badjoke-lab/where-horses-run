@@ -70,4 +70,27 @@
   .section-grid {
     grid-template-columns: 1fr;
   }
+
+  .site-nav {
+    width: 100%;
+    gap: 0.45rem 0.7rem;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--whr-space-2);
+  }
+
+  .site-nav {
+    font-size: 0.9rem;
+  }
+
+  .hero {
+    padding-block: var(--whr-space-2) var(--whr-space-4);
+  }
 }
