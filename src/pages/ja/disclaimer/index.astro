@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Disclaimer | 競馬どこ？"
+  description="競馬どこ？ の注意事項ページです。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Disclaimer</p>
+    <h1 id="page-title">注意事項</h1>
+    <p class="hero__summary">
+      このサイトは情報整理と導線提供を目的とした参考ガイドです。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="注意事項">
+    <article class="card">
+      <h2>賭け助言なし</h2>
+      <p>賭けや投票の推奨・助言は行いません。</p>
+    </article>
+    <article class="card">
+      <h2>公式確認推奨</h2>
+      <p>開催時刻、出走表、結果、払戻は公式ソースで確認してください。</p>
+    </article>
+    <article class="card">
+      <h2>カバー範囲</h2>
+      <p>国・競馬場・ソースによってカバー範囲は異なります。</p>
+    </article>
+  </section>
+</BaseLayout>
