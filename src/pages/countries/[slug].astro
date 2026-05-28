@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCountries, getCountryBySlug, getRacecoursesByCountryId, getSourcesByCountryId } from '../../lib/data';
+import {
+  getCountries,
+  getCountryBySlug,
+  getRacecoursesByCountryId,
+  getSourcesByCountryId,
+  siteData
+} from '../../lib/data';
 
 export function getStaticPaths() {
   return getCountries().map((country) => ({
@@ -17,6 +23,9 @@ if (!country) {
 
 const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
+const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
+const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
+const isHongKongAlpha = country.id === 'hong-kong';
 ---
 
 <BaseLayout
@@ -49,6 +58,37 @@ const sources = getSourcesByCountryId(country.id);
     </article>
   </section>
 
+  {isHongKongAlpha && (
+    <section class="section-grid" aria-label="Alpha timetable coverage">
+      <article class="card">
+        <h2>Alpha timetable coverage</h2>
+        <p><strong>Mode:</strong> link-first / dry-run</p>
+        <p><strong>Live fetching:</strong> disabled</p>
+        <p><strong>Current scope:</strong> official source routing, fixture testing, parser harness checks, and generated status visibility.</p>
+      </article>
+
+      <article class="card">
+        <h2>FetchStatus coverage</h2>
+        {countryFetchStatuses.length > 0 ? (
+          <ul>
+            {countryFetchStatuses.map((status) => (
+              <li>
+                <strong>{status.source_id}</strong>: {status.status} — {status.message}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No FetchStatus entry is listed for this country yet.</p>
+        )}
+      </article>
+
+      <article class="card">
+        <h2>Alpha limitation</h2>
+        <p>This page does not republish racecards, entries, odds, results, payouts, or betting tips.</p>
+      </article>
+    </section>
+  )}
+
   <section class="section-grid" aria-label="Racecourses and sources">
     <article class="card">
       <h2>Racecourses</h2>
@@ -65,7 +105,15 @@ const sources = getSourcesByCountryId(country.id);
       <h2>Official sources</h2>
       {sources.length > 0 ? (
         <ul>
-          {sources.map((source) => <li><a href={source.url}>{source.id}</a></li>)}
+          {sources.map((source) => (
+            <li>
+              <a href={source.url}>{source.id}</a>
+              <br />
+              <span>{source.data_type} / Auto {source.auto_level}</span>
+              <br />
+              <span>{source.notes}</span>
+            </li>
+          ))}
         </ul>
       ) : (
         <p>No source entries are listed yet.</p>
