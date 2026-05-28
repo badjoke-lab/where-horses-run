@@ -54,6 +54,10 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">
+      {isJapanese ? '本文へ移動' : 'Skip to content'}
+    </a>
+
     <div class="site-shell">
       <header class="site-header" aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}>
         <div class="site-header__inner">
@@ -68,7 +72,7 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
         </div>
       </header>
 
-      <main class="main-content">
+      <main id="main-content" class="main-content">
         <slot />
       </main>
 
