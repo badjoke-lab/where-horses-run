@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRacecourseBySlug, getRacecourses } from '../../lib/data';
+
+export function getStaticPaths() {
+  return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
+}
+
+const { slug } = Astro.params;
+const track = getRacecourseBySlug(slug ?? '');
+
+if (!track) {
+  return Astro.redirect('/tracks/');
+}
+---
+
+<BaseLayout title={`${track.name_en} | Tracks`} description={`Track profile for ${track.name_en}.`}>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Track profile</p>
+    <h1 id="page-title">{track.name_en}</h1>
+    <p class="hero__summary">Static profile for {track.name_en}.</p>
+  </section>
+
+  <section class="section-grid" aria-label="Track details">
+    <article class="card">
+      <h2>Profile</h2>
+      <p><strong>Country ID:</strong> {track.country_id}</p>
+      <p><strong>City:</strong> {track.city}</p>
+      <p><strong>Timezone:</strong> {track.timezone}</p>
+      <p><strong>Status:</strong> {track.status}</p>
+    </article>
+    <article class="card">
+      <h2>Types</h2>
+      <p>{track.racing_types.join(', ')}</p>
+    </article>
+  </section>
+
+  <p><a href="/tracks/">Back</a></p>
+</BaseLayout>
