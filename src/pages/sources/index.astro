@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteData, getCountries } from '../../lib/data';
+
+const sources = siteData.sources;
+const countries = getCountries();
+const countryNames = new Map(countries.map((country) => [country.id, country.name_en]));
+---
+
+<BaseLayout
+  title="Sources | Where Horses Run"
+  description="Browse official and reference source links used by Where Horses Run."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Sources</p>
+    <h1 id="page-title">Sources</h1>
+    <p class="hero__summary">
+      Browse source entries used for country and racing coverage notes.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Source list">
+    {sources.map((source) => (
+      <article class="card">
+        <h2><a href={source.url}>{source.id}</a></h2>
+        <p>{countryNames.get(source.country_id) ?? source.country_id}</p>
+        <p><strong>Type:</strong> {source.source_type}</p>
+        <p><strong>Data:</strong> {source.data_type}</p>
+        <p><strong>Auto:</strong> {source.auto_level}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

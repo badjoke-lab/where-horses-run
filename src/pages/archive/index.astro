@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getArchiveEntries } from '../../lib/data';
+
+const entries = getArchiveEntries();
+---
+
+<BaseLayout
+  title="Archive | Where Horses Run"
+  description="Browse archived or inactive racing jurisdiction entries."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Archive</p>
+    <h1 id="page-title">Archive</h1>
+    <p class="hero__summary">
+      Browse archived or inactive entries kept for reference.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Archive list">
+    {entries.map((entry) => (
+      <article class="card">
+        <h2>{entry.name_en}</h2>
+        <p>{entry.summary_en}</p>
+        <p><strong>Status:</strong> {entry.status}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

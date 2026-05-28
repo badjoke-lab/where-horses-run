@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getArchiveEntries } from '../../../lib/data';
+
+const entries = getArchiveEntries();
+---
+
+<BaseLayout
+  title="アーカイブ | 競馬どこ？"
+  description="休止中・アーカイブ扱いの競馬関連エントリを一覧できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Archive</p>
+    <h1 id="page-title">アーカイブ</h1>
+    <p class="hero__summary">
+      休止中または参考用に保持している項目を一覧できます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="アーカイブ一覧">
+    {entries.map((entry) => (
+      <article class="card">
+        <h2>{entry.name_ja}</h2>
+        <p>{entry.summary_ja}</p>
+        <p><strong>状態:</strong> {entry.status}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
