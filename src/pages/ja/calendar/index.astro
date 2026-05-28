@@ -3,21 +3,30 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { siteData } from '../../../lib/data';
 
 const latest = siteData.generated.latest;
+const today = siteData.generated.today;
+const tomorrow = siteData.generated.tomorrow;
+const calendar30d = siteData.generated.calendar30d;
 const fetchStatus = siteData.generated.fetchStatus;
+
 const sourceStatuses = fetchStatus.sources ?? [];
 const notes = fetchStatus.notes ?? [];
+const todayMeetings = today.meetings ?? [];
+const tomorrowMeetings = tomorrow.meetings ?? [];
+const calendarMeetings = calendar30d.meetings ?? [];
+
+const isPlaceholder = fetchStatus.status === 'placeholder' || latest.status === 'placeholder';
 ---
 
 <BaseLayout
   title="カレンダー | 競馬どこ？"
-  description="競馬どこ？ の生成データ状態とfallbackカレンダーページです。"
+  description="競馬どこ？ の生成データ状態、fallback状態、placeholderカレンダーページです。"
   lang="ja"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">カレンダー</h1>
     <p class="hero__summary">
-      生成データの状態、鮮度、placeholder状態を表示します。
+      生成データの状態、鮮度、placeholder状態、fallback表示を確認できます。
     </p>
   </section>
 
@@ -30,9 +39,11 @@ const notes = fetchStatus.notes ?? [];
     </article>
 
     <article class="card">
-      <h2>鮮度メモ</h2>
+      <h2>データ境界</h2>
       <p>
-        placeholder data は、live fetch や parser workflow がまだ開始されていない状態を示します。
+        {isPlaceholder
+          ? 'これはplaceholder dataです。live fetch と parser workflow はまだ開始されていません。'
+          : '生成データはありますが、最終確認は公式ソースで行ってください。'}
       </p>
     </article>
 
@@ -44,7 +55,58 @@ const notes = fetchStatus.notes ?? [];
     </article>
   </section>
 
-  <section class="section-grid" aria-label="生成ファイル">
+  <section class="section-grid" aria-label="スケジュールfallback">
+    <article class="card">
+      <h2>今日</h2>
+      <p><strong>生成日時:</strong> {today.generated_at}</p>
+      {todayMeetings.length > 0 ? (
+        <ul>
+          {todayMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>今日の生成ミーティングはありません。公式ソースで確認してください。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>明日</h2>
+      <p><strong>生成日時:</strong> {tomorrow.generated_at}</p>
+      {tomorrowMeetings.length > 0 ? (
+        <ul>
+          {tomorrowMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>明日の生成ミーティングはありません。公式ソースで確認してください。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>30日fallback</h2>
+      <p><strong>生成日時:</strong> {calendar30d.generated_at}</p>
+      <p><strong>範囲:</strong> {calendar30d.start_date_utc} 〜 {calendar30d.end_date_utc}</p>
+      {calendarMeetings.length > 0 ? (
+        <ul>
+          {calendarMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>30日fallback範囲の生成ミーティングはありません。</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="生成ファイルとメモ">
     <article class="card">
       <h2>生成ファイル</h2>
       <p>{latest.today_file}</p>
