@@ -10,6 +10,21 @@
   border: 0;
 }
 
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid #000000;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
 .flow > * + * {
   margin-block-start: var(--whr-space-3);
 }
