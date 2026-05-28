@@ -4,36 +4,79 @@ import { siteData } from '../../../lib/data';
 
 const latest = siteData.generated.latest;
 const fetchStatus = siteData.generated.fetchStatus;
+const sourceStatuses = fetchStatus.sources ?? [];
+const notes = fetchStatus.notes ?? [];
 ---
 
 <BaseLayout
   title="カレンダー | 競馬どこ？"
-  description="競馬どこ？ の静的カレンダーページです。"
+  description="競馬どこ？ の生成データ状態とfallbackカレンダーページです。"
   lang="ja"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">カレンダー</h1>
     <p class="hero__summary">
-      実データ連携前の静的fallbackページです。
+      生成データの状態、鮮度、placeholder状態を表示します。
     </p>
   </section>
 
-  <section class="section-grid" aria-label="カレンダー状態">
+  <section class="section-grid" aria-label="生成データ状態">
     <article class="card">
-      <h2>状態</h2>
-      <p>{fetchStatus.status}</p>
+      <h2>生成状態</h2>
+      <p><strong>状態:</strong> {fetchStatus.status}</p>
       <p><strong>生成日時:</strong> {fetchStatus.generated_at}</p>
+      <p><strong>latest状態:</strong> {latest.status}</p>
     </article>
+
     <article class="card">
-      <h2>ファイル</h2>
+      <h2>鮮度メモ</h2>
+      <p>
+        placeholder data は、live fetch や parser workflow がまだ開始されていない状態を示します。
+      </p>
+    </article>
+
+    <article class="card">
+      <h2>公式確認</h2>
+      <p>
+        開催日、レース時刻、出走表、結果、払戻は公式ソースで確認してください。
+      </p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="生成ファイル">
+    <article class="card">
+      <h2>生成ファイル</h2>
       <p>{latest.today_file}</p>
       <p>{latest.tomorrow_file}</p>
       <p>{latest.calendar_30d_file}</p>
+      <p>{latest.fetch_status_file}</p>
     </article>
+
     <article class="card">
-      <h2>注意</h2>
-      <p>レース詳細は公式ソースで確認してください。</p>
+      <h2>ソース状態</h2>
+      {sourceStatuses.length > 0 ? (
+        <ul>
+          {sourceStatuses.map((source) => (
+            <li>
+              <strong>{source.source_id}</strong>: {source.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>ソース状態データはまだありません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>メモ</h2>
+      {notes.length > 0 ? (
+        <ul>
+          {notes.map((note) => <li>{note}</li>)}
+        </ul>
+      ) : (
+        <p>生成データメモはまだありません。</p>
+      )}
     </article>
   </section>
 </BaseLayout>
