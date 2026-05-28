@@ -13,7 +13,7 @@ data/generated/today.json
 data/generated/tomorrow.json
 data/generated/calendar-30d.json
 data/generated/fetch-status.json
-````
+```
 
 ## latest.json
 
