@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getRacecourseBySlug, getRacecourses } from '../../../lib/data';
+
+export function getStaticPaths() {
+  return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
+}
+
+const { slug } = Astro.params;
+const track = getRacecourseBySlug(slug ?? '');
+
+if (!track) {
+  return Astro.redirect('/ja/tracks/');
+}
+---
+
+<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の静的プロフィールです。`} lang="ja">
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Track profile</p>
+    <h1 id="page-title">{track.name_ja}</h1>
+    <p class="hero__summary">{track.name_ja} の静的プロフィールです。</p>
+  </section>
+
+  <section class="section-grid" aria-label="競馬場詳細">
+    <article class="card">
+      <h2>概要</h2>
+      <p><strong>国ID:</strong> {track.country_id}</p>
+      <p><strong>都市:</strong> {track.city}</p>
+      <p><strong>タイムゾーン:</strong> {track.timezone}</p>
+      <p><strong>状態:</strong> {track.status}</p>
+    </article>
+    <article class="card">
+      <h2>競馬種別</h2>
+      <p>{track.racing_types.join(', ')}</p>
+    </article>
+  </section>
+
+  <p><a href="/ja/tracks/">一覧へ戻る</a></p>
+</BaseLayout>
