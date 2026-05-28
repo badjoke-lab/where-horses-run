@@ -4,35 +4,78 @@ import { siteData } from '../../lib/data';
 
 const latest = siteData.generated.latest;
 const fetchStatus = siteData.generated.fetchStatus;
+const sourceStatuses = fetchStatus.sources ?? [];
+const notes = fetchStatus.notes ?? [];
 ---
 
 <BaseLayout
   title="Calendar | Where Horses Run"
-  description="Calendar fallback page for Where Horses Run."
+  description="Generated calendar status and fallback schedule page for Where Horses Run."
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">Calendar</h1>
     <p class="hero__summary">
-      This page is a static fallback until generated schedule data is available.
+      Generated schedule status, freshness, and placeholder information.
     </p>
   </section>
 
-  <section class="section-grid" aria-label="Calendar status">
+  <section class="section-grid" aria-label="Generated data status">
     <article class="card">
-      <h2>Status</h2>
-      <p>{fetchStatus.status}</p>
-      <p><strong>Generated:</strong> {fetchStatus.generated_at}</p>
+      <h2>Generated status</h2>
+      <p><strong>Status:</strong> {fetchStatus.status}</p>
+      <p><strong>Generated at:</strong> {fetchStatus.generated_at}</p>
+      <p><strong>Latest status:</strong> {latest.status}</p>
     </article>
+
     <article class="card">
-      <h2>Files</h2>
+      <h2>Freshness note</h2>
+      <p>
+        This page shows generated data status. Placeholder data means live fetching and parser workflows have not started.
+      </p>
+    </article>
+
+    <article class="card">
+      <h2>Official confirmation</h2>
+      <p>
+        Always confirm race days, race times, entries, results, and payouts with official sources.
+      </p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Generated files">
+    <article class="card">
+      <h2>Generated files</h2>
       <p>{latest.today_file}</p>
       <p>{latest.tomorrow_file}</p>
       <p>{latest.calendar_30d_file}</p>
+      <p>{latest.fetch_status_file}</p>
     </article>
+
     <article class="card">
-      <h2>Note</h2>
-      <p>Always confirm race details with official sources.</p>
+      <h2>Source status</h2>
+      {sourceStatuses.length > 0 ? (
+        <ul>
+          {sourceStatuses.map((source) => (
+            <li>
+              <strong>{source.source_id}</strong>: {source.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No source status entries are listed yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Notes</h2>
+      {notes.length > 0 ? (
+        <ul>
+          {notes.map((note) => <li>{note}</li>)}
+        </ul>
+      ) : (
+        <p>No generated data notes are listed yet.</p>
+      )}
     </article>
   </section>
 </BaseLayout>
