@@ -3,20 +3,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { siteData } from '../../lib/data';
 
 const latest = siteData.generated.latest;
+const today = siteData.generated.today;
+const tomorrow = siteData.generated.tomorrow;
+const calendar30d = siteData.generated.calendar30d;
 const fetchStatus = siteData.generated.fetchStatus;
+
 const sourceStatuses = fetchStatus.sources ?? [];
 const notes = fetchStatus.notes ?? [];
+const todayMeetings = today.meetings ?? [];
+const tomorrowMeetings = tomorrow.meetings ?? [];
+const calendarMeetings = calendar30d.meetings ?? [];
+
+const isPlaceholder = fetchStatus.status === 'placeholder' || latest.status === 'placeholder';
 ---
 
 <BaseLayout
   title="Calendar | Where Horses Run"
-  description="Generated calendar status and fallback schedule page for Where Horses Run."
+  description="Generated calendar status, fallback states, and placeholder schedule page for Where Horses Run."
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">Calendar</h1>
     <p class="hero__summary">
-      Generated schedule status, freshness, and placeholder information.
+      Generated schedule status, freshness, placeholder state, and fallback schedule entries.
     </p>
   </section>
 
@@ -29,9 +38,11 @@ const notes = fetchStatus.notes ?? [];
     </article>
 
     <article class="card">
-      <h2>Freshness note</h2>
+      <h2>Data boundary</h2>
       <p>
-        This page shows generated data status. Placeholder data means live fetching and parser workflows have not started.
+        {isPlaceholder
+          ? 'This is placeholder data. Live fetching and parser workflows have not started.'
+          : 'Generated data is available, but official sources remain the final confirmation point.'}
       </p>
     </article>
 
@@ -43,7 +54,58 @@ const notes = fetchStatus.notes ?? [];
     </article>
   </section>
 
-  <section class="section-grid" aria-label="Generated files">
+  <section class="section-grid" aria-label="Schedule fallback sections">
+    <article class="card">
+      <h2>Today</h2>
+      <p><strong>Generated:</strong> {today.generated_at}</p>
+      {todayMeetings.length > 0 ? (
+        <ul>
+          {todayMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No generated meetings are listed for today. Use official sources for confirmation.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Tomorrow</h2>
+      <p><strong>Generated:</strong> {tomorrow.generated_at}</p>
+      {tomorrowMeetings.length > 0 ? (
+        <ul>
+          {tomorrowMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No generated meetings are listed for tomorrow. Use official sources for confirmation.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>30-day fallback</h2>
+      <p><strong>Generated:</strong> {calendar30d.generated_at}</p>
+      <p><strong>Range:</strong> {calendar30d.start_date_utc} to {calendar30d.end_date_utc}</p>
+      {calendarMeetings.length > 0 ? (
+        <ul>
+          {calendarMeetings.map((meeting) => (
+            <li>
+              <strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No generated meetings are listed for the 30-day fallback range.</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Generated files and notes">
     <article class="card">
       <h2>Generated files</h2>
       <p>{latest.today_file}</p>
