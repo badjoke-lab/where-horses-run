@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getRacecourses, getCountries } from '../../../lib/data';
+
+const tracks = getRacecourses();
+const countries = getCountries();
+const countryNames = new Map(countries.map((country) => [country.id, country.name_ja]));
+---
+
+<BaseLayout
+  title="競馬場 | 競馬どこ？"
+  description="世界の競馬場データを一覧できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Racecourses & tracks</p>
+    <h1 id="page-title">競馬場</h1>
+    <p class="hero__summary">
+      登録済みの競馬場を一覧できます。各ページでは国・地域、都市、競馬種別などの静的プロフィールを確認できます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="競馬場一覧">
+    {tracks.map((track) => (
+      <article class="card">
+        <h2><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a></h2>
+        <p>{countryNames.get(track.country_id) ?? track.country_id}</p>
+        <p><strong>都市:</strong> {track.city}</p>
+        <p><strong>種別:</strong> {track.racing_types.join(', ')}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
