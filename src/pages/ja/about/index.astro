@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About | 競馬どこ？"
+  description="競馬どこ？ の概要ページです。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">About</p>
+    <h1 id="page-title">競馬どこ？について</h1>
+    <p class="hero__summary">
+      競馬どこ？ は、世界の競馬開催国・競馬場・公式ソース・用語を整理する静的ガイドです。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="概要">
+    <article class="card">
+      <h2>目的</h2>
+      <p>世界の競馬開催情報や公式導線を探しやすくすることを目的としています。</p>
+    </article>
+    <article class="card">
+      <h2>公式ソース優先</h2>
+      <p>公式ソースへの導線とカバー範囲を重視します。</p>
+    </article>
+    <article class="card">
+      <h2>現在フェーズ</h2>
+      <p>現在は static MVP フェーズです。</p>
+    </article>
+  </section>
+</BaseLayout>

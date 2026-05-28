@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Disclaimer | Where Horses Run"
+  description="Disclaimer and coverage boundaries for Where Horses Run."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Disclaimer</p>
+    <h1 id="page-title">Disclaimer</h1>
+    <p class="hero__summary">
+      This project is an informational guide and reference layer.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Disclaimer sections">
+    <article class="card">
+      <h2>No betting advice</h2>
+      <p>The project does not provide betting tips, wagering recommendations, or gambling advice.</p>
+    </article>
+    <article class="card">
+      <h2>Official confirmation required</h2>
+      <p>Race times, entries, results, and payouts should always be confirmed through official sources.</p>
+    </article>
+    <article class="card">
+      <h2>Coverage limits</h2>
+      <p>Coverage levels vary by country, track, and source availability.</p>
+    </article>
+  </section>
+</BaseLayout>
