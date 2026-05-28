@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getGlossaryEntries } from '../../../lib/data';
+
+const entries = getGlossaryEntries();
+---
+
+<BaseLayout
+  title="用語 | 競馬どこ？"
+  description="競馬カレンダー、時刻表、公式ソースで使われる用語を一覧できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary</p>
+    <h1 id="page-title">用語</h1>
+    <p class="hero__summary">
+      このサイトで使う競馬関連の用語を一覧できます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="用語一覧">
+    {entries.map((entry) => (
+      <article class="card">
+        <h2><a href={`/ja/glossary/${entry.slug}/`}>{entry.term_ja}</a></h2>
+        <p>{entry.summary_ja}</p>
+        <p><strong>分類:</strong> {entry.category}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

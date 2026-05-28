@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../lib/data';
+
+export function getStaticPaths() {
+  return getGlossaryEntries().map((entry) => ({ params: { slug: entry.slug } }));
+}
+
+const { slug } = Astro.params;
+const entry = getGlossaryEntryBySlug(slug ?? '');
+
+if (!entry) {
+  return Astro.redirect('/glossary/');
+}
+---
+
+<BaseLayout title={`${entry.term_en} | Glossary`} description={entry.summary_en}>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary term</p>
+    <h1 id="page-title">{entry.term_en}</h1>
+    <p class="hero__summary">{entry.summary_en}</p>
+  </section>
+
+  <section class="section-grid" aria-label="Glossary detail">
+    <article class="card">
+      <h2>Category</h2>
+      <p>{entry.category}</p>
+    </article>
+    <article class="card">
+      <h2>Japanese term</h2>
+      <p>{entry.term_ja}</p>
+    </article>
+  </section>
+
+  <p><a href="/glossary/">Back</a></p>
+</BaseLayout>

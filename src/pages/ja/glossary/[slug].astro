@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../../lib/data';
+
+export function getStaticPaths() {
+  return getGlossaryEntries().map((entry) => ({ params: { slug: entry.slug } }));
+}
+
+const { slug } = Astro.params;
+const entry = getGlossaryEntryBySlug(slug ?? '');
+
+if (!entry) {
+  return Astro.redirect('/ja/glossary/');
+}
+---
+
+<BaseLayout title={`${entry.term_ja} | 用語 | 競馬どこ？`} description={entry.summary_ja} lang="ja">
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary term</p>
+    <h1 id="page-title">{entry.term_ja}</h1>
+    <p class="hero__summary">{entry.summary_ja}</p>
+  </section>
+
+  <section class="section-grid" aria-label="用語詳細">
+    <article class="card">
+      <h2>分類</h2>
+      <p>{entry.category}</p>
+    </article>
+    <article class="card">
+      <h2>English</h2>
+      <p>{entry.term_en}</p>
+    </article>
+  </section>
+
+  <p><a href="/ja/glossary/">一覧へ戻る</a></p>
+</BaseLayout>
