@@ -1,0 +1,77 @@
+{
+  "schema_version": "timetable-candidates-v0",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "source_adapter_id": "japan-banei-dry-run-adapter",
+  "country_id": "japan",
+  "candidate_window": {
+    "start_date": "2026-05-29",
+    "end_date_exclusive": "2026-06-28",
+    "timezone": "Asia/Tokyo"
+  },
+  "records": [
+    {
+      "candidate_id": "japan-banei-2026-05-30-obihiro",
+      "country_id": "japan",
+      "racing_system_id": "banei",
+      "racecourse_id": "obihiro-racecourse",
+      "racecourse_name": "Obihiro",
+      "date": "2026-05-30",
+      "start_time_local": "14:35",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Banei meeting",
+      "source_id": "japan-banei-monthly-schedule",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "source_checked_at": "2026-05-29T00:00:00Z",
+      "extraction_method": "adapter_dry_run",
+      "status": "candidate",
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Banei meeting-level candidate generated from the existing safe timetable overlay. Official source remains final confirmation."
+    },
+    {
+      "candidate_id": "japan-banei-2026-05-31-obihiro",
+      "country_id": "japan",
+      "racing_system_id": "banei",
+      "racecourse_id": "obihiro-racecourse",
+      "racecourse_name": "Obihiro",
+      "date": "2026-05-31",
+      "start_time_local": "14:25",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Banei meeting",
+      "source_id": "japan-banei-monthly-schedule",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "source_checked_at": "2026-05-29T00:00:00Z",
+      "extraction_method": "adapter_dry_run",
+      "status": "candidate",
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Banei meeting-level candidate generated from the existing safe timetable overlay. Official source remains final confirmation."
+    },
+    {
+      "candidate_id": "japan-banei-2026-06-01-obihiro",
+      "country_id": "japan",
+      "racing_system_id": "banei",
+      "racecourse_id": "obihiro-racecourse",
+      "racecourse_name": "Obihiro",
+      "date": "2026-06-01",
+      "start_time_local": "14:20",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Banei meeting",
+      "source_id": "japan-banei-monthly-schedule",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "source_checked_at": "2026-05-29T00:00:00Z",
+      "extraction_method": "adapter_dry_run",
+      "status": "candidate",
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Banei meeting-level candidate generated from the existing safe timetable overlay. Official source remains final confirmation."
+    }
+  ],
+  "review": {
+    "review_status": "needs_review",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Dry-run candidate file generated from existing safe Banei meeting-level timetable overlay. It is not published coverage until reviewed and promoted.",
+    "promotion_target": null
+  }
+}
