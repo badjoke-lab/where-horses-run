@@ -20,8 +20,8 @@ if (overlay.schema_version !== 'japan-active-timetable-records-v0') {
 }
 
 const records = overlay.records ?? [];
-if (!Array.isArray(records) || records.length < 6) {
-  fail('Japan active timetable overlay must include at least 6 records.');
+if (!Array.isArray(records) || records.length < 15) {
+  fail('Japan active timetable overlay must include at least 15 records after PR-064.');
 }
 
 const generatedAt = new Date(`${String(overlay.generated_at).slice(0, 10)}T00:00:00.000Z`);
@@ -29,6 +29,7 @@ const windowEnd = new Date(Date.UTC(generatedAt.getUTCFullYear(), generatedAt.ge
 
 const requiredTypes = new Set(['NAR local meeting', 'Banei meeting']);
 const seenTypes = new Set();
+const seenKeys = new Set();
 
 for (const record of records) {
   if (record.country_id !== 'japan') fail('Every overlay record must have country_id japan.');
@@ -43,6 +44,10 @@ for (const record of records) {
   if (!record.last_checked_at) fail('Every overlay record must include last_checked_at.');
   if (record.status !== 'source-reviewed') fail(`${record.racecourse_id}: status must be source-reviewed.`);
   if (!record.confidence) fail('Every overlay record must include confidence.');
+
+  const key = `${record.date}:${record.racecourse_id}`;
+  if (seenKeys.has(key)) fail(`Duplicate Japan active timetable record: ${key}`);
+  seenKeys.add(key);
 
   const recordDate = new Date(`${record.date}T00:00:00.000Z`);
   if (recordDate < generatedAt || recordDate >= windowEnd) {
@@ -61,6 +66,20 @@ for (const record of records) {
 
 for (const type of requiredTypes) {
   if (!seenTypes.has(type)) fail(`Missing active-window Japan record type: ${type}`);
+}
+
+for (const requiredKey of [
+  '2026-05-30:urawa-racecourse',
+  '2026-05-30:kasamatsu-racecourse',
+  '2026-05-30:sonoda-racecourse',
+  '2026-05-31:mizusawa-racecourse',
+  '2026-05-31:kanazawa-racecourse',
+  '2026-06-01:mizusawa-racecourse',
+  '2026-06-01:funabashi-racecourse',
+  '2026-06-01:saga-racecourse',
+  '2026-06-01:obihiro-racecourse'
+]) {
+  if (!seenKeys.has(requiredKey)) fail(`Missing PR-064 expanded active-window record: ${requiredKey}`);
 }
 
 for (const sourceId of ['japan-nar-home', 'japan-banei-monthly-schedule']) {
