@@ -27,6 +27,17 @@ const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
 const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
 const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
 const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
+const timetableData = siteData.generated.timetables;
+const timetableRecords = (timetableData.records ?? []).filter(
+  (record) => (record.country_id ?? timetableData.country_id) === country.id
+);
+const hasTimetableFallback = timetableData.country_id === country.id;
+const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
+const timetableSources = hasTimetableFallback
+  ? (timetableData.sources ?? [])
+      .map((sourceId) => sources.find((source) => source.id === sourceId) ?? { id: sourceId, url: '' })
+  : [];
+const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
 ---
 
 <BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
@@ -52,6 +63,90 @@ const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length 
     <article class="card">
       <h2>公式ソース確認</h2>
       <p>開催詳細、出走表、オッズ、結果、払戻は公式または許諾済みソースで確認してください。</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="安全な開催時刻データ">
+    <article class="card">
+      <h2>安全な開催時刻データ</h2>
+      <p><strong>country_id:</strong> {country.id}</p>
+      {hasTimetableData ? (
+        <>
+          <p><strong>状態:</strong> {hasTimetableFallback ? timetableModeLabel : '確認済みレコードあり'}</p>
+          <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
+          <p><strong>確認済みレコード:</strong> {timetableRecords.length}</p>
+          <p><strong>手動fallback:</strong> {hasTimetableFallback ? '手動fallback' : 'なし'}</p>
+          <p><strong>last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'この国では未掲載'}</p>
+          <p><strong>live fetch:</strong> disabled</p>
+          <p><strong>最終確認:</strong> 公式ソースリンクで最終確認してください。</p>
+        </>
+      ) : (
+        <>
+          <p><strong>状態:</strong> timetable recordsなし</p>
+          <p><strong>確認済みレコード:</strong> 0</p>
+          <p><strong>手動fallback:</strong> なし</p>
+          <p><strong>live fetch:</strong> disabled</p>
+          <p>この国の安全な開催時刻レコードはまだありません。</p>
+          <p>最終確認には公式ソースリンクを使用してください。</p>
+        </>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>公式ソースとnotes</h2>
+      {timetableSources.length > 0 ? (
+        <>
+          <p><strong>公式ソース:</strong></p>
+          <ul>
+            {timetableSources.map((source) => (
+              <li>
+                {source.url ? <a href={source.url}>{source.id}</a> : <span>{source.id}</span>}
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>この国のtimetable専用ソースリンクはまだありません。</p>
+      )}
+      {hasTimetableFallback && timetableData.notes.length > 0 ? (
+        <>
+          <p><strong>notes:</strong></p>
+          <ul>
+            {timetableData.notes.map((note) => <li>{note}</li>)}
+          </ul>
+        </>
+      ) : (
+        <p><strong>notes:</strong> 将来の確認済み開催日・発走時刻レコードを表示できる安全な構造です。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>確認済みtimetable records</h2>
+      {timetableRecords.length > 0 ? (
+        <ul>
+          {timetableRecords.map((record) => (
+            <li>
+              <strong>{record.racecourse_name ?? record.racecourse_id ?? 'Racecourse pending'}</strong>
+              <br />
+              <span>date: {record.date ?? '未掲載'} / start_time_local: {record.start_time_local ?? '未掲載'} / timezone: {record.timezone ?? '未掲載'}</span>
+              <br />
+              <span>racing_type: {record.racing_type ?? '未掲載'}</span>
+              <br />
+              <span>source_url: {record.source_url ? <a href={record.source_url}>{record.source_id}</a> : record.source_id}</span>
+              <br />
+              <span>last_checked_at: {record.last_checked_at} / status: {record.status} / confidence: {record.confidence}</span>
+              {record.notes && (
+                <>
+                  <br />
+                  <span>notes: {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</span>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Records: 確認済みtimetable recordsはまだありません。</p>
+      )}
     </article>
   </section>
 
