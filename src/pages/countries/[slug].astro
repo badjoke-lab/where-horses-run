@@ -29,6 +29,17 @@ const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
 const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
 const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
 const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
+const timetableData = siteData.generated.timetables;
+const timetableRecords = (timetableData.records ?? []).filter(
+  (record) => (record.country_id ?? timetableData.country_id) === country.id
+);
+const hasTimetableFallback = timetableData.country_id === country.id;
+const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
+const timetableSources = hasTimetableFallback
+  ? (timetableData.sources ?? [])
+      .map((sourceId) => sources.find((source) => source.id === sourceId) ?? { id: sourceId, url: '' })
+  : [];
+const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
 ---
 
 <BaseLayout
@@ -58,6 +69,90 @@ const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length 
     <article class="card">
       <h2>Official-source boundary</h2>
       <p>Race details, entries, odds, results, and payouts should be confirmed on official or licensed source pages.</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Safe timetable data">
+    <article class="card">
+      <h2>Safe timetable data</h2>
+      <p><strong>Country ID:</strong> {country.id}</p>
+      {hasTimetableData ? (
+        <>
+          <p><strong>Timetable status:</strong> {hasTimetableFallback ? timetableModeLabel : 'verified records listed'}</p>
+          <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
+          <p><strong>Verified records:</strong> {timetableRecords.length}</p>
+          <p><strong>Fallback/manual status:</strong> {hasTimetableFallback ? 'manual fallback' : 'none listed'}</p>
+          <p><strong>Last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'not listed for this country'}</p>
+          <p><strong>Live fetching:</strong> disabled</p>
+          <p><strong>Final confirmation:</strong> Use official source links for final confirmation.</p>
+        </>
+      ) : (
+        <>
+          <p><strong>Timetable status:</strong> no timetable records yet</p>
+          <p><strong>Verified records:</strong> 0</p>
+          <p><strong>Fallback/manual status:</strong> none listed</p>
+          <p><strong>Live fetching:</strong> disabled</p>
+          <p>No safe timetable records are listed for this country yet.</p>
+          <p>Use official source links for final confirmation.</p>
+        </>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Timetable sources and notes</h2>
+      {timetableSources.length > 0 ? (
+        <>
+          <p><strong>Official source:</strong></p>
+          <ul>
+            {timetableSources.map((source) => (
+              <li>
+                {source.url ? <a href={source.url}>{source.id}</a> : <span>{source.id}</span>}
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>No timetable-specific source links are listed for this country yet.</p>
+      )}
+      {hasTimetableFallback && timetableData.notes.length > 0 ? (
+        <>
+          <p><strong>Notes:</strong></p>
+          <ul>
+            {timetableData.notes.map((note) => <li>{note}</li>)}
+          </ul>
+        </>
+      ) : (
+        <p><strong>Notes:</strong> Safe timetable display is ready for future verified date and start-time records.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Verified timetable records</h2>
+      {timetableRecords.length > 0 ? (
+        <ul>
+          {timetableRecords.map((record) => (
+            <li>
+              <strong>{record.racecourse_name ?? record.racecourse_id ?? 'Racecourse pending'}</strong>
+              <br />
+              <span>Date: {record.date ?? 'not listed'} / Start time: {record.start_time_local ?? 'not listed'} / Timezone: {record.timezone ?? 'not listed'}</span>
+              <br />
+              <span>Racing type: {record.racing_type ?? 'not listed'}</span>
+              <br />
+              <span>Source: {record.source_url ? <a href={record.source_url}>{record.source_id}</a> : record.source_id}</span>
+              <br />
+              <span>Last checked: {record.last_checked_at} / Status: {record.status} / Confidence: {record.confidence}</span>
+              {record.notes && (
+                <>
+                  <br />
+                  <span>Notes: {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</span>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Records: no verified timetable records yet.</p>
+      )}
     </article>
   </section>
 
