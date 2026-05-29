@@ -12,6 +12,54 @@
     "m3_notes": "Japan alpha source record candidate. Start with official-source routing and page-level verification before parser or live fetch work."
   },
   {
+    "id": "japan-nar-home",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://www.keiba.go.jp/",
+    "data_type": "link_only",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "M3 Japan source split. Link-first and dry-run only. Use the official NAR site for confirmation. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "NAR official-source routing record. This is not NAR timetable coverage and adds no parser or live fetch."
+  },
+  {
+    "id": "japan-nar-racecourse-guide",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://www.keiba.go.jp/guide/",
+    "data_type": "link_only",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "Official NAR racecourse guide source. Link-first and dry-run only. Use this for racecourse inventory confirmation, not for republishing racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content. Live fetching requires separate source-specific review.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "NAR racecourse inventory source record. This is not NAR calendar coverage."
+  },
+  {
+    "id": "japan-banei-home",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://www.banei-keiba.or.jp/",
+    "data_type": "link_only",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "M3 Japan source split. Link-first and dry-run only. Use the official Banei Tokachi site for confirmation. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "Banei official-source routing record. This is not Banei timetable coverage and adds no parser or live fetch."
+  },
+  {
+    "id": "japan-banei-monthly-schedule",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://www.banei-keiba.or.jp/",
+    "data_type": "link_only",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "Official Banei Tokachi monthly schedule source candidate. Link-first and dry-run only. Do not store source response bodies and do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content. Live fetching requires separate source-specific review.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "Banei monthly schedule routing record. This is not Banei calendar coverage and adds no parser or live fetch."
+  },
+  {
     "id": "hong-kong-hkjc-home",
     "country_id": "hong-kong",
     "source_type": "official",
