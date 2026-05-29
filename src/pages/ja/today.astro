@@ -45,7 +45,7 @@ const todayRecords = (timetableData.records ?? []).filter((record) => record.dat
           {todayRecords.map((record) => (
             <li>
               <p><strong>Country:</strong> {record.country_id}</p>
-              <p><strong>Racecourse:</strong> {record.racecourse_name} ({record.racecourse_id})</p>
+              <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
               <p><strong>Date:</strong> {record.date}</p>
               <p><strong>Start time:</strong> {record.start_time_local}</p>
               <p><strong>Timezone:</strong> {record.timezone}</p>
