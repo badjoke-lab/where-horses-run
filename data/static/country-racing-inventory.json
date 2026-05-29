@@ -1,0 +1,173 @@
+{
+  "schema_version": "country-racing-inventory-v0",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "purpose": "Inventory gate for country racing structure, official sources, racecourse scope, and seed validity before any country is treated as covered.",
+  "coverage_terms": {
+    "not_started": "The source or racing system is known but no timetable coverage work has started.",
+    "initial_seed_only": "A small source-reviewed seed exists, but it is not broad coverage and must not be presented as complete.",
+    "partial": "Some usable active-window records exist, but the country/racing system is not fully covered.",
+    "out_of_window_seed": "Records exist but are outside the active Today/Tomorrow/30-day window and must not be treated as useful current calendar coverage.",
+    "broad": "A substantial portion of the known official calendar is represented, but final completeness still requires review.",
+    "complete": "All known in-scope official racing systems, racecourses, calendar sources, and active-window meetings have been reviewed for the declared coverage window. No current country may use this without a separate completion pass."
+  },
+  "global_rules": [
+    "Do not call a country complete unless every active official racing system in this inventory has a source, racecourse scope, and coverage review.",
+    "Do not treat initial seed records as country coverage.",
+    "Do not treat records outside the active 30-day window as useful current calendar coverage.",
+    "Do not add racecards, entries, horse names, jockey names, odds, results, payouts, predictions, tips, raw HTML, or source response bodies.",
+    "Official source links remain the final confirmation point."
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "display_name": "Japan",
+      "overall_coverage_status": "initial_seed_only",
+      "current_seed_state": "PR-056 added four JRA records for Tokyo and Kyoto on 2026-05-30 and 2026-05-31 only. This is not Japan coverage.",
+      "must_not_claim": [
+        "Japan complete",
+        "JRA complete",
+        "NAR covered",
+        "Banei covered"
+      ],
+      "racing_systems": [
+        {
+          "system_id": "jra",
+          "name": "Japan Racing Association",
+          "role": "Central racing",
+          "official_sources": [
+            {
+              "source_id": "japan-jra-home",
+              "label": "JRA official site",
+              "url": "https://jra.jp/",
+              "usage": "official confirmation and calendar source"
+            }
+          ],
+          "racecourses": [
+            { "racecourse_id": "sapporo-racecourse", "name": "Sapporo", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "hakodate-racecourse", "name": "Hakodate", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "fukushima-racecourse", "name": "Fukushima", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "niigata-racecourse", "name": "Niigata", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "tokyo-racecourse", "name": "Tokyo", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "nakayama-racecourse", "name": "Nakayama", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "chukyo-racecourse", "name": "Chukyo", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kyoto-racecourse", "name": "Kyoto", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "hanshin-racecourse", "name": "Hanshin", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kokura-racecourse", "name": "Kokura", "inventory_status": "known_in_scope" }
+          ],
+          "coverage_status": "initial_seed_only",
+          "coverage_notes": "Only Tokyo and Kyoto have seed records. The other JRA racecourses remain unseeded. JRA coverage cannot be called broad or complete."
+        },
+        {
+          "system_id": "nar",
+          "name": "National Association of Racing / local government racing",
+          "role": "Local government racing coordination; source split required before timetable coverage.",
+          "official_sources": [
+            {
+              "source_id": "japan-nar-home",
+              "label": "NAR official site",
+              "url": "https://www.keiba.go.jp/",
+              "usage": "source candidate; not yet wired into repository source records"
+            }
+          ],
+          "racecourses": [],
+          "coverage_status": "not_started",
+          "coverage_notes": "NAR racecourse inventory and source mapping are not yet implemented. Japan must show NAR as not started."
+        },
+        {
+          "system_id": "banei",
+          "name": "Banei / Obihiro",
+          "role": "Draft-horse sled racing at Obihiro; must be tracked separately from JRA flat/jump and NAR flat racing.",
+          "official_sources": [
+            {
+              "source_id": "japan-banei-home",
+              "label": "Banei Tokachi official site",
+              "url": "https://www.banei-keiba.or.jp/",
+              "usage": "source candidate; not yet wired into repository source records"
+            }
+          ],
+          "racecourses": [
+            { "racecourse_id": "obihiro-racecourse", "name": "Obihiro", "inventory_status": "known_in_scope" }
+          ],
+          "coverage_status": "not_started",
+          "coverage_notes": "Banei is not covered by the current JRA seed and must be displayed as not started."
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "display_name": "Hong Kong",
+      "overall_coverage_status": "initial_seed_only",
+      "current_seed_state": "PR-055 added several HKJC June 2026 meeting-level records for Sha Tin and Happy Valley. This is not a completion review.",
+      "must_not_claim": [
+        "Hong Kong complete",
+        "HKJC season complete"
+      ],
+      "racing_systems": [
+        {
+          "system_id": "hkjc",
+          "name": "Hong Kong Jockey Club",
+          "role": "Primary Hong Kong racing operator and official fixture source.",
+          "official_sources": [
+            {
+              "source_id": "hong-kong-hkjc-home",
+              "label": "HKJC official site",
+              "url": "https://www.hkjc.com/",
+              "usage": "official confirmation"
+            },
+            {
+              "source_id": "hong-kong-hkjc-fixture",
+              "label": "HKJC fixture page",
+              "url": "https://racing.hkjc.com/en-us/local/information/fixture",
+              "usage": "fixture source candidate"
+            }
+          ],
+          "racecourses": [
+            { "racecourse_id": "sha-tin-racecourse", "name": "Sha Tin", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "happy-valley-racecourse", "name": "Happy Valley", "inventory_status": "known_in_scope" }
+          ],
+          "coverage_status": "initial_seed_only",
+          "coverage_notes": "Current seed is not a season or active-window completion pass. A review must verify the full target fixture window before broad/complete status."
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "display_name": "United Arab Emirates",
+      "overall_coverage_status": "out_of_window_seed",
+      "current_seed_state": "PR-057 added April 2026 ERA meeting records, but generated_at is 2026-05-29, so they are outside the active 30-day calendar window.",
+      "must_not_claim": [
+        "UAE complete",
+        "UAE active calendar covered",
+        "UAE 30-day calendar covered"
+      ],
+      "racing_systems": [
+        {
+          "system_id": "era",
+          "name": "Emirates Racing Authority / Emirates Racing",
+          "role": "Official UAE racing calendar source candidate.",
+          "official_sources": [
+            {
+              "source_id": "uae-era-home",
+              "label": "Emirates Racing official site",
+              "url": "https://emiratesracing.com/",
+              "usage": "official confirmation"
+            },
+            {
+              "source_id": "uae-era-season-calendar",
+              "label": "Emirates Racing season calendar",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
+              "usage": "season calendar source candidate"
+            }
+          ],
+          "racecourses": [
+            { "racecourse_id": "meydan-racecourse", "name": "Meydan", "inventory_status": "seen_in_seed" },
+            { "racecourse_id": "al-ain-racecourse", "name": "Al Ain", "inventory_status": "seen_in_seed" },
+            { "racecourse_id": "abu-dhabi-turf-club", "name": "Abu Dhabi Turf Club", "inventory_status": "seen_in_seed" }
+          ],
+          "coverage_status": "out_of_window_seed",
+          "coverage_notes": "Current UAE records are source-reviewed but outside the active Today/Tomorrow/30-day window. Additional racecourse review is required before any broad/complete claim."
+        }
+      ]
+    }
+  ]
+}
