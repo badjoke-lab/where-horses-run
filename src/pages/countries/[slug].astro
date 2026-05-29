@@ -25,6 +25,8 @@ const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
+const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
+const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
 const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
 const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
 ---
@@ -87,6 +89,29 @@ const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length 
         <h2>Generated coverage fallback</h2>
         <p>No live timetable has been fetched for this country yet. Use official source links for confirmation.</p>
         <p>This page does not republish racecards, entries, odds, results, payouts, or betting tips.</p>
+      </article>
+
+      <article class="card">
+        <h2>Live fetch probe status</h2>
+        {countryLiveFetchProbes.length > 0 ? (
+          <ul>
+            {countryLiveFetchProbes.map((probe) => (
+              <li>
+                <strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}
+                <br />
+                <span>Checked: {probe.checked_at}</span>
+                <br />
+                <span>Final URL: {probe.final_url}</span>
+                <br />
+                <span>Content type: {probe.content_type}</span>
+                <br />
+                <span>Safety: raw_content_saved={String(probe.raw_content_saved)}, body_read={String(probe.body_read)}, generated_files_written={String(probe.generated_files_written)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No live fetch probe metadata is listed for this country yet.</p>
+        )}
       </article>
     </section>
   )}

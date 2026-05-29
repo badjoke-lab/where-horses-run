@@ -8,6 +8,7 @@ import today from '../../data/generated/today.json';
 import tomorrow from '../../data/generated/tomorrow.json';
 import calendar30d from '../../data/generated/calendar-30d.json';
 import fetchStatus from '../../data/generated/fetch-status.json';
+import liveFetchProbeStatus from '../../data/generated/live-fetch-probe-status.json';
 
 export type Locale = 'en' | 'ja';
 
@@ -28,7 +29,8 @@ export const siteData = {
     today,
     tomorrow,
     calendar30d,
-    fetchStatus
+    fetchStatus,
+    liveFetchProbeStatus
   }
 } as const;
 
