@@ -63,6 +63,7 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
         <div class="site-header__inner">
           <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
           <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+            <a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
             <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
             <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
             <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Tracks'}</a>

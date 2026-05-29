@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteData } from '../lib/data';
+
+const timetableData = siteData.generated.timetables;
+const currentTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
+const todayRecords = (timetableData.records ?? []).filter((record) => record.date === currentTimetableDate);
+---
+
+<BaseLayout
+  title="Today’s safe timetable | Where Horses Run"
+  description="Safe timetable records listed for today, with official source links as the final confirmation point."
+  canonicalPath="/today/"
+  alternatePath="/ja/today/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Today</p>
+    <h1 id="page-title">Today’s safe timetable</h1>
+    <p class="hero__summary">
+      Safe generated timetable records for {currentTimetableDate || 'the current generated date'}.
+      Official links remain the final confirmation point.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Today safe timetable status">
+    <article class="card">
+      <h2>Status</h2>
+      <p><strong>Generated date:</strong> {currentTimetableDate || 'not listed'}</p>
+      <p><strong>Matching records:</strong> {todayRecords.length}</p>
+      <p><strong>Live fetching:</strong> disabled</p>
+    </article>
+
+    <article class="card">
+      <h2>Official confirmation</h2>
+      <p>Use official source links for final confirmation.</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Today safe timetable records">
+    <article class="card">
+      <h2>Records</h2>
+      {todayRecords.length > 0 ? (
+        <ul>
+          {todayRecords.map((record) => (
+            <li>
+              <p><strong>Country:</strong> {record.country_id}</p>
+              <p><strong>Racecourse:</strong> {record.racecourse_name} ({record.racecourse_id})</p>
+              <p><strong>Date:</strong> {record.date}</p>
+              <p><strong>Start time:</strong> {record.start_time_local}</p>
+              <p><strong>Timezone:</strong> {record.timezone}</p>
+              <p><strong>Racing type:</strong> {record.racing_type}</p>
+              <p>
+                <strong>Official source:</strong>{' '}
+                <a href={record.source_url}>{record.source_id}</a>
+              </p>
+              <p><strong>Last checked:</strong> {record.last_checked_at}</p>
+              <p><strong>Status:</strong> {record.status}</p>
+              <p><strong>Confidence:</strong> {record.confidence}</p>
+              <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>
+          <p>No safe timetable records are listed for today yet.</p>
+          <p>Use official source links for final confirmation.</p>
+          <p>Live fetching: disabled</p>
+        </div>
+      )}
+    </article>
+  </section>
+</BaseLayout>
