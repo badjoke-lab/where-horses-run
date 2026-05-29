@@ -23,7 +23,8 @@ const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
-const isHongKongAlpha = country.id === 'hong-kong';
+const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
+const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
 ---
 
 <BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
@@ -52,13 +53,13 @@ const isHongKongAlpha = country.id === 'hong-kong';
     </article>
   </section>
 
-  {isHongKongAlpha && (
+  {hasAlphaCoverage && (
     <section class="section-grid" aria-label="alpha timetable coverage">
       <article class="card">
         <h2>Alpha timetable coverage</h2>
         <p><strong>Mode:</strong> link-first / dry-run</p>
         <p><strong>Live fetching:</strong> disabled</p>
-        <p><strong>Current scope:</strong> 公式ソース案内、fixture test、parser harness確認、generated status表示。</p>
+        <p><strong>Current scope:</strong> 公式ソース案内、generated fallback表示、FetchStatus表示、UI確認。</p>
       </article>
 
       <article class="card">
@@ -77,7 +78,8 @@ const isHongKongAlpha = country.id === 'hong-kong';
       </article>
 
       <article class="card">
-        <h2>Alpha limitation</h2>
+        <h2>Generated coverage fallback</h2>
+        <p>この国では、まだlive timetableを取得していません。最終確認には公式ソースを使用してください。</p>
         <p>このページでは出走表、オッズ、結果、払戻、予想情報を再掲載しません。</p>
       </article>
     </section>
