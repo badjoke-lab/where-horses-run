@@ -11,6 +11,7 @@ import calendar30d from '../../data/generated/calendar-30d.json';
 import fetchStatus from '../../data/generated/fetch-status.json';
 import liveFetchProbeStatus from '../../data/generated/live-fetch-probe-status.json';
 import timetables from '../../data/generated/timetables.json';
+import japanActiveTimetableRecords from '../../data/generated/japan-active-timetable-records.json';
 
 export type Locale = 'en' | 'ja';
 
@@ -19,6 +20,13 @@ export type Racecourse = (typeof racecourses)[number];
 export type Source = (typeof sources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
 export type ArchiveEntry = (typeof archive)[number];
+
+const mergedTimetables = {
+  ...timetables,
+  records: [...(timetables.records ?? []), ...(japanActiveTimetableRecords.records ?? [])],
+  sources: [...new Set([...(timetables.sources ?? []), ...(japanActiveTimetableRecords.sources ?? [])])],
+  notes: [...(timetables.notes ?? []), ...(japanActiveTimetableRecords.notes ?? [])]
+} as const;
 
 export const siteData = {
   countries,
@@ -34,7 +42,8 @@ export const siteData = {
     calendar30d,
     fetchStatus,
     liveFetchProbeStatus,
-    timetables
+    timetables: mergedTimetables,
+    japanActiveTimetableRecords
   }
 } as const;
 
