@@ -25,7 +25,8 @@ const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
-const isHongKongAlpha = country.id === 'hong-kong';
+const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
+const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
 ---
 
 <BaseLayout
@@ -58,13 +59,13 @@ const isHongKongAlpha = country.id === 'hong-kong';
     </article>
   </section>
 
-  {isHongKongAlpha && (
+  {hasAlphaCoverage && (
     <section class="section-grid" aria-label="Alpha timetable coverage">
       <article class="card">
         <h2>Alpha timetable coverage</h2>
         <p><strong>Mode:</strong> link-first / dry-run</p>
         <p><strong>Live fetching:</strong> disabled</p>
-        <p><strong>Current scope:</strong> official source routing, fixture testing, parser harness checks, and generated status visibility.</p>
+        <p><strong>Current scope:</strong> official source routing, generated fallback visibility, FetchStatus display, and UI verification.</p>
       </article>
 
       <article class="card">
@@ -83,7 +84,8 @@ const isHongKongAlpha = country.id === 'hong-kong';
       </article>
 
       <article class="card">
-        <h2>Alpha limitation</h2>
+        <h2>Generated coverage fallback</h2>
+        <p>No live timetable has been fetched for this country yet. Use official source links for confirmation.</p>
         <p>This page does not republish racecards, entries, odds, results, payouts, or betting tips.</p>
       </article>
     </section>
