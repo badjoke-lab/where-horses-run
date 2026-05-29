@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteData } from '../../lib/data';
+
+const timetableData = siteData.generated.timetables;
+const generatedTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
+const generatedDate = generatedTimetableDate ? new Date(`${generatedTimetableDate}T00:00:00.000Z`) : null;
+const tomorrowDate = generatedDate
+  ? new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate() + 1))
+      .toISOString()
+      .slice(0, 10)
+  : '';
+const tomorrowRecords = (timetableData.records ?? []).filter((record) => record.date === tomorrowDate);
+---
+
+<BaseLayout
+  title="明日の安全な開催時刻データ | 競馬どこ？"
+  description="明日の安全な開催時刻レコードと、最終確認用の公式ソースリンクを表示します。"
+  lang="ja"
+  canonicalPath="/ja/tomorrow/"
+  alternatePath="/tomorrow/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Tomorrow</p>
+    <h1 id="page-title">明日の安全な開催時刻データ</h1>
+    <p class="hero__summary">
+      {tomorrowDate || 'generated timetable dateの翌日'} の安全なgenerated timetable recordsです。
+      最終確認には公式ソースリンクを使用してください。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="明日の安全な開催時刻ステータス">
+    <article class="card">
+      <h2>ステータス</h2>
+      <p><strong>Generated date:</strong> {generatedTimetableDate || 'not listed'}</p>
+      <p><strong>Tomorrow date:</strong> {tomorrowDate || 'not listed'}</p>
+      <p><strong>Matching records:</strong> {tomorrowRecords.length}</p>
+      <p><strong>live fetch:</strong> disabled</p>
+    </article>
+
+    <article class="card">
+      <h2>公式確認</h2>
+      <p>最終確認には公式ソースリンクを使用してください。</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="明日の安全な開催時刻レコード">
+    <article class="card">
+      <h2>レコード</h2>
+      {tomorrowRecords.length > 0 ? (
+        <ul>
+          {tomorrowRecords.map((record) => (
+            <li>
+              <p><strong>Country:</strong> {record.country_id}</p>
+              <p><strong>Racecourse:</strong> {record.racecourse_name} ({record.racecourse_id})</p>
+              <p><strong>Date:</strong> {record.date}</p>
+              <p><strong>Start time:</strong> {record.start_time_local}</p>
+              <p><strong>Timezone:</strong> {record.timezone}</p>
+              <p><strong>Racing type:</strong> {record.racing_type}</p>
+              <p>
+                <strong>Official source:</strong>{' '}
+                <a href={record.source_url}>{record.source_id}</a>
+              </p>
+              <p><strong>Last checked:</strong> {record.last_checked_at}</p>
+              <p><strong>Status:</strong> {record.status}</p>
+              <p><strong>Confidence:</strong> {record.confidence}</p>
+              <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>
+          <p>明日の安全な開催時刻レコードはまだありません。</p>
+          <p>最終確認には公式ソースリンクを使用してください。</p>
+          <p>live fetch: disabled</p>
+        </div>
+      )}
+    </article>
+  </section>
+</BaseLayout>
