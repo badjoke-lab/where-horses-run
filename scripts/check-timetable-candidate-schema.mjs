@@ -16,7 +16,7 @@ function read(relativePath) {
   return readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-const schema = readJson('data/generated/timetable-candidates.schema.json');
+const schema = readJson('docs/runbooks/timetable-candidates.schema.json');
 const sample = readJson('docs/runbooks/timetable-candidates.sample.json');
 const reviewDoc = read('docs/runbooks/timetable-candidate-review-format.md');
 
