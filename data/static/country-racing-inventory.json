@@ -22,12 +22,14 @@
       "country_id": "japan",
       "display_name": "Japan",
       "overall_coverage_status": "initial_seed_only",
-      "current_seed_state": "PR-056 added four JRA records for Tokyo and Kyoto on 2026-05-30 and 2026-05-31 only. This is not Japan coverage.",
+      "current_seed_state": "PR-056 added four JRA records for Tokyo and Kyoto on 2026-05-30 and 2026-05-31 only. PR-060 maps NAR racecourse inventory and Banei schedule source candidates, but Japan timetable coverage is still initial seed only.",
       "must_not_claim": [
         "Japan complete",
         "JRA complete",
         "NAR covered",
-        "Banei covered"
+        "Banei covered",
+        "NAR calendar covered",
+        "Banei calendar covered"
       ],
       "racing_systems": [
         {
@@ -60,36 +62,64 @@
         {
           "system_id": "nar",
           "name": "National Association of Racing / local government racing",
-          "role": "Local government racing coordination; source split required before timetable coverage.",
+          "role": "Local government racing coordination and official local racing information source. Racecourse inventory is mapped, but timetable seed coverage has not started.",
           "official_sources": [
             {
               "source_id": "japan-nar-home",
               "label": "NAR official site",
               "url": "https://www.keiba.go.jp/",
-              "usage": "source candidate; not yet wired into repository source records"
+              "usage": "official confirmation"
+            },
+            {
+              "source_id": "japan-nar-racecourse-guide",
+              "label": "NAR racecourse guide",
+              "url": "https://www.keiba.go.jp/guide/",
+              "usage": "official racecourse inventory source"
             }
           ],
-          "racecourses": [],
+          "racecourses": [
+            { "racecourse_id": "obihiro-racecourse", "name": "Obihiro", "name_ja": "帯広", "guide_url": "https://www.keiba.go.jp/guide/01/index.html", "inventory_status": "known_in_scope_banei_crosslisted" },
+            { "racecourse_id": "monbetsu-racecourse", "name": "Monbetsu", "name_ja": "門別", "guide_url": "https://www.keiba.go.jp/guide/02/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "morioka-racecourse", "name": "Morioka", "name_ja": "盛岡", "guide_url": "https://www.keiba.go.jp/guide/03/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "mizusawa-racecourse", "name": "Mizusawa", "name_ja": "水沢", "guide_url": "https://www.keiba.go.jp/guide/04/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "urawa-racecourse", "name": "Urawa", "name_ja": "浦和", "guide_url": "https://www.keiba.go.jp/guide/05/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "funabashi-racecourse", "name": "Funabashi", "name_ja": "船橋", "guide_url": "https://www.keiba.go.jp/guide/06/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "oi-racecourse", "name": "Ohi", "name_ja": "大井", "guide_url": "https://www.keiba.go.jp/guide/07/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kawasaki-racecourse", "name": "Kawasaki", "name_ja": "川崎", "guide_url": "https://www.keiba.go.jp/guide/08/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kanazawa-racecourse", "name": "Kanazawa", "name_ja": "金沢", "guide_url": "https://www.keiba.go.jp/guide/09/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kasamatsu-racecourse", "name": "Kasamatsu", "name_ja": "笠松", "guide_url": "https://www.keiba.go.jp/guide/10/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "nagoya-racecourse", "name": "Nagoya", "name_ja": "名古屋", "guide_url": "https://www.keiba.go.jp/guide/11/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "sonoda-racecourse", "name": "Sonoda", "name_ja": "園田", "guide_url": "https://www.keiba.go.jp/guide/12/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "himeji-racecourse", "name": "Himeji", "name_ja": "姫路", "guide_url": "https://www.keiba.go.jp/guide/13/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "kochi-racecourse", "name": "Kochi", "name_ja": "高知", "guide_url": "https://www.keiba.go.jp/guide/14/index.html", "inventory_status": "known_in_scope" },
+            { "racecourse_id": "saga-racecourse", "name": "Saga", "name_ja": "佐賀", "guide_url": "https://www.keiba.go.jp/guide/15/index.html", "inventory_status": "known_in_scope" }
+          ],
           "coverage_status": "not_started",
-          "coverage_notes": "NAR racecourse inventory and source mapping are not yet implemented. Japan must show NAR as not started."
+          "coverage_notes": "NAR racecourse inventory is mapped from the official NAR racecourse guide, but no NAR timetable records have been added. Racecourse inventory alone must not be treated as NAR calendar coverage."
         },
         {
           "system_id": "banei",
           "name": "Banei / Obihiro",
-          "role": "Draft-horse sled racing at Obihiro; must be tracked separately from JRA flat/jump and NAR flat racing.",
+          "role": "Draft-horse sled racing at Obihiro; must be tracked separately from JRA flat/jump and ordinary NAR flat racing.",
           "official_sources": [
             {
               "source_id": "japan-banei-home",
               "label": "Banei Tokachi official site",
               "url": "https://www.banei-keiba.or.jp/",
-              "usage": "source candidate; not yet wired into repository source records"
+              "usage": "official confirmation and monthly schedule source candidate"
+            },
+            {
+              "source_id": "japan-banei-monthly-schedule",
+              "label": "Banei Tokachi monthly schedule",
+              "url": "https://www.banei-keiba.or.jp/",
+              "usage": "official monthly schedule source candidate; timetable records not yet stored"
             }
           ],
           "racecourses": [
-            { "racecourse_id": "obihiro-racecourse", "name": "Obihiro", "inventory_status": "known_in_scope" }
+            { "racecourse_id": "obihiro-racecourse", "name": "Obihiro", "name_ja": "帯広", "inventory_status": "known_in_scope" }
           ],
           "coverage_status": "not_started",
-          "coverage_notes": "Banei is not covered by the current JRA seed and must be displayed as not started."
+          "coverage_notes": "Banei official source and Obihiro racecourse are mapped, and the official site exposes monthly schedule information. No Banei timetable records have been added yet, so Banei coverage remains not started."
         }
       ]
     },
