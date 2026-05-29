@@ -41,6 +41,20 @@ const hasTimetableFallback = hasLegacyCountryFallback || hasCountryTimetableSour
 const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
 const timetableSources = countryTimetableSources;
 const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
+const racingInventory = siteData.countryRacingInventory;
+const countryInventory = racingInventory.countries.find((entry) => entry.country_id === country.id);
+const generatedDate = String(timetableData.generated_at ?? '').slice(0, 10);
+const windowStart = generatedDate ? new Date(`${generatedDate}T00:00:00.000Z`) : null;
+const windowEnd = windowStart
+  ? new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate() + 30))
+  : null;
+const activeWindowRecords = windowStart && windowEnd
+  ? timetableRecords.filter((record) => {
+      const recordDate = new Date(`${record.date}T00:00:00.000Z`);
+      return recordDate >= windowStart && recordDate < windowEnd;
+    })
+  : [];
+const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
 ---
 
 <BaseLayout
@@ -73,6 +87,74 @@ const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
     </article>
   </section>
 
+  <section class="section-grid" aria-label="Country racing inventory and seed audit">
+    <article class="card">
+      <h2>Racing inventory status</h2>
+      {countryInventory ? (
+        <>
+          <p><strong>Overall coverage status:</strong> {countryInventory.overall_coverage_status}</p>
+          <p><strong>Current seed state:</strong> {countryInventory.current_seed_state}</p>
+          <p><strong>Active 30-day records:</strong> {activeWindowRecords.length}</p>
+          <p><strong>Out-of-window records:</strong> {outOfWindowRecords}</p>
+          <p><strong>Rule:</strong> Initial seed and out-of-window seed data must not be treated as country coverage.</p>
+        </>
+      ) : (
+        <p>No racing inventory entry exists for this country yet. It must not be treated as covered.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Racing systems</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.racing_systems.map((system) => (
+            <li>
+              <strong>{system.name}</strong> ({system.system_id})
+              <br />
+              <span>Status: {system.coverage_status}</span>
+              <br />
+              <span>Racecourses listed: {system.racecourses.length}</span>
+              <br />
+              <span>{system.coverage_notes}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No racing systems have been inventoried.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Inventory racecourses and sources</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.racing_systems.map((system) => (
+            <li>
+              <strong>{system.name}</strong>
+              <br />
+              <span>Official source candidates: {system.official_sources.map((source) => source.label).join(', ')}</span>
+              <br />
+              <span>Racecourses: {system.racecourses.length > 0 ? system.racecourses.map((racecourse) => racecourse.name).join(', ') : 'not inventoried yet'}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No inventory sources are listed.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Do not claim</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.must_not_claim.map((claim) => <li>{claim}</li>)}
+        </ul>
+      ) : (
+        <p>This country must not be claimed as covered until inventory and coverage checks are added.</p>
+      )}
+    </article>
+  </section>
+
   <section class="section-grid" aria-label="Safe timetable data">
     <article class="card">
       <h2>Safe timetable data</h2>
@@ -82,6 +164,7 @@ const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
           <p><strong>Timetable status:</strong> {hasTimetableFallback ? timetableModeLabel : 'verified records listed'}</p>
           <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
           <p><strong>Verified records:</strong> {timetableRecords.length}</p>
+          <p><strong>Active 30-day records:</strong> {activeWindowRecords.length}</p>
           <p><strong>Fallback/manual status:</strong> {hasTimetableFallback ? 'manual fallback' : 'none listed'}</p>
           <p><strong>Last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'not listed for this country'}</p>
           <p><strong>Live fetching:</strong> disabled</p>
