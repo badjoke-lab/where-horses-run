@@ -4,6 +4,66 @@
   "mode": "manual-seed",
   "records": [
     {
+      "country_id": "japan",
+      "racecourse_id": "tokyo-racecourse",
+      "racecourse_name": "Tokyo",
+      "date": "2026-05-30",
+      "start_time_local": "09:50",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "JRA meeting",
+      "source_id": "japan-jra-home",
+      "source_url": "https://jra.jp/keiba/calendar2026/2026/5/0530.html",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "kyoto-racecourse",
+      "racecourse_name": "Kyoto",
+      "date": "2026-05-30",
+      "start_time_local": "10:05",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "JRA meeting",
+      "source_id": "japan-jra-home",
+      "source_url": "https://jra.jp/keiba/calendar2026/2026/5/0530.html",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "tokyo-racecourse",
+      "racecourse_name": "Tokyo",
+      "date": "2026-05-31",
+      "start_time_local": "09:40",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "JRA meeting",
+      "source_id": "japan-jra-home",
+      "source_url": "https://jra.jp/keiba/calendar2026/2026/5/0531.html",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "kyoto-racecourse",
+      "racecourse_name": "Kyoto",
+      "date": "2026-05-31",
+      "start_time_local": "09:55",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "JRA meeting",
+      "source_id": "japan-jra-home",
+      "source_url": "https://jra.jp/keiba/calendar2026/2026/5/0531.html",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
       "country_id": "hong-kong",
       "racecourse_name": "Happy Valley",
       "date": "2026-06-03",
@@ -112,7 +172,7 @@
   ],
   "notes": [
     "Hong Kong manual timetable seed added using meeting-level safe fields only from the official HKJC fixture.",
-    "Japan fallback remains present without verified timetable records.",
+    "Japan manual timetable seed added using meeting-level safe fields only from the official JRA calendar.",
     "Live fetching remains disabled and no source body is stored.",
     "Only meeting-level safe timetable fields are included."
   ]
