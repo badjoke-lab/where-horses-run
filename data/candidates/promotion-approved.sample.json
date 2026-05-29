@@ -1,0 +1,58 @@
+{
+  "schema_version": "timetable-candidates-v0",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "source_adapter_id": "promotion-sample-adapter",
+  "country_id": "japan",
+  "candidate_window": {
+    "start_date": "2026-05-29",
+    "end_date_exclusive": "2026-06-28",
+    "timezone": "Asia/Tokyo"
+  },
+  "records": [
+    {
+      "candidate_id": "promotion-sample-approved",
+      "country_id": "japan",
+      "racing_system_id": "sample",
+      "racecourse_id": "sample-racecourse",
+      "racecourse_name": "Sample Racecourse",
+      "date": "2026-05-30",
+      "start_time_local": "10:00",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Sample meeting",
+      "source_id": "sample-source",
+      "source_url": "https://example.com/sample-source",
+      "source_checked_at": "2026-05-29T00:00:00Z",
+      "extraction_method": "manual_seed",
+      "status": "candidate",
+      "confidence": "medium",
+      "review_status": "approved",
+      "notes": "Approved meeting-level sample candidate."
+    },
+    {
+      "candidate_id": "promotion-sample-needs-review",
+      "country_id": "japan",
+      "racing_system_id": "sample",
+      "racecourse_id": "unreviewed-racecourse",
+      "racecourse_name": "Unreviewed Racecourse",
+      "date": "2026-05-31",
+      "start_time_local": "11:00",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Sample meeting",
+      "source_id": "sample-source",
+      "source_url": "https://example.com/sample-source",
+      "source_checked_at": "2026-05-29T00:00:00Z",
+      "extraction_method": "manual_seed",
+      "status": "candidate",
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Unreviewed sample candidate. Must not be promoted."
+    }
+  ],
+  "review": {
+    "review_status": "needs_review",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Promotion sample with one approved record and one unreviewed record.",
+    "promotion_target": "data/candidates/promotion-approved.overlay.sample.json"
+  }
+}
