@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "validate:data": "node scripts/validate-data.mjs",
-    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run validate:safe-source-pipeline && npm run validate:m3-hk-alpha-ui && npm run validate:m3-uae-alpha-source && npm run validate:m3-uae-generated-fallback && npm run validate:live-fetch-probe && npm run validate:live-fetch-probe-status-ui && npm run validate:m3-japan-alpha-source && npm run build",
+    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run validate:safe-source-pipeline && npm run validate:m3-hk-alpha-ui && npm run validate:m3-uae-alpha-source && npm run validate:m3-uae-generated-fallback && npm run validate:live-fetch-probe && npm run validate:live-fetch-probe-status-ui && npm run validate:m3-japan-alpha-source && npm run validate:timetable-schema-v0 && npm run build",
     "validate:fixtures": "node scripts/validate-parser-fixtures.mjs",
     "validate:normalizer": "node scripts/check-normalizer-foundation.mjs",
     "validate:fixture-parser": "node scripts/check-fixture-parser-harness.mjs",
@@ -21,7 +21,8 @@
     "probe:live:hk": "node scripts/probe-live-source.mjs hong-kong-hkjc-home",
     "validate:live-fetch-probe": "node scripts/check-live-fetch-probe-contract.mjs",
     "validate:live-fetch-probe-status-ui": "node scripts/check-live-fetch-probe-status-ui.mjs",
-    "validate:m3-japan-alpha-source": "node scripts/check-m3-japan-alpha-source-records.mjs"
+    "validate:m3-japan-alpha-source": "node scripts/check-m3-japan-alpha-source-records.mjs",
+    "validate:timetable-schema-v0": "node scripts/check-timetable-schema-v0.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
