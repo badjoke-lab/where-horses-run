@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "validate:data": "node scripts/validate-data.mjs",
-    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run validate:safe-source-pipeline && npm run validate:m3-hk-alpha-ui && npm run validate:m3-uae-alpha-source && npm run validate:m3-uae-generated-fallback && npm run validate:live-fetch-probe && npm run validate:live-fetch-probe-status-ui && npm run validate:m3-japan-alpha-source && npm run validate:timetable-schema-v0 && npm run validate:country-timetable-ui && npm run validate:today-timetable-ui && npm run build",
+    "check": "npm run validate:data && npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:generated-dry-run && npm run validate:safe-source-pipeline && npm run validate:m3-hk-alpha-ui && npm run validate:m3-uae-alpha-source && npm run validate:m3-uae-generated-fallback && npm run validate:live-fetch-probe && npm run validate:live-fetch-probe-status-ui && npm run validate:m3-japan-alpha-source && npm run validate:timetable-schema-v0 && npm run validate:country-timetable-ui && npm run validate:today-timetable-ui && npm run validate:tomorrow-timetable-ui && npm run build",
     "validate:fixtures": "node scripts/validate-parser-fixtures.mjs",
     "validate:normalizer": "node scripts/check-normalizer-foundation.mjs",
     "validate:fixture-parser": "node scripts/check-fixture-parser-harness.mjs",
@@ -24,7 +24,8 @@
     "validate:m3-japan-alpha-source": "node scripts/check-m3-japan-alpha-source-records.mjs",
     "validate:timetable-schema-v0": "node scripts/check-timetable-schema-v0.mjs",
     "validate:country-timetable-ui": "node scripts/check-country-timetable-ui.mjs",
-    "validate:today-timetable-ui": "node scripts/check-today-timetable-ui.mjs"
+    "validate:today-timetable-ui": "node scripts/check-today-timetable-ui.mjs",
+    "validate:tomorrow-timetable-ui": "node scripts/check-tomorrow-timetable-ui.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
