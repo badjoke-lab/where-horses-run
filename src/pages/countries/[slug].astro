@@ -33,12 +33,13 @@ const timetableData = siteData.generated.timetables;
 const timetableRecords = (timetableData.records ?? []).filter(
   (record) => (record.country_id ?? timetableData.country_id) === country.id
 );
-const hasTimetableFallback = timetableData.country_id === country.id;
+const timetableSourceIds = new Set(timetableData.sources ?? []);
+const countryTimetableSources = sources.filter((source) => timetableSourceIds.has(source.id));
+const hasLegacyCountryFallback = timetableData.country_id === country.id;
+const hasCountryTimetableSource = countryTimetableSources.length > 0;
+const hasTimetableFallback = hasLegacyCountryFallback || hasCountryTimetableSource;
 const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
-const timetableSources = hasTimetableFallback
-  ? (timetableData.sources ?? [])
-      .map((sourceId) => sources.find((source) => source.id === sourceId) ?? { id: sourceId, url: '' })
-  : [];
+const timetableSources = countryTimetableSources;
 const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
 ---
 

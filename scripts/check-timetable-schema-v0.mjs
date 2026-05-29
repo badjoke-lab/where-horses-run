@@ -158,7 +158,7 @@ if (!isPlainObject(data)) {
   }
   requireIsoDateTime(data.generated_at, 'timetables.generated_at');
   requireString(data.mode, 'timetables.mode');
-  requireString(data.country_id, 'timetables.country_id');
+  if ('country_id' in data) requireString(data.country_id, 'timetables.country_id');
   requireArray(data.sources, 'timetables.sources');
   requireArray(data.notes, 'timetables.notes');
 

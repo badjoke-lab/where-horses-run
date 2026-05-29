@@ -1,15 +1,119 @@
 {
   "schema_version": "timetable-schema-v0",
   "generated_at": "2026-05-29T00:00:00Z",
-  "mode": "manual-fallback",
-  "country_id": "japan",
-  "records": [],
+  "mode": "manual-seed",
+  "records": [
+    {
+      "country_id": "hong-kong",
+      "racecourse_name": "Happy Valley",
+      "date": "2026-06-03",
+      "start_time_local": "Night meeting (HKJC fixture shows N; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation. Happy Valley racecourse ID requires later normalization."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "date": "2026-06-07",
+      "start_time_local": "Twilight meeting (HKJC fixture shows T; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_name": "Happy Valley",
+      "date": "2026-06-10",
+      "start_time_local": "Night meeting (HKJC fixture shows N; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation. Happy Valley racecourse ID requires later normalization."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "date": "2026-06-13",
+      "start_time_local": "Twilight meeting (HKJC fixture shows T; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "date": "2026-06-21",
+      "start_time_local": "Twilight meeting (HKJC fixture shows T; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_name": "Happy Valley",
+      "date": "2026-06-24",
+      "start_time_local": "Night meeting (HKJC fixture shows N; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation. Happy Valley racecourse ID requires later normalization."
+    },
+    {
+      "country_id": "hong-kong",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "date": "2026-06-27",
+      "start_time_local": "Twilight meeting (HKJC fixture shows T; exact start time not stored)",
+      "timezone": "Asia/Hong_Kong",
+      "racing_type": "thoroughbred flat",
+      "source_id": "hong-kong-hkjc-home",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed only from the official HKJC fixture. Official source remains final confirmation."
+    }
+  ],
   "sources": [
-    "japan-jra-home"
+    "japan-jra-home",
+    "hong-kong-hkjc-home"
   ],
   "notes": [
-    "Japan fallback structure only; no dates are verified in this file yet.",
-    "Use the official JRA link for final confirmation.",
-    "Live fetching remains disabled and no source body is stored."
+    "Hong Kong manual timetable seed added using meeting-level safe fields only from the official HKJC fixture.",
+    "Japan fallback remains present without verified timetable records.",
+    "Live fetching remains disabled and no source body is stored.",
+    "Only meeting-level safe timetable fields are included."
   ]
 }
