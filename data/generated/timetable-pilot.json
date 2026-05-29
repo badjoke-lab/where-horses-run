@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-05-29T00:00:00Z",
+  "status": "manual_pilot",
+  "data_mode": "manual_seed",
+  "safety_boundary": {
+    "allowed_fields": [
+      "country_id",
+      "track_id",
+      "track_name",
+      "local_date",
+      "timezone",
+      "race_number",
+      "post_time_local",
+      "source_id",
+      "official_url",
+      "last_checked_at",
+      "status"
+    ],
+    "excluded_fields": [
+      "participant_details",
+      "market_details",
+      "outcome_details",
+      "settlement_details",
+      "recommendation_details",
+      "raw_source_markup",
+      "raw_source_text"
+    ]
+  },
+  "meetings": [
+    {
+      "meeting_id": "japan-tokyo-manual-pilot-2026-05-29",
+      "country_id": "japan",
+      "track_id": "tokyo-racecourse",
+      "track_name": "Tokyo Racecourse",
+      "local_date": "2026-05-29",
+      "timezone": "Asia/Tokyo",
+      "source_id": "japan-jra-home",
+      "official_url": "https://jra.jp/",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "manual_pilot",
+      "races": [
+        {
+          "race_number": 1,
+          "post_time_local": "10:00",
+          "official_url": "https://jra.jp/"
+        },
+        {
+          "race_number": 2,
+          "post_time_local": "10:30",
+          "official_url": "https://jra.jp/"
+        },
+        {
+          "race_number": 3,
+          "post_time_local": "11:00",
+          "official_url": "https://jra.jp/"
+        }
+      ],
+      "notes": "Manual pilot data used only to validate timetable rendering and field boundaries. Confirm live details with official sources."
+    }
+  ],
+  "notes": [
+    "Manual seed pilot only.",
+    "This file stores public-safe timetable fields only.",
+    "Official sources remain the confirmation point."
+  ]
+}
