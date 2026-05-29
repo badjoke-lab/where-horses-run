@@ -39,6 +39,20 @@ const hasTimetableFallback = hasLegacyCountryFallback || hasCountryTimetableSour
 const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
 const timetableSources = countryTimetableSources;
 const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
+const racingInventory = siteData.countryRacingInventory;
+const countryInventory = racingInventory.countries.find((entry) => entry.country_id === country.id);
+const generatedDate = String(timetableData.generated_at ?? '').slice(0, 10);
+const windowStart = generatedDate ? new Date(`${generatedDate}T00:00:00.000Z`) : null;
+const windowEnd = windowStart
+  ? new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate() + 30))
+  : null;
+const activeWindowRecords = windowStart && windowEnd
+  ? timetableRecords.filter((record) => {
+      const recordDate = new Date(`${record.date}T00:00:00.000Z`);
+      return recordDate >= windowStart && recordDate < windowEnd;
+    })
+  : [];
+const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
 ---
 
 <BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
@@ -67,6 +81,74 @@ const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
     </article>
   </section>
 
+  <section class="section-grid" aria-label="競馬体系とseed監査">
+    <article class="card">
+      <h2>競馬体系の棚卸し状態</h2>
+      {countryInventory ? (
+        <>
+          <p><strong>全体coverage状態:</strong> {countryInventory.overall_coverage_status}</p>
+          <p><strong>現在のseed状態:</strong> {countryInventory.current_seed_state}</p>
+          <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
+          <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
+          <p><strong>ルール:</strong> initial seed や out-of-window seed は、その国のcoverageとして扱いません。</p>
+        </>
+      ) : (
+        <p>この国の競馬体系inventoryはまだありません。coverage済みとして扱えません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>競馬体系</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.racing_systems.map((system) => (
+            <li>
+              <strong>{system.name}</strong> ({system.system_id})
+              <br />
+              <span>状態: {system.coverage_status}</span>
+              <br />
+              <span>競馬場数: {system.racecourses.length}</span>
+              <br />
+              <span>{system.coverage_notes}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>競馬体系はまだ棚卸しされていません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>棚卸し済み競馬場と公式source候補</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.racing_systems.map((system) => (
+            <li>
+              <strong>{system.name}</strong>
+              <br />
+              <span>公式source候補: {system.official_sources.map((source) => source.label).join(', ')}</span>
+              <br />
+              <span>競馬場: {system.racecourses.length > 0 ? system.racecourses.map((racecourse) => racecourse.name).join(', ') : '未棚卸し'}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>棚卸しsourceはありません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>禁止claim</h2>
+      {countryInventory ? (
+        <ul>
+          {countryInventory.must_not_claim.map((claim) => <li>{claim}</li>)}
+        </ul>
+      ) : (
+        <p>inventoryとcoverage checkが入るまで、この国をcoverage済みとして扱えません。</p>
+      )}
+    </article>
+  </section>
+
   <section class="section-grid" aria-label="安全な開催時刻データ">
     <article class="card">
       <h2>安全な開催時刻データ</h2>
@@ -76,6 +158,7 @@ const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
           <p><strong>状態:</strong> {hasTimetableFallback ? timetableModeLabel : '確認済みレコードあり'}</p>
           <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
           <p><strong>確認済みレコード:</strong> {timetableRecords.length}</p>
+          <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
           <p><strong>手動fallback:</strong> {hasTimetableFallback ? '手動fallback' : 'なし'}</p>
           <p><strong>last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'この国では未掲載'}</p>
           <p><strong>live fetch:</strong> disabled</p>

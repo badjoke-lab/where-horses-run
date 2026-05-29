@@ -3,6 +3,7 @@ import racecourses from '../../data/static/racecourses.json';
 import sources from '../../data/static/sources.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
+import countryRacingInventory from '../../data/static/country-racing-inventory.json';
 import latest from '../../data/generated/latest.json';
 import today from '../../data/generated/today.json';
 import tomorrow from '../../data/generated/tomorrow.json';
@@ -25,6 +26,7 @@ export const siteData = {
   sources,
   glossary,
   archive,
+  countryRacingInventory,
   generated: {
     latest,
     today,
