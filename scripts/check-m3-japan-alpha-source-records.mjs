@@ -18,6 +18,10 @@ function requireIncludes(text, needle, label) {
   }
 }
 
+function requireAllIncludes(text, needles, label) {
+  for (const needle of needles) requireIncludes(text, needle, label);
+}
+
 const sources = readJson('data/static/sources.json');
 const countries = readJson('data/static/countries.json');
 const fetchStatus = readJson('data/generated/fetch-status.json');
@@ -48,9 +52,20 @@ if (!japanSource) {
     fail('japan-jra-home.m3_status: expected alpha_link_first');
   }
 
-  requireIncludes(japanSource.notes, 'Link-first and dry-run only', 'japan source notes');
-  requireIncludes(japanSource.notes, 'Do not republish racecards', 'japan source notes');
-  requireIncludes(japanSource.notes, 'Live fetching requires separate source-specific review', 'japan source notes');
+  requireAllIncludes(
+    japanSource.notes,
+    [
+      'Link-first and dry-run only',
+      'racecards',
+      'entries',
+      'odds',
+      'results',
+      'payouts',
+      'prediction/tip content',
+      'Live fetching requires separate source-specific review',
+    ],
+    'japan source notes',
+  );
 }
 
 const japanFetchStatus = (fetchStatus.sources ?? []).find((status) => status.source_id === 'japan-jra-home');
@@ -60,7 +75,19 @@ if (!japanFetchStatus) {
   if (japanFetchStatus.status !== 'skipped') {
     fail('fetch-status: japan-jra-home should remain skipped');
   }
-  requireIncludes(japanFetchStatus.message, 'Live fetching is not enabled', 'japan FetchStatus message');
+  requireAllIncludes(
+    japanFetchStatus.message,
+    ['Link-first and dry-run only', 'Live fetching is not enabled'],
+    'japan FetchStatus message',
+  );
+}
+
+const fetchNotes = fetchStatus.notes ?? [];
+if (!fetchNotes.some((note) => note.includes('Japan') && note.includes('alpha source-record'))) {
+  fail('fetch-status notes: missing Japan alpha source record note');
+}
+if (!fetchNotes.some((note) => note.includes('Japan') && note.includes('Live fetching remains disabled'))) {
+  fail('fetch-status notes: missing Japan live fetching disabled note');
 }
 
 if (errors.length) {
