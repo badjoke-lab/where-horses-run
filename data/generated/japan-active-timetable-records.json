@@ -1,0 +1,104 @@
+{
+  "schema_version": "japan-active-timetable-records-v0",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "records": [
+    {
+      "country_id": "japan",
+      "racecourse_id": "kochi-racecourse",
+      "racecourse_name": "Kochi",
+      "date": "2026-05-30",
+      "start_time_local": "Meeting date verified on NAR; exact first start time not stored",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "NAR local meeting",
+      "source_id": "japan-nar-home",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "saga-racecourse",
+      "racecourse_name": "Saga",
+      "date": "2026-05-30",
+      "start_time_local": "Meeting date verified on NAR; exact first start time not stored",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "NAR local meeting",
+      "source_id": "japan-nar-home",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "obihiro-racecourse",
+      "racecourse_name": "Obihiro",
+      "date": "2026-05-30",
+      "start_time_local": "14:35",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Banei meeting",
+      "source_id": "japan-banei-monthly-schedule",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official Banei Tokachi schedule page."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "kochi-racecourse",
+      "racecourse_name": "Kochi",
+      "date": "2026-05-31",
+      "start_time_local": "Meeting date verified on NAR; exact first start time not stored",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "NAR local meeting",
+      "source_id": "japan-nar-home",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "saga-racecourse",
+      "racecourse_name": "Saga",
+      "date": "2026-05-31",
+      "start_time_local": "Meeting date verified on NAR; exact first start time not stored",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "NAR local meeting",
+      "source_id": "japan-nar-home",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "country_id": "japan",
+      "racecourse_id": "obihiro-racecourse",
+      "racecourse_name": "Obihiro",
+      "date": "2026-05-31",
+      "start_time_local": "14:25",
+      "timezone": "Asia/Tokyo",
+      "racing_type": "Banei meeting",
+      "source_id": "japan-banei-monthly-schedule",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "last_checked_at": "2026-05-29T00:00:00Z",
+      "status": "source-reviewed",
+      "confidence": "medium",
+      "notes": "Meeting-level timetable seed from the official Banei Tokachi schedule page."
+    }
+  ],
+  "sources": [
+    "japan-nar-home",
+    "japan-banei-monthly-schedule"
+  ],
+  "notes": [
+    "Japan active-window NAR and Banei meeting-level records added from official sources.",
+    "This overlay is merged into generated.timetables at runtime through src/lib/data.ts."
+  ]
+}
