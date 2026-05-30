@@ -7,6 +7,7 @@ const errors = [];
 const paths = {
   page: 'src/pages/major-countries/preview-timetable.astro',
   component: 'src/components/PreviewTimetableSamples.astro',
+  dataModule: 'src/data/majorCountryPreviewTimetableSamples.ts',
   preview: 'data/static/preview-timetable-samples-batch-001.json',
   package: 'package.json',
 };
@@ -106,13 +107,14 @@ function readPackageAtHead() {
 
 const pageText = readText(paths.page);
 const componentText = readText(paths.component);
+const dataModuleText = readText(paths.dataModule);
 const combinedUiText = `${pageText}\n${componentText}`;
 const preview = readJson(paths.preview);
 const packageJson = readJson(paths.package);
 const packageAtHead = readPackageAtHead();
 
-if (!pageText.includes('preview-timetable-samples-batch-001.json')) {
-  fail(`${paths.page} must import or otherwise reference preview-timetable-samples-batch-001.json.`);
+if (!pageText.includes('majorCountryPreviewTimetableSamples') && !dataModuleText.includes('preview-timetable-samples-batch-001.json')) {
+  fail(`${paths.page} must reference the combined preview timetable module backed by preview-timetable-samples-batch-001.json.`);
 }
 if (!pageText.includes('Major Country Timetable Preview')) {
   fail(`${paths.page} must include the title "Major Country Timetable Preview".`);

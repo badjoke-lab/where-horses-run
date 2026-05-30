@@ -19,85 +19,151 @@ interface PreviewRecord {
   user_notice: string;
 }
 
+interface CountryGroup {
+  country: string;
+  records: PreviewRecord[];
+}
+
 interface Props {
   records: PreviewRecord[];
 }
 
 const { records } = Astro.props;
+const recordsByCountry = records.reduce<Map<string, PreviewRecord[]>>((groups, record) => {
+  const countryRecords = groups.get(record.display_country) ?? [];
+  countryRecords.push(record);
+  groups.set(record.display_country, countryRecords);
+  return groups;
+}, new Map());
+const countryGroups: CountryGroup[] = [...recordsByCountry.entries()].map(([country, countryRecords]) => ({
+  country,
+  records: countryRecords,
+}));
 ---
 
 <section class="preview-samples" aria-labelledby="preview-samples-title">
   <h2 id="preview-samples-title">Preview sample timetable records</h2>
-  <div class="preview-samples__grid">
-    {records.map((record) => (
-      <article class="preview-sample-card" aria-labelledby={`${record.preview_id}-title`}>
-        <div class="preview-sample-card__header">
-          <p class="preview-sample-card__status">{record.status_label}</p>
-          <h3 id={`${record.preview_id}-title`}>
-            {record.display_country} / {record.display_system}
-          </h3>
+  <p class="preview-samples__intro">
+    Cards are grouped by country and labelled by country/system. Each card keeps the static manual sample notice,
+    race list, source capture date, and official source link.
+  </p>
+
+  <div class="preview-samples__countries">
+    {countryGroups.map((group) => (
+      <section class="preview-country-group" aria-labelledby={`preview-country-${group.country}`}>
+        <div class="preview-country-group__header">
+          <h3 id={`preview-country-${group.country}`}>{group.country}</h3>
+          <p>{group.records.length} active static manual sample{group.records.length === 1 ? '' : 's'}</p>
         </div>
 
-        <dl class="preview-sample-card__details">
-          <div>
-            <dt>Country</dt>
-            <dd>{record.display_country}</dd>
-          </div>
-          <div>
-            <dt>System</dt>
-            <dd>{record.display_system}</dd>
-          </div>
-          <div>
-            <dt>Racecourse</dt>
-            <dd>{record.display_racecourse}</dd>
-          </div>
-          <div>
-            <dt>Meeting date</dt>
-            <dd>{record.display_meeting_date}</dd>
-          </div>
-          <div>
-            <dt>First race time</dt>
-            <dd>{record.display_first_race_time}</dd>
-          </div>
-          <div>
-            <dt>Source capture date</dt>
-            <dd>{record.source_capture_date}</dd>
-          </div>
-        </dl>
+        <div class="preview-samples__grid">
+          {group.records.map((record) => (
+            <article class="preview-sample-card" aria-labelledby={`${record.preview_id}-title`}>
+              <div class="preview-sample-card__header">
+                <p class="preview-sample-card__status">{record.status_label}</p>
+                <h4 id={`${record.preview_id}-title`}>
+                  {record.display_country} / {record.display_system}
+                </h4>
+              </div>
 
-        <section class="preview-sample-card__races" aria-labelledby={`${record.preview_id}-races`}>
-          <h4 id={`${record.preview_id}-races`}>Races list</h4>
-          <ul>
-            {record.display_races.map((race) => (
-              <li>
-                <span class="preview-sample-card__race-number">Race {race.race_number}</span>
-                <span>{race.race_time}</span>
-                <span>{race.label}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+              <dl class="preview-sample-card__details">
+                <div>
+                  <dt>Country</dt>
+                  <dd>{record.display_country}</dd>
+                </div>
+                <div>
+                  <dt>System</dt>
+                  <dd>{record.display_system}</dd>
+                </div>
+                <div>
+                  <dt>Racecourse</dt>
+                  <dd>{record.display_racecourse}</dd>
+                </div>
+                <div>
+                  <dt>Meeting date</dt>
+                  <dd>{record.display_meeting_date}</dd>
+                </div>
+                <div>
+                  <dt>First race time</dt>
+                  <dd>{record.display_first_race_time}</dd>
+                </div>
+                <div>
+                  <dt>Source capture date</dt>
+                  <dd>{record.source_capture_date}</dd>
+                </div>
+              </dl>
 
-        <p class="preview-sample-card__source">
-          <strong>Official source:</strong>{' '}
-          <a href={record.official_source_url}>{record.official_source_url}</a>
-        </p>
-        <p class="preview-sample-card__notice">{record.user_notice}</p>
-      </article>
+              <section class="preview-sample-card__races" aria-labelledby={`${record.preview_id}-races`}>
+                <h5 id={`${record.preview_id}-races`}>Races list</h5>
+                <ul>
+                  {record.display_races.map((race) => (
+                    <li>
+                      <span class="preview-sample-card__race-number">Race {race.race_number}</span>
+                      <span>{race.race_time}</span>
+                      <span>{race.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <p class="preview-sample-card__source">
+                <strong>Official source:</strong>{' '}
+                <a href={record.official_source_url}>{record.official_source_url}</a>
+              </p>
+              <p class="preview-sample-card__notice">{record.user_notice}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     ))}
   </div>
 </section>
 
 <style>
-  .preview-samples {
+  .preview-samples,
+  .preview-samples__countries,
+  .preview-country-group {
     display: grid;
     gap: var(--whr-space-3);
+  }
+
+  .preview-samples {
     margin-block-start: var(--whr-space-4);
   }
 
-  .preview-samples h2 {
+  .preview-samples h2,
+  .preview-samples h3,
+  .preview-samples h4,
+  .preview-samples h5,
+  .preview-samples p {
     margin: 0;
+  }
+
+  .preview-samples h2 {
     font-size: 1.25rem;
+  }
+
+  .preview-samples__intro {
+    max-width: 70ch;
+    color: var(--whr-color-muted);
+  }
+
+  .preview-country-group {
+    border-block-start: 1px solid var(--whr-color-border);
+    padding-block-start: var(--whr-space-3);
+  }
+
+  .preview-country-group__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--whr-space-2);
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .preview-country-group__header p {
+    color: var(--whr-color-muted);
+    font-weight: 700;
   }
 
   .preview-samples__grid {
@@ -123,7 +189,6 @@ const { records } = Astro.props;
 
   .preview-sample-card__status {
     justify-self: start;
-    margin: 0;
     border: 1px solid var(--whr-color-border);
     padding: 0.15rem 0.45rem;
     font-size: 0.85rem;
@@ -132,46 +197,34 @@ const { records } = Astro.props;
     background: var(--whr-color-bg);
   }
 
-  .preview-sample-card h3,
-  .preview-sample-card h4,
-  .preview-sample-card p,
-  .preview-sample-card ul,
-  .preview-sample-card dl {
-    margin: 0;
-  }
-
-  .preview-sample-card h3 {
-    font-size: 1.1rem;
-  }
-
-  .preview-sample-card h4 {
-    font-size: 1rem;
-  }
-
   .preview-sample-card__details {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--whr-space-2);
+    margin: 0;
   }
 
   .preview-sample-card__details div {
-    min-width: 0;
+    display: grid;
+    gap: 0.1rem;
   }
 
-  .preview-sample-card dt {
-    font-size: 0.85rem;
+  .preview-sample-card__details dt {
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--whr-color-muted);
   }
 
-  .preview-sample-card dd {
+  .preview-sample-card__details dd {
     margin: 0;
   }
 
   .preview-sample-card__races ul {
     display: grid;
     gap: var(--whr-space-1);
-    padding-inline-start: 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .preview-sample-card__races li {

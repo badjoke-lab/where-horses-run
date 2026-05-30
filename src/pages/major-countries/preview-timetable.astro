@@ -1,17 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PreviewTimetableSamples from '../../components/PreviewTimetableSamples.astro';
-import previewTimetableSamples from '../../../data/static/preview-timetable-samples-batch-001.json';
+import {
+  allPreviewTimetableSamples,
+  previewTimetableSummary,
+} from '../../data/majorCountryPreviewTimetableSamples';
 
-const records = previewTimetableSamples.records;
-const countries = [...new Set(records.map((record) => record.display_country))].sort();
-const systems = [...new Set(records.map((record) => record.display_system))].sort();
-const sourceCaptureDates = [...new Set(records.map((record) => record.source_capture_date))].sort();
+const records = allPreviewTimetableSamples;
+const summary = previewTimetableSummary;
 ---
 
 <BaseLayout
   title="Major Country Timetable Preview | Where Horses Run"
-  description="A static manual sample preview of first major-country timetable records. This is not live coverage and full country coverage is not complete."
+  description="A static manual sample preview of all active major-country timetable records. This is not live coverage and full country coverage is not complete."
   canonicalPath="/major-countries/preview-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
@@ -21,36 +22,104 @@ const sourceCaptureDates = [...new Set(records.map((record) => record.source_cap
       <p>This is a static manual sample preview.</p>
       <p>It is not live coverage.</p>
       <p>Full country coverage is not complete yet.</p>
+      <p>Full country/date/racecourse coverage is not complete.</p>
       <p>These samples are based on manually checked official/approved source pages.</p>
+      <p>Singapore is legacy/no active racing and is not included as active timetable coverage.</p>
     </div>
   </section>
 
   <section class="section-grid" aria-label="Preview timetable summary">
     <article class="card">
       <h2>Preview samples</h2>
-      <p><strong>Number of preview samples:</strong> {records.length}</p>
+      <p><strong>Total samples:</strong> {summary.total_samples}</p>
+      <p><strong>Active group count:</strong> {summary.active_group_count}</p>
     </article>
 
     <article class="card">
       <h2>Countries represented</h2>
-      <p>{countries.join(', ')}</p>
+      <p>{summary.countries.join(', ')}</p>
     </article>
 
     <article class="card">
       <h2>Systems represented</h2>
-      <p>{systems.join(', ')}</p>
+      <p>{summary.systems.join(', ')}</p>
     </article>
 
     <article class="card">
       <h2>Source capture dates represented</h2>
-      <p>{sourceCaptureDates.join(', ')}</p>
+      <p>{summary.source_capture_dates.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>Preview notice</h2>
+      <ul>
+        {summary.notice.map((notice) => <li>{notice}</li>)}
+        <li>Singapore remains legacy/no active racing and is not included in active timetable coverage.</li>
+      </ul>
     </article>
 
     <article class="card">
       <h2>Official source confirmation</h2>
-      <p>Each preview sample links to its official source for user review and final confirmation.</p>
+      <p>Each preview sample includes an official source link for user review and final confirmation.</p>
     </article>
+  </section>
+
+  <section class="card preview-status" aria-labelledby="preview-status-title">
+    <h2 id="preview-status-title">Current preview status</h2>
+    <div class="preview-status__grid">
+      <div>
+        <h3>What users can do now</h3>
+        <ul>
+          <li>View static sample meeting dates and race times from official/approved sources.</li>
+          <li>Open official source links for each preview card.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What users cannot do yet</h3>
+        <ul>
+          <li>Browse complete live timetables.</li>
+          <li>See every date/racecourse for every country.</li>
+          <li>Rely on automatic updates.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What comes next</h3>
+        <ul>
+          <li>PR-102 should add the v0 release gate and clearer status wording.</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <PreviewTimetableSamples records={records} />
 </BaseLayout>
+
+<style>
+  .preview-status {
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .preview-status__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--whr-space-3);
+  }
+
+  .preview-status h2,
+  .preview-status h3,
+  .preview-status ul {
+    margin: 0;
+  }
+
+  .preview-status__grid > div {
+    display: grid;
+    align-content: start;
+    gap: var(--whr-space-2);
+  }
+
+  @media (max-width: 820px) {
+    .preview-status__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
