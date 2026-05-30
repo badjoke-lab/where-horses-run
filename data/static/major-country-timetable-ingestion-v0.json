@@ -1,0 +1,1768 @@
+{
+  "schema_version": "major-country-timetable-ingestion-v0",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-30",
+  "target_country_count": 13,
+  "target_active_group_count": 24,
+  "target_legacy_group_count": 1,
+  "source_policy": {
+    "preview_samples_are_not_production_timetable": true,
+    "annual_fixture_is_candidate_until_confirmed_by_rolling_or_racecard": true,
+    "rolling_or_racecard_source_confirms_final_times": true,
+    "manual_static_ingestion_only": true,
+    "no_live_fetch_runtime": true,
+    "no_full_automation_claim": true,
+    "no_live_coverage_claim": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true
+  },
+  "v0_coverage_policy": {
+    "pr_103_all_official_annual_fixture_records": "PR-103 must populate all official-source-available annual/season fixture records for the defined v0 coverage window, not one sample per group.",
+    "pr_104_all_official_rolling_racecard_records": "PR-104 must populate all official-source-available rolling/racecard/entries/declarations/daily info records for the defined v0 coverage window, not one sample per group.",
+    "pending_racecard_visibility": "If a racecard is not yet officially available, the annual fixture must remain visible with status such as pending_racecard, time_pending_official_racecard, source_not_yet_published, or needs_manual_review.",
+    "unresolved_items_not_dropped": "Unresolved items must not be dropped.",
+    "missing_structured_source_data_explicit": "Missing structured source data must be represented explicitly with status, not silently excluded."
+  },
+  "five_pr_path": {
+    "PR-102": "ingestion data model and source plan",
+    "PR-103": "annual/season fixture data for all official-source-available records in the v0 coverage window",
+    "PR-104": "rolling/racecard/entries/declarations/daily info data with first-race and all-race times where officially available",
+    "PR-105": "merged user-facing timetable data and /major-countries/timetable/ UI",
+    "PR-106": "static/manual-driven 13-country timetable v0 completion gate"
+  },
+  "records": [
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "group_name": "Japan Racing Association",
+      "system_name": "Japan Racing Association",
+      "racecourses": [
+        "JRA national racecourse network"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "jra-annual-calendar",
+          "label": "JRA annual race calendar",
+          "url": "https://jra.jp/keiba/calendar2026/",
+          "role": "annual fixture calendar"
+        }
+      ],
+      "rolling_update_sources": [],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "jra-annual-calendar-first-race",
+          "label": "JRA calendar first-race time cells",
+          "url": "https://jra.jp/keiba/calendar2026/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "jra-annual-calendar-race-times",
+          "label": "JRA calendar race time cells",
+          "url": "https://jra.jp/keiba/calendar2026/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "jra-annual-calendar-meetings",
+          "label": "JRA annual race calendar meeting rows",
+          "url": "https://jra.jp/keiba/calendar2026/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "group_name": "National Association of Racing",
+      "system_name": "National Association of Racing",
+      "racecourses": [
+        "NAR local government racecourse network"
+      ],
+      "annual_fixture_sources": [],
+      "rolling_update_sources": [
+        {
+          "source_id": "nar-today-race-info",
+          "label": "NAR Today Race Info",
+          "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "role": "rolling daily race information"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "nar-today-race-info-first-race",
+          "label": "NAR Today Race Info first-race rows",
+          "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "nar-today-race-info-race-times",
+          "label": "NAR Today Race Info race rows",
+          "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "nar-today-race-info-meetings",
+          "label": "NAR Today Race Info meeting list",
+          "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "japan",
+      "group_id": "banei",
+      "group_name": "Banei Tokachi",
+      "system_name": "Banei Tokachi",
+      "racecourses": [
+        "Obihiro/Banei race programme"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "banei-race-schedule",
+          "label": "Banei race schedule",
+          "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "role": "season and meeting schedule"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "banei-race-schedule-rolling",
+          "label": "Banei race schedule rolling view",
+          "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "role": "rolling schedule"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "banei-race-schedule-first-race",
+          "label": "Banei race schedule first-race rows",
+          "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "banei-race-schedule-race-times",
+          "label": "Banei race schedule race rows",
+          "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "banei-race-schedule-meetings",
+          "label": "Banei race schedule meeting rows",
+          "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "group_name": "Hong Kong Jockey Club",
+      "system_name": "Hong Kong Jockey Club",
+      "racecourses": [
+        "Sha Tin and Happy Valley"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "hkjc-fixture-list",
+          "label": "HKJC fixture list",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+          "role": "annual fixture list"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "hkjc-racecard",
+          "label": "HKJC racecard",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "role": "rolling racecard"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "hkjc-racecard-first-race",
+          "label": "HKJC racecard first race metadata",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "hkjc-racecard-race-times",
+          "label": "HKJC racecard race rows",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "hkjc-fixture-list-meetings",
+          "label": "HKJC fixture list meeting rows",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "group_name": "Emirates Racing Authority",
+      "system_name": "Emirates Racing Authority",
+      "racecourses": [
+        "UAE ERA racecourse network"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "era-current-season-calendar",
+          "label": "ERA current season calendar",
+          "url": "https://emiratesracing.com/season-calendar/current-season",
+          "role": "season fixture calendar"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "era-current-season-calendar-rolling",
+          "label": "ERA current season calendar rolling updates",
+          "url": "https://emiratesracing.com/season-calendar/current-season",
+          "role": "rolling fixture calendar"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "era-current-season-calendar-first-race",
+          "label": "ERA season calendar first-race times",
+          "url": "https://emiratesracing.com/season-calendar/current-season",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "era-racecards",
+          "label": "ERA racecards",
+          "url": "https://emiratesracing.com/racecards",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "era-current-season-calendar-meetings",
+          "label": "ERA season calendar meeting rows",
+          "url": "https://emiratesracing.com/season-calendar/current-season",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "group_name": "British Horseracing Authority",
+      "system_name": "British Horseracing Authority",
+      "racecourses": [
+        "BHA licensed racecourses"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "bha-full-year-fixtures",
+          "label": "BHA full-year fixtures",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+          "role": "annual fixture list"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "bha-fixtures",
+          "label": "BHA fixtures",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "role": "rolling fixture list"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "bha-fixtures-first-race",
+          "label": "BHA fixtures first-race fields",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "bha-racecard-links",
+          "label": "BHA racecard links from fixture rows",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "bha-fixtures-meetings",
+          "label": "BHA fixtures meeting rows",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "point-to-point",
+      "group_name": "Point-to-Point Authority path",
+      "system_name": "Point-to-Point Authority path",
+      "racecourses": [
+        "UK point-to-point fixtures under the BHA regulatory path"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "bha-point-to-point",
+          "label": "BHA point-to-point regulation path",
+          "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "role": "point-to-point fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "bha-fixtures-point-to-point",
+          "label": "BHA fixtures rolling path for point-to-point reconciliation",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "role": "rolling fixture reconciliation"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "bha-point-to-point-first-race",
+          "label": "Point-to-point path first-race metadata",
+          "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "bha-point-to-point-race-times",
+          "label": "Point-to-point path racecard/time links",
+          "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "bha-point-to-point-meetings",
+          "label": "Point-to-point path meeting links",
+          "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "purebred-arabian",
+      "group_name": "Purebred Arabian horseracing path",
+      "system_name": "Purebred Arabian horseracing path",
+      "racecourses": [
+        "UK purebred Arabian fixtures identified from the BHA regulation path"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "bha-purebred-arabian",
+          "label": "BHA purebred Arabian horseracing path",
+          "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "role": "Arabian fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "bha-fixtures-arabian",
+          "label": "BHA fixtures rolling path for Arabian reconciliation",
+          "url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "role": "rolling fixture reconciliation"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "bha-purebred-arabian-first-race",
+          "label": "Purebred Arabian first-race metadata",
+          "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "bha-purebred-arabian-race-times",
+          "label": "Purebred Arabian racecard/time links",
+          "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "bha-purebred-arabian-meetings",
+          "label": "Purebred Arabian path meeting links",
+          "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "ireland",
+      "group_id": "hri",
+      "group_name": "Horse Racing Ireland",
+      "system_name": "Horse Racing Ireland",
+      "racecourses": [
+        "HRI racecourse network"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "hri-fixture-list",
+          "label": "HRI fixture list",
+          "url": "https://www.hri.ie/racing/fixture-list/",
+          "role": "annual fixture list"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "hri-home-rolling",
+          "label": "HRI rolling racing entry point",
+          "url": "https://www.hri.ie/",
+          "role": "rolling fixture entry point"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "hri-home-first-race",
+          "label": "HRI rolling first-race metadata",
+          "url": "https://www.hri.ie/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "hri-racecards",
+          "label": "HRI racecards",
+          "url": "https://www.hri.ie/racing/racecards/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "hri-race-results",
+          "label": "HRI race results",
+          "url": "https://www.hri.ie/racing/race-results/",
+          "role": "post-meeting timing reconciliation",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "hri-home-meetings",
+          "label": "HRI rolling meeting cards",
+          "url": "https://www.hri.ie/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "group_name": "France Galop",
+      "system_name": "France Galop",
+      "racecourses": [
+        "France Galop flat and jump racecourses"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "france-galop-calendar",
+          "label": "France Galop calendar entry point",
+          "url": "https://www.france-galop.com/en",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "france-galop-rolling",
+          "label": "France Galop rolling race entry point",
+          "url": "https://www.france-galop.com/en",
+          "role": "rolling fixture path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "france-galop-first-race",
+          "label": "France Galop race programme first-race data",
+          "url": "https://www.france-galop.com/en",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "france-galop-race-times",
+          "label": "France Galop race programme rows",
+          "url": "https://www.france-galop.com/en",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "france-galop-meetings",
+          "label": "France Galop meeting listings",
+          "url": "https://www.france-galop.com/en",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "group_name": "LeTROT",
+      "system_name": "LeTROT",
+      "racecourses": [
+        "LeTROT trotting racecourses"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "letrot-calendar",
+          "label": "LeTROT calendar entry point",
+          "url": "https://www.letrot.com/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "letrot-rolling",
+          "label": "LeTROT rolling race entry point",
+          "url": "https://www.letrot.com/",
+          "role": "rolling fixture path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "letrot-first-race",
+          "label": "LeTROT programme first-race data",
+          "url": "https://www.letrot.com/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "letrot-race-times",
+          "label": "LeTROT programme rows",
+          "url": "https://www.letrot.com/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "letrot-meetings",
+          "label": "LeTROT meeting listings",
+          "url": "https://www.letrot.com/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "equibase-thoroughbred",
+      "group_name": "Equibase",
+      "system_name": "Equibase",
+      "racecourses": [
+        "United States thoroughbred tracks covered by Equibase"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "equibase-calendar",
+          "label": "Equibase calendar entry point",
+          "url": "https://www.equibase.com/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "equibase-rolling",
+          "label": "Equibase entries/results entry point",
+          "url": "https://www.equibase.com/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "equibase-first-race",
+          "label": "Equibase entries/racecard first post fields",
+          "url": "https://www.equibase.com/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "equibase-race-times",
+          "label": "Equibase entries/racecard race rows",
+          "url": "https://www.equibase.com/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "equibase-meetings",
+          "label": "Equibase meeting listings",
+          "url": "https://www.equibase.com/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "usta-harness",
+      "group_name": "United States Trotting Association",
+      "system_name": "United States Trotting Association",
+      "racecourses": [
+        "United States harness tracks covered by USTA"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "usta-calendar",
+          "label": "USTA calendar entry point",
+          "url": "https://www.ustrotting.com/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "usta-rolling",
+          "label": "USTA entries/results entry point",
+          "url": "https://www.ustrotting.com/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "usta-first-race",
+          "label": "USTA entries first-race fields",
+          "url": "https://www.ustrotting.com/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "usta-race-times",
+          "label": "USTA entries race rows",
+          "url": "https://www.ustrotting.com/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "usta-meetings",
+          "label": "USTA meeting listings",
+          "url": "https://www.ustrotting.com/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "aqha-quarter-horse",
+      "group_name": "American Quarter Horse Association",
+      "system_name": "American Quarter Horse Association",
+      "racecourses": [
+        "AQHA quarter-horse racing path"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "aqha-racing",
+          "label": "AQHA racing entry point",
+          "url": "https://www.aqha.com/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "aqha-racing-rolling",
+          "label": "AQHA racing rolling entry point",
+          "url": "https://www.aqha.com/",
+          "role": "rolling fixture path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "aqha-first-race",
+          "label": "AQHA racing first-race data",
+          "url": "https://www.aqha.com/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "aqha-race-times",
+          "label": "AQHA racing race rows",
+          "url": "https://www.aqha.com/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "aqha-meetings",
+          "label": "AQHA racing meeting listings",
+          "url": "https://www.aqha.com/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "canada",
+      "group_id": "standardbred-canada",
+      "group_name": "Standardbred Canada",
+      "system_name": "Standardbred Canada",
+      "racecourses": [
+        "Canadian standardbred tracks covered by Standardbred Canada"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "standardbred-canada-racing",
+          "label": "Standardbred Canada racing",
+          "url": "https://standardbredcanada.ca/racing",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "standardbred-canada-racing-rolling",
+          "label": "Standardbred Canada racing rolling cards",
+          "url": "https://standardbredcanada.ca/racing",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "standardbred-canada-first-race",
+          "label": "Standardbred Canada first-race fields",
+          "url": "https://standardbredcanada.ca/racing",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "standardbred-canada-race-times",
+          "label": "Standardbred Canada race rows",
+          "url": "https://standardbredcanada.ca/racing",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "standardbred-canada-meetings",
+          "label": "Standardbred Canada meeting listings",
+          "url": "https://standardbredcanada.ca/racing",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "canada",
+      "group_id": "woodbine-thoroughbred",
+      "group_name": "Woodbine",
+      "system_name": "Woodbine",
+      "racecourses": [
+        "Woodbine thoroughbred racing path"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "woodbine-horse-racing",
+          "label": "Woodbine horse racing",
+          "url": "https://woodbine.com/horse-racing/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "woodbine-horse-racing-rolling",
+          "label": "Woodbine horse racing rolling cards",
+          "url": "https://woodbine.com/horse-racing/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "woodbine-first-race",
+          "label": "Woodbine first-race fields",
+          "url": "https://woodbine.com/horse-racing/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "woodbine-race-times",
+          "label": "Woodbine race rows",
+          "url": "https://woodbine.com/horse-racing/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "woodbine-meetings",
+          "label": "Woodbine meeting listings",
+          "url": "https://woodbine.com/horse-racing/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-australia-thoroughbred",
+      "group_name": "Racing Australia",
+      "system_name": "Racing Australia",
+      "racecourses": [
+        "Australian thoroughbred racecourses covered by Racing Australia"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "racing-australia-calendar",
+          "label": "Racing Australia FreeFields calendar",
+          "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "role": "annual fixture calendar"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "racing-australia-calendar-rolling",
+          "label": "Racing Australia FreeFields rolling calendar",
+          "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "role": "rolling fixture calendar"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "racing-australia-first-race",
+          "label": "Racing Australia FreeFields first-race fields",
+          "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "racing-australia-race-times",
+          "label": "Racing Australia FreeFields race rows",
+          "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "racing-australia-meetings",
+          "label": "Racing Australia calendar meeting rows",
+          "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "australia",
+      "group_id": "harness-australia",
+      "group_name": "Harness Racing Australia",
+      "system_name": "Harness Racing Australia",
+      "racecourses": [
+        "Australian harness racecourses covered by Harness Racing Australia"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "harness-australia",
+          "label": "Harness Racing Australia entry point",
+          "url": "https://www.harness.org.au/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "harness-australia-rolling",
+          "label": "Harness Racing Australia rolling cards",
+          "url": "https://www.harness.org.au/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "harness-australia-first-race",
+          "label": "Harness Racing Australia first-race fields",
+          "url": "https://www.harness.org.au/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "harness-australia-race-times",
+          "label": "Harness Racing Australia race rows",
+          "url": "https://www.harness.org.au/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "harness-australia-meetings",
+          "label": "Harness Racing Australia meeting listings",
+          "url": "https://www.harness.org.au/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "loveracing-thoroughbred",
+      "group_name": "LOVERACING.NZ",
+      "system_name": "LOVERACING.NZ",
+      "racecourses": [
+        "New Zealand thoroughbred racecourses"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "loveracing-calendar",
+          "label": "LOVERACING calendar",
+          "url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+          "role": "annual fixture calendar"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "loveracing-nominations",
+          "label": "LOVERACING nominations",
+          "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "role": "rolling race information"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "loveracing-first-race",
+          "label": "LOVERACING nominations first-race fields",
+          "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "loveracing-race-times",
+          "label": "LOVERACING nominations race rows",
+          "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "loveracing-meetings",
+          "label": "LOVERACING nominations meeting rows",
+          "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "group_name": "Harness Racing New Zealand",
+      "system_name": "Harness Racing New Zealand",
+      "racecourses": [
+        "New Zealand harness racecourses"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "hrnz",
+          "label": "HRNZ entry point",
+          "url": "https://www.hrnz.co.nz/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "hrnz-rolling",
+          "label": "HRNZ rolling race information",
+          "url": "https://www.hrnz.co.nz/",
+          "role": "rolling race information"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "hrnz-first-race",
+          "label": "HRNZ first-race fields",
+          "url": "https://www.hrnz.co.nz/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "hrnz-race-times",
+          "label": "HRNZ race rows",
+          "url": "https://www.hrnz.co.nz/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "hrnz-meetings",
+          "label": "HRNZ meeting listings",
+          "url": "https://www.hrnz.co.nz/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "south-africa",
+      "group_id": "nhra",
+      "group_name": "National Horseracing Authority of Southern Africa",
+      "system_name": "National Horseracing Authority of Southern Africa",
+      "racecourses": [
+        "National regulator fixture/racecourse inventory path"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "nhra",
+          "label": "NHRA entry point",
+          "url": "https://www.nhra.co.za/",
+          "role": "annual fixture/regulatory path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "nhra-rolling",
+          "label": "NHRA rolling fixture/regulatory path",
+          "url": "https://www.nhra.co.za/",
+          "role": "rolling fixture path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "nhra-first-race",
+          "label": "NHRA first-race reference fields",
+          "url": "https://www.nhra.co.za/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "nhra-race-times",
+          "label": "NHRA race programme references",
+          "url": "https://www.nhra.co.za/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "nhra-meetings",
+          "label": "NHRA meeting listings",
+          "url": "https://www.nhra.co.za/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "south-africa",
+      "group_id": "four-racing",
+      "group_name": "4Racing",
+      "system_name": "4Racing",
+      "racecourses": [
+        "4Racing operated race meetings"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "four-racing",
+          "label": "4Racing entry point",
+          "url": "https://www.4racing.com/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "four-racing-rolling",
+          "label": "4Racing rolling racecards",
+          "url": "https://www.4racing.com/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "four-racing-first-race",
+          "label": "4Racing first-race fields",
+          "url": "https://www.4racing.com/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "four-racing-race-times",
+          "label": "4Racing racecard race rows",
+          "url": "https://www.4racing.com/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "four-racing-meetings",
+          "label": "4Racing meeting listings",
+          "url": "https://www.4racing.com/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "south-africa",
+      "group_id": "gold-circle",
+      "group_name": "Gold Circle",
+      "system_name": "Gold Circle",
+      "racecourses": [
+        "Gold Circle operated race meetings"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "gold-circle",
+          "label": "Gold Circle entry point",
+          "url": "https://www.goldcircle.co.za/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "gold-circle-rolling",
+          "label": "Gold Circle rolling racecards",
+          "url": "https://www.goldcircle.co.za/",
+          "role": "rolling racecard path"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "gold-circle-first-race",
+          "label": "Gold Circle first-race fields",
+          "url": "https://www.goldcircle.co.za/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "gold-circle-race-times",
+          "label": "Gold Circle racecard race rows",
+          "url": "https://www.goldcircle.co.za/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "gold-circle-meetings",
+          "label": "Gold Circle meeting listings",
+          "url": "https://www.goldcircle.co.za/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "south-korea",
+      "group_id": "kra",
+      "group_name": "Korea Racing Authority",
+      "system_name": "Korea Racing Authority",
+      "racecourses": [
+        "KRA racecourse network"
+      ],
+      "annual_fixture_sources": [
+        {
+          "source_id": "kra",
+          "label": "KRA entry point",
+          "url": "https://www.kra.co.kr/",
+          "role": "annual fixture path"
+        }
+      ],
+      "rolling_update_sources": [
+        {
+          "source_id": "kra-rolling",
+          "label": "KRA rolling race information",
+          "url": "https://www.kra.co.kr/",
+          "role": "rolling race information"
+        }
+      ],
+      "racecard_entries_declarations_daily_info_sources": [
+        {
+          "source_id": "kra-first-race",
+          "label": "KRA first-race fields",
+          "url": "https://www.kra.co.kr/",
+          "role": "first race time source",
+          "mapped_from": "first_race_time_sources"
+        },
+        {
+          "source_id": "kra-race-times",
+          "label": "KRA race rows",
+          "url": "https://www.kra.co.kr/",
+          "role": "per-race time source",
+          "mapped_from": "per_race_time_sources"
+        },
+        {
+          "source_id": "kra-meetings",
+          "label": "KRA meeting listings",
+          "url": "https://www.kra.co.kr/",
+          "role": "meeting date source",
+          "mapped_from": "meeting_sources"
+        }
+      ],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "manual static source review for v0 coverage window; parser, cron, and source-specific automation deferred",
+      "last_checked": "2026-05-30",
+      "status": "source_plan_ready"
+    },
+    {
+      "country_id": "singapore",
+      "group_id": "singapore-turf-club-legacy",
+      "group_name": "Singapore Turf Club legacy",
+      "system_name": "Singapore Turf Club legacy",
+      "racecourses": [
+        "Legacy Singapore Turf Club inventory only; no active timetable acquisition"
+      ],
+      "annual_fixture_sources": [],
+      "rolling_update_sources": [],
+      "racecard_entries_declarations_daily_info_sources": [],
+      "annual_schedule_records": [],
+      "rolling_update_records": [],
+      "per_race_time_records": [],
+      "source_priority": [
+        {
+          "rank": 1,
+          "source_type": "racecard_entries_declarations_daily_info",
+          "rule": "Use official racecard, entries, declarations, daily race information, fields, acceptances, first-race, or per-race time sources when available; these confirm first-race and all-race times for display."
+        },
+        {
+          "rank": 2,
+          "source_type": "rolling_update",
+          "rule": "Use official rolling fixture or meeting update sources when racecard-level data is not yet published."
+        },
+        {
+          "rank": 3,
+          "source_type": "annual_fixture",
+          "rule": "Use official annual or season fixture sources as candidate meeting visibility until rolling or racecard sources confirm final times."
+        }
+      ],
+      "update_frequency": "legacy reference only; no active racing refresh planned",
+      "last_checked": "2026-05-30",
+      "status": "legacy_no_active_racing"
+    }
+  ]
+}

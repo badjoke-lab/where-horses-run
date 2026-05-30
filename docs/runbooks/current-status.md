@@ -36,6 +36,8 @@ No racecards, odds, results, payouts, predictions, or tips are stored.
 
 Related release note: [M3 v0 Generator Foundation Status](m3-v0-status-release-note.md).
 
+Related timetable ingestion plan: [PR-102 Major-country timetable ingestion v0 plan](pr-102.md).
+
 ---
 
 ## Completed recent PRs
