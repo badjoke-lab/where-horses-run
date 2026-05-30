@@ -1,0 +1,34 @@
+{
+  "schema_version": "pr-107-all-race-capture-rules-v0",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-30T00:00:00Z",
+  "rules": {
+    "fixture_only_is_not_enough": true,
+    "annual_calendar_only_is_not_enough": true,
+    "source_link_only_is_not_enough": true,
+    "first_race_time_only_is_not_enough": true,
+    "confirmed_record_requires_all_races": true
+  },
+  "required_record_fields": [
+    "country_id",
+    "group_id",
+    "racecourse",
+    "meeting_date",
+    "first_race_time",
+    "races",
+    "source_url",
+    "source_type",
+    "source_capture_date",
+    "last_checked"
+  ],
+  "required_race_fields": [
+    "race_number",
+    "race_time",
+    "race_name_or_label"
+  ],
+  "target_scope": {
+    "countries": 13,
+    "active_groups": 24,
+    "legacy_groups": 1
+  }
+}
