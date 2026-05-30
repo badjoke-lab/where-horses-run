@@ -1,0 +1,309 @@
+{
+  "schema_version": "major-countries-v0-scope-v0",
+  "target_completion_pr": "PR-096",
+  "workflow_status": {
+    "per_country_micro_prs": "paused",
+    "gap_report_only_prs": "paused",
+    "source_evidence_only_prs": "paused_unless_bundled_with_data_schema_or_page_changes"
+  },
+  "coverage_depth_levels": [
+    "level_1_country_profile",
+    "level_2_racecourse_inventory",
+    "level_3_official_calendar_links",
+    "level_4_active_window_meeting_dates",
+    "level_5_first_race_times_optional"
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "display_name": "Japan",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["jra", "nar", "banei"],
+      "expected_racing_types": ["flat", "jump", "dirt", "ban'ei"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "reviewed_partial",
+        "first_race_time_optional": "reviewed_partial"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links",
+        "level_4_active_window_meeting_dates",
+        "level_5_first_race_times_optional"
+      ],
+      "timetable_active_window_target": "partial",
+      "public_status_label": "Partial official-source coverage; not complete",
+      "notes": "Existing Japan data remains partial. JRA/NAR/Banei coverage should be batched without claiming nationwide timetable completion."
+    },
+    {
+      "country_id": "hong-kong",
+      "display_name": "Hong Kong",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["hkjc"],
+      "expected_racing_types": ["flat", "turf", "all-weather"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "reviewed_partial",
+        "first_race_time_optional": "reviewed_partial"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links",
+        "level_4_active_window_meeting_dates",
+        "level_5_first_race_times_optional"
+      ],
+      "timetable_active_window_target": "partial",
+      "public_status_label": "Partial official-source coverage; not complete",
+      "notes": "Existing Hong Kong data remains partial. HKJC active-window records may be batched only where official evidence is stable."
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "display_name": "United Arab Emirates",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["emirates-racing-authority"],
+      "expected_racing_types": ["flat", "turf", "dirt"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "reviewed_partial",
+        "first_race_time_optional": "reviewed_partial"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links",
+        "level_4_active_window_meeting_dates"
+      ],
+      "timetable_active_window_target": "partial",
+      "public_status_label": "Partial official-source coverage; not complete",
+      "notes": "Existing UAE data remains partial. Active-window targets should stay limited to safe official evidence."
+    },
+    {
+      "country_id": "united-kingdom",
+      "display_name": "United Kingdom",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["british-horseracing-authority", "weatherbys-point-to-point"],
+      "expected_racing_types": ["flat", "jump", "all-weather", "point-to-point"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should prioritize authority, racecourse inventory, and official calendar links before active-window timetables."
+    },
+    {
+      "country_id": "ireland",
+      "display_name": "Ireland",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["horse-racing-ireland", "irish-horseracing-regulatory-board"],
+      "expected_racing_types": ["flat", "jump", "point-to-point"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should capture Irish authority and fixture/calendar source links without claiming active-window completion."
+    },
+    {
+      "country_id": "france",
+      "display_name": "France",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["france-galop", "letrot"],
+      "expected_racing_types": ["flat", "jump", "trotting"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should represent both gallop and trotting authorities in the source inventory."
+    },
+    {
+      "country_id": "united-states",
+      "display_name": "United States",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["state-commissions", "racetrack-operator-calendars"],
+      "expected_racing_types": ["flat", "dirt", "turf", "quarter-horse", "harness"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "US racing is decentralized; v0 should record the scalable schema path and avoid a full timetable claim."
+    },
+    {
+      "country_id": "canada",
+      "display_name": "Canada",
+      "priority_tier": "tier_2",
+      "expected_racing_systems": ["provincial-commissions", "racetrack-operator-calendars"],
+      "expected_racing_types": ["flat", "turf", "dirt", "harness"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should identify provincial authority and operator-calendar seams before timetable work."
+    },
+    {
+      "country_id": "australia",
+      "display_name": "Australia",
+      "priority_tier": "tier_1",
+      "expected_racing_systems": ["racing-australia", "state-principal-racing-authorities"],
+      "expected_racing_types": ["flat", "turf", "synthetic", "harness", "greyhound-excluded"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Thoroughbred scope should be separated from non-horse racing where necessary."
+    },
+    {
+      "country_id": "new-zealand",
+      "display_name": "New Zealand",
+      "priority_tier": "tier_2",
+      "expected_racing_systems": ["new-zealand-thoroughbred-racing", "harness-racing-new-zealand"],
+      "expected_racing_types": ["flat", "turf", "synthetic", "harness"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should separate thoroughbred and harness official-source paths."
+    },
+    {
+      "country_id": "south-africa",
+      "display_name": "South Africa",
+      "priority_tier": "tier_2",
+      "expected_racing_systems": ["national-horseracing-authority", "operator-calendars"],
+      "expected_racing_types": ["flat", "turf", "polytrack"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should anchor on official authority and operator fixtures without implying active timetables."
+    },
+    {
+      "country_id": "south-korea",
+      "display_name": "South Korea",
+      "priority_tier": "tier_2",
+      "expected_racing_systems": ["korea-racing-authority"],
+      "expected_racing_types": ["flat", "dirt"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "required_if_calendar_source_available",
+        "first_race_time_optional": "optional"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "later",
+      "public_status_label": "Major-country index target; timetable coverage later",
+      "notes": "Batch should capture KRA authority and official fixture-source links before first-race-time work."
+    },
+    {
+      "country_id": "singapore",
+      "display_name": "Singapore",
+      "priority_tier": "tier_2",
+      "expected_racing_systems": ["singapore-turf-club-legacy"],
+      "expected_racing_types": ["flat", "turf", "polytrack", "legacy"],
+      "expected_source_categories": {
+        "authority": "required",
+        "racecourse_inventory": "required_if_official_inventory_source_available",
+        "fixture_calendar": "required_if_official_calendar_source_available",
+        "meeting_date": "not_expected_for_current_racing_if_no_active_thoroughbred_meetings",
+        "first_race_time_optional": "not_expected"
+      },
+      "expected_coverage_depth_v0": [
+        "level_1_country_profile",
+        "level_2_racecourse_inventory",
+        "level_3_official_calendar_links"
+      ],
+      "timetable_active_window_target": "no",
+      "public_status_label": "Major-country legacy index target; no active timetable target",
+      "notes": "Singapore should be represented carefully as a major racing jurisdiction with legacy/current-status context, not an active-window timetable promise."
+    }
+  ]
+}
