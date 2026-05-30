@@ -1,0 +1,39 @@
+{
+  "schema_version": "pr-107-best-available-capture-rules-v1",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-31T00:00:00Z",
+  "rules": {
+    "keep_best_available_official_data": true,
+    "annual_fixture_rows_are_level_c": true,
+    "rolling_or_racecard_rows_can_promote_records": true,
+    "level_a_requires_all_race_times": true,
+    "level_b_requires_first_race_time": true,
+    "level_c_requires_meeting_date_and_racecourse": true,
+    "level_d_requires_official_source_url": true,
+    "lower_levels_must_not_be_displayed_as_level_a": true
+  },
+  "level_requirements": {
+    "A": ["country_id", "group_id", "racecourse", "meeting_date", "first_race_time", "races", "source_url", "source_type", "source_capture_date", "last_checked"],
+    "B": ["country_id", "group_id", "racecourse", "meeting_date", "first_race_time", "source_url", "source_type", "source_capture_date", "last_checked"],
+    "C": ["country_id", "group_id", "racecourse", "meeting_date", "source_url", "source_type", "source_capture_date", "last_checked"],
+    "D": ["country_id", "group_id", "official_source_url", "source_type", "source_capture_date", "last_checked"]
+  },
+  "annual_fixture_policy": {
+    "data_level": "C",
+    "meaning": "official meeting candidate with date and racecourse",
+    "must_be_kept": true,
+    "must_be_overridden_by_rolling_or_racecard_when_available": true
+  },
+  "update_policy": {
+    "annual_fixture_stale_after_days": 45,
+    "rolling_fixture_stale_after_days": 14,
+    "racecard_daily_info_stale_after_days": 3,
+    "source_capture_date_required": true,
+    "last_checked_required": true
+  },
+  "target_scope": {
+    "countries": 13,
+    "active_groups": 24,
+    "legacy_groups": 1
+  }
+}

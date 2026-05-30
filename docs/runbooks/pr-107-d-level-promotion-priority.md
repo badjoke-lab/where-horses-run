@@ -1,0 +1,100 @@
+# PR-107 D-level promotion priority
+
+## Core correction
+
+D is allowed as a user-visible level for lower-tier or hard-to-cover countries.
+
+However, for the 13-country major racing scope in this project, D should be exceptional and temporary.
+
+D does not mean that racing schedules are unavailable in that country. It means this repository has only registered the official source target and has not yet extracted meeting rows from it.
+
+Major racing countries normally have public calendars, entries, fields, declarations, or racecards that people use to know where and when racing is happening. Therefore, most D systems in the 13-country scope should be promoted to C or better.
+
+## User-facing rule
+
+D may be shown to users when it is accurate, especially for lower-tier countries or difficult sources.
+
+For the 13-country major racing scope, a D label should be worded carefully:
+
+- not "no schedule available"
+- not "no racing information"
+- not "unsupported country"
+- yes: "official source identified; meeting rows not extracted yet"
+
+A public timetable page should primarily show:
+
+- A: all race times
+- B: first race time
+- C: meeting date and racecourse
+- season-window status where a country/system is in an official off-season window
+- D only as a transparent extraction backlog, not as final coverage
+
+## Promotion obligation
+
+Every D system in the 13-country scope must have a next promotion target.
+
+- D to C: extract meeting date and racecourse from official calendars, entries, fields, or fixture lists.
+- C to B: extract first race time from racecard, entries, declarations, or fields.
+- B to A: extract all race rows and race times.
+
+## D systems in PR-107
+
+### United States
+
+- Equibase Thoroughbred: promote to C from official entries/track-date rows.
+- USTA Harness: promote to C from official entries rows.
+- AQHA Quarter Horse: promote to C from official racing calendar or race result/entries source.
+
+### Canada
+
+- Woodbine Thoroughbred: promote to C from Woodbine racing calendar/race-day pages.
+- Standardbred Canada: promote to C from entries/results pages.
+
+### Australia
+
+- Racing Australia Thoroughbred: promote to C from Racing Australia calendar/race fields pages.
+- Harness Australia: promote to C from fields/meeting calendar pages.
+
+### New Zealand
+
+- LOVERACING Thoroughbred: promote to C from RaceInfo calendar/meetings/fields pages.
+- HRNZ Harness: promote to C from HRNZ fields/meeting pages.
+
+### South Africa
+
+- NHRA: regulator/index source; use as supporting authority source, not final D coverage.
+- 4Racing: promote to C from racing/calendar/racecard pages.
+- Gold Circle: promote to C from racing calendar pages.
+
+### South Korea
+
+- KRA: promote to C from official race schedule/race information pages.
+
+## Priority order
+
+1. Promote Australia and New Zealand first because their official pages expose calendar/fields navigation clearly.
+2. Promote Canada next using Woodbine and Standardbred Canada.
+3. Promote South Africa using Gold Circle and 4Racing, while treating NHRA as supporting source.
+4. Promote US by source family. Equibase and USTA may require parser or access handling, but they should not remain D long term.
+5. Promote South Korea after confirming stable KRA schedule URLs and parser path.
+
+## Product implication
+
+If a 13-country system remains D, the user-facing site should not imply that the country lacks usable racing calendars.
+
+It should say: official source identified, extraction pending.
+
+Public pages for the 13-country scope should aim to show C or better whenever an official meeting date/racecourse source exists.
+
+## Next PR work after PR-107
+
+PR-108 should not add more D-only files for the 13-country scope.
+
+PR-108 should promote at least one D country group to C using official calendar or fields rows.
+
+Recommended PR-108 target:
+
+- Australia Thoroughbred and Harness Australia to C
+- New Zealand Thoroughbred and Harness to C
+
+This creates the pattern for promoting the remaining D systems.

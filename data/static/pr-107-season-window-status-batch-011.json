@@ -1,0 +1,48 @@
+{
+  "schema_version": "pr-107-season-window-status-batch-011-v0",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-31T00:00:00Z",
+  "coverage_window": {
+    "start_date": "2026-05-30",
+    "end_date": "2026-06-30"
+  },
+  "records": [
+    {
+      "record_id": "pr107-uae-era-window-status-2026-05-30-2026-06-30",
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "status_type": "official_season_window_status",
+      "window_status": "no_fixture_rows_in_coverage_window_on_current_season_calendar",
+      "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+      "official_source_label": "ERA current season calendar",
+      "source_capture_date": "2026-05-31",
+      "last_checked": "2026-05-31",
+      "calendar_months_present": [
+        "October 2025",
+        "November 2025",
+        "December 2025",
+        "January 2026",
+        "February 2026",
+        "March 2026",
+        "April 2026"
+      ],
+      "coverage_window_months_present": [],
+      "nearest_visible_after_or_within_window": null,
+      "nearest_visible_before_window": {
+        "meeting_date": "2026-04-11",
+        "racecourse": "Abu Dhabi Turf Club"
+      },
+      "last_visible_month_summary": {
+        "month": "April 2026",
+        "meetings": [
+          { "meeting_date": "2026-04-01", "racecourse": "Meydan" },
+          { "meeting_date": "2026-04-03", "racecourse": "Al Ain" },
+          { "meeting_date": "2026-04-04", "racecourse": "Abu Dhabi Turf Club" },
+          { "meeting_date": "2026-04-10", "racecourse": "Al Ain" },
+          { "meeting_date": "2026-04-11", "racecourse": "Abu Dhabi Turf Club" }
+        ]
+      },
+      "display_guidance": "Show UAE/ERA as official season calendar checked for the v0 window, with no fixture rows visible in the 2026-05-30 to 2026-06-30 window. Do not remove UAE from scope and do not call it legacy/no active racing."
+    }
+  ]
+}
