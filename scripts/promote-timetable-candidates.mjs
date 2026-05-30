@@ -19,6 +19,8 @@ const input = args.get('input');
 const output = args.get('output');
 const checkOnly = flags.has('check');
 
+// Safety invariant: needs_review records are never promoted into overlays.
+
 if (!input || !output) {
   console.error('Usage: node scripts/promote-timetable-candidates.mjs --input <candidate.json> --output <overlay.json> [--check]');
   process.exit(1);
