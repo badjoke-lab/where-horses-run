@@ -1,0 +1,1977 @@
+{
+  "schema_version": "major-country-sample-acquisition-fixtures-v0",
+  "scope": "major-countries-v0",
+  "source_groups": "data/static/major-country-acquisition-source-groups.json",
+  "policy_flags": {
+    "sample_targets_only": true,
+    "annual_and_rolling_targets_are_separate": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "excludes_odds_payouts_predictions_tips": true
+  },
+  "countries": [
+    {
+      "country_id": "japan",
+      "sample_fixtures": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "sample_grain": "JRA racecourse-date row — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "sample_grain": "JRA racecourse-date row — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "sample_grain": "JRA racecourse-date row — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "sample_grain": "NAR track-date daily info page — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "sample_grain": "NAR track-date daily info page — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "sample_grain": "NAR track-date daily info page — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "sample_grain": "Banei meeting date — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "sample_grain": "Banei meeting date — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "sample_grain": "Banei meeting date — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "sample_grain": "Banei meeting date — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "sample_fixtures": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+          "sample_grain": "HKJC meeting date and racecard — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "sample_grain": "HKJC meeting date and racecard — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "sample_grain": "HKJC meeting date and racecard — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "sample_grain": "HKJC meeting date and racecard — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "sample_fixtures": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "sample_grain": "ERA meeting date then racecard/declarations page — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "sample_grain": "ERA meeting date then racecard/declarations page — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "sample_grain": "ERA meeting date then racecard/declarations page — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://emiratesracing.com/racecards",
+          "sample_grain": "ERA meeting date then racecard/declarations page — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "sample_fixtures": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+          "sample_grain": "BHA racecourse-date fixture row then racecard link — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "sample_grain": "BHA racecourse-date fixture row then racecard link — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "sample_grain": "BHA racecourse-date fixture row then racecard link — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "derived:bha-racecard-links",
+          "sample_grain": "BHA racecourse-date fixture row then racecard link — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "sample_grain": "point-to-point meeting page — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "sample_grain": "point-to-point meeting page — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "sample_grain": "point-to-point meeting page — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "sample_grain": "point-to-point meeting page — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "sample_grain": "Arabian meeting page — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "sample_grain": "Arabian meeting page — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "sample_grain": "Arabian meeting page — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "sample_grain": "Arabian meeting page — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "sample_fixtures": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hri.ie/racing/fixture-list/",
+          "sample_grain": "HRI fixture date then racecard — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hri.ie/",
+          "sample_grain": "HRI fixture date then racecard — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hri.ie/",
+          "sample_grain": "HRI fixture date then racecard — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hri.ie/racing/racecards/",
+          "sample_grain": "HRI fixture date then racecard — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "sample_fixtures": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "sample_grain": "France Galop meeting programme — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "sample_grain": "France Galop meeting programme — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "sample_grain": "France Galop meeting programme — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "sample_grain": "France Galop meeting programme — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "sample_grain": "LeTROT meeting programme — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "sample_grain": "LeTROT meeting programme — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "sample_grain": "LeTROT meeting programme — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "sample_grain": "LeTROT meeting programme — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "sample_fixtures": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "sample_grain": "Equibase track-date card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "sample_grain": "Equibase track-date card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "sample_grain": "Equibase track-date card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "sample_grain": "Equibase track-date card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "sample_grain": "USTA track-date card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "sample_grain": "USTA track-date card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "sample_grain": "USTA track-date card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "sample_grain": "USTA track-date card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "sample_grain": "AQHA track-date card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "sample_grain": "AQHA track-date card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "sample_grain": "AQHA track-date card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "sample_grain": "AQHA track-date card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "sample_fixtures": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "sample_grain": "Standardbred Canada track-date card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "sample_grain": "Standardbred Canada track-date card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "sample_grain": "Standardbred Canada track-date card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "sample_grain": "Standardbred Canada track-date card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "sample_grain": "Woodbine race date card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "sample_grain": "Woodbine race date card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "sample_grain": "Woodbine race date card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "sample_grain": "Woodbine race date card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "sample_fixtures": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "sample_grain": "Racing Australia meeting card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "sample_grain": "Racing Australia meeting card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "sample_grain": "Racing Australia meeting card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "sample_grain": "Racing Australia meeting card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "sample_grain": "Harness Australia meeting card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "sample_grain": "Harness Australia meeting card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "sample_grain": "Harness Australia meeting card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "sample_grain": "Harness Australia meeting card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "sample_fixtures": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+          "sample_grain": "LOVERACING meeting date and nominations/racecard — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "sample_grain": "LOVERACING meeting date and nominations/racecard — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "sample_grain": "LOVERACING meeting date and nominations/racecard — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "sample_grain": "LOVERACING meeting date and nominations/racecard — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "sample_grain": "HRNZ meeting date and racecard — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "sample_grain": "HRNZ meeting date and racecard — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "sample_grain": "HRNZ meeting date and racecard — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "sample_grain": "HRNZ meeting date and racecard — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "sample_fixtures": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "sample_grain": "NHRA meeting date record — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "sample_grain": "NHRA meeting date record — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "sample_grain": "NHRA meeting date record — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "sample_grain": "NHRA meeting date record — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "sample_grain": "4Racing meeting card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "sample_grain": "4Racing meeting card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "sample_grain": "4Racing meeting card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "sample_grain": "4Racing meeting card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "sample_grain": "Gold Circle meeting card — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "sample_grain": "Gold Circle meeting card — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "sample_grain": "Gold Circle meeting card — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "sample_grain": "Gold Circle meeting card — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "sample_fixtures": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "sample_grain": "KRA meeting date and race information — annual fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "notes": "Concrete annual fixture sample target for PR-092 snapshots; no live acquisition is added here."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "sample_grain": "KRA meeting date and race information — rolling fixture sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "notes": "Concrete rolling/racecard sample target kept separate from annual fixture evidence."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "sample_grain": "KRA meeting date and race information — first race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "notes": "Concrete first-race time sample target for validating the meeting-level first advertised start time."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "sample_grain": "KRA meeting date and race information — per race time sample",
+          "expected_fields": {
+            "racecourse": "racecourse or operator venue name from the sample target",
+            "meeting_date": "meeting date represented by the fixture or racecard sample",
+            "first_race_time": "first advertised race time when this target type carries timing",
+            "races": [
+              "race_number",
+              "race_time",
+              "race_name_or_label"
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "notes": "Concrete per-race time sample target for validating race-level advertised times."
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "sample_fixtures": [
+        {
+          "country_id": "singapore",
+          "group_id": "singapore-turf-club-legacy",
+          "parser_target": "legacy_inventory_page",
+          "sample_target_type": "racecourse_inventory",
+          "sample_source_url": "https://racing.turfclub.com.sg/",
+          "sample_grain": "Singapore Turf Club legacy racecourse inventory evidence only",
+          "expected_fields": {
+            "racecourse": "legacy inventory racecourse name or inactive-country racecourse evidence",
+            "meeting_date": "legacy racing status date range, not an active meeting date",
+            "first_race_time": "not generated for Singapore legacy inventory",
+            "races": []
+          },
+          "annual_vs_rolling_rule": "Legacy-only group: active racing ended in Singapore, so no annual, rolling, first-race, or per-race timetable target is generated.",
+          "notes": "Singapore Turf Club held its final race meeting in 2024; PR-091 preserves legacy inventory evidence only and intentionally creates no active timetable sample target."
+        }
+      ]
+    }
+  ]
+}
