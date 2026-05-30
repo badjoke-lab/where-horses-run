@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PreviewTimetableSamples from '../../components/PreviewTimetableSamples.astro';
+import previewTimetableSamples from '../../../data/static/preview-timetable-samples-batch-001.json';
+
+const records = previewTimetableSamples.records;
+const countries = [...new Set(records.map((record) => record.display_country))].sort();
+const systems = [...new Set(records.map((record) => record.display_system))].sort();
+const sourceCaptureDates = [...new Set(records.map((record) => record.source_capture_date))].sort();
+---
+
+<BaseLayout
+  title="Major Country Timetable Preview | Where Horses Run"
+  description="A static manual sample preview of first major-country timetable records. This is not live coverage and full country coverage is not complete."
+  canonicalPath="/major-countries/preview-timetable/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Major country samples</p>
+    <h1 id="page-title">Major Country Timetable Preview</h1>
+    <div class="hero__summary">
+      <p>This is a static manual sample preview.</p>
+      <p>It is not live coverage.</p>
+      <p>Full country coverage is not complete yet.</p>
+      <p>These samples are based on manually checked official/approved source pages.</p>
+    </div>
+  </section>
+
+  <section class="section-grid" aria-label="Preview timetable summary">
+    <article class="card">
+      <h2>Preview samples</h2>
+      <p><strong>Number of preview samples:</strong> {records.length}</p>
+    </article>
+
+    <article class="card">
+      <h2>Countries represented</h2>
+      <p>{countries.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>Systems represented</h2>
+      <p>{systems.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>Source capture dates represented</h2>
+      <p>{sourceCaptureDates.join(', ')}</p>
+    </article>
+
+    <article class="card">
+      <h2>Official source confirmation</h2>
+      <p>Each preview sample links to its official source for user review and final confirmation.</p>
+    </article>
+  </section>
+
+  <PreviewTimetableSamples records={records} />
+</BaseLayout>
