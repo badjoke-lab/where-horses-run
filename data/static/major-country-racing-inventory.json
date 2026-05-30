@@ -1,0 +1,507 @@
+{
+  "schema_version": "major-country-racing-inventory-v0",
+  "scope": "major-countries-v0",
+  "source_policy": {
+    "annual_fixture_is_not_final_time": true,
+    "rolling_update_required_for_active_countries": true,
+    "racecard_or_daily_info_required_for_final_race_times": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true
+  },
+  "approved_update_models": [
+    "annual_plus_racecard",
+    "season_calendar_plus_declarations",
+    "weekly_fixture_plus_racecard",
+    "operator_split_rolling",
+    "legacy_no_active_racing"
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "display_name": "Japan",
+      "update_model": "annual_plus_racecard",
+      "racing_systems": ["JRA", "NAR", "Banei"],
+      "disciplines": ["thoroughbred_flat", "thoroughbred_jump", "dirt", "local_government_racing", "banei"],
+      "authorities": [
+        { "name": "Japan Racing Association", "role": "national_jra_operator", "url": "https://japanracing.jp/en/" },
+        { "name": "National Association of Racing", "role": "local_government_racing_information", "url": "https://www.keiba.go.jp/" },
+        { "name": "Banei Tokachi", "role": "banei_operator", "url": "https://www.banei-keiba.or.jp/" }
+      ],
+      "operators": ["Japan Racing Association", "Local government racing operators via NAR", "Banei Tokachi"],
+      "racecourses": {
+        "jra": ["Tokyo", "Nakayama", "Kyoto", "Hanshin", "Chukyo", "Fukushima", "Niigata", "Kokura", "Sapporo", "Hakodate"],
+        "nar": ["Obihiro", "Monbetsu", "Morioka", "Mizusawa", "Urawa", "Funabashi", "Oi", "Kawasaki", "Kanazawa", "Kasamatsu", "Nagoya", "Sonoda", "Himeji", "Kochi", "Saga"],
+        "banei": ["Obihiro"]
+      },
+      "racecourse_inventory_sources": [
+        "https://japanracing.jp/en/racing/go_racing/jra_racecourses/",
+        "https://www.keiba.go.jp/guide/",
+        "https://www.banei-keiba.or.jp/"
+      ],
+      "annual_fixture_sources": [
+        "https://jra.jp/keiba/calendar2026/",
+        "https://www.banei-keiba.or.jp/race_schedule.php"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "https://www.banei-keiba.or.jp/race_schedule.php"
+      ],
+      "meeting_sources": [
+        "https://jra.jp/keiba/calendar2026/",
+        "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "https://www.banei-keiba.or.jp/race_schedule.php"
+      ],
+      "first_race_time_sources": [
+        "https://jra.jp/keiba/calendar2026/",
+        "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "https://www.banei-keiba.or.jp/race_schedule.php"
+      ],
+      "per_race_time_sources": [
+        "https://jra.jp/keiba/calendar2026/",
+        "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "https://www.banei-keiba.or.jp/race_schedule.php"
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "display_name": "Hong Kong",
+      "update_model": "annual_plus_racecard",
+      "racing_systems": ["HKJC"],
+      "disciplines": ["thoroughbred_flat", "turf", "all_weather"],
+      "authorities": [
+        { "name": "The Hong Kong Jockey Club", "role": "racing_operator_and_authority", "url": "https://racing.hkjc.com/" }
+      ],
+      "operators": ["The Hong Kong Jockey Club"],
+      "racecourses": {
+        "hkjc": ["Sha Tin", "Happy Valley", "Conghua"]
+      },
+      "racecourse_inventory_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+        "https://crc.hkjc.com/"
+      ],
+      "annual_fixture_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"
+      ],
+      "rolling_fixture_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+      ],
+      "meeting_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"
+      ],
+      "first_race_time_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+      ],
+      "per_race_time_sources": [
+        "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "display_name": "United Arab Emirates",
+      "update_model": "season_calendar_plus_declarations",
+      "racing_systems": ["Emirates Racing Authority"],
+      "disciplines": ["thoroughbred_flat", "turf", "dirt", "purebred_arabian"],
+      "authorities": [
+        { "name": "Emirates Racing Authority", "role": "national_racing_authority", "url": "https://emiratesracing.com/" }
+      ],
+      "operators": ["Emirates Racing Authority"],
+      "racecourses": {
+        "era": ["Meydan", "Jebel Ali", "Abu Dhabi", "Sharjah", "Al Ain"]
+      },
+      "racecourse_inventory_sources": [
+        "https://emiratesracing.com/about-us/racing-in-the-uae"
+      ],
+      "annual_fixture_sources": [
+        "https://emiratesracing.com/season-calendar/current-season"
+      ],
+      "rolling_fixture_sources": [
+        "https://emiratesracing.com/season-calendar/current-season"
+      ],
+      "meeting_sources": [
+        "https://emiratesracing.com/season-calendar/current-season"
+      ],
+      "first_race_time_sources": [
+        "https://emiratesracing.com/season-calendar/current-season"
+      ],
+      "per_race_time_sources": [
+        "https://emiratesracing.com/racecards"
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "display_name": "United Kingdom",
+      "update_model": "weekly_fixture_plus_racecard",
+      "racing_systems": ["British Horseracing Authority", "Point-to-Point Authority", "Arabian Racing Organisation"],
+      "disciplines": ["thoroughbred_flat", "jump", "national_hunt", "all_weather", "point_to_point", "purebred_arabian"],
+      "authorities": [
+        { "name": "British Horseracing Authority", "role": "national_thoroughbred_authority", "url": "https://www.britishhorseracing.com/" },
+        { "name": "Point-to-Point", "role": "point_to_point_racing_path", "url": "https://www.britishhorseracing.com/regulation/point-to-point/" },
+        { "name": "Purebred Arabian Horseracing", "role": "arabian_racing_path", "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/" }
+      ],
+      "operators": ["British racecourse operators under BHA fixtures", "Point-to-Point operators", "Arabian racing operators"],
+      "racecourses": {
+        "bha": [
+          "Aintree", "Ascot", "Ayr", "Bangor-on-Dee", "Bath", "Beverley", "Brighton", "Carlisle", "Cartmel", "Catterick", "Chelmsford City", "Cheltenham", "Chepstow", "Chester", "Doncaster", "Epsom Downs", "Exeter", "Fakenham", "Ffos Las", "Fontwell Park", "Goodwood", "Hamilton Park", "Haydock Park", "Hereford", "Hexham", "Huntingdon", "Kelso", "Kempton Park", "Leicester", "Lingfield Park", "Ludlow", "Market Rasen", "Musselburgh", "Newbury", "Newcastle", "Newmarket", "Newton Abbot", "Nottingham", "Perth", "Plumpton", "Pontefract", "Redcar", "Ripon", "Salisbury", "Sandown Park", "Sedgefield", "Southwell", "Stratford-upon-Avon", "Taunton", "Thirsk", "Uttoxeter", "Warwick", "Wetherby", "Wincanton", "Windsor", "Wolverhampton", "Worcester", "Yarmouth", "York"
+        ]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.britishhorseracing.com/racing/racecourses/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.britishhorseracing.com/racing/fixtures/full-year/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.britishhorseracing.com/racing/fixtures/"
+      ],
+      "meeting_sources": [
+        "https://www.britishhorseracing.com/racing/fixtures/"
+      ],
+      "first_race_time_sources": [
+        "https://www.britishhorseracing.com/racing/fixtures/"
+      ],
+      "per_race_time_sources": [
+        "BHA Racecard links from fixture rows"
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "display_name": "Ireland",
+      "update_model": "weekly_fixture_plus_racecard",
+      "racing_systems": ["Horse Racing Ireland", "Irish Horseracing Regulatory Board"],
+      "disciplines": ["thoroughbred_flat", "jump", "national_hunt", "all_weather", "point_to_point"],
+      "authorities": [
+        { "name": "Horse Racing Ireland", "role": "racing_administration_and_fixture_source", "url": "https://www.hri.ie/" },
+        { "name": "Irish Horseracing Regulatory Board", "role": "regulatory_authority", "url": "https://ihrb.ie/" }
+      ],
+      "operators": ["Horse Racing Ireland racecourse network", "Irish racecourse operators"],
+      "racecourses": {
+        "hri": [
+          "Ballinrobe", "Galway", "Roscommon", "Sligo", "Bellewstown", "Curragh", "Dundalk", "Fairyhouse", "Gowran Park", "Kilbeggan", "Laytown", "Leopardstown", "Naas", "Navan", "Punchestown", "Wexford", "Clonmel", "Cork", "Killarney", "Limerick", "Listowel", "Thurles", "Tipperary", "Tramore", "Down Royal", "Downpatrick"
+        ]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.hri.ie/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.hri.ie/racing/fixture-list/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.hri.ie/"
+      ],
+      "meeting_sources": [
+        "https://www.hri.ie/"
+      ],
+      "first_race_time_sources": [
+        "https://www.hri.ie/"
+      ],
+      "per_race_time_sources": [
+        "https://www.hri.ie/racing/racecards/",
+        "https://www.hri.ie/racing/race-results/"
+      ]
+    },
+    {
+      "country_id": "france",
+      "display_name": "France",
+      "update_model": "weekly_fixture_plus_racecard",
+      "racing_systems": ["France Galop", "LeTROT"],
+      "disciplines": ["thoroughbred_flat", "jump", "trot", "harness_trotting"],
+      "authorities": [
+        { "name": "France Galop", "role": "flat_and_jump_authority", "url": "https://www.france-galop.com/en" },
+        { "name": "LeTROT", "role": "trotting_authority", "url": "https://www.letrot.com/" }
+      ],
+      "operators": ["France Galop", "LeTROT"],
+      "racecourses": {
+        "france_galop_core": ["Auteuil", "Chantilly", "Deauville", "ParisLongchamp", "Saint-Cloud"],
+        "letrot_core": ["Vincennes", "Caen", "Cabourg", "Cagnes-sur-Mer", "Enghien", "Graignes", "La Capelle", "Laval", "Le Croise-Laroche", "Mauquenchy", "Meslay-du-Maine", "Reims", "Toulouse", "Vichy"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ],
+      "meeting_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ],
+      "first_race_time_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ],
+      "per_race_time_sources": [
+        "https://www.france-galop.com/en",
+        "https://www.letrot.com/"
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "display_name": "United States",
+      "update_model": "operator_split_rolling",
+      "racing_systems": ["Equibase", "USTA", "AQHA", "state_commissions", "track_operators"],
+      "disciplines": ["thoroughbred_flat", "dirt", "turf", "harness", "standardbred", "quarter_horse", "arabian"],
+      "authorities": [
+        { "name": "Equibase", "role": "thoroughbred_entries_results_calendar_source", "url": "https://www.equibase.com/" },
+        { "name": "United States Trotting Association", "role": "standardbred_harness_source", "url": "https://www.ustrotting.com/" },
+        { "name": "American Quarter Horse Association", "role": "quarter_horse_source", "url": "https://www.aqha.com/" }
+      ],
+      "operators": ["State commissions", "Track operators", "Equibase", "USTA", "AQHA"],
+      "racecourses": {
+        "thoroughbred_major": ["Aqueduct", "Belmont Park", "Saratoga", "Finger Lakes", "Churchill Downs", "Keeneland", "Turfway Park", "Ellis Park", "Oaklawn Park", "Fair Grounds", "Delta Downs", "Evangeline Downs", "Louisiana Downs", "Santa Anita", "Del Mar", "Los Alamitos", "Gulfstream Park", "Tampa Bay Downs", "Monmouth Park", "Parx Racing", "Penn National", "Presque Isle Downs", "Laurel Park", "Pimlico", "Colonial Downs", "Delaware Park", "Charles Town", "Mountaineer", "Horseshoe Indianapolis", "Prairie Meadows", "Canterbury Park", "Remington Park", "Lone Star Park", "Sam Houston", "Sunland Park", "Zia Park", "Ruidoso Downs", "Albuquerque"],
+        "harness_major": ["Yonkers Raceway", "The Meadowlands", "Harrah's Philadelphia", "Pocono Downs", "Northfield Park", "Scioto Downs", "The Meadows", "Hoosier Park", "Plainridge Park", "Saratoga Harness", "Buffalo Raceway", "Batavia Downs", "Tioga Downs", "Vernon Downs", "Dover Downs", "Harrington Raceway"],
+        "quarter_horse_major": ["Los Alamitos", "Ruidoso Downs", "Remington Park", "Lone Star Park", "Sam Houston", "Sunland Park", "Zia Park", "Prairie Meadows"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/",
+        "https://www.aqha.com/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/",
+        "https://www.aqha.com/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/"
+      ],
+      "meeting_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/"
+      ],
+      "first_race_time_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/"
+      ],
+      "per_race_time_sources": [
+        "https://www.equibase.com/",
+        "https://www.ustrotting.com/"
+      ]
+    },
+    {
+      "country_id": "canada",
+      "display_name": "Canada",
+      "update_model": "operator_split_rolling",
+      "racing_systems": ["Standardbred Canada", "Woodbine", "provincial_authorities", "track_operators"],
+      "disciplines": ["thoroughbred_flat", "turf", "dirt", "standardbred", "harness"],
+      "authorities": [
+        { "name": "Standardbred Canada", "role": "standardbred_harness_source", "url": "https://standardbredcanada.ca/racing" },
+        { "name": "Woodbine", "role": "major_thoroughbred_operator", "url": "https://woodbine.com/" },
+        { "name": "Canadian Pari-Mutuel Agency", "role": "pari_mutuel_regulator", "url": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/office-canadian-pari-mutuel-agency" }
+      ],
+      "operators": ["Standardbred Canada", "Woodbine", "Provincial/track operators"],
+      "racecourses": {
+        "standardbred_canada": ["Century Downs", "Charlottetown", "Clinton", "Dresden", "Flamboro Downs", "Grand River", "Hippodrome 3R", "Kawartha Downs", "Leamington", "Rideau Carleton", "The Raceway at Western Fair District", "Woodbine Mohawk Park"],
+        "thoroughbred_major": ["Woodbine Racetrack", "Fort Erie", "Hastings Racecourse", "Assiniboia Downs", "Century Mile"]
+      },
+      "racecourse_inventory_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/"
+      ],
+      "annual_fixture_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/horse-racing/"
+      ],
+      "rolling_fixture_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/horse-racing/"
+      ],
+      "meeting_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/horse-racing/"
+      ],
+      "first_race_time_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/horse-racing/"
+      ],
+      "per_race_time_sources": [
+        "https://standardbredcanada.ca/racing",
+        "https://woodbine.com/horse-racing/"
+      ]
+    },
+    {
+      "country_id": "australia",
+      "display_name": "Australia",
+      "update_model": "operator_split_rolling",
+      "racing_systems": ["Racing Australia", "state_principal_racing_authorities", "Harness Racing Australia"],
+      "disciplines": ["thoroughbred_flat", "turf", "synthetic", "harness"],
+      "authorities": [
+        { "name": "Racing Australia", "role": "national_thoroughbred_source_router", "url": "https://www.racingaustralia.horse/" },
+        { "name": "Harness Racing Australia", "role": "national_harness_source", "url": "https://www.harness.org.au/" }
+      ],
+      "operators": ["State principal racing authorities", "Harness Racing Australia", "Track operators"],
+      "racecourses": {
+        "state_coverage_units": ["New South Wales", "Victoria", "Queensland", "Western Australia", "South Australia", "Tasmania", "Australian Capital Territory", "Northern Territory"],
+        "thoroughbred_major": ["Randwick", "Rosehill Gardens", "Warwick Farm", "Canterbury Park", "Flemington", "Caulfield", "Moonee Valley", "Sandown", "Eagle Farm", "Doomben", "Gold Coast", "Sunshine Coast", "Ascot", "Belmont Park", "Morphettville", "Balaklava", "Launceston", "Hobart", "Thoroughbred Park", "Fannie Bay"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ],
+      "meeting_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ],
+      "first_race_time_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ],
+      "per_race_time_sources": [
+        "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+        "https://www.harness.org.au/"
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "display_name": "New Zealand",
+      "update_model": "weekly_fixture_plus_racecard",
+      "racing_systems": ["New Zealand Thoroughbred Racing", "Harness Racing New Zealand"],
+      "disciplines": ["thoroughbred_flat", "jump", "synthetic", "harness"],
+      "authorities": [
+        { "name": "LOVERACING / New Zealand Thoroughbred Racing", "role": "thoroughbred_source", "url": "https://loveracing.nz/" },
+        { "name": "Harness Racing New Zealand", "role": "harness_source", "url": "https://www.hrnz.co.nz/" }
+      ],
+      "operators": ["New Zealand Thoroughbred Racing", "Harness Racing New Zealand", "Race clubs"],
+      "racecourses": {
+        "loveracing": ["Arawa Park", "Ascot Park", "Ashburton", "Avondale", "Awapuni", "Awapuni Synthetic", "Cambridge", "Cromwell", "Ellerslie", "Foxton", "Gore", "Hastings", "Hawera", "Kumara", "Kurow", "Matamata", "New Plymouth Raceway", "Oamaru", "Omoto", "Otaki", "Phar Lap Raceway", "Pukekohe Park", "Rangiora", "Reefton", "Riccarton Park", "Riverton", "Ruakaka", "Tauherenikau", "Taupo", "Tauranga", "Te Aroha", "Te Awamutu", "Te Rapa", "Trentham", "Waipukurau", "Wanganui", "Waverley", "Wingatui", "Woodville"]
+      },
+      "racecourse_inventory_sources": [
+        "https://loveracing.nz/RaceInfo/Clubs-And-Courses.aspx",
+        "https://www.hrnz.co.nz/"
+      ],
+      "annual_fixture_sources": [
+        "https://loveracing.nz/RaceInfo/Calendar.aspx",
+        "https://www.hrnz.co.nz/"
+      ],
+      "rolling_fixture_sources": [
+        "https://loveracing.nz/RaceInfo/Nominations.aspx",
+        "https://www.hrnz.co.nz/"
+      ],
+      "meeting_sources": [
+        "https://loveracing.nz/RaceInfo/Nominations.aspx",
+        "https://www.hrnz.co.nz/"
+      ],
+      "first_race_time_sources": [
+        "https://loveracing.nz/RaceInfo/Nominations.aspx",
+        "https://www.hrnz.co.nz/"
+      ],
+      "per_race_time_sources": [
+        "https://loveracing.nz/RaceInfo/Nominations.aspx",
+        "https://www.hrnz.co.nz/"
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "display_name": "South Africa",
+      "update_model": "operator_split_rolling",
+      "racing_systems": ["National Horseracing Authority", "4Racing", "Gold Circle"],
+      "disciplines": ["thoroughbred_flat", "turf", "polytrack"],
+      "authorities": [
+        { "name": "National Horseracing Authority", "role": "regulatory_and_racing_calendar_source", "url": "https://www.nhra.co.za/" },
+        { "name": "4Racing", "role": "operator_source", "url": "https://www.4racing.com/" },
+        { "name": "Gold Circle", "role": "operator_source", "url": "https://www.goldcircle.co.za/" }
+      ],
+      "operators": ["National Horseracing Authority", "4Racing", "Gold Circle"],
+      "racecourses": {
+        "operator_major": ["Turffontein", "Vaal", "Fairview", "Greyville", "Scottsville", "Kenilworth", "Durbanville"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.nhra.co.za/",
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.nhra.co.za/",
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ],
+      "meeting_sources": [
+        "https://www.nhra.co.za/",
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ],
+      "first_race_time_sources": [
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ],
+      "per_race_time_sources": [
+        "https://www.4racing.com/",
+        "https://www.goldcircle.co.za/"
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "display_name": "South Korea",
+      "update_model": "annual_plus_racecard",
+      "racing_systems": ["Korea Racing Authority"],
+      "disciplines": ["thoroughbred_flat", "dirt"],
+      "authorities": [
+        { "name": "Korea Racing Authority", "role": "national_operator", "url": "https://www.kra.co.kr/" }
+      ],
+      "operators": ["Korea Racing Authority"],
+      "racecourses": {
+        "kra": ["LetsRun Park Seoul", "LetsRun Park Busan-Gyeongnam", "LetsRun Park Jeju"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.kra.co.kr/"
+      ],
+      "annual_fixture_sources": [
+        "https://www.kra.co.kr/"
+      ],
+      "rolling_fixture_sources": [
+        "https://www.kra.co.kr/"
+      ],
+      "meeting_sources": [
+        "https://www.kra.co.kr/"
+      ],
+      "first_race_time_sources": [
+        "https://www.kra.co.kr/"
+      ],
+      "per_race_time_sources": [
+        "https://www.kra.co.kr/"
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "display_name": "Singapore",
+      "update_model": "legacy_no_active_racing",
+      "racing_systems": ["Singapore Turf Club"],
+      "disciplines": ["thoroughbred_flat", "turf", "polytrack", "legacy"],
+      "authorities": [
+        { "name": "Singapore Turf Club", "role": "legacy_operator", "url": "https://www.turfclub.com.sg/" }
+      ],
+      "operators": ["Singapore Turf Club"],
+      "racecourses": {
+        "legacy": ["Kranji"]
+      },
+      "racecourse_inventory_sources": [
+        "https://www.turfclub.com.sg/"
+      ],
+      "annual_fixture_sources": [],
+      "rolling_fixture_sources": [],
+      "meeting_sources": [],
+      "first_race_time_sources": [],
+      "per_race_time_sources": [],
+      "legacy_status": "horse_racing_ended_after_final_race_on_2024-10-05"
+    }
+  ]
+}
