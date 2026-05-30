@@ -1,0 +1,271 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import timetable from '../../../data/static/major-country-timetable-v0.json';
+
+const records = timetable.records;
+const gaps = timetable.coverage_gaps;
+const summary = timetable.summary;
+const coverageWindow = timetable.coverage_window;
+
+const statusLabels = {
+  confirmed_times: 'Confirmed by official racecard/entries/daily info',
+  pending_racecard: 'Pending official racecard',
+  time_pending_official_racecard: 'Pending official racecard',
+  source_not_yet_published: 'Source not yet published',
+  needs_manual_review: 'Needs manual review',
+  coverage_gap: 'Needs manual review',
+  legacy_no_active_racing: 'Legacy/no active racing',
+};
+
+const countryNames = new Map(records.map((record) => [record.country_id, record.country_name || record.country_id]));
+const groupNames = new Map(records.map((record) => [`${record.country_id}/${record.group_id}`, record.system_name || record.group_name || record.group_id]));
+const countrySections = Array.from(
+  records.reduce((sections, record) => {
+    const key = record.country_id;
+    if (!sections.has(key)) sections.set(key, []);
+    sections.get(key).push(record);
+    return sections;
+  }, new Map()),
+).sort(([a], [b]) => a.localeCompare(b));
+
+const countryOptions = Array.from(new Set([...records.map((record) => record.country_id), ...gaps.map((gap) => gap.country_id)])).sort();
+const systemOptions = Array.from(new Set([...records.map((record) => `${record.country_id}/${record.group_id}`), ...gaps.map((gap) => `${gap.country_id}/${gap.group_id}`)])).sort();
+const dateOptions = Array.from(new Set(records.map((record) => record.meeting_date).filter(Boolean))).sort();
+const racecourseOptions = Array.from(new Set(records.map((record) => record.racecourse).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+
+function displayStatus(status) {
+  return statusLabels[status] || status;
+}
+
+function sourceCaptureDates(record) {
+  return [record.annual_source?.source_capture_date, record.rolling_source?.source_capture_date].filter(Boolean).join(' / ');
+}
+---
+
+<BaseLayout
+  title="Major Country Timetable v0 | Where Horses Run"
+  description="Static/manual timetable v0 for major racing countries, backed by official-source based annual fixtures and rolling racecard data."
+  canonicalPath="/major-countries/timetable/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Official-source based timetable</p>
+    <h1 id="page-title">Major Country Timetable v0</h1>
+    <p class="timetable-notice">
+      Static/manual timetable. Not live coverage. Not betting advice. No odds, payouts, predictions, or tips.
+    </p>
+    <p>
+      Coverage window: <strong>{coverageWindow.start_date}</strong> to <strong>{coverageWindow.end_date}</strong>
+      ({coverageWindow.basis}).
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Timetable summary counts">
+    <article class="card"><h2>Countries</h2><p class="metric">{summary.countries}</p></article>
+    <article class="card"><h2>Active groups</h2><p class="metric">{summary.active_groups}</p></article>
+    <article class="card"><h2>Confirmed timetable records</h2><p class="metric">{summary.confirmed_timetable_records}</p></article>
+    <article class="card"><h2>Pending records</h2><p class="metric">{summary.pending_records}</p></article>
+    <article class="card"><h2>Coverage gaps</h2><p class="metric">{summary.coverage_gaps}</p></article>
+    <article class="card"><h2>Legacy records</h2><p class="metric">{summary.legacy_records}</p></article>
+  </section>
+
+  <section class="card browse-panel" aria-labelledby="browse-title">
+    <h2 id="browse-title">Browse timetable</h2>
+    <p>Use these grouped indexes to find meetings by country, system/operator, meeting date, or racecourse.</p>
+    <div class="browse-grid">
+      <details open>
+        <summary>Country</summary>
+        <ul>{countryOptions.map((country) => <li>{countryNames.get(country) || country}</li>)}</ul>
+      </details>
+      <details>
+        <summary>System/operator</summary>
+        <ul>{systemOptions.map((systemKey) => <li>{groupNames.get(systemKey) || systemKey}</li>)}</ul>
+      </details>
+      <details>
+        <summary>Meeting date</summary>
+        <ul>{dateOptions.map((date) => <li>{date}</li>)}</ul>
+      </details>
+      <details>
+        <summary>Racecourse</summary>
+        <ul>{racecourseOptions.map((racecourse) => <li>{racecourse}</li>)}</ul>
+      </details>
+    </div>
+  </section>
+
+  <section class="timetable-records" aria-labelledby="records-title">
+    <h2 id="records-title">Timetable records</h2>
+    {countrySections.map(([countryId, countryRecords]) => (
+      <section class="country-section" aria-labelledby={`country-${countryId}`}>
+        <h3 id={`country-${countryId}`}>{countryNames.get(countryId) || countryId}</h3>
+        <div class="record-grid">
+          {countryRecords.map((record) => (
+            <article class="card timetable-card">
+              <header>
+                <p class="status-pill">{displayStatus(record.display_status)}</p>
+                <h4>{record.racecourse}</h4>
+                <p>{record.system_name || record.group_name}</p>
+              </header>
+              <dl class="record-meta">
+                <div><dt>Country</dt><dd>{record.country_name || record.country_id}</dd></div>
+                <div><dt>System/operator</dt><dd>{record.system_name || record.group_name}</dd></div>
+                <div><dt>Meeting date</dt><dd>{record.meeting_date || 'Legacy/no active racing'}</dd></div>
+                <div><dt>Racecourse</dt><dd>{record.racecourse}</dd></div>
+                <div><dt>Display status</dt><dd>{displayStatus(record.display_status)}</dd></div>
+                <div><dt>First-race time</dt><dd>{record.first_race_time || 'Pending official racecard'}</dd></div>
+                <div><dt>Source capture date</dt><dd>{sourceCaptureDates(record)}</dd></div>
+                <div><dt>Last checked</dt><dd>{record.last_checked}</dd></div>
+                <div><dt>Stale/pending status</dt><dd>{record.stale_status}</dd></div>
+              </dl>
+
+              {record.races.length > 0 ? (
+                <div class="race-list">
+                  <h5>Race times</h5>
+                  <ol>
+                    {record.races.map((race) => (
+                      <li><strong>Race {race.race_number}:</strong> {race.race_time} — {race.race_name_or_label}</li>
+                    ))}
+                  </ol>
+                </div>
+              ) : (
+                <p class="pending-message">Official racecard/time data is pending for this timetable record.</p>
+              )}
+
+              <div class="source-links">
+                <h5>Sources</h5>
+                <p>
+                  Annual source:{' '}
+                  {record.annual_source?.source_url ? (
+                    <a href={record.annual_source.source_url}>{record.annual_source.source_label}</a>
+                  ) : (
+                    <span>{record.annual_source?.source_label}</span>
+                  )}{' '}
+                  <span>({record.annual_source?.source_type}, captured {record.annual_source?.source_capture_date})</span>
+                </p>
+                {record.rolling_source ? (
+                  <p>
+                    Rolling/racecard source: <a href={record.rolling_source.source_url}>{record.rolling_source.source_label}</a>{' '}
+                    <span>({record.rolling_source.source_type}, captured {record.rolling_source.source_capture_date})</span>
+                  </p>
+                ) : (
+                  <p>Rolling/racecard source: Pending official racecard</p>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </section>
+
+  <section class="card coverage-gaps" aria-labelledby="gaps-title">
+    <h2 id="gaps-title">Coverage gaps and review states</h2>
+    <p>Coverage gaps remain visible for manual review and are not silently dropped.</p>
+    <div class="gap-grid">
+      {gaps.map((gap) => (
+        <article class="gap-item">
+          <h3>{countryNames.get(gap.country_id) || gap.country_id} — {groupNames.get(`${gap.country_id}/${gap.group_id}`) || gap.group_id}</h3>
+          <p><strong>Status:</strong> {gap.status}</p>
+          <p><strong>Gap type:</strong> {gap.gap_type}</p>
+          <p><strong>Source:</strong> <a href={gap.source_url}>{gap.source_label}</a></p>
+          <p><strong>Source capture date:</strong> {gap.source_capture_date}</p>
+          <p><strong>Required follow-up:</strong> {gap.required_follow_up}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .timetable-notice {
+    border: 1px solid var(--whr-color-border);
+    border-radius: 0.75rem;
+    padding: var(--whr-space-3);
+    background: #f7f7f7;
+    font-weight: 700;
+  }
+
+  .metric {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .browse-panel,
+  .timetable-records,
+  .coverage-gaps {
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .browse-grid,
+  .record-grid,
+  .gap-grid {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .browse-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .record-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gap-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .country-section {
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .timetable-card {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .status-pill {
+    display: inline-flex;
+    width: fit-content;
+    border: 1px solid var(--whr-color-border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    background: #f7f7f7;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .record-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--whr-space-2);
+  }
+
+  .record-meta div,
+  .gap-item {
+    border: 1px solid var(--whr-color-border);
+    border-radius: 0.5rem;
+    padding: var(--whr-space-2);
+  }
+
+  .record-meta dt,
+  .source-links h5,
+  .race-list h5 {
+    font-weight: 800;
+  }
+
+  .record-meta dd {
+    margin: 0;
+  }
+
+  .pending-message {
+    font-weight: 700;
+  }
+
+  @media (max-width: 980px) {
+    .browse-grid,
+    .record-grid,
+    .gap-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
