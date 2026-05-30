@@ -1,0 +1,615 @@
+{
+  "schema_version": "preview-timetable-samples-batch-002-v0",
+  "batch_id": "manual-source-snapshot-batch-002",
+  "source_normalized_samples": "data/static/normalized-timetable-samples-batch-002.json",
+  "records": [
+    {
+      "preview_id": "preview-002-united-kingdom-bha-2026-05-30-newmarket",
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "display_country": "United Kingdom",
+      "display_system": "BHA",
+      "display_racecourse": "Newmarket",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "13:15",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "13:15",
+          "label": "Class 2 Handicap"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:50",
+          "label": "Fillies Handicap"
+        },
+        {
+          "race_number": 3,
+          "race_time": "14:25",
+          "label": "Novice Stakes"
+        },
+        {
+          "race_number": 4,
+          "race_time": "15:00",
+          "label": "Listed Stakes"
+        },
+        {
+          "race_number": 5,
+          "race_time": "15:35",
+          "label": "Handicap"
+        },
+        {
+          "race_number": 6,
+          "race_time": "16:10",
+          "label": "Maiden Stakes"
+        }
+      ],
+      "official_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for United Kingdom BHA; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-united-kingdom-point-to-point-2026-05-25-chaddesley-corbett",
+      "country_id": "united-kingdom",
+      "group_id": "point-to-point",
+      "display_country": "United Kingdom",
+      "display_system": "Point-to-Point Authority",
+      "display_racecourse": "Chaddesley Corbett",
+      "display_meeting_date": "2026-05-25",
+      "display_first_race_time": "14:00",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "14:00",
+          "label": "Hunt Members Conditions Race"
+        },
+        {
+          "race_number": 2,
+          "race_time": "14:35",
+          "label": "Maiden Race"
+        }
+      ],
+      "official_source_url": "https://www.pointtopoint.co.uk/fixtures",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample (partial)",
+      "user_notice": "This is a partial static manual sample for United Kingdom Point-to-Point Authority; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-united-kingdom-purebred-arabian-2026-05-30-doncaster",
+      "country_id": "united-kingdom",
+      "group_id": "purebred-arabian",
+      "display_country": "United Kingdom",
+      "display_system": "Purebred Arabian horseracing",
+      "display_racecourse": "Doncaster",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "17:20",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "17:20",
+          "label": "Purebred Arabian Conditions Stakes"
+        }
+      ],
+      "official_source_url": "https://www.aroracing.co.uk/racing/fixtures/",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample (partial)",
+      "user_notice": "This is a partial static manual sample for United Kingdom Purebred Arabian horseracing; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-ireland-hri-2026-05-23-curragh",
+      "country_id": "ireland",
+      "group_id": "hri",
+      "display_country": "Ireland",
+      "display_system": "Horse Racing Ireland",
+      "display_racecourse": "Curragh",
+      "display_meeting_date": "2026-05-23",
+      "display_first_race_time": "13:15",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "13:15",
+          "label": "Irish EBF Maiden"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:50",
+          "label": "Handicap"
+        },
+        {
+          "race_number": 3,
+          "race_time": "14:25",
+          "label": "Group 3 Stakes"
+        },
+        {
+          "race_number": 4,
+          "race_time": "15:00",
+          "label": "Premier Handicap"
+        },
+        {
+          "race_number": 5,
+          "race_time": "15:35",
+          "label": "Irish 2,000 Guineas"
+        }
+      ],
+      "official_source_url": "https://www.hri.ie/racing/racecards/",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for Ireland Horse Racing Ireland; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-france-france-galop-2026-05-24-parislongchamp",
+      "country_id": "france",
+      "group_id": "france-galop",
+      "display_country": "France",
+      "display_system": "France Galop",
+      "display_racecourse": "ParisLongchamp",
+      "display_meeting_date": "2026-05-24",
+      "display_first_race_time": "13:58",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "13:58",
+          "label": "Prix de la Seine"
+        },
+        {
+          "race_number": 2,
+          "race_time": "14:33",
+          "label": "Prix du Palais-Royal"
+        },
+        {
+          "race_number": 3,
+          "race_time": "15:15",
+          "label": "Prix d’Ispahan"
+        },
+        {
+          "race_number": 4,
+          "race_time": "15:50",
+          "label": "Handicap de Paris"
+        }
+      ],
+      "official_source_url": "https://www.france-galop.com/en/racing/detail/2026/P/VhJX",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for France France Galop; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-france-letrot-2026-05-22-vincennes",
+      "country_id": "france",
+      "group_id": "letrot",
+      "display_country": "France",
+      "display_system": "LeTROT",
+      "display_racecourse": "Vincennes",
+      "display_meeting_date": "2026-05-22",
+      "display_first_race_time": "18:23",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "18:23",
+          "label": "Prix Eudora"
+        },
+        {
+          "race_number": 2,
+          "race_time": "18:58",
+          "label": "Prix Maia"
+        },
+        {
+          "race_number": 3,
+          "race_time": "19:33",
+          "label": "Prix Tolosa"
+        },
+        {
+          "race_number": 4,
+          "race_time": "20:15",
+          "label": "Prix Adalberta"
+        }
+      ],
+      "official_source_url": "https://www.letrot.com/courses/2026-05-22/7500",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for France LeTROT; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-united-states-equibase-thoroughbred-2026-05-30-churchill-downs",
+      "country_id": "united-states",
+      "group_id": "equibase-thoroughbred",
+      "display_country": "United States",
+      "display_system": "Equibase Thoroughbred",
+      "display_racecourse": "Churchill Downs",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "12:45",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "12:45",
+          "label": "Maiden Claiming"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:14",
+          "label": "Claiming"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:43",
+          "label": "Allowance Optional Claiming"
+        },
+        {
+          "race_number": 4,
+          "race_time": "14:12",
+          "label": "Maiden Special Weight"
+        }
+      ],
+      "official_source_url": "https://www.equibase.com/static/entry/CD053026USA-EQB.html",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for United States Equibase Thoroughbred; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-united-states-usta-harness-2026-05-30-meadowlands",
+      "country_id": "united-states",
+      "group_id": "usta-harness",
+      "display_country": "United States",
+      "display_system": "USTA Harness",
+      "display_racecourse": "Meadowlands",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "18:20",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "18:20",
+          "label": "Pace"
+        },
+        {
+          "race_number": 2,
+          "race_time": "18:45",
+          "label": "Trot"
+        },
+        {
+          "race_number": 3,
+          "race_time": "19:10",
+          "label": "Pace"
+        },
+        {
+          "race_number": 4,
+          "race_time": "19:35",
+          "label": "Trot"
+        }
+      ],
+      "official_source_url": "https://www.ustrotting.com/trackside/racecards/racecard.cfm",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for United States USTA Harness; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-united-states-aqha-quarter-horse-2026-05-22-ruidoso-downs",
+      "country_id": "united-states",
+      "group_id": "aqha-quarter-horse",
+      "display_country": "United States",
+      "display_system": "AQHA Quarter Horse",
+      "display_racecourse": "Ruidoso Downs",
+      "display_meeting_date": "2026-05-22",
+      "display_first_race_time": "13:00",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "13:00",
+          "label": "Maiden Quarter Horse"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:28",
+          "label": "Allowance Quarter Horse"
+        }
+      ],
+      "official_source_url": "https://www.aqha.com/racing/race-records",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample (partial)",
+      "user_notice": "This is a partial static manual sample for United States AQHA Quarter Horse; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-canada-standardbred-canada-2026-05-30-woodbine-mohawk-park",
+      "country_id": "canada",
+      "group_id": "standardbred-canada",
+      "display_country": "Canada",
+      "display_system": "Standardbred Canada",
+      "display_racecourse": "Woodbine Mohawk Park",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "19:10",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "19:10",
+          "label": "Pace"
+        },
+        {
+          "race_number": 2,
+          "race_time": "19:35",
+          "label": "Trot"
+        },
+        {
+          "race_number": 3,
+          "race_time": "20:00",
+          "label": "Pace"
+        },
+        {
+          "race_number": 4,
+          "race_time": "20:25",
+          "label": "Trot"
+        }
+      ],
+      "official_source_url": "https://standardbredcanada.ca/racing/entries/data/e0530wbsbsn.dat",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for Canada Standardbred Canada; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-canada-woodbine-thoroughbred-2026-05-30-woodbine",
+      "country_id": "canada",
+      "group_id": "woodbine-thoroughbred",
+      "display_country": "Canada",
+      "display_system": "Woodbine Thoroughbred",
+      "display_racecourse": "Woodbine",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "13:05",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "13:05",
+          "label": "Maiden Optional Claiming"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:35",
+          "label": "Claiming"
+        },
+        {
+          "race_number": 3,
+          "race_time": "14:05",
+          "label": "Allowance Optional Claiming"
+        }
+      ],
+      "official_source_url": "https://woodbine.com/horse-racing/racecards/",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for Canada Woodbine Thoroughbred; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-australia-racing-australia-thoroughbred-2026-05-30-flemington",
+      "country_id": "australia",
+      "group_id": "racing-australia-thoroughbred",
+      "display_country": "Australia",
+      "display_system": "Racing Australia Thoroughbred",
+      "display_racecourse": "Flemington",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "11:55",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "11:55",
+          "label": "Benchmark 78 Handicap"
+        },
+        {
+          "race_number": 2,
+          "race_time": "12:30",
+          "label": "Two-Year-Old Handicap"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:05",
+          "label": "Benchmark 84 Handicap"
+        },
+        {
+          "race_number": 4,
+          "race_time": "13:40",
+          "label": "Listed Handicap"
+        }
+      ],
+      "official_source_url": "https://www.racingaustralia.horse/FreeFields/Acceptances.aspx?Key=2026May30,VIC,Flemington",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for Australia Racing Australia Thoroughbred; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-australia-harness-australia-2026-05-30-melton",
+      "country_id": "australia",
+      "group_id": "harness-australia",
+      "display_country": "Australia",
+      "display_system": "Harness Australia",
+      "display_racecourse": "Melton",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "18:02",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "18:02",
+          "label": "Pace"
+        },
+        {
+          "race_number": 2,
+          "race_time": "18:33",
+          "label": "Trot"
+        },
+        {
+          "race_number": 3,
+          "race_time": "19:04",
+          "label": "Pace"
+        },
+        {
+          "race_number": 4,
+          "race_time": "19:35",
+          "label": "Trot"
+        }
+      ],
+      "official_source_url": "https://www.harness.org.au/racing/fields/race-fields/?mc=MX300526",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for Australia Harness Australia; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-new-zealand-loveracing-thoroughbred-2026-05-30-ellerslie",
+      "country_id": "new-zealand",
+      "group_id": "loveracing-thoroughbred",
+      "display_country": "New Zealand",
+      "display_system": "LOVERACING.NZ Thoroughbred",
+      "display_racecourse": "Ellerslie",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "12:20",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "12:20",
+          "label": "Rating 75 Handicap"
+        },
+        {
+          "race_number": 2,
+          "race_time": "12:55",
+          "label": "Maiden"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:30",
+          "label": "Open Handicap"
+        }
+      ],
+      "official_source_url": "https://loveracing.nz/RaceInfo/Fields.aspx",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for New Zealand LOVERACING.NZ Thoroughbred; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-new-zealand-hrnz-harness-2026-05-29-addington",
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "display_country": "New Zealand",
+      "display_system": "HRNZ Harness",
+      "display_racecourse": "Addington",
+      "display_meeting_date": "2026-05-29",
+      "display_first_race_time": "17:22",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "17:22",
+          "label": "Mobile Pace"
+        },
+        {
+          "race_number": 2,
+          "race_time": "17:49",
+          "label": "Trot"
+        },
+        {
+          "race_number": 3,
+          "race_time": "18:19",
+          "label": "Mobile Pace"
+        },
+        {
+          "race_number": 4,
+          "race_time": "18:49",
+          "label": "Trot"
+        }
+      ],
+      "official_source_url": "https://infohorse.hrnz.co.nz/datahrs/fields/052926fd.htm",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for New Zealand HRNZ Harness; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-south-africa-nhra-2026-05-30-turffontein",
+      "country_id": "south-africa",
+      "group_id": "nhra",
+      "display_country": "South Africa",
+      "display_system": "NHA South Africa",
+      "display_racecourse": "Turffontein",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "12:05",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "12:05",
+          "label": "Maiden Plate"
+        },
+        {
+          "race_number": 2,
+          "race_time": "12:40",
+          "label": "Juvenile Plate"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:15",
+          "label": "Handicap"
+        }
+      ],
+      "official_source_url": "https://www.nhra.co.za/index.php/racing/racecards",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for South Africa NHA South Africa; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-south-africa-four-racing-2026-05-30-turffontein",
+      "country_id": "south-africa",
+      "group_id": "four-racing",
+      "display_country": "South Africa",
+      "display_system": "4Racing",
+      "display_racecourse": "Turffontein",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "12:05",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "12:05",
+          "label": "Maiden Plate"
+        },
+        {
+          "race_number": 2,
+          "race_time": "12:40",
+          "label": "Juvenile Plate"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:15",
+          "label": "MR 80 Handicap"
+        },
+        {
+          "race_number": 4,
+          "race_time": "13:50",
+          "label": "Fillies Handicap"
+        }
+      ],
+      "official_source_url": "https://www.4racing.com/racing/racecards",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for South Africa 4Racing; it is not live coverage, and full country coverage is not complete yet."
+    },
+    {
+      "preview_id": "preview-002-south-africa-gold-circle-2026-05-30-greyville",
+      "country_id": "south-africa",
+      "group_id": "gold-circle",
+      "display_country": "South Africa",
+      "display_system": "Gold Circle",
+      "display_racecourse": "Greyville",
+      "display_meeting_date": "2026-05-30",
+      "display_first_race_time": "12:30",
+      "display_races": [
+        {
+          "race_number": 1,
+          "race_time": "12:30",
+          "label": "Maiden Plate"
+        },
+        {
+          "race_number": 2,
+          "race_time": "13:05",
+          "label": "Fillies Maiden Plate"
+        },
+        {
+          "race_number": 3,
+          "race_time": "13:40",
+          "label": "Class 4 Handicap"
+        }
+      ],
+      "official_source_url": "https://www.goldcircle.co.za/racing/racecards/",
+      "source_capture_date": "2026-05-30",
+      "status_label": "Static manual sample",
+      "user_notice": "This is a static manual sample for South Africa Gold Circle; it is not live coverage, and full country coverage is not complete yet."
+    }
+  ]
+}
