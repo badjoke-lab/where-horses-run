@@ -1,7 +1,7 @@
 # Current status
 
 Status: public project note
-Last updated: 2026-05-29
+Last updated: 2026-05-30
 
 This document summarizes the public-safe project state for Where Horses Run / 競馬どこ？.
 
@@ -20,7 +20,31 @@ The project does not republish entries, odds, results, payouts, tips, full racec
 Repository: badjoke-lab/where-horses-run
 Default branch: main
 Deployment: Cloudflare Pages
-Current phase: M2b Generated Pipeline Foundation Release
+Current phase: M3 v0 generator foundation release gate
+
+---
+
+## M3 v0 release position
+
+M3 v0 generator foundation is complete for the internal release-gate milestone.
+
+Public coverage remains partial. The release gate verifies the generator-based timetable candidate foundation only; it does not certify complete country coverage or complete public coverage for Japan, Hong Kong, UAE, or any other country.
+
+No public complete coverage claim is made in this status note.
+
+No racecards, odds, results, payouts, predictions, or tips are stored.
+
+---
+
+## Completed recent PRs
+
+* PR-073 added Hong Kong HKJC candidate generation.
+* PR-074 added the Hong Kong active-window approved candidate bundle.
+* PR-075 added the CI Node version preflight and clarified Japanese seed-audit wording.
+* PR-076 added UAE ERA candidate generation with season-gap handling.
+* PR-077 added the UAE active-window approved candidate bundle while preserving the season gap state.
+* PR-078 added the cross-country candidate validator.
+* PR-079 adds this M3 v0 release gate.
 
 ---
 
@@ -53,6 +77,9 @@ Current phase: M2b Generated Pipeline Foundation Release
 * Source fetch abstraction exists.
 * Generated data dry-run GitHub Actions workflow exists.
 * First safe source pipeline candidate exists.
+* Japan, Hong Kong, and UAE generator-based candidate files exist for M3 v0 review.
+* Cross-country candidate validation exists.
+* M3 v0 release-gate validation exists.
 
 ---
 
@@ -66,6 +93,7 @@ Static datasets currently include:
 * sources
 * archive
 * i18n dictionaries
+* country racing inventory
 
 Generated datasets currently include:
 
@@ -74,8 +102,22 @@ Generated datasets currently include:
 * tomorrow
 * calendar-30d
 * fetch-status
+* live-fetch-probe-status
+* timetables
+* Japan active timetable records
 
-Generated schedule data is still manual placeholder-level.
+Candidate datasets currently include:
+
+* Japan JRA candidates
+* Japan NAR candidates
+* Japan Banei candidates
+* Japan generator-backed active-window candidate bundle exists
+* Hong Kong HKJC generator candidates
+* Hong Kong active-window approved bundle exists
+* UAE ERA generator candidates
+* UAE approved bundle exists, but UAE is season gap / no active-window meetings and its current active-window approved records are empty
+
+Generated schedule data remains partial and public-safe.
 
 ---
 
@@ -92,15 +134,43 @@ It currently supports:
 * source fetch plan creation
 * skipped fetch result checks
 * GitHub Actions dry-run validation
-* first safe source pipeline candidate verification
+* safe source pipeline candidate verification
+* Japan candidate generator checks
+* Hong Kong candidate generator and approved-bundle checks
+* UAE candidate generator and season-gap approved-bundle checks
+* cross-country candidate validation
+* M3 v0 release-gate validation
 
 It does not currently support:
 
-* live network fetching
-* source-specific live parsing
+* live network fetching; no live fetch is enabled
+* source-specific live parsing; no source page parsing
 * generated file writeback automation
 * scheduled automatic updates
-* raw live page storage
+* raw live page storage; no raw source body storage
+* public overlay replacement from the M3 candidate bundles
+
+---
+
+## Current country state
+
+### Japan
+
+Japan has generator-backed JRA, NAR, and Banei candidate files and a generator-backed active-window candidate bundle exists.
+
+This is partial active-window foundation work. It is not complete Japan coverage.
+
+### Hong Kong
+
+Hong Kong has an HKJC candidate generator and an active-window approved bundle exists.
+
+This is partial active-window foundation work. It is not complete Hong Kong coverage.
+
+### UAE
+
+UAE has an ERA candidate generator and an approved bundle exists, but the current window is a season gap. The approved bundle intentionally keeps `records: []` for the active window because UAE is season gap / no active-window meetings.
+
+This is season-gap documentation and generator-foundation validation. It is not complete UAE coverage.
 
 ---
 
@@ -116,6 +186,7 @@ The project currently focuses on:
 * lightweight static operation
 * bilingual presentation
 * safe generated pipeline groundwork
+* internal M3 v0 generator foundation validation
 
 The project is not currently:
 
@@ -125,35 +196,28 @@ The project is not currently:
 * a replay platform
 * a racecard redistribution service
 * a live feed service
+* a complete public coverage product
 
 ---
 
 ## Current limitation summary
 
-* Generated schedule data is manual placeholder data.
+* Public coverage remains partial.
 * Runtime fetching does not exist yet.
 * Live parsers do not exist yet.
 * GitHub Actions dry-run does not write generated files.
-* Country and racecourse coverage is still seed-level.
+* Country and racecourse coverage is not complete.
+* UAE active-window approved records are empty because the current window is a season gap.
 * Visual guide assets are not started.
 
 ---
 
 ## Next phase
 
-Next phase:
+Next PR:
 
 ```text
-M3 v0 Alpha timetable coverage
+PR-080 M3 v0 status documentation / release note
 ```
 
-M3 should expand alpha coverage using:
-
-* source notes
-* static source records
-* parser or link-first fallback
-* FetchStatus coverage
-* UI verification
-* official source fallback
-
-Live fetching should remain disabled until a source-specific reviewed fetcher is added safely.
+PR-080 should publish a concise status documentation or release note for the internal M3 v0 generator foundation milestone while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no racecards, odds, results, payouts, predictions, or tips.
