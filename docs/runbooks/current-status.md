@@ -34,6 +34,8 @@ No public complete coverage claim is made in this status note.
 
 No racecards, odds, results, payouts, predictions, or tips are stored.
 
+Related release note: [M3 v0 Generator Foundation Status](m3-v0-status-release-note.md).
+
 ---
 
 ## Completed recent PRs
@@ -44,7 +46,8 @@ No racecards, odds, results, payouts, predictions, or tips are stored.
 * PR-076 added UAE ERA candidate generation with season-gap handling.
 * PR-077 added the UAE active-window approved candidate bundle while preserving the season gap state.
 * PR-078 added the cross-country candidate validator.
-* PR-079 adds this M3 v0 release gate.
+* PR-079 added the M3 v0 release gate.
+* PR-080 added the M3 v0 status release note.
 
 ---
 
@@ -217,7 +220,7 @@ The project is not currently:
 Next PR:
 
 ```text
-PR-080 M3 v0 status documentation / release note
+PR-081 or next roadmap item
 ```
 
-PR-080 should publish a concise status documentation or release note for the internal M3 v0 generator foundation milestone while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no racecards, odds, results, payouts, predictions, or tips.
+PR-081 or the next roadmap item should continue from the post-M3 v0 roadmap while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no racecards, odds, results, payouts, predictions, or tips.
