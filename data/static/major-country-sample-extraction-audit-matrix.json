@@ -1,0 +1,567 @@
+{
+  "schema_version": "major-country-sample-extraction-audit-matrix-v0",
+  "scope": "major-countries-v0",
+  "relationship_to_prs": {
+    "PR-088": "data/static/major-country-racing-inventory.json",
+    "PR-089": "data/static/major-country-acquisition-test-matrix.json",
+    "PR-090": "data/static/major-country-acquisition-source-groups.json",
+    "PR-091": "data/static/major-country-sample-acquisition-fixtures.json",
+    "PR-092": "data/static/major-country-sample-acquisition-output-snapshots.json",
+    "PR-093": "data/static/major-country-parser-contracts.json",
+    "PR-094": "data/static/major-country-sample-extraction-snapshots.json"
+  },
+  "policy_flags": {
+    "static_audit_matrix_only": true,
+    "references_existing_static_artifacts": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_scraping_dependency": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "excludes_odds_payouts_predictions_tips": true
+  },
+  "traceability_status_enum": [
+    "ready_for_manual_source_snapshot",
+    "legacy_inventory_only"
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "audit_groups": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 0,
+          "extraction_snapshot_count": 3,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 0,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 3,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "audit_groups": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "audit_groups": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "audit_groups": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "audit_groups": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "audit_groups": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "audit_groups": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "audit_groups": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "audit_groups": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "audit_groups": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "audit_groups": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "audit_groups": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 1,
+          "rolling_fixture_sample_count": 1,
+          "extraction_snapshot_count": 4,
+          "first_race_time_sample_count": 1,
+          "per_race_time_sample_count": 1,
+          "traceability_status": "ready_for_manual_source_snapshot",
+          "remaining_before_live_extraction": "Manual source snapshot plan, approved static source capture, and completion gate before any live extraction runtime."
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "audit_groups": [
+        {
+          "country_id": "singapore",
+          "group_id": "singapore-turf-club-legacy",
+          "update_model": "legacy_no_active_racing",
+          "inventory_present": true,
+          "acquisition_matrix_present": true,
+          "source_group_present": true,
+          "sample_fixtures_present": true,
+          "output_snapshots_present": true,
+          "parser_contract_present": true,
+          "extraction_snapshots_present": true,
+          "annual_fixture_sample_count": 0,
+          "rolling_fixture_sample_count": 0,
+          "extraction_snapshot_count": 1,
+          "traceability_status": "legacy_inventory_only",
+          "remaining_before_live_extraction": "Legacy inventory only; no active timetable extraction path until racing resumes or an approved successor source exists."
+        }
+      ]
+    }
+  ]
+}
