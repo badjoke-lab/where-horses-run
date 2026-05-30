@@ -245,3 +245,9 @@ PR-105 should merge the PR-103 annual candidate-meeting layer and the PR-104 rol
 - Added `npm run validate:major-country-timetable-v0` and wired it into `npm run check`.
 - Next: PR-106 should add the static/manual 13-country timetable v0 completion gate.
 
+## PR-106 — Major country timetable v0 completion gate
+
+PR-106 adds the static/manual-driven 13-country timetable v0 completion gate. The gate verifies the source-plan, annual candidate fixture, rolling/racecard confirmation, merged display timetable, and `/major-countries/timetable/` UI chain, while preserving explicit pending records, coverage gaps, Singapore legacy/no active racing, official source links, source capture dates, last-checked values, and stale/pending status.
+
+The gate remains clear that this is static/manual timetable v0: not live coverage, not full automation, not odds, not payouts, not predictions, and not tips.
+

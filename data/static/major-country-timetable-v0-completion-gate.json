@@ -1,0 +1,94 @@
+{
+  "schema_version": "major-country-timetable-v0-completion-gate",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-30T00:00:00Z",
+  "completion_status": "static_manual_timetable_v0_ready",
+  "coverage_window": {
+    "start_date": "2026-05-30",
+    "end_date": "2026-06-30",
+    "basis": "static_manual_v0_window"
+  },
+  "source_policy": {
+    "preview_samples_are_not_completion": true,
+    "annual_fixture_is_candidate_until_confirmed_by_rolling_or_racecard": true,
+    "rolling_or_racecard_source_confirms_final_times": true,
+    "pending_records_remain_visible": true,
+    "coverage_gaps_remain_visible": true,
+    "no_fake_generated_times": true,
+    "no_live_fetch_runtime": true,
+    "no_full_automation_claim": true,
+    "no_live_coverage_claim": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true
+  },
+  "required_inputs": [
+    "major-country-timetable-ingestion-v0.json",
+    "major-country-annual-fixtures-v0.json",
+    "major-country-rolling-racecards-v0.json",
+    "major-country-timetable-v0.json",
+    "/major-countries/timetable/"
+  ],
+  "user_facing_requirements": [
+    "Users can open /major-countries/timetable/.",
+    "Users can browse or filter by country.",
+    "Users can browse or filter by system/operator.",
+    "Users can browse or filter by meeting date.",
+    "Users can browse or filter by racecourse.",
+    "Users can see first-race time where officially confirmed.",
+    "Users can see all race times where officially confirmed.",
+    "Users can see pending status where official racecard/time data is not yet available.",
+    "Users can see coverage gaps where data needs manual review or source structure is unavailable.",
+    "Users can see Singapore as legacy/no active racing.",
+    "Users can see official annual source links.",
+    "Users can see official rolling/racecard source links where available.",
+    "Users can see source_capture_date.",
+    "Users can see last_checked.",
+    "Users can see stale_status or pending status.",
+    "Users can understand this is static/manual, not live coverage."
+  ],
+  "operations_requirements": [
+    "Maintainers now have an ingestion/source plan layer.",
+    "Maintainers now have an annual candidate fixture layer.",
+    "Maintainers now have a rolling/racecard confirmation layer.",
+    "Maintainers now have a merged display timetable layer.",
+    "Maintainers now have a user-facing timetable route.",
+    "Maintainers now have source trace from display records back to annual and rolling data.",
+    "Maintainers now have explicit pending records.",
+    "Maintainers now have explicit coverage gaps.",
+    "Maintainers now have validation coverage for the full v0 chain.",
+    "Maintainers now have a clear next path toward parser/cron/source-specific automation."
+  ],
+  "validation_summary": {
+    "expected_country_count": 13,
+    "expected_active_group_count": 24,
+    "expected_legacy_group_count": 1,
+    "expected_route": "/major-countries/timetable/",
+    "required_confirmed_time_records_minimum": 1,
+    "pending_records_allowed": true,
+    "coverage_gaps_allowed": true,
+    "singapore_legacy_required": true
+  },
+  "non_goals": [
+    "no live coverage",
+    "no full automation",
+    "no scraper/parser in PR-106",
+    "no cron in PR-106",
+    "no odds",
+    "no payouts",
+    "no predictions",
+    "no tips",
+    "no full racecard republication",
+    "no claim of complete worldwide coverage"
+  ],
+  "next_phase": [
+    "parser implementation",
+    "source-specific extraction",
+    "scheduled refresh/cron",
+    "stale automation",
+    "improved coverage window expansion",
+    "country/group-by-group data quality improvement",
+    "broader confirmed racecard coverage"
+  ]
+}
