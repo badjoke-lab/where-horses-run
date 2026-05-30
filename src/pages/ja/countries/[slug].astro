@@ -90,7 +90,7 @@ const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
           <p><strong>現在のseed状態:</strong> {countryInventory.current_seed_state}</p>
           <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
           <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
-          <p><strong>ルール:</strong> initial seed や out-of-window seed は、その国のcoverageとして扱いません。</p>
+          <p><strong>ルール:</strong> must not claim: initial seed や out-of-window seed は、その国のcoverageとして扱いません。</p>
         </>
       ) : (
         <p>この国の競馬体系inventoryはまだありません。coverage済みとして扱えません。</p>
