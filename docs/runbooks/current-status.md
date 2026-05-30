@@ -40,6 +40,8 @@ Related timetable ingestion plan: [PR-102 Major-country timetable ingestion v0 p
 
 Related annual fixture layer: [PR-103 Major-country annual fixtures v0](pr-103.md).
 
+Related rolling racecard layer: [PR-104 Major-country rolling racecards v0](pr-104.md).
+
 ---
 
 ## Completed recent PRs
@@ -103,6 +105,7 @@ Static datasets currently include:
 * country racing inventory
 * major-country timetable ingestion v0
 * major-country annual fixtures v0
+* major-country rolling racecards v0
 
 Generated datasets currently include:
 
@@ -115,6 +118,7 @@ Generated datasets currently include:
 * timetables
 * Japan active timetable records
 * major-country annual fixture candidate meetings for the 2026-05-30 to 2026-06-30 static/manual window
+* major-country rolling/racecard confirmations, pending racecard states, and rolling-source coverage gaps for the same static/manual window
 
 Candidate datasets currently include:
 
@@ -159,7 +163,7 @@ It does not currently support:
 * scheduled automatic updates
 * raw live page storage; no raw source body storage
 * public overlay replacement from the M3 candidate bundles
-* PR-104 rolling/racecard confirmation for the PR-103 annual candidate meetings
+* PR-105 user-facing merge of the PR-103 annual layer and PR-104 rolling/racecard layer
 
 ---
 
@@ -228,7 +232,7 @@ The project is not currently:
 Next PR:
 
 ```text
-PR-104 major-country rolling/racecard records for the 2026-05-30 to 2026-06-30 v0 window
+PR-105 merge annual fixtures and rolling/racecards into the user-facing major-country timetable
 ```
 
-PR-104 should continue from the PR-103 annual candidate-meeting layer by adding rolling/racecard/entries/declarations/daily-info records with first-race and all-race time status where officially available, while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no wagering, payout, prediction, or advice content.
+PR-105 should merge the PR-103 annual candidate-meeting layer and the PR-104 rolling/racecard confirmation layer into `data/static/major-country-timetable-v0.json`, then add `/major-countries/timetable/` with country, system/operator, date, racecourse, first-race time, available race times, annual source, rolling/racecard source, `source_capture_date`, `last_checked`, and stale/pending status.
