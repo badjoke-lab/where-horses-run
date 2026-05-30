@@ -191,11 +191,13 @@
           ],
           "racecourses": [
             { "racecourse_id": "meydan-racecourse", "name": "Meydan", "inventory_status": "seen_in_seed" },
-            { "racecourse_id": "al-ain-racecourse", "name": "Al Ain", "inventory_status": "seen_in_seed" },
-            { "racecourse_id": "abu-dhabi-turf-club", "name": "Abu Dhabi Turf Club", "inventory_status": "seen_in_seed" }
+            { "racecourse_id": "jebel-ali-racecourse", "name": "Jebel Ali Racecourse", "inventory_status": "known_in_scope_official_evidence" },
+            { "racecourse_id": "abu-dhabi-turf-club", "name": "Abu Dhabi Turf Club", "inventory_status": "seen_in_seed", "notes": "Naming needs normalization review against Abu Dhabi / Abu Dhabi Turf Club / Abu Dhabi Equestrian Club wording in official Emirates Racing evidence." },
+            { "racecourse_id": "sharjah-racecourse", "name": "Sharjah Racecourse / Sharjah Longines Racecourse", "inventory_status": "known_in_scope_official_evidence" },
+            { "racecourse_id": "al-ain-racecourse", "name": "Al Ain", "inventory_status": "seen_in_seed" }
           ],
           "coverage_status": "out_of_window_seed",
-          "coverage_notes": "Current UAE records are source-reviewed but outside the active Today/Tomorrow/30-day window. Additional racecourse review is required before any broad/complete claim."
+          "coverage_notes": "Official Emirates Racing evidence reviewed in PR-082 showed five UAE venue concepts; PR-083 corrects the missing Jebel Ali and Sharjah inventory items. Current UAE timetable records remain out-of-window seed data only, active-window candidate bundles remain empty season-gap records, and UAE must not be treated as broad or complete coverage."
         }
       ]
     }
