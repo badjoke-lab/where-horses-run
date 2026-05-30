@@ -1,0 +1,2738 @@
+{
+  "schema_version": "major-country-sample-extraction-snapshots-v0",
+  "scope": "major-countries-v0",
+  "sample_acquisition_fixtures": "data/static/major-country-sample-acquisition-fixtures.json",
+  "parser_contracts": "data/static/major-country-parser-contracts.json",
+  "policy_flags": {
+    "static_contract_extraction_examples_only": true,
+    "snapshots_match_pr_091_fixtures": true,
+    "snapshots_reference_pr_093_parser_contracts": true,
+    "placeholders_only": true,
+    "singapore_legacy_inventory_only": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_scraping_dependency": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "excludes_odds_payouts_predictions_tips": true
+  },
+  "countries": [
+    {
+      "country_id": "japan",
+      "extraction_snapshots": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "annual_fixture",
+            "source_group_id": "jra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "first_race_time",
+            "source_group_id": "jra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "parser_target": "fixture_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "per_race_time",
+            "source_group_id": "jra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "rolling_fixture",
+            "source_group_id": "nar"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "first_race_time",
+            "source_group_id": "nar"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "per_race_time",
+            "source_group_id": "nar"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "annual_fixture",
+            "source_group_id": "banei"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "rolling_fixture",
+            "source_group_id": "banei"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "first_race_time",
+            "source_group_id": "banei"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "parser_target": "fixture_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "per_race_time",
+            "source_group_id": "banei"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "extraction_snapshots": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "hkjc"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hkjc"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "hkjc"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "hkjc"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "extraction_snapshots": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "annual_fixture",
+            "source_group_id": "era"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "rolling_fixture",
+            "source_group_id": "era"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "first_race_time",
+            "source_group_id": "era"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "parser_target": "declarations_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://emiratesracing.com/racecards",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/racecards",
+            "source_role": "per_race_time",
+            "source_group_id": "era"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "extraction_snapshots": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+            "source_role": "annual_fixture",
+            "source_group_id": "bha"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "bha"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "first_race_time",
+            "source_group_id": "bha"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "derived:bha-racecard-links",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "derived:bha-racecard-links",
+            "source_role": "per_race_time",
+            "source_group_id": "bha"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "annual_fixture",
+            "source_group_id": "point-to-point"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "point-to-point"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "first_race_time",
+            "source_group_id": "point-to-point"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "per_race_time",
+            "source_group_id": "point-to-point"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "annual_fixture",
+            "source_group_id": "purebred-arabian"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "purebred-arabian"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "first_race_time",
+            "source_group_id": "purebred-arabian"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "per_race_time",
+            "source_group_id": "purebred-arabian"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "extraction_snapshots": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hri.ie/racing/fixture-list/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hri.ie/racing/fixture-list/",
+            "source_role": "annual_fixture",
+            "source_group_id": "hri"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hri.ie/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hri.ie/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hri"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hri.ie/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hri.ie/",
+            "source_role": "first_race_time",
+            "source_group_id": "hri"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hri.ie/racing/racecards/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hri.ie/racing/racecards/",
+            "source_role": "per_race_time",
+            "source_group_id": "hri"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "extraction_snapshots": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "annual_fixture",
+            "source_group_id": "france-galop"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "rolling_fixture",
+            "source_group_id": "france-galop"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "first_race_time",
+            "source_group_id": "france-galop"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "per_race_time",
+            "source_group_id": "france-galop"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "letrot"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "letrot"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "letrot"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "letrot"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "extraction_snapshots": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "usta-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "usta-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "usta-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "usta-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "parser_target": "entries_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "extraction_snapshots": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "annual_fixture",
+            "source_group_id": "standardbred-canada"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "rolling_fixture",
+            "source_group_id": "standardbred-canada"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "first_race_time",
+            "source_group_id": "standardbred-canada"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "per_race_time",
+            "source_group_id": "standardbred-canada"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "annual_fixture",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "first_race_time",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "per_race_time",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "extraction_snapshots": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "annual_fixture",
+            "source_group_id": "harness-australia"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "harness-australia"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "first_race_time",
+            "source_group_id": "harness-australia"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "per_race_time",
+            "source_group_id": "harness-australia"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "extraction_snapshots": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "annual_fixture",
+            "source_group_id": "hrnz-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hrnz-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "first_race_time",
+            "source_group_id": "hrnz-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "per_race_time",
+            "source_group_id": "hrnz-harness"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "extraction_snapshots": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "annual_fixture",
+            "source_group_id": "nhra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "nhra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "first_race_time",
+            "source_group_id": "nhra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "parser_target": "operator_calendar_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "per_race_time",
+            "source_group_id": "nhra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "four-racing"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "four-racing"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "four-racing"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "four-racing"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "annual_fixture",
+            "source_group_id": "gold-circle"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "gold-circle"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "first_race_time",
+            "source_group_id": "gold-circle"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "parser_target": "racecard_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "per_race_time",
+            "source_group_id": "gold-circle"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "extraction_snapshots": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "annual_fixture",
+            "source_group_id": "kra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 annual_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "kra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 rolling_fixture sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "first_race_time",
+            "source_group_id": "kra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 first_race_time sample fixture under the PR-093 parser contract."
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "parser_target": "daily_race_info_page",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "extraction_snapshot_kind": "static_contract_extraction_example",
+          "extraction_status": "static_expected_extraction_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "per_race_time",
+            "source_group_id": "kra"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Static placeholder extraction snapshot for the PR-091 per_race_time sample fixture under the PR-093 parser contract."
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "extraction_snapshots": [
+        {
+          "country_id": "singapore",
+          "group_id": "singapore-turf-club-legacy",
+          "parser_target": "legacy_inventory_page",
+          "sample_target_type": "racecourse_inventory",
+          "sample_source_url": "https://racing.turfclub.com.sg/",
+          "extraction_snapshot_kind": "legacy_inventory_extraction_example",
+          "extraction_status": "legacy_inventory_only",
+          "extracted_fields": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>"
+          },
+          "source_trace": {
+            "source_url": "https://racing.turfclub.com.sg/",
+            "source_role": "racecourse_inventory",
+            "source_group_id": "singapore-turf-club-legacy"
+          },
+          "contract_reference": "data/static/major-country-parser-contracts.json",
+          "notes": "Legacy inventory extraction snapshot only; Singapore has no active timetable output in this PR."
+        }
+      ]
+    }
+  ]
+}
