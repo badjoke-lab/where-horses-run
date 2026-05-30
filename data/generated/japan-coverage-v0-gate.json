@@ -1,0 +1,66 @@
+{
+  "schema_version": "japan-coverage-v0-gate-v0",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "country_id": "japan",
+  "phase": "M3 v0 Alpha timetable coverage",
+  "status": "v0_gate_partial_pass",
+  "active_window": {
+    "start_date": "2026-05-29",
+    "end_date_exclusive": "2026-06-28",
+    "timezone": "Asia/Tokyo"
+  },
+  "coverage_summary": {
+    "total_active_window_records": 19,
+    "systems": [
+      {
+        "racing_system_id": "jra",
+        "records": 4,
+        "source_id": "japan-jra-home",
+        "source_mode": "existing_safe_seed_to_candidate",
+        "coverage_level": "partial_meeting_level",
+        "time_detail": "first_start_time_present_for_seeded_records"
+      },
+      {
+        "racing_system_id": "nar",
+        "records": 12,
+        "source_id": "japan-nar-home",
+        "source_mode": "existing_safe_overlay_to_candidate",
+        "coverage_level": "partial_meeting_date_level",
+        "time_detail": "meeting_date_verified_exact_first_start_time_not_stored"
+      },
+      {
+        "racing_system_id": "banei",
+        "records": 3,
+        "source_id": "japan-banei-monthly-schedule",
+        "source_mode": "existing_safe_overlay_to_candidate",
+        "coverage_level": "partial_meeting_level",
+        "time_detail": "first_start_time_present_for_seeded_records"
+      }
+    ]
+  },
+  "v0_gate": {
+    "passes": [
+      "Japan active-window data has JRA, NAR, and Banei represented.",
+      "Japan active-window candidate generation exists for JRA, NAR, and Banei.",
+      "A reviewed candidate bundle path exists with 19 records.",
+      "A candidate-to-overlay promotion script exists and only promotes approved records.",
+      "The public UI can continue to show the existing safe Japan active-window records."
+    ],
+    "fails_or_pending": [
+      "Japan is not full-country coverage yet.",
+      "JRA is not all active-window JRA meetings beyond the seeded records.",
+      "NAR is not all local racing meetings across all NAR racecourses.",
+      "NAR exact first start times are not stored for the seeded NAR records.",
+      "Live fetch and parser-based automatic candidate discovery are not enabled for Japan.",
+      "The approved bundle is not yet wired as the public overlay replacement."
+    ],
+    "decision": "Proceed from manual seed expansion to generator-based coverage review. Do not claim full Japan coverage."
+  },
+  "user_facing_behavior": {
+    "country_page": "Japan page may show safe active-window records from the existing public overlay, but must not claim full Japan coverage.",
+    "calendar_page": "Calendar may show the seeded Japan active-window meetings, with partial coverage status.",
+    "today_tomorrow_pages": "Today and tomorrow pages may show Japan records when the generated timetable window contains matching dates.",
+    "disclosure": "Coverage must be described as partial active-window coverage until parser-backed refresh and fuller source coverage exist."
+  },
+  "next_required_pr": "PR-073 Hong Kong HKJC candidate generator"
+}
