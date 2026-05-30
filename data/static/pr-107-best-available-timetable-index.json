@@ -1,0 +1,83 @@
+{
+  "schema_version": "pr-107-best-available-timetable-index-v0",
+  "scope": "major-countries-timetable-v0",
+  "created_at": "2026-05-31T00:00:00Z",
+  "status": "draft_staging_index",
+  "data_levels": {
+    "A": "all race times captured",
+    "B": "first race time captured",
+    "C": "fixture date and racecourse captured",
+    "D": "official source known, extraction needed",
+    "E": "legacy or no active racing"
+  },
+  "promotion_path": ["D", "C", "B", "A"],
+  "annual_fixture_policy": {
+    "annual_or_season_fixture_records_enter_as": "C",
+    "meaning": "Annual and season fixture rows are meeting candidates with official date and racecourse.",
+    "not_enough_for": "final race times",
+    "kept_for_user_value": true,
+    "kept_for_operations_value": true,
+    "rolling_or_racecard_overrides_annual": true,
+    "source_trace_required": true,
+    "source_trace_fields": [
+      "annual_source_url",
+      "annual_source_capture_date",
+      "rolling_source_url",
+      "rolling_source_capture_date",
+      "final_source_url",
+      "final_source_type"
+    ]
+  },
+  "update_policy": {
+    "manual_driven_until_parser_or_cron_exists": true,
+    "annual_fixture_sources": {
+      "capture_when": ["season calendar published", "annual fixture list changed", "monthly refresh"],
+      "default_freshness_days": 30,
+      "stale_after_days": 45
+    },
+    "rolling_fixture_sources": {
+      "capture_when": ["weekly during active race window", "when meeting date enters next 30 days"],
+      "default_freshness_days": 7,
+      "stale_after_days": 14
+    },
+    "racecard_daily_info_sources": {
+      "capture_when": ["meeting enters next 7 days", "racecard or declarations become available", "day-of-race check"],
+      "default_freshness_days": 2,
+      "stale_after_days": 3
+    },
+    "display_required": [
+      "data_level",
+      "source_type",
+      "source_capture_date",
+      "last_checked",
+      "freshness_status"
+    ]
+  },
+  "source_files": [
+    "data/static/pr-107-best-available-timetable-batch-001.json",
+    "data/static/pr-107-best-available-timetable-batch-002.json",
+    "data/static/pr-107-best-available-timetable-batch-003.json",
+    "data/static/pr-107-best-available-timetable-batch-004.json",
+    "data/static/pr-107-best-available-timetable-batch-005.json",
+    "data/static/pr-107-best-available-timetable-batch-006.json",
+    "data/static/pr-107-best-available-timetable-batch-007.json",
+    "data/static/pr-107-best-available-timetable-batch-008.json",
+    "data/static/pr-107-best-available-timetable-batch-009.json",
+    "data/static/pr-107-best-available-timetable-batch-010.json",
+    "data/static/pr-107-season-window-status-batch-011.json",
+    "data/static/pr-107-best-available-timetable-batch-012.json",
+    "data/static/pr-107-us-source-targets-batch-013.json",
+    "data/static/pr-107-canada-source-targets-batch-014.json",
+    "data/static/pr-107-australia-source-targets-batch-015.json",
+    "data/static/pr-107-new-zealand-source-targets-batch-016.json",
+    "data/static/pr-107-south-africa-source-targets-batch-017.json",
+    "data/static/pr-107-south-korea-source-targets-batch-018.json"
+  ],
+  "current_snapshot": {
+    "level_a_meetings": 9,
+    "level_c_meetings": 178,
+    "season_window_status_systems": 1,
+    "level_d_source_targets": 13,
+    "countries_represented": 13
+  }
+}
