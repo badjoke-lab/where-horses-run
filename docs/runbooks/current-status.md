@@ -38,6 +38,8 @@ Related release note: [M3 v0 Generator Foundation Status](m3-v0-status-release-n
 
 Related timetable ingestion plan: [PR-102 Major-country timetable ingestion v0 plan](pr-102.md).
 
+Related annual fixture layer: [PR-103 Major-country annual fixtures v0](pr-103.md).
+
 ---
 
 ## Completed recent PRs
@@ -99,6 +101,8 @@ Static datasets currently include:
 * archive
 * i18n dictionaries
 * country racing inventory
+* major-country timetable ingestion v0
+* major-country annual fixtures v0
 
 Generated datasets currently include:
 
@@ -110,6 +114,7 @@ Generated datasets currently include:
 * live-fetch-probe-status
 * timetables
 * Japan active timetable records
+* major-country annual fixture candidate meetings for the 2026-05-30 to 2026-06-30 static/manual window
 
 Candidate datasets currently include:
 
@@ -154,6 +159,7 @@ It does not currently support:
 * scheduled automatic updates
 * raw live page storage; no raw source body storage
 * public overlay replacement from the M3 candidate bundles
+* PR-104 rolling/racecard confirmation for the PR-103 annual candidate meetings
 
 ---
 
@@ -222,7 +228,7 @@ The project is not currently:
 Next PR:
 
 ```text
-PR-081 or next roadmap item
+PR-104 major-country rolling/racecard records for the 2026-05-30 to 2026-06-30 v0 window
 ```
 
-PR-081 or the next roadmap item should continue from the post-M3 v0 roadmap while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no racecards, odds, results, payouts, predictions, or tips.
+PR-104 should continue from the PR-103 annual candidate-meeting layer by adding rolling/racecard/entries/declarations/daily-info records with first-race and all-race time status where officially available, while preserving the same safety boundary: no live fetch, no source page parsing, no raw source body storage, no public complete coverage claim, and no wagering, payout, prediction, or advice content.
