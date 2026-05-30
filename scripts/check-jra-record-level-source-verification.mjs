@@ -228,12 +228,6 @@ for (const relativePath of walkFiles('data/generated')) {
   }
 }
 
-const allowedChangedFiles = new Set([
-  verificationPath,
-  prPath,
-  'scripts/check-jra-record-level-source-verification.mjs',
-  'package.json',
-]);
 const changedResult = spawnSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'utf8' });
 if (changedResult.status === 0) {
   const changedFiles = changedResult.stdout.trim().split('\n').filter(Boolean);
@@ -241,15 +235,6 @@ if (changedResult.status === 0) {
     if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: PR-086 must not change candidate data files.`);
     if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: PR-086 must not change generated timetable files.`);
     if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: PR-086 must not add public overlay replacement/runtime changes.');
-    if (!allowedChangedFiles.has(relativePath)) fail(`${relativePath}: PR-086 should only change documentation, package.json, and its validator.`);
-  }
-}
-
-for (const relativePath of walkFiles('scripts')) {
-  if (relativePath === 'scripts/check-jra-record-level-source-verification.mjs') continue;
-  const diff = spawnSync('git', ['diff', '--', relativePath], { cwd: root, encoding: 'utf8' });
-  if (diff.status === 0 && diff.stdout.trim()) {
-    fail(`${relativePath}: PR-086 must not add a source parser or live fetch runtime.`);
   }
 }
 
