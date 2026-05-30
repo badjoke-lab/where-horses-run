@@ -2,15 +2,24 @@
 
 ## Core correction
 
-For the 13-country major racing scope, D is not a real user-facing data level.
+D is allowed as a user-visible level for lower-tier or hard-to-cover countries.
 
-D only means that this repository has an official source target but has not yet extracted meeting rows from it.
+However, for the 13-country major racing scope in this project, D should be exceptional and temporary.
 
-Top-tier racing countries should normally have public calendars, entries, fields, or racecards that people use to know where and when racing is happening. Therefore, D should be treated as a temporary extraction backlog, not as acceptable product coverage.
+D does not mean that racing schedules are unavailable in that country. It means this repository has only registered the official source target and has not yet extracted meeting rows from it.
+
+Major racing countries normally have public calendars, entries, fields, declarations, or racecards that people use to know where and when racing is happening. Therefore, most D systems in the 13-country scope should be promoted to C or better.
 
 ## User-facing rule
 
-Do not present D as timetable coverage.
+D may be shown to users when it is accurate, especially for lower-tier countries or difficult sources.
+
+For the 13-country major racing scope, a D label should be worded carefully:
+
+- not "no schedule available"
+- not "no racing information"
+- not "unsupported country"
+- yes: "official source identified; meeting rows not extracted yet"
 
 A public timetable page should primarily show:
 
@@ -18,12 +27,11 @@ A public timetable page should primarily show:
 - B: first race time
 - C: meeting date and racecourse
 - season-window status where a country/system is in an official off-season window
-
-D can appear only in an internal operations/audit view.
+- D only as a transparent extraction backlog, not as final coverage
 
 ## Promotion obligation
 
-Every D system must have a next promotion target.
+Every D system in the 13-country scope must have a next promotion target.
 
 - D to C: extract meeting date and racecourse from official calendars, entries, fields, or fixture lists.
 - C to B: extract first race time from racecard, entries, declarations, or fields.
@@ -72,15 +80,15 @@ Every D system must have a next promotion target.
 
 ## Product implication
 
-If a system remains D, the user-facing site should not imply that the country has no usable racing calendar.
+If a 13-country system remains D, the user-facing site should not imply that the country lacks usable racing calendars.
 
-It should say internally: source target exists, extraction pending.
+It should say: official source identified, extraction pending.
 
-Public pages should show C or better whenever an official meeting date/racecourse source exists.
+Public pages for the 13-country scope should aim to show C or better whenever an official meeting date/racecourse source exists.
 
 ## Next PR work after PR-107
 
-PR-108 should not add more D-only files.
+PR-108 should not add more D-only files for the 13-country scope.
 
 PR-108 should promote at least one D country group to C using official calendar or fields rows.
 
