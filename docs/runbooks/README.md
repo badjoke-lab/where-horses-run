@@ -19,3 +19,4 @@ Operational procedures live here.
 
 - [PR-104 Major-country rolling racecards v0](pr-104.md)
 - [PR-105 — Major country timetable v0 UI](./pr-105.md)
+- [PR-106 — Major country timetable v0 completion gate](./pr-106.md)
