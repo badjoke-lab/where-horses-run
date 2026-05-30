@@ -236,3 +236,12 @@ PR-105 merge annual fixtures and rolling/racecards into the user-facing major-co
 ```
 
 PR-105 should merge the PR-103 annual candidate-meeting layer and the PR-104 rolling/racecard confirmation layer into `data/static/major-country-timetable-v0.json`, then add `/major-countries/timetable/` with country, system/operator, date, racecourse, first-race time, available race times, annual source, rolling/racecard source, `source_capture_date`, `last_checked`, and stale/pending status.
+
+## PR-105 — Major country timetable v0 UI
+
+- Added merged static/manual timetable v0 data at `data/static/major-country-timetable-v0.json`.
+- Added the user-facing timetable page at `/major-countries/timetable/`.
+- Preserved confirmed race times, pending official racecard states, explicit coverage gaps, and Singapore legacy visibility.
+- Added `npm run validate:major-country-timetable-v0` and wired it into `npm run check`.
+- Next: PR-106 should add the static/manual 13-country timetable v0 completion gate.
+
