@@ -1,0 +1,915 @@
+{
+  "schema_version": "major-country-manual-source-snapshot-plan-v0",
+  "scope": "major-countries-v0",
+  "status": "manual_static_source_snapshot_plan_ready",
+  "relationship_to_pr095": "data/static/major-country-sample-extraction-audit-matrix.json",
+  "countries_count": 13,
+  "acquisition_group_count": 25,
+  "user_visible_status": "This is a manual source snapshot plan only; users still cannot see real major-country timetable data from these artifacts alone.",
+  "next_phase": "manual_static_source_snapshots",
+  "countries": [
+    {
+      "country_id": "japan",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Japan Racing Association can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Japan Racing Association covering JRA national racecourse network.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether National Association of Racing can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "National Association of Racing covering NAR local government racecourse network.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Banei Tokachi can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Banei Tokachi covering Obihiro/Banei race programme.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Hong Kong Jockey Club can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Hong Kong Jockey Club covering Sha Tin and Happy Valley.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Emirates Racing Authority can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Emirates Racing Authority covering UAE ERA racecourse network.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether British Horseracing Authority can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "British Horseracing Authority covering BHA licensed racecourses.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Point-to-Point Authority path can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Point-to-Point Authority path covering UK point-to-point fixtures under the BHA regulatory path.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Purebred Arabian horseracing path can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Purebred Arabian horseracing path covering UK purebred Arabian fixtures identified from the BHA regulation path.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Horse Racing Ireland can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Horse Racing Ireland covering HRI racecourse network.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether France Galop can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "France Galop covering France Galop flat and jump racecourses.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether LeTROT can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "LeTROT covering LeTROT trotting racecourses.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Equibase can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Equibase covering United States thoroughbred tracks covered by Equibase.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether United States Trotting Association can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "United States Trotting Association covering United States harness tracks covered by USTA.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether American Quarter Horse Association can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "American Quarter Horse Association covering AQHA quarter-horse racing path.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Standardbred Canada can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Standardbred Canada covering Canadian standardbred tracks covered by Standardbred Canada.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Woodbine can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Woodbine covering Woodbine thoroughbred racing path.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Racing Australia can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Racing Australia covering Australian thoroughbred racecourses covered by Racing Australia.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Harness Racing Australia can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Harness Racing Australia covering Australian harness racecourses covered by Harness Racing Australia.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether LOVERACING.NZ can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "LOVERACING.NZ covering New Zealand thoroughbred racecourses.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Harness Racing New Zealand can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Harness Racing New Zealand covering New Zealand harness racecourses.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether National Horseracing Authority of Southern Africa can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "National Horseracing Authority of Southern Africa covering National regulator fixture/racecourse inventory path.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether 4Racing can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "4Racing covering 4Racing operated race meetings.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Gold Circle can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Gold Circle covering Gold Circle operated race meetings.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "traceability_status_from_pr095": "ready_for_manual_source_snapshot",
+          "manual_snapshot_required": true,
+          "snapshot_capture_mode": "manual_static_source_snapshot",
+          "user_visible_goal": "Users should be able to see whether Korea Racing Authority can provide meeting date, first race time, and per-race times for this country/system before any public timetable claim is made.",
+          "operator_or_system_scope": "Korea Racing Authority covering KRA racecourse network.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [
+            "racecourse_inventory_or_meeting_context",
+            "annual_or_rolling_fixture",
+            "first_race_time",
+            "per_race_time",
+            "official_source_url",
+            "source_capture_date"
+          ],
+          "annual_vs_rolling_handling": "Annual or season fixture material is only a coarse schedule source. Rolling racecard, entries, declarations, or daily race information is required before treating first-race or per-race times as final.",
+          "required_before_live_extraction": [
+            "one verified manual static source snapshot",
+            "one normalized sample record",
+            "source URL trace",
+            "confirmation that no odds/payouts/predictions/tips are included"
+          ],
+          "next_phase": "manual_static_source_snapshots"
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "manual_snapshot_groups": [
+        {
+          "country_id": "singapore",
+          "group_id": "singapore-turf-club-legacy",
+          "update_model": "legacy_no_active_racing",
+          "traceability_status_from_pr095": "legacy_inventory_only",
+          "manual_snapshot_required": false,
+          "snapshot_capture_mode": "legacy_inventory_only",
+          "user_visible_goal": "Singapore should be shown as legacy/no active racing, not as an active timetable.",
+          "operator_or_system_scope": "Legacy Singapore Turf Club inventory only; no active racing timetable is in scope.",
+          "snapshot_source_basis": [
+            "inventory",
+            "acquisition_matrix",
+            "source_groups",
+            "sample_fixtures",
+            "parser_contracts",
+            "extraction_audit_matrix"
+          ],
+          "minimum_snapshot_targets": [],
+          "annual_vs_rolling_handling": "There are no active timetable targets unless racing resumes or an approved successor source exists.",
+          "required_before_live_extraction": [],
+          "next_phase": "keep_legacy_inventory_only"
+        }
+      ]
+    }
+  ]
+}

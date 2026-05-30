@@ -1,0 +1,48 @@
+{
+  "schema_version": "major-country-v0-completion-gate-v0",
+  "scope": "major-countries-v0",
+  "status": "static_acquisition_readiness_complete",
+  "countries_count": 13,
+  "acquisition_group_count": 25,
+  "preparation_prs": [
+    "PR-088",
+    "PR-089",
+    "PR-090",
+    "PR-091",
+    "PR-092",
+    "PR-093",
+    "PR-094",
+    "PR-095"
+  ],
+  "completed_artifacts": [
+    "data/static/major-country-racing-inventory.json",
+    "data/static/major-country-acquisition-test-matrix.json",
+    "data/static/major-country-acquisition-source-groups.json",
+    "data/static/major-country-sample-acquisition-fixtures.json",
+    "data/static/major-country-sample-acquisition-output-snapshots.json",
+    "data/static/major-country-parser-contracts.json",
+    "data/static/major-country-sample-extraction-snapshots.json",
+    "data/static/major-country-sample-extraction-audit-matrix.json"
+  ],
+  "user_visible_status": "The repository is ready to start manual source snapshot work, but the public site does not yet show real major-country timetable data.",
+  "operation_status": "Source groups, sample targets, parser contracts, placeholder extraction shapes, and audit traceability are prepared. Manual source snapshots, real normalized samples, UI display, and update operations are still not complete.",
+  "explicit_not_complete": [
+    "no live fetch runtime",
+    "no parser implementation",
+    "no real source snapshots captured yet",
+    "no real normalized timetable records generated yet",
+    "no public timetable UI for major-country data yet",
+    "no cron or scheduled update process",
+    "no raw source body storage",
+    "no generated live timetable records",
+    "no odds",
+    "no payouts",
+    "no predictions",
+    "no tips"
+  ],
+  "next_phase": [
+    "manual_static_source_snapshots"
+  ],
+  "next_pr": "PR-097",
+  "next_pr_goal": "Add the manual source snapshot schema and first batch plan for real official-source confirmation."
+}
