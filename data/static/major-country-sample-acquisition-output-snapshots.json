@@ -1,0 +1,2640 @@
+{
+  "schema_version": "major-country-sample-acquisition-output-snapshots-v0",
+  "scope": "major-countries-v0",
+  "sample_acquisition_fixtures": "data/static/major-country-sample-acquisition-fixtures.json",
+  "policy_flags": {
+    "static_expected_shape_only": true,
+    "snapshots_match_pr_091_fixtures": true,
+    "placeholders_only": true,
+    "singapore_legacy_inventory_only": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "excludes_odds_payouts_predictions_tips": true
+  },
+  "countries": [
+    {
+      "country_id": "japan",
+      "output_snapshots": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "annual_fixture",
+            "source_group_id": "jra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "first_race_time",
+            "source_group_id": "jra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://jra.jp/keiba/calendar2026/",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://jra.jp/keiba/calendar2026/",
+            "source_role": "per_race_time",
+            "source_group_id": "jra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "rolling_fixture",
+            "source_group_id": "nar"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "first_race_time",
+            "source_group_id": "nar"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+            "source_role": "per_race_time",
+            "source_group_id": "nar"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "annual_fixture",
+            "source_group_id": "banei"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "rolling_fixture",
+            "source_group_id": "banei"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "first_race_time",
+            "source_group_id": "banei"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "parser_target": "fixture_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+            "source_role": "per_race_time",
+            "source_group_id": "banei"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "output_snapshots": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "hkjc"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hkjc"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "hkjc"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "hkjc"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "output_snapshots": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "parser_target": "declarations_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "annual_fixture",
+            "source_group_id": "era"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "parser_target": "declarations_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "rolling_fixture",
+            "source_group_id": "era"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://emiratesracing.com/season-calendar/current-season",
+          "parser_target": "declarations_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/season-calendar/current-season",
+            "source_role": "first_race_time",
+            "source_group_id": "era"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://emiratesracing.com/racecards",
+          "parser_target": "declarations_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://emiratesracing.com/racecards",
+            "source_role": "per_race_time",
+            "source_group_id": "era"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "output_snapshots": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+            "source_role": "annual_fixture",
+            "source_group_id": "bha"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "bha"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "first_race_time",
+            "source_group_id": "bha"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "derived:bha-racecard-links",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "derived:bha-racecard-links",
+            "source_role": "per_race_time",
+            "source_group_id": "bha"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "annual_fixture",
+            "source_group_id": "point-to-point"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "point-to-point"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "first_race_time",
+            "source_group_id": "point-to-point"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+            "source_role": "per_race_time",
+            "source_group_id": "point-to-point"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "annual_fixture",
+            "source_group_id": "purebred-arabian"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/racing/fixtures/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "purebred-arabian"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "first_race_time",
+            "source_group_id": "purebred-arabian"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+            "source_role": "per_race_time",
+            "source_group_id": "purebred-arabian"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "output_snapshots": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hri.ie/racing/fixture-list/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.hri.ie/racing/fixture-list/",
+            "source_role": "annual_fixture",
+            "source_group_id": "hri"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hri.ie/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.hri.ie/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hri"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hri.ie/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.hri.ie/",
+            "source_role": "first_race_time",
+            "source_group_id": "hri"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hri.ie/racing/racecards/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.hri.ie/racing/racecards/",
+            "source_role": "per_race_time",
+            "source_group_id": "hri"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "output_snapshots": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "annual_fixture",
+            "source_group_id": "france-galop"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "rolling_fixture",
+            "source_group_id": "france-galop"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "first_race_time",
+            "source_group_id": "france-galop"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.france-galop.com/en",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.france-galop.com/en",
+            "source_role": "per_race_time",
+            "source_group_id": "france-galop"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "letrot"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.letrot.com/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "letrot"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "letrot"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.letrot.com/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.letrot.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "letrot"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "output_snapshots": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.equibase.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.equibase.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.equibase.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "equibase-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "usta-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "usta-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "usta-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.ustrotting.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.ustrotting.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "usta-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.aqha.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.aqha.com/",
+          "parser_target": "entries_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.aqha.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "aqha-quarter-horse"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "output_snapshots": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "annual_fixture",
+            "source_group_id": "standardbred-canada"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "rolling_fixture",
+            "source_group_id": "standardbred-canada"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "first_race_time",
+            "source_group_id": "standardbred-canada"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://standardbredcanada.ca/racing",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://standardbredcanada.ca/racing",
+            "source_role": "per_race_time",
+            "source_group_id": "standardbred-canada"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "annual_fixture",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "first_race_time",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://woodbine.com/horse-racing/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://woodbine.com/horse-racing/",
+            "source_role": "per_race_time",
+            "source_group_id": "woodbine-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "output_snapshots": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "racing-australia-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "annual_fixture",
+            "source_group_id": "harness-australia"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.harness.org.au/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "harness-australia"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "first_race_time",
+            "source_group_id": "harness-australia"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.harness.org.au/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.harness.org.au/",
+            "source_role": "per_race_time",
+            "source_group_id": "harness-australia"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "output_snapshots": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+            "source_role": "annual_fixture",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "rolling_fixture",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "first_race_time",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+            "source_role": "per_race_time",
+            "source_group_id": "loveracing-thoroughbred"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "annual_fixture",
+            "source_group_id": "hrnz-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "hrnz-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "first_race_time",
+            "source_group_id": "hrnz-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.hrnz.co.nz/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.hrnz.co.nz/",
+            "source_role": "per_race_time",
+            "source_group_id": "hrnz-harness"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "output_snapshots": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "annual_fixture",
+            "source_group_id": "nhra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "nhra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "first_race_time",
+            "source_group_id": "nhra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.nhra.co.za/",
+          "parser_target": "operator_calendar_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.nhra.co.za/",
+            "source_role": "per_race_time",
+            "source_group_id": "nhra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "annual_fixture",
+            "source_group_id": "four-racing"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.4racing.com/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "four-racing"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "first_race_time",
+            "source_group_id": "four-racing"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.4racing.com/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.4racing.com/",
+            "source_role": "per_race_time",
+            "source_group_id": "four-racing"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "annual_fixture",
+            "source_group_id": "gold-circle"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "gold-circle"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "first_race_time",
+            "source_group_id": "gold-circle"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.goldcircle.co.za/",
+          "parser_target": "racecard_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.goldcircle.co.za/",
+            "source_role": "per_race_time",
+            "source_group_id": "gold-circle"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "output_snapshots": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "sample_target_type": "annual_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Annual fixture samples are retained as coarse season/date inventory only and are not treated as final race-time truth.",
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "annual_fixture",
+            "source_group_id": "kra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "sample_target_type": "rolling_fixture",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Rolling fixture or racecard samples are separate targets used to verify active-window changes and timing detail.",
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "rolling_fixture",
+            "source_group_id": "kra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "sample_target_type": "first_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "First-race time samples are timing targets derived from the matching group source, not substitutes for annual fixture samples.",
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "first_race_time",
+            "source_group_id": "kra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "sample_target_type": "per_race_time",
+          "sample_source_url": "https://www.kra.co.kr/",
+          "parser_target": "daily_race_info_page",
+          "snapshot_kind": "normalized_expected_output",
+          "normalized_output": {
+            "racecourse": "<racecourse>",
+            "meeting_date": "<meeting_date>",
+            "first_race_time": "<first_race_time>",
+            "races": [
+              {
+                "race_number": "<race_number>",
+                "race_time": "<race_time>",
+                "race_name_or_label": "<race_name_or_label>"
+              }
+            ]
+          },
+          "annual_vs_rolling_rule": "Per-race time samples are racecard/programme timing targets and remain separate from annual fixture rows.",
+          "source_trace": {
+            "source_url": "https://www.kra.co.kr/",
+            "source_role": "per_race_time",
+            "source_group_id": "kra"
+          },
+          "snapshot_status": "static_expected_shape_only"
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "output_snapshots": [
+        {
+          "country_id": "singapore",
+          "group_id": "singapore-turf-club-legacy",
+          "sample_target_type": "racecourse_inventory",
+          "sample_source_url": "https://racing.turfclub.com.sg/",
+          "parser_target": "legacy_inventory_page",
+          "snapshot_kind": "legacy_inventory_expected_output",
+          "normalized_output": {
+            "racecourse": "<legacy_racecourse_inventory>",
+            "meeting_date": "<legacy_racing_status_date_range>"
+          },
+          "annual_vs_rolling_rule": "Legacy-only group: active racing ended in Singapore, so no annual, rolling, first-race, or per-race timetable target is generated.",
+          "source_trace": {
+            "source_url": "https://racing.turfclub.com.sg/",
+            "source_role": "racecourse_inventory",
+            "source_group_id": "singapore-turf-club-legacy"
+          },
+          "snapshot_status": "legacy_inventory_only"
+        }
+      ]
+    }
+  ]
+}
