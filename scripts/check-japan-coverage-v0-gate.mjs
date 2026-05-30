@@ -20,7 +20,7 @@ const banei = readJson('data/candidates/japan-banei-candidates.json');
 if (gate.schema_version !== 'japan-coverage-v0-gate-v0') fail('bad schema_version');
 if (gate.country_id !== 'japan') fail('country_id must be japan');
 if (gate.status !== 'v0_gate_partial_pass') fail('status must be v0_gate_partial_pass');
-if (gate.v0_gate?.decision?.includes('full Japan coverage')) fail('decision must explicitly avoid full Japan coverage claims');
+if (!gate.v0_gate?.decision?.includes('Do not claim full Japan coverage.')) fail('decision must explicitly avoid full Japan coverage claims');
 
 const expectedTotal = (jra.records ?? []).length + (nar.records ?? []).length + (banei.records ?? []).length;
 if (gate.coverage_summary?.total_active_window_records !== expectedTotal) {
