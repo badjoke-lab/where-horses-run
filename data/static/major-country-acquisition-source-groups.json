@@ -1,0 +1,1564 @@
+{
+  "schema_version": "major-country-acquisition-source-groups-v0",
+  "scope": "major-countries-v0",
+  "source_inventory": "data/static/major-country-racing-inventory.json",
+  "acquisition_test_matrix": "data/static/major-country-acquisition-test-matrix.json",
+  "source_policy": {
+    "annual_fixture_is_not_final_time": true,
+    "rolling_update_required_for_active_countries": true,
+    "annual_and_rolling_sources_are_separate_fields": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true
+  },
+  "parser_target_enum": [
+    "fixture_page",
+    "racecard_page",
+    "entries_page",
+    "declarations_page",
+    "daily_race_info_page",
+    "operator_calendar_page",
+    "legacy_inventory_page"
+  ],
+  "operator_split_countries": [
+    "united-states",
+    "canada",
+    "australia",
+    "south-africa"
+  ],
+  "multi_system_countries": [
+    "japan",
+    "france",
+    "new-zealand",
+    "united-states",
+    "canada",
+    "australia"
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "update_model": "annual_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "jra",
+          "system_or_operator": "Japan Racing Association",
+          "disciplines": [
+            "thoroughbred_flat",
+            "jump"
+          ],
+          "racecourse_scope": "JRA national racecourse network",
+          "annual_fixture_sources": [
+            {
+              "source_id": "jra-annual-calendar",
+              "label": "JRA annual race calendar",
+              "url": "https://jra.jp/keiba/calendar2026/",
+              "role": "annual fixture calendar"
+            }
+          ],
+          "rolling_fixture_sources": [],
+          "meeting_sources": [
+            {
+              "source_id": "jra-annual-calendar-meetings",
+              "label": "JRA annual race calendar meeting rows",
+              "url": "https://jra.jp/keiba/calendar2026/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "jra-annual-calendar-first-race",
+              "label": "JRA calendar first-race time cells",
+              "url": "https://jra.jp/keiba/calendar2026/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "jra-annual-calendar-race-times",
+              "label": "JRA calendar race time cells",
+              "url": "https://jra.jp/keiba/calendar2026/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "JRA racecourse-date row",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "fixture_page",
+          "next_sample_test_target": "Capture one JRA calendar racecourse-date row with first-race and per-race times."
+        },
+        {
+          "group_id": "nar",
+          "system_or_operator": "National Association of Racing",
+          "disciplines": [
+            "thoroughbred_flat",
+            "local_government_racing"
+          ],
+          "racecourse_scope": "NAR local government racecourse network",
+          "annual_fixture_sources": [],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "nar-today-race-info",
+              "label": "NAR Today Race Info",
+              "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+              "role": "rolling daily race information"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "nar-today-race-info-meetings",
+              "label": "NAR Today Race Info meeting list",
+              "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "nar-today-race-info-first-race",
+              "label": "NAR Today Race Info first-race rows",
+              "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "nar-today-race-info-race-times",
+              "label": "NAR Today Race Info race rows",
+              "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "daily_race_info",
+            "sample_grain": "NAR track-date daily info page",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "daily_race_info_page",
+          "next_sample_test_target": "Capture one NAR Today Race Info track-date page and normalize race times."
+        },
+        {
+          "group_id": "banei",
+          "system_or_operator": "Banei Tokachi",
+          "disciplines": [
+            "banei"
+          ],
+          "racecourse_scope": "Obihiro/Banei race programme",
+          "annual_fixture_sources": [
+            {
+              "source_id": "banei-race-schedule",
+              "label": "Banei race schedule",
+              "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+              "role": "season and meeting schedule"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "banei-race-schedule-rolling",
+              "label": "Banei race schedule rolling view",
+              "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+              "role": "rolling schedule"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "banei-race-schedule-meetings",
+              "label": "Banei race schedule meeting rows",
+              "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "banei-race-schedule-first-race",
+              "label": "Banei race schedule first-race rows",
+              "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "banei-race-schedule-race-times",
+              "label": "Banei race schedule race rows",
+              "url": "https://www.banei-keiba.or.jp/race_schedule.php",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "Banei meeting date",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "fixture_page",
+          "next_sample_test_target": "Capture one Banei schedule meeting and verify first/per-race time extraction."
+        }
+      ]
+    },
+    {
+      "country_id": "hong-kong",
+      "update_model": "annual_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "hkjc",
+          "system_or_operator": "Hong Kong Jockey Club",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "Sha Tin and Happy Valley",
+          "annual_fixture_sources": [
+            {
+              "source_id": "hkjc-fixture-list",
+              "label": "HKJC fixture list",
+              "url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+              "role": "annual fixture list"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "hkjc-racecard",
+              "label": "HKJC racecard",
+              "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+              "role": "rolling racecard"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "hkjc-fixture-list-meetings",
+              "label": "HKJC fixture list meeting rows",
+              "url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "hkjc-racecard-first-race",
+              "label": "HKJC racecard first race metadata",
+              "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "hkjc-racecard-race-times",
+              "label": "HKJC racecard race rows",
+              "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "fixture_plus_racecard",
+            "sample_grain": "HKJC meeting date and racecard",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one HKJC racecard for a fixture-list meeting."
+        }
+      ]
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "update_model": "season_calendar_plus_declarations",
+      "acquisition_groups": [
+        {
+          "group_id": "era",
+          "system_or_operator": "Emirates Racing Authority",
+          "disciplines": [
+            "thoroughbred_flat",
+            "purebred_arabian"
+          ],
+          "racecourse_scope": "UAE ERA racecourse network",
+          "annual_fixture_sources": [
+            {
+              "source_id": "era-current-season-calendar",
+              "label": "ERA current season calendar",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
+              "role": "season fixture calendar"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "era-current-season-calendar-rolling",
+              "label": "ERA current season calendar rolling updates",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
+              "role": "rolling fixture calendar"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "era-current-season-calendar-meetings",
+              "label": "ERA season calendar meeting rows",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "era-current-season-calendar-first-race",
+              "label": "ERA season calendar first-race times",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "era-racecards",
+              "label": "ERA racecards",
+              "url": "https://emiratesracing.com/racecards",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "season_calendar_plus_racecard",
+            "sample_grain": "ERA meeting date then racecard/declarations page",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "declarations_page",
+          "next_sample_test_target": "Capture one ERA season-calendar meeting and matching racecard/declarations page."
+        }
+      ]
+    },
+    {
+      "country_id": "united-kingdom",
+      "update_model": "weekly_fixture_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "bha",
+          "system_or_operator": "British Horseracing Authority",
+          "disciplines": [
+            "thoroughbred_flat",
+            "jump",
+            "national_hunt",
+            "all_weather"
+          ],
+          "racecourse_scope": "BHA licensed racecourses",
+          "annual_fixture_sources": [
+            {
+              "source_id": "bha-full-year-fixtures",
+              "label": "BHA full-year fixtures",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+              "role": "annual fixture list"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "bha-fixtures",
+              "label": "BHA fixtures",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/",
+              "role": "rolling fixture list"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "bha-fixtures-meetings",
+              "label": "BHA fixtures meeting rows",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "bha-fixtures-first-race",
+              "label": "BHA fixtures first-race fields",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "bha-racecard-links",
+              "label": "BHA racecard links from fixture rows",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "fixture_plus_racecard",
+            "sample_grain": "BHA racecourse-date fixture row then racecard link",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one BHA fixture row and its racecard link target."
+        },
+        {
+          "group_id": "point-to-point",
+          "system_or_operator": "Point-to-Point Authority path",
+          "disciplines": [
+            "point_to_point"
+          ],
+          "racecourse_scope": "UK point-to-point fixtures under the BHA regulatory path",
+          "annual_fixture_sources": [
+            {
+              "source_id": "bha-point-to-point",
+              "label": "BHA point-to-point regulation path",
+              "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+              "role": "point-to-point fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "bha-fixtures-point-to-point",
+              "label": "BHA fixtures rolling path for point-to-point reconciliation",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/",
+              "role": "rolling fixture reconciliation"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "bha-point-to-point-meetings",
+              "label": "Point-to-point path meeting links",
+              "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "bha-point-to-point-first-race",
+              "label": "Point-to-point path first-race metadata",
+              "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "bha-point-to-point-race-times",
+              "label": "Point-to-point path racecard/time links",
+              "url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "point-to-point meeting page",
+            "join_keys": [
+              "system",
+              "course_or_area",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "operator_calendar_page",
+          "next_sample_test_target": "Capture one point-to-point meeting from the BHA regulatory path."
+        },
+        {
+          "group_id": "purebred-arabian",
+          "system_or_operator": "Purebred Arabian horseracing path",
+          "disciplines": [
+            "purebred_arabian"
+          ],
+          "racecourse_scope": "UK purebred Arabian fixtures identified from the BHA regulation path",
+          "annual_fixture_sources": [
+            {
+              "source_id": "bha-purebred-arabian",
+              "label": "BHA purebred Arabian horseracing path",
+              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "role": "Arabian fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "bha-fixtures-arabian",
+              "label": "BHA fixtures rolling path for Arabian reconciliation",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/",
+              "role": "rolling fixture reconciliation"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "bha-purebred-arabian-meetings",
+              "label": "Purebred Arabian path meeting links",
+              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "bha-purebred-arabian-first-race",
+              "label": "Purebred Arabian first-race metadata",
+              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "bha-purebred-arabian-race-times",
+              "label": "Purebred Arabian racecard/time links",
+              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "Arabian meeting page",
+            "join_keys": [
+              "system",
+              "course_or_area",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "operator_calendar_page",
+          "next_sample_test_target": "Capture one purebred Arabian meeting from the BHA regulatory path."
+        }
+      ]
+    },
+    {
+      "country_id": "ireland",
+      "update_model": "weekly_fixture_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "hri",
+          "system_or_operator": "Horse Racing Ireland",
+          "disciplines": [
+            "thoroughbred_flat",
+            "jump",
+            "national_hunt",
+            "all_weather",
+            "point_to_point"
+          ],
+          "racecourse_scope": "HRI racecourse network",
+          "annual_fixture_sources": [
+            {
+              "source_id": "hri-fixture-list",
+              "label": "HRI fixture list",
+              "url": "https://www.hri.ie/racing/fixture-list/",
+              "role": "annual fixture list"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "hri-home-rolling",
+              "label": "HRI rolling racing entry point",
+              "url": "https://www.hri.ie/",
+              "role": "rolling fixture entry point"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "hri-home-meetings",
+              "label": "HRI rolling meeting cards",
+              "url": "https://www.hri.ie/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "hri-home-first-race",
+              "label": "HRI rolling first-race metadata",
+              "url": "https://www.hri.ie/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "hri-racecards",
+              "label": "HRI racecards",
+              "url": "https://www.hri.ie/racing/racecards/",
+              "role": "per-race time source"
+            },
+            {
+              "source_id": "hri-race-results",
+              "label": "HRI race results",
+              "url": "https://www.hri.ie/racing/race-results/",
+              "role": "post-meeting timing reconciliation"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "fixture_plus_racecard",
+            "sample_grain": "HRI fixture date then racecard",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one HRI fixture-list date and active racecard page."
+        }
+      ]
+    },
+    {
+      "country_id": "france",
+      "update_model": "weekly_fixture_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "france-galop",
+          "system_or_operator": "France Galop",
+          "disciplines": [
+            "thoroughbred_flat",
+            "jump"
+          ],
+          "racecourse_scope": "France Galop flat and jump racecourses",
+          "annual_fixture_sources": [
+            {
+              "source_id": "france-galop-calendar",
+              "label": "France Galop calendar entry point",
+              "url": "https://www.france-galop.com/en",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "france-galop-rolling",
+              "label": "France Galop rolling race entry point",
+              "url": "https://www.france-galop.com/en",
+              "role": "rolling fixture path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "france-galop-meetings",
+              "label": "France Galop meeting listings",
+              "url": "https://www.france-galop.com/en",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "france-galop-first-race",
+              "label": "France Galop race programme first-race data",
+              "url": "https://www.france-galop.com/en",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "france-galop-race-times",
+              "label": "France Galop race programme rows",
+              "url": "https://www.france-galop.com/en",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "France Galop meeting programme",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "operator_calendar_page",
+          "next_sample_test_target": "Capture one France Galop meeting programme with race times."
+        },
+        {
+          "group_id": "letrot",
+          "system_or_operator": "LeTROT",
+          "disciplines": [
+            "trot",
+            "harness_trotting"
+          ],
+          "racecourse_scope": "LeTROT trotting racecourses",
+          "annual_fixture_sources": [
+            {
+              "source_id": "letrot-calendar",
+              "label": "LeTROT calendar entry point",
+              "url": "https://www.letrot.com/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "letrot-rolling",
+              "label": "LeTROT rolling race entry point",
+              "url": "https://www.letrot.com/",
+              "role": "rolling fixture path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "letrot-meetings",
+              "label": "LeTROT meeting listings",
+              "url": "https://www.letrot.com/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "letrot-first-race",
+              "label": "LeTROT programme first-race data",
+              "url": "https://www.letrot.com/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "letrot-race-times",
+              "label": "LeTROT programme rows",
+              "url": "https://www.letrot.com/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "LeTROT meeting programme",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "operator_calendar_page",
+          "next_sample_test_target": "Capture one LeTROT meeting programme with race times."
+        }
+      ]
+    },
+    {
+      "country_id": "united-states",
+      "update_model": "operator_split_rolling",
+      "acquisition_groups": [
+        {
+          "group_id": "equibase-thoroughbred",
+          "system_or_operator": "Equibase",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "United States thoroughbred tracks covered by Equibase",
+          "annual_fixture_sources": [
+            {
+              "source_id": "equibase-calendar",
+              "label": "Equibase calendar entry point",
+              "url": "https://www.equibase.com/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "equibase-rolling",
+              "label": "Equibase entries/results entry point",
+              "url": "https://www.equibase.com/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "equibase-meetings",
+              "label": "Equibase meeting listings",
+              "url": "https://www.equibase.com/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "equibase-first-race",
+              "label": "Equibase entries/racecard first post fields",
+              "url": "https://www.equibase.com/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "equibase-race-times",
+              "label": "Equibase entries/racecard race rows",
+              "url": "https://www.equibase.com/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Equibase track-date card",
+            "join_keys": [
+              "operator",
+              "track",
+              "race_date"
+            ]
+          },
+          "parser_target": "entries_page",
+          "next_sample_test_target": "Capture one Equibase track-date entries page."
+        },
+        {
+          "group_id": "usta-harness",
+          "system_or_operator": "United States Trotting Association",
+          "disciplines": [
+            "harness_trotting"
+          ],
+          "racecourse_scope": "United States harness tracks covered by USTA",
+          "annual_fixture_sources": [
+            {
+              "source_id": "usta-calendar",
+              "label": "USTA calendar entry point",
+              "url": "https://www.ustrotting.com/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "usta-rolling",
+              "label": "USTA entries/results entry point",
+              "url": "https://www.ustrotting.com/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "usta-meetings",
+              "label": "USTA meeting listings",
+              "url": "https://www.ustrotting.com/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "usta-first-race",
+              "label": "USTA entries first-race fields",
+              "url": "https://www.ustrotting.com/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "usta-race-times",
+              "label": "USTA entries race rows",
+              "url": "https://www.ustrotting.com/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "USTA track-date card",
+            "join_keys": [
+              "operator",
+              "track",
+              "race_date"
+            ]
+          },
+          "parser_target": "entries_page",
+          "next_sample_test_target": "Capture one USTA track-date entries page."
+        },
+        {
+          "group_id": "aqha-quarter-horse",
+          "system_or_operator": "American Quarter Horse Association",
+          "disciplines": [
+            "quarter_horse"
+          ],
+          "racecourse_scope": "AQHA quarter-horse racing path",
+          "annual_fixture_sources": [
+            {
+              "source_id": "aqha-racing",
+              "label": "AQHA racing entry point",
+              "url": "https://www.aqha.com/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "aqha-racing-rolling",
+              "label": "AQHA racing rolling entry point",
+              "url": "https://www.aqha.com/",
+              "role": "rolling fixture path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "aqha-meetings",
+              "label": "AQHA racing meeting listings",
+              "url": "https://www.aqha.com/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "aqha-first-race",
+              "label": "AQHA racing first-race data",
+              "url": "https://www.aqha.com/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "aqha-race-times",
+              "label": "AQHA racing race rows",
+              "url": "https://www.aqha.com/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "AQHA track-date card",
+            "join_keys": [
+              "operator",
+              "track",
+              "race_date"
+            ]
+          },
+          "parser_target": "entries_page",
+          "next_sample_test_target": "Capture one AQHA quarter-horse race listing sample."
+        }
+      ]
+    },
+    {
+      "country_id": "canada",
+      "update_model": "operator_split_rolling",
+      "acquisition_groups": [
+        {
+          "group_id": "standardbred-canada",
+          "system_or_operator": "Standardbred Canada",
+          "disciplines": [
+            "harness_trotting"
+          ],
+          "racecourse_scope": "Canadian standardbred tracks covered by Standardbred Canada",
+          "annual_fixture_sources": [
+            {
+              "source_id": "standardbred-canada-racing",
+              "label": "Standardbred Canada racing",
+              "url": "https://standardbredcanada.ca/racing",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "standardbred-canada-racing-rolling",
+              "label": "Standardbred Canada racing rolling cards",
+              "url": "https://standardbredcanada.ca/racing",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "standardbred-canada-meetings",
+              "label": "Standardbred Canada meeting listings",
+              "url": "https://standardbredcanada.ca/racing",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "standardbred-canada-first-race",
+              "label": "Standardbred Canada first-race fields",
+              "url": "https://standardbredcanada.ca/racing",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "standardbred-canada-race-times",
+              "label": "Standardbred Canada race rows",
+              "url": "https://standardbredcanada.ca/racing",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Standardbred Canada track-date card",
+            "join_keys": [
+              "operator",
+              "track",
+              "race_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one Standardbred Canada track-date racecard."
+        },
+        {
+          "group_id": "woodbine-thoroughbred",
+          "system_or_operator": "Woodbine",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "Woodbine thoroughbred racing path",
+          "annual_fixture_sources": [
+            {
+              "source_id": "woodbine-horse-racing",
+              "label": "Woodbine horse racing",
+              "url": "https://woodbine.com/horse-racing/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "woodbine-horse-racing-rolling",
+              "label": "Woodbine horse racing rolling cards",
+              "url": "https://woodbine.com/horse-racing/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "woodbine-meetings",
+              "label": "Woodbine meeting listings",
+              "url": "https://woodbine.com/horse-racing/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "woodbine-first-race",
+              "label": "Woodbine first-race fields",
+              "url": "https://woodbine.com/horse-racing/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "woodbine-race-times",
+              "label": "Woodbine race rows",
+              "url": "https://woodbine.com/horse-racing/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Woodbine race date card",
+            "join_keys": [
+              "operator",
+              "track",
+              "race_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one Woodbine thoroughbred racecard."
+        }
+      ]
+    },
+    {
+      "country_id": "australia",
+      "update_model": "operator_split_rolling",
+      "acquisition_groups": [
+        {
+          "group_id": "racing-australia-thoroughbred",
+          "system_or_operator": "Racing Australia",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "Australian thoroughbred racecourses covered by Racing Australia",
+          "annual_fixture_sources": [
+            {
+              "source_id": "racing-australia-calendar",
+              "label": "Racing Australia FreeFields calendar",
+              "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+              "role": "annual fixture calendar"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "racing-australia-calendar-rolling",
+              "label": "Racing Australia FreeFields rolling calendar",
+              "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+              "role": "rolling fixture calendar"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "racing-australia-meetings",
+              "label": "Racing Australia calendar meeting rows",
+              "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "racing-australia-first-race",
+              "label": "Racing Australia FreeFields first-race fields",
+              "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "racing-australia-race-times",
+              "label": "Racing Australia FreeFields race rows",
+              "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Racing Australia meeting card",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one Racing Australia FreeFields meeting card."
+        },
+        {
+          "group_id": "harness-australia",
+          "system_or_operator": "Harness Racing Australia",
+          "disciplines": [
+            "harness_trotting"
+          ],
+          "racecourse_scope": "Australian harness racecourses covered by Harness Racing Australia",
+          "annual_fixture_sources": [
+            {
+              "source_id": "harness-australia",
+              "label": "Harness Racing Australia entry point",
+              "url": "https://www.harness.org.au/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "harness-australia-rolling",
+              "label": "Harness Racing Australia rolling cards",
+              "url": "https://www.harness.org.au/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "harness-australia-meetings",
+              "label": "Harness Racing Australia meeting listings",
+              "url": "https://www.harness.org.au/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "harness-australia-first-race",
+              "label": "Harness Racing Australia first-race fields",
+              "url": "https://www.harness.org.au/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "harness-australia-race-times",
+              "label": "Harness Racing Australia race rows",
+              "url": "https://www.harness.org.au/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Harness Australia meeting card",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one Harness Australia meeting card."
+        }
+      ]
+    },
+    {
+      "country_id": "new-zealand",
+      "update_model": "weekly_fixture_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "loveracing-thoroughbred",
+          "system_or_operator": "LOVERACING.NZ",
+          "disciplines": [
+            "thoroughbred_flat",
+            "jump"
+          ],
+          "racecourse_scope": "New Zealand thoroughbred racecourses",
+          "annual_fixture_sources": [
+            {
+              "source_id": "loveracing-calendar",
+              "label": "LOVERACING calendar",
+              "url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+              "role": "annual fixture calendar"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "loveracing-nominations",
+              "label": "LOVERACING nominations",
+              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "role": "rolling race information"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "loveracing-meetings",
+              "label": "LOVERACING nominations meeting rows",
+              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "loveracing-first-race",
+              "label": "LOVERACING nominations first-race fields",
+              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "loveracing-race-times",
+              "label": "LOVERACING nominations race rows",
+              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "fixture_plus_racecard",
+            "sample_grain": "LOVERACING meeting date and nominations/racecard",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one LOVERACING nominations/racecard meeting."
+        },
+        {
+          "group_id": "hrnz-harness",
+          "system_or_operator": "Harness Racing New Zealand",
+          "disciplines": [
+            "harness_trotting"
+          ],
+          "racecourse_scope": "New Zealand harness racecourses",
+          "annual_fixture_sources": [
+            {
+              "source_id": "hrnz",
+              "label": "HRNZ entry point",
+              "url": "https://www.hrnz.co.nz/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "hrnz-rolling",
+              "label": "HRNZ rolling race information",
+              "url": "https://www.hrnz.co.nz/",
+              "role": "rolling race information"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "hrnz-meetings",
+              "label": "HRNZ meeting listings",
+              "url": "https://www.hrnz.co.nz/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "hrnz-first-race",
+              "label": "HRNZ first-race fields",
+              "url": "https://www.hrnz.co.nz/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "hrnz-race-times",
+              "label": "HRNZ race rows",
+              "url": "https://www.hrnz.co.nz/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "fixture_plus_racecard",
+            "sample_grain": "HRNZ meeting date and racecard",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one HRNZ harness racecard meeting."
+        }
+      ]
+    },
+    {
+      "country_id": "south-africa",
+      "update_model": "operator_split_rolling",
+      "acquisition_groups": [
+        {
+          "group_id": "nhra",
+          "system_or_operator": "National Horseracing Authority of Southern Africa",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "National regulator fixture/racecourse inventory path",
+          "annual_fixture_sources": [
+            {
+              "source_id": "nhra",
+              "label": "NHRA entry point",
+              "url": "https://www.nhra.co.za/",
+              "role": "annual fixture/regulatory path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "nhra-rolling",
+              "label": "NHRA rolling fixture/regulatory path",
+              "url": "https://www.nhra.co.za/",
+              "role": "rolling fixture path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "nhra-meetings",
+              "label": "NHRA meeting listings",
+              "url": "https://www.nhra.co.za/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "nhra-first-race",
+              "label": "NHRA first-race reference fields",
+              "url": "https://www.nhra.co.za/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "nhra-race-times",
+              "label": "NHRA race programme references",
+              "url": "https://www.nhra.co.za/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_calendar",
+            "sample_grain": "NHRA meeting date record",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "operator_calendar_page",
+          "next_sample_test_target": "Capture one NHRA fixture/programme reference record."
+        },
+        {
+          "group_id": "four-racing",
+          "system_or_operator": "4Racing",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "4Racing operated race meetings",
+          "annual_fixture_sources": [
+            {
+              "source_id": "four-racing",
+              "label": "4Racing entry point",
+              "url": "https://www.4racing.com/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "four-racing-rolling",
+              "label": "4Racing rolling racecards",
+              "url": "https://www.4racing.com/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "four-racing-meetings",
+              "label": "4Racing meeting listings",
+              "url": "https://www.4racing.com/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "four-racing-first-race",
+              "label": "4Racing first-race fields",
+              "url": "https://www.4racing.com/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "four-racing-race-times",
+              "label": "4Racing racecard race rows",
+              "url": "https://www.4racing.com/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "4Racing meeting card",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one 4Racing meeting racecard."
+        },
+        {
+          "group_id": "gold-circle",
+          "system_or_operator": "Gold Circle",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "Gold Circle operated race meetings",
+          "annual_fixture_sources": [
+            {
+              "source_id": "gold-circle",
+              "label": "Gold Circle entry point",
+              "url": "https://www.goldcircle.co.za/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "gold-circle-rolling",
+              "label": "Gold Circle rolling racecards",
+              "url": "https://www.goldcircle.co.za/",
+              "role": "rolling racecard path"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "gold-circle-meetings",
+              "label": "Gold Circle meeting listings",
+              "url": "https://www.goldcircle.co.za/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "gold-circle-first-race",
+              "label": "Gold Circle first-race fields",
+              "url": "https://www.goldcircle.co.za/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "gold-circle-race-times",
+              "label": "Gold Circle racecard race rows",
+              "url": "https://www.goldcircle.co.za/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_split_racecard",
+            "sample_grain": "Gold Circle meeting card",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "racecard_page",
+          "next_sample_test_target": "Capture one Gold Circle meeting racecard."
+        }
+      ]
+    },
+    {
+      "country_id": "south-korea",
+      "update_model": "annual_plus_racecard",
+      "acquisition_groups": [
+        {
+          "group_id": "kra",
+          "system_or_operator": "Korea Racing Authority",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "KRA racecourse network",
+          "annual_fixture_sources": [
+            {
+              "source_id": "kra",
+              "label": "KRA entry point",
+              "url": "https://www.kra.co.kr/",
+              "role": "annual fixture path"
+            }
+          ],
+          "rolling_fixture_sources": [
+            {
+              "source_id": "kra-rolling",
+              "label": "KRA rolling race information",
+              "url": "https://www.kra.co.kr/",
+              "role": "rolling race information"
+            }
+          ],
+          "meeting_sources": [
+            {
+              "source_id": "kra-meetings",
+              "label": "KRA meeting listings",
+              "url": "https://www.kra.co.kr/",
+              "role": "meeting date source"
+            }
+          ],
+          "first_race_time_sources": [
+            {
+              "source_id": "kra-first-race",
+              "label": "KRA first-race fields",
+              "url": "https://www.kra.co.kr/",
+              "role": "first race time source"
+            }
+          ],
+          "per_race_time_sources": [
+            {
+              "source_id": "kra-race-times",
+              "label": "KRA race rows",
+              "url": "https://www.kra.co.kr/",
+              "role": "per-race time source"
+            }
+          ],
+          "acquisition_unit": {
+            "unit_type": "operator_calendar",
+            "sample_grain": "KRA meeting date and race information",
+            "join_keys": [
+              "operator",
+              "racecourse",
+              "meeting_date"
+            ]
+          },
+          "parser_target": "daily_race_info_page",
+          "next_sample_test_target": "Capture one KRA meeting race information page."
+        }
+      ]
+    },
+    {
+      "country_id": "singapore",
+      "update_model": "legacy_no_active_racing",
+      "acquisition_groups": [
+        {
+          "group_id": "singapore-turf-club-legacy",
+          "system_or_operator": "Singapore Turf Club legacy",
+          "disciplines": [
+            "thoroughbred_flat"
+          ],
+          "racecourse_scope": "Legacy Singapore Turf Club inventory only; no active timetable acquisition",
+          "annual_fixture_sources": [],
+          "rolling_fixture_sources": [],
+          "meeting_sources": [],
+          "first_race_time_sources": [],
+          "per_race_time_sources": [],
+          "acquisition_unit": {
+            "unit_type": "legacy_inventory",
+            "sample_grain": "legacy country inventory evidence only",
+            "join_keys": [
+              "country_id"
+            ]
+          },
+          "parser_target": "legacy_inventory_page",
+          "next_sample_test_target": "Legacy inventory only; do not run active fixture or timing sample acquisition."
+        }
+      ]
+    }
+  ]
+}
