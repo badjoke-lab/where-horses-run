@@ -1,0 +1,342 @@
+{
+  "schema_version": "manual-source-snapshots-batch-001-v0",
+  "batch_id": "manual-source-snapshot-batch-001",
+  "source_capture_date": "2026-05-30",
+  "records": [
+    {
+      "snapshot_id": "batch-001-japan-jra-2026-05-30-tokyo",
+      "country_id": "japan",
+      "group_id": "jra",
+      "source_url": "https://jra.jp/JRADB/accessD.html?CNAME=pw01dde0105202602110120260530%2F17",
+      "source_label": "JRA racecard, 2026-05-30 Tokyo 1R; JRA homepage same-day featured races",
+      "source_type": "racecard",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-05-30 Japan local date; 2nd Tokyo meeting day 11",
+      "racecourse_or_meeting_context": "Tokyo Racecourse, 2026-05-30, 2回東京11日",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official JRA racecard search result shows 2026年5月30日（土曜）2回東京11日 1レース; race result/racecard navigation confirms 12 Tokyo races and JRA homepage lists Tokyo 11R 15:30 and Tokyo 12R 16:10 for the same meeting.",
+      "per_race_time_evidence": "Official JRA pages captured sample race times: Tokyo 1R 10:05, Tokyo 5R 12:10, Tokyo 7R 13:10, Tokyo 10R 14:50, Tokyo 11R 15:30, Tokyo 12R 16:10.",
+      "normalized_sample": {
+        "racecourse": "Tokyo",
+        "meeting_date": "2026-05-30",
+        "first_race_time": "10:05",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "10:05",
+            "race_name_or_label": "3歳 未勝利"
+          },
+          {
+            "race_number": 5,
+            "race_time": "12:10",
+            "race_name_or_label": "3歳 未勝利"
+          },
+          {
+            "race_number": 7,
+            "race_time": "13:10",
+            "race_name_or_label": "3歳 1勝クラス"
+          },
+          {
+            "race_number": 10,
+            "race_time": "14:50",
+            "race_name_or_label": "葉山特別"
+          },
+          {
+            "race_number": 11,
+            "race_time": "15:30",
+            "race_name_or_label": "アハルテケステークス"
+          },
+          {
+            "race_number": 12,
+            "race_time": "16:10",
+            "race_name_or_label": "4歳以上2勝クラス"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://jra.jp/JRADB/accessD.html?CNAME=pw01dde0105202602110120260530%2F17",
+          "source_label": "JRA racecard/result pages for 2026-05-30 Tokyo",
+          "source_type": "racecard",
+          "source_capture_date": "2026-05-30",
+          "country_id": "japan",
+          "group_id": "jra"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://jra.jp/JRADB/accessD.html?CNAME=pw01dde0105202602110120260530%2F17",
+        "source_label": "JRA racecard/result pages for 2026-05-30 Tokyo",
+        "source_type": "racecard",
+        "source_capture_date": "2026-05-30",
+        "country_id": "japan",
+        "group_id": "jra"
+      },
+      "user_visible_result": "Static manual sample confirms a JRA Tokyo meeting with official race-time evidence for selected races; it is not live coverage.",
+      "reviewer_notes": "Manual capture uses official JRA pages surfaced on 2026-05-30. No raw page body stored.",
+      "status": "captured_static_sample"
+    },
+    {
+      "snapshot_id": "batch-001-japan-nar-2026-05-18-ohi",
+      "country_id": "japan",
+      "group_id": "nar",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F05%2F18",
+      "source_label": "地方競馬情報サイト 当日メニュー 2026-05-18 大井競馬",
+      "source_type": "daily_race_info",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-05-18 Japan local date",
+      "racecourse_or_meeting_context": "大井競馬 / Ohi Racecourse daily race menu",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official NAR local racing daily menu lists 2026年5月18日（月） 大井競馬 and 1R 発走時刻 14:30.",
+      "per_race_time_evidence": "Official NAR table lists 1R 14:30, 2R 15:02, 3R 15:35, 4R 16:07, 5R 16:40, 6R 17:12, 7R 17:45, 8R 18:20, 9R 18:55, 10R 19:30, 11R 20:10, 12R 20:50.",
+      "normalized_sample": {
+        "racecourse": "Ohi",
+        "meeting_date": "2026-05-18",
+        "first_race_time": "14:30",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "14:30",
+            "race_name_or_label": "３歳１１ １２"
+          },
+          {
+            "race_number": 2,
+            "race_time": "15:02",
+            "race_name_or_label": "３歳１１ １２"
+          },
+          {
+            "race_number": 3,
+            "race_time": "15:35",
+            "race_name_or_label": "２歳新馬"
+          },
+          {
+            "race_number": 4,
+            "race_time": "16:07",
+            "race_name_or_label": "２歳新馬"
+          },
+          {
+            "race_number": 5,
+            "race_time": "16:40",
+            "race_name_or_label": "Ｃ２十一 十二 十三"
+          },
+          {
+            "race_number": 6,
+            "race_time": "17:12",
+            "race_name_or_label": "Ｃ２十一 十二 十三"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F05%2F18",
+          "source_label": "NAR daily race menu for Ohi 2026-05-18",
+          "source_type": "daily_race_info",
+          "source_capture_date": "2026-05-30",
+          "country_id": "japan",
+          "group_id": "nar"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F05%2F18",
+        "source_label": "NAR daily race menu for Ohi 2026-05-18",
+        "source_type": "daily_race_info",
+        "source_capture_date": "2026-05-30",
+        "country_id": "japan",
+        "group_id": "nar"
+      },
+      "user_visible_result": "Static manual sample confirms an NAR Ohi meeting with official per-race times; it is not live coverage.",
+      "reviewer_notes": "Uses NAR official daily menu; no odds or results data stored.",
+      "status": "captured_static_sample"
+    },
+    {
+      "snapshot_id": "batch-001-japan-banei-2026-05-18-obihiro",
+      "country_id": "japan",
+      "group_id": "banei",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "source_label": "ばんえい十勝 開催日程／時刻 2026年5月",
+      "source_type": "operator_calendar",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-05-18 Japan local date in May 2026 monthly schedule",
+      "racecourse_or_meeting_context": "Obihiro Racecourse / ばんえい十勝",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official Banei Tokachi schedule table for 2026年5月 lists 2026-05-18 with 第1R 14:25.",
+      "per_race_time_evidence": "Official Banei Tokachi monthly schedule provides first and final race times for 2026-05-18: 第1R 14:25 and 第12R 20:35; adjacent official schedule rows confirm the same rolling schedule format for race-day times.",
+      "normalized_sample": {
+        "racecourse": "Obihiro",
+        "meeting_date": "2026-05-18",
+        "first_race_time": "14:25",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "14:25",
+            "race_name_or_label": "ばんえい十勝 第1R"
+          },
+          {
+            "race_number": 12,
+            "race_time": "20:35",
+            "race_name_or_label": "ばんえい十勝 第12R"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+          "source_label": "Banei Tokachi official schedule/times page",
+          "source_type": "operator_calendar",
+          "source_capture_date": "2026-05-30",
+          "country_id": "japan",
+          "group_id": "banei"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+        "source_label": "Banei Tokachi official schedule/times page",
+        "source_type": "operator_calendar",
+        "source_capture_date": "2026-05-30",
+        "country_id": "japan",
+        "group_id": "banei"
+      },
+      "user_visible_result": "Static manual sample confirms Banei Obihiro first and final race times from the official operator calendar; it is not a full per-race card.",
+      "reviewer_notes": "Only first/final race times were visible in the official monthly schedule, so the normalized sample intentionally includes the officially confirmed displayed races only.",
+      "status": "captured_static_sample"
+    },
+    {
+      "snapshot_id": "batch-001-hong-kong-hkjc-2026-04-12-sha-tin",
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/racereportfull?Date=2026%2F04%2F12",
+      "source_label": "HKJC Racing Incident Report, Sha Tin, 2026-04-12",
+      "source_type": "racecard",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-04-12 Hong Kong local date",
+      "racecourse_or_meeting_context": "Sha Tin Racecourse, turf C course, 11-race meeting",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official HKJC report lists Race Meeting: 12/04/2026 (Sun), 11 races, Meeting Start Time: 12:30.",
+      "per_race_time_evidence": "Official HKJC report lists Race 1 (594) BOWRING PLATE and confirms the meeting start time 12:30; the report enumerates Race 1 through Race 11 in the same official meeting record.",
+      "normalized_sample": {
+        "racecourse": "Sha Tin",
+        "meeting_date": "2026-04-12",
+        "first_race_time": "12:30",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "12:30",
+            "race_name_or_label": "BOWRING PLATE (Sec1)"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racereportfull?Date=2026%2F04%2F12",
+          "source_label": "HKJC official racing incident report for 2026-04-12",
+          "source_type": "racecard",
+          "source_capture_date": "2026-05-30",
+          "country_id": "hong-kong",
+          "group_id": "hkjc"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://racing.hkjc.com/en-us/local/information/racereportfull?Date=2026%2F04%2F12",
+        "source_label": "HKJC official racing incident report for 2026-04-12",
+        "source_type": "racecard",
+        "source_capture_date": "2026-05-30",
+        "country_id": "hong-kong",
+        "group_id": "hkjc"
+      },
+      "user_visible_result": "Static manual sample confirms an HKJC Sha Tin meeting start/race-one sample from an official HKJC record; it is not live coverage.",
+      "reviewer_notes": "Official report provides a meeting start time and Race 1 label. Later PRs should prefer the racecard page when full per-race off-times are required.",
+      "status": "captured_static_sample"
+    },
+    {
+      "snapshot_id": "batch-001-united-arab-emirates-era-2026-03-28-meydan",
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "source_url": "https://emiratesracing.com/racecard/2026-03-28/all/entries",
+      "source_label": "Emirates Racing Authority racecard, Meydan, 2026-03-28",
+      "source_type": "racecard",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-03-28 UAE local date",
+      "racecourse_or_meeting_context": "Meydan Racecourse, Dubai World Cup day",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official ERA racecard lists 28 Mar 2026 Meydan and Race 1 - Dubai Kahayla Classic at 15:45.",
+      "per_race_time_evidence": "Official ERA racecard lists Race 1 at 15:45, Race 2 - Godolphin Mile at 16:20, and Race 7 - Dubai Turf at 19:35 on the same Meydan card.",
+      "normalized_sample": {
+        "racecourse": "Meydan",
+        "meeting_date": "2026-03-28",
+        "first_race_time": "15:45",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "15:45",
+            "race_name_or_label": "Dubai Kahayla Classic Sponsored by Zabeel Feed"
+          },
+          {
+            "race_number": 2,
+            "race_time": "16:20",
+            "race_name_or_label": "Godolphin Mile Sponsored by EMAAR"
+          },
+          {
+            "race_number": 7,
+            "race_time": "19:35",
+            "race_name_or_label": "Dubai Turf Sponsored by DP World"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://emiratesracing.com/racecard/2026-03-28/all/entries",
+          "source_label": "ERA official racecard for 2026-03-28 Meydan",
+          "source_type": "racecard",
+          "source_capture_date": "2026-05-30",
+          "country_id": "united-arab-emirates",
+          "group_id": "era"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://emiratesracing.com/racecard/2026-03-28/all/entries",
+        "source_label": "ERA official racecard for 2026-03-28 Meydan",
+        "source_type": "racecard",
+        "source_capture_date": "2026-05-30",
+        "country_id": "united-arab-emirates",
+        "group_id": "era"
+      },
+      "user_visible_result": "Static manual sample confirms selected ERA Meydan race times from the official ERA racecard; it is not live coverage.",
+      "reviewer_notes": "Stores only schedule labels/times and source trace, not entries, odds, results, or page body.",
+      "status": "captured_static_sample"
+    },
+    {
+      "snapshot_id": "batch-001-south-korea-kra-2026-05-23-seoul",
+      "country_id": "south-korea",
+      "group_id": "kra",
+      "source_url": "https://race.kra.co.kr/globalEn/raceCardsSeoul.do",
+      "source_label": "KRA Global English Seoul Race Card",
+      "source_type": "racecard",
+      "source_capture_date": "2026-05-30",
+      "source_local_date_context": "2026-05-23 Korea local date from crawled official racecard",
+      "racecourse_or_meeting_context": "Seoul Racecourse race card",
+      "annual_or_rolling_context": "rolling_or_racecard_required_for_final_time",
+      "first_race_time_evidence": "Official KRA Global English Seoul Race Card search result lists race 1 on 2026/05/23(Sat) with Start Time(KOR) 10:35.",
+      "per_race_time_evidence": "Official KRA race card search result confirms table columns for race number, date, class, distance, and Start Time(KOR), with race 1 at 10:35. The accessible official snippet did not expose additional Seoul race rows in this capture.",
+      "normalized_sample": {
+        "racecourse": "Seoul",
+        "meeting_date": "2026-05-23",
+        "first_race_time": "10:35",
+        "races": [
+          {
+            "race_number": 1,
+            "race_time": "10:35",
+            "race_name_or_label": "Class 6 1200M"
+          }
+        ],
+        "source_trace": {
+          "source_url": "https://race.kra.co.kr/globalEn/raceCardsSeoul.do",
+          "source_label": "KRA official Global English Seoul Race Card",
+          "source_type": "racecard",
+          "source_capture_date": "2026-05-30",
+          "country_id": "south-korea",
+          "group_id": "kra"
+        }
+      },
+      "source_trace": {
+        "source_url": "https://race.kra.co.kr/globalEn/raceCardsSeoul.do",
+        "source_label": "KRA official Global English Seoul Race Card",
+        "source_type": "racecard",
+        "source_capture_date": "2026-05-30",
+        "country_id": "south-korea",
+        "group_id": "kra"
+      },
+      "user_visible_result": "Static manual sample confirms a KRA Seoul first-race sample from the official KRA Global English race card; it is not live coverage.",
+      "reviewer_notes": "The public official page exposed one race row through the capture path. Later source work should improve access to the complete official racecard rows.",
+      "status": "captured_static_sample"
+    }
+  ]
+}
