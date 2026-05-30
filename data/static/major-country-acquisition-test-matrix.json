@@ -1,0 +1,327 @@
+{
+  "schema_version": "major-country-acquisition-test-matrix-v0",
+  "scope": "major-countries-v0",
+  "source_inventory": "data/static/major-country-racing-inventory.json",
+  "result_enum": [
+    "source_path_exists",
+    "source_path_exists_but_needs_parser",
+    "operator_split_required",
+    "legacy_no_active_racing",
+    "source_path_missing"
+  ],
+  "source_policy": {
+    "annual_fixture_is_not_final_time": true,
+    "rolling_update_required_for_active_countries": true,
+    "racecard_or_daily_info_required_for_final_race_times": true,
+    "no_live_fetch_runtime": true,
+    "no_parser_implementation": true,
+    "no_generated_timetable_records": true,
+    "no_raw_source_body_storage": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true
+  },
+  "operator_split_countries": [
+    "united-states",
+    "canada",
+    "australia",
+    "south-africa"
+  ],
+  "multi_system_countries": [
+    "japan",
+    "france",
+    "new-zealand",
+    "united-states",
+    "canada",
+    "australia"
+  ],
+  "countries": [
+    {
+      "country_id": "japan",
+      "update_model": "annual_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://japanracing.jp/en/racing/go_racing/jra_racecourses/", "https://www.keiba.go.jp/guide/", "https://www.banei-keiba.or.jp/"],
+        "annual_fixture_sources": ["https://jra.jp/keiba/calendar2026/", "https://www.banei-keiba.or.jp/race_schedule.php"],
+        "rolling_fixture_sources": ["https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "https://www.banei-keiba.or.jp/race_schedule.php"],
+        "meeting_sources": ["https://jra.jp/keiba/calendar2026/", "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "https://www.banei-keiba.or.jp/race_schedule.php"],
+        "first_race_time_sources": ["https://jra.jp/keiba/calendar2026/", "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "https://www.banei-keiba.or.jp/race_schedule.php"],
+        "per_race_time_sources": ["https://jra.jp/keiba/calendar2026/", "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "https://www.banei-keiba.or.jp/race_schedule.php"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": true,
+      "acquisition_unit": "multi_system_country_by_jra_nar_banei_source_group",
+      "next_required_collection_step": "Build separate JRA, NAR, and Banei source adapters that keep annual calendars separate from daily racecard timing updates."
+    },
+    {
+      "country_id": "hong-kong",
+      "update_model": "annual_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx", "https://crc.hkjc.com/"],
+        "annual_fixture_sources": ["https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"],
+        "rolling_fixture_sources": ["https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"],
+        "meeting_sources": ["https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"],
+        "first_race_time_sources": ["https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"],
+        "per_race_time_sources": ["https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "single_operator_hkjc_fixture_then_racecard",
+      "next_required_collection_step": "Harden HKJC fixture and racecard parsing so fixture dates remain separate from racecard first-race and per-race times."
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "update_model": "season_calendar_plus_declarations",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://emiratesracing.com/about-us/racing-in-the-uae"],
+        "annual_fixture_sources": ["https://emiratesracing.com/season-calendar/current-season"],
+        "rolling_fixture_sources": ["https://emiratesracing.com/season-calendar/current-season"],
+        "meeting_sources": ["https://emiratesracing.com/season-calendar/current-season"],
+        "first_race_time_sources": ["https://emiratesracing.com/season-calendar/current-season"],
+        "per_race_time_sources": ["https://emiratesracing.com/racecards"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "single_authority_era_season_calendar_then_racecards",
+      "next_required_collection_step": "Create ERA season-calendar and racecard collectors that preserve season calendar dates separately from racecard times."
+    },
+    {
+      "country_id": "united-kingdom",
+      "update_model": "weekly_fixture_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.britishhorseracing.com/racing/racecourses/"],
+        "annual_fixture_sources": ["https://www.britishhorseracing.com/racing/fixtures/full-year/"],
+        "rolling_fixture_sources": ["https://www.britishhorseracing.com/racing/fixtures/"],
+        "meeting_sources": ["https://www.britishhorseracing.com/racing/fixtures/"],
+        "first_race_time_sources": ["https://www.britishhorseracing.com/racing/fixtures/"],
+        "per_race_time_sources": ["BHA Racecard links from fixture rows"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "bha_fixture_rows_with_racecard_detail_links",
+      "next_required_collection_step": "Resolve BHA fixture row racecard links before parsing first-race and per-race times."
+    },
+    {
+      "country_id": "ireland",
+      "update_model": "weekly_fixture_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.hri.ie/"],
+        "annual_fixture_sources": ["https://www.hri.ie/racing/fixture-list/"],
+        "rolling_fixture_sources": ["https://www.hri.ie/"],
+        "meeting_sources": ["https://www.hri.ie/"],
+        "first_race_time_sources": ["https://www.hri.ie/"],
+        "per_race_time_sources": ["https://www.hri.ie/racing/racecards/", "https://www.hri.ie/racing/race-results/"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "hri_fixture_list_then_racecards",
+      "next_required_collection_step": "Implement HRI fixture-list and racecard extraction with a separate rolling update pass for near-term timing."
+    },
+    {
+      "country_id": "france",
+      "update_model": "weekly_fixture_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"],
+        "annual_fixture_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"],
+        "rolling_fixture_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"],
+        "meeting_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"],
+        "first_race_time_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"],
+        "per_race_time_sources": ["https://www.france-galop.com/en", "https://www.letrot.com/"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": true,
+      "acquisition_unit": "multi_system_country_by_france_galop_and_letrot",
+      "next_required_collection_step": "Split France Galop and LeTROT collectors while retaining common output fields for meeting dates and race times."
+    },
+    {
+      "country_id": "united-states",
+      "update_model": "operator_split_rolling",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/", "https://www.aqha.com/"],
+        "annual_fixture_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/", "https://www.aqha.com/"],
+        "rolling_fixture_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/"],
+        "meeting_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/"],
+        "first_race_time_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/"],
+        "per_race_time_sources": ["https://www.equibase.com/", "https://www.ustrotting.com/"]
+      },
+      "racecourse_inventory_result": "operator_split_required",
+      "annual_fixture_result": "operator_split_required",
+      "rolling_update_result": "operator_split_required",
+      "meeting_date_result": "operator_split_required",
+      "first_race_time_result": "operator_split_required",
+      "per_race_time_result": "operator_split_required",
+      "operator_split_required": true,
+      "multi_system_required": true,
+      "acquisition_unit": "operator_split_by_equibase_ustrotting_and_aqha",
+      "next_required_collection_step": "Define separate Equibase, USTA, and AQHA acquisition passes before combining country-level coverage."
+    },
+    {
+      "country_id": "canada",
+      "update_model": "operator_split_rolling",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/"],
+        "annual_fixture_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/horse-racing/"],
+        "rolling_fixture_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/horse-racing/"],
+        "meeting_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/horse-racing/"],
+        "first_race_time_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/horse-racing/"],
+        "per_race_time_sources": ["https://standardbredcanada.ca/racing", "https://woodbine.com/horse-racing/"]
+      },
+      "racecourse_inventory_result": "operator_split_required",
+      "annual_fixture_result": "operator_split_required",
+      "rolling_update_result": "operator_split_required",
+      "meeting_date_result": "operator_split_required",
+      "first_race_time_result": "operator_split_required",
+      "per_race_time_result": "operator_split_required",
+      "operator_split_required": true,
+      "multi_system_required": true,
+      "acquisition_unit": "operator_split_by_standardbred_canada_and_woodbine",
+      "next_required_collection_step": "Build separate Standardbred Canada and Woodbine acquisition paths, then add other provincial/operator sources as coverage expands."
+    },
+    {
+      "country_id": "australia",
+      "update_model": "operator_split_rolling",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"],
+        "annual_fixture_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"],
+        "rolling_fixture_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"],
+        "meeting_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"],
+        "first_race_time_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"],
+        "per_race_time_sources": ["https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "https://www.harness.org.au/"]
+      },
+      "racecourse_inventory_result": "operator_split_required",
+      "annual_fixture_result": "operator_split_required",
+      "rolling_update_result": "operator_split_required",
+      "meeting_date_result": "operator_split_required",
+      "first_race_time_result": "operator_split_required",
+      "per_race_time_result": "operator_split_required",
+      "operator_split_required": true,
+      "multi_system_required": true,
+      "acquisition_unit": "operator_split_by_racing_australia_and_harness_australia",
+      "next_required_collection_step": "Implement Racing Australia and Harness Australia collection independently before adding jurisdiction-specific hardening."
+    },
+    {
+      "country_id": "new-zealand",
+      "update_model": "weekly_fixture_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://loveracing.nz/RaceInfo/Clubs-And-Courses.aspx", "https://www.hrnz.co.nz/"],
+        "annual_fixture_sources": ["https://loveracing.nz/RaceInfo/Calendar.aspx", "https://www.hrnz.co.nz/"],
+        "rolling_fixture_sources": ["https://loveracing.nz/RaceInfo/Nominations.aspx", "https://www.hrnz.co.nz/"],
+        "meeting_sources": ["https://loveracing.nz/RaceInfo/Nominations.aspx", "https://www.hrnz.co.nz/"],
+        "first_race_time_sources": ["https://loveracing.nz/RaceInfo/Nominations.aspx", "https://www.hrnz.co.nz/"],
+        "per_race_time_sources": ["https://loveracing.nz/RaceInfo/Nominations.aspx", "https://www.hrnz.co.nz/"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": true,
+      "acquisition_unit": "multi_system_country_by_loveracing_and_hrnz",
+      "next_required_collection_step": "Build LOVE Racing and HRNZ collectors with shared normalization for meeting dates and race times."
+    },
+    {
+      "country_id": "south-africa",
+      "update_model": "operator_split_rolling",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.nhra.co.za/", "https://www.4racing.com/", "https://www.goldcircle.co.za/"],
+        "annual_fixture_sources": ["https://www.nhra.co.za/", "https://www.4racing.com/", "https://www.goldcircle.co.za/"],
+        "rolling_fixture_sources": ["https://www.4racing.com/", "https://www.goldcircle.co.za/"],
+        "meeting_sources": ["https://www.nhra.co.za/", "https://www.4racing.com/", "https://www.goldcircle.co.za/"],
+        "first_race_time_sources": ["https://www.4racing.com/", "https://www.goldcircle.co.za/"],
+        "per_race_time_sources": ["https://www.4racing.com/", "https://www.goldcircle.co.za/"]
+      },
+      "racecourse_inventory_result": "operator_split_required",
+      "annual_fixture_result": "operator_split_required",
+      "rolling_update_result": "operator_split_required",
+      "meeting_date_result": "operator_split_required",
+      "first_race_time_result": "operator_split_required",
+      "per_race_time_result": "operator_split_required",
+      "operator_split_required": true,
+      "multi_system_required": false,
+      "acquisition_unit": "operator_split_by_nhra_4racing_and_gold_circle",
+      "next_required_collection_step": "Separate NHRA schedule evidence from 4Racing and Gold Circle rolling/racecard timing acquisition."
+    },
+    {
+      "country_id": "south-korea",
+      "update_model": "annual_plus_racecard",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.kra.co.kr/"],
+        "annual_fixture_sources": ["https://www.kra.co.kr/"],
+        "rolling_fixture_sources": ["https://www.kra.co.kr/"],
+        "meeting_sources": ["https://www.kra.co.kr/"],
+        "first_race_time_sources": ["https://www.kra.co.kr/"],
+        "per_race_time_sources": ["https://www.kra.co.kr/"]
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "source_path_exists_but_needs_parser",
+      "rolling_update_result": "source_path_exists_but_needs_parser",
+      "meeting_date_result": "source_path_exists_but_needs_parser",
+      "first_race_time_result": "source_path_exists_but_needs_parser",
+      "per_race_time_result": "source_path_exists_but_needs_parser",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "single_authority_kra_calendar_then_racecards",
+      "next_required_collection_step": "Identify KRA calendar and racecard pages within the KRA source path and add parsers without live runtime fetching."
+    },
+    {
+      "country_id": "singapore",
+      "update_model": "legacy_no_active_racing",
+      "tested_sources_from_inventory": {
+        "racecourse_inventory_sources": ["https://www.turfclub.com.sg/"],
+        "annual_fixture_sources": [],
+        "rolling_fixture_sources": [],
+        "meeting_sources": [],
+        "first_race_time_sources": [],
+        "per_race_time_sources": []
+      },
+      "racecourse_inventory_result": "source_path_exists",
+      "annual_fixture_result": "legacy_no_active_racing",
+      "rolling_update_result": "legacy_no_active_racing",
+      "meeting_date_result": "legacy_no_active_racing",
+      "first_race_time_result": "legacy_no_active_racing",
+      "per_race_time_result": "legacy_no_active_racing",
+      "operator_split_required": false,
+      "multi_system_required": false,
+      "acquisition_unit": "legacy_country_not_active_timetable_target",
+      "next_required_collection_step": "Keep Singapore as legacy inventory only because active horse racing ended after the final race on 2024-10-05."
+    }
+  ]
+}
