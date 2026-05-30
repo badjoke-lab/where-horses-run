@@ -1,0 +1,81 @@
+{
+  "schema_version": "manual-source-snapshot-schema-v0",
+  "scope": "major-countries-v0",
+  "purpose": "Define the static manual source snapshot record shape used to confirm official/approved source pages before any live extraction, parser implementation, or public timetable claim.",
+  "required_record_fields": [
+    "snapshot_id",
+    "country_id",
+    "group_id",
+    "source_url",
+    "source_label",
+    "source_type",
+    "source_capture_date",
+    "source_local_date_context",
+    "racecourse_or_meeting_context",
+    "annual_or_rolling_context",
+    "first_race_time_evidence",
+    "per_race_time_evidence",
+    "normalized_sample",
+    "source_trace",
+    "user_visible_result",
+    "reviewer_notes",
+    "status"
+  ],
+  "allowed_source_type": [
+    "racecourse_inventory",
+    "annual_fixture",
+    "season_fixture",
+    "rolling_fixture",
+    "racecard",
+    "entries",
+    "declarations",
+    "daily_race_info",
+    "operator_calendar",
+    "legacy_inventory"
+  ],
+  "annual_or_rolling_context": [
+    "annual_fixture_is_coarse_schedule_only",
+    "rolling_or_racecard_required_for_final_time"
+  ],
+  "normalized_sample": {
+    "required_fields": [
+      "racecourse",
+      "meeting_date",
+      "first_race_time",
+      "races[]",
+      "source_trace"
+    ],
+    "races_required_fields": [
+      "races[].race_number",
+      "races[].race_time",
+      "races[].race_name_or_label"
+    ]
+  },
+  "source_trace": {
+    "required_fields": [
+      "source_url",
+      "source_label",
+      "source_type",
+      "source_capture_date",
+      "country_id",
+      "group_id"
+    ]
+  },
+  "status_enum": [
+    "pending_manual_capture",
+    "captured_static_sample",
+    "needs_source_correction",
+    "legacy_no_active_racing"
+  ],
+  "explicit_exclusions": [
+    "no live fetch runtime",
+    "no parser implementation",
+    "no scraping dependency",
+    "no raw source body/html storage",
+    "no generated live timetable records",
+    "no odds",
+    "no payouts",
+    "no predictions",
+    "no tips"
+  ]
+}

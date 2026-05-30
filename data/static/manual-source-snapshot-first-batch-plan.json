@@ -1,0 +1,138 @@
+{
+  "schema_version": "manual-source-snapshot-first-batch-plan-v0",
+  "scope": "major-countries-v0",
+  "batch_id": "manual-source-snapshot-batch-001",
+  "batch_goal": "Capture the first verified manual static source snapshots for selected high-confidence groups so real official-source confirmation can begin.",
+  "batch_status": "planned",
+  "user_visible_goal": "After this batch is captured in the following PR, users will be closer to seeing real sample meeting dates, first-race times, and per-race times from official/approved source pages.",
+  "operation_goal": "Confirm that the manual source snapshot schema can record official source evidence without adding live fetching, parser runtime, or betting-adjacent data.",
+  "first_batch_reason": [
+    "These are mostly centralized operator/authority sources.",
+    "They are better suited for validating the manual snapshot workflow before moving into heavily operator-split countries.",
+    "They cover annual fixture, rolling fixture, daily race info, racecard, and season/declaration-style source patterns."
+  ],
+  "selected_groups": [
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the Japan Racing Association group.",
+      "operation_expected_result": "Maintainers must verify that the JRA source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the National Association of Racing group.",
+      "operation_expected_result": "Maintainers must verify that the NAR source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    },
+    {
+      "country_id": "japan",
+      "group_id": "banei",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the Banei Tokachi group.",
+      "operation_expected_result": "Maintainers must verify that the Banei source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    },
+    {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the Hong Kong Jockey Club group.",
+      "operation_expected_result": "Maintainers must verify that the HKJC source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the Emirates Racing Authority group.",
+      "operation_expected_result": "Maintainers must verify that the ERA source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    },
+    {
+      "country_id": "south-korea",
+      "group_id": "kra",
+      "source_basis_from_pr096": true,
+      "manual_snapshot_required": true,
+      "planned_snapshot_status": "pending_manual_capture",
+      "source_capture_mode": "manual_static_source_snapshot",
+      "required_evidence": [
+        "racecourse_or_meeting_context",
+        "annual_or_rolling_fixture",
+        "first_race_time",
+        "per_race_time",
+        "official_source_url",
+        "source_capture_date"
+      ],
+      "user_visible_expected_result": "Users should eventually see a meeting date, first race time, per-race times, and an official source link for the Korea Racing Authority group.",
+      "operation_expected_result": "Maintainers must verify that the KRA source page can support a normalized sample without storing raw HTML or adding parser/runtime code.",
+      "next_capture_pr": "PR-098"
+    }
+  ],
+  "singapore_status": {
+    "country_id": "singapore",
+    "group_id": "singapore-turf-club-legacy",
+    "status": "legacy_no_active_racing",
+    "manual_snapshot_required": false,
+    "reason": "Singapore is not an active timetable target.",
+    "next_action": "keep legacy inventory only unless racing resumes or an approved successor source exists"
+  }
+}
