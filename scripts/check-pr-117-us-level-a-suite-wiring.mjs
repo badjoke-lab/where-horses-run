@@ -15,6 +15,16 @@ function read(relativePath) {
   return fs.readFileSync(filePath, 'utf8');
 }
 
+function runCheck(script) {
+  const result = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
+  if (result.status !== 0) {
+    console.error(result.stdout);
+    console.error(result.stderr);
+    fail(`${script} not ok.`);
+  }
+  console.log(result.stdout.trim());
+}
+
 const packageJson = read('package.json');
 const wiredEntrypoint = read('scripts/check-pr-115-usta-level-a.mjs');
 const aqhaValidator = read('scripts/check-pr-116-aqha-level-a.mjs');
@@ -43,15 +53,7 @@ if (!aqhaGenerator.includes('pr-116-aqha-level-a-v0')) {
   fail('AQHA generator schema marker is missing.');
 }
 
-const pr118 = spawnSync('node', ['scripts/check-pr-118-us-level-a-expansion.mjs'], {
-  cwd: root,
-  encoding: 'utf8'
-});
-if (pr118.status !== 0) {
-  console.error(pr118.stdout);
-  console.error(pr118.stderr);
-  fail('PR-118 check not ok.');
-}
-console.log(pr118.stdout.trim());
+runCheck('scripts/check-pr-118-us-level-a-expansion.mjs');
+runCheck('scripts/check-pr-119-current-integrated.mjs');
 
 console.log('[pr-117-level-a-wiring] PASS');
