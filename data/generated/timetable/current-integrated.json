@@ -1,0 +1,181 @@
+{
+  "schema_version": "current-timetable-integrated-v0",
+  "generated_at": "2026-05-31T00:00:00Z",
+  "mode": "fixture_level_a_integration_no_live_fetch",
+  "source_inputs": [
+    "data/generated/timetable/pr-114-equibase-level-a.json",
+    "data/generated/timetable/pr-115-usta-level-a.json",
+    "data/generated/timetable/pr-116-aqha-level-a.json"
+  ],
+  "display_dimensions": [
+    "country",
+    "group",
+    "meeting_date",
+    "racecourse"
+  ],
+  "record_count": 9,
+  "records": [
+    {
+      "record_id": "pr116-us-aqha-quarter-course-one-2026-05-29",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "aqha-quarter-horse",
+      "group_label": "AQHA Quarter Horse",
+      "racecourse": "Quarter Course One",
+      "meeting_date": "2026-05-29",
+      "data_level": "A",
+      "first_race_time": "1:00 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "1:00 PM", "race_name": "Race One", "distance": "350y" },
+        { "race_number": 2, "race_time": "1:24 PM", "race_name": "Race Two", "distance": "400y" },
+        { "race_number": 3, "race_time": "1:48 PM", "race_name": "Race Three", "distance": "440y" }
+      ],
+      "source_trace": { "source_url": "fixture:us-aqha-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "aqha-full-racecard", "promotes_from": "pr113-us-aqha-quarter-course-one-2026-05-29" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr114-us-equibase-churchill-downs-2026-05-29",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "equibase-thoroughbred",
+      "group_label": "Equibase Thoroughbred",
+      "racecourse": "Churchill Downs",
+      "meeting_date": "2026-05-29",
+      "data_level": "A",
+      "first_race_time": "12:45 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "12:45 PM", "race_name": "Allowance", "distance": "6f" },
+        { "race_number": 2, "race_time": "1:14 PM", "race_name": "Maiden Special Weight", "distance": "1m" },
+        { "race_number": 3, "race_time": "1:43 PM", "race_name": "Claiming", "distance": "7f" }
+      ],
+      "source_trace": { "source_url": "fixture:us-equibase-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "equibase-full-racecard", "promotes_from": "pr113-us-equibase-churchill-downs-2026-05-29" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr114-us-equibase-santa-anita-park-2026-05-29",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "equibase-thoroughbred",
+      "group_label": "Equibase Thoroughbred",
+      "racecourse": "Santa Anita Park",
+      "meeting_date": "2026-05-29",
+      "data_level": "A",
+      "first_race_time": "1:00 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "1:00 PM", "race_name": "Maiden Claiming", "distance": "5f" },
+        { "race_number": 2, "race_time": "1:32 PM", "race_name": "Allowance Optional", "distance": "1m" },
+        { "race_number": 3, "race_time": "2:05 PM", "race_name": "Starter Allowance", "distance": "6f" }
+      ],
+      "source_trace": { "source_url": "fixture:us-equibase-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "equibase-full-racecard", "promotes_from": "pr113-us-equibase-santa-anita-park-2026-05-29" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr115-us-usta-meadowlands-2026-05-29",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "usta-harness",
+      "group_label": "USTA Harness",
+      "racecourse": "Meadowlands",
+      "meeting_date": "2026-05-29",
+      "data_level": "A",
+      "first_race_time": "6:20 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "6:20 PM", "race_name": "Conditioned Pace", "distance": "1m" },
+        { "race_number": 2, "race_time": "6:45 PM", "race_name": "Maiden Trot", "distance": "1m" },
+        { "race_number": 3, "race_time": "7:10 PM", "race_name": "Open Pace", "distance": "1m" }
+      ],
+      "source_trace": { "source_url": "fixture:us-usta-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "usta-full-racecard", "promotes_from": "pr113-us-usta-meadowlands-2026-05-29" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr115-us-usta-yonkers-2026-05-29",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "usta-harness",
+      "group_label": "USTA Harness",
+      "racecourse": "Yonkers",
+      "meeting_date": "2026-05-29",
+      "data_level": "A",
+      "first_race_time": "6:45 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "6:45 PM", "race_name": "Claiming Pace", "distance": "1m" },
+        { "race_number": 2, "race_time": "7:05 PM", "race_name": "Conditioned Trot", "distance": "1m" },
+        { "race_number": 3, "race_time": "7:25 PM", "race_name": "Preferred Pace", "distance": "1m" }
+      ],
+      "source_trace": { "source_url": "fixture:us-usta-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "usta-full-racecard", "promotes_from": "pr113-us-usta-yonkers-2026-05-29" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr116-us-aqha-quarter-course-two-2026-05-30",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "aqha-quarter-horse",
+      "group_label": "AQHA Quarter Horse",
+      "racecourse": "Quarter Course Two",
+      "meeting_date": "2026-05-30",
+      "data_level": "A",
+      "first_race_time": "6:00 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "6:00 PM", "race_name": "Race One", "distance": "300y" },
+        { "race_number": 2, "race_time": "6:22 PM", "race_name": "Race Two", "distance": "350y" },
+        { "race_number": 3, "race_time": "6:44 PM", "race_name": "Race Three", "distance": "400y" }
+      ],
+      "source_trace": { "source_url": "fixture:us-aqha-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "aqha-full-racecard", "promotes_from": "pr113-us-aqha-quarter-course-two-2026-05-30" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr114-us-equibase-gulfstream-park-2026-05-30",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "equibase-thoroughbred",
+      "group_label": "Equibase Thoroughbred",
+      "racecourse": "Gulfstream Park",
+      "meeting_date": "2026-05-30",
+      "data_level": "A",
+      "first_race_time": "12:50 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "12:50 PM", "race_name": "Maiden Special Weight", "distance": "5f" },
+        { "race_number": 2, "race_time": "1:18 PM", "race_name": "Starter Optional", "distance": "1m" },
+        { "race_number": 3, "race_time": "1:47 PM", "race_name": "Allowance", "distance": "7f" }
+      ],
+      "source_trace": { "source_url": "fixture:us-equibase-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "equibase-full-racecard", "promotes_from": "pr113-us-equibase-gulfstream-park-2026-05-30" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr115-us-usta-northfield-2026-05-30",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "usta-harness",
+      "group_label": "USTA Harness",
+      "racecourse": "Northfield",
+      "meeting_date": "2026-05-30",
+      "data_level": "A",
+      "first_race_time": "6:00 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "6:00 PM", "race_name": "Conditioned Trot", "distance": "1m" },
+        { "race_number": 2, "race_time": "6:22 PM", "race_name": "Claiming Pace", "distance": "1m" },
+        { "race_number": 3, "race_time": "6:44 PM", "race_name": "Open Trot", "distance": "1m" }
+      ],
+      "source_trace": { "source_url": "fixture:us-usta-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "usta-full-racecard", "promotes_from": "pr113-us-usta-northfield-2026-05-30" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    },
+    {
+      "record_id": "pr116-us-aqha-quarter-course-three-2026-05-31",
+      "country_id": "united-states",
+      "country_label": "United States",
+      "group_id": "aqha-quarter-horse",
+      "group_label": "AQHA Quarter Horse",
+      "racecourse": "Quarter Course Three",
+      "meeting_date": "2026-05-31",
+      "data_level": "A",
+      "first_race_time": "2:00 PM",
+      "all_race_times": [
+        { "race_number": 1, "race_time": "2:00 PM", "race_name": "Race One", "distance": "300y" },
+        { "race_number": 2, "race_time": "2:21 PM", "race_name": "Race Two", "distance": "350y" },
+        { "race_number": 3, "race_time": "2:42 PM", "race_name": "Race Three", "distance": "440y" }
+      ],
+      "source_trace": { "source_url": "fixture:us-aqha-racecard-full", "source_type": "official_racecard_fixture", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31", "parser": "aqha-full-racecard", "promotes_from": "pr113-us-aqha-quarter-course-three-2026-05-31" },
+      "freshness": { "status": "sample_current", "basis": "fixture_source_capture_date", "source_capture_date": "2026-05-31", "last_checked": "2026-05-31" }
+    }
+  ]
+}
