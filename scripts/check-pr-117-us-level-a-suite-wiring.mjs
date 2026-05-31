@@ -60,5 +60,6 @@ runCheck('scripts/check-pr-121-current-timetable-dimensions.mjs');
 runCheck('scripts/check-pr-122-current-timetable-source-freshness.mjs');
 runCheck('scripts/check-pr-123-scheduled-refresh-foundation.mjs');
 runCheck('scripts/check-pr-124-refresh-health-report.mjs');
+runCheck('scripts/check-pr-125-refresh-output-safety-gate.mjs');
 
 console.log('[pr-117-level-a-wiring] PASS');
