@@ -1,0 +1,70 @@
+---
+const { records } = Astro.props;
+---
+
+<section aria-labelledby="current-timetable-title">
+  <h2 id="current-timetable-title">Current integrated timetable records</h2>
+  <div class="current-timetable-list">
+    {records.map((record) => (
+      <article class="card" aria-labelledby={`${record.record_id}-title`}>
+        <h3 id={`${record.record_id}-title`}>{record.country_label} / {record.group_label}</h3>
+        <dl>
+          <div><dt>Country</dt><dd>{record.country_label}</dd></div>
+          <div><dt>System</dt><dd>{record.group_label}</dd></div>
+          <div><dt>Racecourse</dt><dd>{record.racecourse}</dd></div>
+          <div><dt>Meeting date</dt><dd>{record.meeting_date}</dd></div>
+          <div><dt>First race time</dt><dd>{record.first_race_time}</dd></div>
+          <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
+        </dl>
+        <h4>All race times</h4>
+        <ul>
+          {record.all_race_times.map((race) => (
+            <li>Race {race.race_number}: {race.race_time} — {race.race_name} ({race.distance})</li>
+          ))}
+        </ul>
+        <details>
+          <summary>Source trace</summary>
+          <dl>
+            <div><dt>Source</dt><dd>{record.source_trace.source_url}</dd></div>
+            <div><dt>Source type</dt><dd>{record.source_trace.source_type}</dd></div>
+            <div><dt>Source capture date</dt><dd>{record.source_trace.source_capture_date}</dd></div>
+            <div><dt>Parser</dt><dd>{record.source_trace.parser}</dd></div>
+          </dl>
+        </details>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .current-timetable-list {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .card {
+    border: 1px solid var(--whr-color-border);
+    padding: var(--whr-space-3);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--whr-space-2);
+  }
+
+  dt {
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 720px) {
+    dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
