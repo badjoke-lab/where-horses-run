@@ -1,0 +1,53 @@
+---
+const { countries, groups, dates, racecourses } = Astro.props;
+---
+
+<section aria-labelledby="current-timetable-dimensions-title">
+  <h2 id="current-timetable-dimensions-title">Browse dimensions</h2>
+  <div class="dimension-grid">
+    <article class="card">
+      <h3>By country</h3>
+      <ul>{countries.map((item) => <li>{item.label}: {item.count} records</li>)}</ul>
+    </article>
+    <article class="card">
+      <h3>By system</h3>
+      <ul>{groups.map((item) => <li>{item.label}: {item.count} records</li>)}</ul>
+    </article>
+    <article class="card">
+      <h3>By date</h3>
+      <ul>{dates.map((item) => <li>{item.label}: {item.count} records</li>)}</ul>
+    </article>
+    <article class="card">
+      <h3>By racecourse</h3>
+      <ul>{racecourses.map((item) => <li>{item.label}: {item.count} records</li>)}</ul>
+    </article>
+  </div>
+</section>
+
+<style>
+  .dimension-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--whr-space-3);
+  }
+
+  .card {
+    border: 1px solid var(--whr-color-border);
+    padding: var(--whr-space-3);
+  }
+
+  .card h3 {
+    margin-block-start: 0;
+  }
+
+  .card ul {
+    margin-block-end: 0;
+    padding-inline-start: 1.2rem;
+  }
+
+  @media (max-width: 720px) {
+    .dimension-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
