@@ -1,0 +1,126 @@
+{
+  "schema_version": "major-country-source-registry-v0",
+  "created_at": "2026-05-31T00:00:00Z",
+  "scope": "major-countries-timetable-v0",
+  "source_group_reference": "data/static/major-country-acquisition-source-groups.json",
+  "policy": {
+    "manual_per_meeting_updates_are_not_normal_operation": true,
+    "normal_update_path": [
+      "source_registry",
+      "fetch_or_snapshot",
+      "parse",
+      "normalize",
+      "promote",
+      "build_current_timetable",
+      "validate",
+      "generated_update_pr"
+    ],
+    "rank_promotion_required_until_archived": true,
+    "a_archived_records_are_skipped_by_promotion": true,
+    "no_odds": true,
+    "no_payouts": true,
+    "no_predictions": true,
+    "no_tips": true,
+    "no_live_coverage_claim": true,
+    "no_full_automation_claim": true
+  },
+  "source_kinds": [
+    "annual",
+    "rolling",
+    "racecard"
+  ],
+  "promotion_rules": {
+    "D": {
+      "goal": "C",
+      "try_source_kinds": ["annual", "rolling"],
+      "skip_when": ["off_season", "archived", "cancelled_archived"]
+    },
+    "C": {
+      "goal": "B_or_A",
+      "try_source_kinds": ["rolling", "racecard"],
+      "skip_when": ["archived", "cancelled_archived"]
+    },
+    "B": {
+      "goal": "A",
+      "try_source_kinds": ["racecard"],
+      "skip_when": ["archived", "cancelled_archived"]
+    },
+    "A": {
+      "goal": "archive_after_final_check",
+      "try_source_kinds": ["racecard"],
+      "skip_when": ["archived", "cancelled_archived"]
+    }
+  },
+  "lifecycle_statuses": [
+    "future",
+    "upcoming",
+    "race_day",
+    "completed",
+    "archived",
+    "cancelled",
+    "cancelled_archived",
+    "off_season"
+  ],
+  "refresh_commands": {
+    "annual": "npm run refresh:timetable:annual",
+    "rolling": "npm run refresh:timetable:rolling",
+    "racecard": "npm run refresh:timetable:racecards",
+    "promote": "npm run promote:timetable",
+    "archive": "npm run archive:timetable",
+    "all": "npm run refresh:timetable"
+  },
+  "expected_counts": {
+    "countries": 13,
+    "active_groups": 24,
+    "legacy_groups": 1
+  },
+  "sources": [
+    { "country_id": "japan", "group_id": "jra", "status": "active", "source_kind": "annual", "url": "https://jra.jp/keiba/calendar2026/", "parser": "jra-calendar", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "japan", "group_id": "jra", "status": "active", "source_kind": "racecard", "url": "https://jra.jp/keiba/calendar2026/", "parser": "jra-calendar-race-times", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+    { "country_id": "japan", "group_id": "nar", "status": "active", "source_kind": "rolling", "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "parser": "nar-today-race-info", "target_level": "C", "refresh_cadence": "daily" },
+    { "country_id": "japan", "group_id": "nar", "status": "active", "source_kind": "racecard", "url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop", "parser": "nar-race-list", "target_level": "A", "refresh_cadence": "daily" },
+    { "country_id": "japan", "group_id": "banei", "status": "active", "source_kind": "annual", "url": "https://www.banei-keiba.or.jp/race_schedule.php", "parser": "banei-race-schedule", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "japan", "group_id": "banei", "status": "active", "source_kind": "racecard", "url": "https://www.banei-keiba.or.jp/race_schedule.php", "parser": "banei-race-schedule-times", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "hong-kong", "group_id": "hkjc", "status": "active", "source_kind": "annual", "url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx", "parser": "hkjc-fixture-list", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "hong-kong", "group_id": "hkjc", "status": "active", "source_kind": "racecard", "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx", "parser": "hkjc-racecard", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "united-arab-emirates", "group_id": "era", "status": "active", "source_kind": "annual", "url": "https://emiratesracing.com/season-calendar/current-season", "parser": "era-season-calendar", "target_level": "C", "refresh_cadence": "monthly_in_season" },
+    { "country_id": "united-arab-emirates", "group_id": "era", "status": "active", "source_kind": "racecard", "url": "https://emiratesracing.com/racecards", "parser": "era-racecards", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "united-kingdom", "group_id": "bha", "status": "active", "source_kind": "annual", "url": "https://www.britishhorseracing.com/racing/fixtures/full-year/", "parser": "bha-full-year-fixtures", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "united-kingdom", "group_id": "bha", "status": "active", "source_kind": "rolling", "url": "https://www.britishhorseracing.com/racing/fixtures/", "parser": "bha-fixtures", "target_level": "B", "refresh_cadence": "weekly" },
+    { "country_id": "united-kingdom", "group_id": "point-to-point", "status": "active", "source_kind": "annual", "url": "https://www.britishhorseracing.com/regulation/point-to-point/", "parser": "bha-point-to-point", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "united-kingdom", "group_id": "purebred-arabian", "status": "active", "source_kind": "annual", "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/", "parser": "bha-purebred-arabian", "target_level": "C", "refresh_cadence": "monthly" },
+
+    { "country_id": "ireland", "group_id": "hri", "status": "active", "source_kind": "annual", "url": "https://www.hri.ie/racing/fixture-list/", "parser": "hri-fixture-list", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "ireland", "group_id": "hri", "status": "active", "source_kind": "racecard", "url": "https://www.hri.ie/racing/racecards/", "parser": "hri-racecards", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "france", "group_id": "france-galop", "status": "active", "source_kind": "annual", "url": "https://www.france-galop.com/en", "parser": "france-galop-calendar", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "france", "group_id": "france-galop", "status": "active", "source_kind": "racecard", "url": "https://www.france-galop.com/en", "parser": "france-galop-programme", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+    { "country_id": "france", "group_id": "letrot", "status": "active", "source_kind": "annual", "url": "https://www.letrot.com/", "parser": "letrot-calendar", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "france", "group_id": "letrot", "status": "active", "source_kind": "racecard", "url": "https://www.letrot.com/", "parser": "letrot-programme", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "united-states", "group_id": "equibase-thoroughbred", "status": "active", "source_kind": "rolling", "url": "https://www.equibase.com/static/entry/index.html", "parser": "equibase-entries", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "united-states", "group_id": "usta-harness", "status": "active", "source_kind": "rolling", "url": "https://entries.ustrotting.com/", "parser": "usta-entries", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "united-states", "group_id": "aqha-quarter-horse", "status": "active", "source_kind": "annual", "url": "https://www.aqha.com/racing", "parser": "aqha-racing", "target_level": "C", "refresh_cadence": "monthly" },
+
+    { "country_id": "canada", "group_id": "woodbine-thoroughbred", "status": "active", "source_kind": "rolling", "url": "https://woodbine.com/race/", "parser": "woodbine-race", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "canada", "group_id": "standardbred-canada", "status": "active", "source_kind": "rolling", "url": "https://standardbredcanada.ca/racing/entries-results", "parser": "standardbred-canada-entries-results", "target_level": "C", "refresh_cadence": "weekly" },
+
+    { "country_id": "australia", "group_id": "racing-australia-thoroughbred", "status": "active", "source_kind": "annual", "url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "parser": "racing-australia-calendar", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "australia", "group_id": "harness-australia", "status": "active", "source_kind": "rolling", "url": "https://www.harness.org.au/racing/fields/", "parser": "harness-australia-fields", "target_level": "C", "refresh_cadence": "weekly" },
+
+    { "country_id": "new-zealand", "group_id": "loveracing-thoroughbred", "status": "active", "source_kind": "rolling", "url": "https://loveracing.nz/RaceInfo", "parser": "loveracing-raceinfo", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "new-zealand", "group_id": "hrnz-harness", "status": "active", "source_kind": "rolling", "url": "https://infohorse.hrnz.co.nz/datahrs/fields/fields.htm", "parser": "hrnz-fields", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "new-zealand", "group_id": "hrnz-harness", "status": "active", "source_kind": "racecard", "url": "https://infohorse.hrnz.co.nz/datahrs/fields/fields.htm", "parser": "hrnz-racecard", "target_level": "A", "refresh_cadence": "daily_near_meeting" },
+
+    { "country_id": "south-africa", "group_id": "nhra", "status": "active", "source_kind": "annual", "url": "https://www.nhra.co.za/", "parser": "nhra-supporting-source", "target_level": "C", "refresh_cadence": "monthly" },
+    { "country_id": "south-africa", "group_id": "4racing", "status": "active", "source_kind": "rolling", "url": "https://www.4racing.com/racing", "parser": "4racing-calendar", "target_level": "C", "refresh_cadence": "weekly" },
+    { "country_id": "south-africa", "group_id": "gold-circle", "status": "active", "source_kind": "rolling", "url": "https://www.goldcircle.co.za/racing/", "parser": "gold-circle-calendar", "target_level": "C", "refresh_cadence": "weekly" },
+
+    { "country_id": "south-korea", "group_id": "kra", "status": "active", "source_kind": "rolling", "url": "https://race.kra.co.kr/", "parser": "kra-race-schedule", "target_level": "C", "refresh_cadence": "weekly" },
+
+    { "country_id": "singapore", "group_id": "singapore-turf-club", "status": "legacy", "source_kind": "annual", "url": "https://racing.turfclub.com.sg/", "parser": "singapore-legacy-status", "target_level": "E", "refresh_cadence": "quarterly_legacy_check" }
+  ]
+}
