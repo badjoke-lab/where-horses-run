@@ -15,6 +15,8 @@ const { records } = Astro.props;
           <div><dt>Meeting date</dt><dd>{record.meeting_date}</dd></div>
           <div><dt>First race time</dt><dd>{record.first_race_time}</dd></div>
           <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
+          <div><dt>Freshness</dt><dd>{record.freshness.status}</dd></div>
+          <div><dt>Freshness basis</dt><dd>{record.freshness.basis}</dd></div>
         </dl>
         <h4>All race times</h4>
         <ul>
@@ -23,12 +25,16 @@ const { records } = Astro.props;
           ))}
         </ul>
         <details>
-          <summary>Source trace</summary>
+          <summary>Source trace and freshness</summary>
           <dl>
             <div><dt>Source</dt><dd>{record.source_trace.source_url}</dd></div>
             <div><dt>Source type</dt><dd>{record.source_trace.source_type}</dd></div>
             <div><dt>Source capture date</dt><dd>{record.source_trace.source_capture_date}</dd></div>
+            <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
             <div><dt>Parser</dt><dd>{record.source_trace.parser}</dd></div>
+            <div><dt>Promotes from</dt><dd>{record.source_trace.promotes_from}</dd></div>
+            <div><dt>Freshness status</dt><dd>{record.freshness.status}</dd></div>
+            <div><dt>Freshness basis</dt><dd>{record.freshness.basis}</dd></div>
           </dl>
         </details>
       </article>
