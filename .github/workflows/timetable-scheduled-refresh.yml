@@ -45,12 +45,15 @@ jobs:
           WHR_LIVE_FETCH_TIMEOUT_MS: "12000"
         run: |
           node scripts/timetable/live-source-snapshot.mjs
+          node scripts/timetable/apply-live-source-snapshot.mjs
           npm run refresh:timetable
           node scripts/timetable/build-current-integrated.mjs
+          node scripts/timetable/apply-live-source-snapshot.mjs
 
       - name: Validate refresh outputs
         run: |
           node scripts/check-pr-123-scheduled-refresh-foundation.mjs
+          node scripts/check-pr-124-refresh-health-report.mjs
           npm run check
 
       - name: Create generated update PR
