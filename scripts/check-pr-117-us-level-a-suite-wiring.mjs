@@ -57,5 +57,6 @@ runCheck('scripts/check-pr-118-us-level-a-expansion.mjs');
 runCheck('scripts/check-pr-119-current-integrated.mjs');
 runCheck('scripts/check-pr-120-current-timetable-ui.mjs');
 runCheck('scripts/check-pr-121-current-timetable-dimensions.mjs');
+runCheck('scripts/check-pr-122-current-timetable-source-freshness.mjs');
 
 console.log('[pr-117-level-a-wiring] PASS');
