@@ -58,4 +58,15 @@ if (pr116.status !== 0) {
 }
 console.log(pr116.stdout.trim());
 
+const pr117 = spawnSync('node', ['scripts/check-pr-117-us-level-a-suite-wiring.mjs'], {
+  cwd: root,
+  encoding: 'utf8'
+});
+if (pr117.status !== 0) {
+  console.error(pr117.stdout);
+  console.error(pr117.stderr);
+  fail('PR-117 suite wiring check failed.');
+}
+console.log(pr117.stdout.trim());
+
 console.log(`[pr-115-usta] PASS: ${data.records.length} Level A full harness racecard records.`);
