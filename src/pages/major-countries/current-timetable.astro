@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
-import currentTimetable from '../../../data/generated/timetable/current-integrated.json';
+import currentTimetable from '../../../data/generated/timetable/real-calendar-all-countries.json';
 
 const records = currentTimetable.records;
 
@@ -25,15 +25,15 @@ const racecourses = countBy(records, 'racecourse');
 
 <BaseLayout
   title="Current Timetable | Where Horses Run"
-  description="Display-ready current timetable records with race times, source trace, and last checked fields."
+  description="Display-ready real-source timetable records with race times, source trace, and last checked fields."
   canonicalPath="/major-countries/current-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Current timetable</p>
-    <h1 id="page-title">Current integrated timetable</h1>
+    <h1 id="page-title">Current real-source timetable</h1>
     <div class="hero__summary">
-      <p>This page shows the generated integrated timetable records prepared for display.</p>
-      <p>It includes country, system, date, racecourse, first race time, all race times, source trace, and last checked fields.</p>
+      <p>This page shows the real-source timetable records for the 13-country v0 scope.</p>
+      <p>It includes country, system, date, racecourse, first race time when available, all race times when available, source trace, and last checked fields.</p>
     </div>
   </section>
 
