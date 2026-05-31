@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import registry from '../../../data/source-registry/major-country-sources.json';
+
+const sources = registry.sources;
+const activeSources = sources.filter((source) => source.status === 'active');
+const legacySources = sources.filter((source) => source.status === 'legacy');
+const countries = [...new Set(sources.map((source) => source.country_id))].sort();
+const targetLevels = [...new Set(sources.map((source) => source.target_level))].sort();
+---
+
+<BaseLayout
+  title="Source Health | Where Horses Run"
+  description="Registered timetable sources, target levels, refresh cadence, and live-source readiness for Where Horses Run."
+  canonicalPath="/major-countries/source-health/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Source health</p>
+    <h1 id="page-title">Timetable source health</h1>
+    <div class="hero__summary">
+      <p>This page lists the registered timetable sources used by the 13-country v0 scope.</p>
+      <p>Scheduled refresh writes live fetch results into generated source-health and update-report outputs.</p>
+    </div>
+  </section>
+
+  <section class="section-grid" aria-label="Source health summary">
+    <article class="card"><h2>Countries</h2><p>{countries.length}</p></article>
+    <article class="card"><h2>Sources</h2><p>{sources.length}</p></article>
+    <article class="card"><h2>Active</h2><p>{activeSources.length}</p></article>
+    <article class="card"><h2>Legacy</h2><p>{legacySources.length}</p></article>
+    <article class="card"><h2>Target levels</h2><p>{targetLevels.join(', ')}</p></article>
+  </section>
+
+  <section aria-labelledby="source-list-title">
+    <h2 id="source-list-title">Registered sources</h2>
+    <div class="source-list">
+      {sources.map((source) => (
+        <article class="source-card">
+          <h3>{source.country_id} / {source.group_id}</h3>
+          <dl>
+            <div><dt>Status</dt><dd>{source.status}</dd></div>
+            <div><dt>Source kind</dt><dd>{source.source_kind}</dd></div>
+            <div><dt>Target level</dt><dd>{source.target_level}</dd></div>
+            <div><dt>Parser</dt><dd>{source.parser}</dd></div>
+            <div><dt>Refresh cadence</dt><dd>{source.refresh_cadence}</dd></div>
+            <div><dt>URL</dt><dd><a href={source.url}>{source.url}</a></dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .source-list {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .source-card {
+    border: 1px solid var(--whr-color-border);
+    padding: var(--whr-space-3);
+  }
+
+  .source-card h3 {
+    margin-block-start: 0;
+  }
+
+  .source-card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--whr-space-2);
+  }
+
+  .source-card dt {
+    font-weight: 700;
+  }
+
+  .source-card dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 720px) {
+    .source-card dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
