@@ -56,5 +56,6 @@ if (!aqhaGenerator.includes('pr-116-aqha-level-a-v0')) {
 runCheck('scripts/check-pr-118-us-level-a-expansion.mjs');
 runCheck('scripts/check-pr-119-current-integrated.mjs');
 runCheck('scripts/check-pr-120-current-timetable-ui.mjs');
+runCheck('scripts/check-pr-121-current-timetable-dimensions.mjs');
 
 console.log('[pr-117-level-a-wiring] PASS');

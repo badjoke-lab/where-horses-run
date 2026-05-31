@@ -1,13 +1,26 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
+import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
 import currentTimetable from '../../../data/generated/timetable/current-integrated.json';
 
 const records = currentTimetable.records;
-const countries = [...new Set(records.map((record) => record.country_label))].sort();
-const groups = [...new Set(records.map((record) => record.group_label))].sort();
-const dates = [...new Set(records.map((record) => record.meeting_date))].sort();
-const racecourses = [...new Set(records.map((record) => record.racecourse))].sort();
+
+function countBy(records, field) {
+  const counts = new Map();
+  for (const record of records) {
+    const label = record[field];
+    counts.set(label, (counts.get(label) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+const countries = countBy(records, 'country_label');
+const groups = countBy(records, 'group_label');
+const dates = countBy(records, 'meeting_date');
+const racecourses = countBy(records, 'racecourse');
 ---
 
 <BaseLayout
@@ -31,21 +44,22 @@ const racecourses = [...new Set(records.map((record) => record.racecourse))].sor
     </article>
     <article class="card">
       <h2>Countries</h2>
-      <p>{countries.join(', ')}</p>
+      <p>{countries.map((item) => item.label).join(', ')}</p>
     </article>
     <article class="card">
       <h2>Systems</h2>
-      <p>{groups.join(', ')}</p>
+      <p>{groups.map((item) => item.label).join(', ')}</p>
     </article>
     <article class="card">
       <h2>Dates</h2>
-      <p>{dates.join(', ')}</p>
+      <p>{dates.map((item) => item.label).join(', ')}</p>
     </article>
     <article class="card">
       <h2>Racecourses</h2>
-      <p>{racecourses.join(', ')}</p>
+      <p>{racecourses.map((item) => item.label).join(', ')}</p>
     </article>
   </section>
 
+  <CurrentTimetableDimensions countries={countries} groups={groups} dates={dates} racecourses={racecourses} />
   <CurrentTimetableRecords records={records} />
 </BaseLayout>
