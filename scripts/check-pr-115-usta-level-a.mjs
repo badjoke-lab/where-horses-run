@@ -47,4 +47,15 @@ for (const record of data.records) {
   }
 }
 
+const pr116 = spawnSync('node', ['scripts/check-pr-116-aqha-level-a.mjs'], {
+  cwd: root,
+  encoding: 'utf8'
+});
+if (pr116.status !== 0) {
+  console.error(pr116.stdout);
+  console.error(pr116.stderr);
+  fail('PR-116 validator failed.');
+}
+console.log(pr116.stdout.trim());
+
 console.log(`[pr-115-usta] PASS: ${data.records.length} Level A full harness racecard records.`);
