@@ -1,0 +1,65 @@
+name: Timetable Scheduled Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      live_fetch:
+        description: Run live source fetch
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      source_limit:
+        description: Maximum sources to check
+        required: true
+        default: "24"
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  timetable-refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scheduled timetable refresh
+        env:
+          WHR_LIVE_FETCH: ${{ github.event_name == 'schedule' || inputs.live_fetch == 'true' && '1' || '0' }}
+          WHR_LIVE_FETCH_LIMIT: ${{ inputs.source_limit || '24' }}
+          WHR_LIVE_FETCH_TIMEOUT_MS: "12000"
+        run: |
+          node scripts/timetable/live-source-snapshot.mjs
+          npm run refresh:timetable
+          node scripts/timetable/build-current-integrated.mjs
+
+      - name: Validate refresh outputs
+        run: |
+          node scripts/check-pr-123-scheduled-refresh-foundation.mjs
+          npm run check
+
+      - name: Create generated update PR
+        if: github.event_name == 'schedule' || inputs.live_fetch == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: refresh timetable generated data"
+          title: "chore: refresh timetable generated data"
+          body: "Automated timetable refresh output. Review source snapshots, generated timetable data, and validation results before merging."
+          branch: "generated/timetable-refresh"
+          delete-branch: true
+          labels: "generated-data,timetable"
