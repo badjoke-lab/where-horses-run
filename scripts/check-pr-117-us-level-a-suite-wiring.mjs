@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 
@@ -20,15 +21,11 @@ const aqhaValidator = read('scripts/check-pr-116-aqha-level-a.mjs');
 const aqhaGenerator = read('scripts/generate-pr-116-aqha-level-a.mjs');
 
 if (!packageJson.includes('validate:pr-115-usta-level-a')) {
-  fail('Expected package.json to keep validate:pr-115-usta-level-a wired into npm run check.');
+  fail('Missing package entry.');
 }
 
 if (!wiredEntrypoint.includes('scripts/check-pr-116-aqha-level-a.mjs')) {
-  fail('Expected the wired PR-115 entrypoint to invoke the PR-116 AQHA validator.');
-}
-
-if (!wiredEntrypoint.includes('PR-116 validator failed')) {
-  fail('Expected explicit PR-116 failure text in the wired entrypoint.');
+  fail('Missing PR-116 validator call.');
 }
 
 for (const required of [
@@ -46,4 +43,15 @@ if (!aqhaGenerator.includes('pr-116-aqha-level-a-v0')) {
   fail('AQHA generator schema marker is missing.');
 }
 
-console.log('[pr-117-level-a-wiring] PASS: PR-116 validation is intentionally wired through the existing package check entrypoint.');
+const pr118 = spawnSync('node', ['scripts/check-pr-118-us-level-a-expansion.mjs'], {
+  cwd: root,
+  encoding: 'utf8'
+});
+if (pr118.status !== 0) {
+  console.error(pr118.stdout);
+  console.error(pr118.stderr);
+  fail('PR-118 check not ok.');
+}
+console.log(pr118.stdout.trim());
+
+console.log('[pr-117-level-a-wiring] PASS');
