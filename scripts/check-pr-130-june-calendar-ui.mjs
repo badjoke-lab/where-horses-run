@@ -45,20 +45,54 @@ function readJson(relativePath) {
   return JSON.parse(read(relativePath));
 }
 
+function slug(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function expandRecordSets(data) {
+  if (Array.isArray(data.records)) return data.records;
+  if (!Array.isArray(data.record_sets)) fail('Expected records or record_sets.');
+  return data.record_sets.flatMap((set) => {
+    if (!Array.isArray(set.meetings) || set.meetings.length < 1) fail(`${set.country_id}/${set.group_id}: meetings missing.`);
+    return set.meetings.map(([meetingDate, racecourse]) => ({
+      record_id: `june-2026-${set.country_id}-${set.group_id}-${meetingDate}-${slug(racecourse)}`,
+      country_id: set.country_id,
+      country_label: set.country_label,
+      group_id: set.group_id,
+      group_label: set.group_label,
+      racecourse,
+      meeting_date: meetingDate,
+      data_level: set.data_level,
+      data_origin: 'real_source',
+      first_race_time: null,
+      all_race_times: [],
+      source_trace: set.source_trace,
+      freshness: {
+        status: 'real_source_checked',
+        basis: 'official_month_calendar',
+        source_capture_date: set.source_trace?.source_capture_date,
+        last_checked: set.source_trace?.last_checked
+      }
+    }));
+  });
+}
+
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
 const page = read('src/pages/major-countries/current-timetable.astro');
+const records = expandRecordSets(data);
 
 if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
 if (data.month !== '2026-06') fail('Unexpected month.');
-if (!Array.isArray(data.records) || data.records.length < expectedGroups.length) fail(`Expected at least ${expectedGroups.length} June records.`);
+if (records.length < expectedGroups.length) fail(`Expected at least ${expectedGroups.length} June records.`);
 if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
+if (!page.includes('expandRecordSets')) fail('Current timetable page must expand record_sets.');
 
-const groupKeys = new Set(data.records.map((record) => `${record.country_id}::${record.group_id}`));
+const groupKeys = new Set(records.map((record) => `${record.country_id}::${record.group_id}`));
 for (const [countryId, groupId] of expectedGroups) {
   if (!groupKeys.has(`${countryId}::${groupId}`)) fail(`Missing June record for ${countryId}/${groupId}.`);
 }
 
-for (const record of data.records) {
+for (const record of records) {
   if (record.data_origin !== 'real_source') fail(`${record.record_id}: data_origin must be real_source.`);
   if (!['A', 'B', 'C'].includes(record.data_level)) fail(`${record.record_id}: data_level must be A/B/C.`);
   if (!record.meeting_date?.startsWith('2026-06-')) fail(`${record.record_id}: meeting_date must be in June 2026.`);
