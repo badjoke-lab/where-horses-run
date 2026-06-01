@@ -4,6 +4,15 @@
   "purpose": "Record reusable acquisition routes so PR-130 data collection does not restart from scratch on the next update.",
   "routes": [
     {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "status": "manual_route_confirmed",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "parser": "hkjc-fixture-list-month",
+      "output_file": "data/generated/timetable/june-2026-calendar.json",
+      "reusable_next_step": "Promote the month-specific fixture query into a parameterized HKJC month extractor using calmonth and calyear."
+    },
+    {
       "country_id": "japan",
       "group_id": "jra",
       "status": "manual_route_confirmed",
@@ -22,6 +31,15 @@
       "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the race schedule and filters by YYYY-MM."
     },
     {
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "status": "manual_route_confirmed",
+      "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf",
+      "parser": "bha-2026-fixture-list-pdf",
+      "output_file": "data/generated/timetable/june-2026-calendar.json",
+      "reusable_next_step": "Promote the PDF month extraction into a reusable BHA fixture-list parser that filters the annual PDF by YYYY-MM."
+    },
+    {
       "country_id": "ireland",
       "group_id": "hri",
       "status": "manual_route_confirmed",
@@ -37,7 +55,7 @@
       "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
       "parser": "nar-monthly-convene-info",
       "output_file": "data/generated/timetable/manual-june-2026-nar.json",
-      "reusable_next_step": "Run scripts/extract-pr-130-nar-june.mjs to generate the month record set from the NAR monthly convene route."
+      "reusable_next_step": "Run scripts/extract-pr-130-nar-june.mjs with ALLOW_LIVE_SOURCE_FETCH=1 to generate the month record set from the NAR monthly convene route."
     },
     {
       "country_id": "france",
