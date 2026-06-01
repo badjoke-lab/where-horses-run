@@ -30,6 +30,8 @@ const expectedGroups = [
   ['united-states', 'aqha-quarter-horse']
 ];
 
+const terminalCoverageStatuses = new Set(['no_june_meetings', 'legacy_no_active_racing']);
+
 function fail(message) {
   console.error(`[pr-130-june-calendar-ui] ${message}`);
   process.exit(1);
@@ -77,19 +79,32 @@ function expandRecordSets(data) {
   });
 }
 
+function groupKey(item) {
+  return `${item.country_id}::${item.group_id}`;
+}
+
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
 const page = read('src/pages/major-countries/current-timetable.astro');
 const records = expandRecordSets(data);
+const coverageStatus = data.coverage_status ?? [];
 
 if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
 if (data.month !== '2026-06') fail('Unexpected month.');
-if (records.length < expectedGroups.length) fail(`Expected at least ${expectedGroups.length} June records.`);
 if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
 if (!page.includes('expandRecordSets')) fail('Current timetable page must expand record_sets.');
+if (!page.includes('coverage_status')) fail('Current timetable page must expose coverage_status notes.');
 
-const groupKeys = new Set(records.map((record) => `${record.country_id}::${record.group_id}`));
+const satisfiedGroupKeys = new Set(records.map(groupKey));
+for (const statusRecord of coverageStatus) {
+  if (!terminalCoverageStatuses.has(statusRecord.status)) fail(`${groupKey(statusRecord)}: unsupported coverage status ${statusRecord.status}.`);
+  if (!statusRecord.source_trace?.source_url?.startsWith('https://')) fail(`${groupKey(statusRecord)}: source URL missing.`);
+  if (!statusRecord.source_trace?.parser) fail(`${groupKey(statusRecord)}: parser missing.`);
+  if (!statusRecord.source_trace?.last_checked) fail(`${groupKey(statusRecord)}: last_checked missing.`);
+  satisfiedGroupKeys.add(groupKey(statusRecord));
+}
+
 for (const [countryId, groupId] of expectedGroups) {
-  if (!groupKeys.has(`${countryId}::${groupId}`)) fail(`Missing June record for ${countryId}/${groupId}.`);
+  if (!satisfiedGroupKeys.has(`${countryId}::${groupId}`)) fail(`Missing June coverage for ${countryId}/${groupId}.`);
 }
 
 for (const record of records) {
@@ -99,9 +114,13 @@ for (const record of records) {
   if (!record.racecourse) fail(`${record.record_id}: racecourse missing.`);
   if (!record.source_trace?.source_url?.startsWith('https://')) fail(`${record.record_id}: source URL missing.`);
   if (!record.source_trace?.parser) fail(`${record.record_id}: parser missing.`);
-  const serialized = JSON.stringify(record).toLowerCase();
+  if (!record.source_trace?.last_checked) fail(`${record.record_id}: last_checked missing.`);
+}
+
+for (const value of [...records, ...coverageStatus]) {
+  const serialized = JSON.stringify(value).toLowerCase();
   for (const forbidden of ['fixture_source', 'sample', 'mock', 'needs_review', 'not_checked']) {
-    if (serialized.includes(forbidden)) fail(`${record.record_id}: forbidden marker ${forbidden}.`);
+    if (serialized.includes(forbidden)) fail(`${groupKey(value)}: forbidden marker ${forbidden}.`);
   }
 }
 
