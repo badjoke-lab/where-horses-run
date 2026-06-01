@@ -28,6 +28,51 @@
       ]
     },
     {
+      "country_id": "ireland",
+      "country_label": "Ireland",
+      "group_id": "hri",
+      "group_label": "HRI",
+      "data_level": "C",
+      "source_trace": {
+        "source_url": "https://www.hri.ie/racing/fixture-list/",
+        "source_type": "official_source",
+        "source_capture_date": "2026-05-30",
+        "last_checked": "2026-05-30",
+        "parser": "hri-fixture-list-month-manual"
+      },
+      "meetings": [
+        ["2026-06-01", "Listowel"],
+        ["2026-06-03", "Curragh"],
+        ["2026-06-04", "Leopardstown"],
+        ["2026-06-05", "Clonmel"],
+        ["2026-06-05", "Fairyhouse"],
+        ["2026-06-06", "Punchestown"],
+        ["2026-06-07", "Navan"],
+        ["2026-06-07", "Punchestown"],
+        ["2026-06-08", "Roscommon"],
+        ["2026-06-09", "Sligo"],
+        ["2026-06-10", "Limerick"],
+        ["2026-06-11", "Leopardstown"],
+        ["2026-06-12", "Fairyhouse"],
+        ["2026-06-12", "Gowran Park"],
+        ["2026-06-13", "Downpatrick"],
+        ["2026-06-14", "Cork"],
+        ["2026-06-14", "Downpatrick"],
+        ["2026-06-15", "Kilbeggan"],
+        ["2026-06-18", "Leopardstown"],
+        ["2026-06-19", "Down Royal"],
+        ["2026-06-19", "Limerick"],
+        ["2026-06-20", "Down Royal"],
+        ["2026-06-22", "Ballinrobe"],
+        ["2026-06-24", "Naas"],
+        ["2026-06-26", "Curragh"],
+        ["2026-06-27", "Curragh"],
+        ["2026-06-28", "Curragh"],
+        ["2026-06-30", "Roscommon"],
+        ["2026-06-30", "Wexford"]
+      ]
+    },
+    {
       "country_id": "japan",
       "country_label": "Japan",
       "group_id": "banei",
@@ -38,9 +83,63 @@
         "source_type": "official_source",
         "source_capture_date": "2026-06-01",
         "last_checked": "2026-06-01",
-        "parser": "banei-race-schedule-month"
+        "parser": "banei-race-schedule-month-manual"
       },
-      "meetings": [["2026-06-01", "帯広競馬場"]]
+      "meetings": [
+        ["2026-06-01", "Obihiro"],
+        ["2026-06-05", "Obihiro"],
+        ["2026-06-06", "Obihiro"],
+        ["2026-06-07", "Obihiro"],
+        ["2026-06-08", "Obihiro"],
+        ["2026-06-13", "Obihiro"],
+        ["2026-06-14", "Obihiro"],
+        ["2026-06-15", "Obihiro"],
+        ["2026-06-20", "Obihiro"],
+        ["2026-06-21", "Obihiro"],
+        ["2026-06-22", "Obihiro"],
+        ["2026-06-27", "Obihiro"],
+        ["2026-06-28", "Obihiro"],
+        ["2026-06-29", "Obihiro"],
+        ["2026-06-30", "Obihiro"]
+      ]
+    },
+    {
+      "country_id": "japan",
+      "country_label": "Japan",
+      "group_id": "jra",
+      "group_label": "JRA",
+      "data_level": "C",
+      "source_trace": {
+        "source_url": "https://jra.jp/keiba/calendar2026/",
+        "source_type": "official_source",
+        "source_capture_date": "2026-06-01",
+        "last_checked": "2026-06-01",
+        "parser": "jra-calendar-month-manual"
+      },
+      "meetings": [
+        ["2026-06-06", "Tokyo"],
+        ["2026-06-06", "Hanshin"],
+        ["2026-06-07", "Tokyo"],
+        ["2026-06-07", "Hanshin"],
+        ["2026-06-13", "Tokyo"],
+        ["2026-06-13", "Hanshin"],
+        ["2026-06-13", "Hakodate"],
+        ["2026-06-14", "Tokyo"],
+        ["2026-06-14", "Hanshin"],
+        ["2026-06-14", "Hakodate"],
+        ["2026-06-20", "Tokyo"],
+        ["2026-06-20", "Hanshin"],
+        ["2026-06-20", "Hakodate"],
+        ["2026-06-21", "Tokyo"],
+        ["2026-06-21", "Hanshin"],
+        ["2026-06-21", "Hakodate"],
+        ["2026-06-27", "Fukushima"],
+        ["2026-06-27", "Kokura"],
+        ["2026-06-27", "Hakodate"],
+        ["2026-06-28", "Fukushima"],
+        ["2026-06-28", "Kokura"],
+        ["2026-06-28", "Hakodate"]
+      ]
     },
     {
       "country_id": "united-kingdom",
