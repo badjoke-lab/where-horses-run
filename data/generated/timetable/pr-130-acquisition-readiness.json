@@ -92,12 +92,26 @@
     {
       "country_id": "new-zealand",
       "group_id": "hrnz-harness",
-      "status": "club_dates_progress_only",
+      "status": "club_dates_progress_only_with_blockers",
       "progress_file": "data/generated/timetable/progress-june-2026-hrnz-harness.json",
       "source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
       "parser": "hrnz-racing-dates-month-club-progress",
-      "current_coverage": "18 June 2026 official club-date rows",
-      "remaining_work": "Verify Club-to-racecourse mapping for each row before promoting to manual-june-2026-hrnz-harness.json."
+      "current_coverage": "18 June 2026 official club-date rows. 15 rows are mappable with high confidence; 3 rows remain blocked.",
+      "blocked_rows": [
+        {
+          "club": "Invercargill Harness Racing Club Inc",
+          "issue": "Club confirmed, but fetched official text has not explicitly named Ascot Park / exact racecourse for the June rows."
+        },
+        {
+          "club": "Winton Harness Racing Club Inc",
+          "issue": "Club confirmed, but fetched official text has not explicitly named Central Southland Raceway / exact racecourse for the June row."
+        },
+        {
+          "club": "Forbury Park Trotting Club Inc",
+          "issue": "2026-06-21 racecourse unresolved; Forbury Park Raceway closed in 2021, so venue must not be inferred."
+        }
+      ],
+      "remaining_work": "Resolve the 3 blocked club-to-racecourse mappings before promoting to manual-june-2026-hrnz-harness.json."
     }
   ],
   "route_only_not_ready": [
@@ -120,6 +134,7 @@
   "important_findings": [
     "The current PR-130 gate validates source_url/parser/last_checked and committed coverage, but it does not prove full automation for every group.",
     "manual-june-2026-*.json files are auto-merged by scripts/merge-pr-130-manual-june-records.mjs, so partial files must stay under progress-june-2026-* until full coverage is verified.",
-    "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups."
+    "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups.",
+    "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs."
   ]
 }
