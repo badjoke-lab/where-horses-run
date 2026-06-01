@@ -1,79 +1,32 @@
 {
   "schema_version": "june-2026-source-routes-v0",
   "month": "2026-06",
-  "purpose": "Record reusable acquisition routes so PR-130 data collection does not restart from scratch on the next update.",
+  "purpose": "Record reusable acquisition routes for every PR-130 expected country/system group so data collection does not restart from scratch on the next update.",
   "routes": [
-    {
-      "country_id": "hong-kong",
-      "group_id": "hkjc",
-      "status": "manual_route_confirmed",
-      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-      "parser": "hkjc-fixture-list-month",
-      "output_file": "data/generated/timetable/june-2026-calendar.json",
-      "reusable_next_step": "Promote the month-specific fixture query into a parameterized HKJC month extractor using calmonth and calyear."
-    },
-    {
-      "country_id": "japan",
-      "group_id": "jra",
-      "status": "manual_route_confirmed",
-      "source_url": "https://jra.jp/keiba/calendar2026/",
-      "parser": "jra-calendar-month-manual",
-      "output_file": "data/generated/timetable/manual-june-2026-jra.json",
-      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the annual calendar and filters by YYYY-MM."
-    },
-    {
-      "country_id": "japan",
-      "group_id": "banei",
-      "status": "manual_route_confirmed",
-      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
-      "parser": "banei-race-schedule-month-manual",
-      "output_file": "data/generated/timetable/manual-june-2026-banei.json",
-      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the race schedule and filters by YYYY-MM."
-    },
-    {
-      "country_id": "united-kingdom",
-      "group_id": "bha",
-      "status": "manual_route_confirmed",
-      "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf",
-      "parser": "bha-2026-fixture-list-pdf",
-      "output_file": "data/generated/timetable/june-2026-calendar.json",
-      "reusable_next_step": "Promote the PDF month extraction into a reusable BHA fixture-list parser that filters the annual PDF by YYYY-MM."
-    },
-    {
-      "country_id": "ireland",
-      "group_id": "hri",
-      "status": "manual_route_confirmed",
-      "source_url": "https://www.hri.ie/racing/fixture-list/",
-      "parser": "hri-fixture-list-month-manual",
-      "output_file": "data/generated/timetable/manual-june-2026-hri.json",
-      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the HRI fixture list and filters by YYYY-MM."
-    },
-    {
-      "country_id": "japan",
-      "group_id": "nar",
-      "status": "manual_route_confirmed",
-      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
-      "parser": "nar-monthly-convene-info",
-      "output_file": "data/generated/timetable/manual-june-2026-nar.json",
-      "reusable_next_step": "Run scripts/extract-pr-130-nar-june.mjs with ALLOW_LIVE_SOURCE_FETCH=1 to generate the month record set from the NAR monthly convene route."
-    },
-    {
-      "country_id": "france",
-      "group_id": "france-galop",
-      "status": "route_not_yet_extractable",
-      "source_url": "https://www.france-galop.com/en",
-      "parser": "france-galop-calendar",
-      "output_file": "data/generated/timetable/manual-june-2026-france-galop.json",
-      "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records."
-    },
-    {
-      "country_id": "france",
-      "group_id": "letrot",
-      "status": "route_not_yet_extractable",
-      "source_url": "https://www.letrot.com/",
-      "parser": "letrot-calendar",
-      "output_file": "data/generated/timetable/manual-june-2026-letrot.json",
-      "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records."
-    }
+    { "country_id": "japan", "group_id": "jra", "status": "manual_route_confirmed", "source_url": "https://jra.jp/keiba/calendar2026/", "parser": "jra-calendar-month-manual", "output_file": "data/generated/timetable/manual-june-2026-jra.json", "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the annual calendar and filters by YYYY-MM." },
+    { "country_id": "japan", "group_id": "nar", "status": "manual_route_confirmed", "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop", "parser": "nar-monthly-convene-info", "output_file": "data/generated/timetable/manual-june-2026-nar.json", "reusable_next_step": "Run scripts/extract-pr-130-nar-june.mjs with ALLOW_LIVE_SOURCE_FETCH=1 to generate the month record set from the NAR monthly convene route." },
+    { "country_id": "japan", "group_id": "banei", "status": "manual_route_confirmed", "source_url": "https://www.banei-keiba.or.jp/race_schedule.php", "parser": "banei-race-schedule-month-manual", "output_file": "data/generated/timetable/manual-june-2026-banei.json", "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the race schedule and filters by YYYY-MM." },
+    { "country_id": "hong-kong", "group_id": "hkjc", "status": "manual_route_confirmed", "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026", "parser": "hkjc-fixture-list-month", "output_file": "data/generated/timetable/june-2026-calendar.json", "reusable_next_step": "Promote the month-specific fixture query into a parameterized HKJC month extractor using calmonth and calyear." },
+    { "country_id": "united-arab-emirates", "group_id": "era", "status": "manual_route_confirmed", "source_url": "https://emiratesracing.com/season-calendar/current-season", "parser": "era-season-calendar-month-status", "output_file": "data/generated/timetable/june-2026-calendar.json coverage_status", "reusable_next_step": "Keep the month status route and only add meeting records when the official season calendar shows June meetings." },
+    { "country_id": "united-kingdom", "group_id": "bha", "status": "manual_route_confirmed", "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf", "parser": "bha-2026-fixture-list-pdf", "output_file": "data/generated/timetable/june-2026-calendar.json", "reusable_next_step": "Promote the PDF month extraction into a reusable BHA fixture-list parser that filters the annual PDF by YYYY-MM." },
+    { "country_id": "united-kingdom", "group_id": "point-to-point", "status": "route_not_yet_extractable", "source_url": "https://www.britishhorseracing.com/regulation/point-to-point/", "parser": "bha-point-to-point", "output_file": "data/generated/timetable/manual-june-2026-uk-point-to-point.json", "reusable_next_step": "Find the stable fixture/calendar export for point-to-point before adding June records." },
+    { "country_id": "united-kingdom", "group_id": "purebred-arabian", "status": "route_not_yet_extractable", "source_url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/", "parser": "bha-purebred-arabian", "output_file": "data/generated/timetable/manual-june-2026-uk-purebred-arabian.json", "reusable_next_step": "Find the stable fixture/calendar export for purebred Arabian racing before adding June records." },
+    { "country_id": "ireland", "group_id": "hri", "status": "manual_route_confirmed", "source_url": "https://www.hri.ie/racing/fixture-list/", "parser": "hri-fixture-list-month-manual", "output_file": "data/generated/timetable/manual-june-2026-hri.json", "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the HRI fixture list and filters by YYYY-MM." },
+    { "country_id": "france", "group_id": "france-galop", "status": "route_not_yet_extractable", "source_url": "https://www.france-galop.com/en", "parser": "france-galop-calendar", "output_file": "data/generated/timetable/manual-june-2026-france-galop.json", "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records." },
+    { "country_id": "france", "group_id": "letrot", "status": "route_not_yet_extractable", "source_url": "https://www.letrot.com/", "parser": "letrot-calendar", "output_file": "data/generated/timetable/manual-june-2026-letrot.json", "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records." },
+    { "country_id": "australia", "group_id": "racing-australia-thoroughbred", "status": "route_not_yet_extractable", "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx", "parser": "racing-australia-calendar", "output_file": "data/generated/timetable/manual-june-2026-racing-australia-thoroughbred.json", "reusable_next_step": "Turn the Racing Australia calendar route into a month extractor and then add June meeting records." },
+    { "country_id": "australia", "group_id": "harness-australia", "status": "route_not_yet_extractable", "source_url": "https://www.harness.org.au/racing/fields/", "parser": "harness-australia-fields", "output_file": "data/generated/timetable/manual-june-2026-harness-australia.json", "reusable_next_step": "Turn the Harness Australia fields route into a month extractor and then add June meeting records." },
+    { "country_id": "new-zealand", "group_id": "loveracing-thoroughbred", "status": "route_not_yet_extractable", "source_url": "https://loveracing.nz/RaceInfo", "parser": "loveracing-raceinfo", "output_file": "data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json", "reusable_next_step": "Turn the LOVERACING RaceInfo route into a month extractor and then add June meeting records." },
+    { "country_id": "new-zealand", "group_id": "hrnz-harness", "status": "route_not_yet_extractable", "source_url": "https://infohorse.hrnz.co.nz/datahrs/fields/fields.htm", "parser": "hrnz-fields", "output_file": "data/generated/timetable/manual-june-2026-hrnz-harness.json", "reusable_next_step": "Turn the HRNZ fields route into a month extractor and then add June meeting records." },
+    { "country_id": "canada", "group_id": "woodbine-thoroughbred", "status": "route_not_yet_extractable", "source_url": "https://woodbine.com/race/", "parser": "woodbine-race", "output_file": "data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json", "reusable_next_step": "Turn the Woodbine race route into a month extractor and then add June meeting records." },
+    { "country_id": "canada", "group_id": "standardbred-canada", "status": "route_not_yet_extractable", "source_url": "https://standardbredcanada.ca/racing/entries-results", "parser": "standardbred-canada-entries-results", "output_file": "data/generated/timetable/manual-june-2026-standardbred-canada.json", "reusable_next_step": "Turn the Standardbred Canada entries/results route into a month extractor and then add June meeting records." },
+    { "country_id": "south-africa", "group_id": "nhra", "status": "route_not_yet_extractable", "source_url": "https://www.nhra.co.za/", "parser": "nhra-supporting-source", "output_file": "data/generated/timetable/manual-june-2026-nhra.json", "reusable_next_step": "Use NHRA as a supporting route and pair it with an extractable meeting calendar before adding June records." },
+    { "country_id": "south-africa", "group_id": "4racing", "status": "route_not_yet_extractable", "source_url": "https://www.4racing.com/racing", "parser": "4racing-calendar", "output_file": "data/generated/timetable/manual-june-2026-4racing.json", "reusable_next_step": "Turn the 4Racing calendar route into a month extractor and then add June meeting records." },
+    { "country_id": "south-africa", "group_id": "gold-circle", "status": "route_not_yet_extractable", "source_url": "https://www.goldcircle.co.za/racing/", "parser": "gold-circle-calendar", "output_file": "data/generated/timetable/manual-june-2026-gold-circle.json", "reusable_next_step": "Turn the Gold Circle racing route into a month extractor and then add June meeting records." },
+    { "country_id": "south-korea", "group_id": "kra", "status": "route_not_yet_extractable", "source_url": "https://race.kra.co.kr/", "parser": "kra-race-schedule", "output_file": "data/generated/timetable/manual-june-2026-kra.json", "reusable_next_step": "Turn the KRA race schedule route into a month extractor and then add June meeting records." },
+    { "country_id": "singapore", "group_id": "singapore-turf-club", "status": "manual_route_confirmed", "source_url": "https://racing.turfclub.com.sg/", "parser": "singapore-turf-club-legacy-status", "output_file": "data/generated/timetable/june-2026-calendar.json coverage_status", "reusable_next_step": "Keep the quarterly legacy/no-active-racing status check; do not invent June meetings." },
+    { "country_id": "united-states", "group_id": "equibase-thoroughbred", "status": "route_not_yet_extractable", "source_url": "https://www.equibase.com/static/entry/index.html", "parser": "equibase-entries", "output_file": "data/generated/timetable/manual-june-2026-equibase-thoroughbred.json", "reusable_next_step": "Turn the Equibase entries route into a month extractor and then add June meeting records." },
+    { "country_id": "united-states", "group_id": "usta-harness", "status": "route_not_yet_extractable", "source_url": "https://entries.ustrotting.com/", "parser": "usta-entries", "output_file": "data/generated/timetable/manual-june-2026-usta-harness.json", "reusable_next_step": "Turn the USTA entries route into a month extractor and then add June meeting records." },
+    { "country_id": "united-states", "group_id": "aqha-quarter-horse", "status": "route_not_yet_extractable", "source_url": "https://www.aqha.com/racing", "parser": "aqha-racing", "output_file": "data/generated/timetable/manual-june-2026-aqha-quarter-horse.json", "reusable_next_step": "Turn the AQHA racing route into a month extractor and then add June meeting records." }
   ]
 }
