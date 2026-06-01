@@ -84,7 +84,9 @@ for (const statusRecord of coverageStatus) {
 }
 
 for (const [countryId, groupId] of expectedGroups) {
-  if (!satisfiedGroupKeys.has(`${countryId}::${groupId}`)) fail(`Missing June coverage for ${countryId}/${groupId}.`);
+  const key = `${countryId}::${groupId}`;
+  if (!routeByGroup.has(key)) fail(`Missing reusable source route for ${countryId}/${groupId}.`);
+  if (!satisfiedGroupKeys.has(key)) fail(`Missing June coverage for ${countryId}/${groupId}.`);
 }
 
 for (const record of records) {
