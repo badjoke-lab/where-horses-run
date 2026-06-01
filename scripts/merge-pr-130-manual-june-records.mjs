@@ -3,7 +3,8 @@ import fs from 'node:fs';
 const outputPath = 'data/generated/timetable/june-2026-calendar.json';
 const manualPaths = [
   'data/generated/timetable/manual-june-2026-banei.json',
-  'data/generated/timetable/manual-june-2026-jra.json'
+  'data/generated/timetable/manual-june-2026-jra.json',
+  'data/generated/timetable/manual-june-2026-hri.json'
 ];
 
 const data = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
