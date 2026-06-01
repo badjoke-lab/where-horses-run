@@ -33,11 +33,11 @@
     {
       "country_id": "japan",
       "group_id": "nar",
-      "status": "route_identified_partial_extraction",
+      "status": "manual_route_confirmed",
       "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
       "parser": "nar-monthly-convene-info",
       "output_file": "data/generated/timetable/manual-june-2026-nar.json",
-      "reusable_next_step": "Use the monthly convene table as the primary C-level source, then map dates and racecourse columns into meetings."
+      "reusable_next_step": "Run scripts/extract-pr-130-nar-june.mjs to generate the month record set from the NAR monthly convene route."
     },
     {
       "country_id": "france",
