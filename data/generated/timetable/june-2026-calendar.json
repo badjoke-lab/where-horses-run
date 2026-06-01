@@ -88,5 +88,37 @@
         ["2026-06-30", "BRIGHTON"], ["2026-06-30", "MUSSELBURGH"], ["2026-06-30", "Stratford-On-Avon"], ["2026-06-30", "FFOS LAS"]
       ]
     }
+  ],
+  "coverage_status": [
+    {
+      "country_id": "united-arab-emirates",
+      "country_label": "United Arab Emirates",
+      "group_id": "era",
+      "group_label": "ERA",
+      "status": "no_june_meetings",
+      "reason": "The current UAE season calendar source was checked for June 2026 coverage before adding records; no June meetings are represented as timetable records in this PR until an official June meeting is found.",
+      "source_trace": {
+        "source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_type": "official_source",
+        "source_capture_date": "2026-06-01",
+        "last_checked": "2026-06-01",
+        "parser": "era-season-calendar-month-status"
+      }
+    },
+    {
+      "country_id": "singapore",
+      "country_label": "Singapore",
+      "group_id": "singapore-turf-club",
+      "group_label": "Singapore Turf Club",
+      "status": "legacy_no_active_racing",
+      "reason": "Singapore is tracked as a legacy/no active racing group in the source registry; PR-130 records that status instead of inventing June 2026 meetings.",
+      "source_trace": {
+        "source_url": "https://racing.turfclub.com.sg/",
+        "source_type": "official_source",
+        "source_capture_date": "2026-06-01",
+        "last_checked": "2026-06-01",
+        "parser": "singapore-turf-club-legacy-status"
+      }
+    }
   ]
 }
