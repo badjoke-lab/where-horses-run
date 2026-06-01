@@ -1,0 +1,125 @@
+{
+  "schema_version": "pr-130-acquisition-readiness-v0",
+  "month": "2026-06",
+  "purpose": "Track whether PR-130 June data has both committed records and a reusable acquisition path, so future updates do not restart from scratch.",
+  "last_checked": "2026-06-01",
+  "ready_for_next_update": [
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "status": "manual_month_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-jra.json",
+      "source_url": "https://jra.jp/keiba/calendar2026/",
+      "parser": "jra-calendar-month-manual",
+      "remaining_work": "Promote manual month extraction to a parameterized annual-calendar parser. Current route is recorded and repeatable, but not fully automated."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "status": "extractor_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-nar.json",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "parser": "nar-monthly-convene-info",
+      "regeneration_command": "ALLOW_LIVE_SOURCE_FETCH=1 node scripts/extract-pr-130-nar-june.mjs",
+      "remaining_work": "The extractor exists. Keep validating that it reproduces the committed full June record set before PR-131."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "banei",
+      "status": "manual_month_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-banei.json",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "parser": "banei-race-schedule-month-manual",
+      "remaining_work": "Promote manual month extraction to a parameterized schedule parser. Current route is recorded and repeatable, but not fully automated."
+    },
+    {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "status": "parameterized_month_route_ready",
+      "records_file": "data/generated/timetable/june-2026-calendar.json",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "parser": "hkjc-fixture-list-month",
+      "remaining_work": "Promote the month query into an extractor that accepts year/month. The source URL already encodes calmonth/calyear."
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "status": "coverage_status_route_ready",
+      "records_file": "data/generated/timetable/june-2026-calendar.json coverage_status",
+      "source_url": "https://emiratesracing.com/season-calendar/current-season",
+      "parser": "era-season-calendar-month-status",
+      "remaining_work": "Keep checking official season calendar before adding June records. Do not invent meetings."
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "status": "annual_pdf_route_ready",
+      "records_file": "data/generated/timetable/june-2026-calendar.json",
+      "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf",
+      "parser": "bha-2026-fixture-list-pdf",
+      "remaining_work": "Promote PDF month extraction into a reusable annual PDF parser. Current source route is stable and repeatable."
+    },
+    {
+      "country_id": "ireland",
+      "group_id": "hri",
+      "status": "manual_month_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-hri.json",
+      "source_url": "https://www.hri.ie/racing/fixture-list/",
+      "parser": "hri-fixture-list-month-manual",
+      "remaining_work": "Promote manual month extraction into a reusable fixture-list parser. Current route is recorded and repeatable, but not fully automated."
+    },
+    {
+      "country_id": "singapore",
+      "group_id": "singapore-turf-club",
+      "status": "legacy_status_route_ready",
+      "records_file": "data/generated/timetable/june-2026-calendar.json coverage_status",
+      "source_url": "https://racing.turfclub.com.sg/",
+      "parser": "singapore-turf-club-legacy-status",
+      "remaining_work": "Keep legacy/no-active-racing status checks. Do not invent June meetings."
+    }
+  ],
+  "progress_not_ready_for_calendar": [
+    {
+      "country_id": "australia",
+      "group_id": "racing-australia-thoroughbred",
+      "status": "partial_progress_only",
+      "progress_file": "data/generated/timetable/progress-june-2026-racing-australia-thoroughbred.json",
+      "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+      "parser": "racing-australia-calendar-state-visible-window",
+      "current_coverage": "2026-06-01 through 2026-06-13 partial visible-window records only",
+      "remaining_work": "Find full-month state/territory official source routes for 2026-06-14 through 2026-06-30, then promote only after full month is verified."
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "status": "club_dates_progress_only",
+      "progress_file": "data/generated/timetable/progress-june-2026-hrnz-harness.json",
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "parser": "hrnz-racing-dates-month-club-progress",
+      "current_coverage": "18 June 2026 official club-date rows",
+      "remaining_work": "Verify Club-to-racecourse mapping for each row before promoting to manual-june-2026-hrnz-harness.json."
+    }
+  ],
+  "route_only_not_ready": [
+    "united-kingdom/point-to-point",
+    "united-kingdom/purebred-arabian",
+    "france/france-galop",
+    "france/letrot",
+    "australia/harness-australia",
+    "new-zealand/loveracing-thoroughbred",
+    "canada/woodbine-thoroughbred",
+    "canada/standardbred-canada",
+    "south-africa/nhra",
+    "south-africa/4racing",
+    "south-africa/gold-circle",
+    "south-korea/kra",
+    "united-states/equibase-thoroughbred",
+    "united-states/usta-harness",
+    "united-states/aqha-quarter-horse"
+  ],
+  "important_findings": [
+    "The current PR-130 gate validates source_url/parser/last_checked and committed coverage, but it does not prove full automation for every group.",
+    "manual-june-2026-*.json files are auto-merged by scripts/merge-pr-130-manual-june-records.mjs, so partial files must stay under progress-june-2026-* until full coverage is verified.",
+    "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups."
+  ]
+}
