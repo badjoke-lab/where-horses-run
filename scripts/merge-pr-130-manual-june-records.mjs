@@ -1,11 +1,12 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 const outputPath = 'data/generated/timetable/june-2026-calendar.json';
-const manualPaths = [
-  'data/generated/timetable/manual-june-2026-banei.json',
-  'data/generated/timetable/manual-june-2026-jra.json',
-  'data/generated/timetable/manual-june-2026-hri.json'
-];
+const manualDir = 'data/generated/timetable';
+const manualPaths = fs.readdirSync(manualDir)
+  .filter((fileName) => /^manual-june-2026-.+\.json$/.test(fileName))
+  .map((fileName) => path.join(manualDir, fileName))
+  .sort();
 
 const data = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
 const byGroup = new Map((data.record_sets || []).map((set) => [`${set.country_id}::${set.group_id}`, set]));
@@ -17,7 +18,6 @@ function addMeeting(target, meeting) {
 }
 
 for (const manualPath of manualPaths) {
-  if (!fs.existsSync(manualPath)) continue;
   const manual = JSON.parse(fs.readFileSync(manualPath, 'utf8')).record_set;
   if (!manual) continue;
   const key = `${manual.country_id}::${manual.group_id}`;
