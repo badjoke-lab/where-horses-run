@@ -46,34 +46,15 @@ function explicitRecords(data) {
   })));
 }
 
-function staticJuneRecords(data) {
-  return (data.records ?? [])
-    .filter((record) => record.meeting_date?.startsWith('2026-06-'))
-    .map((record) => ({
-      country_id: record.country_id,
-      group_id: record.group_id,
-      meeting_date: record.meeting_date,
-      racecourse: record.racecourse,
-      data_level: record.first_race_time ? 'B' : 'C',
-      data_origin: 'real_source',
-      source_trace: {
-        source_url: record.rolling_source?.source_url ?? record.annual_source?.source_url,
-        parser: record.group_id,
-        last_checked: record.last_checked
-      }
-    }));
-}
-
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
-const staticTimetable = readJson('data/static/major-country-timetable-v0.json');
 const page = read('src/pages/major-countries/current-timetable.astro');
-const records = [...explicitRecords(data), ...staticJuneRecords(staticTimetable)];
+const records = explicitRecords(data);
 const coverageStatus = data.coverage_status ?? [];
 
 if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
 if (data.month !== '2026-06') fail('Unexpected month.');
 if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
-if (!page.includes('major-country-timetable-v0.json')) fail('Current timetable page must import static June timetable data.');
+if (page.includes('major-country-timetable-v0.json')) fail('Current timetable page must not backfill from static timetable data.');
 if (!page.includes('coverage_status')) fail('Current timetable page must expose coverage_status notes.');
 
 const satisfiedGroupKeys = new Set(records.map(groupKey));
