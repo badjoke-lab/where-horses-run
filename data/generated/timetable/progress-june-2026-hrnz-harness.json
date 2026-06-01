@@ -36,13 +36,57 @@
       ["2026-06-28", "NZ Metropolitan Trotting Club Inc"]
     ]
   },
+  "club_to_racecourse_progress": [
+    {
+      "club": "Auckland Trotting Club Inc",
+      "racecourse": "Alexandra Park",
+      "status": "verified_from_official_club_link_domain",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "notes": "HRNZ June racing dates link this club to alexandrapark.co.nz."
+    },
+    {
+      "club": "NZ Metropolitan Trotting Club Inc",
+      "racecourse": "Addington Raceway",
+      "status": "verified_from_official_club_link_domain",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "notes": "HRNZ June racing dates link this club to addington.co.nz."
+    },
+    {
+      "club": "Waikato Bay of Plenty Harness Inc",
+      "racecourse": "Cambridge Raceway",
+      "status": "verified_from_official_club_link_domain",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "notes": "HRNZ June racing dates link this club to cambridgeraceway.co.nz."
+    },
+    {
+      "club": "Winton Harness Racing Club Inc",
+      "racecourse": "Winton / Central Southland Raceway",
+      "status": "not_promoted_secondary_support_only",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club55.htm",
+      "notes": "The HRNZ club page confirms the club and has an all-weather track-map link, but the fetched text does not name Central Southland Raceway. Keep out of manual calendar until source text naming is captured."
+    },
+    {
+      "club": "Invercargill Harness Racing Club Inc",
+      "racecourse": "Invercargill / Ascot Park",
+      "status": "not_promoted_secondary_support_only",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
+      "notes": "The HRNZ club page confirms the club and has track-map links, but the fetched text does not name Ascot Park. Keep out of manual calendar until source text naming is captured."
+    },
+    {
+      "club": "Forbury Park Trotting Club Inc",
+      "racecourse": null,
+      "status": "unresolved",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club47.htm",
+      "notes": "Forbury Park Raceway closed in 2021; the 2026-06-21 date needs exact current venue confirmation before any racecourse is recorded."
+    }
+  ],
   "promotion_blocker": {
-    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all five clubs.",
+    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all rows. Current status: 15 of 18 rows can be mapped with high confidence; Forbury Park Trotting Club Inc remains unresolved and Winton/Invercargill still need explicit racecourse text capture before full promotion.",
+    "rows_total": 18,
+    "rows_mappable_high_confidence": 15,
+    "rows_blocked": 3,
     "clubs_requiring_racecourse_map": [
       "Invercargill Harness Racing Club Inc",
-      "Waikato Bay of Plenty Harness Inc",
-      "Auckland Trotting Club Inc",
-      "NZ Metropolitan Trotting Club Inc",
       "Forbury Park Trotting Club Inc",
       "Winton Harness Racing Club Inc"
     ]
