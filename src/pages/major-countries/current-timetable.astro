@@ -35,6 +35,7 @@ function expandRecordSets(data) {
 }
 
 const records = expandRecordSets(currentTimetable);
+const coverage_status = currentTimetable.coverage_status ?? [];
 
 function countBy(records, field) {
   const counts = new Map();
@@ -89,6 +90,22 @@ const racecourses = countBy(records, 'racecourse');
       <p>{racecourses.map((item) => item.label).join(', ')}</p>
     </article>
   </section>
+
+  {coverage_status.length > 0 && (
+    <section aria-labelledby="coverage-status-title">
+      <h2 id="coverage-status-title">June coverage status</h2>
+      <div class="section-grid">
+        {coverage_status.map((item) => (
+          <article class="card">
+            <h3>{item.country_label} / {item.group_label}</h3>
+            <p><strong>Status:</strong> {item.status}</p>
+            <p>{item.reason}</p>
+            <p><strong>Last checked:</strong> {item.source_trace.last_checked}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 
   <CurrentTimetableDimensions countries={countries} groups={groups} dates={dates} racecourses={racecourses} />
   <CurrentTimetableRecords records={records} />
