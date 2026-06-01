@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 await import('./generate-pr-130-june-calendar.mjs');
+await import('./merge-pr-130-manual-june-records.mjs');
 
 const root = process.cwd();
 const expectedGroups = [
