@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+await import('./generate-pr-130-june-calendar.mjs');
+
 const root = process.cwd();
 const expectedGroups = [
   ['japan', 'jra'], ['japan', 'nar'], ['japan', 'banei'], ['hong-kong', 'hkjc'],
@@ -80,4 +82,4 @@ for (const record of records) {
   if (!record.source_trace?.last_checked) fail(`${groupKey(record)}: last_checked missing.`);
 }
 
-console.log('[pr-130-june-calendar-ui] PASS');
+console.log(`[pr-130-june-calendar-ui] PASS ${records.length} records / ${satisfiedGroupKeys.size} groups`);
