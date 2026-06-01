@@ -3,7 +3,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
 import currentTimetable from '../../../data/generated/timetable/june-2026-calendar.json';
-import staticTimetable from '../../../data/static/major-country-timetable-v0.json';
 
 function slug(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -35,50 +34,7 @@ function expandRecordSets(data) {
   );
 }
 
-function normalizeStaticJuneRecord(record) {
-  return {
-    record_id: record.timetable_id,
-    country_id: record.country_id,
-    country_label: record.country_name,
-    group_id: record.group_id,
-    group_label: record.group_name,
-    racecourse: record.racecourse,
-    meeting_date: record.meeting_date,
-    data_level: record.first_race_time ? 'B' : 'C',
-    data_origin: 'real_source',
-    first_race_time: record.first_race_time,
-    all_race_times: record.races ?? [],
-    source_trace: {
-      source_url: record.rolling_source?.source_url ?? record.annual_source?.source_url,
-      source_type: record.rolling_source?.source_type ?? record.annual_source?.source_type,
-      source_capture_date: record.rolling_source?.source_capture_date ?? record.annual_source?.source_capture_date,
-      last_checked: record.last_checked,
-      parser: record.group_id
-    },
-    freshness: {
-      status: record.display_status,
-      basis: record.source_kind,
-      source_capture_date: record.rolling_source?.source_capture_date ?? record.annual_source?.source_capture_date,
-      last_checked: record.last_checked
-    }
-  };
-}
-
-function dedupeRecords(records) {
-  const seen = new Set();
-  return records.filter((record) => {
-    const key = `${record.country_id}::${record.group_id}::${record.meeting_date}::${record.racecourse}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-const explicitRecords = expandRecordSets(currentTimetable);
-const staticJuneRecords = (staticTimetable.records ?? [])
-  .filter((record) => record.meeting_date?.startsWith('2026-06-'))
-  .map(normalizeStaticJuneRecord);
-const records = dedupeRecords([...explicitRecords, ...staticJuneRecords]);
+const records = expandRecordSets(currentTimetable);
 const coverage_status = currentTimetable.coverage_status ?? [];
 
 function countBy(records, field) {
