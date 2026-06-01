@@ -63,21 +63,39 @@
       "racecourse": "Winton / Central Southland Raceway",
       "status": "not_promoted_secondary_support_only",
       "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club55.htm",
-      "notes": "The HRNZ club page confirms the club and has an all-weather track-map link, but the fetched text does not name Central Southland Raceway. Keep out of manual calendar until source text naming is captured."
+      "notes": "The official HRNZ club page confirms Winton Harness Racing Club Inc, generated 2026-05-23, and exposes an All Weather Track Map link, but fetched text still does not name Central Southland Raceway. Keep out of manual calendar until source text naming is captured."
     },
     {
       "club": "Invercargill Harness Racing Club Inc",
       "racecourse": "Invercargill / Ascot Park",
       "status": "not_promoted_secondary_support_only",
       "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
-      "notes": "The HRNZ club page confirms the club and has track-map links, but the fetched text does not name Ascot Park. Keep out of manual calendar until source text naming is captured."
+      "notes": "The official HRNZ club page confirms Invercargill Harness Racing Club Inc and exposes track-map links, but fetched text still does not name Ascot Park. Keep out of manual calendar until source text naming is captured."
     },
     {
       "club": "Forbury Park Trotting Club Inc",
       "racecourse": null,
       "status": "unresolved",
       "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club47.htm",
-      "notes": "Forbury Park Raceway closed in 2021; the 2026-06-21 date needs exact current venue confirmation before any racecourse is recorded."
+      "notes": "The official HRNZ club page confirms Forbury Park Trotting Club Inc, generated 2026-02-24, with a Grass Track Map link and Southern Harness Racing contact address, but it does not name the 2026-06-21 racecourse. Forbury Park Raceway closed in 2021, so do not infer the venue."
+    }
+  ],
+  "additional_evidence_checked": [
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "result": "Official June 2026 HRNZ racing dates page confirms the club-date rows, including Invercargill on 2026-06-01 and 2026-06-11, Forbury Park on 2026-06-21, and Winton on 2026-06-25."
+    },
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club55.htm",
+      "result": "Official Winton club page confirms the club and an All Weather Track Map link, but not an explicit racecourse name in fetched text."
+    },
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
+      "result": "Official Invercargill club page confirms the club and track-map links, but not an explicit racecourse name in fetched text."
+    },
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club47.htm",
+      "result": "Official Forbury Park club page confirms the club and a Grass Track Map link, but not an explicit 2026-06-21 racecourse name."
     }
   ],
   "promotion_blocker": {
