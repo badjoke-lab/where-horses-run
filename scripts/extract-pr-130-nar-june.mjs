@@ -4,6 +4,7 @@ const year = '2026';
 const month = '06';
 const sourceUrl = 'https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop';
 const outputPath = 'data/generated/timetable/manual-june-2026-nar.json';
+const liveFetchEnabled = process.env.ALLOW_LIVE_SOURCE_FETCH === '1';
 
 const racecourseByCode = new Map([
   ['36', 'Mombetsu'], ['1', 'Sapporo'], ['10', 'Morioka'], ['11', 'Mizusawa'],
@@ -23,9 +24,20 @@ function decodeHtml(value) {
     .trim();
 }
 
-const response = await fetch(sourceUrl);
-if (!response.ok) throw new Error(`NAR monthly source fetch failed: ${response.status}`);
-const html = await response.text();
+if (!liveFetchEnabled) {
+  console.log('[pr-130-nar] live fetch disabled; using existing source-traced data path. Set ALLOW_LIVE_SOURCE_FETCH=1 to regenerate NAR manual records.');
+  process.exit(0);
+}
+
+let html = '';
+try {
+  const response = await fetch(sourceUrl);
+  if (!response.ok) throw new Error(`NAR monthly source fetch failed: ${response.status}`);
+  html = await response.text();
+} catch (error) {
+  console.warn(`[pr-130-nar] live fetch failed; keeping existing source-traced data path: ${error.message}`);
+  process.exit(0);
+}
 
 const meetings = [];
 const seen = new Set();
@@ -43,7 +55,10 @@ while ((match = linkRe.exec(html)) !== null) {
   meetings.push([date, racecourse]);
 }
 
-if (meetings.length < 1) throw new Error('No NAR June meetings extracted.');
+if (meetings.length < 1) {
+  console.warn('[pr-130-nar] no NAR June meetings extracted; keeping existing source-traced data path.');
+  process.exit(0);
+}
 
 meetings.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]));
 
