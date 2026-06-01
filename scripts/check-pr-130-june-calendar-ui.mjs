@@ -85,7 +85,9 @@ for (const statusRecord of coverageStatus) {
 
 for (const [countryId, groupId] of expectedGroups) {
   const key = `${countryId}::${groupId}`;
-  if (!routeByGroup.has(key)) fail(`Missing reusable source route for ${countryId}/${groupId}.`);
+  const route = routeByGroup.get(key);
+  if (!route) fail(`Missing reusable source route for ${countryId}/${groupId}.`);
+  if (route.status === 'route_not_yet_extractable') fail(`Unextractable route remains for ${countryId}/${groupId}.`);
   if (!satisfiedGroupKeys.has(key)) fail(`Missing June coverage for ${countryId}/${groupId}.`);
 }
 
