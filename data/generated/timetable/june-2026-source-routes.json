@@ -1,0 +1,61 @@
+{
+  "schema_version": "june-2026-source-routes-v0",
+  "month": "2026-06",
+  "purpose": "Record reusable acquisition routes so PR-130 data collection does not restart from scratch on the next update.",
+  "routes": [
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "status": "manual_route_confirmed",
+      "source_url": "https://jra.jp/keiba/calendar2026/",
+      "parser": "jra-calendar-month-manual",
+      "output_file": "data/generated/timetable/manual-june-2026-jra.json",
+      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the annual calendar and filters by YYYY-MM."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "banei",
+      "status": "manual_route_confirmed",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "parser": "banei-race-schedule-month-manual",
+      "output_file": "data/generated/timetable/manual-june-2026-banei.json",
+      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the race schedule and filters by YYYY-MM."
+    },
+    {
+      "country_id": "ireland",
+      "group_id": "hri",
+      "status": "manual_route_confirmed",
+      "source_url": "https://www.hri.ie/racing/fixture-list/",
+      "parser": "hri-fixture-list-month-manual",
+      "output_file": "data/generated/timetable/manual-june-2026-hri.json",
+      "reusable_next_step": "Promote the month-specific manual extraction into a parser that reads the HRI fixture list and filters by YYYY-MM."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "status": "route_identified_partial_extraction",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "parser": "nar-monthly-convene-info",
+      "output_file": "data/generated/timetable/manual-june-2026-nar.json",
+      "reusable_next_step": "Use the monthly convene table as the primary C-level source, then map dates and racecourse columns into meetings."
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "status": "route_not_yet_extractable",
+      "source_url": "https://www.france-galop.com/en",
+      "parser": "france-galop-calendar",
+      "output_file": "data/generated/timetable/manual-june-2026-france-galop.json",
+      "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records."
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "status": "route_not_yet_extractable",
+      "source_url": "https://www.letrot.com/",
+      "parser": "letrot-calendar",
+      "output_file": "data/generated/timetable/manual-june-2026-letrot.json",
+      "reusable_next_step": "Find a stable calendar endpoint or export before adding partial records."
+    }
+  ]
+}
