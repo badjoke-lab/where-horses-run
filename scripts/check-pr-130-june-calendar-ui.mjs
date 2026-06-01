@@ -17,6 +17,7 @@ const expectedGroups = [
 ];
 
 const terminalCoverageStatuses = new Set(['no_june_meetings', 'legacy_no_active_racing']);
+const allowedRouteStatuses = new Set(['manual_route_confirmed', 'route_identified_partial_extraction', 'route_not_yet_extractable']);
 
 function fail(message) {
   console.error(`[pr-130-june-calendar-ui] ${message}`);
@@ -50,15 +51,27 @@ function explicitRecords(data) {
 }
 
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
+const routes = readJson('data/generated/timetable/june-2026-source-routes.json');
 const page = read('src/pages/major-countries/current-timetable.astro');
 const records = explicitRecords(data);
 const coverageStatus = data.coverage_status ?? [];
 
 if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
 if (data.month !== '2026-06') fail('Unexpected month.');
+if (routes.schema_version !== 'june-2026-source-routes-v0') fail('Unexpected source routes schema.');
+if (routes.month !== '2026-06') fail('Unexpected source routes month.');
 if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
 if (page.includes('major-country-timetable-v0.json')) fail('Current timetable page must not backfill from static timetable data.');
 if (!page.includes('coverage_status')) fail('Current timetable page must expose coverage_status notes.');
+
+const routeByGroup = new Map();
+for (const route of routes.routes ?? []) {
+  if (!allowedRouteStatuses.has(route.status)) fail(`${groupKey(route)}: unsupported route status ${route.status}.`);
+  if (!route.source_url?.startsWith('https://')) fail(`${groupKey(route)}: route source_url missing.`);
+  if (!route.parser) fail(`${groupKey(route)}: route parser missing.`);
+  if (!route.reusable_next_step) fail(`${groupKey(route)}: route reusable_next_step missing.`);
+  routeByGroup.set(groupKey(route), route);
+}
 
 const satisfiedGroupKeys = new Set(records.map(groupKey));
 for (const statusRecord of coverageStatus) {
@@ -81,6 +94,9 @@ for (const record of records) {
   if (!record.source_trace?.source_url?.startsWith('https://')) fail(`${groupKey(record)}: source URL missing.`);
   if (!record.source_trace?.parser) fail(`${groupKey(record)}: parser missing.`);
   if (!record.source_trace?.last_checked) fail(`${groupKey(record)}: last_checked missing.`);
+  const route = routeByGroup.get(groupKey(record));
+  if (!route) fail(`${groupKey(record)}: reusable source route missing.`);
+  if (route.status === 'route_not_yet_extractable') fail(`${groupKey(record)}: has records but route is not extractable.`);
 }
 
-console.log(`[pr-130-june-calendar-ui] PASS ${records.length} records / ${satisfiedGroupKeys.size} groups`);
+console.log(`[pr-130-june-calendar-ui] PASS ${records.length} records / ${satisfiedGroupKeys.size} groups / ${routeByGroup.size} routes`);
