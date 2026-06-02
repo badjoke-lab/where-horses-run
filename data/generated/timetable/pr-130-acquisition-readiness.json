@@ -2,7 +2,7 @@
   "schema_version": "pr-130-acquisition-readiness-v0",
   "month": "2026-06",
   "purpose": "Track whether PR-130 June data has both committed records and a reusable acquisition path, so future updates do not restart from scratch.",
-  "last_checked": "2026-06-01",
+  "last_checked": "2026-06-02",
   "ready_for_next_update": [
     {
       "country_id": "japan",
@@ -76,6 +76,24 @@
       "source_url": "https://racing.turfclub.com.sg/",
       "parser": "singapore-turf-club-legacy-status",
       "remaining_work": "Keep legacy/no-active-racing status checks. Do not invent June meetings."
+    },
+    {
+      "country_id": "canada",
+      "group_id": "woodbine-thoroughbred",
+      "status": "manual_month_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json",
+      "source_url": "https://woodbine.com/race/",
+      "parser": "woodbine-race-page-upcoming-thoroughbred-races",
+      "remaining_work": "Promote the Woodbine Race Day page extraction into a reusable month parser and keep verifying that the visible upcoming race list covers the full target month before PR-131."
+    },
+    {
+      "country_id": "canada",
+      "group_id": "standardbred-canada",
+      "status": "manual_month_route_ready",
+      "records_file": "data/generated/timetable/manual-june-2026-standardbred-canada.json",
+      "source_url": "https://woodbine.com/mohawk/race/",
+      "parser": "woodbine-mohawk-race-page-upcoming-standardbred-races",
+      "remaining_work": "Woodbine Mohawk Park is now a verified Canada Standardbred PR-130 route contribution. Continue investigating a full national Standardbred Canada month export before PR-131."
     }
   ],
   "progress_not_ready_for_calendar": [
@@ -121,8 +139,6 @@
     "france/letrot",
     "australia/harness-australia",
     "new-zealand/loveracing-thoroughbred",
-    "canada/woodbine-thoroughbred",
-    "canada/standardbred-canada",
     "south-africa/nhra",
     "south-africa/4racing",
     "south-africa/gold-circle",
@@ -135,6 +151,7 @@
     "The current PR-130 gate validates source_url/parser/last_checked and committed coverage, but it does not prove full automation for every group.",
     "manual-june-2026-*.json files are auto-merged by scripts/merge-pr-130-manual-june-records.mjs, so partial files must stay under progress-june-2026-* until full coverage is verified.",
     "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups.",
-    "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs."
+    "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs.",
+    "Canada now has Woodbine Thoroughbred and Woodbine Mohawk Standardbred June 2026 manual records, but PR-131 should still verify whether a full national Standardbred Canada month export is available."
   ]
 }
