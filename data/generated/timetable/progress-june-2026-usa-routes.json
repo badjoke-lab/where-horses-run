@@ -1,0 +1,44 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "united-states",
+  "country_label": "United States",
+  "last_checked": "2026-06-02",
+  "purpose": "Record USA acquisition-route checks for PR-130 without promoting incomplete or inaccessible June 2026 records.",
+  "route_checks": [
+    {
+      "group_id": "equibase-thoroughbred",
+      "group_label": "Equibase Thoroughbred",
+      "source_url": "https://www.equibase.com/static/entry/index.html",
+      "parser": "equibase-entries-route-access-check",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "result": "Official Equibase entries route was checked, but the page fetch returned access blocked and no complete 2026-06 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "usta-harness",
+      "group_label": "USTA Harness",
+      "source_url": "https://entries.ustrotting.com/",
+      "parser": "usta-entries-route-access-check",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "result": "Official USTA entries route was checked, but no complete 2026-06 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "aqha-quarter-horse",
+      "group_label": "AQHA Quarter Horse",
+      "source_url": "https://www.aqha.com/racing",
+      "parser": "aqha-racing-route-access-check",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "result": "Official AQHA racing route was checked, but no complete 2026-06 meeting_date + racecourse rows were captured."
+    }
+  ],
+  "promotion_status": {
+    "status": "do_not_promote",
+    "reason": "No captured official USA route currently provides complete June 2026 meeting_date + racecourse rows for PR-130. Keep USA out of manual-june-2026-* until month-capable official rows are captured."
+  },
+  "next_steps": [
+    "Find a no-login Equibase month calendar, annual race dates export, or official track-date feed that exposes June 2026 rows.",
+    "Find a no-login USTA month calendar/export with June 2026 track/date rows.",
+    "Find a no-login AQHA race-date calendar/export with June 2026 track/date rows.",
+    "Do not infer dates from normal weekly race patterns or current-day entries."
+  ]
+}
