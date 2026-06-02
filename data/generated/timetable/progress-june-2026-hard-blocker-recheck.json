@@ -1,0 +1,51 @@
+{
+  "schema_version": "progress-june-2026-hard-blocker-recheck-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-02",
+  "purpose": "Record a focused recheck of PR-130 hard blockers while continuing real-source data acquisition. This file must not be merged into calendar records.",
+  "rechecks": [
+    {
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "status": "still_blocked_partial_progress",
+      "current_progress": "16 of 18 official HRNZ June rows can now be mapped to racecourses after Winton was source-verified as Central Southland Raceway.",
+      "still_blocked_rows": [
+        ["2026-06-01", "Invercargill Harness Racing Club Inc"],
+        ["2026-06-11", "Invercargill Harness Racing Club Inc"],
+        ["2026-06-21", "Forbury Park Trotting Club Inc"]
+      ],
+      "reason": "The HRNZ racing dates table is club-based. Invercargill and Forbury club pages were checked, but fetched official text does not name the exact 2026-06 racecourse. Forbury Park Raceway is closed, so venue inference remains prohibited."
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "status": "still_blocked_no_full_month_official_rows",
+      "source_url": "https://www.france-galop.com/en",
+      "reason": "Additional searches returned only partial major-race snippets or login/JS-gated routes, not a complete official no-login 2026-06 meeting_date + racecourse calendar."
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "status": "still_blocked_no_full_month_official_rows",
+      "source_url": "https://www.letrot.com/evenements/gnt",
+      "reason": "The official GNT page route is present but captured text exposes navigation only; secondary snippets identify selected GNT stages but not a complete official June 2026 LeTROT calendar."
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-australia-thoroughbred",
+      "status": "still_blocked_visible_window_only",
+      "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+      "reason": "Additional national/state searches did not reveal a no-login full-month official source for the missing 2026-06-14 through 2026-06-30 range. Existing Racing Australia routes remain visible-window only in captured text."
+    }
+  ],
+  "promotion_status": {
+    "status": "do_not_promote_any_blocked_group",
+    "reason": "No new complete official meeting_date + racecourse row set was captured for these blocked groups during this pass."
+  },
+  "next_targets": [
+    "Find HRNZ programme URLs or official Southern Harness pages that explicitly name Invercargill and Forbury 2026-06 racecourses.",
+    "Find a France Galop no-login month export or official PDF containing all June 2026 meeting_date + racecourse rows.",
+    "Find a LeTROT no-login month export/API/PDF containing all June 2026 meeting_date + racecourse rows.",
+    "Find Australian state authority month-capable fixture pages for the missing 2026-06-14 through 2026-06-30 range."
+  ]
+}
