@@ -109,6 +109,16 @@
       "remaining_work": "Find full-month state/territory official source routes for 2026-06-14 through 2026-06-30, then promote only after full month is verified."
     },
     {
+      "country_id": "australia",
+      "group_id": "harness-australia",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "progress_file": "data/generated/timetable/progress-june-2026-harness-australia-routes.json",
+      "source_url": "https://www.harness.org.au/racing/meeting-calendar/",
+      "parser": "harness-australia-meeting-calendar-redirect-check",
+      "current_coverage": "Official fields and meeting-calendar routes were identified, but captured output is JavaScript/Cookie dependent and does not expose complete 2026-06 meeting_date + racecourse rows.",
+      "remaining_work": "Check Harness Australia state authority routes for a no-login month-capable June 2026 meeting calendar before promoting to manual records."
+    },
+    {
       "country_id": "new-zealand",
       "group_id": "hrnz-harness",
       "status": "club_dates_progress_only_with_blockers",
@@ -156,7 +166,6 @@
   "route_only_not_ready": [
     "united-kingdom/point-to-point",
     "united-kingdom/purebred-arabian",
-    "australia/harness-australia",
     "new-zealand/loveracing-thoroughbred",
     "south-africa/nhra",
     "south-africa/4racing",
@@ -173,6 +182,7 @@
     "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs.",
     "Canada now has Woodbine Thoroughbred and Woodbine Mohawk Standardbred June 2026 manual records, but PR-131 should still verify whether a full national Standardbred Canada month export is available.",
     "France now has route-progress documentation for France Galop and LeTROT, but both remain blocked from manual/calendar promotion until full official June 2026 meeting rows are captured.",
-    "Australia state routes were checked again on 2026-06-02 and remain progress-only because no captured official route currently provides the full 2026-06-14 through 2026-06-30 meeting set."
+    "Australia state routes were checked again on 2026-06-02 and remain progress-only because no captured official route currently provides the full 2026-06-14 through 2026-06-30 meeting set.",
+    "Harness Australia official fields and meeting calendar routes were identified, but captured output is JS/Cookie dependent and does not expose a complete June 2026 meeting calendar."
   ]
 }
