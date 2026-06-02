@@ -12,7 +12,7 @@
       "source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
       "source_type": "official_source",
       "source_capture_date": "2026-06-01",
-      "last_checked": "2026-06-01",
+      "last_checked": "2026-06-02",
       "parser": "hrnz-racing-dates-month-club-progress"
     },
     "meetings": [
@@ -60,10 +60,10 @@
     },
     {
       "club": "Winton Harness Racing Club Inc",
-      "racecourse": "Winton / Central Southland Raceway",
-      "status": "not_promoted_secondary_support_only",
-      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club55.htm",
-      "notes": "The official HRNZ club page confirms Winton Harness Racing Club Inc, generated 2026-05-23, and exposes an All Weather Track Map link, but fetched text still does not name Central Southland Raceway. Keep out of manual calendar until source text naming is captured."
+      "racecourse": "Central Southland Raceway",
+      "status": "verified_from_official_programme_text",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/2026062555pg-01.htm",
+      "notes": "Official HRNZ tentative programme for 2026-06-25 states: WINTER MEETING at Central Southland Raceway, Winton."
     },
     {
       "club": "Invercargill Harness Racing Club Inc",
@@ -86,8 +86,8 @@
       "result": "Official June 2026 HRNZ racing dates page confirms the club-date rows, including Invercargill on 2026-06-01 and 2026-06-11, Forbury Park on 2026-06-21, and Winton on 2026-06-25."
     },
     {
-      "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club55.htm",
-      "result": "Official Winton club page confirms the club and an All Weather Track Map link, but not an explicit racecourse name in fetched text."
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/2026062555pg-01.htm",
+      "result": "Official HRNZ Winton programme confirms 2026-06-25 WINTER MEETING at Central Southland Raceway, Winton."
     },
     {
       "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
@@ -99,14 +99,13 @@
     }
   ],
   "promotion_blocker": {
-    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all rows. Current status: 15 of 18 rows can be mapped with high confidence; Forbury Park Trotting Club Inc remains unresolved and Winton/Invercargill still need explicit racecourse text capture before full promotion.",
+    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all rows. Current status: 16 of 18 rows can be mapped with high confidence; Invercargill Harness Racing Club Inc and Forbury Park Trotting Club Inc remain unresolved for racecourse promotion.",
     "rows_total": 18,
-    "rows_mappable_high_confidence": 15,
+    "rows_mappable_high_confidence": 16,
     "rows_blocked": 3,
     "clubs_requiring_racecourse_map": [
       "Invercargill Harness Racing Club Inc",
-      "Forbury Park Trotting Club Inc",
-      "Winton Harness Racing Club Inc"
+      "Forbury Park Trotting Club Inc"
     ]
   }
 }
