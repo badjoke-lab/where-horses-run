@@ -102,9 +102,10 @@
       "group_id": "racing-australia-thoroughbred",
       "status": "partial_progress_only",
       "progress_file": "data/generated/timetable/progress-june-2026-racing-australia-thoroughbred.json",
+      "route_status_file": "data/generated/timetable/progress-june-2026-australia-route-checks.json",
       "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
       "parser": "racing-australia-calendar-state-visible-window",
-      "current_coverage": "2026-06-01 through 2026-06-13 partial visible-window records only",
+      "current_coverage": "2026-06-01 through 2026-06-13 partial visible-window records only. State route status was checked again on 2026-06-02, but the routes still do not expose a captured full-month export.",
       "remaining_work": "Find full-month state/territory official source routes for 2026-06-14 through 2026-06-30, then promote only after full month is verified."
     },
     {
@@ -171,6 +172,7 @@
     "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups.",
     "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs.",
     "Canada now has Woodbine Thoroughbred and Woodbine Mohawk Standardbred June 2026 manual records, but PR-131 should still verify whether a full national Standardbred Canada month export is available.",
-    "France now has route-progress documentation for France Galop and LeTROT, but both remain blocked from manual/calendar promotion until full official June 2026 meeting rows are captured."
+    "France now has route-progress documentation for France Galop and LeTROT, but both remain blocked from manual/calendar promotion until full official June 2026 meeting rows are captured.",
+    "Australia state routes were checked again on 2026-06-02 and remain progress-only because no captured official route currently provides the full 2026-06-14 through 2026-06-30 meeting set."
   ]
 }
