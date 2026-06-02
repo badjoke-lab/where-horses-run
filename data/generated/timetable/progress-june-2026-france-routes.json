@@ -1,0 +1,41 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "france",
+  "country_label": "France",
+  "last_checked": "2026-06-02",
+  "purpose": "Record France Galop and LeTROT acquisition-route checks for PR-130 without promoting unverified or incomplete June 2026 calendar records.",
+  "route_checks": [
+    {
+      "group_id": "france-galop",
+      "group_label": "France Galop",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "source_url": "https://www.france-galop.com/en",
+      "parser": "france-galop-route-check-home-calendar-links",
+      "findings": [
+        "Official France Galop English home page exposes Racing navigation links for Yesterday, Today, Tomorrow, Other dates, Pattern & Listed races, Group 1 races, and Subscribe to the calendar.",
+        "The Other dates and Pattern & Listed routes redirected to account sign-in during capture, so they are not usable as no-login PR-130 extraction routes yet.",
+        "The calendar subscription page exposes racecourse selection metadata, but did not expose June 2026 meeting_date + racecourse rows in the captured text."
+      ],
+      "do_not_promote_reason": "No captured official no-login source provided complete 2026-06 meeting_date + racecourse rows for France Galop."
+    },
+    {
+      "group_id": "letrot",
+      "group_label": "LeTROT",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "source_url": "https://www.letrot.com/",
+      "parser": "letrot-route-check-current-and-next-days",
+      "findings": [
+        "Official LeTROT home and courses pages expose current-day, tomorrow, and next-days meeting lists with racecourse names in captured text.",
+        "The captured routes are rolling short-window pages, not a verified full June 2026 month calendar route.",
+        "Do not infer a full June month from current/next-days pages."
+      ],
+      "do_not_promote_reason": "No captured official source provided complete 2026-06 meeting_date + racecourse rows for LeTROT."
+    }
+  ],
+  "next_steps": [
+    "Find a no-login France Galop source or export that exposes 2026-06 meeting_date + racecourse rows.",
+    "Find a no-login LeTROT month calendar, API, export, or official programme source that exposes 2026-06 meeting_date + racecourse rows.",
+    "Keep France out of manual-june-2026-* until both groups have complete verified month coverage or explicit no-meeting/coverage status."
+  ]
+}
