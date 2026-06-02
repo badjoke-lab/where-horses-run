@@ -130,13 +130,31 @@
         }
       ],
       "remaining_work": "Resolve the 3 blocked club-to-racecourse mappings before promoting to manual-june-2026-hrnz-harness.json."
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "progress_file": "data/generated/timetable/progress-june-2026-france-routes.json",
+      "source_url": "https://www.france-galop.com/en",
+      "parser": "france-galop-route-check-home-calendar-links",
+      "current_coverage": "Official route links confirmed, but no captured no-login source provides complete 2026-06 meeting_date + racecourse rows.",
+      "remaining_work": "Find a no-login France Galop source or export that exposes full 2026-06 meeting_date + racecourse rows before promoting to manual records."
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "status": "route_progress_only_not_ready_for_calendar",
+      "progress_file": "data/generated/timetable/progress-june-2026-france-routes.json",
+      "source_url": "https://www.letrot.com/",
+      "parser": "letrot-route-check-current-and-next-days",
+      "current_coverage": "Official rolling current/next-day route links confirmed, but no captured official source provides complete 2026-06 meeting_date + racecourse rows.",
+      "remaining_work": "Find a no-login LeTROT month calendar, API, export, or official programme source that exposes full 2026-06 meeting_date + racecourse rows before promoting to manual records."
     }
   ],
   "route_only_not_ready": [
     "united-kingdom/point-to-point",
     "united-kingdom/purebred-arabian",
-    "france/france-galop",
-    "france/letrot",
     "australia/harness-australia",
     "new-zealand/loveracing-thoroughbred",
     "south-africa/nhra",
@@ -152,6 +170,7 @@
     "manual-june-2026-*.json files are auto-merged by scripts/merge-pr-130-manual-june-records.mjs, so partial files must stay under progress-june-2026-* until full coverage is verified.",
     "PR-131 must verify regeneration paths, especially for manual_month_route_ready groups.",
     "Problematic/blocked mappings must be recorded as progress blockers and must not be hidden inside manual calendar inputs.",
-    "Canada now has Woodbine Thoroughbred and Woodbine Mohawk Standardbred June 2026 manual records, but PR-131 should still verify whether a full national Standardbred Canada month export is available."
+    "Canada now has Woodbine Thoroughbred and Woodbine Mohawk Standardbred June 2026 manual records, but PR-131 should still verify whether a full national Standardbred Canada month export is available.",
+    "France now has route-progress documentation for France Galop and LeTROT, but both remain blocked from manual/calendar promotion until full official June 2026 meeting rows are captured."
   ]
 }
