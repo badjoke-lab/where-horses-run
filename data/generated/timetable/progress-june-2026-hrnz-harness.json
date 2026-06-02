@@ -68,16 +68,16 @@
     {
       "club": "Invercargill Harness Racing Club Inc",
       "racecourse": "Invercargill / Ascot Park",
-      "status": "not_promoted_secondary_support_only",
-      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
-      "notes": "The official HRNZ club page confirms Invercargill Harness Racing Club Inc and exposes track-map links, but fetched text still does not name Ascot Park. Keep out of manual calendar until source text naming is captured."
+      "status": "not_promoted_programme_link_confirmed_but_racecourse_text_not_captured",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm",
+      "notes": "Official HRNZ Race Programmes Index lists Invercargill Harness Racing Club Inc Day 1 on Thu, 11 Jun 2026 and links to 2026061157pg-01.htm. The programme link exists, but the fetched programme body still fails to load in the current capture path, so Ascot Park is not promoted. The 2026-06-01 Invercargill row still has no programme-link row captured in the programmes index."
     },
     {
       "club": "Forbury Park Trotting Club Inc",
       "racecourse": null,
-      "status": "unresolved",
-      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club47.htm",
-      "notes": "The official HRNZ club page confirms Forbury Park Trotting Club Inc, generated 2026-02-24, with a Grass Track Map link and Southern Harness Racing contact address, but it does not name the 2026-06-21 racecourse. Forbury Park Raceway closed in 2021, so do not infer the venue."
+      "status": "not_promoted_programme_link_confirmed_but_racecourse_text_not_captured",
+      "evidence_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm",
+      "notes": "Official HRNZ Race Programmes Index lists Forbury Park Trotting Club Inc Day 1 on Sun, 21 Jun 2026 and links to 2026062147pg-01.htm. The programme link exists, but the fetched programme body still fails to load in the current capture path and does not confirm the 2026-06-21 racecourse. Forbury Park Raceway closed in 2021, so do not infer the venue."
     }
   ],
   "additional_evidence_checked": [
@@ -86,8 +86,20 @@
       "result": "Official June 2026 HRNZ racing dates page confirms the club-date rows, including Invercargill on 2026-06-01 and 2026-06-11, Forbury Park on 2026-06-21, and Winton on 2026-06-25."
     },
     {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm",
+      "result": "Official HRNZ Race Programmes Index confirms programme entries for Invercargill Harness Racing Club Inc Day 1 on Thu, 11 Jun 2026, Forbury Park Trotting Club Inc Day 1 on Sun, 21 Jun 2026, and Winton Harness Racing Club Inc WINTER MEETING on Thu, 25 Jun 2026."
+    },
+    {
       "source_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/2026062555pg-01.htm",
       "result": "Official HRNZ Winton programme confirms 2026-06-25 WINTER MEETING at Central Southland Raceway, Winton."
+    },
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/2026061157pg-01.htm",
+      "result": "Programme link is listed by the official HRNZ Race Programmes Index for 2026-06-11 Invercargill, but the programme body fetch failed in the current capture path, so racecourse text was not captured."
+    },
+    {
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/programmes/2026062147pg-01.htm",
+      "result": "Programme link is listed by the official HRNZ Race Programmes Index for 2026-06-21 Forbury Park, but the programme body fetch failed in the current capture path, so racecourse text was not captured."
     },
     {
       "source_url": "https://infohorse.hrnz.co.nz/datahrs/clubs/club57.htm",
@@ -99,7 +111,7 @@
     }
   ],
   "promotion_blocker": {
-    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all rows. Current status: 16 of 18 rows can be mapped with high confidence; Invercargill Harness Racing Club Inc and Forbury Park Trotting Club Inc remain unresolved for racecourse promotion.",
+    "reason": "HRNZ June source table labels the venue column as Club, not Racecourse. PR-130 C-rank display requires meeting_date + racecourse. Promote only after club-to-racecourse mapping is source-verified for all rows. Current status: 16 of 18 rows can be mapped with high confidence; Invercargill Harness Racing Club Inc and Forbury Park Trotting Club Inc remain unresolved for racecourse promotion. Programme links for the 2026-06-11 Invercargill row and 2026-06-21 Forbury row are now recorded, but their programme body text was not captured.",
     "rows_total": 18,
     "rows_mappable_high_confidence": 16,
     "rows_blocked": 3,
