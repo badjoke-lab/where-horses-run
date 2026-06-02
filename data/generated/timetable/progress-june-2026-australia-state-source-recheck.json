@@ -1,0 +1,51 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "australia",
+  "country_label": "Australia",
+  "last_checked": "2026-06-02",
+  "purpose": "Record the post-Queensland Australia state-source recheck for PR-130. This file is not a calendar input.",
+  "completed_this_pass": {
+    "group_id": "racing-queensland-thoroughbred",
+    "records_file": "data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json",
+    "source_url": "https://www.racingqueensland.com.au/racing/full-calendar",
+    "status": "manual_month_records_committed",
+    "meetings_count": 61
+  },
+  "remaining_state_checks": [
+    {
+      "state": "NSW",
+      "status": "not_ready_for_manual",
+      "result": "Search and official-route checks did not expose a complete no-login June 2026 meeting_date + racecourse month table. Do not promote partial Racing Australia visible-window rows."
+    },
+    {
+      "state": "VIC",
+      "status": "not_ready_for_manual",
+      "result": "Search and official-route checks did not expose a complete no-login June 2026 meeting_date + racecourse month table. Do not infer from Racing Australia visible-window rows."
+    },
+    {
+      "state": "WA",
+      "status": "not_ready_for_manual",
+      "result": "Search results surfaced feature-race/history pages and venue references, but no complete official June 2026 meeting_date + racecourse month table was captured."
+    },
+    {
+      "state": "SA",
+      "status": "not_ready_for_manual",
+      "result": "Search results surfaced racing news and feature context, but no complete official June 2026 meeting_date + racecourse month table was captured."
+    },
+    {
+      "state": "TAS",
+      "status": "not_ready_for_manual",
+      "result": "Search results did not expose a complete official June 2026 meeting_date + racecourse month table."
+    }
+  ],
+  "promotion_status": {
+    "status": "queensland_only_promoted",
+    "reason": "Queensland has a captured official full-month source. Other states remain blocked until official full-month rows are captured."
+  },
+  "next_steps": [
+    "Look for state authority fixture PDFs or exports rather than Racing Australia visible-window pages.",
+    "Prioritize NSW and VIC next because they have the largest missing coverage.",
+    "Promote only complete state/month record sets with meeting_date, racecourse, source_url, parser, and last_checked."
+  ]
+}
