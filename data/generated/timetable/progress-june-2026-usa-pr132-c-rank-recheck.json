@@ -1,0 +1,98 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "united-states",
+  "country_label": "United States",
+  "data_rank_target": "C",
+  "last_checked": "2026-06-03",
+  "purpose": "Record PR-132 C-rank recheck for USA Equibase, USTA, and AQHA routes. This file is not a calendar input.",
+  "required_c_rank_fields": [
+    "meeting_date",
+    "racecourse",
+    "source_url",
+    "parser",
+    "last_checked",
+    "regeneration_method",
+    "next_update_steps"
+  ],
+  "source_rechecks": [
+    {
+      "group_id": "equibase-thoroughbred",
+      "group_label": "Equibase Thoroughbred",
+      "source_url": "https://www.equibase.com/static/entry/index.html",
+      "source_type": "official_source",
+      "parser": "equibase-entries-route-access-check",
+      "status": "access_or_route_blocked_not_c_rank",
+      "result": "Official Equibase entries route was checked, but the page fetch returned access blocked and no complete June 2026 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "equibase-thoroughbred",
+      "source_type": "official_source_or_accepted_export_candidate",
+      "parser": "equibase-race-dates-search-recheck",
+      "status": "still_blocked_no_full_month_source",
+      "checked_terms": [
+        "Equibase 2026 racing dates June 2026 track calendar",
+        "Equibase 2026 Race Dates",
+        "Thoroughbred Racing Schedule 2026 Equibase"
+      ],
+      "result": "Search results did not capture a complete official June 2026 meeting_date + racecourse month table. Major-race snippets are insufficient."
+    },
+    {
+      "group_id": "usta-harness",
+      "group_label": "USTA Harness",
+      "source_url": "https://entries.ustrotting.com/",
+      "source_type": "official_source",
+      "parser": "usta-entries-route-access-check",
+      "status": "entries_route_not_full_month_c_rank",
+      "result": "Official USTA entries route was checked, but no complete June 2026 meeting_date + racecourse rows were captured. Current entries are not a full-month C-rank calendar."
+    },
+    {
+      "group_id": "usta-harness",
+      "source_type": "official_source_or_accepted_export_candidate",
+      "parser": "usta-race-dates-search-recheck",
+      "status": "still_blocked_no_full_month_source",
+      "checked_terms": [
+        "USTA 2026 race dates June harness tracks",
+        "USTA entries June 2026 calendar",
+        "US Trotting 2026 race dates"
+      ],
+      "result": "Search and route checks did not capture a complete official June 2026 meeting_date + racecourse month table for US harness racing."
+    },
+    {
+      "group_id": "aqha-quarter-horse",
+      "group_label": "AQHA Quarter Horse",
+      "source_url": "https://www.aqha.com/racing",
+      "source_type": "official_source",
+      "parser": "aqha-racing-route-access-check",
+      "status": "official_route_not_month_rows_captured",
+      "result": "Official AQHA racing route was checked, but no complete June 2026 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "aqha-quarter-horse",
+      "source_type": "official_source_or_accepted_export_candidate",
+      "parser": "aqha-race-dates-search-recheck",
+      "status": "still_blocked_no_full_month_source",
+      "checked_terms": [
+        "AQHA 2026 racing calendar June",
+        "AQHA race dates 2026 June",
+        "American Quarter Horse Association racing schedule 2026"
+      ],
+      "result": "Search and route checks did not capture a complete official June 2026 meeting_date + racecourse month table for AQHA quarter horse racing."
+    }
+  ],
+  "promotion_status": {
+    "status": "progress_not_ready_for_calendar",
+    "reason": "USA is not promoted to C-rank manual records because no captured official or accepted route currently provides complete June 2026 meeting_date + racecourse rows for Equibase Thoroughbred, USTA Harness, or AQHA Quarter Horse."
+  },
+  "regeneration_method": {
+    "current": "Re-check official Equibase, USTA, and AQHA entry/calendar routes and search for annual/monthly race-date exports. Use current entries only as discovery hints, not full-month C-rank records.",
+    "missing_for_promotion": "No-login annual/monthly race-date files, official exports, state commission calendars, or accepted official feeds that expose June 2026 meeting_date + racecourse rows for each USA group."
+  },
+  "next_update_steps": [
+    "For Equibase, look for downloadable annual race-date files, official track calendars, or state commission date feeds that can be reconciled to Equibase/Thoroughbred coverage.",
+    "For USTA, look for monthly race-date exports rather than current entries.",
+    "For AQHA, look for official race-date calendar exports or official track-date lists for June 2026.",
+    "Consider splitting USA into smaller PRs by governing/source group if a complete C-rank route is found for only one group.",
+    "Do not infer dates from normal weekly race patterns, current entries, major-race snippets, or track marketing pages."
+  ]
+}
