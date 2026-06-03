@@ -1,31 +1,96 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { siteData } from '../lib/data';
+import juneCalendar from '../../data/generated/timetable/june-2026-calendar.json';
+import manualCanadaStandardbred from '../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
+import manualCanadaWoodbine from '../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
+import manualNzLoveracing from '../../data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json';
+import manualQueensland from '../../data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json';
+import manualRacingNsw from '../../data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json';
+import manualSouthAfrica from '../../data/generated/timetable/manual-june-2026-gold-circle.json';
+import manualUkArabian from '../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
+import manualUkPointToPoint from '../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
 
-const timetableData = siteData.generated.timetables;
-const currentTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
-const todayRecords = (timetableData.records ?? []).filter((record) => record.date === currentTimetableDate);
+const manualRecordSets = [
+  manualCanadaStandardbred.record_set,
+  manualCanadaWoodbine.record_set,
+  manualNzLoveracing.record_set,
+  manualQueensland.record_set,
+  manualRacingNsw.record_set,
+  manualSouthAfrica.record_set,
+  manualUkArabian.record_set,
+  manualUkPointToPoint.record_set
+].filter(Boolean);
+
+function slug(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function cloneSet(set) {
+  return { ...set, meetings: [...(set.meetings ?? [])] };
+}
+
+function mergeRecordSets(data) {
+  const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
+  for (const manual of manualRecordSets) {
+    const key = `${manual.country_id}::${manual.group_id}`;
+    if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
+    const target = byGroup.get(key);
+    target.source_trace = manual.source_trace;
+    target.data_level = manual.data_level;
+    for (const meeting of manual.meetings ?? []) {
+      const meetingKey = `${meeting[0]}::${meeting[1]}`;
+      const exists = target.meetings.some((item) => `${item[0]}::${item[1]}` === meetingKey);
+      if (!exists) target.meetings.push(meeting);
+    }
+  }
+  return [...byGroup.values()];
+}
+
+function expandRecordSets(recordSets) {
+  return recordSets.flatMap((set) =>
+    set.meetings.map(([date, racecourse]) => ({
+      date,
+      country_id: set.country_id,
+      country_label: set.country_label,
+      racecourse_id: slug(racecourse),
+      racecourse_name: racecourse,
+      racing_type: set.group_label,
+      source_url: set.source_trace.source_url,
+      source_id: set.group_id,
+      last_checked_at: set.source_trace.last_checked,
+      status: 'real_source_checked',
+      confidence: set.data_level
+    }))
+  );
+}
+
+const buildDate = new Date().toISOString().slice(0, 10);
+const currentTimetableDate = buildDate.startsWith('2026-06-') ? buildDate : '2026-06-03';
+const todayRecords = expandRecordSets(mergeRecordSets(juneCalendar))
+  .filter((record) => record.date === currentTimetableDate)
+  .sort((a, b) => `${a.country_id}:${a.racecourse_name}`.localeCompare(`${b.country_id}:${b.racecourse_name}`));
 ---
 
 <BaseLayout
-  title="Today’s safe timetable | Where Horses Run"
-  description="Safe timetable records listed for today, with official source links as the final confirmation point."
+  title="Today’s real-source timetable | Where Horses Run"
+  description="Real-source timetable records listed for today, with official source links as the final confirmation point."
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Today</p>
-    <h1 id="page-title">Today’s safe timetable</h1>
+    <h1 id="page-title">Today’s real-source timetable</h1>
     <p class="hero__summary">
-      Safe generated timetable records for {currentTimetableDate || 'the current generated date'}.
+      Real-source timetable records for {currentTimetableDate}.
       Official links remain the final confirmation point.
     </p>
   </section>
 
-  <section class="section-grid" aria-label="Today safe timetable status">
+  <section class="section-grid" aria-label="Today real-source timetable status">
     <article class="card">
       <h2>Status</h2>
-      <p><strong>Generated date:</strong> {currentTimetableDate || 'not listed'}</p>
+      <p><strong>Generated date:</strong> {juneCalendar.generated_at?.slice(0, 10) || 'not listed'}</p>
+      <p><strong>Today date:</strong> {currentTimetableDate}</p>
       <p><strong>Matching records:</strong> {todayRecords.length}</p>
       <p><strong>Live fetching:</strong> disabled</p>
     </article>
@@ -36,37 +101,50 @@ const todayRecords = (timetableData.records ?? []).filter((record) => record.dat
     </article>
   </section>
 
-  <section class="section-grid" aria-label="Today safe timetable records">
-    <article class="card">
-      <h2>Records</h2>
-      {todayRecords.length > 0 ? (
-        <ul>
-          {todayRecords.map((record) => (
-            <li>
-              <p><strong>Country:</strong> {record.country_id}</p>
-              <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
-              <p><strong>Date:</strong> {record.date}</p>
-              <p><strong>Start time:</strong> {record.start_time_local}</p>
-              <p><strong>Timezone:</strong> {record.timezone}</p>
-              <p><strong>Racing type:</strong> {record.racing_type}</p>
-              <p>
-                <strong>Official source:</strong>{' '}
-                <a href={record.source_url}>{record.source_id}</a>
-              </p>
-              <p><strong>Last checked:</strong> {record.last_checked_at}</p>
-              <p><strong>Status:</strong> {record.status}</p>
-              <p><strong>Confidence:</strong> {record.confidence}</p>
-              <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div>
-          <p>No safe timetable records are listed for today yet.</p>
-          <p>Use official source links for final confirmation.</p>
-          <p>Live fetching: disabled</p>
+  <section aria-label="Today real-source timetable records">
+    <h2>Records</h2>
+    {todayRecords.length > 0 ? (
+      <article class="card">
+        <div class="table-scroll" role="region" aria-label="Today records" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Racecourse</th>
+                <th>System</th>
+                <th>Source</th>
+                <th>Checked</th>
+                <th>Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todayRecords.map((record) => (
+                <tr>
+                  <td>{record.country_label}</td>
+                  <td>{record.racecourse_name}</td>
+                  <td>{record.racing_type}</td>
+                  <td><a href={record.source_url}>{record.source_id}</a></td>
+                  <td>{record.last_checked_at}</td>
+                  <td>{record.confidence}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
-    </article>
+      </article>
+    ) : (
+      <article class="card">
+        <p>No real-source timetable records are listed for today yet.</p>
+        <p>Use official source links for final confirmation.</p>
+        <p>Live fetching: disabled</p>
+      </article>
+    )}
   </section>
 </BaseLayout>
+
+<style>
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 760px; }
+  th, td { border-bottom: 1px solid var(--border, #ddd); padding: 0.45rem 0.5rem; text-align: left; vertical-align: top; }
+  th { font-weight: 700; }
+</style>
