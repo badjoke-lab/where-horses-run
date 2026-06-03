@@ -1,0 +1,340 @@
+{
+  "schema_version": "pr-133-current-rank-matrix-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-03",
+  "purpose": "Summarize the current best available rank for each June 2026 target system after PR-132. This file is not a calendar input.",
+  "rank_definitions_source": "data/generated/timetable/pr-132-c-a-acquisition-route-rules.json",
+  "rank_order": ["A", "B+", "B", "C", "coverage_status", "legacy_status", "blocker"],
+  "display_rule_summary": {
+    "monthly_page": "One row per meeting. Show rank, time, race count, details, and source. Do not expand A-rank races on the monthly page.",
+    "C": "Time unknown.",
+    "B": "First race time captured.",
+    "B+": "First and last race start times captured. last_race_time is not meeting end time.",
+    "A": "Race-by-race details captured and shown on meeting detail pages."
+  },
+  "systems": [
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-jra.json",
+      "source_url": "https://jra.jp/keiba/calendar2026/",
+      "parser": "jra-calendar-month-manual",
+      "next_best_step": "B/B+ candidate: look for official first-race and last-race times from JRA racecard or meeting-day source, with reusable extraction route.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-nar.json",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "parser": "nar-monthly-convene-info",
+      "regeneration_command": "ALLOW_LIVE_SOURCE_FETCH=1 node scripts/extract-pr-130-nar-june.mjs",
+      "next_best_step": "B/B+ candidate: investigate NAR race-by-day pages for first_race_time and last_race_time, then A for race-by-race details.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "japan",
+      "group_id": "banei",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-banei.json",
+      "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "parser": "banei-race-schedule-month-manual",
+      "next_best_step": "B/B+ candidate only if official start times can be captured without inference.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/june-2026-calendar.json",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "parser": "hkjc-fixture-list-month",
+      "next_best_step": "High-priority B/B+/A candidate: HKJC meeting/racecard pages likely expose first race, last race, race count, and race-by-race schedule.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "united-arab-emirates",
+      "group_id": "era",
+      "current_rank": "coverage_status",
+      "records_file": "data/generated/timetable/june-2026-calendar.json coverage_status",
+      "source_url": "https://emiratesracing.com/season-calendar/current-season",
+      "parser": "era-season-calendar-month-status",
+      "next_best_step": "Continue status checks. Promote to C only if official June 2026 meeting rows are found.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/june-2026-calendar.json",
+      "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf",
+      "parser": "bha-2026-fixture-list-pdf",
+      "next_best_step": "B/B+ candidate if official racecard or race-day pages expose first_race_time and last_race_time per meeting. A candidate after racecard route is verified.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "point-to-point",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-uk-point-to-point.json",
+      "source_url": "https://www.pointtopoint.co.uk/fixtures",
+      "parser": "weatherbys-pointtopoint-fixtures-page-month-manual",
+      "next_best_step": "B candidate if official fixture pages expose first race time. A is not an early target.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "purebred-arabian",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-uk-purebred-arabian.json",
+      "source_url": "https://www.aroracing.co.uk/",
+      "parser": "aro-fixture-list-month-manual",
+      "next_best_step": "B candidate if official fixture details expose first race time. A is not an early target.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "ireland",
+      "group_id": "hri",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-hri.json",
+      "source_url": "https://www.hri.ie/racing/fixture-list/",
+      "parser": "hri-fixture-list-month-manual",
+      "next_best_step": "B/B+ candidate through HRI racecard or race-day detail pages. A candidate after reusable route is verified.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "singapore",
+      "group_id": "singapore-turf-club",
+      "current_rank": "legacy_status",
+      "records_file": "data/generated/timetable/june-2026-calendar.json coverage_status",
+      "source_url": "https://racing.turfclub.com.sg/",
+      "parser": "singapore-turf-club-legacy-status",
+      "next_best_step": "Keep legacy/no-active-racing status only. Do not promote unless official active racing resumes.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "loveracing-thoroughbred",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json",
+      "source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-03/March%2026%20Programming%20A4.pdf",
+      "parser": "nztr-rpg-march-2026-programme-directory-and-nominations",
+      "next_best_step": "B/B+ candidate if LOVERACING/NZTR race-day pages expose first and last race times. A after racecard route is verified.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-hrnz-harness.json",
+        "data/generated/timetable/progress-june-2026-hrnz-direct-programme-recheck.json",
+        "data/generated/timetable/progress-june-2026-hrnz-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/Raceday/2026/dates_june2026.htm",
+      "parser": "hrnz-racing-dates-month-club-progress",
+      "blocker": "18 club-date rows exist, but 3 rows still lack source-verified racecourse names. Do not infer Invercargill or Forbury venues.",
+      "next_best_step": "Browser/devtools/Codex inspection of HRNZ programme pages before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "canada",
+      "group_id": "woodbine-thoroughbred",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json",
+      "source_url": "https://woodbine.com/race/",
+      "parser": "woodbine-race-page-upcoming-thoroughbred-races",
+      "next_best_step": "B/B+/A candidate through Woodbine race pages if race times and racecard links are reusable by date/month.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "canada",
+      "group_id": "standardbred-canada",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-standardbred-canada.json",
+      "source_url": "https://woodbine.com/mohawk/race/",
+      "parser": "woodbine-mohawk-race-page-upcoming-standardbred-races",
+      "next_best_step": "B/B+/A candidate for Woodbine Mohawk only; continue separate national Standardbred Canada route investigation.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "south-africa",
+      "group_id": "gold-circle",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-gold-circle.json",
+      "source_url": "https://www.goldcircle.co.za/racing/south-african-horse-racing-calender/",
+      "parser": "south-africa-racing-calendar-month-manual",
+      "next_best_step": "B candidate only if official race-day time source is captured. Also verify NHRA/4Racing operator-specific labels if needed.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-queensland-thoroughbred",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json",
+      "source_url": "https://www.racingqueensland.com.au/racing/full-calendar",
+      "parser": "racing-queensland-full-calendar-thoroughbred-month-manual",
+      "next_best_step": "B/B+ candidate if official meeting pages expose first and last race times. A after racecard route is verified.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-nsw-thoroughbred",
+      "current_rank": "C",
+      "records_file": "data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json",
+      "source_url": "https://racing.racingnsw.com.au/FreeFields/Calendar_Meetings.aspx?State=NSW",
+      "supporting_source_url": "https://www.racingnsw.com.au/wp-content/uploads/2025-26-Race-Dates.pdf",
+      "parser": "racing-nsw-race-diary-and-race-dates-pdf-month-manual",
+      "next_best_step": "B/B+/A candidate through Racing NSW race diary/free fields routes if time/racecard extraction is reusable.",
+      "a_candidate": true
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-australia-thoroughbred-other-states",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-racing-australia-thoroughbred.json",
+        "data/generated/timetable/progress-june-2026-australia-state-source-recheck.json",
+        "data/generated/timetable/progress-june-2026-vic-sa-source-recheck.json",
+        "data/generated/timetable/progress-june-2026-wa-tas-source-recheck.json",
+        "data/generated/timetable/progress-june-2026-act-nt-source-recheck.json",
+        "data/generated/timetable/progress-june-2026-australia-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+      "parser": "racing-australia-calendar-state-visible-window",
+      "blocker": "VIC, SA, WA, TAS, and NT remain blocked because complete full-month official source rows were not captured. ACT is represented through Racing NSW Canberra Acton rows and is not duplicated.",
+      "next_best_step": "Find state authority PDFs/exports for C before any B/B+/A work.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "australia",
+      "group_id": "harness-australia",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-harness-australia-routes.json",
+        "data/generated/timetable/progress-june-2026-harness-australia-route-recheck.json",
+        "data/generated/timetable/progress-june-2026-harness-australia-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.harness.org.au/",
+      "parser": "harness-australia-route-recheck",
+      "blocker": "Official routes exist, but Fields and Meeting Calendar are JS/Cookie dependent in current capture and no complete full-month rows were captured.",
+      "next_best_step": "Browser/devtools/Codex inspection of meeting-calendar requests before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-france-routes.json",
+        "data/generated/timetable/progress-june-2026-france-fnch-route-recheck.json",
+        "data/generated/timetable/progress-june-2026-france-month-api-recheck.json",
+        "data/generated/timetable/progress-june-2026-france-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.france-galop.com/en",
+      "parser": "france-galop-route-check-home-calendar-links",
+      "blocker": "Official and subscription routes exist, but no captured no-login source provides complete June 2026 meeting_date + racecourse rows. FNCH is promising but currently day-only in capture.",
+      "next_best_step": "Browser/devtools/Codex inspection of FNCH Ce mois-ci and France Galop calendar subscription calls before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-france-routes.json",
+        "data/generated/timetable/progress-june-2026-france-fnch-route-recheck.json",
+        "data/generated/timetable/progress-june-2026-france-month-api-recheck.json",
+        "data/generated/timetable/progress-june-2026-france-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.letrot.com/",
+      "parser": "letrot-route-check-current-and-next-days",
+      "blocker": "Official rolling/current routes and GNT snippets exist, but no captured official full June 2026 row set exists.",
+      "next_best_step": "Find LeTROT month calendar/API/export or inspect FNCH/LeTROT network calls before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "south-korea",
+      "group_id": "kra",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-kra-routes.json",
+        "data/generated/timetable/progress-june-2026-kra-followup-recheck.json",
+        "data/generated/timetable/progress-june-2026-kra-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.kra.co.kr/",
+      "parser": "kra-route-followup-recheck",
+      "blocker": "No complete official June 2026 meeting_date + racecourse month table captured for Seoul, Busan-Gyeongnam, and Jeju.",
+      "next_best_step": "Find KRA monthly calendar endpoint, official notice, downloadable race-date PDF, or API before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "equibase-thoroughbred",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-usa-routes.json",
+        "data/generated/timetable/progress-june-2026-usa-followup-recheck.json",
+        "data/generated/timetable/progress-june-2026-usa-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.equibase.com/",
+      "parser": "equibase-route-followup-recheck",
+      "blocker": "No complete official June 2026 meeting_date + racecourse month table captured. Entry route was blocked or did not expose month rows.",
+      "next_best_step": "Find annual/monthly race-date files, state commission calendars, or accepted official exports before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "usta-harness",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-usa-routes.json",
+        "data/generated/timetable/progress-june-2026-usa-followup-recheck.json",
+        "data/generated/timetable/progress-june-2026-usa-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.ustrotting.com/",
+      "parser": "usta-route-followup-recheck",
+      "blocker": "No complete official June 2026 meeting_date + racecourse month table captured. Entries route is not a full-month C-rank source.",
+      "next_best_step": "Find USTA monthly race-date export before C promotion.",
+      "a_candidate": false
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "aqha-quarter-horse",
+      "current_rank": "blocker",
+      "progress_files": [
+        "data/generated/timetable/progress-june-2026-usa-routes.json",
+        "data/generated/timetable/progress-june-2026-usa-followup-recheck.json",
+        "data/generated/timetable/progress-june-2026-usa-pr132-c-rank-recheck.json"
+      ],
+      "source_url": "https://www.aqha.com/",
+      "parser": "aqha-route-followup-recheck",
+      "blocker": "No complete official June 2026 meeting_date + racecourse month table captured from AQHA racing routes or follow-up searches.",
+      "next_best_step": "Find AQHA official race-date calendar/export before C promotion.",
+      "a_candidate": false
+    }
+  ],
+  "summary_counts": {
+    "A": 0,
+    "B+": 0,
+    "B": 0,
+    "C": 16,
+    "coverage_status": 1,
+    "legacy_status": 1,
+    "blocker": 10
+  },
+  "next_recommended_prs": [
+    {
+      "pr": "PR-134",
+      "title": "Add monthly rank/time display columns",
+      "purpose": "Prepare UI for C/B/B+/A by adding Rank, Time, Race count, Details, and Source display rules."
+    },
+    {
+      "pr": "PR-135",
+      "title": "Investigate B/B+ acquisition candidates",
+      "purpose": "Start with HKJC, JRA, NAR, BHA, and HRI to find reusable first_race_time and last_race_time routes."
+    }
+  ]
+}
