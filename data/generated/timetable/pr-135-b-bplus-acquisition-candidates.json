@@ -1,0 +1,165 @@
+{
+  "schema_version": "pr-135-b-bplus-acquisition-candidates-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-03",
+  "purpose": "Record B/B+ acquisition candidates after PR-134 without promoting any records. This file is not a calendar input.",
+  "rank_definitions_source": "data/generated/timetable/pr-132-c-a-acquisition-route-rules.json",
+  "current_rank_matrix_source": "data/generated/timetable/pr-133-current-rank-matrix.json",
+  "scope_rules": {
+    "B": "C fields plus first_race_time, time_zone, and time_source_url.",
+    "B+": "B fields plus last_race_time. last_race_time is final race start time, not meeting_end_time.",
+    "promote_rule": "Do not promote from C to B/B+ unless the first_race_time or last_race_time is source-verified through a reusable route.",
+    "monthly_display_rule": "Monthly pages stay one row per meeting and do not expand A-rank race rows."
+  },
+  "priority_order": [
+    "hong-kong/hkjc",
+    "japan/jra",
+    "japan/nar",
+    "ireland/hri",
+    "united-kingdom/bha",
+    "canada/woodbine-thoroughbred",
+    "australia/racing-nsw-thoroughbred",
+    "australia/racing-queensland-thoroughbred",
+    "new-zealand/loveracing-thoroughbred"
+  ],
+  "candidates": [
+    {
+      "country_id": "hong-kong",
+      "group_id": "hkjc",
+      "current_rank": "C",
+      "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "current_parser": "hkjc-fixture-list-month",
+      "target_rank": "B+",
+      "investigation_goal": "Find a reusable official meeting or racecard route that exposes first_race_time, last_race_time, and preferably race_count for each June 2026 meeting.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "A reusable official route captures both first and last race start times without inference.",
+      "next_action": "Inspect HKJC meeting/racecard pages for per-meeting race time payloads."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "jra",
+      "current_rank": "C",
+      "source_url": "https://jra.jp/keiba/calendar2026/",
+      "current_parser": "jra-calendar-month-manual",
+      "target_rank": "B+",
+      "investigation_goal": "Find official JRA racecard or meeting-day pages that expose first_race_time and last_race_time for June 2026 meetings.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "The extraction route is reusable by meeting date and racecourse and does not infer times from non-official summaries.",
+      "next_action": "Inspect JRA racecard and meeting-day source paths for a stable time table."
+    },
+    {
+      "country_id": "japan",
+      "group_id": "nar",
+      "current_rank": "C",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "current_parser": "nar-monthly-convene-info",
+      "regeneration_command": "ALLOW_LIVE_SOURCE_FETCH=1 node scripts/extract-pr-130-nar-june.mjs",
+      "target_rank": "B+",
+      "investigation_goal": "Find NAR race-by-day pages that expose first_race_time and last_race_time for each captured meeting.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "Race time source is official, date-specific, and can be regenerated monthly.",
+      "next_action": "Inspect NAR race-by-day/racecard routes tied to MonthlyConveneInfo rows."
+    },
+    {
+      "country_id": "ireland",
+      "group_id": "hri",
+      "current_rank": "C",
+      "source_url": "https://www.hri.ie/racing/fixture-list/",
+      "current_parser": "hri-fixture-list-month-manual",
+      "target_rank": "B+",
+      "investigation_goal": "Find HRI racecard or race-day detail pages with first_race_time and last_race_time per meeting.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "Times are captured from official HRI or linked official racecard sources with a reusable route.",
+      "next_action": "Inspect HRI fixture detail and racecard pages for June 2026 race time fields."
+    },
+    {
+      "country_id": "united-kingdom",
+      "group_id": "bha",
+      "current_rank": "C",
+      "source_url": "https://media.britishhorseracing.com/bha/Fixture_List/2026_Fixture_List.pdf",
+      "current_parser": "bha-2026-fixture-list-pdf",
+      "target_rank": "B",
+      "investigation_goal": "Find official BHA, Racing Admin, or racecard routes that expose first_race_time per meeting, then test whether last_race_time is also available.",
+      "required_fields": ["first_race_time", "time_zone", "time_source_url"],
+      "optional_bplus_fields": ["last_race_time"],
+      "do_not_promote_until": "First race time is official and reusable by meeting. B+ requires final race start time, not meeting end time.",
+      "next_action": "Inspect BHA fixture-linked racecard routes and avoid treating broad event end times as last_race_time."
+    },
+    {
+      "country_id": "canada",
+      "group_id": "woodbine-thoroughbred",
+      "current_rank": "C",
+      "source_url": "https://woodbine.com/race/",
+      "current_parser": "woodbine-race-page-upcoming-thoroughbred-races",
+      "target_rank": "B+",
+      "investigation_goal": "Verify whether Woodbine race pages expose reusable meeting-level first_race_time and last_race_time by date/month.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "Monthly regeneration can capture June 2026 meeting time rows without relying on only rolling upcoming windows.",
+      "next_action": "Check whether Woodbine has date-addressable race pages or archives for June 2026."
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-nsw-thoroughbred",
+      "current_rank": "C",
+      "source_url": "https://racing.racingnsw.com.au/FreeFields/Calendar_Meetings.aspx?State=NSW",
+      "supporting_source_url": "https://www.racingnsw.com.au/wp-content/uploads/2025-26-Race-Dates.pdf",
+      "current_parser": "racing-nsw-race-diary-and-race-dates-pdf-month-manual",
+      "target_rank": "B+",
+      "investigation_goal": "Find Racing NSW free fields or race diary routes that expose first and last race start times per meeting.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "Time fields are official, reusable, and tied to the same meeting_date/racecourse rows.",
+      "next_action": "Inspect FreeFields meeting detail pages and any stable query parameters."
+    },
+    {
+      "country_id": "australia",
+      "group_id": "racing-queensland-thoroughbred",
+      "current_rank": "C",
+      "source_url": "https://www.racingqueensland.com.au/racing/full-calendar",
+      "current_parser": "racing-queensland-full-calendar-thoroughbred-month-manual",
+      "target_rank": "B+",
+      "investigation_goal": "Check whether Racing Queensland meeting detail pages expose first_race_time and last_race_time for June 2026.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "A reusable official meeting detail route is captured.",
+      "next_action": "Inspect full calendar links and meeting detail payloads."
+    },
+    {
+      "country_id": "new-zealand",
+      "group_id": "loveracing-thoroughbred",
+      "current_rank": "C",
+      "source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-03/March%2026%20Programming%20A4.pdf",
+      "current_parser": "nztr-rpg-march-2026-programme-directory-and-nominations",
+      "target_rank": "B+",
+      "investigation_goal": "Find LOVERACING/NZTR race-day pages that expose first and last race start times for captured June meetings.",
+      "required_fields": ["first_race_time", "last_race_time", "time_zone", "time_source_url"],
+      "do_not_promote_until": "Time route is official, meeting-specific, and reusable beyond a rolling window.",
+      "next_action": "Inspect LOVERACING/NZTR race-day and nominations/programme routes."
+    }
+  ],
+  "blocked_or_later": [
+    {
+      "country_id": "new-zealand",
+      "group_id": "hrnz-harness",
+      "reason": "C is still blocked; do not investigate B/B+ until source-verified racecourse rows are available."
+    },
+    {
+      "country_id": "france",
+      "group_id": "france-galop",
+      "reason": "C is still blocked; inspect FNCH/France Galop routes before B/B+."
+    },
+    {
+      "country_id": "france",
+      "group_id": "letrot",
+      "reason": "C is still blocked; find full-month official row source before B/B+."
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "equibase-thoroughbred",
+      "reason": "C is still blocked; find official full-month race-date source before B/B+."
+    },
+    {
+      "country_id": "united-states",
+      "group_id": "usta-harness",
+      "reason": "C is still blocked; find official full-month race-date source before B/B+."
+    }
+  ]
+}
