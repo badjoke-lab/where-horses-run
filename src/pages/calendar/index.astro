@@ -1,47 +1,117 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { siteData } from '../../lib/data';
+import juneCalendar from '../../../data/generated/timetable/june-2026-calendar.json';
+import manualCanadaStandardbred from '../../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
+import manualCanadaWoodbine from '../../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
+import manualNzLoveracing from '../../../data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json';
+import manualQueensland from '../../../data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json';
+import manualRacingNsw from '../../../data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json';
+import manualSouthAfrica from '../../../data/generated/timetable/manual-june-2026-gold-circle.json';
+import manualUkArabian from '../../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
+import manualUkPointToPoint from '../../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
 
-const timetableData = siteData.generated.timetables;
-const generatedTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
-const rangeStartDate = generatedTimetableDate;
-const generatedDate = generatedTimetableDate ? new Date(`${generatedTimetableDate}T00:00:00.000Z`) : null;
-const rangeEndDate = generatedDate
-  ? new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate() + 30))
-      .toISOString()
-      .slice(0, 10)
-  : '';
-const calendarRecords = (timetableData.records ?? [])
-  .filter((record) => record.date >= rangeStartDate && record.date < rangeEndDate)
-  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
+const manualRecordSets = [
+  manualCanadaStandardbred.record_set,
+  manualCanadaWoodbine.record_set,
+  manualNzLoveracing.record_set,
+  manualQueensland.record_set,
+  manualRacingNsw.record_set,
+  manualSouthAfrica.record_set,
+  manualUkArabian.record_set,
+  manualUkPointToPoint.record_set
+].filter(Boolean);
+
+function slug(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function cloneSet(set) {
+  return {
+    ...set,
+    meetings: [...(set.meetings ?? [])]
+  };
+}
+
+function mergeRecordSets(data) {
+  const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
+
+  for (const manual of manualRecordSets) {
+    const key = `${manual.country_id}::${manual.group_id}`;
+    if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
+    const target = byGroup.get(key);
+    target.source_trace = manual.source_trace;
+    target.data_level = manual.data_level;
+    for (const meeting of manual.meetings ?? []) {
+      const meetingKey = `${meeting[0]}::${meeting[1]}`;
+      const exists = target.meetings.some((item) => `${item[0]}::${item[1]}` === meetingKey);
+      if (!exists) target.meetings.push(meeting);
+    }
+  }
+
+  return [...byGroup.values()].map((set) => ({
+    ...set,
+    meetings: set.meetings.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]))
+  })).sort((a, b) => `${a.country_id}::${a.group_id}`.localeCompare(`${b.country_id}::${b.group_id}`));
+}
+
+function expandRecordSets(recordSets) {
+  return recordSets.flatMap((set) =>
+    set.meetings.map(([date, racecourse]) => ({
+      date,
+      country_id: set.country_id,
+      country_label: set.country_label,
+      racecourse_id: slug(racecourse),
+      racecourse_name: racecourse,
+      start_time_local: 'not listed',
+      timezone: 'not listed',
+      racing_type: set.group_label,
+      source_url: set.source_trace.source_url,
+      source_id: set.group_id,
+      last_checked_at: set.source_trace.last_checked,
+      status: 'real_source_checked',
+      confidence: set.data_level,
+      notes: [
+        `Parser: ${set.source_trace.parser}`,
+        'June 2026 meeting-date/racecourse record; race times are not included in this C-rank calendar view.'
+      ]
+    }))
+  );
+}
+
+const mergedRecordSets = mergeRecordSets(juneCalendar);
+const calendarRecords = expandRecordSets(mergedRecordSets)
+  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_name}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_name}`));
 const recordsByDate = calendarRecords.reduce((groups, record) => {
   groups[record.date] = [...(groups[record.date] ?? []), record];
   return groups;
 }, {});
 const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date, records: recordsByDate[date] }));
+const generatedTimetableDate = juneCalendar.generated_at?.slice(0, 10) ?? '2026-06-01';
+const rangeStartDate = '2026-06-01';
+const rangeEndDate = '2026-07-01';
 ---
 
 <BaseLayout
-  title="30-day safe timetable calendar | Where Horses Run"
-  description="Safe timetable records grouped by date for the 30-day calendar range, with official source links as the final confirmation point."
+  title="June 2026 timetable calendar | Where Horses Run"
+  description="June 2026 real-source timetable records grouped by date, with official source links as the final confirmation point."
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
-    <h1 id="page-title">30-day safe timetable calendar</h1>
+    <h1 id="page-title">June 2026 real-source timetable calendar</h1>
     <p class="hero__summary">
-      Safe generated timetable records grouped by date for the next 30 days from the generated timetable date.
+      Real-source timetable records grouped by date for June 2026.
       Official source links remain the final confirmation point.
     </p>
   </section>
 
-  <section class="section-grid" aria-label="30-day safe timetable status">
+  <section class="section-grid" aria-label="June 2026 timetable status">
     <article class="card">
       <h2>Status</h2>
       <p><strong>Generated date:</strong> {generatedTimetableDate || 'not listed'}</p>
-      <p><strong>Range start:</strong> {rangeStartDate || 'not listed'}</p>
-      <p><strong>Range end:</strong> {rangeEndDate || 'not listed'} (exclusive)</p>
+      <p><strong>Range start:</strong> {rangeStartDate}</p>
+      <p><strong>Range end:</strong> {rangeEndDate} (exclusive)</p>
       <p><strong>Matching records:</strong> {calendarRecords.length}</p>
       <p><strong>Live fetching:</strong> disabled</p>
     </article>
@@ -52,7 +122,7 @@ const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date,
     </article>
   </section>
 
-  <section class="section-grid" aria-label="30-day safe timetable records">
+  <section class="section-grid" aria-label="June 2026 timetable records">
     <article class="card">
       <h2>Records by date</h2>
       {groupedCalendarRecords.length > 0 ? (
@@ -63,7 +133,7 @@ const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date,
               <ul>
                 {group.records.map((record) => (
                   <li>
-                    <p><strong>Country:</strong> {record.country_id}</p>
+                    <p><strong>Country:</strong> {record.country_label} ({record.country_id})</p>
                     <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
                     <p><strong>Date:</strong> {record.date}</p>
                     <p><strong>Start time:</strong> {record.start_time_local}</p>
@@ -85,7 +155,7 @@ const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date,
         </div>
       ) : (
         <div>
-          <p>No safe timetable records are listed for the next 30 days yet.</p>
+          <p>No safe timetable records are listed for June 2026 yet.</p>
           <p>Use official source links for final confirmation.</p>
           <p>Live fetching: disabled</p>
         </div>
