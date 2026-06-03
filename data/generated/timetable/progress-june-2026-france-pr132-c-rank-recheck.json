@@ -1,0 +1,86 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "france",
+  "country_label": "France",
+  "data_rank_target": "C",
+  "last_checked": "2026-06-03",
+  "purpose": "Record PR-132 C-rank recheck for France Galop, LeTROT, and FNCH. This file is not a calendar input.",
+  "required_c_rank_fields": [
+    "meeting_date",
+    "racecourse",
+    "source_url",
+    "parser",
+    "last_checked",
+    "regeneration_method",
+    "next_update_steps"
+  ],
+  "source_rechecks": [
+    {
+      "group_id": "fnch",
+      "source_url": "https://www.fnch.fr/calendrier",
+      "source_type": "official_source",
+      "parser": "fnch-calendar-period-route-check",
+      "status": "official_route_partial_day_only_not_c_rank",
+      "captured_fields": [
+        "date",
+        "hippodrome",
+        "discipline",
+        "federation"
+      ],
+      "captured_example_rows": [
+        ["2026-06-02", "Saint-Cloud", "Plat", "France Galop"],
+        ["2026-06-02", "Hyères", "Trot", "unknown_or_trot"],
+        ["2026-06-02", "Les Sables d'Olonne", "Trot", "unknown_or_trot"],
+        ["2026-06-02", "Paris-Vincennes", "Trot", "unknown_or_trot"]
+      ],
+      "result": "FNCH official calendar route is the strongest France C-rank candidate because it exposes date + hippodrome rows and period controls including Aujourd'hui, Cette semaine, and Ce mois-ci. However, the current capture only exposes 2026-06-02 rows and does not expose a complete June 2026 month table or reusable captured month endpoint. Do not promote."
+    },
+    {
+      "group_id": "france-galop",
+      "source_url": "https://www.france-galop.com/en",
+      "source_type": "official_source",
+      "parser": "france-galop-route-check-home-calendar-links",
+      "status": "official_route_but_month_rows_not_captured",
+      "result": "France Galop navigation exposes Yesterday, Today, Tomorrow, Other dates, Pattern & Listed races, Group 1 races, and subscription routes. Other dates redirected to sign-in in the captured path, and no complete June 2026 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "france-galop",
+      "source_url": "https://www.france-galop.com/en/calendars",
+      "source_type": "official_source",
+      "parser": "france-galop-calendar-subscription-route-check",
+      "status": "subscription_route_present_but_ics_url_not_captured",
+      "result": "Calendar subscription page confirms a free calendar-subscription UI for all France, federation, and racecourse, but captured HTML does not expose a reusable ICS/API URL or complete June 2026 rows."
+    },
+    {
+      "group_id": "letrot",
+      "source_url": "https://www.letrot.com/",
+      "source_type": "official_source",
+      "parser": "letrot-route-check-current-and-next-days",
+      "status": "rolling_window_not_c_rank",
+      "result": "LeTROT home/courses routes expose current-day, tomorrow, and next-days meeting lists with racecourse names, but these are rolling short-window pages and are not a verified full June 2026 month route."
+    },
+    {
+      "group_id": "letrot",
+      "source_url": "https://www.letrot.com/evenements/gnt",
+      "source_type": "official_source",
+      "parser": "letrot-gnt-route-check",
+      "status": "partial_event_snippets_not_c_rank",
+      "result": "GNT route is accessible and snippets identify individual stages such as Laval on 2026-06-03 and Agen on 2026-06-17, but this is not complete LeTROT June 2026 C-rank coverage."
+    }
+  ],
+  "promotion_status": {
+    "status": "progress_not_ready_for_calendar",
+    "reason": "France is not promoted to C-rank manual records because no captured official route currently provides complete June 2026 meeting_date + racecourse rows for France Galop and LeTROT. FNCH is promising but currently day-only in capture."
+  },
+  "regeneration_method": {
+    "current": "Re-check FNCH calendar page and France Galop/LeTROT official routes. Only promote when a reusable month route or export exposes complete June 2026 date + racecourse rows.",
+    "missing_for_promotion": "Captured no-login month endpoint, export, ICS, or official PDF/API for June 2026 France Galop and LeTROT rows."
+  },
+  "next_update_steps": [
+    "Use browser/devtools or Codex network inspection to identify the request behind FNCH Ce mois-ci.",
+    "Inspect France Galop calendar subscription network calls for generated ICS/API URLs.",
+    "Inspect LeTROT courses/calendar-resultats routes for date/month parameters outside current rolling windows and GNT feature pages.",
+    "Do not promote daily FNCH rows, GNT snippets, or rolling-window pages as full-month C-rank coverage."
+  ]
+}
