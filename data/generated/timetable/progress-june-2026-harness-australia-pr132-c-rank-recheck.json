@@ -1,0 +1,68 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "australia",
+  "country_label": "Australia",
+  "group_id": "harness-australia",
+  "group_label": "Harness Australia",
+  "data_rank_target": "C",
+  "last_checked": "2026-06-03",
+  "purpose": "Record PR-132 C-rank recheck for Harness Australia. This file is not a calendar input.",
+  "required_c_rank_fields": [
+    "meeting_date",
+    "racecourse",
+    "source_url",
+    "parser",
+    "last_checked",
+    "regeneration_method",
+    "next_update_steps"
+  ],
+  "source_rechecks": [
+    {
+      "source_url": "https://www.harness.org.au/",
+      "source_type": "official_source",
+      "parser": "harness-australia-home-route-recheck",
+      "status": "official_route_not_month_rows_captured",
+      "result": "Official Harness Australia route was rechecked, but a complete no-login June 2026 meeting_date + racecourse month table was not captured."
+    },
+    {
+      "source_url": "https://www.harness.org.au/racing/fields/",
+      "source_type": "official_source",
+      "parser": "harness-australia-fields-redirect-check",
+      "status": "javascript_cookie_dependent_not_c_rank",
+      "result": "Official Fields route is present, but captured output redirects to a JavaScript/Cookie-dependent page and does not expose complete June 2026 meeting_date + racecourse rows."
+    },
+    {
+      "source_url": "https://www.harness.org.au/racing/meeting-calendar/",
+      "source_type": "official_source",
+      "parser": "harness-australia-meeting-calendar-redirect-check",
+      "status": "javascript_cookie_dependent_not_c_rank",
+      "result": "Official Meeting Calendar route is present, but captured output redirects to a JavaScript/Cookie-dependent page and does not expose complete June 2026 meeting_date + racecourse rows."
+    },
+    {
+      "source_url": "https://legacy.harness.org.au/",
+      "source_type": "legacy_official_route_candidate",
+      "parser": "harness-australia-legacy-route-recheck",
+      "status": "legacy_route_no_full_month_rows_captured",
+      "result": "Legacy route was rechecked, but complete June 2026 meeting_date + racecourse rows were not captured."
+    }
+  ],
+  "supporting_navigation": [
+    "Harness Australia site navigation exposes state links for NSW, QLD, SA, TAS, VIC, and WA.",
+    "Harness Australia site navigation exposes Racing links including Fields, Results, Meeting Calendar, Feature Races, and Tracks."
+  ],
+  "promotion_status": {
+    "status": "progress_not_ready_for_calendar",
+    "reason": "Harness Australia is not promoted to C-rank manual records because no captured official or accepted route currently provides complete June 2026 meeting_date + racecourse rows."
+  },
+  "regeneration_method": {
+    "current": "Re-check Harness Australia official racing routes and legacy route. Use state harness authority routes only if they expose complete month rows.",
+    "missing_for_promotion": "A no-login month-capable official or accepted route that exposes complete June 2026 harness meeting_date + racecourse rows."
+  },
+  "next_update_steps": [
+    "Use browser/devtools or Codex network inspection for Harness Australia Meeting Calendar requests and date/month parameters.",
+    "Inspect state harness authority sites linked from Harness Australia for June 2026 month calendars or downloadable race-date exports.",
+    "Do not promote current-day fields pages, short-window results, or JS/Cookie redirect shells as full-month C-rank calendar records.",
+    "Promote only after every row has meeting_date, racecourse, source_url, parser, last_checked, and a documented regeneration method."
+  ]
+}

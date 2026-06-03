@@ -1,0 +1,190 @@
+{
+  "schema_version": "pr-132-rank-acquisition-display-rules-v1",
+  "purpose": "Define mandatory acquisition-route recording rules and display policy for C, B, B+, and A timetable ranks.",
+  "last_checked": "2026-06-03",
+  "applies_to": [
+    "C-rank meeting-date + racecourse coverage",
+    "B-rank first-race-time coverage",
+    "B+-rank first-race-time + last-race-time coverage",
+    "A-rank race-by-race time / racecard / detail coverage",
+    "monthly, daily, and meeting-detail timetable display"
+  ],
+  "mandatory_rule": "No promoted C, B, B+, or A record set may be added unless its acquisition path is recorded well enough for the next update to re-fetch current real data without restarting the investigation from scratch.",
+  "rank_definitions": {
+    "C": {
+      "label": "meeting confirmed, time unknown",
+      "meaning": "The meeting date and racecourse are confirmed from an official or accepted source, but first-race time is not captured.",
+      "required_fields": [
+        "meeting_date",
+        "racecourse",
+        "source_url",
+        "parser",
+        "last_checked",
+        "regeneration_method",
+        "next_update_steps"
+      ],
+      "monthly_display": {
+        "time": "Time unknown",
+        "race_count": "Not captured",
+        "details": "Source"
+      }
+    },
+    "B": {
+      "label": "first race time captured",
+      "meaning": "The meeting date, racecourse, and first-race start time are captured from an official or accepted source.",
+      "required_fields": [
+        "meeting_date",
+        "racecourse",
+        "first_race_time",
+        "time_zone_or_local_time_note",
+        "time_source_url",
+        "source_url",
+        "parser",
+        "last_checked",
+        "regeneration_method",
+        "next_update_steps"
+      ],
+      "monthly_display": {
+        "time": "First {first_race_time}",
+        "race_count": "Not captured or optional",
+        "details": "Source"
+      }
+    },
+    "B+": {
+      "label": "first and last race times captured",
+      "meaning": "The meeting date, racecourse, first-race start time, and last-race start time are captured from an official or accepted source. last_race_time is not a meeting end time.",
+      "required_fields": [
+        "meeting_date",
+        "racecourse",
+        "first_race_time",
+        "last_race_time",
+        "time_zone_or_local_time_note",
+        "time_source_url",
+        "source_url",
+        "parser",
+        "last_checked",
+        "regeneration_method",
+        "next_update_steps"
+      ],
+      "monthly_display": {
+        "time": "{first_race_time}-{last_race_time}",
+        "race_count": "Not captured or optional",
+        "details": "Source"
+      }
+    },
+    "A": {
+      "label": "race-by-race details captured",
+      "meaning": "The meeting date, racecourse, first and last race start times, race count, and race-by-race schedule/details are captured from an official or accepted source.",
+      "required_fields": [
+        "meeting_date",
+        "racecourse",
+        "first_race_time",
+        "last_race_time",
+        "race_count",
+        "races[].race_number",
+        "races[].race_time",
+        "races[].race_name_or_label_when_available",
+        "races[].distance_when_available",
+        "races[].surface_or_track_type_when_available",
+        "official_racecard_url_or_meeting_url",
+        "official_result_url_when_available",
+        "source_url",
+        "parser",
+        "last_checked",
+        "regeneration_method",
+        "next_update_steps"
+      ],
+      "monthly_display": {
+        "time": "{first_race_time}-{last_race_time}",
+        "race_count": "{race_count} races",
+        "details": "View meeting"
+      }
+    }
+  },
+  "time_field_policy": {
+    "first_race_time": "Allowed when directly captured from official or accepted racecard/meeting/time source.",
+    "last_race_time": "Allowed when directly captured as the final race start time. This is not the meeting end time.",
+    "meeting_end_time": "Do not use by default. It is allowed only when an official source explicitly states an end time. Never infer it from last_race_time.",
+    "time_zone_or_local_time_note": "Required for B, B+, and A. Prefer local track time when the source uses local times."
+  },
+  "display_policy": {
+    "monthly_page": {
+      "granularity": "one row per meeting",
+      "show_fields": [
+        "date",
+        "country",
+        "racecourse",
+        "system",
+        "rank",
+        "time",
+        "race_count",
+        "details",
+        "source"
+      ],
+      "do_not_show": [
+        "Do not expand A-rank races as one row per race on the monthly page.",
+        "Do not create one race page per race in the initial implementation.",
+        "Do not leave C-rank time blank; show Time unknown or Start time not captured."
+      ]
+    },
+    "daily_page": {
+      "granularity": "one row per meeting, grouped by country/system/date",
+      "show_a_rank_summary_only": true
+    },
+    "meeting_detail_page": {
+      "granularity": "one page per meeting when A-rank or rich B/B+ data exists",
+      "a_rank_display": "Show full race list inside the meeting page.",
+      "race_links": "Use in-page anchors such as #race-1. Do not generate individual race pages initially."
+    }
+  },
+  "acquisition_route_required_fields": [
+    "country_id",
+    "group_id",
+    "data_rank",
+    "source_url",
+    "source_type",
+    "parser",
+    "last_checked",
+    "regeneration_method",
+    "expected_output_shape",
+    "promotion_status",
+    "known_limitations",
+    "next_update_steps"
+  ],
+  "promotion_status_values": {
+    "ready_for_next_update": "Promoted records exist and the source route is documented enough to re-run the next month/update.",
+    "progress_not_ready_for_calendar": "Some real source evidence exists, but promoted records are blocked by incomplete coverage, missing racecourse/date/time text, visible-window limits, login barriers, or unresolved parser route.",
+    "route_only_not_ready": "A possible official route exists, but no usable month/data rows have been captured yet."
+  },
+  "blocked_record_policy": [
+    "Do not promote inferred dates or inferred racecourses.",
+    "Do not promote inferred first_race_time or last_race_time.",
+    "Do not infer meeting_end_time from last_race_time.",
+    "Do not promote visible-window rows as full-month coverage.",
+    "Do not promote login-only or unverified snippets unless a reusable public or accepted capture route is documented.",
+    "Do not use fixture/sample/mock/needs_review/not_checked placeholders as promoted records.",
+    "When a source cannot produce the required rank fields, record the checked route and blocker reason in progress files."
+  ],
+  "rank_progression_order": [
+    "A",
+    "B+",
+    "B",
+    "C",
+    "progress-only blocker"
+  ],
+  "workflow_order": [
+    "First: complete C-rank coverage or blockers for every target system.",
+    "Second: add B/B+ where first_race_time and last_race_time can be captured with reusable acquisition routes.",
+    "Third: add A-rank race-by-race details only where reusable acquisition routes exist.",
+    "Fourth: keep monthly display at one row per meeting and move A-rank race lists to meeting detail pages.",
+    "Fifth: update acquisition readiness after every promoted or blocked route update."
+  ],
+  "post_merge_reporting_rule": {
+    "required_after_every_merge": [
+      "Write the overall schedule.",
+      "Write the current location/status.",
+      "Write the next PR/task before continuing work."
+    ],
+    "purpose": "Keep the user oriented after every merge and prevent drift from the data-acquisition roadmap."
+  }
+}
