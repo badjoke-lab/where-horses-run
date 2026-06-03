@@ -1,0 +1,56 @@
+{
+  "schema_version": "pr-136-hkjc-bplus-route-verification-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-03",
+  "purpose": "Record HKJC B+ route verification after PR-135 without promoting records. This file is not a calendar input.",
+  "related_files": {
+    "rank_definitions": "data/generated/timetable/pr-132-c-a-acquisition-route-rules.json",
+    "rank_matrix": "data/generated/timetable/pr-133-current-rank-matrix.json",
+    "candidate_matrix": "data/generated/timetable/pr-135-b-bplus-acquisition-candidates.json"
+  },
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "official_sources": {
+    "fixture_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+    "fixture_source_role": "Confirms June 2026 HKJC meeting dates and racecourses.",
+    "racecard_source_url": "https://racing.hkjc.com/en-us/local/information/racecard",
+    "racecard_source_role": "Exposes race-level start times for the selected/current meeting. It must be made date-addressable before B+ promotion."
+  },
+  "observed_june_2026_meetings_from_fixture_source": [
+    { "meeting_date": "2026-06-03", "racecourse": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-07", "racecourse": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-10", "racecourse": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-13", "racecourse": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-21", "racecourse": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-24", "racecourse": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-27", "racecourse": "Sha Tin", "fixture_code": "ST", "session_type": "day" }
+  ],
+  "route_assessment": {
+    "fixture_route_status": "verified_for_C",
+    "racecard_route_status": "promising_for_Bplus_but_not_promotion_ready",
+    "reason_not_promotion_ready": "Racecard pages expose race-level times for selected/current meetings, but PR-136 does not yet prove a reusable date-addressable June 2026 route for every captured meeting.",
+    "required_before_promotion": [
+      "Find stable date-addressable racecard URL or payload for each June 2026 HKJC meeting.",
+      "Capture race_number and race_time for every race in the meeting.",
+      "Derive first_race_time from the first captured race_time only after all race rows are source-verified.",
+      "Derive last_race_time from the final captured race_time only after all race rows are source-verified.",
+      "Store time_source_url and time_zone with every promoted B/B+ record."
+    ]
+  },
+  "promotion_decision": {
+    "promote_in_this_pr": false,
+    "allowed_next_rank_after_route_proof": "B+",
+    "do_not_infer": ["first_race_time", "last_race_time", "race_count"],
+    "last_race_time_definition": "Final race start time, not meeting_end_time."
+  },
+  "next_steps": [
+    "Inspect HKJC racecard network requests or date query parameters.",
+    "Create a small fixture snapshot for one June 2026 meeting only after stable date addressing is proven.",
+    "Then add B+ fields to HKJC records in a separate data-promotion PR."
+  ]
+}
