@@ -62,6 +62,9 @@ if (data.month !== '2026-06') fail('Unexpected month.');
 if (routes.schema_version !== 'june-2026-source-routes-v0') fail('Unexpected source routes schema.');
 if (routes.month !== '2026-06') fail('Unexpected source routes month.');
 if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
+if (!page.includes('manual-june-2026-*.json')) fail('Current timetable page must import manual June record sets.');
+if (!page.includes('import.meta.glob')) fail('Current timetable page must glob-import manual June record sets.');
+if (!page.includes('mergeManualRecordSets')) fail('Current timetable page must merge manual June record sets before rendering.');
 if (page.includes('major-country-timetable-v0.json')) fail('Current timetable page must not backfill from static timetable data.');
 if (!page.includes('coverage_status')) fail('Current timetable page must expose coverage_status notes.');
 
