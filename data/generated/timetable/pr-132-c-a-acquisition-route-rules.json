@@ -1,0 +1,62 @@
+{
+  "schema_version": "pr-132-c-a-acquisition-route-rules-v0",
+  "purpose": "Define mandatory acquisition-route recording rules before continuing C-rank coverage and later A-rank upgrades.",
+  "last_checked": "2026-06-03",
+  "applies_to": [
+    "C-rank meeting-date + racecourse coverage",
+    "A-rank race-time / racecard / detail upgrades"
+  ],
+  "mandatory_rule": "No promoted C-rank or A-rank record set may be added unless its acquisition path is recorded well enough for the next update to re-fetch current real data without restarting the investigation from scratch.",
+  "c_rank_required_fields": [
+    "meeting_date",
+    "racecourse",
+    "source_url",
+    "parser",
+    "last_checked"
+  ],
+  "a_rank_candidate_fields": [
+    "race_time",
+    "race_number",
+    "race_name",
+    "race_type",
+    "surface_or_track_type",
+    "distance",
+    "official_racecard_url",
+    "official_result_url",
+    "source_url",
+    "parser",
+    "last_checked"
+  ],
+  "acquisition_route_required_fields": [
+    "country_id",
+    "group_id",
+    "data_rank",
+    "source_url",
+    "source_type",
+    "parser",
+    "last_checked",
+    "regeneration_method",
+    "expected_output_shape",
+    "promotion_status",
+    "known_limitations",
+    "next_update_steps"
+  ],
+  "promotion_status_values": {
+    "ready_for_next_update": "Promoted records exist and the source route is documented enough to re-run the next month/update.",
+    "progress_not_ready_for_calendar": "Some real source evidence exists, but promoted records are blocked by incomplete coverage, missing racecourse/date text, visible-window limits, login barriers, or unresolved parser route.",
+    "route_only_not_ready": "A possible official route exists, but no usable month/data rows have been captured yet."
+  },
+  "blocked_record_policy": [
+    "Do not promote inferred dates or inferred racecourses.",
+    "Do not promote visible-window rows as full-month coverage.",
+    "Do not promote login-only or unverified snippets unless a reusable public or accepted capture route is documented.",
+    "Do not use fixture/sample/mock/needs_review/not_checked placeholders as promoted records.",
+    "When a source cannot produce C-rank fields, record the checked route and blocker reason in progress files."
+  ],
+  "next_phase_order": [
+    "First: complete C-rank coverage or blockers for every target system.",
+    "Second: update acquisition readiness so every promoted/blocker route is reusable.",
+    "Third: design A-rank upgrades only after C-rank coverage is complete.",
+    "Fourth: promote A-rank data system-by-system, only with reusable acquisition routes."
+  ]
+}
