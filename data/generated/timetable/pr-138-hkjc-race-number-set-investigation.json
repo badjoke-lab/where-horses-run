@@ -1,0 +1,73 @@
+{
+  "schema_version": "pr-138-hkjc-race-number-set-investigation-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-03",
+  "purpose": "Record the HKJC full race-number set investigation status after PR-137 without promoting records. This file is not a calendar input.",
+  "related_files": {
+    "route_verification": "data/generated/timetable/pr-136-hkjc-bplus-route-verification.json",
+    "racecard_sample": "data/generated/timetable/pr-137-hkjc-racecard-date-sample.json"
+  },
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "sample_meeting": {
+    "meeting_date": "2026-06-03",
+    "racecourse": "Happy Valley",
+    "fixture_code": "HV"
+  },
+  "known_working_sample": {
+    "race_number": 5,
+    "race_time": "20:40",
+    "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03",
+    "observed_header": "Wednesday, June 03, 2026, Happy Valley, 20:40"
+  },
+  "race_number_set_status": {
+    "status": "not_verified",
+    "known_verified_race_numbers": [5],
+    "known_incomplete_or_failed_race_numbers": [1, 9],
+    "missing_requirement": "A source-verified list of every race_number and race_time for the 2026-06-03 Happy Valley meeting.",
+    "do_not_assume_contiguous_range": true,
+    "do_not_assume_race_count_from_probe_range": true
+  },
+  "candidate_discovery_routes_to_inspect": [
+    {
+      "route_type": "racecard_page_links",
+      "goal": "Check whether the official racecard page contains links or navigation controls for all race numbers in the meeting."
+    },
+    {
+      "route_type": "page_scripts",
+      "goal": "Check whether embedded scripts contain a race list, meeting code, or JSON payload used to render race navigation."
+    },
+    {
+      "route_type": "network_payload",
+      "goal": "Inspect browser network requests for a stable racecard endpoint returning the full race list or each race by race number."
+    },
+    {
+      "route_type": "meeting_summary_or_card_index",
+      "goal": "Find an official meeting-level page that lists all races and their start times before loading individual race details."
+    }
+  ],
+  "promotion_decision": {
+    "promote_in_this_pr": false,
+    "allowed_after_future_proof": "B+",
+    "must_verify_before_promotion": [
+      "Every race_number for 2026-06-03 Happy Valley",
+      "Every race_time for 2026-06-03 Happy Valley",
+      "first_race_time from the first source-verified race row",
+      "last_race_time from the final source-verified race row",
+      "race_count from the source-verified race row count",
+      "A reusable route that can be applied to all June 2026 HKJC meetings"
+    ],
+    "do_not_infer": ["first_race_time", "last_race_time", "race_count"],
+    "last_race_time_definition": "Final race start time, not meeting_end_time."
+  },
+  "next_steps": [
+    "Use browser/devtools or Codex to inspect the official HKJC racecard page links, scripts, and network requests.",
+    "If a full race list is found, create a one-meeting verified race_number/race_time snapshot in the next PR.",
+    "Promote HKJC to B+ only after the one-meeting snapshot is reproducible and the same official route works for every June 2026 HKJC meeting."
+  ]
+}
