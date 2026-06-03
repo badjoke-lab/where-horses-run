@@ -1,48 +1,116 @@
 ---
 const { records } = Astro.props;
+
+const rankLabels = new Set(['A', 'B+', 'B', 'C']);
+
+function rankFor(record) {
+  const rank = record.rank ?? record.data_level ?? 'C';
+  return rankLabels.has(rank) ? rank : 'C';
+}
+
+function raceTimesFor(record) {
+  return Array.isArray(record.all_race_times) ? record.all_race_times : [];
+}
+
+function firstRaceTimeFor(record) {
+  return record.first_race_time ?? raceTimesFor(record)[0]?.race_time ?? null;
+}
+
+function lastRaceTimeFor(record) {
+  const raceTimes = raceTimesFor(record);
+  return record.last_race_time ?? raceTimes[raceTimes.length - 1]?.race_time ?? null;
+}
+
+function timeLabelFor(record) {
+  const rank = rankFor(record);
+  const firstRaceTime = firstRaceTimeFor(record);
+  const lastRaceTime = lastRaceTimeFor(record);
+
+  if ((rank === 'A' || rank === 'B+') && firstRaceTime && lastRaceTime) {
+    return `${firstRaceTime}–${lastRaceTime}`;
+  }
+
+  if (rank === 'B' && firstRaceTime) {
+    return `First ${firstRaceTime}`;
+  }
+
+  if (firstRaceTime) {
+    return `First ${firstRaceTime}`;
+  }
+
+  return 'Time unknown';
+}
+
+function raceCountLabelFor(record) {
+  const rank = rankFor(record);
+  const raceTimes = raceTimesFor(record);
+
+  if (rank === 'A' && raceTimes.length > 0) {
+    return `${raceTimes.length} races`;
+  }
+
+  return 'Not captured';
+}
+
+function detailsLabelFor(record) {
+  return rankFor(record) === 'A' ? 'View meeting' : 'Source';
+}
+
+function sourceUrlFor(record) {
+  return record.source_trace?.source_url ?? null;
+}
 ---
 
 <section aria-labelledby="current-timetable-title">
   <h2 id="current-timetable-title">Current integrated timetable records</h2>
+  <p class="current-timetable-note">Monthly listings stay at one row per meeting. A-rank records are not expanded into race-by-race rows here.</p>
   <div class="current-timetable-list">
-    {records.map((record) => (
-      <article class="card" aria-labelledby={`${record.record_id}-title`}>
-        <h3 id={`${record.record_id}-title`}>{record.country_label} / {record.group_label}</h3>
-        <dl>
-          <div><dt>Country</dt><dd>{record.country_label}</dd></div>
-          <div><dt>System</dt><dd>{record.group_label}</dd></div>
-          <div><dt>Racecourse</dt><dd>{record.racecourse}</dd></div>
-          <div><dt>Meeting date</dt><dd>{record.meeting_date}</dd></div>
-          <div><dt>First race time</dt><dd>{record.first_race_time}</dd></div>
-          <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
-          <div><dt>Freshness</dt><dd>{record.freshness.status}</dd></div>
-          <div><dt>Freshness basis</dt><dd>{record.freshness.basis}</dd></div>
-        </dl>
-        <h4>All race times</h4>
-        <ul>
-          {record.all_race_times.map((race) => (
-            <li>Race {race.race_number}: {race.race_time} — {race.race_name} ({race.distance})</li>
-          ))}
-        </ul>
-        <details>
-          <summary>Source trace and freshness</summary>
-          <dl>
-            <div><dt>Source</dt><dd>{record.source_trace.source_url}</dd></div>
-            <div><dt>Source type</dt><dd>{record.source_trace.source_type}</dd></div>
-            <div><dt>Source capture date</dt><dd>{record.source_trace.source_capture_date}</dd></div>
+    {records.map((record) => {
+      const rank = rankFor(record);
+      const sourceUrl = sourceUrlFor(record);
+      return (
+        <article class="card timetable-card" aria-labelledby={`${record.record_id}-title`}>
+          <div class="timetable-card__header">
+            <div>
+              <h3 id={`${record.record_id}-title`}>{record.racecourse}</h3>
+              <p>{record.country_label} / {record.group_label}</p>
+            </div>
+            <span class="rank-badge">{rank}</span>
+          </div>
+          <dl class="timetable-card__grid">
+            <div><dt>Date</dt><dd>{record.meeting_date}</dd></div>
+            <div><dt>Country</dt><dd>{record.country_label}</dd></div>
+            <div><dt>System</dt><dd>{record.group_label}</dd></div>
+            <div><dt>Rank</dt><dd>{rank}</dd></div>
+            <div><dt>Time</dt><dd>{timeLabelFor(record)}</dd></div>
+            <div><dt>Races</dt><dd>{raceCountLabelFor(record)}</dd></div>
+            <div><dt>Details</dt><dd>{detailsLabelFor(record)}</dd></div>
             <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
-            <div><dt>Parser</dt><dd>{record.source_trace.parser}</dd></div>
-            <div><dt>Promotes from</dt><dd>{record.source_trace.promotes_from}</dd></div>
-            <div><dt>Freshness status</dt><dd>{record.freshness.status}</dd></div>
-            <div><dt>Freshness basis</dt><dd>{record.freshness.basis}</dd></div>
           </dl>
-        </details>
-      </article>
-    ))}
+          <details>
+            <summary>Source trace and freshness</summary>
+            <dl class="timetable-card__grid">
+              <div><dt>Source</dt><dd>{sourceUrl ? <a href={sourceUrl}>{sourceUrl}</a> : 'Not captured'}</dd></div>
+              <div><dt>Source type</dt><dd>{record.source_trace.source_type}</dd></div>
+              <div><dt>Source capture date</dt><dd>{record.source_trace.source_capture_date}</dd></div>
+              <div><dt>Last checked</dt><dd>{record.source_trace.last_checked}</dd></div>
+              <div><dt>Parser</dt><dd>{record.source_trace.parser}</dd></div>
+              <div><dt>Promotes from</dt><dd>{record.source_trace.promotes_from}</dd></div>
+              <div><dt>Freshness status</dt><dd>{record.freshness.status}</dd></div>
+              <div><dt>Freshness basis</dt><dd>{record.freshness.basis}</dd></div>
+            </dl>
+          </details>
+        </article>
+      );
+    })}
   </div>
 </section>
 
 <style>
+  .current-timetable-note {
+    max-width: 72ch;
+  }
+
   .current-timetable-list {
     display: grid;
     gap: var(--whr-space-3);
@@ -53,9 +121,31 @@ const { records } = Astro.props;
     padding: var(--whr-space-3);
   }
 
-  dl {
+  .timetable-card__header {
+    align-items: start;
+    display: flex;
+    gap: var(--whr-space-3);
+    justify-content: space-between;
+  }
+
+  .timetable-card__header h3 {
+    margin-bottom: var(--whr-space-1);
+  }
+
+  .timetable-card__header p {
+    margin-top: 0;
+  }
+
+  .rank-badge {
+    border: 1px solid var(--whr-color-border);
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  .timetable-card__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--whr-space-2);
   }
 
@@ -68,8 +158,18 @@ const { records } = Astro.props;
     overflow-wrap: anywhere;
   }
 
+  @media (max-width: 900px) {
+    .timetable-card__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (max-width: 720px) {
-    dl {
+    .timetable-card__header {
+      display: grid;
+    }
+
+    .timetable-card__grid {
       grid-template-columns: 1fr;
     }
   }
