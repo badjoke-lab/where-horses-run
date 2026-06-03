@@ -4,13 +4,45 @@ import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.as
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
 import currentTimetable from '../../../data/generated/timetable/june-2026-calendar.json';
 
+const manualModules = import.meta.glob('../../../data/generated/timetable/manual-june-2026-*.json', { eager: true });
+
 function slug(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function expandRecordSets(data) {
-  if (Array.isArray(data.records)) return data.records;
-  return (data.record_sets ?? []).flatMap((set) =>
+function cloneSet(set) {
+  return {
+    ...set,
+    meetings: [...(set.meetings ?? [])]
+  };
+}
+
+function mergeManualRecordSets(data) {
+  const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
+
+  for (const module of Object.values(manualModules)) {
+    const manual = module.default?.record_set ?? module.record_set;
+    if (!manual) continue;
+    const key = `${manual.country_id}::${manual.group_id}`;
+    if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
+    const target = byGroup.get(key);
+    target.source_trace = manual.source_trace;
+    target.data_level = manual.data_level;
+    for (const meeting of manual.meetings ?? []) {
+      const meetingKey = `${meeting[0]}::${meeting[1]}`;
+      const exists = target.meetings.some((item) => `${item[0]}::${item[1]}` === meetingKey);
+      if (!exists) target.meetings.push(meeting);
+    }
+  }
+
+  return [...byGroup.values()].map((set) => ({
+    ...set,
+    meetings: set.meetings.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]))
+  })).sort((a, b) => `${a.country_id}::${a.group_id}`.localeCompare(`${b.country_id}::${b.group_id}`));
+}
+
+function expandRecordSets(recordSets) {
+  return recordSets.flatMap((set) =>
     set.meetings.map(([meetingDate, racecourse]) => ({
       record_id: `june-2026-${set.country_id}-${set.group_id}-${meetingDate}-${slug(racecourse)}`,
       country_id: set.country_id,
@@ -34,7 +66,8 @@ function expandRecordSets(data) {
   );
 }
 
-const records = expandRecordSets(currentTimetable);
+const mergedRecordSets = mergeManualRecordSets(currentTimetable);
+const records = Array.isArray(currentTimetable.records) ? currentTimetable.records : expandRecordSets(mergedRecordSets);
 const coverage_status = currentTimetable.coverage_status ?? [];
 
 function countBy(records, field) {
