@@ -3,8 +3,25 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
 import currentTimetable from '../../../data/generated/timetable/june-2026-calendar.json';
+import manualCanadaStandardbred from '../../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
+import manualCanadaWoodbine from '../../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
+import manualNzLoveracing from '../../../data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json';
+import manualQueensland from '../../../data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json';
+import manualRacingNsw from '../../../data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json';
+import manualSouthAfrica from '../../../data/generated/timetable/manual-june-2026-gold-circle.json';
+import manualUkArabian from '../../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
+import manualUkPointToPoint from '../../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
 
-const manualModules = import.meta.glob('../../../data/generated/timetable/manual-june-2026-*.json', { eager: true });
+const manualRecordSets = [
+  manualCanadaStandardbred.record_set,
+  manualCanadaWoodbine.record_set,
+  manualNzLoveracing.record_set,
+  manualQueensland.record_set,
+  manualRacingNsw.record_set,
+  manualSouthAfrica.record_set,
+  manualUkArabian.record_set,
+  manualUkPointToPoint.record_set
+].filter(Boolean);
 
 function slug(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -20,9 +37,7 @@ function cloneSet(set) {
 function mergeManualRecordSets(data) {
   const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
 
-  for (const module of Object.values(manualModules)) {
-    const manual = module.default?.record_set ?? module.record_set;
-    if (!manual) continue;
+  for (const manual of manualRecordSets) {
     const key = `${manual.country_id}::${manual.group_id}`;
     if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
     const target = byGroup.get(key);
