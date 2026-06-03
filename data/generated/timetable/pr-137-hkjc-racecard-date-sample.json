@@ -1,0 +1,65 @@
+{
+  "schema_version": "pr-137-hkjc-racecard-date-sample-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-03",
+  "purpose": "Record a date-addressable HKJC racecard sample after PR-136 without promoting records. This file is not a calendar input.",
+  "related_files": {
+    "candidate_matrix": "data/generated/timetable/pr-135-b-bplus-acquisition-candidates.json",
+    "route_verification": "data/generated/timetable/pr-136-hkjc-bplus-route-verification.json"
+  },
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "sample_meeting": {
+    "meeting_date": "2026-06-03",
+    "racecourse": "Happy Valley",
+    "fixture_code": "HV",
+    "racecard_query_pattern": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}",
+    "sample_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03"
+  },
+  "sample_observation": {
+    "race_number": 5,
+    "race_title": "THE CRICKET CLUB VALLEY STAKES (HANDICAP)",
+    "observed_race_header": "Wednesday, June 03, 2026, Happy Valley, 20:40",
+    "race_time": "20:40",
+    "surface_course_distance": "Turf, C Course, 1200M",
+    "source_role": "Proves that at least one HKJC racecard page can be addressed by RaceNo, Racecourse, and racedate and can expose a race_time."
+  },
+  "negative_or_incomplete_probes": [
+    {
+      "probe_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=1&Racecourse=HV&racedate=2026%2F06%2F03",
+      "result": "internal_error_in_current_fetch",
+      "meaning": "Do not assume every RaceNo is retrievable through the same URL pattern yet."
+    },
+    {
+      "probe_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=9&Racecourse=HV&racedate=2026%2F06%2F03",
+      "result": "internal_error_in_current_fetch",
+      "meaning": "Do not derive meeting first_race_time, last_race_time, or race_count from the single RaceNo=5 sample."
+    }
+  ],
+  "promotion_decision": {
+    "promote_in_this_pr": false,
+    "sample_proves": [
+      "date/racecourse/race-number query parameters can return a HKJC racecard page for at least one race",
+      "race_time can be read from the official racecard header for that sample race"
+    ],
+    "sample_does_not_prove": [
+      "all races in the 2026-06-03 Happy Valley meeting are retrievable",
+      "first_race_time for the meeting",
+      "last_race_time for the meeting",
+      "race_count for the meeting",
+      "all June 2026 HKJC meetings are retrievable with the same pattern"
+    ],
+    "do_not_infer": ["first_race_time", "last_race_time", "race_count"],
+    "last_race_time_definition": "Final race start time, not meeting_end_time."
+  },
+  "next_steps": [
+    "Inspect page links, scripts, or network payloads to identify the full race-number set for 2026-06-03 Happy Valley.",
+    "Create a one-meeting sample only after every race_number/race_time row for the meeting is source-verified.",
+    "Promote HKJC to B+ only after all June 2026 meetings can be regenerated through a stable official route."
+  ]
+}
