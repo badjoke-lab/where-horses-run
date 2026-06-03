@@ -62,18 +62,13 @@ function expandRecordSets(recordSets) {
       country_label: set.country_label,
       racecourse_id: slug(racecourse),
       racecourse_name: racecourse,
-      start_time_local: 'not listed',
-      timezone: 'not listed',
       racing_type: set.group_label,
       source_url: set.source_trace.source_url,
       source_id: set.group_id,
       last_checked_at: set.source_trace.last_checked,
       status: 'real_source_checked',
       confidence: set.data_level,
-      notes: [
-        `Parser: ${set.source_trace.parser}`,
-        'June 2026 meeting-date/racecourse record; race times are not included in this C-rank calendar view.'
-      ]
+      parser: set.source_trace.parser
     }))
   );
 }
@@ -122,44 +117,87 @@ const rangeEndDate = '2026-07-01';
     </article>
   </section>
 
-  <section class="section-grid" aria-label="June 2026 timetable records">
-    <article class="card">
-      <h2>Records by date</h2>
-      {groupedCalendarRecords.length > 0 ? (
-        <div>
-          {groupedCalendarRecords.map((group) => (
-            <section aria-labelledby={`date-${group.date}`}>
-              <h3 id={`date-${group.date}`}>{group.date}</h3>
-              <ul>
-                {group.records.map((record) => (
-                  <li>
-                    <p><strong>Country:</strong> {record.country_label} ({record.country_id})</p>
-                    <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
-                    <p><strong>Date:</strong> {record.date}</p>
-                    <p><strong>Start time:</strong> {record.start_time_local}</p>
-                    <p><strong>Timezone:</strong> {record.timezone}</p>
-                    <p><strong>Racing type:</strong> {record.racing_type}</p>
-                    <p>
-                      <strong>Official source:</strong>{' '}
-                      <a href={record.source_url}>{record.source_id}</a>
-                    </p>
-                    <p><strong>Last checked:</strong> {record.last_checked_at}</p>
-                    <p><strong>Status:</strong> {record.status}</p>
-                    <p><strong>Confidence:</strong> {record.confidence}</p>
-                    <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <p>No safe timetable records are listed for June 2026 yet.</p>
-          <p>Use official source links for final confirmation.</p>
-          <p>Live fetching: disabled</p>
-        </div>
-      )}
-    </article>
+  <section aria-label="June 2026 timetable records">
+    <h2>Records by date</h2>
+    {groupedCalendarRecords.length > 0 ? (
+      <div class="calendar-date-groups">
+        {groupedCalendarRecords.map((group) => (
+          <section class="card" aria-labelledby={`date-${group.date}`}>
+            <h3 id={`date-${group.date}`}>{group.date} <span>({group.records.length})</span></h3>
+            <div class="table-scroll" role="region" aria-label={`Records for ${group.date}`} tabindex="0">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Country</th>
+                    <th>Racecourse</th>
+                    <th>System</th>
+                    <th>Source</th>
+                    <th>Checked</th>
+                    <th>Rank</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.records.map((record) => (
+                    <tr>
+                      <td>{record.country_label}</td>
+                      <td>{record.racecourse_name}</td>
+                      <td>{record.racing_type}</td>
+                      <td><a href={record.source_url}>{record.source_id}</a></td>
+                      <td>{record.last_checked_at}</td>
+                      <td>{record.confidence}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <article class="card">
+        <p>No safe timetable records are listed for June 2026 yet.</p>
+        <p>Use official source links for final confirmation.</p>
+        <p>Live fetching: disabled</p>
+      </article>
+    )}
   </section>
 </BaseLayout>
+
+<style>
+  .calendar-date-groups {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .calendar-date-groups h3 {
+    margin-top: 0;
+  }
+
+  .calendar-date-groups h3 span {
+    color: var(--muted, #666);
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--border, #ddd);
+    padding: 0.45rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 700;
+  }
+</style>
