@@ -1,0 +1,26 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "south-korea",
+  "country_label": "South Korea",
+  "group_id": "kra",
+  "group_label": "Korea Racing Authority",
+  "last_checked": "2026-06-02",
+  "status": "route_progress_only_not_ready_for_calendar",
+  "source_checks": [
+    {
+      "source_url": "https://race.kra.co.kr/",
+      "parser": "kra-race-site-entry-check",
+      "result": "Official KRA race site route was checked, but captured text did not expose complete 2026-06 meeting_date + racecourse rows."
+    }
+  ],
+  "promotion_status": {
+    "status": "do_not_promote",
+    "reason": "No captured official KRA route currently provides complete June 2026 meeting_date + racecourse rows. Keep out of manual-june-2026-* until a month-capable official source is captured."
+  },
+  "next_steps": [
+    "Find a KRA no-login monthly racing schedule, annual implementation plan, PDF, or API endpoint that exposes 2026-06 dates and racecourses.",
+    "Expected racecourse labels should only be used after source rows confirm the target dates; do not infer Seoul, Busan-Gyeongnam, or Jeju dates from usual weekly patterns.",
+    "Promote only after every row includes meeting_date, racecourse, source_url, parser, and last_checked."
+  ]
+}

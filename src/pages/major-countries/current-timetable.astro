@@ -2,9 +2,40 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
-import currentTimetable from '../../../data/generated/timetable/real-calendar-all-countries.json';
+import currentTimetable from '../../../data/generated/timetable/june-2026-calendar.json';
 
-const records = currentTimetable.records;
+function slug(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function expandRecordSets(data) {
+  if (Array.isArray(data.records)) return data.records;
+  return (data.record_sets ?? []).flatMap((set) =>
+    set.meetings.map(([meetingDate, racecourse]) => ({
+      record_id: `june-2026-${set.country_id}-${set.group_id}-${meetingDate}-${slug(racecourse)}`,
+      country_id: set.country_id,
+      country_label: set.country_label,
+      group_id: set.group_id,
+      group_label: set.group_label,
+      racecourse,
+      meeting_date: meetingDate,
+      data_level: set.data_level,
+      data_origin: 'real_source',
+      first_race_time: null,
+      all_race_times: [],
+      source_trace: set.source_trace,
+      freshness: {
+        status: 'real_source_checked',
+        basis: 'official_month_calendar',
+        source_capture_date: set.source_trace.source_capture_date,
+        last_checked: set.source_trace.last_checked
+      }
+    }))
+  );
+}
+
+const records = expandRecordSets(currentTimetable);
+const coverage_status = currentTimetable.coverage_status ?? [];
 
 function countBy(records, field) {
   const counts = new Map();
@@ -24,15 +55,15 @@ const racecourses = countBy(records, 'racecourse');
 ---
 
 <BaseLayout
-  title="Current Timetable | Where Horses Run"
-  description="Display-ready real-source timetable records with race times, source trace, and last checked fields."
+  title="June 2026 Timetable | Where Horses Run"
+  description="June 2026 real-source timetable records with racecourse, date, source trace, and last checked fields."
   canonicalPath="/major-countries/current-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Current timetable</p>
-    <h1 id="page-title">Current real-source timetable</h1>
+    <h1 id="page-title">June 2026 real-source timetable</h1>
     <div class="hero__summary">
-      <p>This page shows the real-source timetable records for the 13-country v0 scope.</p>
+      <p>This page shows June 2026 real-source timetable records currently connected to the calendar view.</p>
       <p>It includes country, system, date, racecourse, first race time when available, all race times when available, source trace, and last checked fields.</p>
     </div>
   </section>
@@ -59,6 +90,22 @@ const racecourses = countBy(records, 'racecourse');
       <p>{racecourses.map((item) => item.label).join(', ')}</p>
     </article>
   </section>
+
+  {coverage_status.length > 0 && (
+    <section aria-labelledby="coverage-status-title">
+      <h2 id="coverage-status-title">June coverage status</h2>
+      <div class="section-grid">
+        {coverage_status.map((item) => (
+          <article class="card">
+            <h3>{item.country_label} / {item.group_label}</h3>
+            <p><strong>Status:</strong> {item.status}</p>
+            <p>{item.reason}</p>
+            <p><strong>Last checked:</strong> {item.source_trace.last_checked}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 
   <CurrentTimetableDimensions countries={countries} groups={groups} dates={dates} racecourses={racecourses} />
   <CurrentTimetableRecords records={records} />

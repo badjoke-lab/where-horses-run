@@ -64,5 +64,6 @@ runCheck('scripts/check-pr-125-refresh-output-safety-gate.mjs');
 runCheck('scripts/check-pr-126-scheduled-refresh-completion-gate.mjs');
 runCheck('scripts/check-pr-127-timetable-v0-completion-gate.mjs');
 runCheck('scripts/check-pr-129-real-calendar-all-countries.mjs');
+runCheck('scripts/check-pr-130-june-calendar-ui.mjs');
 
 console.log('[pr-117-level-a-wiring] PASS');

@@ -1,0 +1,36 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "south-africa",
+  "country_label": "South Africa",
+  "last_checked": "2026-06-02",
+  "purpose": "Record supporting South Africa operator/regulator route checks after Gold Circle manual records were committed.",
+  "checks": [
+    {
+      "group_id": "nhra",
+      "source_url": "https://www.nhra.co.za/index.php/racing/racing-results",
+      "parser": "nhra-racing-calendar-header-only-check",
+      "status": "supporting_route_only_not_promoted",
+      "result": "Official NHA Racing Calendar route exposes Season, Region, Date From, Date To, Issue, Races, Race, Last, and Results fields in captured text, but no June 2026 meeting_date + racecourse rows were captured."
+    },
+    {
+      "group_id": "nhra",
+      "source_url": "https://www.nhra.co.za/index.php/racing/racing-index",
+      "parser": "nhra-racing-index-header-only-check",
+      "status": "supporting_route_only_not_promoted",
+      "result": "Official NHA Racing Index route was checked as a possible supporting source, but captured text did not expose complete June 2026 meeting rows."
+    },
+    {
+      "group_id": "4racing",
+      "source_url": "https://www.4racing.com/racing/fixtures/",
+      "parser": "4racing-2026-fixtures-feature-calendar-check",
+      "status": "supporting_route_only_not_promoted",
+      "result": "Official 4Racing 2026 Fixtures route exposes the 2026 feature calendar and June venue/month entries for Turffontein and Fairview, but it does not expose exact meeting_date values needed for PR-130 C-rank records."
+    }
+  ],
+  "promotion_status": {
+    "gold_circle_manual_records": "data/generated/timetable/manual-june-2026-gold-circle.json",
+    "nhra": "do_not_promote_without_rows",
+    "4racing": "do_not_promote_without_dates"
+  }
+}

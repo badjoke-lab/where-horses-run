@@ -1,0 +1,35 @@
+{
+  "schema_version": "progress-june-2026-route-check-v0",
+  "month": "2026-06",
+  "country_id": "australia",
+  "country_label": "Australia",
+  "group_id": "harness-australia",
+  "group_label": "Harness Australia",
+  "last_checked": "2026-06-02",
+  "status": "route_progress_only_not_ready_for_calendar",
+  "source_checks": [
+    {
+      "source_url": "https://www.harness.org.au/racing/fields/",
+      "parser": "harness-australia-fields-redirect-check",
+      "result": "Official Harness Australia Fields route is present, but captured output redirects to a JavaScript/Cookie-dependent page and does not expose complete 2026-06 meeting_date + racecourse rows."
+    },
+    {
+      "source_url": "https://www.harness.org.au/racing/meeting-calendar/",
+      "parser": "harness-australia-meeting-calendar-redirect-check",
+      "result": "Official Harness Australia Meeting Calendar route is present, but captured output redirects to a JavaScript/Cookie-dependent page and does not expose complete 2026-06 meeting_date + racecourse rows."
+    }
+  ],
+  "supporting_navigation": [
+    "Harness Australia site navigation exposes state links for NSW, QLD, SA, TAS, VIC, and WA.",
+    "Harness Australia site navigation exposes Racing links including Fields, Results, Meeting Calendar, Feature Races, and Tracks."
+  ],
+  "promotion_status": {
+    "status": "do_not_promote",
+    "reason": "No captured official source currently provides complete 2026-06 meeting_date + racecourse rows for Harness Australia. Keep out of manual-june-2026-* until a month-capable official source is captured."
+  },
+  "next_steps": [
+    "Check state authority routes linked from Harness Australia for month-capable June 2026 meeting calendars.",
+    "Avoid adding current-day or short-window fields pages as full-month calendar records.",
+    "Promote only after all rows include meeting_date, racecourse, source_url, parser, and last_checked."
+  ]
+}
