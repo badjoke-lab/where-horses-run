@@ -11,3 +11,5 @@ Formal project specifications live here.
 - [image-policy.md](image-policy.md)
 - [data-use-policy.md](data-use-policy.md)
 - [operations-policy.md](operations-policy.md)
+- [racecourse-page-spec.md](racecourse-page-spec.md)
+- [page-link-architecture.md](page-link-architecture.md)
