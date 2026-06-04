@@ -1,0 +1,90 @@
+{
+  "schema_version": "pr-146-jra-official-source-inventory-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Inventory official JRA source candidates after HKJC was paused in PR-145. This file is not a calendar input and does not promote JRA.",
+  "context": {
+    "previous_path": "HKJC paused at C after PR-145",
+    "primary_next_candidate": "JRA",
+    "fallback_candidate": "NAR"
+  },
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "current_rank": "not_promoted_by_this_pr",
+    "target_rank_after_verified_route": "B or B+",
+    "time_zone": "Asia/Tokyo"
+  },
+  "fetch_status": {
+    "assistant_web_status": "not_parseable_in_current_environment",
+    "observed_issue": "Opening www.jra.go.jp pages returned a Unicode decoding error in the current web fetch environment.",
+    "inventory_scope": "Candidate URLs and page roles only. Live verification must happen in a later PR."
+  },
+  "official_source_candidates": [
+    {
+      "source_id": "jra_top",
+      "source_url": "https://www.jra.go.jp/",
+      "expected_role": "official JRA root site and navigation source",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    },
+    {
+      "source_id": "jra_keiba_top",
+      "source_url": "https://www.jra.go.jp/keiba/",
+      "expected_role": "official racing information entry point",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    },
+    {
+      "source_id": "jra_calendar_candidate",
+      "source_url": "https://www.jra.go.jp/keiba/calendar/",
+      "expected_role": "candidate official fixture calendar or schedule page",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    },
+    {
+      "source_id": "jra_jradb_entry_candidate",
+      "source_url": "https://www.jra.go.jp/JRADB/",
+      "expected_role": "candidate JRA database entry point for race information pages",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    },
+    {
+      "source_id": "jra_racecard_candidate",
+      "source_url": "https://www.jra.go.jp/JRADB/accessS.html",
+      "expected_role": "candidate racecard or entry-list route; exact query parameters must be discovered later",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    },
+    {
+      "source_id": "jra_result_candidate",
+      "source_url": "https://www.jra.go.jp/JRADB/accessR.html",
+      "expected_role": "candidate result or race detail route that may expose race time after the event; exact role must be verified later",
+      "verification_status": "candidate_needs_live_check",
+      "use_for_rank": false
+    }
+  ],
+  "required_next_verification": [
+    "Confirm which official JRA page lists fixture dates for June 2026.",
+    "Confirm whether an official JRA page lists all races for one meeting.",
+    "Confirm whether each race row exposes race_number and race_time.",
+    "Discover any required query parameters for date, racecourse, meeting number, or race number.",
+    "Record only source URL, route pattern, race_number, race_time, and status metadata in later inspection results."
+  ],
+  "forward_schedule": [
+    { "planned_pr": "PR-147", "topic": "JRA route verification plan", "goal": "Define exact live checks and output schema for JRA official pages." },
+    { "planned_pr": "PR-148", "topic": "JRA one-meeting inspection result", "goal": "Record whether one JRA meeting can expose complete race time rows." },
+    { "planned_pr": "PR-149A", "topic": "JRA one-meeting snapshot", "goal": "If one meeting is verified, create a snapshot from verified rows." },
+    { "planned_pr": "PR-149B", "topic": "JRA pause and NAR transition", "goal": "If one meeting is not verified, pause JRA and start NAR inventory." },
+    { "planned_pr": "PR-150A", "topic": "JRA wider route status", "goal": "If one meeting is verified, test wider coverage before any promotion." },
+    { "planned_pr": "PR-151A", "topic": "JRA wider snapshot or no-promotion status", "goal": "Create wider data only if source coverage is complete." },
+    { "planned_pr": "PR-152A", "topic": "JRA promotion gate", "goal": "Promote JRA only if PR-132 rank rules are satisfied." }
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "promote_nar_in_this_pr": false,
+    "data_rows_added": false,
+    "snapshot_added": false,
+    "rank_change_added": false
+  }
+}
