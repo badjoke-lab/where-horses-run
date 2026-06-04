@@ -1,0 +1,79 @@
+{
+  "schema_version": "pr-168-jra-promotion-gate-v0",
+  "evaluated_at": "2026-06-05",
+  "purpose": "Evaluate the PR-167 JRA wider snapshot against the existing C / B / B+ / A rank rules. This file records the gate result only and does not change rank data.",
+  "source_snapshot": "data/generated/timetable/pr-163-jra-wider-snapshot.json",
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "time_zone": "Asia/Tokyo"
+  },
+  "snapshot_scope": {
+    "scope_type": "verified_snapshot_scope_only",
+    "month": "2026-01",
+    "verified_meetings": 7,
+    "verified_race_rows": 84,
+    "calendar_route": "https://www.jra.go.jp/keiba/calendar2026/2026/1/{MMDD}.html",
+    "full_month_claim_allowed": false,
+    "reason_full_month_claim_not_allowed": "The snapshot verifies seven selected meetings, not every JRA meeting in January 2026."
+  },
+  "rank_gate": {
+    "c_gate": {
+      "passes": true,
+      "reason": "Official JRA source URLs and meeting dates exist for the verified snapshot scope."
+    },
+    "b_gate": {
+      "passes": true,
+      "reason": "Each verified meeting has source-derived first_race_time, last_race_time, and race_count from verified rows."
+    },
+    "b_plus_gate": {
+      "passes": true,
+      "scope": "verified_snapshot_scope_only",
+      "reason": "Each verified meeting has source-verified race_number and race_time rows from official JRA calendar pages."
+    },
+    "a_gate": {
+      "passes": false,
+      "reason": "A-rank public racecard/detail UI and richer racecard handling are not implemented in this work."
+    }
+  },
+  "decision": {
+    "eligible_rank_for_verified_snapshot_scope": "B+",
+    "eligible_for_a": false,
+    "eligible_for_full_month_claim": false,
+    "rank_change_in_this_pr": false,
+    "recommended_next_pr": "Add a scoped JRA B+ rank update for the verified snapshot records only. Do not claim full-month coverage."
+  },
+  "promotion_boundaries": [
+    "Do not mark JRA as A-rank from this evidence.",
+    "Do not claim all January 2026 JRA meetings are verified.",
+    "Do not claim June 2026 JRA coverage from this January snapshot.",
+    "Do not add public A-rank detail UI in the rank update PR.",
+    "Only the verified snapshot scope may move to B+ in the next PR."
+  ],
+  "forward_schedule": [
+    {
+      "planned_pr": "PR-169A",
+      "topic": "JRA scoped B+ rank update",
+      "condition": "Use if this promotion gate is accepted.",
+      "goal": "Reflect B+ for the verified JRA snapshot scope only."
+    },
+    {
+      "planned_pr": "PR-169B",
+      "topic": "JRA no-promotion status",
+      "condition": "Use only if the scoped B+ update is blocked during implementation.",
+      "goal": "Record why JRA remains unpromoted and move to NAR."
+    },
+    {
+      "planned_pr": "PR-170A",
+      "topic": "JRA UI validation",
+      "condition": "Use after a scoped B+ update.",
+      "goal": "Check rank, time, races, details, and source display for the scoped JRA records."
+    },
+    {
+      "planned_pr": "PR-170B",
+      "topic": "NAR transition",
+      "condition": "Use if JRA promotion remains blocked.",
+      "goal": "Start NAR official source inventory."
+    }
+  ]
+}
