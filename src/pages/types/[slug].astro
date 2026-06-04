@@ -4,6 +4,7 @@ import {
   getRacecoursesByRacingTypeId,
   getRacingTypeBySlug,
   getRacingTypeGlossaryEntry,
+  getRacingTypeRelatedGlossaryEntries,
   getRacingTypes
 } from '../../lib/racingTypes';
 import { getCountries } from '../../lib/data';
@@ -24,6 +25,8 @@ const countries = getCountries();
 const countryById = new Map(countries.map((country) => [country.id, country]));
 const countryIds = [...new Set(tracks.map((track) => track.country_id))];
 const glossaryEntry = getRacingTypeGlossaryEntry(type);
+const relatedTerms = getRacingTypeRelatedGlossaryEntries(type);
+const surfaces = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))].sort();
 ---
 
 <BaseLayout title={`${type.name_en} | Racing Types`} description={type.summary_en}>
@@ -35,12 +38,22 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
 
   <section class="section-grid" aria-label="Racing type detail">
     <article class="card">
+      <h2>Overview</h2>
+      <p>{type.summary_en}</p>
+      <p><strong>Listed racecourses:</strong> {tracks.length}</p>
+      <p><strong>Related countries:</strong> {countryIds.length}</p>
+      <p><strong>Surface tags:</strong> {surfaces.length ? surfaces.join(', ') : 'Not confirmed'}</p>
+    </article>
+
+    <article class="card">
       <h2>Related racecourses</h2>
       {tracks.length ? (
         <ul>
           {tracks.map((track) => (
             <li>
-              <a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city}
+              <a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city} / {countryById.get(track.country_id)?.name_en ?? track.country_id}
+              <br />
+              <span>Surfaces: {track.surfaces.length ? track.surfaces.join(', ') : 'Not confirmed'} · Schedule: {track.schedule_summary?.status ?? 'official-link-only'}</span>
             </li>
           ))}
         </ul>
@@ -55,7 +68,8 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
         <ul>
           {countryIds.map((countryId) => {
             const country = countryById.get(countryId);
-            return <li>{country ? <a href={`/countries/${country.slug}/`}>{country.name_en}</a> : countryId}</li>;
+            const count = tracks.filter((track) => track.country_id === countryId).length;
+            return <li>{country ? <a href={`/countries/${country.slug}/`}>{country.name_en}</a> : countryId} — {count} racecourse{count === 1 ? '' : 's'}</li>;
           })}
         </ul>
       ) : (
@@ -64,7 +78,20 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
     </article>
 
     <article class="card">
-      <h2>Glossary context</h2>
+      <h2>Related glossary terms</h2>
+      {relatedTerms.length ? (
+        <ul>
+          {relatedTerms.map((term) => (
+            <li><a href={`/glossary/${term.slug}/`}>{term.term_en}</a> — {term.summary_en}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No related glossary terms are linked yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Main glossary context</h2>
       {glossaryEntry ? (
         <>
           <p>{glossaryEntry.summary_en}</p>

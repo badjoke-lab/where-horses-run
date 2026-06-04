@@ -4,6 +4,7 @@ import {
   getRacecoursesByRacingTypeId,
   getRacingTypeBySlug,
   getRacingTypeGlossaryEntry,
+  getRacingTypeRelatedGlossaryEntries,
   getRacingTypes
 } from '../../../lib/racingTypes';
 import { getCountries } from '../../../lib/data';
@@ -24,6 +25,8 @@ const countries = getCountries();
 const countryById = new Map(countries.map((country) => [country.id, country]));
 const countryIds = [...new Set(tracks.map((track) => track.country_id))];
 const glossaryEntry = getRacingTypeGlossaryEntry(type);
+const relatedTerms = getRacingTypeRelatedGlossaryEntries(type);
+const surfaces = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))].sort();
 ---
 
 <BaseLayout lang="ja" title={`${type.name_ja} | 競馬種別 | 競馬どこ？`} description={type.summary_ja}>
@@ -35,12 +38,22 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
 
   <section class="section-grid" aria-label="競馬種別詳細">
     <article class="card">
+      <h2>概要</h2>
+      <p>{type.summary_ja}</p>
+      <p><strong>登録競馬場:</strong> {tracks.length}</p>
+      <p><strong>関連国・地域:</strong> {countryIds.length}</p>
+      <p><strong>馬場タグ:</strong> {surfaces.length ? surfaces.join(', ') : '未確認'}</p>
+    </article>
+
+    <article class="card">
       <h2>関連競馬場</h2>
       {tracks.length ? (
         <ul>
           {tracks.map((track) => (
             <li>
-              <a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city}
+              <a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city} / {countryById.get(track.country_id)?.name_ja ?? track.country_id}
+              <br />
+              <span>馬場: {track.surfaces.length ? track.surfaces.join(', ') : '未確認'} · 開催予定: {track.schedule_summary?.status ?? 'official-link-only'}</span>
             </li>
           ))}
         </ul>
@@ -55,7 +68,8 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
         <ul>
           {countryIds.map((countryId) => {
             const country = countryById.get(countryId);
-            return <li>{country ? <a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a> : countryId}</li>;
+            const count = tracks.filter((track) => track.country_id === countryId).length;
+            return <li>{country ? <a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a> : countryId} — {count}件</li>;
           })}
         </ul>
       ) : (
@@ -64,7 +78,20 @@ const glossaryEntry = getRacingTypeGlossaryEntry(type);
     </article>
 
     <article class="card">
-      <h2>用語説明</h2>
+      <h2>関連用語</h2>
+      {relatedTerms.length ? (
+        <ul>
+          {relatedTerms.map((term) => (
+            <li><a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> — {term.summary_ja}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>関連用語はまだありません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>主な用語説明</h2>
       {glossaryEntry ? (
         <>
           <p>{glossaryEntry.summary_ja}</p>
