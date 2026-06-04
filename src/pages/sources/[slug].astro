@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCountries, siteData } from '../../lib/data';
+
+export function getStaticPaths() {
+  return getCountries().map((country) => ({ params: { slug: country.slug } }));
+}
+
+const { slug } = Astro.params;
+const countries = getCountries();
+const country = countries.find((entry) => entry.slug === slug);
+
+if (!country) {
+  return Astro.redirect('/sources/');
+}
+
+const sources = siteData.sources.filter((source) => source.country_id === country.id);
+const relatedTracks = siteData.racecourses.filter((track) => track.country_id === country.id);
+---
+
+<BaseLayout
+  title={`${country.name_en} Sources | Where Horses Run`}
+  description={`Official and reference source links for ${country.name_en} racing coverage.`}
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Source registry</p>
+    <h1 id="page-title">{country.name_en} Sources</h1>
+    <p class="hero__summary">
+      Official and reference source entries used for {country.name_en} coverage. Use source sites for final confirmation.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Country source overview">
+    <article class="card">
+      <h2>Coverage</h2>
+      <p><strong>Country:</strong> <a href={`/countries/${country.slug}/`}>{country.name_en}</a></p>
+      <p><strong>Sources:</strong> {sources.length}</p>
+      <p><strong>Racecourses:</strong> {relatedTracks.length}</p>
+    </article>
+
+    <article class="card">
+      <h2>Boundary</h2>
+      <p>Entries, odds, results, payouts, tips, and full racecards should be confirmed on official or licensed source pages.</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Source list">
+    {sources.length ? (
+      sources.map((source) => (
+        <article class="card">
+          <h2><a href={source.url}>{source.id}</a></h2>
+          <p><strong>Type:</strong> {source.source_type}</p>
+          <p><strong>Data:</strong> {source.data_type}</p>
+          <p><strong>Auto:</strong> {source.auto_level}</p>
+          <p><strong>Risk:</strong> {source.terms_risk}</p>
+        </article>
+      ))
+    ) : (
+      <article class="card">
+        <h2>No sources listed yet</h2>
+        <p>No source entries are currently linked to this country.</p>
+      </article>
+    )}
+  </section>
+
+  <section class="section-grid" aria-label="Related racecourses">
+    <article class="card">
+      <h2>Related racecourses</h2>
+      {relatedTracks.length ? (
+        <ul>
+          {relatedTracks.map((track) => (
+            <li><a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No racecourses are currently linked to this country.</p>
+      )}
+    </article>
+  </section>
+
+  <p><a href="/sources/">Back to all sources</a></p>
+</BaseLayout>

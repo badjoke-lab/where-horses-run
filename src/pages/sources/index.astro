@@ -4,7 +4,13 @@ import { siteData, getCountries } from '../../lib/data';
 
 const sources = siteData.sources;
 const countries = getCountries();
-const countryNames = new Map(countries.map((country) => [country.id, country.name_en]));
+const countryById = new Map(countries.map((country) => [country.id, country]));
+const sourceGroups = countries
+  .map((country) => ({
+    country,
+    sources: sources.filter((source) => source.country_id === country.id)
+  }))
+  .filter((group) => group.sources.length > 0);
 ---
 
 <BaseLayout
@@ -19,15 +25,29 @@ const countryNames = new Map(countries.map((country) => [country.id, country.nam
     </p>
   </section>
 
+  <section class="section-grid" aria-label="Source groups">
+    <article class="card">
+      <h2>Browse by country</h2>
+      <ul>
+        {sourceGroups.map(({ country, sources }) => (
+          <li><a href={`/sources/${country.slug}/`}>{country.name_en}</a> — {sources.length} source{sources.length === 1 ? '' : 's'}</li>
+        ))}
+      </ul>
+    </article>
+  </section>
+
   <section class="section-grid" aria-label="Source list">
-    {sources.map((source) => (
-      <article class="card">
-        <h2><a href={source.url}>{source.id}</a></h2>
-        <p>{countryNames.get(source.country_id) ?? source.country_id}</p>
-        <p><strong>Type:</strong> {source.source_type}</p>
-        <p><strong>Data:</strong> {source.data_type}</p>
-        <p><strong>Auto:</strong> {source.auto_level}</p>
-      </article>
-    ))}
+    {sources.map((source) => {
+      const country = countryById.get(source.country_id);
+      return (
+        <article class="card">
+          <h2><a href={source.url}>{source.id}</a></h2>
+          <p>{country ? <a href={`/sources/${country.slug}/`}>{country.name_en}</a> : source.country_id}</p>
+          <p><strong>Type:</strong> {source.source_type}</p>
+          <p><strong>Data:</strong> {source.data_type}</p>
+          <p><strong>Auto:</strong> {source.auto_level}</p>
+        </article>
+      );
+    })}
   </section>
 </BaseLayout>

@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCountries, siteData } from '../../../lib/data';
+
+export function getStaticPaths() {
+  return getCountries().map((country) => ({ params: { slug: country.slug } }));
+}
+
+const { slug } = Astro.params;
+const countries = getCountries();
+const country = countries.find((entry) => entry.slug === slug);
+
+if (!country) {
+  return Astro.redirect('/ja/sources/');
+}
+
+const sources = siteData.sources.filter((source) => source.country_id === country.id);
+const relatedTracks = siteData.racecourses.filter((track) => track.country_id === country.id);
+---
+
+<BaseLayout
+  lang="ja"
+  title={`${country.name_ja}のソース | 競馬どこ？`}
+  description={`${country.name_ja} の競馬カバーに使う公式・参考ソースの一覧です。`}
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Source registry</p>
+    <h1 id="page-title">{country.name_ja}のソース</h1>
+    <p class="hero__summary">
+      {country.name_ja} のカバーに使う公式・参考ソースです。最終確認は公式またはライセンスされたソースで行ってください。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="国別ソース概要">
+    <article class="card">
+      <h2>カバー範囲</h2>
+      <p><strong>国・地域:</strong> <a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a></p>
+      <p><strong>ソース:</strong> {sources.length}件</p>
+      <p><strong>競馬場:</strong> {relatedTracks.length}件</p>
+    </article>
+
+    <article class="card">
+      <h2>掲載範囲</h2>
+      <p>出走表・オッズ・結果・払戻・予想・全文レースカードは、公式またはライセンスされたソースで確認してください。</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="ソース一覧">
+    {sources.length ? (
+      sources.map((source) => (
+        <article class="card">
+          <h2><a href={source.url}>{source.id}</a></h2>
+          <p><strong>種別:</strong> {source.source_type}</p>
+          <p><strong>データ:</strong> {source.data_type}</p>
+          <p><strong>自動化:</strong> {source.auto_level}</p>
+          <p><strong>利用リスク:</strong> {source.terms_risk}</p>
+        </article>
+      ))
+    ) : (
+      <article class="card">
+        <h2>ソース未登録</h2>
+        <p>この国・地域に紐づくソースはまだありません。</p>
+      </article>
+    )}
+  </section>
+
+  <section class="section-grid" aria-label="関連競馬場">
+    <article class="card">
+      <h2>関連競馬場</h2>
+      {relatedTracks.length ? (
+        <ul>
+          {relatedTracks.map((track) => (
+            <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>この国・地域に紐づく競馬場はまだありません。</p>
+      )}
+    </article>
+  </section>
+
+  <p><a href="/ja/sources/">ソース一覧へ戻る</a></p>
+</BaseLayout>

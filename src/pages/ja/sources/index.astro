@@ -4,7 +4,13 @@ import { siteData, getCountries } from '../../../lib/data';
 
 const sources = siteData.sources;
 const countries = getCountries();
-const countryNames = new Map(countries.map((country) => [country.id, country.name_ja]));
+const countryById = new Map(countries.map((country) => [country.id, country]));
+const sourceGroups = countries
+  .map((country) => ({
+    country,
+    sources: sources.filter((source) => source.country_id === country.id)
+  }))
+  .filter((group) => group.sources.length > 0);
 ---
 
 <BaseLayout
@@ -20,15 +26,29 @@ const countryNames = new Map(countries.map((country) => [country.id, country.nam
     </p>
   </section>
 
+  <section class="section-grid" aria-label="国別ソース">
+    <article class="card">
+      <h2>国・地域別に見る</h2>
+      <ul>
+        {sourceGroups.map(({ country, sources }) => (
+          <li><a href={`/ja/sources/${country.slug}/`}>{country.name_ja}</a> — {sources.length}件</li>
+        ))}
+      </ul>
+    </article>
+  </section>
+
   <section class="section-grid" aria-label="ソース一覧">
-    {sources.map((source) => (
-      <article class="card">
-        <h2><a href={source.url}>{source.id}</a></h2>
-        <p>{countryNames.get(source.country_id) ?? source.country_id}</p>
-        <p><strong>種別:</strong> {source.source_type}</p>
-        <p><strong>データ:</strong> {source.data_type}</p>
-        <p><strong>自動化:</strong> {source.auto_level}</p>
-      </article>
-    ))}
+    {sources.map((source) => {
+      const country = countryById.get(source.country_id);
+      return (
+        <article class="card">
+          <h2><a href={source.url}>{source.id}</a></h2>
+          <p>{country ? <a href={`/ja/sources/${country.slug}/`}>{country.name_ja}</a> : source.country_id}</p>
+          <p><strong>種別:</strong> {source.source_type}</p>
+          <p><strong>データ:</strong> {source.data_type}</p>
+          <p><strong>自動化:</strong> {source.auto_level}</p>
+        </article>
+      );
+    })}
   </section>
 </BaseLayout>
