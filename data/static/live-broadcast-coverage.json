@@ -94,20 +94,24 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
-      "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "NAR live/replay availability is unaudited; no official evidence recorded yet."
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "NAR Chihokeiba Live",
+      "official_live_url": "https://keiba-lv-st.jp/",
+      "official_replay_url": "https://keiba-lv-st.jp/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": "Live video is Japan-only; VOD is available overseas.",
+      "source_type": "authority, official_partner",
+      "evidence_urls": [
+        "https://www.keiba.go.jp/beginner/step5.html",
+        "https://www.keiba.go.jp/qa.html",
+        "https://keiba-lv-st.jp/guide.html"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-04",
+      "notes": "NAR pages point users to free Chihokeiba Live; banei is tracked separately."
     },
     {
       "jurisdiction_id": "japan-banei",
@@ -115,20 +119,25 @@
       "racing_types": [
         "banei-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
-      "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Banei live/replay availability is unaudited; no official evidence recorded yet."
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Banei Tokachi / Chihokeiba Live",
+      "official_live_url": "https://www.banei-keiba.or.jp/",
+      "official_replay_url": "https://www.banei-keiba.or.jp/db_theater.php",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": "Chihokeiba Live is Japan-only for live video; VOD is available overseas.",
+      "source_type": "racecourse, official_partner",
+      "evidence_urls": [
+        "https://www.banei-keiba.or.jp/",
+        "https://www.banei-keiba.or.jp/db_theater.php",
+        "https://keiba-lv-st.jp/guide.html",
+        "https://www.keiba.go.jp/qa.html"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-04",
+      "notes": "Official banei pages link to Chihokeiba Live and provide a public banei theater archive."
     },
     {
       "jurisdiction_id": "hong-kong",
