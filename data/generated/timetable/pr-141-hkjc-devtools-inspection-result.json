@@ -1,0 +1,83 @@
+{
+  "schema_version": "pr-141-hkjc-devtools-inspection-result-v0",
+  "inspection_status": "verified_full_meeting",
+  "result_source": "user_provided_codex_or_devtools_result",
+  "result_received_at": "2026-06-04",
+  "meeting_date": "2026-06-03",
+  "racecourse": "Happy Valley",
+  "fixture_code": "HV",
+  "time_zone": "Asia/Hong_Kong",
+  "source_route_type": "racecard_dom_links",
+  "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03",
+  "request_url_pattern": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse=HV&racedate=2026%2F06%2F03",
+  "races": [
+    {
+      "race_number": 1,
+      "race_time": "18:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=1&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 2,
+      "race_time": "19:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=2&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 3,
+      "race_time": "19:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=3&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 4,
+      "race_time": "20:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=4&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 5,
+      "race_time": "20:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 6,
+      "race_time": "21:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=6&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 7,
+      "race_time": "21:45",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=7&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 8,
+      "race_time": "22:15",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=8&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 9,
+      "race_time": "22:50",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=9&Racecourse=HV&racedate=2026%2F06%2F03"
+    }
+  ],
+  "reason_not_verified": null,
+  "inspector_notes": [
+    "Opened the known sample URL. The official HKJC racecard page exposed the meeting label, Race 5 heading, and the date/course/time line containing 20:40.",
+    "Race navigation controls on the official racecard page exposed official race-number image assets for racecard_rt_1 through racecard_rt_9 for the Happy Valley meeting.",
+    "Probed RaceNo 1 through 9 only using the official racecard route pattern. Official racecard resources exposed race_number and race_time for RaceNo 1, 2, 3, 4, 5, 6, 7, 8, and 9.",
+    "No RaceNo outside 1 through 9 was probed, and no race_count, first_race_time, last_race_time, or contiguous range was inferred from numeric continuity.",
+    "A meeting-level fixture page for June 2026 was found on racing.hkjc.com and showed the 2026-06-03 Happy Valley fixture context, but it did not provide a meeting-level list of all race start times.",
+    "A meeting entries page on racing.hkjc.com was found for the date/course context, but it was not used for participant details and did not provide the race_time verification rows needed here.",
+    "Embedded/inline page text from official racecard resources was sufficient for race_number/race_time verification; no stable separate official network payload endpoint listing all meeting race times was identified.",
+    "Only meeting/race time verification fields were recorded."
+  ],
+  "promotion_decision": {
+    "promote_hkjc_in_this_pr": false,
+    "allowed_next_step": "Create a one-meeting source-verified snapshot from this result before checking all June 2026 HKJC meetings.",
+    "do_not_promote_full_month_yet": true,
+    "do_not_infer": [
+      "first_race_time",
+      "last_race_time",
+      "race_count",
+      "contiguous_race_number_range"
+    ],
+    "last_race_time_definition": "Final race start time, not meeting_end_time."
+  }
+}
