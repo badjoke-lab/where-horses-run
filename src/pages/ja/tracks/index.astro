@@ -1,24 +1,75 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getRacecourses, getCountries } from '../../../lib/data';
-import { getRacingTypeById } from '../../../lib/racingTypes';
+import { getRacingTypeById, getRacingTypes } from '../../../lib/racingTypes';
 
 const tracks = getRacecourses();
 const countries = getCountries();
 const countryNames = new Map(countries.map((country) => [country.id, country.name_ja]));
+const countryGroups = countries
+  .map((country) => ({
+    country,
+    tracks: tracks.filter((track) => track.country_id === country.id)
+  }))
+  .filter((group) => group.tracks.length > 0);
+const racingTypeGroups = getRacingTypes()
+  .map((type) => ({
+    type,
+    tracks: tracks.filter((track) => track.racing_types.includes(type.id))
+  }))
+  .filter((group) => group.tracks.length > 0);
+const surfaceGroups = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))]
+  .sort()
+  .map((surface) => ({
+    surface,
+    tracks: tracks.filter((track) => (track.surfaces ?? []).includes(surface))
+  }));
 ---
 
 <BaseLayout
   title="競馬場 | 競馬どこ？"
-  description="世界の競馬場データを一覧できます。"
+  description="世界の競馬場データを、国・地域、競馬種別、馬場から探せます。"
   lang="ja"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Racecourses</p>
     <h1 id="page-title">競馬場</h1>
     <p class="hero__summary">
-      登録済みの競馬場を一覧できます。各ページでは開催状況、コース特徴、公式リンク、関連用語を確認できます。
+      登録済みの競馬場を、国・地域、競馬種別、馬場から探せます。各ページでは開催状況、コース特徴、公式リンク、関連用語を確認できます。
     </p>
+  </section>
+
+  <section class="section-grid" aria-label="競馬場の探し方">
+    <article class="card">
+      <h2>国・地域から探す</h2>
+      <ul>
+        {countryGroups.map(({ country, tracks }) => (
+          <li><a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a> — {tracks.length}件</li>
+        ))}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>競馬種別から探す</h2>
+      <ul>
+        {racingTypeGroups.map(({ type, tracks }) => (
+          <li><a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> — {tracks.length}件</li>
+        ))}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>馬場から探す</h2>
+      {surfaceGroups.length ? (
+        <ul>
+          {surfaceGroups.map(({ surface, tracks }) => (
+            <li><a href={`#surface-${surface}`}>{surface}</a> — {tracks.length}件</li>
+          ))}
+        </ul>
+      ) : (
+        <p>確認済みの馬場タグはまだありません。</p>
+      )}
+    </article>
   </section>
 
   <section class="section-grid" aria-label="競馬場一覧">
@@ -35,7 +86,25 @@ const countryNames = new Map(countries.map((country) => [country.id, country.nam
             return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
           })}
         </ul>
+        <p><strong>開催予定:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+        <p><strong>コース情報:</strong> {track.data_status?.course_profile ?? 'partial'}</p>
       </article>
     ))}
   </section>
+
+  {surfaceGroups.length ? (
+    <section aria-label="馬場別の競馬場">
+      <h2>馬場別の競馬場</h2>
+      {surfaceGroups.map(({ surface, tracks }) => (
+        <article class="card" id={`surface-${surface}`}>
+          <h3>{surface}</h3>
+          <ul>
+            {tracks.map((track) => (
+              <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {countryNames.get(track.country_id) ?? track.country_id}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </section>
+  ) : null}
 </BaseLayout>
