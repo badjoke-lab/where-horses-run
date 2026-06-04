@@ -63,12 +63,11 @@
   },
   "records": [
     {
-      "jurisdiction_id": "japan",
-      "country_or_region": "Japan",
+      "jurisdiction_id": "japan-jra",
+      "country_or_region": "Japan — JRA",
       "racing_types": [
         "thoroughbred-flat",
-        "jump-racing",
-        "banei-racing"
+        "jump-racing"
       ],
       "live_status": "official_free",
       "replay_status": "replay_available",
@@ -87,7 +86,49 @@
       ],
       "confidence": "medium",
       "last_checked": "2026-06-04",
-      "notes": "JRA evidence supports central racing live coverage and replay services; NAR and banei coverage not fully audited."
+      "notes": "JRA evidence covers central racing only; NAR and banei are separate unaudited records."
+    },
+    {
+      "jurisdiction_id": "japan-nar",
+      "country_or_region": "Japan — NAR",
+      "racing_types": [
+        "thoroughbred-flat"
+      ],
+      "live_status": "not_verified",
+      "replay_status": "not_verified",
+      "provider_name": null,
+      "official_live_url": null,
+      "official_replay_url": null,
+      "requires_login": null,
+      "requires_betting_account": null,
+      "requires_paid_tv": null,
+      "geo_restriction": null,
+      "source_type": null,
+      "evidence_urls": [],
+      "confidence": "not_checked",
+      "last_checked": null,
+      "notes": "NAR live/replay availability is unaudited; no official evidence recorded yet."
+    },
+    {
+      "jurisdiction_id": "japan-banei",
+      "country_or_region": "Japan — banei",
+      "racing_types": [
+        "banei-racing"
+      ],
+      "live_status": "not_verified",
+      "replay_status": "not_verified",
+      "provider_name": null,
+      "official_live_url": null,
+      "official_replay_url": null,
+      "requires_login": null,
+      "requires_betting_account": null,
+      "requires_paid_tv": null,
+      "geo_restriction": null,
+      "source_type": null,
+      "evidence_urls": [],
+      "confidence": "not_checked",
+      "last_checked": null,
+      "notes": "Banei live/replay availability is unaudited; no official evidence recorded yet."
     },
     {
       "jurisdiction_id": "hong-kong",
@@ -395,10 +436,10 @@
         "arabian-racing"
       ],
       "live_status": "official_free",
-      "replay_status": "replay_available",
+      "replay_status": "official_account",
       "provider_name": "SOREC",
       "official_live_url": "https://sorec.ma/",
-      "official_replay_url": "https://vod.sorec.ma/",
+      "official_replay_url": "https://www.sorec-galop.ma/pages/page_vod.jsf",
       "requires_login": true,
       "requires_betting_account": false,
       "requires_paid_tv": false,
@@ -406,14 +447,12 @@
       "source_type": "authority",
       "evidence_urls": [
         "https://sorec.ma/",
-        "https://sorec.ma/courses-hippiques/",
-        "https://partenaires.sorec.ma/en/web/drp-site/les-jeux-hippiques",
-        "https://vod.sorec.ma/",
+        "https://www.sorec-galop.ma/pages/page_vod.jsf",
         "https://vod.sorec.ma/user/register"
       ],
       "confidence": "medium",
       "last_checked": "2026-06-04",
-      "notes": "SOREC evidence supports live race broadcasting and a VOD portal; VOD registration may be required."
+      "notes": "SOREC shows live race access; login evidence applies to VOD replay follow-up."
     },
     {
       "jurisdiction_id": "chile",
@@ -474,8 +513,8 @@
       "live_status": "official_free",
       "replay_status": "replay_available",
       "provider_name": "Hipódromo de las Américas",
-      "official_live_url": "https://www.hipodromo.com.mx/desktop/",
-      "official_replay_url": "https://www.hipodromo.com.mx/desktop/",
+      "official_live_url": "https://www.hipodromo.com.mx/desktop/vivo/",
+      "official_replay_url": "https://hipodromo.com.mx/desktop/index.php?id=72&layout=edit&option=com_content&view=article",
       "requires_login": false,
       "requires_betting_account": false,
       "requires_paid_tv": false,
@@ -483,12 +522,12 @@
       "source_type": "racecourse",
       "evidence_urls": [
         "https://www.hipodromo.com.mx/desktop/",
-        "https://hipodromo.tv/video1.html",
-        "https://mexicocity.cdmx.gob.mx/venues/hipodromo-de-las-americas/?lang=en"
+        "https://www.hipodromo.com.mx/desktop/vivo/",
+        "https://hipodromo.com.mx/desktop/index.php?id=72&layout=edit&option=com_content&view=article"
       ],
       "confidence": "medium",
       "last_checked": "2026-06-04",
-      "notes": "Official site navigation links to live and repetition pages; no direct stream URLs included."
+      "notes": "Official site navigation links to live and replay landing pages; external video page removed."
     },
     {
       "jurisdiction_id": "bahrain",
