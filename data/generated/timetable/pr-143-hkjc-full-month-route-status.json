@@ -1,0 +1,97 @@
+{
+  "schema_version": "pr-143-hkjc-full-month-route-status-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Record HKJC June 2026 full-month route coverage status after PR-142. This file does not promote HKJC and does not create full-month race-time data.",
+  "source_snapshot": "data/generated/timetable/pr-142-hkjc-one-meeting-race-times.json",
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank_after_full_month_verification": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "route_pattern_under_test": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}",
+  "coverage_summary": {
+    "total_june_2026_meetings": 7,
+    "verified_meetings": 1,
+    "unverified_meetings": 6,
+    "full_month_verified": false,
+    "full_month_promotion_allowed": false
+  },
+  "meetings": [
+    {
+      "meeting_date": "2026-06-03",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV",
+      "route_status": "verified_full_meeting",
+      "source_snapshot": "data/generated/timetable/pr-142-hkjc-one-meeting-race-times.json",
+      "verified_race_count": 9,
+      "first_race_time": "18:40",
+      "last_race_time": "22:50",
+      "notes": "Only this one meeting is source-verified so far."
+    },
+    {
+      "meeting_date": "2026-06-07",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    },
+    {
+      "meeting_date": "2026-06-10",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    },
+    {
+      "meeting_date": "2026-06-13",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    },
+    {
+      "meeting_date": "2026-06-21",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    },
+    {
+      "meeting_date": "2026-06-24",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    },
+    {
+      "meeting_date": "2026-06-27",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "route_status": "not_yet_verified",
+      "source_snapshot": null,
+      "required_next_check": "Codex or local browser DevTools must verify every official race_number/race_time row before promotion."
+    }
+  ],
+  "promotion_decision": {
+    "promote_hkjc_in_this_pr": false,
+    "promote_full_month_in_this_pr": false,
+    "reason": "Only 1 of 7 June 2026 HKJC meetings is source-verified. Full-month B+ promotion requires all 7 meetings to be verified through official HKJC racecard resources.",
+    "allowed_next_step": "Collect source-verified race_number/race_time rows for the remaining six June 2026 HKJC meetings."
+  },
+  "next_codex_or_devtools_batch_target": [
+    "2026-06-07 Sha Tin ST",
+    "2026-06-10 Happy Valley HV",
+    "2026-06-13 Sha Tin ST",
+    "2026-06-21 Sha Tin ST",
+    "2026-06-24 Happy Valley HV",
+    "2026-06-27 Sha Tin ST"
+  ]
+}
