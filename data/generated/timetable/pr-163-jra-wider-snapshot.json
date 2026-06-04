@@ -1,0 +1,181 @@
+{
+  "schema_version": "pr-163-jra-wider-snapshot-v0",
+  "month": "2026-01",
+  "last_checked": "2026-06-05",
+  "purpose": "Create a wider source-verified JRA snapshot from PR-155 and PR-162 verified results. This file does not promote JRA.",
+  "source_results": [
+    "data/generated/timetable/pr-154-jra-one-meeting-snapshot.json",
+    "data/generated/timetable/pr-158-jra-additional-meetings-codex-result.json"
+  ],
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "current_rank": "not_promoted_by_this_pr",
+    "target_rank_after_promotion_gate": "B or B+",
+    "time_zone": "Asia/Tokyo"
+  },
+  "route_pattern": "https://www.jra.go.jp/keiba/calendar2026/2026/1/{MMDD}.html",
+  "coverage_summary": {
+    "verified_meetings": 7,
+    "verified_race_rows": 84,
+    "meetings_with_derived_summary": 7,
+    "wider_snapshot_added": true,
+    "promotion_allowed_in_this_pr": false
+  },
+  "meetings": [
+    {
+      "meeting_date": "2026-01-04",
+      "racecourse": "中山",
+      "meeting_id_or_code": "1回中山1日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "10:05" },
+        { "race_number": "2レース", "race_time": "10:35" },
+        { "race_number": "3レース", "race_time": "11:05" },
+        { "race_number": "4レース", "race_time": "11:35" },
+        { "race_number": "5レース", "race_time": "12:25" },
+        { "race_number": "6レース", "race_time": "12:55" },
+        { "race_number": "7レース", "race_time": "13:25" },
+        { "race_number": "8レース", "race_time": "13:55" },
+        { "race_number": "9レース", "race_time": "14:30" },
+        { "race_number": "10レース", "race_time": "15:05" },
+        { "race_number": "11レース", "race_time": "15:45" },
+        { "race_number": "12レース", "race_time": "16:25" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "10:05", "last_race_time": "16:25", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-04",
+      "racecourse": "京都",
+      "meeting_id_or_code": "1回京都1日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "09:50" },
+        { "race_number": "2レース", "race_time": "10:20" },
+        { "race_number": "3レース", "race_time": "10:50" },
+        { "race_number": "4レース", "race_time": "11:20" },
+        { "race_number": "5レース", "race_time": "12:10" },
+        { "race_number": "6レース", "race_time": "12:40" },
+        { "race_number": "7レース", "race_time": "13:10" },
+        { "race_number": "8レース", "race_time": "13:40" },
+        { "race_number": "9レース", "race_time": "14:15" },
+        { "race_number": "10レース", "race_time": "14:50" },
+        { "race_number": "11レース", "race_time": "15:30" },
+        { "race_number": "12レース", "race_time": "16:10" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "09:50", "last_race_time": "16:10", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-05",
+      "racecourse": "京都競馬場",
+      "meeting_id_or_code": "1回京都2日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "9時50分" },
+        { "race_number": "2レース", "race_time": "10時20分" },
+        { "race_number": "3レース", "race_time": "10時50分" },
+        { "race_number": "4レース", "race_time": "11時20分" },
+        { "race_number": "5レース", "race_time": "12時10分" },
+        { "race_number": "6レース", "race_time": "12時40分" },
+        { "race_number": "7レース", "race_time": "13時10分" },
+        { "race_number": "8レース", "race_time": "13時45分" },
+        { "race_number": "9レース", "race_time": "14時20分" },
+        { "race_number": "10レース", "race_time": "14時55分" },
+        { "race_number": "11レース", "race_time": "15時30分" },
+        { "race_number": "12レース", "race_time": "16時10分" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "9時50分", "last_race_time": "16時10分", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-10",
+      "racecourse": "中山",
+      "meeting_id_or_code": "1回中山3日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "10:05" },
+        { "race_number": "2レース", "race_time": "10:35" },
+        { "race_number": "3レース", "race_time": "11:05" },
+        { "race_number": "4レース", "race_time": "11:35" },
+        { "race_number": "5レース", "race_time": "12:25" },
+        { "race_number": "6レース", "race_time": "12:55" },
+        { "race_number": "7レース", "race_time": "13:25" },
+        { "race_number": "8レース", "race_time": "14:00" },
+        { "race_number": "9レース", "race_time": "14:35" },
+        { "race_number": "10レース", "race_time": "15:10" },
+        { "race_number": "11レース", "race_time": "15:45" },
+        { "race_number": "12レース", "race_time": "16:25" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "10:05", "last_race_time": "16:25", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-10",
+      "racecourse": "京都",
+      "meeting_id_or_code": "1回京都3日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "09:50" },
+        { "race_number": "2レース", "race_time": "10:20" },
+        { "race_number": "3レース", "race_time": "10:50" },
+        { "race_number": "4レース", "race_time": "11:20" },
+        { "race_number": "5レース", "race_time": "12:10" },
+        { "race_number": "6レース", "race_time": "12:40" },
+        { "race_number": "7レース", "race_time": "13:10" },
+        { "race_number": "8レース", "race_time": "13:45" },
+        { "race_number": "9レース", "race_time": "14:20" },
+        { "race_number": "10レース", "race_time": "14:55" },
+        { "race_number": "11レース", "race_time": "15:30" },
+        { "race_number": "12レース", "race_time": "16:10" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "09:50", "last_race_time": "16:10", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-11",
+      "racecourse": "中山",
+      "meeting_id_or_code": "1回中山4日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "10:05" },
+        { "race_number": "2レース", "race_time": "10:35" },
+        { "race_number": "3レース", "race_time": "11:05" },
+        { "race_number": "4レース", "race_time": "11:35" },
+        { "race_number": "5レース", "race_time": "12:25" },
+        { "race_number": "6レース", "race_time": "12:55" },
+        { "race_number": "7レース", "race_time": "13:25" },
+        { "race_number": "8レース", "race_time": "13:55" },
+        { "race_number": "9レース", "race_time": "14:30" },
+        { "race_number": "10レース", "race_time": "15:05" },
+        { "race_number": "11レース", "race_time": "15:45" },
+        { "race_number": "12レース", "race_time": "16:25" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "10:05", "last_race_time": "16:25", "race_count": 12 }
+    },
+    {
+      "meeting_date": "2026-01-11",
+      "racecourse": "京都",
+      "meeting_id_or_code": "1回京都4日",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html",
+      "races": [
+        { "race_number": "1レース", "race_time": "09:50" },
+        { "race_number": "2レース", "race_time": "10:20" },
+        { "race_number": "3レース", "race_time": "10:50" },
+        { "race_number": "4レース", "race_time": "11:20" },
+        { "race_number": "5レース", "race_time": "12:10" },
+        { "race_number": "6レース", "race_time": "12:40" },
+        { "race_number": "7レース", "race_time": "13:10" },
+        { "race_number": "8レース", "race_time": "13:40" },
+        { "race_number": "9レース", "race_time": "14:15" },
+        { "race_number": "10レース", "race_time": "14:50" },
+        { "race_number": "11レース", "race_time": "15:30" },
+        { "race_number": "12レース", "race_time": "16:10" }
+      ],
+      "derived_from_verified_rows": { "first_race_time": "09:50", "last_race_time": "16:10", "race_count": 12 }
+    }
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "promotion_gate_required_next": true,
+    "wider_snapshot_added": true,
+    "rank_change_added": false,
+    "next_required_step": "Evaluate this wider snapshot against the PR-132 B/B+ rank rules before any JRA promotion."
+  }
+}
