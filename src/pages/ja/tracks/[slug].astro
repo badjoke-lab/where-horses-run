@@ -32,6 +32,29 @@ const formatValue = (value: unknown) => {
   return String(value);
 };
 
+const toRecord = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
+};
+
+const firstValue = (record: unknown, keys: string[]) => {
+  const row = toRecord(record);
+  for (const key of keys) {
+    if (row[key] !== null && row[key] !== undefined && row[key] !== '') return row[key];
+  }
+  return null;
+};
+
+const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) => {
+  const parts = fields
+    .map(([label, keys]) => {
+      const value = firstValue(record, keys);
+      return value === null ? null : `${label}: ${String(value)}`;
+    })
+    .filter(Boolean);
+  return parts.length ? parts.join(' ・ ') : '詳細は整形待ちです。';
+};
+
 const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
   if (!band) return '未確認';
   const range = band.min_m && band.max_m ? `${band.min_m}m〜${band.max_m}m` : '距離範囲未確認';
@@ -44,6 +67,26 @@ const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null
 const officialLinks = track.official_links ?? [];
 const relatedTerms = track.related_terms ?? [];
 const relatedSources = track.related_sources ?? [];
+const meetingFields: Array<[string, string[]]> = [
+  ['日付', ['date', 'local_date', 'meeting_date']],
+  ['1R', ['first_post', 'first_race_time', 'first_race']],
+  ['最終', ['last_race_time', 'last_race']],
+  ['レース数', ['race_count', 'races']],
+  ['状態', ['status']]
+];
+const raceConditionFields: Array<[string, string[]]> = [
+  ['日付', ['date', 'local_date']],
+  ['R', ['race_number', 'race_no', 'race']],
+  ['時刻', ['post_time', 'start_time', 'time']],
+  ['馬場', ['surface']],
+  ['距離', ['distance', 'distance_m']],
+  ['種別', ['race_type', 'type']]
+];
+const notableRaceFields: Array<[string, string[]]> = [
+  ['名称', ['name_ja', 'name', 'race_name']],
+  ['時期', ['season', 'month']],
+  ['ソース', ['official_link', 'source_url', 'url']]
+];
 ---
 
 <BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の開催予定状況、コース特徴、公式リンク、関連用語をまとめた競馬場ページです。`} lang="ja">
@@ -90,10 +133,12 @@ const relatedSources = track.related_sources ?? [];
       <h2>直近の開催予定</h2>
       {track.schedule_summary?.upcoming_meetings?.length ? (
         <ul>
-          {track.schedule_summary.upcoming_meetings.map((meeting) => <li>{JSON.stringify(meeting)}</li>)}
+          {track.schedule_summary.upcoming_meetings.map((meeting) => (
+            <li>{formatRecordFields(meeting, meetingFields)}</li>
+          ))}
         </ul>
       ) : (
-        <p>この競馬場の確認済み開催予定行はまだありません。</p>
+        <p>この競馬場の確認済み開催予定行はまだありません。公式予定リンクがある場合はそちらを確認してください。</p>
       )}
       <p><strong>最終確認日:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
     </article>
@@ -102,7 +147,9 @@ const relatedSources = track.related_sources ?? [];
       <h2>直近開催のレース条件</h2>
       {track.distance_profile?.upcoming_conditions?.length ? (
         <ul>
-          {track.distance_profile.upcoming_conditions.map((condition) => <li>{JSON.stringify(condition)}</li>)}
+          {track.distance_profile.upcoming_conditions.map((condition) => (
+            <li>{formatRecordFields(condition, raceConditionFields)}</li>
+          ))}
         </ul>
       ) : (
         <p>確認済みのレース条件行はまだありません。出走表・オッズ・結果・払戻・全文レースカードはここでは再掲載しません。</p>
@@ -136,9 +183,13 @@ const relatedSources = track.related_sources ?? [];
     <article class="card">
       <h2>代表レース</h2>
       {track.notable_races?.length ? (
-        <ul>{track.notable_races.map((race) => <li>{JSON.stringify(race)}</li>)}</ul>
+        <ul>
+          {track.notable_races.map((race) => (
+            <li>{formatRecordFields(race, notableRaceFields)}</li>
+          ))}
+        </ul>
       ) : (
-        <p>代表レース情報はまだ登録されていません。</p>
+        <p>代表レース情報はまだ登録されていません。将来追加する場合は公式またはソース安全なページへリンクします。</p>
       )}
     </article>
 
