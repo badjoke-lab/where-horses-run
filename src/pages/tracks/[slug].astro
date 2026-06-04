@@ -7,6 +7,7 @@ import {
   getRacecourses,
   siteData
 } from '../../lib/data';
+import { getRacingTypeById } from '../../lib/racingTypes';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -45,9 +46,9 @@ const relatedTerms = track.related_terms ?? [];
 const relatedSources = track.related_sources ?? [];
 ---
 
-<BaseLayout title={`${track.name_en} | Tracks`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
+<BaseLayout title={`${track.name_en} | Racecourses`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Track profile</p>
+    <p class="hero__eyebrow">Racecourse profile</p>
     <h1 id="page-title">{track.name_en}</h1>
     <p class="hero__summary">
       {track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}
@@ -68,9 +69,9 @@ const relatedSources = track.related_sources ?? [];
     <article class="card">
       <h2>Racing types</h2>
       <ul>
-        {track.racing_types.map((type) => {
-          const term = glossaryById.get(type) ?? glossaryById.get(type.replace('thoroughbred-flat', 'thoroughbred-racing'));
-          return <li>{term ? <a href={`/glossary/${term.slug}/`}>{term.term_en}</a> : type}</li>;
+        {track.racing_types.map((typeId) => {
+          const type = getRacingTypeById(typeId);
+          return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
         })}
       </ul>
     </article>
