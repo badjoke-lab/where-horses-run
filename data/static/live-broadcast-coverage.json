@@ -70,20 +70,24 @@
         "jump-racing",
         "banei-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Japan Racing Association / JRA-VAN",
+      "official_live_url": "https://jra.jp/tvradio/racelive/index.html",
+      "official_replay_url": "https://jra-van.jp/rview/",
       "requires_login": null,
-      "requires_betting_account": null,
+      "requires_betting_account": false,
       "requires_paid_tv": null,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority, official_partner",
+      "evidence_urls": [
+        "https://jra.jp/tvradio/racelive/index.html",
+        "https://jra.jp/link/eizo.html",
+        "https://jra-van.jp/rview/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "JRA evidence supports central racing live coverage and replay services; NAR and banei coverage not fully audited."
     },
     {
       "jurisdiction_id": "hong-kong",
@@ -91,20 +95,25 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "betting_account",
+      "replay_status": "replay_available",
+      "provider_name": "The Hong Kong Jockey Club",
+      "official_live_url": "https://racing.hkjc.com/en-us/index",
+      "official_replay_url": "https://racing.hkjc.com/racing/English/showcase/showcase.asp?b_cid=SPLDSPA_hkjc-home_Footer",
+      "requires_login": true,
+      "requires_betting_account": true,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://racing.hkjc.com/en-us/index",
+        "https://racingtouch.hkjc.com/en/features",
+        "https://common.hkjc.com/utility/faq/english/racing/race-info",
+        "https://campaign.hkjc.com/en/jctv/index.aspx"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-04",
+      "notes": "HKJC evidence supports Racing Touch/HKJC TV live access for account customers and official race replays."
     },
     {
       "jurisdiction_id": "united-arab-emirates",
@@ -113,20 +122,23 @@
         "thoroughbred-flat",
         "arabian-racing"
       ],
-      "live_status": "not_verified",
+      "live_status": "official_free",
       "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
+      "provider_name": "Emirates Racing Authority",
+      "official_live_url": "https://emiratesracing.com/live-streams/dubai-racing-1",
       "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://emiratesracing.com/",
+        "https://emiratesracing.com/live-streams/dubai-racing-1"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "ERA site links to an official live-stream landing page; replay availability not confirmed."
     },
     {
       "jurisdiction_id": "united-kingdom",
@@ -311,20 +323,23 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
+      "live_status": "event_only",
+      "replay_status": "archive_only",
+      "provider_name": "Korea Racing Authority / KRBC",
+      "official_live_url": "https://tv.naver.com/krbc",
+      "official_replay_url": "https://tv.naver.com/krbc",
       "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "official_partner, official_social",
+      "evidence_urls": [
+        "https://tv.naver.com/krbc",
+        "https://www.kra.co.kr/"
+      ],
+      "confidence": "low",
+      "last_checked": "2026-06-04",
+      "notes": "KRBC official channel has live and clip surfaces; routine full race live/replay availability not verified."
     },
     {
       "jurisdiction_id": "singapore",
@@ -354,20 +369,23 @@
         "thoroughbred-flat",
         "arabian-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Jockey Club of Turkey (TJK)",
+      "official_live_url": "https://www.tjk.org/EN/YarisSever/Static/page/canli",
+      "official_replay_url": "https://www.tjk.org/EN/YarisSever/Info/YarisVideoAt/At",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://www.tjk.org/EN/YarisSever/Static/page/canli",
+        "https://www.tjk.org/EN/YarisSever/Info/YarisVideoAt/At?AtKodu=-1181034&YabanciKosuKodu=6054015"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "TJK has an official TJK TV web live page and race-video pages; use landing pages only."
     },
     {
       "jurisdiction_id": "morocco",
@@ -376,20 +394,26 @@
         "thoroughbred-flat",
         "arabian-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "SOREC",
+      "official_live_url": "https://sorec.ma/",
+      "official_replay_url": "https://vod.sorec.ma/",
+      "requires_login": true,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://sorec.ma/",
+        "https://sorec.ma/courses-hippiques/",
+        "https://partenaires.sorec.ma/en/web/drp-site/les-jeux-hippiques",
+        "https://vod.sorec.ma/",
+        "https://vod.sorec.ma/user/register"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "SOREC evidence supports live race broadcasting and a VOD portal; VOD registration may be required."
     },
     {
       "jurisdiction_id": "chile",
@@ -397,20 +421,24 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
+      "live_status": "official_free",
       "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
+      "provider_name": "Hipódromo Chile / Club Hípico de Santiago",
+      "official_live_url": "https://hipodromo.cl/carreras-senal-en-vivo",
       "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://hipodromo.cl/carreras-senal-en-vivo",
+        "https://www.clubhipico.cl/carreras/senal-en-vivo",
+        "https://www.clubhipico.cl/carreras/apps/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "Official racecourse pages support live signals for major Chilean tracks; replay coverage not confirmed."
     },
     {
       "jurisdiction_id": "peru",
@@ -418,20 +446,23 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
+      "live_status": "official_free",
       "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
+      "provider_name": "Hipódromo de Monterrico / Jockey Club del Perú",
+      "official_live_url": "https://hipodromodemonterrico.com.pe/carreras-senal-en-vivo",
       "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
+      "requires_login": false,
+      "requires_betting_account": false,
       "requires_paid_tv": null,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://hipodromodemonterrico.com.pe/carreras-senal-en-vivo",
+        "https://www.tvperu.gob.pe/noticias/deportes/gran-premio-latinoamericano-2026-evento-hipico-mas-importante-del-ano-se-transmitira-por-tvperu"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "Official Monterrico page provides a live-signal landing page; replay availability not confirmed."
     },
     {
       "jurisdiction_id": "mexico",
@@ -440,20 +471,24 @@
         "thoroughbred-flat",
         "quarter-horse-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Hipódromo de las Américas",
+      "official_live_url": "https://www.hipodromo.com.mx/desktop/",
+      "official_replay_url": "https://www.hipodromo.com.mx/desktop/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://www.hipodromo.com.mx/desktop/",
+        "https://hipodromo.tv/video1.html",
+        "https://mexicocity.cdmx.gob.mx/venues/hipodromo-de-las-americas/?lang=en"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-04",
+      "notes": "Official site navigation links to live and repetition pages; no direct stream URLs included."
     },
     {
       "jurisdiction_id": "bahrain",
@@ -462,20 +497,25 @@
         "thoroughbred-flat",
         "arabian-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "archive_only",
+      "provider_name": "The Bahrain Turf Club",
+      "official_live_url": "https://bahrainturfclub.com/live-stream-racing",
+      "official_replay_url": "https://bahrainturfclub.com/news/video-gallery",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://bahrainturfclub.com/racing",
+        "https://bahrainturfclub.com/live-stream-racing",
+        "https://bahrainturfclub.com/news/video-gallery",
+        "https://bahrainturfclub.com/the-rehc"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-04",
+      "notes": "Bahrain Turf Club provides official live-stream racing and video gallery landing pages."
     },
     {
       "jurisdiction_id": "qatar",
