@@ -1,0 +1,55 @@
+{
+  "schema_version": "pr-145-hkjc-pause-jra-start-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Pause the current HKJC B+ attempt after PR-144 and start the next candidate path with JRA. This file is not a calendar input and does not promote any records.",
+  "related_files": {
+    "candidate_matrix": "data/generated/timetable/pr-135-b-bplus-acquisition-candidates.json",
+    "hkjc_one_meeting_snapshot": "data/generated/timetable/pr-142-hkjc-one-meeting-race-times.json",
+    "hkjc_full_month_status": "data/generated/timetable/pr-143-hkjc-full-month-route-status.json",
+    "hkjc_remaining_six_result": "data/generated/timetable/pr-144-hkjc-remaining-six-devtools-result.json"
+  },
+  "hkjc_decision": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "attempted_target_rank": "B+",
+    "decision": "pause_attempt",
+    "verified_meetings": 1,
+    "unverified_meetings": 6,
+    "full_month_promotion_allowed": false,
+    "resume_condition": "Resume only if new official-source evidence verifies every remaining June 2026 HKJC meeting."
+  },
+  "next_candidate_decision": {
+    "primary_next_candidate": "JRA",
+    "fallback_candidate": "NAR",
+    "jra_start_scope": "official source inventory and route investigation only",
+    "jra_promotion_in_this_pr": false,
+    "nar_promotion_in_this_pr": false
+  },
+  "forward_schedule": [
+    { "planned_pr": "PR-146", "topic": "JRA official source inventory", "goal": "List official JRA source candidates. No promotion." },
+    { "planned_pr": "PR-147", "topic": "JRA route verification plan", "goal": "Define checks for JRA official pages or payloads. No promotion." },
+    { "planned_pr": "PR-148", "topic": "JRA one-meeting inspection result", "goal": "Record whether one JRA meeting can expose complete time rows from official sources." },
+    { "planned_pr": "PR-149A", "topic": "JRA one-meeting snapshot", "goal": "If PR-148 succeeds, create a one-meeting snapshot." },
+    { "planned_pr": "PR-149B", "topic": "JRA pause and NAR transition", "goal": "If PR-148 fails, pause JRA and move to NAR inventory." },
+    { "planned_pr": "PR-150A", "topic": "JRA wider route status", "goal": "If JRA one-meeting succeeds, test wider coverage." },
+    { "planned_pr": "PR-151A", "topic": "JRA snapshot or no-promotion status", "goal": "Create a wider snapshot only if source coverage is complete." },
+    { "planned_pr": "PR-152A", "topic": "JRA promotion gate", "goal": "Promote JRA only if the PR-132 rank rules are satisfied." }
+  ],
+  "global_safety_rules": [
+    "Do not promote HKJC to B+ from the current evidence set.",
+    "Do not infer first_race_time without source-verified rows.",
+    "Do not infer last_race_time without source-verified rows.",
+    "Do not infer race_count without a complete source-verified list.",
+    "Do not assume contiguous numbering.",
+    "Do not add public A-rank detail UI during this route work."
+  ],
+  "promotion_decision": {
+    "promote_hkjc_in_this_pr": false,
+    "promote_jra_in_this_pr": false,
+    "promote_nar_in_this_pr": false,
+    "data_rows_added_for_jra": false,
+    "data_rows_added_for_nar": false
+  }
+}
