@@ -1,23 +1,74 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRacecourses, getCountries } from '../../lib/data';
-import { getRacingTypeById } from '../../lib/racingTypes';
+import { getRacingTypeById, getRacingTypes } from '../../lib/racingTypes';
 
 const tracks = getRacecourses();
 const countries = getCountries();
 const countryNames = new Map(countries.map((country) => [country.id, country.name_en]));
+const countryGroups = countries
+  .map((country) => ({
+    country,
+    tracks: tracks.filter((track) => track.country_id === country.id)
+  }))
+  .filter((group) => group.tracks.length > 0);
+const racingTypeGroups = getRacingTypes()
+  .map((type) => ({
+    type,
+    tracks: tracks.filter((track) => track.racing_types.includes(type.id))
+  }))
+  .filter((group) => group.tracks.length > 0);
+const surfaceGroups = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))]
+  .sort()
+  .map((surface) => ({
+    surface,
+    tracks: tracks.filter((track) => (track.surfaces ?? []).includes(surface))
+  }));
 ---
 
 <BaseLayout
   title="Racecourses | Where Horses Run"
-  description="Browse racecourses with country, racing type, course profile, and source context."
+  description="Browse racecourses by country, racing type, surface, course profile, and source context."
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Racecourses</p>
     <h1 id="page-title">Racecourses</h1>
     <p class="hero__summary">
-      Browse racecourse entries. Each racecourse page shows schedule status, course profile fields, official links, related terms, and source routing.
+      Browse racecourse entries by country, racing type, and surface. Each racecourse page shows schedule status, course profile fields, official links, related terms, and source routing.
     </p>
+  </section>
+
+  <section class="section-grid" aria-label="Racecourse browse paths">
+    <article class="card">
+      <h2>Browse by country</h2>
+      <ul>
+        {countryGroups.map(({ country, tracks }) => (
+          <li><a href={`/countries/${country.slug}/`}>{country.name_en}</a> — {tracks.length} racecourse{tracks.length === 1 ? '' : 's'}</li>
+        ))}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Browse by racing type</h2>
+      <ul>
+        {racingTypeGroups.map(({ type, tracks }) => (
+          <li><a href={`/types/${type.slug}/`}>{type.name_en}</a> — {tracks.length} racecourse{tracks.length === 1 ? '' : 's'}</li>
+        ))}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Browse by surface</h2>
+      {surfaceGroups.length ? (
+        <ul>
+          {surfaceGroups.map(({ surface, tracks }) => (
+            <li><a href={`#surface-${surface}`}>{surface}</a> — {tracks.length} racecourse{tracks.length === 1 ? '' : 's'}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No surface tags are confirmed yet.</p>
+      )}
+    </article>
   </section>
 
   <section class="section-grid" aria-label="Racecourse list">
@@ -34,7 +85,25 @@ const countryNames = new Map(countries.map((country) => [country.id, country.nam
             return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
           })}
         </ul>
+        <p><strong>Schedule:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+        <p><strong>Course profile:</strong> {track.data_status?.course_profile ?? 'partial'}</p>
       </article>
     ))}
   </section>
+
+  {surfaceGroups.length ? (
+    <section aria-label="Racecourses by surface">
+      <h2>Racecourses by surface</h2>
+      {surfaceGroups.map(({ surface, tracks }) => (
+        <article class="card" id={`surface-${surface}`}>
+          <h3>{surface}</h3>
+          <ul>
+            {tracks.map((track) => (
+              <li><a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {countryNames.get(track.country_id) ?? track.country_id}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </section>
+  ) : null}
 </BaseLayout>
