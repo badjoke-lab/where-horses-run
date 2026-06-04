@@ -1,0 +1,95 @@
+{
+  "schema_version": "pr-152-jra-one-meeting-codex-result-v0",
+  "inspection_status": "verified_full_meeting",
+  "result_source": "user_provided_codex_or_devtools_result",
+  "result_received_at": "2026-06-04",
+  "time_zone": "Asia/Tokyo",
+  "source_route_type": "calendar_page",
+  "meeting": {
+    "meeting_date": "2026-01-05",
+    "racecourse": "京都競馬場",
+    "meeting_id_or_code": "1回京都2日",
+    "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+  },
+  "route_pattern": "https://www.jra.go.jp/keiba/calendarYYYY/YYYY/M/MMDD.html",
+  "races": [
+    {
+      "race_number": "1レース",
+      "race_time": "9時50分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "2レース",
+      "race_time": "10時20分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "3レース",
+      "race_time": "10時50分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "4レース",
+      "race_time": "11時20分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "5レース",
+      "race_time": "12時10分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "6レース",
+      "race_time": "12時40分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "7レース",
+      "race_time": "13時10分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "8レース",
+      "race_time": "13時45分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "9レース",
+      "race_time": "14時20分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "10レース",
+      "race_time": "14時55分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "11レース",
+      "race_time": "15時30分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    },
+    {
+      "race_number": "12レース",
+      "race_time": "16時10分",
+      "race_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html"
+    }
+  ],
+  "reason_not_verified": null,
+  "inspector_notes": [
+    "Official JRA calendar page for 2026年1月5日 lists a table headed レース番号 and 発走時刻.",
+    "Selected only the 1回京都2日 meeting section.",
+    "Recorded only race_number and race_time rows from the official JRA calendar page; no participant details, price-like data, forecasts, recommendations, or non-time detail fields were collected."
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "snapshot_added": false,
+    "data_rows_added_to_calendar": false,
+    "allowed_next_step": "Create a one-meeting snapshot from this verified result only. Do not promote wider JRA coverage yet.",
+    "do_not_infer": [
+      "first_race_time",
+      "last_race_time",
+      "race_count",
+      "contiguous_race_number_range"
+    ]
+  }
+}
