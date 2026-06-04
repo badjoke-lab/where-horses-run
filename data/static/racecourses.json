@@ -7,11 +7,71 @@
     "name_ja": "東京競馬場",
     "name_local": "東京競馬場",
     "city": "Fuchu",
+    "region": "Tokyo",
     "timezone": "Asia/Tokyo",
     "racing_types": [
       "thoroughbred-flat"
     ],
     "status": "active",
+    "surfaces": [
+      "turf",
+      "dirt"
+    ],
+    "direction": "left-handed",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": null,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Course profile details are pending official-source verification.",
+      "course_notes_ja": "コース詳細は公式ソース確認後に反映する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
+    "notable_races": [],
+    "seasonality": {
+      "summary_en": "Seasonality is pending official-source verification.",
+      "summary_ja": "開催シーズンは公式ソース確認後に反映する。",
+      "status": "partial"
+    },
+    "official_links": [
+      {
+        "label_en": "JRA official site",
+        "label_ja": "JRA公式サイト",
+        "source_id": "japan-jra-home",
+        "url": "https://jra.jp/",
+        "link_type": "official"
+      }
+    ],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["japan-jra-home"],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": null
+    },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Tokyo Racecourse.",
+    "image_alt_ja": "東京競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
     "image": {
       "src": "",
       "alt_en": "Planned illustrative image for Tokyo Racecourse.",
@@ -31,21 +91,47 @@
     "name_ja": "帯広競馬場",
     "name_local": "帯広競馬場",
     "city": "Obihiro",
+    "region": "Hokkaido",
     "timezone": "Asia/Tokyo",
-    "racing_types": [
-      "banei-racing"
-    ],
+    "racing_types": ["banei-racing"],
     "status": "active",
-    "image": {
-      "src": "",
-      "alt_en": "Planned illustrative image for Obihiro Racecourse.",
-      "alt_ja": "帯広競馬場の説明用イメージ画像予定地。",
-      "image_type": "placeholder",
-      "is_official_photo": false,
-      "note_en": "Illustrative image. Not an official venue photo.",
-      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
-      "status": "planned"
-    }
+    "surfaces": ["banei-straight-track"],
+    "direction": "straight",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": false,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Banei course profile details are pending official-source verification.",
+      "course_notes_ja": "ばんえい競馬のコース詳細は公式ソース確認後に反映する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [],
+    "seasonality": { "summary_en": "Seasonality is pending official-source verification.", "summary_ja": "開催シーズンは公式ソース確認後に反映する。", "status": "partial" },
+    "official_links": [
+      { "label_en": "Banei Tokachi official site", "label_ja": "ばんえい十勝公式サイト", "source_id": "japan-banei-home", "url": "https://www.banei-keiba.or.jp/", "link_type": "official" },
+      { "label_en": "Banei monthly schedule source", "label_ja": "ばんえい月間開催予定ソース", "source_id": "japan-banei-monthly-schedule", "url": "https://www.banei-keiba.or.jp/", "link_type": "schedule" }
+    ],
+    "related_terms": ["racecourse", "banei-racing", "meeting", "racecard", "post-time", "fixture", "driver"],
+    "related_sources": ["japan-banei-home", "japan-banei-monthly-schedule"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": null },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Obihiro Racecourse.",
+    "image_alt_ja": "帯広競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Obihiro Racecourse.", "alt_ja": "帯広競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
     "id": "sha-tin-racecourse",
@@ -55,21 +141,27 @@
     "name_ja": "沙田競馬場",
     "name_local": "沙田馬場",
     "city": "Sha Tin",
+    "region": "New Territories",
     "timezone": "Asia/Hong_Kong",
-    "racing_types": [
-      "thoroughbred-flat"
-    ],
+    "racing_types": ["thoroughbred-flat"],
     "status": "active",
-    "image": {
-      "src": "",
-      "alt_en": "Planned illustrative image for Sha Tin Racecourse.",
-      "alt_ja": "沙田競馬場の説明用イメージ画像予定地。",
-      "image_type": "placeholder",
-      "is_official_photo": false,
-      "note_en": "Illustrative image. Not an official venue photo.",
-      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
-      "status": "planned"
-    }
+    "surfaces": ["turf", "all-weather"],
+    "direction": "unknown",
+    "course_profile": { "turf_circumference_m": null, "dirt_circumference_m": null, "home_straight_m": null, "has_inner_outer_courses": null, "has_lighting": null, "elevation_notes_en": null, "elevation_notes_ja": null, "course_notes_en": "Course profile details are pending official-source verification.", "course_notes_ja": "コース詳細は公式ソース確認後に反映する。" },
+    "distance_profile": { "turf": { "min_m": null, "max_m": null, "known_distances_m": [] }, "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] }, "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] }, "jump": { "min_m": null, "max_m": null, "known_distances_m": [] }, "harness": { "min_m": null, "max_m": null, "known_distances_m": [] }, "upcoming_conditions": [] },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [],
+    "seasonality": { "summary_en": "Seasonality is pending official-source verification.", "summary_ja": "開催シーズンは公式ソース確認後に反映する。", "status": "partial" },
+    "official_links": [{ "label_en": "HKJC official site", "label_ja": "香港ジョッキークラブ公式サイト", "source_id": "hong-kong-hkjc-home", "url": "https://www.hkjc.com/", "link_type": "official" }],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["hong-kong-hkjc-home"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": null },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Sha Tin Racecourse.",
+    "image_alt_ja": "沙田競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Sha Tin Racecourse.", "alt_ja": "沙田競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
     "id": "meydan-racecourse",
@@ -79,22 +171,27 @@
     "name_ja": "メイダン競馬場",
     "name_local": "Meydan Racecourse",
     "city": "Dubai",
+    "region": "Dubai",
     "timezone": "Asia/Dubai",
-    "racing_types": [
-      "thoroughbred-flat",
-      "arabian-racing"
-    ],
+    "racing_types": ["thoroughbred-flat", "arabian-racing"],
     "status": "active",
-    "image": {
-      "src": "",
-      "alt_en": "Planned illustrative image for Meydan Racecourse.",
-      "alt_ja": "メイダン競馬場の説明用イメージ画像予定地。",
-      "image_type": "placeholder",
-      "is_official_photo": false,
-      "note_en": "Illustrative image. Not an official venue photo.",
-      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
-      "status": "planned"
-    }
+    "surfaces": ["turf", "dirt"],
+    "direction": "unknown",
+    "course_profile": { "turf_circumference_m": null, "dirt_circumference_m": null, "home_straight_m": null, "has_inner_outer_courses": null, "has_lighting": null, "elevation_notes_en": null, "elevation_notes_ja": null, "course_notes_en": "Course profile details are pending official-source verification.", "course_notes_ja": "コース詳細は公式ソース確認後に反映する。" },
+    "distance_profile": { "turf": { "min_m": null, "max_m": null, "known_distances_m": [] }, "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] }, "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] }, "jump": { "min_m": null, "max_m": null, "known_distances_m": [] }, "harness": { "min_m": null, "max_m": null, "known_distances_m": [] }, "upcoming_conditions": [] },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [],
+    "seasonality": { "summary_en": "Seasonality is pending official-source verification.", "summary_ja": "開催シーズンは公式ソース確認後に反映する。", "status": "partial" },
+    "official_links": [{ "label_en": "Emirates Racing official site", "label_ja": "エミレーツ競馬公式サイト", "source_id": "uae-era-home", "url": "https://emiratesracing.com/", "link_type": "official" }],
+    "related_terms": ["racecourse", "thoroughbred-racing", "arabian-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["uae-era-home"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": null },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Meydan Racecourse.",
+    "image_alt_ja": "メイダン競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Meydan Racecourse.", "alt_ja": "メイダン競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
     "id": "seoul-racecourse",
@@ -104,21 +201,27 @@
     "name_ja": "ソウル競馬場",
     "name_local": "서울경마공원",
     "city": "Gwacheon",
+    "region": "Gyeonggi",
     "timezone": "Asia/Seoul",
-    "racing_types": [
-      "thoroughbred-flat"
-    ],
+    "racing_types": ["thoroughbred-flat"],
     "status": "active",
-    "image": {
-      "src": "",
-      "alt_en": "Planned illustrative image for Seoul Racecourse.",
-      "alt_ja": "ソウル競馬場の説明用イメージ画像予定地。",
-      "image_type": "placeholder",
-      "is_official_photo": false,
-      "note_en": "Illustrative image. Not an official venue photo.",
-      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
-      "status": "planned"
-    }
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": { "turf_circumference_m": null, "dirt_circumference_m": null, "home_straight_m": null, "has_inner_outer_courses": null, "has_lighting": null, "elevation_notes_en": null, "elevation_notes_ja": null, "course_notes_en": "Course profile details are pending official-source verification.", "course_notes_ja": "コース詳細は公式ソース確認後に反映する。" },
+    "distance_profile": { "turf": { "min_m": null, "max_m": null, "known_distances_m": [] }, "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] }, "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] }, "jump": { "min_m": null, "max_m": null, "known_distances_m": [] }, "harness": { "min_m": null, "max_m": null, "known_distances_m": [] }, "upcoming_conditions": [] },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [],
+    "seasonality": { "summary_en": "Seasonality is pending official-source verification.", "summary_ja": "開催シーズンは公式ソース確認後に反映する。", "status": "partial" },
+    "official_links": [],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": [],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": null },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Seoul Racecourse.",
+    "image_alt_ja": "ソウル競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Seoul Racecourse.", "alt_ja": "ソウル競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
     "id": "hipodromo-chile",
@@ -128,20 +231,26 @@
     "name_ja": "イポドロモ・チリ",
     "name_local": "Hipódromo Chile",
     "city": "Santiago",
+    "region": "Santiago",
     "timezone": "America/Santiago",
-    "racing_types": [
-      "thoroughbred-flat"
-    ],
+    "racing_types": ["thoroughbred-flat"],
     "status": "active",
-    "image": {
-      "src": "",
-      "alt_en": "Planned illustrative image for Hipódromo Chile.",
-      "alt_ja": "イポドロモ・チリの説明用イメージ画像予定地。",
-      "image_type": "placeholder",
-      "is_official_photo": false,
-      "note_en": "Illustrative image. Not an official venue photo.",
-      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
-      "status": "planned"
-    }
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": { "turf_circumference_m": null, "dirt_circumference_m": null, "home_straight_m": null, "has_inner_outer_courses": null, "has_lighting": null, "elevation_notes_en": null, "elevation_notes_ja": null, "course_notes_en": "Course profile details are pending official-source verification.", "course_notes_ja": "コース詳細は公式ソース確認後に反映する。" },
+    "distance_profile": { "turf": { "min_m": null, "max_m": null, "known_distances_m": [] }, "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] }, "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] }, "jump": { "min_m": null, "max_m": null, "known_distances_m": [] }, "harness": { "min_m": null, "max_m": null, "known_distances_m": [] }, "upcoming_conditions": [] },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [],
+    "seasonality": { "summary_en": "Seasonality is pending official-source verification.", "summary_ja": "開催シーズンは公式ソース確認後に反映する。", "status": "partial" },
+    "official_links": [],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": [],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": null },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Hipódromo Chile.",
+    "image_alt_ja": "イポドロモ・チリの説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Hipódromo Chile.", "alt_ja": "イポドロモ・チリの説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   }
 ]
