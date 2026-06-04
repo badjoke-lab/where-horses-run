@@ -32,6 +32,29 @@ const formatValue = (value: unknown) => {
   return String(value);
 };
 
+const toRecord = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
+};
+
+const firstValue = (record: unknown, keys: string[]) => {
+  const row = toRecord(record);
+  for (const key of keys) {
+    if (row[key] !== null && row[key] !== undefined && row[key] !== '') return row[key];
+  }
+  return null;
+};
+
+const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) => {
+  const parts = fields
+    .map(([label, keys]) => {
+      const value = firstValue(record, keys);
+      return value === null ? null : `${label}: ${String(value)}`;
+    })
+    .filter(Boolean);
+  return parts.length ? parts.join(' · ') : 'Details are pending formatting.';
+};
+
 const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
   if (!band) return 'Not confirmed';
   const range = band.min_m && band.max_m ? `${band.min_m}m–${band.max_m}m` : 'range not confirmed';
@@ -44,6 +67,26 @@ const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null
 const officialLinks = track.official_links ?? [];
 const relatedTerms = track.related_terms ?? [];
 const relatedSources = track.related_sources ?? [];
+const meetingFields: Array<[string, string[]]> = [
+  ['Date', ['date', 'local_date', 'meeting_date']],
+  ['First post', ['first_post', 'first_race_time', 'first_race']],
+  ['Last race', ['last_race_time', 'last_race']],
+  ['Races', ['race_count', 'races']],
+  ['Status', ['status']]
+];
+const raceConditionFields: Array<[string, string[]]> = [
+  ['Date', ['date', 'local_date']],
+  ['Race', ['race_number', 'race_no', 'race']],
+  ['Time', ['post_time', 'start_time', 'time']],
+  ['Surface', ['surface']],
+  ['Distance', ['distance', 'distance_m']],
+  ['Type', ['race_type', 'type']]
+];
+const notableRaceFields: Array<[string, string[]]> = [
+  ['Name', ['name_en', 'name', 'race_name']],
+  ['Season', ['season', 'month']],
+  ['Source', ['official_link', 'source_url', 'url']]
+];
 ---
 
 <BaseLayout title={`${track.name_en} | Racecourses`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
@@ -90,10 +133,12 @@ const relatedSources = track.related_sources ?? [];
       <h2>Upcoming meetings</h2>
       {track.schedule_summary?.upcoming_meetings?.length ? (
         <ul>
-          {track.schedule_summary.upcoming_meetings.map((meeting) => <li>{JSON.stringify(meeting)}</li>)}
+          {track.schedule_summary.upcoming_meetings.map((meeting) => (
+            <li>{formatRecordFields(meeting, meetingFields)}</li>
+          ))}
         </ul>
       ) : (
-        <p>No verified upcoming meeting rows are listed for this racecourse yet.</p>
+        <p>No verified upcoming meeting rows are listed for this racecourse yet. Check the official schedule link when available.</p>
       )}
       <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
     </article>
@@ -102,7 +147,9 @@ const relatedSources = track.related_sources ?? [];
       <h2>Upcoming race conditions</h2>
       {track.distance_profile?.upcoming_conditions?.length ? (
         <ul>
-          {track.distance_profile.upcoming_conditions.map((condition) => <li>{JSON.stringify(condition)}</li>)}
+          {track.distance_profile.upcoming_conditions.map((condition) => (
+            <li>{formatRecordFields(condition, raceConditionFields)}</li>
+          ))}
         </ul>
       ) : (
         <p>No verified race-condition rows are listed yet. Entries, odds, results, payouts, and full racecards are not republished here.</p>
@@ -136,9 +183,13 @@ const relatedSources = track.related_sources ?? [];
     <article class="card">
       <h2>Notable races</h2>
       {track.notable_races?.length ? (
-        <ul>{track.notable_races.map((race) => <li>{JSON.stringify(race)}</li>)}</ul>
+        <ul>
+          {track.notable_races.map((race) => (
+            <li>{formatRecordFields(race, notableRaceFields)}</li>
+          ))}
+        </ul>
       ) : (
-        <p>No notable-race entries are listed yet.</p>
+        <p>No notable-race entries are listed yet. Future entries should link to official or source-safe pages.</p>
       )}
     </article>
 
