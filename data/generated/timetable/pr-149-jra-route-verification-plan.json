@@ -1,0 +1,106 @@
+{
+  "schema_version": "pr-149-jra-route-verification-plan-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Define the live verification plan for official JRA source candidates after the JRA inventory PR. This file is not a calendar input and does not promote JRA.",
+  "source_inventory": "data/generated/timetable/pr-146-jra-official-source-inventory.json",
+  "context": {
+    "hkjc_status": "paused_at_c",
+    "primary_candidate": "JRA",
+    "fallback_candidate": "NAR"
+  },
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "current_rank": "not_promoted_by_this_pr",
+    "target_rank_after_verified_route": "B or B+",
+    "time_zone": "Asia/Tokyo"
+  },
+  "environment_status": {
+    "assistant_web_status": "not_reliable_for_jra_pages",
+    "reason": "JRA pages were not reliably parseable in the current assistant web environment during the inventory step.",
+    "required_executor": "Codex or local browser DevTools if normal fetch remains unreliable"
+  },
+  "verification_targets": [
+    {
+      "target_id": "fixture_calendar",
+      "candidate_source_ids": ["jra_calendar_candidate", "jra_keiba_top"],
+      "goal": "Find the official page or route that lists JRA fixture dates for June 2026.",
+      "required_fields_if_found": ["meeting_date", "racecourse", "source_url"],
+      "promotion_allowed": false
+    },
+    {
+      "target_id": "one_meeting_race_list",
+      "candidate_source_ids": ["jra_jradb_entry_candidate", "jra_racecard_candidate"],
+      "goal": "Find whether one official JRA meeting page exposes all race rows for a selected meeting.",
+      "required_fields_if_found": ["meeting_date", "racecourse", "race_number", "source_url"],
+      "promotion_allowed": false
+    },
+    {
+      "target_id": "one_meeting_race_times",
+      "candidate_source_ids": ["jra_jradb_entry_candidate", "jra_racecard_candidate", "jra_result_candidate"],
+      "goal": "Find whether every race row in one selected JRA meeting exposes race_number and race_time from official sources.",
+      "required_fields_if_found": ["meeting_date", "racecourse", "race_number", "race_time", "race_source_url"],
+      "promotion_allowed": false
+    },
+    {
+      "target_id": "route_parameters",
+      "candidate_source_ids": ["jra_jradb_entry_candidate", "jra_racecard_candidate", "jra_result_candidate"],
+      "goal": "Discover the official query or path parameters needed for date, racecourse, meeting number, and race number.",
+      "required_fields_if_found": ["route_pattern", "parameter_names", "source_url"],
+      "promotion_allowed": false
+    }
+  ],
+  "inspection_method": {
+    "normal_fetch_first": true,
+    "codex_or_devtools_if_needed": true,
+    "checks": [
+      "Open candidate official JRA pages from PR-146.",
+      "Identify fixture calendar or schedule routes.",
+      "Identify race list or racecard routes for one selected meeting.",
+      "Inspect DOM, linked scripts, and network requests only for meeting/race time verification.",
+      "Record only official source URLs and route metadata.",
+      "Do not add race-time rows until PR-148 inspection result."
+    ]
+  },
+  "expected_pr148_result_schema": {
+    "schema_version": "pr-148-jra-one-meeting-inspection-result-v0",
+    "inspection_status": "verified_full_meeting | partial | not_verified",
+    "time_zone": "Asia/Tokyo",
+    "source_route_type": "calendar_page | racecard_page | jradb_route | network_payload | mixed | not_found",
+    "meeting": {
+      "meeting_date": "YYYY-MM-DD",
+      "racecourse": "official JRA racecourse name or null",
+      "meeting_id_or_code": "official code if found, otherwise null",
+      "source_url": "official JRA URL or null"
+    },
+    "route_pattern": null,
+    "races": [],
+    "reason_not_verified": null,
+    "inspector_notes": []
+  },
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "promote_nar_in_this_pr": false,
+    "data_rows_added": false,
+    "snapshot_added": false,
+    "rank_change_added": false
+  },
+  "forward_schedule": [
+    { "planned_pr": "PR-148", "topic": "JRA one-meeting inspection result", "goal": "Record live verification result for one JRA meeting." },
+    { "planned_pr": "PR-149A", "topic": "JRA one-meeting snapshot", "goal": "If PR-148 succeeds, create a one-meeting snapshot from verified rows." },
+    { "planned_pr": "PR-149B", "topic": "JRA pause and NAR transition", "goal": "If PR-148 fails, pause JRA and move to NAR inventory." },
+    { "planned_pr": "PR-150A", "topic": "JRA wider route status", "goal": "If PR-148 succeeds, test wider coverage before promotion." },
+    { "planned_pr": "PR-151A", "topic": "JRA wider snapshot or no-promotion status", "goal": "Create wider data only if source coverage is complete." },
+    { "planned_pr": "PR-152A", "topic": "JRA promotion gate", "goal": "Promote JRA only if PR-132 rank rules are satisfied." }
+  ],
+  "safety_rules": [
+    "Do not promote JRA in this PR.",
+    "Do not add JRA race-time rows in this PR.",
+    "Do not infer first_race_time without source-verified rows.",
+    "Do not infer last_race_time without source-verified rows.",
+    "Do not infer race_count without a complete source-verified list.",
+    "Do not assume contiguous numbering.",
+    "Do not add public A-rank detail UI during this route work."
+  ]
+}
