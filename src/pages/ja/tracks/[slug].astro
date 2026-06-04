@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getRacecourseBySlug, getRacecourses } from '../../../lib/data';
+import {
+  getCountries,
+  getGlossaryEntries,
+  getRacecourseBySlug,
+  getRacecourses,
+  siteData
+} from '../../../lib/data';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -12,26 +18,188 @@ const track = getRacecourseBySlug(slug ?? '');
 if (!track) {
   return Astro.redirect('/ja/tracks/');
 }
+
+const countries = getCountries();
+const country = countries.find((entry) => entry.id === track.country_id);
+const countryHref = country ? `/ja/countries/${country.slug}/` : '/ja/countries/';
+const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
+const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+
+const formatValue = (value: unknown) => {
+  if (value === null || value === undefined || value === '') return '未確認';
+  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '未確認';
+  return String(value);
+};
+
+const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
+  if (!band) return '未確認';
+  const range = band.min_m && band.max_m ? `${band.min_m}m〜${band.max_m}m` : '距離範囲未確認';
+  const known = band.known_distances_m && band.known_distances_m.length > 0
+    ? `確認済み距離: ${band.known_distances_m.map((distance) => `${distance}m`).join(', ')}`
+    : '確認済み距離: 未確認';
+  return `${range}。${known}`;
+};
+
+const officialLinks = track.official_links ?? [];
+const relatedTerms = track.related_terms ?? [];
+const relatedSources = track.related_sources ?? [];
 ---
 
-<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の静的プロフィールです。`} lang="ja">
+<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の開催予定状況、コース特徴、公式リンク、関連用語をまとめた競馬場ページです。`} lang="ja">
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Track profile</p>
     <h1 id="page-title">{track.name_ja}</h1>
-    <p class="hero__summary">{track.name_ja} の静的プロフィールです。</p>
+    <p class="hero__summary">
+      {track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}
+      {country ? country.name_ja : track.country_id} / {track.city}
+    </p>
   </section>
 
-  <section class="section-grid" aria-label="競馬場詳細">
+  <section class="section-grid" aria-label="競馬場概要">
     <article class="card">
-      <h2>概要</h2>
-      <p><strong>国ID:</strong> {track.country_id}</p>
+      <h2>基本情報</h2>
+      <p><strong>国:</strong> <a href={countryHref}>{country ? country.name_ja : track.country_id}</a></p>
       <p><strong>都市:</strong> {track.city}</p>
+      <p><strong>地域:</strong> {formatValue(track.region)}</p>
       <p><strong>タイムゾーン:</strong> {track.timezone}</p>
       <p><strong>状態:</strong> {track.status}</p>
     </article>
+
     <article class="card">
       <h2>競馬種別</h2>
-      <p>{track.racing_types.join(', ')}</p>
+      <ul>
+        {track.racing_types.map((type) => {
+          const term = glossaryById.get(type) ?? glossaryById.get(type.replace('thoroughbred-flat', 'thoroughbred-racing'));
+          return <li>{term ? <a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> : type}</li>;
+        })}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>今日の開催状況</h2>
+      <p><strong>状態:</strong> {track.schedule_summary?.today_status ?? 'unknown'}</p>
+      <p><strong>次回開催:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
+      <p><strong>予定データ:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+      <p>最終確認は公式ソースで行ってください。</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="直近予定とレース条件">
+    <article class="card">
+      <h2>直近の開催予定</h2>
+      {track.schedule_summary?.upcoming_meetings?.length ? (
+        <ul>
+          {track.schedule_summary.upcoming_meetings.map((meeting) => <li>{JSON.stringify(meeting)}</li>)}
+        </ul>
+      ) : (
+        <p>この競馬場の確認済み開催予定行はまだありません。</p>
+      )}
+      <p><strong>最終確認日:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
+    </article>
+
+    <article class="card">
+      <h2>直近開催のレース条件</h2>
+      {track.distance_profile?.upcoming_conditions?.length ? (
+        <ul>
+          {track.distance_profile.upcoming_conditions.map((condition) => <li>{JSON.stringify(condition)}</li>)}
+        </ul>
+      ) : (
+        <p>確認済みのレース条件行はまだありません。出走表・オッズ・結果・払戻・全文レースカードはここでは再掲載しません。</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="コースと距離プロフィール">
+    <article class="card">
+      <h2>コース特徴</h2>
+      <p><strong>馬場:</strong> {formatValue(track.surfaces)}</p>
+      <p><strong>回り:</strong> {formatValue(track.direction)}</p>
+      <p><strong>芝1周:</strong> {track.course_profile?.turf_circumference_m ? `${track.course_profile.turf_circumference_m}m` : '未確認'}</p>
+      <p><strong>ダート1周:</strong> {track.course_profile?.dirt_circumference_m ? `${track.course_profile.dirt_circumference_m}m` : '未確認'}</p>
+      <p><strong>直線:</strong> {track.course_profile?.home_straight_m ? `${track.course_profile.home_straight_m}m` : '未確認'}</p>
+      <p><strong>内外回り:</strong> {track.course_profile?.has_inner_outer_courses === null ? '未確認' : String(track.course_profile?.has_inner_outer_courses)}</p>
+      <p>{track.course_profile?.course_notes_ja ?? 'コースメモは公式ソース確認後に反映します。'}</p>
+    </article>
+
+    <article class="card">
+      <h2>距離プロフィール</h2>
+      <p><strong>芝:</strong> {formatDistanceBand(track.distance_profile?.turf)}</p>
+      <p><strong>ダート:</strong> {formatDistanceBand(track.distance_profile?.dirt)}</p>
+      <p><strong>オールウェザー:</strong> {formatDistanceBand(track.distance_profile?.all_weather)}</p>
+      <p><strong>障害:</strong> {formatDistanceBand(track.distance_profile?.jump)}</p>
+      <p><strong>ハーネス:</strong> {formatDistanceBand(track.distance_profile?.harness)}</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="代表レース・開催シーズン・公式リンク">
+    <article class="card">
+      <h2>代表レース</h2>
+      {track.notable_races?.length ? (
+        <ul>{track.notable_races.map((race) => <li>{JSON.stringify(race)}</li>)}</ul>
+      ) : (
+        <p>代表レース情報はまだ登録されていません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>開催シーズン</h2>
+      <p>{track.seasonality?.summary_ja ?? '開催シーズンは公式ソース確認後に反映します。'}</p>
+      <p><strong>状態:</strong> {track.seasonality?.status ?? 'partial'}</p>
+    </article>
+
+    <article class="card">
+      <h2>公式リンク</h2>
+      {officialLinks.length ? (
+        <ul>
+          {officialLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label_ja}</a>
+              <br />
+              <span>種別: {link.link_type} / Source: {link.source_id}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>この競馬場に紐づく公式リンクはまだありません。</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="データ状態と関連ページ">
+    <article class="card">
+      <h2>データ状態</h2>
+      <p><strong>コース:</strong> {track.data_status?.course_profile ?? 'partial'}</p>
+      <p><strong>予定:</strong> {track.data_status?.schedule ?? 'official-link-only'}</p>
+      <p><strong>ソース導線:</strong> {track.data_status?.source_status ?? 'link_first'}</p>
+      <p><strong>最終確認:</strong> {formatValue(track.data_status?.last_checked)}</p>
+    </article>
+
+    <article class="card">
+      <h2>関連用語</h2>
+      {relatedTerms.length ? (
+        <ul>
+          {relatedTerms.map((termId) => {
+            const term = glossaryById.get(termId);
+            return <li>{term ? <a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> : termId}</li>;
+          })}
+        </ul>
+      ) : (
+        <p>関連用語はまだありません。</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>関連ソース</h2>
+      {relatedSources.length ? (
+        <ul>
+          {relatedSources.map((sourceId) => {
+            const source = sourcesById.get(sourceId);
+            return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
+          })}
+        </ul>
+      ) : (
+        <p>関連ソースはまだありません。</p>
+      )}
     </article>
   </section>
 
