@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getRacecourses, getCountryBySlug, getCountries } from '../../lib/data';
+import { getRacecourses, getCountries } from '../../lib/data';
+import { getRacingTypeById } from '../../lib/racingTypes';
 
 const tracks = getRacecourses();
 const countries = getCountries();
@@ -8,24 +9,31 @@ const countryNames = new Map(countries.map((country) => [country.id, country.nam
 ---
 
 <BaseLayout
-  title="Tracks | Where Horses Run"
-  description="Browse racecourses and track entries with country, racing type, and source context."
+  title="Racecourses | Where Horses Run"
+  description="Browse racecourses with country, racing type, course profile, and source context."
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Racecourses & tracks</p>
-    <h1 id="page-title">Tracks</h1>
+    <p class="hero__eyebrow">Racecourses</p>
+    <h1 id="page-title">Racecourses</h1>
     <p class="hero__summary">
-      Browse racecourse entries. Each track page shows the current static profile and links back to the country context.
+      Browse racecourse entries. Each racecourse page shows schedule status, course profile fields, official links, related terms, and source routing.
     </p>
   </section>
 
-  <section class="section-grid" aria-label="Track list">
+  <section class="section-grid" aria-label="Racecourse list">
     {tracks.map((track) => (
       <article class="card">
         <h2><a href={`/tracks/${track.slug}/`}>{track.name_en}</a></h2>
         <p>{countryNames.get(track.country_id) ?? track.country_id}</p>
         <p><strong>City:</strong> {track.city}</p>
-        <p><strong>Types:</strong> {track.racing_types.join(', ')}</p>
+        <p><strong>Surfaces:</strong> {track.surfaces.length ? track.surfaces.join(', ') : 'Not confirmed'}</p>
+        <p><strong>Racing types:</strong></p>
+        <ul>
+          {track.racing_types.map((typeId) => {
+            const type = getRacingTypeById(typeId);
+            return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
+          })}
+        </ul>
       </article>
     ))}
   </section>
