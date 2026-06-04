@@ -1,0 +1,100 @@
+{
+  "schema_version": "pr-151-jra-normal-fetch-inspection-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Record that the normal assistant web fetch path could not verify a JRA one-meeting race-time result, and define the Codex/local browser DevTools task required before any JRA snapshot. This file is not a calendar input and does not promote JRA.",
+  "source_plan": "data/generated/timetable/pr-149-jra-route-verification-plan.json",
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "current_rank": "not_promoted_by_this_pr",
+    "target_rank_after_verified_route": "B or B+",
+    "time_zone": "Asia/Tokyo"
+  },
+  "normal_fetch_result": {
+    "inspection_status": "not_verified",
+    "executor": "assistant_web_open",
+    "checked_urls": [
+      "https://www.jra.go.jp/",
+      "https://www.jra.go.jp/keiba/",
+      "https://www.jra.go.jp/keiba/calendar/",
+      "https://www.jra.go.jp/JRADB/",
+      "https://www.jra.go.jp/JRADB/accessS.html"
+    ],
+    "observed_issue": "JRA pages were not reliably parseable through assistant web fetch; several official URLs returned Unicode decoding errors or could not be safely opened from the current search context.",
+    "verified_meeting": null,
+    "races": [],
+    "reason_not_verified": "No source-verified JRA race_number/race_time rows were obtained through normal assistant web fetch."
+  },
+  "required_codex_or_devtools_task": {
+    "task_title": "Inspect one official JRA meeting for race_number and race_time rows",
+    "target_sources": [
+      "https://www.jra.go.jp/keiba/",
+      "https://www.jra.go.jp/keiba/calendar/",
+      "https://www.jra.go.jp/JRADB/",
+      "https://www.jra.go.jp/JRADB/accessS.html",
+      "https://www.jra.go.jp/JRADB/accessR.html"
+    ],
+    "goal": "Find whether one official JRA meeting page or route exposes every race_number and race_time from official JRA resources.",
+    "allowed_fields": [
+      "inspection_status",
+      "time_zone",
+      "source_route_type",
+      "meeting_date",
+      "racecourse",
+      "meeting_id_or_code",
+      "source_url",
+      "route_pattern",
+      "race_number",
+      "race_time",
+      "race_source_url",
+      "reason_not_verified",
+      "inspector_notes"
+    ],
+    "do_not_collect": [
+      "participant_details",
+      "price_like_data",
+      "forecasts",
+      "recommendations",
+      "non_time_detail_fields"
+    ],
+    "do_not_infer": [
+      "first_race_time",
+      "last_race_time",
+      "race_count",
+      "contiguous_race_number_range"
+    ],
+    "expected_result_schema": {
+      "schema_version": "pr-152-jra-one-meeting-codex-result-v0",
+      "inspection_status": "verified_full_meeting | partial | not_verified",
+      "time_zone": "Asia/Tokyo",
+      "source_route_type": "calendar_page | racecard_page | jradb_route | network_payload | mixed | not_found",
+      "meeting": {
+        "meeting_date": "YYYY-MM-DD or null",
+        "racecourse": "official JRA racecourse name or null",
+        "meeting_id_or_code": "official code if found, otherwise null",
+        "source_url": "official JRA URL or null"
+      },
+      "route_pattern": null,
+      "races": [],
+      "reason_not_verified": null,
+      "inspector_notes": []
+    }
+  },
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "promote_nar_in_this_pr": false,
+    "data_rows_added": false,
+    "snapshot_added": false,
+    "rank_change_added": false,
+    "next_required_step": "Run the Codex/local browser DevTools task and commit its result before any JRA snapshot."
+  },
+  "forward_schedule": [
+    { "planned_pr": "PR-152", "topic": "JRA Codex or DevTools one-meeting result", "goal": "Record user-provided or tool-provided browser inspection result for one JRA meeting." },
+    { "planned_pr": "PR-153A", "topic": "JRA one-meeting snapshot", "goal": "If PR-152 succeeds, create a one-meeting snapshot from verified rows." },
+    { "planned_pr": "PR-153B", "topic": "JRA pause and NAR transition", "goal": "If PR-152 fails, pause JRA and move to NAR inventory." },
+    { "planned_pr": "PR-154A", "topic": "JRA wider route status", "goal": "If PR-152 succeeds, test wider coverage before promotion." },
+    { "planned_pr": "PR-155A", "topic": "JRA wider snapshot or no-promotion status", "goal": "Create wider data only if source coverage is complete." },
+    { "planned_pr": "PR-156A", "topic": "JRA promotion gate", "goal": "Promote JRA only if PR-132 rank rules are satisfied." }
+  ]
+}
