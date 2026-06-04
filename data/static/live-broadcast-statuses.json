@@ -1,0 +1,89 @@
+{
+  "schema_version": "live-broadcast-statuses-v0",
+  "status_values": [
+    {
+      "id": "official_free",
+      "label": "Official free",
+      "summary": "Official live or replay access appears available without an account.",
+      "usable_source": true
+    },
+    {
+      "id": "official_account",
+      "label": "Official account",
+      "summary": "Official live or replay access appears available with a non-betting account login.",
+      "usable_source": true
+    },
+    {
+      "id": "betting_account",
+      "label": "Betting account",
+      "summary": "Access appears tied to a betting, wagering, tote, or deposit account.",
+      "usable_source": true
+    },
+    {
+      "id": "tv_pay",
+      "label": "Paid TV",
+      "summary": "Access appears tied to a paid television or subscription package.",
+      "usable_source": true
+    },
+    {
+      "id": "broadcast_partner",
+      "label": "Broadcast partner",
+      "summary": "Access appears provided by an official broadcast or streaming partner.",
+      "usable_source": true
+    },
+    {
+      "id": "replay_available",
+      "label": "Replay available",
+      "summary": "Official replay pages appear available.",
+      "usable_source": true
+    },
+    {
+      "id": "social_stream",
+      "label": "Social stream",
+      "summary": "Official or official-partner social stream appears available.",
+      "usable_source": true
+    },
+    {
+      "id": "racecourse_only",
+      "label": "Racecourse only",
+      "summary": "Viewing appears available only through on-course or venue channels.",
+      "usable_source": true
+    },
+    {
+      "id": "event_only",
+      "label": "Event only",
+      "summary": "Availability appears limited to specific events, seasons, or special broadcasts.",
+      "usable_source": true
+    },
+    {
+      "id": "geo_restricted",
+      "label": "Geo-restricted",
+      "summary": "Official access appears restricted by country or region.",
+      "usable_source": true
+    },
+    {
+      "id": "not_verified",
+      "label": "Not verified",
+      "summary": "No sufficient official evidence has been checked yet.",
+      "usable_source": false
+    },
+    {
+      "id": "none_found",
+      "label": "None found",
+      "summary": "Official research found no usable official live or replay source.",
+      "usable_source": false
+    },
+    {
+      "id": "archive_only",
+      "label": "Archive only",
+      "summary": "Only archived or historical official video appears available.",
+      "usable_source": true
+    },
+    {
+      "id": "unsafe_unofficial",
+      "label": "Unsafe unofficial",
+      "summary": "Unofficial video was found but must not be displayed as a usable source.",
+      "usable_source": false
+    }
+  ]
+}
