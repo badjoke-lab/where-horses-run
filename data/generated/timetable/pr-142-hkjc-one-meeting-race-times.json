@@ -1,0 +1,81 @@
+{
+  "schema_version": "pr-142-hkjc-one-meeting-race-times-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Create a one-meeting source-verified HKJC race-time snapshot from the PR-141 DevTools/Codex inspection result. This file verifies one meeting only and is not a full-month HKJC promotion.",
+  "source_result": "data/generated/timetable/pr-141-hkjc-devtools-inspection-result.json",
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank_after_full_month_verification": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "meeting": {
+    "meeting_date": "2026-06-03",
+    "racecourse": "Happy Valley",
+    "fixture_code": "HV",
+    "source_route_type": "racecard_dom_links",
+    "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03",
+    "request_url_pattern": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse=HV&racedate=2026%2F06%2F03"
+  },
+  "races": [
+    {
+      "race_number": 1,
+      "race_time": "18:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=1&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 2,
+      "race_time": "19:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=2&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 3,
+      "race_time": "19:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=3&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 4,
+      "race_time": "20:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=4&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 5,
+      "race_time": "20:40",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 6,
+      "race_time": "21:10",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=6&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 7,
+      "race_time": "21:45",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=7&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 8,
+      "race_time": "22:15",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=8&Racecourse=HV&racedate=2026%2F06%2F03"
+    },
+    {
+      "race_number": 9,
+      "race_time": "22:50",
+      "race_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=9&Racecourse=HV&racedate=2026%2F06%2F03"
+    }
+  ],
+  "derived_from_verified_rows": {
+    "first_race_time": "18:40",
+    "last_race_time": "22:50",
+    "race_count": 9,
+    "derivation_rule": "Derived only from the source-verified race rows in this one-meeting snapshot. last_race_time is the final race start time, not meeting_end_time."
+  },
+  "promotion_decision": {
+    "promote_hkjc_in_this_pr": false,
+    "verified_scope": "one_meeting_only",
+    "do_not_promote_full_month_yet": true,
+    "next_required_check": "Verify that the same official route works for every June 2026 HKJC meeting before any full-month B+ promotion."
+  }
+}
