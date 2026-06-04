@@ -22,6 +22,35 @@ const requiredFiles = [
 const generatedStatusValues = new Set(['placeholder', 'ok', 'partial', 'stale', 'failed', 'unknown']);
 const sourceStatusValues = new Set(['not_started', 'ok', 'partial', 'stale', 'failed', 'skipped', 'unknown']);
 const meetingStatusValues = new Set(['placeholder', 'ok', 'partial', 'empty', 'stale', 'failed', 'skipped', 'unknown']);
+const racecourseStatusValues = new Set(['active', 'seasonal', 'closed', 'unknown', 'under_review']);
+const racecourseSurfaceValues = new Set([
+  'turf',
+  'dirt',
+  'all-weather',
+  'sand',
+  'harness-track',
+  'jump-course',
+  'banei-straight-track'
+]);
+const racecourseDirectionValues = new Set(['left-handed', 'right-handed', 'straight', 'unknown']);
+const racecourseRacingTypeValues = new Set([
+  'thoroughbred-flat',
+  'jump-racing',
+  'harness-racing',
+  'trotting',
+  'pacing',
+  'arabian-racing',
+  'quarter-horse-racing',
+  'banei-racing'
+]);
+const racecourseScheduleTodayStatusValues = new Set(['racing_today', 'no_racing_today', 'unknown']);
+const racecourseScheduleStatusValues = new Set(['verified', 'partial', 'placeholder', 'stale', 'failed', 'manual', 'official-link-only', 'unknown']);
+const racecoursePageDataStatusValues = new Set(['verified', 'partial', 'placeholder', 'stale', 'failed', 'manual', 'official-link-only', 'unknown']);
+const racecourseSourceRoutingStatusValues = new Set(['link_first', 'verified', 'partial', 'placeholder', 'stale', 'failed', 'manual', 'unknown']);
+const racecourseImageStatusValues = new Set(['planned', 'pending', 'available', 'placeholder', 'none']);
+const racecourseCourseDiagramStatusValues = new Set(['pending', 'planned', 'available', 'none']);
+const racecourseSeasonalityStatusValues = new Set(['verified', 'partial', 'placeholder', 'unknown']);
+const racecourseOfficialLinkTypeValues = new Set(['official', 'schedule', 'racecard', 'visitor', 'source']);
 
 function fail(message) {
   errors.push(message);
@@ -50,6 +79,11 @@ function requireString(value, label) {
   return true;
 }
 
+function requireNullableString(value, label) {
+  if (value === null) return true;
+  return requireString(value, label);
+}
+
 function requireArray(value, label) {
   if (!Array.isArray(value)) {
     fail(`${label}: expected array`);
@@ -73,6 +107,36 @@ function requireAllowed(value, allowed, label) {
   }
 }
 
+function requireNullableNumber(value, label) {
+  if (value === null) return true;
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    fail(`${label}: expected number or null`);
+  }
+}
+
+function requireNullableBoolean(value, label) {
+  if (value === null) return true;
+  if (typeof value !== 'boolean') {
+    fail(`${label}: expected boolean or null`);
+  }
+}
+
+function validateStringArrayValues(value, allowed, label) {
+  if (!requireArray(value, label)) return;
+  for (const item of value) {
+    if (!requireString(item, `${label}:entry`)) continue;
+    if (!allowed.has(item)) fail(`${label}: unexpected value '${item}'`);
+  }
+}
+
+function validateIdRefs(value, knownIds, label) {
+  if (!requireArray(value, label)) return;
+  for (const item of value) {
+    if (!requireString(item, `${label}:entry`)) continue;
+    if (!knownIds.has(item)) fail(`${label}: unknown id '${item}'`);
+  }
+}
+
 function requireIsoDate(value, label) {
   if (!requireString(value, label)) return;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -83,6 +147,11 @@ function requireIsoDate(value, label) {
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
     fail(`${label}: invalid calendar date`);
   }
+}
+
+function requireNullableIsoDate(value, label) {
+  if (value === null) return true;
+  requireIsoDate(value, label);
 }
 
 function requireIsoDateTime(value, label) {
@@ -131,18 +200,113 @@ function validateCountries(rows) {
   return ids;
 }
 
-function validateRacecourses(rows, countryIds) {
+function validateCourseProfile(value, label) {
+  if (!requireObject(value, label)) return;
+  for (const key of ['turf_circumference_m', 'dirt_circumference_m', 'home_straight_m']) {
+    requireNullableNumber(value[key], `${label}.${key}`);
+  }
+  for (const key of ['has_inner_outer_courses', 'has_lighting']) {
+    requireNullableBoolean(value[key], `${label}.${key}`);
+  }
+  for (const key of ['elevation_notes_en', 'elevation_notes_ja', 'course_notes_en', 'course_notes_ja']) {
+    requireNullableString(value[key], `${label}.${key}`);
+  }
+}
+
+function validateDistanceBand(value, label) {
+  if (!requireObject(value, label)) return;
+  requireNullableNumber(value.min_m, `${label}.min_m`);
+  requireNullableNumber(value.max_m, `${label}.max_m`);
+  if (
+    typeof value.min_m === 'number' &&
+    typeof value.max_m === 'number' &&
+    value.min_m > value.max_m
+  ) {
+    fail(`${label}: min_m must be before or equal to max_m`);
+  }
+  if (!requireArray(value.known_distances_m, `${label}.known_distances_m`)) return;
+  for (const distance of value.known_distances_m) {
+    if (typeof distance !== 'number' || !Number.isFinite(distance)) {
+      fail(`${label}.known_distances_m: expected numeric distance entries`);
+    }
+  }
+}
+
+function validateDistanceProfile(value, label) {
+  if (!requireObject(value, label)) return;
+  for (const key of ['turf', 'dirt', 'all_weather', 'jump', 'harness']) {
+    validateDistanceBand(value[key], `${label}.${key}`);
+  }
+  requireArray(value.upcoming_conditions, `${label}.upcoming_conditions`);
+}
+
+function validateRacecourseScheduleSummary(value, label) {
+  if (!requireObject(value, label)) return;
+  requireAllowed(value.today_status, racecourseScheduleTodayStatusValues, `${label}.today_status`);
+  requireNullableIsoDate(value.next_meeting_date, `${label}.next_meeting_date`);
+  requireArray(value.upcoming_meetings, `${label}.upcoming_meetings`);
+  requireAllowed(value.status, racecourseScheduleStatusValues, `${label}.status`);
+  requireNullableIsoDate(value.last_checked, `${label}.last_checked`);
+}
+
+function validateRacecourseSeasonality(value, label) {
+  if (!requireObject(value, label)) return;
+  requireString(value.summary_en, `${label}.summary_en`);
+  requireString(value.summary_ja, `${label}.summary_ja`);
+  requireAllowed(value.status, racecourseSeasonalityStatusValues, `${label}.status`);
+}
+
+function validateRacecourseOfficialLinks(value, label, sourceIds) {
+  if (!requireArray(value, label)) return;
+  for (const row of value) {
+    const rowLabel = `${label}:${row && row.source_id ? row.source_id : 'unknown'}`;
+    if (!requireObject(row, rowLabel)) continue;
+    requireString(row.label_en, `${rowLabel}.label_en`);
+    requireString(row.label_ja, `${rowLabel}.label_ja`);
+    requireString(row.source_id, `${rowLabel}.source_id`);
+    if (row.source_id && !sourceIds.has(row.source_id)) fail(`${rowLabel}.source_id: unknown source '${row.source_id}'`);
+    requireUrl(row.url, `${rowLabel}.url`);
+    requireAllowed(row.link_type, racecourseOfficialLinkTypeValues, `${rowLabel}.link_type`);
+  }
+}
+
+function validateRacecourseDataStatus(value, label) {
+  if (!requireObject(value, label)) return;
+  requireAllowed(value.course_profile, racecoursePageDataStatusValues, `${label}.course_profile`);
+  requireAllowed(value.schedule, racecoursePageDataStatusValues, `${label}.schedule`);
+  requireAllowed(value.source_status, racecourseSourceRoutingStatusValues, `${label}.source_status`);
+  requireNullableIsoDate(value.last_checked, `${label}.last_checked`);
+}
+
+function validateRacecourses(rows, refs) {
   const ids = requireUniqueIds(rows, 'racecourses');
   for (const row of rows || []) {
     if (!row || typeof row !== 'object') continue;
     const label = `racecourses:${row.id || 'unknown'}`;
-    for (const key of ['slug', 'country_id', 'name_en', 'name_ja', 'city', 'timezone', 'status']) {
+    for (const key of ['slug', 'country_id', 'name_en', 'name_ja', 'city', 'region', 'timezone', 'status']) {
       requireString(row[key], `${label}.${key}`);
     }
-    if (row.country_id && !countryIds.has(row.country_id)) {
+    requireAllowed(row.status, racecourseStatusValues, `${label}.status`);
+    if (row.country_id && !refs.countryIds.has(row.country_id)) {
       fail(`${label}.country_id: unknown country '${row.country_id}'`);
     }
-    requireArray(row.racing_types, `${label}.racing_types`);
+    validateStringArrayValues(row.racing_types, racecourseRacingTypeValues, `${label}.racing_types`);
+    validateStringArrayValues(row.surfaces, racecourseSurfaceValues, `${label}.surfaces`);
+    requireAllowed(row.direction, racecourseDirectionValues, `${label}.direction`);
+    validateCourseProfile(row.course_profile, `${label}.course_profile`);
+    validateDistanceProfile(row.distance_profile, `${label}.distance_profile`);
+    validateRacecourseScheduleSummary(row.schedule_summary, `${label}.schedule_summary`);
+    requireArray(row.notable_races, `${label}.notable_races`);
+    validateRacecourseSeasonality(row.seasonality, `${label}.seasonality`);
+    validateRacecourseOfficialLinks(row.official_links, `${label}.official_links`, refs.sourceIds);
+    validateIdRefs(row.related_terms, refs.glossaryIds, `${label}.related_terms`);
+    validateIdRefs(row.related_sources, refs.sourceIds, `${label}.related_sources`);
+    validateRacecourseDataStatus(row.data_status, `${label}.data_status`);
+    requireAllowed(row.image_status, racecourseImageStatusValues, `${label}.image_status`);
+    requireNullableString(row.image_path, `${label}.image_path`);
+    requireString(row.image_alt_en, `${label}.image_alt_en`);
+    requireString(row.image_alt_ja, `${label}.image_alt_ja`);
+    requireAllowed(row.course_diagram_status, racecourseCourseDiagramStatusValues, `${label}.course_diagram_status`);
     if (row.image) {
       requireObject(row.image, `${label}.image`);
       requireString(row.image.alt_en, `${label}.image.alt_en`);
@@ -173,7 +337,7 @@ function validateSources(rows, countryIds) {
 }
 
 function validateGlossary(rows) {
-  requireUniqueIds(rows, 'glossary');
+  const ids = requireUniqueIds(rows, 'glossary');
   for (const row of rows || []) {
     if (!row || typeof row !== 'object') continue;
     const label = `glossary:${row.id || 'unknown'}`;
@@ -181,6 +345,7 @@ function validateGlossary(rows) {
       requireString(row[key], `${label}.${key}`);
     }
   }
+  return ids;
 }
 
 function validateArchive(rows) {
@@ -306,9 +471,9 @@ function validateFetchStatus(value, label, refs) {
 const data = Object.fromEntries(requiredFiles.map((file) => [file, readJson(file)]));
 
 const countryIds = validateCountries(data['data/static/countries.json']);
-const racecourseIds = validateRacecourses(data['data/static/racecourses.json'], countryIds);
 const sourceIds = validateSources(data['data/static/sources.json'], countryIds);
-validateGlossary(data['data/static/glossary.json']);
+const glossaryIds = validateGlossary(data['data/static/glossary.json']);
+const racecourseIds = validateRacecourses(data['data/static/racecourses.json'], { countryIds, sourceIds, glossaryIds });
 validateArchive(data['data/static/archive.json']);
 requireObject(data['data/static/i18n/en.json'], 'i18n/en');
 requireObject(data['data/static/i18n/ja.json'], 'i18n/ja');
