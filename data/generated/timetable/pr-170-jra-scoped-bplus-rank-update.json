@@ -1,0 +1,55 @@
+{
+  "schema_version": "pr-170-jra-scoped-bplus-rank-update-v0",
+  "updated_at": "2026-06-05",
+  "purpose": "Reflect the PR-169 promotion gate result as a scoped B+ rank update for the verified JRA snapshot scope only. This overlay does not claim full-month coverage, June 2026 coverage, or A-rank status.",
+  "source_gate": "data/generated/timetable/pr-168-jra-promotion-gate.json",
+  "source_snapshot": "data/generated/timetable/pr-163-jra-wider-snapshot.json",
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "time_zone": "Asia/Tokyo"
+  },
+  "rank_update": {
+    "rank": "B+",
+    "scope_type": "verified_snapshot_scope_only",
+    "scope_label": "JRA verified January 2026 selected-meeting snapshot",
+    "applies_to_records_file": "data/generated/timetable/pr-163-jra-wider-snapshot.json",
+    "verified_meetings": 7,
+    "verified_race_rows": 84,
+    "source_route_type": "official_jra_calendar_page",
+    "basis": "Each scoped meeting has source-verified race rows and derived first_race_time, last_race_time, and race_count from official JRA calendar pages."
+  },
+  "not_claimed": {
+    "all_jra_rank": true,
+    "full_month_coverage": true,
+    "june_2026_coverage": true,
+    "a_rank": true,
+    "public_a_rank_detail_ui": true
+  },
+  "display_guidance": {
+    "rank_label": "B+",
+    "scope_note": "Verified selected JRA snapshot only; not full-month coverage.",
+    "time_display": "Use per-meeting first_race_time and last_race_time from the verified snapshot.",
+    "race_count_display": "Use per-meeting race_count from the verified snapshot.",
+    "details_display": "Do not expose A-rank racecard detail UI from this update."
+  },
+  "forward_schedule": [
+    {
+      "planned_pr": "PR-171",
+      "topic": "JRA scoped B+ UI validation",
+      "goal": "Validate that the scoped B+ label, time fields, race counts, source links, and scope note render without implying full-month or A-rank coverage."
+    },
+    {
+      "planned_pr": "PR-172A",
+      "topic": "JRA broader coverage expansion",
+      "condition": "Use only if more official JRA calendar pages are verified.",
+      "goal": "Expand the verified snapshot scope without changing the A-rank boundary."
+    },
+    {
+      "planned_pr": "PR-172B",
+      "topic": "NAR transition",
+      "condition": "Use if JRA expansion is paused.",
+      "goal": "Start NAR official source inventory."
+    }
+  ]
+}
