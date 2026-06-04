@@ -1,0 +1,95 @@
+{
+  "schema_version": "pr-144-hkjc-remaining-six-devtools-result-v0",
+  "inspection_status": "not_verified",
+  "result_source": "user_provided_codex_or_devtools_result",
+  "result_received_at": "2026-06-04",
+  "time_zone": "Asia/Hong_Kong",
+  "source_route_type": "not_found",
+  "request_url_pattern": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}",
+  "meetings": [
+    {
+      "meeting_date": "2026-06-07",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    },
+    {
+      "meeting_date": "2026-06-10",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    },
+    {
+      "meeting_date": "2026-06-13",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    },
+    {
+      "meeting_date": "2026-06-21",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    },
+    {
+      "meeting_date": "2026-06-24",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    },
+    {
+      "meeting_date": "2026-06-27",
+      "racecourse": "Sha Tin",
+      "fixture_code": "ST",
+      "inspection_status": "not_verified",
+      "races": [],
+      "reason_not_verified": "No target-meeting race_number and race_time rows were verified from official racing.hkjc.com racecard route exposure.",
+      "inspector_notes": [
+        "No verified racecard DOM links, embedded scripts, navigation rows, or official racecard payload rows were found for the specified target meeting.",
+        "No first_race_time, last_race_time, race_count, or contiguous RaceNo range was inferred."
+      ]
+    }
+  ],
+  "promotion_decision": {
+    "promote_hkjc_in_this_result": false,
+    "promote_hkjc_in_this_pr": false,
+    "continue_hkjc_bplus_work_now": false,
+    "recommended_next_candidate": "JRA or NAR from PR-135 candidate matrix",
+    "do_not_infer": [
+      "first_race_time",
+      "last_race_time",
+      "race_count",
+      "contiguous_race_number_range"
+    ]
+  }
+}
