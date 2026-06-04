@@ -1,0 +1,105 @@
+{
+  "schema_version": "pr-140-hkjc-codex-inspection-task-v0",
+  "month": "2026-06",
+  "last_checked": "2026-06-04",
+  "purpose": "Define the Codex/browser task needed to inspect HKJC racecard links, scripts, and network payloads after PR-139. This file is not a calendar input and does not promote records.",
+  "related_files": {
+    "inspection_plan": "data/generated/timetable/pr-139-hkjc-racecard-inspection-plan.json",
+    "race_number_investigation": "data/generated/timetable/pr-138-hkjc-race-number-set-investigation.json",
+    "racecard_sample": "data/generated/timetable/pr-137-hkjc-racecard-date-sample.json"
+  },
+  "system": {
+    "country_id": "hong-kong",
+    "group_id": "hkjc",
+    "current_rank": "C",
+    "target_rank": "B+",
+    "time_zone": "Asia/Hong_Kong"
+  },
+  "task": {
+    "executor": "Codex or local browser DevTools",
+    "reason": "The assistant web environment could not open the HKJC date-addressable racecard URLs directly. Browser-capable inspection is needed before any race-time snapshot or B+ promotion.",
+    "known_working_sample_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=5&Racecourse=HV&racedate=2026%2F06%2F03",
+    "known_working_sample_observation": "Wednesday, June 03, 2026, Happy Valley, 20:40",
+    "sample_meeting": {
+      "meeting_date": "2026-06-03",
+      "racecourse": "Happy Valley",
+      "fixture_code": "HV"
+    }
+  },
+  "codex_prompt": {
+    "title": "Inspect HKJC 2026-06-03 Happy Valley racecard safely",
+    "prompt": "Open the official HKJC racecard URL for RaceNo=5, Racecourse=HV, racedate=2026/06/03. Inspect only official racing.hkjc.com page links, embedded scripts, and browser network requests. Find whether there is a stable official route that lists every race_number and race_time for the 2026-06-03 Happy Valley meeting. Do not collect odds, pools, betting, dividends, predictions, tips, runner-level details, or performance data. Return only route findings and, if fully source-verified, a race_number/race_time list using the requested JSON schema."
+  },
+  "inspection_steps": [
+    "Open the known working sample URL in a browser-capable environment.",
+    "Record whether the page loads without error and shows the known 20:40 RaceNo=5 header.",
+    "Inspect same-page race navigation links and controls for other RaceNo values.",
+    "Inspect embedded scripts and inline JSON for race lists or race times.",
+    "Inspect browser network requests triggered by the initial load and by switching race numbers.",
+    "Look for a meeting-level official HKJC page that lists every race and start time for 2026-06-03 Happy Valley.",
+    "Stop if the source exposes only betting, odds, pool, dividend, prediction, or runner-level data unrelated to race_number/race_time."
+  ],
+  "allowed_output_fields": [
+    "meeting_date",
+    "racecourse",
+    "fixture_code",
+    "time_zone",
+    "source_route_type",
+    "source_url",
+    "request_url_pattern",
+    "race_number",
+    "race_time",
+    "race_source_url",
+    "inspection_status",
+    "reason_not_verified"
+  ],
+  "forbidden_output_fields": [
+    "odds",
+    "pools",
+    "betting_data",
+    "dividends",
+    "predictions",
+    "tips",
+    "runner_names",
+    "horse_names",
+    "jockey_names",
+    "trainer_names",
+    "form",
+    "ratings"
+  ],
+  "expected_result_schema": {
+    "schema_version": "pr-140-hkjc-codex-inspection-result-v0",
+    "inspection_status": "verified_full_meeting | partial | not_verified",
+    "meeting_date": "2026-06-03",
+    "racecourse": "Happy Valley",
+    "fixture_code": "HV",
+    "time_zone": "Asia/Hong_Kong",
+    "source_route_type": "racecard_dom_links | racecard_embedded_scripts | racecard_network_payloads | meeting_level_index | not_found",
+    "source_url": "official HKJC URL used to verify the result, or null if not found",
+    "request_url_pattern": "official HKJC URL or request pattern, or null if not found",
+    "races": [
+      {
+        "race_number": 5,
+        "race_time": "20:40",
+        "race_source_url": "official HKJC racecard URL for that race"
+      }
+    ],
+    "reason_not_verified": "Required when inspection_status is partial or not_verified."
+  },
+  "promotion_decision": {
+    "promote_in_this_pr": false,
+    "allowed_future_rank_after_verified_full_meeting": "B+ candidate only; June 2026 full-month promotion still requires every HKJC meeting to be source-verified.",
+    "do_not_infer": [
+      "first_race_time",
+      "last_race_time",
+      "race_count",
+      "contiguous_race_number_range"
+    ],
+    "last_race_time_definition": "Final race start time, not meeting_end_time."
+  },
+  "next_steps": [
+    "Run this task in Codex or a local browser with DevTools.",
+    "Commit the inspection result JSON only after official-source verification.",
+    "If the result is verified_full_meeting, the following PR may add a one-meeting race_number/race_time snapshot; otherwise keep HKJC at C."
+  ]
+}
