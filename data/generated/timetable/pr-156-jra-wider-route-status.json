@@ -1,0 +1,80 @@
+{
+  "schema_version": "pr-156-jra-wider-route-status-v0",
+  "month": "2026-01",
+  "last_checked": "2026-06-04",
+  "purpose": "Record wider JRA calendar route status after the one-meeting snapshot in PR-155. This file does not add a wider snapshot and does not promote JRA.",
+  "source_snapshot": "data/generated/timetable/pr-154-jra-one-meeting-snapshot.json",
+  "system": {
+    "country_id": "japan",
+    "group_id": "jra",
+    "current_rank": "not_promoted_by_this_pr",
+    "target_rank_after_wider_verification": "B or B+",
+    "time_zone": "Asia/Tokyo"
+  },
+  "route_pattern_under_test": "https://www.jra.go.jp/keiba/calendarYYYY/YYYY/M/MMDD.html",
+  "coverage_summary": {
+    "tested_meetings": 4,
+    "source_verified_meetings": 1,
+    "normal_fetch_not_verified_meetings": 3,
+    "wider_coverage_verified": false,
+    "wider_snapshot_allowed": false,
+    "promotion_allowed": false
+  },
+  "meetings": [
+    {
+      "meeting_date": "2026-01-05",
+      "racecourse": "京都競馬場",
+      "meeting_id_or_code": "1回京都2日",
+      "route_status": "verified_full_meeting",
+      "source_snapshot": "data/generated/timetable/pr-154-jra-one-meeting-snapshot.json",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0105.html",
+      "verified_race_count": 12,
+      "first_race_time": "9時50分",
+      "last_race_time": "16時10分"
+    },
+    {
+      "meeting_date": "2026-01-04",
+      "racecourse": null,
+      "meeting_id_or_code": null,
+      "route_status": "normal_fetch_not_verified",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html",
+      "races": [],
+      "reason_not_verified": "Normal assistant web fetch could not source-verify race_number/race_time rows from the official JRA calendar page. Codex or local browser DevTools verification is required."
+    },
+    {
+      "meeting_date": "2026-01-10",
+      "racecourse": null,
+      "meeting_id_or_code": null,
+      "route_status": "normal_fetch_not_verified",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html",
+      "races": [],
+      "reason_not_verified": "Normal assistant web fetch could not source-verify race_number/race_time rows from the official JRA calendar page. Codex or local browser DevTools verification is required."
+    },
+    {
+      "meeting_date": "2026-01-11",
+      "racecourse": null,
+      "meeting_id_or_code": null,
+      "route_status": "normal_fetch_not_verified",
+      "source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html",
+      "races": [],
+      "reason_not_verified": "Normal assistant web fetch could not source-verify race_number/race_time rows from the official JRA calendar page. Codex or local browser DevTools verification is required."
+    }
+  ],
+  "required_next_batch": {
+    "executor": "Codex or local browser DevTools",
+    "goal": "Verify additional official JRA calendar pages before any wider snapshot or promotion.",
+    "target_urls": [
+      "https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html",
+      "https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html",
+      "https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html"
+    ],
+    "expected_result_schema": "pr-157-jra-additional-meetings-codex-result-v0"
+  },
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "wider_snapshot_added": false,
+    "wider_coverage_verified": false,
+    "reason": "Only one JRA meeting is source-verified. Additional meetings were not verified through normal assistant web fetch.",
+    "allowed_next_step": "Run Codex or local browser DevTools verification for additional official JRA calendar pages."
+  }
+}
