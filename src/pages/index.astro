@@ -1,58 +1,86 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../lib/data';
+import { getRacingTypes } from '../lib/racingTypes';
+
+const countries = getActiveCountries().slice(0, 6);
+const racecourses = getRacecourses().slice(0, 6);
+const racingTypes = getRacingTypes().slice(0, 8);
+const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
+const sourceCount = siteData.sources.length;
+const todayRecords = siteData.generated.today.meetings ?? [];
+const upcomingPreview = todayRecords.slice(0, 4);
 ---
 
 <BaseLayout
   title="Where Horses Run | Global Horse Racing Calendar & Timetable"
-  description="Find horse racing days, race times, racecourses, and official source links around the world."
+  description="Find horse racing days, race times, racecourses, racing types, glossary context, and official source links around the world."
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Global Horse Racing Calendar & Timetable</p>
     <h1 id="page-title">Where Horses Run</h1>
     <p class="hero__summary">
-      A static-first guide for finding racing days, race times, racecourses, official source links, and glossary context across racing jurisdictions.
+      Find racing days, race times, racecourses, racing types, glossary context, and official source links across racing jurisdictions.
+    </p>
+    <p>
+      <a href="/today/">See today’s racing</a> · <a href="/countries/">Browse countries</a> · <a href="/tracks/">Browse racecourses</a>
     </p>
   </section>
 
-  <section class="section-grid" aria-label="Main navigation cards">
+  <section class="section-grid" aria-label="Primary discovery paths">
     <article class="card">
-      <h2><a href="/today/">Today</a></h2>
-      <p>Safe timetable records listed for today, with clear empty states when none are verified.</p>
-    </article>
-
-    <article class="card">
-      <h2><a href="/tomorrow/">Tomorrow</a></h2>
-      <p>Safe timetable records listed for tomorrow, with official source links for final confirmation.</p>
+      <h2><a href="/today/">Today’s Racing</a></h2>
+      <p>Start with today’s safe timetable records and empty states, then follow racecourse and official-source links.</p>
+      {upcomingPreview.length > 0 ? (
+        <ul>
+          {upcomingPreview.map((meeting) => (
+            <li><strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No verified today records are listed yet. Use country and source pages for official confirmation.</p>
+      )}
     </article>
 
     <article class="card">
       <h2><a href="/calendar/">Calendar</a></h2>
-      <p>Fallback calendar pages and generated schedule status.</p>
+      <p>Browse date-based timetable pages and generated schedule status.</p>
+      <p><a href="/tomorrow/">Tomorrow</a> · <a href="/calendar/">Calendar overview</a></p>
     </article>
 
     <article class="card">
-      <h2><a href="/countries/">Countries</a></h2>
-      <p>Browse racing jurisdictions and country coverage notes.</p>
+      <h2><a href="/countries/">Browse by Country</a></h2>
+      <p>Find racing jurisdictions, country coverage notes, official sources, and listed racecourses.</p>
+      <ul>{countries.map((country) => <li><a href={`/countries/${country.slug}/`}>{country.name_en}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/tracks/">Tracks</a></h2>
-      <p>Browse racecourse entries and racing type summaries.</p>
+      <h2><a href="/tracks/">Explore Racecourses</a></h2>
+      <p>Open racecourse pages with schedule status, course profile placeholders, official links, related terms, and source routing.</p>
+      <ul>{racecourses.map((track) => <li><a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city}</li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/glossary/">Glossary</a></h2>
-      <p>Understand timetable and racing terminology.</p>
+      <h2><a href="/types/">Browse by Racing Type</a></h2>
+      <p>Use racing type pages to move between race formats, related racecourses, related countries, and glossary context.</p>
+      <ul>{racingTypes.map((type) => <li><a href={`/types/${type.slug}/`}>{type.name_en}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/sources/">Sources</a></h2>
-      <p>Browse official and reference source links.</p>
+      <h2><a href="/glossary/">Racing Glossary</a></h2>
+      <p>Understand calendar, racecourse, racecard, post time, and role terminology before opening official sources.</p>
+      <ul>{glossaryTerms.map((term) => <li><a href={`/glossary/${term.slug}/`}>{term.term_en}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/about/">About</a></h2>
-      <p>Project scope, disclaimer, and coverage notes.</p>
+      <h2><a href="/sources/">Official Sources</a></h2>
+      <p>Browse {sourceCount} official and reference source entries used for coverage notes and final confirmation.</p>
+      <p>Entries, odds, results, payouts, tips, and full racecards should be confirmed on official or licensed source pages.</p>
+    </article>
+
+    <article class="card">
+      <h2><a href="/about/">About / Data Coverage</a></h2>
+      <p>Read the project scope, coverage boundary, source-first policy, and disclaimer.</p>
     </article>
   </section>
 </BaseLayout>
