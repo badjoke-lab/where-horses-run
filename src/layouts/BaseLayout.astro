@@ -64,11 +64,12 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
           <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
           <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
             <a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
-            <a href={isJapanese ? '/ja/tomorrow/' : '/tomorrow/'}>{isJapanese ? '明日' : 'Tomorrow'}</a>
             <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
             <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
-            <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Tracks'}</a>
+            <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
+            <a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
             <a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
+            <a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? 'ソース' : 'Sources'}</a>
             <a href={alternateHref}>{alternateLabel}</a>
           </nav>
         </div>
@@ -80,7 +81,7 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
 
       <footer class="site-footer">
         <div class="site-footer__inner">
-          <p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, tracks, and sources.'}</p>
+          <p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, racecourses, racing types, and sources.'}</p>
         </div>
       </footer>
     </div>

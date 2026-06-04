@@ -7,6 +7,7 @@ import {
   getRacecourses,
   siteData
 } from '../../../lib/data';
+import { getRacingTypeById } from '../../../lib/racingTypes';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -47,7 +48,7 @@ const relatedSources = track.related_sources ?? [];
 
 <BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の開催予定状況、コース特徴、公式リンク、関連用語をまとめた競馬場ページです。`} lang="ja">
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Track profile</p>
+    <p class="hero__eyebrow">Racecourse profile</p>
     <h1 id="page-title">{track.name_ja}</h1>
     <p class="hero__summary">
       {track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}
@@ -68,9 +69,9 @@ const relatedSources = track.related_sources ?? [];
     <article class="card">
       <h2>競馬種別</h2>
       <ul>
-        {track.racing_types.map((type) => {
-          const term = glossaryById.get(type) ?? glossaryById.get(type.replace('thoroughbred-flat', 'thoroughbred-racing'));
-          return <li>{term ? <a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> : type}</li>;
+        {track.racing_types.map((typeId) => {
+          const type = getRacingTypeById(typeId);
+          return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
         })}
       </ul>
     </article>

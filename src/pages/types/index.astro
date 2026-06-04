@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRacecoursesByRacingTypeId, getRacingTypes } from '../../lib/racingTypes';
+
+const racingTypes = getRacingTypes();
+---
+
+<BaseLayout
+  title="Racing Types | Where Horses Run"
+  description="Browse horse racing types and connect them to related racecourses, glossary terms, and official-source context."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Racing types</p>
+    <h1 id="page-title">Racing Types</h1>
+    <p class="hero__summary">
+      Browse major horse racing formats, then open related racecourse pages and glossary explanations.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Racing type list">
+    {racingTypes.map((type) => {
+      const tracks = getRacecoursesByRacingTypeId(type.id);
+      return (
+        <article class="card">
+          <h2><a href={`/types/${type.slug}/`}>{type.name_en}</a></h2>
+          <p>{type.summary_en}</p>
+          <p><strong>Listed racecourses:</strong> {tracks.length}</p>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>

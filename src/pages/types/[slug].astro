@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getRacecoursesByRacingTypeId,
+  getRacingTypeBySlug,
+  getRacingTypeGlossaryEntry,
+  getRacingTypes
+} from '../../lib/racingTypes';
+import { getCountries } from '../../lib/data';
+
+export function getStaticPaths() {
+  return getRacingTypes().map((type) => ({ params: { slug: type.slug } }));
+}
+
+const { slug } = Astro.params;
+const type = getRacingTypeBySlug(slug ?? '');
+
+if (!type) {
+  return Astro.redirect('/types/');
+}
+
+const tracks = getRacecoursesByRacingTypeId(type.id);
+const countries = getCountries();
+const countryById = new Map(countries.map((country) => [country.id, country]));
+const countryIds = [...new Set(tracks.map((track) => track.country_id))];
+const glossaryEntry = getRacingTypeGlossaryEntry(type);
+---
+
+<BaseLayout title={`${type.name_en} | Racing Types`} description={type.summary_en}>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Racing type</p>
+    <h1 id="page-title">{type.name_en}</h1>
+    <p class="hero__summary">{type.summary_en}</p>
+  </section>
+
+  <section class="section-grid" aria-label="Racing type detail">
+    <article class="card">
+      <h2>Related racecourses</h2>
+      {tracks.length ? (
+        <ul>
+          {tracks.map((track) => (
+            <li>
+              <a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No racecourse entries are currently tagged with this racing type.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Related countries</h2>
+      {countryIds.length ? (
+        <ul>
+          {countryIds.map((countryId) => {
+            const country = countryById.get(countryId);
+            return <li>{country ? <a href={`/countries/${country.slug}/`}>{country.name_en}</a> : countryId}</li>;
+          })}
+        </ul>
+      ) : (
+        <p>No related country entries are listed yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Glossary context</h2>
+      {glossaryEntry ? (
+        <>
+          <p>{glossaryEntry.summary_en}</p>
+          <p><a href={`/glossary/${glossaryEntry.slug}/`}>Open glossary term</a></p>
+        </>
+      ) : (
+        <p>No glossary entry is linked yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Source boundary</h2>
+      <p>Use official or licensed source pages for entries, odds, results, payouts, tips, and full racecards.</p>
+    </article>
+  </section>
+
+  <p><a href="/types/">Back to racing types</a></p>
+</BaseLayout>

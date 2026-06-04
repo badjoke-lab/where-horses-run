@@ -1,59 +1,87 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../../lib/data';
+import { getRacingTypes } from '../../lib/racingTypes';
+
+const countries = getActiveCountries().slice(0, 6);
+const racecourses = getRacecourses().slice(0, 6);
+const racingTypes = getRacingTypes().slice(0, 8);
+const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
+const sourceCount = siteData.sources.length;
+const todayRecords = siteData.generated.today.meetings ?? [];
+const todayPreview = todayRecords.slice(0, 4);
 ---
 
 <BaseLayout
   lang="ja"
   title="競馬どこ？ | 世界の競馬開催カレンダー・レース時刻表"
-  description="世界の競馬開催日、レース時刻表、競馬場、公式ソースへのリンクを探すための静的中心サイト。"
+  description="世界の競馬開催日、レース時刻表、競馬場、競馬種別、公式ソースへのリンクを探すための静的中心サイト。"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">世界の競馬開催カレンダー・レース時刻表</p>
     <h1 id="page-title">競馬どこ？</h1>
     <p class="hero__summary">
-      世界中の競馬開催日、レース時刻、競馬場、公式ソース、用語理解へ進むための静的中心ガイドです。
+      世界中の競馬開催日、レース時刻、競馬場、競馬種別、公式ソース、用語理解へ進むための静的中心ガイドです。
+    </p>
+    <p>
+      <a href="/ja/today/">今日の競馬を見る</a> · <a href="/ja/countries/">国・地域から探す</a> · <a href="/ja/tracks/">競馬場から探す</a>
     </p>
   </section>
 
-  <section class="section-grid" aria-label="主要ページ">
+  <section class="section-grid" aria-label="主要な探し方">
     <article class="card">
-      <h2><a href="/ja/today/">今日</a></h2>
-      <p>今日の安全な開催時刻レコードを表示し、確認済みレコードがない場合は空状態を示します。</p>
-    </article>
-
-    <article class="card">
-      <h2><a href="/ja/tomorrow/">明日</a></h2>
-      <p>明日の安全な開催時刻レコードを表示し、最終確認には公式ソースリンクを案内します。</p>
+      <h2><a href="/ja/today/">今日の開催</a></h2>
+      <p>今日の安全な開催時刻レコードを起点に、競馬場ページや公式ソースへ進みます。</p>
+      {todayPreview.length > 0 ? (
+        <ul>
+          {todayPreview.map((meeting) => (
+            <li><strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>今日の確認済みレコードはまだありません。国・地域ページや公式ソースで確認してください。</p>
+      )}
     </article>
 
     <article class="card">
       <h2><a href="/ja/calendar/">カレンダー</a></h2>
-      <p>開催情報と生成状態のfallbackページ。</p>
+      <p>日付別の時刻表ページと生成データ状態を確認します。</p>
+      <p><a href="/ja/tomorrow/">明日</a> · <a href="/ja/calendar/">カレンダー概要</a></p>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/countries/">国・地域</a></h2>
-      <p>競馬開催国とカバー範囲を一覧できます。</p>
+      <h2><a href="/ja/countries/">国・地域から探す</a></h2>
+      <p>競馬開催国、カバー範囲、公式ソース、登録競馬場を確認します。</p>
+      <ul>{countries.map((country) => <li><a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/tracks/">競馬場</a></h2>
-      <p>競馬場と競馬種別の静的プロフィール。</p>
+      <h2><a href="/ja/tracks/">競馬場から探す</a></h2>
+      <p>開催予定状況、コース特徴、公式リンク、関連用語を持つ競馬場ページへ進みます。</p>
+      <ul>{racecourses.map((track) => <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city}</li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/glossary/">用語</a></h2>
-      <p>競馬や時刻表関連の用語辞典。</p>
+      <h2><a href="/ja/types/">競馬種別から探す</a></h2>
+      <p>競馬形式ごとに、関連競馬場、関連国、用語説明へ移動します。</p>
+      <ul>{racingTypes.map((type) => <li><a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/sources/">ソース</a></h2>
-      <p>公式・参考ソースリンク一覧。</p>
+      <h2><a href="/ja/glossary/">用語辞書</a></h2>
+      <p>公式ソースを見る前に、開催・レースカード・発走時刻・役割などの用語を確認します。</p>
+      <ul>{glossaryTerms.map((term) => <li><a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/about/">About</a></h2>
-      <p>サイト概要、注意事項、範囲説明。</p>
+      <h2><a href="/ja/sources/">公式ソース</a></h2>
+      <p>{sourceCount}件の公式・参考ソースを確認できます。</p>
+      <p>出走表・オッズ・結果・払戻・予想・全文レースカードは、公式またはライセンスされたソースで確認してください。</p>
+    </article>
+
+    <article class="card">
+      <h2><a href="/ja/about/">概要・データ範囲</a></h2>
+      <p>サイトの範囲、掲載境界、公式ソース優先方針、免責を確認します。</p>
     </article>
   </section>
 </BaseLayout>

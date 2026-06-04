@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getRacecoursesByRacingTypeId, getRacingTypes } from '../../../lib/racingTypes';
+
+const racingTypes = getRacingTypes();
+---
+
+<BaseLayout
+  lang="ja"
+  title="競馬種別 | 競馬どこ？"
+  description="競馬種別から、関連する競馬場・用語・公式ソース文脈へ進むためのページ。"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Racing types</p>
+    <h1 id="page-title">競馬種別</h1>
+    <p class="hero__summary">
+      主要な競馬形式を確認し、関連する競馬場ページや用語説明へ進めます。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="競馬種別一覧">
+    {racingTypes.map((type) => {
+      const tracks = getRacecoursesByRacingTypeId(type.id);
+      return (
+        <article class="card">
+          <h2><a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a></h2>
+          <p>{type.summary_ja}</p>
+          <p><strong>登録競馬場:</strong> {tracks.length}</p>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>
