@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getRacecourseBySlug, getRacecourses } from '../../lib/data';
+import {
+  getCountries,
+  getGlossaryEntries,
+  getRacecourseBySlug,
+  getRacecourses,
+  siteData
+} from '../../lib/data';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -12,26 +18,188 @@ const track = getRacecourseBySlug(slug ?? '');
 if (!track) {
   return Astro.redirect('/tracks/');
 }
+
+const countries = getCountries();
+const country = countries.find((entry) => entry.id === track.country_id);
+const countryHref = country ? `/countries/${country.slug}/` : '/countries/';
+const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
+const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+
+const formatValue = (value: unknown) => {
+  if (value === null || value === undefined || value === '') return 'Not confirmed';
+  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : 'Not confirmed';
+  return String(value);
+};
+
+const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
+  if (!band) return 'Not confirmed';
+  const range = band.min_m && band.max_m ? `${band.min_m}m–${band.max_m}m` : 'range not confirmed';
+  const known = band.known_distances_m && band.known_distances_m.length > 0
+    ? `Known distances: ${band.known_distances_m.map((distance) => `${distance}m`).join(', ')}`
+    : 'Known distances: not confirmed';
+  return `${range}. ${known}`;
+};
+
+const officialLinks = track.official_links ?? [];
+const relatedTerms = track.related_terms ?? [];
+const relatedSources = track.related_sources ?? [];
 ---
 
-<BaseLayout title={`${track.name_en} | Tracks`} description={`Track profile for ${track.name_en}.`}>
+<BaseLayout title={`${track.name_en} | Tracks`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Track profile</p>
     <h1 id="page-title">{track.name_en}</h1>
-    <p class="hero__summary">Static profile for {track.name_en}.</p>
+    <p class="hero__summary">
+      {track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}
+      {country ? country.name_en : track.country_id} / {track.city}
+    </p>
   </section>
 
-  <section class="section-grid" aria-label="Track details">
+  <section class="section-grid" aria-label="Track overview">
     <article class="card">
-      <h2>Profile</h2>
-      <p><strong>Country ID:</strong> {track.country_id}</p>
+      <h2>Basic information</h2>
+      <p><strong>Country:</strong> <a href={countryHref}>{country ? country.name_en : track.country_id}</a></p>
       <p><strong>City:</strong> {track.city}</p>
+      <p><strong>Region:</strong> {formatValue(track.region)}</p>
       <p><strong>Timezone:</strong> {track.timezone}</p>
       <p><strong>Status:</strong> {track.status}</p>
     </article>
+
     <article class="card">
-      <h2>Types</h2>
-      <p>{track.racing_types.join(', ')}</p>
+      <h2>Racing types</h2>
+      <ul>
+        {track.racing_types.map((type) => {
+          const term = glossaryById.get(type) ?? glossaryById.get(type.replace('thoroughbred-flat', 'thoroughbred-racing'));
+          return <li>{term ? <a href={`/glossary/${term.slug}/`}>{term.term_en}</a> : type}</li>;
+        })}
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Today</h2>
+      <p><strong>Status:</strong> {track.schedule_summary?.today_status ?? 'unknown'}</p>
+      <p><strong>Next meeting:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
+      <p><strong>Schedule status:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+      <p>Use official source links for final confirmation.</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Upcoming schedule and race conditions">
+    <article class="card">
+      <h2>Upcoming meetings</h2>
+      {track.schedule_summary?.upcoming_meetings?.length ? (
+        <ul>
+          {track.schedule_summary.upcoming_meetings.map((meeting) => <li>{JSON.stringify(meeting)}</li>)}
+        </ul>
+      ) : (
+        <p>No verified upcoming meeting rows are listed for this racecourse yet.</p>
+      )}
+      <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
+    </article>
+
+    <article class="card">
+      <h2>Upcoming race conditions</h2>
+      {track.distance_profile?.upcoming_conditions?.length ? (
+        <ul>
+          {track.distance_profile.upcoming_conditions.map((condition) => <li>{JSON.stringify(condition)}</li>)}
+        </ul>
+      ) : (
+        <p>No verified race-condition rows are listed yet. Entries, odds, results, payouts, and full racecards are not republished here.</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Course and distance profile">
+    <article class="card">
+      <h2>Course profile</h2>
+      <p><strong>Surfaces:</strong> {formatValue(track.surfaces)}</p>
+      <p><strong>Direction:</strong> {formatValue(track.direction)}</p>
+      <p><strong>Turf circumference:</strong> {track.course_profile?.turf_circumference_m ? `${track.course_profile.turf_circumference_m}m` : 'Not confirmed'}</p>
+      <p><strong>Dirt circumference:</strong> {track.course_profile?.dirt_circumference_m ? `${track.course_profile.dirt_circumference_m}m` : 'Not confirmed'}</p>
+      <p><strong>Home straight:</strong> {track.course_profile?.home_straight_m ? `${track.course_profile.home_straight_m}m` : 'Not confirmed'}</p>
+      <p><strong>Inner / outer courses:</strong> {track.course_profile?.has_inner_outer_courses === null ? 'Not confirmed' : String(track.course_profile?.has_inner_outer_courses)}</p>
+      <p>{track.course_profile?.course_notes_en ?? 'Course notes are pending official-source verification.'}</p>
+    </article>
+
+    <article class="card">
+      <h2>Distance profile</h2>
+      <p><strong>Turf:</strong> {formatDistanceBand(track.distance_profile?.turf)}</p>
+      <p><strong>Dirt:</strong> {formatDistanceBand(track.distance_profile?.dirt)}</p>
+      <p><strong>All-weather:</strong> {formatDistanceBand(track.distance_profile?.all_weather)}</p>
+      <p><strong>Jump:</strong> {formatDistanceBand(track.distance_profile?.jump)}</p>
+      <p><strong>Harness:</strong> {formatDistanceBand(track.distance_profile?.harness)}</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Races, seasonality, and official links">
+    <article class="card">
+      <h2>Notable races</h2>
+      {track.notable_races?.length ? (
+        <ul>{track.notable_races.map((race) => <li>{JSON.stringify(race)}</li>)}</ul>
+      ) : (
+        <p>No notable-race entries are listed yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Seasonality</h2>
+      <p>{track.seasonality?.summary_en ?? 'Seasonality is pending official-source verification.'}</p>
+      <p><strong>Status:</strong> {track.seasonality?.status ?? 'partial'}</p>
+    </article>
+
+    <article class="card">
+      <h2>Official links</h2>
+      {officialLinks.length ? (
+        <ul>
+          {officialLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label_en}</a>
+              <br />
+              <span>Type: {link.link_type} / Source: {link.source_id}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No official links are attached to this racecourse yet.</p>
+      )}
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Data status and related pages">
+    <article class="card">
+      <h2>Data status</h2>
+      <p><strong>Course profile:</strong> {track.data_status?.course_profile ?? 'partial'}</p>
+      <p><strong>Schedule:</strong> {track.data_status?.schedule ?? 'official-link-only'}</p>
+      <p><strong>Source routing:</strong> {track.data_status?.source_status ?? 'link_first'}</p>
+      <p><strong>Last checked:</strong> {formatValue(track.data_status?.last_checked)}</p>
+    </article>
+
+    <article class="card">
+      <h2>Related terms</h2>
+      {relatedTerms.length ? (
+        <ul>
+          {relatedTerms.map((termId) => {
+            const term = glossaryById.get(termId);
+            return <li>{term ? <a href={`/glossary/${term.slug}/`}>{term.term_en}</a> : termId}</li>;
+          })}
+        </ul>
+      ) : (
+        <p>No related terms are listed yet.</p>
+      )}
+    </article>
+
+    <article class="card">
+      <h2>Related sources</h2>
+      {relatedSources.length ? (
+        <ul>
+          {relatedSources.map((sourceId) => {
+            const source = sourcesById.get(sourceId);
+            return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
+          })}
+        </ul>
+      ) : (
+        <p>No related sources are listed yet.</p>
+      )}
     </article>
   </section>
 
