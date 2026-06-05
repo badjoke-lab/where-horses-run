@@ -1,5 +1,6 @@
 import countries from '../../data/static/countries.json';
 import racecourses from '../../data/static/racecourses.json';
+import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import sources from '../../data/static/sources.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
@@ -15,8 +16,10 @@ import japanActiveTimetableRecords from '../../data/generated/japan-active-timet
 
 export type Locale = 'en' | 'ja';
 
+const allRacecourses = [...racecourses, ...racecourseExtensions] as const;
+
 export type Country = (typeof countries)[number];
-export type Racecourse = (typeof racecourses)[number];
+export type Racecourse = (typeof allRacecourses)[number];
 export type Source = (typeof sources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
 export type ArchiveEntry = (typeof archive)[number];
@@ -30,7 +33,7 @@ const mergedTimetables = {
 
 export const siteData = {
   countries,
-  racecourses,
+  racecourses: allRacecourses,
   sources,
   glossary,
   archive,
@@ -60,7 +63,7 @@ export function getCountryBySlug(slug: string): Country | undefined {
 }
 
 export function getRacecourses(): Racecourse[] {
-  return [...racecourses].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  return [...allRacecourses].sort((a, b) => a.name_en.localeCompare(b.name_en));
 }
 
 export function getRacecoursesByCountryId(countryId: string): Racecourse[] {
@@ -68,7 +71,7 @@ export function getRacecoursesByCountryId(countryId: string): Racecourse[] {
 }
 
 export function getRacecourseBySlug(slug: string): Racecourse | undefined {
-  return racecourses.find((racecourse) => racecourse.slug === slug);
+  return allRacecourses.find((racecourse) => racecourse.slug === slug);
 }
 
 export function getSourcesByCountryId(countryId: string): Source[] {
@@ -77,12 +80,4 @@ export function getSourcesByCountryId(countryId: string): Source[] {
 
 export function getGlossaryEntries(): GlossaryEntry[] {
   return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
-}
-
-export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
-  return glossary.find((entry) => entry.slug === slug);
-}
-
-export function getArchiveEntries(): ArchiveEntry[] {
-  return [...archive].sort((a, b) => a.name_en.localeCompare(b.name_en));
 }
