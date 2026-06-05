@@ -19,15 +19,15 @@
     ],
     "direction": "left-handed",
     "course_profile": {
-      "turf_circumference_m": null,
-      "dirt_circumference_m": null,
-      "home_straight_m": null,
-      "has_inner_outer_courses": null,
+      "turf_circumference_m": 2083,
+      "dirt_circumference_m": 1899,
+      "home_straight_m": 526,
+      "has_inner_outer_courses": true,
       "has_lighting": null,
       "elevation_notes_en": null,
       "elevation_notes_ja": null,
-      "course_notes_en": "Course profile details are pending official-source verification.",
-      "course_notes_ja": "コース詳細は公式ソース確認後に反映する。"
+      "course_notes_en": "Official JAIRS/JRA racecourse guide pages confirm Tokyo Racecourse as a left-handed JRA racecourse in Fuchu, Tokyo. JRA course details list turf A/B/C/D course lengths, a dirt course, and a steeplechase course; this profile records only the high-level verified course metrics used by the current schema.",
+      "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、東京競馬場は東京都府中市のJRA競馬場として確認できる。JRAのコース詳細では芝A/B/C/Dコース、ダートコース、障害コースが示されているが、現在のスキーマでは確認済みの主要コース指標のみを記録する。"
     },
     "distance_profile": {
       "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
@@ -44,10 +44,51 @@
       "status": "official-link-only",
       "last_checked": null
     },
-    "notable_races": [],
+    "notable_races": [
+      {
+        "name_en": "February Stakes",
+        "name_ja": "フェブラリーステークス",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "NHK Mile Cup",
+        "name_ja": "NHKマイルカップ",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Victoria Mile",
+        "name_ja": "ヴィクトリアマイル",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Japanese Oaks",
+        "name_ja": "優駿牝馬（オークス）",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Japanese Derby",
+        "name_ja": "東京優駿（日本ダービー）",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Yasuda Kinen",
+        "name_ja": "安田記念",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Tenno Sho (Autumn)",
+        "name_ja": "天皇賞（秋）",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      },
+      {
+        "name_en": "Japan Cup",
+        "name_ja": "ジャパンカップ",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html"
+      }
+    ],
     "seasonality": {
-      "summary_en": "Seasonality is pending official-source verification.",
-      "summary_ja": "開催シーズンは公式ソース確認後に反映する。",
+      "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.",
+      "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。",
       "status": "partial"
     },
     "official_links": [
@@ -57,15 +98,29 @@
         "source_id": "japan-jra-home",
         "url": "https://jra.jp/",
         "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Tokyo Racecourse guide",
+        "label_ja": "JAIRS/JRA 東京競馬場ガイド",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JRA racecourse course details",
+        "label_ja": "JRA競馬場コース詳細",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details.html",
+        "link_type": "official"
       }
     ],
     "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
-    "related_sources": ["japan-jra-home"],
+    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
     "data_status": {
       "course_profile": "partial",
       "schedule": "official-link-only",
       "source_status": "link_first",
-      "last_checked": null
+      "last_checked": "2026-06-05"
     },
     "image_status": "planned",
     "image_path": null,
