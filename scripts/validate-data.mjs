@@ -7,6 +7,7 @@ const errors = [];
 const requiredFiles = [
   'data/static/countries.json',
   'data/static/racecourses.json',
+  'data/static/racecourses-extensions.json',
   'data/static/sources.json',
   'data/static/glossary.json',
   'data/static/archive.json',
@@ -473,7 +474,11 @@ const data = Object.fromEntries(requiredFiles.map((file) => [file, readJson(file
 const countryIds = validateCountries(data['data/static/countries.json']);
 const sourceIds = validateSources(data['data/static/sources.json'], countryIds);
 const glossaryIds = validateGlossary(data['data/static/glossary.json']);
-const racecourseIds = validateRacecourses(data['data/static/racecourses.json'], { countryIds, sourceIds, glossaryIds });
+const racecourseRows = [
+  ...(Array.isArray(data['data/static/racecourses.json']) ? data['data/static/racecourses.json'] : []),
+  ...(Array.isArray(data['data/static/racecourses-extensions.json']) ? data['data/static/racecourses-extensions.json'] : [])
+];
+const racecourseIds = validateRacecourses(racecourseRows, { countryIds, sourceIds, glossaryIds });
 validateArchive(data['data/static/archive.json']);
 requireObject(data['data/static/i18n/en.json'], 'i18n/en');
 requireObject(data['data/static/i18n/ja.json'], 'i18n/ja');
