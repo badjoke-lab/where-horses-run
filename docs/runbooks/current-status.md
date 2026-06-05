@@ -38,7 +38,7 @@ Release-gate public wording:
 - No public complete coverage claim
 - No racecards, odds, results, payouts, predictions, or tips are stored
 
-This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI.
+This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added.
 
 ---
 
@@ -182,7 +182,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md) and empty placeholder inventory data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder inventory data
 
 Generated datasets currently include:
 
@@ -241,6 +241,7 @@ The project currently focuses on:
 - safe generated pipeline groundwork
 - global-first timetable architecture
 - multi-authority source inventory schema validation
+- public-safe timetable data-flow, display, and acquisition-route contract
 - multi-authority source inventory planning
 
 The project is not currently:
