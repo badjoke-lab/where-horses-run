@@ -38,7 +38,7 @@ Release-gate public wording:
 - No public complete coverage claim
 - No racecards, odds, results, payouts, predictions, or tips are stored
 
-This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added. The [normalized timetable output schema](../specs/normalized-timetable-output-schema.md) now defines the empty generated Normalized Timetable Record layer that future reviewed meeting facts can use before calendar view model projection. The [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md) and `src/lib/timetable/calendar-view-model.ts` helper now define the reusable public-safe projection from Normalized Timetable Record data to monthly/day meeting summaries.
+This gate reflects the generator foundation plus first reviewed normalized samples only. It does not change live/replay coverage data, public calendar UI wiring, post-time coverage claims, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added. The [normalized timetable output schema](../specs/normalized-timetable-output-schema.md) now defines the generated Normalized Timetable Record layer and includes first manually reviewed public-safe JRA, NAR/local-government-racing, and HKJC meeting samples before calendar view model projection. The [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md) and `src/lib/timetable/calendar-view-model.ts` helper now define the reusable public-safe projection from Normalized Timetable Record data to monthly/day meeting summaries.
 
 ---
 
@@ -184,7 +184,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), Authority Source Inventory and Acquisition Route Inventory records for the initial peer JRA, NAR/local-government-racing, and HKJC route candidates, plus empty placeholder Normalized Timetable Record data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), Authority Source Inventory and Acquisition Route Inventory records for the initial peer JRA, NAR/local-government-racing, and HKJC route candidates, plus first reviewed public-safe Normalized Timetable Record samples
 
 Generated datasets currently include:
 
@@ -242,7 +242,7 @@ Current boundaries:
 - no raw source body/html storage
 - no racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes
 
-Initial public-safe JRA, NAR/local-government-racing, and HKJC route records now exist as peer candidates in the Acquisition Route Inventory and link to reviewed Authority Source Inventory pairs. Future route records can be checked through this skeleton before implementation. The skeleton reads the Acquisition Route Inventory, Acquisition Route schema, Authority Source Inventory, and Normalized Timetable Record placeholder output, then reports whether route records link to reviewed `authority_id` + `official_source_id` pairs and stay inside allowed acquisition mode, output target, and refresh-scope enums. These records remain dry-run/status-only and do not add live fetching, adapter logic, parser logic, scheduler behavior, generated writeback, or normalized output promotion.
+Initial public-safe JRA, NAR/local-government-racing, and HKJC route records now exist as peer candidates in the Acquisition Route Inventory and link to reviewed Authority Source Inventory pairs. Future route records can be checked through this skeleton before implementation. The skeleton reads the Acquisition Route Inventory, Acquisition Route schema, Authority Source Inventory, and Normalized Timetable Record output, then reports whether route records link to reviewed `authority_id` + `official_source_id` pairs and stay inside allowed acquisition mode, output target, and refresh-scope enums. The route records remain dry-run/status-only and do not add live fetching, adapter logic, parser logic, scheduler behavior, or generated writeback automation; the normalized samples were manually reviewed and are summary-only.
 
 ---
 
@@ -284,7 +284,7 @@ The project is not currently:
 - Live parsers are not available as a public feature.
 - GitHub Actions dry-run does not write generated files.
 - Country and racecourse coverage is not complete.
-- The global timetable source inventory has initial peer JRA, NAR/local-government-racing, and HKJC route candidates only; the adapter selection matrix is not implemented yet, and the common Calendar view model reader contract is not wired to public calendar UI yet.
+- The global timetable source inventory has initial peer JRA, NAR/local-government-racing, and HKJC route candidates plus first manually reviewed normalized meeting samples only; the adapter selection matrix is not implemented yet, and the common Calendar view model reader contract is not wired to public calendar UI yet.
 - Many racecourse course-profile fields are still unconfirmed placeholders.
 - Visual guide assets are not started.
 
@@ -294,10 +294,10 @@ The project is not currently:
 
 Recommended next work:
 
-1. Review the initial peer JRA, NAR/local-government-racing, and HKJC acquisition route records without promoting normalized output.
+1. Review the first normalized meeting samples against source and route records before expanding coverage.
 2. Add multi-country source candidates for overseas authorities at the same inventory level.
-3. Add reviewed normalized timetable records after source and route review.
-4. Add reviewed normalized timetable records that can be consumed by the verified common calendar display reader contract.
+3. Add additional reviewed normalized timetable records only after source and route review.
+4. Keep validating normalized records through the common calendar display reader contract before UI wiring.
 5. Create the adapter selection matrix.
 6. Keep the first adapter candidates limited to JRA / NAR / HKJC as peer candidates.
 

@@ -5,6 +5,7 @@ import ts from 'typescript';
 
 const root = process.cwd();
 const helperPath = 'src/lib/timetable/calendar-view-model.ts';
+const normalizedTimetablePath = 'data/generated/normalized-timetable.json';
 const specPath = 'docs/specs/calendar-view-model-reader-contract.md';
 const flowSpecPath = 'docs/specs/timetable-data-flow-and-display-contract.md';
 const currentStatusPath = 'docs/runbooks/current-status.md';
@@ -149,6 +150,7 @@ const flowSpecText = readText(flowSpecPath);
 const currentStatusText = readText(currentStatusPath);
 const specsReadmeText = readText(specsReadmePath);
 const packageJson = readJson(packagePath);
+const normalizedTimetable = readJson(normalizedTimetablePath);
 
 for (const field of requiredFields) {
   requireIncludes(helperText, field, helperPath);
@@ -238,7 +240,22 @@ if (errors.length === 0) {
   if (helper.readCalendarMeetingSummariesFromNormalizedTimetable({ records: summaries }).length !== summaries.length) {
     fail('Normalized timetable reader must read the records array.');
   }
+
+  const generatedSummaries = helper.readCalendarMeetingSummariesFromNormalizedTimetable(normalizedTimetable);
+  if (generatedSummaries.length !== (normalizedTimetable?.records?.length ?? 0)) {
+    fail(`${normalizedTimetablePath} records must be consumed by readCalendarMeetingSummariesFromNormalizedTimetable.`);
+  }
+  for (const requiredMeetingId of [
+    'jra-tokyo-racecourse-2026-06-06',
+    'nar-obihiro-racecourse-2026-06-06',
+    'hkjc-sha-tin-racecourse-2026-06-07'
+  ]) {
+    if (!generatedSummaries.some((summary) => summary.meeting_id === requiredMeetingId)) {
+      fail(`${normalizedTimetablePath} calendar summaries must include ${requiredMeetingId}.`);
+    }
+  }
 }
+
 
 if (errors.length > 0) {
   console.error('[calendar-view-model-reader] FAIL');
