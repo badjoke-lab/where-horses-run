@@ -65,7 +65,7 @@ Routes are not source truth by themselves. A route must point back to an authori
 
 ### 2.3 Fetch / Manual Snapshot / Dry Run
 
-This stage is the controlled acquisition boundary.
+This stage is the controlled acquisition boundary. The current refresh/acquisition-route implementation is only the dry-run/status-only skeleton in `scripts/dry-run-timetable-acquisition-routes.mjs`: no live fetching, no scheduler, and no generated writeback. Future route records can be checked through this skeleton before implementation, but the skeleton does not add source-specific adapters, parsers, scrapers, route execution, or generated timetable writes.
 
 Allowed public-safe modes are:
 

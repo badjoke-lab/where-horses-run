@@ -228,6 +228,24 @@ It does not currently support:
 
 ---
 
+## Timetable refresh dry-run skeleton
+
+The timetable refresh/acquisition route layer now includes a dry-run/status-only skeleton at `scripts/dry-run-timetable-acquisition-routes.mjs`, wired through `npm run validate:timetable-refresh-dry-run-skeleton`.
+
+Current boundaries:
+
+- dry-run/status-only route wiring validation
+- no live fetching
+- no scheduler
+- no generated writeback
+- no parser, scraper, adapter, or source-specific acquisition implementation
+- no raw source body/html storage
+- no racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes
+
+Future route records can be checked through this skeleton before implementation. The skeleton reads the empty Acquisition Route Inventory, Acquisition Route schema, Authority Source Inventory, and Normalized Timetable Record placeholder output, then reports whether route records link to reviewed `authority_id` + `official_source_id` pairs and stay inside allowed acquisition mode, output target, and refresh-scope enums. It does not add real JRA, NAR, HKJC, or overseas route records.
+
+---
+
 ## Current product position
 
 The project currently focuses on:
