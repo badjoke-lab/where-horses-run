@@ -12,6 +12,15 @@ const flowSpecPath = 'docs/specs/timetable-data-flow-and-display-contract.md';
 const currentStatusPath = 'docs/runbooks/current-status.md';
 const specsReadmePath = 'docs/specs/README.md';
 const packagePath = 'package.json';
+const requiredReviewedSamples = [
+  { authority_id: 'jra', source_id: 'jra-calendar', route_id: 'jra-calendar-status-route' },
+  {
+    authority_id: 'nar-local-government-racing',
+    source_id: 'nar-monthly-convene-info',
+    route_id: 'nar-local-government-monthly-status-route'
+  },
+  { authority_id: 'hkjc', source_id: 'hkjc-fixture-list', route_id: 'hkjc-fixture-status-route' },
+];
 const scriptPath = 'scripts/check-normalized-timetable-output-schema.mjs';
 const packageScriptName = 'validate:normalized-timetable-output-schema';
 
@@ -42,7 +51,7 @@ const displayStatusEnum = ['displayable', 'partial', 'hidden', 'stale', 'unavail
 // B+: first_race_time_local and last_race_time_local may be set
 // A: monthly/day calendar summary must not expose race-by-race detail
 const explicitExclusions = [
-  'no real meeting records in the placeholder generated file',
+  'no automatically generated meeting records',
   'no calendar UI changes',
   'no adapters',
   'no scrapers',
@@ -243,6 +252,7 @@ const knownCountryIds = new Set((countries?.countries ?? []).filter(isPlainObjec
 const knownRacecourseIds = new Set((racecourses?.racecourses ?? []).filter(isPlainObject).map((row) => row.id).filter(isNonEmptyString));
 const knownRouteIds = new Set((routes?.records ?? []).filter(isPlainObject).map((row) => row.route_id).filter(isNonEmptyString));
 const seenMeetingIds = new Set();
+const reviewedSampleHits = new Set();
 
 for (const [index, record] of (data?.records ?? []).entries()) {
   const label = `${dataPath}.records[${index}]`;
@@ -294,6 +304,22 @@ for (const [index, record] of (data?.records ?? []).entries()) {
   }
   if (record.capability_rank === 'B' && record.last_race_time_local !== null) {
     fail(`${label}.last_race_time_local must be null for capability_rank B.`);
+  }
+
+  for (const sample of requiredReviewedSamples) {
+    if (
+      record.authority_id === sample.authority_id &&
+      record.source_id === sample.source_id &&
+      record.route_id === sample.route_id
+    ) {
+      reviewedSampleHits.add(sample.authority_id);
+    }
+  }
+}
+
+for (const sample of requiredReviewedSamples) {
+  if (!reviewedSampleHits.has(sample.authority_id)) {
+    fail(`${dataPath}.records must include a reviewed sample for ${sample.authority_id} using ${sample.source_id} / ${sample.route_id}.`);
   }
 }
 

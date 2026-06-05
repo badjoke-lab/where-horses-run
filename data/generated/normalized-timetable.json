@@ -1,6 +1,61 @@
 {
   "schema_version": "normalized-timetable-output-v0",
   "schema_ref": "data/generated/normalized-timetable.schema.json",
-  "purpose": "Empty public-safe placeholder for future normalized timetable output records after manual review, dry-run extraction, or route-derived normalization.",
-  "records": []
+  "purpose": "Public-safe manually reviewed normalized timetable output records for calendar view model reader consumption; records remain summary-only and are not generated automatically.",
+  "records": [
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "tokyo-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "source_id": "jra-calendar",
+      "route_id": "jra-calendar-status-route",
+      "source_status": "partial",
+      "capability_rank": "B",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "official_source_url": "https://www.jra.go.jp/keiba/calendar/",
+      "last_checked_date": "2026-06-05",
+      "display_status": "partial",
+      "notes": "Manually reviewed meeting-date sample from the official JRA calendar source; no race times are inferred or stored."
+    },
+    {
+      "meeting_id": "nar-obihiro-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "source_id": "nar-monthly-convene-info",
+      "route_id": "nar-local-government-monthly-status-route",
+      "source_status": "partial",
+      "capability_rank": "B",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "last_checked_date": "2026-06-05",
+      "display_status": "partial",
+      "notes": "Manually reviewed local-government-racing meeting-date sample from the official NAR monthly convening source; no race times are inferred or stored."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Hong_Kong",
+      "source_id": "hkjc-fixture-list",
+      "route_id": "hkjc-fixture-status-route",
+      "source_status": "partial",
+      "capability_rank": "B+",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "official_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+      "last_checked_date": "2026-06-05",
+      "display_status": "partial",
+      "notes": "Manually reviewed meeting-date sample from the official HKJC fixture list; no race times are inferred or stored."
+    }
+  ]
 }

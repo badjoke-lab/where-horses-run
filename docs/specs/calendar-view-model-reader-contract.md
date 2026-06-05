@@ -5,7 +5,7 @@ Last updated: 2026-06-05
 
 This specification defines the public-safe reader/helper contract that projects Normalized Timetable Record data into monthly and day calendar meeting summaries.
 
-It does not add real meeting records, calendar UI changes, adapters, scrapers, parsers, runtime fetch logic, scheduler logic, live source fetching, racecards, odds, results, payouts, predictions, tips, full entries, raw source body/html, or private/internal notes.
+It can consume the first manually reviewed normalized meeting samples, but it does not add calendar UI changes, adapters, scrapers, parsers, runtime fetch logic, scheduler logic, live source fetching, generated writeback automation, racecards, odds, results, payouts, predictions, tips, full entries, raw source body/html, or private/internal notes.
 
 ---
 
@@ -25,7 +25,7 @@ The reader must preserve source and route provenance while enforcing capability-
 
 ## 2. Input contract
 
-The reader accepts a normalized timetable file or an array of normalized timetable records. The current placeholder file is `data/generated/normalized-timetable.json`, and the schema is `data/generated/normalized-timetable.schema.json`.
+The reader accepts a normalized timetable file or an array of normalized timetable records. The current generated sample file is `data/generated/normalized-timetable.json`, and the schema is `data/generated/normalized-timetable.schema.json`.
 
 Input records must conform to the Normalized Timetable Record shape:
 
@@ -130,7 +130,7 @@ Date-range filtering is inclusive because calendar views commonly request closed
 
 This reader contract explicitly excludes:
 
-- adding real meeting records;
+- adding unreviewed, automatically generated, or UI-wired meeting records;
 - changing public calendar UI;
 - adapters, scrapers, parsers, runtime fetch logic, scheduler logic, or live source fetching; this helper performs no live source fetching;
 - racecards, odds, results, payouts, predictions, tips, full entries, or raw source body/html; this helper stores no raw source body/html;

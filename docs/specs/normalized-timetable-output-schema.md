@@ -7,7 +7,7 @@ This specification defines the public-safe normalized timetable output records t
 
 Canonical spec file: [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md).
 
-The schema is a normalized meeting-summary contract only. It does not add real meeting records yet, and it does not implement calendar UI changes, adapters, scrapers, parsers, runtime fetch logic, scheduler logic, live source fetching, raw source body/html storage, racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes.
+The schema is a normalized meeting-summary contract only. The generated file now contains a first small set of manually reviewed public-safe meeting samples for JRA, NAR/local-government-racing, and HKJC. It still does not implement calendar UI changes, adapters, scrapers, parsers, runtime fetch logic, scheduler logic, live source fetching, generated writeback automation, raw source body/html storage, racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes.
 
 ---
 
@@ -19,7 +19,7 @@ data/generated/normalized-timetable.json
 scripts/check-normalized-timetable-output-schema.mjs
 ```
 
-`normalized-timetable.schema.json` defines the allowed normalized timetable output fields, enums, display rules, safe summary fields, and explicit exclusions. `normalized-timetable.json` is currently an empty placeholder with `records: []`; follow-up PRs can add manually reviewed, dry-run, or route-derived meeting facts after review.
+`normalized-timetable.schema.json` defines the allowed normalized timetable output fields, enums, display rules, safe summary fields, and explicit exclusions. `normalized-timetable.json` now carries first manually reviewed, summary-only meeting samples; follow-up PRs can add additional reviewed, dry-run, or route-derived meeting facts after review.
 
 ---
 
@@ -169,11 +169,11 @@ A-level source capability is not permission to republish all source content. Any
 
 ## Validation rules
 
-The validator enforces the schema and placeholder contract:
+The validator enforces the schema and reviewed-sample contract:
 
 - schema version, required field order, record key, enums, display rules, safe summary fields, and explicit exclusions;
-- placeholder generated data shape with `records: []` currently allowed and expected;
-- future record object shape, duplicate `meeting_id` checks, `YYYY-MM-DD` date checks, `HH:MM` time checks, URL checks, and enum checks;
+- manually reviewed sample presence for JRA, NAR/local-government-racing, and HKJC using the approved source and route IDs;
+- record object shape, duplicate `meeting_id` checks, `YYYY-MM-DD` date checks, `HH:MM` time checks, URL checks, and enum checks;
 - capability-rank display rules for `C`, `B`, `B+`, and `A`;
 - public-safe key guardrails so raw source body/html, racecard, odds, result, payout, prediction, tip, full-entry, or private/internal fields cannot enter normalized output records;
 - package script and `npm run check` wiring.
