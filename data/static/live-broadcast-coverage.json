@@ -689,20 +689,23 @@
         "thoroughbred-flat",
         "jump-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Jockey Club České republiky / Dostihy.cz",
+      "official_live_url": "https://www.dostihy.cz/dostihy-online",
+      "official_replay_url": "https://www.dostihy.cz/archiv",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://www.dostihy.cz/dostihy-online",
+        "https://www.dostihy.cz/archiv"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "Official Jockey Club site provides a public delayed live page and stream archive."
     },
     {
       "jurisdiction_id": "hungary",
@@ -913,20 +916,22 @@
         "thoroughbred-flat",
         "arabian-racing"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
+      "live_status": "none_found",
+      "replay_status": "replay_available",
+      "provider_name": "Royal Horse Racing Club / Royal Cavalry",
       "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "official_replay_url": "https://rhrc.om/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://rhrc.om/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official Royal Horse Racing Club page exposes race videos; no official live landing page was verified."
     },
     {
       "jurisdiction_id": "zimbabwe",
@@ -934,20 +939,23 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "ZimRacing / Mashonaland Turf Club",
+      "official_live_url": "https://zimracing.com/borrowdale-park-videos/",
+      "official_replay_url": "https://zimracing.com/borrowdale-park-videos/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "official_partner",
+      "evidence_urls": [
+        "https://zimracing.com/about-2/",
+        "https://zimracing.com/borrowdale-park-videos/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "ZimRacing identifies Mashonaland Turf Club-supplied racing information and maintains a Borrowdale livestream archive."
     }
   ]
 }
