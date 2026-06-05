@@ -24,18 +24,17 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | `tv_pay` | 1 |
 | `broadcast_partner` | 2 |
 | `event_only` | 4 |
-| `not_verified` | 1 |
-| `none_found` | 2 |
+| `none_found` | 3 |
 
 ### Count by `replay_status`
 
 | replay_status | Count |
 | --- | ---: |
-| `replay_available` | 24 |
+| `replay_available` | 27 |
 | `official_account` | 2 |
 | `archive_only` | 3 |
-| `not_verified` | 5 |
-| `none_found` | 2 |
+| `not_verified` | 1 |
+| `none_found` | 3 |
 
 ## Records by status requiring v0 tracking
 
@@ -46,13 +45,13 @@ The lists below include any record where the named status appears as either `liv
 - `japan-jra` — Japan — JRA (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `japan-nar` — Japan — NAR (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `japan-banei` — Japan — banei (`live_status`: `official_free`, `replay_status`: `replay_available`)
-- `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `france` — France (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `canada` — Canada (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `new-zealand` — New Zealand (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `turkey` — Turkey (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `morocco` — Morocco (`live_status`: `official_free`, `replay_status`: `official_account`)
-- `chile` — Chile (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `chile` — Chile (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `mexico` — Mexico (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `bahrain` — Bahrain (`live_status`: `official_free`, `replay_status`: `archive_only`)
@@ -60,7 +59,7 @@ The lists below include any record where the named status appears as either `liv
 - `czechia` — Czechia (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `hungary` — Hungary (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `puerto-rico` — Puerto Rico (`live_status`: `official_free`, `replay_status`: `replay_available`)
-- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `barbados` — Barbados (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `zimbabwe` — Zimbabwe (`live_status`: `official_free`, `replay_status`: `replay_available`)
 
@@ -88,17 +87,14 @@ The lists below include any record where the named status appears as either `liv
 
 ### `not_verified`
 
-- `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `chile` — Chile (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
-- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `martinique` — Martinique (`live_status`: `not_verified`, `replay_status`: `replay_available`)
 
 ### `none_found`
 
 - `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
+- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
 - `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
+- `martinique` — Martinique (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
 
 ### `archive_only`
@@ -111,21 +107,16 @@ The lists below include any record where the named status appears as either `liv
 
 - `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
-- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
+- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
 - `austria` — Austria (`live_status`: `event_only`, `replay_status`: `replay_available`)
 
 ## `not_verified` review
 
-`not_verified` intentionally remains in **6** records after the major-jurisdiction audit:
+`not_verified` intentionally remains in **1** record after the live/replay hardening pass:
 
-- `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `chile` — Chile (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
-- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `martinique` — Martinique (`live_status`: `not_verified`, `replay_status`: `replay_available`)
 
-The previous large-jurisdiction placeholder language no longer applies to the United Kingdom, Ireland, France, United States, Canada, Australia, or Singapore. Those records now carry the more specific statuses shown above. Remaining `not_verified` values are conservative and public-safe: the pass verified one side of coverage while leaving the other side unconfirmed, or no official public live landing page was confirmed. The data should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
+The previous large-jurisdiction placeholder language no longer applies to the United Kingdom, Ireland, France, United States, Canada, Australia, or Singapore. The United Arab Emirates, Chile, Jamaica, Malta, and Martinique records now also carry more specific statuses for the previously unresolved side. The remaining `not_verified` value is conservative and public-safe: official Monterrico live coverage is verified, but official replay availability was not confirmed from official landing pages. The data should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
 
 ## Singapore wording note
 
@@ -137,7 +128,9 @@ Singapore should not be described as having active domestic Singapore Turf Club 
 
 ## Hardening notes from this pass
 
-- The summary counts and status lists were recalculated from the current static dataset after the major-jurisdiction audit.
-- Old unresolved-placeholder wording was removed for the United Kingdom, Ireland, France, United States, Canada, Australia, and Singapore because those records now have more specific statuses.
-- Singapore wording was hardened so Singapore Pools account/subscription evidence is not presented as active domestic Singapore Turf Club racing, and so the absence of a verified official domestic Singapore replay archive remains explicit.
+- The summary counts and status lists were recalculated from the current static dataset after the live/replay hardening pass.
+- United Arab Emirates, Chile, and Jamaica replay statuses were promoted only where official racecourse/authority replay landing pages or official replay references were found.
+- Malta replay and Martinique live statuses were moved to `none_found` where official pages did not provide routine public replay/live landing evidence.
+- Peru remains `not_verified` for replay because official results pages were not treated as replay evidence.
+- Singapore wording remains hardened so Singapore Pools account/subscription evidence is not presented as active domestic Singapore Turf Club racing, and so the absence of a verified official domestic Singapore replay archive remains explicit.
 - Evidence remains limited to official or clearly official-partner landing pages where possible.

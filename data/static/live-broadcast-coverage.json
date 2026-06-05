@@ -173,10 +173,10 @@
         "arabian-racing"
       ],
       "live_status": "official_free",
-      "replay_status": "not_verified",
+      "replay_status": "replay_available",
       "provider_name": "Emirates Racing Authority",
       "official_live_url": "https://emiratesracing.com/live-streams/dubai-racing-1",
-      "official_replay_url": null,
+      "official_replay_url": "https://emiratesracing.com/racecard/2026-04-11/7/results",
       "requires_login": false,
       "requires_betting_account": false,
       "requires_paid_tv": false,
@@ -184,11 +184,12 @@
       "source_type": "authority",
       "evidence_urls": [
         "https://emiratesracing.com/",
-        "https://emiratesracing.com/live-streams/dubai-racing-1"
+        "https://emiratesracing.com/live-streams/dubai-racing-1",
+        "https://emiratesracing.com/racecard/2026-04-11/7/results"
       ],
-      "confidence": "medium",
-      "last_checked": "2026-06-04",
-      "notes": "ERA site links to an official live-stream landing page; replay availability not confirmed."
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "ERA live-stream landing page supports live coverage; official racecard/result pages include race-replay links for completed races."
     },
     {
       "jurisdiction_id": "united-kingdom",
@@ -522,10 +523,10 @@
         "thoroughbred-flat"
       ],
       "live_status": "official_free",
-      "replay_status": "not_verified",
+      "replay_status": "replay_available",
       "provider_name": "Hipódromo Chile / Club Hípico de Santiago",
       "official_live_url": "https://hipodromo.cl/carreras-senal-en-vivo",
-      "official_replay_url": null,
+      "official_replay_url": "https://hipodromo.cl/carreras-repetidos",
       "requires_login": false,
       "requires_betting_account": false,
       "requires_paid_tv": false,
@@ -534,11 +535,13 @@
       "evidence_urls": [
         "https://hipodromo.cl/carreras-senal-en-vivo",
         "https://www.clubhipico.cl/carreras/senal-en-vivo",
-        "https://www.clubhipico.cl/carreras/apps/"
+        "https://www.clubhipico.cl/carreras/apps/",
+        "https://hipodromo.cl/carreras-repetidos",
+        "https://www.clubhipico.cl/sala-prensa/noticias/club-hipico-de-santiago-presenta-su-nueva-pagina-web/"
       ],
       "confidence": "medium",
-      "last_checked": "2026-06-04",
-      "notes": "Official racecourse pages support live signals for major Chilean tracks; replay coverage not confirmed."
+      "last_checked": "2026-06-05",
+      "notes": "Official racecourse pages support live signals for major Chilean tracks; official pages also support replay access, but this should not be read as every Chilean venue."
     },
     {
       "jurisdiction_id": "peru",
@@ -558,11 +561,12 @@
       "source_type": "racecourse",
       "evidence_urls": [
         "https://hipodromodemonterrico.com.pe/carreras-senal-en-vivo",
-        "https://www.tvperu.gob.pe/noticias/deportes/gran-premio-latinoamericano-2026-evento-hipico-mas-importante-del-ano-se-transmitira-por-tvperu"
+        "https://www.tvperu.gob.pe/noticias/deportes/gran-premio-latinoamericano-2026-evento-hipico-mas-importante-del-ano-se-transmitira-por-tvperu",
+        "https://hipodromodemonterrico.com.pe/carreras-ultimos-resultados"
       ],
       "confidence": "medium",
-      "last_checked": "2026-06-04",
-      "notes": "Official Monterrico page provides a live-signal landing page; replay availability not confirmed."
+      "last_checked": "2026-06-05",
+      "notes": "Official Monterrico page provides a live-signal landing page; official result pages were not treated as replay evidence, so replay availability remains unverified."
     },
     {
       "jurisdiction_id": "mexico",
@@ -783,7 +787,7 @@
         "trotting"
       ],
       "live_status": "event_only",
-      "replay_status": "not_verified",
+      "replay_status": "none_found",
       "provider_name": "Malta Racing Club",
       "official_live_url": "https://www.maltaracingclub.com/",
       "official_replay_url": null,
@@ -798,8 +802,8 @@
         "https://www.maltaracingclub.com/newsdetails.php?id=382"
       ],
       "confidence": "low",
-      "last_checked": "2026-06-04",
-      "notes": "Official site links social channels and older news supports selected live social streams; current routine replay availability not verified."
+      "last_checked": "2026-06-05",
+      "notes": "Official site and older official news support selected live social streams only; no routine official replay landing page was found."
     },
     {
       "jurisdiction_id": "austria",
@@ -859,10 +863,10 @@
         "thoroughbred-flat"
       ],
       "live_status": "official_free",
-      "replay_status": "not_verified",
+      "replay_status": "replay_available",
       "provider_name": "Caymanas Park / SVREL",
       "official_live_url": "https://caymanasracing.com/live-streaming",
-      "official_replay_url": null,
+      "official_replay_url": "https://www.caymanasracing.com/race-replays",
       "requires_login": false,
       "requires_betting_account": false,
       "requires_paid_tv": false,
@@ -870,11 +874,12 @@
       "source_type": "racecourse",
       "evidence_urls": [
         "https://caymanasracing.com/live-streaming",
-        "https://caymanasracing.com/"
+        "https://caymanasracing.com/",
+        "https://www.caymanasracing.com/race-replays"
       ],
-      "confidence": "medium",
+      "confidence": "high",
       "last_checked": "2026-06-05",
-      "notes": "Official Caymanas page provides a live-stream landing page; no separate official replay landing page was verified."
+      "notes": "Official Caymanas pages provide live-stream and race-replay landing pages; replay listings can depend on page filters or race-date selection."
     },
     {
       "jurisdiction_id": "trinidad-and-tobago",
@@ -931,7 +936,7 @@
         "thoroughbred-flat",
         "trotting"
       ],
-      "live_status": "not_verified",
+      "live_status": "none_found",
       "replay_status": "replay_available",
       "provider_name": "Hippodrome de Martinique - Carrère",
       "official_live_url": null,
@@ -944,11 +949,12 @@
       "evidence_urls": [
         "https://hippodromedecarrere.fr/",
         "https://hippodromedecarrere.fr/index.php/category/videos/",
-        "https://hippodromedecarrere.fr/index.php/category/informations/"
+        "https://hippodromedecarrere.fr/index.php/category/informations/",
+        "https://hippodromedecarrere.fr/index.php/category/live/"
       ],
       "confidence": "medium",
       "last_checked": "2026-06-05",
-      "notes": "Official site maintains a video archive for race replays; no current live-stream landing page was verified."
+      "notes": "Official site maintains a video archive for race replays; its LIVE category had no content, so no current live-stream landing page was verified."
     },
     {
       "jurisdiction_id": "oman",
