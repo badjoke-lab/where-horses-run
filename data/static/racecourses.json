@@ -19,21 +19,21 @@
     ],
     "direction": "left-handed",
     "course_profile": {
-      "turf_circumference_m": null,
-      "dirt_circumference_m": null,
+      "turf_circumference_m": 2083,
+      "dirt_circumference_m": 1899,
       "home_straight_m": null,
-      "has_inner_outer_courses": null,
+      "has_inner_outer_courses": true,
       "has_lighting": null,
       "elevation_notes_en": null,
       "elevation_notes_ja": null,
-      "course_notes_en": "Course profile details are pending official-source verification.",
-      "course_notes_ja": "コース詳細は公式ソース確認後に反映する。"
+      "course_notes_en": "Official course details list Tokyo Racecourse as a left-handed venue with turf A course circumference of 2,083m, dirt course circumference of 1,899m, and jump course circumference of 1,675m. Home-straight and elevation details remain pending source-safe verification.",
+      "course_notes_ja": "公式コース詳細では、東京競馬場は左回りで、芝Aコース1周2,083m、ダートコース1周1,899m、障害コース1周1,675mとされている。直線距離や高低差の詳細はソース安全な確認後に反映する。"
     },
     "distance_profile": {
-      "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": { "min_m": null, "max_m": null, "known_distances_m": [2083] },
+      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [1899] },
       "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": null, "max_m": null, "known_distances_m": [1675] },
       "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
       "upcoming_conditions": []
     },
@@ -57,15 +57,29 @@
         "source_id": "japan-jra-home",
         "url": "https://jra.jp/",
         "link_type": "official"
+      },
+      {
+        "label_en": "Tokyo Racecourse official profile",
+        "label_ja": "東京競馬場公式プロフィール",
+        "source_id": "japan-jra-tokyo-racecourse",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html",
+        "link_type": "official"
+      },
+      {
+        "label_en": "Tokyo Racecourse course details",
+        "label_ja": "東京競馬場コース詳細",
+        "source_id": "japan-jra-tokyo-course-details",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/tokyo.html",
+        "link_type": "source"
       }
     ],
     "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
-    "related_sources": ["japan-jra-home"],
+    "related_sources": ["japan-jra-home", "japan-jra-tokyo-racecourse", "japan-jra-tokyo-course-details"],
     "data_status": {
       "course_profile": "partial",
       "schedule": "official-link-only",
-      "source_status": "link_first",
-      "last_checked": null
+      "source_status": "verified",
+      "last_checked": "2026-06-05"
     },
     "image_status": "planned",
     "image_path": null,
