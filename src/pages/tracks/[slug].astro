@@ -23,6 +23,7 @@ if (!track) {
 const countries = getCountries();
 const country = countries.find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/countries/${country.slug}/` : '/countries/';
+const countrySourceHref = country ? `/sources/${country.slug}/` : '/sources/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
 
@@ -242,6 +243,7 @@ const notableRaceFields: Array<[string, string[]]> = [
 
     <article class="card">
       <h2>Related sources</h2>
+      <p><a href={countrySourceHref}>Open country source registry</a></p>
       {relatedSources.length ? (
         <ul>
           {relatedSources.map((sourceId) => {
