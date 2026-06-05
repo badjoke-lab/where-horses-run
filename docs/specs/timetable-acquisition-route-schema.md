@@ -7,7 +7,7 @@ This specification defines the acquisition route inventory that sits between the
 
 Canonical spec file: [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md).
 
-The inventory is route-review metadata only. It does not add real JRA, NAR, HKJC, or overseas route records yet, and it does not implement adapters, scrapers, parsers, runtime fetch logic, scheduled jobs, live source fetching, raw source body storage, racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes.
+The inventory is route-review metadata only. It may list initial public-safe route records, but it does not implement adapters, scrapers, parsers, runtime fetch logic, scheduled jobs, live source fetching, raw source body storage, racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes.
 
 ---
 
@@ -19,7 +19,7 @@ data/static/timetable-acquisition-routes.json
 scripts/check-timetable-acquisition-route-schema.mjs
 ```
 
-`timetable-acquisition-routes.schema.json` defines the allowed route fields and enums. `timetable-acquisition-routes.json` is currently an empty placeholder with `records: []`; follow-up route inventory PRs can add real public-safe records after authority source review.
+`timetable-acquisition-routes.schema.json` defines the allowed route fields and enums. `timetable-acquisition-routes.json` now includes initial public-safe JRA, NAR/local-government-racing, and HKJC dry-run/status-only route records as peer candidates; follow-up route inventory PRs can add more reviewed public-safe records after authority source review.
 
 ---
 

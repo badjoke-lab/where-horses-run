@@ -17,7 +17,7 @@ data/static/authority-source-inventory.json
 scripts/check-authority-source-inventory-schema.mjs
 ```
 
-`authority-source-inventory.schema.json` defines the allowed fields and enums. `authority-source-inventory.json` is currently an empty placeholder; follow-up inventory PRs can add real public-safe source records after review.
+`authority-source-inventory.schema.json` defines the allowed fields and enums. `authority-source-inventory.json` now includes initial public-safe JRA, NAR/local-government-racing, and HKJC source records as peer adapter candidates; follow-up inventory PRs can add more reviewed source records under the same shape.
 
 ---
 

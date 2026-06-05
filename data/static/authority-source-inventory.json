@@ -1,6 +1,55 @@
 {
   "schema_version": "authority-source-inventory-v0",
   "schema_ref": "data/static/authority-source-inventory.schema.json",
-  "purpose": "Placeholder for shared multi-authority official source inventory records. Real authority records will be added in follow-up inventory PRs.",
-  "records": []
+  "purpose": "Public-safe shared multi-authority official source inventory records for initial timetable acquisition route candidates.",
+  "records": [
+    {
+      "country_id": "japan",
+      "authority_id": "jra",
+      "authority_name_en": "Japan Racing Association",
+      "authority_name_local": "日本中央競馬会",
+      "authority_type": "national",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "jra-calendar",
+      "official_source_url": "https://www.jra.go.jp/keiba/calendar/",
+      "source_kind": "calendar",
+      "source_status": "partial",
+      "last_checked_date": "2026-06-05",
+      "capability_rank": "B",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official public calendar source candidate for JRA meeting-date confirmation. Added as one peer candidate with NAR and HKJC; no adapter or fetch implementation is included."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "authority_name_en": "National Association of Racing / local government racing",
+      "authority_name_local": "地方競馬全国協会 / 地方競馬",
+      "authority_type": "regional",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "nar-monthly-convene-info",
+      "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "source_kind": "calendar",
+      "source_status": "partial",
+      "last_checked_date": "2026-06-05",
+      "capability_rank": "B",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official public local-government racing monthly convening source candidate for meeting-date confirmation. Added as one peer candidate with JRA and HKJC; no adapter or fetch implementation is included."
+    },
+    {
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "authority_name_en": "Hong Kong Jockey Club",
+      "authority_name_local": "香港賽馬會",
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "hkjc-fixture-list",
+      "official_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+      "source_kind": "calendar",
+      "source_status": "partial",
+      "last_checked_date": "2026-06-05",
+      "capability_rank": "B+",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official public fixture-list source candidate for HKJC meeting-date confirmation. Added as one peer candidate with JRA and NAR; no adapter or fetch implementation is included."
+    }
+  ]
 }
