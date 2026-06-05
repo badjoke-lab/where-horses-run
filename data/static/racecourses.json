@@ -248,6 +248,63 @@
     "image": { "src": "", "alt_en": "Planned illustrative image for Hanshin Racecourse.", "alt_ja": "阪神競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
+    "id": "sapporo-racecourse",
+    "slug": "sapporo-racecourse",
+    "country_id": "japan",
+    "name_en": "Sapporo Racecourse",
+    "name_ja": "札幌競馬場",
+    "name_local": "札幌競馬場",
+    "city": "Sapporo",
+    "region": "Hokkaido",
+    "timezone": "Asia/Tokyo",
+    "racing_types": ["thoroughbred-flat"],
+    "status": "active",
+    "surfaces": ["turf", "dirt"],
+    "direction": "right-handed",
+    "course_profile": {
+      "turf_circumference_m": 1641,
+      "dirt_circumference_m": 1487,
+      "home_straight_m": null,
+      "has_inner_outer_courses": false,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Official JAIRS/JRA racecourse guide pages confirm Sapporo Racecourse as a JRA racecourse in Sapporo City, Hokkaido. JRA course details list turf A/B courses and a dirt course; this profile records the turf A-course length as the representative turf circumference for the current schema.",
+      "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、札幌競馬場は北海道札幌市のJRA競馬場として確認できる。JRAのコース詳細では芝A/Bコースとダートコースが示されているが、現在のスキーマでは芝Aコースを代表値として記録する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": 1641, "max_m": 1660, "known_distances_m": [1641, 1660] },
+      "dirt": { "min_m": 1487, "max_m": 1487, "known_distances_m": [1487] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [
+      { "name_en": "Sapporo Kinen", "name_ja": "札幌記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html" },
+      { "name_en": "Queen Stakes", "name_ja": "クイーンステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html" },
+      { "name_en": "Keeneland Cup", "name_ja": "キーンランドカップ", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html" },
+      { "name_en": "Sapporo Nisai Stakes", "name_ja": "札幌2歳ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html" },
+      { "name_en": "Elm Stakes", "name_ja": "エルムステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html" }
+    ],
+    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "official_links": [
+      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Sapporo Racecourse guide", "label_ja": "JAIRS/JRA 札幌競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j09.html", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Sapporo course details", "label_ja": "JAIRS/JRA 札幌コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/sapporo.html", "link_type": "official" }
+    ],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-05" },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Sapporo Racecourse.",
+    "image_alt_ja": "札幌競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Sapporo Racecourse.", "alt_ja": "札幌競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+  },
+  {
     "id": "obihiro-racecourse",
     "slug": "obihiro-racecourse",
     "country_id": "japan",
