@@ -123,12 +123,14 @@ Required sequence:
 
 ```text
 authority source inventory schema
+timetable data-flow / display / acquisition-route contract
 Japan NAR source inventory
 multi-country source candidates
-common calendar display contract
 adapter selection matrix
 first 3 adapters only: JRA / NAR / HKJC
 ```
+
+Japan NAR source inventory must not be added before the timetable data-flow, calendar display, and acquisition-route contract is in place. Additional real authority records should wait until the route-to-normalized-record-to-calendar-display boundary is documented.
 
 Same-level initial source inventory targets:
 

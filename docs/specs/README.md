@@ -8,6 +8,7 @@ Formal project specifications live here.
 - [data-model.md](data-model.md)
 - [global-timetable-architecture.md](global-timetable-architecture.md)
 - [authority-source-inventory-schema.md](authority-source-inventory-schema.md)
+- [timetable-data-flow-and-display-contract.md](timetable-data-flow-and-display-contract.md)
 - [page-map.md](page-map.md)
 - [ui-css-policy.md](ui-css-policy.md)
 - [image-policy.md](image-policy.md)
