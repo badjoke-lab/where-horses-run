@@ -8,6 +8,7 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 - Availability can vary by user location, account state, race day, broadcast rights, and provider policy.
 - Confidence remains conservative. `not_verified` is retained where a public official live/replay landing page was not confirmed, or where the record remains an intentional v0 placeholder for future jurisdiction expansion.
 - Japan is intentionally split into separate records for JRA central racing, NAR local-government racing, and banei racing because their official coverage surfaces and racing types differ.
+- Singapore is treated conservatively: domestic Singapore Turf Club racing ended after the final 2024 meeting, while Singapore Pools evidence relates to account/subscription horse-racing streaming for selected meetings or races and no official domestic Singapore replay archive is verified.
 
 ## Totals
 
@@ -17,32 +18,37 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 
 | live_status | Count |
 | --- | ---: |
-| `official_free` | 18 |
-| `official_account` | 3 |
-| `betting_account` | 1 |
+| `official_free` | 20 |
+| `official_account` | 4 |
+| `betting_account` | 2 |
+| `tv_pay` | 1 |
+| `broadcast_partner` | 2 |
 | `event_only` | 4 |
-| `not_verified` | 8 |
+| `not_verified` | 1 |
 | `none_found` | 2 |
 
 ### Count by `replay_status`
 
 | replay_status | Count |
 | --- | ---: |
+| `replay_available` | 24 |
 | `official_account` | 2 |
-| `replay_available` | 18 |
-| `not_verified` | 12 |
-| `none_found` | 1 |
 | `archive_only` | 3 |
+| `not_verified` | 5 |
+| `none_found` | 2 |
 
+## Records by status requiring v0 tracking
 
-## Records with `official_free`
+The lists below include any record where the named status appears as either `live_status` or `replay_status`.
 
-These records currently have `official_free` for live or replay status. In this v0 dataset, all `official_free` occurrences are live-status records.
+### `official_free`
 
 - `japan-jra` — Japan — JRA (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `japan-nar` — Japan — NAR (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `japan-banei` — Japan — banei (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `france` — France (`live_status`: `official_free`, `replay_status`: `replay_available`)
+- `canada` — Canada (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `new-zealand` — New Zealand (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `turkey` — Turkey (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `morocco` — Morocco (`live_status`: `official_free`, `replay_status`: `official_account`)
@@ -58,60 +64,80 @@ These records currently have `official_free` for live or replay status. In this 
 - `barbados` — Barbados (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `zimbabwe` — Zimbabwe (`live_status`: `official_free`, `replay_status`: `replay_available`)
 
-## Records with `official_account` or `betting_account`
+### `official_account`
 
-- `hong-kong` — Hong Kong (`live_status`: `betting_account`, `replay_status`: `replay_available`)
+- `australia` — Australia (`live_status`: `official_account`, `replay_status`: `replay_available`)
 - `south-africa` — South Africa (`live_status`: `official_account`, `replay_status`: `replay_available`)
 - `morocco` — Morocco (`live_status`: `official_free`, `replay_status`: `official_account`)
 - `sweden` — Sweden (`live_status`: `official_account`, `replay_status`: `official_account`)
 - `denmark` — Denmark (`live_status`: `official_account`, `replay_status`: `replay_available`)
 
-## Records with `event_only`, `archive_only`, `none_found`, or `not_verified`
+### `betting_account`
+
+- `hong-kong` — Hong Kong (`live_status`: `betting_account`, `replay_status`: `replay_available`)
+- `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
+
+### `tv_pay`
+
+- `ireland` — Ireland (`live_status`: `tv_pay`, `replay_status`: `replay_available`)
+
+### `broadcast_partner`
+
+- `united-kingdom` — United Kingdom (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
+- `united-states` — United States (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
+
+### `not_verified`
 
 - `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `united-kingdom` — United Kingdom (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `ireland` — Ireland (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `france` — France (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `united-states` — United States (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `canada` — Canada (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `australia` — Australia (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
-- `singapore` — Singapore (`live_status`: `not_verified`, `replay_status`: `not_verified`)
 - `chile` — Chile (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
+- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `martinique` — Martinique (`live_status`: `not_verified`, `replay_status`: `replay_available`)
+
+### `none_found`
+
+- `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
+- `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
+- `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
+
+### `archive_only`
+
+- `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `bahrain` — Bahrain (`live_status`: `official_free`, `replay_status`: `archive_only`)
+- `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
+
+### `event_only`
+
+- `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
 - `austria` — Austria (`live_status`: `event_only`, `replay_status`: `replay_available`)
-- `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
-- `martinique` — Martinique (`live_status`: `not_verified`, `replay_status`: `replay_available`)
-- `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
 
 ## `not_verified` review
 
-`not_verified` intentionally remains in **13** records after the v0 pass:
+`not_verified` intentionally remains in **6** records after the major-jurisdiction audit:
 
 - `united-arab-emirates` — United Arab Emirates (`live_status`: `official_free`, `replay_status`: `not_verified`)
-- `united-kingdom` — United Kingdom (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `ireland` — Ireland (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `france` — France (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `united-states` — United States (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `canada` — Canada (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `australia` — Australia (`live_status`: `not_verified`, `replay_status`: `not_verified`)
-- `singapore` — Singapore (`live_status`: `not_verified`, `replay_status`: `not_verified`)
 - `chile` — Chile (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `malta` — Malta (`live_status`: `event_only`, `replay_status`: `not_verified`)
 - `jamaica` — Jamaica (`live_status`: `official_free`, `replay_status`: `not_verified`)
 - `martinique` — Martinique (`live_status`: `not_verified`, `replay_status`: `replay_available`)
 
-Reasons are conservative and public-safe: either the record is still an explicit v0 placeholder for a large future jurisdiction, or the pass verified one side of coverage while leaving the other side unconfirmed. The data should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
+The previous large-jurisdiction placeholder language no longer applies to the United Kingdom, Ireland, France, United States, Canada, Australia, or Singapore. Those records now carry the more specific statuses shown above. Remaining `not_verified` values are conservative and public-safe: the pass verified one side of coverage while leaving the other side unconfirmed, or no official public live landing page was confirmed. The data should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
+
+## Singapore wording note
+
+Singapore should not be described as having active domestic Singapore Turf Club racing. The Singapore record should be read as follows:
+
+- Domestic Singapore Turf Club racing ended after the final 2024 meeting.
+- Singapore Pools evidence relates to account/subscription horse-racing streaming for selected meetings or races; it does not verify a free official domestic Singapore live stream.
+- No official domestic Singapore replay archive is verified, so the replay status remains `none_found`.
 
 ## Hardening notes from this pass
 
-- The dataset description now reflects that the file contains audited v0 records plus conservative unverified placeholders, rather than only initial unaudited placeholders.
-- Evidence was kept to official or clearly official-partner landing pages where possible; a specific TJK video URL was normalized to the broader official race-video landing page.
-- Notes were tightened so they do not cite evidence absent from `evidence_urls`; Uruguay now references official Maroñas/HRU surfaces rather than an unlisted YouTube channel.
-- `source_type` ordering was normalized for Denmark to `authority, official_partner`, matching the dominant ordering used elsewhere.
-- Account fields remain conservative: `betting_account` is used only for Hong Kong live access, while `official_account` records keep login requirements explicit and leave uncertain betting-account requirements as `null` rather than inferred.
+- The summary counts and status lists were recalculated from the current static dataset after the major-jurisdiction audit.
+- Old unresolved-placeholder wording was removed for the United Kingdom, Ireland, France, United States, Canada, Australia, and Singapore because those records now have more specific statuses.
+- Singapore wording was hardened so Singapore Pools account/subscription evidence is not presented as active domestic Singapore Turf Club racing, and so the absence of a verified official domestic Singapore replay archive remains explicit.
+- Evidence remains limited to official or clearly official-partner landing pages where possible.
