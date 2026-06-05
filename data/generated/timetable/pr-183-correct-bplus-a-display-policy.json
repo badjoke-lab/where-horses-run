@@ -1,0 +1,76 @@
+{
+  "schema_version": "pr-183-correct-bplus-a-display-policy-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Correct the JRA display/rank policy after PR-181 by restoring the PR-132 rank boundary: B+ is first_race_time plus last_race_time only; A is race-by-race schedule or racecard detail.",
+  "source_of_truth": {
+    "rank_policy_pr": "PR-132",
+    "rank_policy_summary": {
+      "C": "meeting_date plus racecourse confirmed, time unknown",
+      "B": "first_race_time captured",
+      "B+": "first_race_time plus last_race_time captured; last_race_time is the final race start time, not meeting_end_time",
+      "A": "race-by-race schedule or racecard detail captured"
+    },
+    "monthly_display_policy": "one row per meeting; A-rank races are not expanded into the monthly page and belong on meeting detail pages"
+  },
+  "correction": {
+    "wrong_policy_to_remove": "Do not require complete race_number/race_time rows for B+.",
+    "correct_policy": "B+ requires first_race_time and last_race_time. Race-by-race rows make the record A-candidate data, not B+ display data.",
+    "display_principle": "Monthly calendar always renders meeting summaries, never per-race expansion."
+  },
+  "rank_display_contract": [
+    {
+      "rank": "C",
+      "monthly_calendar_row": {
+        "required_fields": ["meeting_date", "racecourse", "rank", "source_url", "verification_status"],
+        "forbidden_fields": ["first_race_time", "last_race_time", "race_rows"]
+      },
+      "day_page": "meeting summary only"
+    },
+    {
+      "rank": "B",
+      "monthly_calendar_row": {
+        "required_fields": ["meeting_date", "racecourse", "rank", "first_race_time", "source_url", "verification_status"],
+        "forbidden_fields": ["last_race_time", "race_rows"]
+      },
+      "day_page": "meeting summary with first_race_time only"
+    },
+    {
+      "rank": "B+",
+      "monthly_calendar_row": {
+        "required_fields": ["meeting_date", "racecourse", "rank", "first_race_time", "last_race_time", "source_url", "verification_status"],
+        "optional_fields": ["race_count"],
+        "forbidden_fields": ["race_rows_expanded_in_monthly_calendar", "racecard_detail_fields"]
+      },
+      "day_page": "meeting summary with first_race_time and last_race_time; race_count may be shown if it is source-derived from verified rows, but race-by-race display is not required for B+"
+    },
+    {
+      "rank": "A",
+      "monthly_calendar_row": {
+        "required_fields": ["meeting_date", "racecourse", "rank", "first_race_time", "last_race_time", "detail_page_path", "source_url", "verification_status"],
+        "optional_fields": ["race_count"],
+        "forbidden_fields": ["race_rows_expanded_in_monthly_calendar"]
+      },
+      "day_page": "meeting summary plus detail link; race-by-race schedule belongs on the meeting detail page",
+      "detail_page_required": true
+    }
+  ],
+  "jra_implication": {
+    "current_verified_page_rows": "The JRA calendar pages expose page-level race rows. Those rows are useful for deriving B+ summaries after section split. They should not force monthly race-row expansion.",
+    "section_split_goal": "Split each calendar page into official meeting sections, then derive meeting summaries. If race-by-race rows remain available per section, mark the record as A-capable and route rows to detail pages.",
+    "bplus_goal": "For each split meeting, store first_race_time and last_race_time summary fields.",
+    "a_goal": "For each split meeting with race-by-race rows or racecard detail links, store A detail data separately from monthly summary rows."
+  },
+  "required_next_changes": [
+    "Update PR-181-derived planning in later files so B+ no longer requires complete race-by-race rows.",
+    "Add CI guard that fails if B+ is described as race-by-race schedule or racecard detail.",
+    "Add CI guard that fails if A race rows are expanded in the monthly calendar.",
+    "Keep monthly calendar one row per meeting for C, B, B+, and A.",
+    "Route A race-by-race content to meeting detail pages only."
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "calendar_rows_added": false,
+    "rank_change_added": false,
+    "this_pr_is_policy_correction_only": true
+  }
+}
