@@ -40,8 +40,8 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | Status | Count |
 | --- | ---: |
 | `official_account` | 2 |
-| `replay_available` | 41 |
-| `none_found` | 8 |
+| `replay_available` | 42 |
+| `none_found` | 7 |
 | `archive_only` | 3 |
 
 ## Records by status requiring v0 tracking
@@ -147,6 +147,7 @@ The lists below include any record where the named status appears as either `liv
 - `belgium-mons` — Belgium — Hippodrome de Wallonie Mons (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `netherlands-wolvega` — Netherlands — Victoria Park Wolvega (`live_status`: `racecourse_only`, `replay_status`: `replay_available`)
 - `switzerland-suisse-trot-replays` — Switzerland — Suisse Trot replays (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `replay_available`)
 
 ### `racecourse_only`
 
@@ -158,7 +159,7 @@ The lists below include any record where the named status appears as either `liv
 - `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
 - `austria` — Austria (`live_status`: `event_only`, `replay_status`: `replay_available`)
-- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `none_found`)
+- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `replay_available`)
 
 ### `none_found`
 
@@ -174,7 +175,6 @@ The lists below include any record where the named status appears as either `liv
 - `spain-trotting` — Spain — trotting (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `belgium-mons` — Belgium — Hippodrome de Wallonie Mons (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `switzerland-suisse-trot-replays` — Switzerland — Suisse Trot replays (`live_status`: `none_found`, `replay_status`: `replay_available`)
-- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `none_found`)
 
 ### `archive_only`
 
@@ -187,7 +187,7 @@ The lists below include any record where the named status appears as either `liv
 - The PR-LIVE-022 pass added Belgium, Netherlands, and Switzerland records only where official racecourse, authority, broadcaster, official-social, or clearly official-partner live/replay evidence was found.
 - Belgium is represented by Hippodrome de Wallonie Mons replay evidence only; it must not be treated as complete Belgium coverage or as verified live coverage.
 - The Netherlands is represented by Victoria Park Wolvega harness-racing evidence only; it must not be treated as national Netherlands coverage, Duindigt coverage, or grass-track coverage.
-- Switzerland is split between Suisse Trot replay evidence and White Turf St. Moritz event-only live evidence; neither record should be described as complete national Swiss live coverage.
+- Switzerland is split between Suisse Trot replay evidence and White Turf St. Moritz event-only live plus race-film archive evidence; neither record should be described as complete national Swiss live or replay coverage.
 - No calendar, race-date, post-time, racecard, odds, entry, result, payout, prediction, tip, direct-stream, or embed behavior was added.
 
 ## Priority 1 live/replay expansion notes
