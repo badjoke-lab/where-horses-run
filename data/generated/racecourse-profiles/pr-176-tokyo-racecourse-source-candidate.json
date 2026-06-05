@@ -1,0 +1,78 @@
+{
+  "schema_version": "pr-176-tokyo-racecourse-source-candidate-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Start source-safe racecourse profile enrichment with Tokyo Racecourse by recording official-source candidates before editing the public racecourse dataset.",
+  "racecourse": {
+    "id": "tokyo-racecourse",
+    "slug": "tokyo-racecourse",
+    "country_id": "japan",
+    "name_en": "Tokyo Racecourse",
+    "name_ja": "東京競馬場",
+    "current_profile_status": "partial",
+    "current_source_status": "link_first"
+  },
+  "official_source_candidates": [
+    {
+      "source_id": "japan-jra-home",
+      "source_url": "https://jra.jp/",
+      "role": "Existing JRA official root link already used by the Tokyo Racecourse record.",
+      "candidate_status": "already_linked",
+      "safe_use": "official routing only"
+    },
+    {
+      "source_id": "japan-jra-tokyo-racecourse-facility",
+      "source_url": "https://jra.jp/facilities/race/tokyo/index.html",
+      "role": "Candidate official Tokyo Racecourse facility page for future source-safe course profile enrichment.",
+      "candidate_status": "needs_browser_confirmation_before_public_profile_values",
+      "safe_use": "candidate link and page-role confirmation only"
+    }
+  ],
+  "allowed_future_fields_after_confirmation": [
+    "official_links",
+    "related_sources",
+    "data_status.source_status",
+    "course_profile.course_notes_en",
+    "course_profile.course_notes_ja"
+  ],
+  "blocked_future_fields_without_explicit_source_verification": [
+    "turf_circumference_m",
+    "dirt_circumference_m",
+    "home_straight_m",
+    "known_distances_m",
+    "notable_races",
+    "schedule_summary.upcoming_meetings"
+  ],
+  "do_not_collect_or_republish": [
+    "entries",
+    "odds",
+    "results",
+    "payouts",
+    "tips",
+    "predictions",
+    "full racecards",
+    "participant details"
+  ],
+  "promotion_decision": {
+    "edit_public_racecourse_dataset_in_this_pr": false,
+    "add_source_registry_record_in_this_pr": false,
+    "add_course_profile_numeric_values_in_this_pr": false,
+    "next_required_step": "Browser-confirm the candidate facility page role, then add a source registry record and racecourse official link in a follow-up PR."
+  },
+  "forward_schedule": [
+    {
+      "planned_pr": "PR-177",
+      "topic": "Tokyo Racecourse facility source confirmation",
+      "goal": "Confirm the candidate official facility URL and page role without collecting prohibited racecard or betting data."
+    },
+    {
+      "planned_pr": "PR-178",
+      "topic": "Tokyo Racecourse public source link",
+      "goal": "If confirmed, add the source registry entry and racecourse official link."
+    },
+    {
+      "planned_pr": "PR-179",
+      "topic": "Tokyo Racecourse profile notes",
+      "goal": "If official page content is confirmed, add conservative profile notes without numeric claims unless explicitly source-verified."
+    }
+  ]
+}
