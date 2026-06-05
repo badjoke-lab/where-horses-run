@@ -20,7 +20,7 @@ The project does not republish entries, odds, results, payouts, tips, full racec
 Repository: badjoke-lab/where-horses-run  
 Default branch: main  
 Deployment: Cloudflare Pages  
-Current phase: public page architecture and non-calendar discovery foundation
+Current phase: global-first timetable architecture and multi-authority source inventory foundation
 
 ---
 
@@ -163,6 +163,7 @@ Static datasets currently include:
 - i18n dictionaries
 - country racing inventory
 - major-country timetable v0 support files
+- global-first timetable architecture notes
 
 Generated datasets currently include:
 
@@ -219,6 +220,8 @@ The project currently focuses on:
 - lightweight static presentation
 - bilingual presentation
 - safe generated pipeline groundwork
+- global-first timetable architecture
+- multi-authority source inventory planning
 
 The project is not currently:
 
@@ -239,6 +242,7 @@ The project is not currently:
 - Live parsers are not available as a public feature.
 - GitHub Actions dry-run does not write generated files.
 - Country and racecourse coverage is not complete.
+- The global timetable source inventory, adapter selection matrix, and common calendar display contract are not implemented yet.
 - Many racecourse course-profile fields are still unconfirmed placeholders.
 - Visual guide assets are not started.
 
@@ -248,16 +252,17 @@ The project is not currently:
 
 Recommended next work:
 
-1. Enrich a small set of selected racecourse profiles with verified official-source course details.
-2. Add source-safe course profile references for those selected racecourses.
-3. Improve racecourse data status notes where official details are still pending.
-4. Continue improving glossary coverage for racing and timetable terms.
-5. Keep timetable and calendar data clearly marked as partial unless coverage is verified.
+1. Define the authority source inventory schema.
+2. Build the Japan NAR source inventory using the same fields as other authority candidates.
+3. Add multi-country source candidates for overseas authorities at the same inventory level.
+4. Define and verify the common calendar display contract.
+5. Create the adapter selection matrix.
+6. Limit the first adapter candidates to JRA / NAR / HKJC.
 
 Near-term candidate:
 
 ```text
-Enrich one selected Japan racecourse profile first, then reuse the pattern for additional racecourses.
+Start with the authority source inventory schema, then inventory Japan NAR, JRA, HKJC, and overseas source candidates under the same source status, last checked date, and capability rank model.
 ```
 
-All future additions should remain source-first and should not republish entries, odds, results, payouts, tips, or full racecards.
+JRA remains a reusable verified source and adapter candidate. It is not the center of the timetable architecture. All future additions should remain source-first and should not republish entries, odds, results, payouts, tips, or full racecards.

@@ -1,6 +1,6 @@
 # Where Horses Run / 競馬どこ？
 
-Global horse racing calendar, timetable, official-source index, and glossary.
+Global horse racing calendar, timetable, multi-authority official-source index, and glossary.
 
 ## What this site is
 
@@ -12,8 +12,8 @@ Japanese subtitle: **世界の競馬開催カレンダー・レース時刻表**
 ## What this site shows
 
 - Countries and regions where horse racing is active, under review, or archived
-- Racecourses and official source links
-- Calendar and timetable coverage where available
+- Racecourses, racing authorities, and official source links
+- Calendar and timetable coverage where available under a global-first timetable architecture
 - Coverage Level and Auto Level labels
 - A glossary for racing types, roles, horse types, and common official-site terms
 
@@ -32,3 +32,4 @@ Start here:
 
 - [Documentation index](docs/README.md)
 - [v0 specification](docs/specs/where-horses-run-v0-spec.md)
+- [Global-first timetable architecture](docs/specs/global-timetable-architecture.md)

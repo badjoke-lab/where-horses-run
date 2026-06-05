@@ -193,6 +193,51 @@ type TermsRisk = "low" | "medium" | "high" | "unknown";
 
 Use `unknown` until reviewed.
 
+
+---
+
+## 3.8 Global timetable source status
+
+Global timetable source inventory records use a shared source status so country and authority candidates can be compared before adapter implementation.
+
+```ts
+type GlobalTimetableSourceStatus =
+  | "verified"
+  | "partial"
+  | "not_verified"
+  | "stale"
+  | "unavailable";
+```
+
+Meaning:
+
+| Status | Meaning |
+|---|---|
+| `verified` | The displayed meeting-level fact was checked against the official source. |
+| `partial` | Some official information is available, but the displayed fact is incomplete. |
+| `not_verified` | A candidate source exists, but the meeting fact has not been verified. |
+| `stale` | The source was checked previously, but freshness is no longer acceptable. |
+| `unavailable` | The expected official source route was unavailable or unusable at last check. |
+
+Unverified source candidates must render as `partial` or `not_verified`; they must not be presented as complete timetable coverage.
+
+### 3.9 Global timetable capability rank
+
+```ts
+type GlobalTimetableCapabilityRank = "C" | "B" | "B+" | "A";
+```
+
+Meaning:
+
+| Rank | Required verified capability |
+|---|---|
+| C | Meeting date and racecourse only. |
+| B | First race time is available. |
+| B+ | First and last race time are available. |
+| A | Race-by-race / racecard-level detail is available from the official source. |
+
+Capability rank describes verified source capability. It does not authorize republishing entries, odds, results, payouts, tips, full racecards, or raw official page content.
+
 ---
 
 ## 4. Country
