@@ -16,10 +16,11 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 - Italy is represented as a MASAF-linked national gallop/jump/trotting broadcast surface through Grande Ippica Italiana/EQU TV; no direct stream or media URL is recorded.
 - Germany is intentionally split into thoroughbred/gallop and trotting records because Deutscher Galopp and WETTSTAR evidence cover different racing-code surfaces.
 - Spain is intentionally split into the Las Carreras thoroughbred circuit, Hipódromo de la Zarzuela racecourse replay evidence, and Federación Balear de Trot trotting evidence. Zarzuela and Balearic trotting evidence must not be treated as complete national Spain coverage.
+- Priority 2 Belgium, Netherlands, and Switzerland records are intentionally split by racecourse, racing code, replay-only source, or event-only source where the official evidence is not national coverage.
 
 ## Totals
 
-- Total audited/static records: **50**
+- Total audited/static records: **54**
 
 ### Count by `live_status`
 
@@ -30,16 +31,17 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | `betting_account` | 2 |
 | `tv_pay` | 3 |
 | `broadcast_partner` | 3 |
-| `event_only` | 4 |
-| `none_found` | 6 |
+| `racecourse_only` | 1 |
+| `event_only` | 5 |
+| `none_found` | 8 |
 
 ### Count by `replay_status`
 
 | Status | Count |
 | --- | ---: |
 | `official_account` | 2 |
-| `replay_available` | 38 |
-| `none_found` | 7 |
+| `replay_available` | 41 |
+| `none_found` | 8 |
 | `archive_only` | 3 |
 
 ## Records by status requiring v0 tracking
@@ -102,26 +104,6 @@ The lists below include any record where the named status appears as either `liv
 - `united-states` — United States (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
 - `brazil` — Brazil (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
 
-### `event_only`
-
-- `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
-- `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
-- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
-- `austria` — Austria (`live_status`: `event_only`, `replay_status`: `replay_available`)
-
-### `none_found`
-
-- `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
-- `macau` — Macau (`live_status`: `none_found`, `replay_status`: `none_found`)
-- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
-- `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
-- `martinique` — Martinique (`live_status`: `none_found`, `replay_status`: `replay_available`)
-- `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
-- `malaysia` — Malaysia (`live_status`: `none_found`, `replay_status`: `none_found`)
-- `philippines-metroturf` — Philippines — Metro Manila Turf Club (`live_status`: `official_free`, `replay_status`: `none_found`)
-- `spain-thoroughbred-las-carreras` — Spain — thoroughbred circuit (`live_status`: `tv_pay`, `replay_status`: `none_found`)
-- `spain-trotting` — Spain — trotting (`live_status`: `none_found`, `replay_status`: `replay_available`)
-
 ### `replay_available`
 
 - `japan-jra` — Japan — JRA (`live_status`: `official_free`, `replay_status`: `replay_available`)
@@ -162,12 +144,51 @@ The lists below include any record where the named status appears as either `liv
 - `germany-trotting` — Germany — trotting (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `spain-zarzuela` — Spain — Hipódromo de la Zarzuela (`live_status`: `tv_pay`, `replay_status`: `replay_available`)
 - `spain-trotting` — Spain — trotting (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `belgium-mons` — Belgium — Hippodrome de Wallonie Mons (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `netherlands-wolvega` — Netherlands — Victoria Park Wolvega (`live_status`: `racecourse_only`, `replay_status`: `replay_available`)
+- `switzerland-suisse-trot-replays` — Switzerland — Suisse Trot replays (`live_status`: `none_found`, `replay_status`: `replay_available`)
+
+### `racecourse_only`
+
+- `netherlands-wolvega` — Netherlands — Victoria Park Wolvega (`live_status`: `racecourse_only`, `replay_status`: `replay_available`)
+
+### `event_only`
+
+- `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
+- `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
+- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
+- `austria` — Austria (`live_status`: `event_only`, `replay_status`: `replay_available`)
+- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `none_found`)
+
+### `none_found`
+
+- `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
+- `macau` — Macau (`live_status`: `none_found`, `replay_status`: `none_found`)
+- `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
+- `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
+- `martinique` — Martinique (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `malaysia` — Malaysia (`live_status`: `none_found`, `replay_status`: `none_found`)
+- `philippines-metroturf` — Philippines — Metro Manila Turf Club (`live_status`: `official_free`, `replay_status`: `none_found`)
+- `spain-thoroughbred-las-carreras` — Spain — thoroughbred circuit (`live_status`: `tv_pay`, `replay_status`: `none_found`)
+- `spain-trotting` — Spain — trotting (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `belgium-mons` — Belgium — Hippodrome de Wallonie Mons (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `switzerland-suisse-trot-replays` — Switzerland — Suisse Trot replays (`live_status`: `none_found`, `replay_status`: `replay_available`)
+- `switzerland-white-turf` — Switzerland — White Turf St. Moritz (`live_status`: `event_only`, `replay_status`: `none_found`)
 
 ### `archive_only`
 
 - `south-korea` — South Korea (`live_status`: `event_only`, `replay_status`: `archive_only`)
 - `bahrain` — Bahrain (`live_status`: `official_free`, `replay_status`: `archive_only`)
 - `qatar` — Qatar (`live_status`: `event_only`, `replay_status`: `archive_only`)
+
+## Priority 2 live/replay expansion notes
+
+- The PR-LIVE-022 pass added Belgium, Netherlands, and Switzerland records only where official racecourse, authority, broadcaster, official-social, or clearly official-partner live/replay evidence was found.
+- Belgium is represented by Hippodrome de Wallonie Mons replay evidence only; it must not be treated as complete Belgium coverage or as verified live coverage.
+- The Netherlands is represented by Victoria Park Wolvega harness-racing evidence only; it must not be treated as national Netherlands coverage, Duindigt coverage, or grass-track coverage.
+- Switzerland is split between Suisse Trot replay evidence and White Turf St. Moritz event-only live evidence; neither record should be described as complete national Swiss live coverage.
+- No calendar, race-date, post-time, racecard, odds, entry, result, payout, prediction, tip, direct-stream, or embed behavior was added.
 
 ## Priority 1 live/replay expansion notes
 
@@ -195,7 +216,7 @@ Singapore should not be described as having active domestic Singapore Turf Club 
 
 ## Hardening notes
 
-- The summary counts and status lists were recalculated from the current static dataset after the Macau Priority 1 inactive-racing audit.
-- India, Malaysia, the Philippines, Italy, Germany, Spain, and Macau records were added only from official racecourse, official authority, broadcaster, or clearly official-partner evidence, with venue/provider or inactive-racing caveats where coverage is not national or not active.
+- The summary counts and status lists were recalculated from the current static dataset after the Priority 2 Belgium, Netherlands, and Switzerland audit expansion.
+- India, Malaysia, the Philippines, Italy, Germany, Spain, Macau, Belgium, the Netherlands, and Switzerland records were added only from official racecourse, official authority, broadcaster, official-social, or clearly official-partner evidence, with venue/provider, event-only, replay-only, or inactive-racing caveats where coverage is not national or not active.
 - Carry-forward v0 hardening remains in place for Malta, Martinique, Peru, and Singapore so unresolved, race-detail, and domestic-racing-ended cases stay explicitly caveated.
 - Evidence remains limited to official or clearly official-partner landing pages where possible.
