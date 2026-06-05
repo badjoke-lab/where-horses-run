@@ -20,7 +20,25 @@ The project does not republish entries, odds, results, payouts, tips, full racec
 Repository: badjoke-lab/where-horses-run  
 Default branch: main  
 Deployment: Cloudflare Pages  
-Current phase: global-first timetable architecture and multi-authority source inventory foundation
+Current phase: M3 v0 generator foundation release gate
+
+---
+
+## M3 v0 release gate status
+
+M3 v0 generator foundation is complete.
+
+Release-gate public wording:
+
+- public coverage remains partial
+- UAE is season gap / no active-window meetings
+- no live fetch is enabled
+- no source page parsing
+- no raw source body storage
+- No public complete coverage claim
+- No racecards, odds, results, payouts, predictions, or tips are stored
+
+This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI.
 
 ---
 
