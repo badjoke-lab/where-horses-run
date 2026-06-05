@@ -30,10 +30,9 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 
 | replay_status | Count |
 | --- | ---: |
-| `replay_available` | 27 |
+| `replay_available` | 28 |
 | `official_account` | 2 |
 | `archive_only` | 3 |
-| `not_verified` | 1 |
 | `none_found` | 3 |
 
 ## Records by status requiring v0 tracking
@@ -52,7 +51,7 @@ The lists below include any record where the named status appears as either `liv
 - `turkey` — Turkey (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `morocco` — Morocco (`live_status`: `official_free`, `replay_status`: `official_account`)
 - `chile` — Chile (`live_status`: `official_free`, `replay_status`: `replay_available`)
-- `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
+- `peru` — Peru (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `mexico` — Mexico (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `bahrain` — Bahrain (`live_status`: `official_free`, `replay_status`: `archive_only`)
 - `uruguay` — Uruguay (`live_status`: `official_free`, `replay_status`: `replay_available`)
@@ -85,10 +84,6 @@ The lists below include any record where the named status appears as either `liv
 - `united-kingdom` — United Kingdom (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
 - `united-states` — United States (`live_status`: `broadcast_partner`, `replay_status`: `replay_available`)
 
-### `not_verified`
-
-- `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
-
 ### `none_found`
 
 - `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
@@ -112,11 +107,9 @@ The lists below include any record where the named status appears as either `liv
 
 ## `not_verified` review
 
-`not_verified` intentionally remains in **1** record after the live/replay hardening pass:
+`not_verified` intentionally remains in **0** records after the final Peru replay verification pass.
 
-- `peru` — Peru (`live_status`: `official_free`, `replay_status`: `not_verified`)
-
-The previous large-jurisdiction placeholder language no longer applies to the United Kingdom, Ireland, France, United States, Canada, Australia, or Singapore. The United Arab Emirates, Chile, Jamaica, Malta, and Martinique records now also carry more specific statuses for the previously unresolved side. The remaining `not_verified` value is conservative and public-safe: official Monterrico live coverage is verified, but official replay availability was not confirmed from official landing pages. The data should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
+The previous large-jurisdiction placeholder language no longer applies to the United Kingdom, Ireland, France, United States, Canada, Australia, or Singapore. The United Arab Emirates, Chile, Jamaica, Malta, Martinique, and Peru records now also carry more specific statuses for the previously unresolved side. Peru replay status is promoted only from official Monterrico results navigation and race-detail pages that include a Video section; the data still should not infer routine live or replay availability from social clips, event pages, race-day news, JavaScript-only surfaces, or non-official mirrors.
 
 ## Singapore wording note
 
@@ -129,8 +122,8 @@ Singapore should not be described as having active domestic Singapore Turf Club 
 ## Hardening notes from this pass
 
 - The summary counts and status lists were recalculated from the current static dataset after the live/replay hardening pass.
-- United Arab Emirates, Chile, and Jamaica replay statuses were promoted only where official racecourse/authority replay landing pages or official replay references were found.
+- United Arab Emirates, Chile, Jamaica, and Peru replay statuses were promoted only where official racecourse/authority replay landing pages, official results navigation with race-video sections, or official replay references were found.
 - Malta replay and Martinique live statuses were moved to `none_found` where official pages did not provide routine public replay/live landing evidence.
-- Peru remains `not_verified` for replay because official results pages were not treated as replay evidence.
+- Peru replay is now `replay_available` because official Monterrico results navigation leads to race-detail pages with a Video section; no direct media URL is stored.
 - Singapore wording remains hardened so Singapore Pools account/subscription evidence is not presented as active domestic Singapore Turf Club racing, and so the absence of a verified official domestic Singapore replay archive remains explicit.
 - Evidence remains limited to official or clearly official-partner landing pages where possible.

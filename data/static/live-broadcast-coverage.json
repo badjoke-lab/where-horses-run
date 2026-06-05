@@ -550,10 +550,10 @@
         "thoroughbred-flat"
       ],
       "live_status": "official_free",
-      "replay_status": "not_verified",
+      "replay_status": "replay_available",
       "provider_name": "Hipódromo de Monterrico / Jockey Club del Perú",
       "official_live_url": "https://hipodromodemonterrico.com.pe/carreras-senal-en-vivo",
-      "official_replay_url": null,
+      "official_replay_url": "https://hipodromodemonterrico.com.pe/carreras-ultimos-resultados",
       "requires_login": false,
       "requires_betting_account": false,
       "requires_paid_tv": null,
@@ -562,11 +562,12 @@
       "evidence_urls": [
         "https://hipodromodemonterrico.com.pe/carreras-senal-en-vivo",
         "https://www.tvperu.gob.pe/noticias/deportes/gran-premio-latinoamericano-2026-evento-hipico-mas-importante-del-ano-se-transmitira-por-tvperu",
-        "https://hipodromodemonterrico.com.pe/carreras-ultimos-resultados"
+        "https://hipodromodemonterrico.com.pe/carreras-ultimos-resultados",
+        "https://hipodromodemonterrico.com.pe/carreras-resultado-ver?id_carrera=808200"
       ],
       "confidence": "medium",
       "last_checked": "2026-06-05",
-      "notes": "Official Monterrico page provides a live-signal landing page; official result pages were not treated as replay evidence, so replay availability remains unverified."
+      "notes": "Official Monterrico pages provide a live-signal landing page and official results navigation whose race-detail pages include a Video section; no direct media URL is stored."
     },
     {
       "jurisdiction_id": "mexico",
