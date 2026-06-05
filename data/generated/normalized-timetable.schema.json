@@ -1,0 +1,106 @@
+{
+  "schema_version": "normalized-timetable-output-schema-v0",
+  "purpose": "Defines the public-safe normalized timetable output records that sit between extracted meeting candidates and calendar view model summaries.",
+  "record_key": [
+    "meeting_id"
+  ],
+  "required_record_fields": [
+    "meeting_id",
+    "country_id",
+    "authority_id",
+    "racecourse_id",
+    "date",
+    "timezone",
+    "source_id",
+    "route_id",
+    "source_status",
+    "capability_rank",
+    "first_race_time_local",
+    "last_race_time_local",
+    "official_source_url",
+    "last_checked_date",
+    "display_status",
+    "notes"
+  ],
+  "field_definitions": {
+    "meeting_id": "Stable public-safe identifier for one authority, racecourse, and local-date meeting.",
+    "country_id": "Stable country identifier shared with country and timetable datasets.",
+    "authority_id": "Stable racing authority identifier within the country scope.",
+    "racecourse_id": "Stable racecourse identifier for the meeting location.",
+    "date": "Local meeting date using YYYY-MM-DD.",
+    "timezone": "IANA timezone used to interpret local race times.",
+    "source_id": "Stable official source identifier from source inventory or reviewed candidate provenance.",
+    "route_id": "Stable acquisition route identifier used to produce or verify the record; use null only when no route contract exists yet.",
+    "source_status": "Public source verification/freshness status applied to the normalized meeting fact.",
+    "capability_rank": "Public-safe capability rank controlling which time summary fields can be exposed to monthly/day calendar display.",
+    "first_race_time_local": "Local HH:MM first race time when supported by source status and capability rank; otherwise null.",
+    "last_race_time_local": "Local HH:MM last race time when supported by source status and capability rank; otherwise null.",
+    "official_source_url": "Official confirmation URL for the source or meeting.",
+    "last_checked_date": "Date the normalized meeting fact was last checked, using YYYY-MM-DD, or null when not checked yet.",
+    "display_status": "Calendar display readiness/status label for this normalized meeting summary.",
+    "notes": "Public-safe notes for limitations, partial coverage, or source caveats; no private/internal notes or prohibited racing content."
+  },
+  "source_status_enum": [
+    "verified",
+    "partial",
+    "not_verified",
+    "stale",
+    "unavailable"
+  ],
+  "capability_rank_enum": [
+    "C",
+    "B",
+    "B+",
+    "A"
+  ],
+  "display_status_enum": [
+    "displayable",
+    "partial",
+    "hidden",
+    "stale",
+    "unavailable"
+  ],
+  "display_rules": {
+    "C": "first_race_time_local and last_race_time_local must be null.",
+    "B": "first_race_time_local may be set, and last_race_time_local must be null.",
+    "B+": "first_race_time_local and last_race_time_local may be set.",
+    "A": "Monthly/day calendar summary must not expose race-by-race detail; only safe summary fields are allowed. first_race_time_local and last_race_time_local may be set."
+  },
+  "safe_calendar_summary_fields": [
+    "meeting_id",
+    "country_id",
+    "authority_id",
+    "racecourse_id",
+    "date",
+    "timezone",
+    "source_id",
+    "route_id",
+    "source_status",
+    "capability_rank",
+    "first_race_time_local",
+    "last_race_time_local",
+    "official_source_url",
+    "last_checked_date",
+    "display_status",
+    "notes"
+  ],
+  "explicit_exclusions": [
+    "no real meeting records in the placeholder generated file",
+    "no calendar UI changes",
+    "no adapters",
+    "no scrapers",
+    "no parsers",
+    "no runtime fetch logic",
+    "no scheduler logic",
+    "no live source fetching",
+    "no raw source body/html storage",
+    "no racecards",
+    "no odds",
+    "no results",
+    "no payouts",
+    "no predictions",
+    "no tips",
+    "no full entries",
+    "no private/internal notes"
+  ]
+}

@@ -38,7 +38,7 @@ Release-gate public wording:
 - No public complete coverage claim
 - No racecards, odds, results, payouts, predictions, or tips are stored
 
-This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added.
+This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added. The [normalized timetable output schema](../specs/normalized-timetable-output-schema.md) now defines the empty generated Normalized Timetable Record layer that future reviewed meeting facts can use before calendar view model projection.
 
 ---
 
@@ -84,6 +84,7 @@ The current public-facing foundation includes:
 - generated schedule status visibility
 - data validation scripts
 - generated data dry-run checks
+- normalized timetable output schema validation
 
 ---
 
@@ -182,7 +183,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory and Acquisition Route Inventory data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory, Acquisition Route Inventory, and Normalized Timetable Record data
 
 Generated datasets currently include:
 
@@ -242,7 +243,7 @@ The project currently focuses on:
 - safe generated pipeline groundwork
 - global-first timetable architecture
 - multi-authority source inventory schema validation
-- public-safe timetable data-flow, display, and acquisition-route contract
+- public-safe timetable data-flow, display, acquisition-route, and Normalized Timetable Record contract
 - multi-authority source inventory planning
 
 The project is not currently:
@@ -277,9 +278,10 @@ Recommended next work:
 1. Define the authority source inventory schema.
 2. Build the Japan NAR source inventory using the same fields as other authority candidates.
 3. Add multi-country source candidates for overseas authorities at the same inventory level.
-4. Define and verify the common calendar display contract.
-5. Create the adapter selection matrix.
-6. Limit the first adapter candidates to JRA / NAR / HKJC.
+4. Add reviewed normalized timetable records after source and route review.
+5. Define and verify the common calendar display reader contract.
+6. Create the adapter selection matrix.
+7. Limit the first adapter candidates to JRA / NAR / HKJC.
 
 Near-term candidate:
 
