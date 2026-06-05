@@ -221,6 +221,9 @@ A route may be promoted only when all of the following are true:
 
 ## 5. Normalized timetable output expectations
 
+The dedicated schema is documented in [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md).
+
+
 Normalized timetable records eligible for calendar display should use this public-safe shape:
 
 ```ts
@@ -282,11 +285,11 @@ type CapabilityRank = "C" | "B" | "B+" | "A";
 
 ```ts
 type DisplayStatus =
-  | "display_ready"
-  | "partial_display"
-  | "source_link_only"
-  | "under_review"
-  | "hidden";
+  | "displayable"
+  | "partial"
+  | "hidden"
+  | "stale"
+  | "unavailable";
 ```
 
 ### 5.3 Normalization rules
@@ -299,7 +302,7 @@ type DisplayStatus =
 - `B` records may set `first_race_time_local` and must keep `last_race_time_local` `null` unless promoted to `B+` or `A` with summary-safe last-time support.
 - `B+` and `A` records may set first and last race times, but monthly/day display must not show race-by-race detail.
 - `official_source_url` must point users to the official source for confirmation.
-- `display_status` must remain conservative when source freshness, mapping confidence, or route status is incomplete.
+- `display_status` must use `displayable`, `partial`, `hidden`, `stale`, or `unavailable`, and must remain conservative when source freshness, mapping confidence, or route status is incomplete.
 - `notes` must be public-safe and must not contain private workflow, budget, monetization, or internal strategy details.
 
 ---
