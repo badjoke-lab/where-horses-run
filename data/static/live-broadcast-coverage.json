@@ -789,20 +789,24 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Hipódromo Camarero",
+      "official_live_url": "https://www.hipodromo-camarero.com/",
+      "official_replay_url": "https://www.hipodromo-camarero.com/resultados/locales",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://www.hipodromo-camarero.com/",
+        "https://www.hipodromo-camarero.com/resultados/locales",
+        "https://preview.hipodromo-camarero.com/FAQ/en-US/index.html"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official site links live viewing and local race replay/results pages; wagering platform FAQ also documents live video/replay controls."
     },
     {
       "jurisdiction_id": "jamaica",
@@ -810,20 +814,23 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
+      "live_status": "official_free",
       "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
+      "provider_name": "Caymanas Park / SVREL",
+      "official_live_url": "https://caymanasracing.com/live-streaming",
       "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://caymanasracing.com/live-streaming",
+        "https://caymanasracing.com/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official Caymanas page provides a live-stream landing page; no separate official replay landing page was verified."
     },
     {
       "jurisdiction_id": "trinidad-and-tobago",
@@ -831,20 +838,23 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
+      "live_status": "none_found",
+      "replay_status": "none_found",
+      "provider_name": "Trinidad & Tobago Racing Authority / Arima Race Club",
       "official_live_url": null,
       "official_replay_url": null,
       "requires_login": null,
       "requires_betting_account": null,
       "requires_paid_tv": null,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://www.ttra.net/",
+        "https://arimaraceclub.com/"
+      ],
+      "confidence": "low",
+      "last_checked": "2026-06-05",
+      "notes": "Official authority site exposes racing records but no public live or replay landing page was verified; club site was not readable without JavaScript."
     },
     {
       "jurisdiction_id": "barbados",
@@ -852,41 +862,49 @@
       "racing_types": [
         "thoroughbred-flat"
       ],
-      "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
-      "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Barbados Turf Club",
+      "official_live_url": "https://www.barbadosturfclub.org/live-stream/",
+      "official_replay_url": "https://www.barbadosturfclub.org/live-stream/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse, official_social",
+      "evidence_urls": [
+        "https://www.barbadosturfclub.org/",
+        "https://www.barbadosturfclub.org/live-stream/"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "Official live-stream page lists live streams, instant replays, and the official BTC YouTube channel."
     },
     {
       "jurisdiction_id": "martinique",
       "country_or_region": "Martinique",
       "racing_types": [
-        "thoroughbred-flat"
+        "thoroughbred-flat",
+        "trotting"
       ],
       "live_status": "not_verified",
-      "replay_status": "not_verified",
-      "provider_name": null,
+      "replay_status": "replay_available",
+      "provider_name": "Hippodrome de Martinique - Carrère",
       "official_live_url": null,
-      "official_replay_url": null,
-      "requires_login": null,
-      "requires_betting_account": null,
-      "requires_paid_tv": null,
+      "official_replay_url": "https://hippodromedecarrere.fr/index.php/category/videos/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": null,
-      "evidence_urls": [],
-      "confidence": "not_checked",
-      "last_checked": null,
-      "notes": "Initial placeholder. Official live/replay availability not yet audited."
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://hippodromedecarrere.fr/",
+        "https://hippodromedecarrere.fr/index.php/category/videos/",
+        "https://hippodromedecarrere.fr/index.php/category/informations/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official site maintains a video archive for race replays; no current live-stream landing page was verified."
     },
     {
       "jurisdiction_id": "oman",
