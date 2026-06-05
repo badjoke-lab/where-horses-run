@@ -1,0 +1,78 @@
+{
+  "schema_version": "timetable-acquisition-routes-schema-v0",
+  "purpose": "Defines the public-safe acquisition route inventory shape used after authority source inventory review and before any fetch, manual snapshot, dry run, normalization, calendar projection, or scheduler implementation.",
+  "record_key": [
+    "route_id"
+  ],
+  "required_record_fields": [
+    "route_id",
+    "authority_id",
+    "official_source_id",
+    "source_url",
+    "acquisition_mode",
+    "output_target",
+    "allowed_refresh_scope",
+    "last_checked_date",
+    "status",
+    "notes"
+  ],
+  "field_definitions": {
+    "route_id": "Stable public-safe identifier for this acquisition route.",
+    "authority_id": "Authority identifier matching an authority source inventory record.",
+    "official_source_id": "Official source identifier matching an authority source inventory record.",
+    "source_url": "Official source URL or stable official route URL used for checking.",
+    "acquisition_mode": "Allowed acquisition posture for this route: manual snapshot, dry run, scheduled candidate, or disabled.",
+    "output_target": "Highest public-safe downstream output this route may produce.",
+    "allowed_refresh_scope": "Maximum refresh scope permitted by this route contract.",
+    "last_checked_date": "Date the route was last checked, using YYYY-MM-DD, or null when not checked yet.",
+    "status": "Route readiness/status label for review, manual verification, dry-run-only use, scheduler candidacy, blocking, disabling, or staleness.",
+    "notes": "Public-safe route notes; no private workflow notes, internal strategy, raw source content, entries, odds, results, payouts, predictions, tips, or full racecards."
+  },
+  "acquisition_mode_enum": [
+    "manual_snapshot",
+    "dry_run",
+    "scheduled_candidate",
+    "disabled"
+  ],
+  "output_target_enum": [
+    "extracted_meeting_candidate",
+    "normalized_timetable_record",
+    "calendar_view_model",
+    "status_only"
+  ],
+  "allowed_refresh_scope_enum": [
+    "none",
+    "single_date",
+    "date_range",
+    "month",
+    "source_defined_window"
+  ],
+  "status_enum": [
+    "not_reviewed",
+    "candidate",
+    "verified_manual",
+    "dry_run_only",
+    "scheduled_candidate",
+    "blocked",
+    "disabled",
+    "stale"
+  ],
+  "explicit_exclusions": [
+    "no real route records in the placeholder inventory",
+    "no adapter implementation",
+    "no scraper implementation",
+    "no parser implementation",
+    "no runtime fetch logic",
+    "no scheduler implementation",
+    "no live source fetching",
+    "no raw source body/html storage",
+    "no racecards",
+    "no odds",
+    "no results",
+    "no payouts",
+    "no predictions",
+    "no tips",
+    "no full entries",
+    "no private/internal notes"
+  ]
+}

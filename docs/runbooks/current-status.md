@@ -182,7 +182,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder inventory data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory and Acquisition Route Inventory data
 
 Generated datasets currently include:
 
@@ -218,6 +218,7 @@ It does not currently support:
 
 - live network fetching as a public runtime feature
 - source-specific live parsing as a public runtime feature
+- live acquisition route fetching or scheduled acquisition route execution
 - generated file writeback automation
 - scheduled automatic updates
 - raw live page storage
