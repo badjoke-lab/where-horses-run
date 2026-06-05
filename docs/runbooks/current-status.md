@@ -182,6 +182,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md) and empty placeholder inventory data
 
 Generated datasets currently include:
 
@@ -239,6 +240,7 @@ The project currently focuses on:
 - bilingual presentation
 - safe generated pipeline groundwork
 - global-first timetable architecture
+- multi-authority source inventory schema validation
 - multi-authority source inventory planning
 
 The project is not currently:

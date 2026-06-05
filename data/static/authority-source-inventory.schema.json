@@ -1,0 +1,105 @@
+{
+  "schema_version": "authority-source-inventory-schema-v0",
+  "purpose": "Defines the shared multi-authority official source inventory shape used before selecting timetable adapters.",
+  "record_key": [
+    "country_id",
+    "authority_id",
+    "official_source_id"
+  ],
+  "required_record_fields": [
+    "country_id",
+    "authority_id",
+    "authority_name_en",
+    "authority_name_local",
+    "authority_type",
+    "racecourse_scope",
+    "official_source_id",
+    "official_source_url",
+    "source_kind",
+    "source_status",
+    "last_checked_date",
+    "capability_rank",
+    "adapter_candidate_status",
+    "notes"
+  ],
+  "field_definitions": {
+    "country_id": "Stable country identifier shared with country and timetable datasets.",
+    "authority_id": "Stable racing authority identifier within the country scope.",
+    "authority_name_en": "English authority name for review and display.",
+    "authority_name_local": "Local-language authority name when applicable; use null when no local variant is needed.",
+    "authority_type": "Authority jurisdiction or operator category.",
+    "racecourse_scope": "Racecourse coverage scope for the source candidate.",
+    "official_source_id": "Stable source identifier for the authority source candidate.",
+    "official_source_url": "Official or authority-owned source URL used for confirmation.",
+    "source_kind": "Kind of source capability being inventoried.",
+    "source_status": "Shared global timetable source status.",
+    "last_checked_date": "Date the source candidate was last checked, using YYYY-MM-DD, or null when not checked yet.",
+    "capability_rank": "Shared global timetable capability rank.",
+    "adapter_candidate_status": "Adapter-selection readiness after source review, without implementing the adapter.",
+    "notes": "Public-safe reviewer notes; no internal strategy, budget, monetization, private workflow, entries, odds, results, payouts, tips, or full racecards."
+  },
+  "authority_type_enum": [
+    "national",
+    "regional",
+    "state",
+    "provincial",
+    "racecourse_operator",
+    "other"
+  ],
+  "racecourse_scope_enum": [
+    "all_authority_racecourses",
+    "subset_of_authority_racecourses",
+    "single_racecourse",
+    "countrywide",
+    "unknown"
+  ],
+  "source_kind_enum": [
+    "calendar",
+    "timetable",
+    "programme",
+    "racecard",
+    "official_link",
+    "source_index",
+    "other"
+  ],
+  "source_status_enum": [
+    "verified",
+    "partial",
+    "not_verified",
+    "stale",
+    "unavailable"
+  ],
+  "capability_rank_enum": [
+    "C",
+    "B",
+    "B+",
+    "A"
+  ],
+  "adapter_candidate_status_enum": [
+    "not_reviewed",
+    "candidate",
+    "needs_review",
+    "blocked",
+    "not_applicable"
+  ],
+  "explicit_exclusions": [
+    "no real authority records in the placeholder inventory",
+    "no adapter implementation",
+    "no scraper implementation",
+    "no parser implementation",
+    "no runtime fetch logic",
+    "no raw source body/html storage",
+    "no racecards",
+    "no odds",
+    "no results",
+    "no payouts",
+    "no predictions",
+    "no tips",
+    "no full entries",
+    "no JRA-centered special fields",
+    "no internal strategy",
+    "no budget notes",
+    "no monetization notes",
+    "no private workflow notes"
+  ]
+}
