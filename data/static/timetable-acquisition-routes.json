@@ -1,6 +1,43 @@
 {
   "schema_version": "timetable-acquisition-routes-v0",
   "schema_ref": "data/static/timetable-acquisition-routes.schema.json",
-  "purpose": "Placeholder for public-safe acquisition route inventory records. Real JRA, NAR, HKJC, and overseas route records will be added in follow-up review PRs.",
-  "records": []
+  "purpose": "Public-safe acquisition route inventory records for the initial peer JRA, NAR/local-government-racing, and HKJC timetable candidates.",
+  "records": [
+    {
+      "route_id": "jra-calendar-status-route",
+      "authority_id": "jra",
+      "official_source_id": "jra-calendar",
+      "source_url": "https://www.jra.go.jp/keiba/calendar/",
+      "acquisition_mode": "dry_run",
+      "output_target": "status_only",
+      "allowed_refresh_scope": "none",
+      "last_checked_date": "2026-06-05",
+      "status": "dry_run_only",
+      "notes": "Initial peer route for official JRA calendar source linkage. Current use is dry-run validation only; no fetch, parser, scheduler, or writeback is enabled."
+    },
+    {
+      "route_id": "nar-local-government-monthly-status-route",
+      "authority_id": "nar-local-government-racing",
+      "official_source_id": "nar-monthly-convene-info",
+      "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+      "acquisition_mode": "dry_run",
+      "output_target": "status_only",
+      "allowed_refresh_scope": "none",
+      "last_checked_date": "2026-06-05",
+      "status": "dry_run_only",
+      "notes": "Initial peer route for official NAR local-government-racing monthly source linkage. Current use is dry-run validation only; no fetch, parser, scheduler, or writeback is enabled."
+    },
+    {
+      "route_id": "hkjc-fixture-status-route",
+      "authority_id": "hkjc",
+      "official_source_id": "hkjc-fixture-list",
+      "source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+      "acquisition_mode": "dry_run",
+      "output_target": "status_only",
+      "allowed_refresh_scope": "none",
+      "last_checked_date": "2026-06-05",
+      "status": "dry_run_only",
+      "notes": "Initial peer route for official HKJC fixture-list source linkage. Current use is dry-run validation only; no fetch, parser, scheduler, or writeback is enabled."
+    }
+  ]
 }

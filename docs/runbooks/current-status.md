@@ -184,7 +184,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory, Acquisition Route Inventory, and Normalized Timetable Record data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), Authority Source Inventory and Acquisition Route Inventory records for the initial peer JRA, NAR/local-government-racing, and HKJC route candidates, plus empty placeholder Normalized Timetable Record data
 
 Generated datasets currently include:
 
@@ -242,7 +242,7 @@ Current boundaries:
 - no raw source body/html storage
 - no racecards, odds, results, payouts, predictions, tips, full entries, or private/internal notes
 
-Future route records can be checked through this skeleton before implementation. The skeleton reads the empty Acquisition Route Inventory, Acquisition Route schema, Authority Source Inventory, and Normalized Timetable Record placeholder output, then reports whether route records link to reviewed `authority_id` + `official_source_id` pairs and stay inside allowed acquisition mode, output target, and refresh-scope enums. It does not add real JRA, NAR, HKJC, or overseas route records.
+Initial public-safe JRA, NAR/local-government-racing, and HKJC route records now exist as peer candidates in the Acquisition Route Inventory and link to reviewed Authority Source Inventory pairs. Future route records can be checked through this skeleton before implementation. The skeleton reads the Acquisition Route Inventory, Acquisition Route schema, Authority Source Inventory, and Normalized Timetable Record placeholder output, then reports whether route records link to reviewed `authority_id` + `official_source_id` pairs and stay inside allowed acquisition mode, output target, and refresh-scope enums. These records remain dry-run/status-only and do not add live fetching, adapter logic, parser logic, scheduler behavior, generated writeback, or normalized output promotion.
 
 ---
 
@@ -284,7 +284,7 @@ The project is not currently:
 - Live parsers are not available as a public feature.
 - GitHub Actions dry-run does not write generated files.
 - Country and racecourse coverage is not complete.
-- The global timetable source inventory and adapter selection matrix are not implemented yet; the common Calendar view model reader contract is now drafted, but it is not wired to public calendar UI yet.
+- The global timetable source inventory has initial peer JRA, NAR/local-government-racing, and HKJC route candidates only; the adapter selection matrix is not implemented yet, and the common Calendar view model reader contract is not wired to public calendar UI yet.
 - Many racecourse course-profile fields are still unconfirmed placeholders.
 - Visual guide assets are not started.
 
@@ -294,18 +294,17 @@ The project is not currently:
 
 Recommended next work:
 
-1. Define the authority source inventory schema.
-2. Build the Japan NAR source inventory using the same fields as other authority candidates.
-3. Add multi-country source candidates for overseas authorities at the same inventory level.
-4. Add reviewed normalized timetable records after source and route review.
-5. Add reviewed normalized timetable records that can be consumed by the verified common calendar display reader contract.
-6. Create the adapter selection matrix.
-7. Limit the first adapter candidates to JRA / NAR / HKJC.
+1. Review the initial peer JRA, NAR/local-government-racing, and HKJC acquisition route records without promoting normalized output.
+2. Add multi-country source candidates for overseas authorities at the same inventory level.
+3. Add reviewed normalized timetable records after source and route review.
+4. Add reviewed normalized timetable records that can be consumed by the verified common calendar display reader contract.
+5. Create the adapter selection matrix.
+6. Keep the first adapter candidates limited to JRA / NAR / HKJC as peer candidates.
 
 Near-term candidate:
 
 ```text
-Start with the authority source inventory schema, then inventory Japan NAR, JRA, HKJC, and overseas source candidates under the same source status, last checked date, and capability rank model.
+Continue from the initial JRA, NAR/local-government-racing, and HKJC source-route records, then add overseas source candidates under the same source status, last checked date, and capability rank model after public-safe review.
 ```
 
 JRA remains a reusable verified source and adapter candidate. It is not the center of the timetable architecture. All future additions should remain source-first and should not republish entries, odds, results, payouts, tips, or full racecards.
