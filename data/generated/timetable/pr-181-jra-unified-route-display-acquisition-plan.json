@@ -1,0 +1,180 @@
+{
+  "schema_version": "pr-181-jra-unified-route-display-acquisition-plan-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Replace the slow B-only path with an A-first route plan that also requires calendar display, day-page display, automatic next-fetch route construction, parser integration, and CI validation before JRA is considered complete.",
+  "context": {
+    "current_jra_state": "one meeting snapshot plus page-level additional calendar rows; wider section-level records not complete",
+    "problem_fixed_by_this_plan": "Previous schedule checked B/B+ acquisition before requiring display and automatic acquisition, and would have forced a later separate A check.",
+    "new_policy": "Check A first. If A is not possible, downgrade using the same evidence to B+ or B. Do not mark JRA complete until records are normalized, displayed in calendar/day views, and reproducible by an acquisition route."
+  },
+  "rank_ladder": [
+    {
+      "rank": "A",
+      "check_first": true,
+      "requires": [
+        "official meeting list route",
+        "official race rows",
+        "official race_time rows",
+        "official race detail or racecard route per race",
+        "stable route parameters for future dates",
+        "normalized data displayed in calendar and day pages",
+        "automatic acquisition route with parser and CI"
+      ]
+    },
+    {
+      "rank": "B+",
+      "fallback_if_a_fails": true,
+      "requires": [
+        "official meeting list route",
+        "complete official race_number and race_time rows",
+        "section-level meeting split",
+        "stable date URL generation",
+        "normalized data displayed in calendar and day pages",
+        "automatic acquisition route with parser and CI"
+      ]
+    },
+    {
+      "rank": "B",
+      "fallback_if_bplus_fails": true,
+      "requires": [
+        "official first_race_time",
+        "official last_race_time",
+        "official or source-derived race_count from complete verified rows",
+        "calendar and day-page display",
+        "repeatable next-fetch route"
+      ]
+    },
+    {
+      "rank": "C",
+      "fallback_if_b_fails": true,
+      "requires": [
+        "fixture/date only or incomplete time coverage"
+      ]
+    }
+  ],
+  "completion_gates": {
+    "acquisition_verification": {
+      "required": true,
+      "description": "Official sources must expose enough data to decide A, B+, B, or C from the same route inspection."
+    },
+    "normalization": {
+      "required": true,
+      "description": "Page rows must be split into official meeting sections and normalized into meeting/race/source records."
+    },
+    "calendar_display": {
+      "required": true,
+      "must_show": [
+        "meeting_date",
+        "racecourse",
+        "rank",
+        "first_race_time",
+        "last_race_time",
+        "race_count",
+        "source_url",
+        "last_checked",
+        "verification_status"
+      ]
+    },
+    "day_page_display": {
+      "required": true,
+      "must_show": [
+        "race_number",
+        "race_time",
+        "race_source_url",
+        "section_or_meeting_id",
+        "verification_status"
+      ]
+    },
+    "automatic_next_fetch_route": {
+      "required": true,
+      "pipeline": [
+        "date_to_jra_calendar_url",
+        "fetch_official_page",
+        "parse_calendar_sections",
+        "split_meetings",
+        "normalize_race_rows",
+        "write_generated_json",
+        "render_calendar_and_day_pages",
+        "validate_in_ci"
+      ]
+    },
+    "ci_validation": {
+      "required": true,
+      "must_detect": [
+        "missing_source_url",
+        "empty_race_rows_for_promoted_records",
+        "duplicate_race_number_inside_same_meeting",
+        "unsplit_multi-section_page_rows",
+        "missing_first_or_last_time_for_B_records",
+        "missing_detail_route_for_A_records",
+        "rank_claim_without_required_fields"
+      ]
+    }
+  },
+  "compressed_forward_schedule": [
+    {
+      "planned_pr": "PR-182",
+      "topic": "JRA A-first inspection and section-split schema",
+      "must_include": [
+        "A/B+/B/C capability matrix",
+        "section split schema",
+        "display field requirements",
+        "auto acquisition route requirements"
+      ]
+    },
+    {
+      "planned_pr": "PR-183",
+      "topic": "JRA normalized section records",
+      "must_include": [
+        "split 中山/京都 sections into separate meetings",
+        "normalized meeting records",
+        "normalized race rows",
+        "source URLs"
+      ]
+    },
+    {
+      "planned_pr": "PR-184",
+      "topic": "JRA calendar and day-page display adapter",
+      "must_include": [
+        "monthly calendar display",
+        "day page race-time display",
+        "rank/source/status display",
+        "empty and partial state display"
+      ]
+    },
+    {
+      "planned_pr": "PR-185",
+      "topic": "JRA automatic acquisition route",
+      "must_include": [
+        "date URL generator",
+        "fetcher contract",
+        "parser contract",
+        "generated data dry-run integration"
+      ]
+    },
+    {
+      "planned_pr": "PR-186",
+      "topic": "JRA CI and rank gate",
+      "must_include": [
+        "CI checks",
+        "A/B+/B rank decision",
+        "no-promotion fallback",
+        "NAR transition if blocked"
+      ]
+    }
+  ],
+  "policy_changes": [
+    "Do not complete JRA at acquisition-result stage only.",
+    "Do not run a separate late A-rank investigation after finishing B/B+; inspect A first and downgrade from the same evidence.",
+    "Do not promote records that are not shown in calendar and day-page UI.",
+    "Do not promote records without a repeatable next-fetch route.",
+    "Do not promote records without CI guarding section splits, source URLs, and rank requirements."
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "calendar_rows_added": false,
+    "auto_fetch_route_added": false,
+    "rank_change_added": false,
+    "this_pr_is_plan_only": true
+  }
+}
