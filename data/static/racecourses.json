@@ -134,6 +134,63 @@
     "image": { "src": "", "alt_en": "Planned illustrative image for Kyoto Racecourse.", "alt_ja": "京都競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   },
   {
+    "id": "nakayama-racecourse",
+    "slug": "nakayama-racecourse",
+    "country_id": "japan",
+    "name_en": "Nakayama Racecourse",
+    "name_ja": "中山競馬場",
+    "name_local": "中山競馬場",
+    "city": "Funabashi",
+    "region": "Chiba",
+    "timezone": "Asia/Tokyo",
+    "racing_types": ["thoroughbred-flat", "jump-racing"],
+    "status": "active",
+    "surfaces": ["turf", "dirt", "jump"],
+    "direction": "right-handed",
+    "course_profile": {
+      "turf_circumference_m": 1840,
+      "dirt_circumference_m": 1493,
+      "home_straight_m": null,
+      "has_inner_outer_courses": true,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Official JAIRS/JRA racecourse guide pages confirm Nakayama Racecourse as a capital-area JRA racecourse. JRA course details list inner and outer turf A/B/C courses, a dirt course, and a turf steeplechase course; this profile records the turf outer A-course length as the representative turf circumference for the current schema.",
+      "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、中山競馬場は首都圏のJRA主要競馬場として確認できる。JRAのコース詳細では芝内回り・外回りA/B/C、ダートコース、芝の障害コースが示されているが、現在のスキーマでは芝外回りAコースを代表値として記録する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": 1667, "max_m": 1877, "known_distances_m": [1667, 1686, 1705, 1840, 1859, 1877] },
+      "dirt": { "min_m": 1493, "max_m": 1493, "known_distances_m": [1493] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": 424, "max_m": 1456, "known_distances_m": [1456, 447, 424] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [
+      { "name_en": "Arima Kinen (The Grand Prix)", "name_ja": "有馬記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html" },
+      { "name_en": "Satsuki Sho (Japanese 2000 Guineas)", "name_ja": "皐月賞", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html" },
+      { "name_en": "Sprinters Stakes", "name_ja": "スプリンターズステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html" },
+      { "name_en": "Nakayama Grand Jump", "name_ja": "中山グランドジャンプ", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html" },
+      { "name_en": "Nakayama Daishogai", "name_ja": "中山大障害", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html" }
+    ],
+    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "official_links": [
+      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Nakayama Racecourse guide", "label_ja": "JAIRS/JRA 中山競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j02.html", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Nakayama course details", "label_ja": "JAIRS/JRA 中山コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/nakayama.html", "link_type": "official" }
+    ],
+    "related_terms": ["racecourse", "thoroughbred-racing", "jump-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-05" },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Nakayama Racecourse.",
+    "image_alt_ja": "中山競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Nakayama Racecourse.", "alt_ja": "中山競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+  },
+  {
     "id": "obihiro-racecourse",
     "slug": "obihiro-racecourse",
     "country_id": "japan",
