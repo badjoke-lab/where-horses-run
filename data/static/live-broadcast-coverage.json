@@ -1,6 +1,6 @@
 {
   "schema_version": "live-broadcast-coverage-v0",
-  "description": "Schema-like static structure and initial placeholder records for future official live broadcast and replay availability research. Records are intentionally unaudited until official source research is completed.",
+  "description": "Static v0 records for official live broadcast and replay availability research. Records are link-first, public-safe, and may include conservative not_verified values where official availability remains unconfirmed.",
   "allowed_status_values": [
     "official_free",
     "official_account",
@@ -442,7 +442,7 @@
       "source_type": "authority",
       "evidence_urls": [
         "https://www.tjk.org/EN/YarisSever/Static/page/canli",
-        "https://www.tjk.org/EN/YarisSever/Info/YarisVideoAt/At?AtKodu=-1181034&YabanciKosuKodu=6054015"
+        "https://www.tjk.org/EN/YarisSever/Info/YarisVideoAt/At"
       ],
       "confidence": "medium",
       "last_checked": "2026-06-04",
@@ -626,7 +626,7 @@
       ],
       "confidence": "medium",
       "last_checked": "2026-06-04",
-      "notes": "Maroñas/HRU evidence supports VeraTV live access and past races via official YouTube channels."
+      "notes": "Maroñas/HRU evidence supports VeraTV live access and past-race surfaces from official Maroñas/HRU pages."
     },
     {
       "jurisdiction_id": "sweden",
@@ -671,7 +671,7 @@
       "requires_betting_account": true,
       "requires_paid_tv": false,
       "geo_restriction": null,
-      "source_type": "official_partner, authority",
+      "source_type": "authority, official_partner",
       "evidence_urls": [
         "https://www.danskhv.dk/samarbejdspartnere/",
         "https://bet25.dk/heste/",
