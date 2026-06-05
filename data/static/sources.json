@@ -12,6 +12,30 @@
     "m3_notes": "Japan alpha source record candidate. Start with official-source routing and page-level verification before parser or live fetch work."
   },
   {
+    "id": "japan-jra-tokyo-racecourse",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j01.html",
+    "data_type": "racecourse_profile",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "Official Tokyo Racecourse profile source. Link-first and page-level verification only. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, prediction, or tips content.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "Tokyo Racecourse profile source used for source-safe racecourse page enrichment."
+  },
+  {
+    "id": "japan-jra-tokyo-course-details",
+    "country_id": "japan",
+    "source_type": "official",
+    "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/tokyo.html",
+    "data_type": "course_profile",
+    "auto_level": "B",
+    "terms_risk": "unknown",
+    "notes": "Official Tokyo Racecourse course details source. Link-first and page-level verification only. Stores selected course-length facts only; no racecards, entries, odds, results, payouts, predictions, or tips.",
+    "m3_status": "alpha_link_first",
+    "m3_notes": "Tokyo course details source used for source-safe course profile enrichment."
+  },
+  {
     "id": "japan-nar-home",
     "country_id": "japan",
     "source_type": "official",
