@@ -1,0 +1,37 @@
+{
+  "schema_version": "pr-187-jra-normalized-section-records-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Normalize JRA page-level calendar rows into separate meeting summary records and A detail records after section split.",
+  "depends_on": ["PR-184", "PR-186"],
+  "source_result": "data/generated/timetable/pr-157-jra-additional-meetings-codex-result.json",
+  "normalization_status": "section_split_applied_to_three_pages",
+  "summary_records": [
+    {"meeting_id":"jra-2026-01-04-nakayama","meeting_date":"2026-01-04","system":"JRA","racecourse":"中山競馬場","meeting_id_or_code":"1回中山1日","rank":"A","first_race_time":"10時05分","last_race_time":"16時25分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html","detail_page_path":"/calendar/2026-01-04/jra-nakayama","verification_status":"source_verified_section_split","last_checked":"2026-06-05"},
+    {"meeting_id":"jra-2026-01-04-kyoto","meeting_date":"2026-01-04","system":"JRA","racecourse":"京都競馬場","meeting_id_or_code":"1回京都1日","rank":"A","first_race_time":"9時50分","last_race_time":"16時10分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html","detail_page_path":"/calendar/2026-01-04/jra-kyoto","verification_status":"source_verified_section_split","last_checked":"2026-06-05"},
+    {"meeting_id":"jra-2026-01-10-nakayama","meeting_date":"2026-01-10","system":"JRA","racecourse":"中山競馬場","meeting_id_or_code":"1回中山3日","rank":"A","first_race_time":"10時05分","last_race_time":"16時25分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html","detail_page_path":"/calendar/2026-01-10/jra-nakayama","verification_status":"source_verified_section_split","last_checked":"2026-06-05"},
+    {"meeting_id":"jra-2026-01-10-kyoto","meeting_date":"2026-01-10","system":"JRA","racecourse":"京都競馬場","meeting_id_or_code":"1回京都3日","rank":"A","first_race_time":"9時50分","last_race_time":"16時10分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html","detail_page_path":"/calendar/2026-01-10/jra-kyoto","verification_status":"source_verified_section_split","last_checked":"2026-06-05"},
+    {"meeting_id":"jra-2026-01-11-nakayama","meeting_date":"2026-01-11","system":"JRA","racecourse":"中山競馬場","meeting_id_or_code":"1回中山4日","rank":"A","first_race_time":"10時05分","last_race_time":"16時25分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html","detail_page_path":"/calendar/2026-01-11/jra-nakayama","verification_status":"source_verified_section_split","last_checked":"2026-06-05"},
+    {"meeting_id":"jra-2026-01-11-kyoto","meeting_date":"2026-01-11","system":"JRA","racecourse":"京都競馬場","meeting_id_or_code":"1回京都4日","rank":"A","first_race_time":"9時50分","last_race_time":"16時10分","race_count":12,"source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html","detail_page_path":"/calendar/2026-01-11/jra-kyoto","verification_status":"source_verified_section_split","last_checked":"2026-06-05"}
+  ],
+  "detail_records": [
+    {"meeting_id":"jra-2026-01-04-nakayama","race_times":["10時05分","10時35分","11時05分","11時35分","12時25分","12時55分","13時25分","13時55分","14時30分","15時05分","15時45分","16時25分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html"},
+    {"meeting_id":"jra-2026-01-04-kyoto","race_times":["9時50分","10時20分","10時50分","11時20分","12時10分","12時40分","13時10分","13時40分","14時15分","14時50分","15時30分","16時10分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0104.html"},
+    {"meeting_id":"jra-2026-01-10-nakayama","race_times":["10時05分","10時35分","11時05分","11時35分","12時25分","12時55分","13時25分","14時00分","14時35分","15時10分","15時45分","16時25分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html"},
+    {"meeting_id":"jra-2026-01-10-kyoto","race_times":["9時50分","10時20分","10時50分","11時20分","12時10分","12時40分","13時10分","13時45分","14時20分","14時55分","15時30分","16時10分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0110.html"},
+    {"meeting_id":"jra-2026-01-11-nakayama","race_times":["10時05分","10時35分","11時05分","11時35分","12時25分","12時55分","13時25分","13時55分","14時30分","15時05分","15時45分","16時25分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html"},
+    {"meeting_id":"jra-2026-01-11-kyoto","race_times":["9時50分","10時20分","10時50分","11時20分","12時10分","12時40分","13時10分","13時40分","14時15分","14時50分","15時30分","16時10分"],"race_source_url":"https://www.jra.go.jp/keiba/calendar2026/2026/1/0111.html"}
+  ],
+  "display_boundary": {
+    "monthly_calendar_uses": "summary_records_only",
+    "meeting_detail_pages_use": "detail_records",
+    "bplus_summary_shape": ["first_race_time", "last_race_time"],
+    "a_detail_shape": ["detail_page_path", "race_times"]
+  },
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "calendar_adapter_added": false,
+    "detail_pages_added": false,
+    "rank_gate_applied": false,
+    "this_pr_adds_normalized_records_only": true
+  }
+}
