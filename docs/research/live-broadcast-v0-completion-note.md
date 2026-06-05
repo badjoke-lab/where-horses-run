@@ -5,7 +5,7 @@ This note records that the v0 live/replay broadcast coverage audit is complete f
 ## Completion state
 
 - Dataset audited: `data/static/live-broadcast-coverage.json`.
-- Total records: **36**.
+- Total records: **39**.
 - Records with `not_verified` in `live_status` or `replay_status`: **0**.
 - The audit is ready to be used as input for future UI work, subject to the display and safety rules below.
 
