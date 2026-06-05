@@ -517,6 +517,83 @@
       "notes": "SOREC shows live race access; login evidence applies to VOD replay follow-up."
     },
     {
+      "jurisdiction_id": "argentina",
+      "country_or_region": "Argentina",
+      "racing_types": [
+        "thoroughbred-flat"
+      ],
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Hipódromo Argentino de Palermo / Hipódromo de San Isidro",
+      "official_live_url": "https://www.palermo.com.ar/es/turf/carreras-en-vivo",
+      "official_replay_url": "https://www.palermo.com.ar/es/turf/calendario-de-carreras",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "racecourse, official_social",
+      "evidence_urls": [
+        "https://www.palermo.com.ar/es/turf/carreras-en-vivo",
+        "https://www.palermo.com.ar/es/turf/turf-vivo-telecom",
+        "https://www.palermo.com.ar/es/turf/ver-carrera/216054",
+        "https://hipodromosanisidro.com/yt/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official racecourse evidence supports Palermo live access and race-video pages plus San Isidro official YouTube live surface; this is not national coverage for every Argentine venue. No direct media URL is stored."
+    },
+    {
+      "jurisdiction_id": "brazil",
+      "country_or_region": "Brazil",
+      "racing_types": [
+        "thoroughbred-flat"
+      ],
+      "live_status": "broadcast_partner",
+      "replay_status": "replay_available",
+      "provider_name": "Jockey Club Brasileiro / TV Turfe / Jockey Club do Paraná",
+      "official_live_url": "https://jcb.com.br/home/live/",
+      "official_replay_url": "https://jockeypr.com.br/corridas-e-apostas/",
+      "requires_login": null,
+      "requires_betting_account": null,
+      "requires_paid_tv": null,
+      "geo_restriction": null,
+      "source_type": "racecourse, broadcaster, official_social",
+      "evidence_urls": [
+        "https://jcb.com.br/home/live/",
+        "https://jcb.com.br/home/historia-2/",
+        "https://jockeypr.com.br/corridas-e-apostas/",
+        "https://jockeypr.com.br/resultados/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Official evidence is split by venue/provider: JCB references TV Turfe, site, Facebook, and YouTube live access for Gávea, while Jockey Club do Paraná provides Tarumã replay links. This should not be treated as one universal Brazil live/replay source."
+    },
+    {
+      "jurisdiction_id": "panama",
+      "country_or_region": "Panama",
+      "racing_types": [
+        "thoroughbred-flat"
+      ],
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Hípica de Panamá / Hipódromo Presidente Remón",
+      "official_live_url": "https://www.hipodromo.com/index.php/carreras-en-vivo-2/",
+      "official_replay_url": "https://www.hipodromo.com/index.php/replay/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "racecourse",
+      "evidence_urls": [
+        "https://www.hipodromo.com/",
+        "https://www.hipodromo.com/index.php/carreras-en-vivo-2/",
+        "https://www.hipodromo.com/index.php/replay/"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "Official Hipódromo Presidente Remón pages expose separate Carreras en Vivo and Replay landing pages; no direct media URL is stored."
+    },
+    {
       "jurisdiction_id": "chile",
       "country_or_region": "Chile",
       "racing_types": [
