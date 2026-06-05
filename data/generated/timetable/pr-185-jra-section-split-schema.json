@@ -1,0 +1,51 @@
+{
+  "schema_version": "pr-185-jra-section-split-schema-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Define JRA section split outputs after the corrected B+ and A display policy.",
+  "depends_on": ["PR-132", "PR-184"],
+  "section_split_problem": {
+    "page_shape": "one JRA calendar page can contain multiple official meeting sections",
+    "required_action": "split page rows into separate official meeting sections before summary derivation"
+  },
+  "meeting_summary_record": {
+    "used_by": ["monthly_calendar", "day_page_summary"],
+    "rank_fields": {
+      "C": [],
+      "B": ["first_race_time"],
+      "B+": ["first_race_time", "last_race_time"],
+      "A": ["first_race_time", "last_race_time", "detail_page_path"]
+    },
+    "optional_fields": ["race_count"],
+    "contains_race_rows": false
+  },
+  "meeting_detail_record": {
+    "used_by": ["meeting_detail_page"],
+    "required_for_rank": "A",
+    "contains_race_rows": true,
+    "monthly_calendar_use": false
+  },
+  "split_rules": [
+    "use official section headings as meeting boundaries",
+    "derive B+ summary only after section split",
+    "store race rows in meeting_detail_record only for A output",
+    "monthly calendar consumes meeting_summary_record only"
+  ],
+  "rank_mapping_after_split": {
+    "B+": {
+      "output": "meeting_summary_record",
+      "fields": ["first_race_time", "last_race_time"]
+    },
+    "A": {
+      "output": ["meeting_summary_record", "meeting_detail_record"],
+      "summary_fields": ["first_race_time", "last_race_time", "detail_page_path"],
+      "monthly_expansion": false
+    }
+  },
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "calendar_rows_added": false,
+    "detail_pages_added": false,
+    "rank_change_added": false,
+    "this_pr_is_schema_only": true
+  }
+}
