@@ -309,7 +309,7 @@ type DisplayStatus =
 
 ## 6. Calendar view model contract
 
-Calendar view models may derive fields for presentation, but only from normalized timetable records and static reference data.
+The dedicated reader contract is documented in [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md), and the reusable TypeScript helper lives at `src/lib/timetable/calendar-view-model.ts`. Calendar view models may derive fields for presentation, but only from Normalized Timetable Record data and static reference data.
 
 Recommended display projection:
 
@@ -333,7 +333,7 @@ type CalendarMeetingSummary = {
 };
 ```
 
-The view model may translate labels, sort by local time where available, group by country or racecourse, and mark stale/partial status. It must not infer unverified race times or race-by-race detail.
+The view model may translate labels, sort by local time where available, group by date, country, or racecourse, and mark stale/partial status. It must not infer unverified race times or race-by-race detail. Monthly/day summaries must enforce the C, B, B+, and A capability-rank display rules before public UI consumes them.
 
 ---
 
@@ -369,6 +369,7 @@ This contract explicitly excludes:
 ## 9. Relationship to existing specs
 
 - The authority source inventory schema defines reviewed source-candidate metadata.
+- The Calendar view model reader contract defines the display-safe helper boundary for monthly/day meeting summaries.
 - This contract defines the downstream route, candidate, normalization, and display boundaries.
 - The global-first timetable architecture defines the broader multi-authority strategy and capability rank model.
 - Future adapter-specific specifications must conform to this contract before producing public calendar display records.

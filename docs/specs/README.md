@@ -10,6 +10,7 @@ Formal project specifications live here.
 - [authority-source-inventory-schema.md](authority-source-inventory-schema.md)
 - [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md) — Acquisition Route Inventory schema for future manual snapshot, dry-run, scheduled-candidate, disabled, and status-only route records.
 - [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md) — Normalized Timetable Record output schema for future public-safe calendar-displayable meeting summaries.
+- [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md) — Calendar view model reader contract/helper for display-safe monthly and day meeting summaries.
 - [timetable-data-flow-and-display-contract.md](timetable-data-flow-and-display-contract.md)
 - [page-map.md](page-map.md)
 - [ui-css-policy.md](ui-css-policy.md)

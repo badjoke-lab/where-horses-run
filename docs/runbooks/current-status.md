@@ -38,7 +38,7 @@ Release-gate public wording:
 - No public complete coverage claim
 - No racecards, odds, results, payouts, predictions, or tips are stored
 
-This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added. The [normalized timetable output schema](../specs/normalized-timetable-output-schema.md) now defines the empty generated Normalized Timetable Record layer that future reviewed meeting facts can use before calendar view model projection.
+This gate reflects the generator foundation only. It does not change live/replay coverage data, calendar data, race dates, post times, racecards, odds, entries, results, payouts, or UI. The timetable data-flow and display contract now documents how future source inventory, acquisition routes, normalized meeting records, and calendar summaries should connect before additional real authority records are added. The [normalized timetable output schema](../specs/normalized-timetable-output-schema.md) now defines the empty generated Normalized Timetable Record layer that future reviewed meeting facts can use before calendar view model projection. The [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md) and `src/lib/timetable/calendar-view-model.ts` helper now define the reusable public-safe projection from Normalized Timetable Record data to monthly/day meeting summaries.
 
 ---
 
@@ -85,6 +85,7 @@ The current public-facing foundation includes:
 - data validation scripts
 - generated data dry-run checks
 - normalized timetable output schema validation
+- calendar view model reader validation
 
 ---
 
@@ -183,7 +184,7 @@ Static datasets currently include:
 - country racing inventory
 - major-country timetable v0 support files
 - global-first timetable architecture notes
-- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory, Acquisition Route Inventory, and Normalized Timetable Record data
+- [authority source inventory schema](../specs/authority-source-inventory-schema.md), [timetable acquisition route schema](../specs/timetable-acquisition-route-schema.md), [normalized timetable output schema](../specs/normalized-timetable-output-schema.md), [Calendar view model reader contract](../specs/calendar-view-model-reader-contract.md), [timetable data flow and display contract](../specs/timetable-data-flow-and-display-contract.md), and empty placeholder Authority Source Inventory, Acquisition Route Inventory, and Normalized Timetable Record data
 
 Generated datasets currently include:
 
@@ -243,7 +244,7 @@ The project currently focuses on:
 - safe generated pipeline groundwork
 - global-first timetable architecture
 - multi-authority source inventory schema validation
-- public-safe timetable data-flow, display, acquisition-route, and Normalized Timetable Record contract
+- public-safe timetable data-flow, display, acquisition-route, Normalized Timetable Record, and Calendar view model reader contract
 - multi-authority source inventory planning
 
 The project is not currently:
@@ -265,7 +266,7 @@ The project is not currently:
 - Live parsers are not available as a public feature.
 - GitHub Actions dry-run does not write generated files.
 - Country and racecourse coverage is not complete.
-- The global timetable source inventory, adapter selection matrix, and common calendar display contract are not implemented yet.
+- The global timetable source inventory and adapter selection matrix are not implemented yet; the common Calendar view model reader contract is now drafted, but it is not wired to public calendar UI yet.
 - Many racecourse course-profile fields are still unconfirmed placeholders.
 - Visual guide assets are not started.
 
@@ -279,7 +280,7 @@ Recommended next work:
 2. Build the Japan NAR source inventory using the same fields as other authority candidates.
 3. Add multi-country source candidates for overseas authorities at the same inventory level.
 4. Add reviewed normalized timetable records after source and route review.
-5. Define and verify the common calendar display reader contract.
+5. Add reviewed normalized timetable records that can be consumed by the verified common calendar display reader contract.
 6. Create the adapter selection matrix.
 7. Limit the first adapter candidates to JRA / NAR / HKJC.
 
