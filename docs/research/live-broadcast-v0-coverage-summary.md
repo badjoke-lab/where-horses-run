@@ -12,13 +12,14 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 - The Philippines expansion is venue-limited to Metro Manila Turf Club evidence and must not be treated as complete Philippines coverage.
 - Malaysia is represented conservatively: official racing surfaces were reviewed, but no official race live-stream or race replay landing page was confirmed.
 - Singapore is treated conservatively: domestic Singapore Turf Club racing ended after the final 2024 meeting, while Singapore Pools evidence relates to account/subscription horse-racing streaming for selected meetings or races and no official domestic Singapore replay archive is verified.
+- Macau is treated as an inactive-racing jurisdiction: official Macao SAR Government evidence states the horse-racing concession terminated on 1 April 2024 and horse-racing activities ceased from that date, so no active live coverage is implied.
 - Italy is represented as a MASAF-linked national gallop/jump/trotting broadcast surface through Grande Ippica Italiana/EQU TV; no direct stream or media URL is recorded.
 - Germany is intentionally split into thoroughbred/gallop and trotting records because Deutscher Galopp and WETTSTAR evidence cover different racing-code surfaces.
 - Spain is intentionally split into the Las Carreras thoroughbred circuit, Hipódromo de la Zarzuela racecourse replay evidence, and Federación Balear de Trot trotting evidence. Zarzuela and Balearic trotting evidence must not be treated as complete national Spain coverage.
 
 ## Totals
 
-- Total audited/static records: **49**
+- Total audited/static records: **50**
 
 ### Count by `live_status`
 
@@ -30,7 +31,7 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | `tv_pay` | 3 |
 | `broadcast_partner` | 3 |
 | `event_only` | 4 |
-| `none_found` | 5 |
+| `none_found` | 6 |
 
 ### Count by `replay_status`
 
@@ -38,7 +39,7 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | --- | ---: |
 | `official_account` | 2 |
 | `replay_available` | 38 |
-| `none_found` | 6 |
+| `none_found` | 7 |
 | `archive_only` | 3 |
 
 ## Records by status requiring v0 tracking
@@ -111,6 +112,7 @@ The lists below include any record where the named status appears as either `liv
 ### `none_found`
 
 - `singapore` — Singapore (`live_status`: `betting_account`, `replay_status`: `none_found`)
+- `macau` — Macau (`live_status`: `none_found`, `replay_status`: `none_found`)
 - `malta` — Malta (`live_status`: `event_only`, `replay_status`: `none_found`)
 - `trinidad-and-tobago` — Trinidad and Tobago (`live_status`: `none_found`, `replay_status`: `none_found`)
 - `martinique` — Martinique (`live_status`: `none_found`, `replay_status`: `replay_available`)
@@ -175,6 +177,14 @@ The lists below include any record where the named status appears as either `liv
 - Spain uses separate Las Carreras, Zarzuela, and Federación Balear de Trot records so racecourse-specific and trotting evidence is not overstated as national coverage.
 - No calendar, race-date, post-time, racecard, odds, entry, result, payout, prediction, tip, direct-stream, or embed behavior was added.
 
+## Macau wording note
+
+Macau should not be described as having active horse racing or active live racing video. The Macau record should be read as follows:
+
+- The Macao SAR Government announced that the horse-racing concession terminated on 1 April 2024 and that horse-racing activities ceased from that date.
+- No active official live coverage is recorded; `live_status` remains `none_found`.
+- No official replay landing page was verified in this pass; `replay_status` remains `none_found`. Old race videos, if found separately, should be treated as historical material unless a future audit verifies an official archive surface.
+
 ## Singapore wording note
 
 Singapore should not be described as having active domestic Singapore Turf Club racing. The Singapore record should be read as follows:
@@ -185,7 +195,7 @@ Singapore should not be described as having active domestic Singapore Turf Club 
 
 ## Hardening notes
 
-- The summary counts and status lists were recalculated from the current static dataset after the Italy, Germany, and Spain Priority 1 expansion pass.
-- India, Malaysia, the Philippines, Italy, Germany, and Spain records were added only from official racecourse, official authority, broadcaster, or clearly official-partner evidence, with venue/provider caveats where coverage is not national.
+- The summary counts and status lists were recalculated from the current static dataset after the Macau Priority 1 inactive-racing audit.
+- India, Malaysia, the Philippines, Italy, Germany, Spain, and Macau records were added only from official racecourse, official authority, broadcaster, or clearly official-partner evidence, with venue/provider or inactive-racing caveats where coverage is not national or not active.
 - Carry-forward v0 hardening remains in place for Malta, Martinique, Peru, and Singapore so unresolved, race-detail, and domestic-racing-ended cases stay explicitly caveated.
 - Evidence remains limited to official or clearly official-partner landing pages where possible.
