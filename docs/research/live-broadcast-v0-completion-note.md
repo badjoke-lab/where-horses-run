@@ -5,7 +5,7 @@ This note records that the v0 live/replay broadcast coverage audit is complete f
 ## Completion state
 
 - Dataset audited: `data/static/live-broadcast-coverage.json`.
-- Total records: **43**.
+- Total records: **49**.
 - Records with `not_verified` in `live_status` or `replay_status`: **0**.
 - The audit is ready to be used as input for future UI work, subject to the display and safety rules below.
 
@@ -35,6 +35,9 @@ The v0 records are not always one record per sovereign country. Some racing juri
 
 - Japan must remain split into **JRA**, **NAR**, and **banei** records. JRA central racing, NAR local-government racing, and banei racing have different official coverage surfaces and racing types. Future UI should not apply JRA links to NAR or banei pages, should not apply NAR or banei links to JRA pages, and should keep Obihiro/banei handling separate.
 - India must not be treated as nationally covered by one turf club. The current India additions are limited to RWITC Mumbai/Pune evidence and Bangalore Turf Club evidence.
+- Italy is represented through MASAF-linked Grande Ippica Italiana/EQU TV evidence for Italian gallop, jump, and trotting programming; future UI must still link only to landing pages and must not expose direct stream/media URLs.
+- Germany must remain split between the Deutscher Galopp thoroughbred/gallop record and the WETTSTAR trotting record, because the audited official/official-partner surfaces are racing-code specific.
+- Spain must remain split between the Las Carreras thoroughbred circuit, Hipódromo de la Zarzuela racecourse-specific replay evidence, and Federación Balear de Trot trotting evidence. Zarzuela and Balearic trotting evidence must not be presented as complete Spain-wide coverage.
 - Malaysia must remain conservative because no official race live-stream or race replay landing page was confirmed during this pass.
 - The Philippines must not be treated as nationally covered by Metro Manila Turf Club evidence. The current Philippines addition is limited to MMTCI official live-racing evidence, with no official replay landing page confirmed.
 - Singapore must retain the domestic-racing-ended caveat. Domestic Singapore Turf Club racing ended after the final 2024 meeting, while the Singapore record reflects conservative account/subscription streaming evidence for selected horse-racing meetings or races rather than verified active domestic Singapore replay coverage.
@@ -42,7 +45,7 @@ The v0 records are not always one record per sovereign country. Some racing juri
 
 ## Future expansion guidance
 
-Future expansion should add new jurisdictions conservatively. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
+Future expansion should add new jurisdictions conservatively. The PR-LIVE-020 Priority 1 expansion added Italy, Germany, and Spain records with the same conservative source-link rules. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
 
 Recommended expansion workflow:
 

@@ -1179,6 +1179,156 @@
       "confidence": "medium",
       "last_checked": "2026-06-05",
       "notes": "Coverage is limited to Metro Manila Turf Club official surfaces and should not be treated as complete Philippines coverage. The official MMTCI landing page links Live Racing; no official replay landing page was confirmed."
+    },
+    {
+      "jurisdiction_id": "italy",
+      "country_or_region": "Italy",
+      "racing_types": [
+        "thoroughbred-flat",
+        "jump-racing",
+        "trotting"
+      ],
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "MASAF / Grande Ippica Italiana / EQU TV",
+      "official_live_url": "https://www.grandeippicaitaliana.it/en/live-streaming/",
+      "official_replay_url": "https://www.grandeippicaitaliana.it/en/live-streaming/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "authority, official_partner",
+      "evidence_urls": [
+        "https://www.grandeippicaitaliana.it/en/live-streaming/",
+        "https://snaitech.it/en/our-activities/equtv/",
+        "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/6209"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "Grande Ippica Italiana/EQU TV evidence covers Italian racing programming with live race blocks and Race Play replays; MASAF/Snaitech evidence supports EQU TV as the MASAF-linked production/broadcast surface. No direct stream URLs are recorded."
+    },
+    {
+      "jurisdiction_id": "germany-thoroughbred",
+      "country_or_region": "Germany — thoroughbred",
+      "racing_types": [
+        "thoroughbred-flat",
+        "jump-racing"
+      ],
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "Deutscher Galopp",
+      "official_live_url": "https://www.deutscher-galopp.de/gr/themen/livestream/",
+      "official_replay_url": "https://www.deutscher-galopp.de/gr/renntage/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://www.deutscher-galopp.de/gr/themen/livestream/",
+        "https://www.deutscher-galopp.de/gr/renntage/"
+      ],
+      "confidence": "high",
+      "last_checked": "2026-06-05",
+      "notes": "Deutscher Galopp evidence is limited to German gallop/thoroughbred racing; it should not be applied to German trotting, which is tracked separately."
+    },
+    {
+      "jurisdiction_id": "germany-trotting",
+      "country_or_region": "Germany — trotting",
+      "racing_types": [
+        "trotting"
+      ],
+      "live_status": "official_free",
+      "replay_status": "replay_available",
+      "provider_name": "WETTSTAR / German trotting clubs",
+      "official_live_url": "https://wettstar.de/wettstar-tv-und-livestream/",
+      "official_replay_url": "https://wettstar.de/wettstar-tv-und-livestream/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "official_partner",
+      "evidence_urls": [
+        "https://wettstar.de/wettstar-tv-und-livestream/",
+        "https://wettstar.de/youtube/"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "WETTSTAR identifies official German racing partners and states that German gallop and trotting races are available free via YouTube with past race-day videos archived; betting-account and paid-app options also exist but are not recorded as direct media links."
+    },
+    {
+      "jurisdiction_id": "spain-thoroughbred-las-carreras",
+      "country_or_region": "Spain — thoroughbred circuit",
+      "racing_types": [
+        "thoroughbred-flat",
+        "jump-racing"
+      ],
+      "live_status": "tv_pay",
+      "replay_status": "none_found",
+      "provider_name": "Asociación de Hipódromos Españoles / Las Carreras / Movistar Plus+",
+      "official_live_url": "https://www.hipodromos.org/proyectos",
+      "official_replay_url": null,
+      "requires_login": true,
+      "requires_betting_account": false,
+      "requires_paid_tv": true,
+      "geo_restriction": "Movistar Plus+ availability depends on its subscription and territory terms.",
+      "source_type": "authority, broadcaster, official_partner",
+      "evidence_urls": [
+        "https://www.hipodromos.org/proyectos"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Asociación de Hipódromos evidence describes Las Carreras as the Spanish horse-racing circuit broadcast on Movistar Plus+. No official national replay landing page was verified in this pass; Zarzuela racecourse replays and Spanish trotting are separate records."
+    },
+    {
+      "jurisdiction_id": "spain-zarzuela",
+      "country_or_region": "Spain — Hipódromo de la Zarzuela",
+      "racing_types": [
+        "thoroughbred-flat",
+        "jump-racing"
+      ],
+      "live_status": "tv_pay",
+      "replay_status": "replay_available",
+      "provider_name": "Hipódromo de la Zarzuela / Las Carreras",
+      "official_live_url": "https://www.hipodromos.org/proyectos",
+      "official_replay_url": "https://www.hipodromodelazarzuela.es/carreras",
+      "requires_login": true,
+      "requires_betting_account": false,
+      "requires_paid_tv": true,
+      "geo_restriction": "Movistar Plus+ availability depends on its subscription and territory terms.",
+      "source_type": "racecourse, official_partner, broadcaster",
+      "evidence_urls": [
+        "https://www.hipodromos.org/proyectos",
+        "https://www.hipodromodelazarzuela.es/carreras",
+        "https://www.hipodromodelazarzuela.es/carreras/carrera/video/0000051873"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Racecourse-specific record: Hipódromo de la Zarzuela pages expose race video links, while live circuit evidence comes from Las Carreras/Movistar Plus+. This must not be treated as complete Spain-wide replay coverage."
+    },
+    {
+      "jurisdiction_id": "spain-trotting",
+      "country_or_region": "Spain — trotting",
+      "racing_types": [
+        "trotting"
+      ],
+      "live_status": "none_found",
+      "replay_status": "replay_available",
+      "provider_name": "Federación Balear de Trot",
+      "official_live_url": null,
+      "official_replay_url": "https://www.federaciobaleardetrot.com/",
+      "requires_login": false,
+      "requires_betting_account": false,
+      "requires_paid_tv": false,
+      "geo_restriction": null,
+      "source_type": "authority",
+      "evidence_urls": [
+        "https://www.federaciobaleardetrot.com/",
+        "https://www.federaciobaleardetrot.com/verCarrera.php?idCarrera=153837&idTipo=1"
+      ],
+      "confidence": "medium",
+      "last_checked": "2026-06-05",
+      "notes": "Federación Balear de Trot identifies itself as Spain's officially recognized trotting federation and exposes recent race-video links. No routine official live-stream landing page was verified."
     }
   ]
 }
