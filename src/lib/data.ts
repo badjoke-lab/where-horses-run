@@ -81,3 +81,11 @@ export function getSourcesByCountryId(countryId: string): Source[] {
 export function getGlossaryEntries(): GlossaryEntry[] {
   return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
 }
+
+export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
+  return glossary.find((entry) => entry.slug === slug);
+}
+
+export function getArchiveEntries(): ArchiveEntry[] {
+  return [...archive].sort((a, b) => a.name_en.localeCompare(b.name_en));
+}
