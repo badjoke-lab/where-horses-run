@@ -14,3 +14,4 @@ This directory contains the planning, specifications, research notes, decisions,
 
 - [v0 specification](specs/where-horses-run-v0-spec.md)
 - [Global-first timetable architecture](specs/global-timetable-architecture.md)
+- [Authority source inventory schema](specs/authority-source-inventory-schema.md)
