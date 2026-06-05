@@ -23,7 +23,7 @@ The jurisdictions below are **targets for future evidence review only**. Inclusi
 
 ## Priority 1: likely high-value jurisdiction targets
 
-These jurisdictions should be reviewed first because they are common racing jurisdictions or may fill notable gaps in the global live/replay map. This list is not evidence of video availability.
+These jurisdictions should be reviewed first because they are common racing jurisdictions or may fill notable gaps in the global live/replay map. This list is not evidence of video availability. Macau was removed from the Priority 1 target table after the PR-LIVE-021 inactive-racing audit added a conservative `none_found` record based on official Macao SAR Government closure evidence.
 
 | Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
 | --- | --- | --- | --- |
@@ -31,7 +31,6 @@ These jurisdictions should be reviewed first because they are common racing juri
 | Brazil | Thoroughbred flat; regional racecourse coverage | authority; racecourse; broadcaster; official partner; social | Avoid treating one club or state as national coverage. |
 | Panama | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm whether live and replay surfaces are official and current before adding. |
 | India | Thoroughbred flat; turf-club systems | authority; racecourse; broadcaster; official partner; social | Racing is often club-specific; avoid national complete-coverage claims. |
-| Macau | Thoroughbred flat status review; archive/replay status review | authority; racecourse; broadcaster; official partner; social | Confirm current racing status before adding any live or replay claim. |
 | Malaysia | Thoroughbred flat; turf-club systems | authority; racecourse; broadcaster; official partner; social | Verify club-specific rights and current official channels. |
 | Philippines | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm official status of any video platform and distinguish social clips from replay archives. |
 | Italy | Thoroughbred flat; jumps where applicable; trotting/harness | authority; racecourse; broadcaster; official partner; social | Separate racing codes if official sources differ. |

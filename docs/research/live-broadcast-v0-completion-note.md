@@ -5,7 +5,7 @@ This note records that the v0 live/replay broadcast coverage audit is complete f
 ## Completion state
 
 - Dataset audited: `data/static/live-broadcast-coverage.json`.
-- Total records: **49**.
+- Total records: **50**.
 - Records with `not_verified` in `live_status` or `replay_status`: **0**.
 - The audit is ready to be used as input for future UI work, subject to the display and safety rules below.
 
@@ -41,11 +41,12 @@ The v0 records are not always one record per sovereign country. Some racing juri
 - Malaysia must remain conservative because no official race live-stream or race replay landing page was confirmed during this pass.
 - The Philippines must not be treated as nationally covered by Metro Manila Turf Club evidence. The current Philippines addition is limited to MMTCI official live-racing evidence, with no official replay landing page confirmed.
 - Singapore must retain the domestic-racing-ended caveat. Domestic Singapore Turf Club racing ended after the final 2024 meeting, while the Singapore record reflects conservative account/subscription streaming evidence for selected horse-racing meetings or races rather than verified active domestic Singapore replay coverage.
+- Macau must retain the inactive-racing caveat. Official Macao SAR Government evidence states the horse-racing concession terminated on 1 April 2024 and horse-racing activities ceased from that date; the Macau record must not be displayed as active live coverage, and no official replay landing page was verified.
 - Country-level grouping should not hide racing-system caveats, racecourse-specific limitations, account requirements, paid-TV requirements, geographic restrictions, event-only availability, archive-only availability, or none-found statuses.
 
 ## Future expansion guidance
 
-Future expansion should add new jurisdictions conservatively. The PR-LIVE-020 Priority 1 expansion added Italy, Germany, and Spain records with the same conservative source-link rules. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
+Future expansion should add new jurisdictions conservatively. The PR-LIVE-020 Priority 1 expansion added Italy, Germany, and Spain records with the same conservative source-link rules. The PR-LIVE-021 Macau audit added an inactive-racing record based on official Macao SAR Government closure evidence. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
 
 Recommended expansion workflow:
 
