@@ -12,7 +12,7 @@ This roadmap estimates the sequence from static MVP to a mature v1.0 site.
 M0 documentation baseline
 M1 static MVP
 M2 generated data foundation
-M3 v0 Alpha timetable coverage
+M3 global-first timetable foundation
 M4 v0 Public coverage
 M5 long-tail country index
 M6 glossary and image expansion
@@ -115,51 +115,47 @@ show official fallback links on failure
 
 ---
 
-## 5. M3 v0 Alpha coverage
+## 5. M3 global-first timetable foundation
 
-Goal: expand from one tested source to Alpha jurisdictions.
+Goal: establish a global-first timetable architecture and multi-authority source inventory before adding more country-specific adapters.
 
-Target jurisdictions:
-
-```text
-Japan
-Hong Kong
-United Arab Emirates
-South Korea
-Turkey
-Morocco
-Chile
-Peru
-Mexico
-Bahrain
-```
-
-Recommended sequence:
+Required sequence:
 
 ```text
-Hong Kong
-United Arab Emirates
-Japan
-Morocco
-Bahrain
-Turkey
-South Korea
-Chile
-Peru
-Mexico
+authority source inventory schema
+Japan NAR source inventory
+multi-country source candidates
+common calendar display contract
+adapter selection matrix
+first 3 adapters only: JRA / NAR / HKJC
 ```
 
-Each jurisdiction should get:
+Same-level initial source inventory targets:
 
 ```text
-source note
-static source record
-parser or link-only fallback
-FetchStatus coverage
-UI verification
+JRA
+NAR
+HKJC
+overseas national authorities
+overseas regional / state / provincial authorities
+overseas racecourse or operator authorities where official calendar sources exist
 ```
 
-If parser risk is too high, keep that jurisdiction as calendar/link-first until reviewed.
+Each authority candidate should get:
+
+```text
+country
+racing authority
+racecourse coverage where known
+meeting-level source capability
+official source
+source status
+last checked date
+capability rank
+notes for adapter selection
+```
+
+JRA remains a reusable verified source and adapter candidate. It is not the center of the timetable architecture. If parser risk is too high for any authority, keep that authority as calendar/link-first until reviewed.
 
 ---
 

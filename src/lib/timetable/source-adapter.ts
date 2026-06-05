@@ -1,3 +1,86 @@
+export type GlobalTimetableCapabilityRank = 'C' | 'B' | 'B+' | 'A';
+
+export type GlobalTimetableSourceStatus =
+  | 'verified'
+  | 'partial'
+  | 'not_verified'
+  | 'stale'
+  | 'unavailable';
+
+export type GlobalRacingAuthorityType =
+  | 'national'
+  | 'regional'
+  | 'state'
+  | 'provincial'
+  | 'racecourse_operator'
+  | 'other';
+
+export type GlobalRacingAuthorityStatus =
+  | 'active'
+  | 'under_review'
+  | 'archive'
+  | 'excluded';
+
+export type GlobalTimetableCountry = {
+  readonly id: string;
+  readonly slug: string;
+  readonly name_en: string;
+  readonly name_local?: string;
+  readonly region: string;
+  readonly timezone_default?: string;
+  readonly status: 'active' | 'under_review' | 'archive' | 'excluded' | 'special';
+};
+
+export type GlobalRacingAuthority = {
+  readonly id: string;
+  readonly country_id: string;
+  readonly name_en: string;
+  readonly name_local?: string;
+  readonly authority_type: GlobalRacingAuthorityType;
+  readonly official_source_ids: readonly string[];
+  readonly status: GlobalRacingAuthorityStatus;
+};
+
+export type GlobalTimetableRacecourse = {
+  readonly id: string;
+  readonly country_id: string;
+  readonly authority_ids: readonly string[];
+  readonly name_en: string;
+  readonly name_local?: string;
+  readonly timezone: string;
+  readonly status: 'active' | 'archive' | 'unknown';
+};
+
+export type GlobalTimetableOfficialSource = {
+  readonly id: string;
+  readonly country_id: string;
+  readonly authority_id: string;
+  readonly racecourse_id?: string;
+  readonly name_en: string;
+  readonly url: string;
+  readonly source_kind: 'calendar' | 'timetable' | 'programme' | 'racecard' | 'link_only';
+  readonly source_status: GlobalTimetableSourceStatus;
+  readonly last_checked_date: string;
+  readonly capability_rank: GlobalTimetableCapabilityRank;
+  readonly notes?: string;
+};
+
+export type GlobalTimetableMeeting = {
+  readonly id: string;
+  readonly country_id: string;
+  readonly authority_id: string;
+  readonly racecourse_id: string;
+  readonly date: string;
+  readonly timezone: string;
+  readonly source_id: string;
+  readonly source_status: GlobalTimetableSourceStatus;
+  readonly last_checked_date: string;
+  readonly capability_rank: GlobalTimetableCapabilityRank;
+  readonly first_race_time_local?: string;
+  readonly last_race_time_local?: string;
+  readonly notes?: string;
+};
+
 export type CandidateExtractionMethod =
   | 'manual_seed'
   | 'adapter_dry_run'

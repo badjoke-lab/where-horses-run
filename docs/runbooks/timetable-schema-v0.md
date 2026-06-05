@@ -1,17 +1,17 @@
 # Timetable schema v0
 
-Status: M3 real-data readiness foundation
-Phase: PR-050
+Status: global-first timetable foundation
+Phase: expansion reset
 
-This runbook defines the first safe timetable data shape for future Today, Tomorrow, and 30-day pages.
+This runbook defines the first safe timetable data shape for future Today, Tomorrow, 30-day, and monthly calendar pages. It now sits under the global-first timetable architecture and multi-authority source inventory described in `docs/specs/global-timetable-architecture.md`.
 
 ---
 
 ## Purpose
 
-The product goal is to help users answer where horse racing is happening today, tomorrow, and in the next 30 days.
+The product goal is to help users answer where horse racing is happening today, tomorrow, and in the next 30 days without making one country or authority the center of the architecture.
 
-`timetable-schema-v0` is the safe foundation for that goal. It stores only meeting-level timetable facts and official confirmation links. It is not a racecard model and does not support betting, prediction, result, or payout content.
+`timetable-schema-v0` is the safe foundation for that goal. It stores only meeting-level timetable facts, source provenance, status, freshness, and capability labels. It is not a racecard model and does not support betting, prediction, result, or payout content.
 
 ---
 
@@ -23,7 +23,7 @@ The generated file is:
 data/generated/timetables.json
 ```
 
-The file starts in manual fallback mode. Japan is represented by an empty safe structure until date-level timetable records are source-reviewed.
+The file starts in manual fallback mode. Country-specific records remain partial until date-level meeting facts are source-reviewed under the common source inventory. JRA is one reusable verified source / adapter candidate, not the center of the timetable model.
 
 ---
 
@@ -43,11 +43,44 @@ Timetable entries may use only these fields:
 | `source_id` | Official source id from the source registry. |
 | `source_url` | Official source link users should open for final confirmation. |
 | `last_checked_at` | Date-time when the safe timetable fact was last checked. |
-| `status` | Safe operational state such as fallback, unverified, verified, skipped, or cancelled. |
+| `last_checked_date` | Source inventory and display freshness date as `YYYY-MM-DD` when available. |
+| `status` | Safe operational state such as verified, partial, not_verified, stale, unavailable, fallback, skipped, or cancelled. |
+| `source_status` | Shared source inventory status when available: verified, partial, not_verified, stale, or unavailable. |
 | `confidence` | Confidence label for the timetable fact. |
+| `capability_rank` | Shared rank when available: C, B, B+, or A. |
 | `notes` | Short safety or verification note. |
 
 When a timetable record is present, it must include `source_id`, `source_url`, `status`, `confidence`, and `last_checked_at` so consumers can show provenance and freshness.
+
+
+---
+
+## Global capability rank matrix
+
+The shared timetable architecture uses one capability matrix across countries and authorities:
+
+| Rank | Required verified capability | Display boundary |
+| --- | --- | --- |
+| C | Meeting date and racecourse only. | Show that a meeting exists. |
+| B | First race time is available. | Show the first race time only. |
+| B+ | First and last race time are available. | Show first / last race time only. |
+| A | Race-by-race / racecard-level detail is available from the official source. | Keep A detail separate from monthly and day summary views. |
+
+Capability rank is a source capability label, not permission to republish full racecard content.
+
+---
+
+## Common display contract
+
+Public timetable display must remain meeting-summary first:
+
+- Monthly calendar pages show meeting summaries only.
+- Day pages show the meeting list, official source, source status, last checked date, and capability rank.
+- A-level detail is separate from the monthly calendar and day summary views.
+- B+ meetings show first and last race time only.
+- B meetings show first race time only.
+- C meetings show that the meeting exists only.
+- Unverified source candidates show `partial` or `not_verified` status.
 
 ---
 
@@ -94,6 +127,6 @@ This schema gives later UI work a safe set of fields for:
 
 - Today pages grouped by country and racecourse.
 - Tomorrow pages using the same timetable record shape.
-- 30-day calendar pages using the same date, local time, timezone, source, status, and confidence fields.
+- 30-day and monthly calendar pages using the same date, local time, timezone, source, status, freshness, capability rank, and confidence fields.
 
-The next UI PR can read the same safe fields without adding parser logic, live fetch logic, or raw source-body storage.
+The next UI PR should implement the common calendar display contract without adding parser logic, live fetch logic, or raw source-body storage.

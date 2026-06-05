@@ -25,7 +25,10 @@ const allowedEntryKeys = new Set([
   'source_id',
   'source_url',
   'last_checked_at',
+  'last_checked_date',
   'status',
+  'source_status',
+  'capability_rank',
   'confidence',
   'notes',
 ]);
@@ -188,7 +191,12 @@ if (!isPlainObject(data)) {
       if ('source_id' in entry) requireString(entry.source_id, `${label}.source_id`);
       if ('source_url' in entry) requireUrl(entry.source_url, `${label}.source_url`);
       if ('last_checked_at' in entry) requireIsoDateTime(entry.last_checked_at, `${label}.last_checked_at`);
+      if ('last_checked_date' in entry) requireIsoDate(entry.last_checked_date, `${label}.last_checked_date`);
       if ('status' in entry) requireString(entry.status, `${label}.status`);
+      if ('source_status' in entry) requireString(entry.source_status, `${label}.source_status`);
+      if ('capability_rank' in entry && !['C', 'B', 'B+', 'A'].includes(entry.capability_rank)) {
+        fail(`${label}.capability_rank: expected C, B, B+, or A`);
+      }
       if ('confidence' in entry) requireString(entry.confidence, `${label}.confidence`);
       if ('notes' in entry && typeof entry.notes !== 'string' && !Array.isArray(entry.notes)) {
         fail(`${label}.notes: expected string or array`);
