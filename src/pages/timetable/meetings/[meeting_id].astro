@@ -1,18 +1,11 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import normalizedTimetable from '../../../../data/generated/normalized-timetable.json';
 import { getNormalizedTimetableMeetingDetail } from '../../../data/normalizedTimetableMeetingDetails';
-import {
-  readCalendarMeetingSummariesFromNormalizedTimetable,
-  type CalendarMeetingSummary,
-  type NormalizedTimetableFile,
-} from '../../../lib/timetable/calendar-view-model';
 import { createNormalizedTimetableMeetingDetailPath } from '../../../data/normalizedTimetableCalendarPreview';
+import { getTimetableMeetingRows, type TimetableMeetingRow } from '../../../data/timetableMeetingRows';
 
 export function getStaticPaths() {
-  const meetings = readCalendarMeetingSummariesFromNormalizedTimetable(
-    normalizedTimetable as NormalizedTimetableFile,
-  );
+  const meetings = getTimetableMeetingRows().filter((meeting) => meeting.can_view_race_timetable);
 
   return meetings.map((meeting) => ({
     params: { meeting_id: meeting.meeting_id },
@@ -21,19 +14,19 @@ export function getStaticPaths() {
 }
 
 interface Props {
-  meeting: CalendarMeetingSummary;
+  meeting: TimetableMeetingRow;
 }
 
 const { meeting } = Astro.props;
 const meetingDetail = getNormalizedTimetableMeetingDetail(meeting.meeting_id);
 const detailPath = createNormalizedTimetableMeetingDetailPath(meeting.meeting_id);
-const displayValue = (value: string | null) => value ?? 'Not displayed';
+const displayValue = (value: string | null | undefined) => value ?? 'Not displayed';
 const titleCaseId = (value: string) =>
   value
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
-const racecourseName = titleCaseId(meeting.racecourse_id);
+const racecourseName = meeting.racecourse_name;
 const authorityNameById: Record<string, string> = {
   jra: 'Japan Racing Association',
   hkjc: 'Hong Kong Jockey Club',
