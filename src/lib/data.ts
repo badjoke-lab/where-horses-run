@@ -1,6 +1,7 @@
 import countries from '../../data/static/countries.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
+import racecourseJraExtensions from '../../data/static/racecourses-jra-extensions.json';
 import sources from '../../data/static/sources.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
@@ -16,7 +17,7 @@ import japanActiveTimetableRecords from '../../data/generated/japan-active-timet
 
 export type Locale = 'en' | 'ja';
 
-const allRacecourses = [...racecourses, ...racecourseExtensions] as const;
+const allRacecourses = [...racecourses, ...racecourseExtensions, ...racecourseJraExtensions] as const;
 
 export type Country = (typeof countries)[number];
 export type Racecourse = (typeof allRacecourses)[number];
@@ -80,12 +81,4 @@ export function getSourcesByCountryId(countryId: string): Source[] {
 
 export function getGlossaryEntries(): GlossaryEntry[] {
   return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
-}
-
-export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
-  return glossary.find((entry) => entry.slug === slug);
-}
-
-export function getArchiveEntries(): ArchiveEntry[] {
-  return [...archive].sort((a, b) => a.name_en.localeCompare(b.name_en));
 }
