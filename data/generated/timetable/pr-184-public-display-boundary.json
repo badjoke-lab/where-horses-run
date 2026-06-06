@@ -1,0 +1,136 @@
+{
+  "schema_version": "pr-184-public-display-boundary-v0",
+  "last_checked": "2026-06-06",
+  "purpose": "Define the public display boundary for timetable list pages, meeting detail pages, A+ programme summaries, and Live / Replay labels before expanding timetable detail display.",
+  "ranks": [
+    {
+      "rank": "C",
+      "public_meaning": "Meeting date and racecourse are known.",
+      "display_boundary": "Show meeting-level information only. Do not show race times."
+    },
+    {
+      "rank": "B",
+      "public_meaning": "First race time is known.",
+      "display_boundary": "Show first race time only."
+    },
+    {
+      "rank": "B+",
+      "public_meaning": "First and last race times are known.",
+      "display_boundary": "Show first race time and last race time only."
+    },
+    {
+      "rank": "A",
+      "public_meaning": "Race-by-race post times are known.",
+      "display_boundary": "Show race label or race number plus post time only."
+    },
+    {
+      "rank": "A+",
+      "public_meaning": "Limited programme summary fields are known.",
+      "display_boundary": "On meeting detail pages only, show race label, post time, race name, distance, surface, and course when allowed."
+    }
+  ],
+  "list_page_policy": {
+    "one_meeting_per_row": true,
+    "applies_to": [
+      "calendar",
+      "today",
+      "tomorrow",
+      "country",
+      "racecourse",
+      "current_timetable"
+    ],
+    "allowed_fields": [
+      "racecourse",
+      "country",
+      "authority_or_racing_system",
+      "rank",
+      "first_race_time",
+      "last_race_time",
+      "detail_link",
+      "official_source_link"
+    ],
+    "forbidden_expansion": [
+      "race_by_race_programme_summary",
+      "race_name_list",
+      "distance_list",
+      "surface_list",
+      "course_list"
+    ]
+  },
+  "detail_page_policy": {
+    "a_plus_detail_limited_to_detail_pages": true,
+    "avoid_racecard_presentation": true,
+    "preferred_headings": [
+      "Programme summary",
+      "Timetable summary",
+      "Race timetable"
+    ]
+  },
+  "a_plus_allowed_fields": [
+    "race_label_or_race_number",
+    "post_time",
+    "race_name",
+    "distance",
+    "surface",
+    "course_label",
+    "official_source_link",
+    "last_checked_date"
+  ],
+  "forbidden_fields": [
+    "entries",
+    "runners",
+    "horse_names",
+    "jockey_names",
+    "trainer_names",
+    "saddlecloth",
+    "gate",
+    "post_position",
+    "weights",
+    "horse_body_weight",
+    "odds",
+    "popularity_or_betting_rank",
+    "results",
+    "payouts",
+    "dividends",
+    "predictions",
+    "betting_tips",
+    "betting_suggestions",
+    "full_racecard_body",
+    "raw_official_source_text",
+    "raw_html",
+    "embedded_video",
+    "direct_stream_urls",
+    "unofficial_mirrors",
+    "redistributed_recordings"
+  ],
+  "live_replay_policy": {
+    "separate_from_timetable_rank": true,
+    "allowed_labels": [
+      "Official live",
+      "Official replay",
+      "Account required",
+      "Betting account required",
+      "Paid TV / subscription may be required",
+      "Replay only",
+      "Open official source"
+    ],
+    "forbidden_outputs": [
+      "Watch here",
+      "guaranteed live claims",
+      "unverified free stream claims",
+      "embedded video",
+      "direct stream URLs",
+      "unofficial mirrors",
+      "redistributed recordings"
+    ]
+  },
+  "promotion_decision": {
+    "adds_new_records": false,
+    "changes_existing_ranks": false,
+    "enables_live_fetch": false,
+    "enables_parser": false,
+    "enables_runtime_fetch": false,
+    "enables_scheduled_jobs": false,
+    "adds_raw_source_storage": false
+  }
+}
