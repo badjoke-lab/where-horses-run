@@ -1,0 +1,173 @@
+---
+import type {
+  NormalizedTimetableCalendarPreviewDay,
+  NormalizedTimetableCalendarPreviewRecord,
+} from '../data/normalizedTimetableCalendarPreview';
+
+interface PreviewSummary {
+  record_count: number;
+  day_count: number;
+  source_path: string;
+  reader_path: string;
+  notice: string[];
+}
+
+interface Props {
+  days: NormalizedTimetableCalendarPreviewDay[];
+  summary: PreviewSummary;
+}
+
+const { days, summary } = Astro.props;
+
+const displayValue = (value: string | null) => value ?? 'not displayed';
+const dayId = (date: string) => `normalized-preview-day-${date}`;
+const sourceLabel = (record: NormalizedTimetableCalendarPreviewRecord) =>
+  `${record.authority_id} official source`;
+---
+
+<section class="normalized-calendar-preview" aria-labelledby="normalized-calendar-preview-title">
+  <div class="normalized-calendar-preview__header">
+    <div>
+      <p class="normalized-calendar-preview__eyebrow">Normalized timetable samples</p>
+      <h2 id="normalized-calendar-preview-title">Preview monthly/day calendar</h2>
+    </div>
+    <p>{summary.record_count} sample records across {summary.day_count} preview days</p>
+  </div>
+
+  <div class="normalized-calendar-preview__notice" aria-label="Preview safety notice">
+    <p>
+      Loaded from generated JSON without live fetching. Records are loaded from <code>{summary.source_path}</code> and projected through
+      <code>{summary.reader_path}</code> before display.
+    </p>
+    <ul>
+      {summary.notice.map((notice) => <li>{notice}</li>)}
+    </ul>
+  </div>
+
+  {days.length > 0 ? (
+    <div class="normalized-calendar-preview__month" aria-label="Normalized timetable preview month">
+      {days.map((day) => (
+        <article class="normalized-calendar-preview__day card" aria-labelledby={dayId(day.date)}>
+          <div class="normalized-calendar-preview__day-header">
+            <h3 id={dayId(day.date)}>{day.date}</h3>
+            <p>{day.records.length} summary record{day.records.length === 1 ? '' : 's'}</p>
+          </div>
+
+          <div class="table-scroll" role="region" aria-label={`Safe summaries for ${day.date}`} tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Country</th>
+                  <th>Authority</th>
+                  <th>Racecourse</th>
+                  <th>Source status</th>
+                  <th>Rank</th>
+                  <th>First race time</th>
+                  <th>Last race time</th>
+                  <th>Display status</th>
+                  <th>Official source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {day.records.map((record) => (
+                  <tr>
+                    <td>{record.date}</td>
+                    <td>{record.country_id}</td>
+                    <td>{record.authority_id}</td>
+                    <td>{record.racecourse_id}</td>
+                    <td>{record.source_status}</td>
+                    <td>{record.capability_rank}</td>
+                    <td>{displayValue(record.first_race_time_local)}</td>
+                    <td>{displayValue(record.last_race_time_local)}</td>
+                    <td>{record.display_status}</td>
+                    <td><a href={record.official_source_url}>{sourceLabel(record)}</a></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <article class="card">
+      <p>No normalized timetable samples are preview-readable yet.</p>
+      <p>Live fetching: disabled</p>
+    </article>
+  )}
+</section>
+
+<style>
+  .normalized-calendar-preview {
+    display: grid;
+    gap: var(--whr-space-3);
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .normalized-calendar-preview__header,
+  .normalized-calendar-preview__day-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--whr-space-2);
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .normalized-calendar-preview__header h2,
+  .normalized-calendar-preview__header p,
+  .normalized-calendar-preview__day-header h3,
+  .normalized-calendar-preview__day-header p,
+  .normalized-calendar-preview__notice p,
+  .normalized-calendar-preview__notice ul {
+    margin: 0;
+  }
+
+  .normalized-calendar-preview__eyebrow,
+  .normalized-calendar-preview__header > p,
+  .normalized-calendar-preview__day-header p {
+    color: var(--whr-color-muted);
+    font-weight: 700;
+  }
+
+  .normalized-calendar-preview__eyebrow {
+    margin: 0 0 var(--whr-space-1);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+  }
+
+  .normalized-calendar-preview__notice,
+  .normalized-calendar-preview__month {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .normalized-calendar-preview__notice {
+    border: 1px solid var(--whr-color-border);
+    padding: var(--whr-space-3);
+    background: var(--whr-color-bg);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 980px;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--whr-color-border);
+    padding: 0.45rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 700;
+  }
+</style>
