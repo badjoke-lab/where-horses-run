@@ -130,6 +130,7 @@ const hasRaceByRaceTimetable = (meetingId: string) =>
   (getNormalizedTimetableMeetingDetail(meetingId)?.timetable_rows.length ?? 0) > 0;
 const canShowRaceTimetable = (rank: CalendarRank, meetingId: string) =>
   (rank === 'A' || rank === 'A+') && hasRaceByRaceTimetable(meetingId);
+const meetingDetailPath = (meetingId: string) => createNormalizedTimetableMeetingDetailPath(meetingId);
 
 function cloneSet(set: GeneratedRecordSet): GeneratedRecordSet {
   return { ...set, meetings: [...(set.meetings ?? [])] };
@@ -160,8 +161,9 @@ function toGeneratedRows(recordSets: GeneratedRecordSet[]): TimetableMeetingRow[
       .map(([meetingDate, racecourse]) => {
         const capabilityRank = (set.data_level ?? 'C') as CalendarRank;
         const racecourseId = slug(racecourse);
+        const meetingId = `generated-${meetingDate}-${set.country_id}-${set.group_id}-${racecourseId}`;
         return {
-          meeting_id: `generated-${meetingDate}-${set.country_id}-${set.group_id}-${racecourseId}`,
+          meeting_id: meetingId,
           date: meetingDate,
           country_id: set.country_id,
           country_label: set.country_label,
@@ -173,7 +175,7 @@ function toGeneratedRows(recordSets: GeneratedRecordSet[]): TimetableMeetingRow[
           first_race_time_local: null,
           last_race_time_local: null,
           official_source_url: set.source_trace?.source_url ?? '#',
-          detail_path: '',
+          detail_path: meetingDetailPath(meetingId),
           can_view_race_timetable: false,
           rank_weight: rankWeight[capabilityRank] ?? 0,
           source_status: 'generated',
@@ -207,9 +209,7 @@ function toNormalizedRows(): TimetableMeetingRow[] {
         first_race_time_local: record.first_race_time_local,
         last_race_time_local: record.last_race_time_local,
         official_source_url: record.official_source_url,
-        detail_path: canViewRaceTimetable
-          ? (record.detail_path ?? createNormalizedTimetableMeetingDetailPath(record.meeting_id))
-          : '',
+        detail_path: record.detail_path ?? meetingDetailPath(record.meeting_id),
         can_view_race_timetable: canViewRaceTimetable,
         rank_weight: rankWeight[capabilityRank],
         source_status: record.source_status,
