@@ -7,8 +7,12 @@ import manualRacingNsw from '../../data/generated/timetable/manual-june-2026-rac
 import manualSouthAfrica from '../../data/generated/timetable/manual-june-2026-gold-circle.json';
 import manualUkArabian from '../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
 import manualUkPointToPoint from '../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
+import hkjcNormalizedTimetableSample from '../../data/generated/timetable/hkjc-normalized-timetable.sample.json';
 import { getNormalizedTimetableMeetingDetail } from './normalizedTimetableMeetingDetails';
-import { normalizedTimetableCalendarPreviewRecords } from './normalizedTimetableCalendarPreview';
+import {
+  createNormalizedTimetableMeetingDetailPath,
+  normalizedTimetableCalendarPreviewRecords,
+} from './normalizedTimetableCalendarPreview';
 
 export type CalendarRank = 'C' | 'B' | 'B+' | 'A';
 
@@ -28,6 +32,8 @@ export type TimetableMeetingRow = {
   detail_path: string;
   can_view_race_timetable: boolean;
   rank_weight: number;
+  source_status?: string;
+  last_checked_date?: string | null;
 };
 
 export type TimetableMeetingDayGroup = {
@@ -47,6 +53,21 @@ type GeneratedRecordSet = {
     last_checked?: string;
   };
   meetings?: [string, string][];
+};
+
+type NormalizedRecordInput = {
+  meeting_id: string;
+  date: string;
+  country_id: string;
+  authority_id: string;
+  racecourse_id: string;
+  capability_rank: CalendarRank;
+  first_race_time_local: string | null;
+  last_race_time_local: string | null;
+  official_source_url: string;
+  detail_path?: string;
+  source_status?: string;
+  last_checked_date?: string | null;
 };
 
 const monthStart = '2026-06-01';
@@ -74,6 +95,7 @@ const racecourseNameById: Record<string, string> = {
   'tokyo-racecourse': 'Tokyo Racecourse',
   'obihiro-racecourse': 'Obihiro Racecourse',
   'sha-tin-racecourse': 'Sha Tin Racecourse',
+  'happy-valley-racecourse': 'Happy Valley Racecourse',
 };
 
 const authorityLabelById: Record<string, string> = {
@@ -151,13 +173,20 @@ function toGeneratedRows(recordSets: GeneratedRecordSet[]): TimetableMeetingRow[
           detail_path: '',
           can_view_race_timetable: false,
           rank_weight: rankWeight[capabilityRank] ?? 0,
+          source_status: 'generated',
+          last_checked_date: set.source_trace?.last_checked ?? null,
         };
       }),
   );
 }
 
 function toNormalizedRows(): TimetableMeetingRow[] {
-  return normalizedTimetableCalendarPreviewRecords
+  const normalizedRecordInputs = [
+    ...normalizedTimetableCalendarPreviewRecords,
+    ...(hkjcNormalizedTimetableSample.records as NormalizedRecordInput[]),
+  ] as NormalizedRecordInput[];
+
+  return normalizedRecordInputs
     .filter((record) => record.date >= monthStart && record.date < monthEnd)
     .map((record) => {
       const capabilityRank = record.capability_rank as CalendarRank;
@@ -175,9 +204,13 @@ function toNormalizedRows(): TimetableMeetingRow[] {
         first_race_time_local: record.first_race_time_local,
         last_race_time_local: record.last_race_time_local,
         official_source_url: record.official_source_url,
-        detail_path: canViewRaceTimetable ? record.detail_path : '',
+        detail_path: canViewRaceTimetable
+          ? (record.detail_path ?? createNormalizedTimetableMeetingDetailPath(record.meeting_id))
+          : '',
         can_view_race_timetable: canViewRaceTimetable,
         rank_weight: rankWeight[capabilityRank],
+        source_status: record.source_status,
+        last_checked_date: record.last_checked_date ?? null,
       };
     });
 }
