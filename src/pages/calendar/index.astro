@@ -1,176 +1,108 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import NormalizedMeetingDetailLinks from '../../components/NormalizedMeetingDetailLinks.astro';
+import { getNormalizedTimetableMeetingDetail } from '../../data/normalizedTimetableMeetingDetails';
 import { normalizedTimetableCalendarPreviewRecords } from '../../data/normalizedTimetableCalendarPreview';
-import juneCalendar from '../../../data/generated/timetable/june-2026-calendar.json';
-import manualCanadaStandardbred from '../../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
-import manualCanadaWoodbine from '../../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
-import manualNzLoveracing from '../../../data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json';
-import manualQueensland from '../../../data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json';
-import manualRacingNsw from '../../../data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json';
-import manualSouthAfrica from '../../../data/generated/timetable/manual-june-2026-gold-circle.json';
-import manualUkArabian from '../../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
-import manualUkPointToPoint from '../../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
 
-const manualRecordSets = [
-  manualCanadaStandardbred.record_set,
-  manualCanadaWoodbine.record_set,
-  manualNzLoveracing.record_set,
-  manualQueensland.record_set,
-  manualRacingNsw.record_set,
-  manualSouthAfrica.record_set,
-  manualUkArabian.record_set,
-  manualUkPointToPoint.record_set
-].filter(Boolean);
+const monthStart = '2026-06-01';
+const monthEnd = '2026-07-01';
 
-function slug(value) {
-  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
+const titleCaseId = (value: string) =>
+  value
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 
-function cloneSet(set) {
-  return {
-    ...set,
-    meetings: [...(set.meetings ?? [])]
-  };
-}
+const racecourseNameById: Record<string, string> = {
+  'tokyo-racecourse': 'Tokyo Racecourse',
+  'obihiro-racecourse': 'Obihiro Racecourse',
+  'sha-tin-racecourse': 'Sha Tin Racecourse',
+};
 
-function mergeRecordSets(data) {
-  const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
+const authorityLabelById: Record<string, string> = {
+  jra: 'JRA',
+  hkjc: 'HKJC',
+  'nar-local-government-racing': 'NAR',
+};
 
-  for (const manual of manualRecordSets) {
-    const key = `${manual.country_id}::${manual.group_id}`;
-    if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
-    const target = byGroup.get(key);
-    target.source_trace = manual.source_trace;
-    target.data_level = manual.data_level;
-    for (const meeting of manual.meetings ?? []) {
-      const meetingKey = `${meeting[0]}::${meeting[1]}`;
-      const exists = target.meetings.some((item) => `${item[0]}::${item[1]}` === meetingKey);
-      if (!exists) target.meetings.push(meeting);
-    }
-  }
+const countryLabelById: Record<string, string> = {
+  japan: 'Japan',
+  'hong-kong': 'Hong Kong',
+};
 
-  return [...byGroup.values()].map((set) => ({
-    ...set,
-    meetings: set.meetings.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]))
-  })).sort((a, b) => `${a.country_id}::${a.group_id}`.localeCompare(`${b.country_id}::${b.group_id}`));
-}
+const displayTime = (value: string | null) => value ?? '—';
+const displayRacecourse = (racecourseId: string) => racecourseNameById[racecourseId] ?? titleCaseId(racecourseId);
+const displayAuthority = (authorityId: string) => authorityLabelById[authorityId] ?? titleCaseId(authorityId);
+const displayCountry = (countryId: string) => countryLabelById[countryId] ?? titleCaseId(countryId);
+const hasRaceByRaceTimetable = (meetingId: string) =>
+  (getNormalizedTimetableMeetingDetail(meetingId)?.timetable_rows.length ?? 0) > 0;
 
-function expandRecordSets(recordSets) {
-  return recordSets.flatMap((set) =>
-    set.meetings.map(([date, racecourse]) => ({
-      date,
-      country_id: set.country_id,
-      country_label: set.country_label,
-      racecourse_id: slug(racecourse),
-      racecourse_name: racecourse,
-      racing_type: set.group_label,
-      source_url: set.source_trace.source_url,
-      source_id: set.group_id,
-      last_checked_at: set.source_trace.last_checked,
-      status: 'real_source_checked',
-      confidence: set.data_level,
-      parser: set.source_trace.parser
-    }))
-  );
-}
+const calendarRecords = normalizedTimetableCalendarPreviewRecords
+  .filter((record) => record.date >= monthStart && record.date < monthEnd)
+  .map((record) => ({
+    ...record,
+    racecourse_name: displayRacecourse(record.racecourse_id),
+    authority_label: displayAuthority(record.authority_id),
+    country_label: displayCountry(record.country_id),
+    can_view_race_timetable: record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id),
+  }));
 
-const mergedRecordSets = mergeRecordSets(juneCalendar);
-const calendarRecords = expandRecordSets(mergedRecordSets)
-  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_name}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_name}`));
-const recordsByDate = calendarRecords.reduce((groups, record) => {
-  groups[record.date] = [...(groups[record.date] ?? []), record];
+const recordsByDate = calendarRecords.reduce<Record<string, typeof calendarRecords>>((groups, record) => {
+  groups[record.date] ??= [];
+  groups[record.date].push(record);
   return groups;
 }, {});
-const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date, records: recordsByDate[date] }));
-const normalizedCalendarRecords = normalizedTimetableCalendarPreviewRecords
-  .filter((record) => record.date >= '2026-06-01' && record.date < '2026-07-01')
-  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
-const generatedTimetableDate = juneCalendar.generated_at?.slice(0, 10) ?? '2026-06-01';
-const rangeStartDate = '2026-06-01';
-const rangeEndDate = '2026-07-01';
+
+const groupedCalendarRecords = Object.entries(recordsByDate)
+  .map(([date, records]) => ({
+    date,
+    records: records.sort((left, right) =>
+      `${left.country_id}:${left.racecourse_id}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
+        `${right.country_id}:${right.racecourse_id}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
+      ),
+    ),
+  }))
+  .sort((left, right) => left.date.localeCompare(right.date));
 ---
 
 <BaseLayout
-  title="June 2026 timetable calendar | Where Horses Run"
-  description="June 2026 real-source timetable records grouped by date, with official source links as the final confirmation point."
+  title="June 2026 Calendar | Where Horses Run"
+  description="A simple date-first meeting calendar for June 2026, with one official source link per meeting and race timetable links only where race-by-race times are available."
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
-    <h1 id="page-title">June 2026 real-source timetable calendar</h1>
+    <h1 id="page-title">June 2026 Calendar</h1>
     <p class="hero__summary">
-      Real-source timetable records grouped by date for June 2026.
-      Official source links remain the final confirmation point.
+      Meetings grouped by date. Rank controls how much timing detail is shown; official sources remain the final confirmation point.
     </p>
   </section>
 
-  <section class="section-grid" aria-label="June 2026 timetable status">
-    <article class="card">
-      <h2>Status</h2>
-      <p><strong>Generated date:</strong> {generatedTimetableDate || 'not listed'}</p>
-      <p><strong>Range start:</strong> {rangeStartDate}</p>
-      <p><strong>Range end:</strong> {rangeEndDate} (exclusive)</p>
-      <p><strong>Matching records:</strong> {calendarRecords.length}</p>
-      <p><strong>Live fetching:</strong> disabled</p>
-    </article>
-
-    <article class="card">
-      <h2>Official confirmation</h2>
-      <p>Use official source links for final confirmation.</p>
-      <p>Normalized meeting detail links below are summary-only and do not claim complete calendar coverage.</p>
-    </article>
-  </section>
-
-  <NormalizedMeetingDetailLinks
-    title="Normalized June meeting detail links"
-    records={normalizedCalendarRecords}
-    emptyLabel="No normalized summary records are available for June 2026 yet."
-  />
-
-  <section aria-label="June 2026 timetable records">
-    <h2>Records by date</h2>
+  <section aria-label="June 2026 meetings by date" class="calendar-date-groups">
     {groupedCalendarRecords.length > 0 ? (
-      <div class="calendar-date-groups">
-        {groupedCalendarRecords.map((group) => (
-          <section class="card" aria-labelledby={`date-${group.date}`}>
-            <h3 id={`date-${group.date}`}>{group.date} <span>({group.records.length})</span></h3>
-            <div class="table-scroll" role="region" aria-label={`Records for ${group.date}`} tabindex="0">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Country</th>
-                    <th>Racecourse</th>
-                    <th>System</th>
-                    <th>Source</th>
-                    <th>Checked</th>
-                    <th>Rank</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {group.records.map((record) => (
-                    <tr>
-                      <td>{record.country_label}</td>
-                      <td>{record.racecourse_name}</td>
-                      <td>{record.racing_type}</td>
-                      <td><a href={record.source_url}>{record.source_id}</a></td>
-                      <td>{record.last_checked_at}</td>
-                      <td>{record.confidence}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        ))}
-      </div>
+      groupedCalendarRecords.map((group) => (
+        <section class="calendar-date-group" aria-labelledby={`date-${group.date}`}>
+          <h2 id={`date-${group.date}`}>{group.date}</h2>
+          <ul class="meeting-list">
+            {group.records.map((record) => (
+              <li class="meeting-row">
+                <span class="meeting-row__course">{record.racecourse_name}</span>
+                <span>{record.authority_label}</span>
+                <span>{record.country_label}</span>
+                <span>Rank {record.capability_rank}</span>
+                {record.capability_rank !== 'C' && <span>First: {displayTime(record.first_race_time_local)}</span>}
+                {(record.capability_rank === 'B+' || record.capability_rank === 'A') && (
+                  <span>Last: {displayTime(record.last_race_time_local)}</span>
+                )}
+                {record.can_view_race_timetable && <a href={record.detail_path}>View race timetable</a>}
+                <a href={record.official_source_url}>Official source</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
     ) : (
-      <article class="card">
-        <p>No safe timetable records are listed for June 2026 yet.</p>
-        <p>Use official source links for final confirmation.</p>
-        <p>Live fetching: disabled</p>
-      </article>
+      <p>No June 2026 meetings are listed yet. Use official source links for final confirmation.</p>
     )}
   </section>
 </BaseLayout>
@@ -178,38 +110,30 @@ const rangeEndDate = '2026-07-01';
 <style>
   .calendar-date-groups {
     display: grid;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
-  .calendar-date-groups h3 {
-    margin-top: 0;
+  .calendar-date-group h2 {
+    margin-block-end: 0.5rem;
   }
 
-  .calendar-date-groups h3 span {
-    color: var(--muted, #666);
-    font-size: 0.9em;
-    font-weight: 500;
+  .meeting-list {
+    display: grid;
+    gap: 0.45rem;
+    list-style: disc;
+    margin: 0;
+    padding-inline-start: 1.25rem;
   }
 
-  .table-scroll {
-    overflow-x: auto;
+  .meeting-row {
+    align-items: baseline;
+    column-gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
   }
 
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 760px;
-  }
-
-  th,
-  td {
-    border-bottom: 1px solid var(--border, #ddd);
-    padding: 0.45rem 0.5rem;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  th {
+  .meeting-row__course {
     font-weight: 700;
   }
 </style>
