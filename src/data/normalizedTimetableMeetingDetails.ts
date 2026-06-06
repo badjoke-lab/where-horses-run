@@ -3,6 +3,11 @@ import hkjcNormalizedMeetingDetailsSample from '../../data/generated/timetable/h
 export type NormalizedTimetableMeetingTimetableRow = {
   readonly label: string;
   readonly post_time_local: string;
+  readonly race_name?: string | null;
+  readonly distance_m?: number | null;
+  readonly surface?: string | null;
+  readonly course_label?: string | null;
+  readonly metadata_status?: 'verified' | 'partial' | 'pending' | null;
   readonly detail_source_label?: string;
 };
 
@@ -16,7 +21,7 @@ const normalizedTimetableMeetingDetails: readonly NormalizedTimetableMeetingDeta
   {
     meeting_id: 'jra-tokyo-racecourse-2026-06-07',
     summary_note:
-      'This manually reviewed A-level sample stores public-safe post times only. Race names, horses, jockeys, entries, odds, results, and payouts are not stored or republished.',
+      'This manually reviewed A-level sample stores public-safe post times only. Race names, entries, odds, results, and payout data are not stored or republished.',
     timetable_rows: [
       { label: 'Race 1', post_time_local: '10:05', detail_source_label: 'Official source' },
       { label: 'Race 2', post_time_local: '10:35', detail_source_label: 'Official source' },
