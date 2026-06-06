@@ -41,6 +41,10 @@ const timezoneByCountryId: Record<string, string> = {
   japan: 'Asia/Tokyo',
   'hong-kong': 'Asia/Hong_Kong',
 };
+const utcOffsetByTimezone: Record<string, string> = {
+  'Asia/Tokyo': 'UTC+9',
+  'Asia/Hong_Kong': 'UTC+8',
+};
 const country = getCountries().find((entry) => entry.id === meeting.country_id);
 const track = getRacecourseBySlug(meeting.racecourse_id);
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
@@ -48,6 +52,7 @@ const countryName = country?.name_en ?? countryNameById[meeting.country_id] ?? t
 const countryPath = country ? `/countries/${country.slug}/` : '/countries/';
 const trackPath = track ? `/tracks/${track.slug}/` : `/tracks/${meeting.racecourse_id}/`;
 const timezone = track?.timezone ?? timezoneByCountryId[meeting.country_id] ?? null;
+const timezoneLabel = timezone ? `${timezone} (${utcOffsetByTimezone[timezone] ?? 'UTC offset not listed'})` : null;
 const timetableRows = meetingDetail?.timetable_rows ?? [];
 const hasRaceByRaceTimetable = timetableRows.length > 0;
 ---
@@ -68,7 +73,7 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
     <p>{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Timezone: {displayValue(timezone)}</p>
+    <p>Timezone: {displayValue(timezoneLabel)}</p>
     <p>Rank: {meeting.capability_rank}</p>
     <p>Source: {meeting.source_status}</p>
     <p>First race: {displayValue(meeting.first_race_time_local)}</p>
