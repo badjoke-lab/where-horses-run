@@ -7,6 +7,7 @@ const root = process.cwd();
 const errors = [];
 const paths = {
   page: 'src/pages/major-countries/preview-timetable.astro',
+  detailPage: 'src/pages/timetable/meetings/[meeting_id].astro',
   component: 'src/components/NormalizedTimetableCalendarPreview.astro',
   dataModule: 'src/data/normalizedTimetableCalendarPreview.ts',
   helper: 'src/lib/timetable/calendar-view-model.ts',
@@ -16,6 +17,7 @@ const paths = {
 };
 const expectedMeetingIds = [
   'jra-tokyo-racecourse-2026-06-06',
+  'jra-tokyo-racecourse-2026-06-07',
   'nar-obihiro-racecourse-2026-06-06',
   'hkjc-sha-tin-racecourse-2026-06-07',
 ];
@@ -102,6 +104,7 @@ async function importHelper(helperText) {
 
 const pageText = readText(paths.page);
 const componentText = readText(paths.component);
+const detailPageText = readText(paths.detailPage);
 const dataModuleText = readText(paths.dataModule);
 const helperText = readText(paths.helper);
 const currentStatusText = readText(paths.currentStatus);
@@ -116,6 +119,13 @@ requireIncludes(dataModuleText, 'readCalendarMeetingSummariesFromNormalizedTimet
 requireIncludes(dataModuleText, 'NormalizedTimetableCalendarPreviewRecord', paths.dataModule);
 requireIncludes(componentText, 'Preview monthly/day calendar', paths.component);
 requireIncludes(componentText, 'Loaded from generated JSON without live fetching', paths.component);
+requireIncludes(componentText, 'record.detail_path', paths.component);
+requireIncludes(componentText, 'View meeting detail', paths.component);
+requireIncludes(detailPageText, 'getStaticPaths', paths.detailPage);
+requireIncludes(detailPageText, 'meeting_id', paths.detailPage);
+requireIncludes(detailPageText, 'Race-by-race detail is available at the official source when applicable, but not republished here.', paths.detailPage);
+requireIncludes(detailPageText, 'racecards, entries, odds, results, payouts, predictions, tips', paths.detailPage);
+requireIncludes(dataModuleText, 'createNormalizedTimetableMeetingDetailPath', paths.dataModule);
 requireIncludes(currentStatusText, 'preview-readable through the calendar view model reader', paths.currentStatus);
 
 for (const field of safeDisplayFields) {
@@ -127,7 +137,7 @@ for (const field of prohibitedDisplayFields) {
     fail(`${paths.component} must not display ${field} on the normalized preview surface.`);
   }
 }
-for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.dataModule]: dataModuleText })) {
+for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText })) {
   for (const pattern of runtimeFetchPatterns) if (pattern.test(text)) fail(`${label} must not add live fetch runtime.`);
   for (const pattern of parserPatterns) if (pattern.test(text)) fail(`${label} must not add parser/scraper logic.`);
 }
@@ -149,6 +159,17 @@ if (errors.length === 0) {
     }
   }
 
+  const aLevelSample = summaries.find((summary) => summary.meeting_id === 'jra-tokyo-racecourse-2026-06-07');
+  if (!aLevelSample) {
+    fail('Normalized preview summaries must include the manually reviewed A-level JRA Tokyo sample.');
+  } else {
+    if (aLevelSample.capability_rank !== 'A') fail('The JRA Tokyo 2026-06-07 sample must use capability_rank A.');
+    if (aLevelSample.first_race_time_local !== '10:05') fail('The A-level sample must expose the reviewed first race time.');
+    if (aLevelSample.last_race_time_local !== '16:30') fail('The A-level sample must expose the reviewed last race time.');
+  }
+
+  const detailPaths = new Set(summaries.map((summary) => `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`));
+
   const previewRows = summaries.map((summary) => ({
     date: summary.date,
     country_id: summary.country_id,
@@ -160,13 +181,17 @@ if (errors.length === 0) {
     last_race_time_local: summary.last_race_time_local,
     display_status: summary.display_status,
     official_source_url: summary.official_source_url,
+    detail_path: `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`,
   }));
 
   for (const row of previewRows) {
     const keys = Object.keys(row).sort();
-    const expectedKeys = [...safeDisplayFields].sort();
+    const expectedKeys = [...safeDisplayFields, 'detail_path'].sort();
     if (keys.join(',') !== expectedKeys.join(',')) {
       fail('Normalized preview rows must contain only the safe summary display fields.');
+    }
+    if (!detailPaths.has(row.detail_path)) {
+      fail(`Normalized preview detail path ${row.detail_path} must resolve to a generated meeting detail page.`);
     }
     if (row.capability_rank === 'C' && (row.first_race_time_local !== null || row.last_race_time_local !== null)) {
       fail('Rank C preview rows must not expose first/last times.');

@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import normalizedTimetable from '../../../../data/generated/normalized-timetable.json';
+import {
+  readCalendarMeetingSummariesFromNormalizedTimetable,
+  type CalendarMeetingSummary,
+  type NormalizedTimetableFile,
+} from '../../../lib/timetable/calendar-view-model';
+import { createNormalizedTimetableMeetingDetailPath } from '../../../data/normalizedTimetableCalendarPreview';
+
+export function getStaticPaths() {
+  const meetings = readCalendarMeetingSummariesFromNormalizedTimetable(
+    normalizedTimetable as NormalizedTimetableFile,
+  );
+
+  return meetings.map((meeting) => ({
+    params: { meeting_id: meeting.meeting_id },
+    props: { meeting },
+  }));
+}
+
+interface Props {
+  meeting: CalendarMeetingSummary;
+}
+
+const { meeting } = Astro.props;
+const displayValue = (value: string | null) => value ?? 'not displayed';
+const detailPath = createNormalizedTimetableMeetingDetailPath(meeting.meeting_id);
+const detailRows = [
+  ['meeting_id', meeting.meeting_id],
+  ['date', meeting.date],
+  ['country_id', meeting.country_id],
+  ['authority_id', meeting.authority_id],
+  ['racecourse_id', meeting.racecourse_id],
+  ['source_status', meeting.source_status],
+  ['capability_rank', meeting.capability_rank],
+  ['display_status', meeting.display_status],
+  ['first_race_time_local', displayValue(meeting.first_race_time_local)],
+  ['last_race_time_local', displayValue(meeting.last_race_time_local)],
+  ['official_source_url', meeting.official_source_url],
+  ['last_checked_date', displayValue(meeting.last_checked_date)],
+  ['notes', meeting.notes],
+];
+---
+
+<BaseLayout
+  title={`${meeting.racecourse_id} meeting detail | Where Horses Run`}
+  description="Public-safe normalized meeting detail with official-source link and no republished race-by-race data."
+  canonicalPath={detailPath}
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Normalized timetable meeting detail</p>
+    <h1 id="page-title">{meeting.racecourse_id} — {meeting.date}</h1>
+    <div class="hero__summary">
+      <p>This page shows public-safe A/B summary fields from the normalized timetable sample only.</p>
+      <p>Race-by-race detail is available at the official source when applicable, but it is not republished here.</p>
+      <p><a href="/major-countries/preview-timetable/">Back to the normalized timetable preview.</a></p>
+    </div>
+  </section>
+
+  <section class="meeting-detail card" aria-labelledby="meeting-detail-title">
+    <h2 id="meeting-detail-title">Meeting fields</h2>
+    <dl class="meeting-detail__fields">
+      {detailRows.map(([label, value]) => (
+        <div class="meeting-detail__field">
+          <dt>{label}</dt>
+          <dd>
+            {label === 'official_source_url' ? <a href={value}>{value}</a> : value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="meeting-detail card" aria-labelledby="meeting-safety-title">
+    <h2 id="meeting-safety-title">Publication boundary</h2>
+    <p>
+      Race-by-race detail is available at the official source when applicable, but not republished here.
+    </p>
+    <p>
+      This page does not include racecards, entries, odds, results, payouts, predictions, tips, full race-by-race detail,
+      or raw source body/html.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .meeting-detail {
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .meeting-detail h2,
+  .meeting-detail p,
+  .meeting-detail dl {
+    margin: 0;
+  }
+
+  .meeting-detail {
+    display: grid;
+    gap: var(--whr-space-3);
+  }
+
+  .meeting-detail__fields {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.4fr) minmax(0, 1fr);
+    border: 1px solid var(--whr-color-border);
+  }
+
+  .meeting-detail__field {
+    display: contents;
+  }
+
+  .meeting-detail__field dt,
+  .meeting-detail__field dd {
+    border-bottom: 1px solid var(--whr-color-border);
+    padding: 0.65rem 0.75rem;
+  }
+
+  .meeting-detail__field dt {
+    background: var(--whr-color-bg);
+    font-weight: 700;
+  }
+
+  .meeting-detail__field dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 680px) {
+    .meeting-detail__fields {
+      grid-template-columns: 1fr;
+    }
+
+    .meeting-detail__field {
+      display: grid;
+    }
+  }
+</style>

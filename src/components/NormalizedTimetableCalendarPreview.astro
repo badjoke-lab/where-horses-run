@@ -66,6 +66,7 @@ const sourceLabel = (record: NormalizedTimetableCalendarPreviewRecord) =>
                   <th>First race time</th>
                   <th>Last race time</th>
                   <th>Display status</th>
+                  <th>Meeting detail</th>
                   <th>Official source</th>
                 </tr>
               </thead>
@@ -81,6 +82,7 @@ const sourceLabel = (record: NormalizedTimetableCalendarPreviewRecord) =>
                     <td>{displayValue(record.first_race_time_local)}</td>
                     <td>{displayValue(record.last_race_time_local)}</td>
                     <td>{record.display_status}</td>
+                    <td><a href={record.detail_path}>View meeting detail</a></td>
                     <td><a href={record.official_source_url}>{sourceLabel(record)}</a></td>
                   </tr>
                 ))}
@@ -156,7 +158,7 @@ const sourceLabel = (record: NormalizedTimetableCalendarPreviewRecord) =>
   table {
     border-collapse: collapse;
     width: 100%;
-    min-width: 980px;
+    min-width: 1080px;
   }
 
   th,

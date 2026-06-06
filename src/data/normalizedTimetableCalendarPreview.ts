@@ -17,12 +17,17 @@ export type NormalizedTimetableCalendarPreviewRecord = Pick<
   | 'last_race_time_local'
   | 'display_status'
   | 'official_source_url'
->;
+> & {
+  readonly detail_path: string;
+};
 
 export type NormalizedTimetableCalendarPreviewDay = {
   date: string;
   records: NormalizedTimetableCalendarPreviewRecord[];
 };
+
+export const createNormalizedTimetableMeetingDetailPath = (meetingId: string) =>
+  `/timetable/meetings/${encodeURIComponent(meetingId)}/`;
 
 const toPreviewRecord = (summary: CalendarMeetingSummary): NormalizedTimetableCalendarPreviewRecord => ({
   date: summary.date,
@@ -35,6 +40,7 @@ const toPreviewRecord = (summary: CalendarMeetingSummary): NormalizedTimetableCa
   last_race_time_local: summary.last_race_time_local,
   display_status: summary.display_status,
   official_source_url: summary.official_source_url,
+  detail_path: createNormalizedTimetableMeetingDetailPath(summary.meeting_id),
 });
 
 export const normalizedTimetableCalendarPreviewRecords = readCalendarMeetingSummariesFromNormalizedTimetable(
@@ -63,5 +69,6 @@ export const normalizedTimetableCalendarPreviewSummary = {
     'Loaded from generated JSON without live fetching.',
     'Projected through the calendar view model reader before display.',
     'Summary-only monthly/day calendar preview; complete calendar coverage is not claimed.',
+    'A-level meeting detail pages link to official sources without republishing race-by-race detail.',
   ],
 };
