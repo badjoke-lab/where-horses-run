@@ -14,7 +14,7 @@ import {
   normalizedTimetableCalendarPreviewRecords,
 } from './normalizedTimetableCalendarPreview';
 
-export type CalendarRank = 'C' | 'B' | 'B+' | 'A';
+export type CalendarRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 
 export type TimetableMeetingRow = {
   meeting_id: string;
@@ -89,6 +89,7 @@ const rankWeight: Record<CalendarRank, number> = {
   B: 1,
   'B+': 2,
   A: 3,
+  'A+': 4,
 };
 
 const racecourseNameById: Record<string, string> = {
@@ -127,6 +128,8 @@ const displayAuthority = (authorityId: string) => authorityLabelById[authorityId
 const displayCountry = (countryId: string) => countryLabelById[countryId] ?? titleCaseId(countryId);
 const hasRaceByRaceTimetable = (meetingId: string) =>
   (getNormalizedTimetableMeetingDetail(meetingId)?.timetable_rows.length ?? 0) > 0;
+const canShowRaceTimetable = (rank: CalendarRank, meetingId: string) =>
+  (rank === 'A' || rank === 'A+') && hasRaceByRaceTimetable(meetingId);
 
 function cloneSet(set: GeneratedRecordSet): GeneratedRecordSet {
   return { ...set, meetings: [...(set.meetings ?? [])] };
@@ -190,7 +193,7 @@ function toNormalizedRows(): TimetableMeetingRow[] {
     .filter((record) => record.date >= monthStart && record.date < monthEnd)
     .map((record) => {
       const capabilityRank = record.capability_rank as CalendarRank;
-      const canViewRaceTimetable = capabilityRank === 'A' && hasRaceByRaceTimetable(record.meeting_id);
+      const canViewRaceTimetable = canShowRaceTimetable(capabilityRank, record.meeting_id);
       return {
         meeting_id: record.meeting_id,
         date: record.date,
