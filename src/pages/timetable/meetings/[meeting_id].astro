@@ -6,7 +6,7 @@ import { getTimetableMeetingRows, type TimetableMeetingRow } from '../../../data
 import { getCountries, getRacecourseBySlug } from '../../../lib/data';
 
 export function getStaticPaths() {
-  const meetings = getTimetableMeetingRows().filter((meeting) => meeting.can_view_race_timetable);
+  const meetings = getTimetableMeetingRows();
 
   return meetings.map((meeting) => ({
     params: { meeting_id: meeting.meeting_id },
@@ -40,10 +40,22 @@ const countryNameById: Record<string, string> = {
 const timezoneByCountryId: Record<string, string> = {
   japan: 'Asia/Tokyo',
   'hong-kong': 'Asia/Hong_Kong',
+  australia: 'Australia/Sydney',
+  canada: 'America/Toronto',
+  ireland: 'Europe/Dublin',
+  'new-zealand': 'Pacific/Auckland',
+  'south-africa': 'Africa/Johannesburg',
+  'united-kingdom': 'Europe/London',
 };
 const utcOffsetByTimezone: Record<string, string> = {
   'Asia/Tokyo': 'UTC+9',
   'Asia/Hong_Kong': 'UTC+8',
+  'Australia/Sydney': 'UTC+10/+11',
+  'America/Toronto': 'UTC-5/-4',
+  'Europe/Dublin': 'UTC+0/+1',
+  'Pacific/Auckland': 'UTC+12/+13',
+  'Africa/Johannesburg': 'UTC+2',
+  'Europe/London': 'UTC+0/+1',
 };
 const country = getCountries().find((entry) => entry.id === meeting.country_id);
 const track = getRacecourseBySlug(meeting.racecourse_id);
@@ -54,15 +66,23 @@ const trackPath = track ? `/tracks/${track.slug}/` : `/tracks/${meeting.racecour
 const timezone = track?.timezone ?? timezoneByCountryId[meeting.country_id] ?? null;
 const timezoneLabel = timezone ? `${timezone} (${utcOffsetByTimezone[timezone] ?? 'UTC offset not listed'})` : null;
 const timetableRows = meetingDetail?.timetable_rows ?? [];
-const hasRaceByRaceTimetable = timetableRows.length > 0;
-const hasRaceMetadata = timetableRows.some(
+const hasRaceByRaceTimetable = meeting.can_view_race_timetable && timetableRows.length > 0;
+const hasRaceMetadata = hasRaceByRaceTimetable && timetableRows.some(
   (row) => row.race_name || row.distance_m || row.surface || row.course_label,
 );
+const pageKind = hasRaceByRaceTimetable ? 'Race timetable' : 'Meeting detail';
+const timeCoverageNoteByRank: Record<string, string> = {
+  C: 'This record confirms the meeting date and racecourse only. Race times are not available in the current source route.',
+  B: 'This record confirms the first race time only. Last race time and race-by-race rows are not available in the current source route.',
+  'B+': 'This record confirms first and last race times only. Full race-by-race rows are not available in the current source route.',
+  A: 'This record includes race-by-race public-safe post times.',
+  'A+': 'This record includes race-by-race public-safe post times and minimal timetable metadata.',
+};
 ---
 
 <BaseLayout
-  title={`${racecourseName} race timetable | Where Horses Run`}
-  description="Public-safe meeting timetable with official-source link and race-by-race post times where available."
+  title={`${racecourseName} ${pageKind.toLowerCase()} | Where Horses Run`}
+  description="Public-safe meeting detail with official-source link and timetable coverage where available."
   canonicalPath={detailPath}
 >
   <nav class="detail-nav" aria-label="Meeting detail navigation">
@@ -72,56 +92,57 @@ const hasRaceMetadata = timetableRows.some(
   </nav>
 
   <section aria-labelledby="page-title">
-    <p class="eyebrow">Timetable meeting detail</p>
+    <p class="eyebrow">{pageKind}</p>
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
     <p>{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
     <p>Timezone: {displayValue(timezoneLabel)}</p>
-    <p>Rank: {hasRaceMetadata ? 'A+' : meeting.capability_rank}</p>
+    <p>Rank: {meeting.capability_rank}</p>
     <p>Source: {meeting.source_status}</p>
     <p>First race: {displayValue(meeting.first_race_time_local)}</p>
     <p>Last race: {displayValue(meeting.last_race_time_local)}</p>
   </section>
 
-  <section aria-labelledby="race-timetable-title">
-    <h2 id="race-timetable-title">Race timetable</h2>
-    {hasRaceByRaceTimetable ? (
-      <>
-        <p>{timetableRows.length} public-safe post times.</p>
-        <div class="table-scroll" role="region" aria-label="Race-by-race post time list" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Race</th>
-                <th>Post time</th>
-                {hasRaceMetadata && <th>Race name</th>}
-                {hasRaceMetadata && <th>Distance</th>}
-                {hasRaceMetadata && <th>Surface</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {timetableRows.map((row) => (
-                <tr>
-                  <td>{row.label}</td>
-                  <td>{row.post_time_local}</td>
-                  {hasRaceMetadata && <td>{displayValue(row.race_name)}</td>}
-                  {hasRaceMetadata && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
-                  {hasRaceMetadata && <td>{[row.surface, row.course_label].filter(Boolean).join(' · ') || 'Not displayed'}</td>}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p>{meetingDetail?.summary_note}</p>
-      </>
-    ) : (
-      <p>No public-safe race-by-race post-time list is stored for this meeting.</p>
-    )}
+  <section aria-labelledby="coverage-title">
+    <h2 id="coverage-title">Time coverage</h2>
+    <p>{timeCoverageNoteByRank[meeting.capability_rank]}</p>
   </section>
+
+  {hasRaceByRaceTimetable && (
+    <section aria-labelledby="race-timetable-title">
+      <h2 id="race-timetable-title">Race timetable</h2>
+      <p>{timetableRows.length} public-safe post times.</p>
+      <div class="table-scroll" role="region" aria-label="Race-by-race post time list" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Race</th>
+              <th>Post time</th>
+              {hasRaceMetadata && <th>Race name</th>}
+              {hasRaceMetadata && <th>Distance</th>}
+              {hasRaceMetadata && <th>Surface</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {timetableRows.map((row) => (
+              <tr>
+                <td>{row.label}</td>
+                <td>{row.post_time_local}</td>
+                {hasRaceMetadata && <td>{displayValue(row.race_name)}</td>}
+                {hasRaceMetadata && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
+                {hasRaceMetadata && <td>{[row.surface, row.course_label].filter(Boolean).join(' · ') || 'Not displayed'}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>{meetingDetail?.summary_note}</p>
+    </section>
+  )}
 
   <section aria-labelledby="official-source-title">
     <h2 id="official-source-title">Official source</h2>
-    <p><a href={meeting.official_source_url}>Open official {meeting.authority_id.toUpperCase()} source</a></p>
+    <p><a href={meeting.official_source_url}>Open official source</a></p>
     <p>Last checked: {displayValue(meeting.last_checked_date)}</p>
   </section>
 
