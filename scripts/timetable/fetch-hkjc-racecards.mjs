@@ -30,16 +30,58 @@ function racecardUrl(template, meeting, raceNumber) {
     .replace('{dd}', dd);
 }
 
-function stripHtml(value) {
+function decodeEntities(value) {
   return value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&#x2F;|&#47;/gi, '/');
+}
+
+function stripHtml(value) {
+  return decodeEntities(value)
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&#x2F;|&#47;/gi, '/')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function normalizeText(value) {
+  return String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractTitle(text) {
+  const titlePatterns = [
+    /Race\s*\d+\s*[-–—:]\s*([^|]{4,120}?)(?:\s{2,}|\s+(?:\d{3,4}M|Turf|All Weather|Course|Class)|$)/i,
+    /(?:HANDICAP|CUP|STAKES|TROPHY|SPRINT|CHALLENGE)[A-Z0-9 '\-&()]{0,90}/i,
+  ];
+  for (const pattern of titlePatterns) {
+    const match = text.match(pattern);
+    if (match?.[1]) return normalizeText(match[1]).toUpperCase();
+    if (match?.[0]) return normalizeText(match[0]).toUpperCase();
+  }
+  return null;
+}
+
+function extractDistance(text) {
+  const match = text.match(/\b(\d{3,4})\s*M\b/i) ?? text.match(/\b(\d{3,4})\s*metres?\b/i);
+  return match ? Number(match[1]) : null;
+}
+
+function extractSurface(text) {
+  if (/All\s*Weather|A\.W\.T\.|AWT/i.test(text)) return 'All Weather Track';
+  if (/\bTurf\b/i.test(text)) return 'Turf';
+  if (/\bDirt\b/i.test(text)) return 'Dirt';
+  return null;
+}
+
+function extractCourseLabel(text) {
+  const match = text.match(/\b([ABC])\s+Course\b/i) ?? text.match(/\bCourse\s+([ABC])\b/i);
+  return match ? `${match[1].toUpperCase()} Course` : null;
 }
 
 function extractPublicSafeObservation(html, meeting, raceNumber) {
@@ -53,12 +95,22 @@ function extractPublicSafeObservation(html, meeting, raceNumber) {
 
   const matched = headerPatterns.map((pattern) => text.match(pattern)).find(Boolean);
   const raceTime = matched?.[1] ?? null;
+  const raceName = extractTitle(text);
+  const distanceM = extractDistance(text);
+  const surface = extractSurface(text);
+  const courseLabel = extractCourseLabel(text);
+  const hasAPlusMetadata = Boolean(raceTime && raceName && distanceM && surface);
 
   return {
     race_number: raceNumber,
     source_url: racecardUrl(config.official_sources.racecard_url_template, meeting, raceNumber),
     fetch_status: raceTime ? 'time_extracted' : 'fetched_no_time',
     race_time_local: raceTime,
+    race_name: raceName,
+    distance_m: distanceM,
+    surface,
+    course_label: courseLabel,
+    metadata_status: hasAPlusMetadata ? 'verified' : raceTime ? 'partial' : 'pending',
     public_safe_text_sample: raceTime ? `${meeting.meeting_date} ${meeting.racecourse_name} Race ${raceNumber} ${raceTime}` : null,
   };
 }
@@ -92,12 +144,35 @@ for (const meeting of config.meetings) {
     try {
       const result = await fetchWithTimeout(url);
       if (!result.ok) {
-        races.push({ race_number: raceNumber, source_url: url, fetch_status: `http_${result.status}`, race_time_local: null, public_safe_text_sample: null });
+        races.push({
+          race_number: raceNumber,
+          source_url: url,
+          fetch_status: `http_${result.status}`,
+          race_time_local: null,
+          race_name: null,
+          distance_m: null,
+          surface: null,
+          course_label: null,
+          metadata_status: 'pending',
+          public_safe_text_sample: null,
+        });
         continue;
       }
       races.push(extractPublicSafeObservation(result.body, meeting, raceNumber));
     } catch (error) {
-      races.push({ race_number: raceNumber, source_url: url, fetch_status: 'fetch_error', error_message: String(error?.message ?? error), race_time_local: null, public_safe_text_sample: null });
+      races.push({
+        race_number: raceNumber,
+        source_url: url,
+        fetch_status: 'fetch_error',
+        error_message: String(error?.message ?? error),
+        race_time_local: null,
+        race_name: null,
+        distance_m: null,
+        surface: null,
+        course_label: null,
+        metadata_status: 'pending',
+        public_safe_text_sample: null,
+      });
     }
   }
   observations.push({
