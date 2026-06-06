@@ -1,7 +1,9 @@
+import hkjcNormalizedMeetingDetailsSample from '../../data/generated/timetable/hkjc-normalized-meeting-details.sample.json';
+
 export type NormalizedTimetableMeetingTimetableRow = {
   readonly label: string;
   readonly post_time_local: string;
-  readonly detail_source_label: string;
+  readonly detail_source_label?: string;
 };
 
 export type NormalizedTimetableMeetingDetail = {
@@ -30,6 +32,7 @@ const normalizedTimetableMeetingDetails: readonly NormalizedTimetableMeetingDeta
       { label: 'Race 12', post_time_local: '16:30', detail_source_label: 'Official source' },
     ],
   },
+  ...(hkjcNormalizedMeetingDetailsSample.details as readonly NormalizedTimetableMeetingDetail[]),
 ];
 
 export function getNormalizedTimetableMeetingDetail(
