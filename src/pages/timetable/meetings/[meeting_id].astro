@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getNormalizedTimetableMeetingDetail } from '../../../data/normalizedTimetableMeetingDetails';
 import { createNormalizedTimetableMeetingDetailPath } from '../../../data/normalizedTimetableCalendarPreview';
 import { getTimetableMeetingRows, type TimetableMeetingRow } from '../../../data/timetableMeetingRows';
+import { getCountries, getRacecourseBySlug } from '../../../lib/data';
 
 export function getStaticPaths() {
   const meetings = getTimetableMeetingRows().filter((meeting) => meeting.can_view_race_timetable);
@@ -36,28 +37,38 @@ const countryNameById: Record<string, string> = {
   japan: 'Japan',
   'hong-kong': 'Hong Kong',
 };
+const timezoneByCountryId: Record<string, string> = {
+  japan: 'Asia/Tokyo',
+  'hong-kong': 'Asia/Hong_Kong',
+};
+const country = getCountries().find((entry) => entry.id === meeting.country_id);
+const track = getRacecourseBySlug(meeting.racecourse_id);
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
-const countryName = countryNameById[meeting.country_id] ?? titleCaseId(meeting.country_id);
+const countryName = country?.name_en ?? countryNameById[meeting.country_id] ?? titleCaseId(meeting.country_id);
+const countryPath = country ? `/countries/${country.slug}/` : '/countries/';
+const trackPath = track ? `/tracks/${track.slug}/` : `/tracks/${meeting.racecourse_id}/`;
+const timezone = track?.timezone ?? timezoneByCountryId[meeting.country_id] ?? null;
 const timetableRows = meetingDetail?.timetable_rows ?? [];
 const hasRaceByRaceTimetable = timetableRows.length > 0;
 ---
 
 <BaseLayout
-  title={`${racecourseName} meeting detail | Where Horses Run`}
-  description="Public-safe normalized meeting detail with official-source link and A-level race-by-race timetable post times where available."
+  title={`${racecourseName} race timetable | Where Horses Run`}
+  description="Public-safe meeting timetable with official-source link and race-by-race post times where available."
   canonicalPath={detailPath}
 >
   <nav class="detail-nav" aria-label="Meeting detail navigation">
-    <a href="/calendar/">← Back to Calendar</a>
-    <a href="/today/">← Back to Today</a>
-    <a href="/major-countries/preview-timetable/">← Back to Preview Timetable</a>
+    <a href="/calendar/">← Calendar</a>
+    <a href="/today/">← Today</a>
+    <a href="/major-countries/current-timetable/">← Current Timetable</a>
   </nav>
 
   <section aria-labelledby="page-title">
-    <p class="eyebrow">Normalized timetable meeting detail</p>
-    <h1 id="page-title">{racecourseName}</h1>
+    <p class="eyebrow">Timetable meeting detail</p>
+    <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
     <p>{meeting.date}</p>
-    <p>{authorityName} · {countryName}</p>
+    <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
+    <p>Timezone: {displayValue(timezone)}</p>
     <p>Rank: {meeting.capability_rank}</p>
     <p>Source: {meeting.source_status}</p>
     <p>First race: {displayValue(meeting.first_race_time_local)}</p>
@@ -90,7 +101,7 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
         <p>{meetingDetail?.summary_note}</p>
       </>
     ) : (
-      <p>No public-safe race-by-race post-time list is stored for this normalized sample.</p>
+      <p>No public-safe race-by-race post-time list is stored for this meeting.</p>
     )}
   </section>
 
@@ -102,7 +113,7 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
 
   <section aria-labelledby="boundary-title">
     <h2 id="boundary-title">Publication boundary</h2>
-    <p>This page does not include racecards, entries, odds, results, payouts, predictions, tips, copied racecard text, or raw source body/html.</p>
+    <p>This page stores only public-safe timetable fields. Detailed official information should be confirmed at the official source.</p>
   </section>
 </BaseLayout>
 
