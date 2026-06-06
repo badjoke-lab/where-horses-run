@@ -1,0 +1,40 @@
+{
+  "schema_version": "hkjc-racecard-route-config-v0",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "timezone": "Asia/Hong_Kong",
+  "month": "2026-06",
+  "target_rank_order": ["A", "B+", "B", "C"],
+  "official_sources": {
+    "fixture_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+    "racecard_url_template": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}"
+  },
+  "meetings": [
+    { "meeting_date": "2026-06-03", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-07", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-10", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-13", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-21", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
+    { "meeting_date": "2026-06-24", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
+    { "meeting_date": "2026-06-27", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" }
+  ],
+  "race_numbers_to_probe": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  "promotion_rules": {
+    "A": "All race numbers from 1 through expected_race_count must return public-safe post times. The normalized detail output may include only Race N and post_time_local.",
+    "B+": "Allowed only when first and final race start times are source-verified for the complete meeting.",
+    "B": "Allowed only when Race 1 start time is source-verified.",
+    "C": "Meeting existence only; do not infer times."
+  },
+  "explicit_exclusions": [
+    "no horses",
+    "no jockeys",
+    "no trainers",
+    "no odds",
+    "no results",
+    "no payouts",
+    "no predictions",
+    "no tips",
+    "no full racecards",
+    "no raw official HTML body storage"
+  ]
+}
