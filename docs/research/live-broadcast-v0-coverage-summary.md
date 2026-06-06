@@ -212,6 +212,49 @@ The lists below include any record where the named status appears as either `liv
 - Poland uses Tor Służewiec/Służewiec iTV official racecourse-network evidence and PKWK authority context; it must not be overstated as complete national Polish coverage.
 - No calendar, race-date, post-time, racecard, odds, entry, result, payout, prediction, tip, direct-stream, or embed behavior was added.
 
+## Priority 2 audit progress summary (PR-LIVE-025)
+
+This progress summary covers the Priority 2 live/replay audit state after the Belgium, Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, and Greece passes. It is documentation-only and does not change `data/static/live-broadcast-coverage.json`.
+
+### Completed Priority 2 records so far
+
+The completed Priority 2 audit set currently contains **12 audited static records** across **9 jurisdictions**:
+
+| Jurisdiction | Completed records | Split/caveat basis | Current status summary |
+| --- | ---: | --- | --- |
+| Belgium | 1 | Racecourse-specific Mons evidence covering gallop/trotting pages. | Mons has replay evidence only; live remains `none_found`. |
+| Netherlands | 1 | Racecourse-specific Wolvega harness evidence. | Wolvega is `racecourse_only` for live and has replay evidence; no national Netherlands claim. |
+| Switzerland | 2 | Code/event split between Suisse Trot replays and White Turf St. Moritz event coverage. | Suisse Trot is replay-only with live `none_found`; White Turf is `event_only` live with replay evidence. |
+| Norway | 1 | Shared paid-TV/operator broadcast surface across trotting and gallop. | Rikstoto Direkte/Rikstoto Play is recorded as `tv_pay` live with replay evidence; no free-access claim. |
+| Finland | 1 | Harness-only TotoTV evidence. | Finnish harness coverage is `betting_account` live with replay evidence; no Finnish thoroughbred source verified. |
+| Poland | 1 | Racecourse-network Służewiec iTV evidence. | Służewiec iTV is `official_free` live with replay evidence, but remains racecourse-network rather than complete national coverage. |
+| Slovakia | 1 | Active authority/racecourse record with no confirmed live/replay landing page. | Live and replay are both `none_found`. |
+| Serbia | 3 | Split into regular Belgrade gallop, regular SKAS trotting, and Ljubičevo event coverage. | Belgrade gallop and SKAS trotting are `none_found`; Ljubičevo is `event_only` live and `archive_only` replay. |
+| Greece | 1 | Inactive domestic Markopoulo racing status. | Live and replay are both `none_found`; record must not be presented as active racing coverage. |
+
+### Remaining Priority 2 target
+
+- **Austria** remains the only original Priority 2 target not yet represented by an audited live/replay static record in this summary. It should stay a future evidence-review target until an official authority, racecourse, broadcaster, official-partner, or official-social landing page is audited.
+
+### Priority 2 country split by status type
+
+- **Code-specific records:** Switzerland (`switzerland-suisse-trot-replays` for trotting replays), Finland (`finland-tototv` for harness), Serbia (`serbia-belgrade-hippodrome` for gallop and `serbia-trotting-skas` for trotting).
+- **Racecourse-specific or racecourse-network records:** Belgium (`belgium-mons`), Netherlands (`netherlands-wolvega`), Poland (`poland-sluzewiec-itv`).
+- **Event-only records:** Switzerland (`switzerland-white-turf`) and Serbia (`serbia-ljubicevo-games`).
+- **Inactive-racing records:** Greece (`greece-markopoulo-inactive`).
+- **Shared broadcast-surface records:** Norway (`norway-rikstoto`) is shared across trotting and gallop but remains account/paid-TV/access-caveated; it should not be described as free or complete national coverage.
+
+### Priority 2 records with `none_found`, `event_only`, or `archive_only`
+
+- **`none_found` appears in Priority 2 records for:** Belgium live (`belgium-mons`), Switzerland live (`switzerland-suisse-trot-replays`), Slovakia live/replay (`slovakia-zavodisko`), Serbia live/replay (`serbia-belgrade-hippodrome`, `serbia-trotting-skas`), and Greece live/replay (`greece-markopoulo-inactive`).
+- **`event_only` appears in Priority 2 records for:** Switzerland live (`switzerland-white-turf`) and Serbia live (`serbia-ljubicevo-games`).
+- **`archive_only` appears in Priority 2 records for:** Serbia replay (`serbia-ljubicevo-games`).
+
+### Wording guardrails
+
+- The current audited Priority 2 records have no `not_verified` live/replay statuses, but that means `not_verified` is **0 only within the audited record set**, not across every country, racing code, racecourse, future target, or potential official source worldwide.
+- No complete national coverage claim should be made for any Priority 2 jurisdiction. The safe phrasing is record-specific: racecourse-specific, code-specific, event-only, inactive, account-limited, paid-TV-limited, replay-only, archive-only, or none-found as applicable.
+
 ## Macau wording note
 
 Macau should not be described as having active horse racing or active live racing video. The Macau record should be read as follows:

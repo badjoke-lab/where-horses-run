@@ -39,20 +39,27 @@ These jurisdictions should be reviewed first because they are common racing juri
 
 ## Priority 2: regional depth and code-specific targets
 
-These targets may require more careful separation by racing code, region, or operator.
+These targets may require more careful separation by racing code, region, or operator. Belgium, Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, and Greece have been moved from open Priority 2 targets to audited-record status in `live-broadcast-v0-coverage-summary.md`; they remain subject to the same caveats and must not be described as complete national coverage.
+
+### Remaining open Priority 2 target
 
 | Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
 | --- | --- | --- | --- |
-| Austria | Thoroughbred flat; trotting/harness | authority; racecourse; broadcaster; official partner; social | Keep code-specific sources separate if they differ. |
-| Belgium | Thoroughbred flat; trotting/harness | authority; racecourse; broadcaster; official partner; social | Verify whether any video evidence is official and not just betting-site redistribution. |
-| Netherlands | Thoroughbred flat where applicable; trotting/harness | authority; racecourse; broadcaster; official partner; social | Confirm current official racecourse or authority coverage before adding. |
-| Switzerland | Thoroughbred flat; jumps where applicable; snow racing if relevant; trotting/harness | authority; racecourse; broadcaster; official partner; social | Seasonal or event-specific coverage must be labeled event-only if used later. |
-| Norway | Thoroughbred flat; trotting/harness | authority; racecourse; broadcaster; official partner; social | Do not infer thoroughbred coverage from harness coverage, or the reverse. |
-| Finland | Trotting/harness; any thoroughbred activity if separately documented | authority; racecourse; broadcaster; official partner; social | Likely code-specific; record only what official evidence supports. |
-| Poland | Thoroughbred flat; jumps where applicable; trotting/harness | authority; racecourse; broadcaster; official partner; social | Verify whether racecourse social video is official and stable enough for public linking. |
-| Slovakia | Thoroughbred flat; jumps where applicable | authority; racecourse; broadcaster; official partner; social | Avoid promoting occasional event streams as routine coverage. |
-| Serbia | Thoroughbred flat; trotting/harness if applicable | authority; racecourse; broadcaster; official partner; social | Confirm current official sources and whether evidence is racecourse-specific. |
-| Greece | Thoroughbred flat status review | authority; racecourse; broadcaster; official partner; social | Confirm current racing and official video status before adding. |
+| Austria | Thoroughbred flat; trotting/harness | authority; racecourse; broadcaster; official partner; social | Keep code-specific sources separate if they differ; no audited live/replay static record is represented in the current Priority 2 progress summary. |
+
+### Completed Priority 2 targets now represented by audited records
+
+| Target jurisdiction | Audited-record status | Caveat to preserve |
+| --- | --- | --- |
+| Belgium | Completed for Mons racecourse evidence. | Racecourse-specific replay evidence only; no national Belgium coverage claim. |
+| Netherlands | Completed for Victoria Park Wolvega harness evidence. | Racecourse-specific harness evidence only; no national Netherlands or Duindigt/grass-track coverage claim. |
+| Switzerland | Completed as split Suisse Trot replay and White Turf St. Moritz event records. | Code/event split; event-only and replay-only caveats remain. |
+| Norway | Completed for shared Rikstoto broadcast surface. | Paid-TV/account/access caveats; no free-access or complete national claim. |
+| Finland | Completed for TotoTV harness evidence. | Harness-only; no Finnish thoroughbred source verified. |
+| Poland | Completed for Służewiec iTV racecourse-network evidence. | Racecourse-network only; no complete national Poland claim. |
+| Slovakia | Completed as active authority/racecourse record with no confirmed live/replay landing page. | `none_found` live/replay status must be preserved unless future audited evidence changes it. |
+| Serbia | Completed as split Belgrade gallop, SKAS trotting, and Ljubičevo event records. | Regular gallop/trotting `none_found`; Ljubičevo event-only/archive-only is not national Serbia coverage. |
+| Greece | Completed as inactive domestic Markopoulo racing status. | Inactive-racing caveat; no active Greek domestic live/replay claim. |
 
 ## Priority 3: emerging, event-only, or high-caution targets
 
