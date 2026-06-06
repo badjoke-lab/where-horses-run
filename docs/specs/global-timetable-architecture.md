@@ -1,7 +1,7 @@
 # Global-first timetable architecture
 
 Status: draft foundation  
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 This specification defines the shared timetable foundation for Where Horses Run / 競馬どこ？ before any additional country-specific adapter work.
 
@@ -28,7 +28,7 @@ Same-level initial and future inventory targets include:
 - HKJC, for Hong Kong racing.
 - Overseas national, regional, state, provincial, or racecourse authorities where official calendar or timetable sources are available.
 
-No additional scraper, parser, runtime fetcher, racecard, odds, result, payout, tip, or full-entry layer belongs in this foundation.
+No additional scraper, parser, runtime fetcher, odds, result, payout, tip, or full-entry layer belongs in this foundation. Racecard-derived timetable fields may be used only when they are reduced to public-safe timetable fields under the capability rank contract.
 
 ---
 
@@ -147,7 +147,7 @@ Use `YYYY-MM-DD` for source inventory and public display freshness. Use date-tim
 ## 3. Capability rank matrix
 
 ```ts
-type CapabilityRank = "C" | "B" | "B+" | "A";
+type CapabilityRank = "C" | "B" | "B+" | "A" | "A+";
 ```
 
 | Rank | Required verified capability | Public display boundary |
@@ -155,9 +155,12 @@ type CapabilityRank = "C" | "B" | "B+" | "A";
 | C | Meeting date and racecourse only. | Show that a meeting exists. Do not show race times. |
 | B | First race time is available. | Show the first race time only. |
 | B+ | First and last race time are available. | Show first / last race time only. |
-| A | Race-by-race or racecard-level detail is available from the official source. | Keep A detail separate from the monthly and day summary contract. |
+| A | Race-by-race post times are available from the official source. | Show race label and post time on a separate detail page. Do not show race metadata in A. |
+| A+ | Race-by-race post times plus minimal race metadata are available from the official source. | On a separate detail page, show race label, post time, race title, distance, and surface/course type only. |
 
 Capability rank describes the official source capability that has been verified for a source or meeting. It is not a permission to republish full source content.
+
+A+ is not a general racecard republication level. It may use racecard-derived fields only after reducing them to the minimum timetable context fields: race title, distance, and surface/course type. A+ must not include starter lists, odds, results, payouts, predictions, tips, copied racecard text, or raw source body/html.
 
 ---
 
@@ -167,7 +170,9 @@ All public timetable views should use the same display boundary:
 
 - Monthly calendar pages show meeting summaries only.
 - Day pages show the meeting list, official source, source status, last checked date, and capability rank.
-- A-level detail is separate from the monthly calendar and day summary views.
+- A-level and A+-level detail is separate from the monthly calendar and day summary views.
+- A-level detail pages show race label and post time only.
+- A+-level detail pages may additionally show race title, distance, and surface/course type.
 - B+ meetings show first and last race time only.
 - B meetings show first race time only.
 - C meetings show that the meeting exists only.
