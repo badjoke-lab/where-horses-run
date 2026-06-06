@@ -21,7 +21,7 @@ interface Props {
 const { meeting } = Astro.props;
 const meetingDetail = getNormalizedTimetableMeetingDetail(meeting.meeting_id);
 const detailPath = createNormalizedTimetableMeetingDetailPath(meeting.meeting_id);
-const displayValue = (value: string | null | undefined) => value ?? 'Not displayed';
+const displayValue = (value: string | number | null | undefined) => value ?? 'Not displayed';
 const titleCaseId = (value: string) =>
   value
     .split('-')
@@ -55,6 +55,9 @@ const timezone = track?.timezone ?? timezoneByCountryId[meeting.country_id] ?? n
 const timezoneLabel = timezone ? `${timezone} (${utcOffsetByTimezone[timezone] ?? 'UTC offset not listed'})` : null;
 const timetableRows = meetingDetail?.timetable_rows ?? [];
 const hasRaceByRaceTimetable = timetableRows.length > 0;
+const hasRaceMetadata = timetableRows.some(
+  (row) => row.race_name || row.distance_m || row.surface || row.course_label,
+);
 ---
 
 <BaseLayout
@@ -74,7 +77,7 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
     <p>{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
     <p>Timezone: {displayValue(timezoneLabel)}</p>
-    <p>Rank: {meeting.capability_rank}</p>
+    <p>Rank: {hasRaceMetadata ? 'A+' : meeting.capability_rank}</p>
     <p>Source: {meeting.source_status}</p>
     <p>First race: {displayValue(meeting.first_race_time_local)}</p>
     <p>Last race: {displayValue(meeting.last_race_time_local)}</p>
@@ -91,6 +94,9 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
               <tr>
                 <th>Race</th>
                 <th>Post time</th>
+                {hasRaceMetadata && <th>Race name</th>}
+                {hasRaceMetadata && <th>Distance</th>}
+                {hasRaceMetadata && <th>Surface</th>}
               </tr>
             </thead>
             <tbody>
@@ -98,6 +104,9 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
                 <tr>
                   <td>{row.label}</td>
                   <td>{row.post_time_local}</td>
+                  {hasRaceMetadata && <td>{displayValue(row.race_name)}</td>}
+                  {hasRaceMetadata && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
+                  {hasRaceMetadata && <td>{[row.surface, row.course_label].filter(Boolean).join(' · ') || 'Not displayed'}</td>}
                 </tr>
               ))}
             </tbody>
@@ -160,5 +169,6 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
     border-bottom: 1px solid var(--whr-color-border);
     padding: 0.55rem 0.4rem;
     text-align: left;
+    vertical-align: top;
   }
 </style>
