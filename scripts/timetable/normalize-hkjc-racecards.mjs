@@ -33,12 +33,21 @@ function compactRaceRows(meeting) {
       race_number: race.race_number,
       label: `Race ${race.race_number}`,
       post_time_local: race.race_time_local,
+      race_name: race.race_name ?? null,
+      distance_m: race.distance_m ?? null,
+      surface: race.surface ?? null,
+      course_label: race.course_label ?? null,
+      metadata_status: race.metadata_status ?? 'pending',
       source_url: race.source_url,
     }));
 }
 
 function isContinuousFromOne(rows) {
   return rows.length > 0 && rows.every((row, index) => row.race_number === index + 1);
+}
+
+function hasAPlusMetadata(row) {
+  return Boolean(row.race_name && row.distance_m && row.surface && row.metadata_status === 'verified');
 }
 
 function normalizeMeeting(snapshot, meeting) {
@@ -52,7 +61,8 @@ function normalizeMeeting(snapshot, meeting) {
     .replace('{dd}', meeting.meeting_date.slice(8, 10));
 
   const continuous = isContinuousFromOne(rows);
-  const capabilityRank = continuous && rows.length >= 2 ? 'A' : rows.length >= 2 ? 'B+' : rows.length === 1 ? 'B' : 'C';
+  const allRowsHaveMetadata = rows.length >= 2 && rows.every(hasAPlusMetadata);
+  const capabilityRank = continuous && allRowsHaveMetadata ? 'A+' : continuous && rows.length >= 2 ? 'A' : rows.length >= 2 ? 'B+' : rows.length === 1 ? 'B' : 'C';
   const firstRaceTime = rows[0]?.post_time_local ?? null;
   const lastRaceTime = rows.length >= 2 ? rows.at(-1)?.post_time_local ?? null : null;
 
@@ -69,24 +79,38 @@ function normalizeMeeting(snapshot, meeting) {
       source_status: rows.length > 0 ? 'verified' : 'partial',
       capability_rank: capabilityRank,
       first_race_time_local: capabilityRank === 'C' ? null : firstRaceTime,
-      last_race_time_local: capabilityRank === 'B+' || capabilityRank === 'A' ? lastRaceTime : null,
+      last_race_time_local: capabilityRank === 'B+' || capabilityRank === 'A' || capabilityRank === 'A+' ? lastRaceTime : null,
       official_source_url: officialSourceUrl,
       last_checked_date: snapshot.generated_at.slice(0, 10),
       display_status: rows.length > 0 ? 'displayable' : 'partial',
       notes:
-        capabilityRank === 'A'
-          ? 'HKJC official racecard route produced continuous public-safe race-by-race post times for this meeting. No entries, odds, results, payouts, predictions, tips, full racecard text, or raw HTML are stored.'
-          : capabilityRank === 'B+'
-            ? 'HKJC official racecard route produced first and last public-safe race start times, but the full continuous race-number set was not proven for A promotion.'
-            : capabilityRank === 'B'
-              ? 'HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred.'
-              : 'HKJC meeting is known, but no race start time was extracted by the official racecard route snapshot.',
+        capabilityRank === 'A+'
+          ? 'HKJC official racecard route produced continuous public-safe race-by-race post times plus minimal timetable metadata: race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored.'
+          : capabilityRank === 'A'
+            ? 'HKJC official racecard route produced continuous public-safe race-by-race post times for this meeting. No starter lists, odds, results, payouts, predictions, full racecard text, or raw HTML are stored.'
+            : capabilityRank === 'B+'
+              ? 'HKJC official racecard route produced first and last public-safe race start times, but the full continuous race-number set was not proven for A promotion.'
+              : capabilityRank === 'B'
+                ? 'HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred.'
+                : 'HKJC meeting is known, but no race start time was extracted by the official racecard route snapshot.',
     },
-    detail: capabilityRank === 'A'
+    detail: capabilityRank === 'A' || capabilityRank === 'A+'
       ? {
           meeting_id: id,
-          summary_note: 'Public-safe HKJC race-by-race post times only. Horses, jockeys, trainers, odds, results, payouts, predictions, tips, full racecard text, and raw HTML are not stored or republished.',
-          timetable_rows: rows.map((row) => ({ label: row.label, post_time_local: row.post_time_local })),
+          summary_note: capabilityRank === 'A+'
+            ? 'Public-safe HKJC timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.'
+            : 'Public-safe HKJC race-by-race post times only. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.',
+          timetable_rows: rows.map((row) => capabilityRank === 'A+'
+            ? {
+                label: row.label,
+                post_time_local: row.post_time_local,
+                race_name: row.race_name,
+                distance_m: row.distance_m,
+                surface: row.surface,
+                course_label: row.course_label,
+                metadata_status: row.metadata_status,
+              }
+            : { label: row.label, post_time_local: row.post_time_local }),
         }
       : null,
     extraction_summary: {
@@ -94,6 +118,7 @@ function normalizeMeeting(snapshot, meeting) {
       extracted_race_count: rows.length,
       race_numbers: rows.map((row) => row.race_number),
       continuous_from_one: continuous,
+      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label'] : [],
       chosen_rank: capabilityRank,
     },
   };
@@ -106,7 +131,7 @@ writeJson(normalizedOutputPath, {
   schema_version: 'hkjc-normalized-timetable-sample-v0',
   generated_at: new Date().toISOString(),
   source_snapshot: 'data/generated/timetable/hkjc-racecard-source-snapshot.json',
-  rank_fallback_order: ['A', 'B+', 'B', 'C'],
+  rank_fallback_order: ['A+', 'A', 'B+', 'B', 'C'],
   records: normalized.map((entry) => entry.record),
   extraction_summary: normalized.map((entry) => entry.extraction_summary),
 });
