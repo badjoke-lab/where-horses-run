@@ -17,6 +17,7 @@ const paths = {
   helper: 'src/lib/timetable/calendar-view-model.ts',
   normalizedTimetable: 'data/generated/normalized-timetable.json',
   currentStatus: 'docs/runbooks/current-status.md',
+  meetingDetailsData: 'src/data/normalizedTimetableMeetingDetails.ts',
   packageJson: 'package.json',
 };
 const expectedMeetingIds = [
@@ -116,6 +117,7 @@ const detailPageText = readText(paths.detailPage);
 const dataModuleText = readText(paths.dataModule);
 const helperText = readText(paths.helper);
 const currentStatusText = readText(paths.currentStatus);
+const meetingDetailsDataText = readText(paths.meetingDetailsData);
 const normalizedTimetable = readJson(paths.normalizedTimetable);
 const packageJson = readJson(paths.packageJson);
 
@@ -141,8 +143,14 @@ requireIncludes(currentTimetablePageText, 'NormalizedMeetingDetailLinks', paths.
 requireIncludes(currentTimetablePageText, 'normalizedCurrentTimetableRecords', paths.currentTimetablePage);
 requireIncludes(detailPageText, 'getStaticPaths', paths.detailPage);
 requireIncludes(detailPageText, 'meeting_id', paths.detailPage);
-requireIncludes(detailPageText, 'Race-by-race detail is available at the official source when applicable, but not republished here.', paths.detailPage);
-requireIncludes(detailPageText, 'racecards, entries, odds, results, payouts, predictions, tips', paths.detailPage);
+requireIncludes(detailPageText, 'Race timetable', paths.detailPage);
+requireIncludes(detailPageText, 'post_time_local', paths.detailPage);
+requireIncludes(detailPageText, 'getNormalizedTimetableMeetingDetail', paths.detailPage);
+requireIncludes(detailPageText, 'This page does not include racecards, entries, odds, results, payouts, predictions, tips', paths.detailPage);
+requireIncludes(meetingDetailsDataText, 'jra-tokyo-racecourse-2026-06-07', paths.meetingDetailsData);
+requireIncludes(meetingDetailsDataText, "{ label: 'Race 1', post_time_local: '10:05', detail_source_label: 'Official source' }", paths.meetingDetailsData);
+requireIncludes(meetingDetailsDataText, "{ label: 'Race 12', post_time_local: '16:30', detail_source_label: 'Official source' }", paths.meetingDetailsData);
+requireIncludes(meetingDetailsDataText, 'Race names, horses, jockeys, entries, odds, results, and payouts are not stored or republished.', paths.meetingDetailsData);
 requireIncludes(dataModuleText, 'createNormalizedTimetableMeetingDetailPath', paths.dataModule);
 requireIncludes(currentStatusText, 'preview-readable through the calendar view model reader', paths.currentStatus);
 
@@ -159,7 +167,7 @@ for (const field of prohibitedDisplayFields) {
     fail(`${paths.linkComponent} must not display ${field} on monthly/day timetable link surfaces.`);
   }
 }
-for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.linkComponent]: linkComponentText, [paths.monthlyPage]: monthlyPageText, [paths.dayPage]: dayPageText, [paths.currentTimetablePage]: currentTimetablePageText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText })) {
+for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.linkComponent]: linkComponentText, [paths.monthlyPage]: monthlyPageText, [paths.dayPage]: dayPageText, [paths.currentTimetablePage]: currentTimetablePageText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText, [paths.meetingDetailsData]: meetingDetailsDataText })) {
   for (const pattern of runtimeFetchPatterns) if (pattern.test(text)) fail(`${label} must not add live fetch runtime.`);
   for (const pattern of parserPatterns) if (pattern.test(text)) fail(`${label} must not add parser/scraper logic.`);
 }
