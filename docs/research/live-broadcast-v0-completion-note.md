@@ -5,7 +5,7 @@ This note records that the v0 live/replay broadcast coverage audit is complete f
 ## Completion state
 
 - Dataset audited: `data/static/live-broadcast-coverage.json`.
-- Total records: **57**.
+- Total records: **62**.
 - Records with `not_verified` in `live_status` or `replay_status`: **0**.
 - The audit is ready to be used as input for future UI work, subject to the display and safety rules below.
 
@@ -44,6 +44,9 @@ The v0 records are not always one record per sovereign country. Some racing juri
 - Norway is represented through the shared Rikstoto Direkte/Rikstoto Play broadcast surface for trotting and gallop; the record carries a paid-TV/account-uncertain caveat and must not be presented as a separate free-access claim for either Norwegian harness or Øvrevoll gallop.
 - Finland is represented only for trotting/harness through Suomen Hippos and Veikkaus TotoTV evidence. It requires a Veikkaus game-account login for the primary web access path and does not verify any Finnish thoroughbred source.
 - Poland is represented through Tor Służewiec/Służewiec iTV official racecourse-network evidence and PKWK authority context. The Służewiec iTV record must not be treated as complete Poland-wide coverage or as proof that every Polish racing venue has its own official live/replay source.
+- Slovakia is represented conservatively through Závodisko, š.p. authority/racecourse evidence. Current racing activity is confirmed, but no official live-stream landing page or race-replay archive landing page was verified, and official social links alone should not be treated as coverage.
+- Serbia remains split between Belgrade gallop, Serbian trotting authority, and the Ljubičevo Equestrian Games event. Regular Belgrade/SKAS racing uses `none_found` for live/replay where no official landing page was confirmed; Ljubičevo is event-only/archive-only and must not be presented as national Serbian coverage.
+- Greece must retain the inactive domestic-racing caveat. OPAP/Horse Races S.A. reporting states that Greek horseracing activity at Markopoulo ceased on 30 January 2024 and the racecourse leasehold was delivered back on 1 April 2024; the Greece record must not be displayed as active live coverage.
 - Malaysia must remain conservative because no official race live-stream or race replay landing page was confirmed during this pass.
 - The Philippines must not be treated as nationally covered by Metro Manila Turf Club evidence. The current Philippines addition is limited to MMTCI official live-racing evidence, with no official replay landing page confirmed.
 - Singapore must retain the domestic-racing-ended caveat. Domestic Singapore Turf Club racing ended after the final 2024 meeting, while the Singapore record reflects conservative account/subscription streaming evidence for selected horse-racing meetings or races rather than verified active domestic Singapore replay coverage.
@@ -52,7 +55,7 @@ The v0 records are not always one record per sovereign country. Some racing juri
 
 ## Future expansion guidance
 
-Future expansion should add new jurisdictions conservatively. The PR-LIVE-020 Priority 1 expansion added Italy, Germany, and Spain records with the same conservative source-link rules. The PR-LIVE-021 Macau audit added an inactive-racing record based on official Macao SAR Government closure evidence. The PR-LIVE-022 Priority 2 expansion added Belgium, Netherlands, and Switzerland records with racecourse-specific, replay-only, event-only, or race-film archive caveats, and PR-LIVE-023 added Norway, Finland, and Poland records with paid-TV, betting-account, harness-only, and racecourse-network caveats as applicable. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
+Future expansion should add new jurisdictions conservatively. The PR-LIVE-020 Priority 1 expansion added Italy, Germany, and Spain records with the same conservative source-link rules. The PR-LIVE-021 Macau audit added an inactive-racing record based on official Macao SAR Government closure evidence. The PR-LIVE-022 Priority 2 expansion added Belgium, Netherlands, and Switzerland records with racecourse-specific, replay-only, event-only, or race-film archive caveats, and PR-LIVE-023 added Norway, Finland, and Poland records with paid-TV, betting-account, harness-only, and racecourse-network caveats as applicable. PR-LIVE-024 added Slovakia, Serbia, and Greece records with none-found, event-only/archive-only, racing-code split, and inactive-racing caveats as applicable. A new record should be added only when an official or clearly official-partner source can be identified, reviewed, and represented without direct stream URLs, video embeds, betting-data content, or complete-coverage claims.
 
 Recommended expansion workflow:
 
