@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PreviewTimetableSamples from '../../components/PreviewTimetableSamples.astro';
+import NormalizedTimetableCalendarPreview from '../../components/NormalizedTimetableCalendarPreview.astro';
 import {
   allPreviewTimetableSamples,
   previewTimetableSummary,
 } from '../../data/majorCountryPreviewTimetableSamples';
+import {
+  normalizedTimetableCalendarPreviewDays,
+  normalizedTimetableCalendarPreviewSummary,
+} from '../../data/normalizedTimetableCalendarPreview';
 
 const records = allPreviewTimetableSamples;
 const summary = previewTimetableSummary;
@@ -26,6 +31,7 @@ const summary = previewTimetableSummary;
       <p>Full country coverage is not complete yet.</p>
       <p>Full country/date/racecourse coverage is not complete.</p>
       <p>These samples are based on manually checked official/approved source pages.</p>
+      <p>The normalized sample records are preview-readable through the calendar view model reader.</p>
       <p>Singapore is legacy/no active racing and is not included as active timetable coverage.</p>
     </div>
   </section>
@@ -63,6 +69,7 @@ const summary = previewTimetableSummary;
     <article class="card">
       <h2>Official source confirmation</h2>
       <p>Each preview sample includes an official source link for user review and final confirmation.</p>
+      <p>Normalized samples use the calendar view model reader for display-safe summaries.</p>
     </article>
   </section>
 
@@ -92,6 +99,11 @@ const summary = previewTimetableSummary;
       </div>
     </div>
   </section>
+
+  <NormalizedTimetableCalendarPreview
+    days={normalizedTimetableCalendarPreviewDays}
+    summary={normalizedTimetableCalendarPreviewSummary}
+  />
 
   <PreviewTimetableSamples records={records} />
 </BaseLayout>
