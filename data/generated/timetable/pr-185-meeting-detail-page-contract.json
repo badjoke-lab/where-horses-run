@@ -1,0 +1,147 @@
+{
+  "schema_version": "pr-185-meeting-detail-page-contract-v0",
+  "last_checked": "2026-06-07",
+  "purpose": "Define the public-safe meeting detail page contract for future A / A+ timetable routing without implementing routes or UI.",
+  "route_shape": {
+    "recommended_routes": [
+      "/meetings/[country]/[racecourse]/[date]/",
+      "/ja/meetings/[country]/[racecourse]/[date]/"
+    ],
+    "date_format": "YYYY-MM-DD",
+    "stable_scope": "one country, one racecourse, one local meeting date",
+    "forbidden_scope": [
+      "horse",
+      "race_entry",
+      "bet_type",
+      "result",
+      "payout",
+      "replay",
+      "stream"
+    ]
+  },
+  "required_source_fields": [
+    "meeting_id",
+    "country_id",
+    "authority_id",
+    "racecourse_id",
+    "date",
+    "timezone",
+    "source_id",
+    "capability_rank",
+    "source_status",
+    "official_source_url",
+    "last_checked_date"
+  ],
+  "optional_source_fields": [
+    "route_id"
+  ],
+  "rank_detail_contract": [
+    {
+      "rank": "C",
+      "display": ["meeting_date", "racecourse", "country", "authority", "timezone", "source_status", "official_source"]
+    },
+    {
+      "rank": "B",
+      "display": ["C_fields", "first_race_time"]
+    },
+    {
+      "rank": "B+",
+      "display": ["B_fields", "last_race_time"]
+    },
+    {
+      "rank": "A",
+      "display": ["B_plus_summary", "race_label_or_race_number", "post_time"]
+    },
+    {
+      "rank": "A+",
+      "display": ["A_fields", "race_name", "distance", "surface", "course_label"]
+    }
+  ],
+  "allowed_sections": [
+    "meeting_summary",
+    "timetable_summary",
+    "programme_summary",
+    "race_timetable",
+    "source_and_verification",
+    "related_racecourse",
+    "related_country",
+    "related_racing_type",
+    "related_glossary"
+  ],
+  "forbidden_headings": [
+    "Full racecard",
+    "Complete entries",
+    "Odds",
+    "Results",
+    "Tips",
+    "Watch here"
+  ],
+  "a_plus_allowed_fields": [
+    "race_label_or_race_number",
+    "post_time",
+    "race_name",
+    "distance",
+    "surface",
+    "course_label",
+    "official_source_link",
+    "last_checked_date"
+  ],
+  "forbidden_fields": [
+    "entries_or_runners",
+    "horse_names",
+    "jockey_names",
+    "trainer_names",
+    "saddlecloth_gate_draw_barrier_or_post_position",
+    "weights",
+    "horse_body_weight",
+    "odds",
+    "betting_popularity_or_betting_rank",
+    "betting_selections",
+    "predictions",
+    "tips",
+    "results",
+    "payouts_or_dividends",
+    "full_racecard_text",
+    "raw_source_text",
+    "raw_html",
+    "embedded_video",
+    "direct_stream_urls",
+    "unofficial_mirrors",
+    "redistributed_recordings"
+  ],
+  "empty_states": [
+    "Meeting summary available only.",
+    "Race-by-race timetable is not available here.",
+    "Use the official source for entries, odds, results, and full racecard information.",
+    "Official source may require an account, location eligibility, or subscription."
+  ],
+  "live_replay_policy": {
+    "separate_from_timetable_rank": true,
+    "allowed_labels": [
+      "Official live",
+      "Official replay",
+      "Account required",
+      "Betting account required",
+      "Paid TV / subscription may be required",
+      "Replay only",
+      "Open official source"
+    ],
+    "forbidden_outputs": [
+      "embedded_video",
+      "direct_stream_urls",
+      "unofficial_mirrors",
+      "redistributed_recordings"
+    ]
+  },
+  "implementation_decision": {
+    "adds_routes": false,
+    "adds_ui": false,
+    "adds_source_specific_parsers": false,
+    "adds_scrapers": false,
+    "adds_runtime_fetching": false,
+    "adds_scheduled_jobs": false,
+    "adds_generated_writeback": false,
+    "adds_racecard_redistribution": false,
+    "adds_video_or_stream_integration": false
+  }
+}
