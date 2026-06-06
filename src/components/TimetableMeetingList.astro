@@ -24,6 +24,7 @@ const groups: TimetableMeetingDayGroup[] = 'groups' in props
     ].filter((group) => group.records.length > 0);
 
 const displayTime = (value: string | null) => value ?? '—';
+const detailLabel = (record: TimetableMeetingRow) => record.can_view_race_timetable ? 'View race timetable' : 'Detail';
 ---
 
 {groups.length > 0 ? (
@@ -39,10 +40,10 @@ const displayTime = (value: string | null) => value ?? '—';
               <span>{record.country_label}</span>
               <span>Rank {record.capability_rank}</span>
               {record.capability_rank !== 'C' && <span>First: {displayTime(record.first_race_time_local)}</span>}
-              {(record.capability_rank === 'B+' || record.capability_rank === 'A') && (
+              {(record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+') && (
                 <span>Last: {displayTime(record.last_race_time_local)}</span>
               )}
-              {record.can_view_race_timetable && <a href={record.detail_path}>View race timetable</a>}
+              <a href={record.detail_path}>{detailLabel(record)}</a>
               <a href={record.official_source_url}>Official source</a>
             </li>
           ))}
