@@ -2,15 +2,70 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getNormalizedTimetableMeetingDetail } from '../../data/normalizedTimetableMeetingDetails';
 import { normalizedTimetableCalendarPreviewRecords } from '../../data/normalizedTimetableCalendarPreview';
+import juneCalendar from '../../../data/generated/timetable/june-2026-calendar.json';
+import manualCanadaStandardbred from '../../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
+import manualCanadaWoodbine from '../../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
+import manualNzLoveracing from '../../../data/generated/timetable/manual-june-2026-loveracing-thoroughbred.json';
+import manualQueensland from '../../../data/generated/timetable/manual-june-2026-racing-queensland-thoroughbred.json';
+import manualRacingNsw from '../../../data/generated/timetable/manual-june-2026-racing-nsw-thoroughbred.json';
+import manualSouthAfrica from '../../../data/generated/timetable/manual-june-2026-gold-circle.json';
+import manualUkArabian from '../../../data/generated/timetable/manual-june-2026-uk-purebred-arabian.json';
+import manualUkPointToPoint from '../../../data/generated/timetable/manual-june-2026-uk-point-to-point.json';
 
 const monthStart = '2026-06-01';
 const monthEnd = '2026-07-01';
+
+type CalendarRank = 'C' | 'B' | 'B+' | 'A';
+
+type CalendarRow = {
+  meeting_id: string;
+  date: string;
+  country_id: string;
+  country_label: string;
+  authority_id: string;
+  authority_label: string;
+  racecourse_id: string;
+  racecourse_name: string;
+  capability_rank: CalendarRank;
+  first_race_time_local: string | null;
+  last_race_time_local: string | null;
+  official_source_url: string;
+  detail_path: string;
+  can_view_race_timetable: boolean;
+  rank_weight: number;
+};
+
+const manualRecordSets = [
+  manualCanadaStandardbred.record_set,
+  manualCanadaWoodbine.record_set,
+  manualNzLoveracing.record_set,
+  manualQueensland.record_set,
+  manualRacingNsw.record_set,
+  manualSouthAfrica.record_set,
+  manualUkArabian.record_set,
+  manualUkPointToPoint.record_set,
+].filter(Boolean);
+
+const rankWeight: Record<CalendarRank, number> = {
+  C: 0,
+  B: 1,
+  'B+': 2,
+  A: 3,
+};
 
 const titleCaseId = (value: string) =>
   value
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
+
+const slug = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const normalizeRacecourseKey = (value: string) => slug(value).replace(/-racecourse$/, '');
 
 const racecourseNameById: Record<string, string> = {
   'tokyo-racecourse': 'Tokyo Racecourse',
@@ -36,28 +91,107 @@ const displayCountry = (countryId: string) => countryLabelById[countryId] ?? tit
 const hasRaceByRaceTimetable = (meetingId: string) =>
   (getNormalizedTimetableMeetingDetail(meetingId)?.timetable_rows.length ?? 0) > 0;
 
-const calendarRecords = normalizedTimetableCalendarPreviewRecords
-  .filter((record) => record.date >= monthStart && record.date < monthEnd)
-  .map((record) => ({
-    ...record,
-    racecourse_name: displayRacecourse(record.racecourse_id),
-    authority_label: displayAuthority(record.authority_id),
-    country_label: displayCountry(record.country_id),
-    can_view_race_timetable: record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id),
-  }));
+function cloneSet(set) {
+  return {
+    ...set,
+    meetings: [...(set.meetings ?? [])],
+  };
+}
 
-const recordsByDate = calendarRecords.reduce<Record<string, typeof calendarRecords>>((groups, record) => {
+function mergeRecordSets(data) {
+  const byGroup = new Map((data.record_sets ?? []).map((set) => [`${set.country_id}::${set.group_id}`, cloneSet(set)]));
+
+  for (const manual of manualRecordSets) {
+    const key = `${manual.country_id}::${manual.group_id}`;
+    if (!byGroup.has(key)) byGroup.set(key, { ...manual, meetings: [] });
+    const target = byGroup.get(key);
+    target.source_trace = manual.source_trace;
+    target.data_level = manual.data_level;
+    for (const meeting of manual.meetings ?? []) {
+      const meetingKey = `${meeting[0]}::${meeting[1]}`;
+      const exists = target.meetings.some((item) => `${item[0]}::${item[1]}` === meetingKey);
+      if (!exists) target.meetings.push(meeting);
+    }
+  }
+
+  return [...byGroup.values()]
+    .map((set) => ({
+      ...set,
+      meetings: set.meetings.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1])),
+    }))
+    .sort((a, b) => `${a.country_id}::${a.group_id}`.localeCompare(`${b.country_id}::${b.group_id}`));
+}
+
+function toGeneratedCalendarRows(recordSets): CalendarRow[] {
+  return recordSets.flatMap((set) =>
+    (set.meetings ?? [])
+      .filter(([date]) => date >= monthStart && date < monthEnd)
+      .map(([date, racecourse]) => {
+        const capabilityRank = (set.data_level ?? 'C') as CalendarRank;
+        const racecourseId = slug(racecourse);
+        return {
+          meeting_id: `generated-${date}-${set.country_id}-${set.group_id}-${racecourseId}`,
+          date,
+          country_id: set.country_id,
+          country_label: set.country_label,
+          authority_id: set.group_id,
+          authority_label: set.group_label,
+          racecourse_id: racecourseId,
+          racecourse_name: racecourse,
+          capability_rank: capabilityRank,
+          first_race_time_local: null,
+          last_race_time_local: null,
+          official_source_url: set.source_trace?.source_url ?? '#',
+          detail_path: '',
+          can_view_race_timetable: false,
+          rank_weight: rankWeight[capabilityRank] ?? 0,
+        };
+      }),
+  );
+}
+
+const normalizedRows: CalendarRow[] = normalizedTimetableCalendarPreviewRecords
+  .filter((record) => record.date >= monthStart && record.date < monthEnd)
+  .map((record) => {
+    const canViewRaceTimetable = record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id);
+    return {
+      ...record,
+      country_label: displayCountry(record.country_id),
+      authority_label: displayAuthority(record.authority_id),
+      racecourse_name: displayRacecourse(record.racecourse_id),
+      can_view_race_timetable: canViewRaceTimetable,
+      detail_path: canViewRaceTimetable ? record.detail_path : '',
+      rank_weight: rankWeight[record.capability_rank],
+    };
+  });
+
+const generatedRows = toGeneratedCalendarRows(mergeRecordSets(juneCalendar));
+
+const rowsByMeeting = new Map<string, CalendarRow>();
+for (const record of [...generatedRows, ...normalizedRows]) {
+  const meetingKey = `${record.date}::${record.country_id}::${normalizeRacecourseKey(record.racecourse_id)}`;
+  const existing = rowsByMeeting.get(meetingKey);
+  if (!existing || record.rank_weight > existing.rank_weight) rowsByMeeting.set(meetingKey, record);
+}
+
+const calendarRecords = [...rowsByMeeting.values()].sort((left, right) =>
+  `${left.date}:${left.country_id}:${left.racecourse_name}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
+    `${right.date}:${right.country_id}:${right.racecourse_name}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
+  ),
+);
+
+const recordsByDate = calendarRecords.reduce((groups, record) => {
   groups[record.date] ??= [];
   groups[record.date].push(record);
   return groups;
-}, {});
+}, {} as Record<string, CalendarRow[]>);
 
 const groupedCalendarRecords = Object.entries(recordsByDate)
   .map(([date, records]) => ({
     date,
     records: records.sort((left, right) =>
-      `${left.country_id}:${left.racecourse_id}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
-        `${right.country_id}:${right.racecourse_id}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
+      `${left.country_id}:${left.racecourse_name}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
+        `${right.country_id}:${right.racecourse_name}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
       ),
     ),
   }))
