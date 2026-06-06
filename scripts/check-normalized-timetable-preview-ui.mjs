@@ -135,12 +135,24 @@ requireIncludes(linkComponentText, 'summary-only normalized meeting detail pages
 requireIncludes(linkComponentText, 'record.detail_path', paths.linkComponent);
 requireIncludes(linkComponentText, 'View meeting detail', paths.linkComponent);
 requireIncludes(linkComponentText, "detail_path.startsWith('/timetable/meetings/')", paths.linkComponent);
-requireIncludes(monthlyPageText, 'NormalizedMeetingDetailLinks', paths.monthlyPage);
-requireIncludes(monthlyPageText, 'normalizedCalendarRecords', paths.monthlyPage);
-requireIncludes(dayPageText, 'NormalizedMeetingDetailLinks', paths.dayPage);
-requireIncludes(dayPageText, 'normalizedTomorrowRecords', paths.dayPage);
-requireIncludes(currentTimetablePageText, 'NormalizedMeetingDetailLinks', paths.currentTimetablePage);
-requireIncludes(currentTimetablePageText, 'normalizedCurrentTimetableRecords', paths.currentTimetablePage);
+requireIncludes(monthlyPageText, 'getNormalizedTimetableMeetingDetail', paths.monthlyPage);
+requireIncludes(monthlyPageText, 'calendarRecords', paths.monthlyPage);
+requireIncludes(dayPageText, 'getNormalizedTimetableMeetingDetail', paths.dayPage);
+requireIncludes(dayPageText, 'tomorrowRecords', paths.dayPage);
+requireIncludes(currentTimetablePageText, 'getNormalizedTimetableMeetingDetail', paths.currentTimetablePage);
+requireIncludes(currentTimetablePageText, 'currentTimetableRecords', paths.currentTimetablePage);
+for (const [label, text] of [
+  [paths.monthlyPage, monthlyPageText],
+  [paths.dayPage, dayPageText],
+  [paths.currentTimetablePage, currentTimetablePageText],
+]) {
+  if (text.includes('NormalizedMeetingDetailLinks')) fail(`${label} must not use NormalizedMeetingDetailLinks.`);
+  if (text.includes('View meeting detail')) fail(`${label} must not render generic meeting detail links.`);
+  if (!text.includes('View race timetable')) fail(`${label} must render the A-only race timetable link label.`);
+  if (!text.includes("record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)")) {
+    fail(`${label} must restrict race timetable links to A records with stored timetable rows.`);
+  }
+}
 requireIncludes(detailPageText, 'getStaticPaths', paths.detailPage);
 requireIncludes(detailPageText, 'meeting_id', paths.detailPage);
 requireIncludes(detailPageText, 'Race timetable', paths.detailPage);

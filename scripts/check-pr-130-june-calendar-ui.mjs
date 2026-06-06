@@ -54,6 +54,7 @@ function explicitRecords(data) {
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
 const routes = readJson('data/generated/timetable/june-2026-source-routes.json');
 const page = read('src/pages/major-countries/current-timetable.astro');
+const calendarPage = read('src/pages/calendar/index.astro');
 const records = explicitRecords(data);
 const coverageStatus = data.coverage_status ?? [];
 
@@ -61,12 +62,22 @@ if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
 if (data.month !== '2026-06') fail('Unexpected month.');
 if (routes.schema_version !== 'june-2026-source-routes-v0') fail('Unexpected source routes schema.');
 if (routes.month !== '2026-06') fail('Unexpected source routes month.');
-if (!page.includes('june-2026-calendar.json')) fail('Current timetable page must import June calendar data.');
-if (!page.includes('manual-june-2026-*.json')) fail('Current timetable page must import manual June record sets.');
-if (!page.includes('import.meta.glob')) fail('Current timetable page must glob-import manual June record sets.');
-if (!page.includes('mergeManualRecordSets')) fail('Current timetable page must merge manual June record sets before rendering.');
-if (page.includes('major-country-timetable-v0.json')) fail('Current timetable page must not backfill from static timetable data.');
-if (!page.includes('coverage_status')) fail('Current timetable page must expose coverage_status notes.');
+for (const [label, content] of [
+  ['src/pages/calendar/index.astro', calendarPage],
+  ['src/pages/major-countries/current-timetable.astro', page],
+]) {
+  if (!content.includes('normalizedTimetableCalendarPreviewRecords')) fail(`${label}: must use normalized timetable calendar preview records.`);
+  if (!content.includes('getNormalizedTimetableMeetingDetail')) fail(`${label}: must check for stored race-by-race timetable rows.`);
+  if (!content.includes("record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)")) {
+    fail(`${label}: race timetable links must be A-only and require stored timetable rows.`);
+  }
+  if (!content.includes('View race timetable')) fail(`${label}: must render the A-only race timetable link label.`);
+  if (!content.includes('Official source')) fail(`${label}: must render one official source link label per meeting row.`);
+  if (content.includes('<table')) fail(`${label}: must render a simple list instead of a table.`);
+  if (content.includes('NormalizedMeetingDetailLinks')) fail(`${label}: must not use NormalizedMeetingDetailLinks.`);
+  if (content.includes('View meeting detail')) fail(`${label}: must not expose generic meeting detail links.`);
+  if (content.includes('CurrentTimetableRecords')) fail(`${label}: must not render the old normalized timetable table component.`);
+}
 
 const routeByGroup = new Map();
 for (const route of routes.routes ?? []) {

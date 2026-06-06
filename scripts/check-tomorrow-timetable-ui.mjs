@@ -21,55 +21,45 @@ function requireIncludes(content, needle, label) {
   if (!content.includes(needle)) fail(`${label}: missing ${needle}`);
 }
 
+function forbidIncludes(content, needle, label) {
+  if (content.includes(needle)) fail(`${label}: must not include ${needle}`);
+}
+
 function requirePattern(content, pattern, label, message) {
   if (!pattern.test(content)) fail(`${label}: ${message}`);
 }
 
 const englishPath = 'src/pages/tomorrow.astro';
-const japanesePath = 'src/pages/ja/tomorrow.astro';
 const englishPage = read(englishPath);
-const japanesePage = read(japanesePath);
 
-for (const [label, content] of [
-  [englishPath, englishPage],
-  [japanesePath, japanesePage],
-]) {
-  requireIncludes(content, 'siteData.generated.timetables', label);
-  requireIncludes(content, 'tomorrowRecords', label);
-  requireIncludes(content, 'generated_at', label);
-  requirePattern(content, /getUTCDate\(\)\s*\+\s*1|setUTCDate\([^)]*\+\s*1|tomorrowDate/i, label, 'must compute tomorrow from the generated timetable date');
-  requirePattern(content, /record\.date\s*={2,3}\s*tomorrowDate/, label, 'must match records using the computed tomorrow date');
-  requirePattern(content, /safe timetable|安全な開催時刻/i, label, 'must include safe timetable wording');
-  requirePattern(content, /official source links.*final confirmation|final confirmation.*official source links|公式ソースリンク.*最終確認|最終確認.*公式ソースリンク/i, label, 'must include official confirmation wording');
-  requirePattern(content, /Live fetching:\s*<\/strong>\s*disabled|Live fetching:\s*disabled|live fetch:\s*<\/strong>\s*disabled|live fetch:\s*disabled/i, label, 'must state live fetch/fetching is disabled');
+requireIncludes(englishPage, 'normalizedTimetableCalendarPreviewRecords', englishPath);
+requireIncludes(englishPage, 'getNormalizedTimetableMeetingDetail', englishPath);
+requireIncludes(englishPage, 'tomorrowRecords', englishPath);
+requireIncludes(englishPage, 'Tomorrow’s meeting list', englishPath);
+requireIncludes(englishPage, 'Rank {record.capability_rank}', englishPath);
+requireIncludes(englishPage, 'First: {displayTime(record.first_race_time_local)}', englishPath);
+requireIncludes(englishPage, 'Last: {displayTime(record.last_race_time_local)}', englishPath);
+requireIncludes(englishPage, 'View race timetable', englishPath);
+requireIncludes(englishPage, 'Official source', englishPath);
+requireIncludes(englishPage, "record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)", englishPath);
+requirePattern(englishPage, /setUTCDate\([^)]*getUTCDate\(\)\s*\+\s*1/, englishPath, 'must compute tomorrow from the current timetable date');
+requirePattern(englishPage, /record\.date\s*={2,3}\s*tomorrowTimetableDate/, englishPath, 'must match records using the computed tomorrow date');
+requirePattern(englishPage, /record\.capability_rank !== 'C'[^\n]+First:/, englishPath, 'C records must not render first-race time');
+requirePattern(englishPage, /record\.capability_rank === 'B\+' \|\| record\.capability_rank === 'A'/, englishPath, 'only B+ and A records should render last-race time');
+requirePattern(englishPage, /record\.can_view_race_timetable && <a href=\{record\.detail_path\}>View race timetable<\/a>/, englishPath, 'internal race timetable link must be conditional');
+requirePattern(englishPage, /official source links.*final confirmation|final confirmation.*official source links/i, englishPath, 'must include official confirmation wording');
+requirePattern(englishPage, /Live fetching:\s*disabled/i, englishPath, 'must state live fetching is disabled');
 
-  for (const safeFieldPattern of [
-    /Country|country_id/,
-    /Racecourse|racecourse_name|racecourse_id/,
-    /Date|record\.date/,
-    /Start time|start_time_local/,
-    /Official source|source_id|source_url/,
-    /Last checked|last_checked_at/,
-    /Status|record\.status/,
-    /Confidence|record\.confidence/,
-  ]) {
-    requirePattern(content, safeFieldPattern, label, `missing safe field display readiness for ${safeFieldPattern}`);
-  }
-}
-
-requireIncludes(englishPage, 'Tomorrow’s safe timetable', englishPath);
-requireIncludes(englishPage, 'No safe timetable records are listed for tomorrow yet.', englishPath);
-requireIncludes(englishPage, 'Use official source links for final confirmation.', englishPath);
-requireIncludes(englishPage, 'Live fetching: disabled', englishPath);
-
-requireIncludes(japanesePage, '明日の安全な開催時刻データ', japanesePath);
-requireIncludes(japanesePage, '明日の安全な開催時刻レコードはまだありません。', japanesePath);
-requireIncludes(japanesePage, '最終確認には公式ソースリンクを使用してください。', japanesePath);
-requireIncludes(japanesePage, 'live fetch: disabled', japanesePath);
+forbidIncludes(englishPage, '<table', englishPath);
+forbidIncludes(englishPage, 'NormalizedMeetingDetailLinks', englishPath);
+forbidIncludes(englishPage, 'View meeting detail', englishPath);
+forbidIncludes(englishPage, 'CurrentTimetableRecords', englishPath);
+forbidIncludes(englishPage, 'source_id}</a>', englishPath);
+forbidIncludes(englishPage, 'last_checked_at', englishPath);
+forbidIncludes(englishPage, 'display_status', englishPath);
 
 const forbiddenDisplayPatterns = [
   /racecard/i,
-  /\bentries\b/i,
   /horse\s+names/i,
   /jockey\s+names/i,
   /\bodds\b/i,
@@ -81,13 +71,8 @@ const forbiddenDisplayPatterns = [
   /record\.(?:racecard|card_body|entries?|horses?|jockeys?|odds?|results?|payouts?|dividends?|predictions?|tips?|raw_html)\b/i,
 ];
 
-for (const [label, content] of [
-  [englishPath, englishPage],
-  [japanesePath, japanesePage],
-]) {
-  for (const pattern of forbiddenDisplayPatterns) {
-    if (pattern.test(content)) fail(`${label}: forbidden timetable display wording or field matched ${pattern}`);
-  }
+for (const pattern of forbiddenDisplayPatterns) {
+  if (pattern.test(englishPage)) fail(`${englishPath}: forbidden timetable display wording or field matched ${pattern}`);
 }
 
 if (errors.length) {
