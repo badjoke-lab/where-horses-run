@@ -1,123 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getNormalizedTimetableMeetingDetail } from '../data/normalizedTimetableMeetingDetails';
-import { normalizedTimetableCalendarPreviewRecords } from '../data/normalizedTimetableCalendarPreview';
+import TimetableMeetingList from '../components/TimetableMeetingList.astro';
+import { getTimetableMeetingRowsForDate, getTomorrowTimetableDate } from '../data/timetableMeetingRows';
 
-const titleCaseId = (value: string) =>
-  value
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-
-const racecourseNameById: Record<string, string> = {
-  'tokyo-racecourse': 'Tokyo Racecourse',
-  'obihiro-racecourse': 'Obihiro Racecourse',
-  'sha-tin-racecourse': 'Sha Tin Racecourse',
-};
-
-const authorityLabelById: Record<string, string> = {
-  jra: 'JRA',
-  hkjc: 'HKJC',
-  'nar-local-government-racing': 'NAR',
-};
-
-const countryLabelById: Record<string, string> = {
-  japan: 'Japan',
-  'hong-kong': 'Hong Kong',
-};
-
-const displayTime = (value: string | null) => value ?? '—';
-const displayRacecourse = (racecourseId: string) => racecourseNameById[racecourseId] ?? titleCaseId(racecourseId);
-const displayAuthority = (authorityId: string) => authorityLabelById[authorityId] ?? titleCaseId(authorityId);
-const displayCountry = (countryId: string) => countryLabelById[countryId] ?? titleCaseId(countryId);
-const hasRaceByRaceTimetable = (meetingId: string) =>
-  (getNormalizedTimetableMeetingDetail(meetingId)?.timetable_rows.length ?? 0) > 0;
-
-const buildDate = new Date().toISOString().slice(0, 10);
-const currentTimetableDate = buildDate.startsWith('2026-06-') ? buildDate : '2026-06-03';
-const tomorrowDate = new Date(`${currentTimetableDate}T00:00:00.000Z`);
-tomorrowDate.setUTCDate(tomorrowDate.getUTCDate() + 1);
-const tomorrowTimetableDate = tomorrowDate.toISOString().slice(0, 10);
-
-const tomorrowRecords = normalizedTimetableCalendarPreviewRecords
-  .filter((record) => record.date === tomorrowTimetableDate)
-  .map((record) => ({
-    ...record,
-    racecourse_name: displayRacecourse(record.racecourse_id),
-    authority_label: displayAuthority(record.authority_id),
-    country_label: displayCountry(record.country_id),
-    can_view_race_timetable: record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id),
-  }))
-  .sort((left, right) =>
-    `${left.country_id}:${left.racecourse_id}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
-      `${right.country_id}:${right.racecourse_id}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
-    ),
-  );
+const tomorrowTimetableDate = getTomorrowTimetableDate();
+const tomorrowRecords = getTimetableMeetingRowsForDate(tomorrowTimetableDate);
 ---
 
 <BaseLayout
-  title="Tomorrow’s meeting list | Where Horses Run"
-  description="A simple meeting list for tomorrow, with rank-limited timing fields, one official source link per meeting, and race timetable links only where race-by-race times are available."
+  title="Tomorrow's timetable | Where Horses Run"
+  description="Tomorrow's meeting list, with one official source link per meeting and race timetable links only where race-by-race times are available."
   canonicalPath="/tomorrow/"
   alternatePath="/ja/tomorrow/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Tomorrow</p>
-    <h1 id="page-title">Tomorrow’s meeting list</h1>
+    <h1 id="page-title">Tomorrow's timetable</h1>
     <p class="hero__summary">
-      Meetings listed for {tomorrowTimetableDate}. Rank controls how much timing detail is shown; official source links remain the final confirmation point.
-      Live fetching: disabled.
+      Meetings for {tomorrowTimetableDate}. Rank controls how much timing detail is shown.
     </p>
   </section>
 
-  <section aria-labelledby="tomorrow-meetings-title" class="meeting-section">
-    <h2 id="tomorrow-meetings-title">Meetings</h2>
-    {tomorrowRecords.length > 0 ? (
-      <ul class="meeting-list">
-        {tomorrowRecords.map((record) => (
-          <li class="meeting-row">
-            <span class="meeting-row__course">{record.racecourse_name}</span>
-            <span>{record.authority_label}</span>
-            <span>{record.country_label}</span>
-            <span>Rank {record.capability_rank}</span>
-            {record.capability_rank !== 'C' && <span>First: {displayTime(record.first_race_time_local)}</span>}
-            {(record.capability_rank === 'B+' || record.capability_rank === 'A') && (
-              <span>Last: {displayTime(record.last_race_time_local)}</span>
-            )}
-            {record.can_view_race_timetable && <a href={record.detail_path}>View race timetable</a>}
-            <a href={record.official_source_url}>Official source</a>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No safe timetable records are listed for tomorrow yet. Use official source links for final confirmation.</p>
-    )}
+  <section aria-label="Tomorrow meeting list">
+    <TimetableMeetingList
+      records={tomorrowRecords}
+      date={tomorrowTimetableDate}
+      emptyLabel="No meetings are listed for tomorrow yet. Use official source links for final confirmation."
+    />
   </section>
 </BaseLayout>
-
-<style>
-  .meeting-section {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .meeting-list {
-    display: grid;
-    gap: 0.45rem;
-    list-style: disc;
-    margin: 0;
-    padding-inline-start: 1.25rem;
-  }
-
-  .meeting-row {
-    align-items: baseline;
-    column-gap: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 0.25rem;
-  }
-
-  .meeting-row__course {
-    font-weight: 700;
-  }
-</style>
