@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import NormalizedMeetingDetailLinks from '../components/NormalizedMeetingDetailLinks.astro';
+import { normalizedTimetableCalendarPreviewRecords } from '../data/normalizedTimetableCalendarPreview';
 import juneCalendar from '../../data/generated/timetable/june-2026-calendar.json';
 import manualCanadaStandardbred from '../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
 import manualCanadaWoodbine from '../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
@@ -72,6 +74,9 @@ const tomorrowTimetableDate = tomorrowDate.toISOString().slice(0, 10);
 const tomorrowRecords = expandRecordSets(mergeRecordSets(juneCalendar))
   .filter((record) => record.date === tomorrowTimetableDate)
   .sort((a, b) => `${a.country_id}:${a.racecourse_name}`.localeCompare(`${b.country_id}:${b.racecourse_name}`));
+const normalizedTomorrowRecords = normalizedTimetableCalendarPreviewRecords
+  .filter((record) => record.date === tomorrowTimetableDate)
+  .sort((a, b) => `${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.country_id}:${b.racecourse_id}`));
 ---
 
 <BaseLayout
@@ -101,8 +106,15 @@ const tomorrowRecords = expandRecordSets(mergeRecordSets(juneCalendar))
     <article class="card">
       <h2>Official confirmation</h2>
       <p>Use official source links for final confirmation.</p>
+      <p>Normalized meeting detail links below are summary-only and do not claim complete calendar coverage.</p>
     </article>
   </section>
+
+  <NormalizedMeetingDetailLinks
+    title="Normalized tomorrow meeting detail links"
+    records={normalizedTomorrowRecords}
+    emptyLabel="No normalized summary records are available for tomorrow yet."
+  />
 
   <section aria-label="Tomorrow real-source timetable records">
     <h2>Records</h2>

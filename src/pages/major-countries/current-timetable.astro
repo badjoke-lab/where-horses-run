@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import NormalizedMeetingDetailLinks from '../../components/NormalizedMeetingDetailLinks.astro';
+import { normalizedTimetableCalendarPreviewRecords } from '../../data/normalizedTimetableCalendarPreview';
 import CurrentTimetableRecords from '../../components/CurrentTimetableRecords.astro';
 import CurrentTimetableDimensions from '../../components/CurrentTimetableDimensions.astro';
 import currentTimetable from '../../../data/generated/timetable/june-2026-calendar.json';
@@ -100,6 +102,9 @@ const countries = countBy(records, 'country_label');
 const groups = countBy(records, 'group_label');
 const dates = countBy(records, 'meeting_date');
 const racecourses = countBy(records, 'racecourse');
+const normalizedCurrentTimetableRecords = normalizedTimetableCalendarPreviewRecords
+  .filter((record) => record.date >= '2026-06-01' && record.date < '2026-07-01')
+  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
 ---
 
 <BaseLayout
@@ -112,7 +117,7 @@ const racecourses = countBy(records, 'racecourse');
     <h1 id="page-title">June 2026 real-source timetable</h1>
     <div class="hero__summary">
       <p>This page shows June 2026 real-source timetable records currently connected to the calendar view.</p>
-      <p>It includes country, system, date, racecourse, first race time when available, all race times when available, source trace, and last checked fields.</p>
+      <p>It includes summary-only timetable fields and links to official sources for details; complete calendar coverage is not claimed.</p>
     </div>
   </section>
 
@@ -156,5 +161,10 @@ const racecourses = countBy(records, 'racecourse');
   )}
 
   <CurrentTimetableDimensions countries={countries} groups={groups} dates={dates} racecourses={racecourses} />
+  <NormalizedMeetingDetailLinks
+    title="Normalized current-timetable meeting detail links"
+    records={normalizedCurrentTimetableRecords}
+    emptyLabel="No normalized summary records are available for the current timetable yet."
+  />
   <CurrentTimetableRecords records={records} />
 </BaseLayout>

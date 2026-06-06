@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import NormalizedMeetingDetailLinks from '../../components/NormalizedMeetingDetailLinks.astro';
+import { normalizedTimetableCalendarPreviewRecords } from '../../data/normalizedTimetableCalendarPreview';
 import juneCalendar from '../../../data/generated/timetable/june-2026-calendar.json';
 import manualCanadaStandardbred from '../../../data/generated/timetable/manual-june-2026-standardbred-canada.json';
 import manualCanadaWoodbine from '../../../data/generated/timetable/manual-june-2026-woodbine-thoroughbred.json';
@@ -81,6 +83,9 @@ const recordsByDate = calendarRecords.reduce((groups, record) => {
   return groups;
 }, {});
 const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date, records: recordsByDate[date] }));
+const normalizedCalendarRecords = normalizedTimetableCalendarPreviewRecords
+  .filter((record) => record.date >= '2026-06-01' && record.date < '2026-07-01')
+  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
 const generatedTimetableDate = juneCalendar.generated_at?.slice(0, 10) ?? '2026-06-01';
 const rangeStartDate = '2026-06-01';
 const rangeEndDate = '2026-07-01';
@@ -114,8 +119,15 @@ const rangeEndDate = '2026-07-01';
     <article class="card">
       <h2>Official confirmation</h2>
       <p>Use official source links for final confirmation.</p>
+      <p>Normalized meeting detail links below are summary-only and do not claim complete calendar coverage.</p>
     </article>
   </section>
+
+  <NormalizedMeetingDetailLinks
+    title="Normalized June meeting detail links"
+    records={normalizedCalendarRecords}
+    emptyLabel="No normalized summary records are available for June 2026 yet."
+  />
 
   <section aria-label="June 2026 timetable records">
     <h2>Records by date</h2>
