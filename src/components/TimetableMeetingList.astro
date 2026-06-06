@@ -1,0 +1,86 @@
+---
+import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+type Props =
+  | {
+      groups: TimetableMeetingDayGroup[];
+      emptyLabel?: string;
+    }
+  | {
+      records: TimetableMeetingRow[];
+      date?: string;
+      emptyLabel?: string;
+    };
+
+const props = Astro.props as Props;
+const emptyLabel = props.emptyLabel ?? 'No meetings are listed yet. Use official source links for final confirmation.';
+const groups: TimetableMeetingDayGroup[] = 'groups' in props
+  ? props.groups
+  : [
+      {
+        date: props.date ?? props.records[0]?.date ?? '',
+        records: props.records,
+      },
+    ].filter((group) => group.records.length > 0);
+
+const displayTime = (value: string | null) => value ?? '—';
+---
+
+{groups.length > 0 ? (
+  <div class="timetable-date-groups">
+    {groups.map((group) => (
+      <section class="timetable-date-group" aria-labelledby={`date-${group.date}`}>
+        {group.date && <h2 id={`date-${group.date}`}>{group.date}</h2>}
+        <ul class="meeting-list">
+          {group.records.map((record) => (
+            <li class="meeting-row">
+              <span class="meeting-row__course">{record.racecourse_name}</span>
+              <span>{record.authority_label}</span>
+              <span>{record.country_label}</span>
+              <span>Rank {record.capability_rank}</span>
+              {record.capability_rank !== 'C' && <span>First: {displayTime(record.first_race_time_local)}</span>}
+              {(record.capability_rank === 'B+' || record.capability_rank === 'A') && (
+                <span>Last: {displayTime(record.last_race_time_local)}</span>
+              )}
+              {record.can_view_race_timetable && <a href={record.detail_path}>View race timetable</a>}
+              <a href={record.official_source_url}>Official source</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+) : (
+  <p>{emptyLabel}</p>
+)}
+
+<style>
+  .timetable-date-groups {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .timetable-date-group h2 {
+    margin-block-end: 0.5rem;
+  }
+
+  .meeting-list {
+    display: grid;
+    gap: 0.45rem;
+    list-style: disc;
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+
+  .meeting-row {
+    align-items: baseline;
+    column-gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+
+  .meeting-row__course {
+    font-weight: 700;
+  }
+</style>
