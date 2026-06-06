@@ -1,1 +1,59 @@
-[]
+[
+  {
+    "id": "niigata-racecourse",
+    "slug": "niigata-racecourse",
+    "country_id": "japan",
+    "name_en": "Niigata Racecourse",
+    "name_ja": "新潟競馬場",
+    "name_local": "新潟競馬場",
+    "city": "Niigata",
+    "region": "Niigata",
+    "timezone": "Asia/Tokyo",
+    "racing_types": ["thoroughbred-flat"],
+    "status": "active",
+    "surfaces": ["turf", "dirt"],
+    "direction": "left-handed",
+    "course_profile": {
+      "turf_circumference_m": 2223,
+      "dirt_circumference_m": 1472,
+      "home_straight_m": null,
+      "has_inner_outer_courses": true,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Official JAIRS/JRA racecourse guide pages confirm Niigata Racecourse as a left-handed JRA racecourse in Niigata City. JRA course details list turf outer and inner A/B courses and a dirt course; this profile records the turf outer A-course length as the representative turf circumference for the current schema.",
+      "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、新潟競馬場は新潟市の左回りJRA競馬場として確認できる。JRAのコース詳細では芝外回り・内回りA/Bコースとダートコースが示されているが、現在のスキーマでは芝外回りAコースを代表値として記録する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": 1623, "max_m": 2248, "known_distances_m": [2223, 2248, 1623, 1648] },
+      "dirt": { "min_m": 1472, "max_m": 1472, "known_distances_m": [1472] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [
+      { "name_en": "Niigata Daishoten", "name_ja": "新潟大賞典", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
+      { "name_en": "Ibis Summer Dash", "name_ja": "アイビスサマーダッシュ", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
+      { "name_en": "Sekiya Kinen", "name_ja": "関屋記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
+      { "name_en": "Niigata Nisai Stakes", "name_ja": "新潟2歳ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
+      { "name_en": "Niigata Kinen", "name_ja": "新潟記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" }
+    ],
+    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "official_links": [
+      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Niigata Racecourse guide", "label_ja": "JAIRS/JRA 新潟競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Niigata course details", "label_ja": "JAIRS/JRA 新潟コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/niigata.html", "link_type": "official" }
+    ],
+    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-05" },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Niigata Racecourse.",
+    "image_alt_ja": "新潟競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Niigata Racecourse.", "alt_ja": "新潟競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+  }
+]
