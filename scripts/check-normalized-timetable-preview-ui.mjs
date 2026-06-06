@@ -9,6 +9,10 @@ const paths = {
   page: 'src/pages/major-countries/preview-timetable.astro',
   detailPage: 'src/pages/timetable/meetings/[meeting_id].astro',
   component: 'src/components/NormalizedTimetableCalendarPreview.astro',
+  linkComponent: 'src/components/NormalizedMeetingDetailLinks.astro',
+  monthlyPage: 'src/pages/calendar/index.astro',
+  dayPage: 'src/pages/tomorrow.astro',
+  currentTimetablePage: 'src/pages/major-countries/current-timetable.astro',
   dataModule: 'src/data/normalizedTimetableCalendarPreview.ts',
   helper: 'src/lib/timetable/calendar-view-model.ts',
   normalizedTimetable: 'data/generated/normalized-timetable.json',
@@ -104,6 +108,10 @@ async function importHelper(helperText) {
 
 const pageText = readText(paths.page);
 const componentText = readText(paths.component);
+const linkComponentText = readText(paths.linkComponent);
+const monthlyPageText = readText(paths.monthlyPage);
+const dayPageText = readText(paths.dayPage);
+const currentTimetablePageText = readText(paths.currentTimetablePage);
 const detailPageText = readText(paths.detailPage);
 const dataModuleText = readText(paths.dataModule);
 const helperText = readText(paths.helper);
@@ -121,6 +129,16 @@ requireIncludes(componentText, 'Preview monthly/day calendar', paths.component);
 requireIncludes(componentText, 'Loaded from generated JSON without live fetching', paths.component);
 requireIncludes(componentText, 'record.detail_path', paths.component);
 requireIncludes(componentText, 'View meeting detail', paths.component);
+requireIncludes(linkComponentText, 'summary-only normalized meeting detail pages', paths.linkComponent);
+requireIncludes(linkComponentText, 'record.detail_path', paths.linkComponent);
+requireIncludes(linkComponentText, 'View meeting detail', paths.linkComponent);
+requireIncludes(linkComponentText, "detail_path.startsWith('/timetable/meetings/')", paths.linkComponent);
+requireIncludes(monthlyPageText, 'NormalizedMeetingDetailLinks', paths.monthlyPage);
+requireIncludes(monthlyPageText, 'normalizedCalendarRecords', paths.monthlyPage);
+requireIncludes(dayPageText, 'NormalizedMeetingDetailLinks', paths.dayPage);
+requireIncludes(dayPageText, 'normalizedTomorrowRecords', paths.dayPage);
+requireIncludes(currentTimetablePageText, 'NormalizedMeetingDetailLinks', paths.currentTimetablePage);
+requireIncludes(currentTimetablePageText, 'normalizedCurrentTimetableRecords', paths.currentTimetablePage);
 requireIncludes(detailPageText, 'getStaticPaths', paths.detailPage);
 requireIncludes(detailPageText, 'meeting_id', paths.detailPage);
 requireIncludes(detailPageText, 'Race-by-race detail is available at the official source when applicable, but not republished here.', paths.detailPage);
@@ -131,13 +149,17 @@ requireIncludes(currentStatusText, 'preview-readable through the calendar view m
 for (const field of safeDisplayFields) {
   requireIncludes(dataModuleText, `'${field}'`, paths.dataModule);
   requireIncludes(componentText, `record.${field}`, paths.component);
+  requireIncludes(linkComponentText, `record.${field}`, paths.linkComponent);
 }
 for (const field of prohibitedDisplayFields) {
   if (componentText.includes(`record.${field}`)) {
     fail(`${paths.component} must not display ${field} on the normalized preview surface.`);
   }
+  if (linkComponentText.includes(`record.${field}`)) {
+    fail(`${paths.linkComponent} must not display ${field} on monthly/day timetable link surfaces.`);
+  }
 }
-for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText })) {
+for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.linkComponent]: linkComponentText, [paths.monthlyPage]: monthlyPageText, [paths.dayPage]: dayPageText, [paths.currentTimetablePage]: currentTimetablePageText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText })) {
   for (const pattern of runtimeFetchPatterns) if (pattern.test(text)) fail(`${label} must not add live fetch runtime.`);
   for (const pattern of parserPatterns) if (pattern.test(text)) fail(`${label} must not add parser/scraper logic.`);
 }
@@ -159,6 +181,11 @@ if (errors.length === 0) {
     }
   }
 
+  const ranksWithDetailPages = new Set(summaries.map((summary) => summary.capability_rank));
+  for (const rank of ['A', 'B+', 'B']) {
+    if (!ranksWithDetailPages.has(rank)) fail(`Normalized meeting detail pages must include at least one ${rank} record.`);
+  }
+
   const aLevelSample = summaries.find((summary) => summary.meeting_id === 'jra-tokyo-racecourse-2026-06-07');
   if (!aLevelSample) {
     fail('Normalized preview summaries must include the manually reviewed A-level JRA Tokyo sample.');
@@ -169,6 +196,12 @@ if (errors.length === 0) {
   }
 
   const detailPaths = new Set(summaries.map((summary) => `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`));
+  for (const summary of summaries.filter((record) => ['A', 'B+', 'B'].includes(record.capability_rank))) {
+    const detailPath = `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`;
+    if (!detailPaths.has(detailPath)) {
+      fail(`${summary.capability_rank} meeting ${summary.meeting_id} must have a generated detail path.`);
+    }
+  }
 
   const previewRows = summaries.map((summary) => ({
     date: summary.date,

@@ -1,0 +1,121 @@
+---
+import type { NormalizedTimetableCalendarPreviewRecord } from '../data/normalizedTimetableCalendarPreview';
+
+interface Props {
+  title: string;
+  records: NormalizedTimetableCalendarPreviewRecord[];
+  emptyLabel?: string;
+}
+
+const { title, records, emptyLabel = 'No normalized summary records are available for this view yet.' } = Astro.props;
+const displayValue = (value: string | null) => value ?? 'not displayed';
+const sourceLabel = (record: NormalizedTimetableCalendarPreviewRecord) => `${record.authority_id} official source`;
+const safeRecords = records.filter((record) => record.detail_path.startsWith('/timetable/meetings/'));
+---
+
+<section class="normalized-meeting-links" aria-labelledby="normalized-meeting-links-title">
+  <div class="normalized-meeting-links__header">
+    <h2 id="normalized-meeting-links-title">{title}</h2>
+    <p>{safeRecords.length} normalized summary record{safeRecords.length === 1 ? '' : 's'}</p>
+  </div>
+  <div class="normalized-meeting-links__notice card">
+    <p>
+      These links open summary-only normalized meeting detail pages. They do not claim complete calendar coverage,
+      and official sources remain the final place for full meeting details.
+    </p>
+  </div>
+
+  {safeRecords.length > 0 ? (
+    <div class="table-scroll" role="region" aria-label={title} tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Country</th>
+            <th>Authority</th>
+            <th>Racecourse</th>
+            <th>Source status</th>
+            <th>Rank</th>
+            <th>First race time</th>
+            <th>Last race time</th>
+            <th>Display status</th>
+            <th>Meeting detail</th>
+            <th>Official source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {safeRecords.map((record) => (
+            <tr>
+              <td>{record.date}</td>
+              <td>{record.country_id}</td>
+              <td>{record.authority_id}</td>
+              <td>{record.racecourse_id}</td>
+              <td>{record.source_status}</td>
+              <td>{record.capability_rank}</td>
+              <td>{displayValue(record.first_race_time_local)}</td>
+              <td>{displayValue(record.last_race_time_local)}</td>
+              <td>{record.display_status}</td>
+              <td><a href={record.detail_path}>View meeting detail</a></td>
+              <td><a href={record.official_source_url}>{sourceLabel(record)}</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <article class="card">
+      <p>{emptyLabel}</p>
+      <p>Use official source links for final confirmation.</p>
+      <p>Live fetching: disabled</p>
+    </article>
+  )}
+</section>
+
+<style>
+  .normalized-meeting-links {
+    display: grid;
+    gap: var(--whr-space-3);
+    margin-block-start: var(--whr-space-4);
+  }
+
+  .normalized-meeting-links__header {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--whr-space-2);
+    justify-content: space-between;
+  }
+
+  .normalized-meeting-links__header h2,
+  .normalized-meeting-links__header p,
+  .normalized-meeting-links__notice p {
+    margin: 0;
+  }
+
+  .normalized-meeting-links__header p {
+    color: var(--whr-color-muted);
+    font-weight: 700;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 980px;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--whr-color-border);
+    padding: 0.45rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 700;
+  }
+</style>

@@ -7,6 +7,7 @@ import {
 
 export type NormalizedTimetableCalendarPreviewRecord = Pick<
   CalendarMeetingSummary,
+  | 'meeting_id'
   | 'date'
   | 'country_id'
   | 'authority_id'
@@ -30,6 +31,7 @@ export const createNormalizedTimetableMeetingDetailPath = (meetingId: string) =>
   `/timetable/meetings/${encodeURIComponent(meetingId)}/`;
 
 const toPreviewRecord = (summary: CalendarMeetingSummary): NormalizedTimetableCalendarPreviewRecord => ({
+  meeting_id: summary.meeting_id,
   date: summary.date,
   country_id: summary.country_id,
   authority_id: summary.authority_id,
@@ -69,6 +71,6 @@ export const normalizedTimetableCalendarPreviewSummary = {
     'Loaded from generated JSON without live fetching.',
     'Projected through the calendar view model reader before display.',
     'Summary-only monthly/day calendar preview; complete calendar coverage is not claimed.',
-    'A-level meeting detail pages link to official sources without republishing race-by-race detail.',
+    'A/B/B+ meeting detail pages link to official sources without republishing race-by-race detail.',
   ],
 };
