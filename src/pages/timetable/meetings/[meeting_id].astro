@@ -45,10 +45,6 @@ const countryNameById: Record<string, string> = {
 };
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
 const countryName = countryNameById[meeting.country_id] ?? titleCaseId(meeting.country_id);
-const rankLabel = meeting.capability_rank === 'A' && meetingDetail
-  ? 'Rank A: Race-by-race timetable available'
-  : `Rank ${meeting.capability_rank}: Summary timetable available`;
-const sourceStatusLabel = meeting.source_status === 'verified' ? 'Verified' : titleCaseId(meeting.source_status);
 const timetableRows = meetingDetail?.timetable_rows ?? [];
 const hasRaceByRaceTimetable = timetableRows.length > 0;
 ---
@@ -64,122 +60,56 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
     <a href="/major-countries/preview-timetable/">← Back to Preview Timetable</a>
   </nav>
 
-  <section class="hero meeting-hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Normalized timetable meeting detail</p>
+  <section aria-labelledby="page-title">
+    <p class="eyebrow">Normalized timetable meeting detail</p>
     <h1 id="page-title">{racecourseName}</h1>
-    <p class="meeting-hero__date">{meeting.date}</p>
-    <p class="meeting-hero__authority">{authorityName} · {countryName}</p>
-    <div class="meeting-badges" aria-label="Meeting timetable status">
-      <span>{rankLabel}</span>
-      <span>Source: {sourceStatusLabel}</span>
-    </div>
-    <div class="hero__summary">
-      {hasRaceByRaceTimetable ? (
-        <p>
-          This meeting has race-by-race timetable information available from the official source. Where Horses Run
-          shows meeting-level timetable data and a public-safe post-time list only.
-        </p>
-      ) : (
-        <p>
-          Race-by-race detail is available at the official source when applicable, but not republished here.
-        </p>
-      )}
-      <p>
-        This page does not include racecards, entries, odds, results, payouts, predictions, tips, copied racecard text,
-        or raw source body/html.
-      </p>
-    </div>
+    <p>{meeting.date}</p>
+    <p>{authorityName} · {countryName}</p>
+    <p>Rank: {meeting.capability_rank}</p>
+    <p>Source: {meeting.source_status}</p>
+    <p>First race: {displayValue(meeting.first_race_time_local)}</p>
+    <p>Last race: {displayValue(meeting.last_race_time_local)}</p>
   </section>
 
-  <section class="time-summary" aria-label="Meeting time summary">
-    <article class="time-summary__card card">
-      <h2>First race</h2>
-      <p>{displayValue(meeting.first_race_time_local)}</p>
-    </article>
-    <article class="time-summary__card card">
-      <h2>Last race</h2>
-      <p>{displayValue(meeting.last_race_time_local)}</p>
-    </article>
-  </section>
-
-  {hasRaceByRaceTimetable ? (
-    <section class="meeting-detail card" aria-labelledby="race-timetable-title">
-      <div class="meeting-detail__header">
-        <h2 id="race-timetable-title">Race timetable</h2>
-        <p>{timetableRows.length} public-safe post times</p>
-      </div>
-      <div class="table-scroll" role="region" aria-label="Race-by-race post time list" tabindex="0">
-        <table>
-          <thead>
-            <tr>
-              <th>Race</th>
-              <th>Post time</th>
-              <th>Detail source</th>
-            </tr>
-          </thead>
-          <tbody>
-            {timetableRows.map((row) => (
+  <section aria-labelledby="race-timetable-title">
+    <h2 id="race-timetable-title">Race timetable</h2>
+    {hasRaceByRaceTimetable ? (
+      <>
+        <p>{timetableRows.length} public-safe post times.</p>
+        <div class="table-scroll" role="region" aria-label="Race-by-race post time list" tabindex="0">
+          <table>
+            <thead>
               <tr>
-                <td>{row.label}</td>
-                <td>{row.post_time_local}</td>
-                <td>{row.detail_source_label}</td>
+                <th>Race</th>
+                <th>Post time</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p class="meeting-detail__note">{meetingDetail?.summary_note}</p>
-    </section>
-  ) : (
-    <section class="meeting-detail card" aria-labelledby="race-timetable-title">
-      <h2 id="race-timetable-title">Race timetable</h2>
-      <p>
-        This normalized sample does not currently include a public-safe race-by-race post-time list. Use the official
-        source for complete programme details.
-      </p>
-    </section>
-  )}
-
-  <section class="meeting-detail card" aria-labelledby="official-source-title">
-    <h2 id="official-source-title">Official source</h2>
-    <p>Full race-by-race programme details are available at the official source.</p>
-    <p>
-      <a class="button-link" href={meeting.official_source_url}>
-        Open official {meeting.authority_id.toUpperCase()} source
-      </a>
-    </p>
-    <p class="meeting-detail__muted">Last checked: {displayValue(meeting.last_checked_date)}</p>
+            </thead>
+            <tbody>
+              {timetableRows.map((row) => (
+                <tr>
+                  <td>{row.label}</td>
+                  <td>{row.post_time_local}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>{meetingDetail?.summary_note}</p>
+      </>
+    ) : (
+      <p>No public-safe race-by-race post-time list is stored for this normalized sample.</p>
+    )}
   </section>
 
-  <section class="meeting-detail card" aria-labelledby="shown-boundary-title">
-    <h2 id="shown-boundary-title">What this page shows</h2>
-    <div class="boundary-grid">
-      <div>
-        <h3>Shown here</h3>
-        <ul class="boundary-list boundary-list--shown">
-          <li>Meeting date</li>
-          <li>Racecourse</li>
-          <li>Racing authority</li>
-          <li>First race time</li>
-          <li>Last race time</li>
-          <li>Race-by-race post time list{hasRaceByRaceTimetable ? '' : ' when available'}</li>
-          <li>Official source link</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Not shown here</h3>
-        <ul class="boundary-list boundary-list--excluded">
-          <li>Horse entries</li>
-          <li>Jockeys / trainers</li>
-          <li>Odds</li>
-          <li>Results</li>
-          <li>Payouts</li>
-          <li>Predictions / tips</li>
-          <li>Full copied racecard text</li>
-          <li>Raw source body/html</li>
-        </ul>
-      </div>
-    </div>
+  <section aria-labelledby="official-source-title">
+    <h2 id="official-source-title">Official source</h2>
+    <p><a href={meeting.official_source_url}>Open official {meeting.authority_id.toUpperCase()} source</a></p>
+    <p>Last checked: {displayValue(meeting.last_checked_date)}</p>
+  </section>
+
+  <section aria-labelledby="boundary-title">
+    <h2 id="boundary-title">Publication boundary</h2>
+    <p>This page does not include racecards, entries, odds, results, payouts, predictions, tips, copied racecard text, or raw source body/html.</p>
   </section>
 </BaseLayout>
 
@@ -187,85 +117,24 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
   .detail-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--whr-space-3);
-    margin-block-end: var(--whr-space-4);
+    gap: 1rem;
+    margin-block-end: 2rem;
   }
 
-  .meeting-hero__date,
-  .meeting-hero__authority,
-  .meeting-detail h2,
-  .meeting-detail h3,
-  .meeting-detail p,
-  .meeting-detail ul,
-  .time-summary__card h2,
-  .time-summary__card p {
-    margin: 0;
+  .eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
-  .meeting-hero__date {
-    font-size: 1.15rem;
-    font-weight: 700;
+  section {
+    margin-block-start: 2rem;
   }
 
-  .meeting-hero__authority {
-    color: var(--whr-color-muted);
-  }
-
-  .meeting-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--whr-space-2);
-    margin-block-start: var(--whr-space-3);
-  }
-
-  .meeting-badges span {
-    border: 1px solid var(--whr-color-border);
-    border-radius: 999px;
-    display: inline-flex;
-    font-weight: 700;
-    padding: 0.4rem 0.75rem;
-  }
-
-  .time-summary {
-    display: grid;
-    gap: var(--whr-space-3);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-block-start: var(--whr-space-4);
-  }
-
-  .time-summary__card {
-    display: grid;
-    gap: var(--whr-space-2);
-  }
-
-  .time-summary__card h2 {
-    color: var(--whr-color-muted);
-    font-size: 1rem;
-  }
-
-  .time-summary__card p {
-    font-size: clamp(1.6rem, 4vw, 2.5rem);
-    font-weight: 800;
-  }
-
-  .meeting-detail {
-    display: grid;
-    gap: var(--whr-space-3);
-    margin-block-start: var(--whr-space-4);
-  }
-
-  .meeting-detail__header {
-    align-items: baseline;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--whr-space-2);
-    justify-content: space-between;
-  }
-
-  .meeting-detail__header p,
-  .meeting-detail__muted,
-  .meeting-detail__note {
-    color: var(--whr-color-muted);
+  h1,
+  h2,
+  p {
+    margin-block: 0 0.75rem;
   }
 
   .table-scroll {
@@ -280,63 +149,7 @@ const hasRaceByRaceTimetable = timetableRows.length > 0;
   th,
   td {
     border-bottom: 1px solid var(--whr-color-border);
-    padding: 0.65rem 0.5rem;
+    padding: 0.55rem 0.4rem;
     text-align: left;
-    vertical-align: top;
-  }
-
-  th {
-    font-weight: 700;
-  }
-
-  .button-link {
-    border: 1px solid var(--whr-color-text);
-    border-radius: 999px;
-    display: inline-flex;
-    font-weight: 700;
-    padding: 0.55rem 0.85rem;
-    text-decoration: none;
-  }
-
-  .boundary-grid {
-    display: grid;
-    gap: var(--whr-space-4);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .boundary-grid > div {
-    display: grid;
-    gap: var(--whr-space-2);
-  }
-
-  .boundary-list {
-    display: grid;
-    gap: 0.35rem;
-    list-style: none;
-    padding: 0;
-  }
-
-  .boundary-list li::before {
-    display: inline-block;
-    font-weight: 800;
-    margin-inline-end: 0.45rem;
-    width: 1.25rem;
-  }
-
-  .boundary-list--shown li::before {
-    color: var(--whr-color-text);
-    content: '✓';
-  }
-
-  .boundary-list--excluded li::before {
-    color: var(--whr-color-text);
-    content: '×';
-  }
-
-  @media (max-width: 680px) {
-    .time-summary,
-    .boundary-grid {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
