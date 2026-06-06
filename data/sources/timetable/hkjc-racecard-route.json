@@ -4,7 +4,7 @@
   "authority_id": "hkjc",
   "timezone": "Asia/Hong_Kong",
   "month": "2026-06",
-  "target_rank_order": ["A", "B+", "B", "C"],
+  "target_rank_order": ["A+", "A", "B+", "B", "C"],
   "official_sources": {
     "fixture_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
     "racecard_url_template": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}"
@@ -20,15 +20,14 @@
   ],
   "race_numbers_to_probe": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
   "promotion_rules": {
-    "A": "All race numbers from 1 through expected_race_count must return public-safe post times. The normalized detail output may include only Race N and post_time_local.",
+    "A+": "Allowed when every displayed race row has public-safe race-by-race post time plus minimal race metadata: race title, distance, and surface/course type. Do not store starter lists, odds, results, payouts, predictions, full racecard text, or raw HTML.",
+    "A": "All race numbers from 1 through expected_race_count must return public-safe post times. The normalized detail output may include Race N and post_time_local.",
     "B+": "Allowed only when first and final race start times are source-verified for the complete meeting.",
     "B": "Allowed only when Race 1 start time is source-verified.",
     "C": "Meeting existence only; do not infer times."
   },
   "explicit_exclusions": [
-    "no horses",
-    "no jockeys",
-    "no trainers",
+    "no starter lists",
     "no odds",
     "no results",
     "no payouts",
