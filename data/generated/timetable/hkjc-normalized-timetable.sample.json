@@ -2,7 +2,7 @@
   "schema_version": "hkjc-normalized-timetable-sample-v0",
   "generated_at": "2026-06-06T08:15:00.000Z",
   "source_snapshot": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
-  "rank_fallback_order": ["A", "B+", "B", "C"],
+  "rank_fallback_order": ["A+", "A", "B+", "B", "C"],
   "records": [
     {
       "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
@@ -14,13 +14,13 @@
       "source_id": "hkjc-racecard-route",
       "route_id": "hkjc-racecard-date-raceno-route",
       "source_status": "verified",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "first_race_time_local": "16:00",
       "last_race_time_local": "21:15",
       "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo=1&Racecourse=ST&racedate=2026%2F06%2F07",
       "last_checked_date": "2026-06-06",
       "display_status": "displayable",
-      "notes": "HKJC official racecard route produced continuous public-safe race-by-race post times for this meeting. No horses, jockeys, trainers, odds, results, payouts, predictions, tips, full racecard text, or raw HTML are stored."
+      "notes": "HKJC official racecard route produced continuous public-safe race-by-race post times plus minimal timetable metadata: race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored."
     }
   ],
   "extraction_summary": [
@@ -29,8 +29,9 @@
       "extracted_race_count": 11,
       "race_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       "continuous_from_one": true,
-      "chosen_rank": "A",
-      "non_meeting_probe": { "race_number": 12, "status": "fetch_error", "meaning": "Race 12 was not used to infer an extra race. A output is limited to the continuous official Race 1-11 post-time rows." }
+      "metadata_fields": ["race_name", "distance_m", "surface", "course_label"],
+      "chosen_rank": "A+",
+      "non_meeting_probe": { "race_number": 12, "status": "fetch_error", "meaning": "Race 12 was not used to infer an extra race. A+ output is limited to the continuous official Race 1-11 public-safe timetable rows." }
     }
   ]
 }
