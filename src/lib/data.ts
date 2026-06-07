@@ -1,4 +1,5 @@
 import countries from '../../data/static/countries.json';
+import countryProfiles from '../../data/static/country-profiles.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import sources from '../../data/static/sources.json';
@@ -19,6 +20,7 @@ export type Locale = 'en' | 'ja';
 const allRacecourses = [...racecourses, ...racecourseExtensions] as const;
 
 export type Country = (typeof countries)[number];
+export type CountryProfile = (typeof countryProfiles)[number];
 export type Racecourse = (typeof allRacecourses)[number];
 export type Source = (typeof sources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
@@ -33,6 +35,7 @@ const mergedTimetables = {
 
 export const siteData = {
   countries,
+  countryProfiles,
   racecourses: allRacecourses,
   sources,
   glossary,
@@ -60,6 +63,14 @@ export function getActiveCountries(): Country[] {
 
 export function getCountryBySlug(slug: string): Country | undefined {
   return countries.find((country) => country.slug === slug);
+}
+
+export function getCountryProfileByCountryId(countryId: string): CountryProfile | undefined {
+  return countryProfiles.find((profile) => profile.country_id === countryId);
+}
+
+export function getCountryProfileBySlug(slug: string): CountryProfile | undefined {
+  return countryProfiles.find((profile) => profile.slug === slug);
 }
 
 export function getRacecourses(): Racecourse[] {

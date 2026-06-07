@@ -1,0 +1,86 @@
+[
+  {
+    "country_id": "japan",
+    "slug": "japan",
+    "status": "reviewed_seed",
+    "last_reviewed": "2026-06-07",
+    "overview_en": "Japan has several parallel horse-racing systems rather than one single national calendar. Central racing, local-government racing, and Banei racing operate with different authorities, racecourses, schedules, and official information sources. Taken together, racing is held throughout the year, although the active racecourses, meeting frequency, and post times vary by system and season.",
+    "overview_ja": "日本の競馬は、単一の全国カレンダーだけで把握できる仕組みではなく、中央競馬、地方競馬、ばんえい競馬という複数の体系が並行して運営されています。主催者、競馬場、開催日程、公式情報の確認先は体系ごとに異なります。全体系を合わせると年間を通じて競馬が行われていますが、開催される競馬場、開催頻度、発走時刻は体系や季節によって変わります。",
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競馬",
+        "summary_en": "The main racing form in both central and local-government racing. Central racing uses turf and dirt, while local-government racing is mainly dirt-based.",
+        "summary_ja": "中央競馬と地方競馬の中心となる競走形式です。中央競馬では芝とダートの両方が行われ、地方競馬ではダート開催が中心です。"
+      },
+      {
+        "id": "jump-racing",
+        "name_en": "Jump racing",
+        "name_ja": "障害競走",
+        "summary_en": "Jump racing is held within the central racing system and should be treated separately from ordinary flat-racing summaries.",
+        "summary_ja": "中央競馬の体系内で障害競走が行われています。通常の平地競走とは分けて理解する必要があります。"
+      },
+      {
+        "id": "banei-racing",
+        "name_en": "Banei racing",
+        "name_ja": "ばんえい競馬",
+        "summary_en": "A distinctive draft-horse format held at Obihiro, where horses pull weighted sleds over a straight course with obstacles.",
+        "summary_ja": "帯広競馬場で行われる独自形式で、大型馬が重量のあるそりを引き、障害のある直線コースを進みます。"
+      }
+    ],
+    "horse_and_format_summary_en": "Thoroughbred racing is the dominant form. Japan also has central-system jump racing and the separate Banei draft-horse format. These should not be combined into a single undifferentiated racing type.",
+    "horse_and_format_summary_ja": "日本ではサラブレッド競馬が中心です。これに加えて、中央競馬の障害競走と、独立した特色を持つばんえい競馬があります。これらを単一の競馬種別としてまとめず、別の形式として扱います。",
+    "seasonality": {
+      "pattern": "year_round_mixed_systems",
+      "summary_en": "When central racing, local-government racing, and Banei racing are viewed together, racing is available year-round. Individual racecourses and systems still follow their own seasonal schedules.",
+      "summary_ja": "中央競馬、地方競馬、ばんえい競馬を合わせると、年間を通じて競馬が行われています。ただし、個々の競馬場や競馬体系にはそれぞれの開催時期と開催周期があります。"
+    },
+    "surfaces_and_tracks": {
+      "surfaces": ["turf", "dirt", "jump-course", "banei-straight-track"],
+      "summary_en": "Central racing uses both turf and dirt and also stages jump racing. Local-government racing is mainly dirt-based. Banei uses a separate straight obstacle course and should not be described as turf or dirt racing.",
+      "summary_ja": "中央競馬では芝とダートの両方が使われ、障害競走も行われます。地方競馬はダート開催が中心です。ばんえい競馬は芝・ダート競馬とは異なる直線障害コースを使用します。"
+    },
+    "typical_schedule": {
+      "day_patterns": ["weekend_central", "weekday_local", "weekend_local", "night_local", "mixed"],
+      "time_patterns": ["daytime", "evening", "night", "varies_by_racecourse"],
+      "timezone": "Asia/Tokyo",
+      "utc_offset_label": "UTC+9",
+      "summary_en": "Central racing is mainly held on weekends and is usually daytime racing. Local-government racing can be held on weekdays or weekends and may include evening or night meetings depending on the racecourse. Banei follows its own published schedule.",
+      "summary_ja": "中央競馬は主に週末の日中開催が中心です。地方競馬は競馬場によって平日・週末の両方で開催され、夕方以降やナイター開催もあります。ばんえい競馬は独自の公式日程で行われます。"
+    },
+    "racing_systems": [
+      {
+        "id": "jra",
+        "name_en": "Japan Racing Association (JRA)",
+        "name_ja": "JRA・中央競馬",
+        "summary_en": "Central racing system with major racecourses across Japan. It is mainly weekend-based and includes turf, dirt, and jump racing.",
+        "summary_ja": "全国の主要競馬場で行われる中央競馬の体系です。主に週末開催で、芝、ダート、障害競走が行われます。",
+        "source_ids": ["japan-jra-home", "japan-jairs-racecourses"]
+      },
+      {
+        "id": "nar",
+        "name_en": "Local-government racing / NAR",
+        "name_ja": "地方競馬・NAR",
+        "summary_en": "A group of regional racing authorities and racecourses. Meeting days and times vary by venue, and weekday or night racing is common at some racecourses.",
+        "summary_ja": "各地域の主催者と競馬場から成る地方競馬の体系です。開催曜日や時間帯は競馬場ごとに異なり、平日開催やナイター開催を行う競馬場もあります。",
+        "source_ids": ["japan-nar-home", "japan-nar-racecourse-guide"]
+      },
+      {
+        "id": "banei",
+        "name_en": "Banei Tokachi",
+        "name_ja": "ばんえい十勝",
+        "summary_en": "The separate Banei racing system based at Obihiro Racecourse. Its format, racecourse, and official schedule should be presented separately from ordinary flat racing.",
+        "summary_ja": "帯広競馬場を拠点とする独自のばんえい競馬体系です。競走形式、競馬場、公式日程は通常の平地競馬と分けて表示します。",
+        "source_ids": ["japan-banei-home", "japan-banei-monthly-schedule"]
+      }
+    ],
+    "calendar_guidance_en": "To understand the Japanese racing calendar, first identify whether the meeting belongs to JRA, local-government racing, or Banei. There is no single official page that should be treated as complete coverage for all three systems. Use each system's official source for final confirmation.",
+    "calendar_guidance_ja": "日本の競馬カレンダーを見るときは、まず対象の開催がJRA、地方競馬、ばんえい競馬のどれに属するかを確認します。3体系すべてを網羅する単一の公式ページがあるものとして扱わず、それぞれの公式ソースで最終確認します。",
+    "beginner_guide_en": "For major weekend central meetings, start with JRA. For weekday, regional, or night meetings, check local-government racing sources. For Japan's distinctive draft-horse format, check Banei Tokachi separately.",
+    "beginner_guide_ja": "週末の主要な中央競馬を調べる場合はJRA、平日・地域開催・ナイターを含めて調べる場合は地方競馬、独自の大型馬による競馬を見たい場合はばんえい十勝を分けて確認すると分かりやすくなります。",
+    "coverage_note_en": "This profile explains the general structure of racing in Japan and routes users to official sources. It does not claim that every meeting is currently covered. Final dates, post times, racecards, odds, results, and payouts must be confirmed on official or licensed sources.",
+    "coverage_note_ja": "このプロフィールは、日本競馬の全体構造と公式ソースへの確認導線を説明するものです。現在の掲載内容が国内すべての開催を網羅しているとは主張しません。開催日、発走時刻、出走表、オッズ、結果、払戻は公式または正規の提供元で最終確認してください。",
+    "related_glossary_ids": ["thoroughbred-racing", "banei-racing", "racecourse", "meeting", "racecard", "post-time", "fixture"]
+  }
+]
