@@ -20,10 +20,12 @@ if (!track) {
   return Astro.redirect('/tracks/');
 }
 
+const profile = track as any;
 const countries = getCountries();
 const country = countries.find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/countries/${country.slug}/` : '/countries/';
 const countrySourceHref = country ? `/sources/${country.slug}/` : '/sources/';
+const calendarHref = country ? `/countries/${country.slug}/` : '/calendar/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
 
@@ -33,9 +35,38 @@ const formatValue = (value: unknown) => {
   return String(value);
 };
 
-const toRecord = (value: unknown): Record<string, unknown> => {
+const formatNumber = (value: unknown) => typeof value === 'number' ? value.toLocaleString('en-US') : 'Not confirmed';
+const formatMeters = (value: unknown) => typeof value === 'number' ? `${value.toLocaleString('en-US')}m` : 'Not confirmed';
+
+const directionLabel = (value: unknown) => {
+  const labels: Record<string, string> = {
+    'left-handed': 'Left-handed',
+    'right-handed': 'Right-handed',
+    straight: 'Straight',
+    unknown: 'Not confirmed'
+  };
+  return typeof value === 'string' ? labels[value] ?? value : 'Not confirmed';
+};
+
+const statusLabel = (value: unknown) => {
+  const labels: Record<string, string> = {
+    racing_today: 'Racing today',
+    no_racing_today: 'No racing today',
+    unknown: 'Schedule not verified yet',
+    verified: 'Verified',
+    partial: 'Partial',
+    secondary: 'Secondary source',
+    stale: 'Needs recheck',
+    failed: 'Failed',
+    'official-link-only': 'Official-link only',
+    link_first: 'Link-first'
+  };
+  return typeof value === 'string' ? labels[value] ?? value : 'Not confirmed';
+};
+
+const toRecord = (value: unknown): Record<string, any> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
-  return value as Record<string, unknown>;
+  return value as Record<string, any>;
 };
 
 const firstValue = (record: unknown, keys: string[]) => {
@@ -56,18 +87,30 @@ const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) 
   return parts.length ? parts.join(' · ') : 'Details are pending formatting.';
 };
 
-const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
-  if (!band) return 'Not confirmed';
-  const range = band.min_m && band.max_m ? `${band.min_m}m–${band.max_m}m` : 'range not confirmed';
-  const known = band.known_distances_m && band.known_distances_m.length > 0
-    ? `Known distances: ${band.known_distances_m.map((distance) => `${distance}m`).join(', ')}`
-    : 'Known distances: not confirmed';
-  return `${range}. ${known}`;
+const formatDistanceList = (value: unknown) => {
+  if (!Array.isArray(value) || value.length === 0) return 'Not verified yet';
+  return value.map((distance) => `${distance}m`).join(', ');
 };
 
 const officialLinks = track.official_links ?? [];
 const relatedTerms = track.related_terms ?? [];
 const relatedSources = track.related_sources ?? [];
+const operator = toRecord(profile.operator);
+const capacity = toRecord(profile.capacity_profile);
+const courseLayout = toRecord(profile.course_layout);
+const raceDistanceProfile = toRecord(profile.race_distance_profile);
+const visitorLinks = toRecord(profile.visitor_links);
+
+const primaryScheduleUrl = typeof visitorLinks.official_schedule === 'string'
+  ? visitorLinks.official_schedule
+  : officialLinks.find((link) => link.link_type === 'schedule')?.url ?? officialLinks[0]?.url;
+const primaryVenueUrl = typeof visitorLinks.official_racecourse === 'string'
+  ? visitorLinks.official_racecourse
+  : officialLinks.find((link) => link.link_type === 'official')?.url ?? officialLinks[0]?.url;
+const primaryCourseUrl = typeof visitorLinks.official_course_details === 'string'
+  ? visitorLinks.official_course_details
+  : officialLinks.find((link) => link.url.includes('course_details'))?.url;
+
 const meetingFields: Array<[string, string[]]> = [
   ['Date', ['date', 'local_date', 'meeting_date']],
   ['First post', ['first_post', 'first_race_time', 'first_race']],
@@ -85,12 +128,41 @@ const raceConditionFields: Array<[string, string[]]> = [
 ];
 const notableRaceFields: Array<[string, string[]]> = [
   ['Name', ['name_en', 'name', 'race_name']],
+  ['Grade', ['grade']],
+  ['Surface', ['surface']],
+  ['Distance', ['distance_m', 'distance']],
   ['Season', ['season', 'month']],
   ['Source', ['official_link', 'source_url', 'url']]
 ];
+
+const courseGroups = [
+  ['Turf courses', courseLayout.turf_courses],
+  ['Dirt courses', courseLayout.dirt_courses],
+  ['Jump courses', courseLayout.jump_courses],
+  ['All-weather courses', courseLayout.all_weather_courses],
+  ['Harness courses', courseLayout.harness_courses],
+  ['Banei courses', courseLayout.banei_courses]
+].filter(([, rows]) => Array.isArray(rows) && rows.length > 0) as Array<[string, any[]]>;
+
+const fallbackCourseRows = [
+  ['Turf circumference', track.course_profile?.turf_circumference_m],
+  ['Dirt circumference', track.course_profile?.dirt_circumference_m],
+  ['Home straight', track.course_profile?.home_straight_m]
+].filter(([, value]) => typeof value === 'number');
+
+const visitorLinkRows = [
+  ['Official racecourse page', visitorLinks.official_racecourse],
+  ['Official schedule / fixtures', visitorLinks.official_schedule],
+  ['Official course details', visitorLinks.official_course_details],
+  ['Official access', visitorLinks.official_access],
+  ['Official racecard', visitorLinks.official_racecard],
+  ['Official results', visitorLinks.official_results]
+].filter(([, url]) => typeof url === 'string' && url.length > 0) as Array<[string, string]>;
+
+const overview = profile.overview_en ?? track.course_profile?.course_notes_en ?? 'This racecourse profile is being built from official and source-safe racing information.';
 ---
 
-<BaseLayout title={`${track.name_en} | Racecourses`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
+<BaseLayout title={`${track.name_en} | Racecourses`} description={`Venue profile, scale, course layout, schedule gateway, official links, and related racing terms for ${track.name_en}.`}>
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Racecourse profile</p>
     <h1 id="page-title">{track.name_en}</h1>
@@ -98,18 +170,50 @@ const notableRaceFields: Array<[string, string[]]> = [
       {track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}
       {country ? country.name_en : track.country_id} / {track.city}
     </p>
+    <p>{overview}</p>
+    <p>
+      {primaryScheduleUrl ? <a href={primaryScheduleUrl}>Official schedule</a> : <a href={calendarHref}>Open calendar view</a>}
+      {' · '}
+      {primaryVenueUrl ? <a href={primaryVenueUrl}>Official venue page</a> : <a href={countrySourceHref}>Country source registry</a>}
+      {primaryCourseUrl ? <><span>{' · '}</span><a href={primaryCourseUrl}>Official course details</a></> : null}
+    </p>
   </section>
 
-  <section class="section-grid" aria-label="Track overview">
+  <section class="section-grid" aria-label="Quick facts and schedule gateway">
     <article class="card">
-      <h2>Basic information</h2>
+      <h2>Quick facts</h2>
       <p><strong>Country:</strong> <a href={countryHref}>{country ? country.name_en : track.country_id}</a></p>
-      <p><strong>City:</strong> {track.city}</p>
-      <p><strong>Region:</strong> {formatValue(track.region)}</p>
+      <p><strong>City / region:</strong> {track.city} / {formatValue(track.region)}</p>
       <p><strong>Timezone:</strong> {track.timezone}</p>
+      <p><strong>Operator:</strong> {formatValue(operator.name)}{operator.type ? ` (${operator.type})` : ''}</p>
       <p><strong>Status:</strong> {track.status}</p>
+      <p><strong>Surfaces:</strong> {formatValue(track.surfaces)}</p>
+      <p><strong>Direction:</strong> {directionLabel(track.direction)}</p>
+      <p><strong>Representative turf length:</strong> {formatMeters(track.course_profile?.turf_circumference_m)}</p>
+      <p><strong>Home straight:</strong> {formatMeters(courseLayout.home_straight_m ?? track.course_profile?.home_straight_m)}</p>
     </article>
 
+    <article class="card">
+      <h2>Venue scale</h2>
+      <p><strong>Total capacity:</strong> {formatNumber(capacity.total_capacity)}</p>
+      <p><strong>Seating capacity:</strong> {formatNumber(capacity.seating_capacity)}</p>
+      <p><strong>Standing capacity:</strong> {formatNumber(capacity.standing_capacity)}</p>
+      <p><strong>Status:</strong> {statusLabel(capacity.status)}</p>
+      <p>{capacity.scale_note_en ?? 'Venue capacity is not confirmed yet.'}</p>
+      {capacity.source_url ? <p><a href={capacity.source_url}>Capacity source</a></p> : null}
+    </article>
+
+    <article class="card">
+      <h2>Schedule gateway</h2>
+      <p><strong>Today:</strong> {statusLabel(track.schedule_summary?.today_status)}</p>
+      <p><strong>Next meeting:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
+      <p><strong>Schedule status:</strong> {statusLabel(track.schedule_summary?.status)}</p>
+      <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
+      <p>{primaryScheduleUrl ? <a href={primaryScheduleUrl}>Check official schedule</a> : <a href={calendarHref}>Open available calendar data</a>}</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Racing types and upcoming meetings">
     <article class="card">
       <h2>Racing types</h2>
       <ul>
@@ -121,16 +225,6 @@ const notableRaceFields: Array<[string, string[]]> = [
     </article>
 
     <article class="card">
-      <h2>Today</h2>
-      <p><strong>Status:</strong> {track.schedule_summary?.today_status ?? 'unknown'}</p>
-      <p><strong>Next meeting:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
-      <p><strong>Schedule status:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
-      <p>Use official source links for final confirmation.</p>
-    </article>
-  </section>
-
-  <section class="section-grid" aria-label="Upcoming schedule and race conditions">
-    <article class="card">
       <h2>Upcoming meetings</h2>
       {track.schedule_summary?.upcoming_meetings?.length ? (
         <ul>
@@ -139,9 +233,8 @@ const notableRaceFields: Array<[string, string[]]> = [
           ))}
         </ul>
       ) : (
-        <p>No verified upcoming meeting rows are listed for this racecourse yet. Check the official schedule link when available.</p>
+        <p>No verified upcoming meeting rows are listed for this racecourse yet. Use the official schedule link for final confirmation.</p>
       )}
-      <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
     </article>
 
     <article class="card">
@@ -158,25 +251,47 @@ const notableRaceFields: Array<[string, string[]]> = [
     </article>
   </section>
 
-  <section class="section-grid" aria-label="Course and distance profile">
+  <section class="section-grid" aria-label="Course layout and race distances">
     <article class="card">
-      <h2>Course profile</h2>
-      <p><strong>Surfaces:</strong> {formatValue(track.surfaces)}</p>
-      <p><strong>Direction:</strong> {formatValue(track.direction)}</p>
-      <p><strong>Turf circumference:</strong> {track.course_profile?.turf_circumference_m ? `${track.course_profile.turf_circumference_m}m` : 'Not confirmed'}</p>
-      <p><strong>Dirt circumference:</strong> {track.course_profile?.dirt_circumference_m ? `${track.course_profile.dirt_circumference_m}m` : 'Not confirmed'}</p>
-      <p><strong>Home straight:</strong> {track.course_profile?.home_straight_m ? `${track.course_profile.home_straight_m}m` : 'Not confirmed'}</p>
-      <p><strong>Inner / outer courses:</strong> {track.course_profile?.has_inner_outer_courses === null ? 'Not confirmed' : String(track.course_profile?.has_inner_outer_courses)}</p>
-      <p>{track.course_profile?.course_notes_en ?? 'Course notes are pending official-source verification.'}</p>
+      <h2>Course layout</h2>
+      {courseGroups.length ? (
+        <div>
+          {courseGroups.map(([label, rows]) => (
+            <div>
+              <h3>{label}</h3>
+              <ul>
+                {rows.map((course) => (
+                  <li>
+                    <strong>{course.label}</strong>
+                    {' — '}{formatMeters(course.circumference_m)}
+                    {course.direction ? ` · ${directionLabel(course.direction)}` : ''}
+                    {course.surface ? ` · ${course.surface}` : ''}
+                    {course.note_en ? <><br /><span>{course.note_en}</span></> : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <p>{track.course_profile?.course_notes_en ?? 'Course layout details are pending official-source verification.'}</p>
+          {fallbackCourseRows.length ? <ul>{fallbackCourseRows.map(([label, value]) => <li><strong>{label}:</strong> {formatMeters(value)}</li>)}</ul> : null}
+        </div>
+      )}
+      <p><strong>Inner / outer note:</strong> {courseLayout.inner_outer_note_en ?? (track.course_profile?.has_inner_outer_courses === null ? 'Not confirmed' : String(track.course_profile?.has_inner_outer_courses))}</p>
+      <p><strong>Layout status:</strong> {statusLabel(courseLayout.status ?? track.data_status?.course_profile)}</p>
     </article>
 
     <article class="card">
-      <h2>Distance profile</h2>
-      <p><strong>Turf:</strong> {formatDistanceBand(track.distance_profile?.turf)}</p>
-      <p><strong>Dirt:</strong> {formatDistanceBand(track.distance_profile?.dirt)}</p>
-      <p><strong>All-weather:</strong> {formatDistanceBand(track.distance_profile?.all_weather)}</p>
-      <p><strong>Jump:</strong> {formatDistanceBand(track.distance_profile?.jump)}</p>
-      <p><strong>Harness:</strong> {formatDistanceBand(track.distance_profile?.harness)}</p>
+      <h2>Race distance profile</h2>
+      <p>This section is for actual race distances used at the venue, not course circumferences.</p>
+      <p><strong>Turf:</strong> {formatDistanceList(raceDistanceProfile.turf_distances_m)}</p>
+      <p><strong>Dirt:</strong> {formatDistanceList(raceDistanceProfile.dirt_distances_m)}</p>
+      <p><strong>Jump:</strong> {formatDistanceList(raceDistanceProfile.jump_distances_m)}</p>
+      <p><strong>All-weather:</strong> {formatDistanceList(raceDistanceProfile.all_weather_distances_m)}</p>
+      <p><strong>Harness:</strong> {formatDistanceList(raceDistanceProfile.harness_distances_m)}</p>
+      <p><strong>Status:</strong> {statusLabel(raceDistanceProfile.status)}</p>
     </article>
   </section>
 
@@ -197,11 +312,16 @@ const notableRaceFields: Array<[string, string[]]> = [
     <article class="card">
       <h2>Seasonality</h2>
       <p>{track.seasonality?.summary_en ?? 'Seasonality is pending official-source verification.'}</p>
-      <p><strong>Status:</strong> {track.seasonality?.status ?? 'partial'}</p>
+      <p><strong>Status:</strong> {statusLabel(track.seasonality?.status)}</p>
     </article>
 
     <article class="card">
-      <h2>Official links</h2>
+      <h2>Official and visitor links</h2>
+      {visitorLinkRows.length ? (
+        <ul>
+          {visitorLinkRows.map(([label, url]) => <li><a href={url}>{label}</a></li>)}
+        </ul>
+      ) : null}
       {officialLinks.length ? (
         <ul>
           {officialLinks.map((link) => (
@@ -221,14 +341,18 @@ const notableRaceFields: Array<[string, string[]]> = [
   <section class="section-grid" aria-label="Data status and related pages">
     <article class="card">
       <h2>Data status</h2>
-      <p><strong>Course profile:</strong> {track.data_status?.course_profile ?? 'partial'}</p>
-      <p><strong>Schedule:</strong> {track.data_status?.schedule ?? 'official-link-only'}</p>
-      <p><strong>Source routing:</strong> {track.data_status?.source_status ?? 'link_first'}</p>
+      <p><strong>Course profile:</strong> {statusLabel(track.data_status?.course_profile)}</p>
+      <p><strong>Schedule:</strong> {statusLabel(track.data_status?.schedule)}</p>
+      <p><strong>Source routing:</strong> {statusLabel(track.data_status?.source_status)}</p>
+      <p><strong>Capacity:</strong> {statusLabel(capacity.status)}</p>
+      <p><strong>Race distances:</strong> {statusLabel(raceDistanceProfile.status)}</p>
       <p><strong>Last checked:</strong> {formatValue(track.data_status?.last_checked)}</p>
+      <p>Where Horses Run links to official sources but does not republish full entries, odds, results, payouts, predictions, or complete racecards.</p>
     </article>
 
     <article class="card">
-      <h2>Related terms</h2>
+      <h2>Related learning</h2>
+      <p><a href={countryHref}>Open country page</a></p>
       {relatedTerms.length ? (
         <ul>
           {relatedTerms.map((termId) => {
