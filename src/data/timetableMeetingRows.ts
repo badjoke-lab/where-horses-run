@@ -115,6 +115,22 @@ export function getTimetableMeetingRowsForDate(date: string): TimetableMeetingRo
   return getTimetableMeetingRows().filter((record) => record.date === date);
 }
 
+export function getTimetableMeetingRowsByCountry(
+  countryId: string,
+): TimetableMeetingRow[] {
+  return getTimetableMeetingRows().filter(
+    (record) => record.country_id === countryId,
+  );
+}
+
+export function getTimetableMeetingRowsByRacecourse(
+  racecourseId: string,
+): TimetableMeetingRow[] {
+  return getTimetableMeetingRows().filter(
+    (record) => record.racecourse_id === racecourseId,
+  );
+}
+
 export function getGroupedTimetableMeetingRows(
   records = getTimetableMeetingRows(),
 ): TimetableMeetingDayGroup[] {
