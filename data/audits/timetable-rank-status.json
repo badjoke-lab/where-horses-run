@@ -1,0 +1,143 @@
+{
+  "schema_version": "timetable-rank-status-audit-v0",
+  "last_checked": "2026-06-07",
+  "purpose": "Inventory the current timetable data and UI state before canonical/public-view unification.",
+  "target_pipeline": [
+    "source_config",
+    "fetch_or_snapshot",
+    "normalize_or_canonical",
+    "publication_policy",
+    "public_view_model_or_public_json",
+    "pages"
+  ],
+  "already_merged_work": [
+    {
+      "github_pr": 221,
+      "title": "Wire normalized timetable samples to preview calendar",
+      "status": "merged",
+      "roadmap_overlap": ["PR-6 partial", "PR-7 partial"],
+      "final_state": "transitional_preview_not_final_public_view"
+    },
+    {
+      "github_pr": 226,
+      "title": "Add normalized meeting detail links to calendar, day, and current timetable surfaces",
+      "status": "merged",
+      "roadmap_overlap": ["PR-7 partial", "PR-9 partial"],
+      "final_state": "transitional_links_not_final_public_view"
+    },
+    {
+      "github_pr": 228,
+      "title": "Add A-level race-by-race timetable detail page",
+      "status": "merged",
+      "roadmap_overlap": ["PR-9 partial"],
+      "final_state": "active_detail_page_but_not_public_detail_json_driven"
+    },
+    {
+      "github_pr": 235,
+      "title": "Add public display boundary policy guard",
+      "status": "merged",
+      "roadmap_overlap": ["PR-5 support"],
+      "final_state": "policy_guard_only_not_resolver"
+    },
+    {
+      "github_pr": 236,
+      "title": "Add meeting detail page contract",
+      "status": "merged",
+      "roadmap_overlap": ["PR-9 support"],
+      "final_state": "contract_only_not_final_public_detail_implementation"
+    }
+  ],
+  "inventory": [
+    {
+      "path": "data/generated/timetables.json",
+      "classification": ["active_display_input", "manual_seed", "current_but_not_canonical"],
+      "decision": "convert_to_canonical_in_PR_4"
+    },
+    {
+      "path": "data/generated/japan-active-timetable-records.json",
+      "classification": ["active_display_input", "manual_reviewed_seed"],
+      "decision": "convert_to_canonical_in_PR_4_after_rank_consistency_review"
+    },
+    {
+      "path": "data/generated/normalized-timetable.json",
+      "classification": ["normalized_candidate", "preview_display_input"],
+      "decision": "convert_to_canonical_in_PR_4_and_stop_direct_page_use_by_PR_10"
+    },
+    {
+      "path": "data/generated/timetable/pr-184-public-display-boundary.json",
+      "classification": ["policy_spec_only"],
+      "decision": "keep_as_policy_evidence_not_display_source"
+    },
+    {
+      "path": "data/generated/timetable/pr-185-jra-section-split-schema.json",
+      "classification": ["schema_support", "jra_split_policy"],
+      "decision": "connect_to_canonical_model_and_jra_acquisition_path"
+    },
+    {
+      "path": "data/generated/timetable/pr-236-meeting-detail-page-contract.json",
+      "classification": ["policy_spec_only", "detail_contract"],
+      "decision": "keep_as_contract_evidence_not_display_source"
+    },
+    {
+      "path": "src/data/normalizedTimetableCalendarPreview.ts",
+      "classification": ["already_wired_ui", "preview_reader", "transitional"],
+      "decision": "absorb_into_public_view_model_in_PR_6_and_PR_7"
+    },
+    {
+      "path": "src/components/NormalizedTimetableCalendarPreview.astro",
+      "classification": ["already_wired_ui", "preview_component", "transitional"],
+      "decision": "replace_or_demote_after_public_view_list_is_live"
+    },
+    {
+      "path": "src/components/NormalizedMeetingDetailLinks.astro",
+      "classification": ["already_wired_ui", "detail_link_component", "transitional"],
+      "decision": "keep_temporarily_then_feed_from_public_view"
+    },
+    {
+      "path": "src/data/normalizedTimetableMeetingDetails.ts",
+      "classification": ["active_detail_input", "transitional_direct_data"],
+      "decision": "convert_to_canonical_meeting_details_and_stop_direct_page_use"
+    },
+    {
+      "path": "src/pages/timetable/meetings/[meeting_id].astro",
+      "classification": ["active_ui", "partially_ahead_of_roadmap"],
+      "decision": "keep_route_but_change_data_source_to_public_detail_in_PR_9"
+    },
+    {
+      "path": "src/pages/calendar/index.astro",
+      "classification": ["active_ui", "partially_ahead_of_roadmap"],
+      "decision": "migrate_to_public_meeting_list_in_PR_7"
+    },
+    {
+      "path": "src/pages/tomorrow.astro",
+      "classification": ["active_ui", "partially_ahead_of_roadmap"],
+      "decision": "migrate_to_public_meeting_list_in_PR_7"
+    },
+    {
+      "path": "src/pages/major-countries/current-timetable.astro",
+      "classification": ["active_ui", "partially_ahead_of_roadmap"],
+      "decision": "migrate_to_public_meeting_list_in_PR_7"
+    }
+  ],
+  "roadmap_status": {
+    "PR_1_current_data_inventory": "this_pr",
+    "PR_2_rank_consistency_repair": "not_complete",
+    "PR_3_canonical_timetable_model": "not_complete_jra_section_schema_only",
+    "PR_4_existing_json_to_canonical": "not_complete",
+    "PR_5_publication_display_policy_resolver": "spec_exists_resolver_not_complete",
+    "PR_6_public_view_generation": "not_complete_preview_partial_exists",
+    "PR_7_list_pages_to_public_view": "not_complete_transitional_links_exist",
+    "PR_8_country_and_track_pages_to_public_list": "not_complete",
+    "PR_9_meeting_detail_page_to_public_detail": "not_complete_detail_page_partial_exists",
+    "PR_10_legacy_input_isolation": "not_complete",
+    "PR_11_hkjc_june_refresh": "not_complete",
+    "PR_12_jra_acquisition_path": "not_complete",
+    "PR_13_nar_banei_acquisition_path": "not_complete",
+    "PR_14_us_sample_reintegration": "not_complete"
+  },
+  "next_pr": {
+    "roadmap_item": "PR-2",
+    "title": "rank consistency repair",
+    "must_not_do": ["new_source_coverage", "page_migration", "canonical_conversion", "new_fetching"]
+  }
+}
