@@ -1,0 +1,127 @@
+{
+  "schema_version": "canonical-timetable-v0",
+  "generated_at": "2026-06-07T03:30:00.000Z",
+  "input_sources": [
+    "data/generated/timetables.json",
+    "data/generated/japan-active-timetable-records.json",
+    "data/generated/normalized-timetable.json"
+  ],
+  "meetings": [
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "tokyo-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "jra-calendar",
+        "route_id": "jra-calendar-status-route",
+        "source_status": "partial",
+        "official_source_url": "https://www.jra.go.jp/keiba/calendar/",
+        "source_label": null,
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-05",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Manually reviewed meeting-date sample from the official JRA calendar source; no race times are inferred or stored. Rank repaired from B to C because first race time is not stored."
+    },
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "tokyo-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "10:05",
+      "last_race_time_local": "16:30",
+      "source_trace": {
+        "source_id": "jra-calendar",
+        "route_id": "jra-calendar-status-route",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+        "source_label": null,
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-06",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Manually reviewed official JRA daily programme sample for Tokyo Racecourse on 2026-06-07. This record stores only meeting-level summary times and relies on a separate transitional meeting-detail module for public-safe race-by-race post times."
+    },
+    {
+      "meeting_id": "nar-obihiro-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-convene-info",
+        "route_id": "nar-local-government-monthly-status-route",
+        "source_status": "partial",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-05",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Manually reviewed local-government-racing meeting-date sample from the official NAR monthly convening source; no race times are inferred or stored. Rank repaired from B to C because first race time is not stored."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-fixture-list",
+        "route_id": "hkjc-fixture-status-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+        "source_label": null,
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-05",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Manually reviewed meeting-date sample from the official HKJC fixture list; no race times are inferred or stored. Rank repaired from B+ to C because first and last race times are not stored in this summary record. Separate HKJC racecard samples remain transitional detail input until canonical conversion."
+    }
+  ]
+}
