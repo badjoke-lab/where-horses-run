@@ -1,0 +1,37 @@
+name: Racecourse profile content model
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'docs/specs/racecourse-profile-content-model-v0.1.md'
+      - 'schemas/racecourse-profile-content-model-v0.1.schema.json'
+      - 'scripts/check-racecourse-profile-content-model-v0.1.mjs'
+      - '.github/workflows/racecourse-profile-content-model.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'schemas/racecourse-profile-content-model-v0.1.schema.json'
+      - 'scripts/check-racecourse-profile-content-model-v0.1.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate racecourse profile content model
+        run: node scripts/check-racecourse-profile-content-model-v0.1.mjs

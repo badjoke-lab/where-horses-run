@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://where-horses-run.example/schemas/racecourse-profile-content-model-v0.1.schema.json",
+  "title": "Racecourse Profile Content Model v0.1",
+  "type": "object",
+  "properties": {
+    "overview_en": { "type": ["string", "null"] },
+    "overview_ja": { "type": ["string", "null"] },
+    "operator": {
+      "type": ["object", "null"],
+      "properties": {
+        "name": { "type": ["string", "null"] },
+        "type": {
+          "type": ["string", "null"],
+          "enum": ["national-authority", "regional-authority", "race-club", "private-operator", "public-operator", "other", "unknown", null]
+        },
+        "url": { "type": ["string", "null"], "format": "uri" }
+      },
+      "additionalProperties": false
+    },
+    "capacity_profile": {
+      "type": ["object", "null"],
+      "properties": {
+        "total_capacity": { "type": ["integer", "null"], "minimum": 0 },
+        "seating_capacity": { "type": ["integer", "null"], "minimum": 0 },
+        "standing_capacity": { "type": ["integer", "null"], "minimum": 0 },
+        "scale_note_en": { "type": ["string", "null"] },
+        "scale_note_ja": { "type": ["string", "null"] },
+        "source_url": { "type": ["string", "null"], "format": "uri" },
+        "source_type": {
+          "type": "string",
+          "enum": ["official", "authority", "secondary", "unknown"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "partial", "secondary", "stale", "unknown"]
+        },
+        "last_checked": { "type": ["string", "null"], "format": "date" }
+      },
+      "required": ["total_capacity", "seating_capacity", "standing_capacity", "source_type", "status", "last_checked"],
+      "additionalProperties": false
+    },
+    "course_layout": {
+      "type": ["object", "null"],
+      "properties": {
+        "turf_courses": { "$ref": "#/$defs/courseArray" },
+        "dirt_courses": { "$ref": "#/$defs/courseArray" },
+        "jump_courses": { "$ref": "#/$defs/courseArray" },
+        "all_weather_courses": { "$ref": "#/$defs/courseArray" },
+        "harness_courses": { "$ref": "#/$defs/courseArray" },
+        "banei_courses": { "$ref": "#/$defs/courseArray" },
+        "home_straight_m": { "type": ["number", "null"], "minimum": 0 },
+        "elevation_note_en": { "type": ["string", "null"] },
+        "elevation_note_ja": { "type": ["string", "null"] },
+        "inner_outer_note_en": { "type": ["string", "null"] },
+        "inner_outer_note_ja": { "type": ["string", "null"] },
+        "source_url": { "type": ["string", "null"], "format": "uri" },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "partial", "secondary", "stale", "unknown"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "race_distance_profile": {
+      "type": ["object", "null"],
+      "properties": {
+        "turf_distances_m": { "$ref": "#/$defs/distanceArray" },
+        "dirt_distances_m": { "$ref": "#/$defs/distanceArray" },
+        "jump_distances_m": { "$ref": "#/$defs/distanceArray" },
+        "all_weather_distances_m": { "$ref": "#/$defs/distanceArray" },
+        "harness_distances_m": { "$ref": "#/$defs/distanceArray" },
+        "source_url": { "type": ["string", "null"], "format": "uri" },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "partial", "secondary", "stale", "unknown"]
+        },
+        "last_checked": { "type": ["string", "null"], "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "visitor_links": {
+      "type": ["object", "null"],
+      "properties": {
+        "official_racecourse": { "type": ["string", "null"], "format": "uri" },
+        "official_schedule": { "type": ["string", "null"], "format": "uri" },
+        "official_course_details": { "type": ["string", "null"], "format": "uri" },
+        "official_access": { "type": ["string", "null"], "format": "uri" },
+        "official_racecard": { "type": ["string", "null"], "format": "uri" },
+        "official_results": { "type": ["string", "null"], "format": "uri" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "distanceArray": {
+      "type": "array",
+      "items": { "type": "number", "minimum": 0 },
+      "uniqueItems": true
+    },
+    "courseArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "circumference_m": { "type": ["number", "null"], "minimum": 0 },
+          "direction": { "type": ["string", "null"] },
+          "surface": { "type": ["string", "null"] },
+          "note_en": { "type": ["string", "null"] },
+          "note_ja": { "type": ["string", "null"] }
+        },
+        "required": ["label"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}
