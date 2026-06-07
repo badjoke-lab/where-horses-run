@@ -28,16 +28,40 @@ const groups: TimetableMeetingDayGroup[] = 'groups' in props
       },
     ].filter((group) => group.records.length > 0);
 
-const displayTime = (value: string | null) => value ?? '—';
-const detailLabel = (record: TimetableMeetingRow) => {
-  if (lang === 'ja') {
-    return record.can_view_race_timetable ? 'レース時刻表を見る' : '詳細';
-  }
-  return record.can_view_race_timetable ? 'View race timetable' : 'Detail';
-};
-const officialSourceLabel = lang === 'ja' ? '公式ソース' : 'Official source';
-const firstLabel = lang === 'ja' ? '第1レース' : 'First';
-const lastLabel = lang === 'ja' ? '最終レース' : 'Last';
+const text = lang === 'ja'
+  ? {
+      authority: '主催・体系',
+      country: '国・地域',
+      detail: '開催詳細',
+      first: '第1レース',
+      last: '最終レース',
+      official: '公式ソース',
+      rank: '公開ランク',
+      racecourse: '競馬場',
+      sourceStatus: 'ソース状態',
+      lastChecked: '最終確認',
+      notListed: '未掲載',
+      sourceRequired: '最終確認は公式ソースで行ってください。',
+    }
+  : {
+      authority: 'Authority / system',
+      country: 'Country',
+      detail: 'Meeting detail',
+      first: 'First race',
+      last: 'Last race',
+      official: 'Official source',
+      rank: 'Public rank',
+      racecourse: 'Racecourse',
+      sourceStatus: 'Source status',
+      lastChecked: 'Last checked',
+      notListed: 'Not listed',
+      sourceRequired: 'Use the official source for final confirmation.',
+    };
+
+const displayTime = (value: string | null) => value ?? text.notListed;
+const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';
+const shouldShowLast = (record: TimetableMeetingRow) =>
+  record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+';
 ---
 
 {groups.length > 0 ? (
@@ -45,21 +69,54 @@ const lastLabel = lang === 'ja' ? '最終レース' : 'Last';
     {groups.map((group) => (
       <section class="timetable-date-group" aria-labelledby={`date-${group.date}`}>
         {group.date && <h2 id={`date-${group.date}`}>{group.date}</h2>}
-        <ul class="meeting-list">
+        <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
           {group.records.map((record) => (
-            <li class="meeting-row">
-              <span class="meeting-row__course">{record.racecourse_name}</span>
-              <span>{record.authority_label}</span>
-              <span>{record.country_label}</span>
-              <span>Rank {record.capability_rank}</span>
-              {record.capability_rank !== 'C' && (
-                <span>{firstLabel}: {displayTime(record.first_race_time_local)}</span>
-              )}
-              {(record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+') && (
-                <span>{lastLabel}: {displayTime(record.last_race_time_local)}</span>
-              )}
-              {record.detail_path && <a href={record.detail_path}>{detailLabel(record)}</a>}
-              <a href={record.official_source_url}>{officialSourceLabel}</a>
+            <li class="meeting-card">
+              <div class="meeting-card__main">
+                <span class="meeting-card__course">{record.racecourse_name}</span>
+                <span class="meeting-card__rank">{text.rank}: {record.capability_rank}</span>
+              </div>
+
+              <dl class="meeting-card__meta">
+                <div>
+                  <dt>{text.authority}</dt>
+                  <dd>{record.authority_label}</dd>
+                </div>
+                <div>
+                  <dt>{text.country}</dt>
+                  <dd>{record.country_label}</dd>
+                </div>
+                {shouldShowFirst(record) && (
+                  <div>
+                    <dt>{text.first}</dt>
+                    <dd>{displayTime(record.first_race_time_local)}</dd>
+                  </div>
+                )}
+                {shouldShowLast(record) && (
+                  <div>
+                    <dt>{text.last}</dt>
+                    <dd>{displayTime(record.last_race_time_local)}</dd>
+                  </div>
+                )}
+                {record.source_status && (
+                  <div>
+                    <dt>{text.sourceStatus}</dt>
+                    <dd>{record.source_status}</dd>
+                  </div>
+                )}
+                {record.last_checked_date && (
+                  <div>
+                    <dt>{text.lastChecked}</dt>
+                    <dd>{record.last_checked_date}</dd>
+                  </div>
+                )}
+              </dl>
+
+              <div class="meeting-card__links">
+                {record.detail_path && <a href={record.detail_path}>{text.detail}</a>}
+                <a href={record.official_source_url}>{text.official}</a>
+              </div>
+              <p class="meeting-card__note">{text.sourceRequired}</p>
             </li>
           ))}
         </ul>
@@ -73,30 +130,89 @@ const lastLabel = lang === 'ja' ? '最終レース' : 'Last';
 <style>
   .timetable-date-groups {
     display: grid;
-    gap: 1.5rem;
+    gap: 1.75rem;
   }
 
   .timetable-date-group h2 {
-    margin-block-end: 0.5rem;
+    margin-block-end: 0.75rem;
   }
 
   .meeting-list {
     display: grid;
-    gap: 0.45rem;
-    list-style: disc;
+    gap: 0.75rem;
+    list-style: none;
     margin: 0;
-    padding-inline-start: 1.25rem;
+    padding: 0;
   }
 
-  .meeting-row {
+  .meeting-card {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.85rem;
+  }
+
+  .meeting-card__main {
     align-items: baseline;
-    column-gap: 1rem;
     display: flex;
     flex-wrap: wrap;
-    row-gap: 0.25rem;
+    gap: 0.5rem 0.85rem;
+    justify-content: space-between;
   }
 
-  .meeting-row__course {
+  .meeting-card__course {
+    font-size: 1.05rem;
     font-weight: 700;
+  }
+
+  .meeting-card__rank {
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .meeting-card__meta {
+    display: grid;
+    gap: 0.45rem 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    margin: 0;
+  }
+
+  .meeting-card__meta div {
+    min-width: 0;
+  }
+
+  .meeting-card__meta dt {
+    color: #555;
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .meeting-card__meta dd {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .meeting-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.85rem;
+  }
+
+  .meeting-card__note {
+    color: #555;
+    font-size: 0.84rem;
+    margin: 0;
+  }
+
+  @media (max-width: 420px) {
+    .meeting-card {
+      border-radius: 0.6rem;
+      padding: 0.75rem;
+    }
+
+    .meeting-card__meta {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
