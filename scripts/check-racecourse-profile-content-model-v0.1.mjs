@@ -179,7 +179,20 @@ function validateTrack(track) {
 
 const base = readJson('data/static/racecourses.json');
 const extensions = readJson('data/static/racecourses-extensions.json');
-const tracks = [...base, ...extensions];
+const overrides = readJson('data/static/racecourse-profile-overrides.json');
+const baseTracks = [...base, ...extensions];
+const trackIds = new Set(baseTracks.map((track) => track.id));
+const overrideIds = new Set();
+
+for (const override of overrides) {
+  if (!trackIds.has(override.id)) fail(`racecourse-profile-overrides:${override.id || 'unknown'}: unknown racecourse id`);
+  if (overrideIds.has(override.id)) fail(`racecourse-profile-overrides:${override.id}: duplicate override id`);
+  overrideIds.add(override.id);
+  validateTrack(override);
+}
+
+const overrideById = new Map(overrides.map((override) => [override.id, override]));
+const tracks = baseTracks.map((track) => ({ ...track, ...(overrideById.get(track.id) ?? {}) }));
 
 for (const track of tracks) validateTrack(track);
 
@@ -189,4 +202,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Racecourse profile content model validation passed for ${tracks.length} racecourses.`);
+console.log(`Racecourse profile content model validation passed for ${tracks.length} racecourses and ${overrides.length} overrides.`);

@@ -2,6 +2,7 @@ import countries from '../../data/static/countries.json';
 import countryProfiles from '../../data/static/country-profiles.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
+import racecourseProfileOverrides from '../../data/static/racecourse-profile-overrides.json';
 import sources from '../../data/static/sources.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
@@ -17,7 +18,11 @@ import japanActiveTimetableRecords from '../../data/generated/japan-active-timet
 
 export type Locale = 'en' | 'ja';
 
-const allRacecourses = [...racecourses, ...racecourseExtensions] as const;
+const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
+const allRacecourses = [...racecourses, ...racecourseExtensions].map((racecourse) => ({
+  ...racecourse,
+  ...(racecourseOverrideById.get(racecourse.id) ?? {})
+})) as const;
 
 export type Country = (typeof countries)[number];
 export type CountryProfile = (typeof countryProfiles)[number];
