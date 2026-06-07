@@ -1,73 +1,33 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { siteData } from '../../lib/data';
+import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
+import { getCurrentTimetableDate, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
 
-const timetableData = siteData.generated.timetables;
-const currentTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
-const todayRecords = (timetableData.records ?? []).filter((record) => record.date === currentTimetableDate);
+const currentTimetableDate = getCurrentTimetableDate();
+const todayRecords = getTimetableMeetingRowsForDate(currentTimetableDate);
 ---
 
 <BaseLayout
-  title="今日の安全な開催時刻データ | 競馬どこ？"
-  description="今日の安全な開催時刻レコードと、最終確認用の公式ソースリンクを表示します。"
+  title="今日の開催時刻表 | 競馬どこ？"
+  description="今日の開催一覧を1開催1行で表示し、利用可能な時刻情報、詳細ページ、公式ソースを案内します。"
   lang="ja"
   canonicalPath="/ja/today/"
   alternatePath="/today/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Today</p>
-    <h1 id="page-title">今日の安全な開催時刻データ</h1>
+    <h1 id="page-title">今日の開催時刻表</h1>
     <p class="hero__summary">
-      {currentTimetableDate || '現在のgenerated date'} の安全なgenerated timetable recordsです。
-      最終確認には公式ソースリンクを使用してください。
+      {currentTimetableDate} の開催情報です。表示ランクに応じて時刻情報を出し分けます。
     </p>
   </section>
 
-  <section class="section-grid" aria-label="今日の安全な開催時刻ステータス">
-    <article class="card">
-      <h2>ステータス</h2>
-      <p><strong>Generated date:</strong> {currentTimetableDate || 'not listed'}</p>
-      <p><strong>Matching records:</strong> {todayRecords.length}</p>
-      <p><strong>live fetch:</strong> disabled</p>
-    </article>
-
-    <article class="card">
-      <h2>公式確認</h2>
-      <p>最終確認には公式ソースリンクを使用してください。</p>
-    </article>
-  </section>
-
-  <section class="section-grid" aria-label="今日の安全な開催時刻レコード">
-    <article class="card">
-      <h2>レコード</h2>
-      {todayRecords.length > 0 ? (
-        <ul>
-          {todayRecords.map((record) => (
-            <li>
-              <p><strong>Country:</strong> {record.country_id}</p>
-              <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
-              <p><strong>Date:</strong> {record.date}</p>
-              <p><strong>Start time:</strong> {record.start_time_local}</p>
-              <p><strong>Timezone:</strong> {record.timezone}</p>
-              <p><strong>Racing type:</strong> {record.racing_type}</p>
-              <p>
-                <strong>Official source:</strong>{' '}
-                <a href={record.source_url}>{record.source_id}</a>
-              </p>
-              <p><strong>Last checked:</strong> {record.last_checked_at}</p>
-              <p><strong>Status:</strong> {record.status}</p>
-              <p><strong>Confidence:</strong> {record.confidence}</p>
-              <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div>
-          <p>今日の安全な開催時刻レコードはまだありません。</p>
-          <p>最終確認には公式ソースリンクを使用してください。</p>
-          <p>live fetch: disabled</p>
-        </div>
-      )}
-    </article>
+  <section aria-label="今日の開催一覧">
+    <TimetableMeetingList
+      records={todayRecords}
+      date={currentTimetableDate}
+      lang="ja"
+      emptyLabel="今日の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+    />
   </section>
 </BaseLayout>
