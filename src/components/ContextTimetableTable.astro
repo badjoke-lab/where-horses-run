@@ -1,0 +1,126 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+type Props = {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+  emptyLabel?: string;
+  limit?: number;
+};
+
+const {
+  records,
+  lang = 'en',
+  emptyLabel = lang === 'ja'
+    ? 'この範囲の開催情報はまだありません。公式ソースで最新情報を確認してください。'
+    : 'No meetings are currently listed for this scope. Check the official source for the latest schedule.',
+  limit = 8,
+} = Astro.props;
+
+const primaryRecords = records.slice(0, limit);
+const remainingRecords = records.slice(limit);
+const text = lang === 'ja'
+  ? {
+      date: '日付',
+      racecourse: '競馬場',
+      authority: '主催・体系',
+      rank: '公開ランク',
+      first: '第1レース',
+      last: '最終レース',
+      links: 'リンク',
+      detail: '開催詳細',
+      official: '公式ソース',
+      more: '件をさらに表示',
+      notListed: '未掲載',
+    }
+  : {
+      date: 'Date',
+      racecourse: 'Racecourse',
+      authority: 'Authority / system',
+      rank: 'Public rank',
+      first: 'First race',
+      last: 'Last race',
+      links: 'Links',
+      detail: 'Meeting detail',
+      official: 'Official source',
+      more: 'more meetings',
+      notListed: 'Not listed',
+    };
+
+const displayTime = (value: string | null) => value ?? text.notListed;
+---
+
+{primaryRecords.length > 0 ? (
+  <>
+    <div class="country-table-wrap">
+      <table class="country-table timetable-context-table">
+        <thead>
+          <tr>
+            <th>{text.date}</th>
+            <th>{text.racecourse}</th>
+            <th>{text.authority}</th>
+            <th>{text.rank}</th>
+            <th>{text.first}</th>
+            <th>{text.last}</th>
+            <th>{text.links}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {primaryRecords.map((record) => (
+            <tr>
+              <td data-label={text.date}>{record.date}</td>
+              <td data-label={text.racecourse}>{record.racecourse_name}</td>
+              <td data-label={text.authority}>{record.authority_label}</td>
+              <td data-label={text.rank}>{record.capability_rank}</td>
+              <td data-label={text.first}>{record.capability_rank === 'C' ? text.notListed : displayTime(record.first_race_time_local)}</td>
+              <td data-label={text.last}>{record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+' ? displayTime(record.last_race_time_local) : text.notListed}</td>
+              <td data-label={text.links}>
+                {record.detail_path && <><a href={record.detail_path}>{text.detail}</a>{' · '}</>}
+                <a href={record.official_source_url}>{text.official}</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {remainingRecords.length > 0 && (
+      <details class="country-more">
+        <summary>{lang === 'ja' ? `さらに${remainingRecords.length}${text.more}` : `Show ${remainingRecords.length} ${text.more}`}</summary>
+        <div class="country-table-wrap">
+          <table class="country-table timetable-context-table">
+            <thead>
+              <tr>
+                <th>{text.date}</th>
+                <th>{text.racecourse}</th>
+                <th>{text.authority}</th>
+                <th>{text.rank}</th>
+                <th>{text.first}</th>
+                <th>{text.last}</th>
+                <th>{text.links}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {remainingRecords.map((record) => (
+                <tr>
+                  <td data-label={text.date}>{record.date}</td>
+                  <td data-label={text.racecourse}>{record.racecourse_name}</td>
+                  <td data-label={text.authority}>{record.authority_label}</td>
+                  <td data-label={text.rank}>{record.capability_rank}</td>
+                  <td data-label={text.first}>{record.capability_rank === 'C' ? text.notListed : displayTime(record.first_race_time_local)}</td>
+                  <td data-label={text.last}>{record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+' ? displayTime(record.last_race_time_local) : text.notListed}</td>
+                  <td data-label={text.links}>
+                    {record.detail_path && <><a href={record.detail_path}>{text.detail}</a>{' · '}</>}
+                    <a href={record.official_source_url}>{text.official}</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    )}
+  </>
+) : (
+  <div class="card country-card"><p>{emptyLabel}</p></div>
+)}
