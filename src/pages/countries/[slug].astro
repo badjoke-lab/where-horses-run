@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   getCountries,
   getCountryBySlug,
+  getCountryProfileByCountryId,
   getRacecoursesByCountryId,
   getSourcesByCountryId,
   siteData
@@ -21,26 +22,37 @@ if (!country) {
   return Astro.redirect('/countries/');
 }
 
+const profile = getCountryProfileByCountryId(country.id);
 const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
+const sourcesById = new Map(sources.map((source) => [source.id, source]));
+const sourceLabelById: Record<string, string> = {
+  'japan-jra-home': 'JRA official site',
+  'japan-jairs-racecourses': 'JAIRS / JRA racecourse guide',
+  'japan-nar-home': 'Local Government Racing official site',
+  'japan-nar-racecourse-guide': 'NAR racecourse guide',
+  'japan-banei-home': 'Banei Tokachi official site',
+  'japan-banei-monthly-schedule': 'Banei Tokachi schedule'
+};
+const getSourceLabel = (sourceId: string) =>
+  sourceLabelById[sourceId] ?? sourceId.split('-').map((part) => part.toUpperCase()).join(' ');
+
+const officialSourceGroups = profile?.racing_systems.map((system) => ({
+  ...system,
+  sources: system.source_ids.flatMap((sourceId) => {
+    const source = sourcesById.get(sourceId);
+    return source ? [source] : [];
+  })
+})) ?? [];
+
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
 const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
 const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
-const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
-const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
 const timetableData = siteData.generated.timetables;
 const timetableRecords = (timetableData.records ?? []).filter(
   (record) => (record.country_id ?? timetableData.country_id) === country.id
 );
-const timetableSourceIds = new Set(timetableData.sources ?? []);
-const countryTimetableSources = sources.filter((source) => timetableSourceIds.has(source.id));
-const hasLegacyCountryFallback = timetableData.country_id === country.id;
-const hasCountryTimetableSource = countryTimetableSources.length > 0;
-const hasTimetableFallback = hasLegacyCountryFallback || hasCountryTimetableSource;
-const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
-const timetableSources = countryTimetableSources;
-const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
 const racingInventory = siteData.countryRacingInventory;
 const countryInventory = racingInventory.countries.find((entry) => entry.country_id === country.id);
 const generatedDate = String(timetableData.generated_at ?? '').slice(0, 10);
@@ -54,278 +66,234 @@ const activeWindowRecords = windowStart && windowEnd
       return recordDate >= windowStart && recordDate < windowEnd;
     })
   : [];
+const upcomingMeetings = [...activeWindowRecords].sort((a, b) =>
+  `${a.date ?? ''}-${a.start_time_local ?? ''}`.localeCompare(`${b.date ?? ''}-${b.start_time_local ?? ''}`)
+);
 const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
+const displayedRacingTypes = profile
+  ? profile.racing_types.map((type) => type.name_en).join(', ')
+  : country.racing_types.join(', ');
+const timezoneLabel = profile
+  ? `${profile.typical_schedule.timezone} / ${profile.typical_schedule.utc_offset_label}`
+  : 'Check the racecourse local time';
 ---
 
 <BaseLayout
-  title={`${country.name_en} | Countries | Where Horses Run`}
-  description={country.summary_en}
+  title={`${country.name_en} Horse Racing Calendar & Racecourses | Where Horses Run`}
+  description={profile?.overview_en ?? country.summary_en}
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Country profile</p>
-    <h1 id="page-title">{country.name_en}</h1>
-    <p class="hero__summary">{country.summary_en}</p>
+    <p class="hero__eyebrow">Country racing guide</p>
+    <h1 id="page-title">{country.name_en} Horse Racing Calendar & Racecourses</h1>
+    <p class="hero__summary">{profile?.overview_en ?? country.summary_en}</p>
+    <p>
+      <a href="#upcoming-meetings">Upcoming meetings</a>
+      {' · '}
+      <a href="#racecourses">Racecourses</a>
+      {' · '}
+      <a href="#official-sources">Official sources</a>
+    </p>
   </section>
 
-  <section class="section-grid" aria-label="Country details">
+  <section class="section-grid" aria-label="Country racing quick facts">
     <article class="card">
-      <h2>Coverage</h2>
-      <p><strong>Status:</strong> {country.status}</p>
+      <h2>Quick facts</h2>
       <p><strong>Region:</strong> {country.region}</p>
-      <p><strong>Coverage level:</strong> {country.coverage_level}</p>
-      <p><strong>Auto level:</strong> {country.auto_level}</p>
+      <p><strong>Local name:</strong> {country.name_local}</p>
+      <p><strong>Racing types:</strong> {displayedRacingTypes}</p>
+      <p><strong>Timezone:</strong> {timezoneLabel}</p>
+      <p><strong>Profile reviewed:</strong> {profile?.last_reviewed ?? 'Detailed profile pending'}</p>
     </article>
 
     <article class="card">
-      <h2>Racing types</h2>
-      <p>{country.racing_types.join(', ')}</p>
-    </article>
-
-    <article class="card">
-      <h2>Official-source boundary</h2>
-      <p>Race details, entries, odds, results, and payouts should be confirmed on official or licensed source pages.</p>
+      <h2>How to use this page</h2>
+      <p>Use this page to understand the country's racing systems, season, surfaces, typical meeting times, racecourses, and official information sources.</p>
+      <p>Final meeting dates and post times should always be confirmed on official or licensed source pages.</p>
     </article>
   </section>
 
-  <section class="section-grid" aria-label="Country racing inventory and seed audit">
-    <article class="card">
-      <h2>Racing inventory status</h2>
-      {countryInventory ? (
-        <>
-          <p><strong>Overall coverage status:</strong> {countryInventory.overall_coverage_status}</p>
-          <p><strong>Current seed state:</strong> {countryInventory.current_seed_state}</p>
-          <p><strong>Active 30-day records:</strong> {activeWindowRecords.length}</p>
-          <p><strong>Out-of-window records:</strong> {outOfWindowRecords}</p>
-          <p><strong>Rule:</strong> Initial seed and out-of-window seed data must not be treated as country coverage.</p>
-        </>
-      ) : (
-        <p>No racing inventory entry exists for this country yet. It must not be treated as covered.</p>
-      )}
-    </article>
+  {profile ? (
+    <>
+      <section aria-labelledby="overview-heading">
+        <h2 id="overview-heading">Horse racing in {country.name_en}</h2>
+        <p>{profile.overview_en}</p>
+        <p>{profile.horse_and_format_summary_en}</p>
+      </section>
 
-    <article class="card">
-      <h2>Racing systems</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.racing_systems.map((system) => (
-            <li>
-              <strong>{system.name}</strong> ({system.system_id})
-              <br />
-              <span>Status: {system.coverage_status}</span>
-              <br />
-              <span>Racecourses listed: {system.racecourses.length}</span>
-              <br />
-              <span>{system.coverage_notes}</span>
-            </li>
+      <section aria-labelledby="racing-types-heading">
+        <h2 id="racing-types-heading">What types of horse racing are held here?</h2>
+        <div class="section-grid">
+          {profile.racing_types.map((type) => (
+            <article class="card">
+              <h3>{type.name_en}</h3>
+              <p>{type.summary_en}</p>
+            </article>
           ))}
-        </ul>
-      ) : (
-        <p>No racing systems have been inventoried.</p>
-      )}
-    </article>
+        </div>
+      </section>
 
-    <article class="card">
-      <h2>Inventory racecourses and sources</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.racing_systems.map((system) => (
-            <li>
-              <strong>{system.name}</strong>
-              <br />
-              <span>Official source candidates: {system.official_sources.map((source) => source.label).join(', ')}</span>
-              <br />
-              <span>Racecourses: {system.racecourses.length > 0 ? system.racecourses.map((racecourse) => racecourse.name).join(', ') : 'not inventoried yet'}</span>
-            </li>
+      <section class="section-grid" aria-label="Season, schedule, and surfaces">
+        <article class="card">
+          <h2>Racing season</h2>
+          <p>{profile.seasonality.summary_en}</p>
+        </article>
+
+        <article class="card">
+          <h2>Typical race days and times</h2>
+          <p>{profile.typical_schedule.summary_en}</p>
+          <p><strong>Timezone:</strong> {profile.typical_schedule.timezone} / {profile.typical_schedule.utc_offset_label}</p>
+        </article>
+
+        <article class="card">
+          <h2>Surfaces, tracks, and formats</h2>
+          <p>{profile.surfaces_and_tracks.summary_en}</p>
+        </article>
+      </section>
+
+      <section aria-labelledby="systems-heading">
+        <h2 id="systems-heading">Racing systems and authorities</h2>
+        <div class="section-grid">
+          {profile.racing_systems.map((system) => (
+            <article class="card">
+              <h3>{system.name_en}</h3>
+              <p>{system.summary_en}</p>
+            </article>
           ))}
-        </ul>
-      ) : (
-        <p>No inventory sources are listed.</p>
-      )}
-    </article>
+        </div>
+      </section>
 
-    <article class="card">
-      <h2>Do not claim</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.must_not_claim.map((claim) => <li>{claim}</li>)}
-        </ul>
-      ) : (
-        <p>This country must not be claimed as covered until inventory and coverage checks are added.</p>
-      )}
-    </article>
-  </section>
+      <section class="section-grid" aria-label="Calendar guidance">
+        <article class="card">
+          <h2>How to read this country's racing calendar</h2>
+          <p>{profile.calendar_guidance_en}</p>
+        </article>
 
-  <section class="section-grid" aria-label="Safe timetable data">
-    <article class="card">
-      <h2>Safe timetable data</h2>
-      <p><strong>Country ID:</strong> {country.id}</p>
-      {hasTimetableData ? (
-        <>
-          <p><strong>Timetable status:</strong> {hasTimetableFallback ? timetableModeLabel : 'verified records listed'}</p>
-          <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
-          <p><strong>Verified records:</strong> {timetableRecords.length}</p>
-          <p><strong>Active 30-day records:</strong> {activeWindowRecords.length}</p>
-          <p><strong>Fallback/manual status:</strong> {hasTimetableFallback ? 'manual fallback' : 'none listed'}</p>
-          <p><strong>Last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'not listed for this country'}</p>
-          <p><strong>Live fetching:</strong> disabled</p>
-          <p><strong>Final confirmation:</strong> Use official source links for final confirmation.</p>
-        </>
-      ) : (
-        <>
-          <p><strong>Timetable status:</strong> no timetable records yet</p>
-          <p><strong>Verified records:</strong> 0</p>
-          <p><strong>Fallback/manual status:</strong> none listed</p>
-          <p><strong>Live fetching:</strong> disabled</p>
-          <p>No safe timetable records are listed for this country yet.</p>
-          <p>Use official source links for final confirmation.</p>
-        </>
-      )}
-    </article>
-
-    <article class="card">
-      <h2>Timetable sources and notes</h2>
-      {timetableSources.length > 0 ? (
-        <>
-          <p><strong>Official source:</strong></p>
-          <ul>
-            {timetableSources.map((source) => (
-              <li>
-                {source.url ? <a href={source.url}>{source.id}</a> : <span>{source.id}</span>}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>No timetable-specific source links are listed for this country yet.</p>
-      )}
-      {hasTimetableFallback && timetableData.notes.length > 0 ? (
-        <>
-          <p><strong>Notes:</strong></p>
-          <ul>
-            {timetableData.notes.map((note) => <li>{note}</li>)}
-          </ul>
-        </>
-      ) : (
-        <p><strong>Notes:</strong> Safe timetable display is ready for future verified date and start-time records.</p>
-      )}
-    </article>
-
-    <article class="card">
-      <h2>Verified timetable records</h2>
-      {timetableRecords.length > 0 ? (
-        <ul>
-          {timetableRecords.map((record) => (
-            <li>
-              <strong>{record.racecourse_name ?? record.racecourse_id ?? 'Racecourse pending'}</strong>
-              <br />
-              <span>Date: {record.date ?? 'not listed'} / Start time: {record.start_time_local ?? 'not listed'} / Timezone: {record.timezone ?? 'not listed'}</span>
-              <br />
-              <span>Racing type: {record.racing_type ?? 'not listed'}</span>
-              <br />
-              <span>Source: {record.source_url ? <a href={record.source_url}>{record.source_id}</a> : record.source_id}</span>
-              <br />
-              <span>Last checked: {record.last_checked_at} / Status: {record.status} / Confidence: {record.confidence}</span>
-              {record.notes && (
-                <>
-                  <br />
-                  <span>Notes: {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</span>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Records: no verified timetable records yet.</p>
-      )}
-    </article>
-  </section>
-
-  {hasAlphaCoverage && (
-    <section class="section-grid" aria-label="Alpha timetable coverage">
+        <article class="card">
+          <h2>First-time guide</h2>
+          <p>{profile.beginner_guide_en}</p>
+        </article>
+      </section>
+    </>
+  ) : (
+    <section class="section-grid" aria-label="Basic country profile">
       <article class="card">
-        <h2>Alpha timetable coverage</h2>
-        <p><strong>Mode:</strong> link-first / dry-run</p>
-        <p><strong>Live fetching:</strong> disabled</p>
-        <p><strong>Current scope:</strong> official source routing, generated fallback visibility, FetchStatus display, and UI verification.</p>
-      </article>
-
-      <article class="card">
-        <h2>FetchStatus coverage</h2>
-        {countryFetchStatuses.length > 0 ? (
-          <ul>
-            {countryFetchStatuses.map((status) => (
-              <li>
-                <strong>{status.source_id}</strong>: {status.status} — {status.message}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No FetchStatus entry is listed for this country yet.</p>
-        )}
-      </article>
-
-      <article class="card">
-        <h2>Generated coverage fallback</h2>
-        <p>No live timetable has been fetched for this country yet. Use official source links for confirmation.</p>
-        <p>This page does not republish racecards, entries, odds, results, payouts, or betting tips.</p>
-      </article>
-
-      <article class="card">
-        <h2>Live fetch probe status</h2>
-        {countryLiveFetchProbes.length > 0 ? (
-          <ul>
-            {countryLiveFetchProbes.map((probe) => (
-              <li>
-                <strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}
-                <br />
-                <span>Checked: {probe.checked_at}</span>
-                <br />
-                <span>Final URL: {probe.final_url}</span>
-                <br />
-                <span>Content type: {probe.content_type}</span>
-                <br />
-                <span>Safety: raw_content_saved={String(probe.raw_content_saved)}, body_read={String(probe.body_read)}, generated_files_written={String(probe.generated_files_written)}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No live fetch probe metadata is listed for this country yet.</p>
-        )}
+        <h2>Country overview</h2>
+        <p>{country.summary_en}</p>
+        <p>A detailed country racing profile has not been added yet.</p>
       </article>
     </section>
   )}
 
-  <section class="section-grid" aria-label="Racecourses and sources">
+  <section id="upcoming-meetings" aria-labelledby="upcoming-meetings-heading">
+    <h2 id="upcoming-meetings-heading">Upcoming meetings</h2>
+    <p>One row represents one race meeting. Racecards, entries, odds, results, and payouts are not reproduced here.</p>
+    {upcomingMeetings.length > 0 ? (
+      <div class="section-grid">
+        {upcomingMeetings.map((record) => (
+          <article class="card">
+            <h3>{record.racecourse_name ?? record.racecourse_id ?? 'Racecourse pending'}</h3>
+            <p><strong>Date:</strong> {record.date ?? 'Not listed'}</p>
+            <p><strong>First listed time:</strong> {record.start_time_local ?? 'Confirm on official source'}</p>
+            <p><strong>Timezone:</strong> {record.timezone ?? timezoneLabel}</p>
+            <p><strong>Racing type:</strong> {record.racing_type ?? 'Not listed'}</p>
+            {record.source_url ? <p><a href={record.source_url}>Open official source</a></p> : <p>Official source link pending.</p>}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="card">
+        <p>No active-window meeting records are currently listed for this country.</p>
+        <p>Use the official source links below to confirm the latest schedule.</p>
+      </div>
+    )}
+  </section>
+
+  <section id="racecourses" aria-labelledby="racecourses-heading">
+    <h2 id="racecourses-heading">Main racecourses</h2>
+    <p>The list below links to racecourse profiles currently available in Where Horses Run.</p>
+    {racecourses.length > 0 ? (
+      <div class="section-grid">
+        {racecourses.map((racecourse) => (
+          <article class="card">
+            <h3><a href={`/racecourses/${racecourse.slug}/`}>{racecourse.name_en}</a></h3>
+            <p>{racecourse.city}</p>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p>No racecourse profiles are listed yet.</p>
+    )}
+  </section>
+
+  <section id="official-sources" aria-labelledby="official-sources-heading">
+    <h2 id="official-sources-heading">Official sources</h2>
+    <p>Use these official landing pages for final confirmation. Where Horses Run does not replace official calendars or racecards.</p>
+    {officialSourceGroups.length > 0 ? (
+      <div class="section-grid">
+        {officialSourceGroups.map((group) => (
+          <article class="card">
+            <h3>{group.name_en}</h3>
+            <ul>
+              {group.sources.map((source) => (
+                <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    ) : sources.length > 0 ? (
+      <ul>
+        {sources.map((source) => <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>)}
+      </ul>
+    ) : (
+      <p>No official source entries are listed yet.</p>
+    )}
+  </section>
+
+  <section class="section-grid" aria-label="Coverage and publication limits">
     <article class="card">
-      <h2>Racecourses</h2>
-      {racecourses.length > 0 ? (
-        <ul>
-          {racecourses.map((racecourse) => <li>{racecourse.name_en} — {racecourse.city}</li>)}
-        </ul>
-      ) : (
-        <p>No racecourse entries are listed yet.</p>
-      )}
+      <h2>Coverage and limitations</h2>
+      <p>{profile?.coverage_note_en ?? 'This page is a guide to available official sources and may not cover every meeting.'}</p>
     </article>
 
     <article class="card">
-      <h2>Official sources</h2>
-      {sources.length > 0 ? (
-        <ul>
-          {sources.map((source) => (
-            <li>
-              <a href={source.url}>{source.id}</a>
-              <br />
-              <span>{source.data_type} / Auto {source.auto_level}</span>
-              <br />
-              <span>{source.notes}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No source entries are listed yet.</p>
-      )}
+      <h2>Not published here</h2>
+      <p>Entries, horse names, jockey names, trainers, draw, weights, odds, popularity, predictions, betting tips, results, and payouts are not published on this country page.</p>
     </article>
   </section>
+
+  <details>
+    <summary>Technical coverage details</summary>
+    <section class="section-grid" aria-label="Technical coverage details">
+      <article class="card">
+        <h2>Dataset status</h2>
+        <p><strong>Country status:</strong> {country.status}</p>
+        <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+        <p><strong>Automation level:</strong> {country.auto_level}</p>
+        <p><strong>Active 30-day records:</strong> {activeWindowRecords.length}</p>
+        <p><strong>Out-of-window records:</strong> {outOfWindowRecords}</p>
+        {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
+      </article>
+
+      <article class="card">
+        <h2>Fetch status</h2>
+        {countryFetchStatuses.length > 0 ? (
+          <ul>{countryFetchStatuses.map((status) => <li><strong>{status.source_id}</strong>: {status.status} — {status.message}</li>)}</ul>
+        ) : (
+          <p>No fetch status entries are listed.</p>
+        )}
+      </article>
+
+      <article class="card">
+        <h2>Probe status</h2>
+        {countryLiveFetchProbes.length > 0 ? (
+          <ul>{countryLiveFetchProbes.map((probe) => <li><strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}</li>)}</ul>
+        ) : (
+          <p>No live fetch probe metadata is listed.</p>
+        )}
+      </article>
+    </section>
+  </details>
 
   <p><a href="/countries/">Back to countries</a></p>
 </BaseLayout>
