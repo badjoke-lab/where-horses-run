@@ -5,15 +5,20 @@ type Props =
   | {
       groups: TimetableMeetingDayGroup[];
       emptyLabel?: string;
+      lang?: 'en' | 'ja';
     }
   | {
       records: TimetableMeetingRow[];
       date?: string;
       emptyLabel?: string;
+      lang?: 'en' | 'ja';
     };
 
 const props = Astro.props as Props;
-const emptyLabel = props.emptyLabel ?? 'No meetings are listed yet. Use official source links for final confirmation.';
+const lang = props.lang ?? 'en';
+const emptyLabel = props.emptyLabel ?? (lang === 'ja'
+  ? '開催情報はまだありません。最終確認には公式ソースを使用してください。'
+  : 'No meetings are listed yet. Use official source links for final confirmation.');
 const groups: TimetableMeetingDayGroup[] = 'groups' in props
   ? props.groups
   : [
@@ -24,7 +29,15 @@ const groups: TimetableMeetingDayGroup[] = 'groups' in props
     ].filter((group) => group.records.length > 0);
 
 const displayTime = (value: string | null) => value ?? '—';
-const detailLabel = (record: TimetableMeetingRow) => record.can_view_race_timetable ? 'View race timetable' : 'Detail';
+const detailLabel = (record: TimetableMeetingRow) => {
+  if (lang === 'ja') {
+    return record.can_view_race_timetable ? 'レース時刻表を見る' : '詳細';
+  }
+  return record.can_view_race_timetable ? 'View race timetable' : 'Detail';
+};
+const officialSourceLabel = lang === 'ja' ? '公式ソース' : 'Official source';
+const firstLabel = lang === 'ja' ? '第1レース' : 'First';
+const lastLabel = lang === 'ja' ? '最終レース' : 'Last';
 ---
 
 {groups.length > 0 ? (
@@ -39,12 +52,14 @@ const detailLabel = (record: TimetableMeetingRow) => record.can_view_race_timeta
               <span>{record.authority_label}</span>
               <span>{record.country_label}</span>
               <span>Rank {record.capability_rank}</span>
-              {record.capability_rank !== 'C' && <span>First: {displayTime(record.first_race_time_local)}</span>}
-              {(record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+') && (
-                <span>Last: {displayTime(record.last_race_time_local)}</span>
+              {record.capability_rank !== 'C' && (
+                <span>{firstLabel}: {displayTime(record.first_race_time_local)}</span>
               )}
-              <a href={record.detail_path}>{detailLabel(record)}</a>
-              <a href={record.official_source_url}>Official source</a>
+              {(record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+') && (
+                <span>{lastLabel}: {displayTime(record.last_race_time_local)}</span>
+              )}
+              {record.detail_path && <a href={record.detail_path}>{detailLabel(record)}</a>}
+              <a href={record.official_source_url}>{officialSourceLabel}</a>
             </li>
           ))}
         </ul>
