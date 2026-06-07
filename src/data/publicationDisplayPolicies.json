@@ -1,0 +1,101 @@
+{
+  "schema_version": "publication-display-policies-v0",
+  "default_policy": {
+    "id": "default-conservative-c",
+    "priority": 0,
+    "match": {},
+    "max_public_rank": "C",
+    "include_in_public_list": true,
+    "a_plus_fields": {
+      "show_race_name": false,
+      "show_distance": false,
+      "show_surface": false,
+      "show_course": false
+    },
+    "show_live_label": false,
+    "show_replay_label": false,
+    "notes": "Unknown or unreviewed source families remain limited to meeting-level C until an explicit reviewed policy is added."
+  },
+  "policies": [
+    {
+      "id": "hkjc-reviewed-a-plus",
+      "priority": 500,
+      "match": { "authority_ids": ["hkjc"] },
+      "max_public_rank": "A+",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "HKJC A+ capability is initially published as A+ to test programme-summary display and later policy switching."
+    },
+    {
+      "id": "jra-reviewed-a-plus",
+      "priority": 500,
+      "match": { "authority_ids": ["jra"] },
+      "max_public_rank": "A+",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "JRA may publish up to A+ when A+ canonical data becomes available; current lower-capability records remain lower automatically."
+    },
+    {
+      "id": "nar-reviewed-a-plus",
+      "priority": 400,
+      "match": { "authority_ids": ["nar-local-government-racing"] },
+      "max_public_rank": "A+",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "NAR may publish up to A+ when valid A+ canonical data exists."
+    },
+    {
+      "id": "banei-reviewed-a-plus",
+      "priority": 400,
+      "match": { "authority_ids": ["banei-tokachi"] },
+      "max_public_rank": "A+",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "Banei may publish up to A+ for display and switching tests."
+    },
+    {
+      "id": "uae-reviewed-a-plus",
+      "priority": 400,
+      "match": { "authority_ids": ["emirates-racing-authority"] },
+      "max_public_rank": "A+",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "UAE may publish up to A+ when A+ canonical data becomes available."
+    }
+  ]
+}
