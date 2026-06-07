@@ -1,0 +1,53 @@
+{
+  "schema_version": "timetable-rank-fixes-audit-v0",
+  "last_checked": "2026-06-07",
+  "roadmap_item": "PR-2 rank consistency repair",
+  "purpose": "Record rank repairs needed before canonical conversion and public view generation.",
+  "rank_rules": {
+    "C": "meeting date and racecourse only; race times may be null",
+    "B": "requires first_race_time_local",
+    "B+": "requires first_race_time_local and last_race_time_local",
+    "A": "requires race-by-race detail rows in a detail source, plus first and last summary times when used in normalized summaries",
+    "A+": "requires A fields plus allowed programme summary fields such as race_name, distance, surface, and course_label"
+  },
+  "repairs": [
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+      "file": "data/generated/normalized-timetable.json",
+      "before_rank": "B",
+      "after_rank": "C",
+      "reason": "first_race_time_local is null, so this is meeting-date coverage only."
+    },
+    {
+      "meeting_id": "nar-obihiro-racecourse-2026-06-06",
+      "file": "data/generated/normalized-timetable.json",
+      "before_rank": "B",
+      "after_rank": "C",
+      "reason": "first_race_time_local is null, so this is meeting-date coverage only."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
+      "file": "data/generated/normalized-timetable.json",
+      "before_rank": "B+",
+      "after_rank": "C",
+      "reason": "first_race_time_local and last_race_time_local are null in the normalized summary record. HKJC detail rows exist in a separate transitional sample, but this summary record itself cannot be B+."
+    }
+  ],
+  "kept_as_is": [
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+      "file": "data/generated/normalized-timetable.json",
+      "rank": "A",
+      "reason": "summary first/last times are present, and a transitional public-safe detail module stores race-by-race post times. This still needs canonical/public detail conversion later."
+    }
+  ],
+  "not_done_in_this_pr": [
+    "canonical_conversion",
+    "public_view_generation",
+    "page_input_migration",
+    "source_fetching",
+    "new_source_coverage",
+    "legacy_input_isolation"
+  ],
+  "next_roadmap_item": "PR-3 canonical timetable model"
+}
