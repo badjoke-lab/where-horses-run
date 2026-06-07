@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import {
   getCountries,
   getCountryBySlug,
+  getCountryProfileByCountryId,
   getRacecoursesByCountryId,
   getSourcesByCountryId,
   siteData
@@ -19,26 +20,37 @@ if (!country) {
   return Astro.redirect('/ja/countries/');
 }
 
+const profile = getCountryProfileByCountryId(country.id);
 const racecourses = getRacecoursesByCountryId(country.id);
 const sources = getSourcesByCountryId(country.id);
+const sourcesById = new Map(sources.map((source) => [source.id, source]));
+const sourceLabelById: Record<string, string> = {
+  'japan-jra-home': 'JRA公式サイト',
+  'japan-jairs-racecourses': 'JAIRS / JRA競馬場ガイド',
+  'japan-nar-home': '地方競馬情報サイト',
+  'japan-nar-racecourse-guide': '地方競馬場ガイド',
+  'japan-banei-home': 'ばんえい十勝公式サイト',
+  'japan-banei-monthly-schedule': 'ばんえい十勝開催日程'
+};
+const getSourceLabel = (sourceId: string) =>
+  sourceLabelById[sourceId] ?? sourceId.split('-').map((part) => part.toUpperCase()).join(' ');
+
+const officialSourceGroups = profile?.racing_systems.map((system) => ({
+  ...system,
+  sources: system.source_ids.flatMap((sourceId) => {
+    const source = sourcesById.get(sourceId);
+    return source ? [source] : [];
+  })
+})) ?? [];
+
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
 const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
 const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
-const alphaSources = sources.filter((source) => source.m3_status === 'alpha_link_first');
-const hasAlphaCoverage = alphaSources.length > 0 || countryFetchStatuses.length > 0;
 const timetableData = siteData.generated.timetables;
 const timetableRecords = (timetableData.records ?? []).filter(
   (record) => (record.country_id ?? timetableData.country_id) === country.id
 );
-const timetableSourceIds = new Set(timetableData.sources ?? []);
-const countryTimetableSources = sources.filter((source) => timetableSourceIds.has(source.id));
-const hasLegacyCountryFallback = timetableData.country_id === country.id;
-const hasCountryTimetableSource = countryTimetableSources.length > 0;
-const hasTimetableFallback = hasLegacyCountryFallback || hasCountryTimetableSource;
-const hasTimetableData = hasTimetableFallback || timetableRecords.length > 0;
-const timetableSources = countryTimetableSources;
-const timetableModeLabel = timetableData.mode.replace(/-/g, ' ');
 const racingInventory = siteData.countryRacingInventory;
 const countryInventory = racingInventory.countries.find((entry) => entry.country_id === country.id);
 const generatedDate = String(timetableData.generated_at ?? '').slice(0, 10);
@@ -52,274 +64,235 @@ const activeWindowRecords = windowStart && windowEnd
       return recordDate >= windowStart && recordDate < windowEnd;
     })
   : [];
+const upcomingMeetings = [...activeWindowRecords].sort((a, b) =>
+  `${a.date ?? ''}-${a.start_time_local ?? ''}`.localeCompare(`${b.date ?? ''}-${b.start_time_local ?? ''}`)
+);
 const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
+const displayedRacingTypes = profile
+  ? profile.racing_types.map((type) => type.name_ja).join('、')
+  : country.racing_types.join('、');
+const timezoneLabel = profile
+  ? `${profile.typical_schedule.timezone} / ${profile.typical_schedule.utc_offset_label}`
+  : '競馬場の現地時刻を確認';
 ---
 
-<BaseLayout title={`${country.name_ja} | 競馬どこ？`} description={country.summary_ja} lang="ja">
+<BaseLayout
+  title={`${country.name_ja}の競馬カレンダー・競馬場ガイド | 競馬どこ？`}
+  description={profile?.overview_ja ?? country.summary_ja}
+  lang="ja"
+>
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Country profile</p>
-    <h1 id="page-title">{country.name_ja}</h1>
-    <p class="hero__summary">{country.summary_ja}</p>
+    <p class="hero__eyebrow">国別競馬ガイド</p>
+    <h1 id="page-title">{country.name_ja}の競馬カレンダー・競馬場ガイド</h1>
+    <p class="hero__summary">{profile?.overview_ja ?? country.summary_ja}</p>
+    <p>
+      <a href="#upcoming-meetings">近日開催</a>
+      {' · '}
+      <a href="#racecourses">競馬場</a>
+      {' · '}
+      <a href="#official-sources">公式ソース</a>
+    </p>
   </section>
 
-  <section class="section-grid" aria-label="profile">
+  <section class="section-grid" aria-label="国別基本情報">
     <article class="card">
-      <h2>Profile</h2>
-      <p><strong>Region:</strong> {country.region}</p>
-      <p><strong>Status:</strong> {country.status}</p>
-      <p><strong>Coverage:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
+      <h2>基本情報</h2>
+      <p><strong>地域:</strong> {country.region}</p>
+      <p><strong>現地名:</strong> {country.name_local}</p>
+      <p><strong>主な競馬種別:</strong> {displayedRacingTypes}</p>
+      <p><strong>タイムゾーン:</strong> {timezoneLabel}</p>
+      <p><strong>プロフィール確認日:</strong> {profile?.last_reviewed ?? '詳細プロフィール未整備'}</p>
     </article>
 
     <article class="card">
-      <h2>Racing types</h2>
-      <p>{country.racing_types.join(', ')}</p>
-    </article>
-
-    <article class="card">
-      <h2>公式ソース確認</h2>
-      <p>開催詳細、出走表、オッズ、結果、払戻は公式または許諾済みソースで確認してください。</p>
+      <h2>このページの使い方</h2>
+      <p>この国の競馬体系、開催シーズン、馬場、開催曜日・時間帯、競馬場、公式情報の確認先を把握するためのページです。</p>
+      <p>最終的な開催日と発走時刻は、必ず公式または正規の提供元で確認してください。</p>
     </article>
   </section>
 
-  <section class="section-grid" aria-label="競馬体系とseed監査">
-    <article class="card">
-      <h2>競馬体系の棚卸し状態</h2>
-      {countryInventory ? (
-        <>
-          <p><strong>全体coverage状態:</strong> {countryInventory.overall_coverage_status}</p>
-          <p><strong>現在のseed状態:</strong> {countryInventory.current_seed_state}</p>
-          <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
-          <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
-          <p><strong>ルール:</strong> must not claim: initial seed や out-of-window seed は、その国のcoverageとして扱いません。</p>
-        </>
-      ) : (
-        <p>この国の競馬体系inventoryはまだありません。coverage済みとして扱えません。</p>
-      )}
-    </article>
+  {profile ? (
+    <>
+      <section aria-labelledby="overview-heading">
+        <h2 id="overview-heading">{country.name_ja}の競馬について</h2>
+        <p>{profile.overview_ja}</p>
+        <p>{profile.horse_and_format_summary_ja}</p>
+      </section>
 
-    <article class="card">
-      <h2>競馬体系</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.racing_systems.map((system) => (
-            <li>
-              <strong>{system.name}</strong> ({system.system_id})
-              <br />
-              <span>状態: {system.coverage_status}</span>
-              <br />
-              <span>競馬場数: {system.racecourses.length}</span>
-              <br />
-              <span>{system.coverage_notes}</span>
-            </li>
+      <section aria-labelledby="racing-types-heading">
+        <h2 id="racing-types-heading">この国で行われている競馬種別</h2>
+        <div class="section-grid">
+          {profile.racing_types.map((type) => (
+            <article class="card">
+              <h3>{type.name_ja}</h3>
+              <p>{type.summary_ja}</p>
+            </article>
           ))}
-        </ul>
-      ) : (
-        <p>競馬体系はまだ棚卸しされていません。</p>
-      )}
-    </article>
+        </div>
+      </section>
 
-    <article class="card">
-      <h2>棚卸し済み競馬場と公式source候補</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.racing_systems.map((system) => (
-            <li>
-              <strong>{system.name}</strong>
-              <br />
-              <span>公式source候補: {system.official_sources.map((source) => source.label).join(', ')}</span>
-              <br />
-              <span>競馬場: {system.racecourses.length > 0 ? system.racecourses.map((racecourse) => racecourse.name).join(', ') : '未棚卸し'}</span>
-            </li>
+      <section class="section-grid" aria-label="開催シーズンと馬場">
+        <article class="card">
+          <h2>開催シーズン</h2>
+          <p>{profile.seasonality.summary_ja}</p>
+        </article>
+
+        <article class="card">
+          <h2>開催曜日・時間帯の傾向</h2>
+          <p>{profile.typical_schedule.summary_ja}</p>
+          <p><strong>タイムゾーン:</strong> {profile.typical_schedule.timezone} / {profile.typical_schedule.utc_offset_label}</p>
+        </article>
+
+        <article class="card">
+          <h2>馬場・コース・競走形式</h2>
+          <p>{profile.surfaces_and_tracks.summary_ja}</p>
+        </article>
+      </section>
+
+      <section aria-labelledby="systems-heading">
+        <h2 id="systems-heading">競馬体系と主催区分</h2>
+        <div class="section-grid">
+          {profile.racing_systems.map((system) => (
+            <article class="card">
+              <h3>{system.name_ja}</h3>
+              <p>{system.summary_ja}</p>
+            </article>
           ))}
-        </ul>
-      ) : (
-        <p>棚卸しsourceはありません。</p>
-      )}
-    </article>
+        </div>
+      </section>
 
-    <article class="card">
-      <h2>禁止claim</h2>
-      {countryInventory ? (
-        <ul>
-          {countryInventory.must_not_claim.map((claim) => <li>{claim}</li>)}
-        </ul>
-      ) : (
-        <p>inventoryとcoverage checkが入るまで、この国をcoverage済みとして扱えません。</p>
-      )}
-    </article>
-  </section>
+      <section class="section-grid" aria-label="カレンダーの見方">
+        <article class="card">
+          <h2>この国の競馬カレンダーの見方</h2>
+          <p>{profile.calendar_guidance_ja}</p>
+        </article>
 
-  <section class="section-grid" aria-label="安全な開催時刻データ">
-    <article class="card">
-      <h2>安全な開催時刻データ</h2>
-      <p><strong>country_id:</strong> {country.id}</p>
-      {hasTimetableData ? (
-        <>
-          <p><strong>状態:</strong> {hasTimetableFallback ? timetableModeLabel : '確認済みレコードあり'}</p>
-          <p><strong>Mode:</strong> {hasTimetableFallback ? timetableModeLabel : 'record data'}</p>
-          <p><strong>確認済みレコード:</strong> {timetableRecords.length}</p>
-          <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
-          <p><strong>手動fallback:</strong> {hasTimetableFallback ? '手動fallback' : 'なし'}</p>
-          <p><strong>last generated:</strong> {hasTimetableFallback ? timetableData.generated_at : 'この国では未掲載'}</p>
-          <p><strong>live fetch:</strong> disabled</p>
-          <p><strong>最終確認:</strong> 公式ソースリンクで最終確認してください。</p>
-        </>
-      ) : (
-        <>
-          <p><strong>状態:</strong> timetable recordsなし</p>
-          <p><strong>確認済みレコード:</strong> 0</p>
-          <p><strong>手動fallback:</strong> なし</p>
-          <p><strong>live fetch:</strong> disabled</p>
-          <p>この国の安全な開催時刻レコードはまだありません。</p>
-          <p>最終確認には公式ソースリンクを使用してください。</p>
-        </>
-      )}
-    </article>
-
-    <article class="card">
-      <h2>公式ソースとnotes</h2>
-      {timetableSources.length > 0 ? (
-        <>
-          <p><strong>公式ソース:</strong></p>
-          <ul>
-            {timetableSources.map((source) => (
-              <li>
-                {source.url ? <a href={source.url}>{source.id}</a> : <span>{source.id}</span>}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>この国のtimetable専用ソースリンクはまだありません。</p>
-      )}
-      {hasTimetableFallback && timetableData.notes.length > 0 ? (
-        <>
-          <p><strong>notes:</strong></p>
-          <ul>
-            {timetableData.notes.map((note) => <li>{note}</li>)}
-          </ul>
-        </>
-      ) : (
-        <p><strong>notes:</strong> 将来の確認済み開催日・発走時刻レコードを表示できる安全な構造です。</p>
-      )}
-    </article>
-
-    <article class="card">
-      <h2>確認済みtimetable records</h2>
-      {timetableRecords.length > 0 ? (
-        <ul>
-          {timetableRecords.map((record) => (
-            <li>
-              <strong>{record.racecourse_name ?? record.racecourse_id ?? 'Racecourse pending'}</strong>
-              <br />
-              <span>date: {record.date ?? '未掲載'} / start_time_local: {record.start_time_local ?? '未掲載'} / timezone: {record.timezone ?? '未掲載'}</span>
-              <br />
-              <span>racing_type: {record.racing_type ?? '未掲載'}</span>
-              <br />
-              <span>source_url: {record.source_url ? <a href={record.source_url}>{record.source_id}</a> : record.source_id}</span>
-              <br />
-              <span>last_checked_at: {record.last_checked_at} / status: {record.status} / confidence: {record.confidence}</span>
-              {record.notes && (
-                <>
-                  <br />
-                  <span>notes: {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</span>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Records: 確認済みtimetable recordsはまだありません。</p>
-      )}
-    </article>
-  </section>
-
-  {hasAlphaCoverage && (
-    <section class="section-grid" aria-label="alpha timetable coverage">
+        <article class="card">
+          <h2>初めて調べる場合</h2>
+          <p>{profile.beginner_guide_ja}</p>
+        </article>
+      </section>
+    </>
+  ) : (
+    <section class="section-grid" aria-label="国別概要">
       <article class="card">
-        <h2>Alpha timetable coverage</h2>
-        <p><strong>Mode:</strong> link-first / dry-run</p>
-        <p><strong>Live fetching:</strong> disabled</p>
-        <p><strong>Current scope:</strong> 公式ソース案内、generated fallback表示、FetchStatus表示、UI確認。</p>
-      </article>
-
-      <article class="card">
-        <h2>FetchStatus coverage</h2>
-        {countryFetchStatuses.length > 0 ? (
-          <ul>
-            {countryFetchStatuses.map((status) => (
-              <li>
-                <strong>{status.source_id}</strong>: {status.status} — {status.message}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>この国のFetchStatusはまだありません。</p>
-        )}
-      </article>
-
-      <article class="card">
-        <h2>Generated coverage fallback</h2>
-        <p>この国では、まだlive timetableを取得していません。最終確認には公式ソースを使用してください。</p>
-        <p>このページでは出走表、オッズ、結果、払戻、予想情報を再掲載しません。</p>
-      </article>
-
-      <article class="card">
-        <h2>Live fetch probe status</h2>
-        {countryLiveFetchProbes.length > 0 ? (
-          <ul>
-            {countryLiveFetchProbes.map((probe) => (
-              <li>
-                <strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}
-                <br />
-                <span>Checked: {probe.checked_at}</span>
-                <br />
-                <span>Final URL: {probe.final_url}</span>
-                <br />
-                <span>Content type: {probe.content_type}</span>
-                <br />
-                <span>Safety: raw_content_saved={String(probe.raw_content_saved)}, body_read={String(probe.body_read)}, generated_files_written={String(probe.generated_files_written)}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>この国のlive fetch probeメタデータはまだありません。</p>
-        )}
+        <h2>国別概要</h2>
+        <p>{country.summary_ja}</p>
+        <p>この国の詳しい競馬プロフィールはまだ追加されていません。</p>
       </article>
     </section>
   )}
 
-  <section class="section-grid" aria-label="racecourses and sources">
+  <section id="upcoming-meetings" aria-labelledby="upcoming-meetings-heading">
+    <h2 id="upcoming-meetings-heading">近日開催</h2>
+    <p>1行・1カードにつき1開催を表示します。出走表、馬名、騎手、オッズ、結果、払戻はここでは再掲載しません。</p>
+    {upcomingMeetings.length > 0 ? (
+      <div class="section-grid">
+        {upcomingMeetings.map((record) => (
+          <article class="card">
+            <h3>{record.racecourse_name ?? record.racecourse_id ?? '競馬場未確定'}</h3>
+            <p><strong>日付:</strong> {record.date ?? '未掲載'}</p>
+            <p><strong>掲載済み開始時刻:</strong> {record.start_time_local ?? '公式ソースで確認'}</p>
+            <p><strong>タイムゾーン:</strong> {record.timezone ?? timezoneLabel}</p>
+            <p><strong>競馬種別:</strong> {record.racing_type ?? '未掲載'}</p>
+            {record.source_url ? <p><a href={record.source_url}>公式ソースを開く</a></p> : <p>公式ソースリンク未掲載。</p>}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="card">
+        <p>現在の掲載対象期間内に、確認済みの開催レコードはありません。</p>
+        <p>最新日程は、下記の公式ソースで確認してください。</p>
+      </div>
+    )}
+  </section>
+
+  <section id="racecourses" aria-labelledby="racecourses-heading">
+    <h2 id="racecourses-heading">主な競馬場</h2>
+    <p>Where Horses Runで現在利用できる競馬場プロフィールへのリンクです。</p>
+    {racecourses.length > 0 ? (
+      <div class="section-grid">
+        {racecourses.map((racecourse) => (
+          <article class="card">
+            <h3><a href={`/ja/racecourses/${racecourse.slug}/`}>{racecourse.name_ja ?? racecourse.name_en}</a></h3>
+            <p>{racecourse.city}</p>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p>競馬場プロフィールはまだありません。</p>
+    )}
+  </section>
+
+  <section id="official-sources" aria-labelledby="official-sources-heading">
+    <h2 id="official-sources-heading">公式ソース</h2>
+    <p>最終確認には、以下の公式案内ページを使用してください。競馬どこ？は公式カレンダーやレースカードの代替ではありません。</p>
+    {officialSourceGroups.length > 0 ? (
+      <div class="section-grid">
+        {officialSourceGroups.map((group) => (
+          <article class="card">
+            <h3>{group.name_ja}</h3>
+            <ul>
+              {group.sources.map((source) => (
+                <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    ) : sources.length > 0 ? (
+      <ul>
+        {sources.map((source) => <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>)}
+      </ul>
+    ) : (
+      <p>公式ソースはまだ登録されていません。</p>
+    )}
+  </section>
+
+  <section class="section-grid" aria-label="掲載範囲と非掲載情報">
     <article class="card">
-      <h2>Racecourses</h2>
-      {racecourses.length > 0 ? (
-        <ul>
-          {racecourses.map((racecourse) => <li>{racecourse.name_ja} — {racecourse.city}</li>)}
-        </ul>
-      ) : (
-        <p>競馬場データはまだありません。</p>
-      )}
+      <h2>掲載範囲と注意点</h2>
+      <p>{profile?.coverage_note_ja ?? 'このページは公式ソースを探すための案内であり、すべての開催を網羅しているとは限りません。'}</p>
     </article>
 
     <article class="card">
-      <h2>Official sources</h2>
-      {sources.length > 0 ? (
-        <ul>
-          {sources.map((source) => (
-            <li>
-              <a href={source.url}>{source.id}</a>
-              <br />
-              <span>{source.data_type} / Auto {source.auto_level}</span>
-              <br />
-              <span>{source.notes}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>公式ソースデータはまだありません。</p>
-      )}
+      <h2>このページで扱わない情報</h2>
+      <p>出走馬、馬名、騎手、調教師、枠順、斤量、オッズ、人気、予想、買い目、結果、払戻は、この国別ページでは掲載しません。</p>
     </article>
   </section>
 
-  <p><a href="/ja/countries/">Back</a></p>
+  <details>
+    <summary>技術的な掲載状況</summary>
+    <section class="section-grid" aria-label="技術的な掲載状況">
+      <article class="card">
+        <h2>データセット状態</h2>
+        <p><strong>国status:</strong> {country.status}</p>
+        <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+        <p><strong>Automation level:</strong> {country.auto_level}</p>
+        <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
+        <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
+        {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
+      </article>
+
+      <article class="card">
+        <h2>Fetch status</h2>
+        {countryFetchStatuses.length > 0 ? (
+          <ul>{countryFetchStatuses.map((status) => <li><strong>{status.source_id}</strong>: {status.status} — {status.message}</li>)}</ul>
+        ) : (
+          <p>Fetch statusはまだありません。</p>
+        )}
+      </article>
+
+      <article class="card">
+        <h2>Probe status</h2>
+        {countryLiveFetchProbes.length > 0 ? (
+          <ul>{countryLiveFetchProbes.map((probe) => <li><strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}</li>)}</ul>
+        ) : (
+          <p>Live fetch probe metadataはまだありません。</p>
+        )}
+      </article>
+    </section>
+  </details>
+
+  <p><a href="/ja/countries/">国一覧へ戻る</a></p>
 </BaseLayout>
