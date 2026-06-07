@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContextTimetableTable from '../../../components/ContextTimetableTable.astro';
 import {
   getCountries,
   getGlossaryEntries,
@@ -8,6 +9,7 @@ import {
   siteData
 } from '../../../lib/data';
 import { getRacingTypeById } from '../../../lib/racingTypes';
+import { getTimetableMeetingRowsByRacecourse } from '../../../data/timetableMeetingRows';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -15,89 +17,39 @@ export function getStaticPaths() {
 
 const { slug } = Astro.params;
 const track = getRacecourseBySlug(slug ?? '');
+if (!track) return Astro.redirect('/ja/tracks/');
 
-if (!track) {
-  return Astro.redirect('/ja/tracks/');
-}
-
-const countries = getCountries();
-const country = countries.find((entry) => entry.id === track.country_id);
+const country = getCountries().find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/ja/countries/${country.slug}/` : '/ja/countries/';
 const countrySourceHref = country ? `/ja/sources/${country.slug}/` : '/ja/sources/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+const publicMeetings = getTimetableMeetingRowsByRacecourse(track.id);
+const officialLinks = track.official_links ?? [];
+const relatedTerms = track.related_terms ?? [];
+const relatedSources = track.related_sources ?? [];
 
 const formatValue = (value: unknown) => {
   if (value === null || value === undefined || value === '') return '未確認';
-  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '未確認';
+  if (Array.isArray(value)) return value.length ? value.join('、') : '未確認';
   return String(value);
-};
-
-const toRecord = (value: unknown): Record<string, unknown> => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
-  return value as Record<string, unknown>;
-};
-
-const firstValue = (record: unknown, keys: string[]) => {
-  const row = toRecord(record);
-  for (const key of keys) {
-    if (row[key] !== null && row[key] !== undefined && row[key] !== '') return row[key];
-  }
-  return null;
-};
-
-const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) => {
-  const parts = fields
-    .map(([label, keys]) => {
-      const value = firstValue(record, keys);
-      return value === null ? null : `${label}: ${String(value)}`;
-    })
-    .filter(Boolean);
-  return parts.length ? parts.join(' ・ ') : '詳細は整形待ちです。';
 };
 
 const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
   if (!band) return '未確認';
   const range = band.min_m && band.max_m ? `${band.min_m}m〜${band.max_m}m` : '距離範囲未確認';
-  const known = band.known_distances_m && band.known_distances_m.length > 0
-    ? `確認済み距離: ${band.known_distances_m.map((distance) => `${distance}m`).join(', ')}`
-    : '確認済み距離: 未確認';
-  return `${range}。${known}`;
+  const known = band.known_distances_m?.length ? band.known_distances_m.map((distance) => `${distance}m`).join('、') : '未確認';
+  return `${range}。確認済み距離: ${known}`;
 };
 
-const officialLinks = track.official_links ?? [];
-const relatedTerms = track.related_terms ?? [];
-const relatedSources = track.related_sources ?? [];
-const meetingFields: Array<[string, string[]]> = [
-  ['日付', ['date', 'local_date', 'meeting_date']],
-  ['1R', ['first_post', 'first_race_time', 'first_race']],
-  ['最終', ['last_race_time', 'last_race']],
-  ['レース数', ['race_count', 'races']],
-  ['状態', ['status']]
-];
-const raceConditionFields: Array<[string, string[]]> = [
-  ['日付', ['date', 'local_date']],
-  ['R', ['race_number', 'race_no', 'race']],
-  ['時刻', ['post_time', 'start_time', 'time']],
-  ['馬場', ['surface']],
-  ['距離', ['distance', 'distance_m']],
-  ['種別', ['race_type', 'type']]
-];
-const notableRaceFields: Array<[string, string[]]> = [
-  ['名称', ['name_ja', 'name', 'race_name']],
-  ['時期', ['season', 'month']],
-  ['ソース', ['official_link', 'source_url', 'url']]
-];
+const notableRaceName = (race: any) => race.name_ja ?? race.name_en ?? race.name ?? race.race_name ?? 'レース名未確認';
 ---
 
-<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の開催予定状況、コース特徴、公式リンク、関連用語をまとめた競馬場ページです。`} lang="ja">
+<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja}の競馬場プロフィールと公開時刻表です。`} lang="ja">
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Racecourse profile</p>
     <h1 id="page-title">{track.name_ja}</h1>
-    <p class="hero__summary">
-      {track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}
-      {country ? country.name_ja : track.country_id} / {track.city}
-    </p>
+    <p class="hero__summary">{track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}{country ? country.name_ja : track.country_id} / {track.city}</p>
   </section>
 
   <section class="section-grid" aria-label="競馬場概要">
@@ -109,53 +61,25 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>タイムゾーン:</strong> {track.timezone}</p>
       <p><strong>状態:</strong> {track.status}</p>
     </article>
-
     <article class="card">
       <h2>競馬種別</h2>
-      <ul>
-        {track.racing_types.map((typeId) => {
-          const type = getRacingTypeById(typeId);
-          return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
-        })}
-      </ul>
+      <ul>{track.racing_types.map((typeId) => {
+        const type = getRacingTypeById(typeId);
+        return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
+      })}</ul>
     </article>
-
     <article class="card">
-      <h2>今日の開催状況</h2>
-      <p><strong>状態:</strong> {track.schedule_summary?.today_status ?? 'unknown'}</p>
+      <h2>予定データ</h2>
       <p><strong>次回開催:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
-      <p><strong>予定データ:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
-      <p>最終確認は公式ソースで行ってください。</p>
+      <p><strong>データ元:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+      <p><strong>最終確認:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
     </article>
   </section>
 
-  <section class="section-grid" aria-label="直近予定とレース条件">
-    <article class="card">
-      <h2>直近の開催予定</h2>
-      {track.schedule_summary?.upcoming_meetings?.length ? (
-        <ul>
-          {track.schedule_summary.upcoming_meetings.map((meeting) => (
-            <li>{formatRecordFields(meeting, meetingFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>この競馬場の確認済み開催予定行はまだありません。公式予定リンクがある場合はそちらを確認してください。</p>
-      )}
-      <p><strong>最終確認日:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
-    </article>
-
-    <article class="card">
-      <h2>直近開催のレース条件</h2>
-      {track.distance_profile?.upcoming_conditions?.length ? (
-        <ul>
-          {track.distance_profile.upcoming_conditions.map((condition) => (
-            <li>{formatRecordFields(condition, raceConditionFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>確認済みのレース条件行はまだありません。出走表・オッズ・結果・払戻・全文レースカードはここでは再掲載しません。</p>
-      )}
-    </article>
+  <section aria-labelledby="upcoming-meetings-heading">
+    <h2 id="upcoming-meetings-heading">直近の開催予定</h2>
+    <p>1行につき1開催を表示し、公開ランクに応じて時刻情報を出し分けます。</p>
+    <ContextTimetableTable records={publicMeetings} lang="ja" emptyLabel="この競馬場の公開時刻表はまだありません。公式予定リンクで最新情報を確認してください。" />
   </section>
 
   <section class="section-grid" aria-label="コースと距離プロフィール">
@@ -166,10 +90,8 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>芝1周:</strong> {track.course_profile?.turf_circumference_m ? `${track.course_profile.turf_circumference_m}m` : '未確認'}</p>
       <p><strong>ダート1周:</strong> {track.course_profile?.dirt_circumference_m ? `${track.course_profile.dirt_circumference_m}m` : '未確認'}</p>
       <p><strong>直線:</strong> {track.course_profile?.home_straight_m ? `${track.course_profile.home_straight_m}m` : '未確認'}</p>
-      <p><strong>内外回り:</strong> {track.course_profile?.has_inner_outer_courses === null ? '未確認' : String(track.course_profile?.has_inner_outer_courses)}</p>
       <p>{track.course_profile?.course_notes_ja ?? 'コースメモは公式ソース確認後に反映します。'}</p>
     </article>
-
     <article class="card">
       <h2>距離プロフィール</h2>
       <p><strong>芝:</strong> {formatDistanceBand(track.distance_profile?.turf)}</p>
@@ -183,38 +105,16 @@ const notableRaceFields: Array<[string, string[]]> = [
   <section class="section-grid" aria-label="代表レース・開催シーズン・公式リンク">
     <article class="card">
       <h2>代表レース</h2>
-      {track.notable_races?.length ? (
-        <ul>
-          {track.notable_races.map((race) => (
-            <li>{formatRecordFields(race, notableRaceFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>代表レース情報はまだ登録されていません。将来追加する場合は公式またはソース安全なページへリンクします。</p>
-      )}
+      {track.notable_races?.length ? <ul>{track.notable_races.map((race) => <li>{notableRaceName(race)}</li>)}</ul> : <p>代表レース情報はまだ登録されていません。</p>}
     </article>
-
     <article class="card">
       <h2>開催シーズン</h2>
       <p>{track.seasonality?.summary_ja ?? '開催シーズンは公式ソース確認後に反映します。'}</p>
       <p><strong>状態:</strong> {track.seasonality?.status ?? 'partial'}</p>
     </article>
-
     <article class="card">
       <h2>公式リンク</h2>
-      {officialLinks.length ? (
-        <ul>
-          {officialLinks.map((link) => (
-            <li>
-              <a href={link.url}>{link.label_ja}</a>
-              <br />
-              <span>種別: {link.link_type} / Source: {link.source_id}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>この競馬場に紐づく公式リンクはまだありません。</p>
-      )}
+      {officialLinks.length ? <ul>{officialLinks.map((link) => <li><a href={link.url}>{link.label_ja}</a></li>)}</ul> : <p>この競馬場に紐づく公式リンクはまだありません。</p>}
     </article>
   </section>
 
@@ -226,36 +126,22 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>ソース導線:</strong> {track.data_status?.source_status ?? 'link_first'}</p>
       <p><strong>最終確認:</strong> {formatValue(track.data_status?.last_checked)}</p>
     </article>
-
     <article class="card">
       <h2>関連用語</h2>
-      {relatedTerms.length ? (
-        <ul>
-          {relatedTerms.map((termId) => {
-            const term = glossaryById.get(termId);
-            return <li>{term ? <a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> : termId}</li>;
-          })}
-        </ul>
-      ) : (
-        <p>関連用語はまだありません。</p>
-      )}
+      {relatedTerms.length ? <ul>{relatedTerms.map((termId) => {
+        const term = glossaryById.get(termId);
+        return <li>{term ? <a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a> : termId}</li>;
+      })}</ul> : <p>関連用語はまだありません。</p>}
     </article>
-
     <article class="card">
       <h2>関連ソース</h2>
       <p><a href={countrySourceHref}>国別ソース一覧を開く</a></p>
-      {relatedSources.length ? (
-        <ul>
-          {relatedSources.map((sourceId) => {
-            const source = sourcesById.get(sourceId);
-            return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
-          })}
-        </ul>
-      ) : (
-        <p>関連ソースはまだありません。</p>
-      )}
+      {relatedSources.length ? <ul>{relatedSources.map((sourceId) => {
+        const source = sourcesById.get(sourceId);
+        return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
+      })}</ul> : <p>関連ソースはまだありません。</p>}
     </article>
   </section>
 
-  <p><a href="/ja/tracks/">一覧へ戻る</a></p>
+  <p><a href="/ja/tracks/">戻る</a></p>
 </BaseLayout>

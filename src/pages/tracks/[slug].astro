@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContextTimetableTable from '../../components/ContextTimetableTable.astro';
 import {
   getCountries,
   getGlossaryEntries,
@@ -8,6 +9,7 @@ import {
   siteData
 } from '../../lib/data';
 import { getRacingTypeById } from '../../lib/racingTypes';
+import { getTimetableMeetingRowsByRacecourse } from '../../data/timetableMeetingRows';
 
 export function getStaticPaths() {
   return getRacecourses().map((track) => ({ params: { slug: track.slug } }));
@@ -15,92 +17,42 @@ export function getStaticPaths() {
 
 const { slug } = Astro.params;
 const track = getRacecourseBySlug(slug ?? '');
+if (!track) return Astro.redirect('/tracks/');
 
-if (!track) {
-  return Astro.redirect('/tracks/');
-}
-
-const countries = getCountries();
-const country = countries.find((entry) => entry.id === track.country_id);
+const country = getCountries().find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/countries/${country.slug}/` : '/countries/';
 const countrySourceHref = country ? `/sources/${country.slug}/` : '/sources/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+const publicMeetings = getTimetableMeetingRowsByRacecourse(track.id);
+const officialLinks = track.official_links ?? [];
+const relatedTerms = track.related_terms ?? [];
+const relatedSources = track.related_sources ?? [];
 
 const formatValue = (value: unknown) => {
   if (value === null || value === undefined || value === '') return 'Not confirmed';
-  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : 'Not confirmed';
+  if (Array.isArray(value)) return value.length ? value.join(', ') : 'Not confirmed';
   return String(value);
-};
-
-const toRecord = (value: unknown): Record<string, unknown> => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
-  return value as Record<string, unknown>;
-};
-
-const firstValue = (record: unknown, keys: string[]) => {
-  const row = toRecord(record);
-  for (const key of keys) {
-    if (row[key] !== null && row[key] !== undefined && row[key] !== '') return row[key];
-  }
-  return null;
-};
-
-const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) => {
-  const parts = fields
-    .map(([label, keys]) => {
-      const value = firstValue(record, keys);
-      return value === null ? null : `${label}: ${String(value)}`;
-    })
-    .filter(Boolean);
-  return parts.length ? parts.join(' · ') : 'Details are pending formatting.';
 };
 
 const formatDistanceBand = (band: { min_m?: number | null; max_m?: number | null; known_distances_m?: number[] } | undefined) => {
   if (!band) return 'Not confirmed';
   const range = band.min_m && band.max_m ? `${band.min_m}m–${band.max_m}m` : 'range not confirmed';
-  const known = band.known_distances_m && band.known_distances_m.length > 0
-    ? `Known distances: ${band.known_distances_m.map((distance) => `${distance}m`).join(', ')}`
-    : 'Known distances: not confirmed';
-  return `${range}. ${known}`;
+  const known = band.known_distances_m?.length ? band.known_distances_m.map((distance) => `${distance}m`).join(', ') : 'not confirmed';
+  return `${range}. Known distances: ${known}`;
 };
 
-const officialLinks = track.official_links ?? [];
-const relatedTerms = track.related_terms ?? [];
-const relatedSources = track.related_sources ?? [];
-const meetingFields: Array<[string, string[]]> = [
-  ['Date', ['date', 'local_date', 'meeting_date']],
-  ['First post', ['first_post', 'first_race_time', 'first_race']],
-  ['Last race', ['last_race_time', 'last_race']],
-  ['Races', ['race_count', 'races']],
-  ['Status', ['status']]
-];
-const raceConditionFields: Array<[string, string[]]> = [
-  ['Date', ['date', 'local_date']],
-  ['Race', ['race_number', 'race_no', 'race']],
-  ['Time', ['post_time', 'start_time', 'time']],
-  ['Surface', ['surface']],
-  ['Distance', ['distance', 'distance_m']],
-  ['Type', ['race_type', 'type']]
-];
-const notableRaceFields: Array<[string, string[]]> = [
-  ['Name', ['name_en', 'name', 'race_name']],
-  ['Season', ['season', 'month']],
-  ['Source', ['official_link', 'source_url', 'url']]
-];
+const notableRaceName = (race: any) => race.name_en ?? race.name ?? race.race_name ?? 'Race name pending';
 ---
 
-<BaseLayout title={`${track.name_en} | Racecourses`} description={`Track profile, upcoming schedule status, course profile, official links, and related racing terms for ${track.name_en}.`}>
+<BaseLayout title={`${track.name_en} | Racecourses`} description={`Racecourse profile and public timetable for ${track.name_en}.`}>
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Racecourse profile</p>
     <h1 id="page-title">{track.name_en}</h1>
-    <p class="hero__summary">
-      {track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}
-      {country ? country.name_en : track.country_id} / {track.city}
-    </p>
+    <p class="hero__summary">{track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}{country ? country.name_en : track.country_id} / {track.city}</p>
   </section>
 
-  <section class="section-grid" aria-label="Track overview">
+  <section class="section-grid" aria-label="Racecourse overview">
     <article class="card">
       <h2>Basic information</h2>
       <p><strong>Country:</strong> <a href={countryHref}>{country ? country.name_en : track.country_id}</a></p>
@@ -109,53 +61,25 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>Timezone:</strong> {track.timezone}</p>
       <p><strong>Status:</strong> {track.status}</p>
     </article>
-
     <article class="card">
       <h2>Racing types</h2>
-      <ul>
-        {track.racing_types.map((typeId) => {
-          const type = getRacingTypeById(typeId);
-          return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
-        })}
-      </ul>
+      <ul>{track.racing_types.map((typeId) => {
+        const type = getRacingTypeById(typeId);
+        return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
+      })}</ul>
     </article>
-
     <article class="card">
-      <h2>Today</h2>
-      <p><strong>Status:</strong> {track.schedule_summary?.today_status ?? 'unknown'}</p>
+      <h2>Schedule status</h2>
       <p><strong>Next meeting:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
-      <p><strong>Schedule status:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
-      <p>Use official source links for final confirmation.</p>
+      <p><strong>Data source:</strong> {track.schedule_summary?.status ?? 'official-link-only'}</p>
+      <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
     </article>
   </section>
 
-  <section class="section-grid" aria-label="Upcoming schedule and race conditions">
-    <article class="card">
-      <h2>Upcoming meetings</h2>
-      {track.schedule_summary?.upcoming_meetings?.length ? (
-        <ul>
-          {track.schedule_summary.upcoming_meetings.map((meeting) => (
-            <li>{formatRecordFields(meeting, meetingFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No verified upcoming meeting rows are listed for this racecourse yet. Check the official schedule link when available.</p>
-      )}
-      <p><strong>Last checked:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
-    </article>
-
-    <article class="card">
-      <h2>Upcoming race conditions</h2>
-      {track.distance_profile?.upcoming_conditions?.length ? (
-        <ul>
-          {track.distance_profile.upcoming_conditions.map((condition) => (
-            <li>{formatRecordFields(condition, raceConditionFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No verified race-condition rows are listed yet. Entries, odds, results, payouts, and full racecards are not republished here.</p>
-      )}
-    </article>
+  <section aria-labelledby="upcoming-meetings-heading">
+    <h2 id="upcoming-meetings-heading">Upcoming meetings</h2>
+    <p>One row represents one meeting. Display fields follow the effective public rank.</p>
+    <ContextTimetableTable records={publicMeetings} emptyLabel="No public timetable meetings are currently listed for this racecourse. Check the official schedule link when available." />
   </section>
 
   <section class="section-grid" aria-label="Course and distance profile">
@@ -166,10 +90,8 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>Turf circumference:</strong> {track.course_profile?.turf_circumference_m ? `${track.course_profile.turf_circumference_m}m` : 'Not confirmed'}</p>
       <p><strong>Dirt circumference:</strong> {track.course_profile?.dirt_circumference_m ? `${track.course_profile.dirt_circumference_m}m` : 'Not confirmed'}</p>
       <p><strong>Home straight:</strong> {track.course_profile?.home_straight_m ? `${track.course_profile.home_straight_m}m` : 'Not confirmed'}</p>
-      <p><strong>Inner / outer courses:</strong> {track.course_profile?.has_inner_outer_courses === null ? 'Not confirmed' : String(track.course_profile?.has_inner_outer_courses)}</p>
       <p>{track.course_profile?.course_notes_en ?? 'Course notes are pending official-source verification.'}</p>
     </article>
-
     <article class="card">
       <h2>Distance profile</h2>
       <p><strong>Turf:</strong> {formatDistanceBand(track.distance_profile?.turf)}</p>
@@ -183,38 +105,16 @@ const notableRaceFields: Array<[string, string[]]> = [
   <section class="section-grid" aria-label="Races, seasonality, and official links">
     <article class="card">
       <h2>Notable races</h2>
-      {track.notable_races?.length ? (
-        <ul>
-          {track.notable_races.map((race) => (
-            <li>{formatRecordFields(race, notableRaceFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No notable-race entries are listed yet. Future entries should link to official or source-safe pages.</p>
-      )}
+      {track.notable_races?.length ? <ul>{track.notable_races.map((race) => <li>{notableRaceName(race)}</li>)}</ul> : <p>No notable-race entries are listed yet.</p>}
     </article>
-
     <article class="card">
       <h2>Seasonality</h2>
       <p>{track.seasonality?.summary_en ?? 'Seasonality is pending official-source verification.'}</p>
       <p><strong>Status:</strong> {track.seasonality?.status ?? 'partial'}</p>
     </article>
-
     <article class="card">
       <h2>Official links</h2>
-      {officialLinks.length ? (
-        <ul>
-          {officialLinks.map((link) => (
-            <li>
-              <a href={link.url}>{link.label_en}</a>
-              <br />
-              <span>Type: {link.link_type} / Source: {link.source_id}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No official links are attached to this racecourse yet.</p>
-      )}
+      {officialLinks.length ? <ul>{officialLinks.map((link) => <li><a href={link.url}>{link.label_en}</a></li>)}</ul> : <p>No official links are attached to this racecourse yet.</p>}
     </article>
   </section>
 
@@ -226,34 +126,20 @@ const notableRaceFields: Array<[string, string[]]> = [
       <p><strong>Source routing:</strong> {track.data_status?.source_status ?? 'link_first'}</p>
       <p><strong>Last checked:</strong> {formatValue(track.data_status?.last_checked)}</p>
     </article>
-
     <article class="card">
       <h2>Related terms</h2>
-      {relatedTerms.length ? (
-        <ul>
-          {relatedTerms.map((termId) => {
-            const term = glossaryById.get(termId);
-            return <li>{term ? <a href={`/glossary/${term.slug}/`}>{term.term_en}</a> : termId}</li>;
-          })}
-        </ul>
-      ) : (
-        <p>No related terms are listed yet.</p>
-      )}
+      {relatedTerms.length ? <ul>{relatedTerms.map((termId) => {
+        const term = glossaryById.get(termId);
+        return <li>{term ? <a href={`/glossary/${term.slug}/`}>{term.term_en}</a> : termId}</li>;
+      })}</ul> : <p>No related terms are listed yet.</p>}
     </article>
-
     <article class="card">
       <h2>Related sources</h2>
       <p><a href={countrySourceHref}>Open country source registry</a></p>
-      {relatedSources.length ? (
-        <ul>
-          {relatedSources.map((sourceId) => {
-            const source = sourcesById.get(sourceId);
-            return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
-          })}
-        </ul>
-      ) : (
-        <p>No related sources are listed yet.</p>
-      )}
+      {relatedSources.length ? <ul>{relatedSources.map((sourceId) => {
+        const source = sourcesById.get(sourceId);
+        return <li>{source ? <a href={source.url}>{source.id}</a> : sourceId}</li>;
+      })}</ul> : <p>No related sources are listed yet.</p>}
     </article>
   </section>
 
