@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const outDir = path.join(root, 'data/generated/timetable/canonical');
 const generatedAt = '2026-06-07T03:30:00.000Z';
 
 function readJson(relativePath) {
@@ -32,18 +31,38 @@ function asTime(value) {
 }
 
 function sourceStatusFromLegacy(value) {
-  if (value === 'source-reviewed') return 'verified';
-  if (value === 'verified') return 'verified';
-  if (value === 'partial') return 'partial';
+  if (value === 'source-reviewed' || value === 'verified') return 'verified';
   if (value === 'stale') return 'stale';
   return 'partial';
 }
 
 function displayStatusFromLegacy(value) {
   if (value === 'displayable') return 'displayable';
-  if (value === 'partial') return 'partial';
-  if (value === 'source-reviewed') return 'partial';
   return 'partial';
+}
+
+function authorityFromRecord(record) {
+  if (record.authority_id) return record.authority_id;
+  const map = {
+    'japan-jra-home': 'jra',
+    'hong-kong-hkjc-home': 'hkjc',
+    'uae-era-home': 'emirates-racing-authority',
+    'japan-nar-home': 'nar-local-government-racing',
+    'japan-banei-monthly-schedule': 'banei-tokachi',
+  };
+  return map[record.source_id] ?? record.source_id ?? 'unknown-authority';
+}
+
+function meetingPrefix(record) {
+  const authority = authorityFromRecord(record);
+  const map = {
+    jra: 'jra',
+    hkjc: 'hkjc',
+    'emirates-racing-authority': 'era',
+    'nar-local-government-racing': 'nar',
+    'banei-tokachi': 'banei',
+  };
+  return map[authority] ?? slug(authority);
 }
 
 function rankFromSummary(record) {
@@ -65,7 +84,7 @@ function normalizeSourceTrace(record, extractionMethod, normalizedFromPath) {
 }
 
 function normalizeFreshness(record, generatedAtValue) {
-  const lastChecked = record.last_checked_date ?? asDate(record.last_checked_at) ?? asDate(generatedAtValue);
+  const lastChecked = record.last_checked_date || asDate(record.last_checked_at) || asDate(generatedAtValue);
   return {
     last_checked_date: lastChecked,
     generated_at: generatedAtValue ?? null,
@@ -74,35 +93,32 @@ function normalizeFreshness(record, generatedAtValue) {
   };
 }
 
-function makeMeetingId(record) {
+function makeMeetingId(record, racecourseId) {
   if (record.meeting_id) return record.meeting_id;
-  const country = record.country_id;
-  const racecourse = record.racecourse_id ?? `${slug(record.racecourse_name)}-racecourse`;
-  return `${country}-${racecourse}-${record.date}`;
+  return `${meetingPrefix(record)}-${racecourseId}-${record.date}`;
 }
 
 function fromLegacyRecord(record, generatedAtValue, sourcePath) {
   const firstRaceTime = record.first_race_time_local ?? asTime(record.start_time_local);
-  const lastRaceTime = record.last_race_time_local ?? null;
   const racecourseId = record.racecourse_id ?? `${slug(record.racecourse_name)}-racecourse`;
   return {
-    meeting_id: makeMeetingId({ ...record, racecourse_id: racecourseId }),
+    meeting_id: makeMeetingId(record, racecourseId),
     country_id: record.country_id,
-    authority_id: record.authority_id ?? record.source_id ?? 'unknown-authority',
+    authority_id: authorityFromRecord(record),
     racecourse_id: racecourseId,
     date: record.date,
     timezone: record.timezone,
     capability_rank: rankFromSummary(record),
     display_status: displayStatusFromLegacy(record.display_status ?? record.status),
     first_race_time_local: firstRaceTime,
-    last_race_time_local: lastRaceTime,
-    source_trace: normalizeSourceTrace(record, sourcePath.includes('normalized') ? 'manual_review' : 'manual_seed', sourcePath),
+    last_race_time_local: record.last_race_time_local ?? null,
+    source_trace: normalizeSourceTrace(record, 'manual_seed', sourcePath),
     freshness: normalizeFreshness(record, generatedAtValue),
     notes: record.notes ?? null,
   };
 }
 
-function fromNormalizedRecord(record, generatedAtValue, sourcePath) {
+function fromNormalizedRecord(record, sourcePath) {
   return {
     meeting_id: record.meeting_id,
     country_id: record.country_id,
@@ -115,25 +131,13 @@ function fromNormalizedRecord(record, generatedAtValue, sourcePath) {
     first_race_time_local: record.first_race_time_local,
     last_race_time_local: record.last_race_time_local,
     source_trace: normalizeSourceTrace(record, 'manual_review', sourcePath),
-    freshness: normalizeFreshness(record, generatedAtValue),
+    freshness: normalizeFreshness(record, null),
     notes: record.notes ?? null,
   };
 }
 
-function detailFromRows({ meeting_id, country_id, authority_id, racecourse_id, date, timezone, capability_rank, source_trace, freshness, summary_note, timetable_rows }) {
-  return {
-    meeting_id,
-    country_id,
-    authority_id,
-    racecourse_id,
-    date,
-    timezone,
-    capability_rank,
-    source_trace,
-    freshness,
-    timetable_rows,
-    summary_note,
-  };
+function detailFromRows(value) {
+  return value;
 }
 
 const timetableSeed = readJson('data/generated/timetables.json');
@@ -142,35 +146,23 @@ const normalized = readJson('data/generated/normalized-timetable.json');
 const hkjcDetails = readJson('data/generated/timetable/hkjc-normalized-meeting-details.sample.json');
 
 const meetingMap = new Map();
-
 for (const record of timetableSeed.records ?? []) {
   const canonical = fromLegacyRecord(record, timetableSeed.generated_at, 'data/generated/timetables.json');
   meetingMap.set(canonical.meeting_id, canonical);
 }
-
 for (const record of japanActive.records ?? []) {
   const canonical = fromLegacyRecord(record, japanActive.generated_at, 'data/generated/japan-active-timetable-records.json');
   meetingMap.set(canonical.meeting_id, canonical);
 }
-
 for (const record of normalized.records ?? []) {
-  const canonical = fromNormalizedRecord(record, null, 'data/generated/normalized-timetable.json');
+  const canonical = fromNormalizedRecord(record, 'data/generated/normalized-timetable.json');
   meetingMap.set(canonical.meeting_id, canonical);
 }
 
 const jraTokyoDetailRows = [
-  ['Race 1', '10:05'],
-  ['Race 2', '10:35'],
-  ['Race 3', '11:05'],
-  ['Race 4', '11:35'],
-  ['Race 5', '12:25'],
-  ['Race 6', '12:55'],
-  ['Race 7', '13:25'],
-  ['Race 8', '13:55'],
-  ['Race 9', '14:30'],
-  ['Race 10', '15:05'],
-  ['Race 11', '15:45'],
-  ['Race 12', '16:30'],
+  ['Race 1', '10:05'], ['Race 2', '10:35'], ['Race 3', '11:05'], ['Race 4', '11:35'],
+  ['Race 5', '12:25'], ['Race 6', '12:55'], ['Race 7', '13:25'], ['Race 8', '13:55'],
+  ['Race 9', '14:30'], ['Race 10', '15:05'], ['Race 11', '15:45'], ['Race 12', '16:30'],
 ].map(([label, post_time_local]) => ({
   label,
   post_time_local,
@@ -248,7 +240,9 @@ const details = [
   })),
 ];
 
-const meetings = [...meetingMap.values()].sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
+const meetings = [...meetingMap.values()].sort((a, b) =>
+  `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`),
+);
 
 writeJson('data/generated/timetable/canonical/meetings.json', {
   schema_version: 'canonical-timetable-v0',
