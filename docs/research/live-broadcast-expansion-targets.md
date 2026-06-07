@@ -23,34 +23,34 @@ The jurisdictions below are **targets for future evidence review only**. Inclusi
 
 ## Priority 1: likely high-value jurisdiction targets
 
-These jurisdictions should be reviewed first because they are common racing jurisdictions or may fill notable gaps in the global live/replay map. This list is not evidence of video availability. Macau was removed from the Priority 1 target table after the PR-LIVE-021 inactive-racing audit added a conservative `none_found` record based on official Macao SAR Government closure evidence.
+These jurisdictions were reviewed or moved out of the open Priority 1 list during the v0 expansion. This list is not evidence of complete video availability. Macau was removed from the Priority 1 target table after the inactive-racing audit added a conservative `none_found` record based on official Macao SAR Government closure evidence.
 
-| Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
-| --- | --- | --- | --- |
-| Argentina | Thoroughbred flat; racecourse-operated coverage | authority; racecourse; broadcaster; official partner; social | Verify whether evidence is racecourse-specific rather than national. |
-| Brazil | Thoroughbred flat; regional racecourse coverage | authority; racecourse; broadcaster; official partner; social | Avoid treating one club or state as national coverage. |
-| Panama | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm whether live and replay surfaces are official and current before adding. |
-| India | Thoroughbred flat; turf-club systems | authority; racecourse; broadcaster; official partner; social | Racing is often club-specific; avoid national complete-coverage claims. |
-| Malaysia | Thoroughbred flat; turf-club systems | authority; racecourse; broadcaster; official partner; social | Verify club-specific rights and current official channels. |
-| Philippines | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm official status of any video platform and distinguish social clips from replay archives. |
-| Italy | Thoroughbred flat; jumps where applicable; trotting/harness | authority; racecourse; broadcaster; official partner; social | Separate racing codes if official sources differ. |
-| Germany | Thoroughbred flat; jumps where applicable; trotting/harness if separately governed | authority; racecourse; broadcaster; official partner; social | Avoid relying on non-official form, results, or betting portals as video evidence. |
-| Spain | Thoroughbred flat; racecourse-operated coverage | authority; racecourse; broadcaster; official partner; social | Verify whether coverage is course-specific or national. |
+| Target jurisdiction | Status | Caveat to preserve |
+| --- | --- | --- |
+| Argentina | Audited record added. | Racecourse-specific evidence; no national complete-coverage claim. |
+| Brazil | Audited record added. | Broadcaster/club evidence; no national complete-coverage claim. |
+| Panama | Audited record added. | Official racecourse evidence. |
+| India | Audited records added. | Split by RWITC and Bangalore Turf Club; no national India claim. |
+| Malaysia | Audited record added. | `none_found` for public live/replay landing pages. |
+| Philippines | Audited record added. | Metro Manila Turf Club only; no national Philippines claim. |
+| Italy | Audited record added. | MASAF-linked national broadcast surface; no direct stream URL. |
+| Germany | Audited records added. | Split by gallop/thoroughbred and trotting surfaces. |
+| Spain | Audited records added. | Split by Las Carreras, Zarzuela, and Balearic trotting evidence. |
+| Macau | Audited inactive-racing record added. | No active live/replay coverage implied. |
 
 ## Priority 2: regional depth and code-specific targets
 
-These targets may require more careful separation by racing code, region, or operator. Belgium, Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, and Greece have been moved from open Priority 2 targets to audited-record status in `live-broadcast-v0-coverage-summary.md`; they remain subject to the same caveats and must not be described as complete national coverage.
+Priority 2 is now represented by audited static records. These records remain subject to their caveats and must not be described as complete national coverage.
 
-### Remaining open Priority 2 target
+### Remaining open Priority 2 targets
 
-| Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
-| --- | --- | --- | --- |
-| Austria | Thoroughbred flat; trotting/harness | authority; racecourse; broadcaster; official partner; social | Keep code-specific sources separate if they differ; no audited live/replay static record is represented in the current Priority 2 progress summary. |
+None.
 
 ### Completed Priority 2 targets now represented by audited records
 
 | Target jurisdiction | Audited-record status | Caveat to preserve |
 | --- | --- | --- |
+| Austria | Completed for Krieau event/live and replay evidence. | Event/racecourse-specific evidence; Austria-wide flat racing coverage was not verified. |
 | Belgium | Completed for Mons racecourse evidence. | Racecourse-specific replay evidence only; no national Belgium coverage claim. |
 | Netherlands | Completed for Victoria Park Wolvega harness evidence. | Racecourse-specific harness evidence only; no national Netherlands or Duindigt/grass-track coverage claim. |
 | Switzerland | Completed as split Suisse Trot replay and White Turf St. Moritz event records. | Code/event split; event-only and replay-only caveats remain. |
