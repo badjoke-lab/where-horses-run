@@ -38,13 +38,14 @@ const getSourceLabel = (sourceId: string) => {
   return label ? pick(label.en, label.ja) : sourceId.split('-').map((part) => part.toUpperCase()).join(' ');
 };
 
-const officialSourceGroups = profile?.racing_systems.map((system) => ({
-  ...system,
-  sources: system.source_ids.flatMap((sourceId) => {
-    const source = sourcesById.get(sourceId);
-    return source ? [source] : [];
-  })
-})) ?? [];
+const officialSourceGroups =
+  profile?.racing_systems.map((system) => ({
+    ...system,
+    sources: system.source_ids.flatMap((sourceId) => {
+      const source = sourcesById.get(sourceId);
+      return source ? [source] : [];
+    })
+  })) ?? [];
 
 const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
 const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
@@ -60,6 +61,10 @@ const windowStart = generatedDate ? new Date(`${generatedDate}T00:00:00.000Z`) :
 const windowEnd = windowStart
   ? new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate() + 30))
   : null;
+
+// Temporary bridge: country pages currently read the available generated meeting records.
+// When the calendar model is finalized, replace this local filtering with the shared
+// calendar helper, e.g. getUpcomingMeetingsByCountry(country.id).
 const activeWindowRecords = windowStart && windowEnd
   ? timetableRecords.filter((record) => {
       const recordDate = new Date(`${record.date}T00:00:00.000Z`);
@@ -183,6 +188,16 @@ const getRacecourseSystem = (racecourse: any) => {
   if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-nar'))) return pick('Local racing', '地方競馬');
   return racecourse.racing_types?.includes('thoroughbred-flat') ? pick('Flat racing', '平地競馬') : pick('Unclassified', '未分類');
 };
+
+const upcomingIntro = pick(
+  'This section shows currently available verified meeting records. After the calendar data model is finalized, this list will read from the same calendar dataset used by the calendar pages. One row represents one meeting; racecards, entries, odds, results, and payouts are not reproduced here.',
+  'この欄は、現在利用できる確認済み開催レコードを表示しています。カレンダー機能の実データモデルが確定した後、この一覧はカレンダーページと同じデータを読む形に差し替えます。1行につき1開催を表示し、出走表、馬名、騎手、オッズ、結果、払戻は掲載しません。'
+);
+
+const upcomingEmptyText = pick(
+  'No verified meeting records are currently linked to this country page. This does not mean there is no racing in this country. Use the official source links below for the latest schedule.',
+  'この国別ページに現在リンクされている確認済み開催レコードはありません。これは、この国で開催がないことを意味しません。最新日程は下記の公式ソースで確認してください。'
+);
 
 const includedItems = pick(
   [
@@ -358,10 +373,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
 
     <section class="country-section" id="upcoming-meetings" aria-labelledby="upcoming-meetings-heading">
       <h2 class="country-section__title" id="upcoming-meetings-heading">{pick('Upcoming meetings', '近日開催')}</h2>
-      <p class="country-section__intro">{pick(
-        'One row represents one meeting. Racecards, entries, odds, results, and payouts are not reproduced here.',
-        '1行につき1開催を表示します。出走表、馬名、騎手、オッズ、結果、払戻は掲載しません。'
-      )}</p>
+      <p class="country-section__intro">{upcomingIntro}</p>
       {primaryMeetings.length > 0 ? (
         <>
           <div class="country-table-wrap">
@@ -420,8 +432,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
         </>
       ) : (
         <div class="card country-card">
-          <p>{pick('No active-window meeting records are currently listed for this country.', '現在の掲載対象期間内に、確認済みの開催レコードはありません。')}</p>
-          <p>{pick('Use the official source links below to confirm the latest schedule.', '最新日程は、下記の公式ソースで確認してください。')}</p>
+          <p>{upcomingEmptyText}</p>
         </div>
       )}
     </section>
