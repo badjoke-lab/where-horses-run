@@ -1,0 +1,178 @@
+---
+import {
+  getPublicTimetableRowsByScope,
+  groupPublicTimetableRowsByDate,
+  type PublicTimetableScope,
+} from '../lib/timetable/publicTimetableFilters';
+import type { PublicTimetableMeetingRow } from '../lib/timetable/publicTimetableViewModel';
+
+type Props = {
+  scope: PublicTimetableScope;
+  heading?: string;
+  intro?: string;
+  lang?: 'en' | 'ja';
+  limit?: number;
+  emptyLabel?: string;
+};
+
+const {
+  scope,
+  heading,
+  intro,
+  lang = 'en',
+  limit = 8,
+  emptyLabel = lang === 'ja'
+    ? 'この範囲の公開時刻表はまだありません。公式ソースで最新情報を確認してください。'
+    : 'No public timetable rows are currently listed for this scope. Check official sources for the latest schedule.',
+} = Astro.props;
+
+const labels = lang === 'ja'
+  ? {
+      authority: '主催・体系',
+      detail: '開催詳細',
+      first: '第1レース',
+      last: '最終レース',
+      official: '公式ソース',
+      rank: '公開ランク',
+      source: 'ソース状態',
+      checked: '最終確認',
+      notListed: '未掲載',
+      more: 'さらに表示',
+    }
+  : {
+      authority: 'Authority / system',
+      detail: 'Meeting detail',
+      first: 'First race',
+      last: 'Last race',
+      official: 'Official source',
+      rank: 'Public rank',
+      source: 'Source status',
+      checked: 'Last checked',
+      notListed: 'Not listed',
+      more: 'Show more',
+    };
+
+const allRows = getPublicTimetableRowsByScope(scope);
+const visibleRows = allRows.slice(0, limit);
+const hiddenRows = allRows.slice(limit);
+const groupedVisibleRows = groupPublicTimetableRowsByDate(visibleRows);
+const groupedHiddenRows = groupPublicTimetableRowsByDate(hiddenRows);
+
+const displayTime = (value: string | null) => value ?? labels.notListed;
+const showFirst = (record: PublicTimetableMeetingRow) => record.effective_public_rank !== 'C';
+const showLast = (record: PublicTimetableMeetingRow) =>
+  record.effective_public_rank === 'B+' ||
+  record.effective_public_rank === 'A' ||
+  record.effective_public_rank === 'A+';
+---
+
+<section class="public-timetable-scope" aria-label={heading ?? 'Public timetable rows'}>
+  {heading && <h2>{heading}</h2>}
+  {intro && <p>{intro}</p>}
+
+  {visibleRows.length > 0 ? (
+    <>
+      <div class="public-timetable-scope__groups">
+        {groupedVisibleRows.map((group) => (
+          <section aria-labelledby={`scope-date-${group.date}`}>
+            <h3 id={`scope-date-${group.date}`}>{group.date}</h3>
+            <ul class="public-timetable-scope__list">
+              {group.records.map((record) => (
+                <li class="public-timetable-scope__card">
+                  <div class="public-timetable-scope__main">
+                    <strong>{record.racecourse_id}</strong>
+                    <span>{labels.rank}: {record.effective_public_rank}</span>
+                  </div>
+                  <dl>
+                    <div><dt>{labels.authority}</dt><dd>{record.authority_id}</dd></div>
+                    {showFirst(record) && <div><dt>{labels.first}</dt><dd>{displayTime(record.first_race_time_local)}</dd></div>}
+                    {showLast(record) && <div><dt>{labels.last}</dt><dd>{displayTime(record.last_race_time_local)}</dd></div>}
+                    <div><dt>{labels.source}</dt><dd>{record.source_status}</dd></div>
+                    <div><dt>{labels.checked}</dt><dd>{record.last_checked_date}</dd></div>
+                  </dl>
+                  <p class="public-timetable-scope__links">
+                    {record.detail_path && <><a href={record.detail_path}>{labels.detail}</a>{' · '}</>}
+                    <a href={record.official_source_url}>{labels.official}</a>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      {hiddenRows.length > 0 && (
+        <details class="public-timetable-scope__more">
+          <summary>{labels.more} ({hiddenRows.length})</summary>
+          {groupedHiddenRows.map((group) => (
+            <section aria-labelledby={`scope-more-date-${group.date}`}>
+              <h3 id={`scope-more-date-${group.date}`}>{group.date}</h3>
+              <ul class="public-timetable-scope__list">
+                {group.records.map((record) => (
+                  <li class="public-timetable-scope__card">
+                    <div class="public-timetable-scope__main">
+                      <strong>{record.racecourse_id}</strong>
+                      <span>{labels.rank}: {record.effective_public_rank}</span>
+                    </div>
+                    <p class="public-timetable-scope__links">
+                      {record.detail_path && <><a href={record.detail_path}>{labels.detail}</a>{' · '}</>}
+                      <a href={record.official_source_url}>{labels.official}</a>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </details>
+      )}
+    </>
+  ) : (
+    <p>{emptyLabel}</p>
+  )}
+</section>
+
+<style>
+  .public-timetable-scope__groups,
+  .public-timetable-scope__list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .public-timetable-scope__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .public-timetable-scope__card {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.85rem;
+  }
+
+  .public-timetable-scope__main,
+  .public-timetable-scope__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.85rem;
+  }
+
+  .public-timetable-scope dl {
+    display: grid;
+    gap: 0.45rem 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    margin: 0;
+  }
+
+  .public-timetable-scope dt {
+    color: #555;
+    font-size: 0.78rem;
+  }
+
+  .public-timetable-scope dd {
+    font-weight: 600;
+    margin: 0;
+  }
+</style>
