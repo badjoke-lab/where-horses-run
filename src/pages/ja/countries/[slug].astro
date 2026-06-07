@@ -22,6 +22,7 @@ if (!country) {
 
 const profile = getCountryProfileByCountryId(country.id);
 const racecourses = getRacecoursesByCountryId(country.id);
+const racecoursesById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
 const sources = getSourcesByCountryId(country.id);
 const sourcesById = new Map(sources.map((source) => [source.id, source]));
 const sourceLabelById: Record<string, string> = {
@@ -67,6 +68,8 @@ const activeWindowRecords = windowStart && windowEnd
 const upcomingMeetings = [...activeWindowRecords].sort((a, b) =>
   `${a.date ?? ''}-${a.start_time_local ?? ''}`.localeCompare(`${b.date ?? ''}-${b.start_time_local ?? ''}`)
 );
+const primaryMeetings = upcomingMeetings.slice(0, 8);
+const remainingMeetings = upcomingMeetings.slice(8);
 const outOfWindowRecords = timetableRecords.length - activeWindowRecords.length;
 const displayedRacingTypes = profile
   ? profile.racing_types.map((type) => type.name_ja).join('、')
@@ -74,225 +77,263 @@ const displayedRacingTypes = profile
 const timezoneLabel = profile
   ? `${profile.typical_schedule.timezone} / ${profile.typical_schedule.utc_offset_label}`
   : '競馬場の現地時刻を確認';
+const overviewParagraphs = profile?.overview_paragraphs_ja ?? (profile ? [profile.overview_ja, profile.horse_and_format_summary_ja] : []);
+const formatStartTime = (value?: string | null) => value && /^\d{1,2}:\d{2}$/.test(value) ? value : '未確認';
+const getMeetingSystem = (value?: string | null) => {
+  if (!value) return '未掲載';
+  if (value.includes('JRA')) return 'JRA';
+  if (value.includes('NAR')) return '地方競馬';
+  if (value.toLowerCase().includes('banei')) return 'ばんえい';
+  return value;
+};
+const getRacecourseName = (record: any) => {
+  const racecourse = record.racecourse_id ? racecoursesById.get(record.racecourse_id) : undefined;
+  return racecourse?.name_ja ?? racecourse?.name_en ?? record.racecourse_name ?? record.racecourse_id ?? '競馬場未確定';
+};
+const getRacecourseSystem = (racecourse: any) => {
+  if (racecourse.id === 'obihiro-racecourse' || racecourse.racing_types?.includes('banei-racing')) return 'ばんえい';
+  if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-jra'))) return 'JRA';
+  if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-nar'))) return '地方競馬';
+  return racecourse.racing_types?.includes('thoroughbred-flat') ? '平地競馬' : '未分類';
+};
 ---
 
 <BaseLayout
   title={`${country.name_ja}の競馬カレンダー・競馬場ガイド | 競馬どこ？`}
-  description={profile?.overview_ja ?? country.summary_ja}
+  description={profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja}
   lang="ja"
 >
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">国別競馬ガイド</p>
-    <h1 id="page-title">{country.name_ja}の競馬カレンダー・競馬場ガイド</h1>
-    <p class="hero__summary">{profile?.overview_ja ?? country.summary_ja}</p>
-    <p>
-      <a href="#upcoming-meetings">近日開催</a>
-      {' · '}
-      <a href="#racecourses">競馬場</a>
-      {' · '}
-      <a href="#official-sources">公式ソース</a>
-    </p>
-  </section>
+  <div class="country-page">
+    <section class="hero country-hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">国別競馬ガイド</p>
+      <h1 id="page-title">{country.name_ja}の競馬カレンダー・競馬場ガイド</h1>
+      <p class="hero__summary">{profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja}</p>
+      <nav class="country-jump-nav" aria-label="ページ内リンク">
+        <a href="#upcoming-meetings">近日開催</a>
+        <a href="#racecourses">主な競馬場</a>
+        <a href="#official-sources">公式ソース</a>
+      </nav>
+    </section>
 
-  <section class="section-grid" aria-label="国別基本情報">
-    <article class="card">
-      <h2>基本情報</h2>
-      <p><strong>地域:</strong> {country.region}</p>
-      <p><strong>現地名:</strong> {country.name_local}</p>
-      <p><strong>主な競馬種別:</strong> {displayedRacingTypes}</p>
-      <p><strong>タイムゾーン:</strong> {timezoneLabel}</p>
-      <p><strong>プロフィール確認日:</strong> {profile?.last_reviewed ?? '詳細プロフィール未整備'}</p>
-    </article>
+    <section class="country-grid country-grid--2 country-section" aria-label="国別基本情報">
+      <article class="card country-card">
+        <h2>基本情報</h2>
+        <dl class="country-facts">
+          <div><dt>地域</dt><dd>{country.region}</dd></div>
+          <div><dt>現地名</dt><dd>{country.name_local}</dd></div>
+          <div><dt>主な競馬種別</dt><dd>{displayedRacingTypes}</dd></div>
+          <div><dt>タイムゾーン</dt><dd>{timezoneLabel}</dd></div>
+          <div><dt>開催形態</dt><dd>{profile?.seasonality.pattern === 'year_round_mixed_systems' ? '全体系で通年' : '詳細を本文で確認'}</dd></div>
+          <div><dt>プロフィール確認日</dt><dd>{profile?.last_reviewed ?? '未整備'}</dd></div>
+        </dl>
+      </article>
 
-    <article class="card">
-      <h2>このページの使い方</h2>
-      <p>この国の競馬体系、開催シーズン、馬場、開催曜日・時間帯、競馬場、公式情報の確認先を把握するためのページです。</p>
-      <p>最終的な開催日と発走時刻は、必ず公式または正規の提供元で確認してください。</p>
-    </article>
-  </section>
-
-  {profile ? (
-    <>
-      <section aria-labelledby="overview-heading">
-        <h2 id="overview-heading">{country.name_ja}の競馬について</h2>
-        <p>{profile.overview_ja}</p>
-        <p>{profile.horse_and_format_summary_ja}</p>
-      </section>
-
-      <section aria-labelledby="racing-types-heading">
-        <h2 id="racing-types-heading">この国で行われている競馬種別</h2>
-        <div class="section-grid">
-          {profile.racing_types.map((type) => (
-            <article class="card">
-              <h3>{type.name_ja}</h3>
-              <p>{type.summary_ja}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section-grid" aria-label="開催シーズンと馬場">
-        <article class="card">
-          <h2>開催シーズン</h2>
-          <p>{profile.seasonality.summary_ja}</p>
-        </article>
-
-        <article class="card">
-          <h2>開催曜日・時間帯の傾向</h2>
-          <p>{profile.typical_schedule.summary_ja}</p>
-          <p><strong>タイムゾーン:</strong> {profile.typical_schedule.timezone} / {profile.typical_schedule.utc_offset_label}</p>
-        </article>
-
-        <article class="card">
-          <h2>馬場・コース・競走形式</h2>
-          <p>{profile.surfaces_and_tracks.summary_ja}</p>
-        </article>
-      </section>
-
-      <section aria-labelledby="systems-heading">
-        <h2 id="systems-heading">競馬体系と主催区分</h2>
-        <div class="section-grid">
-          {profile.racing_systems.map((system) => (
-            <article class="card">
-              <h3>{system.name_ja}</h3>
-              <p>{system.summary_ja}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section-grid" aria-label="カレンダーの見方">
-        <article class="card">
-          <h2>この国の競馬カレンダーの見方</h2>
-          <p>{profile.calendar_guidance_ja}</p>
-        </article>
-
-        <article class="card">
-          <h2>初めて調べる場合</h2>
-          <p>{profile.beginner_guide_ja}</p>
-        </article>
-      </section>
-    </>
-  ) : (
-    <section class="section-grid" aria-label="国別概要">
-      <article class="card">
-        <h2>国別概要</h2>
-        <p>{country.summary_ja}</p>
-        <p>この国の詳しい競馬プロフィールはまだ追加されていません。</p>
+      <article class="card country-card">
+        <h2>このページの見方</h2>
+        <p>この国の競馬体系、開催シーズン、馬場、開催曜日・時間帯、競馬場、公式情報の確認先を把握するためのページです。</p>
+        <p>最終的な開催日、発走時刻、出走情報は、必ず公式または正規の提供元で確認してください。</p>
       </article>
     </section>
-  )}
 
-  <section id="upcoming-meetings" aria-labelledby="upcoming-meetings-heading">
-    <h2 id="upcoming-meetings-heading">近日開催</h2>
-    <p>1行・1カードにつき1開催を表示します。出走表、馬名、騎手、オッズ、結果、払戻はここでは再掲載しません。</p>
-    {upcomingMeetings.length > 0 ? (
-      <div class="section-grid">
-        {upcomingMeetings.map((record) => (
-          <article class="card">
-            <h3>{record.racecourse_name ?? record.racecourse_id ?? '競馬場未確定'}</h3>
-            <p><strong>日付:</strong> {record.date ?? '未掲載'}</p>
-            <p><strong>掲載済み開始時刻:</strong> {record.start_time_local ?? '公式ソースで確認'}</p>
-            <p><strong>タイムゾーン:</strong> {record.timezone ?? timezoneLabel}</p>
-            <p><strong>競馬種別:</strong> {record.racing_type ?? '未掲載'}</p>
-            {record.source_url ? <p><a href={record.source_url}>公式ソースを開く</a></p> : <p>公式ソースリンク未掲載。</p>}
-          </article>
-        ))}
-      </div>
+    {profile ? (
+      <>
+        <section class="country-section" aria-labelledby="overview-heading">
+          <h2 class="country-section__title" id="overview-heading">{country.name_ja}の競馬について</h2>
+          <div class="country-prose">
+            {overviewParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+        </section>
+
+        <section class="country-section" aria-labelledby="racing-types-heading">
+          <h2 class="country-section__title" id="racing-types-heading">この国で行われている競馬種別</h2>
+          <div class="country-grid country-grid--3">
+            {profile.racing_types.map((type) => (
+              <article class="card country-card">
+                <h3>{type.name_ja}</h3>
+                <p>{type.summary_ja}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="country-section" aria-labelledby="meeting-pattern-heading">
+          <h2 class="country-section__title" id="meeting-pattern-heading">開催の特徴</h2>
+          <div class="country-grid country-grid--3">
+            <article class="card country-card">
+              <h3>開催シーズン</h3>
+              <p>{profile.seasonality.summary_ja}</p>
+            </article>
+            <article class="card country-card">
+              <h3>開催曜日・時間帯</h3>
+              <p>{profile.typical_schedule.summary_ja}</p>
+              <p><strong>タイムゾーン:</strong> {profile.typical_schedule.timezone} / {profile.typical_schedule.utc_offset_label}</p>
+            </article>
+            <article class="card country-card">
+              <h3>馬場・コース・競走形式</h3>
+              <p>{profile.surfaces_and_tracks.summary_ja}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="country-section" aria-labelledby="systems-heading">
+          <h2 class="country-section__title" id="systems-heading">競馬体系と主催区分</h2>
+          <div class="country-grid country-grid--3">
+            {profile.racing_systems.map((system) => (
+              <article class="card country-card">
+                <h3>{system.name_ja}</h3>
+                <p>{system.summary_ja}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="country-section" aria-labelledby="calendar-guide-heading">
+          <h2 class="country-section__title" id="calendar-guide-heading">カレンダーの見方</h2>
+          <div class="country-grid country-grid--2">
+            <article class="card country-card">
+              <h3>この国の競馬カレンダーの見方</h3>
+              <p>{profile.calendar_guidance_ja}</p>
+            </article>
+            <article class="card country-card">
+              <h3>初めて調べる場合</h3>
+              <p>{profile.beginner_guide_ja}</p>
+            </article>
+          </div>
+        </section>
+      </>
     ) : (
-      <div class="card">
-        <p>現在の掲載対象期間内に、確認済みの開催レコードはありません。</p>
-        <p>最新日程は、下記の公式ソースで確認してください。</p>
-      </div>
+      <section class="country-section">
+        <h2 class="country-section__title">国別概要</h2>
+        <div class="country-prose"><p>{country.summary_ja}</p><p>この国の詳しい競馬プロフィールはまだ追加されていません。</p></div>
+      </section>
     )}
-  </section>
 
-  <section id="racecourses" aria-labelledby="racecourses-heading">
-    <h2 id="racecourses-heading">主な競馬場</h2>
-    <p>Where Horses Runで現在利用できる競馬場プロフィールへのリンクです。</p>
-    {racecourses.length > 0 ? (
-      <div class="section-grid">
-        {racecourses.map((racecourse) => (
-          <article class="card">
-            <h3><a href={`/ja/racecourses/${racecourse.slug}/`}>{racecourse.name_ja ?? racecourse.name_en}</a></h3>
-            <p>{racecourse.city}</p>
-          </article>
-        ))}
-      </div>
-    ) : (
-      <p>競馬場プロフィールはまだありません。</p>
-    )}
-  </section>
+    <section class="country-section" id="upcoming-meetings" aria-labelledby="upcoming-meetings-heading">
+      <h2 class="country-section__title" id="upcoming-meetings-heading">近日開催</h2>
+      <p class="country-section__intro">1行につき1開催を表示します。出走表、馬名、騎手、オッズ、結果、払戻は掲載しません。</p>
+      {primaryMeetings.length > 0 ? (
+        <>
+          <div class="country-table-wrap">
+            <table class="country-table">
+              <thead><tr><th>日付</th><th>競馬場</th><th>体系</th><th>開始時刻</th><th>タイムゾーン</th><th>公式</th></tr></thead>
+              <tbody>
+                {primaryMeetings.map((record) => (
+                  <tr>
+                    <td data-label="日付">{record.date ?? '未掲載'}</td>
+                    <td data-label="競馬場">{getRacecourseName(record)}</td>
+                    <td data-label="体系">{getMeetingSystem(record.racing_type)}</td>
+                    <td data-label="開始時刻">{formatStartTime(record.start_time_local)}</td>
+                    <td data-label="タイムゾーン">{record.timezone ?? timezoneLabel}</td>
+                    <td data-label="公式">{record.source_url ? <a href={record.source_url}>開く</a> : '未掲載'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {remainingMeetings.length > 0 && (
+            <details class="country-more">
+              <summary>さらに{remainingMeetings.length}件を表示</summary>
+              <div class="country-table-wrap">
+                <table class="country-table">
+                  <thead><tr><th>日付</th><th>競馬場</th><th>体系</th><th>開始時刻</th><th>タイムゾーン</th><th>公式</th></tr></thead>
+                  <tbody>
+                    {remainingMeetings.map((record) => (
+                      <tr>
+                        <td data-label="日付">{record.date ?? '未掲載'}</td>
+                        <td data-label="競馬場">{getRacecourseName(record)}</td>
+                        <td data-label="体系">{getMeetingSystem(record.racing_type)}</td>
+                        <td data-label="開始時刻">{formatStartTime(record.start_time_local)}</td>
+                        <td data-label="タイムゾーン">{record.timezone ?? timezoneLabel}</td>
+                        <td data-label="公式">{record.source_url ? <a href={record.source_url}>開く</a> : '未掲載'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          )}
+        </>
+      ) : (
+        <div class="card country-card"><p>現在の掲載対象期間内に、確認済みの開催レコードはありません。</p><p>最新日程は、下記の公式ソースで確認してください。</p></div>
+      )}
+    </section>
 
-  <section id="official-sources" aria-labelledby="official-sources-heading">
-    <h2 id="official-sources-heading">公式ソース</h2>
-    <p>最終確認には、以下の公式案内ページを使用してください。競馬どこ？は公式カレンダーやレースカードの代替ではありません。</p>
-    {officialSourceGroups.length > 0 ? (
-      <div class="section-grid">
-        {officialSourceGroups.map((group) => (
-          <article class="card">
-            <h3>{group.name_ja}</h3>
-            <ul>
-              {group.sources.map((source) => (
-                <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>
+    <section class="country-section" id="racecourses" aria-labelledby="racecourses-heading">
+      <h2 class="country-section__title" id="racecourses-heading">主な競馬場</h2>
+      <p class="country-section__intro">Where Horses Runで現在利用できる競馬場プロフィールへのリンクです。</p>
+      {racecourses.length > 0 ? (
+        <div class="country-table-wrap">
+          <table class="country-table country-table--racecourses">
+            <thead><tr><th>競馬場</th><th>地域</th><th>体系</th><th>詳細</th></tr></thead>
+            <tbody>
+              {racecourses.map((racecourse) => (
+                <tr>
+                  <td data-label="競馬場">{racecourse.name_ja ?? racecourse.name_en}</td>
+                  <td data-label="地域">{racecourse.city}</td>
+                  <td data-label="体系">{getRacecourseSystem(racecourse)}</td>
+                  <td data-label="詳細"><a href={`/ja/racecourses/${racecourse.slug}/`}>競馬場ページを開く</a></td>
+                </tr>
               ))}
-            </ul>
-          </article>
-        ))}
-      </div>
-    ) : sources.length > 0 ? (
-      <ul>
-        {sources.map((source) => <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>)}
-      </ul>
-    ) : (
-      <p>公式ソースはまだ登録されていません。</p>
-    )}
-  </section>
-
-  <section class="section-grid" aria-label="掲載範囲と非掲載情報">
-    <article class="card">
-      <h2>掲載範囲と注意点</h2>
-      <p>{profile?.coverage_note_ja ?? 'このページは公式ソースを探すための案内であり、すべての開催を網羅しているとは限りません。'}</p>
-    </article>
-
-    <article class="card">
-      <h2>このページで扱わない情報</h2>
-      <p>出走馬、馬名、騎手、調教師、枠順、斤量、オッズ、人気、予想、買い目、結果、払戻は、この国別ページでは掲載しません。</p>
-    </article>
-  </section>
-
-  <details>
-    <summary>技術的な掲載状況</summary>
-    <section class="section-grid" aria-label="技術的な掲載状況">
-      <article class="card">
-        <h2>データセット状態</h2>
-        <p><strong>国status:</strong> {country.status}</p>
-        <p><strong>Coverage level:</strong> {country.coverage_level}</p>
-        <p><strong>Automation level:</strong> {country.auto_level}</p>
-        <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
-        <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
-        {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
-      </article>
-
-      <article class="card">
-        <h2>Fetch status</h2>
-        {countryFetchStatuses.length > 0 ? (
-          <ul>{countryFetchStatuses.map((status) => <li><strong>{status.source_id}</strong>: {status.status} — {status.message}</li>)}</ul>
-        ) : (
-          <p>Fetch statusはまだありません。</p>
-        )}
-      </article>
-
-      <article class="card">
-        <h2>Probe status</h2>
-        {countryLiveFetchProbes.length > 0 ? (
-          <ul>{countryLiveFetchProbes.map((probe) => <li><strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}</li>)}</ul>
-        ) : (
-          <p>Live fetch probe metadataはまだありません。</p>
-        )}
-      </article>
+            </tbody>
+          </table>
+        </div>
+      ) : <p>競馬場プロフィールはまだありません。</p>}
     </section>
-  </details>
 
-  <p><a href="/ja/countries/">国一覧へ戻る</a></p>
+    <section class="country-section" id="official-sources" aria-labelledby="official-sources-heading">
+      <h2 class="country-section__title" id="official-sources-heading">公式ソース</h2>
+      <p class="country-section__intro">最終確認には以下の公式ページを使用してください。競馬どこ？は公式カレンダーやレースカードの代替ではありません。</p>
+      {officialSourceGroups.length > 0 ? (
+        <div class="country-grid country-grid--3">
+          {officialSourceGroups.map((group) => (
+            <article class="card country-card">
+              <h3>{group.name_ja}</h3>
+              <ul>{group.sources.map((source) => <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>)}</ul>
+            </article>
+          ))}
+        </div>
+      ) : sources.length > 0 ? (
+        <ul>{sources.map((source) => <li><a href={source.url}>{getSourceLabel(source.id)}</a></li>)}</ul>
+      ) : <p>公式ソースはまだ登録されていません。</p>}
+    </section>
+
+    <section class="country-section" aria-labelledby="coverage-heading">
+      <h2 class="country-section__title" id="coverage-heading">掲載範囲</h2>
+      <div class="country-grid country-grid--2">
+        <article class="card country-card">
+          <h3>掲載している情報</h3>
+          <p>{profile?.coverage_note_ja ?? 'このページは公式ソースを探すための案内であり、すべての開催を網羅しているとは限りません。'}</p>
+        </article>
+        <article class="card country-card">
+          <h3>掲載しない情報</h3>
+          <p>出走馬、騎手、調教師、枠順、斤量、オッズ、人気、予想、買い目、結果、払戻は、この国別ページでは掲載しません。</p>
+        </article>
+      </div>
+    </section>
+
+    <details class="country-technical">
+      <summary>技術的な掲載状況</summary>
+      <div class="country-grid country-grid--3">
+        <article class="card country-card">
+          <h3>データセット状態</h3>
+          <p><strong>国status:</strong> {country.status}</p>
+          <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+          <p><strong>Automation level:</strong> {country.auto_level}</p>
+          <p><strong>30日範囲内records:</strong> {activeWindowRecords.length}</p>
+          <p><strong>30日範囲外records:</strong> {outOfWindowRecords}</p>
+          {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
+        </article>
+        <article class="card country-card">
+          <h3>Fetch status</h3>
+          {countryFetchStatuses.length > 0 ? <ul>{countryFetchStatuses.map((status) => <li><strong>{status.source_id}</strong>: {status.status} — {status.message}</li>)}</ul> : <p>Fetch statusはまだありません。</p>}
+        </article>
+        <article class="card country-card">
+          <h3>Probe status</h3>
+          {countryLiveFetchProbes.length > 0 ? <ul>{countryLiveFetchProbes.map((probe) => <li><strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}</li>)}</ul> : <p>Live fetch probe metadataはまだありません。</p>}
+        </article>
+      </div>
+    </details>
+
+    <p class="country-back-link"><a href="/ja/countries/">← 国一覧へ戻る</a></p>
+  </div>
 </BaseLayout>
