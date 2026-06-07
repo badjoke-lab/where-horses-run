@@ -63,27 +63,31 @@ None.
 
 ## Priority 3: emerging, event-only, or high-caution targets
 
-These targets may be valuable for completeness but should remain lower priority because evidence may be sparse, event-only, fragmented, inactive, or difficult to classify safely.
+Priority 3 source review is complete for the current target list. One target produced an audited static record; the remaining targets were reviewed but did not meet the evidence threshold for a stable official or clearly official-partner live/replay record.
 
-### Completed Priority 3 targets now represented by audited records
+### Completed Priority 3 target represented by an audited record
 
 | Target jurisdiction | Audited-record status | Caveat to preserve |
 | --- | --- | --- |
 | Saudi Arabia | Completed for JCSA authority and official-social live evidence. | Official free live surface only; no official replay archive landing page was verified. |
 
-### Open Priority 3 targets
+### Completed Priority 3 source reviews with no static record added
 
-| Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
-| --- | --- | --- | --- |
-| Egypt | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Require clear official evidence before any public record. |
-| Tunisia | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Avoid non-official social reposts and aggregator pages. |
-| Algeria | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Require official or official-partner evidence at record level. |
-| Colombia | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm current official status and whether video is live, replay, or clips only. |
-| Ecuador | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Treat social-only evidence cautiously unless clearly official. |
-| Dominican Republic | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Verify official status of any racecourse or broadcaster page. |
-| Guadeloupe | Thoroughbred flat; local racecourse coverage | authority; racecourse; broadcaster; official partner; social | Avoid assuming coverage from nearby jurisdictions or shared language markets. |
-| Réunion | Thoroughbred flat; local racecourse coverage | authority; racecourse; broadcaster; official partner; social | Verify current official racecourse or federation evidence. |
-| Mauritius | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Confirm operator status, official channels, and whether archived material is current. |
+| Target jurisdiction | Review result | Revisit condition |
+| --- | --- | --- |
+| Egypt | No stable official live/replay landing page verified. | Revisit when an official authority, racecourse, broadcaster, or official-social source is identified. |
+| Tunisia | No stable official live/replay landing page verified. | Revisit when an official Ksar Said/operator or national racing source is identified. |
+| Algeria | No stable official live/replay landing page verified. | Revisit when an official authority, racecourse, broadcaster, or official-social source is identified. |
+| Colombia | No stable official live/replay landing page verified. | Revisit after current racing activity and an official operator are confirmed. |
+| Ecuador | No stable official live/replay landing page verified. | Revisit when an official Hipódromo Miguel Salem Dibo or national source is identified. |
+| Dominican Republic | No stable official live/replay landing page verified. | Revisit when an official Hipódromo V Centenario, authority, or broadcaster source is identified. |
+| Guadeloupe | No stable official live/replay landing page verified. | Revisit after current racing activity and the responsible official operator are confirmed. |
+| Réunion | No stable official live/replay landing page verified. | Revisit when an official racecourse, federation, broadcaster, or official-social source is identified. |
+| Mauritius | Official broadcaster leads found, but no stable race-specific live or replay landing page verified. | Re-check MBC/MBC 11 and the current race operator on an active event day. |
+
+### Remaining open Priority 3 targets
+
+None from the current target list.
 
 ## Racing systems to separate during future audits
 
