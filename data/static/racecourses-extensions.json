@@ -267,5 +267,61 @@
     "image_alt_ja": "中京競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
     "image": { "src": "", "alt_en": "Planned illustrative image for Chukyo Racecourse.", "alt_ja": "中京競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+  },
+  {
+    "id": "kokura-racecourse",
+    "slug": "kokura-racecourse",
+    "country_id": "japan",
+    "name_en": "Kokura Racecourse",
+    "name_ja": "小倉競馬場",
+    "name_local": "小倉競馬場",
+    "city": "Kitakyushu",
+    "region": "Fukuoka",
+    "timezone": "Asia/Tokyo",
+    "racing_types": ["thoroughbred-flat", "jump-racing"],
+    "status": "active",
+    "surfaces": ["turf", "dirt", "jump"],
+    "direction": "right-handed",
+    "course_profile": {
+      "turf_circumference_m": 1615,
+      "dirt_circumference_m": 1445,
+      "home_straight_m": null,
+      "has_inner_outer_courses": false,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Official JAIRS/JRA racecourse guide pages confirm Kokura Racecourse as a JRA racecourse in Kitakyushu, Fukuoka. JRA course details list turf A/B/C courses, a dirt course, and steeplechase courses; this profile records the turf A-course length as the representative turf circumference for the current schema.",
+      "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、小倉競馬場は福岡県北九州市のJRA競馬場として確認できる。JRAのコース詳細では芝A/B/Cコース、ダートコース、障害コースが示されているが、現在のスキーマでは芝Aコースを代表値として記録する。"
+    },
+    "distance_profile": {
+      "turf": { "min_m": 1615, "max_m": 1633, "known_distances_m": [1615, 1624, 1633] },
+      "dirt": { "min_m": 1445, "max_m": 1445, "known_distances_m": [1445] },
+      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "jump": { "min_m": 415, "max_m": 1724, "known_distances_m": [1724, 415] },
+      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "notable_races": [
+      { "name_en": "Kokura Daishoten", "name_ja": "小倉大賞典", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j06.html" },
+      { "name_en": "Kokura Kinen", "name_ja": "小倉記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j06.html" },
+      { "name_en": "Kitakyushu Kinen", "name_ja": "北九州記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j06.html" },
+      { "name_en": "Kokura Nisai Stakes", "name_ja": "小倉2歳ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j06.html" }
+    ],
+    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "official_links": [
+      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Kokura Racecourse guide", "label_ja": "JAIRS/JRA 小倉競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j06.html", "link_type": "official" },
+      { "label_en": "JAIRS/JRA Kokura course details", "label_ja": "JAIRS/JRA 小倉コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/kokura.html", "link_type": "official" }
+    ],
+    "related_terms": ["racecourse", "thoroughbred-racing", "jump-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
+    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
+    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-07" },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Kokura Racecourse.",
+    "image_alt_ja": "小倉競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": { "src": "", "alt_en": "Planned illustrative image for Kokura Racecourse.", "alt_ja": "小倉競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
   }
 ]
