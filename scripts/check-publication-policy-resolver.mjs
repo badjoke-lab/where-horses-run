@@ -8,14 +8,26 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
+function readJson(relativePath) {
+  return JSON.parse(read(relativePath));
+}
+
 function requireText(source, token, label) {
   if (!source.includes(token)) errors.push(`${label} missing: ${token}`);
 }
 
-const policies = read('src/data/publicationDisplayPolicies.ts');
+const policyData = readJson('src/data/publicationDisplayPolicies.json');
+const policyModule = read('src/data/publicationDisplayPolicies.ts');
 const resolver = read('src/lib/timetable/publicationPolicy.ts');
 const notes = read('PR-243.md');
 
+if (policyData.schema_version !== 'publication-display-policies-v0') {
+  errors.push('Unexpected publication policy schema version.');
+}
+
+const policyAuthorities = new Set(
+  policyData.policies.flatMap((policy) => policy.match.authority_ids ?? []),
+);
 for (const authority of [
   'hkjc',
   'jra',
@@ -23,20 +35,37 @@ for (const authority of [
   'banei-tokachi',
   'emirates-racing-authority',
 ]) {
-  requireText(policies, authority, 'publication policies');
+  if (!policyAuthorities.has(authority)) {
+    errors.push(`publication policies missing authority: ${authority}`);
+  }
+}
+
+for (const policy of policyData.policies) {
+  if (policy.max_public_rank !== 'A+') {
+    errors.push(`${policy.id} must initially allow A+.`);
+  }
+  for (const field of [
+    'show_race_name',
+    'show_distance',
+    'show_surface',
+    'show_course',
+  ]) {
+    if (policy.a_plus_fields[field] !== true) {
+      errors.push(`${policy.id} must enable ${field}.`);
+    }
+  }
+}
+
+if (policyData.default_policy.max_public_rank !== 'C') {
+  errors.push('Default publication policy must remain capped at C.');
 }
 
 for (const token of [
-  "max_public_rank: 'A+'",
-  'show_race_name: true',
-  'show_distance: true',
-  'show_surface: true',
-  'show_course: true',
-  "id: 'default-conservative-c'",
-  "max_public_rank: 'C'",
-  'later tests downgrade/switch behavior',
+  "import policyData from './publicationDisplayPolicies.json'",
+  'typedPolicyData.default_policy',
+  'typedPolicyData.policies',
 ]) {
-  requireText(policies, token, 'publication policies');
+  requireText(policyModule, token, 'publication policy module');
 }
 
 for (const token of [
@@ -62,44 +91,21 @@ const lowerRank = (capabilityRank, maxPublicRank) =>
     : maxPublicRank;
 
 const cases = [
-  {
-    name: 'A+ capability remains A+ under reviewed A+ policy',
-    capability: 'A+',
-    max: 'A+',
-    expected: 'A+',
-  },
-  {
-    name: 'A+ capability can be switched down to A',
-    capability: 'A+',
-    max: 'A',
-    expected: 'A',
-  },
-  {
-    name: 'B capability is not promoted by A+ policy',
-    capability: 'B',
-    max: 'A+',
-    expected: 'B',
-  },
-  {
-    name: 'unknown source default can cap A+ capability at C',
-    capability: 'A+',
-    max: 'C',
-    expected: 'C',
-  },
+  ['A+', 'A+', 'A+'],
+  ['A+', 'A', 'A'],
+  ['B', 'A+', 'B'],
+  ['A+', 'C', 'C'],
 ];
-
-for (const testCase of cases) {
-  const actual = lowerRank(testCase.capability, testCase.max);
-  if (actual !== testCase.expected) {
-    errors.push(`${testCase.name}: expected ${testCase.expected}, got ${actual}`);
+for (const [capability, maximum, expected] of cases) {
+  const actual = lowerRank(capability, maximum);
+  if (actual !== expected) {
+    errors.push(`${capability}/${maximum}: expected ${expected}, got ${actual}`);
   }
 }
 
 for (const token of [
   'A+ capability may publish as A+ during the initial display test period.',
   'The same resolver can switch A+ down to A, B+, B, C, D, or not_listed.',
-  'No public JSON is generated.',
-  'No page input is changed.',
   'Next roadmap item is PR-6 public view generation.',
 ]) {
   requireText(notes, token, 'PR note');
