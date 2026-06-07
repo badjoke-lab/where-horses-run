@@ -1,97 +1,31 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { siteData } from '../../../lib/data';
+import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
+import { getGroupedTimetableMeetingRows } from '../../../data/timetableMeetingRows';
 
-const timetableData = siteData.generated.timetables;
-const generatedTimetableDate = (timetableData.generated_at ?? '').slice(0, 10);
-const rangeStartDate = generatedTimetableDate;
-const generatedDate = generatedTimetableDate ? new Date(`${generatedTimetableDate}T00:00:00.000Z`) : null;
-const rangeEndDate = generatedDate
-  ? new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate() + 30))
-      .toISOString()
-      .slice(0, 10)
-  : '';
-const calendarRecords = (timetableData.records ?? [])
-  .filter((record) => record.date >= rangeStartDate && record.date < rangeEndDate)
-  .sort((a, b) => `${a.date}:${a.country_id}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.country_id}:${b.racecourse_id}`));
-const recordsByDate = calendarRecords.reduce((groups, record) => {
-  groups[record.date] = [...(groups[record.date] ?? []), record];
-  return groups;
-}, {});
-const groupedCalendarRecords = Object.keys(recordsByDate).map((date) => ({ date, records: recordsByDate[date] }));
+const groupedCalendarRecords = getGroupedTimetableMeetingRows();
 ---
 
 <BaseLayout
-  title="30日間の安全な開催時刻カレンダー | 競馬どこ？"
-  description="30日間の対象範囲にある安全な開催時刻レコードを日付別に表示し、最終確認用の公式ソースリンクを示します。"
+  title="2026年6月 開催カレンダー | 競馬どこ？"
+  description="2026年6月の開催情報を日付別に1開催1行で表示し、詳細情報と公式ソースへのリンクを案内します。"
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
-    <h1 id="page-title">30日間の安全な開催時刻カレンダー</h1>
+    <h1 id="page-title">2026年6月 開催カレンダー</h1>
     <p class="hero__summary">
-      generated timetable dateから30日間の安全なgenerated timetable recordsを日付別に表示します。
-      公式ソースリンクで最終確認してください。
+      開催情報を日付別に表示します。表示ランクに応じて時刻情報を出し分け、最終確認先として公式ソースを案内します。
     </p>
   </section>
 
-  <section class="section-grid" aria-label="30日間の安全な開催時刻ステータス">
-    <article class="card">
-      <h2>ステータス</h2>
-      <p><strong>Generated date:</strong> {generatedTimetableDate || 'not listed'}</p>
-      <p><strong>対象開始日:</strong> {rangeStartDate || 'not listed'}</p>
-      <p><strong>対象終了日:</strong> {rangeEndDate || 'not listed'} (exclusive)</p>
-      <p><strong>一致レコード数:</strong> {calendarRecords.length}</p>
-      <p><strong>live fetch:</strong> disabled</p>
-    </article>
-
-    <article class="card">
-      <h2>公式確認</h2>
-      <p>公式ソースリンクで最終確認してください。</p>
-      <p>最終確認には公式ソースリンクを使用してください。</p>
-    </article>
-  </section>
-
-  <section class="section-grid" aria-label="30日間の安全な開催時刻レコード">
-    <article class="card">
-      <h2>日付別レコード</h2>
-      {groupedCalendarRecords.length > 0 ? (
-        <div>
-          {groupedCalendarRecords.map((group) => (
-            <section aria-labelledby={`date-${group.date}`}>
-              <h3 id={`date-${group.date}`}>{group.date}</h3>
-              <ul>
-                {group.records.map((record) => (
-                  <li>
-                    <p><strong>Country:</strong> {record.country_id}</p>
-                    <p><strong>Racecourse:</strong> {record.racecourse_name}{record.racecourse_id ? ` (${record.racecourse_id})` : ''}</p>
-                    <p><strong>Date:</strong> {record.date}</p>
-                    <p><strong>Start time:</strong> {record.start_time_local}</p>
-                    <p><strong>Timezone:</strong> {record.timezone}</p>
-                    <p><strong>Racing type:</strong> {record.racing_type}</p>
-                    <p>
-                      <strong>Official source:</strong>{' '}
-                      <a href={record.source_url}>{record.source_id}</a>
-                    </p>
-                    <p><strong>Last checked:</strong> {record.last_checked_at}</p>
-                    <p><strong>Status:</strong> {record.status}</p>
-                    <p><strong>Confidence:</strong> {record.confidence}</p>
-                    <p><strong>Notes:</strong> {Array.isArray(record.notes) ? record.notes.join('; ') : record.notes}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <p>今後30日間の安全な開催時刻レコードはまだありません。</p>
-          <p>最終確認には公式ソースリンクを使用してください。</p>
-          <p>live fetch: disabled</p>
-        </div>
-      )}
-    </article>
+  <section aria-label="2026年6月の開催一覧">
+    <TimetableMeetingList
+      groups={groupedCalendarRecords}
+      lang="ja"
+      emptyLabel="2026年6月の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+    />
   </section>
 </BaseLayout>
