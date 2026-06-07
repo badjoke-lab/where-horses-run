@@ -129,6 +129,15 @@
   padding-inline-start: 1.2rem;
 }
 
+.country-card__note {
+  margin-block-start: var(--whr-space-3);
+}
+
+.country-coverage-list {
+  margin-block: var(--whr-space-2) 0;
+  padding-inline-start: 1.2rem;
+}
+
 .country-facts {
   display: grid;
   gap: var(--whr-space-1);
@@ -160,6 +169,20 @@
 
 .country-prose p + p {
   margin-block-start: var(--whr-space-3);
+}
+
+.country-prose-section + .country-prose-section {
+  margin-block-start: var(--whr-space-4);
+}
+
+.country-prose-section h3 {
+  margin-block: 0 var(--whr-space-1);
+  font-size: 1rem;
+}
+
+.country-prose-section p {
+  margin-block: 0;
+  line-height: 1.9;
 }
 
 .country-table-wrap {
