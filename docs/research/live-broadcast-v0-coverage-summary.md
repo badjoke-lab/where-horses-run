@@ -17,16 +17,17 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 - Germany is intentionally split into thoroughbred/gallop and trotting records because Deutscher Galopp and WETTSTAR evidence cover different racing-code surfaces.
 - Spain is intentionally split into the Las Carreras thoroughbred circuit, Hipódromo de la Zarzuela racecourse replay evidence, and Federación Balear de Trot trotting evidence. Zarzuela and Balearic trotting evidence must not be treated as complete national Spain coverage.
 - Priority 2 Belgium, Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, and Greece records are intentionally split or caveated by racecourse, racing code, account/paid-TV access, replay-only source, event-only source, broadcast surface, none-found status, or inactive-racing status where the official evidence is not complete active national coverage.
+- Saudi Arabia is represented by the JCSA official-social live surface only; no official replay archive landing page was verified in this pass.
 
 ## Totals
 
-- Total audited/static records: **62**
+- Total audited/static records: **63**
 
 ### Count by `live_status`
 
 | Status | Count |
 | --- | ---: |
-| `official_free` | 28 |
+| `official_free` | 29 |
 | `official_account` | 5 |
 | `betting_account` | 3 |
 | `tv_pay` | 4 |
@@ -41,7 +42,7 @@ This document summarizes the public-safe v0 audit state for `data/static/live-br
 | --- | ---: |
 | `official_account` | 2 |
 | `replay_available` | 45 |
-| `none_found` | 11 |
+| `none_found` | 12 |
 | `archive_only` | 4 |
 
 ## Records by status requiring v0 tracking
@@ -65,6 +66,7 @@ The lists below include any record where the named status appears as either `liv
 - `peru` — Peru (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `mexico` — Mexico (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `bahrain` — Bahrain (`live_status`: `official_free`, `replay_status`: `archive_only`)
+- `saudi-arabia-jcsa` — Saudi Arabia — JCSA (`live_status`: `official_free`, `replay_status`: `none_found`)
 - `uruguay` — Uruguay (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `czechia` — Czechia (`live_status`: `official_free`, `replay_status`: `replay_available`)
 - `hungary` — Hungary (`live_status`: `official_free`, `replay_status`: `replay_available`)
@@ -178,6 +180,7 @@ The lists below include any record where the named status appears as either `liv
 - `oman` — Oman (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `malaysia` — Malaysia (`live_status`: `none_found`, `replay_status`: `none_found`)
 - `philippines-metroturf` — Philippines — Metro Manila Turf Club (`live_status`: `official_free`, `replay_status`: `none_found`)
+- `saudi-arabia-jcsa` — Saudi Arabia — JCSA (`live_status`: `official_free`, `replay_status`: `none_found`)
 - `spain-thoroughbred-las-carreras` — Spain — thoroughbred circuit (`live_status`: `tv_pay`, `replay_status`: `none_found`)
 - `spain-trotting` — Spain — trotting (`live_status`: `none_found`, `replay_status`: `replay_available`)
 - `belgium-mons` — Belgium — Hippodrome de Wallonie Mons (`live_status`: `none_found`, `replay_status`: `replay_available`)
@@ -207,6 +210,7 @@ The lists below include any record where the named status appears as either `liv
 - The PR-LIVE-022 pass added Belgium, Netherlands, and Switzerland records only where official or clearly official-partner live/replay evidence was found, with racecourse-specific, replay-only, event-only, or race-film archive caveats.
 - The PR-LIVE-023 pass added Norway, Finland, and Poland records only where official or clearly official-partner live/replay evidence was found, with paid-TV, betting-account, harness-only, and racecourse-network caveats as applicable.
 - The PR-LIVE-024 pass added Slovakia, Serbia, and Greece records after first confirming current racing activity or inactive-racing status; Slovakia and regular Serbian gallop/trotting records use `none_found` where no official live/replay landing page was confirmed, the Ljubičevo record is event-only/archive-only, and Greece is inactive for domestic Markopoulo racing.
+- The PR-LIVE-026 pass added the Saudi Arabia JCSA record from official authority and official-social evidence for free live coverage; replay remains `none_found` because no official replay archive landing page was verified.
 - Norway uses the shared Rikstoto Direkte/Rikstoto Play broadcast surface for trotting and gallop and does not make separate free-access claims for either Norwegian harness or Øvrevoll gallop.
 - Finland uses Suomen Hippos/Veikkaus TotoTV harness-racing evidence only; no Finnish thoroughbred source was verified.
 - Poland uses Tor Służewiec/Służewiec iTV official racecourse-network evidence and PKWK authority context; it must not be overstated as complete national Polish coverage.
@@ -273,7 +277,7 @@ Singapore should not be described as having active domestic Singapore Turf Club 
 
 ## Hardening notes
 
-- The summary counts and status lists were recalculated from the current static dataset after the Priority 2 Slovakia, Serbia, and Greece audit expansion.
-- India, Malaysia, the Philippines, Italy, Germany, Spain, Macau, Belgium, the Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, and Greece records were added only from official racecourse, official authority, broadcaster, official-social, operator, or clearly official-partner evidence, with venue/provider, code-specific, account/paid-TV, event-only, replay-only, racecourse-network, none-found, or inactive-racing caveats where coverage is not national, not active, or not universally free.
+- The summary counts and status lists were recalculated from the current static dataset after the Saudi Arabia JCSA audit expansion.
+- India, Malaysia, the Philippines, Italy, Germany, Spain, Macau, Belgium, the Netherlands, Switzerland, Norway, Finland, Poland, Slovakia, Serbia, Greece, and Saudi Arabia records were added only from official racecourse, official authority, broadcaster, official-social, operator, or clearly official-partner evidence, with venue/provider, code-specific, account/paid-TV, event-only, replay-only, racecourse-network, none-found, or inactive-racing caveats where coverage is not national, not active, or not universally free.
 - Carry-forward v0 hardening remains in place for Malta, Martinique, Peru, and Singapore so unresolved, race-detail, and domestic-racing-ended cases stay explicitly caveated.
 - Evidence remains limited to official or clearly official-partner landing pages where possible.

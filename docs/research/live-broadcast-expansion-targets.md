@@ -65,9 +65,16 @@ None.
 
 These targets may be valuable for completeness but should remain lower priority because evidence may be sparse, event-only, fragmented, inactive, or difficult to classify safely.
 
+### Completed Priority 3 targets now represented by audited records
+
+| Target jurisdiction | Audited-record status | Caveat to preserve |
+| --- | --- | --- |
+| Saudi Arabia | Completed for JCSA authority and official-social live evidence. | Official free live surface only; no official replay archive landing page was verified. |
+
+### Open Priority 3 targets
+
 | Target jurisdiction | Racing systems to consider | Expected source type to verify | Notes for future audit |
 | --- | --- | --- | --- |
-| Saudi Arabia | Thoroughbred flat; event-focused coverage | authority; racecourse; broadcaster; official partner; social | Separate major-event coverage from ordinary domestic coverage. |
 | Egypt | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Require clear official evidence before any public record. |
 | Tunisia | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Avoid non-official social reposts and aggregator pages. |
 | Algeria | Thoroughbred flat | authority; racecourse; broadcaster; official partner; social | Require official or official-partner evidence at record level. |
