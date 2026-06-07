@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const errors = [];
@@ -29,6 +30,17 @@ for (const file of [
   assertFile(file);
 }
 
+if (errors.length === 0) {
+  try {
+    execFileSync(process.execPath, ['scripts/timetable/build-canonical-timetable.mjs'], {
+      cwd: root,
+      stdio: 'inherit',
+    });
+  } catch (error) {
+    fail(`Canonical builder failed: ${error.message}`);
+  }
+}
+
 const buildScript = read('scripts/timetable/build-canonical-timetable.mjs');
 const meetings = readJson('data/generated/timetable/canonical/meetings.json');
 const details = readJson('data/generated/timetable/canonical/meeting-details.json');
@@ -36,6 +48,8 @@ const notes = read('PR-242.md');
 
 if (meetings.schema_version !== 'canonical-timetable-v0') fail('Unexpected canonical meetings schema_version.');
 if (details.schema_version !== 'canonical-meeting-details-v0') fail('Unexpected canonical details schema_version.');
+if ((meetings.meetings ?? []).length < 34) fail(`Expected at least 34 canonical meetings after build, found ${(meetings.meetings ?? []).length}.`);
+if ((details.details ?? []).length !== 2) fail(`Expected 2 canonical meeting detail records, found ${(details.details ?? []).length}.`);
 
 for (const source of [
   'data/generated/timetables.json',
@@ -43,6 +57,7 @@ for (const source of [
   'data/generated/normalized-timetable.json'
 ]) {
   if (!buildScript.includes(source)) fail(`Build script does not read ${source}.`);
+  if (!(meetings.input_sources ?? []).includes(source)) fail(`Canonical meetings output missing input source ${source}.`);
 }
 
 for (const source of [
@@ -50,10 +65,14 @@ for (const source of [
   'data/generated/timetable/hkjc-normalized-meeting-details.sample.json'
 ]) {
   if (!buildScript.includes(source)) fail(`Build script does not mention detail source ${source}.`);
+  if (!(details.input_sources ?? []).includes(source)) fail(`Canonical details output missing input source ${source}.`);
 }
 
 const meetingIds = new Set((meetings.meetings ?? []).map((meeting) => meeting.meeting_id));
 for (const id of [
+  'jra-tokyo-racecourse-2026-05-30',
+  'banei-obihiro-racecourse-2026-05-30',
+  'era-meydan-racecourse-2026-04-01',
   'jra-tokyo-racecourse-2026-06-06',
   'jra-tokyo-racecourse-2026-06-07',
   'nar-obihiro-racecourse-2026-06-06',
