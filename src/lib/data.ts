@@ -12,7 +12,7 @@ import tomorrow from '../../data/generated/tomorrow.json';
 import calendar30d from '../../data/generated/calendar-30d.json';
 import fetchStatus from '../../data/generated/fetch-status.json';
 import liveFetchProbeStatus from '../../data/generated/live-fetch-probe-status.json';
-import timetables from '../../data/generated/timetables.json';
+import publicTimetableMeetingList from '../../data/generated/timetable/public/meeting-list.json';
 import japanActiveTimetableRecords from '../../data/generated/japan-active-timetable-records.json';
 
 export type Locale = 'en' | 'ja';
@@ -26,12 +26,63 @@ export type Source = (typeof sources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
 export type ArchiveEntry = (typeof archive)[number];
 
-const mergedTimetables = {
-  ...timetables,
-  records: [...(timetables.records ?? []), ...(japanActiveTimetableRecords.records ?? [])],
-  sources: [...new Set([...(timetables.sources ?? []), ...(japanActiveTimetableRecords.sources ?? [])])],
-  notes: [...(timetables.notes ?? []), ...(japanActiveTimetableRecords.notes ?? [])]
+type PublicMeeting = (typeof publicTimetableMeetingList.meetings)[number];
+
+const authorityDisplayLabel: Record<string, string> = {
+  jra: 'JRA',
+  hkjc: 'HKJC',
+  'nar-local-government-racing': 'NAR local racing',
+  'banei-tokachi': 'Banei racing',
+  'emirates-racing-authority': 'Emirates Racing Authority',
+};
+
+const publicTimetableRecords = publicTimetableMeetingList.meetings.map((meeting) => ({
+  meeting_id: meeting.meeting_id,
+  country_id: meeting.country_id,
+  authority_id: meeting.authority_id,
+  racecourse_id: meeting.racecourse_id,
+  racecourse_name: meeting.racecourse_id,
+  date: meeting.date,
+  start_time_local: meeting.first_race_time_local,
+  first_race_time_local: meeting.first_race_time_local,
+  last_race_time_local: meeting.last_race_time_local,
+  timezone: meeting.timezone,
+  racing_type: authorityDisplayLabel[meeting.authority_id] ?? meeting.authority_id,
+  source_id: meeting.authority_id,
+  source_url: meeting.official_source_url,
+  official_source_url: meeting.official_source_url,
+  detail_path: meeting.detail_path,
+  capability_rank: meeting.capability_rank,
+  effective_public_rank: meeting.effective_public_rank,
+  status: meeting.source_status,
+  confidence: 'publication-policy-resolved',
+  last_checked_at: meeting.last_checked_date,
+  last_checked_date: meeting.last_checked_date,
+  notes: `Public timetable row resolved by ${meeting.policy_id}.`,
+}));
+
+const publicTimetables = {
+  schema_version: publicTimetableMeetingList.schema_version,
+  generated_at: publicTimetableMeetingList.generated_at,
+  records: publicTimetableRecords,
+  sources: [...new Set(publicTimetableMeetingList.meetings.map((meeting) => meeting.authority_id))],
+  notes: [
+    'Country and racecourse timetable surfaces read the publication-policy-resolved public meeting list.',
+    'One row represents one meeting; race-by-race rows are not included here.',
+  ],
 } as const;
+
+function getPublicMeetingsByRacecourseId(racecourseId: string): PublicMeeting[] {
+  const generatedDate = String(publicTimetableMeetingList.generated_at ?? '').slice(0, 10);
+  return publicTimetableMeetingList.meetings
+    .filter((meeting) => meeting.racecourse_id === racecourseId)
+    .filter((meeting) => !generatedDate || meeting.date >= generatedDate)
+    .sort((left, right) =>
+      `${left.date}:${left.first_race_time_local ?? '99:99'}:${left.meeting_id}`.localeCompare(
+        `${right.date}:${right.first_race_time_local ?? '99:99'}:${right.meeting_id}`,
+      ),
+    );
+}
 
 export const siteData = {
   countries,
@@ -48,7 +99,7 @@ export const siteData = {
     calendar30d,
     fetchStatus,
     liveFetchProbeStatus,
-    timetables: mergedTimetables,
+    timetables: publicTimetables,
     japanActiveTimetableRecords
   }
 } as const;
@@ -81,8 +132,38 @@ export function getRacecoursesByCountryId(countryId: string): Racecourse[] {
   return getRacecourses().filter((racecourse) => racecourse.country_id === countryId);
 }
 
-export function getRacecourseBySlug(slug: string): Racecourse | undefined {
-  return allRacecourses.find((racecourse) => racecourse.slug === slug);
+export function getRacecourseBySlug(slug: string) {
+  const racecourse = allRacecourses.find((entry) => entry.slug === slug);
+  if (!racecourse) return undefined;
+
+  const publicMeetings = getPublicMeetingsByRacecourseId(racecourse.id);
+  const existingSchedule = racecourse.schedule_summary ?? {
+    today_status: 'unknown',
+    next_meeting_date: null,
+    upcoming_meetings: [],
+    status: 'official-link-only',
+    last_checked: null,
+  };
+
+  return {
+    ...racecourse,
+    schedule_summary: {
+      ...existingSchedule,
+      today_status: publicMeetings.length > 0 ? 'public-meeting-listed' : existingSchedule.today_status,
+      next_meeting_date: publicMeetings[0]?.date ?? existingSchedule.next_meeting_date,
+      upcoming_meetings: publicMeetings.map((meeting) => ({
+        meeting_id: meeting.meeting_id,
+        date: meeting.date,
+        first_post: meeting.first_race_time_local,
+        last_race_time: meeting.last_race_time_local,
+        status: meeting.effective_public_rank,
+        detail_path: meeting.detail_path,
+        official_source_url: meeting.official_source_url,
+      })),
+      status: publicMeetings.length > 0 ? 'public-timetable-view' : existingSchedule.status,
+      last_checked: publicMeetings[0]?.last_checked_date ?? existingSchedule.last_checked,
+    },
+  };
 }
 
 export function getSourcesByCountryId(countryId: string): Source[] {
