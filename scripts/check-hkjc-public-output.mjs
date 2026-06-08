@@ -68,20 +68,6 @@ const publicHkjc = (publicList.meetings ?? []).filter((meeting) => meeting.autho
 const publicHkjcDetails = (publicDetails.details ?? []).filter((detail) => detail.authority_id === 'hkjc');
 const publicDetailById = new Map(publicHkjcDetails.map((detail) => [detail.meeting_id, detail]));
 const reportRows = report.statuses ?? [];
-const smokeResults = report.smoke_results ?? [];
-
-
-if ((route.smoke_targets ?? []).length < 1) fail('Expected at least one configured HKJC known-published smoke target.');
-if (smokeResults.length < 1) fail('Expected at least one HKJC smoke target result.');
-if (!smokeResults.some((result) => result.status === 'a_plus_ready' && result.observation && missingAPlusFields({
-  post_time_local: result.observation.race_time_local,
-  race_name: result.observation.race_name,
-  distance_m: result.observation.distance_m,
-  surface: result.observation.surface,
-  course_label: result.observation.course_label,
-}).length === 0)) {
-  fail('Expected at least one known-published HKJC smoke target with post_time_local, race_name, distance_m, and surface/course_label.');
-}
 
 if (routeMeetings.length < 1) fail('Expected at least one HKJC fixture meeting from the refresh route config.');
 if (normalizedHkjc.length !== routeMeetings.length) fail(`Expected ${routeMeetings.length} HKJC normalized records, found ${normalizedHkjc.length}.`);
@@ -124,20 +110,58 @@ for (const summary of normalized.extraction_summary ?? []) {
   }
 }
 
+const hvId = 'hkjc-happy-valley-racecourse-2026-06-10';
+const hvPublic = publicHkjc.find((meeting) => meeting.meeting_id === hvId);
+if (!hvPublic) {
+  fail(`Missing required HKJC smoke/public validation row ${hvId}.`);
+} else {
+  if (hvPublic.effective_public_rank !== 'A+') fail(`${hvId} must be public A+, found ${hvPublic.effective_public_rank}.`);
+  if (hvPublic.first_race_time_local !== '18:40') fail(`${hvId} first_race_time_local must be 18:40, found ${hvPublic.first_race_time_local}.`);
+  if (hvPublic.last_race_time_local !== '22:50') fail(`${hvId} last_race_time_local must be 22:50, found ${hvPublic.last_race_time_local}.`);
+  if (!hvPublic.detail_path) fail(`${hvId} must expose detail_path.`);
+}
+
+const hvDetail = publicDetailById.get(hvId);
+if (!hvDetail) {
+  fail(`Missing required HKJC public meeting detail ${hvId}.`);
+} else {
+  if ((hvDetail.timetable_rows ?? []).length !== 9) fail(`${hvId} must have 9 public detail race rows, found ${hvDetail.timetable_rows?.length ?? 0}.`);
+  const first = hvDetail.timetable_rows?.[0];
+  if (!first) {
+    fail(`${hvId} missing Race 1 detail row.`);
+  } else {
+    if (first.label !== 'Race 1') fail(`${hvId} Race 1 label mismatch: ${first.label}.`);
+    if (first.post_time_local !== '18:40') fail(`${hvId} Race 1 post_time_local must be 18:40, found ${first.post_time_local}.`);
+    if (first.race_name !== 'CHEK LAP KOK HANDICAP') fail(`${hvId} Race 1 race_name mismatch: ${first.race_name}.`);
+    if (first.distance_m !== 1800) fail(`${hvId} Race 1 distance_m must be 1800, found ${first.distance_m}.`);
+    if (first.surface !== 'Turf') fail(`${hvId} Race 1 surface must be Turf, found ${first.surface}.`);
+    if (first.course_label !== 'C+3 Course') fail(`${hvId} Race 1 course_label must be C+3 Course, found ${first.course_label}.`);
+  }
+}
+
+if (!reportRows.some((row) => row.meeting_date === '2026-06-10'
+  && row.racecourse_id === 'happy-valley-racecourse'
+  && row.race_number === 10
+  && row.status === 'no_race_stop_candidate')) {
+  fail('Expected 2026-06-10 Happy Valley Race 10 to be reported as no_race_stop_candidate.');
+}
+
 for (const key of ['pending_meetings', 'missing_meetings', 'parser_failed_meetings', 'a_plus_ready_meetings']) {
   if (!Array.isArray(report[key])) fail(`Report missing ${key} array.`);
 }
 
-if (reportRows.length > 0) {
-  for (const row of reportRows) {
-    if (!row.meeting_date) fail('Report row missing meeting_date.');
-    if (!row.racecourse_id) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_id.`);
-    if (!row.racecourse_code) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_code.`);
-    if (!Object.hasOwn(row, 'race_number')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing race_number.`);
-    if (!Object.hasOwn(row, 'http_status')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing http_status.`);
-    if (!Array.isArray(row.missing_fields)) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing missing_fields array.`);
-    if (!row.status) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing status.`);
-  }
+for (const row of reportRows) {
+  if (!row.meeting_date) fail('Report row missing meeting_date.');
+  if (!row.racecourse_id) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_id.`);
+  if (!row.racecourse_code) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_code.`);
+  if (!Object.hasOwn(row, 'race_number')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing race_number.`);
+  if (!Object.hasOwn(row, 'http_status')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing http_status.`);
+  if (!Object.hasOwn(row, 'final_url')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing final_url.`);
+  if (!Object.hasOwn(row, 'content_type')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing content_type.`);
+  if (!Object.hasOwn(row, 'body_size')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing body_size.`);
+  if (!Object.hasOwn(row, 'failure_status')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing failure_status.`);
+  if (!Array.isArray(row.missing_fields)) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing missing_fields array.`);
+  if (!row.status) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing status.`);
 }
 
 for (const [relativePath, dataset] of [
