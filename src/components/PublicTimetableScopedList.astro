@@ -1,0 +1,147 @@
+---
+import type { PublicTimetableMeetingRow } from '../lib/timetable/publicTimetableViewModel';
+import { limitPublicTimetableRows } from '../lib/timetable/publicTimetableFilters';
+
+type Props = {
+  rows: readonly PublicTimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+  headingId?: string;
+  emptyLabel?: string;
+  limit?: number;
+};
+
+const {
+  rows,
+  lang = 'en',
+  headingId,
+  emptyLabel = lang === 'ja'
+    ? 'この範囲の開催情報はまだありません。公式ソースで最新情報を確認してください。'
+    : 'No meetings are currently listed for this scope. Check the official source for the latest schedule.',
+  limit = 8,
+} = Astro.props;
+
+const primaryRows = limitPublicTimetableRows(rows, limit);
+const text = lang === 'ja'
+  ? {
+      date: '日付',
+      racecourse: '競馬場',
+      authority: '主催・体系',
+      rank: '公開ランク',
+      first: '第1レース',
+      last: '最終レース',
+      detail: '開催詳細',
+      official: '公式ソース',
+      notListed: '未掲載',
+      confirm: '最終確認は公式ソースで行ってください。',
+    }
+  : {
+      date: 'Date',
+      racecourse: 'Racecourse',
+      authority: 'Authority / system',
+      rank: 'Public rank',
+      first: 'First race',
+      last: 'Last race',
+      detail: 'Meeting detail',
+      official: 'Official source',
+      notListed: 'Not listed',
+      confirm: 'Use the official source for final confirmation.',
+    };
+
+const showFirst = (row: PublicTimetableMeetingRow) => row.effective_public_rank !== 'C';
+const showLast = (row: PublicTimetableMeetingRow) =>
+  row.effective_public_rank === 'B+' || row.effective_public_rank === 'A' || row.effective_public_rank === 'A+';
+const displayTime = (value: string | null) => value ?? text.notListed;
+---
+
+{primaryRows.length > 0 ? (
+  <div class="scoped-timetable" aria-labelledby={headingId}>
+    <ul class="scoped-timetable__list">
+      {primaryRows.map((row) => (
+        <li class="scoped-timetable__item">
+          <div class="scoped-timetable__main">
+            <span class="scoped-timetable__title">{row.racecourse_id}</span>
+            <span>{text.rank}: {row.effective_public_rank}</span>
+          </div>
+          <dl class="scoped-timetable__meta">
+            <div><dt>{text.date}</dt><dd>{row.date}</dd></div>
+            <div><dt>{text.authority}</dt><dd>{row.authority_id}</dd></div>
+            {showFirst(row) && <div><dt>{text.first}</dt><dd>{displayTime(row.first_race_time_local)}</dd></div>}
+            {showLast(row) && <div><dt>{text.last}</dt><dd>{displayTime(row.last_race_time_local)}</dd></div>}
+          </dl>
+          <div class="scoped-timetable__links">
+            {row.detail_path && <a href={row.detail_path}>{text.detail}</a>}
+            <a href={row.official_source_url}>{text.official}</a>
+          </div>
+          <p class="scoped-timetable__note">{text.confirm}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+) : (
+  <p>{emptyLabel}</p>
+)}
+
+<style>
+  .scoped-timetable__list {
+    display: grid;
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .scoped-timetable__item {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.85rem;
+  }
+
+  .scoped-timetable__main,
+  .scoped-timetable__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.85rem;
+    justify-content: space-between;
+  }
+
+  .scoped-timetable__title {
+    font-weight: 700;
+  }
+
+  .scoped-timetable__meta {
+    display: grid;
+    gap: 0.4rem 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    margin: 0;
+  }
+
+  .scoped-timetable__meta dt {
+    color: #555;
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .scoped-timetable__meta dd {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .scoped-timetable__note {
+    color: #555;
+    font-size: 0.84rem;
+    margin: 0;
+  }
+
+  @media (max-width: 420px) {
+    .scoped-timetable__item {
+      border-radius: 0.6rem;
+      padding: 0.75rem;
+    }
+
+    .scoped-timetable__meta {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
