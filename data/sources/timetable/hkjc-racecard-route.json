@@ -3,22 +3,206 @@
   "country_id": "hong-kong",
   "authority_id": "hkjc",
   "timezone": "Asia/Hong_Kong",
-  "month": "2026-06",
-  "target_rank_order": ["A+", "A", "B+", "B", "C"],
+  "rolling_refresh": true,
+  "refresh_window": {
+    "from": "2026-06-08",
+    "to": "2026-07-31",
+    "mode": "range"
+  },
+  "target_rank_order": [
+    "A+",
+    "A",
+    "B+",
+    "B",
+    "C"
+  ],
   "official_sources": {
-    "fixture_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+    "fixture_source_url": "HKJC official fixture pages for 2026-06-08..2026-07-31",
     "racecard_url_template": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}"
   },
   "meetings": [
-    { "meeting_date": "2026-06-03", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
-    { "meeting_date": "2026-06-07", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
-    { "meeting_date": "2026-06-10", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
-    { "meeting_date": "2026-06-13", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
-    { "meeting_date": "2026-06-21", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" },
-    { "meeting_date": "2026-06-24", "racecourse_id": "happy-valley-racecourse", "racecourse_name": "Happy Valley", "fixture_code": "HV", "session_type": "night" },
-    { "meeting_date": "2026-06-27", "racecourse_id": "sha-tin-racecourse", "racecourse_name": "Sha Tin", "fixture_code": "ST", "session_type": "day" }
+    {
+      "meeting_date": "2026-06-10",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_name": "Happy Valley",
+      "fixture_code": "HV",
+      "session_type": "night",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-06-13",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "day",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-06-21",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "day",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-06-24",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_name": "Happy Valley",
+      "fixture_code": "HV",
+      "session_type": "night",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-06-27",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "day",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-07-01",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-07-04",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-07-08",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_name": "Happy Valley",
+      "fixture_code": "HV",
+      "session_type": "night",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-07-12",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_name": "Sha Tin",
+      "fixture_code": "ST",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    },
+    {
+      "meeting_date": "2026-07-15",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_name": "Happy Valley",
+      "fixture_code": "HV",
+      "session_type": "night",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "fixture_fetch_warning": [
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+          "error_message": "fetch failed"
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+          "error_message": "fetch failed"
+        }
+      ]
+    }
   ],
-  "race_numbers_to_probe": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  "max_race_number_to_probe": 14,
   "promotion_rules": {
     "A+": "Allowed when every displayed race row has public-safe race-by-race post time plus minimal race metadata: race title, distance, and surface/course type. Do not store starter lists, odds, results, payouts, predictions, full racecard text, or raw HTML.",
     "A": "All race numbers from 1 through expected_race_count must return public-safe post times. The normalized detail output may include Race N and post_time_local.",

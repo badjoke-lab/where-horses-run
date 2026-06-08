@@ -6,9 +6,15 @@ const configPath = path.join(root, 'data/sources/timetable/hkjc-racecard-route.j
 const snapshotPath = path.join(root, 'data/generated/timetable/hkjc-racecard-source-snapshot.json');
 const normalizedOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-timetable.sample.json');
 const detailsOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-meeting-details.sample.json');
+const reportPath = path.join(root, 'data/generated/timetable/hkjc-refresh-report.json');
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function readJsonIfExists(filePath, fallback) {
+  if (!fs.existsSync(filePath)) return fallback;
+  return readJson(filePath);
 }
 
 function writeJson(filePath, value) {
@@ -55,6 +61,7 @@ function compactRaceRows(meeting) {
       course_label: race.course_label ?? null,
       metadata_status: race.metadata_status ?? 'pending',
       source_url: race.source_url,
+      official_source_url: race.source_url,
     }));
 }
 
@@ -63,7 +70,16 @@ function isContinuousFromOne(rows) {
 }
 
 function hasAPlusMetadata(row) {
-  return Boolean(row.race_name && row.distance_m && row.surface && row.metadata_status === 'verified');
+  return Boolean(row.race_name && row.distance_m && (row.surface || row.course_label) && row.metadata_status === 'verified');
+}
+
+function missingAPlusFields(row) {
+  const missing = [];
+  if (!row.post_time_local) missing.push('post_time_local');
+  if (!row.race_name) missing.push('race_name');
+  if (row.distance_m == null) missing.push('distance_m');
+  if (!row.surface && !row.course_label) missing.push('surface_or_course_label');
+  return missing;
 }
 
 function snapshotMeetingByKey(snapshot) {
@@ -108,6 +124,7 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
       first_race_time_local: capabilityRank === 'C' ? null : firstRaceTime,
       last_race_time_local: capabilityRank === 'B+' || capabilityRank === 'A' || capabilityRank === 'A+' ? lastRaceTime : null,
       official_source_url: officialSourceUrl,
+      official_fixture_url: routeMeeting.official_fixture_url ?? null,
       last_checked_date: snapshot.generated_at.slice(0, 10),
       display_status: rows.length > 0 ? 'displayable' : 'partial',
       notes:
@@ -138,8 +155,9 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
                 surface: row.surface,
                 course_label: row.course_label,
                 metadata_status: row.metadata_status,
+                official_source_url: row.official_source_url,
               }
-            : { label: row.label, post_time_local: row.post_time_local }),
+            : { label: row.label, post_time_local: row.post_time_local, official_source_url: row.official_source_url }),
         }
       : null,
     extraction_summary: {
@@ -147,7 +165,8 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
       extracted_race_count: rows.length,
       race_numbers: rows.map((row) => row.race_number),
       continuous_from_one: continuous,
-      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label'] : [],
+      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label', 'official_source_url'] : [],
+      missing_a_plus_fields: rows.flatMap((row) => missingAPlusFields(row).map((field) => ({ race_number: row.race_number, field }))),
       chosen_rank: capabilityRank,
       route_config_meeting: true,
       snapshot_observation_present: observed,
