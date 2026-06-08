@@ -30,22 +30,22 @@ const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entr
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
 
 const formatValue = (value: unknown) => {
-  if (value === null || value === undefined || value === '') return '未確認';
-  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '未確認';
+  if (value === null || value === undefined || value === '') return '未掲載';
+  if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '未掲載';
   return String(value);
 };
 
-const formatNumber = (value: unknown) => typeof value === 'number' ? value.toLocaleString('ja-JP') : '未確認';
-const formatMeters = (value: unknown) => typeof value === 'number' ? `${value.toLocaleString('ja-JP')}m` : '未確認';
+const formatNumber = (value: unknown) => typeof value === 'number' ? value.toLocaleString('ja-JP') : '未掲載';
+const formatMeters = (value: unknown) => typeof value === 'number' ? `${value.toLocaleString('ja-JP')}m` : '未掲載';
 
 const directionLabel = (value: unknown) => {
   const labels: Record<string, string> = {
     'left-handed': '左回り',
     'right-handed': '右回り',
     straight: '直線',
-    unknown: '未確認'
+    unknown: '未掲載'
   };
-  return typeof value === 'string' ? labels[value] ?? value : '未確認';
+  return typeof value === 'string' ? labels[value] ?? value : '未掲載';
 };
 
 const statusLabel = (value: unknown) => {
@@ -57,11 +57,11 @@ const statusLabel = (value: unknown) => {
     partial: '一部確認済み',
     secondary: '二次情報',
     stale: '再確認が必要',
-    failed: '取得失敗',
-    'official-link-only': '公式リンク確認',
+    failed: '利用不可',
+    'official-link-only': 'リンク確認',
     link_first: 'リンク優先'
   };
-  return typeof value === 'string' ? labels[value] ?? value : '未確認';
+  return typeof value === 'string' ? labels[value] ?? value : '未掲載';
 };
 
 const toRecord = (value: unknown): Record<string, any> => {
@@ -84,11 +84,11 @@ const formatRecordFields = (record: unknown, fields: Array<[string, string[]]>) 
       return value === null ? null : `${label}: ${String(value)}`;
     })
     .filter(Boolean);
-  return parts.length ? parts.join(' ・ ') : '詳細は整形待ちです。';
+  return parts.length ? parts.join(' ・ ') : '詳細は今後追加します。';
 };
 
 const formatDistanceList = (value: unknown) => {
-  if (!Array.isArray(value) || value.length === 0) return '未確認';
+  if (!Array.isArray(value) || value.length === 0) return null;
   return value.map((distance) => `${distance}m`).join(', ');
 };
 
@@ -100,6 +100,8 @@ const capacity = toRecord(profile.capacity_profile);
 const courseLayout = toRecord(profile.course_layout);
 const raceDistanceProfile = toRecord(profile.race_distance_profile);
 const visitorLinks = toRecord(profile.visitor_links);
+const upcomingMeetings = track.schedule_summary?.upcoming_meetings ?? [];
+const upcomingConditions = track.distance_profile?.upcoming_conditions ?? [];
 
 const primaryScheduleUrl = typeof visitorLinks.official_schedule === 'string'
   ? visitorLinks.official_schedule
@@ -126,14 +128,6 @@ const raceConditionFields: Array<[string, string[]]> = [
   ['距離', ['distance', 'distance_m']],
   ['種別', ['race_type', 'type']]
 ];
-const notableRaceFields: Array<[string, string[]]> = [
-  ['名称', ['name_ja', 'name', 'race_name']],
-  ['格付け', ['grade']],
-  ['馬場', ['surface']],
-  ['距離', ['distance_m', 'distance']],
-  ['時期', ['season', 'month']],
-  ['ソース', ['official_link', 'source_url', 'url']]
-];
 
 const courseGroups = [
   ['芝コース', courseLayout.turf_courses],
@@ -150,21 +144,34 @@ const fallbackCourseRows = [
   ['直線', track.course_profile?.home_straight_m]
 ].filter(([, value]) => typeof value === 'number');
 
+const raceDistanceRows = [
+  ['芝', raceDistanceProfile.turf_distances_m],
+  ['ダート', raceDistanceProfile.dirt_distances_m],
+  ['障害', raceDistanceProfile.jump_distances_m],
+  ['オールウェザー', raceDistanceProfile.all_weather_distances_m],
+  ['ハーネス', raceDistanceProfile.harness_distances_m]
+]
+  .map(([label, value]) => [label, formatDistanceList(value)] as const)
+  .filter(([, value]) => value);
+
 const visitorLinkRows = [
-  ['公式競馬場ページ', visitorLinks.official_racecourse],
-  ['公式開催予定', visitorLinks.official_schedule],
-  ['公式コース詳細', visitorLinks.official_course_details],
-  ['公式アクセス', visitorLinks.official_access],
-  ['公式レースカード', visitorLinks.official_racecard],
-  ['公式結果', visitorLinks.official_results]
+  ['競馬場ページ', visitorLinks.official_racecourse],
+  ['開催予定', visitorLinks.official_schedule],
+  ['コース詳細', visitorLinks.official_course_details],
+  ['アクセス', visitorLinks.official_access],
+  ['レースカード', visitorLinks.official_racecard],
+  ['結果', visitorLinks.official_results]
 ].filter(([, url]) => typeof url === 'string' && url.length > 0) as Array<[string, string]>;
 
-const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ?? 'この競馬場ページは、公式またはソース安全な競馬情報をもとに整備中です。';
+const fallbackOfficialRows = officialLinks.map((link) => [link.label_ja, link.url] as [string, string]);
+const linkRows = visitorLinkRows.length ? visitorLinkRows : fallbackOfficialRows;
+const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ?? 'このページでは、競馬場の基本情報、コース情報、開催予定へのリンクを整理しています。';
+const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capacity.seating_capacity === 'number' || typeof capacity.standing_capacity === 'number';
 ---
 
-<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の規模、コース構造、開催予定導線、公式リンク、関連用語をまとめた競馬場ページです。`} lang="ja">
+<BaseLayout title={`${track.name_ja} | 競馬場 | 競馬どこ？`} description={`${track.name_ja} の規模、コース構造、開催予定へのリンク、関連用語をまとめた競馬場ページです。`} lang="ja">
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Racecourse profile</p>
+    <p class="hero__eyebrow">競馬場プロフィール</p>
     <h1 id="page-title">{track.name_ja}</h1>
     <p class="hero__summary">
       {track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}
@@ -172,48 +179,52 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
     </p>
     <p>{overview}</p>
     <p>
-      {primaryScheduleUrl ? <a href={primaryScheduleUrl}>公式開催予定を見る</a> : <a href={calendarHref}>カレンダーを見る</a>}
+      {primaryScheduleUrl ? <a href={primaryScheduleUrl}>開催予定</a> : <a href={calendarHref}>カレンダー</a>}
       {' ・ '}
-      {primaryVenueUrl ? <a href={primaryVenueUrl}>公式競馬場ページ</a> : <a href={countrySourceHref}>国別ソース一覧</a>}
-      {primaryCourseUrl ? <><span>{' ・ '}</span><a href={primaryCourseUrl}>公式コース詳細</a></> : null}
+      {primaryVenueUrl ? <a href={primaryVenueUrl}>競馬場ページ</a> : <a href={countrySourceHref}>ソース一覧</a>}
+      {primaryCourseUrl ? <><span>{' ・ '}</span><a href={primaryCourseUrl}>コース詳細</a></> : null}
     </p>
   </section>
 
-  <section class="section-grid" aria-label="基本情報と開催導線">
+  <section class="section-grid" aria-label="競馬場の基本情報">
     <article class="card">
       <h2>基本情報</h2>
       <p><strong>国:</strong> <a href={countryHref}>{country ? country.name_ja : track.country_id}</a></p>
       <p><strong>都市 / 地域:</strong> {track.city} / {formatValue(track.region)}</p>
       <p><strong>タイムゾーン:</strong> {track.timezone}</p>
-      <p><strong>運営者:</strong> {formatValue(operator.name)}{operator.type ? ` (${operator.type})` : ''}</p>
+      <p><strong>運営:</strong> {formatValue(operator.name)}</p>
       <p><strong>状態:</strong> {track.status}</p>
       <p><strong>馬場:</strong> {formatValue(track.surfaces)}</p>
       <p><strong>回り:</strong> {directionLabel(track.direction)}</p>
-      <p><strong>代表芝コース長:</strong> {formatMeters(track.course_profile?.turf_circumference_m)}</p>
+      <p><strong>代表コース長:</strong> 芝 {formatMeters(track.course_profile?.turf_circumference_m)} / ダート {formatMeters(track.course_profile?.dirt_circumference_m)}</p>
       <p><strong>直線:</strong> {formatMeters(courseLayout.home_straight_m ?? track.course_profile?.home_straight_m)}</p>
     </article>
 
-    <article class="card">
-      <h2>規模感</h2>
-      <p><strong>収容人数:</strong> {formatNumber(capacity.total_capacity)}</p>
-      <p><strong>座席数:</strong> {formatNumber(capacity.seating_capacity)}</p>
-      <p><strong>立見等:</strong> {formatNumber(capacity.standing_capacity)}</p>
-      <p><strong>確認状態:</strong> {statusLabel(capacity.status)}</p>
-      <p>{capacity.scale_note_ja ?? '収容人数はまだ確認できていません。'}</p>
-      {capacity.source_url ? <p><a href={capacity.source_url}>収容人数ソース</a></p> : null}
-    </article>
+    {hasCapacity ? (
+      <article class="card">
+        <h2>規模感</h2>
+        <p><strong>収容人数:</strong> {formatNumber(capacity.total_capacity)}</p>
+        <p><strong>座席数:</strong> {formatNumber(capacity.seating_capacity)}</p>
+        {typeof capacity.standing_capacity === 'number' ? <p><strong>立見等:</strong> {formatNumber(capacity.standing_capacity)}</p> : null}
+        <p>{capacity.scale_note_ja ?? '収容人数は、より確実な資料を確認できた場合に更新します。'}</p>
+        {capacity.source_url ? <p><a href={capacity.source_url}>収容人数の参照元</a></p> : null}
+      </article>
+    ) : null}
 
     <article class="card">
-      <h2>開催予定への導線</h2>
-      <p><strong>今日:</strong> {statusLabel(track.schedule_summary?.today_status)}</p>
-      <p><strong>次回開催:</strong> {formatValue(track.schedule_summary?.next_meeting_date)}</p>
-      <p><strong>予定データ:</strong> {statusLabel(track.schedule_summary?.status)}</p>
-      <p><strong>最終確認:</strong> {formatValue(track.schedule_summary?.last_checked)}</p>
-      <p>{primaryScheduleUrl ? <a href={primaryScheduleUrl}>公式開催予定を確認</a> : <a href={calendarHref}>取得済みカレンダーを見る</a>}</p>
+      <h2>開催予定</h2>
+      {upcomingMeetings.length ? (
+        <ul>
+          {upcomingMeetings.map((meeting) => <li>{formatRecordFields(meeting, meetingFields)}</li>)}
+        </ul>
+      ) : (
+        <p>このページでは、直近の開催予定はまだ表示していません。カレンダー側のデータ接続後、この欄に開催予定を表示します。</p>
+      )}
+      <p>{primaryScheduleUrl ? <a href={primaryScheduleUrl}>最新の開催予定を見る</a> : <a href={calendarHref}>カレンダーを見る</a>}</p>
     </article>
   </section>
 
-  <section class="section-grid" aria-label="競馬種別と直近予定">
+  <section class="section-grid" aria-label="競馬種別とレース条件">
     <article class="card">
       <h2>競馬種別</h2>
       <ul>
@@ -224,31 +235,14 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
       </ul>
     </article>
 
-    <article class="card">
-      <h2>直近の開催予定</h2>
-      {track.schedule_summary?.upcoming_meetings?.length ? (
+    {upcomingConditions.length ? (
+      <article class="card">
+        <h2>直近開催のレース条件</h2>
         <ul>
-          {track.schedule_summary.upcoming_meetings.map((meeting) => (
-            <li>{formatRecordFields(meeting, meetingFields)}</li>
-          ))}
+          {upcomingConditions.map((condition) => <li>{formatRecordFields(condition, raceConditionFields)}</li>)}
         </ul>
-      ) : (
-        <p>この競馬場の確認済み開催予定行はまだありません。最終確認は公式開催予定で行ってください。</p>
-      )}
-    </article>
-
-    <article class="card">
-      <h2>直近開催のレース条件</h2>
-      {track.distance_profile?.upcoming_conditions?.length ? (
-        <ul>
-          {track.distance_profile.upcoming_conditions.map((condition) => (
-            <li>{formatRecordFields(condition, raceConditionFields)}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>確認済みのレース条件行はまだありません。出走表・オッズ・結果・払戻・全文レースカードはここでは再掲載しません。</p>
-      )}
-    </article>
+      </article>
+    ) : null}
   </section>
 
   <section class="section-grid" aria-label="コース構造と実施距離">
@@ -266,7 +260,6 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
                     {' — '}{formatMeters(course.circumference_m)}
                     {course.direction ? ` ・ ${directionLabel(course.direction)}` : ''}
                     {course.surface ? ` ・ ${course.surface}` : ''}
-                    {course.note_ja ? <><br /><span>{course.note_ja}</span></> : null}
                   </li>
                 ))}
               </ul>
@@ -275,81 +268,60 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
         </div>
       ) : (
         <div>
-          <p>{track.course_profile?.course_notes_ja ?? 'コース構造は公式ソース確認後に反映します。'}</p>
+          <p>{track.course_profile?.course_notes_ja ?? 'コース構造は今後追加します。'}</p>
           {fallbackCourseRows.length ? <ul>{fallbackCourseRows.map(([label, value]) => <li><strong>{label}:</strong> {formatMeters(value)}</li>)}</ul> : null}
         </div>
       )}
-      <p><strong>内外回りメモ:</strong> {courseLayout.inner_outer_note_ja ?? (track.course_profile?.has_inner_outer_courses === null ? '未確認' : String(track.course_profile?.has_inner_outer_courses))}</p>
-      <p><strong>構造データ:</strong> {statusLabel(courseLayout.status ?? track.data_status?.course_profile)}</p>
+      <p>{courseLayout.inner_outer_note_ja ?? '詳細な仮柵設定やコース図は、コース詳細ページで確認できます。'}</p>
+      {primaryCourseUrl ? <p><a href={primaryCourseUrl}>コース詳細を見る</a></p> : null}
     </article>
 
-    <article class="card">
-      <h2>実施レース距離</h2>
-      <p>この欄はコース1周距離ではなく、実際に使われるレース距離を扱います。</p>
-      <p><strong>芝:</strong> {formatDistanceList(raceDistanceProfile.turf_distances_m)}</p>
-      <p><strong>ダート:</strong> {formatDistanceList(raceDistanceProfile.dirt_distances_m)}</p>
-      <p><strong>障害:</strong> {formatDistanceList(raceDistanceProfile.jump_distances_m)}</p>
-      <p><strong>オールウェザー:</strong> {formatDistanceList(raceDistanceProfile.all_weather_distances_m)}</p>
-      <p><strong>ハーネス:</strong> {formatDistanceList(raceDistanceProfile.harness_distances_m)}</p>
-      <p><strong>確認状態:</strong> {statusLabel(raceDistanceProfile.status)}</p>
-    </article>
+    {raceDistanceRows.length ? (
+      <article class="card">
+        <h2>実施レース距離</h2>
+        <p>実施レース距離は、コース1周距離とは別の情報です。</p>
+        {raceDistanceRows.map(([label, value]) => <p><strong>{label}:</strong> {value}</p>)}
+      </article>
+    ) : null}
   </section>
 
-  <section class="section-grid" aria-label="代表レース・開催シーズン・公式リンク">
+  <section class="section-grid" aria-label="代表レース・開催シーズン・リンク">
     <article class="card">
       <h2>代表レース</h2>
       {track.notable_races?.length ? (
         <ul>
-          {track.notable_races.map((race) => (
-            <li>{formatRecordFields(race, notableRaceFields)}</li>
-          ))}
+          {track.notable_races.map((race) => {
+            const row = toRecord(race);
+            const name = row.name_ja ?? row.name ?? row.race_name;
+            const url = row.source_url ?? row.official_link ?? row.url;
+            return <li>{typeof url === 'string' ? <a href={url}>{name}</a> : name}</li>;
+          })}
         </ul>
       ) : (
-        <p>代表レース情報はまだ登録されていません。将来追加する場合は公式またはソース安全なページへリンクします。</p>
+        <p>代表レースは今後追加します。</p>
       )}
+      <p>格付け、距離、馬場、開催時期は、整理できたものから追加します。</p>
     </article>
 
     <article class="card">
       <h2>開催シーズン</h2>
-      <p>{track.seasonality?.summary_ja ?? '開催シーズンは公式ソース確認後に反映します。'}</p>
+      <p>{track.seasonality?.summary_ja ?? '開催シーズンは今後追加します。'}</p>
       <p><strong>状態:</strong> {statusLabel(track.seasonality?.status)}</p>
     </article>
 
     <article class="card">
       <h2>公式・来場関連リンク</h2>
-      {visitorLinkRows.length ? (
+      {linkRows.length ? (
         <ul>
-          {visitorLinkRows.map(([label, url]) => <li><a href={url}>{label}</a></li>)}
-        </ul>
-      ) : null}
-      {officialLinks.length ? (
-        <ul>
-          {officialLinks.map((link) => (
-            <li>
-              <a href={link.url}>{link.label_ja}</a>
-              <br />
-              <span>種別: {link.link_type} / Source: {link.source_id}</span>
-            </li>
-          ))}
+          {linkRows.map(([label, url]) => <li><a href={url}>{label}</a></li>)}
         </ul>
       ) : (
-        <p>この競馬場に紐づく公式リンクはまだありません。</p>
+        <p>リンクは今後追加します。</p>
       )}
     </article>
   </section>
 
-  <section class="section-grid" aria-label="データ状態と関連ページ">
-    <article class="card">
-      <h2>データ状態</h2>
-      <p><strong>コース:</strong> {statusLabel(track.data_status?.course_profile)}</p>
-      <p><strong>予定:</strong> {statusLabel(track.data_status?.schedule)}</p>
-      <p><strong>ソース導線:</strong> {statusLabel(track.data_status?.source_status)}</p>
-      <p><strong>収容人数:</strong> {statusLabel(capacity.status)}</p>
-      <p><strong>実施距離:</strong> {statusLabel(raceDistanceProfile.status)}</p>
-      <p><strong>最終確認:</strong> {formatValue(track.data_status?.last_checked)}</p>
-      <p>Where Horses Run / 競馬どこ？ は公式ソースへの導線を提供しますが、出走表・オッズ・結果・払戻・予想・完全なレースカードは再掲載しません。</p>
-    </article>
-
+  <section class="section-grid" aria-label="関連ページとデータ状態">
     <article class="card">
       <h2>関連学習</h2>
       <p><a href={countryHref}>国ページを開く</a></p>
@@ -361,7 +333,7 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
           })}
         </ul>
       ) : (
-        <p>関連用語はまだありません。</p>
+        <p>関連用語は今後追加します。</p>
       )}
     </article>
 
@@ -376,8 +348,18 @@ const overview = profile.overview_ja ?? track.course_profile?.course_notes_ja ??
           })}
         </ul>
       ) : (
-        <p>関連ソースはまだありません。</p>
+        <p>関連ソースは今後追加します。</p>
       )}
+    </article>
+
+    <article class="card">
+      <h2>データ状態</h2>
+      <p><strong>コース情報:</strong> {statusLabel(track.data_status?.course_profile)}</p>
+      <p><strong>開催予定:</strong> {statusLabel(track.data_status?.schedule)}</p>
+      <p><strong>収容人数:</strong> {statusLabel(capacity.status)}</p>
+      <p><strong>実施距離:</strong> {statusLabel(raceDistanceProfile.status)}</p>
+      <p><strong>最終確認:</strong> {formatValue(track.data_status?.last_checked)}</p>
+      <p>Where Horses Run / 競馬どこ？ は、競馬場情報と開催予定への入口を整理するサイトです。出走表・オッズ・結果・払戻・予想・完全なレースカードは掲載しません。</p>
     </article>
   </section>
 
