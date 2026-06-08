@@ -8,7 +8,7 @@ const racecourses = getRacecourses().slice(0, 6);
 const racingTypes = getRacingTypes().slice(0, 8);
 const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
 const sourceCount = siteData.sources.length;
-const todayRecords = siteData.generated.today.meetings ?? [];
+const todayRecords = (siteData.generated.today.meetings ?? []).filter((meeting) => meeting.status !== 'placeholder');
 const todayPreview = todayRecords.slice(0, 4);
 ---
 
@@ -31,7 +31,7 @@ const todayPreview = todayRecords.slice(0, 4);
   <section class="section-grid" aria-label="主要な探し方">
     <article class="card">
       <h2><a href="/ja/today/">今日の開催</a></h2>
-      <p>今日の安全な開催時刻レコードを起点に、競馬場ページや公式ソースへ進みます。</p>
+      <p>確認済みの開催時刻レコードがある場合に表示し、競馬場ページや公式ソースへ案内します。</p>
       {todayPreview.length > 0 ? (
         <ul>
           {todayPreview.map((meeting) => (
@@ -39,7 +39,7 @@ const todayPreview = todayRecords.slice(0, 4);
           ))}
         </ul>
       ) : (
-        <p>今日の確認済みレコードはまだありません。国・地域ページや公式ソースで確認してください。</p>
+        <p>確認済みの時刻表レコードを準備中です。国・地域ページや公式ソースで確認してください。</p>
       )}
     </article>
 
