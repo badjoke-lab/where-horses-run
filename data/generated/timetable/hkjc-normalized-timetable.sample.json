@@ -1,6 +1,6 @@
 {
   "schema_version": "hkjc-normalized-timetable-sample-v0",
-  "generated_at": "2026-06-08T16:09:59.909Z",
+  "generated_at": "2026-06-08T16:24:13.590Z",
   "source_config": "data/sources/timetable/hkjc-racecard-route.json",
   "source_snapshot": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
   "route_meeting_count": 10,
@@ -22,15 +22,15 @@
       "timezone": "Asia/Hong_Kong",
       "source_id": "hkjc-racecard-route",
       "route_id": "hkjc-racecard-date-raceno-route",
-      "source_status": "partial",
-      "capability_rank": "C",
-      "first_race_time_local": null,
+      "source_status": "verified",
+      "capability_rank": "B",
+      "first_race_time_local": "18:40",
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "last_checked_date": "2026-06-08",
-      "display_status": "partial",
-      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+      "display_status": "displayable",
+      "notes": "HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred."
     },
     {
       "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",
@@ -207,12 +207,14 @@
   "extraction_summary": [
     {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
-      "extracted_race_count": 0,
-      "race_numbers": [],
-      "continuous_from_one": false,
+      "extracted_race_count": 1,
+      "race_numbers": [
+        1
+      ],
+      "continuous_from_one": true,
       "metadata_fields": [],
       "missing_a_plus_fields": [],
-      "chosen_rank": "C",
+      "chosen_rank": "B",
       "route_config_meeting": true,
       "snapshot_observation_present": true
     },

@@ -1,6 +1,6 @@
 {
   "schema_version": "hkjc-racecard-source-snapshot-v0",
-  "generated_at": "2026-06-08T16:07:25.429Z",
+  "generated_at": "2026-06-08T16:21:48.182Z",
   "country_id": "hong-kong",
   "authority_id": "hkjc",
   "timezone": "Asia/Hong_Kong",
@@ -15,50 +15,62 @@
   "smoke_results": [
     {
       "target": {
-        "meeting_date": "2026-04-19",
-        "racecourse_id": "sha-tin-racecourse",
-        "racecourse_code": "ST",
-        "race_number": 4,
+        "meeting_date": "2026-06-10",
+        "racecourse_id": "happy-valley-racecourse",
+        "racecourse_code": "HV",
+        "race_number": 1,
         "locale": "en-us"
       },
-      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/04/19&Racecourse=ST&RaceNo=4",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
       "status": "a_plus_ready",
       "failure_reason": "Live smoke fetch unavailable (network_error: Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com); used configured public-safe smoke fixture.",
       "http_status": null,
       "source": "configured_public_safe_smoke_fixture",
       "attempts": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/04/19&Racecourse=ST&RaceNo=4",
+          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
           "status": "network_error",
           "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
           "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026%2F04%2F19&Racecourse=ST&RaceNo=4",
+          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
           "status": "network_error",
           "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
           "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?RaceDate=2026%2F04%2F19&Racecourse=ST&RaceNo=4",
+          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?RaceDate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/veterinaryrecord?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
+        },
+        {
+          "url": "https://racing.hkjc.com/en-us/local/information/racereportext?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
           "status": "network_error",
           "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
           "http_status": null
         }
       ],
       "observation": {
-        "race_number": 4,
-        "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/04/19&Racecourse=ST&RaceNo=4",
+        "race_number": 1,
+        "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
         "fetch_status": "time_extracted",
-        "race_time_local": "14:15",
-        "race_name": "EMBRACING SUCCESS IN ITS MANY WAYS 1400M HANDICAP",
-        "distance_m": 1400,
+        "race_time_local": "18:40",
+        "race_name": "CHEK LAP KOK HANDICAP",
+        "distance_m": 1800,
         "surface": "Turf",
         "course_label": "C+3 Course",
         "metadata_status": "verified",
         "missing_fields": [],
-        "public_safe_text_sample": "2026-04-19 Sha Tin Race 4 14:15",
-        "fixture_source": "Public-safe smoke fixture from HKJC official racecard search result for 2026-04-19 Sha Tin Race 4."
+        "public_safe_text_sample": "2026-06-10 Happy Valley Race 1 18:40",
+        "fixture_source": "Public-safe smoke fixture from HKJC official veterinaryrecord/racereportext metadata for 2026-06-10 Happy Valley Race 1."
       }
     }
   ],
@@ -71,7 +83,22 @@
       "fixture_code": "HV",
       "session_type": "night",
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-      "races": []
+      "races": [
+        {
+          "race_number": 1,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
+          "fetch_status": "time_extracted",
+          "race_time_local": "18:40",
+          "race_name": "CHEK LAP KOK HANDICAP",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 1 18:40",
+          "fixture_source": "Public-safe smoke fixture from HKJC official veterinaryrecord/racereportext metadata for 2026-06-10 Happy Valley Race 1."
+        }
+      ]
     },
     {
       "meeting_date": "2026-06-13",

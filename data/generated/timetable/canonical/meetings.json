@@ -798,15 +798,15 @@
       "racecourse_id": "happy-valley-racecourse",
       "date": "2026-06-10",
       "timezone": "Asia/Hong_Kong",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
+      "capability_rank": "B",
+      "display_status": "displayable",
+      "first_race_time_local": "18:40",
       "last_race_time_local": null,
       "source_trace": {
         "source_id": "hkjc-racecard-route",
         "route_id": "hkjc-racecard-date-raceno-route",
-        "source_status": "partial",
-        "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
         "source_label": "Official source",
         "extraction_method": "official_racecard_route",
         "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
@@ -818,7 +818,7 @@
         "stale_after_date": null,
         "freshness_note": "HKJC normalized route record merged after canonical build."
       },
-      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+      "notes": "HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred."
     },
     {
       "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",

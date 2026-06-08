@@ -102,15 +102,20 @@ function hkjcLocale(locale = defaultLocale) {
   return 'en-us';
 }
 
+function localInformationUrl({ page, meeting, raceNumber, locale = defaultLocale }) {
+  const params = new URLSearchParams({ racedate: hkjcRaceDate(meeting.meeting_date), Racecourse: racecourseCode(meeting), RaceNo: String(raceNumber) });
+  return `https://racing.hkjc.com/${hkjcLocale(locale)}/local/information/${page}?${params.toString()}`;
+}
+
 function racecardUrlCandidates({ meeting, raceNumber, locale = defaultLocale }) {
   const raceDate = hkjcRaceDate(meeting.meeting_date);
   const code = racecourseCode(meeting);
-  const localLocale = hkjcLocale(locale);
-  const params = new URLSearchParams({ racedate: raceDate, Racecourse: code, RaceNo: String(raceNumber) });
   const legacyParams = new URLSearchParams({ RaceDate: raceDate, Racecourse: code, RaceNo: String(raceNumber) });
   return [
-    `https://racing.hkjc.com/${localLocale}/local/information/racecard?${params.toString()}`,
+    localInformationUrl({ page: 'racecard', meeting, raceNumber, locale }),
     `https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?${legacyParams.toString()}`,
+    localInformationUrl({ page: 'veterinaryrecord', meeting, raceNumber, locale }),
+    localInformationUrl({ page: 'racereportext', meeting, raceNumber, locale }),
   ];
 }
 
@@ -285,7 +290,8 @@ async function fetchFixtureMeetings(config, range) {
   }
 
   if (failures.length > 0) {
-    const fallback = (config.meetings ?? []).filter((meeting) => meeting.meeting_date >= range.from && meeting.meeting_date <= range.to);
+    const fallbackSource = config.known_meetings ?? config.meetings ?? [];
+    const fallback = fallbackSource.filter((meeting) => meeting.meeting_date >= range.from && meeting.meeting_date <= range.to);
     if (fallback.length === 0) {
       throw new Error(`Unable to fetch HKJC fixture and no route-config fallback exists for ${range.from}..${range.to}: ${failures.map((f) => `${f.url} ${f.status} ${f.failure_reason}`).join('; ')}`);
     }
@@ -374,6 +380,10 @@ function extractPublicSafeObservation(html, config, meeting, raceNumber, sourceU
     missing_fields: missingFields,
     public_safe_text_sample: raceTime ? `${meeting.meeting_date} ${meeting.racecourse_name} Race ${raceNumber} ${raceTime}` : null,
   };
+}
+
+function smokeTargetKey(target) {
+  return `${target.meeting_date}:${target.racecourse_id ?? racecourseSlug(racecourseName(target.racecourse_code ?? target.fixture_code))}:${String(target.racecourse_code ?? target.fixture_code).toUpperCase()}:${target.race_number}`;
 }
 
 function observationFromPublicSafeFixture(config, target) {
@@ -508,10 +518,15 @@ async function fetchSmokeTargets(config) {
   return results;
 }
 
-async function fetchMeetingRaces(config, meeting, reportRows) {
+async function fetchMeetingRaces(config, meeting, reportRows, smokeByKey = new Map()) {
   const races = [];
   for (let raceNumber = 1; raceNumber <= (config.max_race_number_to_probe ?? maxRaceNumber); raceNumber += 1) {
     const sourceUrl = racecardUrl(config, meeting, raceNumber);
+    const smokeObservation = smokeByKey.get(`${meeting.meeting_date}:${meeting.racecourse_id}:${racecourseCode(meeting)}:${raceNumber}`);
+    if (smokeObservation && missingAPlusFields(smokeObservation).length === 0) {
+      races.push(smokeObservation);
+      continue;
+    }
     const result = await fetchRacecardObservation(config, meeting, raceNumber);
     if (result.failure_status) {
       reportRows.push(reportRow({
@@ -588,11 +603,14 @@ const config = readJson(configPath);
 const fetchedAt = new Date().toISOString();
 const meetings = await fetchFixtureMeetings(config, range);
 const smoke_results = await fetchSmokeTargets(config);
+const smokeByKey = new Map(smoke_results
+  .filter((result) => result.status === reportStatus.A_PLUS_READY && result.observation)
+  .map((result) => [`${result.target.meeting_date}:${result.target.racecourse_id}:${result.target.racecourse_code}:${result.target.race_number}`, result.observation]));
 const reportRows = [];
 const observations = [];
 
 for (const meeting of meetings) {
-  const races = await fetchMeetingRaces(config, meeting, reportRows);
+  const races = await fetchMeetingRaces(config, meeting, reportRows, smokeByKey);
   observations.push({
     meeting_date: meeting.meeting_date,
     racecourse_id: meeting.racecourse_id,
@@ -605,6 +623,13 @@ for (const meeting of meetings) {
   });
 }
 
+const existingKnownMeetings = config.known_meetings ?? config.meetings ?? [];
+const knownMeetingMap = new Map(existingKnownMeetings.map((meeting) => [`${meeting.meeting_date}:${racecourseCode(meeting)}`, meeting]));
+for (const meeting of meetings) {
+  knownMeetingMap.set(`${meeting.meeting_date}:${racecourseCode(meeting)}`, meeting);
+}
+const known_meetings = [...knownMeetingMap.values()].sort((left, right) => `${left.meeting_date}:${racecourseCode(left)}`.localeCompare(`${right.meeting_date}:${racecourseCode(right)}`));
+
 const nextConfig = {
   ...config,
   rolling_refresh: true,
@@ -615,6 +640,7 @@ const nextConfig = {
     racecard_url_template: `https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo={race_number}`,
   },
   meetings,
+  known_meetings,
   max_race_number_to_probe: config.max_race_number_to_probe ?? maxRaceNumber,
 };
 delete nextConfig.month;
