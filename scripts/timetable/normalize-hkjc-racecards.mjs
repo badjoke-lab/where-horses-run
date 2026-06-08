@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const configPath = path.join(root, 'data/sources/timetable/hkjc-racecard-route.json');
 const snapshotPath = path.join(root, 'data/generated/timetable/hkjc-racecard-source-snapshot.json');
 const normalizedOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-timetable.sample.json');
 const detailsOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-meeting-details.sample.json');
@@ -13,6 +14,21 @@ function readJson(filePath) {
 function writeJson(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function formatDateParts(date) {
+  const [yyyy, mm, dd] = date.split('-');
+  return { yyyy, mm, dd };
+}
+
+function racecardUrl(template, meeting, raceNumber) {
+  const { yyyy, mm, dd } = formatDateParts(meeting.meeting_date);
+  return template
+    .replace('{race_number}', String(raceNumber))
+    .replace('{fixture_code}', meeting.fixture_code)
+    .replace('{yyyy}', yyyy)
+    .replace('{mm}', mm)
+    .replace('{dd}', dd);
 }
 
 function racecourseSlug(name) {
@@ -50,33 +66,44 @@ function hasAPlusMetadata(row) {
   return Boolean(row.race_name && row.distance_m && row.surface && row.metadata_status === 'verified');
 }
 
-function normalizeMeeting(snapshot, meeting) {
+function snapshotMeetingByKey(snapshot) {
+  return new Map((snapshot.observations ?? []).map((meeting) => [`${meeting.meeting_date}:${meeting.fixture_code}`, meeting]));
+}
+
+function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
+  const meeting = observedMeeting ?? {
+    meeting_date: routeMeeting.meeting_date,
+    racecourse_id: routeMeeting.racecourse_id,
+    racecourse_name: routeMeeting.racecourse_name,
+    fixture_code: routeMeeting.fixture_code,
+    races: [],
+  };
   const rows = compactRaceRows(meeting);
   const id = meetingId(meeting);
-  const officialSourceUrl = rows[0]?.source_url ?? snapshot.official_source_url_template
-    .replace('{race_number}', '1')
-    .replace('{fixture_code}', meeting.fixture_code)
-    .replace('{yyyy}', meeting.meeting_date.slice(0, 4))
-    .replace('{mm}', meeting.meeting_date.slice(5, 7))
-    .replace('{dd}', meeting.meeting_date.slice(8, 10));
+  const officialSourceUrl = rows[0]?.source_url ?? racecardUrl(
+    config.official_sources.racecard_url_template,
+    routeMeeting,
+    1,
+  );
 
   const continuous = isContinuousFromOne(rows);
   const allRowsHaveMetadata = rows.length >= 2 && rows.every(hasAPlusMetadata);
   const capabilityRank = continuous && allRowsHaveMetadata ? 'A+' : continuous && rows.length >= 2 ? 'A' : rows.length >= 2 ? 'B+' : rows.length === 1 ? 'B' : 'C';
   const firstRaceTime = rows[0]?.post_time_local ?? null;
   const lastRaceTime = rows.length >= 2 ? rows.at(-1)?.post_time_local ?? null : null;
+  const observed = Boolean(observedMeeting);
 
   return {
     record: {
       meeting_id: id,
       country_id: snapshot.country_id,
       authority_id: snapshot.authority_id,
-      racecourse_id: meeting.racecourse_id,
-      date: meeting.meeting_date,
+      racecourse_id: routeMeeting.racecourse_id,
+      date: routeMeeting.meeting_date,
       timezone: snapshot.timezone,
       source_id: 'hkjc-racecard-route',
       route_id: 'hkjc-racecard-date-raceno-route',
-      source_status: rows.length > 0 ? 'verified' : 'partial',
+      source_status: rows.length > 0 ? 'verified' : observed ? 'partial' : 'route_config_only',
       capability_rank: capabilityRank,
       first_race_time_local: capabilityRank === 'C' ? null : firstRaceTime,
       last_race_time_local: capabilityRank === 'B+' || capabilityRank === 'A' || capabilityRank === 'A+' ? lastRaceTime : null,
@@ -92,7 +119,9 @@ function normalizeMeeting(snapshot, meeting) {
               ? 'HKJC official racecard route produced first and last public-safe race start times, but the full continuous race-number set was not proven for A promotion.'
               : capabilityRank === 'B'
                 ? 'HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred.'
-                : 'HKJC meeting is known, but no race start time was extracted by the official racecard route snapshot.',
+                : observed
+                  ? 'HKJC route snapshot included this meeting, but no race start time was extracted.'
+                  : 'HKJC route config includes this meeting, but the current source snapshot has not captured race rows yet.',
     },
     detail: capabilityRank === 'A' || capabilityRank === 'A+'
       ? {
@@ -120,17 +149,29 @@ function normalizeMeeting(snapshot, meeting) {
       continuous_from_one: continuous,
       metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label'] : [],
       chosen_rank: capabilityRank,
+      route_config_meeting: true,
+      snapshot_observation_present: observed,
     },
   };
 }
 
+const config = readJson(configPath);
 const snapshot = readJson(snapshotPath);
-const normalized = snapshot.observations.map((meeting) => normalizeMeeting(snapshot, meeting));
+const observations = snapshotMeetingByKey(snapshot);
+const normalized = config.meetings.map((routeMeeting) => normalizeMeeting({
+  config,
+  snapshot,
+  routeMeeting,
+  observedMeeting: observations.get(`${routeMeeting.meeting_date}:${routeMeeting.fixture_code}`),
+}));
 
 writeJson(normalizedOutputPath, {
   schema_version: 'hkjc-normalized-timetable-sample-v0',
   generated_at: new Date().toISOString(),
+  source_config: 'data/sources/timetable/hkjc-racecard-route.json',
   source_snapshot: 'data/generated/timetable/hkjc-racecard-source-snapshot.json',
+  route_meeting_count: config.meetings.length,
+  snapshot_observation_count: snapshot.observations?.length ?? 0,
   rank_fallback_order: ['A+', 'A', 'B+', 'B', 'C'],
   records: normalized.map((entry) => entry.record),
   extraction_summary: normalized.map((entry) => entry.extraction_summary),
@@ -139,6 +180,7 @@ writeJson(normalizedOutputPath, {
 writeJson(detailsOutputPath, {
   schema_version: 'hkjc-normalized-meeting-details-sample-v0',
   generated_at: new Date().toISOString(),
+  source_config: 'data/sources/timetable/hkjc-racecard-route.json',
   source_snapshot: 'data/generated/timetable/hkjc-racecard-source-snapshot.json',
   details: normalized.map((entry) => entry.detail).filter(Boolean),
 });
@@ -148,4 +190,4 @@ const rankCounts = normalized.reduce((counts, entry) => {
   return counts;
 }, {});
 
-console.log(`[normalize-hkjc-racecards] wrote ${path.relative(root, normalizedOutputPath)} ranks=${JSON.stringify(rankCounts)}`);
+console.log(`[normalize-hkjc-racecards] wrote ${path.relative(root, normalizedOutputPath)} route_meetings=${config.meetings.length} snapshot_observations=${snapshot.observations?.length ?? 0} ranks=${JSON.stringify(rankCounts)}`);
