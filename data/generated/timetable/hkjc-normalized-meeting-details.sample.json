@@ -1,23 +1,103 @@
 {
   "schema_version": "hkjc-normalized-meeting-details-sample-v0",
-  "generated_at": "2026-06-06T08:15:00.000Z",
+  "generated_at": "2026-06-08T17:57:28.438Z",
+  "source_config": "data/sources/timetable/hkjc-racecard-route.json",
   "source_snapshot": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
   "details": [
     {
-      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
-      "summary_note": "Public-safe HKJC race-by-race timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.",
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+      "summary_note": "Public-safe HKJC timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.",
       "timetable_rows": [
-        { "label": "Race 1", "post_time_local": "16:00", "race_name": "HKU FACULTIES OF ARTS AND EDUCATION HANDICAP", "distance_m": 1800, "surface": "All Weather Track", "course_label": null, "metadata_status": "verified" },
-        { "label": "Race 2", "post_time_local": "16:30", "race_name": "HKU BUSINESS SCHOOL AND FACULTY OF ENGINEERING HANDICAP", "distance_m": 1400, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 3", "post_time_local": "17:00", "race_name": "HKU FACULTIES OF DENTISTRY AND SOCIAL SCIENCES HANDICAP", "distance_m": 1200, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 4", "post_time_local": "17:30", "race_name": "HKU FACULTIES OF LAW AND MEDICINE HANDICAP", "distance_m": 1400, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 5", "post_time_local": "18:00", "race_name": "UNIVERSITY HALL HANDICAP", "distance_m": 1800, "surface": "All Weather Track", "course_label": null, "metadata_status": "verified" },
-        { "label": "Race 6", "post_time_local": "18:30", "race_name": "HKU HERITAGE HANDICAP", "distance_m": 1600, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 7", "post_time_local": "19:05", "race_name": "THE HONG KONG UNIVERSITY ALUMNI ASSOCIATION CHALLENGE CUP (HANDICAP)", "distance_m": 1200, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 8", "post_time_local": "19:35", "race_name": "HKU FOUNDATION HANDICAP", "distance_m": 1000, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 9", "post_time_local": "20:05", "race_name": "HKU JOCKEY CLUB STUDENT VILLAGES HANDICAP", "distance_m": 1200, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 10", "post_time_local": "20:40", "race_name": "THE HONG KONG JOCKEY CLUB SCHOLARSHIPS HANDICAP", "distance_m": 1200, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" },
-        { "label": "Race 11", "post_time_local": "21:15", "race_name": "HKU JOCKEY CLUB TOWER HANDICAP", "distance_m": 1400, "surface": "Turf", "course_label": "C Course", "metadata_status": "verified" }
+        {
+          "label": "Race 1",
+          "post_time_local": "18:40",
+          "race_name": "CHEK LAP KOK HANDICAP",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "19:10",
+          "race_name": "KAI TAK HANDICAP",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=2"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "19:40",
+          "race_name": "STANLEY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=3"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "20:10",
+          "race_name": "TSIM SHA TSUI HANDICAP",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=4"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "20:40",
+          "race_name": "THE TOURISM CUP (HANDICAP)",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=5"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "21:10",
+          "race_name": "STANLEY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=6"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "21:45",
+          "race_name": "VICTORIA HARBOUR HANDICAP",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=7"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "22:15",
+          "race_name": "WEST KOWLOON HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=8"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "22:50",
+          "race_name": "WEST KOWLOON HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=9"
+        }
       ]
     }
   ]

@@ -1,0 +1,295 @@
+{
+  "schema_version": "hkjc-refresh-report-v0",
+  "generated_at": "2026-06-08T17:57:19.440Z",
+  "refresh_window": {
+    "from": "2026-06-08",
+    "to": "2026-07-31",
+    "mode": "range"
+  },
+  "fixture_meeting_count": 10,
+  "statuses": [
+    {
+      "meeting_date": "2026-06-10",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_code": "HV",
+      "race_number": 10,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=10",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=10"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=10",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "no_race_stop_candidate",
+      "failure_reason": "Race 10 returned no public-safe racecard fields after contiguous Race 1..9; stop probing this meeting.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [],
+      "status": "no_race_stop_candidate"
+    },
+    {
+      "meeting_date": "2026-06-10",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_code": "HV",
+      "race_number": null,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
+      "attempted_urls": [],
+      "http_status": 200,
+      "final_url": null,
+      "content_type": null,
+      "body_size": null,
+      "failure_status": "a_plus_ready",
+      "failure_reason": "Fetched contiguous Race 1..9.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [],
+      "status": "a_plus_ready"
+    },
+    {
+      "meeting_date": "2026-06-13",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/13&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/13&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/13&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-06-21",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/21&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/21&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/21&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-06-24",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_code": "HV",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/24&Racecourse=HV&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/24&Racecourse=HV&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/24&Racecourse=HV&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-06-27",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/27&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/27&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/27&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-07-01",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/01&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/01&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/01&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-07-04",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/04&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/04&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/04&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-07-08",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_code": "HV",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-07-12",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/12&Racecourse=ST&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/12&Racecourse=ST&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/12&Racecourse=ST&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    },
+    {
+      "meeting_date": "2026-07-15",
+      "racecourse_id": "happy-valley-racecourse",
+      "racecourse_code": "HV",
+      "race_number": 1,
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/15&Racecourse=HV&RaceNo=1",
+      "attempted_urls": [
+        "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/15&Racecourse=HV&RaceNo=1"
+      ],
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/15&Racecourse=HV&RaceNo=1",
+      "content_type": "text/html; charset=utf-8",
+      "body_size": 120504,
+      "failure_status": "racecard_not_published",
+      "failure_reason": "Race 1 had no public-safe racecard fields; racecard may be unpublished or parser may need review.",
+      "network_error": null,
+      "network_error_detail": null,
+      "missing_fields": [
+        "post_time_local",
+        "race_name",
+        "distance_m",
+        "surface_or_course_label"
+      ],
+      "status": "racecard_not_published"
+    }
+  ],
+  "pending_meetings": [
+    "2026-06-13:sha-tin-racecourse",
+    "2026-06-21:sha-tin-racecourse",
+    "2026-06-24:happy-valley-racecourse",
+    "2026-06-27:sha-tin-racecourse",
+    "2026-07-01:sha-tin-racecourse",
+    "2026-07-04:sha-tin-racecourse",
+    "2026-07-08:happy-valley-racecourse",
+    "2026-07-12:sha-tin-racecourse",
+    "2026-07-15:happy-valley-racecourse"
+  ],
+  "missing_meetings": [],
+  "parser_failed_meetings": [],
+  "a_plus_ready_meetings": [
+    "2026-06-10:happy-valley-racecourse"
+  ],
+  "stopped_probe_meetings": [
+    "2026-06-10:happy-valley-racecourse"
+  ],
+  "untouched_fixture_meetings": []
+}

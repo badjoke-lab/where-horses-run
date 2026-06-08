@@ -21,11 +21,27 @@ function formatDateParts(date) {
   return { yyyy, mm, dd };
 }
 
+function hkjcRaceDate(date) {
+  const { yyyy, mm, dd } = formatDateParts(date);
+  return `${yyyy}/${mm}/${dd}`;
+}
+
+function racecourseCode(meeting) {
+  if (meeting.racecourse_code) return String(meeting.racecourse_code).toUpperCase();
+  if (meeting.fixture_code) return String(meeting.fixture_code).toUpperCase();
+  if (meeting.racecourse_id === 'happy-valley-racecourse' || meeting.racecourse_name === 'Happy Valley') return 'HV';
+  if (meeting.racecourse_id === 'sha-tin-racecourse' || meeting.racecourse_name === 'Sha Tin') return 'ST';
+  throw new Error(`Unsupported HKJC racecourse: ${meeting.racecourse_id ?? meeting.racecourse_name ?? 'unknown'}`);
+}
+
 function racecardUrl(template, meeting, raceNumber) {
   const { yyyy, mm, dd } = formatDateParts(meeting.meeting_date);
   return template
     .replace('{race_number}', String(raceNumber))
-    .replace('{fixture_code}', meeting.fixture_code)
+    .replace('{racecourse_code}', racecourseCode(meeting))
+    .replace('{fixture_code}', racecourseCode(meeting))
+    .replace('{locale}', 'en-us')
+    .replace('{race_date}', hkjcRaceDate(meeting.meeting_date))
     .replace('{yyyy}', yyyy)
     .replace('{mm}', mm)
     .replace('{dd}', dd);
@@ -55,6 +71,7 @@ function compactRaceRows(meeting) {
       course_label: race.course_label ?? null,
       metadata_status: race.metadata_status ?? 'pending',
       source_url: race.source_url,
+      official_source_url: race.source_url,
     }));
 }
 
@@ -63,11 +80,20 @@ function isContinuousFromOne(rows) {
 }
 
 function hasAPlusMetadata(row) {
-  return Boolean(row.race_name && row.distance_m && row.surface && row.metadata_status === 'verified');
+  return Boolean(row.race_name && row.distance_m && (row.surface || row.course_label) && row.metadata_status === 'verified');
+}
+
+function missingAPlusFields(row) {
+  const missing = [];
+  if (!row.post_time_local) missing.push('post_time_local');
+  if (!row.race_name) missing.push('race_name');
+  if (row.distance_m == null) missing.push('distance_m');
+  if (!row.surface && !row.course_label) missing.push('surface_or_course_label');
+  return missing;
 }
 
 function snapshotMeetingByKey(snapshot) {
-  return new Map((snapshot.observations ?? []).map((meeting) => [`${meeting.meeting_date}:${meeting.fixture_code}`, meeting]));
+  return new Map((snapshot.observations ?? []).map((meeting) => [`${meeting.meeting_date}:${racecourseCode(meeting)}`, meeting]));
 }
 
 function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
@@ -75,7 +101,8 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
     meeting_date: routeMeeting.meeting_date,
     racecourse_id: routeMeeting.racecourse_id,
     racecourse_name: routeMeeting.racecourse_name,
-    fixture_code: routeMeeting.fixture_code,
+    racecourse_code: racecourseCode(routeMeeting),
+    fixture_code: racecourseCode(routeMeeting),
     races: [],
   };
   const rows = compactRaceRows(meeting);
@@ -108,6 +135,7 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
       first_race_time_local: capabilityRank === 'C' ? null : firstRaceTime,
       last_race_time_local: capabilityRank === 'B+' || capabilityRank === 'A' || capabilityRank === 'A+' ? lastRaceTime : null,
       official_source_url: officialSourceUrl,
+      official_fixture_url: routeMeeting.official_fixture_url ?? null,
       last_checked_date: snapshot.generated_at.slice(0, 10),
       display_status: rows.length > 0 ? 'displayable' : 'partial',
       notes:
@@ -138,8 +166,9 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
                 surface: row.surface,
                 course_label: row.course_label,
                 metadata_status: row.metadata_status,
+                official_source_url: row.official_source_url,
               }
-            : { label: row.label, post_time_local: row.post_time_local }),
+            : { label: row.label, post_time_local: row.post_time_local, official_source_url: row.official_source_url }),
         }
       : null,
     extraction_summary: {
@@ -147,7 +176,8 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
       extracted_race_count: rows.length,
       race_numbers: rows.map((row) => row.race_number),
       continuous_from_one: continuous,
-      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label'] : [],
+      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label', 'official_source_url'] : [],
+      missing_a_plus_fields: rows.flatMap((row) => missingAPlusFields(row).map((field) => ({ race_number: row.race_number, field }))),
       chosen_rank: capabilityRank,
       route_config_meeting: true,
       snapshot_observation_present: observed,
@@ -162,7 +192,7 @@ const normalized = config.meetings.map((routeMeeting) => normalizeMeeting({
   config,
   snapshot,
   routeMeeting,
-  observedMeeting: observations.get(`${routeMeeting.meeting_date}:${routeMeeting.fixture_code}`),
+  observedMeeting: observations.get(`${routeMeeting.meeting_date}:${racecourseCode(routeMeeting)}`),
 }));
 
 writeJson(normalizedOutputPath, {

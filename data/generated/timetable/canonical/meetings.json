@@ -4,9 +4,735 @@
   "input_sources": [
     "data/generated/timetables.json",
     "data/generated/japan-active-timetable-records.json",
-    "data/generated/normalized-timetable.json"
+    "data/generated/normalized-timetable.json",
+    "data/generated/timetable/hkjc-normalized-timetable.sample.json"
   ],
   "meetings": [
+    {
+      "meeting_id": "era-meydan-racecourse-2026-04-01",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "meydan-racecourse",
+      "date": "2026-04-01",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "uae-era-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from official UAE racing source. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "era-al-ain-racecourse-2026-04-03",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "al-ain-racecourse",
+      "date": "2026-04-03",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "uae-era-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from official UAE racing source. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "era-abu-dhabi-turf-club-2026-04-04",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "abu-dhabi-turf-club",
+      "date": "2026-04-04",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "uae-era-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from official UAE racing source. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "era-al-ain-racecourse-2026-04-10",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "al-ain-racecourse",
+      "date": "2026-04-10",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "uae-era-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from official UAE racing source. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "era-abu-dhabi-turf-club-2026-04-11",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "abu-dhabi-turf-club",
+      "date": "2026-04-11",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "uae-era-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from official UAE racing source. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-kochi-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kochi-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "jra-kyoto-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kyoto-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "10:05",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-jra-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/5/0530.html",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "14:35",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-banei-monthly-schedule",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official Banei Tokachi schedule page."
+    },
+    {
+      "meeting_id": "nar-saga-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "saga-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "tokyo-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "09:50",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-jra-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/5/0530.html",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-05-30",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "urawa-racecourse",
+      "date": "2026-05-30",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-kanazawa-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kanazawa-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-kochi-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kochi-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "jra-kyoto-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kyoto-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "09:55",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-jra-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/5/0531.html",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "nar-mizusawa-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "mizusawa-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "14:25",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-banei-monthly-schedule",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official Banei Tokachi schedule page."
+    },
+    {
+      "meeting_id": "nar-saga-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "saga-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "jra-tokyo-racecourse-2026-05-31",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "tokyo-racecourse",
+      "date": "2026-05-31",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "09:40",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-jra-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/5/0531.html",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/timetables.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed only from the official JRA calendar. Start time is the listed first race time. Official source remains final confirmation."
+    },
+    {
+      "meeting_id": "nar-funabashi-racecourse-2026-06-01",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "funabashi-racecourse",
+      "date": "2026-06-01",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-mizusawa-racecourse-2026-06-01",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "mizusawa-racecourse",
+      "date": "2026-06-01",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-06-01",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-06-01",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "B",
+      "display_status": "partial",
+      "first_race_time_local": "14:20",
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-banei-monthly-schedule",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official Banei Tokachi schedule page."
+    },
+    {
+      "meeting_id": "nar-saga-racecourse-2026-06-01",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "saga-racecourse",
+      "date": "2026-06-01",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "japan-nar-home",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_seed",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/japan-active-timetable-records.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-05-29",
+        "generated_at": "2026-05-29T00:00:00Z",
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Meeting-level timetable seed from the official NAR current race information page."
+    },
+    {
+      "meeting_id": "nar-obihiro-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-convene-info",
+        "route_id": "nar-local-government-monthly-status-route",
+        "source_status": "partial",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+        "source_label": null,
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/generated/normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-05",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": null
+      },
+      "notes": "Manually reviewed local-government-racing meeting-date sample from the official NAR monthly convening source; no race times are inferred or stored. Rank repaired from B to C because first race time is not stored."
+    },
     {
       "meeting_id": "jra-tokyo-racecourse-2026-06-06",
       "country_id": "japan",
@@ -66,62 +792,294 @@
       "notes": "Manually reviewed official JRA daily programme sample for Tokyo Racecourse on 2026-06-07. This record stores only meeting-level summary times and relies on a separate transitional meeting-detail module for public-safe race-by-race post times."
     },
     {
-      "meeting_id": "nar-obihiro-racecourse-2026-06-06",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "obihiro-racecourse",
-      "date": "2026-06-06",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-06-10",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "18:40",
+      "last_race_time_local": "22:50",
       "source_trace": {
-        "source_id": "nar-monthly-convene-info",
-        "route_id": "nar-local-government-monthly-status-route",
-        "source_status": "partial",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
-        "source_label": null,
-        "extraction_method": "manual_review",
-        "source_snapshot_path": null,
-        "normalized_from_path": "data/generated/normalized-timetable.json"
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
       },
       "freshness": {
-        "last_checked_date": "2026-06-05",
+        "last_checked_date": "2026-06-08",
         "generated_at": null,
         "stale_after_date": null,
-        "freshness_note": null
+        "freshness_note": "HKJC normalized route record merged after canonical build."
       },
-      "notes": "Manually reviewed local-government-racing meeting-date sample from the official NAR monthly convening source; no race times are inferred or stored. Rank repaired from B to C because first race time is not stored."
+      "notes": "HKJC official racecard route produced continuous public-safe race-by-race post times plus minimal timetable metadata: race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored."
     },
     {
-      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",
       "country_id": "hong-kong",
       "authority_id": "hkjc",
       "racecourse_id": "sha-tin-racecourse",
-      "date": "2026-06-07",
+      "date": "2026-06-13",
       "timezone": "Asia/Hong_Kong",
       "capability_rank": "C",
       "display_status": "partial",
       "first_race_time_local": null,
       "last_race_time_local": null,
       "source_trace": {
-        "source_id": "hkjc-fixture-list",
-        "route_id": "hkjc-fixture-status-route",
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
         "source_status": "partial",
-        "official_source_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
-        "source_label": null,
-        "extraction_method": "manual_review",
-        "source_snapshot_path": null,
-        "normalized_from_path": "data/generated/normalized-timetable.json"
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/13&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
       },
       "freshness": {
-        "last_checked_date": "2026-06-05",
+        "last_checked_date": "2026-06-08",
         "generated_at": null,
         "stale_after_date": null,
-        "freshness_note": null
+        "freshness_note": "HKJC normalized route record merged after canonical build."
       },
-      "notes": "Manually reviewed meeting-date sample from the official HKJC fixture list; no race times are inferred or stored. Rank repaired from B+ to C because first and last race times are not stored in this summary record. Separate HKJC racecard samples remain transitional detail input until canonical conversion."
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-21",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-06-21",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/21&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-06-24",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-06-24",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/24&Racecourse=HV&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-27",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-06-27",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/27&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-07-01",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-07-01",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/01&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-07-04",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-07-04",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/04&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-07-08",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-07-12",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-07-12",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/12&Racecourse=ST&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
+    },
+    {
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-07-15",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-07-15",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-racecard-route",
+        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_status": "partial",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/15&Racecourse=HV&RaceNo=1",
+        "source_label": "Official source",
+        "extraction_method": "official_racecard_route",
+        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/hkjc-normalized-timetable.sample.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-08",
+        "generated_at": null,
+        "stale_after_date": null,
+        "freshness_note": "HKJC normalized route record merged after canonical build."
+      },
+      "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
     }
   ]
 }

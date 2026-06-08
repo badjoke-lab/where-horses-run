@@ -112,7 +112,9 @@
     "validate:normalized-timetable-output-schema": "node scripts/check-normalized-timetable-output-schema.mjs",
     "validate:calendar-view-model-reader": "node scripts/check-calendar-view-model-reader.mjs",
     "validate:timetable-refresh-dry-run-skeleton": "node scripts/dry-run-timetable-acquisition-routes.mjs",
-    "validate:normalized-timetable-preview-ui": "node scripts/check-normalized-timetable-preview-ui.mjs"
+    "validate:normalized-timetable-preview-ui": "node scripts/check-normalized-timetable-preview-ui.mjs",
+    "refresh:hkjc": "node scripts/timetable/refresh-hkjc.mjs",
+    "check:hkjc-public-output": "node scripts/check-hkjc-public-output.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
