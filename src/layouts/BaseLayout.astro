@@ -26,9 +26,13 @@ const homeHref = isJapanese ? '/ja/' : '/';
 const alternateHref = isJapanese ? '/' : '/ja/';
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
-const siteUrl = 'https://wherehorsesrun.pages.dev';
-const canonicalUrl = `${siteUrl}${canonicalPath ?? Astro.url.pathname}`;
+const siteUrl = 'https://whr.badjoke-lab.com';
+const canonicalPathname = canonicalPath ?? Astro.url.pathname;
+const canonicalUrl = `${siteUrl}${canonicalPathname}`;
 const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
+const xDefaultUrl = `${siteUrl}${isJapanese ? alternatePath ?? '/' : canonicalPathname}`;
+const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
+const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 ---
 
 <!doctype html>
@@ -41,11 +45,15 @@ const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang={isJapanese ? 'en' : 'ja'} href={alternateUrl} />
     <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Where Horses Run" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={alternateOgLocale} />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
