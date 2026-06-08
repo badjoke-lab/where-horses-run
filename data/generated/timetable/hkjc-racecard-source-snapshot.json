@@ -1,6 +1,6 @@
 {
   "schema_version": "hkjc-racecard-source-snapshot-v0",
-  "generated_at": "2026-06-08T16:21:48.182Z",
+  "generated_at": "2026-06-08T17:57:19.440Z",
   "country_id": "hong-kong",
   "authority_id": "hkjc",
   "timezone": "Asia/Hong_Kong",
@@ -12,68 +12,6 @@
     "to": "2026-07-31",
     "mode": "range"
   },
-  "smoke_results": [
-    {
-      "target": {
-        "meeting_date": "2026-06-10",
-        "racecourse_id": "happy-valley-racecourse",
-        "racecourse_code": "HV",
-        "race_number": 1,
-        "locale": "en-us"
-      },
-      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
-      "status": "a_plus_ready",
-      "failure_reason": "Live smoke fetch unavailable (network_error: Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com); used configured public-safe smoke fixture.",
-      "http_status": null,
-      "source": "configured_public_safe_smoke_fixture",
-      "attempts": [
-        {
-          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
-          "status": "network_error",
-          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
-          "http_status": null
-        },
-        {
-          "url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
-          "status": "network_error",
-          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
-          "http_status": null
-        },
-        {
-          "url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?RaceDate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
-          "status": "network_error",
-          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
-          "http_status": null
-        },
-        {
-          "url": "https://racing.hkjc.com/en-us/local/information/veterinaryrecord?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
-          "status": "network_error",
-          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
-          "http_status": null
-        },
-        {
-          "url": "https://racing.hkjc.com/en-us/local/information/racereportext?racedate=2026%2F06%2F10&Racecourse=HV&RaceNo=1",
-          "status": "network_error",
-          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
-          "http_status": null
-        }
-      ],
-      "observation": {
-        "race_number": 1,
-        "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
-        "fetch_status": "time_extracted",
-        "race_time_local": "18:40",
-        "race_name": "CHEK LAP KOK HANDICAP",
-        "distance_m": 1800,
-        "surface": "Turf",
-        "course_label": "C+3 Course",
-        "metadata_status": "verified",
-        "missing_fields": [],
-        "public_safe_text_sample": "2026-06-10 Happy Valley Race 1 18:40",
-        "fixture_source": "Public-safe smoke fixture from HKJC official veterinaryrecord/racereportext metadata for 2026-06-10 Happy Valley Race 1."
-      }
-    }
-  ],
   "observations": [
     {
       "meeting_date": "2026-06-10",
@@ -82,7 +20,7 @@
       "racecourse_code": "HV",
       "fixture_code": "HV",
       "session_type": "night",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "races": [
         {
           "race_number": 1,
@@ -95,8 +33,111 @@
           "course_label": "C+3 Course",
           "metadata_status": "verified",
           "missing_fields": [],
-          "public_safe_text_sample": "2026-06-10 Happy Valley Race 1 18:40",
-          "fixture_source": "Public-safe smoke fixture from HKJC official veterinaryrecord/racereportext metadata for 2026-06-10 Happy Valley Race 1."
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 1 18:40"
+        },
+        {
+          "race_number": 2,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=2",
+          "fetch_status": "time_extracted",
+          "race_time_local": "19:10",
+          "race_name": "KAI TAK HANDICAP",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 2 19:10"
+        },
+        {
+          "race_number": 3,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=3",
+          "fetch_status": "time_extracted",
+          "race_time_local": "19:40",
+          "race_name": "STANLEY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 3 19:40"
+        },
+        {
+          "race_number": 4,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=4",
+          "fetch_status": "time_extracted",
+          "race_time_local": "20:10",
+          "race_name": "TSIM SHA TSUI HANDICAP",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 4 20:10"
+        },
+        {
+          "race_number": 5,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=5",
+          "fetch_status": "time_extracted",
+          "race_time_local": "20:40",
+          "race_name": "THE TOURISM CUP (HANDICAP)",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 5 20:40"
+        },
+        {
+          "race_number": 6,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=6",
+          "fetch_status": "time_extracted",
+          "race_time_local": "21:10",
+          "race_name": "STANLEY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 6 21:10"
+        },
+        {
+          "race_number": 7,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=7",
+          "fetch_status": "time_extracted",
+          "race_time_local": "21:45",
+          "race_name": "VICTORIA HARBOUR HANDICAP",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 7 21:45"
+        },
+        {
+          "race_number": 8,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=8",
+          "fetch_status": "time_extracted",
+          "race_time_local": "22:15",
+          "race_name": "WEST KOWLOON HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 8 22:15"
+        },
+        {
+          "race_number": 9,
+          "source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=9",
+          "fetch_status": "time_extracted",
+          "race_time_local": "22:50",
+          "race_name": "WEST KOWLOON HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C+3 Course",
+          "metadata_status": "verified",
+          "missing_fields": [],
+          "public_safe_text_sample": "2026-06-10 Happy Valley Race 9 22:50"
         }
       ]
     },
@@ -106,8 +147,8 @@
       "racecourse_name": "Sha Tin",
       "racecourse_code": "ST",
       "fixture_code": "ST",
-      "session_type": "day",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "races": []
     },
     {
@@ -116,8 +157,8 @@
       "racecourse_name": "Sha Tin",
       "racecourse_code": "ST",
       "fixture_code": "ST",
-      "session_type": "day",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "races": []
     },
     {
@@ -127,7 +168,7 @@
       "racecourse_code": "HV",
       "fixture_code": "HV",
       "session_type": "night",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "races": []
     },
     {
@@ -136,8 +177,8 @@
       "racecourse_name": "Sha Tin",
       "racecourse_code": "ST",
       "fixture_code": "ST",
-      "session_type": "day",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "session_type": "twilight",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "races": []
     },
     {
@@ -147,7 +188,7 @@
       "racecourse_code": "ST",
       "fixture_code": "ST",
       "session_type": "twilight",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "races": []
     },
     {
@@ -157,7 +198,7 @@
       "racecourse_code": "ST",
       "fixture_code": "ST",
       "session_type": "twilight",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "races": []
     },
     {
@@ -167,7 +208,7 @@
       "racecourse_code": "HV",
       "fixture_code": "HV",
       "session_type": "night",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "races": []
     },
     {
@@ -177,7 +218,7 @@
       "racecourse_code": "ST",
       "fixture_code": "ST",
       "session_type": "twilight",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "races": []
     },
     {
@@ -187,7 +228,7 @@
       "racecourse_code": "HV",
       "fixture_code": "HV",
       "session_type": "night",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "races": []
     }
   ]

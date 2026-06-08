@@ -1,6 +1,6 @@
 {
   "schema_version": "hkjc-normalized-timetable-sample-v0",
-  "generated_at": "2026-06-08T16:24:13.590Z",
+  "generated_at": "2026-06-08T17:57:28.419Z",
   "source_config": "data/sources/timetable/hkjc-racecard-route.json",
   "source_snapshot": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
   "route_meeting_count": 10,
@@ -23,14 +23,14 @@
       "source_id": "hkjc-racecard-route",
       "route_id": "hkjc-racecard-date-raceno-route",
       "source_status": "verified",
-      "capability_rank": "B",
+      "capability_rank": "A+",
       "first_race_time_local": "18:40",
-      "last_race_time_local": null,
+      "last_race_time_local": "22:50",
       "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "displayable",
-      "notes": "HKJC official racecard route produced one source-verified race start time only. Last race time is not inferred."
+      "notes": "HKJC official racecard route produced continuous public-safe race-by-race post times plus minimal timetable metadata: race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored."
     },
     {
       "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",
@@ -45,8 +45,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/13&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -64,8 +64,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/21&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -83,8 +83,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/24&Racecourse=HV&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -102,8 +102,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/27&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -121,8 +121,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/01&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -140,8 +140,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/04&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -159,8 +159,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -178,8 +178,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/12&Racecourse=ST&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -197,8 +197,8 @@
       "capability_rank": "C",
       "first_race_time_local": null,
       "last_race_time_local": null,
-      "official_source_url": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo=1",
-      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/15&Racecourse=HV&RaceNo=1",
+      "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
       "last_checked_date": "2026-06-08",
       "display_status": "partial",
       "notes": "HKJC route snapshot included this meeting, but no race start time was extracted."
@@ -207,14 +207,28 @@
   "extraction_summary": [
     {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
-      "extracted_race_count": 1,
+      "extracted_race_count": 9,
       "race_numbers": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
       ],
       "continuous_from_one": true,
-      "metadata_fields": [],
+      "metadata_fields": [
+        "race_name",
+        "distance_m",
+        "surface",
+        "course_label",
+        "official_source_url"
+      ],
       "missing_a_plus_fields": [],
-      "chosen_rank": "B",
+      "chosen_rank": "A+",
       "route_config_meeting": true,
       "snapshot_observation_present": true
     },
