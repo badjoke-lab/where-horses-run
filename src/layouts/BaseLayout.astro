@@ -4,6 +4,7 @@ import '../styles/base.css';
 import '../styles/layout.css';
 import '../styles/components.css';
 import '../styles/utilities.css';
+import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 
 interface Props {
   title: string;
@@ -58,6 +59,8 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <GoogleAnalytics />
 
     <title>{title}</title>
   </head>
