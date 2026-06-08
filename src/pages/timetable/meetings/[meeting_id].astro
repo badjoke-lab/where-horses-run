@@ -1,89 +1,79 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getNormalizedTimetableMeetingDetail } from '../../../data/normalizedTimetableMeetingDetails';
-import { createNormalizedTimetableMeetingDetailPath } from '../../../data/normalizedTimetableCalendarPreview';
-import { getTimetableMeetingRows, type TimetableMeetingRow } from '../../../data/timetableMeetingRows';
-import { getCountries, getRacecourseBySlug } from '../../../lib/data';
+import {
+  getPublicTimetableMeetingDetail,
+  getPublicTimetableMeetingRows,
+  type PublicTimetableMeetingDetail,
+  type PublicTimetableMeetingRow,
+} from '../../../lib/timetable/publicTimetableViewModel';
+import { getCountries, getRacecourses } from '../../../lib/data';
 
 export function getStaticPaths() {
-  const meetings = getTimetableMeetingRows();
+  const meetings = getPublicTimetableMeetingRows().filter((meeting) => meeting.detail_path !== null);
 
   return meetings.map((meeting) => ({
     params: { meeting_id: meeting.meeting_id },
-    props: { meeting },
+    props: {
+      meeting,
+      detail: getPublicTimetableMeetingDetail(meeting.meeting_id),
+    },
   }));
 }
 
 interface Props {
-  meeting: TimetableMeetingRow;
+  meeting: PublicTimetableMeetingRow;
+  detail: PublicTimetableMeetingDetail | undefined;
 }
 
-const { meeting } = Astro.props;
-const meetingDetail = getNormalizedTimetableMeetingDetail(meeting.meeting_id);
-const detailPath = createNormalizedTimetableMeetingDetailPath(meeting.meeting_id);
+const { meeting, detail } = Astro.props;
+
+if (!detail) {
+  throw new Error(`Missing public meeting detail for ${meeting.meeting_id}`);
+}
+
 const displayValue = (value: string | number | null | undefined) => value ?? 'Not displayed';
 const titleCaseId = (value: string) =>
   value
+    .replace(/-racecourse$/, '')
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
-const racecourseName = meeting.racecourse_name;
+
+const countries = getCountries();
+const racecourses = getRacecourses();
+const country = countries.find((entry) => entry.id === meeting.country_id);
+const track = racecourses.find((entry) => entry.id === meeting.racecourse_id);
+
+const racecourseName = track?.name_en ?? `${titleCaseId(meeting.racecourse_id)} Racecourse`;
 const authorityNameById: Record<string, string> = {
   jra: 'Japan Racing Association',
   hkjc: 'Hong Kong Jockey Club',
   'nar-local-government-racing': 'National Association of Racing',
+  'banei-tokachi': 'Banei Tokachi',
+  'emirates-racing-authority': 'Emirates Racing Authority',
 };
-const countryNameById: Record<string, string> = {
-  japan: 'Japan',
-  'hong-kong': 'Hong Kong',
-};
-const timezoneByCountryId: Record<string, string> = {
-  japan: 'Asia/Tokyo',
-  'hong-kong': 'Asia/Hong_Kong',
-  australia: 'Australia/Sydney',
-  canada: 'America/Toronto',
-  ireland: 'Europe/Dublin',
-  'new-zealand': 'Pacific/Auckland',
-  'south-africa': 'Africa/Johannesburg',
-  'united-kingdom': 'Europe/London',
-};
-const utcOffsetByTimezone: Record<string, string> = {
-  'Asia/Tokyo': 'UTC+9',
-  'Asia/Hong_Kong': 'UTC+8',
-  'Australia/Sydney': 'UTC+10/+11',
-  'America/Toronto': 'UTC-5/-4',
-  'Europe/Dublin': 'UTC+0/+1',
-  'Pacific/Auckland': 'UTC+12/+13',
-  'Africa/Johannesburg': 'UTC+2',
-  'Europe/London': 'UTC+0/+1',
-};
-const country = getCountries().find((entry) => entry.id === meeting.country_id);
-const track = getRacecourseBySlug(meeting.racecourse_id);
-const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
-const countryName = country?.name_en ?? countryNameById[meeting.country_id] ?? titleCaseId(meeting.country_id);
+const countryName = country?.name_en ?? titleCaseId(meeting.country_id);
 const countryPath = country ? `/countries/${country.slug}/` : '/countries/';
 const trackPath = track ? `/tracks/${track.slug}/` : `/tracks/${meeting.racecourse_id}/`;
-const timezone = track?.timezone ?? timezoneByCountryId[meeting.country_id] ?? null;
-const timezoneLabel = timezone ? `${timezone} (${utcOffsetByTimezone[timezone] ?? 'UTC offset not listed'})` : null;
-const timetableRows = meetingDetail?.timetable_rows ?? [];
-const hasRaceByRaceTimetable = meeting.can_view_race_timetable && timetableRows.length > 0;
-const hasRaceMetadata = hasRaceByRaceTimetable && timetableRows.some(
-  (row) => row.race_name || row.distance_m || row.surface || row.course_label,
-);
-const pageKind = hasRaceByRaceTimetable ? 'Race timetable' : 'Meeting detail';
+const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
+
+const pageKind = detail.effective_public_rank === 'A+' ? 'Programme summary' : 'Race timetable';
+const hasRaceRows = detail.timetable_rows.length > 0;
+const hasRaceName = detail.show_race_name && detail.timetable_rows.some((row) => row.race_name);
+const hasDistance = detail.show_distance && detail.timetable_rows.some((row) => row.distance_m !== undefined);
+const hasSurface = detail.show_surface && detail.timetable_rows.some((row) => row.surface);
+const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.course_label);
+
 const timeCoverageNoteByRank: Record<string, string> = {
-  C: 'This record confirms the meeting date and racecourse only. Race times are not available in the current source route.',
-  B: 'This record confirms the first race time only. Last race time and race-by-race rows are not available in the current source route.',
-  'B+': 'This record confirms first and last race times only. Full race-by-race rows are not available in the current source route.',
-  A: 'This record includes race-by-race public-safe post times.',
-  'A+': 'This record includes race-by-race public-safe post times and minimal timetable metadata.',
+  A: 'This public detail page shows race labels and post times only.',
+  'A+': 'This public detail page shows race labels, post times, and policy-approved programme summary fields only.',
 };
 ---
 
 <BaseLayout
   title={`${racecourseName} ${pageKind.toLowerCase()} | Where Horses Run`}
-  description="Public-safe meeting detail with official-source link and timetable coverage where available."
-  canonicalPath={detailPath}
+  description="Public-safe meeting detail with official-source link and policy-controlled timetable coverage."
+  canonicalPath={`/timetable/meetings/${meeting.meeting_id}/`}
 >
   <nav class="detail-nav" aria-label="Meeting detail navigation">
     <a href="/calendar/">← Calendar</a>
@@ -96,59 +86,62 @@ const timeCoverageNoteByRank: Record<string, string> = {
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
     <p>{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Timezone: {displayValue(timezoneLabel)}</p>
-    <p>Rank: {meeting.capability_rank}</p>
-    <p>Source: {meeting.source_status}</p>
-    <p>First race: {displayValue(meeting.first_race_time_local)}</p>
-    <p>Last race: {displayValue(meeting.last_race_time_local)}</p>
+    <p>Timezone: {detail.timezone}</p>
+    <p>Capability rank: {detail.capability_rank}</p>
+    <p>Public rank: {detail.effective_public_rank}</p>
+    <p>Publication policy: {detail.policy_id}</p>
+    <p>Source status: {detail.source_status}</p>
   </section>
 
   <section aria-labelledby="coverage-title">
     <h2 id="coverage-title">Time coverage</h2>
-    <p>{timeCoverageNoteByRank[meeting.capability_rank]}</p>
+    <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
+    <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
   </section>
 
-  {hasRaceByRaceTimetable && (
+  {hasRaceRows && (
     <section aria-labelledby="race-timetable-title">
-      <h2 id="race-timetable-title">Race timetable</h2>
-      <p>{timetableRows.length} public-safe post times.</p>
-      <div class="table-scroll" role="region" aria-label="Race-by-race post time list" tabindex="0">
+      <h2 id="race-timetable-title">{pageKind}</h2>
+      <p>{detail.timetable_rows.length} public-safe timetable rows.</p>
+      <div class="table-scroll" role="region" aria-label="Public-safe race timetable" tabindex="0">
         <table>
           <thead>
             <tr>
               <th>Race</th>
               <th>Post time</th>
-              {hasRaceMetadata && <th>Race name</th>}
-              {hasRaceMetadata && <th>Distance</th>}
-              {hasRaceMetadata && <th>Surface</th>}
+              {hasRaceName && <th>Race name</th>}
+              {hasDistance && <th>Distance</th>}
+              {hasSurface && <th>Surface</th>}
+              {hasCourse && <th>Course</th>}
             </tr>
           </thead>
           <tbody>
-            {timetableRows.map((row) => (
+            {detail.timetable_rows.map((row) => (
               <tr>
                 <td>{row.label}</td>
                 <td>{row.post_time_local}</td>
-                {hasRaceMetadata && <td>{displayValue(row.race_name)}</td>}
-                {hasRaceMetadata && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
-                {hasRaceMetadata && <td>{[row.surface, row.course_label].filter(Boolean).join(' · ') || 'Not displayed'}</td>}
+                {hasRaceName && <td>{displayValue(row.race_name)}</td>}
+                {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
+                {hasSurface && <td>{displayValue(row.surface)}</td>}
+                {hasCourse && <td>{displayValue(row.course_label)}</td>}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p>{meetingDetail?.summary_note}</p>
     </section>
   )}
 
   <section aria-labelledby="official-source-title">
     <h2 id="official-source-title">Official source</h2>
-    <p><a href={meeting.official_source_url}>Open official source</a></p>
-    <p>Last checked: {displayValue(meeting.last_checked_date)}</p>
+    <p><a href={detail.official_source_url}>Open official source</a></p>
+    <p>Last checked: {displayValue(detail.last_checked_date)}</p>
   </section>
 
   <section aria-labelledby="boundary-title">
     <h2 id="boundary-title">Publication boundary</h2>
-    <p>This page stores only public-safe timetable fields. Detailed official information should be confirmed at the official source.</p>
+    <p>This page uses the public meeting detail dataset. A details show only race label and post time. A+ details show only policy-approved programme summary fields.</p>
+    <p>Complete official information should be confirmed at the official source.</p>
   </section>
 </BaseLayout>
 
