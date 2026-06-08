@@ -18,7 +18,7 @@
   ],
   "official_sources": {
     "fixture_source_url": "HKJC official fixture pages for 2026-06-08..2026-07-31",
-    "racecard_url_template": "https://racing.hkjc.com/en-us/local/information/racecard?RaceNo={race_number}&Racecourse={fixture_code}&racedate={yyyy}%2F{mm}%2F{dd}"
+    "racecard_url_template": "https://racing.hkjc.com/{locale}/local/information/racecard?racedate={race_date}&Racecourse={racecourse_code}&RaceNo={race_number}"
   },
   "meetings": [
     {
@@ -30,14 +30,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "HV"
     },
     {
       "meeting_date": "2026-06-13",
@@ -48,14 +53,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-06-21",
@@ -66,14 +76,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-06-24",
@@ -84,14 +99,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "HV"
     },
     {
       "meeting_date": "2026-06-27",
@@ -102,14 +122,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-07-01",
@@ -120,14 +145,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-07-04",
@@ -138,14 +168,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-07-08",
@@ -156,14 +191,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "HV"
     },
     {
       "meeting_date": "2026-07-12",
@@ -174,14 +214,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "ST"
     },
     {
       "meeting_date": "2026-07-15",
@@ -192,14 +237,19 @@
       "official_fixture_url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
       "fixture_fetch_warning": [
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=06&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=06&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         },
         {
-          "url": "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=07&calyear=2026",
-          "error_message": "fetch failed"
+          "url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=07&CalYear=2026",
+          "status": "network_error",
+          "failure_reason": "Network error while requesting HKJC official page: getaddrinfo EAI_AGAIN racing.hkjc.com",
+          "http_status": null
         }
-      ]
+      ],
+      "racecourse_code": "HV"
     }
   ],
   "max_race_number_to_probe": 14,
@@ -219,5 +269,22 @@
     "no tips",
     "no full racecards",
     "no raw official HTML body storage"
+  ],
+  "smoke_targets": [
+    {
+      "meeting_date": "2026-04-19",
+      "racecourse_id": "sha-tin-racecourse",
+      "racecourse_code": "ST",
+      "race_number": 4,
+      "locale": "en-us",
+      "public_safe_fixture": {
+        "post_time_local": "14:15",
+        "race_name": "EMBRACING SUCCESS IN ITS MANY WAYS 1400M HANDICAP",
+        "distance_m": 1400,
+        "surface": "Turf",
+        "course_label": "C+3 Course",
+        "source_note": "Public-safe smoke fixture from HKJC official racecard search result for 2026-04-19 Sha Tin Race 4."
+      }
+    }
   ]
 }

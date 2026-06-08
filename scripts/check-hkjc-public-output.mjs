@@ -68,6 +68,20 @@ const publicHkjc = (publicList.meetings ?? []).filter((meeting) => meeting.autho
 const publicHkjcDetails = (publicDetails.details ?? []).filter((detail) => detail.authority_id === 'hkjc');
 const publicDetailById = new Map(publicHkjcDetails.map((detail) => [detail.meeting_id, detail]));
 const reportRows = report.statuses ?? [];
+const smokeResults = report.smoke_results ?? [];
+
+
+if ((route.smoke_targets ?? []).length < 1) fail('Expected at least one configured HKJC known-published smoke target.');
+if (smokeResults.length < 1) fail('Expected at least one HKJC smoke target result.');
+if (!smokeResults.some((result) => result.status === 'a_plus_ready' && result.observation && missingAPlusFields({
+  post_time_local: result.observation.race_time_local,
+  race_name: result.observation.race_name,
+  distance_m: result.observation.distance_m,
+  surface: result.observation.surface,
+  course_label: result.observation.course_label,
+}).length === 0)) {
+  fail('Expected at least one known-published HKJC smoke target with post_time_local, race_name, distance_m, and surface/course_label.');
+}
 
 if (routeMeetings.length < 1) fail('Expected at least one HKJC fixture meeting from the refresh route config.');
 if (normalizedHkjc.length !== routeMeetings.length) fail(`Expected ${routeMeetings.length} HKJC normalized records, found ${normalizedHkjc.length}.`);
@@ -110,11 +124,17 @@ for (const summary of normalized.extraction_summary ?? []) {
   }
 }
 
+for (const key of ['pending_meetings', 'missing_meetings', 'parser_failed_meetings', 'a_plus_ready_meetings']) {
+  if (!Array.isArray(report[key])) fail(`Report missing ${key} array.`);
+}
+
 if (reportRows.length > 0) {
   for (const row of reportRows) {
     if (!row.meeting_date) fail('Report row missing meeting_date.');
     if (!row.racecourse_id) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_id.`);
+    if (!row.racecourse_code) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing racecourse_code.`);
     if (!Object.hasOwn(row, 'race_number')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing race_number.`);
+    if (!Object.hasOwn(row, 'http_status')) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing http_status.`);
     if (!Array.isArray(row.missing_fields)) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing missing_fields array.`);
     if (!row.status) fail(`Report row for ${row.meeting_date ?? 'unknown'} missing status.`);
   }
