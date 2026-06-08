@@ -6,15 +6,9 @@ const configPath = path.join(root, 'data/sources/timetable/hkjc-racecard-route.j
 const snapshotPath = path.join(root, 'data/generated/timetable/hkjc-racecard-source-snapshot.json');
 const normalizedOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-timetable.sample.json');
 const detailsOutputPath = path.join(root, 'data/generated/timetable/hkjc-normalized-meeting-details.sample.json');
-const reportPath = path.join(root, 'data/generated/timetable/hkjc-refresh-report.json');
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-}
-
-function readJsonIfExists(filePath, fallback) {
-  if (!fs.existsSync(filePath)) return fallback;
-  return readJson(filePath);
 }
 
 function writeJson(filePath, value) {
@@ -27,11 +21,27 @@ function formatDateParts(date) {
   return { yyyy, mm, dd };
 }
 
+function hkjcRaceDate(date) {
+  const { yyyy, mm, dd } = formatDateParts(date);
+  return `${yyyy}/${mm}/${dd}`;
+}
+
+function racecourseCode(meeting) {
+  if (meeting.racecourse_code) return String(meeting.racecourse_code).toUpperCase();
+  if (meeting.fixture_code) return String(meeting.fixture_code).toUpperCase();
+  if (meeting.racecourse_id === 'happy-valley-racecourse' || meeting.racecourse_name === 'Happy Valley') return 'HV';
+  if (meeting.racecourse_id === 'sha-tin-racecourse' || meeting.racecourse_name === 'Sha Tin') return 'ST';
+  throw new Error(`Unsupported HKJC racecourse: ${meeting.racecourse_id ?? meeting.racecourse_name ?? 'unknown'}`);
+}
+
 function racecardUrl(template, meeting, raceNumber) {
   const { yyyy, mm, dd } = formatDateParts(meeting.meeting_date);
   return template
     .replace('{race_number}', String(raceNumber))
-    .replace('{fixture_code}', meeting.fixture_code)
+    .replace('{racecourse_code}', racecourseCode(meeting))
+    .replace('{fixture_code}', racecourseCode(meeting))
+    .replace('{locale}', 'en-us')
+    .replace('{race_date}', hkjcRaceDate(meeting.meeting_date))
     .replace('{yyyy}', yyyy)
     .replace('{mm}', mm)
     .replace('{dd}', dd);
@@ -83,7 +93,7 @@ function missingAPlusFields(row) {
 }
 
 function snapshotMeetingByKey(snapshot) {
-  return new Map((snapshot.observations ?? []).map((meeting) => [`${meeting.meeting_date}:${meeting.fixture_code}`, meeting]));
+  return new Map((snapshot.observations ?? []).map((meeting) => [`${meeting.meeting_date}:${racecourseCode(meeting)}`, meeting]));
 }
 
 function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
@@ -91,7 +101,8 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
     meeting_date: routeMeeting.meeting_date,
     racecourse_id: routeMeeting.racecourse_id,
     racecourse_name: routeMeeting.racecourse_name,
-    fixture_code: routeMeeting.fixture_code,
+    racecourse_code: racecourseCode(routeMeeting),
+    fixture_code: racecourseCode(routeMeeting),
     races: [],
   };
   const rows = compactRaceRows(meeting);
@@ -181,7 +192,7 @@ const normalized = config.meetings.map((routeMeeting) => normalizeMeeting({
   config,
   snapshot,
   routeMeeting,
-  observedMeeting: observations.get(`${routeMeeting.meeting_date}:${routeMeeting.fixture_code}`),
+  observedMeeting: observations.get(`${routeMeeting.meeting_date}:${racecourseCode(routeMeeting)}`),
 }));
 
 writeJson(normalizedOutputPath, {
