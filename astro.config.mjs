@@ -9,8 +9,7 @@ const runTimetableBuilder = (script) => {
   });
 };
 
-runTimetableBuilder('scripts/timetable/build-canonical-timetable.mjs');
-runTimetableBuilder('scripts/timetable/build-public-timetable-view.mjs');
+runTimetableBuilder('scripts/timetable/build-public-timetable-pipeline.mjs');
 
 export default defineConfig({
   site: 'https://where-horses-run.pages.dev',
