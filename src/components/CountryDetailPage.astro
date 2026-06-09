@@ -18,10 +18,17 @@ const isJa = locale === 'ja';
 const pick = <T,>(en: T, ja: T): T => (isJa ? ja : en);
 
 const profile = getCountryProfileByCountryId(country.id);
-const racecourses = getRacecoursesByCountryId(country.id);
+const rawRacecourses = getRacecoursesByCountryId(country.id);
+const racecourses = [...new Map(rawRacecourses.map((racecourse) => [racecourse.slug ?? racecourse.id, racecourse])).values()];
 const racecoursesById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
 const sources = getSourcesByCountryId(country.id);
 const sourcesById = new Map(sources.map((source) => [source.id, source]));
+
+const getGridClass = (count: number) => {
+  if (count <= 1) return 'country-grid country-grid--1';
+  if (count === 2) return 'country-grid country-grid--2';
+  return 'country-grid country-grid--3';
+};
 
 const sourceLabelById: Record<string, { en: string; ja: string }> = {
   'japan-jra-home': { en: 'JRA official site', ja: 'JRA公式サイト' },
@@ -84,7 +91,7 @@ const displayedRacingTypes = profile
 
 const formatTimezone = (value?: string | null) => {
   if (value === 'Asia/Tokyo') return pick('JST / UTC+9', 'JST（UTC+9）');
-  if (value === 'Asia/Hong_Kong') return pick('HKT / UTC+8', 'HKT（UTC+8）');
+  if (value === 'Asia/Hong_Kong') return pick('Hong Kong Time / UTC+8', '香港時間（UTC+8）');
   if (!value) return pick('Check local time', '現地時刻を確認');
   if (profile?.typical_schedule.timezone === value) {
     return isJa
@@ -94,6 +101,18 @@ const formatTimezone = (value?: string | null) => {
   return value;
 };
 
+const getSeasonPatternLabel = () => {
+  if (!profile?.seasonality?.pattern) return pick('See detailed profile', '詳細を本文で確認');
+
+  const labels: Record<string, { en: string; ja: string }> = {
+    year_round_mixed_systems: { en: 'Year-round across systems', ja: '全体系で通年' },
+    seasonal_september_to_july: { en: 'September–July season', ja: '9月〜翌7月中心' }
+  };
+
+  const label = labels[profile.seasonality.pattern];
+  return label ? pick(label.en, label.ja) : pick('See detailed profile', '詳細を本文で確認');
+};
+
 const timezoneLabel = formatTimezone(profile?.typical_schedule.timezone);
 const overviewParagraphs = profile
   ? (isJa
@@ -101,30 +120,50 @@ const overviewParagraphs = profile
       : profile.overview_paragraphs_en ?? [profile.overview_en, profile.horse_and_format_summary_en])
   : [];
 
-const japanOverviewHeadings = {
-  en: [
-    'Overview of racing in Japan',
-    'JRA central racing',
-    'Local-government racing',
-    'Banei racing',
-    'Year-round racing and seasonality',
-    'How to check the calendar',
-    'What this page provides'
-  ],
-  ja: [
-    '日本競馬の全体像',
-    'JRA・中央競馬',
-    '地方競馬',
-    'ばんえい競馬',
-    '年間開催と季節性',
-    'カレンダーの確認方法',
-    'このページで確認できること'
-  ]
+const overviewHeadingByCountryId: Record<string, { en: string[]; ja: string[] }> = {
+  japan: {
+    en: [
+      'Overview of racing in Japan',
+      'JRA central racing',
+      'Local-government racing',
+      'Banei racing',
+      'Year-round racing and seasonality',
+      'How to check the calendar',
+      'What this page provides'
+    ],
+    ja: [
+      '日本競馬の全体像',
+      'JRA・中央競馬',
+      '地方競馬',
+      'ばんえい競馬',
+      '年間開催と季節性',
+      'カレンダーの確認方法',
+      'このページで確認できること'
+    ]
+  },
+  'hong-kong': {
+    en: [
+      'Overview of Hong Kong racing',
+      'Racing type',
+      'Main racecourses',
+      'Surfaces and courses',
+      'Racing season',
+      'How to check the calendar',
+      'What this page provides'
+    ],
+    ja: [
+      '香港競馬の全体像',
+      '競馬種別',
+      '主な競馬場',
+      '馬場とコース',
+      '開催シーズン',
+      'カレンダーの確認方法',
+      'このページで確認できること'
+    ]
+  }
 };
 
-const overviewHeadings = country.id === 'japan'
-  ? japanOverviewHeadings[locale]
-  : overviewParagraphs.map((_, index) => index === 0 ? pick('Overview', '概要') : pick(`Additional context ${index + 1}`, `補足 ${index + 1}`));
+const overviewHeadings = overviewHeadingByCountryId[country.id]?.[locale] ?? [];
 
 const japaneseLocationByRacecourseId: Record<string, string> = {
   'tokyo-racecourse': '東京都府中市',
@@ -137,7 +176,9 @@ const japaneseLocationByRacecourseId: Record<string, string> = {
   'fukushima-racecourse': '福島県福島市',
   'niigata-racecourse': '新潟県新潟市',
   'kokura-racecourse': '福岡県北九州市',
-  'obihiro-racecourse': '北海道帯広市'
+  'obihiro-racecourse': '北海道帯広市',
+  'sha-tin-racecourse': '新界・沙田',
+  'happy-valley-racecourse': '香港島・ハッピーバレー'
 };
 
 const englishLocationByRacecourseId: Record<string, string> = {
@@ -151,16 +192,17 @@ const englishLocationByRacecourseId: Record<string, string> = {
   'fukushima-racecourse': 'Fukushima, Fukushima',
   'niigata-racecourse': 'Niigata, Niigata',
   'kokura-racecourse': 'Kitakyushu, Fukuoka',
-  'obihiro-racecourse': 'Obihiro, Hokkaido'
+  'obihiro-racecourse': 'Obihiro, Hokkaido',
+  'sha-tin-racecourse': 'Sha Tin, New Territories',
+  'happy-valley-racecourse': 'Happy Valley, Hong Kong Island'
 };
 
 const getRacecourseLocation = (racecourse: any) => {
-  if (country.id === 'japan') {
-    const mapped = isJa
-      ? japaneseLocationByRacecourseId[racecourse.id]
-      : englishLocationByRacecourseId[racecourse.id];
-    if (mapped) return mapped;
-  }
+  const mapped = isJa
+    ? japaneseLocationByRacecourseId[racecourse.id]
+    : englishLocationByRacecourseId[racecourse.id];
+  if (mapped) return mapped;
+
   return [racecourse.city, racecourse.region].filter(Boolean).join(', ') || pick('Location pending', '所在地未掲載');
 };
 
@@ -169,6 +211,7 @@ const formatStartTime = (value?: string | null) =>
 
 const getMeetingSystem = (value?: string | null) => {
   if (!value) return pick('Not listed', '未掲載');
+  if (country.id === 'hong-kong') return 'HKJC';
   if (value.includes('JRA')) return 'JRA';
   if (value.includes('NAR')) return pick('Local racing', '地方競馬');
   if (value.toLowerCase().includes('banei')) return pick('Banei', 'ばんえい');
@@ -183,6 +226,7 @@ const getRacecourseName = (record: any) => {
 };
 
 const getRacecourseSystem = (racecourse: any) => {
+  if (country.id === 'hong-kong') return 'HKJC';
   if (racecourse.id === 'obihiro-racecourse' || racecourse.racing_types?.includes('banei-racing')) return pick('Banei', 'ばんえい');
   if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-jra'))) return 'JRA';
   if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-nar'))) return pick('Local racing', '地方競馬');
@@ -272,7 +316,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
           <div><dt>{pick('Local name', '現地名')}</dt><dd>{country.name_local}</dd></div>
           <div><dt>{pick('Racing types', '主な競馬種別')}</dt><dd>{displayedRacingTypes}</dd></div>
           <div><dt>{pick('Timezone', 'タイムゾーン')}</dt><dd>{timezoneLabel}</dd></div>
-          <div><dt>{pick('Season pattern', '開催形態')}</dt><dd>{profile?.seasonality.pattern === 'year_round_mixed_systems' ? pick('Year-round across systems', '全体系で通年') : pick('See detailed profile', '詳細を本文で確認')}</dd></div>
+          <div><dt>{pick('Season pattern', '開催形態')}</dt><dd>{getSeasonPatternLabel()}</dd></div>
           <div><dt>{pick('Profile reviewed', 'プロフィール確認日')}</dt><dd>{profile?.last_reviewed ?? pick('Pending', '未整備')}</dd></div>
         </dl>
       </article>
@@ -297,7 +341,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
           <div class="country-prose">
             {overviewParagraphs.map((paragraph, index) => (
               <section class="country-prose-section">
-                <h3>{overviewHeadings[index] ?? pick('Additional context', '補足')}</h3>
+                {overviewHeadings[index] && <h3>{overviewHeadings[index]}</h3>}
                 <p>{paragraph}</p>
               </section>
             ))}
@@ -306,7 +350,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
 
         <section class="country-section" aria-labelledby="racing-types-heading">
           <h2 class="country-section__title" id="racing-types-heading">{pick('What types of horse racing are held here?', 'この国で行われている競馬種別')}</h2>
-          <div class="country-grid country-grid--3">
+          <div class={getGridClass(profile.racing_types.length)}>
             {profile.racing_types.map((type) => (
               <article class="card country-card">
                 <h3>{pick(type.name_en, type.name_ja)}</h3>
@@ -337,7 +381,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
 
         <section class="country-section" aria-labelledby="systems-heading">
           <h2 class="country-section__title" id="systems-heading">{pick('Racing systems and authorities', '競馬体系と主催区分')}</h2>
-          <div class="country-grid country-grid--3">
+          <div class={getGridClass(profile.racing_systems.length)}>
             {profile.racing_systems.map((system) => (
               <article class="card country-card">
                 <h3>{pick(system.name_en, system.name_ja)}</h3>
@@ -472,7 +516,7 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
         '最終確認には以下の公式ページを使用してください。競馬どこ？は公式カレンダーやレースカードの代替ではありません。'
       )}</p>
       {officialSourceGroups.length > 0 ? (
-        <div class="country-grid country-grid--3">
+        <div class={getGridClass(officialSourceGroups.length)}>
           {officialSourceGroups.map((group) => (
             <article class="card country-card">
               <h3>{pick(group.name_en, group.name_ja)}</h3>
