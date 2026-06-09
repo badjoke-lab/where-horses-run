@@ -35,15 +35,37 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-function classifyResponse({ httpStatus, sampleText, networkError }) {
-  if (networkError) return 'network_error';
-  if ([401, 403, 429].includes(httpStatus)) return 'blocked_or_rate_limited';
-  if (httpStatus == null) return 'unknown_failure';
-  if (httpStatus < 200 || httpStatus >= 400) return 'http_error';
-  if (/captcha|access denied|request blocked|forbidden|akamai|cloudflare ray id|verify you are human|robot/i.test(sampleText)) {
-    return 'blocked_or_bot_page';
+function detectBlockPage(sampleText) {
+  const checks = [
+    ['captcha', /\b(?:captcha|recaptcha|hcaptcha)\b/i],
+    ['access_denied', /\baccess denied\b/i],
+    ['request_blocked', /\brequest blocked\b/i],
+    ['verify_human', /\bverify (?:that )?you are human\b/i],
+    ['checking_browser', /\bchecking your browser\b/i],
+    ['cloudflare_challenge', /\bcloudflare ray id\b|cf-chl-|challenge-platform/i],
+    ['akamai_block', /\bakamai reference\b|reference #\d+\.[a-f0-9]+/i],
+    ['security_check', /\bsecurity check required\b|\btemporarily blocked\b/i],
+  ];
+
+  for (const [reason, pattern] of checks) {
+    if (pattern.test(sampleText)) return reason;
   }
-  return 'fetchable';
+  return null;
+}
+
+function classifyResponse({ httpStatus, sampleText, networkError }) {
+  if (networkError) return { status: 'network_error', reason: networkError };
+  if ([401, 403, 429].includes(httpStatus)) {
+    return { status: 'blocked_or_rate_limited', reason: `http_${httpStatus}` };
+  }
+  if (httpStatus == null) return { status: 'unknown_failure', reason: 'missing_http_status' };
+  if (httpStatus < 200 || httpStatus >= 400) {
+    return { status: 'http_error', reason: `http_${httpStatus}` };
+  }
+
+  const blockReason = detectBlockPage(sampleText);
+  if (blockReason) return { status: 'blocked_or_bot_page', reason: blockReason };
+  return { status: 'fetchable', reason: 'http_success_no_block_marker' };
 }
 
 async function fetchProbe(url, timeoutMs, maxBytes) {
@@ -90,14 +112,15 @@ async function fetchProbe(url, timeoutMs, maxBytes) {
     }
 
     const sample = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk))).toString('utf8');
-    const status = classifyResponse({
+    const classification = classifyResponse({
       httpStatus: response.status,
       sampleText: sample,
       networkError: null,
     });
 
     return {
-      status,
+      status: classification.status,
+      status_reason: classification.reason,
       http_status: response.status,
       final_url: response.url,
       content_type: response.headers.get('content-type'),
@@ -111,8 +134,10 @@ async function fetchProbe(url, timeoutMs, maxBytes) {
   } catch (error) {
     const detail = String(error?.cause?.message ?? error?.message ?? error);
     const code = String(error?.cause?.code ?? error?.name ?? 'unknown');
+    const classification = classifyResponse({ httpStatus: null, sampleText: '', networkError: code });
     return {
-      status: classifyResponse({ httpStatus: null, sampleText: '', networkError: code }),
+      status: classification.status,
+      status_reason: classification.reason,
       http_status: null,
       final_url: url,
       content_type: null,
@@ -174,14 +199,29 @@ function groupByUrl(entries) {
 function summarize(results) {
   const byStatus = {};
   const byCountry = {};
+
   for (const result of results) {
     byStatus[result.status] = (byStatus[result.status] ?? 0) + 1;
+
+    const refsByCountry = new Map();
     for (const ref of result.references ?? []) {
-      byCountry[ref.country_id] ??= { total_urls: 0, statuses: {} };
-      byCountry[ref.country_id].total_urls += 1;
-      byCountry[ref.country_id].statuses[result.status] = (byCountry[ref.country_id].statuses[result.status] ?? 0) + 1;
+      const refs = refsByCountry.get(ref.country_id) ?? [];
+      refs.push(ref);
+      refsByCountry.set(ref.country_id, refs);
+    }
+
+    for (const [countryId, refs] of refsByCountry.entries()) {
+      byCountry[countryId] ??= {
+        unique_urls: 0,
+        source_references: 0,
+        statuses: {},
+      };
+      byCountry[countryId].unique_urls += 1;
+      byCountry[countryId].source_references += refs.length;
+      byCountry[countryId].statuses[result.status] = (byCountry[countryId].statuses[result.status] ?? 0) + 1;
     }
   }
+
   return { by_status: byStatus, by_country: byCountry };
 }
 
@@ -208,6 +248,7 @@ for (const entry of withoutUrl) {
   results.push({
     official_url: null,
     status: 'no_concrete_url',
+    status_reason: 'source_entry_has_no_url',
     http_status: null,
     final_url: null,
     content_type: null,
