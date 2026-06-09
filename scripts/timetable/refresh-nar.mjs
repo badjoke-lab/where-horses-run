@@ -74,11 +74,7 @@ function listUrl(date, venueCode) {
 }
 
 function detailUrl(date, venueCode, raceNumber) {
-  const params = new URLSearchParams({
-    k_babaCode: venueCode,
-    k_raceDate: narDate(date),
-    k_raceNo: String(raceNumber),
-  });
+  const params = new URLSearchParams({ k_babaCode: venueCode, k_raceDate: narDate(date), k_raceNo: String(raceNumber) });
   return `https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?${params.toString()}`;
 }
 
