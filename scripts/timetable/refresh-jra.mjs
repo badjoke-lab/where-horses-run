@@ -24,6 +24,8 @@ const racecourses = {
   '小倉': { id: 'kokura-racecourse', name: 'Kokura' },
 };
 
+const rankOrder = ['not_listed', 'D', 'C', 'B', 'B+', 'A', 'A+'];
+
 function parseArgs(argv) {
   const values = {};
   for (const arg of argv) {
@@ -73,15 +75,16 @@ function decodeEntities(value) {
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&#x2F;|&#47;/gi, '/')
-    .replace(/&#x3A;|&#58;/gi, ':');
+    .replace(/&#x3A;|&#58;/gi, ':')
+    .replace(/&#xFF08;/gi, '（')
+    .replace(/&#xFF09;/gi, '）');
 }
 
 function decodeBody(buffer) {
-  const encodings = ['shift_jis', 'utf-8'];
-  const candidates = encodings.map((encoding) => {
+  const candidates = ['shift_jis', 'utf-8'].map((encoding) => {
     try {
       const text = new TextDecoder(encoding).decode(buffer);
-      const score = ['発走時刻', 'レース', ...Object.keys(racecourses)]
+      const score = ['発走時刻', 'レース', 'メートル', ...Object.keys(racecourses)]
         .reduce((total, token) => total + (text.split(token).length - 1), 0);
       return { encoding, text, score };
     } catch {
@@ -97,7 +100,7 @@ function stripHtml(html) {
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(?:div|section|article|table|thead|tbody|tr|td|th|li|ul|ol|p|h[1-6]|dl|dt|dd)>/gi, '\n')
+    .replace(/<\/(?:div|section|article|table|thead|tbody|tr|td|th|li|ul|ol|p|h[1-6]|dl|dt|dd|a|span)>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
     .replace(/[ \t\u3000]+/g, ' ')
     .replace(/\r/g, '')
@@ -151,40 +154,151 @@ function normalizeTime(hour, minute) {
   return `${String(Number(hour)).padStart(2, '0')}:${String(Number(minute)).padStart(2, '0')}`;
 }
 
-function extractRaceRows(block) {
-  const rows = new Map();
-  const patterns = [
-    /(\d{1,2})\s*(?:レース|R)\b[\s\S]{0,600}?発走時刻\s*(\d{1,2})\s*時\s*(\d{1,2})\s*分/gi,
-    /(\d{1,2})\s*(?:レース|R)\b[\s\S]{0,600}?(\d{1,2})\s*時\s*(\d{1,2})\s*分/gi,
-    /(\d{1,2})\s*(?:レース|R)\b[\s\S]{0,300}?(\d{1,2})\s*[:：]\s*(\d{2})/gi,
-  ];
-
+function firstMatch(text, patterns) {
   for (const pattern of patterns) {
-    for (const match of block.matchAll(pattern)) {
-      const raceNumber = Number(match[1]);
-      const hour = Number(match[2]);
-      const minute = Number(match[3]);
-      if (raceNumber < 1 || raceNumber > 30 || hour > 23 || minute > 59) continue;
-      if (!rows.has(raceNumber)) {
-        rows.set(raceNumber, {
-          race_number: raceNumber,
-          label: `Race ${raceNumber}`,
-          post_time_local: normalizeTime(hour, minute),
-        });
-      }
-    }
+    const match = text.match(pattern);
+    if (match) return match;
+  }
+  return null;
+}
+
+function extractPostTime(segment) {
+  const match = firstMatch(segment, [
+    /発走時刻\s*(\d{1,2})\s*時\s*(\d{1,2})\s*分/i,
+    /発走\s*(\d{1,2})\s*時\s*(\d{1,2})\s*分/i,
+    /(?:発走時刻|発走)?\s*(\d{1,2})\s*[:：]\s*(\d{2})/i,
+  ]);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return null;
+  return normalizeTime(hour, minute);
+}
+
+function extractDistance(segment) {
+  const match = segment.match(/(\d{1,2}(?:,\d{3})|\d{3,4})\s*(?:メートル|m|M)/);
+  if (!match) return null;
+  const distance = Number(match[1].replace(',', ''));
+  return distance >= 600 && distance <= 6000 ? distance : null;
+}
+
+function extractSurface(segment) {
+  const metadata = segment.slice(0, 1200);
+  if (/ダート/.test(metadata)) return 'Dirt';
+  if (/芝/.test(metadata)) return 'Turf';
+  return null;
+}
+
+function extractCourseLabel(segment) {
+  const metadataMatch = segment.match(/(?:芝|ダート|障害)[\s・･／/（）()A-Za-z0-9右左内外直線コース]*?(?=\d{1,2}(?:,\d{3})|\d{3,4})/);
+  const metadata = metadataMatch?.[0] ?? segment.slice(0, 1200);
+  const labels = [];
+  if (/障害/.test(metadata)) labels.push('Jump');
+  if (/左/.test(metadata)) labels.push('Left');
+  if (/右/.test(metadata)) labels.push('Right');
+  if (/直線/.test(metadata)) labels.push('Straight');
+  if (/内(?:回り)?/.test(metadata)) labels.push('Inner');
+  if (/外(?:回り)?/.test(metadata)) labels.push('Outer');
+  return labels.length > 0 ? [...new Set(labels)].join(' / ') : null;
+}
+
+function cleanRaceName(value) {
+  return String(value ?? '')
+    .replace(/^第?\s*\d{1,2}\s*(?:レース|R)\s*/i, '')
+    .replace(/^[・･:：\-–—\s]+|[・･:：\-–—\s]+$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractRaceName(segment) {
+  const markerRemoved = segment.replace(/^第?\s*\d{1,2}\s*(?:レース|R)\s*/i, '');
+  const stopIndexes = [
+    markerRemoved.search(/発走時刻|発走\s*\d{1,2}\s*(?:時|[:：])/),
+    markerRemoved.search(/(?:芝|ダート|障害)[\s・･／/（）()A-Za-z0-9右左内外直線コース]*?(?:\d{1,2}(?:,\d{3})|\d{3,4})\s*(?:メートル|m|M)/),
+  ].filter((value) => value >= 0);
+  const prefix = markerRemoved.slice(0, stopIndexes.length > 0 ? Math.min(...stopIndexes) : Math.min(markerRemoved.length, 900));
+  const candidates = prefix
+    .split('\n')
+    .map(cleanRaceName)
+    .filter(Boolean)
+    .filter((line) => line.length <= 140)
+    .filter((line) => !/^\d+$/.test(line))
+    .filter((line) => !/^\d{1,2}[:：]\d{2}$/.test(line))
+    .filter((line) => !/(出馬表|オッズ|投票|結果|払戻|映像|騎手|調教師|馬体重|発走時刻|メートル)/.test(line))
+    .filter((line) => !Object.keys(racecourses).some((name) => new RegExp(`第?\\d+回\\s*${name}`).test(line)));
+
+  const preferred = candidates.filter((line) =>
+    /(ステークス|カップ|賞|特別|未勝利|新馬|メイクデビュー|オープン|リステッド|障害|サラ系|\d歳|牝|G[ⅠⅡⅢ123]|J・G)/i.test(line),
+  );
+  const selected = preferred[0] ?? candidates[0] ?? null;
+  return selected ? cleanRaceName(selected) : null;
+}
+
+function rowCompleteness(row) {
+  return [row.post_time_local, row.race_name, row.distance_m, row.surface, row.course_label]
+    .filter((value) => value !== null && value !== '').length;
+}
+
+function extractRaceRows(block) {
+  const markerPattern = /第?\s*(\d{1,2})\s*(?:レース|R)(?![A-Za-z])/gi;
+  const markers = [...block.matchAll(markerPattern)];
+  const rows = new Map();
+
+  for (let index = 0; index < markers.length; index += 1) {
+    const marker = markers[index];
+    const raceNumber = Number(marker[1]);
+    if (raceNumber < 1 || raceNumber > 30) continue;
+    const next = markers[index + 1];
+    const segment = block.slice(marker.index, next?.index ?? Math.min(block.length, marker.index + 3000));
+    const row = {
+      race_number: raceNumber,
+      label: `Race ${raceNumber}`,
+      post_time_local: extractPostTime(segment),
+      race_name: extractRaceName(segment),
+      distance_m: extractDistance(segment),
+      surface: extractSurface(segment),
+      course_label: extractCourseLabel(segment),
+    };
+    const existing = rows.get(raceNumber);
+    if (!existing || rowCompleteness(row) > rowCompleteness(existing)) rows.set(raceNumber, row);
   }
 
-  return [...rows.values()].sort((left, right) => left.race_number - right.race_number);
+  return [...rows.values()]
+    .filter((row) => row.post_time_local)
+    .sort((left, right) => left.race_number - right.race_number);
 }
 
 function isContinuous(rows) {
   return rows.length >= 2 && rows.every((row, index) => row.race_number === index + 1);
 }
 
+function missingFieldsForRows(rows) {
+  const missing = new Set();
+  for (const row of rows) {
+    if (!row.post_time_local) missing.add('post_time_local');
+    if (!row.race_name) missing.add('race_name');
+    if (!row.distance_m) missing.add('distance_m');
+    if (!row.surface) missing.add('surface');
+    if (!row.course_label) missing.add('course_label');
+  }
+  return [...missing];
+}
+
+function rankMeeting(rows) {
+  if (rows.length === 0) return 'C';
+  const continuous = isContinuous(rows);
+  const allAPlusFields = continuous && rows.every((row) =>
+    row.post_time_local && row.race_name && row.distance_m && row.surface && row.course_label,
+  );
+  if (allAPlusFields) return 'A+';
+  if (continuous) return 'A';
+  if (rows.length >= 2) return 'B+';
+  return 'B';
+}
+
 function parseMeetings(date, html, sourceUrl) {
   const text = stripHtml(html);
-  const headingPattern = /(\d+)\s*回\s*(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)\s*(\d+)\s*日/g;
+  const headingPattern = /第?\s*(\d+)\s*回\s*(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)\s*(?:競馬)?\s*第?\s*(\d+)\s*日/g;
   const headings = [...text.matchAll(headingPattern)];
   const meetings = [];
 
@@ -195,9 +309,7 @@ function parseMeetings(date, html, sourceUrl) {
     const venue = racecourses[heading[2]];
     const rows = extractRaceRows(block);
     if (rows.length === 0) continue;
-
-    const continuous = isContinuous(rows);
-    const rank = continuous ? 'A' : rows.length >= 2 ? 'B+' : 'B';
+    const rank = rankMeeting(rows);
     meetings.push({
       meeting_id: `jra-${venue.id}-${date}`,
       country_id: 'japan',
@@ -211,15 +323,16 @@ function parseMeetings(date, html, sourceUrl) {
       first_race_time_local: rows[0]?.post_time_local ?? null,
       last_race_time_local: rows.length >= 2 ? rows.at(-1)?.post_time_local ?? null : null,
       official_source_url: sourceUrl,
-      continuous_from_one: continuous,
+      continuous_from_one: isContinuous(rows),
+      missing_fields: missingFieldsForRows(rows),
       timetable_rows: rows.map((row) => ({
         label: row.label,
         post_time_local: row.post_time_local,
-        race_name: null,
-        distance_m: null,
-        surface: null,
-        course_label: null,
-        metadata_status: 'verified',
+        race_name: row.race_name,
+        distance_m: row.distance_m,
+        surface: row.surface,
+        course_label: row.course_label,
+        metadata_status: rank === 'A+' ? 'verified' : 'partial',
       })),
     });
   }
@@ -227,7 +340,7 @@ function parseMeetings(date, html, sourceUrl) {
   const unique = new Map();
   for (const meeting of meetings) {
     const existing = unique.get(meeting.meeting_id);
-    if (!existing || meeting.timetable_rows.length > existing.timetable_rows.length) {
+    if (!existing || rankOrder.indexOf(meeting.capability_rank) > rankOrder.indexOf(existing.capability_rank)) {
       unique.set(meeting.meeting_id, meeting);
     }
   }
@@ -242,7 +355,6 @@ function mergeIntoCanonical(records, details, generatedAt) {
 
   const canonical = readJson(canonicalMeetingsPath);
   const canonicalDetails = readJson(canonicalDetailsPath);
-  const rankOrder = ['not_listed', 'D', 'C', 'B', 'B+', 'A', 'A+'];
   const meetingMap = new Map((canonical.meetings ?? []).map((meeting) => [meeting.meeting_id, meeting]));
 
   for (const record of records) {
@@ -263,7 +375,7 @@ function mergeIntoCanonical(records, details, generatedAt) {
         source_status: 'verified',
         official_source_url: record.official_source_url,
         source_label: 'JRA official calendar/program page',
-        extraction_method: 'live_fetch_parser',
+        extraction_method: 'live_fetch_parser_a_plus_first',
         source_snapshot_path: snapshotPath,
         normalized_from_path: normalizedPath,
       },
@@ -271,9 +383,9 @@ function mergeIntoCanonical(records, details, generatedAt) {
         last_checked_date: generatedAt.slice(0, 10),
         generated_at: generatedAt,
         stale_after_date: null,
-        freshness_note: 'Live JRA official date-page extraction.',
+        freshness_note: 'Live JRA official date-page extraction with A+ attempted before fallback.',
       },
-      notes: 'JRA official date-page race times. No runners, odds, results, payouts, predictions, or raw HTML are stored.',
+      notes: 'JRA official race names, scheduled post times, distances, surfaces, and course labels only. No runners, odds, results, payouts, predictions, or raw HTML are stored.',
     };
     const existing = meetingMap.get(record.meeting_id);
     if (!existing || rankOrder.indexOf(candidate.capability_rank) >= rankOrder.indexOf(existing.capability_rank)) {
@@ -359,6 +471,24 @@ for (const date of enumerateDates(range.from, range.to)) {
       counts[meeting.capability_rank] = (counts[meeting.capability_rank] ?? 0) + 1;
       return counts;
     }, {}),
+    meeting_diagnostics: meetings.map((meeting) => ({
+      meeting_id: meeting.meeting_id,
+      rank: meeting.capability_rank,
+      race_count: meeting.timetable_rows.length,
+      missing_fields: meeting.missing_fields,
+      incomplete_races: meeting.timetable_rows
+        .map((row, index) => ({
+          race_number: index + 1,
+          missing_fields: [
+            !row.post_time_local ? 'post_time_local' : null,
+            !row.race_name ? 'race_name' : null,
+            !row.distance_m ? 'distance_m' : null,
+            !row.surface ? 'surface' : null,
+            !row.course_label ? 'course_label' : null,
+          ].filter(Boolean),
+        }))
+        .filter((row) => row.missing_fields.length > 0),
+    })),
   });
 }
 
@@ -380,7 +510,7 @@ const details = publishable
       source_status: 'verified',
       official_source_url: meeting.official_source_url,
       source_label: 'JRA official calendar/program page',
-      extraction_method: 'live_fetch_parser',
+      extraction_method: 'live_fetch_parser_a_plus_first',
       source_snapshot_path: snapshotPath,
       normalized_from_path: detailsPath,
     },
@@ -388,10 +518,10 @@ const details = publishable
       last_checked_date: generatedAt.slice(0, 10),
       generated_at: generatedAt,
       stale_after_date: null,
-      freshness_note: 'Live JRA official date-page extraction.',
+      freshness_note: 'Live JRA official date-page extraction with A+ attempted before fallback.',
     },
     timetable_rows: meeting.timetable_rows,
-    summary_note: 'Public-safe JRA race labels and scheduled post times only.',
+    summary_note: 'Public-safe JRA race names, scheduled post times, distances, surfaces, and course labels.',
   }));
 
 writeJson(snapshotPath, {
@@ -420,9 +550,12 @@ writeJson(reportPath, {
   dates_checked: reportRows.length,
   meetings_extracted: meetings.length,
   publishable_meetings: publishable.length,
-  a_level_meetings: details.length,
+  a_plus_meetings: details.filter((meeting) => meeting.capability_rank === 'A+').length,
+  a_level_meetings: details.filter((meeting) => meeting.capability_rank === 'A').length,
   statuses: reportRows,
 });
 
 mergeIntoCanonical(publishable, details, generatedAt);
-console.log(`[refresh-jra] complete meetings=${meetings.length} publishable=${publishable.length} A=${details.length}`);
+console.log(
+  `[refresh-jra] complete meetings=${meetings.length} publishable=${publishable.length} A+=${details.filter((meeting) => meeting.capability_rank === 'A+').length} A=${details.filter((meeting) => meeting.capability_rank === 'A').length}`,
+);
