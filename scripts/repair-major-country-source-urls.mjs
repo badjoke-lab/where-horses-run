@@ -2,7 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const sourcePath = path.join(root, 'data/static/major-country-acquisition-source-groups.json');
+const targetPaths = [
+  path.join(root, 'data/static/major-country-acquisition-source-groups.json'),
+  path.join(root, 'data/static/major-country-racing-inventory.json'),
+];
 
 const replacements = new Map([
   ['https://www.hri.ie/racing/fixture-list/', 'https://www.hri.ie/fixture-list'],
@@ -14,39 +17,87 @@ const replacements = new Map([
   ['https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/', 'https://www.britishhorseracing.com/regulation/arabian-racing/'],
 ]);
 
-function walk(value, visitor) {
+const requiredCurrentUrls = [
+  'https://www.hri.ie/fixture-list',
+  'https://www.hri.ie/racecards',
+  'https://www.hri.ie/results',
+  'https://loveracing.nz/RaceInfo.aspx#bm-meeting-calendar',
+  'https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields',
+  'https://emiratesracing.com/season-calendar/current-season',
+  'https://www.britishhorseracing.com/regulation/arabian-racing/',
+];
+
+function replaceStrings(value, stats) {
+  if (typeof value === 'string') {
+    if (replacements.has(value)) {
+      stats.replacements += 1;
+      return replacements.get(value);
+    }
+    return value;
+  }
+
   if (Array.isArray(value)) {
-    for (const item of value) walk(item, visitor);
-    return;
-  }
-  if (!value || typeof value !== 'object') return;
-  visitor(value);
-  for (const child of Object.values(value)) walk(child, visitor);
-}
-
-const data = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
-let replacementCount = 0;
-let bhaRacecardDiscoveryCount = 0;
-
-walk(data, (object) => {
-  if (typeof object.url === 'string' && replacements.has(object.url)) {
-    object.url = replacements.get(object.url);
-    replacementCount += 1;
+    return value.map((entry) => replaceStrings(entry, stats));
   }
 
-  if (object.source_id === 'bha-racecard-links' && !object.url) {
-    object.url = 'https://www.britishhorseracing.com/racing/fixtures/upcoming/';
-    object.role = 'racecard link discovery from upcoming fixture rows';
-    bhaRacecardDiscoveryCount += 1;
+  if (!value || typeof value !== 'object') return value;
+
+  const next = {};
+  for (const [key, child] of Object.entries(value)) {
+    next[key] = replaceStrings(child, stats);
   }
-});
 
-if (replacementCount !== 13) {
-  throw new Error(`Expected 13 URL replacements, applied ${replacementCount}.`);
-}
-if (bhaRacecardDiscoveryCount !== 1) {
-  throw new Error(`Expected one BHA racecard discovery URL insertion, applied ${bhaRacecardDiscoveryCount}.`);
+  if (next.source_id === 'bha-racecard-links') {
+    if (!next.url) {
+      next.url = 'https://www.britishhorseracing.com/racing/fixtures/upcoming/';
+      stats.insertions += 1;
+    }
+    next.role = 'racecard link discovery from upcoming fixture rows';
+  }
+
+  return next;
 }
 
-fs.writeFileSync(sourcePath, `${JSON.stringify(data, null, 2)}\n`);
-console.log(`[repair-major-country-source-urls] updated ${path.relative(root, sourcePath)} replacements=${replacementCount} inserted=${bhaRacecardDiscoveryCount}`);
+function collectStrings(value, output = []) {
+  if (typeof value === 'string') {
+    output.push(value);
+    return output;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) collectStrings(entry, output);
+    return output;
+  }
+  if (value && typeof value === 'object') {
+    for (const child of Object.values(value)) collectStrings(child, output);
+  }
+  return output;
+}
+
+for (const filePath of targetPaths) {
+  const original = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const stats = { replacements: 0, insertions: 0 };
+  const repaired = replaceStrings(original, stats);
+  const strings = new Set(collectStrings(repaired));
+
+  for (const staleUrl of replacements.keys()) {
+    if (strings.has(staleUrl)) {
+      throw new Error(`${path.relative(root, filePath)} still contains stale URL: ${staleUrl}`);
+    }
+  }
+
+  if (filePath.endsWith('major-country-acquisition-source-groups.json')) {
+    for (const requiredUrl of requiredCurrentUrls) {
+      if (!strings.has(requiredUrl)) {
+        throw new Error(`${path.relative(root, filePath)} missing repaired URL: ${requiredUrl}`);
+      }
+    }
+    if (!strings.has('https://www.britishhorseracing.com/racing/fixtures/upcoming/')) {
+      throw new Error(`${path.relative(root, filePath)} missing BHA racecard discovery URL.`);
+    }
+  }
+
+  fs.writeFileSync(filePath, `${JSON.stringify(repaired, null, 2)}\n`);
+  console.log(
+    `[repair-major-country-source-urls] updated ${path.relative(root, filePath)} replacements=${stats.replacements} inserted=${stats.insertions}`,
+  );
+}
