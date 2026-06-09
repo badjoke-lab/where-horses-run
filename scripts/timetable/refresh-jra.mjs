@@ -10,7 +10,6 @@ const detailsPath = 'data/generated/timetable/jra-normalized-meeting-details.jso
 const reportPath = 'data/generated/timetable/jra-refresh-report.json';
 const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json';
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
-
 const rankOrder = ['not_listed', 'D', 'C', 'B', 'B+', 'A', 'A+'];
 
 const racecourses = {
@@ -82,7 +81,7 @@ function decodeBody(buffer) {
   const candidates = ['shift_jis', 'utf-8'].map((encoding) => {
     try {
       const text = new TextDecoder(encoding).decode(buffer);
-      const score = ['発走時刻', 'レース', 'メートル', ...Object.keys(racecourses)]
+      const score = ['発走時刻', 'レース', '芝', 'ダート', '東京', '阪神']
         .reduce((total, token) => total + (text.split(token).length - 1), 0);
       return { encoding, text, score };
     } catch {
@@ -153,61 +152,55 @@ function normalizeTime(hour, minute) {
 }
 
 function cleanText(value) {
-  return String(value ?? '')
-    .replace(/^[・･:：\-–—\s]+|[・･:：\-–—\s]+$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
 
-function extractDistance(segment) {
-  const match = segment.match(/(\d{1,2}(?:,\d{3})|\d{3,4})\s*(?:メートル|m|M)/);
-  if (!match) return null;
-  const distance = Number(match[1].replace(',', ''));
-  return distance >= 600 && distance <= 6000 ? distance : null;
-}
-
-function extractSurface(segment) {
-  if (/障害/.test(segment)) return 'Jump';
-  if (/ダート/.test(segment)) return 'Dirt';
-  if (/芝/.test(segment)) return 'Turf';
+function surfaceFromCode(code) {
+  const normalized = cleanText(code).replace(/[･]/g, '・');
+  if (normalized.startsWith('芝')) return 'Turf';
+  if (normalized.startsWith('ダ')) return 'Dirt';
+  if (normalized.startsWith('障')) return 'Jump';
   return null;
 }
 
-function extractCourseLabel(segment) {
-  const distanceMatch = segment.match(/(?:芝|ダート|障害)[\s\S]{0,120}?(?:\d{1,2}(?:,\d{3})|\d{3,4})\s*(?:メートル|m|M)[\s\S]{0,100}/);
-  const metadata = distanceMatch?.[0] ?? segment.slice(0, 1500);
-  const labels = [];
-  if (/障害/.test(metadata)) labels.push('Jump Course');
-  if (/左/.test(metadata)) labels.push('Left');
-  if (/右/.test(metadata)) labels.push('Right');
-  if (/直線/.test(metadata)) labels.push('Straight');
-  if (/内(?:回り)?/.test(metadata)) labels.push('Inner');
-  if (/外(?:回り)?/.test(metadata)) labels.push('Outer');
-  if (/A\s*コース/i.test(metadata)) labels.push('A Course');
-  if (/B\s*コース/i.test(metadata)) labels.push('B Course');
-  if (/C\s*コース/i.test(metadata)) labels.push('C Course');
-  if (/D\s*コース/i.test(metadata)) labels.push('D Course');
-  return labels.length ? [...new Set(labels)].join(' / ') : null;
+function courseLabelFromCode(code) {
+  const normalized = cleanText(code).replace(/[･]/g, '・');
+  if (normalized.startsWith('芝')) {
+    if (normalized.includes('外')) return 'Turf Outer Course';
+    if (normalized.includes('内')) return 'Turf Inner Course';
+    return 'Turf Course';
+  }
+  if (normalized.startsWith('ダ')) return 'Dirt Course';
+  if (normalized.startsWith('障')) return 'Jump Course';
+  return null;
 }
 
-function extractRaceName(segment, raceNumber) {
-  const withoutMarker = segment.replace(new RegExp(`^第?\\s*${raceNumber}\\s*(?:レース|R)\\s*`, 'i'), '');
-  const stopCandidates = [
-    withoutMarker.search(/発走時刻/),
-    withoutMarker.search(/(?:芝|ダート|障害)[\s\S]{0,120}?(?:\d{1,2}(?:,\d{3})|\d{3,4})\s*(?:メートル|m|M)/),
-  ].filter((index) => index >= 0);
-  const prefix = withoutMarker.slice(0, stopCandidates.length ? Math.min(...stopCandidates) : Math.min(1000, withoutMarker.length));
-  const lines = prefix
-    .split('\n')
-    .map(cleanText)
-    .filter(Boolean)
-    .filter((line) => line.length <= 160)
-    .filter((line) => !/(出馬表|オッズ|結果|払戻|投票|映像|騎手|調教師|発走時刻|メートル)/.test(line));
-  const preferred = lines.find((line) => /(ステークス|カップ|賞|特別|未勝利|新馬|メイクデビュー|オープン|リステッド|障害|サラ系|\d歳|牝|G[ⅠⅡⅢ123]|J・G)/i.test(line));
-  return preferred ?? lines[0] ?? null;
+function parseRichRows(block) {
+  const rows = new Map();
+  const pattern = /第?\s*(\d{1,2})\s*(?:レース|R)\s+([\s\S]*?)\s+(\d{1,2}(?:,\d{3})|\d{3,4})\s*[（(]\s*([^）)]+?)\s*[）)][\s\S]*?(\d{1,2})\s*時\s*(\d{1,2})\s*分/gi;
+
+  for (const match of block.matchAll(pattern)) {
+    const raceNumber = Number(match[1]);
+    const distance = Number(match[3].replace(',', ''));
+    const courseCode = cleanText(match[4]);
+    if (raceNumber < 1 || raceNumber > 30 || distance < 600 || distance > 6000) continue;
+
+    rows.set(raceNumber, {
+      race_number: raceNumber,
+      label: `Race ${raceNumber}`,
+      post_time_local: normalizeTime(match[5], match[6]),
+      race_name: cleanText(match[2]),
+      distance_m: distance,
+      surface: surfaceFromCode(courseCode),
+      course_label: courseLabelFromCode(courseCode),
+      source_course_code: courseCode,
+    });
+  }
+
+  return rows;
 }
 
-function buildTimeRows(block) {
+function parseTimeRows(block) {
   const rows = new Map();
   const patterns = [
     /第?\s*(\d{1,2})\s*(?:レース|R)[\s\S]{0,600}?発走時刻\s*(\d{1,2})\s*時\s*(\d{1,2})\s*分/gi,
@@ -226,62 +219,47 @@ function buildTimeRows(block) {
           race_number: raceNumber,
           label: `Race ${raceNumber}`,
           post_time_local: normalizeTime(hour, minute),
+          race_name: null,
+          distance_m: null,
+          surface: null,
+          course_label: null,
+          source_course_code: null,
         });
       }
     }
   }
 
-  return [...rows.values()].sort((left, right) => left.race_number - right.race_number);
+  return rows;
 }
 
-function enrichRows(block, timeRows) {
-  const markers = [...block.matchAll(/第?\s*(\d{1,2})\s*(?:レース|R)(?![A-Za-z])/gi)];
-  const segments = new Map();
-  for (let index = 0; index < markers.length; index += 1) {
-    const marker = markers[index];
-    const raceNumber = Number(marker[1]);
-    const next = markers[index + 1];
-    const segment = block.slice(marker.index, next?.index ?? Math.min(block.length, marker.index + 3500));
-    if (!segments.has(raceNumber) || segment.length > segments.get(raceNumber).length) {
-      segments.set(raceNumber, segment);
-    }
-  }
-
-  return timeRows.map((row) => {
-    const segment = segments.get(row.race_number) ?? block.slice(0, 0);
-    return {
-      ...row,
-      race_name: extractRaceName(segment, row.race_number),
-      distance_m: extractDistance(segment),
-      surface: extractSurface(segment),
-      course_label: extractCourseLabel(segment),
-    };
-  });
+function parseRows(block) {
+  const richRows = parseRichRows(block);
+  const timeRows = parseTimeRows(block);
+  const raceNumbers = [...new Set([...timeRows.keys(), ...richRows.keys()])].sort((a, b) => a - b);
+  return raceNumbers.map((raceNumber) => ({
+    ...(timeRows.get(raceNumber) ?? {}),
+    ...(richRows.get(raceNumber) ?? {}),
+  }));
 }
 
 function isContinuous(rows) {
   return rows.length >= 2 && rows.every((row, index) => row.race_number === index + 1);
 }
 
-function missingFields(rows) {
-  const result = new Set();
-  for (const row of rows) {
-    if (!row.post_time_local) result.add('post_time_local');
-    if (!row.race_name) result.add('race_name');
-    if (!row.distance_m) result.add('distance_m');
-    if (!row.surface) result.add('surface');
-    if (!row.course_label) result.add('course_label');
-  }
-  return [...result];
+function rowMissingFields(row) {
+  return [
+    !row.post_time_local ? 'post_time_local' : null,
+    !row.race_name ? 'race_name' : null,
+    !row.distance_m ? 'distance_m' : null,
+    !row.surface ? 'surface' : null,
+    !row.course_label ? 'course_label' : null,
+  ].filter(Boolean);
 }
 
 function rankRows(rows) {
   if (!rows.length) return 'C';
   const continuous = isContinuous(rows);
-  const completeAPlus = continuous && rows.every((row) =>
-    row.post_time_local && row.race_name && row.distance_m && row.surface && row.course_label,
-  );
-  if (completeAPlus) return 'A+';
+  if (continuous && rows.every((row) => rowMissingFields(row).length === 0)) return 'A+';
   if (continuous) return 'A';
   if (rows.length >= 2) return 'B+';
   return 'B';
@@ -297,9 +275,9 @@ function parseMeetings(date, html, sourceUrl) {
     const heading = headings[index];
     const next = headings[index + 1];
     const block = text.slice(heading.index, next?.index ?? text.length);
-    const timeRows = buildTimeRows(block);
-    if (!timeRows.length) continue;
-    const rows = enrichRows(block, timeRows);
+    const rows = parseRows(block);
+    if (!rows.length) continue;
+
     const rank = rankRows(rows);
     const venue = racecourses[heading[2]];
     meetings.push({
@@ -316,7 +294,7 @@ function parseMeetings(date, html, sourceUrl) {
       last_race_time_local: rows.length >= 2 ? rows.at(-1)?.post_time_local ?? null : null,
       official_source_url: sourceUrl,
       continuous_from_one: isContinuous(rows),
-      missing_fields: missingFields(rows),
+      missing_fields: [...new Set(rows.flatMap(rowMissingFields))],
       timetable_rows: rows.map((row) => ({
         label: row.label,
         post_time_local: row.post_time_local,
@@ -357,7 +335,7 @@ function mergeIntoCanonical(records, details, generatedAt) {
         source_status: 'verified',
         official_source_url: record.official_source_url,
         source_label: 'JRA official calendar/program page',
-        extraction_method: 'live_fetch_parser_a_plus_first',
+        extraction_method: 'live_fetch_program_row_parser',
         source_snapshot_path: snapshotPath,
         normalized_from_path: normalizedPath,
       },
@@ -365,7 +343,7 @@ function mergeIntoCanonical(records, details, generatedAt) {
         last_checked_date: generatedAt.slice(0, 10),
         generated_at: generatedAt,
         stale_after_date: null,
-        freshness_note: 'Live JRA official extraction with A+ attempted before fallback.',
+        freshness_note: 'Live JRA official program-row extraction with A+ attempted before fallback.',
       },
       notes: 'JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored.',
     };
@@ -453,16 +431,7 @@ for (const date of enumerateDates(range.from, range.to)) {
       race_count: meeting.timetable_rows.length,
       missing_fields: meeting.missing_fields,
       incomplete_races: meeting.timetable_rows
-        .map((row, index) => ({
-          race_number: index + 1,
-          missing_fields: [
-            !row.post_time_local ? 'post_time_local' : null,
-            !row.race_name ? 'race_name' : null,
-            !row.distance_m ? 'distance_m' : null,
-            !row.surface ? 'surface' : null,
-            !row.course_label ? 'course_label' : null,
-          ].filter(Boolean),
-        }))
+        .map((row, index) => ({ race_number: index + 1, missing_fields: rowMissingFields(row) }))
         .filter((row) => row.missing_fields.length),
     })),
   });
@@ -486,7 +455,7 @@ const details = publishable
       source_status: 'verified',
       official_source_url: meeting.official_source_url,
       source_label: 'JRA official calendar/program page',
-      extraction_method: 'live_fetch_parser_a_plus_first',
+      extraction_method: 'live_fetch_program_row_parser',
       source_snapshot_path: snapshotPath,
       normalized_from_path: detailsPath,
     },
@@ -494,10 +463,10 @@ const details = publishable
       last_checked_date: generatedAt.slice(0, 10),
       generated_at: generatedAt,
       stale_after_date: null,
-      freshness_note: 'Live JRA official extraction with A+ attempted before fallback.',
+      freshness_note: 'Live JRA official program-row extraction with A+ attempted before fallback.',
     },
     timetable_rows: meeting.timetable_rows,
-    summary_note: 'Public-safe JRA race metadata.',
+    summary_note: 'Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation.',
   }));
 
 writeJson(snapshotPath, {
