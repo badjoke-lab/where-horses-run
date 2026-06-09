@@ -43,3 +43,4 @@ Public-safe test records may include:
 | ---: | --- | --- | --- |
 | 01 | UAE | Complete | ERA official sources verified across Meydan, Al Ain, Jebel Ali, Sharjah and Abu Dhabi Turf Club; 35 races confirmed; technical capability A+. |
 | 02 | South Korea | Complete | KRA official sources verified across Seoul, Busan-Gyeongnam and Jeju; 6 meetings and 51 races confirmed; technical capability A+; fallback rank A. |
+| 03 | Turkey | Complete | TJK official sources verified across 10 domestic racecourses, 12 meetings and 96 races; technical capability A+; fallback rank A. |
