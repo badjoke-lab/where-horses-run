@@ -19,37 +19,60 @@ function readJson(relativePath) {
 }
 
 const page = read('src/pages/major-countries/current-timetable.astro');
-const component = read('src/components/CurrentTimetableRecords.astro');
-const data = readJson('data/generated/timetable/current-integrated.json');
+const component = read('src/components/TimetableMeetingList.astro');
+const rowAdapter = read('src/data/timetableMeetingRows.ts');
+const publicViewModel = read('src/lib/timetable/publicTimetableViewModel.ts');
+const publicList = readJson('data/generated/timetable/public/meeting-list.json');
 
-if (!page.includes('current-integrated.json')) fail('Page must import current-integrated.json.');
-if (!page.includes('CurrentTimetableRecords')) fail('Page must render CurrentTimetableRecords.');
-if (!page.includes('Current integrated timetable')) fail('Page title text missing.');
+if (!page.includes('TimetableMeetingList')) fail('Page must render TimetableMeetingList.');
+if (!page.includes('getGroupedTimetableMeetingRows')) fail('Page must read grouped rows through timetableMeetingRows.');
+if (!page.includes('Current timetable')) fail('Page current timetable heading is missing.');
+if (page.includes('current-integrated.json')) fail('Page must not directly import legacy current-integrated.json.');
+
+if (!rowAdapter.includes('getPublicTimetableMeetingRows')) {
+  fail('timetableMeetingRows must read through getPublicTimetableMeetingRows.');
+}
+if (!rowAdapter.includes('getGroupedTimetableMeetingRows')) {
+  fail('timetableMeetingRows must expose grouped timetable rows.');
+}
+if (!publicViewModel.includes('data/generated/timetable/public/meeting-list.json')) {
+  fail('Public timetable view model must import public meeting-list.json.');
+}
+if (!publicViewModel.includes('data/generated/timetable/public/meeting-details.json')) {
+  fail('Public timetable view model must import public meeting-details.json.');
+}
 
 for (const field of [
   'country_label',
-  'group_label',
-  'racecourse',
-  'meeting_date',
-  'first_race_time',
-  'all_race_times',
-  'source_trace',
-  'last_checked'
+  'racecourse_name',
+  'capability_rank',
+  'first_race_time_local',
+  'last_race_time_local',
+  'official_source_url',
+  'detail_path',
+  'source_status',
+  'last_checked_date',
 ]) {
-  if (!component.includes(field)) fail(`Component must reference ${field}.`);
+  if (!component.includes(field)) fail(`TimetableMeetingList must reference ${field}.`);
 }
 
-if (data.schema_version !== 'current-timetable-integrated-v0') fail('Unexpected data schema.');
-if (!Array.isArray(data.records) || data.records.length < 9) fail('Expected at least nine records.');
-
-for (const record of data.records) {
-  if (!record.country_label) fail(`${record.record_id}: country_label missing.`);
-  if (!record.group_label) fail(`${record.record_id}: group_label missing.`);
-  if (!record.racecourse) fail(`${record.record_id}: racecourse missing.`);
-  if (!record.meeting_date) fail(`${record.record_id}: meeting_date missing.`);
-  if (!record.first_race_time) fail(`${record.record_id}: first_race_time missing.`);
-  if (!Array.isArray(record.all_race_times) || record.all_race_times.length < 3) fail(`${record.record_id}: all_race_times missing.`);
-  if (!record.source_trace?.last_checked) fail(`${record.record_id}: last_checked missing.`);
+if (publicList.schema_version !== 'public-timetable-meeting-list-v0') {
+  fail('Unexpected public meeting-list schema.');
+}
+if (!Array.isArray(publicList.meetings) || publicList.meetings.length < 9) {
+  fail('Expected at least nine public timetable meeting rows.');
 }
 
-console.log(`[pr-120-current-timetable-ui] PASS: ${data.records.length} records available to UI.`);
+for (const meeting of publicList.meetings) {
+  if (!meeting.meeting_id) fail('Public meeting row missing meeting_id.');
+  if (!meeting.country_id) fail(`${meeting.meeting_id}: country_id missing.`);
+  if (!meeting.authority_id) fail(`${meeting.meeting_id}: authority_id missing.`);
+  if (!meeting.racecourse_id) fail(`${meeting.meeting_id}: racecourse_id missing.`);
+  if (!meeting.date) fail(`${meeting.meeting_id}: date missing.`);
+  if (!meeting.effective_public_rank) fail(`${meeting.meeting_id}: effective_public_rank missing.`);
+  if (!meeting.official_source_url) fail(`${meeting.meeting_id}: official_source_url missing.`);
+  if (!meeting.source_status) fail(`${meeting.meeting_id}: source_status missing.`);
+  if (!meeting.last_checked_date) fail(`${meeting.meeting_id}: last_checked_date missing.`);
+}
+
+console.log(`[pr-120-current-timetable-ui] PASS: ${publicList.meetings.length} public timetable rows available through the canonical/public UI path.`);
