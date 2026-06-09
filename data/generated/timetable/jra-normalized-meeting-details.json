@@ -1,148 +1,11 @@
 {
-  "schema_version": "canonical-meeting-details-v0",
+  "schema_version": "jra-normalized-meeting-details-v0",
   "generated_at": "2026-06-09T15:02:29.605Z",
-  "input_sources": [
-    "src/data/normalizedTimetableMeetingDetails.ts",
-    "data/generated/timetable/hkjc-normalized-meeting-details.sample.json",
-    "data/generated/timetable/jra-normalized-meeting-details.json"
-  ],
+  "refresh_window": {
+    "from": "2026-06-06",
+    "to": "2026-06-07"
+  },
   "details": [
-    {
-      "meeting_id": "jra-hanshin-racecourse-2026-06-06",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racecourse_id": "hanshin-racecourse",
-      "date": "2026-06-06",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "jra-calendar-date-program",
-        "route_id": "jra-calendar-date-page",
-        "source_status": "verified",
-        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
-        "source_label": "JRA official calendar/program page",
-        "extraction_method": "live_fetch_program_row_parser",
-        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
-      },
-      "freshness": {
-        "last_checked_date": "2026-06-09",
-        "generated_at": "2026-06-09T15:02:29.605Z",
-        "stale_after_date": null,
-        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "09:50",
-          "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "10:25",
-          "race_name": "3歳未勝利",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "10:55",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "11:25",
-          "race_name": "3歳未勝利",
-          "distance_m": 1200,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "12:15",
-          "race_name": "2歳新馬",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "12:45",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:15",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "13:45",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 2200,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "14:20",
-          "race_name": "城崎特別 3歳以上1勝クラス",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "14:55",
-          "race_name": "加古川特別 3歳以上2勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "15:30",
-          "race_name": "垂水ステークス 3歳以上3勝クラス",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "16:15",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        }
-      ],
-      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
-    },
     {
       "meeting_id": "jra-tokyo-racecourse-2026-06-06",
       "country_id": "japan",
@@ -280,18 +143,18 @@
       "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
     },
     {
-      "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+      "meeting_id": "jra-hanshin-racecourse-2026-06-06",
       "country_id": "japan",
       "authority_id": "jra",
       "racecourse_id": "hanshin-racecourse",
-      "date": "2026-06-07",
+      "date": "2026-06-06",
       "timezone": "Asia/Tokyo",
       "capability_rank": "A+",
       "source_trace": {
         "source_id": "jra-calendar-date-program",
         "route_id": "jra-calendar-date-page",
         "source_status": "verified",
-        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
         "source_label": "JRA official calendar/program page",
         "extraction_method": "live_fetch_program_row_parser",
         "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
@@ -306,25 +169,25 @@
       "timetable_rows": [
         {
           "label": "Race 1",
-          "post_time_local": "09:45",
-          "race_name": "障害3歳以上未勝利",
-          "distance_m": 2970,
+          "post_time_local": "09:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1400,
           "surface": "Dirt",
           "course_label": "Dirt Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 2",
-          "post_time_local": "10:20",
+          "post_time_local": "10:25",
           "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 3",
-          "post_time_local": "10:50",
+          "post_time_local": "10:55",
           "race_name": "3歳未勝利",
           "distance_m": 1800,
           "surface": "Dirt",
@@ -333,81 +196,81 @@
         },
         {
           "label": "Race 4",
-          "post_time_local": "11:20",
+          "post_time_local": "11:25",
           "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 5",
-          "post_time_local": "12:10",
+          "post_time_local": "12:15",
           "race_name": "2歳新馬",
-          "distance_m": 1400,
+          "distance_m": 1600,
           "surface": "Turf",
-          "course_label": "Turf Course",
+          "course_label": "Turf Outer Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 6",
-          "post_time_local": "12:40",
+          "post_time_local": "12:45",
           "race_name": "3歳未勝利",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:10",
-          "race_name": "3歳以上1勝クラス",
           "distance_m": 1800,
           "surface": "Dirt",
           "course_label": "Dirt Course",
           "metadata_status": "verified"
         },
         {
+          "label": "Race 7",
+          "post_time_local": "13:15",
+          "race_name": "3歳未勝利",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
           "label": "Race 8",
-          "post_time_local": "13:40",
+          "post_time_local": "13:45",
           "race_name": "3歳以上1勝クラス",
-          "distance_m": 1400,
+          "distance_m": 2200,
           "surface": "Turf",
           "course_label": "Turf Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 9",
-          "post_time_local": "14:10",
-          "race_name": "洲本特別 3歳以上2勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "14:45",
-          "race_name": "三木特別 3歳以上2勝クラス",
+          "post_time_local": "14:20",
+          "race_name": "城崎特別 3歳以上1勝クラス",
           "distance_m": 1800,
           "surface": "Turf",
           "course_label": "Turf Outer Course",
           "metadata_status": "verified"
         },
         {
-          "label": "Race 11",
-          "post_time_local": "15:20",
-          "race_name": "水無月ステークス 3歳以上オープン",
-          "distance_m": 1200,
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "加古川特別 3歳以上2勝クラス",
+          "distance_m": 1800,
           "surface": "Dirt",
           "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "垂水ステークス 3歳以上3勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
           "metadata_status": "verified"
         },
         {
           "label": "Race 12",
           "post_time_local": "16:15",
           "race_name": "3歳以上1勝クラス",
-          "distance_m": 1800,
+          "distance_m": 1400,
           "surface": "Dirt",
           "course_label": "Dirt Course",
           "metadata_status": "verified"
@@ -552,122 +415,140 @@
       "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
     },
     {
-      "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
-      "country_id": "hong-kong",
-      "authority_id": "hkjc",
-      "racecourse_id": "happy-valley-racecourse",
-      "date": "2026-06-10",
-      "timezone": "Asia/Hong_Kong",
+      "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hanshin-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Tokyo",
       "capability_rank": "A+",
       "source_trace": {
-        "source_id": "hkjc-racecard-route",
-        "route_id": "hkjc-racecard-date-raceno-route",
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
         "source_status": "verified",
-        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1",
-        "source_label": "Official source",
-        "extraction_method": "official_racecard_route",
-        "source_snapshot_path": "data/generated/timetable/hkjc-racecard-source-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/hkjc-normalized-meeting-details.sample.json"
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
       },
       "freshness": {
-        "last_checked_date": "2026-06-08",
-        "generated_at": null,
+        "last_checked_date": "2026-06-09",
+        "generated_at": "2026-06-09T15:02:29.605Z",
         "stale_after_date": null,
-        "freshness_note": "HKJC detail merged from rolling refresh normalized output."
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
       },
       "timetable_rows": [
         {
           "label": "Race 1",
-          "post_time_local": "18:40",
-          "race_name": "CHEK LAP KOK HANDICAP",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=1"
+          "post_time_local": "09:45",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2970,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 2",
-          "post_time_local": "19:10",
-          "race_name": "KAI TAK HANDICAP",
-          "distance_m": 1650,
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
           "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=2"
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 3",
-          "post_time_local": "19:40",
-          "race_name": "STANLEY HANDICAP",
-          "distance_m": 1200,
-          "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=3"
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 4",
-          "post_time_local": "20:10",
-          "race_name": "TSIM SHA TSUI HANDICAP",
-          "distance_m": 1000,
-          "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=4"
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 5",
-          "post_time_local": "20:40",
-          "race_name": "THE TOURISM CUP (HANDICAP)",
-          "distance_m": 1650,
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1400,
           "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=5"
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 6",
-          "post_time_local": "21:10",
-          "race_name": "STANLEY HANDICAP",
-          "distance_m": 1200,
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
           "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=6"
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 7",
-          "post_time_local": "21:45",
-          "race_name": "VICTORIA HARBOUR HANDICAP",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
           "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=7"
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 8",
-          "post_time_local": "22:15",
-          "race_name": "WEST KOWLOON HANDICAP",
-          "distance_m": 1200,
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1400,
           "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=8"
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
         },
         {
           "label": "Race 9",
-          "post_time_local": "22:50",
-          "race_name": "WEST KOWLOON HANDICAP",
-          "distance_m": 1200,
+          "post_time_local": "14:10",
+          "race_name": "洲本特別 3歳以上2勝クラス",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "三木特別 3歳以上2勝クラス",
+          "distance_m": 1800,
           "surface": "Turf",
-          "course_label": "C+3 Course",
-          "metadata_status": "verified",
-          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/06/10&Racecourse=HV&RaceNo=9"
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "水無月ステークス 3歳以上オープン",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
         }
       ],
-      "summary_note": "Public-safe HKJC timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished."
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
     }
   ]
 }

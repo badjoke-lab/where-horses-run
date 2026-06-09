@@ -74,7 +74,11 @@ function decodeEntities(value) {
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&#x2F;|&#47;/gi, '/')
-    .replace(/&#x3A;|&#58;/gi, ':');
+    .replace(/&#x3A;|&#58;/gi, ':')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) =>
+      String.fromCodePoint(Number.parseInt(code, 16))
+    );
 }
 
 function decodeBody(buffer) {

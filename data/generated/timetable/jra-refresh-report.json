@@ -1,0 +1,75 @@
+{
+  "schema_version": "jra-refresh-report-v0",
+  "generated_at": "2026-06-09T15:02:29.605Z",
+  "refresh_window": {
+    "from": "2026-06-06",
+    "to": "2026-06-07"
+  },
+  "dates_checked": 2,
+  "meetings_extracted": 4,
+  "publishable_meetings": 4,
+  "a_plus_meetings": 4,
+  "a_level_meetings": 0,
+  "statuses": [
+    {
+      "date": "2026-06-06",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+      "content_type": "text/html",
+      "body_size": 65061,
+      "encoding": "shift_jis",
+      "meeting_count": 2,
+      "ranks": {
+        "A+": 2
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-06-07",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+      "content_type": "text/html",
+      "body_size": 65225,
+      "encoding": "shift_jis",
+      "meeting_count": 2,
+      "ranks": {
+        "A+": 2
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    }
+  ]
+}
