@@ -1,0 +1,1925 @@
+{
+  "schema_version": "major-country-live-source-audit-v0",
+  "generated_at": "2026-06-09T02:33:07.075Z",
+  "source_inventory": "data/static/major-country-acquisition-source-groups.json",
+  "filters": {
+    "country": null,
+    "group": null
+  },
+  "policy": {
+    "raw_response_body_stored": false,
+    "sample_text_stored": false,
+    "max_bytes_per_url": 2000000,
+    "timeout_ms": 20000
+  },
+  "source_reference_count": 119,
+  "unique_url_count": 31,
+  "no_concrete_url_count": 0,
+  "summary": {
+    "by_status": {
+      "blocked_or_bot_page": 3,
+      "fetchable": 25,
+      "blocked_or_rate_limited": 2,
+      "network_error": 1
+    },
+    "by_country": {
+      "australia": {
+        "unique_urls": 2,
+        "source_references": 10,
+        "statuses": {
+          "blocked_or_bot_page": 1,
+          "fetchable": 1
+        }
+      },
+      "canada": {
+        "unique_urls": 2,
+        "source_references": 10,
+        "statuses": {
+          "fetchable": 2
+        }
+      },
+      "france": {
+        "unique_urls": 2,
+        "source_references": 10,
+        "statuses": {
+          "fetchable": 1,
+          "blocked_or_bot_page": 1
+        }
+      },
+      "hong-kong": {
+        "unique_urls": 2,
+        "source_references": 5,
+        "statuses": {
+          "fetchable": 2
+        }
+      },
+      "ireland": {
+        "unique_urls": 4,
+        "source_references": 6,
+        "statuses": {
+          "fetchable": 4
+        }
+      },
+      "japan": {
+        "unique_urls": 3,
+        "source_references": 13,
+        "statuses": {
+          "fetchable": 3
+        }
+      },
+      "new-zealand": {
+        "unique_urls": 3,
+        "source_references": 10,
+        "statuses": {
+          "blocked_or_rate_limited": 1,
+          "blocked_or_bot_page": 1,
+          "fetchable": 1
+        }
+      },
+      "south-africa": {
+        "unique_urls": 3,
+        "source_references": 15,
+        "statuses": {
+          "fetchable": 2,
+          "network_error": 1
+        }
+      },
+      "south-korea": {
+        "unique_urls": 1,
+        "source_references": 5,
+        "statuses": {
+          "fetchable": 1
+        }
+      },
+      "united-arab-emirates": {
+        "unique_urls": 1,
+        "source_references": 5,
+        "statuses": {
+          "fetchable": 1
+        }
+      },
+      "united-kingdom": {
+        "unique_urls": 5,
+        "source_references": 15,
+        "statuses": {
+          "fetchable": 5
+        }
+      },
+      "united-states": {
+        "unique_urls": 3,
+        "source_references": 15,
+        "statuses": {
+          "blocked_or_rate_limited": 1,
+          "fetchable": 2
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "official_url": "https://www.harness.org.au/",
+      "status": "blocked_or_bot_page",
+      "status_reason": "captcha",
+      "http_status": 200,
+      "final_url": "https://www.harness.org.au/",
+      "content_type": "text/html;charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 55633,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "harness-australia",
+          "label": "Harness Racing Australia entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.harness.org.au/"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "harness-australia-rolling",
+          "label": "Harness Racing Australia rolling cards",
+          "role": "rolling racecard path",
+          "official_url": "https://www.harness.org.au/"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "harness-australia-meetings",
+          "label": "Harness Racing Australia meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.harness.org.au/"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "harness-australia-first-race",
+          "label": "Harness Racing Australia first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.harness.org.au/"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "harness-australia",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "harness-australia-race-times",
+          "label": "Harness Racing Australia race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.harness.org.au/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 30505,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "racing-australia-calendar",
+          "label": "Racing Australia FreeFields calendar",
+          "role": "annual fixture calendar",
+          "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "racing-australia-calendar-rolling",
+          "label": "Racing Australia FreeFields rolling calendar",
+          "role": "rolling fixture calendar",
+          "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "racing-australia-meetings",
+          "label": "Racing Australia calendar meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "racing-australia-first-race",
+          "label": "Racing Australia FreeFields first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx"
+        },
+        {
+          "country_id": "australia",
+          "group_id": "racing-australia-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "racing-australia-race-times",
+          "label": "Racing Australia FreeFields race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.racingaustralia.horse/FreeFields/Calendar.aspx"
+        }
+      ]
+    },
+    {
+      "official_url": "https://standardbredcanada.ca/racing",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://standardbredcanada.ca/racing",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 396527,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "standardbred-canada-racing",
+          "label": "Standardbred Canada racing",
+          "role": "annual fixture path",
+          "official_url": "https://standardbredcanada.ca/racing"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "standardbred-canada-racing-rolling",
+          "label": "Standardbred Canada racing rolling cards",
+          "role": "rolling racecard path",
+          "official_url": "https://standardbredcanada.ca/racing"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "standardbred-canada-meetings",
+          "label": "Standardbred Canada meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://standardbredcanada.ca/racing"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "standardbred-canada-first-race",
+          "label": "Standardbred Canada first-race fields",
+          "role": "first race time source",
+          "official_url": "https://standardbredcanada.ca/racing"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "standardbred-canada",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "standardbred-canada-race-times",
+          "label": "Standardbred Canada race rows",
+          "role": "per-race time source",
+          "official_url": "https://standardbredcanada.ca/racing"
+        }
+      ]
+    },
+    {
+      "official_url": "https://woodbine.com/horse-racing/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://woodbine.com/horse-racing/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 372693,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "woodbine-horse-racing",
+          "label": "Woodbine horse racing",
+          "role": "annual fixture path",
+          "official_url": "https://woodbine.com/horse-racing/"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "woodbine-horse-racing-rolling",
+          "label": "Woodbine horse racing rolling cards",
+          "role": "rolling racecard path",
+          "official_url": "https://woodbine.com/horse-racing/"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "woodbine-meetings",
+          "label": "Woodbine meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://woodbine.com/horse-racing/"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "woodbine-first-race",
+          "label": "Woodbine first-race fields",
+          "role": "first race time source",
+          "official_url": "https://woodbine.com/horse-racing/"
+        },
+        {
+          "country_id": "canada",
+          "group_id": "woodbine-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "woodbine-race-times",
+          "label": "Woodbine race rows",
+          "role": "per-race time source",
+          "official_url": "https://woodbine.com/horse-racing/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.france-galop.com/en",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.france-galop.com/en",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 34884,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "france-galop-calendar",
+          "label": "France Galop calendar entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.france-galop.com/en"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "france-galop-rolling",
+          "label": "France Galop rolling race entry point",
+          "role": "rolling fixture path",
+          "official_url": "https://www.france-galop.com/en"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "meeting_sources",
+          "source_id": "france-galop-meetings",
+          "label": "France Galop meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.france-galop.com/en"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "france-galop-first-race",
+          "label": "France Galop race programme first-race data",
+          "role": "first race time source",
+          "official_url": "https://www.france-galop.com/en"
+        },
+        {
+          "country_id": "france",
+          "group_id": "france-galop",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "france-galop-race-times",
+          "label": "France Galop race programme rows",
+          "role": "per-race time source",
+          "official_url": "https://www.france-galop.com/en"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.letrot.com/",
+      "status": "blocked_or_bot_page",
+      "status_reason": "captcha",
+      "http_status": 200,
+      "final_url": "https://www.letrot.com/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": "16548",
+      "body_size_observed": 150528,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "letrot-calendar",
+          "label": "LeTROT calendar entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.letrot.com/"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "letrot-rolling",
+          "label": "LeTROT rolling race entry point",
+          "role": "rolling fixture path",
+          "official_url": "https://www.letrot.com/"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "meeting_sources",
+          "source_id": "letrot-meetings",
+          "label": "LeTROT meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.letrot.com/"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "letrot-first-race",
+          "label": "LeTROT programme first-race data",
+          "role": "first race time source",
+          "official_url": "https://www.letrot.com/"
+        },
+        {
+          "country_id": "france",
+          "group_id": "letrot",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "letrot-race-times",
+          "label": "LeTROT programme rows",
+          "role": "per-race time source",
+          "official_url": "https://www.letrot.com/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/fixture",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": "14467",
+      "body_size_observed": 199138,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "hkjc-fixture-list",
+          "label": "HKJC fixture list",
+          "role": "annual fixture list",
+          "official_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "hkjc-fixture-list-meetings",
+          "label": "HKJC fixture list meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://racing.hkjc.com/racing/information/English/Racing/Fixture.aspx"
+        }
+      ]
+    },
+    {
+      "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://racing.hkjc.com/en-us/local/information/racecard",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": "20040",
+      "body_size_observed": 201752,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "hkjc-racecard",
+          "label": "HKJC racecard",
+          "role": "rolling racecard",
+          "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "hkjc-racecard-first-race",
+          "label": "HKJC racecard first race metadata",
+          "role": "first race time source",
+          "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+        },
+        {
+          "country_id": "hong-kong",
+          "group_id": "hkjc",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "hkjc-racecard-race-times",
+          "label": "HKJC racecard race rows",
+          "role": "per-race time source",
+          "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.hri.ie/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.hri.ie/",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 125397,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "hri-home-rolling",
+          "label": "HRI rolling racing entry point",
+          "role": "rolling fixture entry point",
+          "official_url": "https://www.hri.ie/"
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "hri-home-meetings",
+          "label": "HRI rolling meeting cards",
+          "role": "meeting date source",
+          "official_url": "https://www.hri.ie/"
+        },
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "hri-home-first-race",
+          "label": "HRI rolling first-race metadata",
+          "role": "first race time source",
+          "official_url": "https://www.hri.ie/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.hri.ie/fixture-list",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.hri.ie/fixture-list",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 87965,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "hri-fixture-list",
+          "label": "HRI fixture list",
+          "role": "annual fixture list",
+          "official_url": "https://www.hri.ie/fixture-list"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.hri.ie/racecards",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.hri.ie/racecards",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 73600,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "hri-racecards",
+          "label": "HRI racecards",
+          "role": "per-race time source",
+          "official_url": "https://www.hri.ie/racecards"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.hri.ie/results",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.hri.ie/results",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 123056,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "ireland",
+          "group_id": "hri",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "hri-race-results",
+          "label": "HRI race results",
+          "role": "post-meeting timing reconciliation",
+          "official_url": "https://www.hri.ie/results"
+        }
+      ]
+    },
+    {
+      "official_url": "https://jra.jp/keiba/calendar2026/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/",
+      "content_type": "text/html",
+      "content_length_header": "11647",
+      "body_size_observed": 59311,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "jra-annual-calendar",
+          "label": "JRA annual race calendar",
+          "role": "annual fixture calendar",
+          "official_url": "https://jra.jp/keiba/calendar2026/"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "meeting_sources",
+          "source_id": "jra-annual-calendar-meetings",
+          "label": "JRA annual race calendar meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://jra.jp/keiba/calendar2026/"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "jra-annual-calendar-first-race",
+          "label": "JRA calendar first-race time cells",
+          "role": "first race time source",
+          "official_url": "https://jra.jp/keiba/calendar2026/"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "jra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "jra-annual-calendar-race-times",
+          "label": "JRA calendar race time cells",
+          "role": "per-race time source",
+          "official_url": "https://jra.jp/keiba/calendar2026/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 40951,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "banei-race-schedule",
+          "label": "Banei race schedule",
+          "role": "season and meeting schedule",
+          "official_url": "https://www.banei-keiba.or.jp/race_schedule.php"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "banei-race-schedule-rolling",
+          "label": "Banei race schedule rolling view",
+          "role": "rolling schedule",
+          "official_url": "https://www.banei-keiba.or.jp/race_schedule.php"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "meeting_sources",
+          "source_id": "banei-race-schedule-meetings",
+          "label": "Banei race schedule meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://www.banei-keiba.or.jp/race_schedule.php"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "banei-race-schedule-first-race",
+          "label": "Banei race schedule first-race rows",
+          "role": "first race time source",
+          "official_url": "https://www.banei-keiba.or.jp/race_schedule.php"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "banei",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "fixture_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "banei-race-schedule-race-times",
+          "label": "Banei race schedule race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.banei-keiba.or.jp/race_schedule.php"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 62221,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "nar-today-race-info",
+          "label": "NAR Today Race Info",
+          "role": "rolling daily race information",
+          "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "meeting_sources",
+          "source_id": "nar-today-race-info-meetings",
+          "label": "NAR Today Race Info meeting list",
+          "role": "meeting date source",
+          "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "nar-today-race-info-first-race",
+          "label": "NAR Today Race Info first-race rows",
+          "role": "first race time source",
+          "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop"
+        },
+        {
+          "country_id": "japan",
+          "group_id": "nar",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "nar-today-race-info-race-times",
+          "label": "NAR Today Race Info race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/TodayRaceInfoTop"
+        }
+      ]
+    },
+    {
+      "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-calendar",
+      "status": "blocked_or_rate_limited",
+      "status_reason": "http_403",
+      "http_status": 403,
+      "final_url": "https://loveracing.nz/RaceInfo.aspx",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 5613,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "loveracing-calendar",
+          "label": "LOVERACING calendar",
+          "role": "annual fixture calendar",
+          "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-calendar"
+        }
+      ]
+    },
+    {
+      "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields",
+      "status": "blocked_or_bot_page",
+      "status_reason": "cloudflare_challenge",
+      "http_status": 200,
+      "final_url": "https://loveracing.nz/RaceInfo.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 67807,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "loveracing-nominations",
+          "label": "LOVERACING nominations",
+          "role": "rolling race information",
+          "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "loveracing-meetings",
+          "label": "LOVERACING nominations meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "loveracing-first-race",
+          "label": "LOVERACING nominations first-race fields",
+          "role": "first race time source",
+          "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "loveracing-thoroughbred",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "loveracing-race-times",
+          "label": "LOVERACING nominations race rows",
+          "role": "per-race time source",
+          "official_url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.hrnz.co.nz/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.hrnz.co.nz/",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": "24713",
+      "body_size_observed": 250303,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "hrnz",
+          "label": "HRNZ entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.hrnz.co.nz/"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "hrnz-rolling",
+          "label": "HRNZ rolling race information",
+          "role": "rolling race information",
+          "official_url": "https://www.hrnz.co.nz/"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "hrnz-meetings",
+          "label": "HRNZ meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.hrnz.co.nz/"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "hrnz-first-race",
+          "label": "HRNZ first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.hrnz.co.nz/"
+        },
+        {
+          "country_id": "new-zealand",
+          "group_id": "hrnz-harness",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "hrnz-race-times",
+          "label": "HRNZ race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.hrnz.co.nz/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.4racing.com/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.4racing.com/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 39961,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "four-racing",
+          "label": "4Racing entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.4racing.com/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "four-racing-rolling",
+          "label": "4Racing rolling racecards",
+          "role": "rolling racecard path",
+          "official_url": "https://www.4racing.com/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "four-racing-meetings",
+          "label": "4Racing meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.4racing.com/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "four-racing-first-race",
+          "label": "4Racing first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.4racing.com/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "four-racing",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "four-racing-race-times",
+          "label": "4Racing racecard race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.4racing.com/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.goldcircle.co.za/",
+      "status": "network_error",
+      "status_reason": "UND_ERR_CONNECT_TIMEOUT",
+      "http_status": null,
+      "final_url": "https://www.goldcircle.co.za/",
+      "content_type": null,
+      "content_length_header": null,
+      "body_size_observed": 0,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": "UND_ERR_CONNECT_TIMEOUT",
+      "network_error_detail": "Connect Timeout Error (attempted addresses: 41.162.25.100:443, 165.165.171.132:443, timeout: 10000ms)",
+      "references": [
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "gold-circle",
+          "label": "Gold Circle entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.goldcircle.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "gold-circle-rolling",
+          "label": "Gold Circle rolling racecards",
+          "role": "rolling racecard path",
+          "official_url": "https://www.goldcircle.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "gold-circle-meetings",
+          "label": "Gold Circle meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.goldcircle.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "gold-circle-first-race",
+          "label": "Gold Circle first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.goldcircle.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "gold-circle",
+          "update_model": "operator_split_rolling",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "gold-circle-race-times",
+          "label": "Gold Circle racecard race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.goldcircle.co.za/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.nhra.co.za/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.nhra.co.za/",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": null,
+      "body_size_observed": 105299,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "parser_target": "operator_calendar_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "nhra",
+          "label": "NHRA entry point",
+          "role": "annual fixture/regulatory path",
+          "official_url": "https://www.nhra.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "parser_target": "operator_calendar_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "nhra-rolling",
+          "label": "NHRA rolling fixture/regulatory path",
+          "role": "rolling fixture path",
+          "official_url": "https://www.nhra.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "parser_target": "operator_calendar_page",
+          "source_field": "meeting_sources",
+          "source_id": "nhra-meetings",
+          "label": "NHRA meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.nhra.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "parser_target": "operator_calendar_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "nhra-first-race",
+          "label": "NHRA first-race reference fields",
+          "role": "first race time source",
+          "official_url": "https://www.nhra.co.za/"
+        },
+        {
+          "country_id": "south-africa",
+          "group_id": "nhra",
+          "update_model": "operator_split_rolling",
+          "parser_target": "operator_calendar_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "nhra-race-times",
+          "label": "NHRA race programme references",
+          "role": "per-race time source",
+          "official_url": "https://www.nhra.co.za/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.kra.co.kr/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.kra.co.kr/main.do",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 197325,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "kra",
+          "label": "KRA entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.kra.co.kr/"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "kra-rolling",
+          "label": "KRA rolling race information",
+          "role": "rolling race information",
+          "official_url": "https://www.kra.co.kr/"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "meeting_sources",
+          "source_id": "kra-meetings",
+          "label": "KRA meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.kra.co.kr/"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "kra-first-race",
+          "label": "KRA first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.kra.co.kr/"
+        },
+        {
+          "country_id": "south-korea",
+          "group_id": "kra",
+          "update_model": "annual_plus_racecard",
+          "parser_target": "daily_race_info_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "kra-race-times",
+          "label": "KRA race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.kra.co.kr/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://emiratesracing.com/season-calendar/current-season",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://emiratesracing.com/season-calendar/current-season",
+      "content_type": "text/html; charset=utf-8",
+      "content_length_header": "36963",
+      "body_size_observed": 1068742,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "parser_target": "declarations_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "era-current-season-calendar",
+          "label": "ERA current season calendar",
+          "role": "season fixture calendar",
+          "official_url": "https://emiratesracing.com/season-calendar/current-season"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "parser_target": "declarations_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "era-current-season-calendar-rolling",
+          "label": "ERA current season calendar rolling updates",
+          "role": "rolling fixture calendar",
+          "official_url": "https://emiratesracing.com/season-calendar/current-season"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "parser_target": "declarations_page",
+          "source_field": "meeting_sources",
+          "source_id": "era-current-season-calendar-meetings",
+          "label": "ERA season calendar meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://emiratesracing.com/season-calendar/current-season"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "parser_target": "declarations_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "era-current-season-calendar-first-race",
+          "label": "ERA season calendar first-race times",
+          "role": "first race time source",
+          "official_url": "https://emiratesracing.com/season-calendar/current-season"
+        },
+        {
+          "country_id": "united-arab-emirates",
+          "group_id": "era",
+          "update_model": "season_calendar_plus_declarations",
+          "parser_target": "declarations_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "era-racecards",
+          "label": "ERA racecards",
+          "role": "per-race time source",
+          "official_url": "https://emiratesracing.com/season-calendar/current-season"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.britishhorseracing.com/racing/fixtures/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.britishhorseracing.com/racing/fixtures/upcoming/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 85049,
+      "truncated": false,
+      "redirect_changed_url": true,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "bha-fixtures",
+          "label": "BHA fixtures",
+          "role": "rolling fixture list",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "meeting_sources",
+          "source_id": "bha-fixtures-meetings",
+          "label": "BHA fixtures meeting rows",
+          "role": "meeting date source",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "bha-fixtures-first-race",
+          "label": "BHA fixtures first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "bha-fixtures-point-to-point",
+          "label": "BHA fixtures rolling path for point-to-point reconciliation",
+          "role": "rolling fixture reconciliation",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "bha-fixtures-arabian",
+          "label": "BHA fixtures rolling path for Arabian reconciliation",
+          "role": "rolling fixture reconciliation",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 80532,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "bha-full-year-fixtures",
+          "label": "BHA full-year fixtures",
+          "role": "annual fixture list",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/full-year/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.britishhorseracing.com/racing/fixtures/upcoming/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.britishhorseracing.com/racing/fixtures/upcoming/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 85049,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "bha",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "racecard_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "bha-racecard-links",
+          "label": "BHA racecard links from fixture rows",
+          "role": "racecard link discovery from upcoming fixture rows",
+          "official_url": "https://www.britishhorseracing.com/racing/fixtures/upcoming/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 101538,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "bha-purebred-arabian",
+          "label": "BHA purebred Arabian horseracing path",
+          "role": "Arabian fixture path",
+          "official_url": "https://www.britishhorseracing.com/regulation/arabian-racing/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "meeting_sources",
+          "source_id": "bha-purebred-arabian-meetings",
+          "label": "Purebred Arabian path meeting links",
+          "role": "meeting date source",
+          "official_url": "https://www.britishhorseracing.com/regulation/arabian-racing/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "bha-purebred-arabian-first-race",
+          "label": "Purebred Arabian first-race metadata",
+          "role": "first race time source",
+          "official_url": "https://www.britishhorseracing.com/regulation/arabian-racing/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "purebred-arabian",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "bha-purebred-arabian-race-times",
+          "label": "Purebred Arabian racecard/time links",
+          "role": "per-race time source",
+          "official_url": "https://www.britishhorseracing.com/regulation/arabian-racing/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.britishhorseracing.com/regulation/point-to-point/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 96393,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "bha-point-to-point",
+          "label": "BHA point-to-point regulation path",
+          "role": "point-to-point fixture path",
+          "official_url": "https://www.britishhorseracing.com/regulation/point-to-point/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "meeting_sources",
+          "source_id": "bha-point-to-point-meetings",
+          "label": "Point-to-point path meeting links",
+          "role": "meeting date source",
+          "official_url": "https://www.britishhorseracing.com/regulation/point-to-point/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "bha-point-to-point-first-race",
+          "label": "Point-to-point path first-race metadata",
+          "role": "first race time source",
+          "official_url": "https://www.britishhorseracing.com/regulation/point-to-point/"
+        },
+        {
+          "country_id": "united-kingdom",
+          "group_id": "point-to-point",
+          "update_model": "weekly_fixture_plus_racecard",
+          "parser_target": "operator_calendar_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "bha-point-to-point-race-times",
+          "label": "Point-to-point path racecard/time links",
+          "role": "per-race time source",
+          "official_url": "https://www.britishhorseracing.com/regulation/point-to-point/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.aqha.com/",
+      "status": "blocked_or_rate_limited",
+      "status_reason": "http_403",
+      "http_status": 403,
+      "final_url": "https://www.aqha.com/",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 562731,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "aqha-racing",
+          "label": "AQHA racing entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.aqha.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "aqha-racing-rolling",
+          "label": "AQHA racing rolling entry point",
+          "role": "rolling fixture path",
+          "official_url": "https://www.aqha.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "meeting_sources",
+          "source_id": "aqha-meetings",
+          "label": "AQHA racing meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.aqha.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "aqha-first-race",
+          "label": "AQHA racing first-race data",
+          "role": "first race time source",
+          "official_url": "https://www.aqha.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "aqha-quarter-horse",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "aqha-race-times",
+          "label": "AQHA racing race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.aqha.com/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.equibase.com/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.equibase.com/",
+      "content_type": "text/html;charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 392469,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "equibase-calendar",
+          "label": "Equibase calendar entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.equibase.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "equibase-rolling",
+          "label": "Equibase entries/results entry point",
+          "role": "rolling racecard path",
+          "official_url": "https://www.equibase.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "meeting_sources",
+          "source_id": "equibase-meetings",
+          "label": "Equibase meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.equibase.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "equibase-first-race",
+          "label": "Equibase entries/racecard first post fields",
+          "role": "first race time source",
+          "official_url": "https://www.equibase.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "equibase-thoroughbred",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "equibase-race-times",
+          "label": "Equibase entries/racecard race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.equibase.com/"
+        }
+      ]
+    },
+    {
+      "official_url": "https://www.ustrotting.com/",
+      "status": "fetchable",
+      "status_reason": "http_success_no_block_marker",
+      "http_status": 200,
+      "final_url": "https://www.ustrotting.com/",
+      "content_type": "text/html;charset=UTF-8",
+      "content_length_header": null,
+      "body_size_observed": 77186,
+      "truncated": false,
+      "redirect_changed_url": false,
+      "network_error": null,
+      "network_error_detail": null,
+      "references": [
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "annual_fixture_sources",
+          "source_id": "usta-calendar",
+          "label": "USTA calendar entry point",
+          "role": "annual fixture path",
+          "official_url": "https://www.ustrotting.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "rolling_fixture_sources",
+          "source_id": "usta-rolling",
+          "label": "USTA entries/results entry point",
+          "role": "rolling racecard path",
+          "official_url": "https://www.ustrotting.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "meeting_sources",
+          "source_id": "usta-meetings",
+          "label": "USTA meeting listings",
+          "role": "meeting date source",
+          "official_url": "https://www.ustrotting.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "first_race_time_sources",
+          "source_id": "usta-first-race",
+          "label": "USTA entries first-race fields",
+          "role": "first race time source",
+          "official_url": "https://www.ustrotting.com/"
+        },
+        {
+          "country_id": "united-states",
+          "group_id": "usta-harness",
+          "update_model": "operator_split_rolling",
+          "parser_target": "entries_page",
+          "source_field": "per_race_time_sources",
+          "source_id": "usta-race-times",
+          "label": "USTA entries race rows",
+          "role": "per-race time source",
+          "official_url": "https://www.ustrotting.com/"
+        }
+      ]
+    }
+  ]
+}

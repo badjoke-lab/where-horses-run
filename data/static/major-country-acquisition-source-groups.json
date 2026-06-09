@@ -324,7 +324,7 @@
             {
               "source_id": "era-racecards",
               "label": "ERA racecards",
-              "url": "https://emiratesracing.com/racecards",
+              "url": "https://emiratesracing.com/season-calendar/current-season",
               "role": "per-race time source"
             }
           ],
@@ -392,7 +392,8 @@
             {
               "source_id": "bha-racecard-links",
               "label": "BHA racecard links from fixture rows",
-              "role": "per-race time source"
+              "role": "racecard link discovery from upcoming fixture rows",
+              "url": "https://www.britishhorseracing.com/racing/fixtures/upcoming/"
             }
           ],
           "acquisition_unit": {
@@ -477,7 +478,7 @@
             {
               "source_id": "bha-purebred-arabian",
               "label": "BHA purebred Arabian horseracing path",
-              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
               "role": "Arabian fixture path"
             }
           ],
@@ -493,7 +494,7 @@
             {
               "source_id": "bha-purebred-arabian-meetings",
               "label": "Purebred Arabian path meeting links",
-              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
               "role": "meeting date source"
             }
           ],
@@ -501,7 +502,7 @@
             {
               "source_id": "bha-purebred-arabian-first-race",
               "label": "Purebred Arabian first-race metadata",
-              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
               "role": "first race time source"
             }
           ],
@@ -509,7 +510,7 @@
             {
               "source_id": "bha-purebred-arabian-race-times",
               "label": "Purebred Arabian racecard/time links",
-              "url": "https://www.britishhorseracing.com/regulation/purebred-arabian-pa-horseracing/",
+              "url": "https://www.britishhorseracing.com/regulation/arabian-racing/",
               "role": "per-race time source"
             }
           ],
@@ -546,7 +547,7 @@
             {
               "source_id": "hri-fixture-list",
               "label": "HRI fixture list",
-              "url": "https://www.hri.ie/racing/fixture-list/",
+              "url": "https://www.hri.ie/fixture-list",
               "role": "annual fixture list"
             }
           ],
@@ -578,13 +579,13 @@
             {
               "source_id": "hri-racecards",
               "label": "HRI racecards",
-              "url": "https://www.hri.ie/racing/racecards/",
+              "url": "https://www.hri.ie/racecards",
               "role": "per-race time source"
             },
             {
               "source_id": "hri-race-results",
               "label": "HRI race results",
-              "url": "https://www.hri.ie/racing/race-results/",
+              "url": "https://www.hri.ie/results",
               "role": "post-meeting timing reconciliation"
             }
           ],
@@ -1175,7 +1176,7 @@
             {
               "source_id": "loveracing-calendar",
               "label": "LOVERACING calendar",
-              "url": "https://loveracing.nz/RaceInfo/Calendar.aspx",
+              "url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-calendar",
               "role": "annual fixture calendar"
             }
           ],
@@ -1183,7 +1184,7 @@
             {
               "source_id": "loveracing-nominations",
               "label": "LOVERACING nominations",
-              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields",
               "role": "rolling race information"
             }
           ],
@@ -1191,7 +1192,7 @@
             {
               "source_id": "loveracing-meetings",
               "label": "LOVERACING nominations meeting rows",
-              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields",
               "role": "meeting date source"
             }
           ],
@@ -1199,7 +1200,7 @@
             {
               "source_id": "loveracing-first-race",
               "label": "LOVERACING nominations first-race fields",
-              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields",
               "role": "first race time source"
             }
           ],
@@ -1207,7 +1208,7 @@
             {
               "source_id": "loveracing-race-times",
               "label": "LOVERACING nominations race rows",
-              "url": "https://loveracing.nz/RaceInfo/Nominations.aspx",
+              "url": "https://loveracing.nz/RaceInfo.aspx#bm-meeting-nom-fields",
               "role": "per-race time source"
             }
           ],
