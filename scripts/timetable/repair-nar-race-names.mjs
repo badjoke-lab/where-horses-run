@@ -21,25 +21,22 @@ function decode(value) {
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function namesFromHtml(html) {
-  const names = new Map();
-  for (const row of html.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
-    for (const anchor of row[0].matchAll(/<a\b[^>]*href=["']([^"']*DebaTable[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
-      const href = anchor[1].replace(/&amp;/g, '&');
-      const no = href.match(/[?&]k_raceNo=(\d{1,2})(?:&|$)/i);
-      const name = decode(anchor[2]);
-      if (!no || !name || /^(出馬表|詳細)$/.test(name)) continue;
-      const raceNo = Number(no[1]);
-      const current = names.get(raceNo);
-      if (!current || name.length > current.length) names.set(raceNo, name);
-    }
-  }
-  return names;
+function officialNameFromDetail(html) {
+  const plain = decode(html);
+  const match = plain.match(
+    /第\s*\d{1,2}\s*競走\s*\d{1,2}\s*[:：]\s*\d{2}\s*発走\s+(.+?)\s+(?:ダート|芝|障害)\s*\d{3,4}\s*[mｍＭ]/,
+  );
+  return match?.[1]?.trim() || null;
 }
 
 async function fetchText(url) {
@@ -55,6 +52,10 @@ async function fetchText(url) {
   const sjis = new TextDecoder('shift_jis').decode(buffer);
   const text = utf8.includes('競馬') ? utf8 : sjis;
   return { status: response.status, text };
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function replaceRows(rows, names) {
@@ -74,17 +75,43 @@ const report = [];
 
 for (const observation of snapshot.observations ?? []) {
   const meeting = observation.meeting;
-  if (!meeting?.meeting_id || !meeting?.official_source_url) continue;
-  const source = await fetchText(meeting.official_source_url);
-  const names = namesFromHtml(source.text);
+  if (!meeting?.meeting_id) continue;
+
+  const names = new Map();
+  const raceReports = [];
+
+  for (let index = 0; index < (meeting.timetable_rows ?? []).length; index += 1) {
+    const row = meeting.timetable_rows[index];
+    const raceNumber = index + 1;
+    const detailUrl = row.detail_url;
+    if (!detailUrl) {
+      raceReports.push({ race_number: raceNumber, status: null, official_name: null, reason: 'missing_detail_url' });
+      continue;
+    }
+
+    await sleep(80);
+    const source = await fetchText(detailUrl);
+    const officialName = source.status === 200 ? officialNameFromDetail(source.text) : null;
+    if (officialName) names.set(raceNumber, officialName);
+    raceReports.push({
+      race_number: raceNumber,
+      status: source.status,
+      official_name: officialName,
+      detail_url: detailUrl,
+    });
+  }
+
   byMeeting.set(meeting.meeting_id, names);
   const result = replaceRows(meeting.timetable_rows ?? [], names);
   meeting.timetable_rows = result.rows;
   report.push({
     meeting_id: meeting.meeting_id,
-    status: source.status,
     names_found: names.size,
     rows_changed: result.changed,
+    unresolved_generic_names: meeting.timetable_rows
+      .map((row, index) => ({ race_number: index + 1, race_name: row.race_name }))
+      .filter((row) => /^(?:特別|重賞)$/.test(row.race_name ?? '')),
+    races: raceReports,
   });
 }
 
@@ -102,7 +129,16 @@ for (const file of files.slice(1)) {
 
 write('data/generated/timetable/nar-race-name-repair-report.json', {
   generated_at: new Date().toISOString(),
+  meetings_checked: report.length,
+  total_names_found: report.reduce((total, row) => total + row.names_found, 0),
+  total_rows_changed: report.reduce((total, row) => total + row.rows_changed, 0),
+  unresolved_generic_names: report.reduce((total, row) => total + row.unresolved_generic_names.length, 0),
   report,
 });
 
-console.log(JSON.stringify(report, null, 2));
+console.log(JSON.stringify({
+  meetings_checked: report.length,
+  total_names_found: report.reduce((total, row) => total + row.names_found, 0),
+  total_rows_changed: report.reduce((total, row) => total + row.rows_changed, 0),
+  unresolved_generic_names: report.reduce((total, row) => total + row.unresolved_generic_names.length, 0),
+}, null, 2));
