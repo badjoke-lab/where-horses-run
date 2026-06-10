@@ -1,0 +1,16 @@
+=== e-sorec.ma DNS ===
+105.159.251.46
+154.144.230.92
+=== www.e-sorec.ma DNS ===
+154.144.230.92
+105.159.251.46
+curl: (28) Failed to connect to e-sorec.ma port 80 after 5002 ms: Timeout was reached
+HTTP e-sorec: code=000 size=0 final=http://e-sorec.ma/
+curl: (28) Failed to connect to www.e-sorec.ma port 80 after 5001 ms: Timeout was reached
+HTTP www.e-sorec: code=000 size=0 final=http://www.e-sorec.ma/
+=== streaming DNS ===
+54.36.17.186
+curl: (28) Failed to connect to sorec-streaming.archostechnology.net port 80 after 5005 ms: Timeout was reached
+HTTP streaming: code=000 size=0 final=http://sorec-streaming.archostechnology.net/
+curl: (28) Failed to connect to sorec-streaming.archostechnology.net port 443 after 5006 ms: Timeout was reached
+HTTPS streaming: code=000 size=0 final=https://sorec-streaming.archostechnology.net/
