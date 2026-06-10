@@ -32,11 +32,12 @@ function decode(value) {
 }
 
 function officialNameFromDetail(html) {
-  const plain = decode(html);
-  const match = plain.match(
-    /第\s*\d{1,2}\s*競走\s*\d{1,2}\s*[:：]\s*\d{2}\s*発走\s+(.+?)\s+(?:ダート|芝|障害)\s*\d{3,4}\s*[mｍＭ]/,
-  );
-  return match?.[1]?.trim() || null;
+  const headings = [...String(html ?? '').matchAll(/<h3\b[^>]*>([\s\S]*?)<\/h3>/gi)]
+    .map((match) => decode(match[1]))
+    .filter(Boolean)
+    .filter((name) => !/^(?:オッズ|払戻金|競走成績|変更情報)$/.test(name));
+
+  return headings[0] ?? null;
 }
 
 async function fetchText(url) {
