@@ -45,3 +45,4 @@ Public-safe test records may include:
 | 02 | South Korea | Complete | KRA official sources verified across Seoul, Busan-Gyeongnam and Jeju; 6 meetings and 51 races confirmed; technical capability A+; fallback rank A. |
 | 03 | Turkey | Complete | TJK official sources verified across 10 domestic racecourses, 12 meetings and 96 races; technical capability A+; fallback rank A. |
 | 04 | Morocco | Pending | A+ investigation paused; FARAS and SOREC infrastructure confirmed, but no stable official meeting-date or Race 1-N source confirmed; no technical rank assigned. |
+| 05 | Chile | Complete | Teletrak calendar and official programme PDFs verified across Club Hípico de Concepción, Valparaíso Sporting Club, Club Hípico de Santiago and Hipódromo Chile; 4 meetings and 62 races confirmed; technical capability A+. |
