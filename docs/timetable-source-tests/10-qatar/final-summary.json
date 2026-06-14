@@ -4,8 +4,29 @@
   "technical_rank": "A+",
   "initial_public_display_ceiling": "A",
   "official_source": "Qatar Racing and Equestrian Club official race calendar",
+  "tested_season": "2025-26",
   "tested_meetings": 3,
   "total_races": 22,
+  "seasonality": {
+    "model": "seasonal",
+    "published_window": {
+      "starts": "2025-10-15",
+      "continues_through_month": "2026-04"
+    },
+    "sample_position": "middle and later part of the 2025-26 season",
+    "assessment_date": "2026-06-15",
+    "assessment_date_outside_published_window": true
+  },
+  "revalidation": {
+    "required": true,
+    "trigger": "publication or opening meeting of the 2026-27 season",
+    "checks": [
+      "official meeting-list and race-detail access remains available",
+      "race identity, ordered sequence, post time, race name and distance remain available",
+      "opening-meeting data can construct Race 1..N"
+    ],
+    "rank_effect": "A+ remains valid as demonstrated technical source capability unless a next-season source change is observed"
+  },
   "field_coverage": {
     "race_identity": {
       "present": 22,
@@ -43,7 +64,6 @@
   "rank_reason": "The official ordered races arrays provided complete race identity, post time, race name and distance coverage for all tested races.",
   "public_safety": {
     "raw_payloads_published": false,
-    "client_credentials_published": false,
     "participant_data_published": false,
     "betting_or_result_data_published": false
   }
