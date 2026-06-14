@@ -1,0 +1,78 @@
+{
+  "country": "Brazil",
+  "slug": "brazil",
+  "test_status": "complete",
+  "technical_result": {
+    "highest_rank": "A+",
+    "result_model": "mixed_by_racecourse_and_racing_system",
+    "timed_programme_samples": 4,
+    "timed_races": 39,
+    "untimed_supplementary_races": 1,
+    "initial_public_display_ceiling": "A"
+  },
+  "scope_results": [
+    {
+      "racecourse": "Gávea",
+      "racing_system": "Thoroughbred",
+      "scope": "2026-06-14",
+      "races": 10,
+      "first_post": "13:00",
+      "last_post": "18:15",
+      "technical_rank": "A+"
+    },
+    {
+      "racecourse": "Cidade Jardim",
+      "racing_system": "Thoroughbred",
+      "scope": "2026-06-06",
+      "races": 9,
+      "first_post": "13:25",
+      "last_post": "17:22",
+      "technical_rank": "A+"
+    },
+    {
+      "racecourse": "Cidade Jardim",
+      "racing_system": "Arabian",
+      "scope": "2026-06-06 supplementary race",
+      "races": 1,
+      "first_post": null,
+      "last_post": null,
+      "technical_rank": "C"
+    },
+    {
+      "racecourse": "Hipódromo do Cristal",
+      "racing_system": "Thoroughbred",
+      "scope": "2026-06-11",
+      "races": 7,
+      "first_post": "15:58",
+      "last_post": "19:05",
+      "technical_rank": "A"
+    },
+    {
+      "racecourse": "Sorocaba",
+      "racing_system": "Quarter Horse",
+      "scope": "2026-06 programme; exact meeting date unresolved",
+      "races": 13,
+      "first_post": "08:00",
+      "last_post": "13:10",
+      "technical_rank": "A+"
+    }
+  ],
+  "unresolved_sources": [
+    {
+      "racecourse": "Tarumã",
+      "authority": "Jockey Club do Paraná",
+      "status": "pending",
+      "reason": "Official candidate page returned HTTP 403; no stable programme source confirmed."
+    }
+  ],
+  "publication_boundary": {
+    "default_public_ceiling": "A",
+    "authority_review_required_for_a_plus": true,
+    "separate_racing_systems": [
+      "Thoroughbred",
+      "Arabian",
+      "Quarter Horse"
+    ]
+  },
+  "raw_storage_note": "Raw evidence remains only under .whr-local-source-tests/08-brazil/ and must not be committed."
+}

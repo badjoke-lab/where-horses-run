@@ -53,3 +53,4 @@ Public-safe test records may include:
 | ---: | --- | --- | --- | --- | --- |
 | 06 | Peru | Complete | A+ | Hipódromo de Monterrico official website + official JSON API | 3 meetings / 27 races |
 | 07 | Mexico | Pending | Pending | Hipódromo de las Américas official website candidate | DNS/reachability failure; no programme source confirmed |
+| 08 | Brazil | Complete | A+ | Multi-source official HTML/PDF by racecourse and racing system | 4 timed programme samples / 39 races; 1 untimed Arabian supplementary race; Tarumã pending |
