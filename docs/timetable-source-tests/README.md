@@ -55,4 +55,4 @@ Public-safe test records may include:
 | 07 | Mexico | Pending | Pending | Hipódromo de las Américas official website candidate | DNS/reachability failure; no programme source confirmed |
 | 08 | Brazil | Complete | A+ | Multi-source official HTML/PDF by racecourse and racing system | 4 timed programme samples / 39 races; 1 untimed Arabian supplementary race; Tarumã pending |
 | 09 | Bahrain | Complete | A+ | Bahrain Turf Club official per-race HTML pages | 3 meetings / 25 races; post times and distances 25/25; initial public ceiling A |
-| 10 | Qatar | Complete | A+ | Qatar Racing and Equestrian Club official race-calendar client data | 3 meetings / 22 races; post times, race names and distances 22/22; initial public ceiling A |
+| 10 | Qatar | Complete | A+ | Qatar Racing and Equestrian Club official race-calendar client data | 2025-26 seasonal programme; 3 mid-to-late-season meetings / 22 races; post times, race names and distances 22/22; recheck at 2026-27 opening; initial public ceiling A |
