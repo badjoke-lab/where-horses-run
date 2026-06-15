@@ -35,6 +35,35 @@ However:
 - the public results page exposed no timetable table, PDF link or
   post-time data
 
+### Oman Horse Racing Club official YouTube
+
+The official club YouTube channel is an active public distribution
+route for domestic flat racing.
+
+A sample of 40 recent watch pages produced:
+
+- 39 videos with a meeting date in the title
+- 29 videos with an individual Race number
+- 10 archived live records with a start timestamp
+- 10 distinct meeting dates
+
+The sample includes race-by-race publication such as:
+
+- 2026-04-09, meeting 23: sampled Race 1–10
+- 2026-04-17, meeting 24: sampled Race 1–9
+- 2026-04-18, meeting 25: sampled Race 1–5
+
+This confirms that the public can follow meetings through official
+live video and race-by-race archives even though the former calendar
+website is unavailable.
+
+It does not yet establish a stable advance timetable source. The
+current streams page exposed no upcoming or scheduled-start marker,
+and no sampled live page was shown as published more than five
+minutes before its recorded live start. The channel is therefore
+classified as same-day/live dissemination and historical archive,
+not as confirmed future fixture or post-time coverage.
+
 ### Oman News Agency
 
 Official ONA reporting confirms that the 2025-26 flat-racing season
@@ -59,7 +88,8 @@ A source suitable for normal timetable operation must provide at
 least a repeatable future meeting date and venue. Higher ranks require
 first/last times or complete Race 1..N post times.
 
-The available sources do not yet provide that repeatable national
+The available sources confirm public same-day and historical race
+coverage, but do not yet provide repeatable national advance timetable
 coverage.
 
 ## Revalidation
