@@ -1,0 +1,46 @@
+{
+  "country": "Oman",
+  "status": "Pending",
+  "technical_rank": null,
+  "tested_season_context": "2025-26",
+  "decision": "No stable country-wide official source was confirmed for future meetings with Race 1..N and post times.",
+  "source_findings": {
+    "legacy_rhrc": {
+      "usable": false,
+      "reason": "Former calendar unavailable and legacy URLs no longer expose racing data."
+    },
+    "oerf": {
+      "reachable": true,
+      "wordpress_rest_available": true,
+      "public_mec_records": 12,
+      "public_mec_record_period": "2021-11 to 2022-01",
+      "current_flat_racing_timetable_confirmed": false
+    },
+    "official_news_reports": {
+      "current_season_meetings_confirmed": true,
+      "primarily_retrospective": true,
+      "post_times_available": false,
+      "limited_advance_special_event_notice": true,
+      "country_wide_rank_c_adopted": false
+    }
+  },
+  "revalidation": {
+    "required": true,
+    "trigger": "publication or opening meeting of the 2026-27 season",
+    "required_fields": [
+      "future meeting date",
+      "racecourse",
+      "ordered Race 1..N",
+      "first and last post times",
+      "per-race post times"
+    ]
+  },
+  "public_safety": {
+    "raw_html_published": false,
+    "raw_json_published": false,
+    "article_bodies_published": false,
+    "participant_data_published": false,
+    "result_data_published": false,
+    "betting_data_published": false
+  }
+}

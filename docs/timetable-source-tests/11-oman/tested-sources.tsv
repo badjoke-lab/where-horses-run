@@ -1,0 +1,9 @@
+source_id	source_type	url	status	public_safe_finding
+rhrc-home	legacy official website	https://rhrc.om/	200 redirect	redirected to hosting-control page; former racing site unavailable
+rhrc-calendar	legacy official calendar	https://rhrc.om/Calendar.aspx?PID=4&T=R	404	former ASP.NET racing calendar unavailable
+oerf-home	current federation website	https://oerf.om/en/	200	WordPress and Modern Events Calendar detected
+oerf-rest-index	current federation REST API	https://oerf.om/wp-json/	200	public WordPress REST routes available
+oerf-mec-events	current federation event collection	https://oerf.om/wp-json/wp/v2/mec-events	200	12 records from 2021-22; not current national flat-racing timetable
+oerf-results	current federation results page	https://oerf.om/sport/results.php	200	no usable timetable, racecard or post-time structure confirmed
+ona-season-round	official retrospective report	https://omannews.gov.om/topics/en/140/show/126764	200	confirmed a 2025-26 Al Rahba meeting with eight races after the event
+ona-advance-special-event	official advance report	https://omannews.gov.om/topics/en/79/show/126374/index.php	200	confirmed next-day date and Al Rahba venue for a major annual meeting; no post times
