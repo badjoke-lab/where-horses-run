@@ -1,0 +1,45 @@
+{
+  "country": "Zimbabwe",
+  "status": "Complete",
+  "technical_rank": "C",
+  "fallback_rank": "C",
+  "tested_meeting": {
+    "date": "2026-06-17",
+    "racecourse": "Borrowdale Park",
+    "race_count": 6
+  },
+  "source_model": {
+    "document_owner": "Mashonaland Turf Club",
+    "public_distributor": "Zimracing",
+    "document_type": "official race card PDF"
+  },
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "race_numbers": true,
+    "distances": true,
+    "first_post_time": false,
+    "last_post_time": false,
+    "per_race_post_times": false
+  },
+  "race_distances_m": {
+    "1": 1100,
+    "2": 1200,
+    "3": 1600,
+    "4": 1700,
+    "5": 2200,
+    "6": 1260
+  },
+  "decision": "Rank C. The official race card confirms the meeting date and Borrowdale Park, but no reliable scheduled post times were found.",
+  "rejected_extraction": {
+    "reason": "Automatically extracted clock values did not form a valid increasing race-time sequence and included historical form data.",
+    "used_for_rank": false
+  },
+  "public_safety": {
+    "raw_pdf_published": false,
+    "full_text_published": false,
+    "participant_data_published": false,
+    "betting_data_published": false,
+    "result_data_published": false
+  }
+}
