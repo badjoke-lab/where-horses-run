@@ -6,7 +6,7 @@
 | --- | --- |
 | Country | Bahrain |
 | Slug | bahrain |
-| Note status | draft |
+| Note status | reviewed |
 | Evidence cutoff | Not recorded in the reviewed source-test summary |
 | Source-test status | Complete |
 | Technical rank | A+ |

@@ -6,7 +6,7 @@
 | --- | --- |
 | Country | Oman |
 | Slug | oman |
-| Note status | draft |
+| Note status | reviewed |
 | Evidence cutoff | Not recorded in the reviewed source-test summary |
 | Source-test status | Pending |
 | Technical rank | unassigned |

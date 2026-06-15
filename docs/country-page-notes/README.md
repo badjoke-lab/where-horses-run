@@ -1,6 +1,6 @@
 # Country page notes
 
-Status: public-safe editorial source material
+Status: initial 12-note batch reviewed for editorial reuse
 
 This directory stores structured research notes for future Where Horses
 Run country detail pages.
@@ -8,6 +8,27 @@ Run country detail pages.
 These files are not finished country-page copy. They preserve facts,
 observations, limitations and research gaps discovered while testing
 official racing calendars, programmes and public information channels.
+
+## Initial batch review status
+
+Cross-country consistency review completed: 2026-06-15
+
+The first 12 country notes have passed the editorial-stage structural,
+index and public-safety review defined for this batch.
+
+Review summary:
+
+- 12 country notes reviewed
+- 9 notes based on complete timetable source tests
+- 3 notes preserving Pending source-test results: Morocco, Mexico and Oman
+- 8 initial public display ceilings at A
+- 1 initial public display ceiling at C: Zimbabwe
+- 3 public display ceilings remaining pending
+- fresh country-page research still required for all 12 countries
+
+A `reviewed` note is approved as reusable public-safe research material.
+It is not finished English or Japanese country-page copy, does not resolve
+its `NEEDS_RESEARCH` items and does not remove the required freshness check.
 
 ## Separation of responsibilities
 
@@ -147,6 +168,15 @@ The first batch covers:
 11. Oman
 12. Zimbabwe
 
+## Note status values
+
+- `not_started`: no country note has been drafted
+- `draft`: note content exists but the cross-country review is incomplete
+- `reviewed`: note passed this editorial-stage consistency review
+
+The status applies to the research note, not to the final public country
+page.
+
 ## Workflow
 
 1. Create the framework and index.
@@ -160,7 +190,7 @@ The first batch covers:
 
 ## Completion criteria for one country note
 
-A country note is complete for this stage when:
+A country note can be marked reviewed for this stage when:
 
 - VERIFIED and OBSERVED claims are separated
 - no single meeting is presented as a permanent national pattern

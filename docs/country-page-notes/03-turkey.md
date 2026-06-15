@@ -6,7 +6,7 @@
 | --- | --- |
 | Country | Turkey |
 | Slug | turkey |
-| Note status | draft |
+| Note status | reviewed |
 | Evidence cutoff | 2026-06-10 |
 | Source-test status | Complete |
 | Technical rank | A+ |

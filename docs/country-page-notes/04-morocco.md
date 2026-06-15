@@ -6,7 +6,7 @@
 | --- | --- |
 | Country | Morocco |
 | Slug | morocco |
-| Note status | draft |
+| Note status | reviewed |
 | Evidence cutoff | 2026-06-10 |
 | Source-test status | Pending |
 | Technical rank | unassigned |
