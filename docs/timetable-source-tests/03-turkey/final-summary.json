@@ -1,0 +1,299 @@
+{
+  "country": "turkey",
+  "country_test_number": 3,
+  "status": "complete",
+  "checked_date": "2026-06-10",
+  "authority": "Türkiye Jokey Kulübü",
+  "technical_capability_rank": "A+",
+  "fallback_rank_if_aplus_fields_unavailable": "A",
+  "racecourses_tested": [
+    "Adana",
+    "Ankara",
+    "Antalya",
+    "Bursa",
+    "Diyarbakır",
+    "Elazığ",
+    "İstanbul",
+    "İzmir",
+    "Kocaeli",
+    "Şanlıurfa"
+  ],
+  "racecourse_count": 10,
+  "meetings_tested": 12,
+  "venue_totals": {
+    "Adana": {
+      "meetings_tested": 1,
+      "races": 7,
+      "post_times": 7,
+      "distances": 7,
+      "surfaces": 7
+    },
+    "Ankara": {
+      "meetings_tested": 2,
+      "races": 19,
+      "post_times": 19,
+      "distances": 19,
+      "surfaces": 19
+    },
+    "Antalya": {
+      "meetings_tested": 1,
+      "races": 9,
+      "post_times": 9,
+      "distances": 9,
+      "surfaces": 9
+    },
+    "Bursa": {
+      "meetings_tested": 1,
+      "races": 9,
+      "post_times": 9,
+      "distances": 9,
+      "surfaces": 9
+    },
+    "Diyarbakır": {
+      "meetings_tested": 2,
+      "races": 12,
+      "post_times": 12,
+      "distances": 12,
+      "surfaces": 12
+    },
+    "Elazığ": {
+      "meetings_tested": 1,
+      "races": 8,
+      "post_times": 8,
+      "distances": 8,
+      "surfaces": 8
+    },
+    "Kocaeli": {
+      "meetings_tested": 1,
+      "races": 8,
+      "post_times": 8,
+      "distances": 8,
+      "surfaces": 8
+    },
+    "İstanbul": {
+      "meetings_tested": 1,
+      "races": 9,
+      "post_times": 9,
+      "distances": 9,
+      "surfaces": 9
+    },
+    "İzmir": {
+      "meetings_tested": 1,
+      "races": 7,
+      "post_times": 7,
+      "distances": 7,
+      "surfaces": 7
+    },
+    "Şanlıurfa": {
+      "meetings_tested": 1,
+      "races": 8,
+      "post_times": 8,
+      "distances": 8,
+      "surfaces": 8
+    }
+  },
+  "totals": {
+    "races": 96,
+    "post_time_local": 96,
+    "distance_m": 96,
+    "surface": 96
+  },
+  "source_strategy": {
+    "annual_program": "https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu",
+    "annual_filtered_data": "https://www.tjk.org/TR/YarisSever/Query/Data/YillikYarisProgramiCoklu",
+    "daily_program": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami",
+    "daily_parameters": [
+      "SehirId",
+      "QueryParameter_Tarih",
+      "SehirAdi"
+    ]
+  },
+  "aplus_fields": [
+    "race_number",
+    "post_time_local",
+    "distance_m",
+    "surface",
+    "official_source_url"
+  ],
+  "optional_fields": [
+    "race_name",
+    "race_condition"
+  ],
+  "fallback_reason": "If distance and surface become unavailable, complete Race 1-N post times remain usable.",
+  "meeting_results": [
+    {
+      "racecourse": "Adana",
+      "city_id": "1",
+      "meeting_date": "2024-12-17",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=17%2F12%2F2024&SehirAdi=Adana&SehirId=1",
+      "race_numbers": "1,2,3,4,5,6,7",
+      "race_count": 7,
+      "post_time_count": 7,
+      "distance_count": 7,
+      "surface_count": 7,
+      "race_name_count": 0,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with distance or surface for every race"
+    },
+    {
+      "racecourse": "Ankara",
+      "city_id": "5",
+      "meeting_date": "2026-06-09",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=09%2F06%2F2026&SehirAdi=Ankara",
+      "race_numbers": "1,2,3,4,5,6,7,8,9",
+      "race_count": 9,
+      "post_time_count": 9,
+      "distance_count": 9,
+      "surface_count": 9,
+      "race_name_count": 2,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "Ankara",
+      "city_id": "5",
+      "meeting_date": "2026-06-11",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=11%2F06%2F2026&SehirAdi=Ankara",
+      "race_numbers": "1,2,3,4,5,6,7,8,9,10",
+      "race_count": 10,
+      "post_time_count": 10,
+      "distance_count": 10,
+      "surface_count": 10,
+      "race_name_count": 4,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "Antalya",
+      "city_id": "10",
+      "meeting_date": "2024-12-17",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=17%2F12%2F2024&SehirAdi=Antalya&SehirId=10",
+      "race_numbers": "1,2,3,4,5,6,7,8,9",
+      "race_count": 9,
+      "post_time_count": 9,
+      "distance_count": 9,
+      "surface_count": 9,
+      "race_name_count": 0,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with distance or surface for every race"
+    },
+    {
+      "racecourse": "Bursa",
+      "city_id": "4",
+      "meeting_date": "2026-06-08",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=08%2F06%2F2026&SehirAdi=Bursa",
+      "race_numbers": "1,2,3,4,5,6,7,8,9",
+      "race_count": 9,
+      "post_time_count": 9,
+      "distance_count": 9,
+      "surface_count": 9,
+      "race_name_count": 4,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "Diyarbakır",
+      "city_id": "8",
+      "meeting_date": "2024-04-20",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=20%2F04%2F2024&SehirAdi=Diyarbak%C4%B1r&SehirId=8",
+      "race_numbers": "1,2,3,4,5,6",
+      "race_count": 6,
+      "post_time_count": 6,
+      "distance_count": 6,
+      "surface_count": 6,
+      "race_name_count": 0,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with distance or surface for every race"
+    },
+    {
+      "racecourse": "Diyarbakır",
+      "city_id": "8",
+      "meeting_date": "2024-06-15",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=15%2F06%2F2024&SehirAdi=Diyarbak%C4%B1r&SehirId=8",
+      "race_numbers": "1,2,3,4,5,6",
+      "race_count": 6,
+      "post_time_count": 6,
+      "distance_count": 6,
+      "surface_count": 6,
+      "race_name_count": 0,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with distance or surface for every race"
+    },
+    {
+      "racecourse": "Elazığ",
+      "city_id": "7",
+      "meeting_date": "2026-06-10",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=7&QueryParameter_Tarih=10%2F06%2F2026&SehirAdi=Elaz%C4%B1%C4%9F",
+      "race_numbers": "1,2,3,4,5,6,7,8",
+      "race_count": 8,
+      "post_time_count": 8,
+      "distance_count": 8,
+      "surface_count": 8,
+      "race_name_count": 1,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "Kocaeli",
+      "city_id": "9",
+      "meeting_date": "2026-06-09",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=9&QueryParameter_Tarih=09%2F06%2F2026&SehirAdi=Kocaeli",
+      "race_numbers": "1,2,3,4,5,6,7,8",
+      "race_count": 8,
+      "post_time_count": 8,
+      "distance_count": 8,
+      "surface_count": 8,
+      "race_name_count": 1,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "İstanbul",
+      "city_id": "3",
+      "meeting_date": "2026-06-10",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=10%2F06%2F2026&SehirAdi=%C4%B0stanbul",
+      "race_numbers": "1,2,3,4,5,6,7,8,9",
+      "race_count": 9,
+      "post_time_count": 9,
+      "distance_count": 9,
+      "surface_count": 9,
+      "race_name_count": 2,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    },
+    {
+      "racecourse": "İzmir",
+      "city_id": "2",
+      "meeting_date": "2024-12-19",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=19%2F12%2F2024&SehirAdi=%C4%B0zmir&SehirId=2",
+      "race_numbers": "1,2,3,4,5,6,7",
+      "race_count": 7,
+      "post_time_count": 7,
+      "distance_count": 7,
+      "surface_count": 7,
+      "race_name_count": 0,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with distance or surface for every race"
+    },
+    {
+      "racecourse": "Şanlıurfa",
+      "city_id": "6",
+      "meeting_date": "2026-06-08",
+      "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=6&QueryParameter_Tarih=08%2F06%2F2026&SehirAdi=%C5%9Eanl%C4%B1urfa",
+      "race_numbers": "1,2,3,4,5,6,7,8",
+      "race_count": 8,
+      "post_time_count": 8,
+      "distance_count": 8,
+      "surface_count": 8,
+      "race_name_count": 1,
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with at least one programme-summary field for every race"
+    }
+  ],
+  "superseded_results": [
+    "turkey-missing-four-summary.json C classifications",
+    "Diyarbakır date-by-date scan result",
+    "Info/Page endpoint tests"
+  ],
+  "final_decision": "Turkey official timetable data is obtainable at A+ capability across all ten domestic TJK racecourses."
+}

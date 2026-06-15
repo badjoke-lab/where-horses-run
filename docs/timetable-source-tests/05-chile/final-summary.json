@@ -1,0 +1,88 @@
+{
+  "country": "chile",
+  "country_test_number": 5,
+  "status": "complete",
+  "checked_date": "2026-06-10",
+  "technical_capability_rank": "A+",
+  "fallback_rank": "A",
+  "racecourses_tested": [
+    "Club Hípico de Concepción",
+    "Valparaíso Sporting Club",
+    "Club Hípico de Santiago",
+    "Hipódromo Chile"
+  ],
+  "meetings_tested": 4,
+  "races_detected": 62,
+  "aplus_meetings": 4,
+  "source_strategy": {
+    "national_calendar_source": "Teletrak WordPress AJAX calendar",
+    "calendar_endpoint": "https://teletrak.cl/wp-admin/admin-ajax.php",
+    "calendar_action": "get_hipodromo_races_detailed",
+    "program_source": "official programme PDFs linked from Teletrak calendar",
+    "excluded": "Simulcasting hipodromo_id=5"
+  },
+  "verified_fields": [
+    "racecourse",
+    "meeting_date",
+    "race_number",
+    "post_time_local",
+    "distance_m",
+    "official_source_url"
+  ],
+  "optional_fields": [
+    "race_name",
+    "surface",
+    "course_label"
+  ],
+  "meeting_results": [
+    {
+      "racecourse": "Club Hípico de Concepción",
+      "meeting_date": "2026-06-09",
+      "race_count": "9",
+      "race_numbers_contiguous": "yes",
+      "post_time_count": "9",
+      "distance_count": "9",
+      "race_name_count": "9",
+      "surface_count": "0",
+      "technical_rank": "A+",
+      "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_chc/100693.pdf"
+    },
+    {
+      "racecourse": "Valparaíso Sporting Club",
+      "meeting_date": "2026-06-10",
+      "race_count": "14",
+      "race_numbers_contiguous": "yes",
+      "post_time_count": "14",
+      "distance_count": "14",
+      "race_name_count": "14",
+      "surface_count": "14",
+      "technical_rank": "A+",
+      "official_source_url": "https://www.sporting.cl/hipica/upload/handout/2026-06-10/VOLANTE_10_de_junio_COLOR.pdf"
+    },
+    {
+      "racecourse": "Club Hípico de Santiago",
+      "meeting_date": "2026-06-05",
+      "race_count": "18",
+      "race_numbers_contiguous": "yes",
+      "post_time_count": "18",
+      "distance_count": "18",
+      "race_name_count": "0",
+      "surface_count": "18",
+      "technical_rank": "A+",
+      "official_source_url": "https://static.clubhipico.cl/archivos/volantes/05-06-2026.pdf"
+    },
+    {
+      "racecourse": "Hipódromo Chile",
+      "meeting_date": "2026-06-06",
+      "race_count": "21",
+      "race_numbers_contiguous": "yes",
+      "post_time_count": "21",
+      "distance_count": "21",
+      "race_name_count": "21",
+      "surface_count": "0",
+      "technical_rank": "A+",
+      "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_hch/100676.pdf"
+    }
+  ],
+  "final_decision": "Chile official timetable data is obtainable at A+ capability for Club Hípico de Concepción, Valparaíso Sporting Club, Club Hípico de Santiago and Hipódromo Chile."
+}

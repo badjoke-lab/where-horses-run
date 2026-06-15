@@ -1,0 +1,60 @@
+# Timetable source tests
+
+This directory stores public-safe local terminal test results for Where Horses Run timetable source research.
+
+Raw official HTML must remain under .whr-local-source-tests/ and must not be committed.
+
+## Folder naming
+
+Format:
+
+NN-country-slug/
+
+## Public-safe rule
+
+Do not commit:
+
+- raw official HTML
+- full racecard text
+- horses or runners
+- jockeys
+- trainers
+- weights
+- odds
+- results
+- payouts
+- predictions or tips
+
+Public-safe test records may include:
+
+- official source URLs
+- HTTP status
+- source structure
+- tested racecourses
+- tested race counts
+- obtainable timetable fields
+- technical capability rank
+- fallback rank
+- source limitations
+
+## Current country test index
+
+| No. | Country | Status | Current finding |
+| ---: | --- | --- | --- |
+| 01 | UAE | Complete | ERA official sources verified across Meydan, Al Ain, Jebel Ali, Sharjah and Abu Dhabi Turf Club; 35 races confirmed; technical capability A+. |
+| 02 | South Korea | Complete | KRA official sources verified across Seoul, Busan-Gyeongnam and Jeju; 6 meetings and 51 races confirmed; technical capability A+; fallback rank A. |
+| 03 | Turkey | Complete | TJK official sources verified across 10 domestic racecourses, 12 meetings and 96 races; technical capability A+; fallback rank A. |
+| 04 | Morocco | Pending | A+ investigation paused; FARAS and SOREC infrastructure confirmed, but no stable official meeting-date or Race 1-N source confirmed; no technical rank assigned. |
+| 05 | Chile | Complete | Teletrak calendar and official programme PDFs verified across Club Hípico de Concepción, Valparaíso Sporting Club, Club Hípico de Santiago and Hipódromo Chile; 4 meetings and 62 races confirmed; technical capability A+. |
+
+## Country tests
+
+| No. | Country | Status | Technical rank | Primary source model | Tested scope |
+| ---: | --- | --- | --- | --- | --- |
+| 06 | Peru | Complete | A+ | Hipódromo de Monterrico official website + official JSON API | 3 meetings / 27 races |
+| 07 | Mexico | Pending | Pending | Hipódromo de las Américas official website candidate | DNS/reachability failure; no programme source confirmed |
+| 08 | Brazil | Complete | A+ | Multi-source official HTML/PDF by racecourse and racing system | 4 timed programme samples / 39 races; 1 untimed Arabian supplementary race; Tarumã pending |
+| 09 | Bahrain | Complete | A+ | Bahrain Turf Club official per-race HTML pages | 3 meetings / 25 races; post times and distances 25/25; initial public ceiling A |
+| 10 | Qatar | Complete | A+ | Qatar Racing and Equestrian Club official race-calendar client data | 2025-26 seasonal programme; 3 mid-to-late-season meetings / 22 races; post times, race names and distances 22/22; recheck at 2026-27 opening; initial public ceiling A |
+| 11 | Oman | Pending | Pending | OERF website and REST API + Oman Horse Racing Club official YouTube + Oman News Agency reports | Official YouTube confirms same-day/live distribution and race-by-race archives, but no stable advance fixture or scheduled post-time source is confirmed; recheck at 2026-27 opening |
+| 12 | Zimbabwe | Complete | C | Mashonaland Turf Club official race card PDF distributed through Zimracing | 1 meeting / 6 races; date, Borrowdale Park, Race 1-6 and distances confirmed; no reliable official post times |
