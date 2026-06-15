@@ -1,0 +1,39 @@
+{
+  "country": "Bahrain",
+  "slug": "bahrain",
+  "test_status": "complete",
+  "primary_source": {
+    "name": "Bahrain Turf Club official racecard",
+    "base_url": "https://bahrainturfclub.com/",
+    "race_url_pattern": "https://bahrainturfclub.com/racecard/{YYYY-MM-DD}/{race_number}/entries"
+  },
+  "tested_scope": {
+    "dates": [
+      "2026-02-12",
+      "2026-03-13",
+      "2026-04-24"
+    ],
+    "meetings": 3,
+    "races": 25
+  },
+  "technical_result": {
+    "rank": "A+",
+    "race_labels": "25/25",
+    "post_times": "25/25",
+    "race_names": "0/25",
+    "distances": "25/25",
+    "surfaces": "0/25",
+    "course_labels": "0/25"
+  },
+  "publication_boundary": {
+    "initial_public_display_ceiling": "A",
+    "a_plus_review_required": true
+  },
+  "source_limitations": [
+    "Race names were not reliably confirmed.",
+    "Surface wording was not confirmed as race-specific metadata.",
+    "Course labels were not confirmed.",
+    "Official pages contain prohibited racecard fields that must be ignored."
+  ],
+  "raw_storage_note": "Raw HTML and exploratory extraction files remain only under .whr-local-source-tests/09-bahrain/ and must not be committed."
+}

@@ -1,0 +1,10 @@
+field	availability	coverage	notes
+meeting date	available	3/3 meetings	Matched through the official race-calendar event payload.
+race identity	available	22/22 races	Stable official race identifiers were present.
+race number / label	derived	22/22 races	No explicit race-number field was present; sequence is derived from the official ordered races array.
+post time	available	22/22 races	Official postTime field.
+race name	available	22/22 races	Official race name field.
+distance	available	22/22 races	Official distance field.
+surface	not established across all races	0/22 races	Not used for the technical rank.
+course label	not established across all races	0/22 races	Not used for the technical rank.
+horse, jockey, trainer, weight, result, betting and payout data	excluded	not published	Outside the timetable publication boundary.

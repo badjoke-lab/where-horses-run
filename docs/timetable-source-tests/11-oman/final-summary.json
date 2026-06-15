@@ -1,0 +1,62 @@
+{
+  "country": "Oman",
+  "status": "Pending",
+  "technical_rank": null,
+  "tested_season_context": "2025-26",
+  "decision": "Official YouTube confirms same-day live and race-by-race public distribution, but no stable country-wide advance fixture and post-time source was confirmed.",
+  "source_findings": {
+    "legacy_rhrc": {
+      "usable": false,
+      "reason": "Former calendar unavailable and legacy URLs no longer expose racing data."
+    },
+    "oerf": {
+      "reachable": true,
+      "wordpress_rest_available": true,
+      "public_mec_records": 12,
+      "public_mec_record_period": "2021-11 to 2022-01",
+      "current_flat_racing_timetable_confirmed": false
+    },
+    "official_news_reports": {
+      "current_season_meetings_confirmed": true,
+      "primarily_retrospective": true,
+      "post_times_available": false,
+      "limited_advance_special_event_notice": true,
+      "country_wide_rank_c_adopted": false
+    },
+    "official_youtube": {
+      "reachable": true,
+      "sampled_watch_pages": 40,
+      "watch_fetch_failures": 1,
+      "dated_video_pages": 39,
+      "distinct_meeting_dates": 10,
+      "race_number_video_pages": 29,
+      "live_start_records": 10,
+      "current_upcoming_markers": 0,
+      "current_scheduled_start_markers": 0,
+      "published_before_live_start_records": 0,
+      "race_by_race_archive_confirmed": true,
+      "same_day_live_distribution_confirmed": true,
+      "advance_timetable_confirmed": false
+    }
+  },
+  "revalidation": {
+    "required": true,
+    "trigger": "publication or opening meeting of the 2026-27 season",
+    "required_fields": [
+      "future meeting date",
+      "racecourse",
+      "ordered Race 1..N",
+      "first and last post times",
+      "per-race post times",
+      "pre-event scheduled live or other advance official publication"
+    ]
+  },
+  "public_safety": {
+    "raw_html_published": false,
+    "raw_json_published": false,
+    "article_bodies_published": false,
+    "participant_data_published": false,
+    "result_data_published": false,
+    "betting_data_published": false
+  }
+}

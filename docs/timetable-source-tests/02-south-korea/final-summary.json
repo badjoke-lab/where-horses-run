@@ -1,0 +1,201 @@
+{
+  "country": "south-korea",
+  "country_test_number": 2,
+  "status": "complete",
+  "checked_date": "2026-06-09",
+  "authority": "Korea Racing Authority",
+  "technical_capability_rank": "A+",
+  "fallback_rank_if_aplus_fields_unavailable": "A",
+  "racecourses_tested": [
+    "Seoul",
+    "Busan-Gyeongnam",
+    "Jeju"
+  ],
+  "meetings_tested": 6,
+  "venue_totals": {
+    "Busan-Gyeongnam": {
+      "meetings_tested": 2,
+      "races_tested": 15,
+      "post_times": 15,
+      "distances": 15,
+      "descriptions": 15
+    },
+    "Jeju": {
+      "meetings_tested": 2,
+      "races_tested": 16,
+      "post_times": 16,
+      "distances": 16,
+      "descriptions": 16
+    },
+    "Seoul": {
+      "meetings_tested": 2,
+      "races_tested": 20,
+      "post_times": 20,
+      "distances": 20,
+      "descriptions": 20
+    }
+  },
+  "totals": {
+    "races": 51,
+    "post_time_local": 51,
+    "distance_m": 51,
+    "race_description": 51
+  },
+  "source_strategy": {
+    "meeting_url": "https://todayrace.kra.co.kr/main.do",
+    "meeting_method": "POST",
+    "meeting_parameters": [
+      "rcDate",
+      "meets"
+    ],
+    "meet_codes": {
+      "1": "Seoul",
+      "2": "Jeju",
+      "3": "Busan-Gyeongnam"
+    },
+    "additional_sources": [
+      "https://todayrace.kra.co.kr/racing/info/selectSimpleInfoList.do",
+      "https://todayrace.kra.co.kr/racing/info/selectInfoList.do"
+    ],
+    "generated_payload_fields": [
+      "meet",
+      "rcDate",
+      "rcNo"
+    ]
+  },
+  "aplus_fields": [
+    "race_number",
+    "post_time_local",
+    "distance_m",
+    "race_description",
+    "official_source_url"
+  ],
+  "optional_fields": [
+    "race_name",
+    "surface",
+    "course_label"
+  ],
+  "fallback_reason": "If distance becomes unavailable, the official main page still provides the complete Race 1-N timetable and every post time.",
+  "detail_endpoint_limitation": "Historical detail requests may return a 1297-byte shell. The selected main, simple and info pages still provide complete race times and distances.",
+  "meeting_results": [
+    {
+      "meeting_date": "20260605",
+      "venue": "Busan-Gyeongnam",
+      "meet_code": "3",
+      "expected_races": "1,2,3,4,5,6,7,8",
+      "expected_race_count": 8,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7,8",
+      "time_count": 8,
+      "distance_races": "1,2,3,4,5,6,7,8",
+      "distance_count": 8,
+      "description_races": "1,2,3,4,5,6,7,8",
+      "description_count": 8,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-post,main-post,simple-post"
+    },
+    {
+      "meeting_date": "20260605",
+      "venue": "Jeju",
+      "meet_code": "2",
+      "expected_races": "1,2,3,4,5,6,7,8,9",
+      "expected_race_count": 9,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7,8,9",
+      "time_count": 9,
+      "distance_races": "1,2,3,4,5,6,7,8,9",
+      "distance_count": 9,
+      "description_races": "1,2,3,4,5,6,7,8,9",
+      "description_count": 9,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-post,main-post,simple-post"
+    },
+    {
+      "meeting_date": "20260606",
+      "venue": "Seoul",
+      "meet_code": "1",
+      "expected_races": "1,2,3,4,5,6,7,8,9,10",
+      "expected_race_count": 10,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7,8,9,10",
+      "time_count": 10,
+      "distance_races": "1,2,3,4,5,6,7,8,9,10",
+      "distance_count": 10,
+      "description_races": "1,2,3,4,5,6,7,8,9,10",
+      "description_count": 10,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-get,info-post,main-post,simple-get,simple-post"
+    },
+    {
+      "meeting_date": "20260606",
+      "venue": "Jeju",
+      "meet_code": "2",
+      "expected_races": "1,2,3,4,5,6,7",
+      "expected_race_count": 7,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7",
+      "time_count": 7,
+      "distance_races": "1,2,3,4,5,6,7",
+      "distance_count": 7,
+      "description_races": "1,2,3,4,5,6,7",
+      "description_count": 7,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-post,main-post,simple-post"
+    },
+    {
+      "meeting_date": "20260607",
+      "venue": "Seoul",
+      "meet_code": "1",
+      "expected_races": "1,2,3,4,5,6,7,8,9,10",
+      "expected_race_count": 10,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7,8,9,10",
+      "time_count": 10,
+      "distance_races": "1,2,3,4,5,6,7,8,9,10",
+      "distance_count": 10,
+      "description_races": "1,2,3,4,5,6,7,8,9,10",
+      "description_count": 10,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-get,info-post,main-post,simple-get,simple-post"
+    },
+    {
+      "meeting_date": "20260607",
+      "venue": "Busan-Gyeongnam",
+      "meet_code": "3",
+      "expected_races": "1,2,3,4,5,6,7",
+      "expected_race_count": 7,
+      "payload_complete": "yes",
+      "time_races": "1,2,3,4,5,6,7",
+      "time_count": 7,
+      "distance_races": "1,2,3,4,5,6,7",
+      "distance_count": 7,
+      "description_races": "1,2,3,4,5,6,7",
+      "description_count": 7,
+      "all_times_complete": "yes",
+      "all_distances_complete": "yes",
+      "technical_rank": "A+",
+      "rank_reason": "Complete Race 1-N timetable with post time and distance for every race",
+      "evidence_sources": "info-post,main-post,simple-post"
+    }
+  ],
+  "superseded_results": [
+    "korea-nationwide-exact-summary.json C classification",
+    "korea-generated-payload-summary.json A+ failure"
+  ],
+  "final_decision": "South Korea official timetable data is obtainable at A+ capability for Seoul, Busan-Gyeongnam and Jeju."
+}
