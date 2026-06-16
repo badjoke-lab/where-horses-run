@@ -1,0 +1,88 @@
+{
+  "schema_version": "2.0.0",
+  "country_id": "japan",
+  "slug": "japan",
+  "status": "reviewed",
+  "page_kind": "country",
+  "last_reviewed": "2026-06-16",
+  "public_display_ceiling": "A",
+  "source_test_status": "complete",
+  "hero": {
+    "summary_en": "Japan has central, local-government and Banei racing systems with separate official information routes.",
+    "summary_ja": "日本には中央競馬、地方競馬、ばんえい競馬があり、それぞれ公式情報の確認先が異なります。"
+  },
+  "overview": {
+    "paragraphs_en": [
+      "Japanese racing is organised through several parallel systems rather than one all-in-one national calendar.",
+      "Meeting dates and post times should be checked on the official source for the relevant system."
+    ],
+    "paragraphs_ja": [
+      "日本の競馬は単一の全国カレンダーではなく、複数の競馬体系によって運営されています。",
+      "開催日と発走時刻は、該当する競馬体系の公式情報で確認する必要があります。"
+    ]
+  },
+  "racing_types": [
+    {
+      "id": "thoroughbred-flat",
+      "name_en": "Thoroughbred flat racing",
+      "name_ja": "サラブレッド平地競馬",
+      "summary_en": "The principal format in central and local-government racing.",
+      "summary_ja": "中央競馬と地方競馬の中心となる競走形式です。"
+    },
+    {
+      "id": "banei-racing",
+      "name_en": "Banei racing",
+      "name_ja": "ばんえい競馬",
+      "summary_en": "A separate draft-horse format held at Obihiro.",
+      "summary_ja": "帯広で行われる大型馬による独自の競馬形式です。"
+    }
+  ],
+  "seasonality": {
+    "pattern": "year-round-mixed-systems",
+    "summary_en": "The systems together provide racing across the year, although individual venues follow their own schedules.",
+    "summary_ja": "複数の体系を合わせると年間を通じて開催がありますが、各競馬場は独自の日程で運営されます。"
+  },
+  "schedule": {
+    "timezone": "Asia/Tokyo",
+    "utc_offset_label": "UTC+9",
+    "day_patterns": ["weekend-central", "weekday-local", "mixed"],
+    "time_patterns": ["daytime", "evening", "night"],
+    "summary_en": "Central racing is mainly daytime weekend racing, while local racing also includes weekday and night meetings.",
+    "summary_ja": "中央競馬は週末の日中開催が中心で、地方競馬には平日開催やナイターもあります。"
+  },
+  "surfaces": {
+    "ids": ["turf", "dirt", "banei-straight-track"],
+    "summary_en": "Turf, dirt and the separate Banei course format are used across the systems.",
+    "summary_ja": "各体系では芝、ダート、ばんえい専用コースが使用されます。"
+  },
+  "systems": [
+    {
+      "id": "jra",
+      "name_en": "Japan Racing Association",
+      "name_ja": "JRA・中央競馬",
+      "summary_en": "The central racing system.",
+      "summary_ja": "中央競馬の運営体系です。",
+      "organiser_source_ids": ["japan-jra-home"],
+      "distributor_source_ids": []
+    },
+    {
+      "id": "local-government-racing",
+      "name_en": "Local-government racing",
+      "name_ja": "地方競馬",
+      "summary_en": "Regional racing organised by local authorities and racecourse operators.",
+      "summary_ja": "地域の主催者と競馬場によって行われる競馬です。",
+      "organiser_source_ids": ["japan-nar-home"],
+      "distributor_source_ids": []
+    }
+  ],
+  "principal_racecourse_ids": ["tokyo-racecourse", "nakayama-racecourse", "obihiro-racecourse"],
+  "calendar_guidance_en": "Choose the relevant racing system before checking its official calendar.",
+  "calendar_guidance_ja": "対象となる競馬体系を確認してから、その公式日程を参照してください。",
+  "coverage_note_en": "This profile explains the main systems and does not claim complete coverage of every meeting.",
+  "coverage_note_ja": "このプロフィールは主要な競馬体系を説明するもので、すべての開催を網羅するとは主張しません。",
+  "revalidation": {
+    "triggers_en": ["Before publication after a major official calendar or source change."],
+    "triggers_ja": ["公式カレンダーや情報提供元に大きな変更があった場合は公開前に再確認する。"]
+  },
+  "related_glossary_ids": ["racecourse", "meeting", "fixture", "post-time"]
+}
