@@ -1,0 +1,52 @@
+name: Country profile v2
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/country-profile-v2.schema.json'
+      - 'scripts/check-country-profile-v2.mjs'
+      - 'scripts/country-profile-v2/**'
+      - 'tests/fixtures/country-profile-v2/**'
+      - 'docs/country-pages/profile-v2-contract.md'
+      - 'docs/runbooks/pr-286.md'
+      - '.github/workflows/country-profile-v2.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'schemas/country-profile-v2.schema.json'
+      - 'scripts/check-country-profile-v2.mjs'
+      - 'scripts/country-profile-v2/**'
+      - 'tests/fixtures/country-profile-v2/**'
+      - 'docs/country-pages/profile-v2-contract.md'
+      - 'docs/runbooks/pr-286.md'
+      - '.github/workflows/country-profile-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Parse schema
+        run: node -e "JSON.parse(require('fs').readFileSync('schemas/country-profile-v2.schema.json', 'utf8'))"
+
+      - name: Accept valid profile
+        run: node scripts/check-country-profile-v2.mjs tests/fixtures/country-profile-v2/valid-japan.json
+
+      - name: Reject invalid profile
+        run: |
+          if node scripts/check-country-profile-v2.mjs \
+            tests/fixtures/country-profile-v2/invalid-profile.json; then
+            echo 'Invalid profile was accepted'
+            exit 1
+          fi
