@@ -130,6 +130,12 @@ Dates use ISO `YYYY-MM-DD`.
 Review and publication dates must not be future dates. A future
 `tested_meeting_date` must never be copied into `evidence_reviewed_at`.
 
+The country-level tracker stores review and publication milestones. A
+`tested_meeting_date` remains in the relevant source-test or evidence-handoff
+record because it is meeting-level evidence and a country may have many tested
+meetings. The tracker must not duplicate one selected meeting date as if it
+were a country-wide milestone.
+
 ## 6. Route and QA states
 
 `en_route_status` and `ja_route_status` use:
