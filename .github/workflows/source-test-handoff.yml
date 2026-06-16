@@ -1,0 +1,61 @@
+name: Source test handoff
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/source-test-handoff.schema.json'
+      - 'scripts/source-test-handoff/**'
+      - 'tests/fixtures/source-test-handoff/**'
+      - 'docs/runbooks/source-test-handoff.md'
+      - 'docs/runbooks/pr-285.md'
+      - '.github/workflows/source-test-handoff.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'schemas/source-test-handoff.schema.json'
+      - 'scripts/source-test-handoff/**'
+      - 'tests/fixtures/source-test-handoff/**'
+      - 'docs/runbooks/source-test-handoff.md'
+      - 'docs/runbooks/pr-285.md'
+      - '.github/workflows/source-test-handoff.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Export fixture
+        run: |
+          rm -rf /tmp/whr-source-test-handoff
+          node scripts/source-test-handoff/export-handoff.mjs \
+            --input tests/fixtures/source-test-handoff/input.json \
+            --output /tmp/whr-source-test-handoff \
+            --generated-at 2026-06-16T00:00:00Z
+
+      - name: Validate exported fixture
+        run: node scripts/source-test-handoff/validate-handoff.mjs /tmp/whr-source-test-handoff
+
+      - name: Compare expected fixture
+        run: |
+          diff -u \
+            tests/fixtures/source-test-handoff/expected-handoff.json \
+            /tmp/whr-source-test-handoff/12-zimbabwe-whr-12-zimbabwe-20260615.handoff.json
+
+      - name: Reject invalid fixture
+        run: |
+          if node scripts/source-test-handoff/validate-handoff.mjs \
+            tests/fixtures/source-test-handoff/invalid-handoff.json; then
+            echo 'Invalid fixture was accepted'
+            exit 1
+          fi
