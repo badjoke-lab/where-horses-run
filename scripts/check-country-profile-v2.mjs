@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { validateBilingual } from './country-profile-v2/validate-bilingual.mjs';
+import { validateShape } from './country-profile-v2/validate-shape.mjs';
 import { validateStructure } from './country-profile-v2/validate-structure.mjs';
 
 const root = process.cwd();
@@ -43,6 +44,7 @@ const run = () => {
   for (const file of listFiles(input)) {
     const profile = JSON.parse(fs.readFileSync(file, 'utf8'));
     const errors = [
+      ...validateShape(profile),
       ...validateStructure(profile),
       ...validateBilingual(profile),
       ...validateTrackerLink(profile, tracker)
