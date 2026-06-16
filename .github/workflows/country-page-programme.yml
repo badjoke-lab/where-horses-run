@@ -1,0 +1,35 @@
+name: Country page programme
+
+on:
+  pull_request:
+    paths:
+      - 'docs/country-pages/**'
+      - 'docs/country-page-notes/**'
+      - 'scripts/check-country-page-programme.mjs'
+      - '.github/workflows/country-page-programme.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/country-pages/**'
+      - 'docs/country-page-notes/**'
+      - 'scripts/check-country-page-programme.mjs'
+      - '.github/workflows/country-page-programme.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate country page programme
+        run: node scripts/check-country-page-programme.mjs
