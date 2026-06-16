@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Where Horses Run country profile v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "country_id",
+    "slug",
+    "status",
+    "page_kind",
+    "last_reviewed",
+    "public_display_ceiling",
+    "source_test_status",
+    "hero",
+    "overview",
+    "racing_types",
+    "seasonality",
+    "schedule",
+    "surfaces",
+    "systems",
+    "principal_racecourse_ids",
+    "calendar_guidance_en",
+    "calendar_guidance_ja",
+    "coverage_note_en",
+    "coverage_note_ja",
+    "revalidation",
+    "related_glossary_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "2.0.0" },
+    "country_id": { "$ref": "#/$defs/id" },
+    "slug": { "$ref": "#/$defs/id" },
+    "status": { "enum": ["draft", "reviewed"] },
+    "page_kind": { "enum": ["country", "special", "explanatory", "archive"] },
+    "last_reviewed": { "type": "string", "format": "date" },
+    "public_display_ceiling": { "enum": ["A+", "A", "B+", "B", "C", "pending"] },
+    "source_test_status": { "enum": ["complete", "partial", "pending", "not_applicable"] },
+    "hero": { "$ref": "#/$defs/bilingual" },
+    "overview": {
+      "type": "object",
+      "required": ["paragraphs_en", "paragraphs_ja"],
+      "properties": {
+        "paragraphs_en": { "$ref": "#/$defs/textList" },
+        "paragraphs_ja": { "$ref": "#/$defs/textList" }
+      }
+    },
+    "racing_types": { "type": "array", "items": { "$ref": "#/$defs/named" } },
+    "seasonality": { "$ref": "#/$defs/patternBlock" },
+    "schedule": {
+      "type": "object",
+      "required": ["timezone", "utc_offset_label", "day_patterns", "time_patterns", "summary_en", "summary_ja"],
+      "properties": {
+        "timezone": { "$ref": "#/$defs/text" },
+        "utc_offset_label": { "$ref": "#/$defs/text" },
+        "day_patterns": { "$ref": "#/$defs/idList" },
+        "time_patterns": { "$ref": "#/$defs/idList" },
+        "summary_en": { "$ref": "#/$defs/text" },
+        "summary_ja": { "$ref": "#/$defs/text" }
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "required": ["ids", "summary_en", "summary_ja"],
+      "properties": {
+        "ids": { "$ref": "#/$defs/idList" },
+        "summary_en": { "$ref": "#/$defs/text" },
+        "summary_ja": { "$ref": "#/$defs/text" }
+      }
+    },
+    "systems": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/named" },
+          {
+            "type": "object",
+            "required": ["organiser_source_ids", "distributor_source_ids"],
+            "properties": {
+              "organiser_source_ids": { "$ref": "#/$defs/idList" },
+              "distributor_source_ids": { "$ref": "#/$defs/idList" }
+            }
+          }
+        ]
+      }
+    },
+    "principal_racecourse_ids": { "$ref": "#/$defs/idList" },
+    "calendar_guidance_en": { "$ref": "#/$defs/text" },
+    "calendar_guidance_ja": { "$ref": "#/$defs/text" },
+    "coverage_note_en": { "$ref": "#/$defs/text" },
+    "coverage_note_ja": { "$ref": "#/$defs/text" },
+    "revalidation": {
+      "type": "object",
+      "required": ["triggers_en", "triggers_ja"],
+      "properties": {
+        "triggers_en": { "$ref": "#/$defs/textList" },
+        "triggers_ja": { "$ref": "#/$defs/textList" }
+      }
+    },
+    "related_glossary_ids": { "$ref": "#/$defs/idList" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "text": { "type": "string", "minLength": 1 },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "textList": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
+    "bilingual": {
+      "type": "object",
+      "required": ["summary_en", "summary_ja"],
+      "properties": {
+        "summary_en": { "$ref": "#/$defs/text" },
+        "summary_ja": { "$ref": "#/$defs/text" }
+      }
+    },
+    "named": {
+      "type": "object",
+      "required": ["id", "name_en", "name_ja", "summary_en", "summary_ja"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name_en": { "$ref": "#/$defs/text" },
+        "name_ja": { "$ref": "#/$defs/text" },
+        "summary_en": { "$ref": "#/$defs/text" },
+        "summary_ja": { "$ref": "#/$defs/text" }
+      }
+    },
+    "patternBlock": {
+      "type": "object",
+      "required": ["pattern", "summary_en", "summary_ja"],
+      "properties": {
+        "pattern": { "$ref": "#/$defs/id" },
+        "summary_en": { "$ref": "#/$defs/text" },
+        "summary_ja": { "$ref": "#/$defs/text" }
+      }
+    }
+  }
+}
