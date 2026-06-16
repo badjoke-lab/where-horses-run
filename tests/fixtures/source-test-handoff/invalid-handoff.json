@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "invalid-fixture",
+  "generated_at": "2026-06-16T00:00:00Z",
+  "country": {
+    "delivery_no": "12",
+    "slug": "zimbabwe",
+    "name_en": "Zimbabwe",
+    "name_ja": "ジンバブエ"
+  },
+  "source": {
+    "source_id": "zimbabwe-mashonaland-race-card",
+    "tested_url": "https://example.org/race-card",
+    "final_url": "https://example.org/race-card.pdf",
+    "document_owner": "Mashonaland Turf Club",
+    "public_distributor": "Zimracing",
+    "content_type": "application/pdf",
+    "source_type": "official_pdf"
+  },
+  "capture": {
+    "fetched_at": "2026-06-15T12:00:00Z",
+    "http_status": 200,
+    "method": "manual_document_review",
+    "artifacts": [
+      {
+        "role": "source_document",
+        "sha256": "not-a-valid-digest",
+        "size_bytes": 26
+      }
+    ]
+  },
+  "meeting": {
+    "tested_meeting_date": "2026-06-17",
+    "racecourse": "Borrowdale Park",
+    "race_count": 6
+  },
+  "decision": {
+    "status": "complete",
+    "technical_rank": "Z",
+    "fallback_rank": "C",
+    "public_display_ceiling": "C",
+    "confirmed_fields": ["meeting_date", "racecourse"],
+    "unconfirmed_fields": ["first_post_time"],
+    "summary": "This fixture must be rejected by validation."
+  },
+  "public_safety": {
+    "raw_source_included": false,
+    "restricted_records_included": false,
+    "local_paths_included": false,
+    "direct_media_routes_included": false
+  }
+}
