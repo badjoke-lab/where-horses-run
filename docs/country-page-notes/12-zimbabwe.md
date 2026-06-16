@@ -7,7 +7,7 @@
 | Country | Zimbabwe |
 | Slug | zimbabwe |
 | Note status | reviewed |
-| Evidence cutoff | 2026-06-17 |
+| Evidence cutoff | 2026-06-15 |
 | Source-test status | Complete |
 | Technical rank | C |
 | Public display ceiling | C |
