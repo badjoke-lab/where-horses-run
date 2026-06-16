@@ -5,8 +5,10 @@ import { validateHandoff as validateObject } from './validate-object.mjs';
 import { validateIdentity } from './validate-identity.mjs';
 import { validateArtifacts } from './validate-artifacts.mjs';
 import { validateMeeting } from './validate-meeting.mjs';
+import { validateShape } from './validate-shape.mjs';
 
 export const validateHandoff = (data) => [
+  ...validateShape(data),
   ...validateObject(data),
   ...validateIdentity(data),
   ...validateArtifacts(data),
