@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source-test handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_id", "generated_at", "country", "source", "capture", "meeting", "decision", "public_safety"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "evidence_id": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "country": { "type": "object" },
+    "source": { "type": "object" },
+    "capture": { "type": "object" },
+    "meeting": { "type": "object" },
+    "decision": { "type": "object" },
+    "public_safety": { "type": "object" }
+  }
+}
