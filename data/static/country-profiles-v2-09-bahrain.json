@@ -1,0 +1,26 @@
+[
+  {
+    "schema_version":"2.0.0",
+    "country_id":"bahrain",
+    "slug":"bahrain",
+    "status":"reviewed",
+    "page_kind":"country",
+    "last_reviewed":"2026-06-17",
+    "public_display_ceiling":"A",
+    "source_test_status":"complete",
+    "hero":{"summary_en":"Bahrain has a verified official racecard route, while the reviewed batch does not establish a reliable venue name.","summary_ja":"バーレーンには確認済み公式レースカード導線がありますが、レビュー済みbatchでは信頼できる会場名を確定していません。"},
+    "overview":{"paragraphs_en":["Three reviewed meetings confirmed race order and post times through Bahrain Turf Club. Institutional and venue roles remain under review."],"paragraphs_ja":["レビュー済み3開催でBahrain Turf Clubのレース順と発走時刻を確認しました。機関・会場の役割は調査中です。"]},
+    "racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"The reviewed racecard route confirms a current programme without a complete national code inventory.","summary_ja":"レビュー済み導線で現行番組を確認していますが、全国の競走区分一覧は未確定です。"}],
+    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current Bahrain Turf Club calendar and racecard route.","summary_ja":"Bahrain Turf Clubの現行日程とレースカード導線を確認します。"},
+    "schedule":{"timezone":"Asia/Bahrain","utc_offset_label":"UTC+3","day_patterns":["official-calendar-required"],"time_patterns":["published-by-official-source"],"summary_en":"Post times must be taken from the selected official racecard.","summary_ja":"発走時刻は対象の公式レースカードで確認します。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage is not assigned in this batch.","summary_ja":"このbatchでは馬場種別を指定しません。"},
+    "systems":[{"id":"bahrain-turf-club-system","name_en":"Bahrain Turf Club system","name_ja":"Bahrain Turf Club体系","summary_en":"The club route and racecard route provide the reviewed public information.","summary_ja":"クラブ導線とレースカード導線がレビュー済み公開情報を提供します。","organiser_source_ids":["bahrain-turf-club-home"],"distributor_source_ids":["bahrain-turf-club-racecards"]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Use the official racecard and do not infer a venue from the club name.",
+    "calendar_guidance_ja":"公式レースカードを使い、クラブ名から会場を推測しないでください。",
+    "coverage_note_en":"Technical A+ fields were observed, but public output is capped at A.",
+    "coverage_note_ja":"技術上A+の項目を確認しましたが、公開表示はAまでです。",
+    "revalidation":{"triggers_en":["The racecard route changes","A reliable venue identity is confirmed"],"triggers_ja":["レースカード導線が変更されたとき","信頼できる会場名を確認できたとき"]},
+    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+  }
+]

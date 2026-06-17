@@ -1,18 +1,29 @@
 import countries from '../../data/static/countries.json';
 import countryPageCountries0508 from '../../data/static/country-page-countries-05-08.json';
+import countryPageCountries0912 from '../../data/static/country-page-countries-09-12.json';
 import legacyCountryProfiles from '../../data/static/country-profiles.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
 import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
 import countryProfilesV207Mexico from '../../data/static/country-profiles-v2-07-mexico.json';
 import countryProfilesV208Brazil from '../../data/static/country-profiles-v2-08-brazil.json';
+import countryProfilesV209Bahrain from '../../data/static/country-profiles-v2-09-bahrain.json';
+import countryProfilesV210Qatar from '../../data/static/country-profiles-v2-10-qatar.json';
+import countryProfilesV211Oman from '../../data/static/country-profiles-v2-11-oman.json';
+import countryProfilesV212Zimbabwe from '../../data/static/country-profiles-v2-12-zimbabwe.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
+import countryPageRacecourses11Oman from '../../data/static/country-page-racecourses-11-oman.json';
+import countryPageRacecourses12Zimbabwe from '../../data/static/country-page-racecourses-12-zimbabwe.json';
 import racecourseProfileOverrides from '../../data/static/racecourse-profile-overrides.json';
 import sources from '../../data/static/sources.json';
 import countryPageSources0104 from '../../data/static/country-page-sources-01-04.json';
 import countryPageSources0508 from '../../data/static/country-page-sources-05-08.json';
+import countryPageSources09Bahrain from '../../data/static/country-page-sources-09-bahrain.json';
+import countryPageSources10Qatar from '../../data/static/country-page-sources-10-qatar.json';
+import countryPageSources11Oman from '../../data/static/country-page-sources-11-oman.json';
+import countryPageSources12Zimbabwe from '../../data/static/country-page-sources-12-zimbabwe.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -31,20 +42,24 @@ import {
 
 export type Locale = 'en' | 'ja';
 
-const allCountries = [...countries, ...countryPageCountries0508] as const;
+const allCountries = [...countries, ...countryPageCountries0508, ...countryPageCountries0912] as const;
 const allProfilesV2 = [
   ...countryProfilesV2,
   ...countryProfilesV205Chile,
   ...countryProfilesV206Peru,
   ...countryProfilesV207Mexico,
-  ...countryProfilesV208Brazil
+  ...countryProfilesV208Brazil,
+  ...countryProfilesV209Bahrain,
+  ...countryProfilesV210Qatar,
+  ...countryProfilesV211Oman,
+  ...countryProfilesV212Zimbabwe
 ] as const;
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
-const allRacecourses = [...racecourses, ...racecourseExtensions, ...countryPageRacecourses0104].map((racecourse) => ({
+const allRacecourses = [...racecourses, ...racecourseExtensions, ...countryPageRacecourses0104, ...countryPageRacecourses11Oman, ...countryPageRacecourses12Zimbabwe].map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
-const allSources = [...sources, ...countryPageSources0104, ...countryPageSources0508] as const;
+const allSources = [...sources, ...countryPageSources0104, ...countryPageSources0508, ...countryPageSources09Bahrain, ...countryPageSources10Qatar, ...countryPageSources11Oman, ...countryPageSources12Zimbabwe] as const;
 const countryProfiles = buildCountryDetailProfiles(allProfilesV2, legacyCountryProfiles);
 
 export type Country = (typeof allCountries)[number];

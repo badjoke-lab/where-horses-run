@@ -1,0 +1,26 @@
+[
+  {
+    "schema_version":"2.0.0",
+    "country_id":"qatar",
+    "slug":"qatar",
+    "status":"reviewed",
+    "page_kind":"country",
+    "last_reviewed":"2026-06-17",
+    "public_display_ceiling":"A",
+    "source_test_status":"complete",
+    "hero":{"summary_en":"Qatar has a verified seasonal official race calendar, while the reviewed batch does not establish a complete venue inventory.","summary_ja":"カタールには確認済みの季節開催型公式日程がありますが、レビュー済みbatchでは完全な会場一覧を確定していません。"},
+    "overview":{"paragraphs_en":["The reviewed 2025-26 QREC programme confirmed meeting dates, race order, post times, names and distances. Venue identity was not consistent enough for a principal-racecourse claim."],"paragraphs_ja":["レビュー済み2025-26 QREC番組で開催日、レース順、発走時刻、名称、距離を確認しました。主要競馬場を断定できるほど会場表記は一貫していません。"]},
+    "racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"The official seasonal programme confirms racing without a complete venue or racing-code inventory.","summary_ja":"公式シーズン番組で競馬を確認していますが、完全な会場・競走区分一覧は未確定です。"}],
+    "seasonality":{"pattern":"october-to-april-reviewed","summary_en":"The reviewed 2025-26 programme ran from October 2025 through April 2026. Revalidate the next season.","summary_ja":"レビュー済み2025-26番組は2025年10月から2026年4月までです。次シーズンを再確認します。"},
+    "schedule":{"timezone":"Asia/Qatar","utc_offset_label":"UTC+3","day_patterns":["official-calendar-required"],"time_patterns":["published-by-official-source"],"summary_en":"Use the current QREC seasonal calendar for meeting dates and post times.","summary_ja":"開催日と発走時刻はQRECの現行シーズン日程で確認します。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage is not assigned country-wide in this batch.","summary_ja":"このbatchでは馬場種別を国全体へ指定しません。"},
+    "systems":[{"id":"qatar-qrec-calendar-system","name_en":"QREC calendar system","name_ja":"QREC日程体系","summary_en":"QREC publishes the reviewed seasonal programme and calendar route.","summary_ja":"QRECがレビュー済みシーズン番組と日程導線を公開します。","organiser_source_ids":["qatar-qrec-home"],"distributor_source_ids":["qatar-qrec-calendar"]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Use the current official season page and do not infer a venue when the calendar does not state one consistently.",
+    "calendar_guidance_ja":"現行公式シーズンページを使い、日程に一貫した会場表記がない場合は会場を推測しないでください。",
+    "coverage_note_en":"Technical A+ fields were observed, but public output is capped at A.",
+    "coverage_note_ja":"技術上A+の項目を確認しましたが、公開表示はAまでです。",
+    "revalidation":{"triggers_en":["The 2026-27 programme is published","The calendar route changes","Venue labels become reliable"],"triggers_ja":["2026-27番組が公開されたとき","日程導線が変更されたとき","会場表記を信頼できるようになったとき"]},
+    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+  }
+]
