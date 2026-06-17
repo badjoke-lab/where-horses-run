@@ -1,0 +1,17 @@
+[
+  {
+    "schema_version":"2.0.0","country_id":"uruguay","slug":"uruguay","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-17","public_display_ceiling":"C","source_test_status":"complete",
+    "hero":{"summary_en":"Uruguay is confirmed at calendar level for Maroñas and Las Piedras.","summary_ja":"ウルグアイはMaroñasとLas Piedrasの開催日・会場をカレンダーレベルで確認済みです。"},
+    "overview":{"paragraphs_en":["The reviewed official route confirms meeting dates and venues. Stable reusable post times were not confirmed."],"paragraphs_ja":["レビュー済み公式導線で開催日と会場を確認しました。安定した発走時刻sourceは未確認です。"]},
+    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Calendar-level meeting coverage is confirmed.","summary_ja":"カレンダーレベルの開催情報を確認済みです。"}],
+    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current HRU calendar for meeting dates.","summary_ja":"開催日はHRUの現行カレンダーで確認します。"},
+    "schedule":{"timezone":"America/Montevideo","utc_offset_label":"Verify current Uruguay civil-time offset","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"Public output is limited to meeting date and venue.","summary_ja":"公開表示は開催日と会場に限定します。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
+    "systems":[{"id":"uruguay-hru-system","name_en":"HRU calendar system","name_ja":"HRUカレンダー体系","summary_en":"The official HRU route provides the reviewed calendar-level information.","summary_ja":"HRU公式導線がレビュー済みカレンダー情報を提供します。","organiser_source_ids":["uruguay-hru-home"],"distributor_source_ids":[]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Show only the official meeting date and venue until a stable post-time source is confirmed.","calendar_guidance_ja":"安定した発走時刻sourceを確認するまで公式の開催日と会場のみ表示します。",
+    "coverage_note_en":"Rank C does not establish first, last, or per-race post times.","coverage_note_ja":"Cは第1・最終・レース別発走時刻を意味しません。",
+    "revalidation":{"triggers_en":["HRU calendar change","Stable post-time source confirmed","Venue inventory change"],"triggers_ja":["HRUカレンダー変更時","安定した発走時刻source確認時","会場一覧変更時"]},
+    "related_glossary_ids":["racecourse","meeting","fixture"]
+  }
+]
