@@ -1,0 +1,56 @@
+name: Country detail profile runtime
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/country-profiles.json'
+      - 'data/static/country-profiles-v2.json'
+      - 'src/lib/country-profile-runtime.ts'
+      - 'src/lib/data.ts'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-profile-v2.mjs'
+      - 'scripts/country-profile-v2/**'
+      - '.github/workflows/country-detail-profile-runtime.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/country-profiles.json'
+      - 'data/static/country-profiles-v2.json'
+      - 'src/lib/country-profile-runtime.ts'
+      - 'src/lib/data.ts'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-profile-v2.mjs'
+      - 'scripts/country-profile-v2/**'
+      - '.github/workflows/country-detail-profile-runtime.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate runtime boundary
+        run: node scripts/check-country-detail-profile-runtime.mjs
+
+      - name: Build site
+        run: npm run build
