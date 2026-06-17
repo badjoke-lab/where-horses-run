@@ -66,7 +66,7 @@
 - [VERIFIED] NAR and Banei use separate official navigation and meeting-information routes.
 - [INFERRED] Collection and public presentation should use separate source adapters and labels.
 
-## Programme and racecard format
+## Programme format
 
 - [VERIFIED] JRA provides the fields required for a complete per-race timetable and additional common programme fields.
 - [VERIFIED] Public pages remain capped at A until a separate JRA A+ publication review is completed.
