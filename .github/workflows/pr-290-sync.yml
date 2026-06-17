@@ -31,9 +31,7 @@ jobs:
           git add scripts/check-country-page-programme.mjs \
             scripts/check-country-page-id-inventory-01-12.mjs \
             docs/country-pages/98-country-tracker.tsv \
-            data/static/country-page-id-inventory-01-12.json \
-            .github/workflows/country-detail-profile-runtime.yml \
-            .github/workflows/country-page-id-inventory-01-12.yml
+            data/static/country-page-id-inventory-01-12.json
           if git diff --cached --quiet; then
             echo 'No synchronized changes to commit.'
             exit 0
