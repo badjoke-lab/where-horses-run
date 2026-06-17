@@ -37,9 +37,40 @@ on:
       - '.github/workflows/country-detail-profile-runtime.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  synchronize:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'country-page-route-qa'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-page-route-qa
+          fetch-depth: 0
+      - name: Update country routes
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file = 'src/components/CountryDetailPage.astro';
+          let text = fs.readFileSync(file, 'utf8');
+          text = text.replace("const racecoursePathPrefix = isJa ? '/ja/racecourses/' : '/racecourses/';", "const racecoursePathPrefix = isJa ? '/ja/tracks/' : '/tracks/';");
+          text = text.replace("const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';", "const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';\nconst canonicalPath = isJa ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`;\nconst alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${country.slug}/`;");
+          text = text.replace('<BaseLayout title={pageTitle} description={pageDescription} lang={locale}>', '<BaseLayout title={pageTitle} description={pageDescription} lang={locale} canonicalPath={canonicalPath} alternatePath={alternatePath}>');
+          text = text.replaceAll('<th>', '<th scope="col">');
+          fs.writeFileSync(file, text);
+          NODE
+      - name: Commit update
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/components/CountryDetailPage.astro
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Correct country page routes and metadata'
+          git push origin HEAD:country-page-route-qa
+
   validate:
     runs-on: ubuntu-latest
     steps:
