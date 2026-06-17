@@ -5,13 +5,28 @@ import '../styles/layout.css';
 import '../styles/components.css';
 import '../styles/utilities.css';
 
-interface Props { title: string; description: string; lang?: 'en' | 'ja'; canonicalPath?: string; alternatePath?: string; }
-const { title, description, lang = 'en', canonicalPath, alternatePath } = Astro.props;
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'ja';
+  canonicalPath?: string;
+  alternatePath?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'en',
+  canonicalPath,
+  alternatePath
+} = Astro.props;
+
 const isJapanese = lang === 'ja';
 const homeHref = isJapanese ? '/ja/' : '/';
 const defaultAlternateHref = isJapanese ? '/' : '/ja/';
 const languageSwitchHref = alternatePath ?? defaultAlternateHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
+
 const siteUrl = 'https://whr.badjoke-lab.com';
 const canonicalPathname = canonicalPath ?? Astro.url.pathname;
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
@@ -20,48 +35,64 @@ const xDefaultUrl = `${siteUrl}${isJapanese ? languageSwitchHref : canonicalPath
 const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 ---
+
 <!doctype html>
 <html lang={lang}>
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content={description} />
-<link rel="canonical" href={canonicalUrl} />
-<link rel="alternate" hreflang={isJapanese ? 'en' : 'ja'} href={alternateUrl} />
-<link rel="alternate" hreflang={lang} href={canonicalUrl} />
-<link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="Where Horses Run" />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalUrl} />
-<meta property="og:locale" content={ogLocale} />
-<meta property="og:locale:alternate" content={alternateOgLocale} />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<title>{title}</title>
-</head>
-<body>
-<a class="skip-link" href="#main-content">{isJapanese ? '本文へ移動' : 'Skip to content'}</a>
-<div class="site-shell">
-<header class="site-header" aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}>
-<div class="site-header__inner">
-<a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
-<nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
-<a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
-<a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
-<a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
-<a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
-<a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
-<a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
-<a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? 'ソース' : 'Sources'}</a>
-<a href={languageSwitchHref}>{alternateLabel}</a>
-</nav>
-</div>
-</header>
-<main id="main-content" class="main-content"><slot /></main>
-<footer class="site-footer"><div class="site-footer__inner"><p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, racecourses, racing types, and sources.'}</p></div></footer>
-</div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang={isJapanese ? 'en' : 'ja'} href={alternateUrl} />
+    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Where Horses Run" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={alternateOgLocale} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">
+      {isJapanese ? '本文へ移動' : 'Skip to content'}
+    </a>
+
+    <div class="site-shell">
+      <header class="site-header" aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}>
+        <div class="site-header__inner">
+          <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
+          <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+            <a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
+            <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
+            <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
+            <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
+            <a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
+            <a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
+            <a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? 'ソース' : 'Sources'}</a>
+            <a href={languageSwitchHref}>{alternateLabel}</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-content" class="main-content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div class="site-footer__inner">
+          <p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, racecourses, racing types, and sources.'}</p>
+        </div>
+      </footer>
+    </div>
+  </body>
 </html>
