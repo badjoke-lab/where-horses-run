@@ -1,26 +1,95 @@
 [
   {
-    "schema_version":"2.0.0",
-    "country_id":"chile",
-    "slug":"chile",
-    "status":"reviewed",
-    "page_kind":"country",
-    "last_reviewed":"2026-06-18",
-    "public_display_ceiling":"A",
-    "source_test_status":"complete",
-    "hero":{"summary_en":"Chile uses several venue-specific official programme routes rather than one verified national timetable.","summary_ja":"チリでは確認済み全国一括時刻表ではなく、競馬場別の公式番組導線を使います。"},
-    "overview":{"paragraphs_en":["The reviewed batch covers four venues and uses Teletrak as a discovery and distribution route, not as a verified national organiser."],"paragraphs_ja":["レビュー済み対象は4会場で、Teletrakは開催発見・番組配信の導線として扱い、全国運営主体とは断定しません。"]},
-    "racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"Venue programmes are confirmed; a complete national code inventory is not.","summary_ja":"会場別番組は確認済みですが、全国の競走区分一覧は未確定です。"}],
-    "seasonality":{"pattern":"venue-calendars-required","summary_en":"Current venue calendars are required.","summary_ja":"現行の会場別日程を確認する必要があります。"},
-    "schedule":{"timezone":"America/Santiago","utc_offset_label":"Verify current Chile civil-time offset","day_patterns":["varies-by-racecourse"],"time_patterns":["published-by-official-source"],"summary_en":"Dates and times vary by venue and civil-time season.","summary_ja":"日付と時刻は会場および標準時・夏時間の時期により変わります。"},
-    "surfaces":{"ids":[],"summary_en":"Surface coverage is not assigned country-wide.","summary_ja":"馬場種別を国全体へ一括指定しません。"},
-    "systems":[{"id":"chile-venue-programme-network","name_en":"Chile venue programme network","name_ja":"チリ競馬場別番組網","summary_en":"Four venue routes and Teletrak provide the reviewed paths.","summary_ja":"4会場の公式導線とTeletrakがレビュー済み経路です。","organiser_source_ids":[],"distributor_source_ids":["chile-club-hipico-concepcion-home","chile-valparaiso-sporting-home","chile-club-hipico-santiago-home","chile-hipodromo-chile-home","chile-teletrak-calendar"]}],
-    "principal_racecourse_ids":["hipodromo-chile"],
-    "calendar_guidance_en":"Use Teletrak or the selected venue and exclude simulcasting.",
-    "calendar_guidance_ja":"Teletrakまたは対象会場を使い、海外中継を除外してください。",
-    "coverage_note_en":"Public output remains capped at A.",
-    "coverage_note_ja":"公開表示はAまでとします。",
-    "revalidation":{"triggers_en":["A venue route changes","Teletrak mapping changes"],"triggers_ja":["会場導線が変更されたとき","Teletrakの対応が変更されたとき"]},
-    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+    "schema_version": "2.0.0",
+    "country_id": "chile",
+    "slug": "chile",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Chile uses several venue-specific official programme routes rather than one verified national timetable.",
+      "summary_ja": "チリでは確認済み全国一括時刻表ではなく、競馬場別の公式番組導線を使います。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The reviewed batch covers four venues and uses Teletrak as a discovery and distribution route, not as a verified national organiser."
+      ],
+      "paragraphs_ja": [
+        "レビュー済み対象は4会場で、Teletrakは開催発見・番組配信の導線として扱い、全国運営主体とは断定しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "horse-racing",
+        "name_en": "Horse racing",
+        "name_ja": "競馬",
+        "summary_en": "Venue programmes are confirmed; a complete national code inventory is not.",
+        "summary_ja": "会場別番組は確認済みですが、全国の競走区分一覧は未確定です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "venue-calendars-required",
+      "summary_en": "Current venue calendars are required.",
+      "summary_ja": "現行の会場別日程を確認する必要があります。"
+    },
+    "schedule": {
+      "timezone": "America/Santiago",
+      "utc_offset_label": "Verify current Chile civil-time offset",
+      "day_patterns": [
+        "varies-by-racecourse"
+      ],
+      "time_patterns": [
+        "published-by-official-source"
+      ],
+      "summary_en": "Dates and times vary by venue and civil-time season.",
+      "summary_ja": "日付と時刻は会場および標準時・夏時間の時期により変わります。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface coverage is not assigned country-wide.",
+      "summary_ja": "馬場種別を国全体へ一括指定しません。"
+    },
+    "systems": [
+      {
+        "id": "chile-venue-programme-network",
+        "name_en": "Chile venue programme network",
+        "name_ja": "チリ競馬場別番組網",
+        "summary_en": "Four venue routes and Teletrak provide the reviewed paths.",
+        "summary_ja": "4会場の公式導線とTeletrakがレビュー済み経路です。",
+        "organiser_source_ids": [],
+        "distributor_source_ids": [
+          "chile-club-hipico-concepcion-home",
+          "chile-valparaiso-sporting-home",
+          "chile-club-hipico-santiago-home",
+          "chile-hipodromo-chile-home",
+          "chile-teletrak-calendar"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "hipodromo-chile"
+    ],
+    "calendar_guidance_en": "Use Teletrak or the selected venue and exclude simulcasting.",
+    "calendar_guidance_ja": "Teletrakまたは対象会場を使い、海外中継を除外してください。",
+    "coverage_note_en": "Public output remains capped at A.",
+    "coverage_note_ja": "公開表示はAまでとします。",
+    "revalidation": {
+      "triggers_en": [
+        "A venue route changes",
+        "Teletrak mapping changes"
+      ],
+      "triggers_ja": [
+        "会場導線が変更されたとき",
+        "Teletrakの対応が変更されたとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
   }
 ]

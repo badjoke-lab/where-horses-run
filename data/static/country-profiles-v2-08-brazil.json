@@ -1,35 +1,147 @@
 [
   {
-    "schema_version":"2.0.0",
-    "country_id":"brazil",
-    "slug":"brazil",
-    "status":"reviewed",
-    "page_kind":"country",
-    "last_reviewed":"2026-06-18",
-    "public_display_ceiling":"A",
-    "source_test_status":"complete",
-    "hero":{"summary_en":"Brazil is represented as several verified venue and racing-code systems, not one national timetable.","summary_ja":"ブラジルは全国一括時刻表ではなく、複数の確認済み会場・競走区分体系として表示します。"},
-    "overview":{"paragraphs_en":["The reviewed batch covers Gávea, Cidade Jardim, Cristal and Sorocaba through four separate official authorities. Tarumã remains unresolved."],"paragraphs_ja":["レビュー済み対象は4つの異なる公式主体によるガヴェア、シダージ・ジャルジン、クリスタル、ソロカバです。タルマンは未解決です。"]},
-    "racing_types":[
-      {"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Confirmed in the reviewed Gávea, Cidade Jardim and Cristal systems.","summary_ja":"ガヴェア、シダージ・ジャルジン、クリスタルで確認済みです。"},
-      {"id":"arabian-racing","name_en":"Arabian racing","name_ja":"アラブ競走","summary_en":"Separate supplementary evidence exists at Cidade Jardim.","summary_ja":"シダージ・ジャルジンに別個の補足根拠があります。"},
-      {"id":"quarter-horse-racing","name_en":"Quarter Horse racing","name_ja":"クォーターホース競走","summary_en":"Confirmed in the reviewed Sorocaba route.","summary_ja":"ソロカバのレビュー済み導線で確認済みです。"}
+    "schema_version": "2.0.0",
+    "country_id": "brazil",
+    "slug": "brazil",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Brazil is represented as several verified venue and racing-code systems, not one national timetable.",
+      "summary_ja": "ブラジルは全国一括時刻表ではなく、複数の確認済み会場・競走区分体系として表示します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The reviewed batch covers Gávea, Cidade Jardim, Cristal and Sorocaba through four separate official authorities. Tarumã remains unresolved."
+      ],
+      "paragraphs_ja": [
+        "レビュー済み対象は4つの異なる公式主体によるガヴェア、シダージ・ジャルジン、クリスタル、ソロカバです。タルマンは未解決です。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Confirmed in the reviewed Gávea, Cidade Jardim and Cristal systems.",
+        "summary_ja": "ガヴェア、シダージ・ジャルジン、クリスタルで確認済みです。"
+      },
+      {
+        "id": "arabian-racing",
+        "name_en": "Arabian racing",
+        "name_ja": "アラブ競走",
+        "summary_en": "Separate supplementary evidence exists at Cidade Jardim.",
+        "summary_ja": "シダージ・ジャルジンに別個の補足根拠があります。"
+      },
+      {
+        "id": "quarter-horse-racing",
+        "name_en": "Quarter Horse racing",
+        "name_ja": "クォーターホース競走",
+        "summary_en": "Confirmed in the reviewed Sorocaba route.",
+        "summary_ja": "ソロカバのレビュー済み導線で確認済みです。"
+      }
     ],
-    "seasonality":{"pattern":"multi-venue-calendars-required","summary_en":"Each authority requires its own current calendar check.","summary_ja":"公式主体ごとに現行日程を確認する必要があります。"},
-    "schedule":{"timezone":"America/Sao_Paulo","utc_offset_label":"Verify the selected venue time zone","day_patterns":["varies-by-racecourse"],"time_patterns":["published-by-official-source","date-verification-required-for-sorocaba"],"summary_en":"Dates and times remain attached to their venue and authority.","summary_ja":"日付と時刻は会場・公式主体と結び付けて扱います。"},
-    "surfaces":{"ids":[],"summary_en":"Surface claims are not normalized across systems.","summary_ja":"体系間で馬場情報を共通化しません。"},
-    "systems":[
-      {"id":"brazil-gavea-system","name_en":"Gávea system","name_ja":"ガヴェア体系","summary_en":"Jockey Club Brasileiro distributes the reviewed programme.","summary_ja":"Jockey Club Brasileiroがレビュー済み番組を配信します。","organiser_source_ids":["brazil-jockey-club-brasileiro"],"distributor_source_ids":["brazil-gavea-programme"]},
-      {"id":"brazil-cidade-jardim-system","name_en":"Cidade Jardim system","name_ja":"シダージ・ジャルジン体系","summary_en":"Jockey Club de São Paulo distributes separate evidence by racing code.","summary_ja":"Jockey Club de São Pauloが競走区分別の根拠を配信します。","organiser_source_ids":["brazil-jockey-club-sao-paulo"],"distributor_source_ids":["brazil-cidade-jardim-programme"]},
-      {"id":"brazil-cristal-system","name_en":"Cristal system","name_ja":"クリスタル体系","summary_en":"Jockey Club do Rio Grande do Sul distributes the reviewed programme.","summary_ja":"Jockey Club do Rio Grande do Sulがレビュー済み番組を配信します。","organiser_source_ids":["brazil-jockey-club-rio-grande-do-sul"],"distributor_source_ids":["brazil-cristal-programme"]},
-      {"id":"brazil-sorocaba-system","name_en":"Sorocaba system","name_ja":"ソロカバ体系","summary_en":"Jockey Club de Sorocaba distributes the reviewed programme; the exact meeting date requires confirmation.","summary_ja":"Jockey Club de Sorocabaが番組を配信しますが、正確な開催日は確認が必要です。","organiser_source_ids":["brazil-jockey-club-sorocaba"],"distributor_source_ids":["brazil-sorocaba-programme"]}
+    "seasonality": {
+      "pattern": "multi-venue-calendars-required",
+      "summary_en": "Each authority requires its own current calendar check.",
+      "summary_ja": "公式主体ごとに現行日程を確認する必要があります。"
+    },
+    "schedule": {
+      "timezone": "America/Sao_Paulo",
+      "utc_offset_label": "Verify the selected venue time zone",
+      "day_patterns": [
+        "varies-by-racecourse"
+      ],
+      "time_patterns": [
+        "published-by-official-source",
+        "date-verification-required-for-sorocaba"
+      ],
+      "summary_en": "Dates and times remain attached to their venue and authority.",
+      "summary_ja": "日付と時刻は会場・公式主体と結び付けて扱います。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface claims are not normalized across systems.",
+      "summary_ja": "体系間で馬場情報を共通化しません。"
+    },
+    "systems": [
+      {
+        "id": "brazil-gavea-system",
+        "name_en": "Gávea system",
+        "name_ja": "ガヴェア体系",
+        "summary_en": "Jockey Club Brasileiro distributes the reviewed programme.",
+        "summary_ja": "Jockey Club Brasileiroがレビュー済み番組を配信します。",
+        "organiser_source_ids": [
+          "brazil-jockey-club-brasileiro"
+        ],
+        "distributor_source_ids": [
+          "brazil-gavea-programme"
+        ]
+      },
+      {
+        "id": "brazil-cidade-jardim-system",
+        "name_en": "Cidade Jardim system",
+        "name_ja": "シダージ・ジャルジン体系",
+        "summary_en": "Jockey Club de São Paulo distributes separate evidence by racing code.",
+        "summary_ja": "Jockey Club de São Pauloが競走区分別の根拠を配信します。",
+        "organiser_source_ids": [
+          "brazil-jockey-club-sao-paulo"
+        ],
+        "distributor_source_ids": [
+          "brazil-cidade-jardim-programme"
+        ]
+      },
+      {
+        "id": "brazil-cristal-system",
+        "name_en": "Cristal system",
+        "name_ja": "クリスタル体系",
+        "summary_en": "Jockey Club do Rio Grande do Sul distributes the reviewed programme.",
+        "summary_ja": "Jockey Club do Rio Grande do Sulがレビュー済み番組を配信します。",
+        "organiser_source_ids": [
+          "brazil-jockey-club-rio-grande-do-sul"
+        ],
+        "distributor_source_ids": [
+          "brazil-cristal-programme"
+        ]
+      },
+      {
+        "id": "brazil-sorocaba-system",
+        "name_en": "Sorocaba system",
+        "name_ja": "ソロカバ体系",
+        "summary_en": "Jockey Club de Sorocaba distributes the reviewed programme; the exact meeting date requires confirmation.",
+        "summary_ja": "Jockey Club de Sorocabaが番組を配信しますが、正確な開催日は確認が必要です。",
+        "organiser_source_ids": [
+          "brazil-jockey-club-sorocaba"
+        ],
+        "distributor_source_ids": [
+          "brazil-sorocaba-programme"
+        ]
+      }
     ],
-    "principal_racecourse_ids":[],
-    "calendar_guidance_en":"Select the authority first and do not merge different racing codes.",
-    "calendar_guidance_ja":"先に公式主体を選び、異なる競走区分を統合しないでください。",
-    "coverage_note_en":"The four reviewed systems are not claimed to be a complete active list.",
-    "coverage_note_ja":"レビュー済み4体系を完全な現行一覧とは断定しません。",
-    "revalidation":{"triggers_en":["An authority route changes","The Sorocaba date is verified","Tarumã becomes verifiable"],"triggers_ja":["公式主体の導線が変更されたとき","ソロカバの日付を確認できたとき","タルマンを確認できたとき"]},
-    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Select the authority first and do not merge different racing codes.",
+    "calendar_guidance_ja": "先に公式主体を選び、異なる競走区分を統合しないでください。",
+    "coverage_note_en": "The four reviewed systems are not claimed to be a complete active list.",
+    "coverage_note_ja": "レビュー済み4体系を完全な現行一覧とは断定しません。",
+    "revalidation": {
+      "triggers_en": [
+        "An authority route changes",
+        "The Sorocaba date is verified",
+        "Tarumã becomes verifiable"
+      ],
+      "triggers_ja": [
+        "公式主体の導線が変更されたとき",
+        "ソロカバの日付を確認できたとき",
+        "タルマンを確認できたとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
   }
 ]

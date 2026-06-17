@@ -1,26 +1,86 @@
 [
   {
-    "schema_version":"2.0.0",
-    "country_id":"mexico",
-    "slug":"mexico",
-    "status":"reviewed",
-    "page_kind":"country",
-    "last_reviewed":"2026-06-18",
-    "public_display_ceiling":"pending",
-    "source_test_status":"pending",
-    "hero":{"summary_en":"Mexico remains link-first because the reviewed official route was unreachable.","summary_ja":"メキシコはレビュー対象の公式導線へ到達できなかったため、リンク中心の状態です。"},
-    "overview":{"paragraphs_en":["The retained route is a candidate only; no timetable payload was verified."],"paragraphs_ja":["保持した導線は候補であり、時刻表payloadは確認できていません。"]},
-    "racing_types":[{"id":"horse-racing-candidate","name_en":"Candidate scope","name_ja":"候補範囲","summary_en":"Current programme details are unverified.","summary_ja":"現行番組の詳細は未確認です。"}],
-    "seasonality":{"pattern":"unresolved","summary_en":"No pattern is assigned.","summary_ja":"パターンは指定しません。"},
-    "schedule":{"timezone":"America/Mexico_City","utc_offset_label":"Verify current civil-time offset","day_patterns":["not-yet-verified"],"time_patterns":["not-yet-verified"],"summary_en":"No dates or times are published.","summary_ja":"日付や時刻は公開しません。"},
-    "surfaces":{"ids":[],"summary_en":"Unresolved.","summary_ja":"未解決です。"},
-    "systems":[{"id":"mexico-candidate-route","name_en":"Mexico candidate route","name_ja":"メキシコ候補導線","summary_en":"A future reachability test is required.","summary_ja":"今後の到達性テストが必要です。","organiser_source_ids":[],"distributor_source_ids":["mexico-hipodromo-las-americas-candidate"]}],
-    "principal_racecourse_ids":[],
-    "calendar_guidance_en":"Treat the route as unresolved.",
-    "calendar_guidance_ja":"導線は未解決として扱います。",
-    "coverage_note_en":"No timetable data is published.",
-    "coverage_note_ja":"時刻表データは公開しません。",
-    "revalidation":{"triggers_en":["The candidate becomes reachable"],"triggers_ja":["候補へ到達できたとき"]},
-    "related_glossary_ids":["racecourse","meeting","fixture"]
+    "schema_version": "2.0.0",
+    "country_id": "mexico",
+    "slug": "mexico",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "pending",
+    "source_test_status": "pending",
+    "hero": {
+      "summary_en": "Mexico remains link-first because the reviewed official route was unreachable.",
+      "summary_ja": "メキシコはレビュー対象の公式導線へ到達できなかったため、リンク中心の状態です。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The retained route is a candidate only; no timetable payload was verified."
+      ],
+      "paragraphs_ja": [
+        "保持した導線は候補であり、時刻表payloadは確認できていません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "horse-racing-candidate",
+        "name_en": "Candidate scope",
+        "name_ja": "候補範囲",
+        "summary_en": "Current programme details are unverified.",
+        "summary_ja": "現行番組の詳細は未確認です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "unresolved",
+      "summary_en": "No pattern is assigned.",
+      "summary_ja": "パターンは指定しません。"
+    },
+    "schedule": {
+      "timezone": "America/Mexico_City",
+      "utc_offset_label": "Verify current civil-time offset",
+      "day_patterns": [
+        "not-yet-verified"
+      ],
+      "time_patterns": [
+        "not-yet-verified"
+      ],
+      "summary_en": "No dates or times are published.",
+      "summary_ja": "日付や時刻は公開しません。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Unresolved.",
+      "summary_ja": "未解決です。"
+    },
+    "systems": [
+      {
+        "id": "mexico-candidate-route",
+        "name_en": "Mexico candidate route",
+        "name_ja": "メキシコ候補導線",
+        "summary_en": "A future reachability test is required.",
+        "summary_ja": "今後の到達性テストが必要です。",
+        "organiser_source_ids": [],
+        "distributor_source_ids": [
+          "mexico-hipodromo-las-americas-candidate"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Treat the route as unresolved.",
+    "calendar_guidance_ja": "導線は未解決として扱います。",
+    "coverage_note_en": "No timetable data is published.",
+    "coverage_note_ja": "時刻表データは公開しません。",
+    "revalidation": {
+      "triggers_en": [
+        "The candidate becomes reachable"
+      ],
+      "triggers_ja": [
+        "候補へ到達できたとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture"
+    ]
   }
 ]
