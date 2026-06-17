@@ -217,10 +217,26 @@ const expectedFirstBatch = [
   ['12', 'zimbabwe']
 ];
 
+const productionProfilesPath = path.join(root, 'data/static/country-profiles-v2.json');
+const productionProfiles = JSON.parse(fs.readFileSync(productionProfilesPath, 'utf8'));
+const productionProfileIds = new Set(productionProfiles.map((profile) => profile.country_id));
+
 for (const [deliveryNo, slug] of expectedFirstBatch) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row || row.slug !== slug) fail(`delivery ${deliveryNo} must be ${slug}`);
-  if (row?.programme_status !== 'note_reviewed') fail(`delivery ${deliveryNo} must remain note_reviewed until page implementation`);
+  const hasProductionProfile = productionProfileIds.has(slug);
+  const expectedProgrammeStatus = hasProductionProfile ? 'profile_ready' : 'note_reviewed';
+  if (row?.programme_status !== expectedProgrammeStatus) {
+    fail(`delivery ${deliveryNo} must be ${expectedProgrammeStatus}; found ${row?.programme_status}`);
+  }
+  if (hasProductionProfile) {
+    if (row.profile_status !== 'reviewed') fail(`delivery ${deliveryNo} profile must be reviewed`);
+    if (row.en_route_status !== 'complete' || row.ja_route_status !== 'complete') {
+      fail(`delivery ${deliveryNo} reviewed profile requires complete EN and JA routes`);
+    }
+  } else if (row.profile_status !== 'not_started') {
+    fail(`delivery ${deliveryNo} without a production profile must remain not_started`);
+  }
 }
 
 for (const slug of ['japan', 'hong-kong']) {
@@ -235,10 +251,15 @@ const statusCounts = rows.reduce((counts, row) => {
   return counts;
 }, {});
 
-if ((statusCounts.published ?? 0) !== 0) fail('initial tracker must not claim any formally published country pages');
-if ((statusCounts.note_reviewed ?? 0) !== 12) fail('initial tracker must contain 12 note_reviewed rows');
-if ((statusCounts.profile_ready ?? 0) !== 2) fail('initial tracker must contain two profile_ready legacy seeds');
-if ((statusCounts.not_started ?? 0) !== 84) fail('initial tracker must contain 84 not_started rows');
+const firstBatchProfileCount = expectedFirstBatch.filter(([, slug]) => productionProfileIds.has(slug)).length;
+if ((statusCounts.published ?? 0) !== 0) fail('tracker must not claim formally published country pages before QA');
+if ((statusCounts.note_reviewed ?? 0) !== 12 - firstBatchProfileCount) {
+  fail(`tracker must contain ${12 - firstBatchProfileCount} note_reviewed rows`);
+}
+if ((statusCounts.profile_ready ?? 0) !== 2 + firstBatchProfileCount) {
+  fail(`tracker must contain ${2 + firstBatchProfileCount} profile_ready rows`);
+}
+if ((statusCounts.not_started ?? 0) !== 84) fail('tracker must contain 84 not_started rows');
 
 const requiredContractPhrases = [
   'All 98 countries and regions',
@@ -260,7 +281,7 @@ if (!process.exitCode) {
   console.log('COUNTRY_PAGE_PROGRAMME_VALID');
   console.log(`TRACKER_ROWS_VALID: ${rows.length}`);
   console.log('GROUP_COUNTS_VALID: 27 + 29 + 16 + 13 + 6 + 4 + 3 = 98');
-  console.log('FIRST_BATCH_VALID: 12 reviewed notes');
+  console.log(`FIRST_BATCH_VALID: ${firstBatchProfileCount} profiles ready, ${12 - firstBatchProfileCount} reviewed notes`);
   console.log('LEGACY_SEEDS_VALID: Japan and Hong Kong profile_ready');
   console.log('FORMALLY_PUBLISHED_COUNT: 0');
 }
