@@ -5,10 +5,15 @@ const root = process.cwd();
 const inventoryPath = path.join(root, 'data/static/country-page-id-inventory-01-12.json');
 const trackerPath = path.join(root, 'docs/country-pages/98-country-tracker.tsv');
 const countriesPath = path.join(root, 'data/static/countries.json');
-const sourcesPath = path.join(root, 'data/static/sources.json');
+const profilesPath = path.join(root, 'data/static/country-profiles-v2.json');
+const sourcePaths = [
+  path.join(root, 'data/static/sources.json'),
+  path.join(root, 'data/static/country-page-sources-01-04.json')
+];
 const racecoursePaths = [
   path.join(root, 'data/static/racecourses.json'),
-  path.join(root, 'data/static/racecourses-extensions.json')
+  path.join(root, 'data/static/racecourses-extensions.json'),
+  path.join(root, 'data/static/country-page-racecourses-01-04.json')
 ];
 
 const errors = [];
@@ -69,8 +74,10 @@ const indexSplitRegistry = (records, label) => {
 const inventory = readJson(inventoryPath);
 const tracker = parseTracker();
 const countries = readJson(countriesPath);
-const sources = readJson(sourcesPath);
-const racecourses = racecoursePaths.flatMap(readJson);
+const profiles = readJson(profilesPath);
+const profileIds = new Set(profiles.map((profile) => profile.country_id));
+const sources = sourcePaths.filter(fs.existsSync).flatMap(readJson);
+const racecourses = racecoursePaths.filter(fs.existsSync).flatMap(readJson);
 
 if (inventory.schema_version !== '1.0.0') fail('inventory schema_version must be 1.0.0');
 if (JSON.stringify(inventory.delivery_range) !== JSON.stringify(['01', '12'])) {
@@ -109,8 +116,18 @@ for (const entry of inventoryCountries) {
     if (trackerRow.slug !== entry.slug) fail(`tracker slug mismatch for delivery ${entry.delivery_no}`);
     if (trackerRow.page_kind !== 'country') fail(`delivery ${entry.delivery_no} must remain page_kind country`);
     if (trackerRow.note_ref !== entry.note_ref) fail(`tracker note_ref mismatch for ${entry.slug}`);
-    if (trackerRow.programme_status !== 'note_reviewed') fail(`${entry.slug} must remain note_reviewed in PR 288`);
-    if (trackerRow.profile_status !== 'not_started') fail(`${entry.slug} profile status must not advance in PR 288`);
+    const hasProfile = profileIds.has(entry.country_id);
+    const expectedProgrammeStatus = hasProfile ? 'profile_ready' : 'note_reviewed';
+    const expectedProfileStatus = hasProfile ? 'reviewed' : 'not_started';
+    if (trackerRow.programme_status !== expectedProgrammeStatus) {
+      fail(`${entry.slug} programme status must be ${expectedProgrammeStatus}`);
+    }
+    if (trackerRow.profile_status !== expectedProfileStatus) {
+      fail(`${entry.slug} profile status must be ${expectedProfileStatus}`);
+    }
+    if (hasProfile && (trackerRow.en_route_status !== 'complete' || trackerRow.ja_route_status !== 'complete')) {
+      fail(`${entry.slug} production profile requires complete EN and JA routes`);
+    }
   }
 
   for (const key of ['organiser_source_ids', 'distributor_source_ids', 'racecourse_ids', 'principal_racecourse_ids']) {

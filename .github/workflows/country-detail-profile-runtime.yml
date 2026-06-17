@@ -5,6 +5,8 @@ on:
     paths:
       - 'data/static/country-profiles.json'
       - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/country-page-racecourses-*.json'
       - 'src/lib/country-profile-runtime.ts'
       - 'src/lib/data.ts'
       - 'src/components/CountryDetailPage.astro'
@@ -20,6 +22,8 @@ on:
     paths:
       - 'data/static/country-profiles.json'
       - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/country-page-racecourses-*.json'
       - 'src/lib/country-profile-runtime.ts'
       - 'src/lib/data.ts'
       - 'src/components/CountryDetailPage.astro'
