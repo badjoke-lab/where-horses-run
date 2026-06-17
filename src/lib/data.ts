@@ -3,8 +3,10 @@ import legacyCountryProfiles from '../../data/static/country-profiles.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
+import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
 import racecourseProfileOverrides from '../../data/static/racecourse-profile-overrides.json';
 import sources from '../../data/static/sources.json';
+import countryPageSources0104 from '../../data/static/country-page-sources-01-04.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -24,16 +26,17 @@ import {
 export type Locale = 'en' | 'ja';
 
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
-const allRacecourses = [...racecourses, ...racecourseExtensions].map((racecourse) => ({
+const allRacecourses = [...racecourses, ...racecourseExtensions, ...countryPageRacecourses0104].map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
+const allSources = [...sources, ...countryPageSources0104] as const;
 const countryProfiles = buildCountryDetailProfiles(countryProfilesV2, legacyCountryProfiles);
 
 export type Country = (typeof countries)[number];
 export type CountryProfile = CountryDetailProfile;
 export type Racecourse = (typeof allRacecourses)[number];
-export type Source = (typeof sources)[number];
+export type Source = (typeof allSources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
 export type ArchiveEntry = (typeof archive)[number];
 
@@ -48,7 +51,7 @@ export const siteData = {
   countries,
   countryProfiles,
   racecourses: allRacecourses,
-  sources,
+  sources: allSources,
   glossary,
   archive,
   countryRacingInventory,
@@ -97,7 +100,7 @@ export function getRacecourseBySlug(slug: string): Racecourse | undefined {
 }
 
 export function getSourcesByCountryId(countryId: string): Source[] {
-  return sources.filter((source) => source.country_id === countryId);
+  return allSources.filter((source) => source.country_id === countryId);
 }
 
 export function getGlossaryEntries(): GlossaryEntry[] {
