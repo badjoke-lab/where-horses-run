@@ -1,0 +1,33 @@
+name: PR 290 synchronization
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/pr-290-sync.mjs'
+      - '.github/workflows/pr-290-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.event.pull_request.head.ref == 'country-profiles-05-08'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-profiles-05-08
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/pr-290-sync.mjs
+      - name: Commit synchronized files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/check-country-page-programme.mjs docs/country-pages/98-country-tracker.tsv data/static/country-page-id-inventory-01-12.json
+          git commit -m 'Synchronize programme state for profiles 05-08'
+          git push origin HEAD:country-profiles-05-08
