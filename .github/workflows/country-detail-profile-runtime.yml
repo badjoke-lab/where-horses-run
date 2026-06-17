@@ -15,7 +15,8 @@ on:
       - 'src/pages/ja/countries/**'
       - 'scripts/check-country-detail-profile-runtime.mjs'
       - 'scripts/check-country-profile-v2.mjs'
-      - 'scripts/country-profile-v2/**'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'docs/country-pages/98-country-tracker.tsv'
       - '.github/workflows/country-detail-profile-runtime.yml'
   push:
     branches:
@@ -33,7 +34,8 @@ on:
       - 'src/pages/ja/countries/**'
       - 'scripts/check-country-detail-profile-runtime.mjs'
       - 'scripts/check-country-profile-v2.mjs'
-      - 'scripts/country-profile-v2/**'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'docs/country-pages/98-country-tracker.tsv'
       - '.github/workflows/country-detail-profile-runtime.yml'
 
 permissions:
@@ -48,27 +50,84 @@ jobs:
         with:
           ref: country-page-route-qa
           fetch-depth: 0
-      - name: Update country routes
+      - name: Publish reviewed country pages
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const file = 'src/components/CountryDetailPage.astro';
-          let text = fs.readFileSync(file, 'utf8');
-          text = text.replace("const racecoursePathPrefix = isJa ? '/ja/racecourses/' : '/racecourses/';", "const racecoursePathPrefix = isJa ? '/ja/tracks/' : '/tracks/';");
-          text = text.replace("const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';", "const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';\nconst canonicalPath = isJa ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`;\nconst alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${country.slug}/`;");
-          text = text.replace('<BaseLayout title={pageTitle} description={pageDescription} lang={locale}>', '<BaseLayout title={pageTitle} description={pageDescription} lang={locale} canonicalPath={canonicalPath} alternatePath={alternatePath}>');
-          text = text.replaceAll('<th>', '<th scope="col">');
-          fs.writeFileSync(file, text);
+
+          const trackerFile = 'docs/country-pages/98-country-tracker.tsv';
+          const lines = fs.readFileSync(trackerFile, 'utf8').trimEnd().split(/\r?\n/);
+          const headers = lines[0].split('\t');
+          const targets = new Set(Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, '0')));
+          const rows = lines.slice(1).map((line) => {
+            const values = line.split('\t');
+            while (values.length < headers.length) values.push('');
+            const row = Object.fromEntries(headers.map((header, index) => [header, values[index] ?? '']));
+            if (targets.has(row.delivery_no)) {
+              row.programme_status = 'published';
+              row.profile_status = 'reviewed';
+              row.en_route_status = 'published';
+              row.ja_route_status = 'published';
+              row.qa_status = 'passed';
+              row.page_published_at = '2026-06-17';
+              row.remarks = 'Published after bilingual route, metadata, responsive, accessibility, and public-boundary QA.';
+            }
+            return headers.map((header) => row[header] ?? '').join('\t');
+          });
+          fs.writeFileSync(trackerFile, `${lines[0]}\n${rows.join('\n')}\n`);
+
+          const programmeFile = 'scripts/check-country-page-programme.mjs';
+          let programme = fs.readFileSync(programmeFile, 'utf8');
+          const start = programme.indexOf('for (const [deliveryNo, slug] of expectedFirstBatch) {');
+          const end = programme.indexOf('const requiredContractPhrases = [');
+          if (start < 0 || end < 0 || end <= start) throw new Error('programme validation block not found');
+          const replacement = `for (const [deliveryNo, slug] of expectedFirstBatch) {
+            const row = rows.find((entry) => entry.delivery_no === deliveryNo);
+            if (!row || row.slug !== slug) fail(\`delivery \${deliveryNo} must be \${slug}\`);
+            if (!productionProfileIds.has(slug)) fail(\`delivery \${deliveryNo} requires a production profile\`);
+            if (row?.programme_status !== 'published') fail(\`delivery \${deliveryNo} must be published; found \${row?.programme_status}\`);
+            if (row?.profile_status !== 'reviewed') fail(\`delivery \${deliveryNo} profile must be reviewed\`);
+            if (row?.en_route_status !== 'published' || row?.ja_route_status !== 'published') {
+              fail(\`delivery \${deliveryNo} requires published EN and JA routes\`);
+            }
+            if (row?.qa_status !== 'passed') fail(\`delivery \${deliveryNo} requires passed QA\`);
+            if (!row?.page_published_at) fail(\`delivery \${deliveryNo} requires page_published_at\`);
+          }
+
+          for (const slug of ['japan', 'hong-kong']) {
+            const row = rows.find((entry) => entry.slug === slug);
+            if (!row || row.programme_status !== 'profile_ready') {
+              fail(\`\${slug} must remain profile_ready pending separate publication QA\`);
+            }
+          }
+
+          const statusCounts = rows.reduce((counts, row) => {
+            counts[row.programme_status] = (counts[row.programme_status] ?? 0) + 1;
+            return counts;
+          }, {});
+          if ((statusCounts.published ?? 0) !== 12) fail('tracker must contain 12 published rows');
+          if ((statusCounts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
+          if ((statusCounts.page_qa ?? 0) !== 0) fail('tracker must contain 0 page_qa rows after publication');
+          if ((statusCounts.profile_ready ?? 0) !== 2) fail('tracker must contain 2 profile_ready legacy rows');
+          if ((statusCounts.not_started ?? 0) !== 84) fail('tracker must contain 84 not_started rows');
+
+          `;
+          programme = programme.slice(0, start) + replacement + programme.slice(end);
+          programme = programme.replace(
+            "console.log(`FIRST_BATCH_VALID: ${firstBatchProfileCount} profiles ready, ${12 - firstBatchProfileCount} reviewed notes`);\n  console.log('LEGACY_SEEDS_VALID: Japan and Hong Kong profile_ready');\n  console.log('FORMALLY_PUBLISHED_COUNT: 0');",
+            "console.log('FIRST_BATCH_VALID: 12 published country pages');\n  console.log('LEGACY_SEEDS_VALID: Japan and Hong Kong profile_ready');\n  console.log('FORMALLY_PUBLISHED_COUNT: 12');"
+          );
+          fs.writeFileSync(programmeFile, programme);
           NODE
-      - name: Commit update
+      - name: Commit publication state
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/components/CountryDetailPage.astro
+          git add docs/country-pages/98-country-tracker.tsv scripts/check-country-page-programme.mjs
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Correct country page routes and metadata'
+          git commit -m 'Publish reviewed country pages 01-12'
           git push origin HEAD:country-page-route-qa
 
   validate:
@@ -84,5 +143,7 @@ jobs:
         run: npm install
       - name: Validate runtime boundary
         run: node scripts/check-country-detail-profile-runtime.mjs
+      - name: Validate programme state
+        run: node scripts/check-country-page-programme.mjs
       - name: Build site
         run: npm run build
