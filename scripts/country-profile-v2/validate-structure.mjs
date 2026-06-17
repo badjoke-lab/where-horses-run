@@ -66,12 +66,16 @@ export const validateStructure = (profile, today = new Date().toISOString().slic
   if (ACTIVE_PAGE_KINDS.has(profile.page_kind)) {
     if (!profile.racing_types?.length) errors.push('active page requires racing_types');
     if (!profile.systems?.length) errors.push('active page requires systems');
-    if (!profile.principal_racecourse_ids?.length) errors.push('active page requires principal_racecourse_ids');
   }
 
   (profile.systems ?? []).forEach((system, index) => {
-    idList(system.organiser_source_ids, `systems[${index}].organiser_source_ids`, errors, false);
+    idList(system.organiser_source_ids, `systems[${index}].organiser_source_ids`, errors);
     idList(system.distributor_source_ids, `systems[${index}].distributor_source_ids`, errors);
+    const organiserCount = system.organiser_source_ids?.length ?? 0;
+    const distributorCount = system.distributor_source_ids?.length ?? 0;
+    if (organiserCount + distributorCount === 0) {
+      errors.push(`systems[${index}] requires at least one organiser or distributor source id`);
+    }
     const organisers = new Set(system.organiser_source_ids ?? []);
     (system.distributor_source_ids ?? []).forEach((id) => {
       if (organisers.has(id)) errors.push(`systems[${index}] source id has both organiser and distributor roles: ${id}`);
