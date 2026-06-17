@@ -43,6 +43,29 @@ const indexUnique = (records, label) => {
   return map;
 };
 
+const indexSplitRegistry = (records, label) => {
+  const map = new Map();
+  for (const record of records) {
+    if (!record || typeof record !== 'object' || Array.isArray(record)) {
+      fail(`${label} contains a non-object record`);
+      continue;
+    }
+    if (!idPattern.test(record.id ?? '')) {
+      fail(`${label} contains invalid id: ${record.id}`);
+      continue;
+    }
+    const existing = map.get(record.id);
+    if (existing) {
+      if (existing.country_id !== record.country_id) {
+        fail(`${label} contains conflicting country references for id: ${record.id}`);
+      }
+      continue;
+    }
+    map.set(record.id, record);
+  }
+  return map;
+};
+
 const inventory = readJson(inventoryPath);
 const tracker = parseTracker();
 const countries = readJson(countriesPath);
@@ -144,7 +167,7 @@ for (const source of inventorySources) {
 }
 
 const racecourseDefinitions = indexUnique(inventoryRacecourses, 'inventory racecourses');
-const racecourseRegistry = indexUnique(racecourses, 'racecourse registries');
+const racecourseRegistry = indexSplitRegistry(racecourses, 'racecourse registries');
 for (const racecourse of inventoryRacecourses) {
   if (!inventoryCountryById.has(racecourse.country_id)) fail(`racecourse has unknown country_id: ${racecourse.id}`);
   if (!['confirmed', 'observed', 'candidate'].includes(racecourse.evidence_status)) fail(`invalid racecourse evidence_status: ${racecourse.id}`);
