@@ -1,12 +1,18 @@
 import countries from '../../data/static/countries.json';
+import countryPageCountries0508 from '../../data/static/country-page-countries-05-08.json';
 import legacyCountryProfiles from '../../data/static/country-profiles.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
+import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
+import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
+import countryProfilesV207Mexico from '../../data/static/country-profiles-v2-07-mexico.json';
+import countryProfilesV208Brazil from '../../data/static/country-profiles-v2-08-brazil.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
 import racecourseProfileOverrides from '../../data/static/racecourse-profile-overrides.json';
 import sources from '../../data/static/sources.json';
 import countryPageSources0104 from '../../data/static/country-page-sources-01-04.json';
+import countryPageSources0508 from '../../data/static/country-page-sources-05-08.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -25,15 +31,23 @@ import {
 
 export type Locale = 'en' | 'ja';
 
+const allCountries = [...countries, ...countryPageCountries0508] as const;
+const allProfilesV2 = [
+  ...countryProfilesV2,
+  ...countryProfilesV205Chile,
+  ...countryProfilesV206Peru,
+  ...countryProfilesV207Mexico,
+  ...countryProfilesV208Brazil
+] as const;
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
 const allRacecourses = [...racecourses, ...racecourseExtensions, ...countryPageRacecourses0104].map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
-const allSources = [...sources, ...countryPageSources0104] as const;
-const countryProfiles = buildCountryDetailProfiles(countryProfilesV2, legacyCountryProfiles);
+const allSources = [...sources, ...countryPageSources0104, ...countryPageSources0508] as const;
+const countryProfiles = buildCountryDetailProfiles(allProfilesV2, legacyCountryProfiles);
 
-export type Country = (typeof countries)[number];
+export type Country = (typeof allCountries)[number];
 export type CountryProfile = CountryDetailProfile;
 export type Racecourse = (typeof allRacecourses)[number];
 export type Source = (typeof allSources)[number];
@@ -48,7 +62,7 @@ const mergedTimetables = {
 } as const;
 
 export const siteData = {
-  countries,
+  countries: allCountries,
   countryProfiles,
   racecourses: allRacecourses,
   sources: allSources,
@@ -68,7 +82,7 @@ export const siteData = {
 } as const;
 
 export function getCountries(): Country[] {
-  return [...countries].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  return [...allCountries].sort((a, b) => a.name_en.localeCompare(b.name_en));
 }
 
 export function getActiveCountries(): Country[] {
@@ -76,7 +90,7 @@ export function getActiveCountries(): Country[] {
 }
 
 export function getCountryBySlug(slug: string): Country | undefined {
-  return countries.find((country) => country.slug === slug);
+  return allCountries.find((country) => country.slug === slug);
 }
 
 export function getCountryProfileByCountryId(countryId: string): CountryProfile | undefined {
