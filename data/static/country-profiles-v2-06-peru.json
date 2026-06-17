@@ -1,0 +1,26 @@
+[
+  {
+    "schema_version":"2.0.0",
+    "country_id":"peru",
+    "slug":"peru",
+    "status":"reviewed",
+    "page_kind":"country",
+    "last_reviewed":"2026-06-18",
+    "public_display_ceiling":"A",
+    "source_test_status":"complete",
+    "hero":{"summary_en":"Peru coverage currently centres on verified official programme routes for Hipódromo de Monterrico.","summary_ja":"ペルーの現行カバーは、モンテリコ競馬場の確認済み公式番組導線を中心とします。"},
+    "overview":{"paragraphs_en":["Three official June 2026 programme samples confirmed meeting dates and race-time data for Monterrico, while national completeness and operator identity remain unresolved."],"paragraphs_ja":["2026年6月の公式番組3件でモンテリコの開催日と発走時刻を確認しましたが、全国的な網羅性と運営主体は未確定です。"]},
+    "racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"The reviewed programme confirms racing at Monterrico without defining a national code inventory.","summary_ja":"レビュー済み番組でモンテリコの競馬を確認していますが、全国の競走区分一覧は未確定です。"}],
+    "seasonality":{"pattern":"sample-window-only","summary_en":"The three-meeting sample does not establish an annual pattern.","summary_ja":"3開催のサンプルだけでは年間パターンを確定できません。"},
+    "schedule":{"timezone":"America/Lima","utc_offset_label":"UTC-5","day_patterns":["official-calendar-required"],"time_patterns":["published-by-official-source"],"summary_en":"Use the current Monterrico programme route for dates and times.","summary_ja":"日付と時刻はモンテリコの現行公式番組で確認してください。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
+    "systems":[{"id":"peru-monterrico-programme-system","name_en":"Monterrico programme system","name_ja":"モンテリコ番組体系","summary_en":"The official website and programme route distribute the reviewed data.","summary_ja":"公式サイトと番組導線がレビュー済みデータを配信します。","organiser_source_ids":[],"distributor_source_ids":["peru-monterrico-home","peru-monterrico-programmes"]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Use the official upcoming-programmes route and do not infer that Monterrico is Peru's only active venue.",
+    "calendar_guidance_ja":"公式番組導線を使い、モンテリコがペルー唯一の現行会場とは断定しないでください。",
+    "coverage_note_en":"Public output is capped at A and excludes raw API and complete racecard content.",
+    "coverage_note_ja":"公開表示はAまでとし、raw APIや完全なracecardは掲載しません。",
+    "revalidation":{"triggers_en":["The programme route changes","Additional official venues are confirmed"],"triggers_ja":["番組導線が変更されたとき","追加の公式会場を確認できたとき"]},
+    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+  }
+]
