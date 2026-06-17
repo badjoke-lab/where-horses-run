@@ -1,5 +1,6 @@
 import countries from '../../data/static/countries.json';
-import countryProfiles from '../../data/static/country-profiles.json';
+import legacyCountryProfiles from '../../data/static/country-profiles.json';
+import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import racecourseProfileOverrides from '../../data/static/racecourse-profile-overrides.json';
@@ -15,6 +16,10 @@ import fetchStatus from '../../data/generated/fetch-status.json';
 import liveFetchProbeStatus from '../../data/generated/live-fetch-probe-status.json';
 import timetables from '../../data/generated/timetables.json';
 import japanActiveTimetableRecords from '../../data/generated/japan-active-timetable-records.json';
+import {
+  buildCountryDetailProfiles,
+  type CountryDetailProfile
+} from './country-profile-runtime';
 
 export type Locale = 'en' | 'ja';
 
@@ -23,9 +28,10 @@ const allRacecourses = [...racecourses, ...racecourseExtensions].map((racecourse
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
+const countryProfiles = buildCountryDetailProfiles(countryProfilesV2, legacyCountryProfiles);
 
 export type Country = (typeof countries)[number];
-export type CountryProfile = (typeof countryProfiles)[number];
+export type CountryProfile = CountryDetailProfile;
 export type Racecourse = (typeof allRacecourses)[number];
 export type Source = (typeof sources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
