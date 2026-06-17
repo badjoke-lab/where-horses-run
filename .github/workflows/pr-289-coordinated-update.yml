@@ -1,0 +1,44 @@
+name: PR 289 coordinated update
+
+on:
+  push:
+    branches:
+      - country-profiles-01-04
+    paths:
+      - '.github/workflows/pr-289-coordinated-update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: country-profiles-01-04
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Apply coordinated updates
+        run: node scripts/pr-289-apply.mjs
+
+      - name: Commit updated programme files
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/country-pages/98-country-tracker.tsv \
+            data/static/country-page-id-inventory-01-12.json \
+            scripts/check-country-page-programme.mjs \
+            scripts/check-country-page-id-inventory-01-12.mjs \
+            .github/workflows/country-page-id-inventory-01-12.yml \
+            .github/workflows/country-detail-profile-runtime.yml
+          git diff --cached --check
+          git commit -m 'Synchronize tracker and validators for profiles 01-04'
+          git push origin HEAD:country-profiles-01-04
