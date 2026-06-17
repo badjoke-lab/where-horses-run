@@ -60,12 +60,12 @@ const rows = lines.slice(1).map((line, index) => {
 const expectedTracker = {
   '13': ['profile_ready', 'remote_partial'],
   '14': ['profile_ready', 'remote_complete'],
-  '15': ['source_tested', 'remote_partial'],
-  '16': ['source_tested', 'remote_partial'],
-  '17': ['source_tested', 'remote_complete'],
-  '18': ['source_tested', 'remote_complete'],
-  '19': ['source_tested', 'remote_partial'],
-  '20': ['source_tested', 'remote_partial']
+  '15': ['note_reviewed', 'remote_partial'],
+  '16': ['note_reviewed', 'remote_partial'],
+  '17': ['note_reviewed', 'remote_complete'],
+  '18': ['note_reviewed', 'remote_complete'],
+  '19': ['note_reviewed', 'remote_partial'],
+  '20': ['note_reviewed', 'remote_partial']
 };
 for (const [deliveryNo, [programmeStatus, acquisitionStatus]] of Object.entries(expectedTracker)) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
@@ -76,6 +76,7 @@ for (const [deliveryNo, [programmeStatus, acquisitionStatus]] of Object.entries(
   if (row.programme_status !== programmeStatus) fail(`delivery ${deliveryNo} programme_status must be ${programmeStatus}`);
   if (row.acquisition_status !== acquisitionStatus) fail(`delivery ${deliveryNo} acquisition_status must be ${acquisitionStatus}`);
   if (row.source_last_checked !== '2026-06-17') fail(`delivery ${deliveryNo} source_last_checked must be 2026-06-17`);
+  if (row.note_status !== 'reviewed') fail(`delivery ${deliveryNo} note_status must be reviewed`);
 }
 
 const prohibited = /(?:raw_html|full_racecard|horse_names|jockeys|trainers|odds|results|payouts|predictions|direct_stream_url)/i;
@@ -91,5 +92,5 @@ if (errors.length) {
 
 console.log('COUNTRY_SOURCE_TESTS_13_20_VALID');
 console.log('SUMMARY_FILES: 8');
-console.log('TRACKER: Japan/Hong Kong profile_ready; entries 15-20 source_tested');
-console.log('PUBLIC_BOUNDARY: no participant, betting, result, or direct-stream fields');
+console.log('TRACKER: Japan/Hong Kong profile_ready; entries 15-20 note_reviewed');
+console.log('PUBLIC_BOUNDARY: no prohibited public fields');

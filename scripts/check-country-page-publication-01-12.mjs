@@ -54,11 +54,11 @@ for (const [deliveryNo, slug] of expected) {
 
 const publishedCount = rows.filter((row) => row.programme_status === 'published').length;
 const profileReadyCount = rows.filter((row) => row.programme_status === 'profile_ready').length;
-const sourceTestedCount = rows.filter((row) => row.programme_status === 'source_tested').length;
+const noteReviewedCount = rows.filter((row) => row.programme_status === 'note_reviewed').length;
 const notStartedCount = rows.filter((row) => row.programme_status === 'not_started').length;
 if (publishedCount !== 12) fail(`expected 12 published rows; found ${publishedCount}`);
 if (profileReadyCount !== 2) fail(`expected 2 profile_ready legacy rows; found ${profileReadyCount}`);
-if (sourceTestedCount !== 6) fail(`expected 6 source_tested rows; found ${sourceTestedCount}`);
+if (noteReviewedCount !== 6) fail(`expected 6 note_reviewed rows; found ${noteReviewedCount}`);
 if (notStartedCount !== 78) fail(`expected 78 not_started rows; found ${notStartedCount}`);
 
 const staticDirectory = path.join(root, 'data/static');
@@ -121,7 +121,7 @@ if (!process.exitCode) {
   console.log('COUNTRY_PAGE_PUBLICATION_01_12_VALID');
   console.log('PUBLICATION_QA_SCOPE: entries 01-12');
   console.log('PUBLISHED_ROUTES: 12 EN + 12 JA');
-  console.log('TRACKER_COUNTS: published=12 profile_ready=2 source_tested=6 not_started=78');
+  console.log('TRACKER_COUNTS: published=12 profile_ready=2 note_reviewed=6 not_started=78');
   console.log('METADATA: canonical + hreflang + page-specific language switch');
   console.log('RESPONSIVE_AND_ACCESSIBILITY: validated');
 }
