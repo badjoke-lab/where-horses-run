@@ -1,0 +1,17 @@
+[
+  {
+    "schema_version":"2.0.0","country_id":"hong-kong","slug":"hong-kong","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-17","public_display_ceiling":"A","source_test_status":"complete",
+    "hero":{"summary_en":"Hong Kong racing is distributed through the Hong Kong Jockey Club across Sha Tin and Happy Valley.","summary_ja":"香港の競馬情報は香港ジョッキークラブを通じて沙田とハッピーバレーに配信されます。"},
+    "overview":{"paragraphs_en":["HKJC provides a complete reviewed fixture and per-race timetable path for the two venues. Additional programme fields are available, but public output remains capped at A."],"paragraphs_ja":["HKJCは2会場の開催日程とレース別時刻を確認できる公式導線を提供します。追加番組項目も取得できますが、公開表示はAまでです。"]},
+    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"HKJC provides the reviewed fixture and timetable system.","summary_ja":"HKJCがレビュー済み開催・時刻表体系を提供します。"}],
+    "seasonality":{"pattern":"official-season-fixture","summary_en":"Use the current HKJC seasonal fixture and revalidate at season rollover.","summary_ja":"HKJCの現行シーズン日程を使用し、シーズン更新時に再確認します。"},
+    "schedule":{"timezone":"Asia/Hong_Kong","utc_offset_label":"UTC+8","day_patterns":["official-fixture-required"],"time_patterns":["published-by-official-source"],"summary_en":"Meeting dates and post times are resolved from the official fixture and programme routes.","summary_ja":"開催日と発走時刻は公式日程・番組導線から確認します。"},
+    "surfaces":{"ids":["turf","dirt"],"summary_en":"Sha Tin and Happy Valley retain venue-specific surface contexts.","summary_ja":"沙田とハッピーバレーの馬場情報は会場別に扱います。"},
+    "systems":[{"id":"hong-kong-hkjc-system","name_en":"Hong Kong Jockey Club system","name_ja":"香港ジョッキークラブ体系","summary_en":"HKJC provides the official fixture, venue and programme routes.","summary_ja":"HKJCが公式日程、会場、番組導線を提供します。","organiser_source_ids":["hong-kong-hkjc-home"],"distributor_source_ids":["hong-kong-hkjc-fixture"]}],
+    "principal_racecourse_ids":["sha-tin-racecourse","happy-valley-racecourse"],
+    "calendar_guidance_en":"Confirm the meeting venue in the fixture before opening race-level timetable information.","calendar_guidance_ja":"レース別時刻を確認する前に公式日程で開催会場を確認してください。",
+    "coverage_note_en":"Technical capability is A+, but public output remains capped at race label or number plus post time.","coverage_note_ja":"技術上はA+ですが、公開はレースラベルまたは番号と発走時刻までに制限します。",
+    "revalidation":{"triggers_en":["HKJC season rollover","Fixture-route change","Venue-label change"],"triggers_ja":["HKJCシーズン更新時","日程導線変更時","会場表記変更時"]},
+    "related_glossary_ids":["racecourse","meeting","fixture","post-time"]
+  }
+]
