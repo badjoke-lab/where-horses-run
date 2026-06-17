@@ -1,0 +1,26 @@
+[
+  {
+    "schema_version":"2.0.0",
+    "country_id":"zimbabwe",
+    "slug":"zimbabwe",
+    "status":"reviewed",
+    "page_kind":"country",
+    "last_reviewed":"2026-06-17",
+    "public_display_ceiling":"C",
+    "source_test_status":"complete",
+    "hero":{"summary_en":"Zimbabwe is confirmed at calendar-level rank C through an official Borrowdale Park race card, without reliable scheduled post times.","summary_ja":"ジンバブエはBorrowdale Parkの公式レースカードにより開催日・競馬場レベルのCを確認していますが、信頼できる予定発走時刻は未確認です。"},
+    "overview":{"paragraphs_en":["The reviewed 17 June 2026 card identifies Mashonaland Turf Club, Borrowdale Park and six races. Zimracing is treated as the public distributor, not the organiser."],"paragraphs_ja":["2026年6月17日のレビュー済みカードでMashonaland Turf Club、Borrowdale Park、6競走を確認しました。Zimracingは運営主体ではなく公開配信者として扱います。"]},
+    "racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"The reviewed card confirms a meeting without reliable post times.","summary_ja":"レビュー済みカードで開催を確認していますが、信頼できる発走時刻はありません。"}],
+    "seasonality":{"pattern":"official-calendar-unresolved","summary_en":"A stable official future calendar remains unconfirmed.","summary_ja":"安定した公式の将来日程は未確認です。"},
+    "schedule":{"timezone":"Africa/Harare","utc_offset_label":"UTC+2","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"The public page may show the meeting date and Borrowdale Park only; no post times are published.","summary_ja":"公開ページでは開催日とBorrowdale Parkのみ表示でき、発走時刻は公開しません。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage is not assigned in this batch.","summary_ja":"このbatchでは馬場種別を指定しません。"},
+    "systems":[{"id":"zimbabwe-borrowdale-card-system","name_en":"Borrowdale Park card system","name_ja":"Borrowdale Parkカード体系","summary_en":"Mashonaland Turf Club owns the reviewed material and Zimracing distributes it publicly.","summary_ja":"Mashonaland Turf Clubがレビュー済み資料の主体で、Zimracingが公開配信します。","organiser_source_ids":["zimbabwe-mashonaland-turf-club"],"distributor_source_ids":["zimbabwe-zimracing-racecards"]}],
+    "principal_racecourse_ids":["borrowdale-park-racecourse"],
+    "calendar_guidance_en":"Use the official card for the meeting-date and venue pairing. Reject extracted clock values that are not scheduled post times.",
+    "calendar_guidance_ja":"開催日と会場の組合せは公式カードで確認し、予定発走時刻でない抽出時計値は採用しないでください。",
+    "coverage_note_en":"Public output is limited to rank C despite race numbers and distances appearing in the reviewed card.",
+    "coverage_note_ja":"レビュー済みカードにレース番号と距離があっても、公開表示はCに制限します。",
+    "revalidation":{"triggers_en":["A stable official calendar appears","Reliable scheduled post times are published","Additional active venues are verified"],"triggers_ja":["安定した公式日程が公開されたとき","信頼できる予定発走時刻が公開されたとき","追加の現行会場を確認できたとき"]},
+    "related_glossary_ids":["racecourse","meeting","fixture"]
+  }
+]
