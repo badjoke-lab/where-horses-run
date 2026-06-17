@@ -23,14 +23,15 @@ const {
 
 const isJapanese = lang === 'ja';
 const homeHref = isJapanese ? '/ja/' : '/';
-const alternateHref = isJapanese ? '/' : '/ja/';
+const defaultAlternateHref = isJapanese ? '/' : '/ja/';
+const languageSwitchHref = alternatePath ?? defaultAlternateHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
 const siteUrl = 'https://whr.badjoke-lab.com';
 const canonicalPathname = canonicalPath ?? Astro.url.pathname;
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
-const alternateUrl = `${siteUrl}${alternatePath ?? alternateHref}`;
-const xDefaultUrl = `${siteUrl}${isJapanese ? alternatePath ?? '/' : canonicalPathname}`;
+const alternateUrl = `${siteUrl}${languageSwitchHref}`;
+const xDefaultUrl = `${siteUrl}${isJapanese ? languageSwitchHref : canonicalPathname}`;
 const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 ---
@@ -78,7 +79,7 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
             <a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
             <a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
             <a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? 'ソース' : 'Sources'}</a>
-            <a href={alternateHref}>{alternateLabel}</a>
+            <a href={languageSwitchHref}>{alternateLabel}</a>
           </nav>
         </div>
       </header>

@@ -291,11 +291,13 @@ const pageTitle = isJa
 const pageDescription = isJa
   ? profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja
   : profile?.hero_summary_en ?? profile?.overview_en ?? country.summary_en;
-const racecoursePathPrefix = isJa ? '/ja/racecourses/' : '/racecourses/';
+const racecoursePathPrefix = isJa ? '/ja/tracks/' : '/tracks/';
 const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
+const canonicalPath = isJa ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`;
+const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${country.slug}/`;
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} lang={locale}>
+<BaseLayout title={pageTitle} description={pageDescription} lang={locale} canonicalPath={canonicalPath} alternatePath={alternatePath}>
   <div class="country-page">
     <section class="hero country-hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">{pick('Country racing guide', '国別競馬ガイド')}</p>
@@ -423,12 +425,12 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
           <div class="country-table-wrap">
             <table class="country-table">
               <thead><tr>
-                <th>{pick('Date', '日付')}</th>
-                <th>{pick('Racecourse', '競馬場')}</th>
-                <th>{pick('System', '体系')}</th>
-                <th>{pick('Start time', '開始時刻')}</th>
-                <th>{pick('Timezone', 'タイムゾーン')}</th>
-                <th>{pick('Official', '公式')}</th>
+                <th scope="col">{pick('Date', '日付')}</th>
+                <th scope="col">{pick('Racecourse', '競馬場')}</th>
+                <th scope="col">{pick('System', '体系')}</th>
+                <th scope="col">{pick('Start time', '開始時刻')}</th>
+                <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>
+                <th scope="col">{pick('Official', '公式')}</th>
               </tr></thead>
               <tbody>
                 {primaryMeetings.map((record) => (
@@ -450,12 +452,12 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
               <div class="country-table-wrap">
                 <table class="country-table">
                   <thead><tr>
-                    <th>{pick('Date', '日付')}</th>
-                    <th>{pick('Racecourse', '競馬場')}</th>
-                    <th>{pick('System', '体系')}</th>
-                    <th>{pick('Start time', '開始時刻')}</th>
-                    <th>{pick('Timezone', 'タイムゾーン')}</th>
-                    <th>{pick('Official', '公式')}</th>
+                    <th scope="col">{pick('Date', '日付')}</th>
+                    <th scope="col">{pick('Racecourse', '競馬場')}</th>
+                    <th scope="col">{pick('System', '体系')}</th>
+                    <th scope="col">{pick('Start time', '開始時刻')}</th>
+                    <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>
+                    <th scope="col">{pick('Official', '公式')}</th>
                   </tr></thead>
                   <tbody>
                     {remainingMeetings.map((record) => (
@@ -491,9 +493,9 @@ const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
         <div class="country-table-wrap">
           <table class="country-table country-table--racecourses">
             <thead><tr>
-              <th>{pick('Racecourse', '競馬場')}</th>
-              <th>{pick('Location', '所在地')}</th>
-              <th>{pick('System', '体系')}</th>
+              <th scope="col">{pick('Racecourse', '競馬場')}</th>
+              <th scope="col">{pick('Location', '所在地')}</th>
+              <th scope="col">{pick('System', '体系')}</th>
             </tr></thead>
             <tbody>
               {racecourses.map((racecourse) => (
