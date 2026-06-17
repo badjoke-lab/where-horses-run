@@ -119,16 +119,28 @@ for (const entry of inventoryCountries) {
     if (trackerRow.page_kind !== 'country') fail(`delivery ${entry.delivery_no} must remain page_kind country`);
     if (trackerRow.note_ref !== entry.note_ref) fail(`tracker note_ref mismatch for ${entry.slug}`);
     const hasProfile = profileIds.has(entry.country_id);
-    const expectedProgrammeStatus = hasProfile ? 'profile_ready' : 'note_reviewed';
-    const expectedProfileStatus = hasProfile ? 'reviewed' : 'not_started';
-    if (trackerRow.programme_status !== expectedProgrammeStatus) {
-      fail(`${entry.slug} programme status must be ${expectedProgrammeStatus}`);
-    }
-    if (trackerRow.profile_status !== expectedProfileStatus) {
-      fail(`${entry.slug} profile status must be ${expectedProfileStatus}`);
-    }
-    if (hasProfile && (trackerRow.en_route_status !== 'complete' || trackerRow.ja_route_status !== 'complete')) {
-      fail(`${entry.slug} production profile requires complete EN and JA routes`);
+    if (hasProfile) {
+      if (!['profile_ready', 'page_qa', 'published'].includes(trackerRow.programme_status)) {
+        fail(`${entry.slug} programme status must be profile_ready, page_qa, or published`);
+      }
+      if (trackerRow.profile_status !== 'reviewed') {
+        fail(`${entry.slug} profile status must be reviewed`);
+      }
+      const expectedRouteStatus = trackerRow.programme_status === 'published' ? 'published' : 'complete';
+      if (trackerRow.en_route_status !== expectedRouteStatus || trackerRow.ja_route_status !== expectedRouteStatus) {
+        fail(`${entry.slug} routes must be ${expectedRouteStatus}`);
+      }
+      if (trackerRow.programme_status === 'published') {
+        if (trackerRow.qa_status !== 'passed') fail(`${entry.slug} published page requires passed QA`);
+        if (!trackerRow.page_published_at) fail(`${entry.slug} published page requires page_published_at`);
+      }
+    } else {
+      if (trackerRow.programme_status !== 'note_reviewed') {
+        fail(`${entry.slug} programme status must be note_reviewed without a production profile`);
+      }
+      if (trackerRow.profile_status !== 'not_started') {
+        fail(`${entry.slug} profile status must remain not_started without a production profile`);
+      }
     }
   }
 
