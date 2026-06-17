@@ -1,1 +1,311 @@
-[]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "united-arab-emirates",
+    "slug": "united-arab-emirates",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "The United Arab Emirates has a centrally coordinated calendar for major Thoroughbred and Purebred Arabian meetings.",
+      "summary_ja": "アラブ首長国連邦では、主要なサラブレッド競走と純血アラブ競走の開催日程が中央機関によってまとめられています。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The Emirates Racing Authority is the national official source used for the season calendar and racecourse network.",
+        "Racing is staged at Meydan, Abu Dhabi, Al Ain, Jebel Ali and Sharjah."
+      ],
+      "paragraphs_ja": [
+        "Emirates Racing Authorityをシーズン日程と競馬場網の公式情報源として扱います。",
+        "開催地はメイダン、アブダビ、アルアイン、ジェベルアリ、シャルジャです。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "A principal part of the national programme.",
+        "summary_ja": "全国番組の主要な競走区分です。"
+      },
+      {
+        "id": "arabian-racing",
+        "name_en": "Purebred Arabian racing",
+        "name_ja": "純血アラブ競走",
+        "summary_en": "A distinct part of the official programme.",
+        "summary_ja": "公式番組の独立した競走区分です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "autumn-to-spring",
+      "summary_en": "The main season normally runs through the cooler part of the year.",
+      "summary_ja": "主要シーズンは通常、比較的涼しい時期に行われます。"
+    },
+    "schedule": {
+      "timezone": "Asia/Dubai",
+      "utc_offset_label": "UTC+4",
+      "day_patterns": ["varies-by-racecourse", "official-calendar-required"],
+      "time_patterns": ["published-by-official-source"],
+      "summary_en": "Meeting days and post times vary by venue and season.",
+      "summary_ja": "開催曜日と発走時刻は競馬場とシーズンにより変わります。"
+    },
+    "surfaces": {
+      "ids": ["turf", "dirt"],
+      "summary_en": "Turf and dirt are used depending on the venue.",
+      "summary_ja": "競馬場により芝とダートが使われます。"
+    },
+    "systems": [
+      {
+        "id": "uae-national-racing-system",
+        "name_en": "UAE national racing system",
+        "name_ja": "UAE全国競馬体系",
+        "summary_en": "ERA provides the national authority route and official calendar guidance.",
+        "summary_ja": "ERAが全国機関の導線と公式日程案内を提供します。",
+        "organiser_source_ids": ["uae-era-home"],
+        "distributor_source_ids": ["uae-emirates-racing-calendar"]
+      }
+    ],
+    "principal_racecourse_ids": ["meydan-racecourse"],
+    "calendar_guidance_en": "Open the official ERA season calendar, then confirm the selected venue.",
+    "calendar_guidance_ja": "ERA公式シーズン日程を開き、対象競馬場を確認してください。",
+    "coverage_note_en": "The page provides official links and an A-level timetable boundary. Detailed programme material remains on official sources.",
+    "coverage_note_ja": "公式リンクと公開上限Aの時刻表案内を提供し、詳細番組は公式ソースに残します。",
+    "revalidation": {
+      "triggers_en": ["A new season calendar is published", "The racecourse list changes"],
+      "triggers_ja": ["新シーズン日程が公開されたとき", "競馬場一覧が変更されたとき"]
+    },
+    "related_glossary_ids": ["racecourse", "meeting", "fixture", "post-time"]
+  },
+  {
+    "schema_version": "2.0.0",
+    "country_id": "south-korea",
+    "slug": "south-korea",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "South Korean racing is centrally administered by the Korea Racing Authority across Seoul, Busan-Gyeongnam and Jeju.",
+      "summary_ja": "韓国の競馬は韓国馬事会が中央管理し、ソウル、釜山慶南、済州で開催されています。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "KRA is the official national organiser and primary public information source.",
+        "Seoul and Busan-Gyeongnam use Thoroughbred programmes, while Jeju has a distinct native-pony context."
+      ],
+      "paragraphs_ja": [
+        "韓国馬事会は全国の公式運営主体であり、主要な公開情報源です。",
+        "ソウルと釜山慶南はサラブレッド競走、済州は在来馬競走という別の文脈を持ちます。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "The principal code at Seoul and Busan-Gyeongnam.",
+        "summary_ja": "ソウルと釜山慶南の主要競走区分です。"
+      },
+      {
+        "id": "korean-native-pony-racing",
+        "name_en": "Korean native pony racing",
+        "name_ja": "韓国在来馬競走",
+        "summary_en": "A distinct programme at Jeju.",
+        "summary_ja": "済州の独自番組です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "year-round-with-calendar-variation",
+      "summary_en": "Racing follows an annual KRA calendar with seasonal variation.",
+      "summary_ja": "年間のKRA日程に基づき、時期による変動があります。"
+    },
+    "schedule": {
+      "timezone": "Asia/Seoul",
+      "utc_offset_label": "UTC+9",
+      "day_patterns": ["friday", "saturday", "sunday"],
+      "time_patterns": ["published-by-official-source"],
+      "summary_en": "The current KRA calendar is authoritative for meeting days.",
+      "summary_ja": "開催日は現行のKRA公式日程を優先します。"
+    },
+    "surfaces": {
+      "ids": ["dirt"],
+      "summary_en": "A broad dirt-track label is used for country-level guidance.",
+      "summary_ja": "国別案内では広い意味でダート系コースとして示します。"
+    },
+    "systems": [
+      {
+        "id": "kra-national-racing-system",
+        "name_en": "Korea Racing Authority system",
+        "name_ja": "韓国馬事会競馬体系",
+        "summary_en": "KRA administers the national system and public race-day guidance.",
+        "summary_ja": "韓国馬事会が全国体系と開催案内を管理します。",
+        "organiser_source_ids": ["south-korea-kra-home"],
+        "distributor_source_ids": ["south-korea-kra-raceday"]
+      }
+    ],
+    "principal_racecourse_ids": ["seoul-racecourse"],
+    "calendar_guidance_en": "Use KRA current racing information and calendar routes.",
+    "calendar_guidance_ja": "KRAの現行競馬情報と日程導線を使用してください。",
+    "coverage_note_en": "The profile separates national organisation from public information delivery and caps timetable display at A.",
+    "coverage_note_ja": "全国運営と公開情報配信を分け、時刻表表示はAまでとします。",
+    "revalidation": {
+      "triggers_en": ["The racecourse network changes", "The meeting pattern changes"],
+      "triggers_ja": ["競馬場網が変更されたとき", "開催パターンが変更されたとき"]
+    },
+    "related_glossary_ids": ["racecourse", "meeting", "fixture", "post-time"]
+  },
+  {
+    "schema_version": "2.0.0",
+    "country_id": "turkey",
+    "slug": "turkey",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Turkey has a centralized system through the Jockey Club of Turkey, with Thoroughbred and Purebred Arabian racing at ten racecourses.",
+      "summary_ja": "トルコではトルコジョッキークラブを中心とする全国体系があり、10競馬場でサラブレッド競走と純血アラブ競走が行われます。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "TJK is the main official route for racecourses, fixtures and daily programmes.",
+        "The official guide lists ten venues; İstanbul Veliefendi is the principal navigation link here."
+      ],
+      "paragraphs_ja": [
+        "TJKは競馬場、開催日程、日別番組を確認する主要な公式導線です。",
+        "公式ガイドには10会場が掲載され、このページではイスタンブール・ヴェリエフェンディを主要導線とします。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "One of the two principal national codes.",
+        "summary_ja": "二つの主要競走区分の一つです。"
+      },
+      {
+        "id": "arabian-racing",
+        "name_en": "Purebred Arabian racing",
+        "name_ja": "純血アラブ競走",
+        "summary_en": "A separate national programme context.",
+        "summary_ja": "別の全国番組区分です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "year-round-multi-venue",
+      "summary_en": "The multi-venue calendar supports racing in different parts of the year.",
+      "summary_ja": "複数会場により年間の異なる時期に開催があります。"
+    },
+    "schedule": {
+      "timezone": "Europe/Istanbul",
+      "utc_offset_label": "UTC+3",
+      "day_patterns": ["varies-by-racecourse", "official-calendar-required"],
+      "time_patterns": ["day-and-evening-meetings", "published-by-official-source"],
+      "summary_en": "Meeting days and start times vary by venue and season.",
+      "summary_ja": "開催曜日と開始時刻は会場と季節により異なります。"
+    },
+    "surfaces": {
+      "ids": ["turf", "dirt", "synthetic"],
+      "summary_en": "Surface configurations vary by racecourse.",
+      "summary_ja": "コース構成は競馬場により異なります。"
+    },
+    "systems": [
+      {
+        "id": "tjk-national-racing-system",
+        "name_en": "Jockey Club of Turkey system",
+        "name_ja": "トルコジョッキークラブ競馬体系",
+        "summary_en": "TJK provides the organiser route, fixtures and daily programmes.",
+        "summary_ja": "TJKが運営主体の導線、日程、日別番組を提供します。",
+        "organiser_source_ids": ["turkey-tjk-home"],
+        "distributor_source_ids": ["turkey-tjk-programme"]
+      }
+    ],
+    "principal_racecourse_ids": ["istanbul-racecourse"],
+    "calendar_guidance_en": "Start with the official TJK fixture or daily programme and confirm the city and date.",
+    "calendar_guidance_ja": "TJK公式日程または日別番組を開き、都市と日付を確認してください。",
+    "coverage_note_en": "The profile records national structure and official routes with an A-level display ceiling.",
+    "coverage_note_ja": "全国体系と公式導線を整理し、公開表示はAまでとします。",
+    "revalidation": {
+      "triggers_en": ["The official racecourse list changes", "The programme route changes"],
+      "triggers_ja": ["公式競馬場一覧が変更されたとき", "番組導線が変更されたとき"]
+    },
+    "related_glossary_ids": ["racecourse", "meeting", "fixture", "post-time"]
+  },
+  {
+    "schema_version": "2.0.0",
+    "country_id": "morocco",
+    "slug": "morocco",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-06-17",
+    "public_display_ceiling": "pending",
+    "source_test_status": "pending",
+    "hero": {
+      "summary_en": "Morocco has an official structure centred on SOREC and seven listed racecourses, while a stable public timetable source remains unresolved.",
+      "summary_ja": "モロッコにはSORECを中心とする公式体系と7競馬場がありますが、安定した公開時刻表ソースは未解決です。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "SOREC is the official institution used for this page and lists seven racecourses.",
+        "The reviewed source test did not establish a reusable public programme endpoint or technical timetable rank."
+      ],
+      "paragraphs_ja": [
+        "このページではSORECを公式機関として扱い、7競馬場の一覧を参照します。",
+        "レビュー済みsource testでは、再利用可能な公開番組endpointも時刻表rankも確立できませんでした。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "horse-racing",
+        "name_en": "Horse racing",
+        "name_ja": "競馬",
+        "summary_en": "Organised racing is confirmed, while venue-level codes remain under review.",
+        "summary_ja": "組織的な競馬開催は確認済みですが、会場別の競走区分は調査中です。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-calendar-unresolved",
+      "summary_en": "A stable official meeting calendar has not yet been verified.",
+      "summary_ja": "安定した公式開催カレンダーは未確認です。"
+    },
+    "schedule": {
+      "timezone": "Africa/Casablanca",
+      "utc_offset_label": "Verify current Morocco civil-time offset",
+      "day_patterns": ["official-calendar-required"],
+      "time_patterns": ["not-yet-verified"],
+      "summary_en": "No normal meeting-day or post-time pattern is claimed.",
+      "summary_ja": "通常の開催曜日や発走時刻パターンは断定しません。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface coverage remains under review.",
+      "summary_ja": "馬場種別は引き続き調査対象です。"
+    },
+    "systems": [
+      {
+        "id": "sorec-racing-information-system",
+        "name_en": "SOREC racing information system",
+        "name_ja": "SOREC競馬情報体系",
+        "summary_en": "SOREC provides the official institution and racecourse route; stable timetable acquisition remains unverified.",
+        "summary_ja": "SORECが公式機関と競馬場の導線を提供し、安定した時刻表取得経路は未確認です。",
+        "organiser_source_ids": ["morocco-sorec-home"],
+        "distributor_source_ids": ["morocco-faras-programme"]
+      }
+    ],
+    "principal_racecourse_ids": ["casablanca-anfa-racecourse"],
+    "calendar_guidance_en": "Use the official SOREC racing page as the safe starting point.",
+    "calendar_guidance_ja": "安全な入口としてSOREC公式競馬ページを使用してください。",
+    "coverage_note_en": "This is a reviewed link-first profile with a pending timetable ceiling.",
+    "coverage_note_ja": "レビュー済みのリンク中心profileで、時刻表の公開上限はpendingです。",
+    "revalidation": {
+      "triggers_en": ["A stable official programme route becomes available", "The seven-racecourse list changes"],
+      "triggers_ja": ["安定した公式番組導線が利用可能になったとき", "7競馬場一覧が変更されたとき"]
+    },
+    "related_glossary_ids": ["racecourse", "meeting", "fixture"]
+  }
+]
