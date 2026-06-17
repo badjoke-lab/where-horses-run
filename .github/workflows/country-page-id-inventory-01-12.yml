@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/country-page-racecourses-*.json'
       - 'data/static/countries.json'
       - 'data/static/sources.json'
       - 'data/static/racecourses.json'
@@ -16,6 +19,9 @@ on:
       - main
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/country-page-racecourses-*.json'
       - 'data/static/countries.json'
       - 'data/static/sources.json'
       - 'data/static/racecourses.json'
