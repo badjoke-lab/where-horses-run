@@ -1,0 +1,47 @@
+name: Country source tests 13-20
+
+on:
+  pull_request:
+    paths:
+      - 'docs/timetable-source-tests/13-20-index.md'
+      - 'docs/timetable-source-tests/13-*/**'
+      - 'docs/timetable-source-tests/14-*/**'
+      - 'docs/timetable-source-tests/15-*/**'
+      - 'docs/timetable-source-tests/16-*/**'
+      - 'docs/timetable-source-tests/17-*/**'
+      - 'docs/timetable-source-tests/18-*/**'
+      - 'docs/timetable-source-tests/19-*/**'
+      - 'docs/timetable-source-tests/20-*/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'scripts/check-country-source-tests-13-20.mjs'
+      - '.github/workflows/country-source-tests-13-20.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/timetable-source-tests/13-20-index.md'
+      - 'docs/timetable-source-tests/13-*/**'
+      - 'docs/timetable-source-tests/14-*/**'
+      - 'docs/timetable-source-tests/15-*/**'
+      - 'docs/timetable-source-tests/16-*/**'
+      - 'docs/timetable-source-tests/17-*/**'
+      - 'docs/timetable-source-tests/18-*/**'
+      - 'docs/timetable-source-tests/19-*/**'
+      - 'docs/timetable-source-tests/20-*/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'scripts/check-country-source-tests-13-20.mjs'
+      - '.github/workflows/country-source-tests-13-20.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-source-tests-13-20.mjs
+      - run: npm install
+      - run: npm run build
