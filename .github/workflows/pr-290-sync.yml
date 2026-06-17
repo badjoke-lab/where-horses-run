@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'scripts/pr-290-sync.mjs'
+      - 'scripts/pr-290-fix-dates.mjs'
       - '.github/workflows/pr-290-sync.yml'
 
 permissions:
@@ -24,6 +25,7 @@ jobs:
         with:
           node-version: 22.12.0
       - run: node scripts/pr-290-sync.mjs
+      - run: node scripts/pr-290-fix-dates.mjs
       - name: Commit synchronized files
         run: |
           git config user.name 'github-actions[bot]'
@@ -31,10 +33,14 @@ jobs:
           git add scripts/check-country-page-programme.mjs \
             scripts/check-country-page-id-inventory-01-12.mjs \
             docs/country-pages/98-country-tracker.tsv \
-            data/static/country-page-id-inventory-01-12.json
+            data/static/country-page-id-inventory-01-12.json \
+            data/static/country-profiles-v2-05-chile.json \
+            data/static/country-profiles-v2-06-peru.json \
+            data/static/country-profiles-v2-07-mexico.json \
+            data/static/country-profiles-v2-08-brazil.json
           if git diff --cached --quiet; then
             echo 'No synchronized changes to commit.'
             exit 0
           fi
-          git commit -m 'Synchronize validators for profiles 05-08'
+          git commit -m 'Normalize profile batch 05-08 validation data'
           git push origin HEAD:country-profiles-05-08
