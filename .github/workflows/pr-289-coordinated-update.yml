@@ -1,10 +1,14 @@
 name: PR 289 coordinated update
 
 on:
-  push:
+  pull_request:
     branches:
-      - country-profiles-01-04
+      - main
     paths:
+      - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-page-sources-01-04.json'
+      - 'data/static/country-page-racecourses-01-04.json'
+      - 'scripts/pr-289-apply.mjs'
       - '.github/workflows/pr-289-coordinated-update.yml'
 
 permissions:
@@ -12,6 +16,7 @@ permissions:
 
 jobs:
   apply:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'country-profiles-01-04'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -25,8 +30,14 @@ jobs:
         with:
           node-version: 22.12.0
 
-      - name: Apply coordinated updates
-        run: node scripts/pr-289-apply.mjs
+      - name: Apply coordinated updates once
+        shell: bash
+        run: |
+          if awk -F '\t' '$1 == "01" && $8 == "profile_ready" { found = 1 } END { exit found ? 0 : 1 }' docs/country-pages/98-country-tracker.tsv; then
+            echo 'PR 289 programme files are already synchronized.'
+            exit 0
+          fi
+          node scripts/pr-289-apply.mjs
 
       - name: Commit updated programme files
         shell: bash
@@ -39,6 +50,10 @@ jobs:
             scripts/check-country-page-id-inventory-01-12.mjs \
             .github/workflows/country-page-id-inventory-01-12.yml \
             .github/workflows/country-detail-profile-runtime.yml
+          if git diff --cached --quiet; then
+            echo 'No synchronized changes to commit.'
+            exit 0
+          fi
           git diff --cached --check
           git commit -m 'Synchronize tracker and validators for profiles 01-04'
           git push origin HEAD:country-profiles-01-04
