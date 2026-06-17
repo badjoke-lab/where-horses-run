@@ -33,7 +33,7 @@ jobs:
       - name: Apply coordinated updates once
         shell: bash
         run: |
-          if awk -F '\t' '$1 == "01" && $8 == "profile_ready" { found = 1 } END { exit found ? 0 : 1 }' docs/country-pages/98-country-tracker.tsv; then
+          if grep -q "productionProfilesPath" scripts/check-country-page-programme.mjs; then
             echo 'PR 289 programme files are already synchronized.'
             exit 0
           fi
