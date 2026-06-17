@@ -117,6 +117,7 @@ for (const snippet of [
 
 if (!process.exitCode) {
   console.log('COUNTRY_PAGE_PUBLICATION_01_12_VALID');
+  console.log('PUBLICATION_QA_SCOPE: entries 01-12');
   console.log('PUBLISHED_ROUTES: 12 EN + 12 JA');
   console.log('TRACKER_COUNTS: published=12 profile_ready=2 not_started=84');
   console.log('METADATA: canonical + hreflang + page-specific language switch');
