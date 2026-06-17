@@ -1,0 +1,49 @@
+name: Country page ID inventory 01-12
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/countries.json'
+      - 'data/static/sources.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - '.github/workflows/country-page-id-inventory-01-12.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/countries.json'
+      - 'data/static/sources.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - '.github/workflows/country-page-id-inventory-01-12.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate country, source, and racecourse IDs
+        run: node scripts/check-country-page-id-inventory-01-12.mjs
+
+      - name: Build site
+        run: npm run build
