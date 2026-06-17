@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
-      - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-profiles-v2*.json'
+      - 'data/static/country-page-countries-*.json'
       - 'data/static/country-page-sources-*.json'
       - 'data/static/country-page-racecourses-*.json'
       - 'data/static/countries.json'
@@ -19,7 +20,8 @@ on:
       - main
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
-      - 'data/static/country-profiles-v2.json'
+      - 'data/static/country-profiles-v2*.json'
+      - 'data/static/country-page-countries-*.json'
       - 'data/static/country-page-sources-*.json'
       - 'data/static/country-page-racecourses-*.json'
       - 'data/static/countries.json'
@@ -39,15 +41,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-
       - name: Install dependencies
         run: npm install
-
       - name: Validate country, source, and racecourse IDs
         id: validate_ids
         shell: bash
@@ -57,7 +56,6 @@ jobs:
           status=${PIPESTATUS[0]}
           echo "status=${status}" >> "$GITHUB_OUTPUT"
           exit 0
-
       - name: Upload validation diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,10 +63,8 @@ jobs:
           name: country-page-id-validation
           path: country-page-id-validation.log
           if-no-files-found: error
-
       - name: Fail when ID validation fails
         if: steps.validate_ids.outputs.status != '0'
         run: exit 1
-
       - name: Build site
         run: npm run build

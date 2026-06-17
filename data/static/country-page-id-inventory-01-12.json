@@ -117,15 +117,14 @@
       "slug": "chile",
       "note_ref": "docs/country-page-notes/05-chile.md",
       "country_registry_status": "registered",
-      "organiser_status": "confirmed",
+      "organiser_status": "pending",
       "principal_racecourse_status": "confirmed",
-      "organiser_source_ids": [
+      "organiser_source_ids": [],
+      "distributor_source_ids": [
         "chile-club-hipico-concepcion-home",
         "chile-valparaiso-sporting-home",
         "chile-club-hipico-santiago-home",
-        "chile-hipodromo-chile-home"
-      ],
-      "distributor_source_ids": [
+        "chile-hipodromo-chile-home",
         "chile-teletrak-calendar"
       ],
       "racecourse_ids": [
@@ -135,9 +134,6 @@
         "hipodromo-chile"
       ],
       "principal_racecourse_ids": [
-        "club-hipico-de-concepcion",
-        "valparaiso-sporting-club",
-        "club-hipico-de-santiago",
         "hipodromo-chile"
       ]
     },
@@ -147,20 +143,17 @@
       "slug": "peru",
       "note_ref": "docs/country-page-notes/06-peru.md",
       "country_registry_status": "registered",
-      "organiser_status": "confirmed",
-      "principal_racecourse_status": "confirmed",
-      "organiser_source_ids": [
-        "peru-monterrico-home"
-      ],
+      "organiser_status": "pending",
+      "principal_racecourse_status": "pending",
+      "organiser_source_ids": [],
       "distributor_source_ids": [
+        "peru-monterrico-home",
         "peru-monterrico-programmes"
       ],
       "racecourse_ids": [
         "monterrico-racecourse"
       ],
-      "principal_racecourse_ids": [
-        "monterrico-racecourse"
-      ]
+      "principal_racecourse_ids": []
     },
     {
       "delivery_no": "07",
@@ -184,9 +177,9 @@
       "country_id": "brazil",
       "slug": "brazil",
       "note_ref": "docs/country-page-notes/08-brazil.md",
-      "country_registry_status": "reserved",
+      "country_registry_status": "registered",
       "organiser_status": "confirmed",
-      "principal_racecourse_status": "confirmed",
+      "principal_racecourse_status": "pending",
       "organiser_source_ids": [
         "brazil-jockey-club-brasileiro",
         "brazil-jockey-club-sao-paulo",
@@ -206,12 +199,7 @@
         "sorocaba-racecourse",
         "taruma-racecourse"
       ],
-      "principal_racecourse_ids": [
-        "gavea-racecourse",
-        "cidade-jardim-racecourse",
-        "cristal-racecourse",
-        "sorocaba-racecourse"
-      ]
+      "principal_racecourse_ids": []
     },
     {
       "delivery_no": "09",
@@ -341,98 +329,98 @@
     {
       "id": "chile-club-hipico-concepcion-home",
       "country_id": "chile",
-      "role": "organiser",
-      "registry_status": "reserved"
+      "role": "supplementary",
+      "registry_status": "registered"
     },
     {
       "id": "chile-valparaiso-sporting-home",
       "country_id": "chile",
-      "role": "organiser",
-      "registry_status": "reserved"
+      "role": "supplementary",
+      "registry_status": "registered"
     },
     {
       "id": "chile-club-hipico-santiago-home",
       "country_id": "chile",
-      "role": "organiser",
-      "registry_status": "reserved"
+      "role": "supplementary",
+      "registry_status": "registered"
     },
     {
       "id": "chile-hipodromo-chile-home",
       "country_id": "chile",
-      "role": "organiser",
-      "registry_status": "reserved"
+      "role": "supplementary",
+      "registry_status": "registered"
     },
     {
       "id": "chile-teletrak-calendar",
       "country_id": "chile",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "peru-monterrico-home",
       "country_id": "peru",
-      "role": "organiser",
-      "registry_status": "reserved"
+      "role": "supplementary",
+      "registry_status": "registered"
     },
     {
       "id": "peru-monterrico-programmes",
       "country_id": "peru",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "mexico-hipodromo-las-americas-candidate",
       "country_id": "mexico",
       "role": "distributor",
-      "registry_status": "candidate"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-jockey-club-brasileiro",
       "country_id": "brazil",
       "role": "organiser",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-jockey-club-sao-paulo",
       "country_id": "brazil",
       "role": "organiser",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-jockey-club-rio-grande-do-sul",
       "country_id": "brazil",
       "role": "organiser",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-jockey-club-sorocaba",
       "country_id": "brazil",
       "role": "organiser",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-gavea-programme",
       "country_id": "brazil",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-cidade-jardim-programme",
       "country_id": "brazil",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-cristal-programme",
       "country_id": "brazil",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "brazil-sorocaba-programme",
       "country_id": "brazil",
       "role": "distributor",
-      "registry_status": "reserved"
+      "registry_status": "registered"
     },
     {
       "id": "bahrain-turf-club-home",

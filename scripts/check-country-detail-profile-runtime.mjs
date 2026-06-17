@@ -10,6 +10,10 @@ const fail = (message) => {
 };
 
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
+const staticDirectory = path.join(root, 'data/static');
+const profileFiles = fs.readdirSync(staticDirectory)
+  .filter((name) => /^country-profiles-v2(?:-.*)?\.json$/.test(name))
+  .sort();
 const requiredPaths = [
   'data/static/country-profiles-v2.json',
   'src/lib/country-profile-runtime.ts',
@@ -22,20 +26,22 @@ const requiredPaths = [
 for (const relativePath of requiredPaths) {
   if (!fs.existsSync(path.join(root, relativePath))) fail(`missing ${relativePath}`);
 }
-
+if (!profileFiles.length) fail('no country-profile-v2 batch files found');
 if (process.exitCode) process.exit(process.exitCode);
 
-let profiles;
-try {
-  profiles = JSON.parse(read('data/static/country-profiles-v2.json'));
-} catch (error) {
-  fail(`country-profiles-v2.json is not valid JSON: ${error.message}`);
-  profiles = [];
-}
-
-if (!Array.isArray(profiles)) {
-  fail('country-profiles-v2.json must contain an array');
-  profiles = [];
+const profiles = [];
+for (const file of profileFiles) {
+  const relativePath = `data/static/${file}`;
+  try {
+    const batch = JSON.parse(read(relativePath));
+    if (!Array.isArray(batch)) {
+      fail(`${relativePath} must contain an array`);
+      continue;
+    }
+    profiles.push(...batch);
+  } catch (error) {
+    fail(`${relativePath} is not valid JSON: ${error.message}`);
+  }
 }
 
 const seenCountryIds = new Set();
@@ -100,8 +106,9 @@ const dataText = read('src/lib/data.ts');
 if (!dataText.includes("import countryProfilesV2 from '../../data/static/country-profiles-v2.json'")) {
   fail('data.ts must import the canonical v2 collection');
 }
-if (!dataText.includes('buildCountryDetailProfiles(countryProfilesV2, legacyCountryProfiles)')) {
-  fail('data.ts must build the runtime profile collection with v2 first');
+if (!dataText.includes('const allProfilesV2 = [')) fail('data.ts must combine profile-v2 batches');
+if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2, legacyCountryProfiles)')) {
+  fail('data.ts must build the runtime profile collection from all v2 batches first');
 }
 if (!dataText.includes('return countryProfiles.find((profile) => profile.country_id === countryId)')) {
   fail('country profile lookup must use the normalized runtime collection');
@@ -140,5 +147,5 @@ if (profiles.length > 0) {
 }
 
 if (!process.exitCode) {
-  console.log(`COUNTRY_DETAIL_PROFILE_RUNTIME_VALID v2=${profiles.length} legacy_compat=2`);
+  console.log(`COUNTRY_DETAIL_PROFILE_RUNTIME_VALID v2=${profiles.length} files=${profileFiles.length} legacy_compat=2`);
 }

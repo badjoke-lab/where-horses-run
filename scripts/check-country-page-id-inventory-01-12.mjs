@@ -4,16 +4,18 @@ import path from 'node:path';
 const root = process.cwd();
 const inventoryPath = path.join(root, 'data/static/country-page-id-inventory-01-12.json');
 const trackerPath = path.join(root, 'docs/country-pages/98-country-tracker.tsv');
-const countriesPath = path.join(root, 'data/static/countries.json');
-const profilesPath = path.join(root, 'data/static/country-profiles-v2.json');
-const sourcePaths = [
-  path.join(root, 'data/static/sources.json'),
-  path.join(root, 'data/static/country-page-sources-01-04.json')
-];
+const staticDirectory = path.join(root, 'data/static');
+const filesMatching = (pattern) => fs.readdirSync(staticDirectory)
+  .filter((name) => pattern.test(name))
+  .sort()
+  .map((name) => path.join(staticDirectory, name));
+const countryPaths = [path.join(staticDirectory, 'countries.json'), ...filesMatching(/^country-page-countries-.*\.json$/)];
+const profilePaths = filesMatching(/^country-profiles-v2(?:-.*)?\.json$/);
+const sourcePaths = [path.join(staticDirectory, 'sources.json'), ...filesMatching(/^country-page-sources-.*\.json$/)];
 const racecoursePaths = [
-  path.join(root, 'data/static/racecourses.json'),
-  path.join(root, 'data/static/racecourses-extensions.json'),
-  path.join(root, 'data/static/country-page-racecourses-01-04.json')
+  path.join(staticDirectory, 'racecourses.json'),
+  path.join(staticDirectory, 'racecourses-extensions.json'),
+  ...filesMatching(/^country-page-racecourses-.*\.json$/)
 ];
 
 const errors = [];
@@ -73,8 +75,8 @@ const indexSplitRegistry = (records, label) => {
 
 const inventory = readJson(inventoryPath);
 const tracker = parseTracker();
-const countries = readJson(countriesPath);
-const profiles = readJson(profilesPath);
+const countries = countryPaths.filter(fs.existsSync).flatMap(readJson);
+const profiles = profilePaths.filter(fs.existsSync).flatMap(readJson);
 const profileIds = new Set(profiles.map((profile) => profile.country_id));
 const sources = sourcePaths.filter(fs.existsSync).flatMap(readJson);
 const racecourses = racecoursePaths.filter(fs.existsSync).flatMap(readJson);

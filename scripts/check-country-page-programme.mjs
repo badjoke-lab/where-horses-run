@@ -217,8 +217,18 @@ const expectedFirstBatch = [
   ['12', 'zimbabwe']
 ];
 
-const productionProfilesPath = path.join(root, 'data/static/country-profiles-v2.json');
-const productionProfiles = JSON.parse(fs.readFileSync(productionProfilesPath, 'utf8'));
+const staticDirectory = path.join(root, 'data/static');
+const productionProfileFiles = fs.readdirSync(staticDirectory)
+  .filter((name) => /^country-profiles-v2(?:-.*)?\.json$/.test(name))
+  .sort();
+const productionProfiles = productionProfileFiles.flatMap((fileName) => {
+  const value = JSON.parse(fs.readFileSync(path.join(staticDirectory, fileName), 'utf8'));
+  if (!Array.isArray(value)) {
+    fail(`${fileName} must contain an array`);
+    return [];
+  }
+  return value;
+});
 const productionProfileIds = new Set(productionProfiles.map((profile) => profile.country_id));
 
 for (const [deliveryNo, slug] of expectedFirstBatch) {
