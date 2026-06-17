@@ -28,6 +28,15 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/check-country-page-programme.mjs docs/country-pages/98-country-tracker.tsv data/static/country-page-id-inventory-01-12.json
-          git commit -m 'Synchronize programme state for profiles 05-08'
+          git add scripts/check-country-page-programme.mjs \
+            scripts/check-country-page-id-inventory-01-12.mjs \
+            docs/country-pages/98-country-tracker.tsv \
+            data/static/country-page-id-inventory-01-12.json \
+            .github/workflows/country-detail-profile-runtime.yml \
+            .github/workflows/country-page-id-inventory-01-12.yml
+          if git diff --cached --quiet; then
+            echo 'No synchronized changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Synchronize validators for profiles 05-08'
           git push origin HEAD:country-profiles-05-08
