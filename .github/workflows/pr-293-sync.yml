@@ -1,0 +1,29 @@
+name: PR 293 tracker synchronization
+
+on:
+  push:
+    branches: [country-source-tests-13-20]
+    paths: ['.github/workflows/pr-293-sync.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-source-tests-13-20
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/pr-293-sync.mjs
+      - name: Commit tracker
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/country-pages/98-country-tracker.tsv
+          git commit -m 'Synchronize source-test tracker states 13-20'
+          git push origin HEAD:country-source-tests-13-20
