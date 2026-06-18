@@ -79,25 +79,17 @@ for (const [index, profile] of profiles.entries()) {
   inspectKeys(profile, `profiles[${index}]`);
 }
 
-const runtimeText = read('src/lib/country-profile-runtime.ts');
-const allowlistMatch = runtimeText.match(/LEGACY_COUNTRY_PROFILE_COMPATIBILITY_IDS\s*=\s*\[([^\]]*)\]\s*as const/);
-if (!allowlistMatch) {
-  fail('runtime must declare the legacy compatibility allowlist');
-} else {
-  const ids = [...allowlistMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map((match) => match[1]);
-  if (JSON.stringify(ids) !== JSON.stringify(['japan', 'hong-kong'])) {
-    fail(`legacy compatibility allowlist must be exactly japan and hong-kong; found ${ids.join(', ')}`);
-  }
+for (const countryId of ['japan', 'hong-kong']) {
+  if (!seenCountryIds.has(countryId)) fail(`${countryId} must have a profile-v2 record`);
 }
+if (profiles.length !== 20) fail(`runtime must contain 20 reviewed profile-v2 records after PR #295; found ${profiles.length}`);
 
-const v2AdaptPosition = runtimeText.indexOf('const adaptedV2Profiles = v2Profiles.map(adaptCountryProfileV2)');
-const compatibilityPosition = runtimeText.indexOf('const compatibilityProfiles = legacyProfiles');
-if (v2AdaptPosition < 0 || compatibilityPosition < 0 || v2AdaptPosition > compatibilityPosition) {
-  fail('runtime must adapt v2 profiles before evaluating legacy compatibility profiles');
-}
+const runtimeText = read('src/lib/country-profile-runtime.ts');
+if (runtimeText.includes('legacy-compat')) fail('runtime must not expose legacy-compat profile origin');
+if (runtimeText.includes('LEGACY_COUNTRY_PROFILE_COMPATIBILITY_IDS')) fail('runtime must not contain a legacy compatibility allowlist');
+if (runtimeText.includes('adaptLegacyCountryProfile')) fail('runtime must not adapt legacy country profiles');
 if (!runtimeText.includes("profile_origin: 'v2'")) fail('runtime must mark v2 profiles');
-if (!runtimeText.includes("profile_origin: 'legacy-compat'")) fail('runtime must mark legacy compatibility profiles');
-if (!runtimeText.includes('!v2CountryIds.has(countryId)')) fail('a v2 profile must override the legacy compatibility record');
+if (!runtimeText.includes('return v2Profiles.map(adaptCountryProfileV2)')) fail('runtime must build profiles exclusively from v2 input');
 if (!runtimeText.includes('organiser_source_ids') || !runtimeText.includes('distributor_source_ids')) {
   fail('runtime must preserve organiser and distributor source roles');
 }
@@ -107,8 +99,12 @@ if (!dataText.includes("import countryProfilesV2 from '../../data/static/country
   fail('data.ts must import the canonical v2 collection');
 }
 if (!dataText.includes('const allProfilesV2 = [')) fail('data.ts must combine profile-v2 batches');
-if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2, legacyCountryProfiles)')) {
-  fail('data.ts must build the runtime profile collection from all v2 batches first');
+if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2)')) fail('data.ts must build the runtime collection from v2 profiles only');
+if (dataText.includes('legacyCountryProfiles') || dataText.includes("country-profiles.json'")) {
+  fail('data.ts must not import or pass the legacy profile collection');
+}
+for (const deliveryNo of ['13', '14', '15', '16', '17', '18', '19', '20']) {
+  if (!dataText.includes(`countryProfilesV2${deliveryNo}`)) fail(`data.ts must load profile batch ${deliveryNo}`);
 }
 if (!dataText.includes('return countryProfiles.find((profile) => profile.country_id === countryId)')) {
   fail('country profile lookup must use the normalized runtime collection');
@@ -147,5 +143,5 @@ if (profiles.length > 0) {
 }
 
 if (!process.exitCode) {
-  console.log(`COUNTRY_DETAIL_PROFILE_RUNTIME_VALID v2=${profiles.length} files=${profileFiles.length} legacy_compat=2`);
+  console.log(`COUNTRY_DETAIL_PROFILE_RUNTIME_VALID v2=${profiles.length} files=${profileFiles.length} legacy_compat=0`);
 }
