@@ -139,19 +139,20 @@ const rows = trackerLines.slice(1).map((line) => {
 for (const [deliveryNo, slug] of expected) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row || row.slug !== slug) fail(`tracker delivery ${deliveryNo} must be ${slug}`);
-  if (row?.programme_status !== 'profile_ready') fail(`${slug} programme_status must be profile_ready`);
+  if (row?.programme_status !== 'published') fail(`${slug} programme_status must be published`);
   if (row?.profile_status !== 'reviewed') fail(`${slug} profile_status must be reviewed`);
   if (row?.note_status !== 'reviewed') fail(`${slug} note_status must remain reviewed`);
-  if (row?.en_route_status !== 'complete' || row?.ja_route_status !== 'complete') fail(`${slug} routes must be complete`);
+  if (row?.en_route_status !== 'published' || row?.ja_route_status !== 'published') fail(`${slug} routes must be published`);
   if (!row?.profile_last_reviewed) fail(`${slug} requires profile_last_reviewed`);
+  if (row?.qa_status !== 'passed' || row?.page_published_at !== '2026-06-18') fail(`${slug} publication QA must be complete`);
 }
 
 const counts = rows.reduce((result, row) => {
   result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
   return result;
 }, {});
-if ((counts.published ?? 0) !== 12) fail('tracker must contain 12 published rows');
-if ((counts.profile_ready ?? 0) !== 8) fail('tracker must contain 8 profile_ready rows');
+if ((counts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
+if ((counts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
 if ((counts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
 if ((counts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');
 
@@ -163,4 +164,4 @@ if (errors.length) {
 console.log('COUNTRY_PROFILES_13_20_VALID');
 console.log('PROFILE_V2_RECORDS: 8');
 console.log('RUNTIME: v2-only; legacy compatibility removed');
-console.log('TRACKER_COUNTS: published=12 profile_ready=8 not_started=78');
+console.log('TRACKER_COUNTS: published=20 not_started=78');
