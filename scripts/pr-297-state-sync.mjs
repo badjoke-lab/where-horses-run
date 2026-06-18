@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 
-const replaceOnce = (text, before, after, label) => {
-  const count = text.split(before).length - 1;
-  if (count !== 1) throw new Error(`${label}: expected one match, found ${count}`);
-  return text.replace(before, after);
+const replaceState = (text, before, after) => {
+  if (text.includes(after)) return text;
+  if (text.includes(before)) return text.replace(before, after);
+  throw new Error(`state marker missing: ${before}`);
 };
 
 {
@@ -38,20 +38,17 @@ const replaceOnce = (text, before, after, label) => {
 {
   const file = 'scripts/check-country-page-programme.mjs';
   let text = fs.readFileSync(file, 'utf8');
-  text = replaceOnce(text,
+  text = replaceState(text,
     "if ((statusCounts.source_tested ?? 0) !== 0) fail('tracker must contain 0 source_tested rows');",
-    "if ((statusCounts.source_tested ?? 0) !== 8) fail('tracker must contain 8 source_tested rows');",
-    'programme source-tested count'
+    "if ((statusCounts.source_tested ?? 0) !== 8) fail('tracker must contain 8 source_tested rows');"
   );
-  text = replaceOnce(text,
+  text = replaceState(text,
     "if ((statusCounts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');",
-    "if ((statusCounts.not_started ?? 0) !== 70) fail('tracker must contain 70 not_started rows');",
-    'programme not-started count'
+    "if ((statusCounts.not_started ?? 0) !== 70) fail('tracker must contain 70 not_started rows');"
   );
-  text = replaceOnce(text,
+  text = replaceState(text,
     "console.log('PROGRAMME_COUNTS: published=20 not_started=78');",
-    "console.log('PROGRAMME_COUNTS: published=20 source_tested=8 not_started=70');",
-    'programme output'
+    "console.log('PROGRAMME_COUNTS: published=20 source_tested=8 not_started=70');"
   );
   fs.writeFileSync(file, text);
 }
@@ -71,18 +68,16 @@ const replaceOnce = (text, before, after, label) => {
     ['remaining after #297: #298-#337', 'remaining after #298: #299-#337'],
     ['| #297 | Source tests for entries 21-28. Record official routes, source roles, capability rank, public ceiling, review date, and local requirements. |', '| #297 | Completed public-safe source tests for entries 21-28, including official routes, capability ranks, public ceilings, review dates, and remote acquisition decisions. |']
   ];
-  for (const [before, after] of updates) {
-    text = replaceOnce(text, before, after, `roadmap ${before}`);
-  }
+  for (const [before, after] of updates) text = replaceState(text, before, after);
   fs.writeFileSync(file, text);
 }
 
 {
   const file = 'scripts/check-country-page-programme-roadmap.mjs';
   let text = fs.readFileSync(file, 'utf8');
-  text = replaceOnce(text, "'Working PR: #297'", "'Working PR: #298'", 'roadmap validator working PR');
-  text = replaceOnce(text, "'Next PR: #298'", "'Next PR: #299'", 'roadmap validator next PR');
-  text = replaceOnce(text, "'Merged through: PR #296'", "'Merged through: PR #297'", 'roadmap validator merged-through');
+  text = replaceState(text, "'Working PR: #297'", "'Working PR: #298'");
+  text = replaceState(text, "'Next PR: #298'", "'Next PR: #299'");
+  text = replaceState(text, "'Merged through: PR #296'", "'Merged through: PR #297'");
   fs.writeFileSync(file, text);
 }
 
