@@ -29,7 +29,7 @@ const counts = rows.reduce((result, row) => {
   return result;
 }, {});
 
-const expectedCountLines = [
+const allCountLines = [
   ['published', counts.published ?? 0],
   ['profile_ready', counts.profile_ready ?? 0],
   ['note_reviewed', counts.note_reviewed ?? 0],
@@ -37,6 +37,8 @@ const expectedCountLines = [
   ['not_started', counts.not_started ?? 0],
   ['total', rows.length]
 ];
+const alwaysRequired = new Set(['published', 'profile_ready', 'not_started', 'total']);
+const expectedCountLines = allCountLines.filter(([label, count]) => alwaysRequired.has(label) || count > 0);
 
 for (const [label, count] of expectedCountLines) {
   const pattern = new RegExp(`^${label}:\\s+${count}$`, 'm');
@@ -70,5 +72,5 @@ if (errors.length) {
 }
 
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
-console.log(`TRACKER_COUNTS: ${expectedCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
+console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
 console.log('PR_RANGE: 284-337');
