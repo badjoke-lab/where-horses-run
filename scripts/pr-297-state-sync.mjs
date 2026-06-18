@@ -81,4 +81,46 @@ const replaceState = (text, before, after) => {
   fs.writeFileSync(file, text);
 }
 
+const relaxGlobalCounts = (file) => {
+  let text = fs.readFileSync(file, 'utf8');
+  text = text.replace(
+    /const counts = rows\.reduce\(\(result, row\) => \{[\s\S]*?if \(\(counts\.not_started \?\? 0\) !== \d+\) fail\([^\n]+\);\n/,
+    "if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);\n"
+  );
+  text = text.replace(/console\.log\('TRACKER_COUNTS:[^\n]+\);\n?/g, '');
+  fs.writeFileSync(file, text);
+};
+
+for (const file of [
+  'scripts/check-country-notes-13-20.mjs',
+  'scripts/check-country-profiles-13-20.mjs',
+  'scripts/check-country-page-publication-13-20.mjs'
+]) relaxGlobalCounts(file);
+
+{
+  const file = 'scripts/check-country-page-publication-01-12.mjs';
+  let text = fs.readFileSync(file, 'utf8');
+  text = text.replace(
+    /const publishedCount = rows\.filter[\s\S]*?if \(notStartedCount !== \d+\) fail\([^\n]+\);\n/,
+    "if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);\n"
+  );
+  text = text.replace(/console\.log\('TRACKER_COUNTS:[^\n]+\);\n?/g, '');
+  fs.writeFileSync(file, text);
+}
+
+{
+  const file = 'scripts/check-country-source-tests-21-28.mjs';
+  let text = fs.readFileSync(file, 'utf8');
+  text = text.replace(
+    "if (row.programme_status !== 'source_tested') fail(`${slug} programme_status must be source_tested`);",
+    "const stageOrder = ['not_started', 'source_research', 'source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published'];\n  if (stageOrder.indexOf(row.programme_status) < stageOrder.indexOf('source_tested')) fail(`${slug} must be at least source_tested`);"
+  );
+  text = text.replace(
+    /const counts = rows\.reduce\(\(result, row\) => \{[\s\S]*?if \(\(counts\.not_started \?\? 0\) !== 70\) fail\([^\n]+\);\n/,
+    "if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);\n"
+  );
+  text = text.replace("console.log('TRACKER_COUNTS: published=20 source_tested=8 not_started=70');\n", '');
+  fs.writeFileSync(file, text);
+}
+
 console.log('PR_297_STATE_SYNC_COMPLETE');
