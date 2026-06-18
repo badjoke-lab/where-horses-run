@@ -1,0 +1,17 @@
+[
+  {
+    "schema_version":"2.0.0","country_id":"sweden","slug":"sweden","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-18","public_display_ceiling":"C","source_test_status":"complete",
+    "hero":{"summary_en":"Sweden is confirmed at calendar level through Svensk Galopp.","summary_ja":"スウェーデンはSvensk Galoppを通じてカレンダーレベルで確認済みです。"},
+    "overview":{"paragraphs_en":["The reviewed official calendar confirms race days and venues. Reusable first-race or per-race times were not confirmed."],"paragraphs_ja":["レビュー済み公式カレンダーで開催日と会場を確認しました。第1レースまたはレース別時刻は未確認です。"]},
+    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Calendar-level meeting coverage is confirmed.","summary_ja":"カレンダーレベルの開催情報を確認済みです。"}],
+    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current Svensk Galopp calendar for race days and venues.","summary_ja":"開催日と会場はSvensk Galoppの現行カレンダーで確認します。"},
+    "schedule":{"timezone":"Europe/Stockholm","utc_offset_label":"Verify current Sweden civil-time offset","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"Public output is limited to meeting date and venue.","summary_ja":"公開表示は開催日と会場に限定します。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
+    "systems":[{"id":"sweden-svensk-galopp-system","name_en":"Svensk Galopp calendar system","name_ja":"Svensk Galoppカレンダー体系","summary_en":"Svensk Galopp provides the reviewed official calendar.","summary_ja":"Svensk Galoppがレビュー済み公式カレンダーを提供します。","organiser_source_ids":["sweden-svensk-galopp-calendar"],"distributor_source_ids":[]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Show only the official meeting date and venue until a stable timetable source is confirmed.","calendar_guidance_ja":"安定した時刻表sourceを確認するまで公式の開催日と会場のみ表示します。",
+    "coverage_note_en":"Calendar-level completion does not establish first, last, or per-race times.","coverage_note_ja":"カレンダーレベルの完了は第1・最終・レース別時刻を意味しません。",
+    "revalidation":{"triggers_en":["Calendar-route change","Stable timetable source confirmed","Venue inventory change"],"triggers_ja":["カレンダー導線変更時","安定した時刻表source確認時","会場一覧変更時"]},
+    "related_glossary_ids":["racecourse","meeting","fixture"]
+  }
+]
