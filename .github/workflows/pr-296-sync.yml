@@ -1,6 +1,13 @@
 name: PR 296 publication synchronization
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pr-296-sync.yml'
+      - 'scripts/pr-296-component-sync.mjs'
+      - 'scripts/pr-296-tracker-sync.mjs'
+      - 'scripts/pr-296-roadmap-sync.mjs'
   push:
     branches: [country-pages-13-20-publication-qa]
     paths: ['.github/workflows/pr-296-sync.yml']
@@ -10,6 +17,7 @@ permissions:
 
 jobs:
   sync:
+    if: github.event_name == 'push' || github.event.pull_request.head.ref == 'country-pages-13-20-publication-qa'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,5 +35,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add src/components/CountryDetailPage.astro docs/country-pages/98-country-tracker.tsv docs/country-pages/programme-roadmap.md
+          if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Apply country page publication QA 13-20'
           git push origin HEAD:country-pages-13-20-publication-qa
