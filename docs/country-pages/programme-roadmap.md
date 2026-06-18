@@ -19,19 +19,19 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 Current main state:
 
 ```text
-Merged through: PR #295
-Latest confirmed merge: PR #295
-Working PR: #296
-Working branch: country-pages-13-20-publication-qa
-Next PR: #297
+Merged through: PR #296
+Latest confirmed merge: PR #296
+Working PR: #297
+Working branch: country-source-tests-21-28
+Next PR: #298
 Final release gate: #337
 ```
 
 Current tracker counts on main:
 
 ```text
-published:       12
-profile_ready:    8
+published:       20
+profile_ready:    0
 note_reviewed:    0
 not_started:     78
 total:           98
@@ -40,9 +40,9 @@ total:           98
 Current route count:
 
 ```text
-formally published English routes:   12
-formally published Japanese routes:  12
-formally published total routes:     24
+formally published English routes:   20
+formally published Japanese routes:  20
+formally published total routes:     40
 final target routes:                196
 ```
 
@@ -50,9 +50,9 @@ PR count:
 
 ```text
 roadmap range: #284-#337
-merged:        #284-#295 = 12 PRs
-in progress:   #296
-remaining after #296: #297-#337
+merged:        #284-#296 = 13 PRs
+in progress:   #297
+remaining after #297: #298-#337
 ```
 
 ## 3. Operating model
@@ -153,7 +153,7 @@ Entries:
 | #293 | merged | Added public-safe source-test decisions. Multi-system countries remain separated; technical capability and public ceilings are recorded independently. |
 | #294 | merged | Added reviewed country notes and advanced entries 15-20 to `note_reviewed`. Japan and Hong Kong retained seed profiles pending v2 migration. |
 | #295 | merged | Migrated Japan and Hong Kong from legacy seed profiles to profile v2. Added profile v2 and source-led registry records for New Zealand, South Africa, Uruguay, Sweden, Denmark, and the Czech Republic. All eight entries are `profile_ready`, and the runtime is v2-only. |
-| #296 | in progress | Run bilingual route and publication QA for entries 13-20. Verify canonical, hreflang, language switch, racecourse and source links, responsive layout, accessibility, public ceilings, and empty states. Completion condition: eight entries and sixteen routes are `published`. |
+| #296 | merged | Run bilingual route and publication QA for entries 13-20. Verify canonical, hreflang, language switch, racecourse and source links, responsive layout, accessibility, public ceilings, and empty states. Completion condition: eight entries and sixteen routes are `published`. |
 
 ## 8. Wave 21-28
 

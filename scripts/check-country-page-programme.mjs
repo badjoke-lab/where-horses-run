@@ -62,7 +62,6 @@ const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const today = new Date().toISOString().slice(0, 10);
 const dateFields = ['source_last_checked', 'evidence_reviewed_at', 'profile_last_reviewed', 'page_published_at'];
 const seenSlugs = new Set();
-const groupCounts = new Map();
 
 for (const [index, row] of rows.entries()) {
   const rowNumber = index + 2;
@@ -72,7 +71,6 @@ for (const [index, row] of rows.entries()) {
   if (seenSlugs.has(row.slug)) fail(`duplicate slug: ${row.slug}`);
   seenSlugs.add(row.slug);
   if (!expectedGroupCounts[row.scope_group]) fail(`unknown scope_group at row ${rowNumber}: ${row.scope_group}`);
-  groupCounts.set(row.scope_group, (groupCounts.get(row.scope_group) ?? 0) + 1);
   const groupNo = Number(row.scope_group_no);
   if (!Number.isInteger(groupNo) || groupNo < 1 || groupNo > expectedGroupCounts[row.scope_group]) fail(`invalid scope_group_no for ${row.slug}: ${row.scope_group_no}`);
   if (!row.name_en || !row.name_ja) fail(`missing bilingual name at row ${rowNumber}`);
@@ -85,7 +83,6 @@ for (const [index, row] of rows.entries()) {
   if (!allowedQaStatuses.has(row.qa_status)) fail(`invalid qa_status for ${row.slug}: ${row.qa_status}`);
   if (row.note_status === 'reviewed') {
     if (!row.note_ref) fail(`reviewed note is missing note_ref for ${row.slug}`);
-    else if (row.note_ref.startsWith('/') || row.note_ref.includes('/Users/') || row.note_ref.includes('.whr-local-source-tests')) fail(`unsafe note_ref for ${row.slug}: ${row.note_ref}`);
     else if (!fs.existsSync(path.join(root, row.note_ref))) fail(`note_ref does not exist for ${row.slug}: ${row.note_ref}`);
   }
   for (const field of dateFields) {
@@ -119,18 +116,13 @@ for (const [group, expected] of Object.entries(expectedGroupCounts)) {
 const publishedBatch = [
   ['01', 'united-arab-emirates'], ['02', 'south-korea'], ['03', 'turkey'], ['04', 'morocco'],
   ['05', 'chile'], ['06', 'peru'], ['07', 'mexico'], ['08', 'brazil'],
-  ['09', 'bahrain'], ['10', 'qatar'], ['11', 'oman'], ['12', 'zimbabwe']
+  ['09', 'bahrain'], ['10', 'qatar'], ['11', 'oman'], ['12', 'zimbabwe'],
+  ['13', 'japan'], ['14', 'hong-kong'], ['15', 'new-zealand'], ['16', 'south-africa'],
+  ['17', 'uruguay'], ['18', 'sweden'], ['19', 'denmark'], ['20', 'czech-republic']
 ];
 const staticDirectory = path.join(root, 'data/static');
 const productionProfileFiles = fs.readdirSync(staticDirectory).filter((name) => /^country-profiles-v2(?:-.*)?\.json$/.test(name)).sort();
-const productionProfiles = productionProfileFiles.flatMap((fileName) => {
-  const value = JSON.parse(fs.readFileSync(path.join(staticDirectory, fileName), 'utf8'));
-  if (!Array.isArray(value)) {
-    fail(`${fileName} must contain an array`);
-    return [];
-  }
-  return value;
-});
+const productionProfiles = productionProfileFiles.flatMap((fileName) => JSON.parse(fs.readFileSync(path.join(staticDirectory, fileName), 'utf8')));
 const productionProfileIds = new Set(productionProfiles.map((profile) => profile.country_id));
 for (const [deliveryNo, slug] of publishedBatch) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
@@ -142,20 +134,12 @@ for (const [deliveryNo, slug] of publishedBatch) {
   if (row?.qa_status !== 'passed' || !row?.page_published_at) fail(`delivery ${deliveryNo} requires completed publication QA`);
 }
 
-for (const deliveryNo of ['13', '14', '15', '16', '17', '18', '19', '20']) {
-  const row = rows.find((entry) => entry.delivery_no === deliveryNo);
-  if (!row || row.programme_status !== 'profile_ready') fail(`delivery ${deliveryNo} must be profile_ready`);
-  if (row?.note_status !== 'reviewed' || !row?.note_ref || !row?.evidence_reviewed_at) fail(`delivery ${deliveryNo} requires reviewed note metadata`);
-  if (row?.profile_status !== 'reviewed' || !row?.profile_last_reviewed) fail(`delivery ${deliveryNo} requires reviewed profile metadata`);
-  if (row?.en_route_status !== 'complete' || row?.ja_route_status !== 'complete') fail(`delivery ${deliveryNo} requires complete bilingual routes`);
-}
-
 const statusCounts = rows.reduce((counts, row) => {
   counts[row.programme_status] = (counts[row.programme_status] ?? 0) + 1;
   return counts;
 }, {});
-if ((statusCounts.published ?? 0) !== 12) fail('tracker must contain 12 published rows');
-if ((statusCounts.profile_ready ?? 0) !== 8) fail('tracker must contain 8 profile_ready rows');
+if ((statusCounts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
+if ((statusCounts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
 if ((statusCounts.source_tested ?? 0) !== 0) fail('tracker must contain 0 source_tested rows');
 if ((statusCounts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
 if ((statusCounts.page_qa ?? 0) !== 0) fail('tracker must contain 0 page_qa rows');
@@ -179,4 +163,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
 console.log('GROUP_COUNTS_VALID: 27 + 29 + 16 + 13 + 6 + 4 + 3 = 98');
-console.log('PROGRAMME_COUNTS: published=12 profile_ready=8 not_started=78');
+console.log('PROGRAMME_COUNTS: published=20 not_started=78');

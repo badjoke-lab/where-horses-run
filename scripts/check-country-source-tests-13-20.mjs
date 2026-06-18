@@ -58,14 +58,14 @@ const rows = lines.slice(1).map((line, index) => {
 }).filter(Boolean);
 
 const expectedTracker = {
-  '13': ['profile_ready', 'remote_partial'],
-  '14': ['profile_ready', 'remote_complete'],
-  '15': ['profile_ready', 'remote_partial'],
-  '16': ['profile_ready', 'remote_partial'],
-  '17': ['profile_ready', 'remote_complete'],
-  '18': ['profile_ready', 'remote_complete'],
-  '19': ['profile_ready', 'remote_partial'],
-  '20': ['profile_ready', 'remote_partial']
+  '13': ['published', 'remote_partial'],
+  '14': ['published', 'remote_complete'],
+  '15': ['published', 'remote_partial'],
+  '16': ['published', 'remote_partial'],
+  '17': ['published', 'remote_complete'],
+  '18': ['published', 'remote_complete'],
+  '19': ['published', 'remote_partial'],
+  '20': ['published', 'remote_partial']
 };
 for (const [deliveryNo, [programmeStatus, acquisitionStatus]] of Object.entries(expectedTracker)) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
@@ -77,6 +77,8 @@ for (const [deliveryNo, [programmeStatus, acquisitionStatus]] of Object.entries(
   if (row.acquisition_status !== acquisitionStatus) fail(`delivery ${deliveryNo} acquisition_status must be ${acquisitionStatus}`);
   if (row.source_last_checked !== '2026-06-17') fail(`delivery ${deliveryNo} source_last_checked must be 2026-06-17`);
   if (row.note_status !== 'reviewed') fail(`delivery ${deliveryNo} note_status must be reviewed`);
+  if (row.profile_status !== 'reviewed') fail(`delivery ${deliveryNo} profile_status must be reviewed`);
+  if (row.qa_status !== 'passed' || row.page_published_at !== '2026-06-18') fail(`delivery ${deliveryNo} publication QA must be complete`);
 }
 
 const prohibited = /(?:raw_html|full_racecard|horse_names|jockeys|trainers|odds|results|payouts|predictions|direct_stream_url)/i;
@@ -92,5 +94,5 @@ if (errors.length) {
 
 console.log('COUNTRY_SOURCE_TESTS_13_20_VALID');
 console.log('SUMMARY_FILES: 8');
-console.log('TRACKER: entries 13-20 profile_ready');
+console.log('TRACKER: entries 13-20 published');
 console.log('PUBLIC_BOUNDARY: no prohibited public fields');

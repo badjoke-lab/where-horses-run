@@ -5,14 +5,14 @@ const root = process.cwd();
 const errors = [];
 const fail = (message) => errors.push(message);
 const expected = [
-  ['13', 'japan', 'profile_ready'],
-  ['14', 'hong-kong', 'profile_ready'],
-  ['15', 'new-zealand', 'profile_ready'],
-  ['16', 'south-africa', 'profile_ready'],
-  ['17', 'uruguay', 'profile_ready'],
-  ['18', 'sweden', 'profile_ready'],
-  ['19', 'denmark', 'profile_ready'],
-  ['20', 'czech-republic', 'profile_ready']
+  ['13', 'japan', 'published'],
+  ['14', 'hong-kong', 'published'],
+  ['15', 'new-zealand', 'published'],
+  ['16', 'south-africa', 'published'],
+  ['17', 'uruguay', 'published'],
+  ['18', 'sweden', 'published'],
+  ['19', 'denmark', 'published'],
+  ['20', 'czech-republic', 'published']
 ];
 
 const requiredSections = [
@@ -75,14 +75,15 @@ for (const [deliveryNo, slug, programmeStatus] of expected) {
   if (row.note_ref !== notePath) fail(`${slug} note_ref must be ${notePath}`);
   if (row.evidence_reviewed_at !== '2026-06-17') fail(`${slug} evidence_reviewed_at must be 2026-06-17`);
   if (row.profile_status !== 'reviewed') fail(`${slug} profile_status must be reviewed`);
+  if (row.qa_status !== 'passed' || row.page_published_at !== '2026-06-18') fail(`${slug} publication QA must be complete`);
 }
 
 const counts = rows.reduce((result, row) => {
   result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
   return result;
 }, {});
-if ((counts.published ?? 0) !== 12) fail('tracker must contain 12 published rows');
-if ((counts.profile_ready ?? 0) !== 8) fail('tracker must contain 8 profile_ready rows');
+if ((counts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
+if ((counts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
 if ((counts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
 if ((counts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');
 
@@ -93,5 +94,5 @@ if (errors.length) {
 
 console.log('COUNTRY_NOTES_13_20_VALID');
 console.log('REVIEWED_NOTES: 8');
-console.log('TRACKER_COUNTS: published=12 profile_ready=8 not_started=78');
+console.log('TRACKER_COUNTS: published=20 not_started=78');
 console.log('PUBLIC_BOUNDARY: note files contain no prohibited public field tokens');
