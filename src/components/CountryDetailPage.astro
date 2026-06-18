@@ -18,6 +18,8 @@ const isJa = locale === 'ja';
 const pick = <T,>(en: T, ja: T): T => (isJa ? ja : en);
 
 const profile = getCountryProfileByCountryId(country.id);
+const publicDisplayCeiling = profile?.public_display_ceiling ?? 'C';
+const showMeetingDetails = ['A+', 'A', 'B+', 'B'].includes(publicDisplayCeiling);
 const rawRacecourses = getRacecoursesByCountryId(country.id);
 const racecourses = [...new Map(rawRacecourses.map((racecourse) => [racecourse.slug ?? racecourse.id, racecourse])).values()];
 const racecoursesById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
@@ -402,7 +404,7 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
             </article>
             <article class="card country-card">
               <h3>{pick('First-time guide', '初めて調べる場合')}</h3>
-              <p>{pick(profile.beginner_guide_en, profile.beginner_guide_ja)}</p>
+              <p>{pick(profile.beginner_guide_en ?? profile.coverage_note_en, profile.beginner_guide_ja ?? profile.coverage_note_ja)}</p>
             </article>
           </div>
         </section>
@@ -427,20 +429,20 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
               <thead><tr>
                 <th scope="col">{pick('Date', '日付')}</th>
                 <th scope="col">{pick('Racecourse', '競馬場')}</th>
-                <th scope="col">{pick('System', '体系')}</th>
-                <th scope="col">{pick('Start time', '開始時刻')}</th>
-                <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>
-                <th scope="col">{pick('Official', '公式')}</th>
+                {showMeetingDetails && <th scope="col">{pick('System', '体系')}</th>}
+                {showMeetingDetails && <th scope="col">{pick('Start time', '開始時刻')}</th>}
+                {showMeetingDetails && <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>}
+                {showMeetingDetails && <th scope="col">{pick('Official', '公式')}</th>}
               </tr></thead>
               <tbody>
                 {primaryMeetings.map((record) => (
                   <tr>
                     <td data-label={pick('Date', '日付')}>{record.date ?? pick('Not listed', '未掲載')}</td>
                     <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseName(record)}</td>
-                    <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>
-                    <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>
-                    <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>
-                    <td data-label={pick('Official', '公式')}>{record.source_url ? <a href={record.source_url}>{pick('Open', '開く')}</a> : pick('Not listed', '未掲載')}</td>
+                    {showMeetingDetails && <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>}
+                    {showMeetingDetails && <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>}
+                    {showMeetingDetails && <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>}
+                    {showMeetingDetails && <td data-label={pick('Official', '公式')}>{record.source_url ? <a href={record.source_url}>{pick('Open', '開く')}</a> : pick('Not listed', '未掲載')}</td>}
                   </tr>
                 ))}
               </tbody>
@@ -454,20 +456,20 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
                   <thead><tr>
                     <th scope="col">{pick('Date', '日付')}</th>
                     <th scope="col">{pick('Racecourse', '競馬場')}</th>
-                    <th scope="col">{pick('System', '体系')}</th>
-                    <th scope="col">{pick('Start time', '開始時刻')}</th>
-                    <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>
-                    <th scope="col">{pick('Official', '公式')}</th>
+                    {showMeetingDetails && <th scope="col">{pick('System', '体系')}</th>}
+                    {showMeetingDetails && <th scope="col">{pick('Start time', '開始時刻')}</th>}
+                    {showMeetingDetails && <th scope="col">{pick('Timezone', 'タイムゾーン')}</th>}
+                    {showMeetingDetails && <th scope="col">{pick('Official', '公式')}</th>}
                   </tr></thead>
                   <tbody>
                     {remainingMeetings.map((record) => (
                       <tr>
                         <td data-label={pick('Date', '日付')}>{record.date ?? pick('Not listed', '未掲載')}</td>
                         <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseName(record)}</td>
-                        <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>
-                        <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>
-                        <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>
-                        <td data-label={pick('Official', '公式')}>{record.source_url ? <a href={record.source_url}>{pick('Open', '開く')}</a> : pick('Not listed', '未掲載')}</td>
+                        {showMeetingDetails && <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>}
+                        {showMeetingDetails && <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>}
+                        {showMeetingDetails && <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>}
+                        {showMeetingDetails && <td data-label={pick('Official', '公式')}>{record.source_url ? <a href={record.source_url}>{pick('Open', '開く')}</a> : pick('Not listed', '未掲載')}</td>}
                       </tr>
                     ))}
                   </tbody>
