@@ -1,8 +1,4 @@
-export const LEGACY_COUNTRY_PROFILE_COMPATIBILITY_IDS = ['japan', 'hong-kong'] as const;
-
-const legacyCompatibilityIds = new Set<string>(LEGACY_COUNTRY_PROFILE_COMPATIBILITY_IDS);
-
-export type CountryProfileOrigin = 'v2' | 'legacy-compat';
+export type CountryProfileOrigin = 'v2';
 export type PublicDisplayCeiling = 'A+' | 'A' | 'B+' | 'B' | 'C' | 'pending';
 export type SourceTestStatus = 'complete' | 'partial' | 'pending' | 'not_applicable';
 export type CountryPageKind = 'country' | 'special' | 'explanatory' | 'archive';
@@ -172,37 +168,7 @@ export function adaptCountryProfileV2(profile: CountryProfileV2): CountryDetailP
   };
 }
 
-function adaptLegacyCountryProfile(input: Record<string, unknown>): CountryDetailProfile {
-  const legacy = input as unknown as CountryDetailProfile;
-  const overviewParagraphsEn = legacy.overview_paragraphs_en ?? [legacy.overview_en];
-  const overviewParagraphsJa = legacy.overview_paragraphs_ja ?? [legacy.overview_ja];
-
-  return {
-    ...legacy,
-    page_kind: legacy.page_kind ?? 'country',
-    hero_summary_en: legacy.hero_summary_en ?? legacy.overview_en,
-    hero_summary_ja: legacy.hero_summary_ja ?? legacy.overview_ja,
-    overview_paragraphs_en: overviewParagraphsEn,
-    overview_paragraphs_ja: overviewParagraphsJa,
-    profile_origin: 'legacy-compat'
-  };
-}
-
-export function buildCountryDetailProfiles(
-  v2Input: unknown,
-  legacyInput: unknown
-): CountryDetailProfile[] {
+export function buildCountryDetailProfiles(v2Input: unknown): CountryDetailProfile[] {
   const v2Profiles = Array.isArray(v2Input) ? v2Input as CountryProfileV2[] : [];
-  const legacyProfiles = Array.isArray(legacyInput) ? legacyInput as Record<string, unknown>[] : [];
-  const adaptedV2Profiles = v2Profiles.map(adaptCountryProfileV2);
-  const v2CountryIds = new Set(adaptedV2Profiles.map((profile) => profile.country_id));
-
-  const compatibilityProfiles = legacyProfiles
-    .filter((profile) => {
-      const countryId = typeof profile.country_id === 'string' ? profile.country_id : '';
-      return legacyCompatibilityIds.has(countryId) && !v2CountryIds.has(countryId);
-    })
-    .map(adaptLegacyCountryProfile);
-
-  return [...adaptedV2Profiles, ...compatibilityProfiles];
+  return v2Profiles.map(adaptCountryProfileV2);
 }

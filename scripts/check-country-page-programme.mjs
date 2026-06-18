@@ -142,15 +142,12 @@ for (const [deliveryNo, slug] of publishedBatch) {
   if (row?.qa_status !== 'passed' || !row?.page_published_at) fail(`delivery ${deliveryNo} requires completed publication QA`);
 }
 
-for (const slug of ['japan', 'hong-kong']) {
-  const row = rows.find((entry) => entry.slug === slug);
-  if (!row || row.programme_status !== 'profile_ready') fail(`${slug} must remain profile_ready pending separate publication QA`);
-  if (row?.note_status !== 'reviewed' || !row?.note_ref || !row?.evidence_reviewed_at) fail(`${slug} requires reviewed note metadata`);
-}
-for (const deliveryNo of ['15', '16', '17', '18', '19', '20']) {
+for (const deliveryNo of ['13', '14', '15', '16', '17', '18', '19', '20']) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
-  if (!row || row.programme_status !== 'note_reviewed') fail(`delivery ${deliveryNo} must be note_reviewed`);
+  if (!row || row.programme_status !== 'profile_ready') fail(`delivery ${deliveryNo} must be profile_ready`);
   if (row?.note_status !== 'reviewed' || !row?.note_ref || !row?.evidence_reviewed_at) fail(`delivery ${deliveryNo} requires reviewed note metadata`);
+  if (row?.profile_status !== 'reviewed' || !row?.profile_last_reviewed) fail(`delivery ${deliveryNo} requires reviewed profile metadata`);
+  if (row?.en_route_status !== 'complete' || row?.ja_route_status !== 'complete') fail(`delivery ${deliveryNo} requires complete bilingual routes`);
 }
 
 const statusCounts = rows.reduce((counts, row) => {
@@ -158,9 +155,9 @@ const statusCounts = rows.reduce((counts, row) => {
   return counts;
 }, {});
 if ((statusCounts.published ?? 0) !== 12) fail('tracker must contain 12 published rows');
-if ((statusCounts.profile_ready ?? 0) !== 2) fail('tracker must contain 2 profile_ready rows');
+if ((statusCounts.profile_ready ?? 0) !== 8) fail('tracker must contain 8 profile_ready rows');
 if ((statusCounts.source_tested ?? 0) !== 0) fail('tracker must contain 0 source_tested rows');
-if ((statusCounts.note_reviewed ?? 0) !== 6) fail('tracker must contain 6 note_reviewed rows');
+if ((statusCounts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
 if ((statusCounts.page_qa ?? 0) !== 0) fail('tracker must contain 0 page_qa rows');
 if ((statusCounts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');
 
@@ -182,4 +179,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
 console.log('GROUP_COUNTS_VALID: 27 + 29 + 16 + 13 + 6 + 4 + 3 = 98');
-console.log('PROGRAMME_COUNTS: published=12 profile_ready=2 note_reviewed=6 not_started=78');
+console.log('PROGRAMME_COUNTS: published=12 profile_ready=8 not_started=78');

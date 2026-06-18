@@ -60,12 +60,12 @@ const rows = lines.slice(1).map((line, index) => {
 const expectedTracker = {
   '13': ['profile_ready', 'remote_partial'],
   '14': ['profile_ready', 'remote_complete'],
-  '15': ['note_reviewed', 'remote_partial'],
-  '16': ['note_reviewed', 'remote_partial'],
-  '17': ['note_reviewed', 'remote_complete'],
-  '18': ['note_reviewed', 'remote_complete'],
-  '19': ['note_reviewed', 'remote_partial'],
-  '20': ['note_reviewed', 'remote_partial']
+  '15': ['profile_ready', 'remote_partial'],
+  '16': ['profile_ready', 'remote_partial'],
+  '17': ['profile_ready', 'remote_complete'],
+  '18': ['profile_ready', 'remote_complete'],
+  '19': ['profile_ready', 'remote_partial'],
+  '20': ['profile_ready', 'remote_partial']
 };
 for (const [deliveryNo, [programmeStatus, acquisitionStatus]] of Object.entries(expectedTracker)) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
@@ -92,5 +92,5 @@ if (errors.length) {
 
 console.log('COUNTRY_SOURCE_TESTS_13_20_VALID');
 console.log('SUMMARY_FILES: 8');
-console.log('TRACKER: Japan/Hong Kong profile_ready; entries 15-20 note_reviewed');
+console.log('TRACKER: entries 13-20 profile_ready');
 console.log('PUBLIC_BOUNDARY: no prohibited public fields');

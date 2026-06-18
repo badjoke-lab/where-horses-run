@@ -1,0 +1,17 @@
+[
+  {
+    "schema_version":"2.0.0","country_id":"denmark","slug":"denmark","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-18","public_display_ceiling":"C","source_test_status":"partial",
+    "hero":{"summary_en":"Denmark is confirmed at race-day and venue level through official national and venue routes.","summary_ja":"デンマークは公式の全国・会場導線を通じて開催日と会場を確認済みです。"},
+    "overview":{"paragraphs_en":["Official pages confirm race days and venues, but a complete reusable race timetable was not confirmed."],"paragraphs_ja":["公式ページで開催日と会場を確認できますが、完全で再利用可能なレース時刻表は未確認です。"]},
+    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Calendar-level meeting coverage is confirmed.","summary_ja":"カレンダーレベルの開催情報を確認済みです。"}],
+    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current Dansk Galop and venue calendars for meeting dates.","summary_ja":"開催日はDansk Galopと各会場の現行カレンダーで確認します。"},
+    "schedule":{"timezone":"Europe/Copenhagen","utc_offset_label":"Verify current Denmark civil-time offset","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"Public output is limited to meeting date and venue.","summary_ja":"公開表示は開催日と会場に限定します。"},
+    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
+    "systems":[{"id":"denmark-dansk-galop-system","name_en":"Dansk Galop guidance system","name_ja":"Dansk Galop案内体系","summary_en":"Dansk Galop provides the reviewed national guidance route.","summary_ja":"Dansk Galopがレビュー済み全国案内導線を提供します。","organiser_source_ids":["denmark-dansk-galop-home"],"distributor_source_ids":[]},{"id":"denmark-klampenborg-system","name_en":"Klampenborg venue system","name_ja":"Klampenborg会場体系","summary_en":"Klampenborg provides a reviewed venue-specific official route.","summary_ja":"Klampenborgがレビュー済み会場別公式導線を提供します。","organiser_source_ids":["denmark-klampenborg-home"],"distributor_source_ids":[]}],
+    "principal_racecourse_ids":[],
+    "calendar_guidance_en":"Show only confirmed meeting dates and venues; do not convert general event times into race post times.","calendar_guidance_ja":"確認済み開催日と会場のみ表示し、一般イベント時刻を発走時刻へ変換しません。",
+    "coverage_note_en":"Rank C does not establish first, last, or per-race post times, and national venue coverage remains incomplete.","coverage_note_ja":"Cは第1・最終・レース別発走時刻を意味せず、全国会場網羅性も未確定です。",
+    "revalidation":{"triggers_en":["Dansk Galop route change","Venue calendar change","Stable timetable source confirmed"],"triggers_ja":["Dansk Galop導線変更時","会場カレンダー変更時","安定した時刻表source確認時"]},
+    "related_glossary_ids":["racecourse","meeting","fixture"]
+  }
+]
