@@ -51,9 +51,9 @@ for (let pr = 284; pr <= 337; pr += 1) {
 
 const requiredPhrases = [
   'Current position',
-  'Working PR: #297',
-  'Next PR: #298',
-  'Merged through: PR #296',
+  'Working PR: #298',
+  'Next PR: #299',
+  'Merged through: PR #297',
   'Final release gate: #337',
   'Local work is requested only when',
   'Standard four-PR wave',
