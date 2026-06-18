@@ -6,8 +6,12 @@ const output = [];
 let insertedCeiling = false;
 let updatedGuide = false;
 let wrappedColumns = 0;
+let insideMeetings = false;
 
 for (const line of input) {
+  if (line.includes('id="upcoming-meetings"')) insideMeetings = true;
+  if (line.includes('id="racecourses"')) insideMeetings = false;
+
   output.push(line);
 
   if (!insertedCeiling && line.includes('const profile = getCountryProfileByCountryId')) {
@@ -26,6 +30,7 @@ for (const line of input) {
   }
 
   const isMeetingColumn =
+    insideMeetings &&
     (line.includes('<th ') || line.includes('<td ')) &&
     ['System', 'Start time', 'Timezone', 'Official'].some((label) => line.includes(`pick('${label}'`));
 
