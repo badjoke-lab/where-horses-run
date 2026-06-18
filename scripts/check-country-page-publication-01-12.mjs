@@ -56,8 +56,8 @@ const publishedCount = rows.filter((row) => row.programme_status === 'published'
 const profileReadyCount = rows.filter((row) => row.programme_status === 'profile_ready').length;
 const noteReviewedCount = rows.filter((row) => row.programme_status === 'note_reviewed').length;
 const notStartedCount = rows.filter((row) => row.programme_status === 'not_started').length;
-if (publishedCount !== 12) fail(`expected 12 published rows; found ${publishedCount}`);
-if (profileReadyCount !== 8) fail(`expected 8 profile_ready rows; found ${profileReadyCount}`);
+if (publishedCount !== 20) fail(`expected 20 published rows; found ${publishedCount}`);
+if (profileReadyCount !== 0) fail(`expected 0 profile_ready rows; found ${profileReadyCount}`);
 if (noteReviewedCount !== 0) fail(`expected 0 note_reviewed rows; found ${noteReviewedCount}`);
 if (notStartedCount !== 78) fail(`expected 78 not_started rows; found ${notStartedCount}`);
 
@@ -121,7 +121,7 @@ if (!process.exitCode) {
   console.log('COUNTRY_PAGE_PUBLICATION_01_12_VALID');
   console.log('PUBLICATION_QA_SCOPE: entries 01-12');
   console.log('PUBLISHED_ROUTES: 12 EN + 12 JA');
-  console.log('TRACKER_COUNTS: published=12 profile_ready=8 not_started=78');
+  console.log('TRACKER_COUNTS: published=20 not_started=78');
   console.log('METADATA: canonical + hreflang + page-specific language switch');
   console.log('RESPONSIVE_AND_ACCESSIBILITY: validated');
 }
