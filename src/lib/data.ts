@@ -1,7 +1,7 @@
 import countries from '../../data/static/countries.json';
 import countryPageCountries0508 from '../../data/static/country-page-countries-05-08.json';
 import countryPageCountries0912 from '../../data/static/country-page-countries-09-12.json';
-import legacyCountryProfiles from '../../data/static/country-profiles.json';
+import countryPageCountries1520 from '../../data/static/country-page-countries-15-20.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
 import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
@@ -11,6 +11,14 @@ import countryProfilesV209Bahrain from '../../data/static/country-profiles-v2-09
 import countryProfilesV210Qatar from '../../data/static/country-profiles-v2-10-qatar.json';
 import countryProfilesV211Oman from '../../data/static/country-profiles-v2-11-oman.json';
 import countryProfilesV212Zimbabwe from '../../data/static/country-profiles-v2-12-zimbabwe.json';
+import countryProfilesV213Japan from '../../data/static/country-profiles-v2-13-japan.json';
+import countryProfilesV214HongKong from '../../data/static/country-profiles-v2-14-hong-kong.json';
+import countryProfilesV215NewZealand from '../../data/static/country-profiles-v2-15-new-zealand.json';
+import countryProfilesV216SouthAfrica from '../../data/static/country-profiles-v2-16-south-africa.json';
+import countryProfilesV217Uruguay from '../../data/static/country-profiles-v2-17-uruguay.json';
+import countryProfilesV218Sweden from '../../data/static/country-profiles-v2-18-sweden.json';
+import countryProfilesV219Denmark from '../../data/static/country-profiles-v2-19-denmark.json';
+import countryProfilesV220CzechRepublic from '../../data/static/country-profiles-v2-20-czech-republic.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
@@ -24,6 +32,14 @@ import countryPageSources09Bahrain from '../../data/static/country-page-sources-
 import countryPageSources10Qatar from '../../data/static/country-page-sources-10-qatar.json';
 import countryPageSources11Oman from '../../data/static/country-page-sources-11-oman.json';
 import countryPageSources12Zimbabwe from '../../data/static/country-page-sources-12-zimbabwe.json';
+import countryPageSources14HongKong from '../../data/static/country-page-sources-14-hong-kong.json';
+import countryPageSources15NewZealandHarness from '../../data/static/country-page-sources-15-new-zealand-harness.json';
+import countryPageSources15NewZealandThoroughbred from '../../data/static/country-page-sources-15-new-zealand-thoroughbred.json';
+import countryPageSources16SouthAfrica from '../../data/static/country-page-sources-16-south-africa.json';
+import countryPageSources17Uruguay from '../../data/static/country-page-sources-17-uruguay.json';
+import countryPageSources18Sweden from '../../data/static/country-page-sources-18-sweden.json';
+import countryPageSources19Denmark from '../../data/static/country-page-sources-19-denmark.json';
+import countryPageSources20CzechRepublic from '../../data/static/country-page-sources-20-czech-republic.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -42,7 +58,13 @@ import {
 
 export type Locale = 'en' | 'ja';
 
-const allCountries = [...countries, ...countryPageCountries0508, ...countryPageCountries0912] as const;
+const allCountries = [
+  ...countries,
+  ...countryPageCountries0508,
+  ...countryPageCountries0912,
+  ...countryPageCountries1520
+] as const;
+
 const allProfilesV2 = [
   ...countryProfilesV2,
   ...countryProfilesV205Chile,
@@ -52,15 +74,48 @@ const allProfilesV2 = [
   ...countryProfilesV209Bahrain,
   ...countryProfilesV210Qatar,
   ...countryProfilesV211Oman,
-  ...countryProfilesV212Zimbabwe
+  ...countryProfilesV212Zimbabwe,
+  ...countryProfilesV213Japan,
+  ...countryProfilesV214HongKong,
+  ...countryProfilesV215NewZealand,
+  ...countryProfilesV216SouthAfrica,
+  ...countryProfilesV217Uruguay,
+  ...countryProfilesV218Sweden,
+  ...countryProfilesV219Denmark,
+  ...countryProfilesV220CzechRepublic
 ] as const;
+
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
-const allRacecourses = [...racecourses, ...racecourseExtensions, ...countryPageRacecourses0104, ...countryPageRacecourses11Oman, ...countryPageRacecourses12Zimbabwe].map((racecourse) => ({
+const allRacecourses = [
+  ...racecourses,
+  ...racecourseExtensions,
+  ...countryPageRacecourses0104,
+  ...countryPageRacecourses11Oman,
+  ...countryPageRacecourses12Zimbabwe
+].map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
-const allSources = [...sources, ...countryPageSources0104, ...countryPageSources0508, ...countryPageSources09Bahrain, ...countryPageSources10Qatar, ...countryPageSources11Oman, ...countryPageSources12Zimbabwe] as const;
-const countryProfiles = buildCountryDetailProfiles(allProfilesV2, legacyCountryProfiles);
+
+const allSources = [
+  ...sources,
+  ...countryPageSources0104,
+  ...countryPageSources0508,
+  ...countryPageSources09Bahrain,
+  ...countryPageSources10Qatar,
+  ...countryPageSources11Oman,
+  ...countryPageSources12Zimbabwe,
+  ...countryPageSources14HongKong,
+  ...countryPageSources15NewZealandHarness,
+  ...countryPageSources15NewZealandThoroughbred,
+  ...countryPageSources16SouthAfrica,
+  ...countryPageSources17Uruguay,
+  ...countryPageSources18Sweden,
+  ...countryPageSources19Denmark,
+  ...countryPageSources20CzechRepublic
+] as const;
+
+const countryProfiles = buildCountryDetailProfiles(allProfilesV2);
 
 export type Country = (typeof allCountries)[number];
 export type CountryProfile = CountryDetailProfile;
