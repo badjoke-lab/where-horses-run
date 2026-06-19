@@ -3,17 +3,25 @@ name: Country page programme roadmap
 on:
   pull_request:
     paths:
+      - 'README.md'
+      - 'docs/README.md'
+      - 'docs/operations/**'
       - 'docs/country-pages/programme-roadmap.md'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'docs/country-pages/README.md'
+      - 'scripts/check-deployment-ci-policy.mjs'
       - 'scripts/check-country-page-programme-roadmap.mjs'
       - '.github/workflows/country-page-programme-roadmap.yml'
   push:
     branches: [main]
     paths:
+      - 'README.md'
+      - 'docs/README.md'
+      - 'docs/operations/**'
       - 'docs/country-pages/programme-roadmap.md'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'docs/country-pages/README.md'
+      - 'scripts/check-deployment-ci-policy.mjs'
       - 'scripts/check-country-page-programme-roadmap.mjs'
       - '.github/workflows/country-page-programme-roadmap.yml'
 
@@ -28,4 +36,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - run: node scripts/check-deployment-ci-policy.mjs
       - run: node scripts/check-country-page-programme-roadmap.mjs

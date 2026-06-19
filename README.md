@@ -23,13 +23,16 @@ This project does **not** republish entries, odds, results, payouts, race tips, 
 
 ## Development status
 
-Current stage: planning / documentation.  
-Implementation has not started yet.
+Active development. The country-page programme is tracked through the canonical roadmap and 98-entry tracker.
+
+Current formally published scope: 20 English country routes and 20 Japanese country routes.
 
 ## Documentation
 
 Start here:
 
 - [Documentation index](docs/README.md)
+- [Country page programme](docs/country-pages/README.md)
+- [Deployment and CI policy](docs/operations/deployment-and-ci-policy.md)
 - [v0 specification](docs/specs/where-horses-run-v0-spec.md)
 - [Global-first timetable architecture](docs/specs/global-timetable-architecture.md)

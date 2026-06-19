@@ -62,6 +62,8 @@ const rows = lines.slice(1).map((line, index) => {
   return Object.fromEntries(headers.map((header, column) => [header, values[column]]));
 }).filter(Boolean);
 
+if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);
+
 for (const [deliveryNo, slug, programmeStatus] of expected) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row) {
@@ -78,15 +80,6 @@ for (const [deliveryNo, slug, programmeStatus] of expected) {
   if (row.qa_status !== 'passed' || row.page_published_at !== '2026-06-18') fail(`${slug} publication QA must be complete`);
 }
 
-const counts = rows.reduce((result, row) => {
-  result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
-  return result;
-}, {});
-if ((counts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
-if ((counts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
-if ((counts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
-if ((counts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');
-
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
@@ -94,5 +87,4 @@ if (errors.length) {
 
 console.log('COUNTRY_NOTES_13_20_VALID');
 console.log('REVIEWED_NOTES: 8');
-console.log('TRACKER_COUNTS: published=20 not_started=78');
 console.log('PUBLIC_BOUNDARY: note files contain no prohibited public field tokens');

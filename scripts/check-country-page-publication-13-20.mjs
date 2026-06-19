@@ -28,6 +28,8 @@ const rows = lines.slice(1).map((line, index) => {
   return Object.fromEntries(headers.map((header, column) => [header, values[column]]));
 }).filter(Boolean);
 
+if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);
+
 for (const [deliveryNo, slug] of expected) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row || row.slug !== slug) {
@@ -40,14 +42,6 @@ for (const [deliveryNo, slug] of expected) {
   if (row.qa_status !== 'passed') fail(`${slug} QA must be passed`);
   if (row.page_published_at !== '2026-06-18') fail(`${slug} page_published_at must be 2026-06-18`);
 }
-
-const counts = rows.reduce((result, row) => {
-  result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
-  return result;
-}, {});
-if ((counts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
-if ((counts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
-if ((counts.not_started ?? 0) !== 78) fail('tracker must contain 78 not_started rows');
 
 const staticDirectory = path.join(root, 'data/static');
 const profiles = new Map();
@@ -72,9 +66,9 @@ const component = fs.readFileSync(componentPath, 'utf8');
 for (const phrase of [
   "const publicDisplayCeiling = profile?.public_display_ceiling ?? 'C';",
   "const showMeetingDetails = ['A+', 'A', 'B+', 'B'].includes(publicDisplayCeiling);",
-  "showMeetingDetails &&",
-  "profile.beginner_guide_en ?? profile.coverage_note_en",
-  "profile.beginner_guide_ja ?? profile.coverage_note_ja"
+  'showMeetingDetails &&',
+  'profile.beginner_guide_en ?? profile.coverage_note_en',
+  'profile.beginner_guide_ja ?? profile.coverage_note_ja'
 ]) {
   if (!component.includes(phrase)) fail(`CountryDetailPage is missing ceiling-aware phrase: ${phrase}`);
 }
@@ -126,5 +120,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PUBLICATION_13_20_VALID');
 console.log('PUBLISHED_ROUTES: 8 EN + 8 JA');
 console.log('DISPLAY_CEILINGS: A=4 C=4');
-console.log('TRACKER_COUNTS: published=20 not_started=78');
 console.log('RUNTIME: v2-only');

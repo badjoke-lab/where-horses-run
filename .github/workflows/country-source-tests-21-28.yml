@@ -1,0 +1,53 @@
+name: Country source tests 21-28
+
+on:
+  pull_request:
+    paths:
+      - 'docs/timetable-source-tests/21-28-index.md'
+      - 'docs/timetable-source-tests/21-*/**'
+      - 'docs/timetable-source-tests/22-*/**'
+      - 'docs/timetable-source-tests/23-*/**'
+      - 'docs/timetable-source-tests/24-*/**'
+      - 'docs/timetable-source-tests/25-*/**'
+      - 'docs/timetable-source-tests/26-*/**'
+      - 'docs/timetable-source-tests/27-*/**'
+      - 'docs/timetable-source-tests/28-*/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'scripts/check-country-source-tests-21-28.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-source-tests-21-28.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/timetable-source-tests/21-28-index.md'
+      - 'docs/timetable-source-tests/21-*/**'
+      - 'docs/timetable-source-tests/22-*/**'
+      - 'docs/timetable-source-tests/23-*/**'
+      - 'docs/timetable-source-tests/24-*/**'
+      - 'docs/timetable-source-tests/25-*/**'
+      - 'docs/timetable-source-tests/26-*/**'
+      - 'docs/timetable-source-tests/27-*/**'
+      - 'docs/timetable-source-tests/28-*/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'scripts/check-country-source-tests-21-28.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-source-tests-21-28.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-source-tests-21-28.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
