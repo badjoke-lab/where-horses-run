@@ -16,7 +16,7 @@ This document is the repository-level source of truth for the PR sequence, curre
 Merged through: PR #299
 Latest confirmed merge: PR #299
 Working PR: #300
-Working branch: preview-country-pages-21-28
+Working branch: country-pages-21-28-publication-qa
 Next PR: #301
 Final release gate: #337
 ```
@@ -105,7 +105,7 @@ List pages remain one meeting per row. Do not publish runners, participants, wei
 
 ### PR #300 — QA and publish entries 21-28
 
-Validate all sixteen English and Japanese routes, canonical and hreflang metadata, language switching, source links, responsive layout, accessibility, empty states, and public ceilings. Use one `preview-*` deployment only after GitHub validation passes. Advance only passing rows to `published`.
+Validate all sixteen English and Japanese routes, canonical and hreflang metadata, language switching, source links, responsive layout, accessibility, empty states, and public ceilings. Complete normal work on `country-pages-21-28-publication-qa`; create or copy to a `preview-*` branch only after GitHub validation passes. Use one final preview deployment and advance only passing rows to `published`.
 
 ## 8. Remaining wave schedule
 
