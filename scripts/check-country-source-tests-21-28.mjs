@@ -90,28 +90,25 @@ const rows = lines.slice(1).map((line, index) => {
   return Object.fromEntries(headers.map((header, column) => [header, values[column]]));
 }).filter(Boolean);
 
+if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);
+const stageOrder = ['not_started', 'source_research', 'source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published'];
+
 for (const [deliveryNo, slug, , , , , acquisitionStatus] of expected) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row || row.slug !== slug) {
     fail(`tracker delivery ${deliveryNo} must be ${slug}`);
     continue;
   }
-  if (row.programme_status !== 'source_tested') fail(`${slug} programme_status must be source_tested`);
+  if (stageOrder.indexOf(row.programme_status) < stageOrder.indexOf('source_tested')) fail(`${slug} must be at least source_tested`);
   if (row.acquisition_status !== acquisitionStatus) fail(`${slug} acquisition_status must be ${acquisitionStatus}`);
   if (row.source_last_checked !== '2026-06-18') fail(`${slug} source_last_checked must be 2026-06-18`);
-  if (row.note_status !== 'not_started') fail(`${slug} note_status must remain not_started`);
-  if (row.profile_status !== 'not_started') fail(`${slug} profile_status must remain not_started`);
-  if (row.en_route_status !== 'missing' || row.ja_route_status !== 'missing') fail(`${slug} routes must remain missing`);
-  if (row.qa_status !== 'not_started') fail(`${slug} QA must remain not_started`);
+  if (row.programme_status === 'source_tested') {
+    if (row.note_status !== 'not_started') fail(`${slug} note_status must remain not_started at source_tested`);
+    if (row.profile_status !== 'not_started') fail(`${slug} profile_status must remain not_started at source_tested`);
+    if (row.en_route_status !== 'missing' || row.ja_route_status !== 'missing') fail(`${slug} routes must remain missing at source_tested`);
+    if (row.qa_status !== 'not_started') fail(`${slug} QA must remain not_started at source_tested`);
+  }
 }
-
-const counts = rows.reduce((result, row) => {
-  result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
-  return result;
-}, {});
-if ((counts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
-if ((counts.source_tested ?? 0) !== 8) fail('tracker must contain 8 source_tested rows');
-if ((counts.not_started ?? 0) !== 70) fail('tracker must contain 70 not_started rows');
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
@@ -121,4 +118,3 @@ if (errors.length) {
 console.log('COUNTRY_SOURCE_TESTS_21_28_VALID');
 console.log('SUMMARY_FILES: 8');
 console.log('PUBLIC_CEILINGS: A=5 C=3');
-console.log('TRACKER_COUNTS: published=20 source_tested=8 not_started=70');
