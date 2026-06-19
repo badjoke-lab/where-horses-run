@@ -48,7 +48,7 @@ const allowed = {
 };
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-const today = new Date().toISOString().slice(0, 10);
+const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 const seenSlugs = new Set();
 
 for (const [index, row] of rows.entries()) {
