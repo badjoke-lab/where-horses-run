@@ -18,21 +18,21 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 
 ```text
 Contiguous publication sequence merged through: PR #299
-Latest confirmed merge: PR #301
+Latest confirmed merge: PR #302
 Publication gate: PR #300 — Draft; GitHub QA passed; Cloudflare preview pending
 Publication branch: country-pages-21-28-publication-qa
-Parallel working PR: #302
-Parallel working branch: country-notes-29-36
-Next PR after #302: #303
+Parallel working PR: #303
+Parallel working branch: country-profiles-29-36
+Next PR after #303: #304
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #302 head:
+Current tracker counts on the PR #303 head:
 
 ```text
 published:       20
-profile_ready:    8
-note_reviewed:    8
+profile_ready:   16
+note_reviewed:    0
 source_tested:    0
 not_started:     62
 total:           98
@@ -44,9 +44,9 @@ Current route state:
 formally published English routes:   20
 formally published Japanese routes:  20
 formally published total routes:     40
-profile-ready English routes:         8
-profile-ready Japanese routes:        8
-profile-ready total routes:          16
+profile-ready English routes:        16
+profile-ready Japanese routes:       16
+profile-ready total routes:          32
 final target routes:                196
 ```
 
@@ -54,10 +54,10 @@ PR state:
 
 ```text
 roadmap range: #284-#337
-merged foundation and waves: #284-#299, #301
+merged foundation and waves: #284-#299, #301-#302
 publication gate open:       #300
-parallel editorial work:     #302
-next planned:                #303
+parallel profile work:       #303
+next planned:                #304
 ```
 
 PR #300 remains the publication gate for entries 21-28. It must not merge or mark those entries published until one final rendered Cloudflare preview is reviewed. Independent source-test, reviewed-note, and profile work may continue in parallel because those stages do not require Cloudflare.
@@ -131,6 +131,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #298 | merged | Added reviewed notes for entries 21-28. |
 | #299 | merged | Added profile v2 records and profile-ready routes for entries 21-28. |
 | #301 | merged | Added official source tests and conservative country ceilings for entries 29-36. |
+| #302 | merged | Added reviewed country notes and editorial boundaries for entries 29-36. |
 
 ## 7. Publication gate for entries 21-28
 
@@ -166,15 +167,18 @@ Entries:
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
 | #301 | merged | Added source tests with national completeness separated from subsystem capability. |
-| #302 | in progress | Add reviewed notes and advance all eight entries to `note_reviewed`. |
-| #303 | next | Add Profile v2 records, reviewed registry references, and reach `profile_ready`. |
-| #304 | planned | QA and publish. Validate sixteen routes and use one final preview. |
+| #302 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
+| #303 | in progress | Add Profile v2 records, reviewed country/source references, and reach `profile_ready`. |
+| #304 | next | QA and publish. Validate sixteen routes and use one final preview. |
 
-Reviewed ceilings retained through PR #302:
+Reviewed ceilings retained through PR #303:
 
 - A public ceiling: Ireland, France, Saudi Arabia.
 - C public ceiling: United Kingdom, United States, Australia, Canada, India.
 - United States, Australia, Canada, and India expose A-level detail in reviewed subsystems but remain C at country level because national multi-authority or multi-code completeness is not established.
+- France preserves France Galop and LETROT as separate systems.
+- Canada preserves Ontario Racing and Standardbred Canada as separate systems.
+- India preserves four reviewed turf-club systems without claiming national completeness.
 
 ## 9. Remaining wave schedule
 
