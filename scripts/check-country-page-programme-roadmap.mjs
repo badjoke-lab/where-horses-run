@@ -41,7 +41,7 @@ const alwaysRequired = new Set(['published', 'profile_ready', 'not_started', 'to
 const expectedCountLines = allCountLines.filter(([label, count]) => alwaysRequired.has(label) || count > 0);
 
 for (const [label, count] of expectedCountLines) {
-  const pattern = new RegExp(`^${label}:\s+${count}$`, 'm');
+  const pattern = new RegExp(`^${label}:\\s+${count}$`, 'm');
   if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
 }
 
