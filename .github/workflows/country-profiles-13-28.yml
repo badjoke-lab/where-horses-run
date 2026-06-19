@@ -1,9 +1,10 @@
-name: Country profiles 13-20
+name: Country profiles 13-28
 
 on:
   pull_request:
     paths:
       - 'data/static/country-page-countries-15-20.json'
+      - 'data/static/country-page-countries-21-28.json'
       - 'data/static/country-page-sources-14-*.json'
       - 'data/static/country-page-sources-15-*.json'
       - 'data/static/country-page-sources-16-*.json'
@@ -11,6 +12,7 @@ on:
       - 'data/static/country-page-sources-18-*.json'
       - 'data/static/country-page-sources-19-*.json'
       - 'data/static/country-page-sources-20-*.json'
+      - 'data/static/country-page-sources-21-28.json'
       - 'data/static/country-profiles-v2-13-*.json'
       - 'data/static/country-profiles-v2-14-*.json'
       - 'data/static/country-profiles-v2-15-*.json'
@@ -19,16 +21,29 @@ on:
       - 'data/static/country-profiles-v2-18-*.json'
       - 'data/static/country-profiles-v2-19-*.json'
       - 'data/static/country-profiles-v2-20-*.json'
+      - 'data/static/country-profiles-v2-21-*.json'
+      - 'data/static/country-profiles-v2-22-*.json'
+      - 'data/static/country-profiles-v2-23-*.json'
+      - 'data/static/country-profiles-v2-24-*.json'
+      - 'data/static/country-profiles-v2-25-*.json'
+      - 'data/static/country-profiles-v2-26-*.json'
+      - 'data/static/country-profiles-v2-27-*.json'
+      - 'data/static/country-profiles-v2-28-*.json'
       - 'docs/country-pages/**'
+      - 'docs/runbooks/pr-299.md'
       - 'src/lib/data.ts'
       - 'src/lib/country-profile-runtime.ts'
       - 'scripts/check-country-detail-profile-runtime.mjs'
       - 'scripts/check-country-profiles-13-20.mjs'
-      - '.github/workflows/country-profiles-13-20.yml'
+      - 'scripts/check-country-profiles-21-28.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-13-28.yml'
   push:
     branches: [main]
     paths:
       - 'data/static/country-page-countries-15-20.json'
+      - 'data/static/country-page-countries-21-28.json'
       - 'data/static/country-page-sources-14-*.json'
       - 'data/static/country-page-sources-15-*.json'
       - 'data/static/country-page-sources-16-*.json'
@@ -36,6 +51,7 @@ on:
       - 'data/static/country-page-sources-18-*.json'
       - 'data/static/country-page-sources-19-*.json'
       - 'data/static/country-page-sources-20-*.json'
+      - 'data/static/country-page-sources-21-28.json'
       - 'data/static/country-profiles-v2-13-*.json'
       - 'data/static/country-profiles-v2-14-*.json'
       - 'data/static/country-profiles-v2-15-*.json'
@@ -44,12 +60,28 @@ on:
       - 'data/static/country-profiles-v2-18-*.json'
       - 'data/static/country-profiles-v2-19-*.json'
       - 'data/static/country-profiles-v2-20-*.json'
+      - 'data/static/country-profiles-v2-21-*.json'
+      - 'data/static/country-profiles-v2-22-*.json'
+      - 'data/static/country-profiles-v2-23-*.json'
+      - 'data/static/country-profiles-v2-24-*.json'
+      - 'data/static/country-profiles-v2-25-*.json'
+      - 'data/static/country-profiles-v2-26-*.json'
+      - 'data/static/country-profiles-v2-27-*.json'
+      - 'data/static/country-profiles-v2-28-*.json'
       - 'docs/country-pages/**'
+      - 'docs/runbooks/pr-299.md'
       - 'src/lib/data.ts'
       - 'src/lib/country-profile-runtime.ts'
       - 'scripts/check-country-detail-profile-runtime.mjs'
       - 'scripts/check-country-profiles-13-20.mjs'
-      - '.github/workflows/country-profiles-13-20.yml'
+      - 'scripts/check-country-profiles-21-28.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-13-28.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -63,6 +95,9 @@ jobs:
         with:
           node-version: 22.12.0
       - run: node scripts/check-country-profiles-13-20.mjs
+      - run: node scripts/check-country-profiles-21-28.mjs
       - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
       - run: npm install
       - run: npm run build

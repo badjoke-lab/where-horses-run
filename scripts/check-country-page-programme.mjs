@@ -139,9 +139,9 @@ const statusCounts = rows.reduce((counts, row) => {
   return counts;
 }, {});
 if ((statusCounts.published ?? 0) !== 20) fail('tracker must contain 20 published rows');
-if ((statusCounts.profile_ready ?? 0) !== 0) fail('tracker must contain 0 profile_ready rows');
+if ((statusCounts.profile_ready ?? 0) !== 8) fail('tracker must contain 8 profile_ready rows');
 if ((statusCounts.source_tested ?? 0) !== 0) fail('tracker must contain 0 source_tested rows');
-if ((statusCounts.note_reviewed ?? 0) !== 8) fail('tracker must contain 8 note_reviewed rows');
+if ((statusCounts.note_reviewed ?? 0) !== 0) fail('tracker must contain 0 note_reviewed rows');
 if ((statusCounts.page_qa ?? 0) !== 0) fail('tracker must contain 0 page_qa rows');
 if ((statusCounts.not_started ?? 0) !== 70) fail('tracker must contain 70 not_started rows');
 
@@ -163,4 +163,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
 console.log('GROUP_COUNTS_VALID: 27 + 29 + 16 + 13 + 6 + 4 + 3 = 98');
-console.log('PROGRAMME_COUNTS: published=20 note_reviewed=8 not_started=70');
+console.log('PROGRAMME_COUNTS: published=20 profile_ready=8 not_started=70');

@@ -82,7 +82,7 @@ for (const [index, profile] of profiles.entries()) {
 for (const countryId of ['japan', 'hong-kong']) {
   if (!seenCountryIds.has(countryId)) fail(`${countryId} must have a profile-v2 record`);
 }
-if (profiles.length !== 20) fail(`runtime must contain 20 reviewed profile-v2 records after PR #295; found ${profiles.length}`);
+if (profiles.length !== 28) fail(`runtime must contain 28 reviewed profile-v2 records after PR #299; found ${profiles.length}`);
 
 const runtimeText = read('src/lib/country-profile-runtime.ts');
 if (runtimeText.includes('legacy-compat')) fail('runtime must not expose legacy-compat profile origin');
@@ -103,7 +103,7 @@ if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2)')) fail('data.
 if (dataText.includes('legacyCountryProfiles') || dataText.includes("country-profiles.json'")) {
   fail('data.ts must not import or pass the legacy profile collection');
 }
-for (const deliveryNo of ['13', '14', '15', '16', '17', '18', '19', '20']) {
+for (let deliveryNo = 13; deliveryNo <= 28; deliveryNo += 1) {
   if (!dataText.includes(`countryProfilesV2${deliveryNo}`)) fail(`data.ts must load profile batch ${deliveryNo}`);
 }
 if (!dataText.includes('return countryProfiles.find((profile) => profile.country_id === countryId)')) {
