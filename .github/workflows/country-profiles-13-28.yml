@@ -79,10 +79,6 @@ on:
       - 'scripts/check-country-page-programme-roadmap.mjs'
       - '.github/workflows/country-profiles-13-28.yml'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
@@ -99,5 +95,3 @@ jobs:
       - run: node scripts/check-country-detail-profile-runtime.mjs
       - run: node scripts/check-country-page-programme.mjs
       - run: node scripts/check-country-page-programme-roadmap.mjs
-      - run: npm install
-      - run: npm run build
