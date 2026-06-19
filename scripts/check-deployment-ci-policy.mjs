@@ -61,7 +61,10 @@ for (const [file, link] of linkChecks) {
 }
 
 const roadmapWorkflow = read('.github/workflows/country-page-programme-roadmap.yml');
-if (!roadmapWorkflow.includes("'docs/operations/deployment-and-ci-policy.md'")) {
+const watchesOperations =
+  roadmapWorkflow.includes("'docs/operations/**'") ||
+  roadmapWorkflow.includes("'docs/operations/deployment-and-ci-policy.md'");
+if (!watchesOperations) {
   fail('roadmap workflow must watch the deployment policy');
 }
 if (!roadmapWorkflow.includes('node scripts/check-deployment-ci-policy.mjs')) {
