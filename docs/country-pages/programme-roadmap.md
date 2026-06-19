@@ -19,11 +19,11 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 Current main state:
 
 ```text
-Merged through: PR #297
-Latest confirmed merge: PR #297
-Working PR: #298
-Working branch: country-notes-21-28
-Next PR: #299
+Merged through: PR #298
+Latest confirmed merge: PR #298
+Working PR: #299
+Working branch: country-profiles-21-28
+Next PR: #300
 Final release gate: #337
 ```
 
@@ -32,8 +32,8 @@ Current tracker counts on main:
 ```text
 published:       20
 profile_ready:    0
-note_reviewed:    0
-source_tested:    8
+note_reviewed:    8
+source_tested:    0
 not_started:     70
 total:           98
 ```
@@ -51,9 +51,9 @@ PR count:
 
 ```text
 roadmap range: #284-#337
-merged:        #284-#297 = 14 PRs
-in progress:   #298
-remaining after #298: #299-#337
+merged:        #284-#298 = 15 PRs
+in progress:   #299
+remaining after #299: #300-#337
 ```
 
 ## 3. Operating model
@@ -161,7 +161,7 @@ Entries:
 | PR | Work and completion condition |
 | ---: | --- |
 | #297 | Completed public-safe source tests for entries 21-28, including official routes, capability ranks, public ceilings, review dates, and remote acquisition decisions. |
-| #298 | Reviewed notes for entries 21-28. Separate verified facts, observations, inferences, unresolved claims, and revalidation triggers. |
+| #298 | Completed reviewed notes for entries 21-28 with verified facts, observations, inferences, unresolved claims, public ceilings, and revalidation triggers. |
 | #299 | Profile v2 for entries 21-28. Add bilingual profiles and only the country, source, and racecourse records supported by reviewed evidence. |
 | #300 | QA and publish entries 21-28. Validate sixteen routes and advance only passing rows to `published`. |
 
