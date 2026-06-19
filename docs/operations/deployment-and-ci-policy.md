@@ -233,6 +233,6 @@ Update this policy when any of the following changes:
 - GitHub Actions build architecture
 - standard PR wave
 
-Every programme roadmap and development index must link to this policy.
+Every development documentation index must link to this policy. The country-page roadmap CI must watch and validate it together with the roadmap and tracker.
 
 Every non-publication merge report must confirm that Cloudflare deployment was skipped. Every QA/publish merge report must state the preview and production deployment results.
