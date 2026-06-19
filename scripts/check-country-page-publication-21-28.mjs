@@ -80,8 +80,11 @@ for (const [deliveryNo, slug, ceiling] of expected) {
   }
   profiles.set(slug, profile);
   if (profile.public_display_ceiling !== ceiling) fail(`${slug} public ceiling must be ${ceiling}`);
-  if (!Array.isArray(profile.racing_systems) || profile.racing_systems.length === 0) fail(`${slug} requires a racing system`);
-  const sourceIds = profile.racing_systems.flatMap((system) => system.source_ids ?? []);
+  if (!Array.isArray(profile.systems) || profile.systems.length === 0) fail(`${slug} requires a racing system`);
+  const sourceIds = (profile.systems ?? []).flatMap((system) => [
+    ...(system.organiser_source_ids ?? []),
+    ...(system.distributor_source_ids ?? [])
+  ]);
   if (sourceIds.length === 0) fail(`${slug} requires reviewed official source references`);
   for (const sourceId of sourceIds) {
     const source = sourceById.get(sourceId);
@@ -129,11 +132,21 @@ for (const [, slug] of expected) {
   if (countMatches(ja, /<h1\b/g) !== 1) fail(`${slug} JA must contain exactly one h1`);
   if (!en.includes(`/ja/countries/${slug}/`)) fail(`${slug} EN language switch is missing`);
   if (!ja.includes(`/countries/${slug}/`)) fail(`${slug} JA language switch is missing`);
-  if (!en.includes('This does not mean there is no racing in this country.')) fail(`${slug} EN empty-state safeguard is missing`);
-  if (!ja.includes('これは、この国で開催がないことを意味しません。')) fail(`${slug} JA empty-state safeguard is missing`);
+
+  const enHasMeetingRows = /<tbody>[\s\S]*?<tr>/.test(en);
+  const jaHasMeetingRows = /<tbody>[\s\S]*?<tr>/.test(ja);
+  if (!enHasMeetingRows && !en.includes('This does not mean there is no racing in this country.')) {
+    fail(`${slug} EN empty-state safeguard is missing`);
+  }
+  if (!jaHasMeetingRows && !ja.includes('これは、この国で開催がないことを意味しません。')) {
+    fail(`${slug} JA empty-state safeguard is missing`);
+  }
 
   const profile = profiles.get(slug);
-  const sourceIds = profile?.racing_systems.flatMap((system) => system.source_ids ?? []) ?? [];
+  const sourceIds = (profile?.systems ?? []).flatMap((system) => [
+    ...(system.organiser_source_ids ?? []),
+    ...(system.distributor_source_ids ?? [])
+  ]);
   const sourceUrls = sourceIds.map((id) => sourceById.get(id)?.url).filter(Boolean);
   if (!sourceUrls.some((url) => en.includes(url))) fail(`${slug} EN official source link is missing`);
   if (!sourceUrls.some((url) => ja.includes(url))) fail(`${slug} JA official source link is missing`);
