@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build
+    name: Build and publication QA
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,3 +27,12 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Validate country pages 01-12
+        run: node scripts/check-country-page-publication-01-12.mjs
+
+      - name: Validate country pages 13-20
+        run: node scripts/check-country-page-publication-13-20.mjs
+
+      - name: Validate country pages 21-28 before preview
+        run: node scripts/check-country-page-publication-21-28.mjs
