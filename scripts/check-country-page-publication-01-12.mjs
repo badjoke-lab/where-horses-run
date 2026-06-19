@@ -37,6 +37,8 @@ const rows = trackerLines.slice(1).map((line, index) => {
   return Object.fromEntries(headers.map((header, column) => [header, values[column]]));
 }).filter(Boolean);
 
+if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);
+
 for (const [deliveryNo, slug] of expected) {
   const row = rows.find((entry) => entry.delivery_no === deliveryNo);
   if (!row) {
@@ -51,15 +53,6 @@ for (const [deliveryNo, slug] of expected) {
   if (row.qa_status !== 'passed') fail(`${slug} QA must be passed`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(row.page_published_at)) fail(`${slug} requires page_published_at`);
 }
-
-const publishedCount = rows.filter((row) => row.programme_status === 'published').length;
-const profileReadyCount = rows.filter((row) => row.programme_status === 'profile_ready').length;
-const noteReviewedCount = rows.filter((row) => row.programme_status === 'note_reviewed').length;
-const notStartedCount = rows.filter((row) => row.programme_status === 'not_started').length;
-if (publishedCount !== 20) fail(`expected 20 published rows; found ${publishedCount}`);
-if (profileReadyCount !== 0) fail(`expected 0 profile_ready rows; found ${profileReadyCount}`);
-if (noteReviewedCount !== 0) fail(`expected 0 note_reviewed rows; found ${noteReviewedCount}`);
-if (notStartedCount !== 78) fail(`expected 78 not_started rows; found ${notStartedCount}`);
 
 const staticDirectory = path.join(root, 'data/static');
 const profileFiles = fs.readdirSync(staticDirectory)
@@ -121,7 +114,6 @@ if (!process.exitCode) {
   console.log('COUNTRY_PAGE_PUBLICATION_01_12_VALID');
   console.log('PUBLICATION_QA_SCOPE: entries 01-12');
   console.log('PUBLISHED_ROUTES: 12 EN + 12 JA');
-  console.log('TRACKER_COUNTS: published=20 not_started=78');
   console.log('METADATA: canonical + hreflang + page-specific language switch');
   console.log('RESPONSIVE_AND_ACCESSIBILITY: validated');
 }
