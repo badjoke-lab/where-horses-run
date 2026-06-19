@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -38,36 +39,44 @@ if (sources.length !== 15) fail(`expected 15 source records; found ${sources.len
 if (countryIds.size !== countries.length) fail('country IDs must be unique');
 if (sourceIds.size !== sources.length) fail('source IDs must be unique');
 
-for (const [deliveryNo, slug, ceiling, sourceStatus] of expected) {
-  if (!countryIds.has(slug)) fail(`missing country record ${slug}`);
-  const profilePath = `data/static/country-profiles-v2-${deliveryNo}-${slug}.json`;
-  if (!fs.existsSync(path.join(root, profilePath))) {
-    fail(`missing ${profilePath}`);
-    continue;
-  }
-  const batch = parse(profilePath);
-  if (!Array.isArray(batch) || batch.length !== 1) {
-    fail(`${profilePath} must contain exactly one profile`);
-    continue;
-  }
-  const profile = batch[0];
-  if (profile.country_id !== slug || profile.slug !== slug) fail(`${slug} profile identity mismatch`);
-  if (profile.status !== 'reviewed') fail(`${slug} profile must be reviewed`);
-  if (profile.page_kind !== 'country') fail(`${slug} page_kind must be country`);
-  if (profile.last_reviewed !== '2026-06-19') fail(`${slug} last_reviewed must be 2026-06-19`);
-  if (profile.public_display_ceiling !== ceiling) fail(`${slug} public ceiling must be ${ceiling}`);
-  if (profile.source_test_status !== sourceStatus) fail(`${slug} source status must be ${sourceStatus}`);
-  if (!Array.isArray(profile.systems) || profile.systems.length < 1) fail(`${slug} must contain a reviewed system`);
-  for (const system of profile.systems ?? []) {
-    for (const id of [...(system.organiser_source_ids ?? []), ...(system.distributor_source_ids ?? [])]) {
-      if (!sourceIds.has(id)) fail(`${slug} references missing source ${id}`);
+const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-profiles-21-28-'));
+try {
+  for (const [deliveryNo, slug, ceiling, sourceStatus] of expected) {
+    if (!countryIds.has(slug)) fail(`missing country record ${slug}`);
+    const profilePath = `data/static/country-profiles-v2-${deliveryNo}-${slug}.json`;
+    if (!fs.existsSync(path.join(root, profilePath))) {
+      fail(`missing ${profilePath}`);
+      continue;
     }
+    const batch = parse(profilePath);
+    if (!Array.isArray(batch) || batch.length !== 1) {
+      fail(`${profilePath} must contain exactly one profile`);
+      continue;
+    }
+    const profile = batch[0];
+    if (profile.country_id !== slug || profile.slug !== slug) fail(`${slug} profile identity mismatch`);
+    if (profile.status !== 'reviewed') fail(`${slug} profile must be reviewed`);
+    if (profile.page_kind !== 'country') fail(`${slug} page_kind must be country`);
+    if (profile.last_reviewed !== '2026-06-19') fail(`${slug} last_reviewed must be 2026-06-19`);
+    if (profile.public_display_ceiling !== ceiling) fail(`${slug} public ceiling must be ${ceiling}`);
+    if (profile.source_test_status !== sourceStatus) fail(`${slug} source status must be ${sourceStatus}`);
+    if (!Array.isArray(profile.systems) || profile.systems.length < 1) fail(`${slug} must contain a reviewed system`);
+    for (const system of profile.systems ?? []) {
+      for (const id of [...(system.organiser_source_ids ?? []), ...(system.distributor_source_ids ?? [])]) {
+        if (!sourceIds.has(id)) fail(`${slug} references missing source ${id}`);
+      }
+    }
+
+    const tempProfilePath = path.join(tempDirectory, `${deliveryNo}-${slug}.json`);
+    fs.writeFileSync(tempProfilePath, `${JSON.stringify(profile, null, 2)}\n`);
+    const result = spawnSync(process.execPath, ['scripts/check-country-profile-v2.mjs', tempProfilePath], {
+      cwd: root,
+      encoding: 'utf8'
+    });
+    if (result.status !== 0) fail(`${slug} schema validation failed: ${(result.stderr || result.stdout).trim()}`);
   }
-  const result = spawnSync(process.execPath, ['scripts/check-country-profile-v2.mjs', profilePath], {
-    cwd: root,
-    encoding: 'utf8'
-  });
-  if (result.status !== 0) fail(`${slug} schema validation failed: ${(result.stderr || result.stdout).trim()}`);
+} finally {
+  fs.rmSync(tempDirectory, { recursive: true, force: true });
 }
 
 for (const source of sources) {
