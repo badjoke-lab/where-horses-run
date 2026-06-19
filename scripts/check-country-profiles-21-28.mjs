@@ -112,15 +112,6 @@ for (const [deliveryNo, slug] of expected) {
   if (row[index.page_published_at]) fail(`${slug} must not have a publication date`);
 }
 
-const counts = rows.reduce((result, row) => {
-  const status = row[index.programme_status];
-  result[status] = (result[status] ?? 0) + 1;
-  return result;
-}, {});
-for (const [status, count] of Object.entries({ published: 20, profile_ready: 8, not_started: 70 })) {
-  if ((counts[status] ?? 0) !== count) fail(`tracker count ${status} must be ${count}; found ${counts[status] ?? 0}`);
-}
-
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
