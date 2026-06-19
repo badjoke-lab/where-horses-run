@@ -8,9 +8,15 @@ Last roadmap review: 2026-06-19
 
 ## 1. Purpose
 
-This document is the repository-level source of truth for the PR sequence, current position, work boundaries, and completion gates for the 98-country detail-page programme. The programme closes only when all 98 rows and all 196 bilingual routes satisfy the completion contract.
+This document is the repository-level source of truth for the PR sequence, current position, work boundaries, and completion gates for the 98-country detail-page programme.
+
+The roadmap uses actual GitHub PR numbers. Older planning labels such as `PR-065` are historical planning identifiers and are not the current execution sequence.
+
+The programme is complete only when all 98 tracker rows and all 196 bilingual routes satisfy the completion contract.
 
 ## 2. Current position
+
+Current main state after PR #299 merges:
 
 ```text
 Merged through: PR #299
@@ -26,17 +32,21 @@ Current tracker counts on the PR #299 head:
 ```text
 published:       20
 profile_ready:    8
+note_reviewed:    0
+source_tested:    0
 not_started:     70
 total:           98
 ```
 
-Current route state:
+Current route count:
 
 ```text
 formally published English routes:   20
 formally published Japanese routes:  20
 formally published total routes:     40
-profile-ready routes awaiting QA:    16
+profile-ready English routes:         8
+profile-ready Japanese routes:        8
+profile-ready total routes:          16
 final target routes:                196
 ```
 
@@ -51,22 +61,43 @@ remaining after #300: #301-#337
 
 ## 3. Operating model
 
-GitHub work is performed directly in the repository whenever possible: branch creation, data and documentation changes, validators, workflows, Draft PR creation, CI diagnosis, review, merge, tracker updates, and roadmap updates.
+GitHub work is performed directly in the repository whenever possible:
 
-Local work is requested only when a required official source cannot be resolved remotely because of access controls, regional restrictions, login requirements, JavaScript-only delivery, or files available only on the user's device. Local requests must identify the exact source, action, allowed output, prohibited content, and handoff format.
+- branch creation
+- data and documentation changes
+- validators and workflows
+- Draft PR creation
+- CI diagnosis and repair
+- review and merge
+- tracker and roadmap updates
 
-All branch, PR, workflow, preview, and merge work follows `docs/operations/deployment-and-ci-policy.md`. Source-test, note, and profile PRs do not use Cloudflare. QA/publish PRs use one final preview and one production deployment only.
+Local work is requested only when a required official source cannot be resolved remotely because of access controls, regional restrictions, login requirements, JavaScript-only delivery, or files available only on the user's device.
+
+When local work is required, the request must specify:
+
+- exact country or source
+- exact URL or file
+- exact command or browser action
+- allowed output
+- prohibited content
+- expected handoff format
+
+Local tasks should be batched by wave where practical rather than requested one country at a time.
+
+All country-page branches, PRs, workflows, previews, and merges must also follow `docs/operations/deployment-and-ci-policy.md`. Normal source-test, reviewed-note, and profile-v2 work does not use Cloudflare. QA/publish work uses a normal non-preview branch until GitHub validation passes, then one final `preview-*` deployment and one production deployment after merge.
 
 ## 4. Standard four-PR wave
 
-| Stage | Purpose | Tracker transition |
-| --- | --- | --- |
-| Source test | Confirm official routes, source roles, capability, limitations, and public ceiling | `not_started` -> `source_tested` |
-| Reviewed note | Convert findings into reusable editorial decisions | `source_tested` -> `note_reviewed` |
-| Profile v2 | Create bilingual structured profiles and reviewed registry references | `note_reviewed` -> `profile_ready` |
-| QA and publish | Validate routes, metadata, links, layout, accessibility, and publication boundary | `profile_ready` -> `published` |
+Each normal eight-entry wave uses four PRs.
 
-A source-test failure may produce a link-first, pending, explanatory, special, or archive treatment rather than blocking the page.
+| Stage | Purpose | Typical tracker transition |
+| --- | --- | --- |
+| Source test | Confirm official routes, source roles, technical capability, limitations, and public ceiling | `not_started` -> `source_tested` |
+| Reviewed note | Convert source findings into reusable editorial decisions | `source_tested` -> `note_reviewed` |
+| Profile v2 | Create bilingual structured profiles and required registry records | `note_reviewed` -> `profile_ready` |
+| QA and publish | Validate routes, metadata, links, responsive layout, accessibility, and publication boundary | `profile_ready` -> `published` |
+
+A source-test failure does not automatically block a page. It may produce a link-first, pending, explanatory, special, or archive treatment instead.
 
 ## 5. Public display boundary
 
@@ -78,82 +109,216 @@ A   race label or number plus post time
 A+  selected detail-page fields only after a separate review
 ```
 
-List pages remain one meeting per row. Do not publish runners, participants, weights, odds, results, payouts, predictions, complete racecards, raw official text, embedded video, direct stream URLs, or unofficial mirrors.
+List pages remain one meeting per row at every rank.
 
-## 6. Completed work
+Do not publish:
 
-| PR | Status | Result |
+- runners or horses
+- jockeys, trainers, owners, or other participants
+- weights
+- odds or betting recommendations
+- results or payouts
+- predictions or tips
+- complete racecards
+- raw official HTML or copied source text
+- embedded video
+- direct stream URLs
+- unofficial mirror links
+
+## 6. Completed foundation and first publication batch
+
+| PR | Status | Purpose and result |
 | ---: | --- | --- |
-| #284 | merged | Created the 98-row tracker and completion programme. |
-| #285 | merged | Added public-safe source-test handoff tooling. |
-| #286 | merged | Defined the country profile v2 contract. |
-| #287 | merged | Routed country detail pages through profile v2. |
-| #288 | merged | Aligned country, source, and racecourse identifiers for entries 01-12. |
-| #289 | merged | Added profiles for entries 01-04. |
-| #290 | merged | Added profiles for entries 05-08. |
-| #291 | merged | Added profiles for entries 09-12. |
-| #292 | merged | Published entries 01-12. |
-| #293 | merged | Added source tests for entries 13-20. |
-| #294 | merged | Added reviewed notes for entries 13-20. |
-| #295 | merged | Added profile v2 records for entries 13-20. |
-| #296 | merged | Published entries 13-20. |
-| #297 | merged | Added source tests for entries 21-28 and the deployment policy. |
-| #298 | merged | Added reviewed notes for entries 21-28. |
-| #299 | merged | Added eight reviewed profile-v2 records, reviewed country/source references, runtime loading, validation, and profile-ready tracker state for entries 21-28. |
+| #284 | merged | Created the 98-row canonical tracker, completion contract, programme states, date semantics, and baseline programme validator. |
+| #285 | merged | Added public-safe source-test export rules, schema, fixtures, validator, and workflow. Raw source captures remain outside the public repository. |
+| #286 | merged | Added country profile v2 schema and validation for bilingual content, page kind, source roles, public ceiling, and prohibited fields. |
+| #287 | merged | Added v2-first country-page runtime with a temporary Japan and Hong Kong legacy fallback. |
+| #288 | merged | Canonicalised country, source, and racecourse IDs for entries 01-12 and added dangling-reference validation. |
+| #289 | merged | Added reviewed profiles for UAE, South Korea, Turkey, and Morocco. |
+| #290 | merged | Added reviewed profiles for Chile, Peru, Mexico, and Brazil. |
+| #291 | merged | Added reviewed profiles for Bahrain, Qatar, Oman, and Zimbabwe. |
+| #292 | merged | Published entries 01-12 in English and Japanese and added permanent publication QA. |
 
-## 7. Current publication gate
+## 7. Wave 13-20
 
-### PR #300 — QA and publish entries 21-28
+Entries:
 
-Validate all sixteen English and Japanese routes, canonical and hreflang metadata, language switching, source links, responsive layout, accessibility, empty states, and public ceilings. Complete normal work on `country-pages-21-28-publication-qa`; create or copy to a `preview-*` branch only after GitHub validation passes. Use one final preview deployment and advance only passing rows to `published`.
+```text
+13 Japan
+14 Hong Kong
+15 New Zealand
+16 South Africa
+17 Uruguay
+18 Sweden
+19 Denmark
+20 Czech Republic
+```
 
-## 8. Remaining wave schedule
+| PR | Status | Work |
+| ---: | --- | --- |
+| #293 | merged | Added public-safe source-test decisions. Multi-system countries remain separated; technical capability and public ceilings are recorded independently. |
+| #294 | merged | Added reviewed country notes and advanced entries 15-20 to `note_reviewed`. Japan and Hong Kong retained seed profiles pending v2 migration. |
+| #295 | merged | Migrated Japan and Hong Kong from legacy seed profiles to profile v2. Added profile v2 and source-led registry records for New Zealand, South Africa, Uruguay, Sweden, Denmark, and the Czech Republic. All eight entries are `profile_ready`, and the runtime is v2-only. |
+| #296 | merged | Ran bilingual route and publication QA for entries 13-20. Verified canonical, hreflang, language switch, racecourse and source links, responsive layout, accessibility, public ceilings, and empty states. Eight entries and sixteen routes are `published`. |
 
-| Entries | Source test | Reviewed note | Profile v2 | QA and publish |
-| --- | ---: | ---: | ---: | ---: |
-| 29-36 | #301 | #302 | #303 | #304 |
-| 37-44 | #305 | #306 | #307 | #308 |
-| 45-52 | #309 | #310 | #311 | #312 |
-| 53-60 | #313 | #314 | #315 | #316 |
-| 61-68 | #317 | #318 | #319 | #320 |
-| 69-76 | #321 | #322 | #323 | #324 |
-| 77-84 | #325 | #326 | #327 | #328 |
-| 85-92 | #329 | #330 | #331 | #332 |
-| 93-98 | #333 | #334 | #335 | #336 |
+## 8. Wave 21-28
 
-Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, uses only reviewed references, and publishes only routes that satisfy the completion contract.
+| PR | Work and completion condition |
+| ---: | --- |
+| #297 | Completed public-safe source tests for entries 21-28, including official routes, capability ranks, public ceilings, review dates, and remote acquisition decisions. |
+| #298 | Completed reviewed notes for entries 21-28 with verified facts, observations, inferences, unresolved claims, public ceilings, and revalidation triggers. |
+| #299 | Completed profile v2 for entries 21-28. Added eight bilingual reviewed profiles, reviewed country and official-source records, v2 runtime loading, permanent validation, and `profile_ready` tracker state. |
+| #300 | QA and publish entries 21-28. Work first on `country-pages-21-28-publication-qa`; validate sixteen routes and GitHub production build, then create or copy the final reviewed head to a `preview-*` branch for one rendered preview. Advance only passing rows to `published`. |
 
-## 9. Final release gate
+## 9. Wave 29-36
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #301 | Source tests for entries 29-36. Keep separate racing systems and authorities separate. |
+| #302 | Reviewed notes for entries 29-36. Confirm page kind and safe public claims. |
+| #303 | Profile v2 for entries 29-36. Resolve schema and ID references and reach `profile_ready`. |
+| #304 | QA and publish entries 29-36. Validate routes, metadata, responsive layout, accessibility, and public boundaries. |
+
+## 10. Wave 37-44
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #305 | Source tests for entries 37-44. Determine official calendar or programme availability and public ceilings. |
+| #306 | Reviewed notes for entries 37-44. Document systems, organisers, seasonality, venues, and limitations. |
+| #307 | Profile v2 for entries 37-44. Create bilingual profiles and reviewed references. |
+| #308 | QA and publish entries 37-44. Publish only routes that satisfy the completion contract. |
+
+## 11. Wave 45-52
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #309 | Source tests for entries 45-52. Distinguish unreachable sources from absence of racing. |
+| #310 | Reviewed notes for entries 45-52. Decide country, special, explanatory, or archive treatment. |
+| #311 | Profile v2 for entries 45-52. Implement the correct page kind and bilingual content. |
+| #312 | QA and publish entries 45-52. Pay special attention to current-list inclusion and empty-state wording. |
+
+## 12. Wave 53-60
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #313 | Source tests for entries 53-60. Record organiser and distributor roles separately. |
+| #314 | Reviewed notes for entries 53-60. Preserve calendar-source and venue-source distinctions. |
+| #315 | Profile v2 for entries 53-60. Add systems, coverage notes, and revalidation triggers. |
+| #316 | QA and publish entries 53-60. Validate routes, metadata, links, and display ceilings. |
+
+## 13. Wave 61-68
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #317 | Source tests for entries 61-68. Prefer accurate rank C or link-first decisions over unsupported detail. |
+| #318 | Reviewed notes for entries 61-68. Remove unsupported claims and document limited coverage honestly. |
+| #319 | Profile v2 for entries 61-68. Create thin but accurate profiles without invented venues. |
+| #320 | QA and publish entries 61-68. Focus on empty states, freshness, and bilingual consistency. |
+
+## 14. Wave 69-76
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #321 | Source tests for entries 69-76. Identify current, inactive, special, explanatory, and archive candidates. |
+| #322 | Reviewed notes for entries 69-76. Confirm page kind and verified status. |
+| #323 | Profile v2 for entries 69-76. Implement `country`, `special`, `explanatory`, or `archive` correctly. |
+| #324 | QA and publish entries 69-76. Ensure archive and explanatory pages do not enter current calendars. |
+
+## 15. Wave 77-84
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #325 | Source tests for entries 77-84. Confirm source existence, update status, and current activity. |
+| #326 | Reviewed notes for entries 77-84. Distinguish inaccessible information from no current racing. |
+| #327 | Profile v2 for entries 77-84. Add current or explanatory profiles as supported. |
+| #328 | QA and publish entries 77-84. Validate listing inclusion, empty states, and date fields. |
+
+## 16. Wave 85-92
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #329 | Source tests for entries 85-92. Do not force incomplete countries into `complete`. |
+| #330 | Reviewed notes for entries 85-92. Confirm current, special, explanatory, or archive treatment. |
+| #331 | Profile v2 for entries 85-92. Add bilingual profiles and reviewed references. |
+| #332 | QA and publish entries 85-92. Validate sixteen routes and advance passing rows. |
+
+## 17. Wave 93-98
+
+This final normal wave contains six entries.
+
+| PR | Work and completion condition |
+| ---: | --- |
+| #333 | Source tests for entries 93-98. Ensure no tracker row remains without an acquisition decision. |
+| #334 | Reviewed notes for entries 93-98. Ensure every row is at least `note_reviewed`. |
+| #335 | Profile v2 for entries 93-98. Ensure all 98 rows have reviewed structured profiles. |
+| #336 | QA and publish entries 93-98. Complete the final twelve bilingual routes and reach 98 published rows. |
+
+## 18. Final release gate
 
 ### PR #337 — full programme audit
 
-PR #337 adds no new country scope. Required checks:
+PR #337 adds no new country scope. It audits the complete programme.
+
+Required checks:
 
 ```text
 tracker rows exactly 98
 English routes exactly 98
 Japanese routes exactly 98
 bilingual routes exactly 196
+
 no duplicate slugs
 no missing country IDs
 no dangling source IDs
 no dangling racecourse IDs
+
+no Japan or Hong Kong legacy fallback
 all production profiles use v2
 page-kind listing rules are correct
 archive and explanatory pages are absent from current calendars
+
 published rows have review and publication dates
 all pages have explicit coverage and source states
 all public ceilings are enforced
 one meeting per list row
 prohibited fields are absent
 private and local source files are absent from the public build
+
 all validators pass
 full production build passes
 final programme report is generated
 ```
 
-## 10. Roadmap maintenance rules
+The programme closes only after PR #337 is merged and the tracker reports 98 published rows.
 
-Update this roadmap in the same PR whenever the working PR, merged-through PR, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
+## 19. Roadmap maintenance rules
 
-Every merge report states the PR number and title, merge SHA, changed behaviour and files, CI result, tracker counts, local-work requirement, remaining schedule position, and next PR.
+This file must be updated in the same PR whenever any of the following changes:
+
+- current working PR
+- merged-through PR
+- tracker counts
+- wave boundaries
+- PR purpose or completion condition
+- final release criteria
+- local-work requirements
+
+After every merge, update:
+
+1. `Merged through`
+2. `Latest confirmed merge`
+3. `Working PR`
+4. `Next PR`
+5. tracker counts
+6. the status of the merged PR row
+
+The merge report must state:
+
+- PR number and title
+- merge SHA
+- changed behaviour and files
+- CI result
+- tracker counts
+- local work required or not required
+- full remaining schedule position
+- next PR
