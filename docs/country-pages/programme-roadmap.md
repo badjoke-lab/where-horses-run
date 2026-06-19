@@ -17,23 +17,23 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Merged through: PR #299
-Latest confirmed merge: PR #299
+Contiguous publication sequence merged through: PR #299
+Latest confirmed merge: PR #301
 Publication gate: PR #300 — Draft; GitHub QA passed; Cloudflare preview pending
 Publication branch: country-pages-21-28-publication-qa
-Parallel working PR: #301
-Parallel working branch: country-source-tests-29-36
-Next PR after #301: #302
+Parallel working PR: #302
+Parallel working branch: country-notes-29-36
+Next PR after #302: #303
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #301 head:
+Current tracker counts on the PR #302 head:
 
 ```text
 published:       20
 profile_ready:    8
-note_reviewed:    0
-source_tested:    8
+note_reviewed:    8
+source_tested:    0
 not_started:     62
 total:           98
 ```
@@ -54,10 +54,10 @@ PR state:
 
 ```text
 roadmap range: #284-#337
-merged:        #284-#299 = 16 PRs
-publication gate open: #300
-parallel research:     #301
-next planned:          #302
+merged foundation and waves: #284-#299, #301
+publication gate open:       #300
+parallel editorial work:     #302
+next planned:                #303
 ```
 
 PR #300 remains the publication gate for entries 21-28. It must not merge or mark those entries published until one final rendered Cloudflare preview is reviewed. Independent source-test, reviewed-note, and profile work may continue in parallel because those stages do not require Cloudflare.
@@ -130,6 +130,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #297 | merged | Added source tests for entries 21-28 and the deployment/CI policy. |
 | #298 | merged | Added reviewed notes for entries 21-28. |
 | #299 | merged | Added profile v2 records and profile-ready routes for entries 21-28. |
+| #301 | merged | Added official source tests and conservative country ceilings for entries 29-36. |
 
 ## 7. Publication gate for entries 21-28
 
@@ -164,12 +165,12 @@ Entries:
 
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
-| #301 | in progress | Source tests. Preserve separate authorities and codes; record national completeness separately from subsystem capability. |
-| #302 | next | Reviewed notes. Convert verified source findings into safe bilingual editorial decisions. |
-| #303 | planned | Profile v2. Resolve IDs and reach `profile_ready`. |
+| #301 | merged | Added source tests with national completeness separated from subsystem capability. |
+| #302 | in progress | Add reviewed notes and advance all eight entries to `note_reviewed`. |
+| #303 | next | Add Profile v2 records, reviewed registry references, and reach `profile_ready`. |
 | #304 | planned | QA and publish. Validate sixteen routes and use one final preview. |
 
-PR #301 reviewed conclusions:
+Reviewed ceilings retained through PR #302:
 
 - A public ceiling: Ireland, France, Saudi Arabia.
 - C public ceiling: United Kingdom, United States, Australia, Canada, India.

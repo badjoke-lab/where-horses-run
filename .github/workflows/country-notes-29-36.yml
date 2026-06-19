@@ -1,0 +1,52 @@
+name: Country notes 29-36
+
+on:
+  pull_request:
+    paths:
+      - 'docs/country-page-notes/29-*.md'
+      - 'docs/country-page-notes/30-*.md'
+      - 'docs/country-page-notes/31-*.md'
+      - 'docs/country-page-notes/32-*.md'
+      - 'docs/country-page-notes/33-*.md'
+      - 'docs/country-page-notes/34-*.md'
+      - 'docs/country-page-notes/35-*.md'
+      - 'docs/country-page-notes/36-*.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'scripts/check-country-notes-29-36.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-notes-29-36.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/country-page-notes/29-*.md'
+      - 'docs/country-page-notes/30-*.md'
+      - 'docs/country-page-notes/31-*.md'
+      - 'docs/country-page-notes/32-*.md'
+      - 'docs/country-page-notes/33-*.md'
+      - 'docs/country-page-notes/34-*.md'
+      - 'docs/country-page-notes/35-*.md'
+      - 'docs/country-page-notes/36-*.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'scripts/check-country-notes-29-36.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-notes-29-36.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-notes-29-36.mjs
+      - run: node scripts/check-country-source-tests-29-36.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
