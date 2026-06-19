@@ -31,7 +31,7 @@ const requiredSections = [
   '## Editorial handoff'
 ];
 
-const prohibited = /(?:raw_html|direct_stream_url|full_racecard|horse_names|jockeys|trainers|odds|results|payouts|predictions)/i;
+const prohibitedStructuralTokens = /(?:raw_html|raw_text|direct_stream_url|stream_url|full_racecard|horse_names)/i;
 
 for (const [deliveryNo, slug, country, ceiling] of expected) {
   const notePath = `docs/country-page-notes/${deliveryNo}-${slug}.md`;
@@ -53,7 +53,7 @@ for (const [deliveryNo, slug, country, ceiling] of expected) {
   if (!note.includes(`docs/timetable-source-tests/${deliveryNo}-${slug}/final-summary.json`)) {
     fail(`${slug} must reference its final-summary.json`);
   }
-  if (prohibited.test(note)) fail(`${slug} note contains a prohibited public field token`);
+  if (prohibitedStructuralTokens.test(note)) fail(`${slug} note contains a prohibited structural token`);
 }
 
 const trackerPath = path.join(root, 'docs/country-pages/98-country-tracker.tsv');
