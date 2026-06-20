@@ -1,0 +1,35 @@
+name: Country source tests 45-52
+
+on:
+  pull_request:
+    paths:
+      - 'docs/timetable-source-tests/45-52-*.md'
+      - 'docs/timetable-source-tests/4*/**'
+      - 'docs/timetable-source-tests/5*/**'
+      - 'docs/country-pages/**'
+      - 'scripts/check-country-*.mjs'
+      - '.github/workflows/country-source-tests-45-52.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/timetable-source-tests/45-52-*.md'
+      - 'docs/timetable-source-tests/4*/**'
+      - 'docs/timetable-source-tests/5*/**'
+      - 'docs/country-pages/**'
+      - 'scripts/check-country-*.mjs'
+      - '.github/workflows/country-source-tests-45-52.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-source-tests-45-52.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
