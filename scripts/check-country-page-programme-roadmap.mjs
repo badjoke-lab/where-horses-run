@@ -52,9 +52,10 @@ for (let pr = 284; pr <= 337; pr += 1) {
 const requiredPhrases = [
   'Current position',
   'Publication gate: PR #300',
-  'Parallel working PR: #303',
-  'Next PR after #303: #304',
-  'Latest confirmed merge: PR #302',
+  'Second publication gate: PR #304',
+  'Parallel working PR: #305',
+  'Next PR after #305: #306',
+  'Latest confirmed merge: PR #303',
   'Final release gate: #337',
   'Local work is requested only when',
   'Standard four-PR wave',
@@ -75,4 +76,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
 console.log('PR_RANGE: 284-337');
-console.log('PARALLEL_STATE: publication_gate=300 profiles_pr=303 next=304');
+console.log('PARALLEL_STATE: publication_gates=300,304 source_tests_pr=305 next=306');

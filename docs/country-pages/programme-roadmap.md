@@ -10,31 +10,28 @@ Last roadmap review: 2026-06-20
 
 This document is the repository-level source of truth for the PR sequence, current position, work boundaries, and completion gates for the 98-country detail-page programme.
 
-The roadmap uses actual GitHub PR numbers. Older planning labels such as `PR-065` are historical planning identifiers and are not the current execution sequence.
-
 The programme is complete only when all 98 tracker rows and all 196 bilingual routes satisfy the completion contract.
 
 ## 2. Current position
 
 ```text
-Contiguous publication sequence merged through: PR #299
-Latest confirmed merge: PR #302
-Publication gate: PR #300 — Draft; GitHub QA passed; Cloudflare preview pending
-Publication branch: country-pages-21-28-publication-qa
-Parallel working PR: #303
-Parallel working branch: country-profiles-29-36
-Next PR after #303: #304
+Latest confirmed merge: PR #303
+Publication gate: PR #300 — Draft; entries 21-28; Cloudflare preview pending
+Second publication gate: PR #304 — Draft; entries 29-36; Cloudflare preview pending
+Parallel working PR: #305
+Parallel working branch: country-source-tests-37-44
+Next PR after #305: #306
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #303 head:
+Current tracker counts on the PR #305 head:
 
 ```text
 published:       20
 profile_ready:   16
 note_reviewed:    0
-source_tested:    0
-not_started:     62
+source_tested:    8
+not_started:     54
 total:           98
 ```
 
@@ -50,17 +47,7 @@ profile-ready total routes:          32
 final target routes:                196
 ```
 
-PR state:
-
-```text
-roadmap range: #284-#337
-merged foundation and waves: #284-#299, #301-#302
-publication gate open:       #300
-parallel profile work:       #303
-next planned:                #304
-```
-
-PR #300 remains the publication gate for entries 21-28. It must not merge or mark those entries published until one final rendered Cloudflare preview is reviewed. Independent source-test, reviewed-note, and profile work may continue in parallel because those stages do not require Cloudflare.
+PR #300 and PR #304 remain independent publication gates. They must not merge or mark their entries published until their respective final rendered Cloudflare previews are reviewed. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
 
 ## 3. Operating model
 
@@ -76,25 +63,23 @@ GitHub work is performed directly in the repository whenever possible:
 
 Local work is requested only when a required official source cannot be resolved remotely because of access controls, regional restrictions, login requirements, JavaScript-only delivery, or files available only on the user's device.
 
-When local work is required, the request must specify the exact country or source, URL or file, required action, allowed output, prohibited content, and expected handoff format.
-
 All country-page branches, PRs, workflows, previews, and merges follow `docs/operations/deployment-and-ci-policy.md`.
 
-- Source-test, reviewed-note, and profile-v2 PRs do not use Cloudflare.
-- QA/publish work uses a normal branch until GitHub validation passes.
-- A QA/publish wave uses one final `preview-*` deployment and one production deployment after merge.
+- Source-test, reviewed-note, and Profile v2 PRs do not use Cloudflare.
+- QA/publish PRs remain Draft until one final rendered preview passes.
 - Nondeployment commits and nonpublication squash merges use `[CF-Pages-Skip]`.
+- A publication wave uses one final preview and one production deployment after merge.
 
 ## 4. Standard four-PR wave
 
 | Stage | Purpose | Typical tracker transition |
 | --- | --- | --- |
-| Source test | Confirm official routes, source roles, technical capability, limitations, and public ceiling | `not_started` -> `source_tested` |
-| Reviewed note | Convert findings into reusable editorial decisions | `source_tested` -> `note_reviewed` |
-| Profile v2 | Create bilingual structured profiles and required registry records | `note_reviewed` -> `profile_ready` |
-| QA and publish | Validate routes, metadata, links, responsive layout, accessibility, and publication boundary | `profile_ready` -> `published` |
+| Source test | Confirm official routes, source roles, capability, limitations, and public ceiling | `not_started` -> `source_tested` |
+| Reviewed note | Convert source findings into reusable editorial decisions | `source_tested` -> `note_reviewed` |
+| Profile v2 | Create bilingual profiles and reviewed registry references | `note_reviewed` -> `profile_ready` |
+| QA and publish | Validate routes, metadata, layout, accessibility, and publication boundary | `profile_ready` -> `published` |
 
-A source-test failure does not automatically block a page. It may produce a link-first, pending, explanatory, special, or archive treatment instead.
+A source-test limitation does not automatically block a page. It may produce a link-first, pending, explanatory, special, or archive treatment.
 
 ## 5. Public display boundary
 
@@ -110,14 +95,14 @@ List pages remain one meeting per row at every rank.
 
 Do not publish runners or horses, participants, weights, odds, betting recommendations, results, payouts, predictions, complete racecards, raw official text, embedded video, direct stream URLs, or unofficial mirrors.
 
-## 6. Completed work
+## 6. Completed work and open gates
 
 | PR | Status | Result |
 | ---: | --- | --- |
 | #284 | merged | Created the 98-row tracker, completion contract, states, and baseline validator. |
-| #285 | merged | Added public-safe source-test export rules, schema, fixtures, validator, and workflow. |
-| #286 | merged | Added the country profile v2 schema and prohibited-field validation. |
-| #287 | merged | Added v2-first country-page runtime. |
+| #285 | merged | Added public-safe source-test export rules and validation. |
+| #286 | merged | Added the country Profile v2 schema and prohibited-field validation. |
+| #287 | merged | Added the v2-first country-page runtime. |
 | #288 | merged | Canonicalised country, source, and racecourse IDs for entries 01-12. |
 | #289 | merged | Added profiles for entries 01-04. |
 | #290 | merged | Added profiles for entries 05-08. |
@@ -125,66 +110,64 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #292 | merged | Published entries 01-12. |
 | #293 | merged | Added source tests for entries 13-20. |
 | #294 | merged | Added reviewed notes for entries 13-20. |
-| #295 | merged | Added profile v2 records for entries 13-20 and removed legacy runtime fallback. |
+| #295 | merged | Added Profile v2 records for entries 13-20. |
 | #296 | merged | Published entries 13-20. |
-| #297 | merged | Added source tests for entries 21-28 and the deployment/CI policy. |
+| #297 | merged | Added source tests for entries 21-28 and deployment policy. |
 | #298 | merged | Added reviewed notes for entries 21-28. |
-| #299 | merged | Added profile v2 records and profile-ready routes for entries 21-28. |
-| #301 | merged | Added official source tests and conservative country ceilings for entries 29-36. |
-| #302 | merged | Added reviewed country notes and editorial boundaries for entries 29-36. |
+| #299 | merged | Added Profile v2 records for entries 21-28. |
+| #300 | Draft gate | GitHub QA for entries 21-28 passed; rendered preview remains. |
+| #301 | merged | Added source tests for entries 29-36. |
+| #302 | merged | Added reviewed notes for entries 29-36. |
+| #303 | merged | Added Profile v2 records for entries 29-36. |
+| #304 | Draft gate | GitHub QA for entries 29-36 passed; rendered preview remains. |
 
-## 7. Publication gate for entries 21-28
+## 7. Publication gates
 
-### PR #300 — QA and publish entries 21-28
+### PR #300 — entries 21-28
 
-GitHub-side QA has validated all sixteen English and Japanese routes, canonical and hreflang metadata, language switching, official source links, one-h1 structure, empty states, v2-only runtime, and A/C public ceilings.
+Remaining work:
 
-Remaining gate:
-
-1. Review exactly one final Cloudflare `preview-*` deployment.
-2. Check representative A and C pages in English and Japanese.
-3. Confirm responsive layout, source links, language switching, and empty states.
-4. Advance only passing rows to `published`.
+1. Create or move one final `preview-*` branch to the reviewed head.
+2. Review representative A and C pages in English and Japanese.
+3. Check responsive layout, source links, language switching, and empty states.
+4. Advance passing rows to `published`.
 5. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
 
-Until this gate passes, entries 21-28 remain `profile_ready` and PR #300 remains Draft.
+### PR #304 — entries 29-36
 
-## 8. Wave 29-36
+The same final-preview and production sequence applies independently. Until approval, entries 29-36 remain `profile_ready` with no publication date.
+
+## 8. Wave 37-44
 
 Entries:
 
 ```text
-29 United Kingdom
-30 United States
-31 Australia
-32 Ireland
-33 France
-34 Canada
-35 Saudi Arabia
-36 India
+37 Malaysia
+38 Thailand
+39 Philippines
+40 Mauritius
+41 Argentina
+42 Germany
+43 Italy
+44 Spain
 ```
 
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
-| #301 | merged | Added source tests with national completeness separated from subsystem capability. |
-| #302 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
-| #303 | in progress | Add Profile v2 records, reviewed country/source references, and reach `profile_ready`. |
-| #304 | next | QA and publish. Validate sixteen routes and use one final preview. |
+| #305 | in progress | Add official source tests and advance all eight entries to `source_tested`. |
+| #306 | next | Add reviewed notes and advance all eight entries to `note_reviewed`. |
+| #307 | planned | Add Profile v2 records and reach `profile_ready`. |
+| #308 | planned | QA and publish sixteen routes after one final rendered preview. |
 
-Reviewed ceilings retained through PR #303:
+PR #305 uses conservative country ceilings:
 
-- A public ceiling: Ireland, France, Saudi Arabia.
-- C public ceiling: United Kingdom, United States, Australia, Canada, India.
-- United States, Australia, Canada, and India expose A-level detail in reviewed subsystems but remain C at country level because national multi-authority or multi-code completeness is not established.
-- France preserves France Galop and LETROT as separate systems.
-- Canada preserves Ontario Racing and Standardbred Canada as separate systems.
-- India preserves four reviewed turf-club systems without claiming national completeness.
+- Malaysia, Thailand, Philippines, Mauritius, Argentina, Germany, Italy, and Spain remain C.
+- Argentina, Germany, and Spain expose A-level detail in reviewed subsystems, but the country ceiling remains C because wider racecourse or horse-racing-code coverage is incomplete.
 
 ## 9. Remaining wave schedule
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | ---: | ---: | ---: | ---: |
-| 37-44 | #305 | #306 | #307 | #308 |
 | 45-52 | #309 | #310 | #311 | #312 |
 | 53-60 | #313 | #314 | #315 | #316 |
 | 61-68 | #317 | #318 | #319 | #320 |
@@ -193,7 +176,7 @@ Reviewed ceilings retained through PR #303:
 | 85-92 | #329 | #330 | #331 | #332 |
 | 93-98 | #333 | #334 | #335 | #336 |
 
-Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, uses only reviewed references, and publishes only routes satisfying the completion contract.
+Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
 ## 10. Final release gate
 
@@ -228,6 +211,6 @@ The programme closes only after PR #337 is merged and the tracker reports 98 pub
 
 ## 11. Roadmap maintenance rules
 
-Update this roadmap in the same PR whenever the working PR, publication gate, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
+Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 
 Every merge report states the PR number and title, merge SHA, changed behaviour and files, CI result, tracker counts, local-work requirement, remaining schedule position, and next PR.
