@@ -1,0 +1,58 @@
+name: One-shot PR307 metadata
+
+on:
+  push:
+    branches: [country-profiles-37-44]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: ${{ !contains(github.event.head_commit.message, '[pr307-sync]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-profiles-37-44
+      - run: |
+          python - <<'PY'
+          from pathlib import Path
+          changes = {
+            'scripts/check-country-page-programme.mjs': [
+              ('published: 20, profile_ready: 16, source_tested: 0, note_reviewed: 8', 'published: 20, profile_ready: 24, source_tested: 0, note_reviewed: 0'),
+              ('profile_ready=16 note_reviewed=8', 'profile_ready=24')],
+            'docs/country-pages/programme-roadmap.md': [
+              ('Latest confirmed merge: PR #305', 'Latest confirmed merge: PR #306'),
+              ('Parallel working PR: #306', 'Parallel working PR: #307'),
+              ('country-notes-37-44', 'country-profiles-37-44'),
+              ('Next PR after #306: #307', 'Next PR after #307: #308'),
+              ('PR #306 head', 'PR #307 head'),
+              ('profile_ready:   16', 'profile_ready:   24'),
+              ('note_reviewed:    8', 'note_reviewed:    0'),
+              ('profile-ready English routes:        16', 'profile-ready English routes:        24'),
+              ('profile-ready Japanese routes:       16', 'profile-ready Japanese routes:       24'),
+              ('profile-ready total routes:          32', 'profile-ready total routes:          48'),
+              ('| #306 | in progress |', '| #306 | merged |'),
+              ('| #307 | next |', '| #307 | in progress |'),
+              ('| #308 | planned |', '| #308 | next |'),
+              ('through PR #306:', 'through PR #307:')],
+            'scripts/check-country-page-programme-roadmap.mjs': [
+              ('Parallel working PR: #306', 'Parallel working PR: #307'),
+              ('Next PR after #306: #307', 'Next PR after #307: #308'),
+              ('Latest confirmed merge: PR #305', 'Latest confirmed merge: PR #306'),
+              ('notes PR 306; next PR 307', 'profiles PR 307; next PR 308')]
+          }
+          for file, pairs in changes.items():
+              p = Path(file); text = p.read_text()
+              for old, new in pairs:
+                  if old not in text: raise SystemExit(f'missing: {file}: {old}')
+                  text = text.replace(old, new)
+              p.write_text(text)
+          PY
+      - run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/check-country-page-programme.mjs docs/country-pages/programme-roadmap.md scripts/check-country-page-programme-roadmap.mjs
+          git commit -m '[CF-Pages-Skip] Advance roadmap and counts to PR 307 [pr307-sync]'
+          git push
