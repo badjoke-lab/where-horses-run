@@ -15,23 +15,24 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #306
+Latest confirmed merge: PR #307
 Publication gate: PR #300 — Draft; entries 21-28; Cloudflare preview pending
 Second publication gate: PR #304 — Draft; entries 29-36; Cloudflare preview pending
-Parallel working PR: #307
-Parallel working branch: country-profiles-37-44
-Next PR after #307: #308
+Third publication gate: PR #308 — Draft; entries 37-44; Cloudflare preview pending
+Parallel working PR: #309
+Parallel working branch: country-source-tests-45-52
+Next PR after #309: #310
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #307 head:
+Current tracker counts on the PR #309 head:
 
 ```text
 published:       20
 profile_ready:   24
 note_reviewed:    0
-source_tested:    0
-not_started:     54
+source_tested:    8
+not_started:     46
 total:           98
 ```
 
@@ -47,7 +48,7 @@ profile-ready total routes:          48
 final target routes:                196
 ```
 
-PR #300 and PR #304 remain independent publication gates. They must not merge or mark their entries published until their respective final rendered Cloudflare previews are reviewed. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
+PR #300, PR #304, and PR #308 remain independent publication gates. They must not merge or mark their entries published until their respective final rendered Cloudflare previews are reviewed. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
 
 ## 3. Operating model
 
@@ -121,6 +122,9 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #303 | merged | Added Profile v2 records for entries 29-36. |
 | #304 | Draft gate | GitHub QA for entries 29-36 passed; rendered preview remains. |
 | #305 | merged | Added source tests and conservative country ceilings for entries 37-44. |
+| #306 | merged | Added reviewed country notes for entries 37-44. |
+| #307 | merged | Added Profile v2 records for entries 37-44. |
+| #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |
 
 ## 7. Publication gates
 
@@ -156,9 +160,9 @@ Entries:
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
 | #305 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
-| #306 | merged | Add reviewed notes and advance all eight entries to `note_reviewed`. |
-| #307 | in progress | Add Profile v2 records and reach `profile_ready`. |
-| #308 | next | QA and publish sixteen routes after one final rendered preview. |
+| #306 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
+| #307 | merged | Added Profile v2 records and advanced all eight entries to `profile_ready`. |
+| #308 | Draft gate | GitHub pre-preview QA passed; rendered preview remains. |
 
 Reviewed country ceilings retained through PR #307:
 
@@ -167,7 +171,20 @@ Reviewed country ceilings retained through PR #307:
 - Mauritius preserves regulator and organiser roles separately.
 - Italy preserves trot and gallop as distinct racing contexts.
 
-## 9. Remaining wave schedule
+## 9. Wave 45-52
+
+Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and Slovakia.
+
+| PR | Status | Work and completion condition |
+| ---: | --- | --- |
+| #309 | in progress | Add official source tests and advance all eight entries to `source_tested`. |
+| #310 | next | Add reviewed notes and advance all eight entries to `note_reviewed`. |
+| #311 | planned | Add Profile v2 records and reach `profile_ready`. |
+| #312 | planned | QA and publish sixteen routes after one final rendered preview. |
+
+All eight initial country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
+
+## 10. Remaining wave schedule
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | ---: | ---: | ---: | ---: |
@@ -181,7 +198,7 @@ Reviewed country ceilings retained through PR #307:
 
 Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
-## 10. Final release gate
+## 11. Final release gate
 
 ### PR #337 — full programme audit
 
@@ -212,7 +229,7 @@ final programme report is generated
 
 The programme closes only after PR #337 is merged and the tracker reports 98 published rows.
 
-## 11. Roadmap maintenance rules
+## 12. Roadmap maintenance rules
 
 Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 
