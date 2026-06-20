@@ -3,6 +3,7 @@ import countryPageCountries0508 from '../../data/static/country-page-countries-0
 import countryPageCountries0912 from '../../data/static/country-page-countries-09-12.json';
 import countryPageCountries1520 from '../../data/static/country-page-countries-15-20.json';
 import countryPageCountries2128 from '../../data/static/country-page-countries-21-28.json';
+import countryPageCountries2936 from '../../data/static/country-page-countries-29-36.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
 import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
@@ -28,6 +29,14 @@ import countryProfilesV225Jamaica from '../../data/static/country-profiles-v2-25
 import countryProfilesV226TrinidadAndTobago from '../../data/static/country-profiles-v2-26-trinidad-and-tobago.json';
 import countryProfilesV227Barbados from '../../data/static/country-profiles-v2-27-barbados.json';
 import countryProfilesV228Martinique from '../../data/static/country-profiles-v2-28-martinique.json';
+import countryProfilesV229UnitedKingdom from '../../data/static/country-profiles-v2-29-united-kingdom.json';
+import countryProfilesV230UnitedStates from '../../data/static/country-profiles-v2-30-united-states.json';
+import countryProfilesV231Australia from '../../data/static/country-profiles-v2-31-australia.json';
+import countryProfilesV232Ireland from '../../data/static/country-profiles-v2-32-ireland.json';
+import countryProfilesV233France from '../../data/static/country-profiles-v2-33-france.json';
+import countryProfilesV234Canada from '../../data/static/country-profiles-v2-34-canada.json';
+import countryProfilesV235SaudiArabia from '../../data/static/country-profiles-v2-35-saudi-arabia.json';
+import countryProfilesV236India from '../../data/static/country-profiles-v2-36-india.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
@@ -50,6 +59,7 @@ import countryPageSources18Sweden from '../../data/static/country-page-sources-1
 import countryPageSources19Denmark from '../../data/static/country-page-sources-19-denmark.json';
 import countryPageSources20CzechRepublic from '../../data/static/country-page-sources-20-czech-republic.json';
 import countryPageSources2128 from '../../data/static/country-page-sources-21-28.json';
+import countryPageSources2936 from '../../data/static/country-page-sources-29-36.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -70,7 +80,8 @@ const allCountries = [
   ...countryPageCountries0508,
   ...countryPageCountries0912,
   ...countryPageCountries1520,
-  ...countryPageCountries2128
+  ...countryPageCountries2128,
+  ...countryPageCountries2936
 ] as const;
 
 const allProfilesV2 = [
@@ -98,7 +109,15 @@ const allProfilesV2 = [
   ...countryProfilesV225Jamaica,
   ...countryProfilesV226TrinidadAndTobago,
   ...countryProfilesV227Barbados,
-  ...countryProfilesV228Martinique
+  ...countryProfilesV228Martinique,
+  ...countryProfilesV229UnitedKingdom,
+  ...countryProfilesV230UnitedStates,
+  ...countryProfilesV231Australia,
+  ...countryProfilesV232Ireland,
+  ...countryProfilesV233France,
+  ...countryProfilesV234Canada,
+  ...countryProfilesV235SaudiArabia,
+  ...countryProfilesV236India
 ] as const;
 
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
@@ -129,7 +148,8 @@ const allSources = [
   ...countryPageSources18Sweden,
   ...countryPageSources19Denmark,
   ...countryPageSources20CzechRepublic,
-  ...countryPageSources2128
+  ...countryPageSources2128,
+  ...countryPageSources2936
 ] as const;
 
 const countryProfiles = buildCountryDetailProfiles(allProfilesV2);
