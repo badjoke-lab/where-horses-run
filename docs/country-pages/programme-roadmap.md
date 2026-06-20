@@ -15,21 +15,21 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #305
+Latest confirmed merge: PR #306
 Publication gate: PR #300 — Draft; entries 21-28; Cloudflare preview pending
 Second publication gate: PR #304 — Draft; entries 29-36; Cloudflare preview pending
-Parallel working PR: #306
-Parallel working branch: country-notes-37-44
-Next PR after #306: #307
+Parallel working PR: #307
+Parallel working branch: country-profiles-37-44
+Next PR after #307: #308
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #306 head:
+Current tracker counts on the PR #307 head:
 
 ```text
 published:       20
-profile_ready:   16
-note_reviewed:    8
+profile_ready:   24
+note_reviewed:    0
 source_tested:    0
 not_started:     54
 total:           98
@@ -41,9 +41,9 @@ Current route state:
 formally published English routes:   20
 formally published Japanese routes:  20
 formally published total routes:     40
-profile-ready English routes:        16
-profile-ready Japanese routes:       16
-profile-ready total routes:          32
+profile-ready English routes:        24
+profile-ready Japanese routes:       24
+profile-ready total routes:          48
 final target routes:                196
 ```
 
@@ -156,11 +156,11 @@ Entries:
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
 | #305 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
-| #306 | in progress | Add reviewed notes and advance all eight entries to `note_reviewed`. |
-| #307 | next | Add Profile v2 records and reach `profile_ready`. |
-| #308 | planned | QA and publish sixteen routes after one final rendered preview. |
+| #306 | merged | Add reviewed notes and advance all eight entries to `note_reviewed`. |
+| #307 | in progress | Add Profile v2 records and reach `profile_ready`. |
+| #308 | next | QA and publish sixteen routes after one final rendered preview. |
 
-Reviewed country ceilings retained through PR #306:
+Reviewed country ceilings retained through PR #307:
 
 - Malaysia, Thailand, Philippines, Mauritius, Argentina, Germany, Italy, and Spain remain C.
 - Argentina, Germany, and Spain expose A-level detail in reviewed subsystems, but the country ceiling remains C because wider racecourse or horse-racing-code coverage is incomplete.
