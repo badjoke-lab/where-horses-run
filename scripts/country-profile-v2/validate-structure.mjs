@@ -37,7 +37,18 @@ const namedIds = (items, label, errors) => {
   if (new Set(ids).size !== ids.length) errors.push(`${label} contains duplicate ids`);
 };
 
-export const validateStructure = (profile, today = new Date().toISOString().slice(0, 10)) => {
+const projectDate = () => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+};
+
+export const validateStructure = (profile, today = projectDate()) => {
   const errors = [];
   if (!profile || typeof profile !== 'object' || Array.isArray(profile)) return ['profile must be an object'];
   requiredKeys.forEach((key) => {
