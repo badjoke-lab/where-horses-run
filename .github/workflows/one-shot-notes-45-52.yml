@@ -1,0 +1,16 @@
+name: Notes sync
+on:
+  push:
+    branches: [country-notes-45-52]
+permissions:
+  contents: write
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[45-52-note-sync]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-notes-45-52
+      - run: node scripts/advance-notes-45-52.mjs
+      - run: bash scripts/commit-notes-45-52.sh
