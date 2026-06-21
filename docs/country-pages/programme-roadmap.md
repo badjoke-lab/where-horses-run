@@ -15,23 +15,23 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #307
+Latest confirmed merge: PR #309
 Publication gate: PR #300 — Draft; entries 21-28; Cloudflare preview pending
 Second publication gate: PR #304 — Draft; entries 29-36; Cloudflare preview pending
 Third publication gate: PR #308 — Draft; entries 37-44; Cloudflare preview pending
-Parallel working PR: #309
-Parallel working branch: country-source-tests-45-52
-Next PR after #309: #310
+Parallel working PR: #310
+Parallel working branch: country-notes-45-52
+Next PR after #310: #311
 Final release gate: #337
 ```
 
-Current tracker counts on the PR #309 head:
+Current tracker counts on the PR #310 head:
 
 ```text
 published:       20
 profile_ready:   24
-note_reviewed:    0
-source_tested:    8
+note_reviewed:    8
+source_tested:    0
 not_started:     46
 total:           98
 ```
@@ -125,6 +125,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #306 | merged | Added reviewed country notes for entries 37-44. |
 | #307 | merged | Added Profile v2 records for entries 37-44. |
 | #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |
+| #309 | merged | Added official source tests for entries 45-52. |
 
 ## 7. Publication gates
 
@@ -177,12 +178,12 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
-| #309 | in progress | Add official source tests and advance all eight entries to `source_tested`. |
-| #310 | next | Add reviewed notes and advance all eight entries to `note_reviewed`. |
-| #311 | planned | Add Profile v2 records and reach `profile_ready`. |
+| #309 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
+| #310 | in progress | Add reviewed notes and advance all eight entries to `note_reviewed`. |
+| #311 | next | Add Profile v2 records and reach `profile_ready`. |
 | #312 | planned | QA and publish sixteen routes after one final rendered preview. |
 
-All eight initial country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
+All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
 ## 10. Remaining wave schedule
 
