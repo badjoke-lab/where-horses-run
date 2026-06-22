@@ -1,4 +1,4 @@
-name: Preview reachability 21-28 v2
+name: Production verification 21-28
 
 on:
   pull_request:
@@ -9,29 +9,32 @@ permissions:
   contents: read
 
 jobs:
-  probe:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Wait for Cloudflare branch alias
+      - name: Wait for corrected production pages
         shell: bash
         run: |
           set -euo pipefail
-          base='https://preview-country-pages-21-28-v2.where-horses-run.pages.dev'
+          base='https://whr.badjoke-lab.com'
           for attempt in $(seq 1 90); do
             if curl --connect-timeout 10 --max-time 30 -fsSL "$base/countries/hungary/" -o hungary.html \
               && curl --connect-timeout 10 --max-time 30 -fsSL "$base/ja/countries/malta/" -o malta.html; then
-              grep -q 'Europe/Budapest' hungary.html
-              grep -q 'Europe/Malta' malta.html
-              ! grep -q 'Verify the current local UTC offset' hungary.html
-              ! grep -q 'After the calendar data model is finalized' hungary.html
-              ! grep -q 'カレンダー機能の実データモデルが確定した後' malta.html
-              ! grep -q 'この一覧はカレンダーページと同じデータを読む形に差し替えます' malta.html
-              echo 'CORRECTED_PREVIEW_REACHABLE_AND_COPY_VALID'
-              exit 0
+              if grep -q 'Europe/Budapest' hungary.html \
+                && grep -q 'Europe/Malta' malta.html \
+                && grep -q 'Open the official sources for the latest complete schedule' hungary.html \
+                && grep -q '最新の完全な日程は公式ソースで確認してください' malta.html \
+                && ! grep -q 'Verify the current local UTC offset' hungary.html \
+                && ! grep -q 'After the calendar data model is finalized' hungary.html \
+                && ! grep -q 'カレンダー機能の実データモデルが確定した後' malta.html \
+                && ! grep -q 'この一覧はカレンダーページと同じデータを読む形に差し替えます' malta.html; then
+                echo 'PRODUCTION_COUNTRY_PAGES_21_28_VALID'
+                exit 0
+              fi
             fi
             if [ "$attempt" -eq 90 ]; then
-              echo 'Cloudflare branch alias did not become reachable'
+              echo 'Corrected production pages did not become available'
               exit 1
             fi
             sleep 10
