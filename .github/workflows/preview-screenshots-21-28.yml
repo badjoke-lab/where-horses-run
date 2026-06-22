@@ -1,0 +1,35 @@
+name: Preview screenshots 21-28
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/preview-screenshots-21-28.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PREVIEW_BASE: https://19067203.where-horses-run.pages.dev
+    steps:
+      - name: Capture representative desktop and mobile views
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p preview-screenshots
+          browser="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1440,1200 --screenshot=preview-screenshots/hungary-desktop.png "$PREVIEW_BASE/countries/hungary/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=preview-screenshots/hungary-mobile.png "$PREVIEW_BASE/countries/hungary/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1440,1200 --screenshot=preview-screenshots/malta-ja-desktop.png "$PREVIEW_BASE/ja/countries/malta/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=preview-screenshots/malta-ja-mobile.png "$PREVIEW_BASE/ja/countries/malta/"
+          file preview-screenshots/*.png
+
+      - name: Upload screenshot evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-screenshots-21-28
+          path: preview-screenshots/*.png
+          retention-days: 7
