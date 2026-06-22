@@ -19,6 +19,7 @@ const expected = [
   ['27', 'barbados', 'A', 'complete'],
   ['28', 'martinique', 'C', 'partial']
 ];
+const stageOrder = ['not_started', 'source_research', 'source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published'];
 
 const countryPath = 'data/static/country-page-countries-21-28.json';
 const sourcePath = 'data/static/country-page-sources-21-28.json';
@@ -103,17 +104,28 @@ for (const [deliveryNo, slug] of expected) {
     continue;
   }
   if (row[index.slug] !== slug) fail(`tracker slug mismatch for ${deliveryNo}`);
-  if (row[index.programme_status] !== 'profile_ready') fail(`${slug} must be profile_ready`);
+  if (stageOrder.indexOf(row[index.programme_status]) < stageOrder.indexOf('profile_ready')) fail(`${slug} must be at least profile_ready`);
   if (row[index.note_status] !== 'reviewed') fail(`${slug} note must remain reviewed`);
   if (row[index.profile_status] !== 'reviewed') fail(`${slug} profile must be reviewed`);
-  if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug} routes must be complete`);
-  if (row[index.qa_status] !== 'not_started') fail(`${slug} QA must remain not_started`);
   if (row[index.profile_last_reviewed] !== '2026-06-19') fail(`${slug} profile review date mismatch`);
-  if (row[index.page_published_at]) fail(`${slug} must not have a publication date`);
+
+  if (row[index.programme_status] === 'published') {
+    if (row[index.en_route_status] !== 'published' || row[index.ja_route_status] !== 'published') fail(`${slug} published routes are required`);
+    if (row[index.qa_status] !== 'passed') fail(`${slug} published QA must be passed`);
+    if (!row[index.page_published_at]) fail(`${slug} published row requires page_published_at`);
+  } else if (row[index.programme_status] === 'page_qa') {
+    if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug} page-QA routes must be complete`);
+    if (row[index.qa_status] !== 'pending') fail(`${slug} page-QA status must be pending`);
+    if (row[index.page_published_at]) fail(`${slug} page-QA row must not have a publication date`);
+  } else {
+    if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug} profile-ready routes must be complete`);
+    if (row[index.qa_status] !== 'not_started') fail(`${slug} profile-ready QA must be not_started`);
+    if (row[index.page_published_at]) fail(`${slug} profile-ready row must not have a publication date`);
+  }
 }
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('COUNTRY_PROFILES_21_28_VALID countries=8 sources=15 profiles=8 tracker=profile_ready');
+console.log('COUNTRY_PROFILES_21_28_VALID countries=8 sources=15 profiles=8 tracker=at_least_profile_ready');
