@@ -1,0 +1,42 @@
+name: Preview screenshots 21-28 with CJK fonts
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/preview-screenshots-21-28-cjk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PREVIEW_BASE: https://19067203.where-horses-run.pages.dev
+    steps:
+      - name: Install Japanese and emoji fonts
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
+          fc-cache -f
+
+      - name: Capture representative desktop and mobile views
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p preview-screenshots-cjk
+          browser="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1440,1200 --screenshot=preview-screenshots-cjk/hungary-desktop.png "$PREVIEW_BASE/countries/hungary/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=preview-screenshots-cjk/hungary-mobile.png "$PREVIEW_BASE/countries/hungary/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1440,1200 --screenshot=preview-screenshots-cjk/malta-ja-desktop.png "$PREVIEW_BASE/ja/countries/malta/"
+          "$browser" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=preview-screenshots-cjk/malta-ja-mobile.png "$PREVIEW_BASE/ja/countries/malta/"
+          file preview-screenshots-cjk/*.png
+
+      - name: Upload final screenshot evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-screenshots-21-28-cjk
+          path: preview-screenshots-cjk/*.png
+          retention-days: 7
