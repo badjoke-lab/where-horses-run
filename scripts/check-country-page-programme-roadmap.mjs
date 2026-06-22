@@ -45,19 +45,19 @@ for (const [label, count] of expectedCountLines) {
   if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
 }
 
-for (let pr = 284; pr <= 337; pr += 1) {
+for (let pr = 284; pr <= 340; pr += 1) {
   if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing PR #${pr}`);
 }
 
 const requiredPhrases = [
   'Current position',
-  'Publication gate: PR #300',
+  'Publication gate: PR #311',
   'Second publication gate: PR #304',
   'Third publication gate: PR #308',
-  'Parallel working PR: #310',
-  'Next PR after #310: #311',
-  'Latest confirmed merge: PR #309',
-  'Final release gate: #337',
+  'Next working PR: #314',
+  'Next working branch: country-profiles-45-52',
+  'Latest confirmed merge: PR #310',
+  'Final release gate: #340',
   'Local work is requested only when',
   'Standard four-PR wave',
   'Public display boundary',
@@ -76,5 +76,5 @@ if (errors.length) {
 
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
-console.log('PR_RANGE: 284-337');
-console.log('CURRENT_WORK: publication gates 300 and 304; publication gates 300, 304, and 308; reviewed notes PR 310; next PR 311');
+console.log('PR_RANGE: 284-340');
+console.log('CURRENT_WORK: publication gate 311; stale gates 304 and 308; next Profile v2 PR 314');
