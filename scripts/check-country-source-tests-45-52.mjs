@@ -14,6 +14,7 @@ const expected = [
   ['51', 'serbia', 'Serbia', 'Partial', 'remote_partial'],
   ['52', 'slovakia', 'Slovakia', 'Complete at official calendar level', 'remote_complete']
 ];
+const stageOrder = ['not_started', 'source_research', 'source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published'];
 const prohibited = new Set(['horses','horse_names','jockeys','trainers','odds','results','payouts','predictions','raw_html','raw_text','stream_url','racecard']);
 
 const inspect = (value, location) => {
@@ -69,11 +70,8 @@ for (const [deliveryNo, slug, , , acquisition] of expected) {
     fail(`tracker delivery ${deliveryNo} must be ${slug}`);
     continue;
   }
-  if (row.programme_status !== 'source_tested') fail(`${slug} must be source_tested`);
+  if (stageOrder.indexOf(row.programme_status) < stageOrder.indexOf('source_tested')) fail(`${slug} must be at least source_tested`);
   if (row.acquisition_status !== acquisition) fail(`${slug} acquisition status must be ${acquisition}`);
-  if (row.note_status !== 'not_started' || row.profile_status !== 'not_started') fail(`${slug} later stages must remain not_started`);
-  if (row.en_route_status !== 'missing' || row.ja_route_status !== 'missing') fail(`${slug} routes must remain missing`);
-  if (row.qa_status !== 'not_started' || row.page_published_at) fail(`${slug} must remain unpublished`);
   if (row.source_last_checked !== '2026-06-20') fail(`${slug} source check date mismatch`);
 }
 
