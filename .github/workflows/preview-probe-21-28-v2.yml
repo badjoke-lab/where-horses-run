@@ -1,4 +1,4 @@
-name: Production response diagnostic 21-28
+name: Production origin comparison 21-28
 
 on:
   pull_request:
@@ -9,32 +9,31 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  compare:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Inspect production responses
+      - name: Compare custom, production alias, and approved preview
         shell: bash
         run: |
           set -u
-          base='https://whr.badjoke-lab.com'
-          for route in '/countries/hungary/' '/ja/countries/malta/' '/'; do
-            safe=$(printf '%s' "$route" | tr '/-' '__')
-            echo "=== ROUTE $route ==="
-            curl -sS -L --connect-timeout 10 --max-time 30 -D "$safe.headers" -w 'HTTP_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$base$route" -o "$safe.html"
-            echo '-- HEADERS --'
-            sed -n '1,20p' "$safe.headers"
-            echo '-- TITLE --'
-            grep -o '<title[^>]*>[^<]*</title>' "$safe.html" | head -1 || true
-            echo '-- CANONICAL --'
-            grep -o 'rel="canonical"[^>]*' "$safe.html" | head -1 || true
-            echo '-- H1 --'
-            grep -o '<h1[^>]*>[^<]*</h1>' "$safe.html" | head -3 || true
-            echo '-- SIZE/HASH --'
-            wc -c "$safe.html"
-            sha256sum "$safe.html"
-            echo '-- FIRST 800 BYTES --'
-            head -c 800 "$safe.html"
-            echo
+          for base in \
+            'https://whr.badjoke-lab.com' \
+            'https://where-horses-run.pages.dev' \
+            'https://19067203.where-horses-run.pages.dev'; do
+            echo "=== BASE $base ==="
+            for route in '/countries/hungary/' '/ja/countries/malta/' '/'; do
+              key=$(printf '%s%s' "$base" "$route" | sed 's#https://##' | tr '/.-' '____')
+              echo "--- ROUTE $route ---"
+              curl -sS -L --connect-timeout 10 --max-time 30 -w 'HTTP_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$base$route" -o "$key.html"
+              grep -o '<title[^>]*>[^<]*</title>' "$key.html" | head -1 || true
+              grep -o 'rel="canonical"[^>]*' "$key.html" | head -1 || true
+              grep -o '<h1[^>]*>[^<]*</h1>' "$key.html" | head -1 || true
+              wc -c "$key.html"
+              sha256sum "$key.html"
+              grep -q 'Europe/Budapest' "$key.html" && echo 'BUDAPEST=yes' || true
+              grep -q 'Europe/Malta' "$key.html" && echo 'MALTA=yes' || true
+              grep -q 'Open the official sources for the latest complete schedule' "$key.html" && echo 'NEW_EN_COPY=yes' || true
+              grep -q '最新の完全な日程は公式ソースで確認してください' "$key.html" && echo 'NEW_JA_COPY=yes' || true
+            done
           done
-          exit 0
