@@ -1,0 +1,103 @@
+name: Final rendered preview verification 21-28
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/preview-verify-21-28-final.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PREVIEW_BASE: https://19067203.where-horses-run.pages.dev
+    steps:
+      - name: Fetch representative pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p preview-evidence
+          curl --connect-timeout 10 --max-time 60 -fsSL "$PREVIEW_BASE/countries/hungary/" -o preview-evidence/hungary.html
+          curl --connect-timeout 10 --max-time 60 -fsSL "$PREVIEW_BASE/ja/countries/malta/" -o preview-evidence/malta-ja.html
+
+      - name: Validate rendered HTML
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          pages = {
+              'Hungary EN': Path('preview-evidence/hungary.html').read_text(encoding='utf-8'),
+              'Malta JA': Path('preview-evidence/malta-ja.html').read_text(encoding='utf-8'),
+          }
+          hungary = pages['Hungary EN']
+          malta = pages['Malta JA']
+          errors = []
+
+          prohibited = [
+              'Verify the current local UTC offset',
+              'After the calendar data model is finalized',
+              'カレンダー機能の実データモデルが確定した後',
+              'この一覧はカレンダーページと同じデータを読む形に差し替えます',
+          ]
+          for phrase in prohibited:
+              for label, html in pages.items():
+                  if phrase in html:
+                      errors.append(f'{label} contains internal wording: {phrase}')
+
+          checks = [
+              ('Hungary timezone', 'Europe/Budapest' in hungary),
+              ('Malta timezone', 'Europe/Malta' in malta),
+              ('Hungary canonical', 'https://whr.badjoke-lab.com/countries/hungary/' in hungary),
+              ('Malta canonical', 'https://whr.badjoke-lab.com/ja/countries/malta/' in malta),
+              ('Hungary language switch', '/ja/countries/hungary/' in hungary),
+              ('Malta language switch', '/countries/malta/' in malta),
+              ('Hungary public guidance', 'Open the official sources for the latest complete schedule' in hungary),
+              ('Malta public guidance', '最新の完全な日程は公式ソースで確認してください' in malta),
+          ]
+          for label, passed in checks:
+              if not passed:
+                  errors.append(f'missing or invalid: {label}')
+
+          if re.search(r'<th[^>]*>開始時刻</th>', malta):
+              errors.append('Malta C page renders a start-time column')
+          if re.search(r'<th[^>]*>タイムゾーン</th>', malta):
+              errors.append('Malta C page renders a timezone column')
+
+          for label, html in pages.items():
+              if len(re.findall(r'<h1\b', html)) != 1:
+                  errors.append(f'{label} must contain exactly one h1')
+              if re.search(r'<(?:iframe|video)\b', html, re.I):
+                  errors.append(f'{label} embeds video')
+              if re.search(r'\bWatch here\b', html, re.I):
+                  errors.append(f'{label} contains Watch here')
+
+          if errors:
+              for error in errors:
+                  print(f'ERROR: {error}')
+              raise SystemExit(1)
+
+          print('CORRECTED_PREVIEW_HTML_VALID')
+          print('TIMEZONES: Europe/Budapest, Europe/Malta')
+          print('INTERNAL_COPY: absent')
+          print('C_COLUMNS: safe')
+
+      - name: Capture desktop and mobile screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm exec --yes --package=playwright@1.55.0 -- playwright install chromium
+          npm exec --yes --package=playwright@1.55.0 -- playwright screenshot --device="Desktop Chrome" --full-page "$PREVIEW_BASE/countries/hungary/" preview-evidence/hungary-desktop.png
+          npm exec --yes --package=playwright@1.55.0 -- playwright screenshot --device="iPhone 13" --full-page "$PREVIEW_BASE/countries/hungary/" preview-evidence/hungary-mobile.png
+          npm exec --yes --package=playwright@1.55.0 -- playwright screenshot --device="Desktop Chrome" --full-page "$PREVIEW_BASE/ja/countries/malta/" preview-evidence/malta-ja-desktop.png
+          npm exec --yes --package=playwright@1.55.0 -- playwright screenshot --device="iPhone 13" --full-page "$PREVIEW_BASE/ja/countries/malta/" preview-evidence/malta-ja-mobile.png
+
+      - name: Upload rendered evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-preview-evidence-21-28
+          path: preview-evidence/
+          retention-days: 7
