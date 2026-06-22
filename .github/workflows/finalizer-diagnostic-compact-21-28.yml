@@ -1,0 +1,35 @@
+name: Finalizer compact diagnostic 21-28
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/finalizer-diagnostic-compact-21-28.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone branch and show finalizer error
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth=1 --branch country-pages-21-28-publication-final https://github.com/badjoke-lab/where-horses-run.git repo
+          cd repo
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import textwrap
+          source = Path('.github/workflows/finalize-country-pages-21-28.yml').read_text(encoding='utf-8')
+          start = '      - name: Apply approved publication state and roadmap renumbering\n        shell: python\n        run: |\n'
+          end = '\n      - name: Validate finalized publication state\n'
+          block = source.split(start, 1)[1].split(end, 1)[0]
+          Path('/tmp/finalizer.py').write_text(textwrap.dedent(block), encoding='utf-8')
+          result = subprocess.run(['python', '/tmp/finalizer.py'], text=True, capture_output=True)
+          print('RETURN', result.returncode)
+          print('OUT', result.stdout)
+          print('ERR', result.stderr)
+          raise SystemExit(result.returncode)
+          PY
