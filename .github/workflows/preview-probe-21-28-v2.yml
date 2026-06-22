@@ -1,4 +1,4 @@
-name: Trigger production deployment 21-28
+name: Verify production deployment 21-28
 
 on:
   pull_request:
@@ -6,59 +6,38 @@ on:
       - '.github/workflows/preview-probe-21-28-v2.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  trigger:
+  verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Record merged publication gate
-        shell: python
-        run: |
-          from pathlib import Path
-
-          roadmap_path = Path('docs/country-pages/programme-roadmap.md')
-          roadmap = roadmap_path.read_text(encoding='utf-8')
-
-          replacements = [
-              ('Latest confirmed merge: PR #310', 'Latest confirmed merge: PR #311'),
-              ('Publication gate: PR #311 — Draft; entries 21-28; corrected rendered preview passed', 'Publication gate: PR #311 — merged; entries 21-28 published; production trigger commit active'),
-              ('| #311 | Draft publication gate | Corrected rendered preview for entries 21-28 passed; publication state recorded. |', '| #311 | merged | Published entries 21-28 after corrected rendered-preview approval. |'),
-              ('| #312 | temporary operations PR | Preview-probe evidence only; close without merge. |', '| #312 | closed, unmerged | Temporary preview-probe evidence only. |'),
-              ('| #313 | temporary preview PR | Cloudflare preview trigger only; close without merge. |', '| #313 | closed, unmerged | Temporary Cloudflare preview trigger only. |'),
-              ('4. Entries 21-28 are recorded as `published`, with final production deployment still gated on PR merge.\n5. Merge PR #311 without `[CF-Pages-Skip]`, then confirm one production deployment and the two representative production routes.', '4. Entries 21-28 are recorded as `published`.\n5. PR #311 merged as `87eee53b4d6d1cf30f6897012f9dcc8724b53786`.\n6. This roadmap update is the dedicated production trigger; confirm one deployment and the two representative production routes after Cloudflare completes.'),
-          ]
-          for old, new in replacements:
-              if old not in roadmap:
-                  raise SystemExit(f'missing roadmap anchor: {old}')
-              roadmap = roadmap.replace(old, new, 1)
-          roadmap_path.write_text(roadmap, encoding='utf-8')
-
-          validator_path = Path('scripts/check-country-page-programme-roadmap.mjs')
-          validator = validator_path.read_text(encoding='utf-8')
-          old = "'Latest confirmed merge: PR #310'"
-          new = "'Latest confirmed merge: PR #311'"
-          if old not in validator:
-              raise SystemExit('missing roadmap-validator merge anchor')
-          validator = validator.replace(old, new, 1)
-          validator_path.write_text(validator, encoding='utf-8')
-
-      - name: Validate roadmap
-        run: |
-          node scripts/check-country-page-programme.mjs
-          node scripts/check-country-page-programme-roadmap.mjs
-
-      - name: Commit production trigger
+      - name: Wait for published country pages
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/country-pages/programme-roadmap.md scripts/check-country-page-programme-roadmap.mjs
-          git commit -m 'Trigger production deployment for published country pages 21-28'
-          git push origin HEAD:main
+          base='https://whr.badjoke-lab.com'
+          for attempt in $(seq 1 90); do
+            if curl --connect-timeout 10 --max-time 30 -fsSL "$base/countries/hungary/" -o hungary.html \
+              && curl --connect-timeout 10 --max-time 30 -fsSL "$base/ja/countries/malta/" -o malta.html; then
+              if grep -q 'Europe/Budapest' hungary.html \
+                && grep -q 'Europe/Malta' malta.html \
+                && grep -q 'Open the official sources for the latest complete schedule' hungary.html \
+                && grep -q '最新の完全な日程は公式ソースで確認してください' malta.html \
+                && grep -q 'https://whr.badjoke-lab.com/countries/hungary/' hungary.html \
+                && grep -q 'https://whr.badjoke-lab.com/ja/countries/malta/' malta.html \
+                && ! grep -q 'Verify the current local UTC offset' hungary.html \
+                && ! grep -q 'After the calendar data model is finalized' hungary.html \
+                && ! grep -q 'カレンダー機能の実データモデルが確定した後' malta.html \
+                && ! grep -q 'この一覧はカレンダーページと同じデータを読む形に差し替えます' malta.html; then
+                echo "PRODUCTION_COUNTRY_PAGES_21_28_VALID attempt=$attempt"
+                exit 0
+              fi
+            fi
+            if [ "$attempt" -eq 90 ]; then
+              echo 'Published country pages did not become available'
+              exit 1
+            fi
+            sleep 10
+          done
