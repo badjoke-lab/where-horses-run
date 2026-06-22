@@ -56,7 +56,7 @@ const requiredPhrases = [
   'Third publication gate: PR #308',
   'Next working PR: #314',
   'Next working branch: country-profiles-45-52',
-  'Latest confirmed merge: PR #310',
+  'Latest confirmed merge: PR #311',
   'Final release gate: #340',
   'Local work is requested only when',
   'Standard four-PR wave',

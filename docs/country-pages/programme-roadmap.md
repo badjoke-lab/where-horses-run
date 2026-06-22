@@ -15,8 +15,8 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #310
-Publication gate: PR #311 — Draft; entries 21-28; corrected rendered preview passed
+Latest confirmed merge: PR #311
+Publication gate: PR #311 — merged; entries 21-28 published; production trigger commit active
 Second publication gate: PR #304 — stale Draft; entries 29-36; rebuild from latest main required
 Third publication gate: PR #308 — stale Draft; entries 37-44; rebuild from latest main required
 Next working PR: #314
@@ -126,9 +126,9 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |
 | #309 | merged | Added official source tests for entries 45-52. |
 | #310 | merged | Added reviewed notes for entries 45-52 and remediated public country-page copy. |
-| #311 | Draft publication gate | Corrected rendered preview for entries 21-28 passed; publication state recorded. |
-| #312 | temporary operations PR | Preview-probe evidence only; close without merge. |
-| #313 | temporary preview PR | Cloudflare preview trigger only; close without merge. |
+| #311 | merged | Published entries 21-28 after corrected rendered-preview approval. |
+| #312 | closed, unmerged | Temporary preview-probe evidence only. |
+| #313 | closed, unmerged | Temporary Cloudflare preview trigger only. |
 
 ## 7. Publication gates
 
@@ -139,8 +139,9 @@ Corrected preview status:
 1. Cloudflare deployment `19067203` succeeded from the preview-only branch.
 2. Representative Hungary and Malta pages passed rendered English/Japanese HTML checks.
 3. Desktop and mobile screenshots passed responsive review with Japanese CJK fonts.
-4. Entries 21-28 are recorded as `published`, with final production deployment still gated on PR merge.
-5. Merge PR #311 without `[CF-Pages-Skip]`, then confirm one production deployment and the two representative production routes.
+4. Entries 21-28 are recorded as `published`.
+5. PR #311 merged as `87eee53b4d6d1cf30f6897012f9dcc8724b53786`.
+6. This roadmap update is the dedicated production trigger; confirm one deployment and the two representative production routes after Cloudflare completes.
 
 ### PR #304 — entries 29-36
 
