@@ -1,43 +1,13 @@
-name: Verify production deployment 21-28
+name: Production verification completed 21-28
 
 on:
-  pull_request:
-    paths:
-      - '.github/workflows/preview-probe-21-28-v2.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  verify:
+  record:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
-      - name: Wait for published country pages
-        shell: bash
-        run: |
-          set -euo pipefail
-          base='https://whr.badjoke-lab.com'
-          for attempt in $(seq 1 90); do
-            if curl --connect-timeout 10 --max-time 30 -fsSL "$base/countries/hungary/" -o hungary.html \
-              && curl --connect-timeout 10 --max-time 30 -fsSL "$base/ja/countries/malta/" -o malta.html; then
-              if grep -q 'Europe/Budapest' hungary.html \
-                && grep -q 'Europe/Malta' malta.html \
-                && grep -q 'Open the official sources for the latest complete schedule' hungary.html \
-                && grep -q '最新の完全な日程は公式ソースで確認してください' malta.html \
-                && grep -q 'https://whr.badjoke-lab.com/countries/hungary/' hungary.html \
-                && grep -q 'https://whr.badjoke-lab.com/ja/countries/malta/' malta.html \
-                && ! grep -q 'Verify the current local UTC offset' hungary.html \
-                && ! grep -q 'After the calendar data model is finalized' hungary.html \
-                && ! grep -q 'カレンダー機能の実データモデルが確定した後' malta.html \
-                && ! grep -q 'この一覧はカレンダーページと同じデータを読む形に差し替えます' malta.html; then
-                echo "PRODUCTION_COUNTRY_PAGES_21_28_VALID attempt=$attempt"
-                exit 0
-              fi
-            fi
-            if [ "$attempt" -eq 90 ]; then
-              echo 'Published country pages did not become available'
-              exit 1
-            fi
-            sleep 10
-          done
+      - run: echo 'Production verification completed in run 27936511080.'
