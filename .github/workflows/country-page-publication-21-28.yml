@@ -1,0 +1,63 @@
+name: Country page publication 21-28
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/country-profiles-v2-21-*.json'
+      - 'data/static/country-profiles-v2-22-*.json'
+      - 'data/static/country-profiles-v2-23-*.json'
+      - 'data/static/country-profiles-v2-24-*.json'
+      - 'data/static/country-profiles-v2-25-*.json'
+      - 'data/static/country-profiles-v2-26-*.json'
+      - 'data/static/country-profiles-v2-27-*.json'
+      - 'data/static/country-profiles-v2-28-*.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/sources.json'
+      - 'docs/country-pages/**'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/country-profile-runtime.ts'
+      - 'src/lib/data.ts'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/components.css'
+      - 'scripts/check-country-page-publication-21-28.mjs'
+      - '.github/workflows/country-page-publication-21-28.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/country-profiles-v2-21-*.json'
+      - 'data/static/country-profiles-v2-22-*.json'
+      - 'data/static/country-profiles-v2-23-*.json'
+      - 'data/static/country-profiles-v2-24-*.json'
+      - 'data/static/country-profiles-v2-25-*.json'
+      - 'data/static/country-profiles-v2-26-*.json'
+      - 'data/static/country-profiles-v2-27-*.json'
+      - 'data/static/country-profiles-v2-28-*.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/sources.json'
+      - 'docs/country-pages/**'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/country-profile-runtime.ts'
+      - 'src/lib/data.ts'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/components.css'
+      - 'scripts/check-country-page-publication-21-28.mjs'
+      - '.github/workflows/country-page-publication-21-28.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: npm run build
+      - run: node scripts/check-country-page-publication-21-28.mjs
