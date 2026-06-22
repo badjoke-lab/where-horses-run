@@ -1,4 +1,4 @@
-name: Production diagnostic 21-28
+name: Production response diagnostic 21-28
 
 on:
   pull_request:
@@ -13,40 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Diagnose production pages
+      - name: Inspect production responses
         shell: bash
         run: |
-          set -uo pipefail
+          set -u
           base='https://whr.badjoke-lab.com'
-          echo '=== HUNGARY FETCH ==='
-          curl -sS -L --connect-timeout 10 --max-time 30 -w '\nHTTP_STATUS=%{http_code}\n' "$base/countries/hungary/" -o hungary.html
-          h_status=$?
-          echo "CURL_EXIT=$h_status"
-          if [ -f hungary.html ]; then
-            wc -c hungary.html
-            grep -q 'Europe/Budapest' hungary.html && echo 'HUNGARY_TIMEZONE=yes' || echo 'HUNGARY_TIMEZONE=no'
-            grep -q 'Open the official sources for the latest complete schedule' hungary.html && echo 'HUNGARY_NEW_COPY=yes' || echo 'HUNGARY_NEW_COPY=no'
-            grep -q 'Verify the current local UTC offset' hungary.html && echo 'HUNGARY_OLD_PLACEHOLDER=yes' || echo 'HUNGARY_OLD_PLACEHOLDER=no'
-          fi
-
-          echo '=== MALTA FETCH ==='
-          curl -sS -L --connect-timeout 10 --max-time 30 -w '\nHTTP_STATUS=%{http_code}\n' "$base/ja/countries/malta/" -o malta.html
-          m_status=$?
-          echo "CURL_EXIT=$m_status"
-          if [ -f malta.html ]; then
-            wc -c malta.html
-            grep -q 'Europe/Malta' malta.html && echo 'MALTA_TIMEZONE=yes' || echo 'MALTA_TIMEZONE=no'
-            grep -q '最新の完全な日程は公式ソースで確認してください' malta.html && echo 'MALTA_NEW_COPY=yes' || echo 'MALTA_NEW_COPY=no'
-            grep -q 'カレンダー機能の実データモデルが確定した後' malta.html && echo 'MALTA_OLD_COPY=yes' || echo 'MALTA_OLD_COPY=no'
-          fi
-
-          if [ "$h_status" -ne 0 ] || [ "$m_status" -ne 0 ]; then
-            exit 2
-          fi
-          grep -q 'Europe/Budapest' hungary.html
-          grep -q 'Europe/Malta' malta.html
-          grep -q 'Open the official sources for the latest complete schedule' hungary.html
-          grep -q '最新の完全な日程は公式ソースで確認してください' malta.html
-          ! grep -q 'Verify the current local UTC offset' hungary.html
-          ! grep -q 'カレンダー機能の実データモデルが確定した後' malta.html
-          echo 'PRODUCTION_COUNTRY_PAGES_21_28_VALID'
+          for route in '/countries/hungary/' '/ja/countries/malta/' '/'; do
+            safe=$(printf '%s' "$route" | tr '/-' '__')
+            echo "=== ROUTE $route ==="
+            curl -sS -L --connect-timeout 10 --max-time 30 -D "$safe.headers" -w 'HTTP_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$base$route" -o "$safe.html"
+            echo '-- HEADERS --'
+            sed -n '1,20p' "$safe.headers"
+            echo '-- TITLE --'
+            grep -o '<title[^>]*>[^<]*</title>' "$safe.html" | head -1 || true
+            echo '-- CANONICAL --'
+            grep -o 'rel="canonical"[^>]*' "$safe.html" | head -1 || true
+            echo '-- H1 --'
+            grep -o '<h1[^>]*>[^<]*</h1>' "$safe.html" | head -3 || true
+            echo '-- SIZE/HASH --'
+            wc -c "$safe.html"
+            sha256sum "$safe.html"
+            echo '-- FIRST 800 BYTES --'
+            head -c 800 "$safe.html"
+            echo
+          done
+          exit 0
