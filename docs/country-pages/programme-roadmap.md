@@ -4,7 +4,7 @@ Status: active canonical roadmap
 Scope: country and region detail page programme  
 Canonical tracker: `docs/country-pages/98-country-tracker.tsv`  
 Completion contract: `docs/country-pages/completion-contract.md`  
-Last roadmap review: 2026-06-20
+Last roadmap review: 2026-06-22
 
 ## 1. Purpose
 
@@ -15,21 +15,20 @@ The programme is complete only when all 98 tracker rows and all 196 bilingual ro
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #309
-Publication gate: PR #300 — Draft; entries 21-28; Cloudflare preview pending
-Second publication gate: PR #304 — Draft; entries 29-36; Cloudflare preview pending
-Third publication gate: PR #308 — Draft; entries 37-44; Cloudflare preview pending
-Parallel working PR: #310
-Parallel working branch: country-notes-45-52
-Next PR after #310: #311
-Final release gate: #337
+Latest confirmed merge: PR #310
+Publication gate: PR #311 — Draft; entries 21-28; corrected rendered preview passed
+Second publication gate: PR #304 — stale Draft; entries 29-36; rebuild from latest main required
+Third publication gate: PR #308 — stale Draft; entries 37-44; rebuild from latest main required
+Next working PR: #314
+Next working branch: country-profiles-45-52
+Final release gate: #340
 ```
 
-Current tracker counts on the PR #310 head:
+Current tracker counts after corrected preview approval:
 
 ```text
-published:       20
-profile_ready:   24
+published:       28
+profile_ready:   16
 note_reviewed:    8
 source_tested:    0
 not_started:     46
@@ -39,16 +38,16 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   20
-formally published Japanese routes:  20
-formally published total routes:     40
-profile-ready English routes:        24
-profile-ready Japanese routes:       24
-profile-ready total routes:          48
+formally published English routes:   28
+formally published Japanese routes:  28
+formally published total routes:     56
+profile-ready English routes:        16
+profile-ready Japanese routes:       16
+profile-ready total routes:          32
 final target routes:                196
 ```
 
-PR #300, PR #304, and PR #308 remain independent publication gates. They must not merge or mark their entries published until their respective final rendered Cloudflare previews are reviewed. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
+PR #311 replaces the closed, superseded PR #300 for entries 21-28. PR #304 and PR #308 remain stale Draft gates and must be rebuilt from the latest main before their own rendered previews. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
 
 ## 3. Operating model
 
@@ -116,7 +115,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #297 | merged | Added source tests for entries 21-28 and deployment policy. |
 | #298 | merged | Added reviewed notes for entries 21-28. |
 | #299 | merged | Added Profile v2 records for entries 21-28. |
-| #300 | Draft gate | GitHub QA for entries 21-28 passed; rendered preview remains. |
+| #300 | closed, superseded | Replaced by PR #311; retained only as historical reference. |
 | #301 | merged | Added source tests for entries 29-36. |
 | #302 | merged | Added reviewed notes for entries 29-36. |
 | #303 | merged | Added Profile v2 records for entries 29-36. |
@@ -126,18 +125,22 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #307 | merged | Added Profile v2 records for entries 37-44. |
 | #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |
 | #309 | merged | Added official source tests for entries 45-52. |
+| #310 | merged | Added reviewed notes for entries 45-52 and remediated public country-page copy. |
+| #311 | Draft publication gate | Corrected rendered preview for entries 21-28 passed; publication state recorded. |
+| #312 | temporary operations PR | Preview-probe evidence only; close without merge. |
+| #313 | temporary preview PR | Cloudflare preview trigger only; close without merge. |
 
 ## 7. Publication gates
 
-### PR #300 — entries 21-28
+### PR #311 — entries 21-28
 
-Remaining work:
+Corrected preview status:
 
-1. Create or move one final `preview-*` branch to the reviewed head.
-2. Review representative A and C pages in English and Japanese.
-3. Check responsive layout, source links, language switching, and empty states.
-4. Advance passing rows to `published`.
-5. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
+1. Cloudflare deployment `19067203` succeeded from the preview-only branch.
+2. Representative Hungary and Malta pages passed rendered English/Japanese HTML checks.
+3. Desktop and mobile screenshots passed responsive review with Japanese CJK fonts.
+4. Entries 21-28 are recorded as `published`, with final production deployment still gated on PR merge.
+5. Merge PR #311 without `[CF-Pages-Skip]`, then confirm one production deployment and the two representative production routes.
 
 ### PR #304 — entries 29-36
 
@@ -179,9 +182,9 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 | PR | Status | Work and completion condition |
 | ---: | --- | --- |
 | #309 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
-| #310 | in progress | Add reviewed notes and advance all eight entries to `note_reviewed`. |
-| #311 | next | Add Profile v2 records and reach `profile_ready`. |
-| #312 | planned | QA and publish sixteen routes after one final rendered preview. |
+| #310 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
+| #314 | next | Add Profile v2 records and reach `profile_ready`. |
+| #315 | planned | QA and publish sixteen routes after one final rendered preview. |
 
 All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
@@ -189,21 +192,21 @@ All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, B
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | ---: | ---: | ---: | ---: |
-| 45-52 | #309 | #310 | #311 | #312 |
-| 53-60 | #313 | #314 | #315 | #316 |
-| 61-68 | #317 | #318 | #319 | #320 |
-| 69-76 | #321 | #322 | #323 | #324 |
-| 77-84 | #325 | #326 | #327 | #328 |
-| 85-92 | #329 | #330 | #331 | #332 |
-| 93-98 | #333 | #334 | #335 | #336 |
+| 45-52 | #309 | #310 | #314 | #315 |
+| 53-60 | #316 | #317 | #318 | #319 |
+| 61-68 | #320 | #321 | #322 | #323 |
+| 69-76 | #324 | #325 | #326 | #327 |
+| 77-84 | #328 | #329 | #330 | #331 |
+| 85-92 | #332 | #333 | #334 | #335 |
+| 93-98 | #336 | #337 | #338 | #339 |
 
 Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
 ## 11. Final release gate
 
-### PR #337 — full programme audit
+### PR #340 — full programme audit
 
-PR #337 adds no new country scope. Required checks:
+PR #340 adds no new country scope. Required checks:
 
 ```text
 tracker rows exactly 98
@@ -228,7 +231,7 @@ full production build passes
 final programme report is generated
 ```
 
-The programme closes only after PR #337 is merged and the tracker reports 98 published rows.
+The programme closes only after PR #340 is merged and the tracker reports 98 published rows.
 
 ## 12. Roadmap maintenance rules
 
