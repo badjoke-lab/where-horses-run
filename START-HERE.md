@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-06-28
+Last reviewed: 2026-06-29
 
 Read documents in this order:
 
