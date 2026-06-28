@@ -6,6 +6,9 @@ on:
       - verify-production-29-36
     paths:
       - '.github/workflows/verify-production-29-36.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/verify-production-29-36.yml'
 
 permissions:
   contents: read
