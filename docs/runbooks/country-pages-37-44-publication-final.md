@@ -1,10 +1,10 @@
 # Country pages 37-44 publication runbook
 
-Status: GitHub pre-preview QA  
+Status: rendered preview approved; publication finalization complete  
 Work ID: `WHR-CP-PUB-37-44`  
 Normal work branch: `country-pages-37-44-publication-final`  
-Final preview branch: one `preview-*` branch created only after GitHub QA passes  
-Production publication: prohibited until rendered preview review passes
+Final preview branch: `preview-country-pages-37-44`  
+Production publication: pending no-skip merge and production verification
 
 ## Scope
 
@@ -69,9 +69,36 @@ After GitHub QA is green:
 7. Update the canonical roadmap to the next Work ID.
 8. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
 
-## Current non-publication state
+## Rendered preview approval
 
-Until rendered preview approval, entries 37-44 remain `profile_ready` with complete bilingual routes and no publication date.
+Approved on 2026-06-28.
+
+```text
+Branch preview: https://preview-country-pages-37-44.where-horses-run.pages.dev
+Preview branch: preview-country-pages-37-44
+Preview marker commit: b6851b9bf594878e0d8d71542f95dfd4d706e242
+Representative pages: Malaysia and Italy, EN/JA, desktop and Pixel 7
+Evidence artifact: rendered-preview-37-44 (artifact 7936442604)
+Artifact digest: sha256:8d1f3c314a36ddaeb821115051f51d758aad103d5854a37e6babc82a921c53e0
+```
+
+All 16 live routes passed HTML checks. Representative screenshots passed responsive, CJK, card-layout, and C-rank-boundary review.
+
+## Publication state
+
+Entries 37-44 are recorded as `published` with `qa_status=passed` and `page_published_at=2026-06-28`. PR #319 now requires a no-skip merge and one production-deployment confirmation.
+
+Final tracker counts before merge:
+
+```text
+published:       44
+profile_ready:    0
+note_reviewed:    8
+not_started:     46
+total:           98
+```
+
+Final published route count before merge: 44 English + 44 Japanese = 88.
 
 ## Superseded work
 

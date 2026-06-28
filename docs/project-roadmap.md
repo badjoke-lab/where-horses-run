@@ -1,8 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-CP-PUB-37-44`  
-Next Work ID: `WHR-CAL-BACKFILL-01-20`  
+Current Work ID: `WHR-CAL-BACKFILL-01-20`  
+Next Work ID: `WHR-CAL-BACKFILL-21-36`  
 Last reviewed: 2026-06-28
 
 ## Purpose
@@ -35,19 +35,19 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 ## Current position
 
 ```text
-published country pages:       36
-profile_ready:                  8
+published country pages:       44
+profile_ready:                  0
 note_reviewed:                  8
 not_started:                   46
 total countries/regions:       98
-published routes:              36 EN + 36 JA = 72
+published routes:              44 EN + 44 JA = 88
 final bilingual route target:  98 EN + 98 JA = 196
 ```
 
 Publication debt:
 
 - entries 29-36 are published after the approved rendered preview;
-- entries 37-44 still require a current-main publication rebuild;
+- entries 37-44 are published after the approved rendered preview;
 - entries 45-52 need Profile v2 and publication.
 
 Calendar baseline already exists:
@@ -136,17 +136,16 @@ Completion moves the programme to `WHR-CP-PUB-29-36`.
 
 ## Phase 2 — clear publication debt
 
-Current Work ID: `WHR-CP-PUB-37-44`
-
 Completed:
 
 - `WHR-CP-PUB-29-36` via PR #317 after immutable rendered-preview approval.
+- `WHR-CP-PUB-37-44` via PR #319 after rendered-preview approval.
 
-Remaining:
-
-- `WHR-CP-PUB-37-44`, rebuilt from current `main`, followed by one final preview and one production deployment.
+The publication debt for entries 29-44 is closed.
 
 ## Phase 3 — Calendar Readiness backfill
+
+Current Work ID: `WHR-CAL-BACKFILL-01-20`
 
 ```text
 WHR-CAL-BACKFILL-01-20
