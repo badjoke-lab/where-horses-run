@@ -1,10 +1,10 @@
 # Country pages 29-36 publication runbook
 
-Status: rendered preview approved; publication finalization  
+Status: rendered preview approved; publication finalization complete  
 Work ID: `WHR-CP-PUB-29-36`  
 Normal work branch: `country-pages-29-36-publication-final`  
-Final preview branch: one `preview-*` branch created only after GitHub QA passes  
-Production publication: prohibited until rendered preview review passes
+Final preview branch: `preview-country-pages-29-36`  
+Production publication: pending no-skip merge and production verification
 
 ## Scope
 
@@ -28,7 +28,7 @@ Subsystem-level source capability must not raise the country-level public ceilin
 
 ## GitHub QA gate
 
-The repository must verify:
+The repository verifies:
 
 - all sixteen built routes exist;
 - one h1 per route;
@@ -41,8 +41,7 @@ The repository must verify:
 - no embedded video or `Watch here` output;
 - empty meeting data is not described as absence of racing;
 - runtime remains Profile v2 only;
-- country programme, governance, and Calendar contracts remain valid;
-- entries remain at least `profile_ready` until rendered preview approval.
+- country programme, governance, and Calendar contracts remain valid.
 
 ## Validation
 
@@ -56,19 +55,6 @@ node scripts/check-country-page-programme.mjs
 node scripts/check-project-governance-docs.mjs
 node scripts/check-calendar-contracts.mjs
 ```
-
-## Preview gate
-
-After GitHub QA is green:
-
-1. Create one final `preview-country-pages-29-36` branch at the reviewed PR head.
-2. Allow exactly one Cloudflare preview deployment.
-3. Review representative A and C pages in both English and Japanese.
-4. Check desktop and mobile layout, official links, language switching, metadata, and empty states.
-5. Record the preview URL and review result in the PR.
-6. Only after approval, advance entries 29-36 to `published`, set route statuses to `published`, set `qa_status=passed`, and add `page_published_at`.
-7. Update the project roadmap so the next Work ID is `WHR-CP-PUB-37-44`.
-8. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
 
 ## Rendered preview approval
 
@@ -86,8 +72,32 @@ Live HTML, desktop screenshots, and Pixel 7 screenshots passed. No horizontal ov
 
 ## Publication state
 
-Entries 29-36 are recorded as `published` with `qa_status=passed` and `page_published_at=2026-06-28`. PR #317 now requires a no-skip merge and one production-deployment confirmation.
+Entries 29-36 are recorded as `published` with `qa_status=passed` and `page_published_at=2026-06-28`.
+
+Final tracker counts before merge:
+
+```text
+published:       36
+profile_ready:    8
+note_reviewed:    8
+not_started:     46
+total:           98
+```
+
+Final published route count before merge:
+
+```text
+English:   36
+Japanese:  36
+total:     72
+```
+
+PR #317 now requires a no-skip merge and one production-deployment confirmation.
 
 ## Superseded work
 
-PR #304 used an older main baseline and PR-number-specific runbook. The new Work ID and this runbook supersede it. Do not merge PR #304.
+PR #304 used an older main baseline and a PR-number-specific runbook. PR #317 supersedes it; PR #304 must not be merged.
+
+## Next Work ID
+
+`WHR-CP-PUB-37-44`
