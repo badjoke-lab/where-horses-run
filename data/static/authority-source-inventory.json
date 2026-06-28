@@ -1,7 +1,7 @@
 {
-  "schema_version": "authority-source-inventory-v0",
+  "schema_version": "authority-source-inventory-v1",
   "schema_ref": "data/static/authority-source-inventory.schema.json",
-  "purpose": "Public-safe shared multi-authority official source inventory records for initial timetable acquisition route candidates.",
+  "purpose": "Public-safe shared multi-authority official source inventory records used by timetable acquisition planning and Calendar Readiness references.",
   "records": [
     {
       "country_id": "japan",
@@ -17,7 +17,7 @@
       "last_checked_date": "2026-06-05",
       "capability_rank": "B",
       "adapter_candidate_status": "candidate",
-      "notes": "Official public calendar source candidate for JRA meeting-date confirmation. Added as one peer candidate with NAR and HKJC; no adapter or fetch implementation is included."
+      "notes": "Official public calendar source candidate for JRA meeting-date confirmation. This record does not claim that a live adapter or fetch implementation exists."
     },
     {
       "country_id": "japan",
@@ -33,7 +33,7 @@
       "last_checked_date": "2026-06-05",
       "capability_rank": "B",
       "adapter_candidate_status": "candidate",
-      "notes": "Official public local-government racing monthly convening source candidate for meeting-date confirmation. Added as one peer candidate with JRA and HKJC; no adapter or fetch implementation is included."
+      "notes": "Official public local-government racing monthly convening source candidate for meeting-date confirmation. This record does not claim that a live adapter or fetch implementation exists."
     },
     {
       "country_id": "hong-kong",
@@ -49,7 +49,7 @@
       "last_checked_date": "2026-06-05",
       "capability_rank": "B+",
       "adapter_candidate_status": "candidate",
-      "notes": "Official public fixture-list source candidate for HKJC meeting-date confirmation. Added as one peer candidate with JRA and NAR; no adapter or fetch implementation is included."
+      "notes": "Official public fixture-list source candidate for HKJC meeting-date confirmation. This record does not claim that a live adapter or fetch implementation exists."
     }
   ]
 }

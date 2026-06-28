@@ -1,7 +1,6 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Work ID: `WHR-GOV-ROADMAP-01`  
 Last reviewed: 2026-06-28
 
 ## Authority order
@@ -10,7 +9,7 @@ When repository documents conflict, use this order:
 
 1. active contracts and machine-readable schemas;
 2. `docs/project-roadmap.md`;
-3. active programme roadmaps and their adopted replacement/addendum files;
+3. active programme roadmaps and adopted addenda;
 4. active operations policies;
 5. canonical trackers and registries;
 6. accepted decision records;
@@ -41,17 +40,28 @@ Overall:
 
 Country pages:
 
-- `docs/country-pages/programme-roadmap.md`, as amended by `programme-roadmap-2026-06-28-addendum.md`
-- `docs/country-pages/completion-contract.md`, as amended by `completion-contract-calendar-addendum.md`
+- `docs/country-pages/programme-roadmap.md` plus active addendum
+- `docs/country-pages/completion-contract.md` plus Calendar addendum
 - `docs/country-pages/98-country-tracker.tsv`
 
-Calendar:
+Calendar human-readable contracts:
 
 - `docs/calendar/source-test-v2-contract.md`
 - `docs/calendar/calendar-readiness-contract.md`
+- `docs/calendar/machine-readable-contracts.md`
 - `docs/calendar/implementation-roadmap.md`
-- `docs/specs/global-timetable-architecture.md`, as amended by the 2026-06-28 addendum
-- adopted machine-readable timetable and readiness schemas
+- `docs/specs/global-timetable-architecture.md` plus active addendum
+- `docs/specs/authority-source-inventory-schema.md` plus active addendum
+
+Calendar machine-readable contracts:
+
+- `data/static/source-test-v2.schema.json`
+- `data/static/calendar-readiness.schema.json`
+- `data/static/calendar-readiness-registry.json`
+- `data/static/authority-source-inventory.schema.json`
+- `data/static/authority-source-inventory.json`
+- `scripts/check-calendar-contracts.mjs`
+- `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
 
@@ -64,7 +74,7 @@ Before work begins:
 3. confirm tracker or registry state;
 4. record whether Cloudflare is required.
 
-The same PR must update the relevant tracker, registry, roadmap, contract, runbook, and validator when their state or rule changes.
+The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
 
 Every substantive PR records:
 
@@ -83,7 +93,7 @@ Next Work ID
 
 ## Public repository boundary
 
-The public repository may contain reviewed facts, schemas, code, hashes, and public-safe summaries. Raw local captures, credentials, restricted access details, private workflow notes, and prohibited race participant or betting data remain outside it.
+The public repository may contain reviewed facts, schemas, code, hashes, and public-safe summaries. Raw local captures, credentials, restricted access details, private workflow notes, and prohibited participant or betting data remain outside it.
 
 ## Maintenance
 

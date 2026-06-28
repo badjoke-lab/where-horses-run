@@ -1,7 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-GOV-ROADMAP-01`  
+Current Work ID: `WHR-CAL-CONTRACT-02`  
+Next Work ID: `WHR-CP-PUB-29-36`  
 Last reviewed: 2026-06-28
 
 ## Purpose
@@ -21,28 +22,26 @@ official-source research
 
 ## Product destination
 
-Where Horses Run is a bilingual, static-first world racing calendar and timetable guide. It should:
+Where Horses Run is a bilingual, static-first world racing calendar and timetable guide that:
 
-- publish English and Japanese pages for all 98 tracked countries and regions;
-- identify racing systems, authorities, racecourses, and official sources;
-- show the maximum reviewed timetable detail available for each source;
-- keep technical capability separate from public display permission;
-- support automatic, semi-automatic, manual, link-only, blocked, and not-applicable treatments;
-- publish only reviewed meeting and timetable fields;
-- direct users to official sources for final confirmation.
+- publishes English and Japanese pages for all 98 tracked countries and regions;
+- identifies racing systems, authorities, racecourses, and official sources;
+- shows the maximum reviewed timetable detail available for each source;
+- keeps Technical Rank separate from Public Ceiling;
+- supports automatic, semi-automatic, manual, link-only, blocked, and not-applicable treatments;
+- publishes only reviewed meeting and timetable fields;
+- directs users to official sources for final confirmation.
 
 ## Current position
 
-Country pages:
-
 ```text
-published:       28
-profile_ready:   16
-note_reviewed:    8
-not_started:     46
-total:           98
-published routes: 28 English + 28 Japanese = 56
-final target:     98 English + 98 Japanese = 196
+published country pages:       28
+profile_ready:                 16
+note_reviewed:                  8
+not_started:                   46
+total countries/regions:       98
+published routes:              28 EN + 28 JA = 56
+final bilingual route target:  98 EN + 98 JA = 196
 ```
 
 Publication debt:
@@ -53,25 +52,24 @@ Publication debt:
 Calendar baseline already exists:
 
 - Calendar, Today, Tomorrow, and meeting-detail surfaces;
-- C / B / B+ / A / A+ public-rank handling;
+- C / B / B+ / A / A+ display handling;
 - canonical and public generated timetable datasets;
 - source, fixture, normalizer, candidate, promotion, and UI validators;
 - Japan JRA, NAR, and Banei candidate work;
 - Hong Kong and UAE acquisition work;
-- a major-country source registry covering 13 countries and 24 active source groups;
-- shared refresh commands.
+- a major-country source registry and refresh commands.
 
 The baseline is not yet a complete continuously updated calendar:
 
-- Calendar and date helpers still contain June 2026 preview-era assumptions;
+- Calendar/date helpers still contain June 2026 preview assumptions;
 - generated records include seed and preview dates;
 - the shared refresh core still reports `skeleton_no_live_fetch`;
-- registered parsers and cadences do not by themselves prove live acquisition;
-- Calendar Readiness is not yet closed for every country, system, authority, and source.
+- registered parsers and cadences do not prove live acquisition;
+- Calendar Readiness is not yet backfilled for entries 01-52.
 
 ## Governing rules
 
-### Research drives both products
+### Research drives both country pages and Calendar
 
 ```text
 official source test
@@ -84,33 +82,9 @@ official source test
 -> page QA and publication
 ```
 
-Country pages are reader-facing results of the same research that prepares the calendar.
-
-### Country and calendar completion are separate
+### Country and Calendar completion are separate
 
 A country page may be published while a calendar source remains manual, link-only, blocked, or not applicable. Both states use stable IDs but are tracked separately.
-
-### Rank model
-
-```text
-Technical Rank = what the reviewed official source can provide
-Public Ceiling = what Where Horses Run may display
-Effective Public Rank = the lower approved rank applied to a public record
-```
-
-### No forced automation
-
-A closed calendar decision may be:
-
-```text
-automatic
-semi_automatic
-manual_import
-manual_confirmation
-link_only
-blocked
-not_applicable
-```
 
 ### Candidate generation is not publication
 
@@ -129,28 +103,46 @@ official source
 
 Use stable Work IDs. GitHub PR numbers are recorded after creation but do not define the schedule.
 
-Every substantive PR records the Work ID, programme, canonical documents reviewed, tracker or registry changes, runtime behaviour, display boundary, deployment requirement, completion conditions, and next Work ID.
+Every substantive PR records the Work ID, canonical documents reviewed, tracker/registry changes, runtime behaviour, display boundary, deployment requirement, completion conditions, and next Work ID.
 
-## Programme phases
+## Phase 0 — governance alignment
 
-### Phase 0 — governance and contract alignment
+Completed through PR #314 and PR #315:
 
-Current: `WHR-GOV-ROADMAP-01`
+- document authority;
+- project roadmap;
+- Calendar contracts and implementation roadmap;
+- local/raw source boundary;
+- documentation indexes and governance validation.
 
-Create document authority, this roadmap, Calendar contracts, implementation roadmap, baseline audit, and aligned indexes and validators.
+## Phase 1 — machine-readable Calendar contracts
 
-Next: `WHR-CAL-CONTRACT-02`
+Current Work ID: `WHR-CAL-CONTRACT-02`
 
-Implement the readiness schema, registry, validators, and consistency checks without activating live acquisition.
+Deliver:
 
-### Phase 1 — clear publication debt
+- `data/static/source-test-v2.schema.json`;
+- `data/static/calendar-readiness.schema.json`;
+- bootstrap `data/static/calendar-readiness-registry.json`;
+- stable country, authority/source, and racecourse reference rules;
+- C / B / B+ / A / A+ enum alignment;
+- automation, readiness, implementation, refresh, fallback, and source-status enums;
+- `scripts/check-calendar-contracts.mjs`;
+- dedicated GitHub Actions validation;
+- no live acquisition and no invented readiness records.
+
+Completion moves the programme to `WHR-CP-PUB-29-36`.
+
+## Phase 2 — clear publication debt
 
 ```text
 WHR-CP-PUB-29-36
 WHR-CP-PUB-37-44
 ```
 
-### Phase 2 — Calendar Readiness backfill
+Each stale publication gate is rebuilt from current `main`, receives one final rendered preview, then one production deployment.
+
+## Phase 3 — Calendar Readiness backfill
 
 ```text
 WHR-CAL-BACKFILL-01-20
@@ -158,18 +150,16 @@ WHR-CAL-BACKFILL-21-36
 WHR-CAL-BACKFILL-37-52
 ```
 
-Reuse reviewed evidence. Do not invent automation claims.
+Reuse reviewed evidence. Do not invent automation claims, parser availability, or nationwide coverage.
 
-### Phase 3 — finish entries 45-52
+## Phase 4 — finish entries 45-52
 
 ```text
 WHR-CP-PROFILE-45-52
 WHR-CP-PUB-45-52
 ```
 
-### Phase 4 — complete entries 53-98 under Source Test v2
-
-Each wave remains Source Test, Reviewed Note, Profile v2, and QA/Publish, but Source Test v2 also closes the calendar decision.
+## Phase 5 — complete entries 53-98 under Source Test v2
 
 ```text
 WHR-ST2-53-60 -> WHR-NOTE-53-60 -> WHR-PROFILE-53-60 -> WHR-PUB-53-60
@@ -180,7 +170,9 @@ WHR-ST2-85-92 -> WHR-NOTE-85-92 -> WHR-PROFILE-85-92 -> WHR-PUB-85-92
 WHR-ST2-93-98 -> WHR-NOTE-93-98 -> WHR-PROFILE-93-98 -> WHR-PUB-93-98
 ```
 
-### Phase 5 — combined 98-country and readiness audit
+Each wave remains Source Test, Reviewed Note, Profile v2, and QA/Publish, but Source Test v2 also closes the Calendar decision.
+
+## Phase 6 — combined 98-country and readiness audit
 
 Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
 
@@ -188,18 +180,18 @@ Required outcomes:
 
 - 98 tracker rows and 196 published bilingual routes;
 - every country has a calendar decision;
-- every reviewed system or source has a closed readiness state;
+- every reviewed system/source has a closed readiness state;
 - Technical Rank, Public Ceiling, automation mode, fallback, freshness, and revalidation are recorded where applicable;
 - no unexplained unknown state remains;
-- priority and blocked/link-only reports are generated.
+- implementation priority and blocked/link-only reports are generated.
 
-This closes the 98-country research and page programme. It does not close the product.
+This closes the 98-country research/page programme. It does not close the product.
 
-### Phase 6 — reconcile the existing calendar baseline
+## Phase 7 — reconcile the existing Calendar baseline
 
 Work ID: `WHR-CAL-BASELINE-RECONCILE`
 
-Classify current schemas, registries, generated data, candidate paths, display policies, refresh commands, Calendar views, fixed-date logic, seed data, and PR-specific scripts as:
+Classify schemas, registries, generated data, candidate paths, display policies, refresh commands, fixed dates, seed data, and PR-specific scripts as:
 
 ```text
 retain
@@ -209,7 +201,7 @@ replace
 archive
 ```
 
-### Phase 7 — activate the reviewed pipeline
+## Phase 8 — activate the reviewed pipeline
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -217,9 +209,9 @@ WHR-CAL-DYNAMIC-DATES
 WHR-CAL-OPS-V1
 ```
 
-Deliver one adapter contract, fixture-backed parsing, candidate and promotion gates, dynamic dates and rolling window, stale/failure behaviour, scheduled candidate generation, and reviewable update PRs.
+Deliver one adapter contract, fixture-backed parsing, candidate/promotion gates, dynamic dates, rolling window, stale/failure handling, scheduled candidate generation, reviewable update PRs, pause, and rollback.
 
-### Phase 8 — pilot source activation
+## Phase 9 — pilot source activation
 
 ```text
 WHR-CAL-JAPAN-JRA
@@ -229,21 +221,19 @@ WHR-CAL-HONG-KONG-HKJC
 WHR-CAL-UAE-ERA
 ```
 
-Each pilot must pass acquisition, normalization, validation, human promotion, display, stale handling, and rollback documentation.
+Each pilot must pass acquisition, normalization, validation, human promotion, display, stale handling, fallback, and rollback documentation.
 
-### Phase 9 — Calendar public v1
+## Phase 10 — Calendar public v1
 
 Work ID: `WHR-CAL-PUBLIC-V1`
 
 Require dynamic Calendar, Today, and Tomorrow dates; maintained pilot data; visible source, coverage, and freshness; rank boundaries; official fallback; bilingual QA; and operations runbooks.
 
-### Phase 10 — expansion
+## Phase 11 — expansion and steady-state operations
 
 Choose cohorts from Calendar Readiness using source stability, completeness, timetable depth, maintenance cost, publication safety, season timing, and user value.
 
-### Phase 11 — steady-state operations
-
-Daily candidate and failure review, weekly stale review, monthly source revalidation, seasonal fixture rollover, rank changes, adapter maintenance, and country/racecourse/glossary/search improvements.
+Ongoing operation includes daily candidate/failure review, weekly stale review, monthly source revalidation, seasonal fixture rollover, controlled rank changes, adapter maintenance, and country/racecourse/glossary/search improvements.
 
 ## Required reading
 
@@ -253,10 +243,10 @@ Every PR:
 2. this roadmap
 3. `docs/operations/deployment-and-ci-policy.md`
 
-Country-page work also reads the country roadmap, completion contract, and tracker.
+Country-page work also reads the country roadmap, active addendum, completion contract, Calendar addendum, and tracker.
 
-Calendar work also reads the Source Test v2 contract, Calendar Readiness contract, implementation roadmap, applicable records, and global timetable architecture.
+Calendar work also reads Source Test v2, Calendar Readiness, machine-readable contracts, implementation roadmap, applicable records, and global timetable architecture.
 
 ## Maintenance
 
-Update this roadmap in the same PR whenever the current or next Work ID, phase boundaries, completion conditions, material tracker/readiness counts, component status, or deployment model changes.
+Update this roadmap in the same PR whenever the current or next Work ID, phase boundary, completion condition, material tracker/readiness count, component status, or deployment model changes.

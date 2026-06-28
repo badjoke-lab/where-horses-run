@@ -2,7 +2,7 @@
 
 Status: active canonical research contract  
 Work ID introduced by: `WHR-GOV-ROADMAP-01`  
-Machine-readable enforcement planned in: `WHR-CAL-CONTRACT-02`  
+Machine-readable enforcement active from: `WHR-CAL-CONTRACT-02`  
 Last reviewed: 2026-06-28
 
 ## Purpose
@@ -10,6 +10,23 @@ Last reviewed: 2026-06-28
 A Source Test v2 determines both what reviewed official racing information exists and how that source may be maintained for the public calendar.
 
 A source test is not complete merely because an official URL and country-level rank were found.
+
+## Machine-readable files
+
+```text
+data/static/source-test-v2.schema.json
+data/static/calendar-readiness.schema.json
+data/static/calendar-readiness-registry.json
+scripts/check-calendar-contracts.mjs
+```
+
+Future Source Test v2 outputs use:
+
+```text
+docs/timetable-source-tests/<delivery>-<slug>/source-test-v2.json
+```
+
+The machine schema, registry, and validator are documented in `docs/calendar/machine-readable-contracts.md`.
 
 ## Unit of review
 
@@ -26,22 +43,32 @@ country
 
 Do not generalize one racecourse or authority to an entire country without evidence.
 
-## Required record
+## Required summary
+
+Each country summary records:
+
+- tracker `delivery_no` and stable `country_id`;
+- country name;
+- checked date and evidence-review date;
+- country completeness classification;
+- one or more reviewed system/source records;
+- `public_safe: true`.
+
+## Required system/source record
 
 Each reviewed system/source records:
 
-- stable country, authority/operator, source, and relevant racecourse IDs;
-- racing system or code and source role;
-- countrywide, authority-wide, subset, or single-racecourse scope;
+- stable readiness ID, system ID, authority/source key, and relevant racecourse IDs;
+- racing system name and coverage scope;
 - meeting-date, racecourse, first-time, last-time, race-by-race, and A+ field availability;
 - Technical Rank `C`, `B`, `B+`, `A`, or `A+`;
-- tested dates and tested meeting/race counts where meaningful;
-- limitations and unresolved coverage;
-- separate Public Ceiling and any item-level A+ switches;
-- source format and access mode where known;
-- automation mode, refresh class, stale/revalidation rule, fallback, and Calendar Readiness;
-- checked date, evidence-review date, and public-safe evidence references;
-- local-work requirement.
+- separate Public Ceiling and any item-level A+ limitations;
+- source format and access mode;
+- automation mode and refresh classes;
+- Calendar Readiness and separate implementation status;
+- source status, fallback, and revalidation trigger;
+- blocked reason when applicable;
+- limitations and public-safe notes.
 
 ## Source and access enums
 
@@ -114,12 +141,13 @@ Do not commit raw HTML, JavaScript, PDF bodies, API response bodies, complete pr
 [ ] refresh and stale/revalidation behaviour are recorded
 [ ] fallback is recorded
 [ ] Calendar Readiness is closed
+[ ] implementation status is not confused with readiness
 [ ] public-safe evidence is linked
 [ ] raw, internal, and prohibited material is absent
 [ ] tracker and readiness registry are updated
-[ ] relevant validators pass
+[ ] node scripts/check-calendar-contracts.mjs passes
 ```
 
 ## Existing entries
 
-Entries 01-52 predate this contract. Backfill them from existing reviewed evidence through the Work IDs in the project roadmap. Do not invent live parsers, automation, or coverage.
+Entries 01-52 predate this contract. Backfill them from existing reviewed evidence through the Work IDs in the project roadmap. Existing `final-summary.json` files may be referenced during backfill. Do not invent live parsers, automation, nationwide coverage, or readiness from old labels alone.

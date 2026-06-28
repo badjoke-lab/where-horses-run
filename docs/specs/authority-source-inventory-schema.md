@@ -1,13 +1,12 @@
 # Authority source inventory schema
 
-Status: draft foundation  
-Last updated: 2026-06-05
+Status: active foundation  
+Schema version: `authority-source-inventory-schema-v1`  
+Last updated: 2026-06-28
 
-This specification defines the shared authority source inventory used before selecting timetable adapters. It supports JRA, NAR, HKJC, and overseas authorities under the same public-safe fields so no single authority becomes the center of the timetable architecture.
+This specification defines the shared public-safe authority source inventory used before timetable adapter selection and by Calendar Readiness references. It supports national, regional, state, provincial, racecourse-operator, and other authority structures without making one jurisdiction the center of the architecture.
 
-The inventory is source-review metadata only. It does not add adapters, scrapers, parsers, runtime fetch logic, racecards, odds, results, payouts, tips, full entries, raw source bodies, or private workflow notes.
-
----
+The inventory records reviewed source metadata only. It does not claim that an adapter, scraper, parser, scheduler, or live fetch path exists.
 
 ## Files
 
@@ -17,13 +16,13 @@ data/static/authority-source-inventory.json
 scripts/check-authority-source-inventory-schema.mjs
 ```
 
-`authority-source-inventory.schema.json` defines the allowed fields and enums. `authority-source-inventory.json` now includes initial public-safe JRA, NAR/local-government-racing, and HKJC source records as peer adapter candidates; follow-up inventory PRs can add more reviewed source records under the same shape.
+Calendar Readiness records reference an inventory record using:
 
----
+```text
+country_id/authority_id/official_source_id
+```
 
 ## Record shape
-
-Each record uses this shape:
 
 ```ts
 type AuthoritySourceInventoryRecord = {
@@ -44,34 +43,11 @@ type AuthoritySourceInventoryRecord = {
 };
 ```
 
-The stable record key is:
+Stable inventory key:
 
 ```text
 country_id + authority_id + official_source_id
 ```
-
----
-
-## Required fields
-
-| Field | Type | Purpose |
-| --- | --- | --- |
-| `country_id` | string | Stable country identifier shared with country and timetable datasets. |
-| `authority_id` | string | Stable racing authority identifier within the country scope. |
-| `authority_name_en` | string | English authority name for review and display. |
-| `authority_name_local` | string \| null | Local-language authority name when applicable; use `null` when no local variant is needed. |
-| `authority_type` | enum | Authority jurisdiction or operator category. |
-| `racecourse_scope` | enum | Racecourse coverage scope for the source candidate. |
-| `official_source_id` | string | Stable source identifier for the authority source candidate. |
-| `official_source_url` | URL string | Official or authority-owned source URL used for confirmation. |
-| `source_kind` | enum | Kind of source capability being inventoried. |
-| `source_status` | enum | Shared global timetable source status. |
-| `last_checked_date` | `YYYY-MM-DD` \| null | Date the source candidate was last checked, or `null` when not checked yet. |
-| `capability_rank` | enum | Shared global timetable capability rank. |
-| `adapter_candidate_status` | enum | Adapter-selection readiness after source review, without implementing the adapter. |
-| `notes` | string | Public-safe reviewer notes. |
-
----
 
 ## Enums
 
@@ -113,8 +89,6 @@ type SourceKind =
 
 ### Source status
 
-Authority source inventory records reuse the existing global timetable source status exactly:
-
 ```ts
 type GlobalTimetableSourceStatus =
   | "verified"
@@ -126,11 +100,11 @@ type GlobalTimetableSourceStatus =
 
 ### Capability rank
 
-Authority source inventory records reuse the existing global timetable capability rank exactly:
-
 ```ts
-type GlobalTimetableCapabilityRank = "C" | "B" | "B+" | "A";
+type GlobalTimetableCapabilityRank = "C" | "B" | "B+" | "A" | "A+";
 ```
+
+A+ means that selected programme-summary fields may be technically obtainable. It does not permit complete racecard republication and remains subject to Public Ceiling and item-level publication policy.
 
 ### Adapter candidate status
 
@@ -143,28 +117,45 @@ type AdapterCandidateStatus =
   | "not_applicable";
 ```
 
-This field records adapter-selection readiness only. It must not imply that an adapter, scraper, parser, or runtime fetch path exists.
+Adapter candidate status is not Calendar Readiness and is not implementation status. A `candidate` record does not prove that a parser or runtime path exists.
 
----
+## Calendar Readiness relationship
+
+Keep these states separate:
+
+```text
+inventory source capability
+Calendar Readiness
+implementation status
+public source status
+```
+
+The source inventory answers what official source exists and what it may provide. Calendar Readiness answers whether and how implementation may begin. Implementation status answers what tooling and operations actually exist.
+
+See:
+
+- `docs/calendar/calendar-readiness-contract.md`
+- `docs/calendar/machine-readable-contracts.md`
+- `data/static/calendar-readiness.schema.json`
 
 ## Public-safe exclusions
 
-Inventory records must not include:
+Inventory records must not contain:
 
-- entries, odds, results, payouts, predictions, tips, racecards, or full entries;
-- raw official page content or source bodies;
-- scraper, parser, adapter, or runtime fetch implementation details;
-- JRA-only fields that would make Japan central racing the center of the architecture;
-- internal strategy, budget, monetization, or private workflow notes.
-
----
+- raw HTML, JavaScript, PDF bodies, or API response bodies;
+- complete programmes or racecards;
+- horses, runners, jockeys, trainers, weights, gates, or participant lists;
+- odds, betting recommendations, results, payouts, predictions, or tips;
+- credentials, cookies, tokens, restricted access details, or bypass instructions;
+- internal strategy, budget, monetization, private workflow, or private publication-risk notes.
 
 ## Validation
 
-Run the schema validator with:
+Run:
 
 ```text
-npm run validate:authority-source-inventory-schema
+node scripts/check-authority-source-inventory-schema.mjs
+node scripts/check-calendar-contracts.mjs
 ```
 
-The validator checks the schema enums, placeholder data file shape, required record fields, URL/date formats, duplicate source keys, and public-safe exclusion guardrails.
+The validators check schema versions, enums, required fields, URL/date formats, duplicate source keys, public-safe exclusions, A+ consistency, and Calendar Readiness reference compatibility.
