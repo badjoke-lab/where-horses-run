@@ -1,0 +1,251 @@
+name: Finalize publication state 37-44
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/finalize-publication-37-44.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-pages-37-44-publication-final
+          fetch-depth: 0
+      - name: Apply approved publication state
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv
+          import io
+
+          def replace_once(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'missing replacement target: {label}')
+              return text.replace(old, new, 1)
+
+          tracker_path = Path('docs/country-pages/98-country-tracker.tsv')
+          source = tracker_path.read_text(encoding='utf-8')
+          reader = csv.DictReader(io.StringIO(source), delimiter='\t')
+          rows = list(reader)
+          if len(rows) != 98:
+              raise SystemExit(f'expected 98 tracker rows, found {len(rows)}')
+
+          remarks = {
+              '37': 'Published after rendered Cloudflare preview and bilingual public-boundary QA.',
+              '38': 'Published after rendered Cloudflare preview and bilingual public-boundary QA; wider country coverage remains unresolved.',
+              '39': 'Published after rendered Cloudflare preview and bilingual public-boundary QA.',
+              '40': 'Published after rendered Cloudflare preview and bilingual public-boundary QA.',
+              '41': 'Published after rendered Cloudflare preview and bilingual public-boundary QA; wider racecourse coverage remains incomplete.',
+              '42': 'Published after rendered Cloudflare preview and bilingual public-boundary QA; other horse-racing codes remain unreviewed.',
+              '43': 'Published after rendered Cloudflare preview and bilingual public-boundary QA.',
+              '44': 'Published after rendered Cloudflare preview and bilingual public-boundary QA; wider horse-racing code coverage remains incomplete.',
+          }
+          seen = set()
+          for row in rows:
+              delivery = row['delivery_no']
+              if delivery not in remarks:
+                  continue
+              seen.add(delivery)
+              if row['programme_status'] not in {'profile_ready', 'page_qa', 'published'}:
+                  raise SystemExit(f'{delivery}: unexpected programme status {row["programme_status"]}')
+              row['programme_status'] = 'published'
+              row['en_route_status'] = 'published'
+              row['ja_route_status'] = 'published'
+              row['qa_status'] = 'passed'
+              row['page_published_at'] = '2026-06-28'
+              row['remarks'] = remarks[delivery]
+          if seen != set(remarks):
+              raise SystemExit(f'missing tracker rows: {sorted(set(remarks) - seen)}')
+
+          output = io.StringIO()
+          writer = csv.DictWriter(output, fieldnames=reader.fieldnames, delimiter='\t', lineterminator='\n')
+          writer.writeheader()
+          writer.writerows(rows)
+          tracker_path.write_text(output.getvalue(), encoding='utf-8')
+
+          path = Path('docs/project-roadmap.md')
+          text = path.read_text(encoding='utf-8')
+          text = replace_once(text, 'Current Work ID: `WHR-CP-PUB-37-44`', 'Current Work ID: `WHR-CAL-BACKFILL-01-20`', 'project current Work ID')
+          text = replace_once(text, 'Next Work ID: `WHR-CAL-BACKFILL-01-20`', 'Next Work ID: `WHR-CAL-BACKFILL-21-36`', 'project next Work ID')
+          text = replace_once(text, 'published country pages:       36', 'published country pages:       44', 'published count')
+          text = replace_once(text, 'profile_ready:                  8', 'profile_ready:                  0', 'profile-ready count')
+          text = replace_once(text, 'published routes:              36 EN + 36 JA = 72', 'published routes:              44 EN + 44 JA = 88', 'published routes')
+          text = replace_once(text, '- entries 37-44 still require a current-main publication rebuild;', '- entries 37-44 are published after the approved rendered preview;', 'publication debt 37-44')
+          old_phase2 = '''## Phase 2 — clear publication debt
+
+Current Work ID: `WHR-CP-PUB-37-44`
+
+Completed:
+
+- `WHR-CP-PUB-29-36` via PR #317 after immutable rendered-preview approval.
+
+Remaining:
+
+- `WHR-CP-PUB-37-44`, rebuilt from current `main`, followed by one final preview and one production deployment.'''
+          new_phase2 = '''## Phase 2 — clear publication debt
+
+Completed:
+
+- `WHR-CP-PUB-29-36` via PR #317 after immutable rendered-preview approval.
+- `WHR-CP-PUB-37-44` via PR #319 after rendered-preview approval.
+
+The publication debt for entries 29-44 is closed.'''
+          text = replace_once(text, old_phase2, new_phase2, 'phase 2 completion')
+          text = replace_once(text, '## Phase 3 — Calendar Readiness backfill\n\n```text', '## Phase 3 — Calendar Readiness backfill\n\nCurrent Work ID: `WHR-CAL-BACKFILL-01-20`\n\n```text', 'phase 3 current work')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('START-HERE.md')
+          text = path.read_text(encoding='utf-8')
+          text = replace_once(text, 'WHR-CP-PUB-37-44', 'WHR-CAL-BACKFILL-01-20', 'entry current Work ID')
+          text = replace_once(text, 'WHR-CAL-BACKFILL-01-20', 'WHR-CAL-BACKFILL-21-36', 'entry next Work ID')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('scripts/check-country-page-programme.mjs')
+          text = path.read_text(encoding='utf-8')
+          old_slugs = """  'saudi-arabia', 'india'\n];"""
+          new_slugs = """  'saudi-arabia', 'india',\n  'malaysia', 'thailand', 'philippines', 'mauritius', 'argentina', 'germany',\n  'italy', 'spain'\n];"""
+          text = replace_once(text, old_slugs, new_slugs, 'published slug list')
+          text = replace_once(text, "{ published: 36, profile_ready: 8, source_tested: 0, note_reviewed: 8, page_qa: 0, not_started: 46 }", "{ published: 44, profile_ready: 0, source_tested: 0, note_reviewed: 8, page_qa: 0, not_started: 46 }", 'programme counts')
+          text = replace_once(text, 'PROGRAMME_COUNTS: published=36 profile_ready=8 note_reviewed=8 not_started=46', 'PROGRAMME_COUNTS: published=44 profile_ready=0 note_reviewed=8 not_started=46', 'programme log')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('scripts/check-project-governance-docs.mjs')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('Current Work ID: `WHR-CP-PUB-37-44`', 'Current Work ID: `WHR-CAL-BACKFILL-01-20`')
+          text = text.replace('Next Work ID: `WHR-CAL-BACKFILL-01-20`', 'Next Work ID: `WHR-CAL-BACKFILL-21-36`')
+          text = text.replace("'START-HERE.md': ['WHR-CP-PUB-37-44', 'WHR-CAL-BACKFILL-01-20', 'calendar-readiness-registry.json']", "'START-HERE.md': ['WHR-CAL-BACKFILL-01-20', 'WHR-CAL-BACKFILL-21-36', 'calendar-readiness-registry.json']")
+          text = text.replace('CURRENT_WORK_ID: WHR-CP-PUB-37-44', 'CURRENT_WORK_ID: WHR-CAL-BACKFILL-01-20')
+          text = text.replace('NEXT_WORK_ID: WHR-CAL-BACKFILL-01-20', 'NEXT_WORK_ID: WHR-CAL-BACKFILL-21-36')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('scripts/check-calendar-contracts.mjs')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace("[paths.roadmap, roadmapText, ['Current Work ID: `WHR-CP-PUB-37-44`', 'Next Work ID: `WHR-CAL-BACKFILL-01-20`']]", "[paths.roadmap, roadmapText, ['Current Work ID: `WHR-CAL-BACKFILL-01-20`', 'Next Work ID: `WHR-CAL-BACKFILL-21-36`']]")
+          text = text.replace("[paths.startHere, startHereText, ['WHR-CP-PUB-37-44', 'WHR-CAL-BACKFILL-01-20']]", "[paths.startHere, startHereText, ['WHR-CAL-BACKFILL-01-20', 'WHR-CAL-BACKFILL-21-36']]")
+          text = text.replace('CURRENT_WORK_ID: WHR-CP-PUB-37-44', 'CURRENT_WORK_ID: WHR-CAL-BACKFILL-01-20')
+          text = text.replace('NEXT_WORK_ID: WHR-CAL-BACKFILL-01-20', 'NEXT_WORK_ID: WHR-CAL-BACKFILL-21-36')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('docs/country-pages/programme-roadmap.md')
+          text = path.read_text(encoding='utf-8')
+          old_position = '''Latest confirmed merge: PR #317
+Publication gate: PR #317 — entries 29-36 published after approved rendered preview
+Current Work ID: WHR-CP-PUB-37-44
+Next working branch: country-pages-37-44-publication-final
+Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98'''
+          new_position = '''Latest confirmed merge: PR #319
+Publication gate: PR #319 — entries 37-44 published after approved rendered preview
+Current Work ID: WHR-CAL-BACKFILL-01-20
+Next working branch: calendar-readiness-backfill-01-20
+Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98'''
+          text = replace_once(text, old_position, new_position, 'programme current position')
+          text = replace_once(text, 'Current tracker counts after entries 29-36 preview approval:', 'Current tracker counts after entries 37-44 preview approval:', 'tracker heading')
+          text = replace_once(text, 'published:       36', 'published:       44', 'programme published count')
+          text = replace_once(text, 'profile_ready:    8', 'profile_ready:    0', 'programme profile count')
+          text = replace_once(text, 'formally published English routes:   36', 'formally published English routes:   44', 'programme EN routes')
+          text = replace_once(text, 'formally published Japanese routes:  36', 'formally published Japanese routes:  44', 'programme JA routes')
+          text = replace_once(text, 'formally published total routes:     72', 'formally published total routes:     88', 'programme total routes')
+          text = replace_once(text, 'profile-ready English routes:         8', 'profile-ready English routes:         0', 'programme profile EN')
+          text = replace_once(text, 'profile-ready Japanese routes:        8', 'profile-ready Japanese routes:        0', 'programme profile JA')
+          text = replace_once(text, 'profile-ready total routes:          16', 'profile-ready total routes:           0', 'programme profile total')
+          old_summary = 'PR #317 replaces the closed, superseded PR #304 for entries 29-36. Entries 29-36 passed immutable rendered-preview QA and are published. PR #308 remains a stale Draft gate and must be rebuilt from the latest main for entries 37-44. Source-test, reviewed-note, Profile v2, and Calendar Readiness work continues independently without Cloudflare.'
+          new_summary = 'PR #319 replaces the closed, superseded PR #308 for entries 37-44. Entries 29-44 are published after rendered-preview QA. Calendar Readiness backfill for entries 01-20 is now the active Work ID; reviewed-note and Profile v2 work for entries 45-52 remains queued.'
+          text = replace_once(text, old_summary, new_summary, 'programme summary')
+          text = replace_once(text, '| #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |', '| #308 | closed, superseded | Replaced by current-main publication PR #319. |', 'PR 308 table row')
+          text = replace_once(text, '| #317 | publication | Published entries 29-36 after immutable rendered-preview approval. |', '| #317 | merged | Published entries 29-36 after immutable rendered-preview approval. |\n| #319 | publication | Published entries 37-44 after rendered-preview approval. |', 'PR 319 table row')
+          text = replace_once(text, '| #308 | Draft gate | GitHub pre-preview QA passed; rendered preview remains. |', '| #308 | closed, superseded | Replaced by PR #319. |\n| #319 | publication | Published all sixteen routes after rendered-preview approval. |', 'wave 37-44 table')
+          gate = '''### PR #319 — entries 37-44
+
+Rendered preview approval:
+
+1. `preview-country-pages-37-44` passed live checks for all 16 English/Japanese routes.
+2. Malaysia and Italy passed English/Japanese desktop and Pixel 7 screenshot review.
+3. Canonical, hreflang, language switching, official links, empty states, CJK rendering, and C-column suppression passed.
+4. Evidence artifact `rendered-preview-37-44` is artifact `7936442604` with digest `sha256:8d1f3c314a36ddaeb821115051f51d758aad103d5854a37e6babc82a921c53e0`.
+5. Entries 37-44 are recorded as `published` on 2026-06-28.
+6. PR #319 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
+
+'''
+          text = replace_once(text, '## 8. Wave 37-44\n\n', gate + '## 8. Wave 37-44\n\n', 'PR 319 gate')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('scripts/check-country-page-programme-roadmap.mjs')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('for (const pr of [284, 311, 316, 317, 340])', 'for (const pr of [284, 311, 316, 317, 319, 340])')
+          text = text.replace("'Publication gate: PR #317'", "'Publication gate: PR #319'")
+          text = text.replace("'Current Work ID: WHR-CP-PUB-37-44'", "'Current Work ID: WHR-CAL-BACKFILL-01-20'")
+          text = text.replace("'Next working branch: country-pages-37-44-publication-final'", "'Next working branch: calendar-readiness-backfill-01-20'")
+          text = text.replace("'Latest confirmed merge: PR #317'", "'Latest confirmed merge: PR #319'")
+          text = text.replace('KEY_PRS: 284,311,316,317,340', 'KEY_PRS: 284,311,316,317,319,340')
+          text = text.replace('CURRENT_WORK: entries 29-36 published; next Work ID WHR-CP-PUB-37-44', 'CURRENT_WORK: entries 29-44 published; current Work ID WHR-CAL-BACKFILL-01-20')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('docs/runbooks/country-pages-37-44-publication-final.md')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('Status: GitHub pre-preview QA', 'Status: rendered preview approved; publication finalization complete')
+          text = text.replace('Final preview branch: one `preview-*` branch created only after GitHub QA passes', 'Final preview branch: `preview-country-pages-37-44`')
+          text = text.replace('Production publication: prohibited until rendered preview review passes', 'Production publication: pending no-skip merge and production verification')
+          old_state = '''## Current non-publication state
+
+Until rendered preview approval, entries 37-44 remain `profile_ready` with complete bilingual routes and no publication date.'''
+          new_state = '''## Rendered preview approval
+
+Approved on 2026-06-28.
+
+```text
+Branch preview: https://preview-country-pages-37-44.where-horses-run.pages.dev
+Preview branch: preview-country-pages-37-44
+Preview marker commit: b6851b9bf594878e0d8d71542f95dfd4d706e242
+Representative pages: Malaysia and Italy, EN/JA, desktop and Pixel 7
+Evidence artifact: rendered-preview-37-44 (artifact 7936442604)
+Artifact digest: sha256:8d1f3c314a36ddaeb821115051f51d758aad103d5854a37e6babc82a921c53e0
+```
+
+All 16 live routes passed HTML checks. Representative screenshots passed responsive, CJK, card-layout, and C-rank-boundary review.
+
+## Publication state
+
+Entries 37-44 are recorded as `published` with `qa_status=passed` and `page_published_at=2026-06-28`. PR #319 now requires a no-skip merge and one production-deployment confirmation.
+
+Final tracker counts before merge:
+
+```text
+published:       44
+profile_ready:    0
+note_reviewed:    8
+not_started:     46
+total:           98
+```
+
+Final published route count before merge: 44 English + 44 Japanese = 88.'''
+          text = replace_once(text, old_state, new_state, 'runbook approval state')
+          path.write_text(text, encoding='utf-8')
+
+          for temporary in [
+              Path('.github/workflows/rendered-preview-qa-37-44.yml'),
+              Path('.github/workflows/finalize-publication-37-44.yml'),
+          ]:
+              temporary.unlink(missing_ok=True)
+          PY
+      - name: Validate final state
+        run: |
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-country-profiles-37-44.mjs
+          npm install
+          npm run build
+          node scripts/check-country-page-publication-37-44.mjs
+      - name: Commit final state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Finalize publication state for entries 37-44'
+          git push origin HEAD:country-pages-37-44-publication-final
