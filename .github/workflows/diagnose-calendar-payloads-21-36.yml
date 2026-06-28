@@ -1,0 +1,26 @@
+name: Diagnose Calendar payloads 21-36
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/diagnose-calendar-payloads-21-36.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-readiness-backfill-21-36
+      - run: |
+          cat .tmp/calendar-readiness-authority-21-36.part{01..09} > joined-authority.txt
+          sha256sum joined-authority.txt .tmp/calendar-readiness-registry-21-36.zlib.b64 > payload-hashes.txt
+          wc -c joined-authority.txt .tmp/calendar-readiness-registry-21-36.zlib.b64 >> payload-hashes.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-payload-hashes-21-36
+          path: payload-hashes.txt
+          retention-days: 1
