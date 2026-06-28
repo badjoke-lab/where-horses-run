@@ -1,4 +1,4 @@
-name: Calendar readiness backfill 01-20
+name: Calendar readiness backfill 21-36
 
 on:
   pull_request:
@@ -6,14 +6,15 @@ on:
       - 'START-HERE.md'
       - 'docs/project-roadmap.md'
       - 'docs/country-pages/programme-roadmap.md'
-      - 'docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json'
+      - 'docs/runbooks/calendar-readiness-backfill-21-36.md'
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-calendar-readiness-backfill-01-20.mjs'
+      - 'scripts/check-calendar-readiness-backfill-21-36.mjs'
       - 'scripts/check-calendar-contracts.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'scripts/check-country-page-programme-roadmap.mjs'
-      - '.github/workflows/calendar-readiness-backfill-01-20.yml'
+      - '.github/workflows/calendar-readiness-backfill-21-36.yml'
   push:
     branches:
       - main
@@ -21,14 +22,15 @@ on:
       - 'START-HERE.md'
       - 'docs/project-roadmap.md'
       - 'docs/country-pages/programme-roadmap.md'
-      - 'docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json'
+      - 'docs/runbooks/calendar-readiness-backfill-21-36.md'
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-calendar-readiness-backfill-01-20.mjs'
+      - 'scripts/check-calendar-readiness-backfill-21-36.mjs'
       - 'scripts/check-calendar-contracts.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'scripts/check-country-page-programme-roadmap.mjs'
-      - '.github/workflows/calendar-readiness-backfill-01-20.yml'
+      - '.github/workflows/calendar-readiness-backfill-21-36.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -47,6 +49,7 @@ jobs:
           node-version: 22.12.0
       - run: node scripts/check-calendar-contracts.mjs
       - run: node scripts/check-calendar-readiness-backfill-01-20.mjs
+      - run: node scripts/check-calendar-readiness-backfill-21-36.mjs
       - run: node scripts/check-project-governance-docs.mjs
       - run: node scripts/check-country-page-programme-roadmap.mjs
       - run: npm install

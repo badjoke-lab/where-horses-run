@@ -17,10 +17,10 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #321
+Latest confirmed merge: PR #322
 Publication gate: PR #319 — entries 37-44 published after approved rendered preview
-Current Work ID: WHR-CAL-BACKFILL-21-36
-Next working branch: calendar-readiness-backfill-21-36
+Current Work ID: WHR-CAL-BACKFILL-37-52
+Next working branch: calendar-readiness-backfill-37-52
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
@@ -47,7 +47,7 @@ profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #321 closes Calendar Readiness decisions for entries 01-20 with 30 system/source records. Entries 29-44 remain published, entries 21-36 are the active Readiness backfill, and reviewed-note/Profile v2 work for entries 45-52 remains queued.
+PR #322 closes Calendar Readiness decisions for entries 21-36, bringing the cumulative state to 36 countries and 51 system/source records. Entries 37-52 are the active Readiness backfill, and Profile v2 work for entries 45-52 remains queued.
 
 ## 3. Operating model
 
@@ -132,7 +132,8 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #316 | merged | Added machine-readable Source Test v2 and Calendar Readiness contracts. |
 | #317 | merged | Published entries 29-36 after immutable rendered-preview approval. |
 | #319 | merged | Published entries 37-44 after rendered-preview approval. |
-| #321 | Calendar Readiness | Closed entries 01-20 with 30 system/source decisions; implementation remains not started. |
+| #321 | merged | Closed Calendar Readiness for entries 01-20 with 30 system/source decisions. |
+| #322 | Calendar Readiness | Closed entries 21-36 with 21 additional system/source decisions; implementation remains not started. |
 
 ## 7. Publication gates
 
