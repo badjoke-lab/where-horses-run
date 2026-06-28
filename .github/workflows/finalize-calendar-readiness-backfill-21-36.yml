@@ -4,30 +4,45 @@ on:
   pull_request:
     paths:
       - '.github/workflows/finalize-calendar-readiness-backfill-21-36.yml'
+      - '.tmp/calendar-readiness-authority-21-36.part*'
 
 permissions:
   contents: write
 
 jobs:
-  diagnose:
+  finalize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: calendar-readiness-backfill-21-36
           fetch-depth: 0
-      - name: Apply reviewed backfill in temporary worktree
-        id: apply
-        continue-on-error: true
-        run: python scripts/finalize-calendar-readiness-backfill-21-36.py > finalizer-diagnostic.txt 2>&1
-      - name: Upload diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: calendar-readiness-finalizer-diagnostic-21-36
-          path: finalizer-diagnostic.txt
-          retention-days: 1
-          if-no-files-found: error
-      - name: Stop after diagnostic
-        if: steps.apply.outcome == 'failure'
-        run: exit 1
+      - name: Reassemble and verify payloads
+        run: |
+          cat .tmp/calendar-readiness-authority-21-36.part{01..09} > .tmp/calendar-readiness-authority-21-36.zlib.b64
+          echo '1e496b83af92bba223404337ac6b0f0cbbbfa872a72631ae256c2d4690c80ca6  .tmp/calendar-readiness-authority-21-36.zlib.b64' | sha256sum --check
+          echo '3ac9920c62d1dea04feeb5fadebe6c03e4bb5a91f8d4cdbac90b32e4b8a714d1  .tmp/calendar-readiness-registry-21-36.zlib.b64' | sha256sum --check
+      - name: Apply reviewed backfill
+        run: python scripts/finalize-calendar-readiness-backfill-21-36.py
+      - name: Remove one-time files
+        run: |
+          rm -f \
+            .tmp/calendar-readiness-authority-21-36.zlib.b64 \
+            .tmp/calendar-readiness-authority-21-36.part* \
+            .tmp/calendar-readiness-registry-21-36.zlib.b64 \
+            scripts/finalize-calendar-readiness-backfill-21-36.py \
+            .github/workflows/finalize-calendar-readiness-backfill-21-36.yml
+          rmdir .tmp 2>/dev/null || true
+      - name: Validate canonical state
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-calendar-readiness-backfill-21-36.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+      - name: Commit canonical state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Complete Calendar readiness backfill 21-36'
+          git push origin HEAD:calendar-readiness-backfill-21-36
