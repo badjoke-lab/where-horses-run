@@ -27,7 +27,7 @@ Subsystem-level source capability must not raise the country-level public ceilin
 
 ## GitHub QA gate
 
-The repository must verify:
+The repository verifies:
 
 - all sixteen built routes exist;
 - one h1 per route;
@@ -39,8 +39,7 @@ The repository must verify:
 - no embedded video or `Watch here` output;
 - empty meeting data is not described as absence of racing;
 - runtime remains Profile v2 only;
-- country programme, roadmap, governance, and Calendar contracts remain valid;
-- entries remain at least `profile_ready` until rendered preview approval.
+- country programme, roadmap, governance, and Calendar contracts remain valid.
 
 ## Validation
 
@@ -56,18 +55,16 @@ node scripts/check-project-governance-docs.mjs
 node scripts/check-calendar-contracts.mjs
 ```
 
-## Preview gate
+## Completed preview sequence
 
-After GitHub QA is green:
-
-1. Create one final `preview-country-pages-37-44` branch at the reviewed PR head.
-2. Allow exactly one Cloudflare preview deployment.
-3. Review representative English and Japanese C pages on desktop and mobile.
-4. Check official links, language switching, metadata, empty states, CJK rendering, and horizontal overflow.
-5. Record the immutable preview URL and review result in the PR.
-6. Only after approval, advance entries 37-44 to `published`, set route statuses to `published`, set `qa_status=passed`, and add `page_published_at`.
-7. Update the canonical roadmap to the next Work ID.
-8. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
+1. GitHub QA and the production build passed on the reviewed country-page head.
+2. The final `preview-country-pages-37-44` branch requested one Cloudflare preview.
+3. All sixteen live English/Japanese routes passed HTML checks.
+4. Malaysia and Italy passed representative desktop and mobile rendered review.
+5. Official links, language switching, metadata, empty states, CJK rendering, horizontal overflow, and C-rank boundaries passed.
+6. Entries 37-44 were advanced to `published`, with `qa_status=passed` and `page_published_at=2026-06-28`.
+7. The canonical roadmap was advanced to Calendar Readiness backfill.
+8. PR #319 now requires a no-skip merge and one production-deployment confirmation.
 
 ## Rendered preview approval
 
@@ -103,3 +100,7 @@ Final published route count before merge: 44 English + 44 Japanese = 88.
 ## Superseded work
 
 PR #308 used an older main baseline and a PR-number-specific runbook. The current-main rebuild supersedes it. Do not merge PR #308.
+
+## Next Work ID
+
+`WHR-CAL-BACKFILL-01-20`
