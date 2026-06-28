@@ -1,0 +1,169 @@
+{
+  "schema_version": "calendar-readiness-schema-v1",
+  "purpose": "Defines the reviewed implementation-readiness registry for country, racing-system, authority-source, and racecourse scope decisions.",
+  "record_key": ["readiness_id"],
+  "required_registry_fields": [
+    "schema_version",
+    "schema_ref",
+    "source_test_schema_ref",
+    "bootstrap_status",
+    "programme_state",
+    "records"
+  ],
+  "required_programme_state_fields": [
+    "country_target",
+    "countries_with_closed_decision",
+    "readiness_records",
+    "next_backfill_work_ids"
+  ],
+  "required_record_fields": [
+    "readiness_id",
+    "country_id",
+    "country_tracker_delivery_no",
+    "system_id",
+    "system_name_en",
+    "authority_source_key",
+    "racecourse_ids",
+    "coverage_scope",
+    "technical_rank",
+    "public_ceiling",
+    "confirmed_fields",
+    "source_format",
+    "access_mode",
+    "automation_mode",
+    "refresh_classes",
+    "readiness",
+    "implementation_status",
+    "fallback",
+    "source_status",
+    "checked_date",
+    "evidence_reviewed_at",
+    "revalidation_trigger",
+    "blocked_reason",
+    "source_test_ref",
+    "limitations",
+    "notes"
+  ],
+  "technical_rank_enum": ["C", "B", "B+", "A", "A+"],
+  "public_ceiling_enum": ["C", "B", "B+", "A", "A+"],
+  "coverage_scope_enum": [
+    "countrywide",
+    "authority_wide",
+    "subset_of_authority_racecourses",
+    "single_racecourse",
+    "system_only",
+    "archive_or_explanatory",
+    "unknown"
+  ],
+  "source_format_enum": [
+    "html",
+    "json",
+    "api",
+    "pdf",
+    "csv",
+    "ics",
+    "javascript_rendered",
+    "mobile_app_only",
+    "mixed",
+    "unknown"
+  ],
+  "access_mode_enum": [
+    "direct",
+    "date_route",
+    "query_parameter",
+    "api_call",
+    "javascript_required",
+    "login_required",
+    "local_required",
+    "unreachable",
+    "unknown"
+  ],
+  "automation_mode_enum": [
+    "automatic",
+    "semi_automatic",
+    "manual_import",
+    "manual_confirmation",
+    "link_only",
+    "blocked",
+    "not_applicable"
+  ],
+  "refresh_class_enum": [
+    "daily",
+    "near_meeting",
+    "weekly",
+    "monthly",
+    "seasonal",
+    "event_driven",
+    "manual",
+    "none"
+  ],
+  "readiness_enum": [
+    "ready",
+    "prototype_ready",
+    "manual_ready",
+    "link_only",
+    "blocked",
+    "not_applicable"
+  ],
+  "implementation_status_enum": [
+    "not_started",
+    "prototype",
+    "fixture_validated",
+    "candidate_active",
+    "manual_operation",
+    "scheduled_candidate_active",
+    "public_active",
+    "paused",
+    "retired"
+  ],
+  "fallback_enum": [
+    "keep_last_verified_and_mark_stale",
+    "downgrade_to_C",
+    "official_link_only",
+    "hide_from_current_calendar",
+    "archive_last_verified",
+    "not_applicable"
+  ],
+  "source_status_enum": [
+    "verified",
+    "partial",
+    "not_verified",
+    "stale",
+    "unavailable"
+  ],
+  "confirmed_field_keys": [
+    "meeting_date",
+    "racecourse",
+    "first_race_time",
+    "last_race_time",
+    "per_race_post_times",
+    "race_name",
+    "distance",
+    "surface",
+    "course"
+  ],
+  "referential_integrity": {
+    "country_id": "Must match a slug in docs/country-pages/98-country-tracker.tsv.",
+    "country_tracker_delivery_no": "Must match the tracker delivery_no for country_id.",
+    "authority_source_key": "When non-null, must match country_id/authority_id/official_source_id in data/static/authority-source-inventory.json.",
+    "racecourse_ids": "Every value must match id in data/static/racecourses.json.",
+    "source_test_ref": "When non-null, must point to an existing public-safe file under docs/timetable-source-tests/."
+  },
+  "closure_rules": [
+    "public_ceiling must not exceed technical_rank",
+    "ready and prototype_ready require a reviewed authority_source_key and a non-not_applicable fallback",
+    "manual_ready requires manual_import or manual_confirmation automation mode",
+    "link_only requires link_only automation mode and official_link_only fallback",
+    "blocked requires blocked automation mode and a non-empty blocked_reason",
+    "not_applicable requires not_applicable automation mode and fallback",
+    "public_active implementation status requires ready or manual_ready readiness",
+    "unknown values are not valid closed decisions"
+  ],
+  "explicit_exclusions": [
+    "no raw source bodies",
+    "no complete programmes or racecards",
+    "no participant betting result payout prediction or tip data",
+    "no credentials restricted access details or bypass instructions",
+    "no private workflow or publication-risk notes"
+  ]
+}
