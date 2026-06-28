@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/finalize-calendar-readiness-backfill-01-20.yml'
+      - '.tmp/calendar-readiness-registry-01-20.zlib.b64'
 
 permissions:
   contents: write
@@ -24,7 +25,8 @@ jobs:
             .tmp/calendar-readiness-authority-01-20.zlib.b64 \
             .tmp/calendar-readiness-registry-01-20.zlib.b64 \
             scripts/finalize-calendar-readiness-backfill-01-20.py \
-            .github/workflows/finalize-calendar-readiness-backfill-01-20.yml
+            .github/workflows/finalize-calendar-readiness-backfill-01-20.yml \
+            .github/workflows/diagnose-calendar-readiness-finalizer-01-20.yml
           rmdir .tmp 2>/dev/null || true
       - name: Validate canonical state
         run: |
