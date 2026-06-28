@@ -1,0 +1,107 @@
+name: Verify production country pages 29-36
+
+on:
+  push:
+    branches:
+      - verify-production-29-36
+    paths:
+      - '.github/workflows/verify-production-29-36.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch all production routes
+        env:
+          PRODUCTION_BASE: https://whr.badjoke-lab.com
+        run: |
+          mkdir -p production-verification/html
+          for slug in \
+            united-kingdom \
+            united-states \
+            australia \
+            ireland \
+            france \
+            canada \
+            saudi-arabia \
+            india
+          do
+            for prefix in countries ja/countries
+            do
+              route="$prefix/$slug"
+              output="production-verification/html/${route//\//-}.html"
+              curl --fail --show-error --silent --location \
+                --retry 12 --retry-delay 5 --retry-all-errors \
+                --connect-timeout 15 --max-time 60 \
+                "$PRODUCTION_BASE/$route/" \
+                --output "$output"
+              test -s "$output"
+            done
+          done
+      - name: Validate production HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('production-verification/html')
+          slugs = [
+              'united-kingdom',
+              'united-states',
+              'australia',
+              'ireland',
+              'france',
+              'canada',
+              'saudi-arabia',
+              'india',
+          ]
+          c_slugs = {
+              'united-kingdom',
+              'united-states',
+              'australia',
+              'canada',
+              'india',
+          }
+
+          for slug in slugs:
+              en_file = root / f'countries-{slug}.html'
+              ja_file = root / f'ja-countries-{slug}.html'
+              en = en_file.read_text(encoding='utf-8')
+              ja = ja_file.read_text(encoding='utf-8')
+
+              expected_en = f'https://whr.badjoke-lab.com/countries/{slug}/'
+              expected_ja = f'https://whr.badjoke-lab.com/ja/countries/{slug}/'
+              for label, html, canonical, alternate in [
+                  ('EN', en, expected_en, expected_ja),
+                  ('JA', ja, expected_ja, expected_en),
+              ]:
+                  if html.count('<h1') != 1:
+                      raise SystemExit(f'{slug} {label}: expected exactly one h1')
+                  if canonical not in html:
+                      raise SystemExit(f'{slug} {label}: canonical missing')
+                  if alternate not in html:
+                      raise SystemExit(f'{slug} {label}: alternate language route missing')
+                  lowered = html.lower()
+                  if '<iframe' in lowered or '<video' in lowered or 'watch here' in lowered:
+                      raise SystemExit(f'{slug} {label}: prohibited media output found')
+
+              if slug in c_slugs:
+                  for label, html in [('EN', en), ('JA', ja)]:
+                      for prohibited in ['Start time</th>', '開始時刻</th>', 'Timezone</th>', 'タイムゾーン</th>']:
+                          if prohibited in html:
+                              raise SystemExit(f'{slug} {label}: C-rank column leaked: {prohibited}')
+
+          print('PRODUCTION_COUNTRY_PAGES_29_36_VALID')
+          print('ROUTES_CHECKED: 8 EN + 8 JA = 16')
+          PY
+      - name: Upload production verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-verification-29-36
+          path: production-verification
+          if-no-files-found: error
+          retention-days: 7
