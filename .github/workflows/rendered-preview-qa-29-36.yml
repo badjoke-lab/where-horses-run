@@ -1,0 +1,110 @@
+name: Rendered preview QA 29-36
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rendered-preview-qa-29-36.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install Chromium for Playwright
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Check live preview responses
+        env:
+          PREVIEW_BASE: https://747c0076.where-horses-run.pages.dev
+        run: |
+          mkdir -p rendered-preview/html rendered-preview/screenshots
+          for route in \
+            countries/ireland \
+            ja/countries/ireland \
+            countries/united-kingdom \
+            ja/countries/united-kingdom
+          do
+            output="rendered-preview/html/${route//\//-}.html"
+            curl --fail --show-error --silent --location \
+              --retry 3 --retry-all-errors \
+              "$PREVIEW_BASE/$route/" \
+              --output "$output"
+            test -s "$output"
+          done
+      - name: Validate live preview HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          base = Path('rendered-preview/html')
+          checks = {
+              'countries-ireland.html': [
+                  'https://whr.badjoke-lab.com/countries/ireland/',
+                  '/ja/countries/ireland/',
+                  'Ireland',
+              ],
+              'ja-countries-ireland.html': [
+                  'https://whr.badjoke-lab.com/ja/countries/ireland/',
+                  '/countries/ireland/',
+                  'アイルランド',
+              ],
+              'countries-united-kingdom.html': [
+                  'https://whr.badjoke-lab.com/countries/united-kingdom/',
+                  '/ja/countries/united-kingdom/',
+                  'United Kingdom',
+              ],
+              'ja-countries-united-kingdom.html': [
+                  'https://whr.badjoke-lab.com/ja/countries/united-kingdom/',
+                  '/countries/united-kingdom/',
+                  'イギリス',
+              ],
+          }
+
+          for filename, phrases in checks.items():
+              text = (base / filename).read_text(encoding='utf-8')
+              if text.count('<h1') != 1:
+                  raise SystemExit(f'{filename}: expected exactly one h1')
+              for phrase in phrases:
+                  if phrase not in text:
+                      raise SystemExit(f'{filename}: missing {phrase}')
+              lowered = text.lower()
+              if '<iframe' in lowered or '<video' in lowered or 'watch here' in lowered:
+                  raise SystemExit(f'{filename}: prohibited media output found')
+
+          for filename in ['countries-united-kingdom.html', 'ja-countries-united-kingdom.html']:
+              text = (base / filename).read_text(encoding='utf-8')
+              for prohibited in ['Start time</th>', '開始時刻</th>', 'Timezone</th>', 'タイムゾーン</th>']:
+                  if prohibited in text:
+                      raise SystemExit(f'{filename}: C-boundary column found: {prohibited}')
+
+          print('LIVE_PREVIEW_HTML_VALID')
+          PY
+      - name: Capture desktop screenshots
+        env:
+          PREVIEW_BASE: https://747c0076.where-horses-run.pages.dev
+        run: |
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/ireland/" rendered-preview/screenshots/ireland-en-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/ireland/" rendered-preview/screenshots/ireland-ja-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/united-kingdom/" rendered-preview/screenshots/united-kingdom-en-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/united-kingdom/" rendered-preview/screenshots/united-kingdom-ja-desktop.png
+      - name: Capture mobile screenshots
+        env:
+          PREVIEW_BASE: https://747c0076.where-horses-run.pages.dev
+        run: |
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/ireland/" rendered-preview/screenshots/ireland-en-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/ireland/" rendered-preview/screenshots/ireland-ja-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/united-kingdom/" rendered-preview/screenshots/united-kingdom-en-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/united-kingdom/" rendered-preview/screenshots/united-kingdom-ja-mobile.png
+      - name: Upload rendered preview evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-preview-29-36
+          path: rendered-preview
+          if-no-files-found: error
+          retention-days: 7
