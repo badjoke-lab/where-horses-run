@@ -1,6 +1,6 @@
 # Calendar Readiness backfill 21-36
 
-Status: implementation in progress  
+Status: complete; final validation  
 Work ID: `WHR-CAL-BACKFILL-21-36`  
 PR: #322  
 Deployment: not required
@@ -9,7 +9,7 @@ Deployment: not required
 
 Close evidence-based Calendar decisions for tracker entries 21-36 by reusing reviewed source tests, Profile v2 systems, and official source records.
 
-## Expected state
+## Completed state
 
 ```text
 closed countries: 36
@@ -37,6 +37,7 @@ implementation not_started: 51
 
 ```text
 node scripts/check-calendar-contracts.mjs
+node scripts/check-calendar-readiness-backfill-01-20.mjs
 node scripts/check-calendar-readiness-backfill-21-36.mjs
 node scripts/check-project-governance-docs.mjs
 node scripts/check-country-page-programme-roadmap.mjs
