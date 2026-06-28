@@ -1,0 +1,40 @@
+name: Project governance docs
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/governance/**'
+      - 'docs/calendar/**'
+      - 'docs/country-pages/**'
+      - 'docs/specs/**'
+      - 'scripts/check-project-governance-docs.mjs'
+      - '.github/workflows/project-governance-docs.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/governance/**'
+      - 'docs/calendar/**'
+      - 'docs/country-pages/**'
+      - 'docs/specs/**'
+      - 'scripts/check-project-governance-docs.mjs'
+      - '.github/workflows/project-governance-docs.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate project governance documents
+        run: node scripts/check-project-governance-docs.mjs
