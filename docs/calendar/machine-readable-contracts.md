@@ -14,7 +14,10 @@ This document connects the human-readable Source Test v2 and Calendar Readiness 
 data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
+data/static/authority-source-inventory.schema.json
+data/static/authority-source-inventory.json
 scripts/check-calendar-contracts.mjs
+scripts/check-authority-source-inventory-schema.mjs
 .github/workflows/calendar-contracts.yml
 ```
 
@@ -55,6 +58,12 @@ readiness_records: 0
 
 Actual records are added only by evidence-based backfill or Source Test v2 work. Parser names, intended cadences, old Auto Level labels, and candidate status do not by themselves justify a readiness record.
 
+## Authority source inventory relationship
+
+`data/static/authority-source-inventory.schema.json` and `data/static/authority-source-inventory.json` define the reviewed source records that Calendar Readiness may reference.
+
+The authority inventory records source capability and candidate status. It does not claim Calendar Readiness, implementation status, or a live fetch path. Its capability rank enum is aligned to C / B / B+ / A / A+.
+
 ## Stable references
 
 Each readiness record links to:
@@ -92,9 +101,10 @@ Run:
 
 ```text
 node scripts/check-calendar-contracts.mjs
+node scripts/check-authority-source-inventory-schema.mjs
 ```
 
-The validator checks:
+The validators check:
 
 - exact enum agreement across Source Test v2, Calendar Readiness, and authority inventory rank schemas;
 - 98-country tracker references;
