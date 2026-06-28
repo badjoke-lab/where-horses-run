@@ -1,0 +1,58 @@
+name: Calendar contracts
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/timetable-source-tests/**'
+      - 'docs/specs/authority-source-inventory-schema.md'
+      - 'docs/specs/authority-source-inventory-2026-06-28-addendum.md'
+      - 'data/static/source-test-v2.schema.json'
+      - 'data/static/calendar-readiness.schema.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/authority-source-inventory.schema.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/racecourses.json'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-authority-source-inventory-schema.mjs'
+      - '.github/workflows/calendar-contracts.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/**'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/timetable-source-tests/**'
+      - 'docs/specs/authority-source-inventory-schema.md'
+      - 'docs/specs/authority-source-inventory-2026-06-28-addendum.md'
+      - 'data/static/source-test-v2.schema.json'
+      - 'data/static/calendar-readiness.schema.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/authority-source-inventory.schema.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/racecourses.json'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-authority-source-inventory-schema.mjs'
+      - '.github/workflows/calendar-contracts.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Calendar contracts and registry
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Validate authority source inventory compatibility
+        run: node scripts/check-authority-source-inventory-schema.mjs
