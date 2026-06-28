@@ -1,9 +1,9 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-CAL-BACKFILL-01-20`  
-Next Work ID: `WHR-CAL-BACKFILL-21-36`  
-Last reviewed: 2026-06-28
+Current Work ID: `WHR-CAL-BACKFILL-21-36`  
+Next Work ID: `WHR-CAL-BACKFILL-37-52`  
+Last reviewed: 2026-06-29
 
 ## Purpose
 
@@ -66,7 +66,7 @@ The baseline is not yet a complete continuously updated calendar:
 - generated records include seed and preview dates;
 - the shared refresh core still reports `skeleton_no_live_fetch`;
 - registered parsers and cadences do not prove live acquisition;
-- Calendar Readiness is not yet backfilled for entries 01-52.
+- Calendar Readiness decisions are closed for entries 01-20; entries 21-52 remain to be backfilled.
 
 ## Governing rules
 
@@ -145,7 +145,9 @@ The publication debt for entries 29-44 is closed.
 
 ## Phase 3 — Calendar Readiness backfill
 
-Current Work ID: `WHR-CAL-BACKFILL-01-20`
+Completed: `WHR-CAL-BACKFILL-01-20` via PR #321 with 20 closed countries and 30 system/source records.
+
+Current Work ID: `WHR-CAL-BACKFILL-21-36`
 
 ```text
 WHR-CAL-BACKFILL-01-20

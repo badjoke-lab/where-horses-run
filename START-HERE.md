@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-06-28
+Last reviewed: 2026-06-29
 
 Read documents in this order:
 
@@ -50,5 +50,5 @@ WHR-CAL-BACKFILL-21-36
 Next Work ID:
 
 ```text
-WHR-CAL-BACKFILL-01-20
+WHR-CAL-BACKFILL-37-52
 ```
