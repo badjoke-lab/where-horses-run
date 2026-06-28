@@ -99,7 +99,9 @@ const publishedSlugs = [
   'united-arab-emirates', 'south-korea', 'turkey', 'morocco', 'chile', 'peru', 'mexico', 'brazil',
   'bahrain', 'qatar', 'oman', 'zimbabwe', 'japan', 'hong-kong', 'new-zealand', 'south-africa',
   'uruguay', 'sweden', 'denmark', 'czech-republic', 'hungary', 'malta', 'austria', 'puerto-rico',
-  'jamaica', 'trinidad-and-tobago', 'barbados', 'martinique'
+  'jamaica', 'trinidad-and-tobago', 'barbados', 'martinique',
+  'united-kingdom', 'united-states', 'australia', 'ireland', 'france', 'canada',
+  'saudi-arabia', 'india'
 ];
 const profileFiles = fs.readdirSync(path.join(root, 'data/static')).filter((name) => /^country-profiles-v2(?:-.*)?\.json$/.test(name));
 const profileIds = new Set(profileFiles.flatMap((name) => JSON.parse(fs.readFileSync(path.join(root, 'data/static', name), 'utf8'))).map((profile) => profile.country_id));
@@ -112,7 +114,7 @@ const counts = rows.reduce((result, row) => {
   result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
   return result;
 }, {});
-for (const [status, expected] of Object.entries({ published: 28, profile_ready: 16, source_tested: 0, note_reviewed: 8, page_qa: 0, not_started: 46 })) {
+for (const [status, expected] of Object.entries({ published: 36, profile_ready: 8, source_tested: 0, note_reviewed: 8, page_qa: 0, not_started: 46 })) {
   if ((counts[status] ?? 0) !== expected) fail(`tracker must contain ${expected} ${status} rows; found ${counts[status] ?? 0}`);
 }
 
@@ -127,4 +129,4 @@ if (errors.length) {
 }
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
-console.log('PROGRAMME_COUNTS: published=28 profile_ready=16 note_reviewed=8 not_started=46');
+console.log('PROGRAMME_COUNTS: published=36 profile_ready=8 note_reviewed=8 not_started=46');

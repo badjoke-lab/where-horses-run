@@ -1,6 +1,6 @@
 # Country pages 29-36 publication runbook
 
-Status: GitHub pre-preview QA  
+Status: rendered preview approved; publication finalization  
 Work ID: `WHR-CP-PUB-29-36`  
 Normal work branch: `country-pages-29-36-publication-final`  
 Final preview branch: one `preview-*` branch created only after GitHub QA passes  
@@ -70,9 +70,23 @@ After GitHub QA is green:
 7. Update the project roadmap so the next Work ID is `WHR-CP-PUB-37-44`.
 8. Merge without `[CF-Pages-Skip]` and confirm one production deployment.
 
-## Current non-publication state
+## Rendered preview approval
 
-Until rendered preview approval, entries 29-36 remain `profile_ready` with complete bilingual routes and no publication date.
+Approved on 2026-06-28.
+
+```text
+Immutable preview: https://747c0076.where-horses-run.pages.dev
+Preview branch: preview-country-pages-29-36
+A representative: /countries/ireland/ and /ja/countries/ireland/
+C representative: /countries/united-kingdom/ and /ja/countries/united-kingdom/
+Evidence artifact: rendered-preview-29-36 (artifact 7935963942)
+```
+
+Live HTML, desktop screenshots, and Pixel 7 screenshots passed. No horizontal overflow, broken CJK rendering, card-layout failure, prohibited media output, or C-rank time-column leakage was found.
+
+## Publication state
+
+Entries 29-36 are recorded as `published` with `qa_status=passed` and `page_published_at=2026-06-28`. PR #317 now requires a no-skip merge and one production-deployment confirmation.
 
 ## Superseded work
 

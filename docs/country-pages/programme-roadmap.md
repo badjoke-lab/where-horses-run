@@ -4,7 +4,7 @@ Status: active canonical roadmap
 Scope: country and region detail page programme  
 Canonical tracker: `docs/country-pages/98-country-tracker.tsv`  
 Completion contract: `docs/country-pages/completion-contract.md`  
-Last roadmap review: 2026-06-22
+Last roadmap review: 2026-06-28
 
 ## 1. Purpose
 
@@ -12,23 +12,23 @@ This document is the repository-level source of truth for the PR sequence, curre
 
 The programme is complete only when all 98 tracker rows and all 196 bilingual routes satisfy the completion contract.
 
+The PR-number assignments in the older schedule sections are historical. Active sequencing is defined by `docs/project-roadmap.md` and the 2026-06-28 addendum.
+
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #311
-Publication gate: PR #311 — merged; entries 21-28 published; production trigger commit active
-Second publication gate: PR #304 — stale Draft; entries 29-36; rebuild from latest main required
-Third publication gate: PR #308 — stale Draft; entries 37-44; rebuild from latest main required
-Next working PR: #314
-Next working branch: country-profiles-45-52
-Final release gate: #340
+Latest confirmed merge: PR #317
+Publication gate: PR #317 — entries 29-36 published after approved rendered preview
+Current Work ID: WHR-CP-PUB-37-44
+Next working branch: country-pages-37-44-publication-final
+Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after corrected preview approval:
+Current tracker counts after entries 29-36 preview approval:
 
 ```text
-published:       28
-profile_ready:   16
+published:       36
+profile_ready:    8
 note_reviewed:    8
 source_tested:    0
 not_started:     46
@@ -38,16 +38,16 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   28
-formally published Japanese routes:  28
-formally published total routes:     56
-profile-ready English routes:        16
-profile-ready Japanese routes:       16
-profile-ready total routes:          32
+formally published English routes:   36
+formally published Japanese routes:  36
+formally published total routes:     72
+profile-ready English routes:         8
+profile-ready Japanese routes:        8
+profile-ready total routes:          16
 final target routes:                196
 ```
 
-PR #311 replaces the closed, superseded PR #300 for entries 21-28. PR #304 and PR #308 remain stale Draft gates and must be rebuilt from the latest main before their own rendered previews. Source-test, reviewed-note, and Profile v2 work continues independently without Cloudflare.
+PR #317 replaces the closed, superseded PR #304 for entries 29-36. Entries 29-36 passed immutable rendered-preview QA and are published. PR #308 remains a stale Draft gate and must be rebuilt from the latest main for entries 37-44. Source-test, reviewed-note, Profile v2, and Calendar Readiness work continues independently without Cloudflare.
 
 ## 3. Operating model
 
@@ -119,7 +119,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #301 | merged | Added source tests for entries 29-36. |
 | #302 | merged | Added reviewed notes for entries 29-36. |
 | #303 | merged | Added Profile v2 records for entries 29-36. |
-| #304 | Draft gate | GitHub QA for entries 29-36 passed; rendered preview remains. |
+| #304 | closed, superseded | Replaced by current-main publication PR #317. |
 | #305 | merged | Added source tests and conservative country ceilings for entries 37-44. |
 | #306 | merged | Added reviewed country notes for entries 37-44. |
 | #307 | merged | Added Profile v2 records for entries 37-44. |
@@ -129,6 +129,8 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #311 | merged | Published entries 21-28 after corrected rendered-preview approval. |
 | #312 | closed, unmerged | Temporary preview-probe evidence only. |
 | #313 | closed, unmerged | Temporary Cloudflare preview trigger only. |
+| #316 | merged | Added machine-readable Source Test v2 and Calendar Readiness contracts. |
+| #317 | publication | Published entries 29-36 after immutable rendered-preview approval. |
 
 ## 7. Publication gates
 
@@ -143,9 +145,16 @@ Corrected preview status:
 5. PR #311 merged as `87eee53b4d6d1cf30f6897012f9dcc8724b53786`.
 6. This roadmap update is the dedicated production trigger; confirm one deployment and the two representative production routes after Cloudflare completes.
 
-### PR #304 — entries 29-36
+### PR #317 — entries 29-36
 
-The same final-preview and production sequence applies independently. Until approval, entries 29-36 remain `profile_ready` with no publication date.
+Rendered preview approval:
+
+1. Cloudflare deployment `747c0076` succeeded from `preview-country-pages-29-36`.
+2. Ireland (A) and United Kingdom (C) passed live English/Japanese HTML checks.
+3. Desktop and Pixel 7 screenshots passed responsive and CJK review.
+4. Canonical, hreflang, language switching, official links, empty states, and C-column suppression passed.
+5. Entries 29-36 are recorded as `published` on 2026-06-28.
+6. PR #317 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
 
 ## 8. Wave 37-44
 

@@ -45,19 +45,17 @@ for (const [label, count] of expectedCountLines) {
   if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
 }
 
-for (let pr = 284; pr <= 340; pr += 1) {
-  if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing PR #${pr}`);
+for (const pr of [284, 311, 316, 317, 340]) {
+  if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing key PR #${pr}`);
 }
 
 const requiredPhrases = [
   'Current position',
-  'Publication gate: PR #311',
-  'Second publication gate: PR #304',
-  'Third publication gate: PR #308',
-  'Next working PR: #314',
-  'Next working branch: country-profiles-45-52',
-  'Latest confirmed merge: PR #311',
-  'Final release gate: #340',
+  'Publication gate: PR #317',
+  'Current Work ID: WHR-CP-PUB-37-44',
+  'Next working branch: country-pages-37-44-publication-final',
+  'Latest confirmed merge: PR #317',
+  'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98',
   'Local work is requested only when',
   'Standard four-PR wave',
   'Public display boundary',
@@ -76,5 +74,5 @@ if (errors.length) {
 
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
-console.log('PR_RANGE: 284-340');
-console.log('CURRENT_WORK: publication gate 311; stale gates 304 and 308; next Profile v2 PR 314');
+console.log('KEY_PRS: 284,311,316,317,340');
+console.log('CURRENT_WORK: entries 29-36 published; next Work ID WHR-CP-PUB-37-44');
