@@ -13,6 +13,7 @@ const requiredFiles = [
   'docs/calendar/README.md',
   'docs/calendar/source-test-v2-contract.md',
   'docs/calendar/calendar-readiness-contract.md',
+  'docs/calendar/machine-readable-contracts.md',
   'docs/calendar/implementation-roadmap.md',
   'docs/calendar/current-baseline-audit.md',
   'docs/country-pages/programme-roadmap-2026-06-28-addendum.md',
@@ -20,6 +21,9 @@ const requiredFiles = [
   'docs/specs/global-timetable-architecture-2026-06-28-addendum.md',
   'docs/specs/authority-source-inventory-2026-06-28-addendum.md',
   'docs/specs/where-horses-run-v0-status.md',
+  'data/static/source-test-v2.schema.json',
+  'data/static/calendar-readiness.schema.json',
+  'data/static/calendar-readiness-registry.json',
 ];
 
 const read = (relativePath) => {
@@ -35,19 +39,18 @@ const content = Object.fromEntries(requiredFiles.map((file) => [file, read(file)
 
 const requiredPhrases = {
   'docs/project-roadmap.md': [
-    'WHR-GOV-ROADMAP-01',
-    'WHR-CAL-CONTRACT-02',
+    'Current Work ID: `WHR-CAL-CONTRACT-02`',
+    'Next Work ID: `WHR-CP-PUB-29-36`',
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
     'WHR-CAL-BASELINE-RECONCILE',
     'WHR-CAL-PUBLIC-V1',
-    'Technical Rank',
-    'Public Ceiling',
     'Candidate generation is not publication',
   ],
+  'START-HERE.md': ['WHR-CAL-CONTRACT-02', 'WHR-CP-PUB-29-36', 'calendar-readiness-registry.json'],
   'docs/governance/document-authority.md': [
     'Authority order',
     'Conversation history and PR numbers do not replace canonical repository documents',
-    'Internal-only',
+    'Calendar machine-readable contracts',
   ],
   'docs/governance/internal-source-handling.md': [
     'Raw or detailed source acquisition material remains local',
@@ -56,18 +59,27 @@ const requiredPhrases = {
     'do not commit the ZIP itself',
   ],
   'docs/calendar/source-test-v2-contract.md': [
+    'Machine-readable enforcement active from',
+    'data/static/source-test-v2.schema.json',
     'automation mode',
     'Calendar Readiness',
     'Public Ceiling',
-    'Entries 01-52 predate this contract',
   ],
   'docs/calendar/calendar-readiness-contract.md': [
-    'automatic',
+    'Machine-readable enforcement active from',
+    'data/static/calendar-readiness.schema.json',
+    'implementation status',
     'semi_automatic',
     'manual_import',
     'link_only',
     'blocked',
     'not_applicable',
+  ],
+  'docs/calendar/machine-readable-contracts.md': [
+    'data/static/source-test-v2.schema.json',
+    'data/static/calendar-readiness.schema.json',
+    'data/static/calendar-readiness-registry.json',
+    'node scripts/check-calendar-contracts.mjs',
   ],
   'docs/calendar/implementation-roadmap.md': [
     'retain',
@@ -83,6 +95,11 @@ const requiredPhrases = {
     'WHR-CP-PUB-29-36',
     'WHR-CP-PUB-37-44',
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
+  ],
+  'data/static/calendar-readiness-registry.json': [
+    'pending_backfill_01_52',
+    'WHR-CAL-BACKFILL-01-20',
+    'WHR-CAL-BACKFILL-37-52',
   ],
 };
 
@@ -112,5 +129,5 @@ if (errors.length) {
 
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log(`FILES_CHECKED: ${requiredFiles.length}`);
-console.log('CURRENT_WORK_ID: WHR-GOV-ROADMAP-01');
-console.log('NEXT_WORK_ID: WHR-CAL-CONTRACT-02');
+console.log('CURRENT_WORK_ID: WHR-CAL-CONTRACT-02');
+console.log('NEXT_WORK_ID: WHR-CP-PUB-29-36');
