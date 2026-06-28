@@ -1,0 +1,55 @@
+name: Trigger publication finalizer 37-44
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/trigger-finalize-publication-37-44.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-pages-37-44-publication-final
+          fetch-depth: 0
+      - name: Execute reviewed finalizer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          workflow = Path('.github/workflows/finalize-publication-37-44.yml').read_text(encoding='utf-8')
+          marker = "          python - <<'PY'\n"
+          ending = '\n          PY\n'
+          if marker not in workflow or ending not in workflow:
+              raise SystemExit('finalizer Python block was not found')
+          raw = workflow.split(marker, 1)[1].split(ending, 1)[0]
+          block = '\n'.join(line[10:] if line.startswith('          ') else line for line in raw.splitlines())
+          exec(compile(block, 'finalize-publication-37-44.py', 'exec'), {'__name__': '__main__'})
+          PY
+      - name: Remove one-time workflow files
+        run: |
+          rm -f \
+            .github/workflows/rendered-preview-qa-37-44.yml \
+            .github/workflows/finalize-publication-37-44.yml \
+            .github/workflows/trigger-finalize-publication-37-44.yml
+      - name: Validate final state
+        run: |
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-country-profiles-37-44.mjs
+          npm install
+          npm run build
+          node scripts/check-country-page-publication-37-44.mjs
+      - name: Commit final state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Finalize publication state for entries 37-44'
+          git push origin HEAD:country-pages-37-44-publication-final
