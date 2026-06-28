@@ -39,7 +39,7 @@ jobs:
               route="$prefix/$slug"
               output="rendered-preview/html/${route//\//-}.html"
               curl --fail --show-error --silent --location \
-                --retry 24 --retry-delay 5 --retry-all-errors \
+                --retry 60 --retry-delay 5 --retry-all-errors \
                 --connect-timeout 15 --max-time 60 \
                 "$PREVIEW_BASE/$route/" \
                 --output "$output"
