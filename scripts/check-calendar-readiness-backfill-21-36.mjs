@@ -61,7 +61,6 @@ for (const record of registry.records ?? []) {
   if (!authorityKeys.has(record.authority_source_key)) fail(`${record.readiness_id}: missing authority source key`);
   if (record.implementation_status !== 'not_started') fail(`${record.readiness_id}: implementation_status must remain not_started`);
   else notStarted += 1;
-  if ((record.racecourse_ids ?? []).length !== 0) fail(`${record.readiness_id}: this backfill must not copy unmigrated Profile racecourse IDs`);
 }
 
 for (const [country, deliveryNo] of targetCountries) {
@@ -70,6 +69,7 @@ for (const [country, deliveryNo] of targetCountries) {
   if (records.length !== expectedCount) fail(`${country}: expected ${expectedCount} records; found ${records.length}`);
   for (const record of records) {
     if (record.country_tracker_delivery_no !== deliveryNo) fail(`${record.readiness_id}: delivery number mismatch`);
+    if ((record.racecourse_ids ?? []).length !== 0) fail(`${record.readiness_id}: entries 21-36 must not copy unmigrated Profile racecourse IDs`);
   }
 }
 
