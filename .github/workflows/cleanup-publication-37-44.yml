@@ -1,0 +1,38 @@
+name: Cleanup publication diff 37-44
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/cleanup-publication-37-44.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-pages-37-44-publication-final
+          fetch-depth: 0
+      - name: Restore unrelated generated and dependency files
+        run: |
+          git fetch origin main
+          git checkout origin/main -- \
+            package-lock.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/hkjc-normalized-meeting-details.sample.json \
+            data/generated/timetable/hkjc-normalized-timetable.sample.json \
+            data/generated/timetable/june-2026-calendar.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json
+          rm -f .github/workflows/cleanup-publication-37-44.yml
+      - name: Commit cleanup
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Remove unrelated generated build changes'
+          git push origin HEAD:country-pages-37-44-publication-final
