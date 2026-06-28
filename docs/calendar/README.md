@@ -8,17 +8,30 @@ Use these files together:
 - [`../project-roadmap.md`](../project-roadmap.md) — full product sequence and current Work ID.
 - [`source-test-v2-contract.md`](source-test-v2-contract.md) — required source-research output.
 - [`calendar-readiness-contract.md`](calendar-readiness-contract.md) — completion states for each racing system and source.
+- [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, and validator map.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — current repository capabilities and gaps.
-- [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its 2026-06-28 addendum.
+- [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
+- [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
 - [`../operations/deployment-and-ci-policy.md`](../operations/deployment-and-ci-policy.md).
+
+## Machine-readable entry points
+
+```text
+data/static/source-test-v2.schema.json
+data/static/calendar-readiness.schema.json
+data/static/calendar-readiness-registry.json
+scripts/check-calendar-contracts.mjs
+```
+
+The registry begins empty with `pending_backfill_01_52`. This is an explicit bootstrap state, not a claim that reviewed countries lack racing or official sources.
 
 ## Operating rule
 
 Calendar work starts from reviewed source tests, authority/source records, country-page notes, and Calendar Readiness records. It must not begin from generic country assumptions.
 
-Country-page completion and Calendar Readiness share research and stable identifiers but remain separate states.
+Country-page completion, source capability, Public Ceiling, Calendar Readiness, and implementation status share stable identifiers but remain separate states.
 
 ## Local research boundary
 
@@ -26,4 +39,4 @@ Detailed local captures remain outside the repository. The public repository may
 
 ## Maintenance
 
-Every Calendar PR must update the applicable roadmap, readiness registry, source record, runbook, or validator when its state changes.
+Every Calendar PR must update the applicable roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
