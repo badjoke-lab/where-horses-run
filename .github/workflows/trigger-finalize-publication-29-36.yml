@@ -37,12 +37,32 @@ jobs:
             .github/workflows/finalize-publication-29-36.yml \
             .github/workflows/trigger-finalize-publication-29-36.yml
       - name: Validate final state
+        id: validate
+        continue-on-error: true
         run: |
-          node scripts/check-country-page-programme.mjs
-          node scripts/check-country-page-programme-roadmap.mjs
-          node scripts/check-project-governance-docs.mjs
-          node scripts/check-calendar-contracts.mjs
+          set +e
+          {
+            node scripts/check-country-page-programme.mjs
+            node scripts/check-country-page-programme-roadmap.mjs
+            node scripts/check-project-governance-docs.mjs
+            node scripts/check-calendar-contracts.mjs
+          } > finalizer-validation.txt 2>&1
+          status=$?
+          cat finalizer-validation.txt
+          exit $status
+      - name: Preserve validation output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: finalizer-validation-29-36
+          path: finalizer-validation.txt
+          if-no-files-found: error
+          retention-days: 1
+      - name: Stop on validation failure
+        if: steps.validate.outcome == 'failure'
+        run: exit 1
       - name: Commit final state
+        if: steps.validate.outcome == 'success'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
