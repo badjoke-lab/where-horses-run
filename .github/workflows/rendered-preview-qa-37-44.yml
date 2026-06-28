@@ -1,0 +1,113 @@
+name: Rendered preview QA 37-44
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rendered-preview-qa-37-44.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install Chromium for Playwright
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Fetch all live preview routes
+        env:
+          PREVIEW_BASE: https://preview-country-pages-37-44.where-horses-run.pages.dev
+        run: |
+          mkdir -p rendered-preview/html rendered-preview/screenshots
+          for slug in \
+            malaysia \
+            thailand \
+            philippines \
+            mauritius \
+            argentina \
+            germany \
+            italy \
+            spain
+          do
+            for prefix in countries ja/countries
+            do
+              route="$prefix/$slug"
+              output="rendered-preview/html/${route//\//-}.html"
+              curl --fail --show-error --silent --location \
+                --retry 24 --retry-delay 5 --retry-all-errors \
+                --connect-timeout 15 --max-time 60 \
+                "$PREVIEW_BASE/$route/" \
+                --output "$output"
+              test -s "$output"
+            done
+          done
+      - name: Validate live preview HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('rendered-preview/html')
+          slugs = [
+              'malaysia',
+              'thailand',
+              'philippines',
+              'mauritius',
+              'argentina',
+              'germany',
+              'italy',
+              'spain',
+          ]
+
+          for slug in slugs:
+              en = (root / f'countries-{slug}.html').read_text(encoding='utf-8')
+              ja = (root / f'ja-countries-{slug}.html').read_text(encoding='utf-8')
+              expected_en = f'https://whr.badjoke-lab.com/countries/{slug}/'
+              expected_ja = f'https://whr.badjoke-lab.com/ja/countries/{slug}/'
+              for label, html, canonical, alternate in [
+                  ('EN', en, expected_en, expected_ja),
+                  ('JA', ja, expected_ja, expected_en),
+              ]:
+                  if html.count('<h1') != 1:
+                      raise SystemExit(f'{slug} {label}: expected exactly one h1')
+                  if canonical not in html:
+                      raise SystemExit(f'{slug} {label}: canonical missing')
+                  if alternate not in html:
+                      raise SystemExit(f'{slug} {label}: language alternate missing')
+                  lowered = html.lower()
+                  if '<iframe' in lowered or '<video' in lowered or 'watch here' in lowered:
+                      raise SystemExit(f'{slug} {label}: prohibited media output found')
+                  for prohibited in ['Start time</th>', '開始時刻</th>', 'Timezone</th>', 'タイムゾーン</th>']:
+                      if prohibited in html:
+                          raise SystemExit(f'{slug} {label}: C-rank column leaked: {prohibited}')
+
+          print('LIVE_PREVIEW_37_44_HTML_VALID')
+          print('ROUTES_CHECKED: 8 EN + 8 JA = 16')
+          PY
+      - name: Capture representative desktop screenshots
+        env:
+          PREVIEW_BASE: https://preview-country-pages-37-44.where-horses-run.pages.dev
+        run: |
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/malaysia/" rendered-preview/screenshots/malaysia-en-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/malaysia/" rendered-preview/screenshots/malaysia-ja-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/italy/" rendered-preview/screenshots/italy-en-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/italy/" rendered-preview/screenshots/italy-ja-desktop.png
+      - name: Capture representative mobile screenshots
+        env:
+          PREVIEW_BASE: https://preview-country-pages-37-44.where-horses-run.pages.dev
+        run: |
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/malaysia/" rendered-preview/screenshots/malaysia-en-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/malaysia/" rendered-preview/screenshots/malaysia-ja-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/countries/italy/" rendered-preview/screenshots/italy-en-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="Pixel 7" --full-page --wait-for-timeout=1500 "$PREVIEW_BASE/ja/countries/italy/" rendered-preview/screenshots/italy-ja-mobile.png
+      - name: Upload rendered preview evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-preview-37-44
+          path: rendered-preview
+          if-no-files-found: error
+          retention-days: 7
