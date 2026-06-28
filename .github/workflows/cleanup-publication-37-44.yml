@@ -19,8 +19,8 @@ jobs:
       - name: Restore unrelated generated and dependency files
         run: |
           git fetch origin main
+          rm -f package-lock.json
           git checkout origin/main -- \
-            package-lock.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/hkjc-normalized-meeting-details.sample.json \
