@@ -1,8 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-CAL-CONTRACT-02`  
-Next Work ID: `WHR-CP-PUB-29-36`  
+Current Work ID: `WHR-CP-PUB-37-44`  
+Next Work ID: `WHR-CAL-BACKFILL-01-20`  
 Last reviewed: 2026-06-28
 
 ## Purpose
@@ -35,18 +35,19 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 ## Current position
 
 ```text
-published country pages:       28
-profile_ready:                 16
+published country pages:       36
+profile_ready:                  8
 note_reviewed:                  8
 not_started:                   46
 total countries/regions:       98
-published routes:              28 EN + 28 JA = 56
+published routes:              36 EN + 36 JA = 72
 final bilingual route target:  98 EN + 98 JA = 196
 ```
 
 Publication debt:
 
-- entries 29-36 and 37-44 have stale Draft gates and must be rebuilt from current `main`;
+- entries 29-36 are published after the approved rendered preview;
+- entries 37-44 still require a current-main publication rebuild;
 - entries 45-52 need Profile v2 and publication.
 
 Calendar baseline already exists:
@@ -117,9 +118,9 @@ Completed through PR #314 and PR #315:
 
 ## Phase 1 — machine-readable Calendar contracts
 
-Current Work ID: `WHR-CAL-CONTRACT-02`
+Completed Work ID: `WHR-CAL-CONTRACT-02` via PR #316.
 
-Deliver:
+Delivered:
 
 - `data/static/source-test-v2.schema.json`;
 - `data/static/calendar-readiness.schema.json`;
@@ -135,12 +136,15 @@ Completion moves the programme to `WHR-CP-PUB-29-36`.
 
 ## Phase 2 — clear publication debt
 
-```text
-WHR-CP-PUB-29-36
-WHR-CP-PUB-37-44
-```
+Current Work ID: `WHR-CP-PUB-37-44`
 
-Each stale publication gate is rebuilt from current `main`, receives one final rendered preview, then one production deployment.
+Completed:
+
+- `WHR-CP-PUB-29-36` via PR #317 after immutable rendered-preview approval.
+
+Remaining:
+
+- `WHR-CP-PUB-37-44`, rebuilt from current `main`, followed by one final preview and one production deployment.
 
 ## Phase 3 — Calendar Readiness backfill
 

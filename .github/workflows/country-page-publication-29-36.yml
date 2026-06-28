@@ -1,0 +1,95 @@
+name: Country page publication 29-36
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/**'
+      - 'docs/calendar/**'
+      - 'docs/governance/**'
+      - 'docs/runbooks/country-pages-29-36-publication-final.md'
+      - 'data/static/country-page-countries-29-36.json'
+      - 'data/static/country-page-sources-29-36.json'
+      - 'data/static/country-profiles-v2-29-*.json'
+      - 'data/static/country-profiles-v2-30-*.json'
+      - 'data/static/country-profiles-v2-31-*.json'
+      - 'data/static/country-profiles-v2-32-*.json'
+      - 'data/static/country-profiles-v2-33-*.json'
+      - 'data/static/country-profiles-v2-34-*.json'
+      - 'data/static/country-profiles-v2-35-*.json'
+      - 'data/static/country-profiles-v2-36-*.json'
+      - 'data/static/calendar-readiness*.json'
+      - 'data/static/source-test-v2.schema.json'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/**'
+      - 'scripts/check-country-page-publication-29-36.mjs'
+      - 'scripts/check-country-profiles-29-36.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-page-publication-29-36.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/**'
+      - 'docs/calendar/**'
+      - 'docs/governance/**'
+      - 'docs/runbooks/country-pages-29-36-publication-final.md'
+      - 'data/static/country-page-countries-29-36.json'
+      - 'data/static/country-page-sources-29-36.json'
+      - 'data/static/country-profiles-v2-29-*.json'
+      - 'data/static/country-profiles-v2-30-*.json'
+      - 'data/static/country-profiles-v2-31-*.json'
+      - 'data/static/country-profiles-v2-32-*.json'
+      - 'data/static/country-profiles-v2-33-*.json'
+      - 'data/static/country-profiles-v2-34-*.json'
+      - 'data/static/country-profiles-v2-35-*.json'
+      - 'data/static/country-profiles-v2-36-*.json'
+      - 'data/static/calendar-readiness*.json'
+      - 'data/static/source-test-v2.schema.json'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/**'
+      - 'scripts/check-country-page-publication-29-36.mjs'
+      - 'scripts/check-country-profiles-29-36.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-page-publication-29-36.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: npm run build
+      - run: node scripts/check-country-page-publication-29-36.mjs
+      - run: node scripts/check-country-profiles-29-36.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs

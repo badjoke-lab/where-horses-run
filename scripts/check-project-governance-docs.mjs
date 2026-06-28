@@ -39,14 +39,14 @@ const content = Object.fromEntries(requiredFiles.map((file) => [file, read(file)
 
 const requiredPhrases = {
   'docs/project-roadmap.md': [
-    'Current Work ID: `WHR-CAL-CONTRACT-02`',
-    'Next Work ID: `WHR-CP-PUB-29-36`',
+    'Current Work ID: `WHR-CP-PUB-37-44`',
+    'Next Work ID: `WHR-CAL-BACKFILL-01-20`',
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
     'WHR-CAL-BASELINE-RECONCILE',
     'WHR-CAL-PUBLIC-V1',
     'Candidate generation is not publication',
   ],
-  'START-HERE.md': ['WHR-CAL-CONTRACT-02', 'WHR-CP-PUB-29-36', 'calendar-readiness-registry.json'],
+  'START-HERE.md': ['WHR-CP-PUB-37-44', 'WHR-CAL-BACKFILL-01-20', 'calendar-readiness-registry.json'],
   'docs/governance/document-authority.md': [
     'Authority order',
     'Conversation history and PR numbers do not replace canonical repository documents',
@@ -129,5 +129,5 @@ if (errors.length) {
 
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log(`FILES_CHECKED: ${requiredFiles.length}`);
-console.log('CURRENT_WORK_ID: WHR-CAL-CONTRACT-02');
-console.log('NEXT_WORK_ID: WHR-CP-PUB-29-36');
+console.log('CURRENT_WORK_ID: WHR-CP-PUB-37-44');
+console.log('NEXT_WORK_ID: WHR-CAL-BACKFILL-01-20');

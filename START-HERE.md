@@ -44,11 +44,11 @@ scripts/check-calendar-contracts.mjs
 Current Work ID:
 
 ```text
-WHR-CAL-CONTRACT-02
+WHR-CP-PUB-37-44
 ```
 
 Next Work ID:
 
 ```text
-WHR-CP-PUB-29-36
+WHR-CAL-BACKFILL-01-20
 ```
