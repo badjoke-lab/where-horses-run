@@ -1,6 +1,6 @@
 {
-  "schema_version": "authority-source-inventory-schema-v0",
-  "purpose": "Defines the shared multi-authority official source inventory shape used before selecting timetable adapters.",
+  "schema_version": "authority-source-inventory-schema-v1",
+  "purpose": "Defines the shared multi-authority official source inventory shape used before selecting timetable adapters and linking Calendar Readiness records.",
   "record_key": [
     "country_id",
     "authority_id",
@@ -23,7 +23,7 @@
     "notes"
   ],
   "field_definitions": {
-    "country_id": "Stable country identifier shared with country and timetable datasets.",
+    "country_id": "Stable country identifier shared with country, timetable, and Calendar Readiness datasets.",
     "authority_id": "Stable racing authority identifier within the country scope.",
     "authority_name_en": "English authority name for review and display.",
     "authority_name_local": "Local-language authority name when applicable; use null when no local variant is needed.",
@@ -34,9 +34,9 @@
     "source_kind": "Kind of source capability being inventoried.",
     "source_status": "Shared global timetable source status.",
     "last_checked_date": "Date the source candidate was last checked, using YYYY-MM-DD, or null when not checked yet.",
-    "capability_rank": "Shared global timetable capability rank.",
+    "capability_rank": "Shared global timetable capability rank from C through A+.",
     "adapter_candidate_status": "Adapter-selection readiness after source review, without implementing the adapter.",
-    "notes": "Public-safe reviewer notes; no internal strategy, budget, monetization, private workflow, entries, odds, results, payouts, tips, or full racecards."
+    "notes": "Public-safe reviewer notes; no internal strategy, raw source bodies, participant data, betting data, results, payouts, predictions, tips, or complete racecards."
   },
   "authority_type_enum": [
     "national",
@@ -73,7 +73,8 @@
     "C",
     "B",
     "B+",
-    "A"
+    "A",
+    "A+"
   ],
   "adapter_candidate_status_enum": [
     "not_reviewed",
@@ -83,23 +84,16 @@
     "not_applicable"
   ],
   "explicit_exclusions": [
-    "no real authority records in the placeholder inventory",
-    "no adapter implementation",
-    "no scraper implementation",
-    "no parser implementation",
-    "no runtime fetch logic",
-    "no raw source body/html storage",
-    "no racecards",
-    "no odds",
-    "no results",
-    "no payouts",
-    "no predictions",
-    "no tips",
-    "no full entries",
+    "no adapter implementation claim",
+    "no scraper implementation claim",
+    "no parser implementation claim",
+    "no runtime fetch implementation claim",
+    "no raw source body or html storage",
+    "no complete programmes or racecards",
+    "no horses runners jockeys trainers weights or gates",
+    "no odds betting recommendations results payouts predictions or tips",
+    "no credentials restricted access details or bypass instructions",
     "no JRA-centered special fields",
-    "no internal strategy",
-    "no budget notes",
-    "no monetization notes",
-    "no private workflow notes"
+    "no internal strategy budget monetization or private workflow notes"
   ]
 }
