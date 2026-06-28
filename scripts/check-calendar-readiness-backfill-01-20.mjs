@@ -43,24 +43,31 @@ const expectedSystemCounts = new Map(Object.entries({
   'czech-republic': 3,
 }));
 
-if (registry.bootstrap_status !== 'backfill_in_progress') fail('bootstrap_status must be backfill_in_progress');
-if (registry.programme_state?.countries_with_closed_decision !== 20) fail('countries_with_closed_decision must be 20');
-if (registry.programme_state?.readiness_records !== 30) fail('readiness_records must be 30');
-if (JSON.stringify(registry.programme_state?.next_backfill_work_ids) !== JSON.stringify(['WHR-CAL-BACKFILL-21-36', 'WHR-CAL-BACKFILL-37-52'])) {
-  fail('next_backfill_work_ids must contain 21-36 and 37-52');
+if (!['backfill_in_progress', 'complete_01_52', 'revalidation_required'].includes(registry.bootstrap_status)) {
+  fail(`unexpected bootstrap_status: ${registry.bootstrap_status}`);
 }
-if (!Array.isArray(registry.records) || registry.records.length !== 30) fail(`expected 30 readiness records; found ${registry.records?.length ?? 0}`);
+if (!Array.isArray(registry.records)) fail('registry.records must be an array');
+if (registry.programme_state?.readiness_records !== registry.records?.length) {
+  fail('programme_state.readiness_records must match the registry length');
+}
+if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 20) {
+  fail('countries_with_closed_decision must be at least 20');
+}
 
 const authorityKeys = new Set((authorityInventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
 if (authorityKeys.size !== (authorityInventory.records ?? []).length) fail('authority inventory contains duplicate compound keys');
-if ((authorityInventory.records ?? []).length !== 31) fail(`expected 31 authority records after backfill; found ${(authorityInventory.records ?? []).length}`);
+if ((authorityInventory.records ?? []).length < 31) fail('authority inventory must retain at least the 31 records established by entries 01-20');
+
+const targetRecords = (registry.records ?? []).filter((record) => targetCountries.has(record.country_id));
+if (targetRecords.length !== 30) fail(`entries 01-20 must retain 30 readiness records; found ${targetRecords.length}`);
 
 const recordsByCountry = new Map();
-for (const record of registry.records ?? []) {
+let targetNotStarted = 0;
+for (const record of targetRecords) {
   if (!recordsByCountry.has(record.country_id)) recordsByCountry.set(record.country_id, []);
   recordsByCountry.get(record.country_id).push(record);
   if (!authorityKeys.has(record.authority_source_key)) fail(`${record.readiness_id}: missing authority source key`);
-  if (record.implementation_status !== 'not_started') fail(`${record.readiness_id}: implementation_status must remain not_started`);
+  if (record.implementation_status === 'not_started') targetNotStarted += 1;
   if (record.coverage_scope === 'unknown' && record.readiness !== 'blocked') fail(`${record.readiness_id}: unknown coverage may only remain on blocked records`);
 }
 
@@ -71,9 +78,6 @@ for (const [country, deliveryNo] of targetCountries) {
   for (const record of records) {
     if (record.country_tracker_delivery_no !== deliveryNo) fail(`${record.readiness_id}: delivery number mismatch`);
   }
-}
-for (const country of recordsByCountry.keys()) {
-  if (!targetCountries.has(country)) fail(`backfill includes out-of-range country ${country}`);
 }
 
 const expectedBlocked = new Set([
@@ -87,11 +91,11 @@ const expectedLinkOnly = new Set([
   'japan--japan-banei-system--banei-official-schedule',
 ]);
 
-for (const record of registry.records ?? []) {
+for (const record of targetRecords) {
   if (expectedBlocked.has(record.readiness_id) && record.readiness !== 'blocked') fail(`${record.readiness_id}: must remain blocked`);
   if (expectedLinkOnly.has(record.readiness_id) && record.readiness !== 'link_only') fail(`${record.readiness_id}: must remain link_only`);
-  if (record.readiness === 'blocked' && !expectedBlocked.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected blocked record`);
-  if (record.readiness === 'link_only' && !expectedLinkOnly.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected link-only record`);
+  if (record.readiness === 'blocked' && !expectedBlocked.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected blocked record in entries 01-20`);
+  if (record.readiness === 'link_only' && !expectedLinkOnly.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected link-only record in entries 01-20`);
 }
 
 for (const required of [
@@ -109,9 +113,10 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_READINESS_BACKFILL_01_20_VALID');
-console.log('COUNTRIES_WITH_CLOSED_DECISION: 20');
-console.log('READINESS_RECORDS: 30');
-console.log('AUTHORITY_SOURCE_RECORDS: 31');
-console.log('BLOCKED_RECORDS: 4');
-console.log('LINK_ONLY_RECORDS: 2');
-console.log('IMPLEMENTATION_STATUS: not_started=30');
+console.log('TARGET_COUNTRIES: 20');
+console.log('TARGET_READINESS_RECORDS: 30');
+console.log('MINIMUM_AUTHORITY_SOURCE_RECORDS: 31');
+console.log('TARGET_BLOCKED_RECORDS: 4');
+console.log('TARGET_LINK_ONLY_RECORDS: 2');
+console.log(`TARGET_IMPLEMENTATION_NOT_STARTED: ${targetNotStarted}`);
+console.log(`CUMULATIVE_READINESS_RECORDS: ${registry.records.length}`);
