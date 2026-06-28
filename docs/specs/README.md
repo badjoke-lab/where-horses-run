@@ -1,17 +1,17 @@
 # Specifications
 
-Formal project specifications live here.
+Formal project specifications live here. Read `docs/governance/document-authority.md` before treating an older specification as current.
 
-## Current
+## Active specifications and contracts
 
-- [where-horses-run-v0-spec.md](where-horses-run-v0-spec.md)
 - [data-model.md](data-model.md)
 - [global-timetable-architecture.md](global-timetable-architecture.md)
+- [global-timetable-architecture-2026-06-28-addendum.md](global-timetable-architecture-2026-06-28-addendum.md)
 - [authority-source-inventory-schema.md](authority-source-inventory-schema.md)
-- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md) — Acquisition Route Inventory schema for public-safe manual snapshot, dry-run, scheduled-candidate, disabled, and status-only route records.
-- Timetable refresh dry-run skeleton — `scripts/dry-run-timetable-acquisition-routes.mjs` is dry-run/status-only: no live fetching, no scheduler, no generated writeback; future route records can be checked through this skeleton before implementation.
-- [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md) — Normalized Timetable Record output schema for future public-safe calendar-displayable meeting summaries.
-- [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md) — Calendar view model reader contract/helper for display-safe monthly and day meeting summaries.
+- [authority-source-inventory-2026-06-28-addendum.md](authority-source-inventory-2026-06-28-addendum.md)
+- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md)
+- [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md)
+- [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md)
 - [timetable-data-flow-and-display-contract.md](timetable-data-flow-and-display-contract.md)
 - [page-map.md](page-map.md)
 - [ui-css-policy.md](ui-css-policy.md)
@@ -20,3 +20,10 @@ Formal project specifications live here.
 - [operations-policy.md](operations-policy.md)
 - [racecourse-page-spec.md](racecourse-page-spec.md)
 - [page-link-architecture.md](page-link-architecture.md)
+
+## Historical baseline
+
+- [where-horses-run-v0-spec.md](where-horses-run-v0-spec.md)
+- [where-horses-run-v0-status.md](where-horses-run-v0-status.md)
+
+The v0 specification preserves original product intent but does not override current roadmaps, contracts, schemas, or active addenda.
