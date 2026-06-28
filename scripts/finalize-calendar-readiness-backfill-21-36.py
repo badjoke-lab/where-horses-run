@@ -40,8 +40,8 @@ path.write_text(text, encoding='utf-8')
 
 path = ROOT / 'START-HERE.md'
 text = path.read_text(encoding='utf-8')
-text = replace_once(text, 'WHR-CAL-BACKFILL-21-36', 'WHR-CAL-BACKFILL-37-52', 'START-HERE current Work ID')
 text = replace_once(text, 'WHR-CAL-BACKFILL-37-52', 'WHR-CP-PROFILE-45-52', 'START-HERE next Work ID')
+text = replace_once(text, 'WHR-CAL-BACKFILL-21-36', 'WHR-CAL-BACKFILL-37-52', 'START-HERE current Work ID')
 path.write_text(text, encoding='utf-8')
 
 path = ROOT / 'docs/country-pages/programme-roadmap.md'
