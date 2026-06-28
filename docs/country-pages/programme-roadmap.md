@@ -17,18 +17,18 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #317
-Publication gate: PR #317 — entries 29-36 published after approved rendered preview
-Current Work ID: WHR-CP-PUB-37-44
-Next working branch: country-pages-37-44-publication-final
+Latest confirmed merge: PR #319
+Publication gate: PR #319 — entries 37-44 published after approved rendered preview
+Current Work ID: WHR-CAL-BACKFILL-01-20
+Next working branch: calendar-readiness-backfill-01-20
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after entries 29-36 preview approval:
+Current tracker counts after entries 37-44 preview approval:
 
 ```text
-published:       36
-profile_ready:    8
+published:       44
+profile_ready:    0
 note_reviewed:    8
 source_tested:    0
 not_started:     46
@@ -38,16 +38,16 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   36
-formally published Japanese routes:  36
-formally published total routes:     72
-profile-ready English routes:         8
-profile-ready Japanese routes:        8
-profile-ready total routes:          16
+formally published English routes:   44
+formally published Japanese routes:  44
+formally published total routes:     88
+profile-ready English routes:         0
+profile-ready Japanese routes:        0
+profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #317 replaces the closed, superseded PR #304 for entries 29-36. Entries 29-36 passed immutable rendered-preview QA and are published. PR #308 remains a stale Draft gate and must be rebuilt from the latest main for entries 37-44. Source-test, reviewed-note, Profile v2, and Calendar Readiness work continues independently without Cloudflare.
+PR #319 replaces the closed, superseded PR #308 for entries 37-44. Entries 29-44 are published after rendered-preview QA. Calendar Readiness backfill for entries 01-20 is now the active Work ID; reviewed-note and Profile v2 work for entries 45-52 remains queued.
 
 ## 3. Operating model
 
@@ -123,14 +123,15 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #305 | merged | Added source tests and conservative country ceilings for entries 37-44. |
 | #306 | merged | Added reviewed country notes for entries 37-44. |
 | #307 | merged | Added Profile v2 records for entries 37-44. |
-| #308 | Draft gate | GitHub QA for entries 37-44 passed; rendered preview remains. |
+| #308 | closed, superseded | Replaced by current-main publication PR #319. |
 | #309 | merged | Added official source tests for entries 45-52. |
 | #310 | merged | Added reviewed notes for entries 45-52 and remediated public country-page copy. |
 | #311 | merged | Published entries 21-28 after corrected rendered-preview approval. |
 | #312 | closed, unmerged | Temporary preview-probe evidence only. |
 | #313 | closed, unmerged | Temporary Cloudflare preview trigger only. |
 | #316 | merged | Added machine-readable Source Test v2 and Calendar Readiness contracts. |
-| #317 | publication | Published entries 29-36 after immutable rendered-preview approval. |
+| #317 | merged | Published entries 29-36 after immutable rendered-preview approval. |
+| #319 | publication | Published entries 37-44 after rendered-preview approval. |
 
 ## 7. Publication gates
 
@@ -156,6 +157,17 @@ Rendered preview approval:
 5. Entries 29-36 are recorded as `published` on 2026-06-28.
 6. PR #317 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
 
+### PR #319 — entries 37-44
+
+Rendered preview approval:
+
+1. `preview-country-pages-37-44` passed live checks for all 16 English/Japanese routes.
+2. Malaysia and Italy passed English/Japanese desktop and Pixel 7 screenshot review.
+3. Canonical, hreflang, language switching, official links, empty states, CJK rendering, and C-column suppression passed.
+4. Evidence artifact `rendered-preview-37-44` is artifact `7936442604` with digest `sha256:8d1f3c314a36ddaeb821115051f51d758aad103d5854a37e6babc82a921c53e0`.
+5. Entries 37-44 are recorded as `published` on 2026-06-28.
+6. PR #319 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
+
 ## 8. Wave 37-44
 
 Entries:
@@ -176,7 +188,8 @@ Entries:
 | #305 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
 | #306 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
 | #307 | merged | Added Profile v2 records and advanced all eight entries to `profile_ready`. |
-| #308 | Draft gate | GitHub pre-preview QA passed; rendered preview remains. |
+| #308 | closed, superseded | Replaced by PR #319. |
+| #319 | publication | Published all sixteen routes after rendered-preview approval. |
 
 Reviewed country ceilings retained through PR #307:
 

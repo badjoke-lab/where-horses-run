@@ -109,19 +109,27 @@ for (const [deliveryNo, slug] of expected) {
     continue;
   }
   if (row[index.slug] !== slug) fail(`tracker slug mismatch for ${deliveryNo}`);
-  if (row[index.programme_status] !== 'profile_ready') fail(`${slug} must be profile_ready`);
+  const programmeStatus = row[index.programme_status];
+  if (!['profile_ready', 'published'].includes(programmeStatus)) fail(`${slug} must be profile_ready or published`);
   if (row[index.note_status] !== 'reviewed') fail(`${slug} note must remain reviewed`);
   if (row[index.profile_status] !== 'reviewed') fail(`${slug} profile must be reviewed`);
-  if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug} routes must be complete`);
-  if (row[index.qa_status] !== 'not_started') fail(`${slug} QA must remain not_started`);
   if (row[index.profile_last_reviewed] !== '2026-06-20') fail(`${slug} profile review date mismatch`);
-  if (row[index.page_published_at]) fail(`${slug} must not have a publication date`);
+
+  if (programmeStatus === 'published') {
+    if (row[index.en_route_status] !== 'published' || row[index.ja_route_status] !== 'published') fail(`${slug} published routes are required`);
+    if (row[index.qa_status] !== 'passed') fail(`${slug} published QA must be passed`);
+    if (!row[index.page_published_at]) fail(`${slug} published row requires page_published_at`);
+  } else {
+    if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug} profile-ready routes must be complete`);
+    if (row[index.qa_status] !== 'not_started') fail(`${slug} profile-ready QA must remain not_started`);
+    if (row[index.page_published_at]) fail(`${slug} profile-ready row must not have a publication date`);
+  }
 }
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('COUNTRY_PROFILES_37_44_VALID countries=8 sources=18 profiles=8 tracker=profile_ready');
+console.log('COUNTRY_PROFILES_37_44_VALID countries=8 sources=18 profiles=8 tracker=profile_ready_or_published');
 console.log('PUBLIC_CEILINGS: C=8');
 console.log('SYSTEMS: italy=2');

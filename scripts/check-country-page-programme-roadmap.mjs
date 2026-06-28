@@ -45,16 +45,16 @@ for (const [label, count] of expectedCountLines) {
   if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
 }
 
-for (const pr of [284, 311, 316, 317, 340]) {
+for (const pr of [284, 311, 316, 317, 319, 340]) {
   if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing key PR #${pr}`);
 }
 
 const requiredPhrases = [
   'Current position',
-  'Publication gate: PR #317',
-  'Current Work ID: WHR-CP-PUB-37-44',
-  'Next working branch: country-pages-37-44-publication-final',
-  'Latest confirmed merge: PR #317',
+  'Publication gate: PR #319',
+  'Current Work ID: WHR-CAL-BACKFILL-01-20',
+  'Next working branch: calendar-readiness-backfill-01-20',
+  'Latest confirmed merge: PR #319',
   'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98',
   'Local work is requested only when',
   'Standard four-PR wave',
@@ -74,5 +74,5 @@ if (errors.length) {
 
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
-console.log('KEY_PRS: 284,311,316,317,340');
-console.log('CURRENT_WORK: entries 29-36 published; next Work ID WHR-CP-PUB-37-44');
+console.log('KEY_PRS: 284,311,316,317,319,340');
+console.log('CURRENT_WORK: entries 29-44 published; current Work ID WHR-CAL-BACKFILL-01-20');
