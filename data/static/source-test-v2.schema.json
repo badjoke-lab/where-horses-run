@@ -1,0 +1,159 @@
+{
+  "schema_version": "source-test-v2-schema-v1",
+  "purpose": "Defines the public-safe machine-readable shape for future official-source tests and Calendar Readiness handoff decisions.",
+  "record_key": [
+    "country_id",
+    "system_id",
+    "authority_source_key"
+  ],
+  "required_summary_fields": [
+    "schema_version",
+    "delivery_no",
+    "country_id",
+    "country_name_en",
+    "checked_date",
+    "evidence_reviewed_at",
+    "country_completeness",
+    "records",
+    "public_safe"
+  ],
+  "required_record_fields": [
+    "readiness_id",
+    "system_id",
+    "system_name_en",
+    "authority_source_key",
+    "racecourse_ids",
+    "coverage_scope",
+    "technical_rank",
+    "public_ceiling",
+    "confirmed_fields",
+    "source_format",
+    "access_mode",
+    "automation_mode",
+    "refresh_classes",
+    "readiness",
+    "implementation_status",
+    "fallback",
+    "source_status",
+    "revalidation_trigger",
+    "blocked_reason",
+    "limitations",
+    "notes"
+  ],
+  "technical_rank_enum": ["C", "B", "B+", "A", "A+"],
+  "public_ceiling_enum": ["C", "B", "B+", "A", "A+"],
+  "coverage_scope_enum": [
+    "countrywide",
+    "authority_wide",
+    "subset_of_authority_racecourses",
+    "single_racecourse",
+    "system_only",
+    "archive_or_explanatory",
+    "unknown"
+  ],
+  "source_format_enum": [
+    "html",
+    "json",
+    "api",
+    "pdf",
+    "csv",
+    "ics",
+    "javascript_rendered",
+    "mobile_app_only",
+    "mixed",
+    "unknown"
+  ],
+  "access_mode_enum": [
+    "direct",
+    "date_route",
+    "query_parameter",
+    "api_call",
+    "javascript_required",
+    "login_required",
+    "local_required",
+    "unreachable",
+    "unknown"
+  ],
+  "automation_mode_enum": [
+    "automatic",
+    "semi_automatic",
+    "manual_import",
+    "manual_confirmation",
+    "link_only",
+    "blocked",
+    "not_applicable"
+  ],
+  "refresh_class_enum": [
+    "daily",
+    "near_meeting",
+    "weekly",
+    "monthly",
+    "seasonal",
+    "event_driven",
+    "manual",
+    "none"
+  ],
+  "readiness_enum": [
+    "ready",
+    "prototype_ready",
+    "manual_ready",
+    "link_only",
+    "blocked",
+    "not_applicable"
+  ],
+  "implementation_status_enum": [
+    "not_started",
+    "prototype",
+    "fixture_validated",
+    "candidate_active",
+    "manual_operation",
+    "scheduled_candidate_active",
+    "public_active",
+    "paused",
+    "retired"
+  ],
+  "fallback_enum": [
+    "keep_last_verified_and_mark_stale",
+    "downgrade_to_C",
+    "official_link_only",
+    "hide_from_current_calendar",
+    "archive_last_verified",
+    "not_applicable"
+  ],
+  "source_status_enum": [
+    "verified",
+    "partial",
+    "not_verified",
+    "stale",
+    "unavailable"
+  ],
+  "country_completeness_enum": [
+    "complete",
+    "partial",
+    "single_system",
+    "single_racecourse",
+    "link_only",
+    "blocked",
+    "not_applicable"
+  ],
+  "confirmed_field_keys": [
+    "meeting_date",
+    "racecourse",
+    "first_race_time",
+    "last_race_time",
+    "per_race_post_times",
+    "race_name",
+    "distance",
+    "surface",
+    "course"
+  ],
+  "explicit_exclusions": [
+    "no raw html or javascript bodies",
+    "no pdf or api response bodies",
+    "no complete programme or racecard text",
+    "no horses runners jockeys trainers weights or gates",
+    "no odds betting recommendations results payouts or predictions",
+    "no credentials cookies tokens restricted access details or bypass instructions",
+    "no private publication-risk notes"
+  ]
+}
