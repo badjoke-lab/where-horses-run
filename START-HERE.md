@@ -3,7 +3,7 @@
 Status: active entry point  
 Last reviewed: 2026-06-28
 
-The root README and some older specifications describe earlier development states. For current work, read documents in this order:
+Read documents in this order:
 
 1. [`docs/governance/document-authority.md`](docs/governance/document-authority.md)
 2. [`docs/project-roadmap.md`](docs/project-roadmap.md)
@@ -22,23 +22,33 @@ For Calendar work:
 4. [`docs/calendar/README.md`](docs/calendar/README.md)
 5. [`docs/calendar/source-test-v2-contract.md`](docs/calendar/source-test-v2-contract.md)
 6. [`docs/calendar/calendar-readiness-contract.md`](docs/calendar/calendar-readiness-contract.md)
-7. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
-8. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-9. [`docs/specs/global-timetable-architecture.md`](docs/specs/global-timetable-architecture.md)
-10. [`docs/specs/global-timetable-architecture-2026-06-28-addendum.md`](docs/specs/global-timetable-architecture-2026-06-28-addendum.md)
+7. [`docs/calendar/machine-readable-contracts.md`](docs/calendar/machine-readable-contracts.md)
+8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
+9. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+10. [`docs/specs/global-timetable-architecture.md`](docs/specs/global-timetable-architecture.md)
+11. [`docs/specs/authority-source-inventory-schema.md`](docs/specs/authority-source-inventory-schema.md)
 
 For local source material and public-repository boundaries:
 
 - [`docs/governance/internal-source-handling.md`](docs/governance/internal-source-handling.md)
 
+Machine-readable Calendar files:
+
+```text
+data/static/source-test-v2.schema.json
+data/static/calendar-readiness.schema.json
+data/static/calendar-readiness-registry.json
+scripts/check-calendar-contracts.mjs
+```
+
 Current Work ID:
 
 ```text
-WHR-GOV-ROADMAP-01
+WHR-CAL-CONTRACT-02
 ```
 
-Next Work ID after this documentation alignment:
+Next Work ID:
 
 ```text
-WHR-CAL-CONTRACT-02
+WHR-CP-PUB-29-36
 ```
