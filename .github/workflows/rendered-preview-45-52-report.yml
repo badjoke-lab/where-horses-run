@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - run: mkdir -p artifacts/rendered-preview-45-52
       - run: npm install
       - run: npm install --no-save playwright@1.53.1
       - run: npx playwright install --with-deps chromium
@@ -28,22 +29,32 @@ jobs:
         run: |
           sed -n 's/^          CHECKER_B64: //p' .github/workflows/rendered-preview-45-52.yml | base64 -d > /tmp/check-rendered-preview-45-52.mjs
       - name: Validate rendered preview
+        id: preview
+        continue-on-error: true
         env:
           BASE_URL: https://preview-country-pages-45-52.where-horses-run.pages.dev
         run: node /tmp/check-rendered-preview-45-52.mjs
       - name: Record workflow run
+        if: always()
+        env:
+          PREVIEW_OUTCOME: ${{ steps.preview.outcome }}
         run: |
-          node -e "const fs=require('fs');fs.writeFileSync('artifacts/rendered-preview-45-52/run.json',JSON.stringify({run_id:process.env.GITHUB_RUN_ID,commit:process.env.GITHUB_SHA,status:'success'},null,2)+'\n')"
+          node -e "const fs=require('fs');fs.writeFileSync('artifacts/rendered-preview-45-52/run.json',JSON.stringify({run_id:process.env.GITHUB_RUN_ID,commit:process.env.GITHUB_SHA,status:process.env.PREVIEW_OUTCOME},null,2)+'\n')"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: rendered-preview-45-52
           path: artifacts/rendered-preview-45-52
           if-no-files-found: error
           retention-days: 7
       - name: Commit report metadata
+        if: always()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add artifacts/rendered-preview-45-52/report.json artifacts/rendered-preview-45-52/README.txt artifacts/rendered-preview-45-52/run.json
+          git add -f artifacts/rendered-preview-45-52
           git commit -m '[CF-Pages-Skip] Record rendered preview 45-52'
           git push origin HEAD:preview-country-pages-45-52
+      - name: Enforce preview result
+        if: steps.preview.outcome != 'success'
+        run: exit 1
