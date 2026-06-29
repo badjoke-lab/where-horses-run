@@ -97,9 +97,9 @@ const requiredPhrases = {
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
   ],
   'data/static/calendar-readiness-registry.json': [
-    'complete_01_52',
+    '"bootstrap_status": "complete"',
     '"countries_with_closed_decision": 52',
-    '"next_backfill_work_ids": []',
+    '"WHR-ST2-53-60"',
   ],
 };
 
