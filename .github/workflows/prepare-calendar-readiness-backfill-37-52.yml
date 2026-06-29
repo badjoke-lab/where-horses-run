@@ -1,0 +1,62 @@
+name: Prepare Calendar readiness backfill 37-52
+
+on:
+  push:
+    branches:
+      - calendar-readiness-backfill-37-52
+    paths:
+      - 'scripts/apply-calendar-readiness-backfill-37-52.mjs'
+      - '.github/workflows/prepare-calendar-readiness-backfill-37-52.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prepare-calendar-readiness-backfill-37-52
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-readiness-backfill-37-52
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply reviewed additions in the workspace
+        run: node scripts/apply-calendar-readiness-backfill-37-52.mjs
+      - name: Validate Calendar contracts and cumulative backfills
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-calendar-readiness-backfill-01-20.mjs
+          node scripts/check-calendar-readiness-backfill-21-36.mjs
+          node scripts/check-calendar-readiness-backfill-37-52.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+      - name: Validate production build
+        run: |
+          npm install
+          npm run build
+      - name: Stage finalized files
+        run: |
+          mkdir -p /tmp/finalized/data/static
+          mkdir -p /tmp/finalized/docs/country-pages
+          mkdir -p /tmp/finalized/docs/runbooks
+          mkdir -p /tmp/finalized/scripts
+          cp data/static/authority-source-inventory.json /tmp/finalized/data/static/
+          cp data/static/calendar-readiness-registry.json /tmp/finalized/data/static/
+          cp START-HERE.md /tmp/finalized/
+          cp docs/project-roadmap.md /tmp/finalized/docs/
+          cp docs/country-pages/programme-roadmap.md /tmp/finalized/docs/country-pages/
+          cp docs/runbooks/calendar-readiness-backfill-37-52.md /tmp/finalized/docs/runbooks/
+          cp scripts/check-calendar-contracts.mjs /tmp/finalized/scripts/
+          cp scripts/check-project-governance-docs.mjs /tmp/finalized/scripts/
+          cp scripts/check-country-page-programme-roadmap.mjs /tmp/finalized/scripts/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: finalized-calendar-readiness-backfill-37-52
+          path: /tmp/finalized
+          if-no-files-found: error
+          retention-days: 1
