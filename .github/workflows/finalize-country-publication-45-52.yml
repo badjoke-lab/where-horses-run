@@ -41,14 +41,20 @@ jobs:
           node scripts/check-country-page-programme-roadmap.mjs
           node scripts/check-project-governance-docs.mjs
           node scripts/check-calendar-contracts.mjs
-      - name: Remove one-time finalizer
-        run: |
-          rm scripts/finalize-country-publication-45-52.mjs
-          rm .github/workflows/finalize-country-publication-45-52.yml
-      - name: Commit finalized publication state
+      - name: Commit finalized publication files
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add -- \
+            START-HERE.md \
+            docs/project-roadmap.md \
+            docs/country-pages/programme-roadmap.md \
+            docs/country-pages/98-country-tracker.tsv \
+            docs/runbooks/country-pages-45-52-publication-final.md \
+            scripts/check-country-page-programme.mjs \
+            scripts/check-calendar-contracts.mjs \
+            scripts/check-project-governance-docs.mjs \
+            scripts/check-country-page-programme-roadmap.mjs \
+            .github/workflows/country-page-publication-45-52.yml
           git commit -m '[CF-Pages-Skip] Finalize country publication 45-52'
           git push origin HEAD:country-pages-45-52-publication-qa
