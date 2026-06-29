@@ -1,0 +1,66 @@
+name: Country notes 61-68
+
+on:
+  pull_request:
+    paths:
+      - 'docs/country-page-notes/61-slovenia.md'
+      - 'docs/country-page-notes/62-croatia.md'
+      - 'docs/country-page-notes/63-dominican-republic.md'
+      - 'docs/country-page-notes/64-tunisia.md'
+      - 'docs/country-page-notes/65-lebanon.md'
+      - 'docs/country-page-notes/66-libya.md'
+      - 'docs/country-page-notes/67-mainland-china.md'
+      - 'docs/country-page-notes/68-indonesia.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - 'scripts/check-country-notes-61-68.mjs'
+      - 'scripts/check-source-test-v2-61-68.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-notes-61-68.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/country-page-notes/61-slovenia.md'
+      - 'docs/country-page-notes/62-croatia.md'
+      - 'docs/country-page-notes/63-dominican-republic.md'
+      - 'docs/country-page-notes/64-tunisia.md'
+      - 'docs/country-page-notes/65-lebanon.md'
+      - 'docs/country-page-notes/66-libya.md'
+      - 'docs/country-page-notes/67-mainland-china.md'
+      - 'docs/country-page-notes/68-indonesia.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - 'scripts/check-country-notes-61-68.mjs'
+      - 'scripts/check-source-test-v2-61-68.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-notes-61-68.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-notes-61-68.mjs
+      - run: node scripts/check-source-test-v2-61-68.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: npm install
+      - run: npm run build
