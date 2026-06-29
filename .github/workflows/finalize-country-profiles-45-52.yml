@@ -25,6 +25,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Separate organiser and distributor roles
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          for (const file of [
+            'data/static/country-profiles-v2-45-norway.json',
+            'data/static/country-profiles-v2-48-switzerland.json'
+          ]) {
+            const profiles = JSON.parse(fs.readFileSync(file, 'utf8'));
+            for (const profile of profiles) {
+              for (const system of profile.systems ?? []) {
+                const organisers = new Set(system.organiser_source_ids ?? []);
+                system.distributor_source_ids = (system.distributor_source_ids ?? []).filter((id) => !organisers.has(id));
+              }
+            }
+            fs.writeFileSync(file, `${JSON.stringify(profiles)}\n`);
+          }
+          NODE
       - name: Apply tracker and governance transition
         run: node scripts/apply-country-profiles-45-52.mjs
       - name: Validate profiles and programme
@@ -55,6 +73,8 @@ jobs:
               'docs/project-roadmap.md',
               'docs/country-pages/programme-roadmap.md',
               'docs/country-pages/98-country-tracker.tsv',
+              'data/static/country-profiles-v2-45-norway.json',
+              'data/static/country-profiles-v2-48-switzerland.json',
               'scripts/check-calendar-contracts.mjs',
               'scripts/check-project-governance-docs.mjs',
               'scripts/check-country-page-programme-roadmap.mjs'
