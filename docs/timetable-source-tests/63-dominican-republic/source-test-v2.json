@@ -1,0 +1,35 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "63",
+  "country_id": "dominican-republic",
+  "country_name_en": "Dominican Republic",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "single_racecourse",
+  "records": [
+    {
+      "readiness_id": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
+      "system_id": "hvc-racing-system",
+      "system_name_en": "Hipódromo V Centenario racing system",
+      "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+      "source_format": "html",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": ["weekly", "near_meeting"],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the official calendar or date-route structure changes.",
+      "blocked_reason": null,
+      "limitations": ["The reviewed scope covers Hipódromo V Centenario only.", "Detailed programme content remains outside the country calendar.", "No reusable race-time fields are approved."],
+      "notes": "Official date-addressable routes support a bounded C-level prototype for meeting dates and venue."
+    }
+  ],
+  "public_safe": true
+}
