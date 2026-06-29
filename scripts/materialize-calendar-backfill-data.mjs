@@ -13,9 +13,15 @@ const authorityPath = 'data/static/authority-source-inventory.json';
 const registryPath = 'data/static/calendar-readiness-registry.json';
 const authority = readJson(authorityPath);
 const registry = readJson(registryPath);
+
+if (authority.records.length === 70 && registry.records.length === 70) {
+  if (registry.bootstrap_status !== 'complete') throw new Error('Completed registry must use bootstrap_status complete');
+  console.log('CALENDAR_BACKFILL_DATA_ALREADY_MATERIALIZED authority=70 readiness=70 countries=52');
+  process.exit(0);
+}
+
 const authorityAdditions = decode('.tmp/calendar-readiness-authority-additions-37-52.zlib.b64');
 const readinessAdditions = decode('.tmp/calendar-readiness-record-additions-37-52.zlib.b64');
-
 if (authority.records.length !== 52 || authorityAdditions.length !== 18) throw new Error('Unexpected authority record counts');
 if (registry.records.length !== 51 || readinessAdditions.length !== 19) throw new Error('Unexpected readiness record counts');
 
