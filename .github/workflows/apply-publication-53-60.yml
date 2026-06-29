@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: apply-publication-53-60
+  cancel-in-progress: false
+
 jobs:
   finalize:
     runs-on: ubuntu-latest
