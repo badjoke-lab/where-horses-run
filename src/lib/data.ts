@@ -5,6 +5,7 @@ import countryPageCountries1520 from '../../data/static/country-page-countries-1
 import countryPageCountries2128 from '../../data/static/country-page-countries-21-28.json';
 import countryPageCountries2936 from '../../data/static/country-page-countries-29-36.json';
 import countryPageCountries3744 from '../../data/static/country-page-countries-37-44.json';
+import countryPageCountries4552 from '../../data/static/country-page-countries-45-52.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
 import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
@@ -46,6 +47,14 @@ import countryProfilesV241Argentina from '../../data/static/country-profiles-v2-
 import countryProfilesV242Germany from '../../data/static/country-profiles-v2-42-germany.json';
 import countryProfilesV243Italy from '../../data/static/country-profiles-v2-43-italy.json';
 import countryProfilesV244Spain from '../../data/static/country-profiles-v2-44-spain.json';
+import countryProfilesV245Norway from '../../data/static/country-profiles-v2-45-norway.json';
+import countryProfilesV246Finland from '../../data/static/country-profiles-v2-46-finland.json';
+import countryProfilesV247Netherlands from '../../data/static/country-profiles-v2-47-netherlands.json';
+import countryProfilesV248Switzerland from '../../data/static/country-profiles-v2-48-switzerland.json';
+import countryProfilesV249Poland from '../../data/static/country-profiles-v2-49-poland.json';
+import countryProfilesV250Romania from '../../data/static/country-profiles-v2-50-romania.json';
+import countryProfilesV251Serbia from '../../data/static/country-profiles-v2-51-serbia.json';
+import countryProfilesV252Slovakia from '../../data/static/country-profiles-v2-52-slovakia.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
@@ -70,6 +79,7 @@ import countryPageSources20CzechRepublic from '../../data/static/country-page-so
 import countryPageSources2128 from '../../data/static/country-page-sources-21-28.json';
 import countryPageSources2936 from '../../data/static/country-page-sources-29-36.json';
 import countryPageSources3744 from '../../data/static/country-page-sources-37-44.json';
+import countryPageSources4552 from '../../data/static/country-page-sources-45-52.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -92,7 +102,8 @@ const allCountries = [
   ...countryPageCountries1520,
   ...countryPageCountries2128,
   ...countryPageCountries2936,
-  ...countryPageCountries3744
+  ...countryPageCountries3744,
+  ...countryPageCountries4552
 ] as const;
 
 const allProfilesV2 = [
@@ -136,7 +147,15 @@ const allProfilesV2 = [
   ...countryProfilesV241Argentina,
   ...countryProfilesV242Germany,
   ...countryProfilesV243Italy,
-  ...countryProfilesV244Spain
+  ...countryProfilesV244Spain,
+  ...countryProfilesV245Norway,
+  ...countryProfilesV246Finland,
+  ...countryProfilesV247Netherlands,
+  ...countryProfilesV248Switzerland,
+  ...countryProfilesV249Poland,
+  ...countryProfilesV250Romania,
+  ...countryProfilesV251Serbia,
+  ...countryProfilesV252Slovakia
 ] as const;
 
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
@@ -169,7 +188,8 @@ const allSources = [
   ...countryPageSources20CzechRepublic,
   ...countryPageSources2128,
   ...countryPageSources2936,
-  ...countryPageSources3744
+  ...countryPageSources3744,
+  ...countryPageSources4552
 ] as const;
 
 const countryProfiles = buildCountryDetailProfiles(allProfilesV2);
@@ -178,80 +198,21 @@ export type Country = (typeof allCountries)[number];
 export type CountryProfile = CountryDetailProfile;
 export type Racecourse = (typeof allRacecourses)[number];
 export type Source = (typeof allSources)[number];
-export type GlossaryEntry = (typeof glossary)[number];
-export type ArchiveEntry = (typeof archive)[number];
 
-const mergedTimetables = {
-  ...timetables,
-  records: [...(timetables.records ?? []), ...(japanActiveTimetableRecords.records ?? [])],
-  sources: [...new Set([...(timetables.sources ?? []), ...(japanActiveTimetableRecords.sources ?? [])])],
-  notes: [...(timetables.notes ?? []), ...(japanActiveTimetableRecords.notes ?? [])]
-} as const;
-
-export const siteData = {
-  countries: allCountries,
+export {
+  allCountries as countries,
   countryProfiles,
-  racecourses: allRacecourses,
-  sources: allSources,
+  allRacecourses as racecourses,
+  allSources as sources,
   glossary,
   archive,
   countryRacingInventory,
-  generated: {
-    latest,
-    today,
-    tomorrow,
-    calendar30d,
-    fetchStatus,
-    liveFetchProbeStatus,
-    timetables: mergedTimetables,
-    japanActiveTimetableRecords
-  }
-} as const;
-
-export function getCountries(): Country[] {
-  return [...allCountries].sort((a, b) => a.name_en.localeCompare(b.name_en));
-}
-
-export function getActiveCountries(): Country[] {
-  return getCountries().filter((country) => country.status === 'active');
-}
-
-export function getCountryBySlug(slug: string): Country | undefined {
-  return allCountries.find((country) => country.slug === slug);
-}
-
-export function getCountryProfileByCountryId(countryId: string): CountryProfile | undefined {
-  return countryProfiles.find((profile) => profile.country_id === countryId);
-}
-
-export function getCountryProfileBySlug(slug: string): CountryProfile | undefined {
-  return countryProfiles.find((profile) => profile.slug === slug);
-}
-
-export function getRacecourses(): Racecourse[] {
-  return [...allRacecourses].sort((a, b) => a.name_en.localeCompare(b.name_en));
-}
-
-export function getRacecoursesByCountryId(countryId: string): Racecourse[] {
-  return getRacecourses().filter((racecourse) => racecourse.country_id === countryId);
-}
-
-export function getRacecourseBySlug(slug: string): Racecourse | undefined {
-  return allRacecourses.find((racecourse) => racecourse.slug === slug);
-}
-
-export function getSourcesByCountryId(countryId: string): Source[] {
-  return allSources.filter((source) => source.country_id === countryId);
-}
-
-export function getGlossaryEntries(): GlossaryEntry[] {
-  return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
-}
-
-export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
-  return glossary.find((entry) => entry.slug === slug);
-}
-
-export function getArchiveEntries(): ArchiveEntry[] {
-  return [...archive].sort((a, b) => a.name_en.localeCompare(b.name_en));
-}
+  latest,
+  today,
+  tomorrow,
+  calendar30d,
+  fetchStatus,
+  liveFetchProbeStatus,
+  timetables,
+  japanActiveTimetableRecords
+};
