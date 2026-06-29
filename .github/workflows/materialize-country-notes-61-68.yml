@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'scripts/materialize-country-notes-61-68.mjs'
+      - 'scripts/patch-note-roadmap-61-68.mjs'
       - '.github/workflows/materialize-country-notes-61-68.yml'
   push:
     branches: [country-notes-61-68]
     paths:
       - 'scripts/materialize-country-notes-61-68.mjs'
+      - 'scripts/patch-note-roadmap-61-68.mjs'
       - '.github/workflows/materialize-country-notes-61-68.yml'
 
 permissions:
@@ -24,7 +26,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: node scripts/materialize-country-notes-61-68.mjs
+      - run: |
+          node scripts/materialize-country-notes-61-68.mjs
+          node scripts/patch-note-roadmap-61-68.mjs
       - run: node scripts/check-country-notes-61-68.mjs
       - run: node scripts/check-source-test-v2-61-68.mjs
       - run: node scripts/check-country-page-programme.mjs
