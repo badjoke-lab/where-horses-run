@@ -45,18 +45,22 @@ jobs:
           NODE
       - name: Apply tracker and governance transition
         run: node scripts/apply-country-profiles-45-52.mjs
-      - name: Validate profiles and programme
-        run: |
-          node scripts/check-country-profiles-45-52.mjs
-          node scripts/check-country-page-programme.mjs
-          node scripts/check-country-detail-profile-runtime.mjs
-          node scripts/check-calendar-contracts.mjs
-          node scripts/check-project-governance-docs.mjs
-          node scripts/check-country-page-programme-roadmap.mjs
+      - name: Validate profiles 45-52
+        run: node scripts/check-country-profiles-45-52.mjs
+      - name: Validate country programme
+        run: node scripts/check-country-page-programme.mjs
+      - name: Validate profile runtime
+        run: node scripts/check-country-detail-profile-runtime.mjs
+      - name: Validate Calendar contracts
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Validate governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Validate programme roadmap
+        run: node scripts/check-country-page-programme-roadmap.mjs
+      - name: Install dependencies
+        run: npm install
       - name: Validate production build
-        run: |
-          npm install
-          npm run build
+        run: npm run build
       - uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
