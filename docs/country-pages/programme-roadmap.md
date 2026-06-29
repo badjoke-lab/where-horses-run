@@ -27,12 +27,12 @@ Next working branch: country-publish-61-68
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after Profile v2 61-68:
+Current tracker counts during publication QA 61-68:
 
 ```text
 published:       60
-page_qa:          0
-profile_ready:    8
+page_qa:          8
+profile_ready:    0
 note_reviewed:    0
 source_tested:    0
 not_started:     30
@@ -45,16 +45,16 @@ Current route state:
 formally published English routes:   60
 formally published Japanese routes:  60
 formally published total routes:    120
-page-QA English routes:                0
-page-QA Japanese routes:               0
-page-QA total routes:                  0
-profile-ready English routes:           8
-profile-ready Japanese routes:          8
-profile-ready total routes:            16
+page-QA English routes:                8
+page-QA Japanese routes:               8
+page-QA total routes:                  16
+profile-ready English routes:           0
+profile-ready Japanese routes:          0
+profile-ready total routes:             0
 final target routes:                196
 ```
 
-PR #332 completes reviewed bilingual Profile v2 records for entries 61-68. QA and publication work for these entries is now active.
+PR #333 runs GitHub publication QA for entries 61-68. One final rendered preview remains required before publication.
 
 ## 3. Operating model
 
@@ -151,6 +151,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #330 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 61-68. |
 | #331 | reviewed notes | Completed public-safe editorial notes for entries 61-68. |
 | #332 | Profile v2 | Added reviewed bilingual Profile v2 records and complete English/Japanese routes for entries 61-68. |
+| #333 | publication QA | GitHub QA active; rendered preview and publication approval pending. |
 
 ## 7. Publication gates
 
@@ -275,7 +276,7 @@ Entries: Slovenia, Croatia, Dominican Republic, Tunisia, Lebanon, Libya, Mainlan
 | #330 / `WHR-ST2-61-68` | complete | Added eight Source Test v2 records and eight Calendar Readiness decisions. |
 | #331 / `WHR-NOTE-61-68` | complete | Added eight reviewed editorial notes with explicit scope and limitations. |
 | #332 / `WHR-PROFILE-61-68` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| `WHR-PUB-61-68` | next | QA and publish after one rendered preview. |
+| #333 / `WHR-PUB-61-68` | active | GitHub QA active; publish after one approved rendered preview. |
 
 Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked. Every country public ceiling remains C.
 

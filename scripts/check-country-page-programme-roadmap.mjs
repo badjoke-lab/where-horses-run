@@ -46,7 +46,7 @@ for (const [label, count] of expectedCountLines) {
   if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
 }
 
-for (const pr of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 340]) {
+for (const pr of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 340]) {
   if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing key PR #${pr}`);
 }
 
@@ -79,5 +79,5 @@ if (errors.length) {
 
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
-console.log('KEY_PRS: 284,311,316,317,319,321,322,323,324,325,326,327,328,329,330,331,332,340');
-console.log('CURRENT_WORK: entries 61-68 profile-ready; current Work ID WHR-PUB-61-68');
+console.log('KEY_PRS: 284,311,316,317,319,321,322,323,324,325,326,327,328,329,330,331,332,333,340');
+console.log('CURRENT_WORK: entries 61-68 in page QA; current Work ID WHR-PUB-61-68');
