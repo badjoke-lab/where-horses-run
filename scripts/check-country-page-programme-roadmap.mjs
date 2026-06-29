@@ -13,10 +13,10 @@ for (const row of rows) counts[row[statusIndex]] = (counts[row[statusIndex]] || 
 for (const [status, count] of Object.entries(counts)) {
   if (!new RegExp('^' + status + ':\\s+' + count + '$', 'm').test(roadmap)) errors.push('stale roadmap count: ' + status);
 }
-for (const phrase of ['Current Work ID: WHR-NOTE-69-76', 'Next working branch: country-notes-69-76', 'Latest completed Source Test v2 change: PR #334', 'Publication gate: PR #333', 'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98', 'tracker rows exactly 98', 'bilingual routes exactly 196']) {
+for (const phrase of ['Current Work ID: WHR-NOTE-69-76', 'Next working branch: country-notes-69-76', 'Latest completed Source Test v2 change: PR #335', 'Publication gate: PR #333', 'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98', 'tracker rows exactly 98', 'bilingual routes exactly 196']) {
   if (!roadmap.includes(phrase)) errors.push('missing roadmap phrase: ' + phrase);
 }
-for (const number of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 340]) {
+for (const number of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 335, 340]) {
   if (!roadmap.includes('#' + number)) errors.push('missing PR #' + number);
 }
 if (errors.length) {
