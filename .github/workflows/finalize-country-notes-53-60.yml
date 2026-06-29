@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'scripts/finalize-country-notes-53-60.mjs'
+      - 'scripts/run-finalize-country-notes-53-60.mjs'
       - '.github/workflows/finalize-country-notes-53-60.yml'
   push:
     branches: [country-notes-53-60]
     paths:
       - 'scripts/finalize-country-notes-53-60.mjs'
+      - 'scripts/run-finalize-country-notes-53-60.mjs'
       - '.github/workflows/finalize-country-notes-53-60.yml'
 
 permissions:
@@ -25,7 +27,7 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Apply reviewed-note state
-        run: node scripts/finalize-country-notes-53-60.mjs
+        run: node scripts/run-finalize-country-notes-53-60.mjs
       - name: Validate reviewed-note state
         run: |
           node scripts/check-country-notes-53-60.mjs
