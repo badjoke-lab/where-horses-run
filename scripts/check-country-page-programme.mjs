@@ -130,6 +130,9 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
+
+await import('./check-source-test-v2-53-60.mjs');
+
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
 console.log('PROGRAMME_COUNTS: published=52 source_tested=8 note_reviewed=0 not_started=38');
