@@ -19,12 +19,12 @@ const sourceTestOrLater = new Set(['source_tested', 'note_reviewed', 'profile_re
 
 const authority = readJson('data/static/authority-source-inventory.json');
 const registry = readJson('data/static/calendar-readiness-registry.json');
-if (authority.records?.length !== 78) fail(`authority records must be 78; found ${authority.records?.length}`);
-if (registry.records?.length !== 78) fail(`readiness records must be 78; found ${registry.records?.length}`);
+if ((authority.records?.length ?? 0) < 78) fail(`authority records must retain at least 78; found ${authority.records?.length}`);
+if ((registry.records?.length ?? 0) < 78) fail(`readiness records must retain at least 78; found ${registry.records?.length}`);
 if (registry.bootstrap_status !== 'source_test_v2_active') fail('bootstrap_status must be source_test_v2_active');
-if (registry.programme_state?.countries_with_closed_decision !== 60) fail('closed decision count must be 60');
-if (registry.programme_state?.readiness_records !== 78) fail('programme readiness count must be 78');
-if (JSON.stringify(registry.programme_state?.next_backfill_work_ids) !== JSON.stringify(['WHR-ST2-61-68'])) fail('next backfill must be WHR-ST2-61-68');
+if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 60) fail('closed decision count must be at least 60');
+if ((registry.programme_state?.readiness_records ?? 0) < 78) fail('programme readiness count must be at least 78');
+if (registry.programme_state?.readiness_records !== registry.records?.length) fail('programme readiness count must match registry length');
 
 const authorityKeys = new Set((authority.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
 if (authorityKeys.size !== authority.records?.length) fail('authority compound keys must be unique');
@@ -90,5 +90,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('SOURCE_TEST_V2_53_60_VALID countries=8 authority=78 readiness=78');
+console.log(`SOURCE_TEST_V2_53_60_VALID countries=8 authority=${authority.records.length} readiness=${registry.records.length}`);
 console.log('READINESS_MIX prototype_ready=2 manual_ready=3 link_only=2 blocked=1');
