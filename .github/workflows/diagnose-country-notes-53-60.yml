@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/finalize-country-notes-53-60.mjs'
+      - 'scripts/run-finalize-country-notes-53-60.mjs'
       - '.github/workflows/diagnose-country-notes-53-60.yml'
 
 permissions:
@@ -19,7 +20,7 @@ jobs:
           node-version: 22.12.0
       - name: Run updater and preserve output
         run: |
-          node scripts/finalize-country-notes-53-60.mjs > updater-output.txt 2>&1 || true
+          node scripts/run-finalize-country-notes-53-60.mjs > updater-output.txt 2>&1 || true
           cat updater-output.txt
       - uses: actions/upload-artifact@v4
         with:
