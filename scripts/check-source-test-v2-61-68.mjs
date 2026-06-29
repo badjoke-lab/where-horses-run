@@ -5,6 +5,7 @@ const root = process.cwd();
 const readJson = (file) => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8'));
 const errors = [];
 const fail = (message) => errors.push(message);
+const sourceTestOrLater = new Set(['source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published']);
 const expected = [
   ['61', 'slovenia', 'link_only', 'C', 'C'],
   ['62', 'croatia', 'manual_ready', 'C', 'C'],
@@ -79,7 +80,7 @@ for (const [deliveryNo, slug] of expected) {
   const row = rows.find((candidate) => candidate[index.delivery_no] === deliveryNo);
   if (!row || row[index.slug] !== slug) fail(`tracker missing ${deliveryNo}-${slug}`);
   else {
-    if (row[index.programme_status] !== 'source_tested') fail(`${slug}: tracker must be source_tested`);
+    if (!sourceTestOrLater.has(row[index.programme_status])) fail(`${slug}: tracker must retain Source Test completion or a later programme state`);
     if (row[index.source_last_checked] !== '2026-06-29' || row[index.evidence_reviewed_at] !== '2026-06-29') fail(`${slug}: tracker dates mismatch`);
   }
 }
