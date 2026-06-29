@@ -15,6 +15,7 @@ const expected = [
   ['59', 'venezuela', 'blocked', 'C', 'C'],
   ['60', 'belgium', 'prototype_ready', 'A', 'C'],
 ];
+const sourceTestOrLater = new Set(['source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published']);
 
 const authority = readJson('data/static/authority-source-inventory.json');
 const registry = readJson('data/static/calendar-readiness-registry.json');
@@ -80,7 +81,7 @@ for (const [deliveryNo, slug] of expected) {
   const row = rows.find((candidate) => candidate[index.delivery_no] === deliveryNo);
   if (!row || row[index.slug] !== slug) fail(`tracker missing ${deliveryNo}-${slug}`);
   else {
-    if (row[index.programme_status] !== 'source_tested') fail(`${slug}: tracker must be source_tested`);
+    if (!sourceTestOrLater.has(row[index.programme_status])) fail(`${slug}: tracker must retain Source Test v2 completion or a later programme state`);
     if (row[index.source_last_checked] !== '2026-06-29' || row[index.evidence_reviewed_at] !== '2026-06-29') fail(`${slug}: tracker dates mismatch`);
   }
 }
