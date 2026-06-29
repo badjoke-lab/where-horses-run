@@ -29,9 +29,9 @@ Active development.
 Current formally published country-page scope:
 
 ```text
-28 English routes
-28 Japanese routes
-56 published bilingual routes
+68 English routes
+68 Japanese routes
+136 published bilingual routes
 ```
 
 The current programme is completing 98 English and 98 Japanese country/region routes while also recording Calendar Readiness for each reviewed racing system and official source.

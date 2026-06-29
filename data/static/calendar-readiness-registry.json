@@ -5,10 +5,10 @@
   "bootstrap_status": "source_test_v2_active",
   "programme_state": {
     "country_target": 98,
-    "countries_with_closed_decision": 68,
-    "readiness_records": 86,
+    "countries_with_closed_decision": 76,
+    "readiness_records": 94,
     "next_backfill_work_ids": [
-      "WHR-ST2-69-76"
+      "WHR-ST2-77-84"
     ]
   },
   "records": [
@@ -3837,7 +3837,371 @@
       "checked_date": "2026-06-29",
       "evidence_reviewed_at": "2026-06-29",
       "source_test_ref": "docs/timetable-source-tests/68-indonesia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "russia--rostov-racing-system--rostov-2026-season-notice",
+      "system_id": "rostov-racing-system",
+      "system_name_en": "Rostov Hippodrome racing system",
+      "authority_source_key": "russia/rostov-hippodrome/rostov-2026-season-notice",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when Rostov Hippodrome publishes a stable date-addressable 2026 meeting calendar.",
+      "blocked_reason": null,
+      "limitations": [
+        "The official source confirms preparation for the 2026 season but does not provide a stable meeting calendar.",
+        "The reviewed scope covers Rostov Hippodrome only and does not establish countrywide Russian racing coverage.",
+        "No current meeting fields are approved."
+      ],
+      "notes": "Retain an official-link-first treatment until a stable current meeting calendar is published.",
+      "country_id": "russia",
+      "country_tracker_delivery_no": "69",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/69-russia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "namibia--racing-context--sports-commission-portal",
+      "system_id": "racing-context",
+      "system_name_en": "Namibian racing context",
+      "authority_source_key": "namibia/sports-commission/sports-commission-portal",
+      "racecourse_ids": [],
+      "coverage_scope": "unknown",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when a recognised official body publishes a stable current calendar.",
+      "blocked_reason": null,
+      "limitations": [
+        "Official sport-governance context is available, but no stable current racing calendar was confirmed.",
+        "No current meeting fields are approved.",
+        "National coverage remains unresolved."
+      ],
+      "notes": "Retain a link-only treatment until a stable official calendar is available.",
+      "country_id": "namibia",
+      "country_tracker_delivery_no": "70",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/70-namibia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "nigeria--hrfn-national-system--hrfn-home",
+      "system_id": "hrfn-national-system",
+      "system_name_en": "Horse Racing Federation of Nigeria system",
+      "authority_source_key": "nigeria/horse-racing-federation-of-nigeria/hrfn-home",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "weekly",
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when HRFN populates a stable upcoming-events calendar with meeting dates and locations.",
+      "blocked_reason": null,
+      "limitations": [
+        "The official federation site identifies the national governing body, but its upcoming-events table did not provide reusable current meeting rows at review time.",
+        "Past results and race highlights are outside the public calendar dataset.",
+        "No current meeting fields are approved."
+      ],
+      "notes": "Retain an official-link-first treatment until the official upcoming-events section is populated and reviewed.",
+      "country_id": "nigeria",
+      "country_tracker_delivery_no": "71",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/71-nigeria/source-test-v2.json"
+    },
+    {
+      "readiness_id": "belize--national-racing-schedule--horse-racing-belize-schedule",
+      "system_id": "national-racing-schedule",
+      "system_name_en": "Horse Racing Belize schedule system",
+      "authority_source_key": "belize/horse-racing-investments-limited/horse-racing-belize-schedule",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the 2026 schedule changes or a new season schedule is published.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed schedule lists meeting dates and venues but does not establish a stable structured feed.",
+        "Detailed programmes, participants, results, and wagering material remain excluded.",
+        "Complete authority and venue-identifier coverage requires later inventory work."
+      ],
+      "notes": "The official schedule supports a bounded C-level prototype for meeting dates and racecourses.",
+      "country_id": "belize",
+      "country_tracker_delivery_no": "72",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/72-belize/source-test-v2.json"
+    },
+    {
+      "readiness_id": "colombia--national-racing-regulatory-context--coljuegos-horse-racing-regulation",
+      "system_id": "national-racing-regulatory-context",
+      "system_name_en": "Colombian horse-racing regulatory context",
+      "authority_source_key": "colombia/coljuegos/coljuegos-horse-racing-regulation",
+      "racecourse_ids": [],
+      "coverage_scope": "archive_or_explanatory",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "blocked",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "fallback": "hide_from_current_calendar",
+      "source_status": "stale",
+      "revalidation_trigger": "Revalidate when an official Colombian authority or racecourse publishes a stable current meeting calendar.",
+      "blocked_reason": "The reviewed official material is regulatory and historical; it does not confirm a current domestic meeting calendar.",
+      "limitations": [
+        "The source establishes regulatory context rather than current racing activity.",
+        "No current racecourse or meeting-date pairing is approved.",
+        "Historical plans or betting regulations must not generate current calendar rows."
+      ],
+      "notes": "Keep Colombia out of current-calendar output until a current official meeting source is reviewed.",
+      "country_id": "colombia",
+      "country_tracker_delivery_no": "73",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/73-colombia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
+      "system_id": "trotting-league-system",
+      "system_name_en": "Lithuanian Trotting Horse League calendar",
+      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the league calendar or event-route structure changes.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed source covers the league calendar and identified venues, not every possible Lithuanian racing system.",
+        "Programmes, start protocols, results, participants, and prize information remain excluded.",
+        "The public country layer remains limited to meeting date and racecourse."
+      ],
+      "notes": "Official event routes support a bounded C-level prototype for trotting meeting dates and venues.",
+      "country_id": "lithuania",
+      "country_tracker_delivery_no": "74",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/74-lithuania/source-test-v2.json"
+    },
+    {
+      "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
+      "system_id": "tuula-trotting-system",
+      "system_name_en": "Tuula Hipodroom trotting system",
+      "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the Hipodroom calendar structure or Tuula venue context changes.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed scope covers Tuula Hipodroom only.",
+        "Programme PDFs, participants, results, statistics, and wagering-related detail remain excluded.",
+        "The public country layer remains limited to meeting date and racecourse."
+      ],
+      "notes": "Current official site activity supports a bounded C-level prototype for Tuula trotting meetings.",
+      "country_id": "estonia",
+      "country_tracker_delivery_no": "75",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/75-estonia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "guyana--horse-racing-authority-context--authority-act-2025",
+      "system_id": "horse-racing-authority-context",
+      "system_name_en": "Guyana Horse Racing Authority legal context",
+      "authority_source_key": "guyana/parliament-of-guyana/horse-racing-authority-act-2025",
+      "racecourse_ids": [],
+      "coverage_scope": "archive_or_explanatory",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "blocked",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "fallback": "hide_from_current_calendar",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when the Guyana Horse Racing Authority or an officially recognised racecourse publishes a stable current calendar.",
+      "blocked_reason": "The official Act establishes the authority framework but does not provide a current meeting calendar.",
+      "limitations": [
+        "The source is legal and explanatory rather than a current racing calendar.",
+        "No current meeting dates, racecourses, or recurring calendar routes are approved.",
+        "Unofficial event promotion must not generate current calendar rows."
+      ],
+      "notes": "Keep Guyana out of current-calendar output until a current official meeting source is reviewed.",
+      "country_id": "guyana",
+      "country_tracker_delivery_no": "76",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/76-guyana/source-test-v2.json"
     }
   ],
-  "last_updated": "2026-06-29"
+  "last_updated": "2026-06-30"
 }

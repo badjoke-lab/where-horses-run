@@ -1,9 +1,9 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-ST2-69-76`  
-Next Work ID: `WHR-NOTE-69-76`  
-Last reviewed: 2026-06-29
+Current Work ID: `WHR-NOTE-69-76`  
+Next Work ID: `WHR-PROFILE-69-76`  
+Last reviewed: 2026-06-30
 
 ## Purpose
 
@@ -39,8 +39,8 @@ published country pages:       68
 page_qa:                        0
 profile_ready:                  0
 note_reviewed:                  0
-source_tested:                  0
-not_started:                   30
+source_tested:                  8
+not_started:                   22
 total countries/regions:       98
 published routes:              68 EN + 68 JA = 136
 final bilingual route target:  98 EN + 98 JA = 196
@@ -70,7 +70,7 @@ The baseline is not yet a complete continuously updated calendar:
 - generated records include seed and preview dates;
 - the shared refresh core still reports `skeleton_no_live_fetch`;
 - registered parsers and cadences do not prove live acquisition;
-- Calendar Readiness decisions are closed through entry 68, covering 68 countries and 86 system/source records.
+- Calendar Readiness decisions are closed through entry 76, covering 76 countries and 94 system/source records.
 
 ## Governing rules
 
@@ -188,7 +188,9 @@ Completed: `WHR-ST2-53-60` via PR #326, `WHR-NOTE-53-60` via PR #327, `WHR-PROFI
 
 Completed: `WHR-ST2-61-68` via PR #330, `WHR-NOTE-61-68` via PR #331, `WHR-PROFILE-61-68` via PR #332, and `WHR-PUB-61-68` via PR #333 after rendered-preview approval.
 
-Current Work ID: `WHR-ST2-69-76`
+Completed: `WHR-ST2-69-76` via PR #334 with eight Source Test v2 and Calendar Readiness decisions.
+
+Current Work ID: `WHR-NOTE-69-76`
 
 ```text
 WHR-ST2-53-60 -> WHR-NOTE-53-60 -> WHR-PROFILE-53-60 -> WHR-PUB-53-60

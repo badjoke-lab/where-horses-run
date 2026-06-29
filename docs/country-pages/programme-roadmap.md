@@ -4,7 +4,7 @@ Status: active canonical roadmap
 Scope: country and region detail page programme  
 Canonical tracker: `docs/country-pages/98-country-tracker.tsv`  
 Completion contract: `docs/country-pages/completion-contract.md`  
-Last roadmap review: 2026-06-29
+Last roadmap review: 2026-06-30
 
 ## 1. Purpose
 
@@ -17,13 +17,13 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest completed Source Test v2 change: PR #330 — entries 61-68
+Latest completed Source Test v2 change: PR #334 — entries 69-76
 Latest completed reviewed-note change: PR #331 — entries 61-68
 Latest completed Profile v2 change: PR #332 — entries 61-68
 Latest country publication: PR #333 — entries 61-68 approved after rendered preview
 Publication gate: PR #333 — entries 61-68 published after approved rendered preview
-Current Work ID: WHR-ST2-69-76
-Next working branch: source-test-v2-69-76
+Current Work ID: WHR-NOTE-69-76
+Next working branch: country-notes-69-76
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
@@ -34,8 +34,8 @@ published:       68
 page_qa:          0
 profile_ready:    0
 note_reviewed:    0
-source_tested:    0
-not_started:     30
+source_tested:    8
+not_started:     22
 total:           98
 ```
 
@@ -54,7 +54,7 @@ profile-ready total routes:             0
 final target routes:                196
 ```
 
-PR #333 publishes entries 61-68 after the approved rendered preview. Source Test v2 for entries 69-76 is now active.
+PR #334 closes Source Test v2 and Calendar Readiness for entries 69-76. Reviewed-note work for entries 69-76 is now active.
 
 ## 3. Operating model
 
@@ -152,6 +152,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #331 | reviewed notes | Completed public-safe editorial notes for entries 61-68. |
 | #332 | Profile v2 | Added reviewed bilingual Profile v2 records and complete English/Japanese routes for entries 61-68. |
 | #333 | publication | Published entries 61-68 after rendered-preview approval. |
+| #334 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 69-76. |
 
 ## 7. Publication gates
 
@@ -292,21 +293,31 @@ Entries: Slovenia, Croatia, Dominican Republic, Tunisia, Lebanon, Libya, Mainlan
 
 Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked. Every country public ceiling remains C.
 
-## 12. Remaining wave schedule
+## 12. Wave 69-76
+
+Entries: Russia, Namibia, Nigeria, Belize, Colombia, Lithuania, Estonia, and Guyana.
+
+| Work | Status | Result |
+| --- | --- | --- |
+| #334 / `WHR-ST2-69-76` | complete | Added eight Source Test v2 records, eight authority/source records, and eight Calendar Readiness decisions. |
+| `WHR-NOTE-69-76` | active | Convert the reviewed source decisions into public-safe editorial notes. |
+| `WHR-PROFILE-69-76` | queued | Add reviewed bilingual Profile v2 records and complete English/Japanese routes. |
+| `WHR-PUB-69-76` | queued | Run rendered-preview QA and publish all sixteen routes. |
+
+Readiness result: 3 prototype-ready, 3 link-only, and 2 blocked. Every technical rank and country public ceiling remains C.
+
+## 13. Remaining wave schedule
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
-| --- | ---: | ---: | ---: | ---: |
-| 45-52 | #309 | #310 | #314 | #315 |
-| 53-60 | #316 | #317 | #318 | #319 |
-| 61-68 | #320 | #321 | #322 | #323 |
-| 69-76 | #324 | #325 | #326 | #327 |
-| 77-84 | #328 | #329 | #330 | #331 |
-| 85-92 | #332 | #333 | #334 | #335 |
-| 93-98 | #336 | #337 | #338 | #339 |
+| --- | --- | --- | --- | --- |
+| 69-76 | `WHR-ST2-69-76` complete | `WHR-NOTE-69-76` active | `WHR-PROFILE-69-76` queued | `WHR-PUB-69-76` queued |
+| 77-84 | `WHR-ST2-77-84` | `WHR-NOTE-77-84` | `WHR-PROFILE-77-84` | `WHR-PUB-77-84` |
+| 85-92 | `WHR-ST2-85-92` | `WHR-NOTE-85-92` | `WHR-PROFILE-85-92` | `WHR-PUB-85-92` |
+| 93-98 | `WHR-ST2-93-98` | `WHR-NOTE-93-98` | `WHR-PROFILE-93-98` | `WHR-PUB-93-98` |
 
 Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
-## 13. Final release gate
+## 14. Final release gate
 
 ### PR #340 — full programme audit
 
@@ -337,7 +348,7 @@ final programme report is generated
 
 The programme closes only after PR #340 is merged and the tracker reports 98 published rows.
 
-## 14. Roadmap maintenance rules
+## 15. Roadmap maintenance rules
 
 Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 
