@@ -1,6 +1,10 @@
 name: Finalize country notes 53-60
 
 on:
+  pull_request:
+    paths:
+      - 'scripts/finalize-country-notes-53-60.mjs'
+      - '.github/workflows/finalize-country-notes-53-60.yml'
   push:
     branches: [country-notes-53-60]
     paths:
