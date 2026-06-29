@@ -139,6 +139,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #324 | merged | Added reviewed Profile v2 records for entries 45-52. |
 | #325 | publication | Published entries 45-52 after rendered-preview approval. |
 | #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
+| #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
 
 ## 7. Publication gates
 
