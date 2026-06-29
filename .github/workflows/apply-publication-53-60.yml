@@ -1,6 +1,10 @@
 name: Apply final publication state 53-60
 
 on:
+  pull_request:
+    paths:
+      - 'scripts/apply-pub-53-60.mjs'
+      - '.github/workflows/apply-publication-53-60.yml'
   push:
     branches: [country-publish-53-60]
     paths:
