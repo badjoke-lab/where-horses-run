@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - 'scripts/apply-country-profiles-45-52.mjs'
+      - 'scripts/repair-data-runtime-45-52.mjs'
       - '.github/workflows/finalize-country-profiles-45-52.yml'
   push:
     branches:
       - calendar-readiness-backfill-37-52
     paths:
       - 'scripts/apply-country-profiles-45-52.mjs'
+      - 'scripts/repair-data-runtime-45-52.mjs'
       - '.github/workflows/finalize-country-profiles-45-52.yml'
 
 permissions:
@@ -43,6 +45,8 @@ jobs:
             fs.writeFileSync(file, `${JSON.stringify(profiles)}\n`);
           }
           NODE
+      - name: Restore complete data runtime
+        run: node scripts/repair-data-runtime-45-52.mjs
       - name: Apply tracker and governance transition
         run: node scripts/apply-country-profiles-45-52.mjs
       - name: Validate profiles 45-52
@@ -79,6 +83,7 @@ jobs:
               'docs/country-pages/98-country-tracker.tsv',
               'data/static/country-profiles-v2-45-norway.json',
               'data/static/country-profiles-v2-48-switzerland.json',
+              'src/lib/data.ts',
               'scripts/check-calendar-contracts.mjs',
               'scripts/check-project-governance-docs.mjs',
               'scripts/check-country-page-programme-roadmap.mjs'
@@ -94,6 +99,7 @@ jobs:
               tree.push({ path: file, mode: '100644', type: 'blob', sha: blob.data.sha });
             }
             tree.push({ path: 'scripts/apply-country-profiles-45-52.mjs', mode: '100644', type: 'blob', sha: null });
+            tree.push({ path: 'scripts/repair-data-runtime-45-52.mjs', mode: '100644', type: 'blob', sha: null });
             tree.push({ path: '.github/workflows/finalize-country-profiles-45-52.yml', mode: '100644', type: 'blob', sha: null });
             const createdTree = await github.rest.git.createTree({ owner, repo, base_tree: parentCommit.data.tree.sha, tree });
             const commit = await github.rest.git.createCommit({
