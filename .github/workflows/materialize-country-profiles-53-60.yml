@@ -1,6 +1,10 @@
 name: Materialize country profiles 53-60
 
 on:
+  pull_request:
+    paths:
+      - 'scripts/materialize-country-profiles-53-60.mjs'
+      - '.github/workflows/materialize-country-profiles-53-60.yml'
   push:
     branches: [country-profiles-53-60]
     paths:
