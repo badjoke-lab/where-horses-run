@@ -1,0 +1,46 @@
+name: Clean Source Test v2 69-76 diffs
+
+on:
+  push:
+    branches: [source-test-v2-69-76]
+    paths:
+      - '.github/workflows/clean-source-test-v2-69-76.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: source-test-v2-69-76
+          fetch-depth: 0
+      - name: Restore generated files and fix roadmap heading
+        run: |
+          git fetch origin main
+          git checkout origin/main -- package-lock.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/hkjc-normalized-meeting-details.sample.json \
+            data/generated/timetable/hkjc-normalized-timetable.sample.json \
+            data/generated/timetable/june-2026-calendar.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/country-pages/programme-roadmap.md')
+          text = path.read_text()
+          old = 'Current tracker counts after publication 61-68:'
+          new = 'Current tracker counts after Source Test v2 69-76:'
+          if old not in text:
+              raise SystemExit('roadmap heading not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+          rm .github/workflows/clean-source-test-v2-69-76.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add package-lock.json data/generated/timetable docs/country-pages/programme-roadmap.md .github/workflows/clean-source-test-v2-69-76.yml
+          git commit -m "[CF-Pages-Skip] Remove verification-generated diffs"
+          git push origin HEAD:source-test-v2-69-76
