@@ -39,14 +39,14 @@ const content = Object.fromEntries(requiredFiles.map((file) => [file, read(file)
 
 const requiredPhrases = {
   'docs/project-roadmap.md': [
-    'Current Work ID: `WHR-ST2-61-68`',
-    'Next Work ID: `WHR-NOTE-61-68`',
+    'Current Work ID: `WHR-NOTE-61-68`',
+    'Next Work ID: `WHR-PROFILE-61-68`',
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
     'WHR-CAL-BASELINE-RECONCILE',
     'WHR-CAL-PUBLIC-V1',
     'Candidate generation is not publication',
   ],
-  'START-HERE.md': ['WHR-ST2-61-68', 'WHR-NOTE-61-68', 'calendar-readiness-registry.json'],
+  'START-HERE.md': ['WHR-NOTE-61-68', 'WHR-PROFILE-61-68', 'calendar-readiness-registry.json'],
   'docs/governance/document-authority.md': [
     'Authority order',
     'Conversation history and PR numbers do not replace canonical repository documents',
@@ -98,8 +98,8 @@ const requiredPhrases = {
   ],
   'data/static/calendar-readiness-registry.json': [
     '"bootstrap_status": "source_test_v2_active"',
-    '"countries_with_closed_decision": 60',
-    '"WHR-ST2-61-68"',
+    '"countries_with_closed_decision": 68',
+    '"WHR-ST2-69-76"',
   ],
 };
 
@@ -129,5 +129,5 @@ if (errors.length) {
 
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log(`FILES_CHECKED: ${requiredFiles.length}`);
-console.log('CURRENT_WORK_ID: WHR-ST2-61-68');
-console.log('NEXT_WORK_ID: WHR-NOTE-61-68');
+console.log('CURRENT_WORK_ID: WHR-NOTE-61-68');
+console.log('NEXT_WORK_ID: WHR-PROFILE-61-68');
