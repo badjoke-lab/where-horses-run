@@ -1,0 +1,50 @@
+name: Finalize country publication 45-52
+
+on:
+  push:
+    branches:
+      - country-pages-45-52-publication-qa
+    paths:
+      - 'scripts/finalize-country-publication-45-52.mjs'
+      - '.github/workflows/finalize-country-publication-45-52.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-pages-45-52-publication-qa
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply publication state and governance transition
+        run: node scripts/finalize-country-publication-45-52.mjs
+      - name: Install dependencies
+        run: npm install
+      - name: Build production output
+        run: npm run build
+      - name: Validate publication and programme
+        run: |
+          node scripts/check-country-page-publication-45-52.mjs
+          node scripts/check-country-profiles-45-52.mjs
+          node scripts/check-country-notes-45-52.mjs
+          node scripts/check-country-detail-profile-runtime.mjs
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+      - name: Remove one-time finalizer
+        run: |
+          rm scripts/finalize-country-publication-45-52.mjs
+          rm .github/workflows/finalize-country-publication-45-52.yml
+      - name: Commit finalized publication state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Finalize country publication 45-52'
+          git push origin HEAD:country-pages-45-52-publication-qa
