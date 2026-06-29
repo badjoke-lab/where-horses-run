@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'scripts/materialize-country-profiles-53-60.mjs'
+      - 'scripts/patch-profile-runtime-53-60.mjs'
       - '.github/workflows/materialize-country-profiles-53-60.yml'
   push:
     branches: [country-profiles-53-60]
     paths:
       - 'scripts/materialize-country-profiles-53-60.mjs'
+      - 'scripts/patch-profile-runtime-53-60.mjs'
       - '.github/workflows/materialize-country-profiles-53-60.yml'
 
 permissions:
@@ -25,7 +27,9 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Apply profile state
-        run: node scripts/materialize-country-profiles-53-60.mjs
+        run: |
+          node scripts/materialize-country-profiles-53-60.mjs
+          node scripts/patch-profile-runtime-53-60.mjs
       - name: Validate profiles 53-60
         run: node scripts/check-country-profiles-53-60.mjs
       - name: Validate notes 53-60
@@ -50,7 +54,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/lib/data.ts START-HERE.md docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv docs/runbooks/country-profiles-53-60.md scripts/check-country-page-programme.mjs scripts/check-calendar-contracts.mjs scripts/check-project-governance-docs.mjs scripts/check-country-page-programme-roadmap.mjs
+          git add src/lib/data.ts START-HERE.md docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv docs/runbooks/country-profiles-53-60.md scripts/check-country-page-programme.mjs scripts/check-country-detail-profile-runtime.mjs scripts/check-calendar-contracts.mjs scripts/check-project-governance-docs.mjs scripts/check-country-page-programme-roadmap.mjs
           if ! git diff --cached --quiet; then
             git commit -m '[CF-Pages-Skip] Finalize country profiles 53-60'
             git push origin HEAD:country-profiles-53-60
