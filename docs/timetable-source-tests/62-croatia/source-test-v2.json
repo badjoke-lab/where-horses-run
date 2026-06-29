@@ -1,0 +1,35 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "62",
+  "country_id": "croatia",
+  "country_name_en": "Croatia",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "single_system",
+  "records": [
+    {
+      "readiness_id": "croatia--croatian-gallop-system--hgs-2026-calendar",
+      "system_id": "croatian-gallop-system",
+      "system_name_en": "Croatian gallop federation calendar",
+      "authority_source_key": "croatia/hrvatski-galopski-savez/hgs-2026-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "manual_confirmation",
+      "refresh_classes": ["seasonal", "monthly", "manual"],
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the Croatian gallop federation changes its calendar or confirms the provisional August date.",
+      "blocked_reason": null,
+      "limitations": ["The reviewed scope covers the official Zagreb gallop calendar only.", "One August meeting remains provisional in the official calendar.", "Reusable race times are not approved."],
+      "notes": "The official 2026 calendar supports manual C-level meeting-date and racecourse publication for the reviewed Zagreb scope."
+    }
+  ],
+  "public_safe": true
+}
