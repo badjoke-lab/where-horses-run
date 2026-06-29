@@ -17,7 +17,7 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest completed Source Test v2 change: PR #334 — entries 69-76
+Latest completed Source Test v2 change: PR #335 — entries 69-76
 Latest completed reviewed-note change: PR #331 — entries 61-68
 Latest completed Profile v2 change: PR #332 — entries 61-68
 Latest country publication: PR #333 — entries 61-68 approved after rendered preview
@@ -27,7 +27,7 @@ Next working branch: country-notes-69-76
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after publication 61-68:
+Current tracker counts after Source Test v2 69-76:
 
 ```text
 published:       68
@@ -54,7 +54,7 @@ profile-ready total routes:             0
 final target routes:                196
 ```
 
-PR #334 closes Source Test v2 and Calendar Readiness for entries 69-76. Reviewed-note work for entries 69-76 is now active.
+PR #335 closes Source Test v2 and Calendar Readiness for entries 69-76. Reviewed-note work for entries 69-76 is now active.
 
 ## 3. Operating model
 
@@ -152,7 +152,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #331 | reviewed notes | Completed public-safe editorial notes for entries 61-68. |
 | #332 | Profile v2 | Added reviewed bilingual Profile v2 records and complete English/Japanese routes for entries 61-68. |
 | #333 | publication | Published entries 61-68 after rendered-preview approval. |
-| #334 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 69-76. |
+| #335 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 69-76. |
 
 ## 7. Publication gates
 
@@ -299,7 +299,7 @@ Entries: Russia, Namibia, Nigeria, Belize, Colombia, Lithuania, Estonia, and Guy
 
 | Work | Status | Result |
 | --- | --- | --- |
-| #334 / `WHR-ST2-69-76` | complete | Added eight Source Test v2 records, eight authority/source records, and eight Calendar Readiness decisions. |
+| #335 / `WHR-ST2-69-76` | complete | Added eight Source Test v2 records, eight authority/source records, and eight Calendar Readiness decisions. |
 | `WHR-NOTE-69-76` | active | Convert the reviewed source decisions into public-safe editorial notes. |
 | `WHR-PROFILE-69-76` | queued | Add reviewed bilingual Profile v2 records and complete English/Japanese routes. |
 | `WHR-PUB-69-76` | queued | Run rendered-preview QA and publish all sixteen routes. |
