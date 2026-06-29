@@ -1,0 +1,79 @@
+name: Apply final publication state 53-60
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/apply-pub-53-60.mjs'
+      - 'scripts/run-apply-pub-53-60.mjs'
+      - '.github/workflows/run-pub-53-60.yml'
+  push:
+    branches: [country-publish-53-60]
+    paths:
+      - 'scripts/apply-pub-53-60.mjs'
+      - 'scripts/run-apply-pub-53-60.mjs'
+      - '.github/workflows/run-pub-53-60.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-publication-53-60
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-publish-53-60
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply final publication state
+        id: apply
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/run-apply-pub-53-60.mjs 2>&1 | tee final-publication-53-60.log
+      - name: Commit finalizer diagnostic
+        if: steps.apply.outcome != 'success'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f final-publication-53-60.log
+          git commit -m '[CF-Pages-Skip] Record publication finalizer diagnostic 53-60'
+          git push origin HEAD:country-publish-53-60
+      - name: Stop after finalizer failure
+        if: steps.apply.outcome != 'success'
+        run: exit 1
+      - name: Build production output
+        run: |
+          npm install
+          npm run build
+      - name: Validate final publication state
+        run: |
+          node scripts/check-country-page-publication-53-60.mjs
+          node scripts/check-country-profiles-53-60.mjs
+          node scripts/check-country-detail-profile-runtime.mjs
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+      - name: Remove temporary publication machinery
+        run: |
+          rm -f .github/workflows/collect-rendered-preview-53-60.yml
+          rm -f .github/workflows/rendered-preview-53-60.yml
+          rm -f scripts/rendered-preview-53-60.mjs
+          rm -f .github/workflows/apply-publication-53-60.yml
+          rm -f .github/workflows/run-pub-53-60.yml
+          rm -f scripts/apply-pub-53-60.mjs
+          rm -f scripts/run-apply-pub-53-60.mjs
+          rm -f final-publication-53-60.log
+      - name: Commit final publication state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '[CF-Pages-Skip] Finalize publication state 53-60'
+          git push origin HEAD:country-publish-53-60
