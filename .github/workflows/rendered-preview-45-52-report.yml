@@ -27,7 +27,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Restore preview checker
         run: |
-          sed -n 's/^          CHECKER_B64: //p' .github/workflows/rendered-preview-45-52.yml | base64 -d > /tmp/check-rendered-preview-45-52.mjs
+          sed -n 's/^          CHECKER_B64: //p' .github/workflows/rendered-preview-45-52.yml | base64 -d > scripts/check-rendered-preview-45-52.mjs
       - name: Validate rendered preview
         id: preview
         continue-on-error: true
@@ -35,7 +35,7 @@ jobs:
           BASE_URL: https://preview-country-pages-45-52.where-horses-run.pages.dev
         run: |
           set -o pipefail
-          node /tmp/check-rendered-preview-45-52.mjs 2>&1 | tee artifacts/rendered-preview-45-52/validation.log
+          node scripts/check-rendered-preview-45-52.mjs 2>&1 | tee artifacts/rendered-preview-45-52/validation.log
       - name: Record workflow run
         if: always()
         env:
