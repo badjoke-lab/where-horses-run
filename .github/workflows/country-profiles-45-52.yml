@@ -1,0 +1,67 @@
+name: Country profiles 45-52
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/runbooks/country-profiles-45-52.md'
+      - 'data/static/country-page-countries-45-52.json'
+      - 'data/static/country-page-sources-45-52.json'
+      - 'data/static/country-profiles-v2-4*.json'
+      - 'data/static/country-profiles-v2-5*.json'
+      - 'src/lib/data.ts'
+      - 'scripts/check-country-profiles-45-52.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-45-52.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/runbooks/country-profiles-45-52.md'
+      - 'data/static/country-page-countries-45-52.json'
+      - 'data/static/country-page-sources-45-52.json'
+      - 'data/static/country-profiles-v2-4*.json'
+      - 'data/static/country-profiles-v2-5*.json'
+      - 'src/lib/data.ts'
+      - 'scripts/check-country-profiles-45-52.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-45-52.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-profiles-45-52.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: npm install
+      - run: npm run build

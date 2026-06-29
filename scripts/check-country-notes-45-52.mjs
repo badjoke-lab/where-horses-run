@@ -66,12 +66,22 @@ for (const [deliveryNo, slug] of expected) {
     fail(`tracker delivery ${deliveryNo} must be ${slug}`);
     continue;
   }
-  if (row.programme_status !== 'note_reviewed') fail(`${slug} must be note_reviewed`);
+  if (!['note_reviewed', 'profile_ready', 'page_qa', 'published'].includes(row.programme_status)) {
+    fail(`${slug} must retain at least note_reviewed state`);
+  }
   if (row.note_status !== 'reviewed') fail(`${slug} note_status must be reviewed`);
   if (row.note_ref !== `docs/country-page-notes/${deliveryNo}-${slug}.md`) fail(`${slug} note_ref is incorrect`);
   if (row.evidence_reviewed_at !== '2026-06-20') fail(`${slug} evidence review date mismatch`);
-  if (row.profile_status !== 'not_started') fail(`${slug} profile must remain not_started`);
-  if (row.en_route_status !== 'missing' || row.ja_route_status !== 'missing') fail(`${slug} routes must remain missing`);
+
+  if (row.programme_status === 'note_reviewed') {
+    if (row.profile_status !== 'not_started') fail(`${slug} note-reviewed profile must remain not_started`);
+    if (row.en_route_status !== 'missing' || row.ja_route_status !== 'missing') fail(`${slug} note-reviewed routes must remain missing`);
+  } else {
+    if (!['reviewed', 'reviewed_seed'].includes(row.profile_status)) fail(`${slug} later state must retain a reviewed profile`);
+    if (!['complete', 'published'].includes(row.en_route_status) || !['complete', 'published'].includes(row.ja_route_status)) {
+      fail(`${slug} later state must retain complete bilingual routes`);
+    }
+  }
 }
 
 if (errors.length) {

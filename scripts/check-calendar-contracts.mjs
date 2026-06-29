@@ -448,8 +448,8 @@ for (const [file, text, phrases] of [
   [paths.sourceContract, sourceContractText, [paths.sourceSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.readinessContract, readinessContractText, [paths.readinessSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.machineContract, machineContractText, [paths.sourceSchema, paths.readinessSchema, paths.registry, 'node scripts/check-calendar-contracts.mjs']],
-  [paths.roadmap, roadmapText, ['Current Work ID: `WHR-CAL-BACKFILL-37-52`', 'Next Work ID: `WHR-CP-PROFILE-45-52`']],
-  [paths.startHere, startHereText, ['WHR-CAL-BACKFILL-37-52', 'WHR-CP-PROFILE-45-52']],
+  [paths.roadmap, roadmapText, ['Current Work ID: `WHR-CP-PUB-45-52`', 'Next Work ID: `WHR-ST2-53-60`']],
+  [paths.startHere, startHereText, ['WHR-CP-PUB-45-52', 'WHR-ST2-53-60']],
 ]) {
   for (const phrase of phrases) {
     if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);

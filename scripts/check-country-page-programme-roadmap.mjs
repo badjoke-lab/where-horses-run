@@ -52,8 +52,8 @@ for (const pr of [284, 311, 316, 317, 319, 321, 322, 323, 340]) {
 const requiredPhrases = [
   'Current position',
   'Publication gate: PR #319',
-  'Current Work ID: WHR-CP-PROFILE-45-52',
-  'Next working branch: country-profiles-45-52',
+  'Current Work ID: WHR-CP-PUB-45-52',
+  'Next working branch: country-pages-45-52-publication-qa',
   'Latest completed Calendar Readiness change: PR #323',
   'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98',
   'Local work is requested only when',
@@ -75,4 +75,4 @@ if (errors.length) {
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
 console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
 console.log('KEY_PRS: 284,311,316,317,319,321,322,323,340');
-console.log('CURRENT_WORK: entries 01-52 readiness closed; current Work ID WHR-CP-PROFILE-45-52');
+console.log('CURRENT_WORK: entries 45-52 profile-ready; current Work ID WHR-CP-PUB-45-52');
