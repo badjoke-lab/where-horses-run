@@ -31,13 +31,14 @@ const counts = rows.reduce((result, row) => {
 
 const allCountLines = [
   ['published', counts.published ?? 0],
+  ['page_qa', counts.page_qa ?? 0],
   ['profile_ready', counts.profile_ready ?? 0],
   ['note_reviewed', counts.note_reviewed ?? 0],
   ['source_tested', counts.source_tested ?? 0],
   ['not_started', counts.not_started ?? 0],
   ['total', rows.length]
 ];
-const alwaysRequired = new Set(['published', 'profile_ready', 'not_started', 'total']);
+const alwaysRequired = new Set(['published', 'page_qa', 'profile_ready', 'not_started', 'total']);
 const expectedCountLines = allCountLines.filter(([label, count]) => alwaysRequired.has(label) || count > 0);
 
 for (const [label, count] of expectedCountLines) {

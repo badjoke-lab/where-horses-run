@@ -106,12 +106,15 @@ for (const [deliveryNo, slug] of expected) {
     fail(`tracker mismatch for ${deliveryNo}-${slug}`);
     continue;
   }
-  if (!['profile_ready', 'published'].includes(row[index.programme_status])) fail(`${slug}: must be profile_ready or published`);
+  if (!['profile_ready', 'page_qa', 'published'].includes(row[index.programme_status])) fail(`${slug}: must be profile_ready, page_qa, or published`);
   if (row[index.note_status] !== 'reviewed' || row[index.profile_status] !== 'reviewed') fail(`${slug}: note and profile must be reviewed`);
   if (row[index.profile_last_reviewed] !== '2026-06-29') fail(`${slug}: profile review date mismatch`);
   if (row[index.programme_status] === 'profile_ready') {
     if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug}: profile-ready routes must be complete`);
     if (row[index.qa_status] !== 'not_started' || row[index.page_published_at]) fail(`${slug}: publication state must remain untouched`);
+  } else if (row[index.programme_status] === 'page_qa') {
+    if (row[index.en_route_status] !== 'complete' || row[index.ja_route_status] !== 'complete') fail(`${slug}: page-QA routes must be complete`);
+    if (row[index.qa_status] !== 'pending' || row[index.page_published_at]) fail(`${slug}: page-QA state is invalid`);
   }
 }
 
@@ -119,6 +122,6 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('COUNTRY_PROFILES_53_60_VALID countries=8 sources=8 profiles=8 tracker=profile_ready_or_published');
+console.log('COUNTRY_PROFILES_53_60_VALID countries=8 sources=8 profiles=8 tracker=profile_ready_page_qa_or_published');
 console.log('PUBLIC_CEILINGS: C=8');
 console.log('BOUNDARIES: link_only=kuwait,pakistan blocked_calendar=venezuela technical_A_public_C=belgium');

@@ -27,11 +27,12 @@ Next working branch: country-publish-53-60
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after Profile v2 53-60:
+Current tracker counts during publication QA 53-60:
 
 ```text
 published:       52
-profile_ready:    8
+page_qa:          8
+profile_ready:    0
 note_reviewed:    0
 source_tested:    0
 not_started:     38
@@ -44,13 +45,13 @@ Current route state:
 formally published English routes:   52
 formally published Japanese routes:  52
 formally published total routes:    104
-profile-ready English routes:         8
-profile-ready Japanese routes:        8
-profile-ready total routes:          16
+page-QA English routes:                8
+page-QA Japanese routes:               8
+page-QA total routes:                 16
 final target routes:                196
 ```
 
-PR #328 completes reviewed bilingual Profile v2 records for entries 53-60. QA and publication work for these entries is now active.
+PR #329 runs GitHub publication QA for entries 53-60. One final rendered Cloudflare preview remains required before publication.
 
 ## 3. Operating model
 
@@ -143,6 +144,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
 | #327 | reviewed notes | Completed public-safe editorial notes for entries 53-60. |
 | #328 | Profile v2 | Added reviewed bilingual Profile v2 records and generated complete English and Japanese routes for entries 53-60. |
+| #329 | publication QA | GitHub QA active; final rendered preview and publication approval pending. |
 
 ## 7. Publication gates
 
@@ -242,7 +244,7 @@ Entries: Cyprus, Panama, Kuwait, Kenya, Pakistan, Ecuador, Venezuela, and Belgiu
 | #326 / `WHR-ST2-53-60` | complete | Added eight public-safe Source Test v2 records and eight Calendar Readiness decisions. |
 | #327 / `WHR-NOTE-53-60` | complete | Added eight reviewed editorial notes with explicit scope, limitations, and handoff rules. |
 | #328 / `WHR-PROFILE-53-60` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| `WHR-PUB-53-60` | next | QA and publish after one rendered preview. |
+| #329 / `WHR-PUB-53-60` | active | GitHub QA active; publish after one approved rendered preview. |
 
 Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked. Belgium retains technical rank A behind country public ceiling C; all other country ceilings remain C.
 

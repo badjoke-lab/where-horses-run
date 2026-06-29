@@ -36,7 +36,8 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 
 ```text
 published country pages:       52
-profile_ready:                  8
+page_qa:                        8
+profile_ready:                  0
 note_reviewed:                  0
 source_tested:                  0
 not_started:                   38
@@ -49,7 +50,8 @@ Publication debt:
 
 - entries 29-36 are published after the approved rendered preview;
 - entries 37-44 are published after the approved rendered preview;
-- entries 45-52 are published after the approved rendered preview.
+- entries 45-52 are published after the approved rendered preview;
+- entries 53-60 are in publication QA and require one final rendered preview.
 
 Calendar baseline already exists:
 
