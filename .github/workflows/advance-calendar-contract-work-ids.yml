@@ -1,0 +1,34 @@
+name: Advance Calendar contract Work IDs
+
+on:
+  push:
+    branches: [source-test-v2-69-76]
+    paths:
+      - 'scripts/advance-calendar-contract-work-ids.mjs'
+      - '.github/workflows/advance-calendar-contract-work-ids.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: source-test-v2-69-76
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/advance-calendar-contract-work-ids.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - name: Commit update
+        run: |
+          rm scripts/advance-calendar-contract-work-ids.mjs
+          rm .github/workflows/advance-calendar-contract-work-ids.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "[CF-Pages-Skip] Advance Calendar contract Work IDs"
+          git push origin HEAD:source-test-v2-69-76
