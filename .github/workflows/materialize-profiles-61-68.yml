@@ -1,0 +1,44 @@
+name: Materialize profiles 61-68
+
+on:
+  push:
+    branches: [country-profiles-61-68]
+    paths:
+      - 'scripts/apply-profile-*-61-68.mjs'
+      - '.github/workflows/materialize-profiles-61-68.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: country-profiles-61-68
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: |
+          node scripts/apply-profile-data-61-68.mjs
+          node scripts/apply-profile-runtime-61-68.mjs
+          node scripts/apply-profile-tracker-61-68.mjs
+          node scripts/apply-profile-roadmap-61-68.mjs
+          node scripts/apply-profile-governance-61-68.mjs
+      - run: npm install
+      - run: npm run build
+      - run: |
+          node scripts/check-country-profiles-61-68.mjs
+          node scripts/check-country-notes-61-68.mjs
+          node scripts/check-source-test-v2-61-68.mjs
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-detail-profile-runtime.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+      - uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: '[CF-Pages-Skip] Finalize country profiles 61-68'
+          branch: country-profiles-61-68
+          file_pattern: 'src/lib/data.ts START-HERE.md docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv docs/runbooks/country-profiles-61-68.md scripts/check-country-detail-profile-runtime.mjs scripts/check-country-page-programme.mjs scripts/check-calendar-contracts.mjs scripts/check-project-governance-docs.mjs scripts/check-country-page-programme-roadmap.mjs'
