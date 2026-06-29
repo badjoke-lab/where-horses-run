@@ -18,23 +18,23 @@ The PR-number assignments in the older schedule sections are historical. Active 
 
 ```text
 Latest completed Source Test v2 change: PR #330 — entries 61-68
-Latest completed reviewed-note change: PR #327 — entries 53-60
+Latest completed reviewed-note change: PR #331 — entries 61-68
 Latest completed Profile v2 change: PR #328 — entries 53-60
 Latest country publication: PR #329 — entries 53-60 approved after rendered preview
 Publication gate: PR #329 — entries 53-60 published after approved rendered preview
-Current Work ID: WHR-NOTE-61-68
-Next working branch: country-notes-61-68
+Current Work ID: WHR-PROFILE-61-68
+Next working branch: country-profiles-61-68
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after Source Test v2 61-68:
+Current tracker counts after reviewed notes 61-68:
 
 ```text
 published:       60
 page_qa:          0
 profile_ready:    0
-note_reviewed:    0
-source_tested:    8
+note_reviewed:    8
+source_tested:    0
 not_started:     30
 total:           98
 ```
@@ -51,7 +51,7 @@ page-QA total routes:                  0
 final target routes:                196
 ```
 
-PR #330 closes Source Test v2 and Calendar Readiness decisions for entries 61-68. Reviewed-note work for these entries is now active.
+PR #331 completes reviewed editorial notes for entries 61-68. Profile v2 work for these entries is now active.
 
 ## 3. Operating model
 
@@ -267,8 +267,8 @@ Entries: Slovenia, Croatia, Dominican Republic, Tunisia, Lebanon, Libya, Mainlan
 | Work | Status | Result |
 | --- | --- | --- |
 | #330 / `WHR-ST2-61-68` | complete | Added eight Source Test v2 records and eight Calendar Readiness decisions. |
-| `WHR-NOTE-61-68` | next | Convert the verified boundaries into reviewed editorial notes. |
-| `WHR-PROFILE-61-68` | planned | Add bilingual Profile v2 records. |
+| #331 / `WHR-NOTE-61-68` | complete | Added eight reviewed editorial notes with explicit scope and limitations. |
+| `WHR-PROFILE-61-68` | next | Add bilingual Profile v2 records. |
 | `WHR-PUB-61-68` | planned | QA and publish after one rendered preview. |
 
 Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked. Every country public ceiling remains C.
