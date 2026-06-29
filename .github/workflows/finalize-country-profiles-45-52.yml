@@ -1,6 +1,10 @@
 name: Finalize country profiles 45-52
 
 on:
+  pull_request:
+    paths:
+      - 'scripts/apply-country-profiles-45-52.mjs'
+      - '.github/workflows/finalize-country-profiles-45-52.yml'
   push:
     branches:
       - calendar-readiness-backfill-37-52
@@ -67,12 +71,7 @@ jobs:
             }
             tree.push({ path: 'scripts/apply-country-profiles-45-52.mjs', mode: '100644', type: 'blob', sha: null });
             tree.push({ path: '.github/workflows/finalize-country-profiles-45-52.yml', mode: '100644', type: 'blob', sha: null });
-            const createdTree = await github.rest.git.createTree({
-              owner,
-              repo,
-              base_tree: parentCommit.data.tree.sha,
-              tree
-            });
+            const createdTree = await github.rest.git.createTree({ owner, repo, base_tree: parentCommit.data.tree.sha, tree });
             const commit = await github.rest.git.createCommit({
               owner,
               repo,
@@ -80,11 +79,5 @@ jobs:
               tree: createdTree.data.sha,
               parents: [parent]
             });
-            await github.rest.git.updateRef({
-              owner,
-              repo,
-              ref: `heads/${branch}`,
-              sha: commit.data.sha,
-              force: false
-            });
+            await github.rest.git.updateRef({ owner, repo, ref: `heads/${branch}`, sha: commit.data.sha, force: false });
             core.info(`updated ${branch} to ${commit.data.sha}`);
