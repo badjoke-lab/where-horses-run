@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "68",
+  "country_id": "indonesia",
+  "country_name_en": "Indonesia",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "partial",
+  "records": [{
+    "readiness_id": "indonesia--pordasi-racing-system--pordasi-race-calendar-2026",
+    "system_id": "pordasi-racing-system",
+    "system_name_en": "PORDASI national racing calendar system",
+    "authority_source_key": "indonesia/pordasi/pordasi-race-calendar-2026",
+    "racecourse_ids": [],
+    "coverage_scope": "authority_wide",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "mixed",
+    "access_mode": "direct",
+    "automation_mode": "manual_import",
+    "refresh_classes": ["seasonal", "monthly", "manual"],
+    "readiness": "manual_ready",
+    "implementation_status": "not_started",
+    "fallback": "official_link_only",
+    "source_status": "verified",
+    "revalidation_trigger": "Revalidate when PORDASI updates the 2026 race-event calendar or publishes a new season calendar.",
+    "blocked_reason": null,
+    "limitations": ["The official calendar presentation is not a stable structured feed.", "Authority-wide completeness requires periodic manual confirmation.", "Reusable race-time fields are not approved."],
+    "notes": "The official 2026 race-event calendar supports manual C-level meeting-date and venue confirmation."
+  }],
+  "public_safe": true
+}

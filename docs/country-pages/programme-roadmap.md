@@ -17,25 +17,25 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest completed Source Test v2 change: PR #326 — entries 53-60
+Latest completed Source Test v2 change: PR #330 — entries 61-68
 Latest completed reviewed-note change: PR #327 — entries 53-60
 Latest completed Profile v2 change: PR #328 — entries 53-60
 Latest country publication: PR #329 — entries 53-60 approved after rendered preview
 Publication gate: PR #329 — entries 53-60 published after approved rendered preview
-Current Work ID: WHR-ST2-61-68
-Next working branch: source-test-v2-61-68
+Current Work ID: WHR-NOTE-61-68
+Next working branch: country-notes-61-68
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after publication 53-60:
+Current tracker counts after Source Test v2 61-68:
 
 ```text
 published:       60
 page_qa:          0
 profile_ready:    0
 note_reviewed:    0
-source_tested:    0
-not_started:     38
+source_tested:    8
+not_started:     30
 total:           98
 ```
 
@@ -51,7 +51,7 @@ page-QA total routes:                  0
 final target routes:                196
 ```
 
-PR #329 publishes entries 53-60 after the approved rendered Cloudflare preview. Source Test v2 for entries 61-68 is now active.
+PR #330 closes Source Test v2 and Calendar Readiness decisions for entries 61-68. Reviewed-note work for these entries is now active.
 
 ## 3. Operating model
 
@@ -260,7 +260,20 @@ Entries: Cyprus, Panama, Kuwait, Kenya, Pakistan, Ecuador, Venezuela, and Belgiu
 
 Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked. Belgium retains technical rank A behind country public ceiling C; all other country ceilings remain C.
 
-## 11. Remaining wave schedule
+## 11. Wave 61-68
+
+Entries: Slovenia, Croatia, Dominican Republic, Tunisia, Lebanon, Libya, Mainland China, and Indonesia.
+
+| Work | Status | Result |
+| --- | --- | --- |
+| #330 / `WHR-ST2-61-68` | complete | Added eight Source Test v2 records and eight Calendar Readiness decisions. |
+| `WHR-NOTE-61-68` | next | Convert the verified boundaries into reviewed editorial notes. |
+| `WHR-PROFILE-61-68` | planned | Add bilingual Profile v2 records. |
+| `WHR-PUB-61-68` | planned | QA and publish after one rendered preview. |
+
+Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked. Every country public ceiling remains C.
+
+## 12. Remaining wave schedule
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | ---: | ---: | ---: | ---: |
@@ -274,7 +287,7 @@ Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked.
 
 Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
-## 12. Final release gate
+## 13. Final release gate
 
 ### PR #340 — full programme audit
 
@@ -305,7 +318,7 @@ final programme report is generated
 
 The programme closes only after PR #340 is merged and the tracker reports 98 published rows.
 
-## 13. Roadmap maintenance rules
+## 14. Roadmap maintenance rules
 
 Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 

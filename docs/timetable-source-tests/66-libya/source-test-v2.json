@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "66",
+  "country_id": "libya",
+  "country_name_en": "Libya",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "link_only",
+  "records": [{
+    "readiness_id": "libya--national-racing-system--official-racing-page",
+    "system_id": "national-racing-system",
+    "system_name_en": "Libyan national racing system",
+    "authority_source_key": "libya/libyan-racing-body/official-racing-page",
+    "racecourse_ids": [],
+    "coverage_scope": "authority_wide",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "link_only",
+    "refresh_classes": ["event_driven", "manual"],
+    "readiness": "link_only",
+    "implementation_status": "not_started",
+    "fallback": "official_link_only",
+    "source_status": "stale",
+    "revalidation_trigger": "Revalidate when a stable current public calendar is published.",
+    "blocked_reason": null,
+    "limitations": ["A current 2026 upcoming calendar was not confirmed.", "Older calendar material must not generate current meeting rows."],
+    "notes": "Use an official-link-first treatment until a current public calendar is confirmed."
+  }],
+  "public_safe": true
+}

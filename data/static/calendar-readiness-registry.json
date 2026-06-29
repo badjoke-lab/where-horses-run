@@ -5,10 +5,10 @@
   "bootstrap_status": "source_test_v2_active",
   "programme_state": {
     "country_target": 98,
-    "countries_with_closed_decision": 60,
-    "readiness_records": 78,
+    "countries_with_closed_decision": 68,
+    "readiness_records": 86,
     "next_backfill_work_ids": [
-      "WHR-ST2-61-68"
+      "WHR-ST2-69-76"
     ]
   },
   "records": [
@@ -3477,6 +3477,366 @@
         "Racecourse IDs await a separate inventory migration."
       ],
       "notes": "The national federation calendar is a strong prototype candidate, with higher-detail fields held behind the reviewed country display boundary."
+    },
+    {
+      "readiness_id": "slovenia--slovenian-trotting-system--slovenian-trotting-home",
+      "system_id": "slovenian-trotting-system",
+      "system_name_en": "Slovenian trotting federation system",
+      "authority_source_key": "slovenia/kasaska-zveza-slovenije/slovenian-trotting-home",
+      "racecourse_ids": [],
+      "coverage_scope": "system_only",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when the Slovenian trotting federation publishes a stable current-season calendar route.",
+      "blocked_reason": null,
+      "limitations": [
+        "A stable current 2026 meeting calendar was not confirmed.",
+        "Stale or test-site material must not be treated as current calendar evidence."
+      ],
+      "notes": "Retain an official-link-first treatment until a stable current-season federation calendar can be reviewed.",
+      "country_id": "slovenia",
+      "country_tracker_delivery_no": "61",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/61-slovenia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "croatia--croatian-gallop-system--hgs-2026-calendar",
+      "system_id": "croatian-gallop-system",
+      "system_name_en": "Croatian gallop federation calendar",
+      "authority_source_key": "croatia/hrvatski-galopski-savez/hgs-2026-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "manual_confirmation",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the Croatian gallop federation changes its calendar or confirms the provisional August date.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed scope covers the official Zagreb gallop calendar only.",
+        "One August meeting remains provisional in the official calendar.",
+        "Reusable race times are not approved."
+      ],
+      "notes": "The official 2026 calendar supports manual C-level meeting-date and racecourse publication for the reviewed Zagreb scope.",
+      "country_id": "croatia",
+      "country_tracker_delivery_no": "62",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/62-croatia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
+      "system_id": "hvc-racing-system",
+      "system_name_en": "Hipódromo V Centenario racing system",
+      "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the official calendar or date-route structure changes.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed scope covers Hipódromo V Centenario only.",
+        "Detailed programme content remains outside the country calendar.",
+        "No reusable race-time fields are approved."
+      ],
+      "notes": "Official date-addressable routes support a bounded C-level prototype for meeting dates and venue.",
+      "country_id": "dominican-republic",
+      "country_tracker_delivery_no": "63",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/63-dominican-republic/source-test-v2.json"
+    },
+    {
+      "readiness_id": "tunisia--sch-national-racing-system--sch-official-calendar",
+      "system_id": "sch-national-racing-system",
+      "system_name_en": "Société des Courses Hippiques calendar system",
+      "authority_source_key": "tunisia/societe-des-courses-hippiques/sch-official-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "manual_confirmation",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when the official calendar route becomes consistently reachable or changes structure.",
+      "blocked_reason": null,
+      "limitations": [
+        "The official calendar route may be intermittently slow or unavailable.",
+        "Countrywide venue completeness has not been independently closed.",
+        "Reusable race-time fields are not approved."
+      ],
+      "notes": "The official authority calendar supports manual C-level confirmation when the route is reachable.",
+      "country_id": "tunisia",
+      "country_tracker_delivery_no": "64",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/64-tunisia/source-test-v2.json"
+    },
+    {
+      "readiness_id": "lebanon--beirut-racing-system--ifahr-lebanon-member-page",
+      "system_id": "beirut-racing-system",
+      "system_name_en": "Beirut racecourse system",
+      "authority_source_key": "lebanon/lebanon-racing-authority/ifahr-lebanon-member-page",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when the official member route publishes a current Lebanon race calendar.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed official member page does not provide a current 2026 calendar.",
+        "No current meeting fields are approved."
+      ],
+      "notes": "Retain a link-only authority treatment until a current official calendar is published.",
+      "country_id": "lebanon",
+      "country_tracker_delivery_no": "65",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/65-lebanon/source-test-v2.json"
+    },
+    {
+      "readiness_id": "libya--national-racing-system--official-racing-page",
+      "system_id": "national-racing-system",
+      "system_name_en": "Libyan national racing system",
+      "authority_source_key": "libya/libyan-racing-body/official-racing-page",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "stale",
+      "revalidation_trigger": "Revalidate when a stable current public calendar is published.",
+      "blocked_reason": null,
+      "limitations": [
+        "A current 2026 upcoming calendar was not confirmed.",
+        "Older calendar material must not generate current meeting rows."
+      ],
+      "notes": "Use an official-link-first treatment until a current public calendar is confirmed.",
+      "country_id": "libya",
+      "country_tracker_delivery_no": "66",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/66-libya/source-test-v2.json"
+    },
+    {
+      "readiness_id": "mainland-china--conghua-racing-system--hkjc-conghua-launch",
+      "system_id": "conghua-racing-system",
+      "system_name_en": "Conghua Racecourse system",
+      "authority_source_key": "mainland-china/hong-kong-jockey-club/hkjc-conghua-launch",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": false,
+        "racecourse": false,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "blocked",
+      "refresh_classes": [
+        "event_driven",
+        "seasonal"
+      ],
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "fallback": "hide_from_current_calendar",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when an official date-addressable Conghua meeting calendar is published.",
+      "blocked_reason": "The official source confirms an October 2026 launch but does not yet provide a stable upcoming meeting-date calendar.",
+      "limitations": [
+        "The reviewed scope covers Conghua Racecourse only.",
+        "Launch timing must not be converted into a meeting date.",
+        "No current calendar fields are approved."
+      ],
+      "notes": "Keep Mainland China out of current-calendar rows until an official meeting calendar is available.",
+      "country_id": "mainland-china",
+      "country_tracker_delivery_no": "67",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/67-mainland-china/source-test-v2.json"
+    },
+    {
+      "readiness_id": "indonesia--pordasi-racing-system--pordasi-race-calendar-2026",
+      "system_id": "pordasi-racing-system",
+      "system_name_en": "PORDASI national racing calendar system",
+      "authority_source_key": "indonesia/pordasi/pordasi-race-calendar-2026",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "manual_import",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when PORDASI updates the 2026 race-event calendar or publishes a new season calendar.",
+      "blocked_reason": null,
+      "limitations": [
+        "The official calendar presentation is not a stable structured feed.",
+        "Authority-wide completeness requires periodic manual confirmation.",
+        "Reusable race-time fields are not approved."
+      ],
+      "notes": "The official 2026 race-event calendar supports manual C-level meeting-date and venue confirmation.",
+      "country_id": "indonesia",
+      "country_tracker_delivery_no": "68",
+      "checked_date": "2026-06-29",
+      "evidence_reviewed_at": "2026-06-29",
+      "source_test_ref": "docs/timetable-source-tests/68-indonesia/source-test-v2.json"
     }
   ],
   "last_updated": "2026-06-29"

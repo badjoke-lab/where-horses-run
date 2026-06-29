@@ -6,25 +6,24 @@ const readJson = (file) => JSON.parse(fs.readFileSync(path.join(root, file), 'ut
 const errors = [];
 const fail = (message) => errors.push(message);
 const expected = [
-  ['53', 'cyprus', 'manual_ready', 'C', 'C'],
-  ['54', 'panama', 'prototype_ready', 'C', 'C'],
-  ['55', 'kuwait', 'link_only', 'C', 'C'],
-  ['56', 'kenya', 'manual_ready', 'C', 'C'],
-  ['57', 'pakistan', 'link_only', 'C', 'C'],
-  ['58', 'ecuador', 'manual_ready', 'C', 'C'],
-  ['59', 'venezuela', 'blocked', 'C', 'C'],
-  ['60', 'belgium', 'prototype_ready', 'A', 'C'],
+  ['61', 'slovenia', 'link_only', 'C', 'C'],
+  ['62', 'croatia', 'manual_ready', 'C', 'C'],
+  ['63', 'dominican-republic', 'prototype_ready', 'C', 'C'],
+  ['64', 'tunisia', 'manual_ready', 'C', 'C'],
+  ['65', 'lebanon', 'link_only', 'C', 'C'],
+  ['66', 'libya', 'link_only', 'C', 'C'],
+  ['67', 'mainland-china', 'blocked', 'C', 'C'],
+  ['68', 'indonesia', 'manual_ready', 'C', 'C'],
 ];
-const sourceTestOrLater = new Set(['source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published']);
 
 const authority = readJson('data/static/authority-source-inventory.json');
 const registry = readJson('data/static/calendar-readiness-registry.json');
-if ((authority.records?.length ?? 0) < 78) fail(`authority records must retain at least 78; found ${authority.records?.length}`);
-if ((registry.records?.length ?? 0) < 78) fail(`readiness records must retain at least 78; found ${registry.records?.length}`);
-if (registry.bootstrap_status !== 'source_test_v2_active') fail('bootstrap_status must be source_test_v2_active');
-if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 60) fail('closed decision count must be at least 60');
-if ((registry.programme_state?.readiness_records ?? 0) < 78) fail('programme readiness count must be at least 78');
-if (registry.programme_state?.readiness_records !== registry.records?.length) fail('programme readiness count must match registry length');
+if (authority.records?.length !== 86) fail(`authority records must be 86; found ${authority.records?.length}`);
+if (registry.records?.length !== 86) fail(`readiness records must be 86; found ${registry.records?.length}`);
+if (registry.bootstrap_status !== 'source_test_v2_active') fail('bootstrap_status must remain source_test_v2_active');
+if (registry.programme_state?.countries_with_closed_decision !== 68) fail('closed decision count must be 68');
+if (registry.programme_state?.readiness_records !== 86) fail('programme readiness count must be 86');
+if (JSON.stringify(registry.programme_state?.next_backfill_work_ids) !== JSON.stringify(['WHR-ST2-69-76'])) fail('next backfill must be WHR-ST2-69-76');
 
 const authorityKeys = new Set((authority.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
 if (authorityKeys.size !== authority.records?.length) fail('authority compound keys must be unique');
@@ -49,8 +48,7 @@ for (const [deliveryNo, slug, readiness, technicalRank, publicCeiling] of expect
   const record = summary.records[0];
   readinessCounts[record.readiness] = (readinessCounts[record.readiness] ?? 0) + 1;
   if (record.readiness !== readiness) fail(`${slug}: readiness must be ${readiness}`);
-  if (record.technical_rank !== technicalRank) fail(`${slug}: technical rank must be ${technicalRank}`);
-  if (record.public_ceiling !== publicCeiling) fail(`${slug}: public ceiling must be ${publicCeiling}`);
+  if (record.technical_rank !== technicalRank || record.public_ceiling !== publicCeiling) fail(`${slug}: rank or public ceiling mismatch`);
   if (record.implementation_status !== 'not_started') fail(`${slug}: implementation must remain not_started`);
   if ((record.racecourse_ids ?? []).length !== 0) fail(`${slug}: racecourse IDs must remain empty until inventory migration`);
   if (!authorityKeys.has(record.authority_source_key)) fail(`${slug}: missing authority source key`);
@@ -69,7 +67,7 @@ for (const [deliveryNo, slug, readiness, technicalRank, publicCeiling] of expect
   }
 }
 
-if (readinessCounts.prototype_ready !== 2 || readinessCounts.manual_ready !== 3 || readinessCounts.link_only !== 2 || readinessCounts.blocked !== 1) {
+if (readinessCounts.manual_ready !== 3 || readinessCounts.prototype_ready !== 1 || readinessCounts.link_only !== 3 || readinessCounts.blocked !== 1) {
   fail(`unexpected readiness mix: ${JSON.stringify(readinessCounts)}`);
 }
 
@@ -81,7 +79,7 @@ for (const [deliveryNo, slug] of expected) {
   const row = rows.find((candidate) => candidate[index.delivery_no] === deliveryNo);
   if (!row || row[index.slug] !== slug) fail(`tracker missing ${deliveryNo}-${slug}`);
   else {
-    if (!sourceTestOrLater.has(row[index.programme_status])) fail(`${slug}: tracker must retain Source Test v2 completion or a later programme state`);
+    if (row[index.programme_status] !== 'source_tested') fail(`${slug}: tracker must be source_tested`);
     if (row[index.source_last_checked] !== '2026-06-29' || row[index.evidence_reviewed_at] !== '2026-06-29') fail(`${slug}: tracker dates mismatch`);
   }
 }
@@ -90,5 +88,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log(`SOURCE_TEST_V2_53_60_VALID countries=8 authority=${authority.records.length} readiness=${registry.records.length}`);
-console.log('READINESS_MIX prototype_ready=2 manual_ready=3 link_only=2 blocked=1');
+console.log('SOURCE_TEST_V2_61_68_VALID countries=8 authority=86 readiness=86');
+console.log('READINESS_MIX manual_ready=3 prototype_ready=1 link_only=3 blocked=1');
