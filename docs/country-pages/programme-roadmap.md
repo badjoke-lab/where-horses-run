@@ -20,18 +20,18 @@ The PR-number assignments in the older schedule sections are historical. Active 
 Latest completed Source Test v2 change: PR #326 — entries 53-60
 Latest completed reviewed-note change: PR #327 — entries 53-60
 Latest completed Profile v2 change: PR #328 — entries 53-60
-Latest country publication: PR #325 — entries 45-52 approved after rendered preview
-Publication gate: PR #325 — entries 45-52 published after approved rendered preview
-Current Work ID: WHR-PUB-53-60
-Next working branch: country-publish-53-60
+Latest country publication: PR #329 — entries 53-60 approved after rendered preview
+Publication gate: PR #329 — entries 53-60 published after approved rendered preview
+Current Work ID: WHR-ST2-61-68
+Next working branch: source-test-v2-61-68
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts during publication QA 53-60:
+Current tracker counts after publication 53-60:
 
 ```text
-published:       52
-page_qa:          8
+published:       60
+page_qa:          0
 profile_ready:    0
 note_reviewed:    0
 source_tested:    0
@@ -42,16 +42,16 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   52
-formally published Japanese routes:  52
-formally published total routes:    104
-page-QA English routes:                8
-page-QA Japanese routes:               8
-page-QA total routes:                 16
+formally published English routes:   60
+formally published Japanese routes:  60
+formally published total routes:    120
+page-QA English routes:                0
+page-QA Japanese routes:               0
+page-QA total routes:                  0
 final target routes:                196
 ```
 
-PR #329 runs GitHub publication QA for entries 53-60. One final rendered Cloudflare preview remains required before publication.
+PR #329 publishes entries 53-60 after the approved rendered Cloudflare preview. Source Test v2 for entries 61-68 is now active.
 
 ## 3. Operating model
 
@@ -144,8 +144,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
 | #327 | reviewed notes | Completed public-safe editorial notes for entries 53-60. |
 | #328 | Profile v2 | Added reviewed bilingual Profile v2 records and generated complete English and Japanese routes for entries 53-60. |
-| #329 | publication QA | GitHub QA active; final rendered preview and publication approval pending. |
-| #329 | publication QA | GitHub QA active; final rendered preview and publication approval pending. |
+| #329 | publication | Published entries 53-60 after rendered-preview approval. |
 
 ## 7. Publication gates
 
@@ -192,6 +191,18 @@ Rendered preview approval:
 4. Evidence artifact `rendered-preview-45-52` is artifact `7943936486` with digest `sha256:663817f1622d1d8328f042c6a7305f2202001b2290945407b4518a7078dc0014`.
 5. Entries 45-52 are recorded as `published` on 2026-06-29.
 6. PR #325 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
+
+### PR #329 — entries 53-60
+
+Rendered preview approval:
+
+1. Cloudflare Pages preview deployment `79eea020-b3d2-4c56-8c93-75cce98f7770` succeeded from `preview-country-pages-53-60`.
+2. All 8 English and 8 Japanese routes passed rendered route checks.
+3. Cyprus, Kuwait, Venezuela, and Belgium passed English/Japanese desktop 1440x1200 and Pixel 7 412x915 rendered review.
+4. Canonical, hreflang, language switching, official links, empty states, CJK rendering, horizontal overflow, media exclusion, and C-rank column suppression passed.
+5. Evidence artifact `rendered-preview-53-60` is artifact `7947674868` with digest `sha256:df4d7c5250a4f167f86354fc4e0344bf9ec6795a095c2b1f3f6e6c1f1f2ec28d`; rendered run `28361835722` completed with 0 errors.
+6. Entries 53-60 are recorded as `published` on 2026-06-29.
+7. PR #329 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
 
 ## 8. Wave 37-44
 
@@ -245,7 +256,7 @@ Entries: Cyprus, Panama, Kuwait, Kenya, Pakistan, Ecuador, Venezuela, and Belgiu
 | #326 / `WHR-ST2-53-60` | complete | Added eight public-safe Source Test v2 records and eight Calendar Readiness decisions. |
 | #327 / `WHR-NOTE-53-60` | complete | Added eight reviewed editorial notes with explicit scope, limitations, and handoff rules. |
 | #328 / `WHR-PROFILE-53-60` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| #329 / `WHR-PUB-53-60` | active | GitHub QA active; publish after one approved rendered preview. |
+| #329 / `WHR-PUB-53-60` | complete | Published all sixteen routes after approved rendered-preview QA. |
 
 Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked. Belgium retains technical rank A behind country public ceiling C; all other country ceilings remain C.
 

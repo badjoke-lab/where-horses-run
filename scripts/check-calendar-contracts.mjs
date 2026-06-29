@@ -448,8 +448,8 @@ for (const [file, text, phrases] of [
   [paths.sourceContract, sourceContractText, [paths.sourceSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.readinessContract, readinessContractText, [paths.readinessSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.machineContract, machineContractText, [paths.sourceSchema, paths.readinessSchema, paths.registry, 'node scripts/check-calendar-contracts.mjs']],
-  [paths.roadmap, roadmapText, ['Current Work ID: `WHR-PUB-53-60`', 'Next Work ID: `WHR-ST2-61-68`']],
-  [paths.startHere, startHereText, ['WHR-PUB-53-60', 'WHR-ST2-61-68']],
+  [paths.roadmap, roadmapText, ['Current Work ID: `WHR-ST2-61-68`', 'Next Work ID: `WHR-NOTE-61-68`']],
+  [paths.startHere, startHereText, ['WHR-ST2-61-68', 'WHR-NOTE-61-68']],
 ]) {
   for (const phrase of phrases) {
     if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
@@ -469,5 +469,5 @@ console.log(`RACECOURSE_IDS: ${racecourseCountry.size}`);
 console.log(`READINESS_RECORDS: ${registry.records.length}`);
 console.log(`CLOSED_COUNTRIES: ${closedCountries.size}`);
 console.log(`SOURCE_TEST_V2_FILES: ${sourceTestV2Files.length}`);
-console.log('CURRENT_WORK_ID: WHR-PUB-53-60');
-console.log('NEXT_WORK_ID: WHR-ST2-61-68');
+console.log('CURRENT_WORK_ID: WHR-ST2-61-68');
+console.log('NEXT_WORK_ID: WHR-NOTE-61-68');

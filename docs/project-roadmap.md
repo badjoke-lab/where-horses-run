@@ -1,8 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-PUB-53-60`  
-Next Work ID: `WHR-ST2-61-68`  
+Current Work ID: `WHR-ST2-61-68`  
+Next Work ID: `WHR-NOTE-61-68`  
 Last reviewed: 2026-06-29
 
 ## Purpose
@@ -35,14 +35,14 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 ## Current position
 
 ```text
-published country pages:       52
-page_qa:                        8
+published country pages:       60
+page_qa:                        0
 profile_ready:                  0
 note_reviewed:                  0
 source_tested:                  0
 not_started:                   38
 total countries/regions:       98
-published routes:              52 EN + 52 JA = 104
+published routes:              60 EN + 60 JA = 120
 final bilingual route target:  98 EN + 98 JA = 196
 ```
 
@@ -51,7 +51,7 @@ Publication debt:
 - entries 29-36 are published after the approved rendered preview;
 - entries 37-44 are published after the approved rendered preview;
 - entries 45-52 are published after the approved rendered preview;
-- entries 53-60 are in publication QA and require one final rendered preview.
+- entries 53-60 are published after the approved rendered preview.
 
 Calendar baseline already exists:
 
@@ -183,9 +183,9 @@ WHR-CP-PUB-45-52
 
 ## Phase 5 — complete entries 53-98 under Source Test v2
 
-Completed: `WHR-ST2-53-60` via PR #326, `WHR-NOTE-53-60` via PR #327, and `WHR-PROFILE-53-60` via PR #328.
+Completed: `WHR-ST2-53-60` via PR #326, `WHR-NOTE-53-60` via PR #327, `WHR-PROFILE-53-60` via PR #328, and `WHR-PUB-53-60` via PR #329 after rendered-preview approval.
 
-Current Work ID: `WHR-PUB-53-60`
+Current Work ID: `WHR-ST2-61-68`
 
 ```text
 WHR-ST2-53-60 -> WHR-NOTE-53-60 -> WHR-PROFILE-53-60 -> WHR-PUB-53-60
