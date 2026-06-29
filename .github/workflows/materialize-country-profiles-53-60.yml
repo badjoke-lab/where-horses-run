@@ -26,16 +26,22 @@ jobs:
           node-version: 22.12.0
       - name: Apply profile state
         run: node scripts/materialize-country-profiles-53-60.mjs
-      - name: Validate profile state
-        run: |
-          node scripts/check-country-profiles-53-60.mjs
-          node scripts/check-country-notes-53-60.mjs
-          node scripts/check-source-test-v2-53-60.mjs
-          node scripts/check-country-page-programme.mjs
-          node scripts/check-country-detail-profile-runtime.mjs
-          node scripts/check-calendar-contracts.mjs
-          node scripts/check-project-governance-docs.mjs
-          node scripts/check-country-page-programme-roadmap.mjs
+      - name: Validate profiles 53-60
+        run: node scripts/check-country-profiles-53-60.mjs
+      - name: Validate notes 53-60
+        run: node scripts/check-country-notes-53-60.mjs
+      - name: Validate Source Test v2 53-60
+        run: node scripts/check-source-test-v2-53-60.mjs
+      - name: Validate country programme
+        run: node scripts/check-country-page-programme.mjs
+      - name: Validate profile runtime
+        run: node scripts/check-country-detail-profile-runtime.mjs
+      - name: Validate Calendar contracts
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Validate governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Validate programme roadmap
+        run: node scripts/check-country-page-programme-roadmap.mjs
       - name: Validate production build
         run: |
           npm install
