@@ -1,10 +1,11 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-06-07T03:30:00.000Z",
+  "generated_at": "2026-06-09T15:02:29.605Z",
   "input_sources": [
     "data/generated/timetables.json",
     "data/generated/japan-active-timetable-records.json",
     "data/generated/normalized-timetable.json",
+    "data/generated/timetable/jra-normalized-timetable.json",
     "data/generated/timetable/hkjc-normalized-timetable.sample.json"
   ],
   "meetings": [
@@ -705,6 +706,35 @@
       "notes": "Meeting-level timetable seed from the official NAR current race information page."
     },
     {
+      "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hanshin-racecourse",
+      "date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:50",
+      "last_race_time_local": "16:15",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-09",
+        "generated_at": "2026-06-09T15:02:29.605Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
+    },
+    {
       "meeting_id": "nar-obihiro-racecourse-2026-06-06",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -740,27 +770,56 @@
       "racecourse_id": "tokyo-racecourse",
       "date": "2026-06-06",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "10:05",
+      "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "jra-calendar",
-        "route_id": "jra-calendar-status-route",
-        "source_status": "partial",
-        "official_source_url": "https://www.jra.go.jp/keiba/calendar/",
-        "source_label": null,
-        "extraction_method": "manual_review",
-        "source_snapshot_path": null,
-        "normalized_from_path": "data/generated/normalized-timetable.json"
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-timetable.json"
       },
       "freshness": {
-        "last_checked_date": "2026-06-05",
-        "generated_at": null,
+        "last_checked_date": "2026-06-09",
+        "generated_at": "2026-06-09T15:02:29.605Z",
         "stale_after_date": null,
-        "freshness_note": null
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
       },
-      "notes": "Manually reviewed meeting-date sample from the official JRA calendar source; no race times are inferred or stored. Rank repaired from B to C because first race time is not stored."
+      "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
+    },
+    {
+      "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hanshin-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:45",
+      "last_race_time_local": "16:15",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-timetable.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-06-09",
+        "generated_at": "2026-06-09T15:02:29.605Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
     },
     {
       "meeting_id": "jra-tokyo-racecourse-2026-06-07",
@@ -769,27 +828,27 @@
       "racecourse_id": "tokyo-racecourse",
       "date": "2026-06-07",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "10:05",
       "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "jra-calendar",
-        "route_id": "jra-calendar-status-route",
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
         "source_status": "verified",
         "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
-        "source_label": null,
-        "extraction_method": "manual_review",
-        "source_snapshot_path": null,
-        "normalized_from_path": "data/generated/normalized-timetable.json"
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-timetable.json"
       },
       "freshness": {
-        "last_checked_date": "2026-06-06",
-        "generated_at": null,
+        "last_checked_date": "2026-06-09",
+        "generated_at": "2026-06-09T15:02:29.605Z",
         "stale_after_date": null,
-        "freshness_note": null
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
       },
-      "notes": "Manually reviewed official JRA daily programme sample for Tokyo Racecourse on 2026-06-07. This record stores only meeting-level summary times and relies on a separate transitional meeting-detail module for public-safe race-by-race post times."
+      "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
     },
     {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
