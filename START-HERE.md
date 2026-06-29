@@ -41,6 +41,8 @@ data/static/calendar-readiness-registry.json
 scripts/check-calendar-contracts.mjs
 ```
 
+Previous completed Work ID: `WHR-CAL-BACKFILL-37-52`
+
 Current Work ID:
 
 ```text
