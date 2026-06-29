@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'scripts/materialize-source-test-v2-61-68.mjs'
+      - 'scripts/check-source-test-v2-53-60.mjs'
       - '.github/workflows/materialize-source-test-v2-61-68.yml'
   push:
     branches: [source-test-v2-61-68]
     paths:
       - 'scripts/materialize-source-test-v2-61-68.mjs'
+      - 'scripts/check-source-test-v2-53-60.mjs'
       - '.github/workflows/materialize-source-test-v2-61-68.yml'
 
 permissions:
@@ -24,27 +26,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Apply Source Test v2 state
-        run: node scripts/materialize-source-test-v2-61-68.mjs
-      - name: Validate Source Test v2
-        run: node scripts/check-source-test-v2-61-68.mjs
-      - name: Validate country programme
-        run: node scripts/check-country-page-programme.mjs
-      - name: Validate programme roadmap
-        run: node scripts/check-country-page-programme-roadmap.mjs
-      - name: Validate governance
-        run: node scripts/check-project-governance-docs.mjs
-      - name: Validate Calendar contracts
-        run: node scripts/check-calendar-contracts.mjs
-      - name: Validate production build
-        run: |
-          npm install
-          npm run build
+      - run: node scripts/materialize-source-test-v2-61-68.mjs
+      - run: node scripts/check-source-test-v2-61-68.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: npm install
+      - run: npm run build
       - name: Commit materialized state
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add START-HERE.md docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv docs/runbooks/source-test-v2-61-68.md data/static/authority-source-inventory.json data/static/calendar-readiness-registry.json scripts/check-country-page-programme.mjs scripts/check-country-page-programme-roadmap.mjs scripts/check-project-governance-docs.mjs scripts/check-calendar-contracts.mjs
+          git add START-HERE.md docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv docs/runbooks/source-test-v2-61-68.md data/static/authority-source-inventory.json data/static/calendar-readiness-registry.json scripts/check-source-test-v2-53-60.mjs scripts/check-country-page-programme.mjs scripts/check-country-page-programme-roadmap.mjs scripts/check-project-governance-docs.mjs scripts/check-calendar-contracts.mjs
           if ! git diff --cached --quiet; then
             git commit -m '[CF-Pages-Skip] Finalize Source Test v2 state 61-68'
             git push origin HEAD:source-test-v2-61-68
