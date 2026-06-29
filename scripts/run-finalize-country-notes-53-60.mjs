@@ -11,6 +11,7 @@ const replacements = [
   ["console.log('CURRENT_WORK_ID: WIRNOTE-53-60');", "console.log('CURRENT_WORK_ID: WHR-NOTE-53-60');"],
   ["  'Latest completed reviewed-note change: PR #327',\" 'roadmap phrases');", "  'Latest completed reviewed-note change: PR #327',\", 'roadmap phrases');"],
   [", \"roadmap logs');", ", 'roadmap logs');"],
+  ["- tracker transition: \\`source_tested\\` to \\`note_reviewed`", "- tracker transition: \\`source_tested\\` to \\`note_reviewed\\`"],
 ];
 
 for (const [before, after] of replacements) {
