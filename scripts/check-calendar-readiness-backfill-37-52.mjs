@@ -15,10 +15,10 @@ const rows = lines.map((line) => line.split('\t'));
 const countries = new Map(rows.filter((row) => Number(row[deliveryIndex]) >= 37 && Number(row[deliveryIndex]) <= 52).map((row) => [row[slugIndex], row[deliveryIndex]]));
 const expected = { malaysia:1, thailand:1, philippines:1, mauritius:1, argentina:1, germany:1, italy:2, spain:1, norway:2, finland:1, netherlands:1, switzerland:2, poland:1, romania:1, serbia:1, slovakia:1 };
 
-if (registry.bootstrap_status !== 'complete_01_52') fail('bootstrap_status must be complete_01_52');
+if (registry.bootstrap_status !== 'complete') fail('bootstrap_status must be complete');
 if (registry.programme_state?.countries_with_closed_decision !== 52) fail('closed country count must be 52');
 if (registry.programme_state?.readiness_records !== 70 || registry.records?.length !== 70) fail('readiness count must be 70');
-if ((registry.programme_state?.next_backfill_work_ids ?? []).length !== 0) fail('next_backfill_work_ids must be empty');
+if (JSON.stringify(registry.programme_state?.next_backfill_work_ids ?? []) !== JSON.stringify(['WHR-ST2-53-60'])) fail('next_backfill_work_ids must point to WHR-ST2-53-60');
 if (inventory.records?.length !== 70) fail('authority inventory count must be 70');
 
 const authorityKeys = new Set((inventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
