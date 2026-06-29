@@ -1,0 +1,50 @@
+name: Materialize Calendar backfill blobs
+
+on:
+  push:
+    branches: [calendar-readiness-backfill-37-52]
+    paths:
+      - '.github/workflows/materialize-calendar-backfill-blobs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-readiness-backfill-37-52
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/apply-calendar-readiness-backfill-37-52.mjs
+      - uses: actions/github-script@v7
+        id: blobs
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const files = [
+              'data/static/authority-source-inventory.json',
+              'data/static/calendar-readiness-registry.json'
+            ];
+            const result = {};
+            for (const file of files) {
+              const content = fs.readFileSync(file).toString('base64');
+              const blob = await github.rest.git.createBlob({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                content,
+                encoding: 'base64'
+              });
+              result[file] = blob.data.sha;
+              core.info(`${file} ${blob.data.sha}`);
+            }
+            fs.writeFileSync('calendar-backfill-blob-shas.json', JSON.stringify(result, null, 2));
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-backfill-blob-shas
+          path: calendar-backfill-blob-shas.json
+          retention-days: 1
