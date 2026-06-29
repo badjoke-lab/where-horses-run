@@ -43,7 +43,7 @@ const expectedSystemCounts = new Map(Object.entries({
   'czech-republic': 3,
 }));
 
-if (!['backfill_in_progress', 'complete_01_52', 'complete', 'revalidation_required'].includes(registry.bootstrap_status)) {
+if (!['backfill_in_progress', 'complete_01_52', 'complete', 'source_test_v2_active', 'revalidation_required'].includes(registry.bootstrap_status)) {
   fail(`unexpected bootstrap_status: ${registry.bootstrap_status}`);
 }
 if (!Array.isArray(registry.records)) fail('registry.records must be an array');

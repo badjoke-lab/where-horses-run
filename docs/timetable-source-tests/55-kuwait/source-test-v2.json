@@ -1,0 +1,51 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "55",
+  "country_id": "kuwait",
+  "country_name_en": "Kuwait",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "single_system",
+  "records": [
+    {
+      "readiness_id": "kuwait--hec-racing-app-system--hec-racing-app",
+      "system_id": "hec-racing-app-system",
+      "system_name_en": "Hunting & Equestrian Club app system",
+      "authority_source_key": "kuwait/hunting-equestrian-club/hec-racing-app",
+      "racecourse_ids": [],
+      "coverage_scope": "system_only",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mobile_app_only",
+      "access_mode": "local_required",
+      "automation_mode": "link_only",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Reopen review if the club publishes a stable public web calendar or documented export.",
+      "blocked_reason": null,
+      "limitations": [
+        "Calendar detail is app-based rather than exposed through a reviewed public web feed.",
+        "Remote structured acquisition is not confirmed."
+      ],
+      "notes": "Keep Kuwait link-only until a stable public timetable source can be reviewed without app-local access."
+    }
+  ],
+  "public_safe": true
+}

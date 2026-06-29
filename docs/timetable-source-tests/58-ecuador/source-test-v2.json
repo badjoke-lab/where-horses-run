@@ -1,0 +1,53 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "58",
+  "country_id": "ecuador",
+  "country_name_en": "Ecuador",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "single_racecourse",
+  "records": [
+    {
+      "readiness_id": "ecuador--miguel-salem-dibo-system--msd-calendar",
+      "system_id": "miguel-salem-dibo-system",
+      "system_name_en": "Hipódromo Miguel Salem Dibo system",
+      "authority_source_key": "ecuador/hipodromo-miguel-salem-dibo/msd-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "javascript_rendered",
+      "access_mode": "javascript_required",
+      "automation_mode": "manual_confirmation",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "fallback": "official_link_only",
+      "source_status": "partial",
+      "revalidation_trigger": "Revalidate when the official next-event or programme route is populated, moved, or structurally changed.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed scope is a single racecourse.",
+        "The next-event area may be empty when no programme is posted.",
+        "Live media, wagering totals, results, and participant information are excluded."
+      ],
+      "notes": "A reviewer may confirm C-level meetings from the official calendar when populated; no unattended acquisition is claimed."
+    }
+  ],
+  "public_safe": true
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "60",
+  "country_id": "belgium",
+  "country_name_en": "Belgium",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "complete",
+  "records": [{
+    "readiness_id": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
+    "system_id": "belgian-federation-calendar-system",
+    "system_name_en": "Belgian federation racing calendar",
+    "authority_source_key": "belgium/belgian-federation-horse-racing/belgium-racing-calendar",
+    "racecourse_ids": [],
+    "coverage_scope": "countrywide",
+    "technical_rank": "A",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": true, "last_race_time": true, "per_race_post_times": true, "race_name": true, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "semi_automatic",
+    "refresh_classes": ["daily", "weekly", "near_meeting"],
+    "readiness": "prototype_ready",
+    "implementation_status": "not_started",
+    "fallback": "downgrade_to_C",
+    "source_status": "verified",
+    "revalidation_trigger": "Revalidate if the federation calendar filters, racecourse list, or race-page structure changes.",
+    "blocked_reason": null,
+    "limitations": ["The public country ceiling remains C despite A-level technical capability.", "Higher-detail programme fields remain excluded from country display.", "Racecourse IDs await a separate inventory migration."],
+    "notes": "The national federation calendar is a strong prototype candidate, with higher-detail fields held behind the reviewed country display boundary."
+  }],
+  "public_safe": true
+}

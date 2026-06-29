@@ -17,11 +17,11 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest completed Calendar Readiness change: PR #323
+Latest completed Source Test v2 change: PR #326 — entries 53-60
 Latest country publication: PR #325 — entries 45-52 approved after rendered preview
 Publication gate: PR #325 — entries 45-52 published after approved rendered preview
-Current Work ID: WHR-ST2-53-60
-Next working branch: source-test-v2-53-60
+Current Work ID: WHR-NOTE-53-60
+Next working branch: country-notes-53-60
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
@@ -31,8 +31,8 @@ Current tracker counts after entries 45-52 preview approval:
 published:       52
 profile_ready:    0
 note_reviewed:    0
-source_tested:    0
-not_started:     46
+source_tested:    8
+not_started:     38
 total:           98
 ```
 
@@ -48,7 +48,7 @@ profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #325 publishes entries 45-52 after GitHub QA and rendered-preview approval. Source Test v2 work for entries 53-60 is now active.
+PR #326 closes Source Test v2 and Calendar Readiness decisions for entries 53-60. Reviewed-note work for these entries is now active.
 
 ## 3. Operating model
 
@@ -138,6 +138,8 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #323 | merged | Completed entries 37-52 with 19 additional system/source decisions; implementation remains not started. |
 | #324 | merged | Added reviewed Profile v2 records for entries 45-52. |
 | #325 | publication | Published entries 45-52 after rendered-preview approval. |
+| #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
+| #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
 
 ## 7. Publication gates
 
@@ -228,7 +230,20 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 
 All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
-## 10. Remaining wave schedule
+## 10. Wave 53-60
+
+Entries: Cyprus, Panama, Kuwait, Kenya, Pakistan, Ecuador, Venezuela, and Belgium.
+
+| Work | Status | Result |
+| --- | --- | --- |
+| #326 / `WHR-ST2-53-60` | complete | Added eight public-safe Source Test v2 records and eight Calendar Readiness decisions. |
+| `WHR-NOTE-53-60` | next | Convert the verified boundaries into reviewed editorial notes. |
+| `WHR-PROFILE-53-60` | planned | Add bilingual Profile v2 records. |
+| `WHR-PUB-53-60` | planned | QA and publish after one rendered preview. |
+
+Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked. Belgium retains technical rank A behind country public ceiling C; all other country ceilings remain C.
+
+## 11. Remaining wave schedule
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | ---: | ---: | ---: | ---: |
@@ -242,7 +257,7 @@ All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, B
 
 Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
 
-## 11. Final release gate
+## 12. Final release gate
 
 ### PR #340 — full programme audit
 
@@ -273,7 +288,7 @@ final programme report is generated
 
 The programme closes only after PR #340 is merged and the tracker reports 98 published rows.
 
-## 12. Roadmap maintenance rules
+## 13. Roadmap maintenance rules
 
 Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 
