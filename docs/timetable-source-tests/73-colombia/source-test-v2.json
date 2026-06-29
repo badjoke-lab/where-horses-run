@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "73",
+  "country_id": "colombia",
+  "country_name_en": "Colombia",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "blocked",
+  "records": [{
+    "readiness_id": "colombia--national-racing-regulatory-context--coljuegos-horse-racing-regulation",
+    "system_id": "national-racing-regulatory-context",
+    "system_name_en": "Colombian horse-racing regulatory context",
+    "authority_source_key": "colombia/coljuegos/coljuegos-horse-racing-regulation",
+    "racecourse_ids": [],
+    "coverage_scope": "archive_or_explanatory",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "blocked",
+    "refresh_classes": ["event_driven", "manual"],
+    "readiness": "blocked",
+    "implementation_status": "not_started",
+    "fallback": "hide_from_current_calendar",
+    "source_status": "stale",
+    "revalidation_trigger": "Revalidate when an official Colombian authority or racecourse publishes a stable current meeting calendar.",
+    "blocked_reason": "The reviewed official material is regulatory and historical; it does not confirm a current domestic meeting calendar.",
+    "limitations": ["The source establishes regulatory context rather than current racing activity.", "No current racecourse or meeting-date pairing is approved.", "Historical plans or betting regulations must not generate current calendar rows."],
+    "notes": "Keep Colombia out of current-calendar output until a current official meeting source is reviewed."
+  }],
+  "public_safe": true
+}
