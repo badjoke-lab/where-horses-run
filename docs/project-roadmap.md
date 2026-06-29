@@ -106,6 +106,11 @@ Use stable Work IDs. GitHub PR numbers are recorded after creation but do not de
 
 Every substantive PR records the Work ID, canonical documents reviewed, tracker/registry changes, runtime behaviour, display boundary, deployment requirement, completion conditions, and next Work ID.
 
+Historical transition record from the state closed by PR #323:
+
+> Current Work ID: `WHR-CAL-BACKFILL-37-52`  
+> Next Work ID: `WHR-CP-PROFILE-45-52`
+
 ## Phase 0 — governance alignment
 
 Completed through PR #314 and PR #315:
