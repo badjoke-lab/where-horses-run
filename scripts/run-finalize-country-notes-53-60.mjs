@@ -25,3 +25,5 @@ try {
 } finally {
   fs.rmSync(fixedPath, { force: true });
 }
+
+// One-time wrapper; remove after canonical note state is committed.
