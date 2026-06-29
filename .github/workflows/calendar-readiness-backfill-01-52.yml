@@ -71,12 +71,19 @@ jobs:
             const repo = context.repo.repo;
             const parent = context.payload.pull_request.head.sha;
             const parentCommit = await github.rest.git.getCommit({ owner, repo, commit_sha: parent });
+            const currentTree = await github.rest.git.getTree({
+              owner,
+              repo,
+              tree_sha: parentCommit.data.tree.sha,
+              recursive: 'true'
+            });
             const files = [
               'data/static/authority-source-inventory.json',
               'data/static/calendar-readiness-registry.json'
             ];
             const tree = [];
-            const result = { parent };
+            const result = { parent, updated: false };
+            let changed = false;
             for (const file of files) {
               const blob = await github.rest.git.createBlob({
                 owner,
@@ -84,25 +91,40 @@ jobs:
                 content: fs.readFileSync(file).toString('base64'),
                 encoding: 'base64'
               });
+              const current = currentTree.data.tree.find((entry) => entry.path === file);
               tree.push({ path: file, mode: '100644', type: 'blob', sha: blob.data.sha });
               result[file] = blob.data.sha;
+              if (!current || current.sha !== blob.data.sha) changed = true;
             }
-            const createdTree = await github.rest.git.createTree({
-              owner,
-              repo,
-              base_tree: parentCommit.data.tree.sha,
-              tree
-            });
-            const commit = await github.rest.git.createCommit({
-              owner,
-              repo,
-              message: '[CF-Pages-Skip] Finalize Calendar Readiness data 37-52',
-              tree: createdTree.data.sha,
-              parents: [parent]
-            });
-            result.tree = createdTree.data.sha;
-            result.commit = commit.data.sha;
-            core.info(`prepared commit ${commit.data.sha}`);
+            if (changed) {
+              const createdTree = await github.rest.git.createTree({
+                owner,
+                repo,
+                base_tree: parentCommit.data.tree.sha,
+                tree
+              });
+              const commit = await github.rest.git.createCommit({
+                owner,
+                repo,
+                message: '[CF-Pages-Skip] Finalize Calendar Readiness data 37-52',
+                tree: createdTree.data.sha,
+                parents: [parent]
+              });
+              await github.rest.git.updateRef({
+                owner,
+                repo,
+                ref: `heads/${context.payload.pull_request.head.ref}`,
+                sha: commit.data.sha,
+                force: false
+              });
+              result.updated = true;
+              result.tree = createdTree.data.sha;
+              result.commit = commit.data.sha;
+              core.info(`updated branch to ${commit.data.sha}`);
+            } else {
+              result.commit = parent;
+              core.info('Calendar data blobs already match the branch head');
+            }
             fs.writeFileSync('calendar-backfill-commit.json', JSON.stringify(result, null, 2));
       - uses: actions/upload-artifact@v4
         if: github.event_name == 'pull_request'
