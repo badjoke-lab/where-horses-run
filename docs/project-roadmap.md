@@ -188,7 +188,7 @@ Completed: `WHR-ST2-53-60` via PR #326, `WHR-NOTE-53-60` via PR #327, `WHR-PROFI
 
 Completed: `WHR-ST2-61-68` via PR #330, `WHR-NOTE-61-68` via PR #331, `WHR-PROFILE-61-68` via PR #332, and `WHR-PUB-61-68` via PR #333 after rendered-preview approval.
 
-Completed: `WHR-ST2-69-76` via PR #334 with eight Source Test v2 and Calendar Readiness decisions.
+Completed: `WHR-ST2-69-76` via PR #335 with eight Source Test v2 and Calendar Readiness decisions.
 
 Current Work ID: `WHR-NOTE-69-76`
 
