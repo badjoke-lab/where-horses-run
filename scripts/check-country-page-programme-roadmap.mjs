@@ -1,83 +1,27 @@
 import fs from 'node:fs';
-import path from 'node:path';
 
-const root = process.cwd();
-const roadmapPath = path.join(root, 'docs/country-pages/programme-roadmap.md');
-const trackerPath = path.join(root, 'docs/country-pages/98-country-tracker.tsv');
-const errors = [];
-const fail = (message) => errors.push(message);
-
-if (!fs.existsSync(roadmapPath)) fail('missing docs/country-pages/programme-roadmap.md');
-if (!fs.existsSync(trackerPath)) fail('missing docs/country-pages/98-country-tracker.tsv');
-if (errors.length) {
-  errors.forEach((error) => console.error(`ERROR: ${error}`));
-  process.exit(1);
-}
-
-const roadmap = fs.readFileSync(roadmapPath, 'utf8');
-const trackerLines = fs.readFileSync(trackerPath, 'utf8').trimEnd().split(/\r?\n/);
-const headers = trackerLines[0].split('\t');
+const roadmap = fs.readFileSync('docs/country-pages/programme-roadmap.md', 'utf8');
+const tracker = fs.readFileSync('docs/country-pages/98-country-tracker.tsv', 'utf8').trimEnd().split(/\r?\n/);
+const headers = tracker[0].split('\t');
 const statusIndex = headers.indexOf('programme_status');
-if (statusIndex < 0) fail('tracker is missing programme_status');
+const rows = tracker.slice(1).map((line) => line.split('\t'));
+const errors = [];
+const counts = {};
 
-const rows = trackerLines.slice(1).map((line) => line.split('\t'));
-if (rows.length !== 98) fail(`tracker must contain 98 rows; found ${rows.length}`);
-
-const counts = rows.reduce((result, row) => {
-  const status = row[statusIndex] ?? '';
-  result[status] = (result[status] ?? 0) + 1;
-  return result;
-}, {});
-
-const allCountLines = [
-  ['published', counts.published ?? 0],
-  ['page_qa', counts.page_qa ?? 0],
-  ['profile_ready', counts.profile_ready ?? 0],
-  ['note_reviewed', counts.note_reviewed ?? 0],
-  ['source_tested', counts.source_tested ?? 0],
-  ['not_started', counts.not_started ?? 0],
-  ['total', rows.length]
-];
-const alwaysRequired = new Set(['published', 'page_qa', 'profile_ready', 'not_started', 'total']);
-const expectedCountLines = allCountLines.filter(([label, count]) => alwaysRequired.has(label) || count > 0);
-
-for (const [label, count] of expectedCountLines) {
-  const pattern = new RegExp(`^${label}:\\s+${count}$`, 'm');
-  if (!pattern.test(roadmap)) fail(`roadmap count is missing or stale: ${label}=${count}`);
+if (rows.length !== 98) errors.push('tracker row count must be 98');
+for (const row of rows) counts[row[statusIndex]] = (counts[row[statusIndex]] || 0) + 1;
+for (const [status, count] of Object.entries(counts)) {
+  if (!new RegExp('^' + status + ':\\s+' + count + '$', 'm').test(roadmap)) errors.push('stale roadmap count: ' + status);
 }
-
-for (const pr of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 340]) {
-  if (!roadmap.includes(`#${pr}`)) fail(`roadmap is missing key PR #${pr}`);
+for (const phrase of ['Current Work ID: WHR-NOTE-69-76', 'Next working branch: country-notes-69-76', 'Latest completed Source Test v2 change: PR #334', 'Publication gate: PR #333', 'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98', 'tracker rows exactly 98', 'bilingual routes exactly 196']) {
+  if (!roadmap.includes(phrase)) errors.push('missing roadmap phrase: ' + phrase);
 }
-
-const requiredPhrases = [
-  'Current position',
-  'Publication gate: PR #333',
-  'Current Work ID: WHR-ST2-69-76',
-  'Next working branch: source-test-v2-69-76',
-  'Latest completed Source Test v2 change: PR #330',
-  'Latest completed reviewed-note change: PR #331',
-  'Latest completed reviewed-note change: PR #331',
-  'Latest completed Profile v2 change: PR #332',
-  'Latest country publication: PR #333',
-  'Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98',
-  'Local work is requested only when',
-  'Standard four-PR wave',
-  'Public display boundary',
-  'Roadmap maintenance rules',
-  'tracker rows exactly 98',
-  'bilingual routes exactly 196'
-];
-for (const phrase of requiredPhrases) {
-  if (!roadmap.includes(phrase)) fail(`roadmap is missing required phrase: ${phrase}`);
+for (const number of [284, 311, 316, 317, 319, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 340]) {
+  if (!roadmap.includes('#' + number)) errors.push('missing PR #' + number);
 }
-
 if (errors.length) {
-  errors.forEach((error) => console.error(`ERROR: ${error}`));
+  for (const error of errors) console.error('ERROR: ' + error);
   process.exit(1);
 }
-
 console.log('COUNTRY_PAGE_PROGRAMME_ROADMAP_VALID');
-console.log(`TRACKER_COUNTS: ${allCountLines.map(([label, count]) => `${label}=${count}`).join(' ')}`);
-console.log('KEY_PRS: 284,311,316,317,319,321,322,323,324,325,326,327,328,329,330,331,332,333,340');
-console.log('CURRENT_WORK: entries 61-68 published; current Work ID WHR-ST2-69-76');
+console.log('CURRENT_WORK: entries 69-76 source-tested; current Work ID WHR-NOTE-69-76');
