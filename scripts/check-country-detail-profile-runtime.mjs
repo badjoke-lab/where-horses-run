@@ -59,8 +59,8 @@ for (const [index, profile] of profiles.entries()) {
   inspectKeys(profile, `profiles[${index}]`);
 }
 
-if (profiles.length !== 44) fail(`runtime must contain 44 profile-v2 records; found ${profiles.length}`);
-for (const countryId of ['japan', 'hong-kong', 'malaysia', 'thailand', 'philippines', 'mauritius', 'argentina', 'germany', 'italy', 'spain']) {
+if (profiles.length !== 52) fail(`runtime must contain 52 profile-v2 records; found ${profiles.length}`);
+for (const countryId of ['japan', 'hong-kong', 'malaysia', 'thailand', 'philippines', 'mauritius', 'argentina', 'germany', 'italy', 'spain', 'norway', 'finland', 'netherlands', 'switzerland', 'poland', 'romania', 'serbia', 'slovakia']) {
   if (!seenCountryIds.has(countryId)) fail(`missing profile-v2 record: ${countryId}`);
 }
 
@@ -74,10 +74,10 @@ if (!runtimeText.includes('organiser_source_ids') || !runtimeText.includes('dist
 const dataText = read('src/lib/data.ts');
 if (!dataText.includes('const allProfilesV2 = [')) fail('data.ts must combine profile-v2 batches');
 if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2)')) fail('data.ts must build the runtime profile collection');
-for (let deliveryNo = 13; deliveryNo <= 44; deliveryNo += 1) {
+for (let deliveryNo = 13; deliveryNo <= 52; deliveryNo += 1) {
   if (!dataText.includes(`countryProfilesV2${deliveryNo}`)) fail(`data.ts must load profile batch ${deliveryNo}`);
 }
-for (const token of ['countryPageCountries3744', 'countryPageSources3744']) {
+for (const token of ['countryPageCountries3744', 'countryPageSources3744', 'countryPageCountries4552', 'countryPageSources4552']) {
   if (!dataText.includes(token)) fail(`data.ts must load ${token}`);
 }
 
