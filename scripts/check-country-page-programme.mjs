@@ -117,7 +117,7 @@ const counts = rows.reduce((result, row) => {
   result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
   return result;
 }, {});
-for (const [status, expected] of Object.entries({ published: 52, profile_ready: 0, source_tested: 0, note_reviewed: 0, page_qa: 0, not_started: 46 })) {
+for (const [status, expected] of Object.entries({ published: 52, profile_ready: 0, source_tested: 8, note_reviewed: 0, page_qa: 0, not_started: 38 })) {
   if ((counts[status] ?? 0) !== expected) fail(`tracker must contain ${expected} ${status} rows; found ${counts[status] ?? 0}`);
 }
 
@@ -132,4 +132,4 @@ if (errors.length) {
 }
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
-console.log('PROGRAMME_COUNTS: published=52 profile_ready=0 note_reviewed=0 not_started=46');
+console.log('PROGRAMME_COUNTS: published=52 source_tested=8 note_reviewed=0 not_started=38');

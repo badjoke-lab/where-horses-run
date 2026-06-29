@@ -41,16 +41,16 @@ data/static/calendar-readiness-registry.json
 scripts/check-calendar-contracts.mjs
 ```
 
-Previous completed Work ID: `WHR-CP-PUB-45-52`
+Previous completed Work ID: `WHR-ST2-53-60`
 
 Current Work ID:
 
 ```text
-WHR-ST2-53-60
+WHR-NOTE-53-60
 ```
 
 Next Work ID:
 
 ```text
-WHR-NOTE-53-60
+WHR-PROFILE-53-60
 ```
