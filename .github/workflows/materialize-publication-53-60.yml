@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'scripts/materialize-publication-53-60.mjs'
+      - 'scripts/patch-profile-validator-for-publication-53-60.mjs'
       - '.github/workflows/materialize-publication-53-60.yml'
   push:
     branches: [country-publish-53-60]
     paths:
       - 'scripts/materialize-publication-53-60.mjs'
+      - 'scripts/patch-profile-validator-for-publication-53-60.mjs'
       - '.github/workflows/materialize-publication-53-60.yml'
 
 permissions:
@@ -25,7 +27,9 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Apply publication QA state
-        run: node scripts/materialize-publication-53-60.mjs
+        run: |
+          node scripts/materialize-publication-53-60.mjs
+          node scripts/patch-profile-validator-for-publication-53-60.mjs
       - name: Build production output
         run: |
           npm install
@@ -48,7 +52,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv scripts/check-country-page-publication-53-60.mjs scripts/check-country-page-programme.mjs scripts/check-country-page-programme-roadmap.mjs
+          git add docs/project-roadmap.md docs/country-pages/programme-roadmap.md docs/country-pages/98-country-tracker.tsv scripts/check-country-page-publication-53-60.mjs scripts/check-country-profiles-53-60.mjs scripts/check-country-page-programme.mjs scripts/check-country-page-programme-roadmap.mjs
           if ! git diff --cached --quiet; then
             git commit -m '[CF-Pages-Skip] Enter publication QA for entries 53-60'
             git push origin HEAD:country-publish-53-60
