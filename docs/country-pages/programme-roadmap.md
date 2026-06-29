@@ -4,7 +4,7 @@ Status: active canonical roadmap
 Scope: country and region detail page programme  
 Canonical tracker: `docs/country-pages/98-country-tracker.tsv`  
 Completion contract: `docs/country-pages/completion-contract.md`  
-Last roadmap review: 2026-06-28
+Last roadmap review: 2026-06-29
 
 ## 1. Purpose
 
@@ -17,10 +17,10 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest confirmed merge: PR #322
+Latest completed Calendar Readiness change: PR #323
 Publication gate: PR #319 — entries 37-44 published after approved rendered preview
-Current Work ID: WHR-CAL-BACKFILL-37-52
-Next working branch: calendar-readiness-backfill-37-52
+Current Work ID: WHR-CP-PROFILE-45-52
+Next working branch: country-profiles-45-52
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
@@ -47,7 +47,7 @@ profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #322 closes Calendar Readiness decisions for entries 21-36, bringing the cumulative state to 36 countries and 51 system/source records. Entries 37-52 are the active Readiness backfill, and Profile v2 work for entries 45-52 remains queued.
+PR #323 completes Calendar Readiness decisions for entries 37-52, bringing the cumulative state to 52 countries and 70 system/source records. Profile v2 work for entries 45-52 is now active.
 
 ## 3. Operating model
 
@@ -133,7 +133,8 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #317 | merged | Published entries 29-36 after immutable rendered-preview approval. |
 | #319 | merged | Published entries 37-44 after rendered-preview approval. |
 | #321 | merged | Closed Calendar Readiness for entries 01-20 with 30 system/source decisions. |
-| #322 | Calendar Readiness | Closed entries 21-36 with 21 additional system/source decisions; implementation remains not started. |
+| #322 | merged | Closed entries 21-36 with 21 additional system/source decisions; implementation remains not started. |
+| #323 | Calendar Readiness | Completes entries 37-52 with 19 additional system/source decisions; implementation remains not started. |
 
 ## 7. Publication gates
 
@@ -208,8 +209,8 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 | ---: | --- | --- |
 | #309 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
 | #310 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
-| #314 | next | Add Profile v2 records and reach `profile_ready`. |
-| #315 | planned | QA and publish sixteen routes after one final rendered preview. |
+| `WHR-CP-PROFILE-45-52` | next | Add Profile v2 records and reach `profile_ready`. |
+| `WHR-CP-PUB-45-52` | planned | QA and publish sixteen routes after one final rendered preview. |
 
 All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
