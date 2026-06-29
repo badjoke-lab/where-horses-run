@@ -33,7 +33,9 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: https://preview-country-pages-45-52.where-horses-run.pages.dev
-        run: node /tmp/check-rendered-preview-45-52.mjs
+        run: |
+          set -o pipefail
+          node /tmp/check-rendered-preview-45-52.mjs 2>&1 | tee artifacts/rendered-preview-45-52/validation.log
       - name: Record workflow run
         if: always()
         env:
