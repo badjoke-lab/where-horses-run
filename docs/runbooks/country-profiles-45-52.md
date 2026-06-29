@@ -1,6 +1,6 @@
 # Country Profiles v2 — entries 45-52
 
-Status: in progress  
+Status: complete  
 Work ID: `WHR-CP-PROFILE-45-52`  
 Deployment: not required
 
@@ -17,7 +17,7 @@ Deployment: not required
 52 Slovakia
 ```
 
-## Completion target
+## Completed result
 
 - eight reviewed Country Profile v2 records;
 - eight country records and eighteen official source records;
@@ -25,8 +25,8 @@ Deployment: not required
 - separate Swiss trot/gallop systems;
 - Romania and Serbia remain partial country coverage;
 - all country public ceilings remain C;
-- tracker transitions from `note_reviewed` to `profile_ready`;
-- English and Japanese route states become `complete` but not `published`;
+- tracker transitioned from `note_reviewed` to `profile_ready`;
+- English and Japanese route states are `complete` but not `published`;
 - publication QA remains `not_started`.
 
 ## Checks
