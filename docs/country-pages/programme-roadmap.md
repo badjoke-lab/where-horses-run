@@ -145,6 +145,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #327 | reviewed notes | Completed public-safe editorial notes for entries 53-60. |
 | #328 | Profile v2 | Added reviewed bilingual Profile v2 records and generated complete English and Japanese routes for entries 53-60. |
 | #329 | publication QA | GitHub QA active; final rendered preview and publication approval pending. |
+| #329 | publication QA | GitHub QA active; final rendered preview and publication approval pending. |
 
 ## 7. Publication gates
 
