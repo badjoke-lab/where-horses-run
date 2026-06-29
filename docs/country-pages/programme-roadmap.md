@@ -19,8 +19,8 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ```text
 Latest completed Calendar Readiness change: PR #323
 Publication gate: PR #319 — entries 37-44 published after approved rendered preview
-Current Work ID: WHR-CP-PROFILE-45-52
-Next working branch: country-profiles-45-52
+Current Work ID: WHR-CP-PUB-45-52
+Next working branch: country-pages-45-52-publication-qa
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
@@ -28,8 +28,8 @@ Current tracker counts after entries 37-44 preview approval:
 
 ```text
 published:       44
-profile_ready:    0
-note_reviewed:    8
+profile_ready:    8
+note_reviewed:    0
 source_tested:    0
 not_started:     46
 total:           98
@@ -47,7 +47,7 @@ profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #323 completes Calendar Readiness decisions for entries 37-52, bringing the cumulative state to 52 countries and 70 system/source records. Profile v2 work for entries 45-52 is now active.
+PR #323 completes Calendar Readiness decisions for entries 37-52. Profile v2 records for entries 45-52 are complete and publication QA is now active.
 
 ## 3. Operating model
 
@@ -209,8 +209,8 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 | ---: | --- | --- |
 | #309 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
 | #310 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
-| `WHR-CP-PROFILE-45-52` | next | Add Profile v2 records and reach `profile_ready`. |
-| `WHR-CP-PUB-45-52` | planned | QA and publish sixteen routes after one final rendered preview. |
+| `WHR-CP-PROFILE-45-52` | complete | Added eight reviewed Profile v2 records and reached `profile_ready`. |
+| `WHR-CP-PUB-45-52` | next | QA and publish sixteen routes after one final rendered preview. |
 
 All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
