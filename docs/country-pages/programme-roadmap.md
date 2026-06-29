@@ -20,19 +20,19 @@ The PR-number assignments in the older schedule sections are historical. Active 
 Latest completed Source Test v2 change: PR #330 — entries 61-68
 Latest completed reviewed-note change: PR #331 — entries 61-68
 Latest completed Profile v2 change: PR #332 — entries 61-68
-Latest country publication: PR #329 — entries 53-60 approved after rendered preview
-Publication gate: PR #329 — entries 53-60 published after approved rendered preview
-Current Work ID: WHR-PUB-61-68
-Next working branch: country-publish-61-68
+Latest country publication: PR #333 — entries 61-68 approved after rendered preview
+Publication gate: PR #333 — entries 61-68 published after approved rendered preview
+Current Work ID: WHR-ST2-69-76
+Next working branch: source-test-v2-69-76
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after Profile v2 61-68:
+Current tracker counts after publication 61-68:
 
 ```text
-published:       60
+published:       68
 page_qa:          0
-profile_ready:    8
+profile_ready:    0
 note_reviewed:    0
 source_tested:    0
 not_started:     30
@@ -42,19 +42,19 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   60
-formally published Japanese routes:  60
-formally published total routes:    120
+formally published English routes:   68
+formally published Japanese routes:  68
+formally published total routes:    136
 page-QA English routes:                0
 page-QA Japanese routes:               0
 page-QA total routes:                  0
-profile-ready English routes:           8
-profile-ready Japanese routes:          8
-profile-ready total routes:            16
+profile-ready English routes:           0
+profile-ready Japanese routes:          0
+profile-ready total routes:             0
 final target routes:                196
 ```
 
-PR #332 completes reviewed bilingual Profile v2 records for entries 61-68. QA and publication work for these entries is now active.
+PR #333 publishes entries 61-68 after the approved rendered preview. Source Test v2 for entries 69-76 is now active.
 
 ## 3. Operating model
 
@@ -151,6 +151,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #330 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 61-68. |
 | #331 | reviewed notes | Completed public-safe editorial notes for entries 61-68. |
 | #332 | Profile v2 | Added reviewed bilingual Profile v2 records and complete English/Japanese routes for entries 61-68. |
+| #333 | publication | Published entries 61-68 after rendered-preview approval. |
 
 ## 7. Publication gates
 
@@ -209,6 +210,18 @@ Rendered preview approval:
 5. Evidence artifact `rendered-preview-53-60` is artifact `7947674868` with digest `sha256:df4d7c5250a4f167f86354fc4e0344bf9ec6795a095c2b1f3f6e6c1f1f2ec28d`; rendered run `28361835722` completed with 0 errors.
 6. Entries 53-60 are recorded as `published` on 2026-06-29.
 7. PR #329 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
+
+### PR #333 — entries 61-68
+
+Rendered preview approval:
+
+1. Cloudflare Pages deployment `94121055-c2cf-4d21-bb32-16325e184a32` succeeded from `preview-country-pages-61-68`.
+2. All 8 English and 8 Japanese routes passed rendered route checks.
+3. Slovenia, Dominican Republic, Mainland China, and Indonesia passed English/Japanese desktop 1440x1200 and Pixel 7 412x915 review.
+4. Canonical, hreflang, language switching, official links, empty states, CJK rendering, horizontal overflow, media exclusion, and C-level time-column suppression passed.
+5. Evidence artifact `rendered-preview-61-68` is artifact `7950774820` with digest `sha256:dbb5126e397cf026d23244b153d5029bebe37ddcf83cb2146d7a5e876ff32d00`; rendered run `28369320969` completed with 0 errors.
+6. Entries 61-68 are recorded as `published` on 2026-06-29.
+7. PR #333 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
 
 ## 8. Wave 37-44
 
@@ -275,7 +288,7 @@ Entries: Slovenia, Croatia, Dominican Republic, Tunisia, Lebanon, Libya, Mainlan
 | #330 / `WHR-ST2-61-68` | complete | Added eight Source Test v2 records and eight Calendar Readiness decisions. |
 | #331 / `WHR-NOTE-61-68` | complete | Added eight reviewed editorial notes with explicit scope and limitations. |
 | #332 / `WHR-PROFILE-61-68` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| `WHR-PUB-61-68` | next | QA and publish after one rendered preview. |
+| #333 / `WHR-PUB-61-68` | complete | Published all sixteen routes after approved rendered-preview QA. |
 
 Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked. Every country public ceiling remains C.
 

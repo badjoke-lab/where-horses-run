@@ -1,0 +1,79 @@
+name: Country page publication 61-68
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/**'
+      - 'docs/calendar/**'
+      - 'docs/governance/**'
+      - 'docs/runbooks/country-pages-61-68-publication-qa.md'
+      - 'data/static/country-page-countries-61-68.json'
+      - 'data/static/country-page-sources-61-68.json'
+      - 'data/static/country-profiles-v2-6*.json'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/**'
+      - 'scripts/check-country-page-publication-61-68.mjs'
+      - 'scripts/check-country-profiles-61-68.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-page-publication-61-68.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/**'
+      - 'docs/calendar/**'
+      - 'docs/governance/**'
+      - 'docs/runbooks/country-pages-61-68-publication-qa.md'
+      - 'data/static/country-page-countries-61-68.json'
+      - 'data/static/country-page-sources-61-68.json'
+      - 'data/static/country-profiles-v2-6*.json'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/countries/**'
+      - 'src/pages/ja/countries/**'
+      - 'src/styles/**'
+      - 'scripts/check-country-page-publication-61-68.mjs'
+      - 'scripts/check-country-profiles-61-68.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - '.github/workflows/country-page-publication-61-68.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: npm run build
+      - run: node scripts/check-country-page-publication-61-68.mjs
+      - run: node scripts/check-country-profiles-61-68.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
