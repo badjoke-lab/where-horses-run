@@ -1,8 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-CP-PUB-45-52`  
-Next Work ID: `WHR-ST2-53-60`  
+Current Work ID: `WHR-ST2-53-60`  
+Next Work ID: `WHR-NOTE-53-60`  
 Last reviewed: 2026-06-29
 
 ## Purpose
@@ -35,12 +35,12 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 ## Current position
 
 ```text
-published country pages:       44
-profile_ready:                  8
+published country pages:       52
+profile_ready:                  0
 note_reviewed:                  0
 not_started:                   46
 total countries/regions:       98
-published routes:              44 EN + 44 JA = 88
+published routes:              52 EN + 52 JA = 104
 final bilingual route target:  98 EN + 98 JA = 196
 ```
 
@@ -48,7 +48,7 @@ Publication debt:
 
 - entries 29-36 are published after the approved rendered preview;
 - entries 37-44 are published after the approved rendered preview;
-- entries 45-52 are profile-ready and need publication.
+- entries 45-52 are published after the approved rendered preview.
 
 Calendar baseline already exists:
 
@@ -145,8 +145,9 @@ Completed:
 
 - `WHR-CP-PUB-29-36` via PR #317 after immutable rendered-preview approval.
 - `WHR-CP-PUB-37-44` via PR #319 after rendered-preview approval.
+- `WHR-CP-PUB-45-52` via PR #325 after rendered-preview approval.
 
-The publication debt for entries 29-44 is closed.
+The publication debt for entries 29-52 is closed.
 
 ## Phase 3 — Calendar Readiness backfill
 
@@ -158,7 +159,7 @@ Completed:
 
 Calendar Readiness backfill 01-52 is complete.
 
-Current Work ID: `WHR-CP-PUB-45-52`
+Next programme Work ID: `WHR-ST2-53-60`
 
 ```text
 WHR-CAL-BACKFILL-01-20
@@ -170,9 +171,7 @@ Reuse reviewed evidence. Do not invent automation claims, parser availability, o
 
 ## Phase 4 — finish entries 45-52
 
-Completed: `WHR-CP-PROFILE-45-52`.
-
-Current Work ID: `WHR-CP-PUB-45-52`
+Completed: `WHR-CP-PROFILE-45-52` via PR #324 and `WHR-CP-PUB-45-52` via PR #325.
 
 ```text
 WHR-CP-PROFILE-45-52
