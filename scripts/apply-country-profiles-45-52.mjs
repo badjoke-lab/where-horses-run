@@ -52,9 +52,8 @@ programme = replaceRequired(programme, '| `WHR-CP-PROFILE-45-52` | next | Add Pr
 write('docs/country-pages/programme-roadmap.md', programme);
 
 let calendarCheck = read('scripts/check-calendar-contracts.mjs');
-calendarCheck = replaceRequired(calendarCheck, "['Current Work ID: `WHR-CP-PROFILE-45-52`', 'Next Work ID: `WHR-CP-PUB-45-52`']", "['Current Work ID: `WHR-CP-PUB-45-52`', 'Next Work ID: `WHR-ST2-53-60`']", 'calendar roadmap check');
-calendarCheck = replaceRequired(calendarCheck, "['WHR-CP-PROFILE-45-52', 'WHR-CP-PUB-45-52']", "['WHR-CP-PUB-45-52', 'WHR-ST2-53-60']", 'calendar start check');
-calendarCheck = replaceRequired(calendarCheck, "console.log('CURRENT_WORK_ID: WHR-CP-PROFILE-45-52');\nconsole.log('NEXT_WORK_ID: WHR-CP-PUB-45-52');", "console.log('CURRENT_WORK_ID: WHR-CP-PUB-45-52');\nconsole.log('NEXT_WORK_ID: WHR-ST2-53-60');", 'calendar logs');
+calendarCheck = replaceRequired(calendarCheck, "['Current Work ID: `WHR-CAL-BACKFILL-37-52`', 'Next Work ID: `WHR-CP-PROFILE-45-52`']", "['Current Work ID: `WHR-CP-PUB-45-52`', 'Next Work ID: `WHR-ST2-53-60`']", 'calendar roadmap check');
+calendarCheck = replaceRequired(calendarCheck, "['WHR-CAL-BACKFILL-37-52', 'WHR-CP-PROFILE-45-52']", "['WHR-CP-PUB-45-52', 'WHR-ST2-53-60']", 'calendar start check');
 write('scripts/check-calendar-contracts.mjs', calendarCheck);
 
 let governanceCheck = read('scripts/check-project-governance-docs.mjs');
