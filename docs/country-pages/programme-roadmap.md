@@ -19,19 +19,20 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ```text
 Latest completed Source Test v2 change: PR #326 — entries 53-60
 Latest completed reviewed-note change: PR #327 — entries 53-60
+Latest completed Profile v2 change: PR #328 — entries 53-60
 Latest country publication: PR #325 — entries 45-52 approved after rendered preview
 Publication gate: PR #325 — entries 45-52 published after approved rendered preview
-Current Work ID: WHR-PROFILE-53-60
-Next working branch: country-profiles-53-60
+Current Work ID: WHR-PUB-53-60
+Next working branch: country-publish-53-60
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after reviewed notes 53-60:
+Current tracker counts after Profile v2 53-60:
 
 ```text
 published:       52
-profile_ready:    0
-note_reviewed:    8
+profile_ready:    8
+note_reviewed:    0
 source_tested:    0
 not_started:     38
 total:           98
@@ -43,13 +44,13 @@ Current route state:
 formally published English routes:   52
 formally published Japanese routes:  52
 formally published total routes:    104
-profile-ready English routes:         0
-profile-ready Japanese routes:        0
-profile-ready total routes:           0
+profile-ready English routes:         8
+profile-ready Japanese routes:        8
+profile-ready total routes:          16
 final target routes:                196
 ```
 
-PR #327 completes reviewed editorial notes for entries 53-60. Profile v2 work for these entries is now active.
+PR #328 completes reviewed bilingual Profile v2 records for entries 53-60. QA and publication work for these entries is now active.
 
 ## 3. Operating model
 
@@ -141,6 +142,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #325 | publication | Published entries 45-52 after rendered-preview approval. |
 | #326 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 53-60. |
 | #327 | reviewed notes | Completed public-safe editorial notes for entries 53-60. |
+| #328 | Profile v2 | Added reviewed bilingual Profile v2 records and generated complete English and Japanese routes for entries 53-60. |
 
 ## 7. Publication gates
 
@@ -239,8 +241,8 @@ Entries: Cyprus, Panama, Kuwait, Kenya, Pakistan, Ecuador, Venezuela, and Belgiu
 | --- | --- | --- |
 | #326 / `WHR-ST2-53-60` | complete | Added eight public-safe Source Test v2 records and eight Calendar Readiness decisions. |
 | #327 / `WHR-NOTE-53-60` | complete | Added eight reviewed editorial notes with explicit scope, limitations, and handoff rules. |
-| `WHR-PROFILE-53-60` | next | Add bilingual Profile v2 records. |
-| `WHR-PUB-53-60` | planned | QA and publish after one rendered preview. |
+| #328 / `WHR-PROFILE-53-60` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
+| `WHR-PUB-53-60` | next | QA and publish after one rendered preview. |
 
 Readiness result: 2 prototype-ready, 3 manual-ready, 2 link-only, and 1 blocked. Belgium retains technical rank A behind country public ceiling C; all other country ceilings remain C.
 

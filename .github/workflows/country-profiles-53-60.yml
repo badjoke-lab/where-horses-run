@@ -1,0 +1,62 @@
+name: Country profiles 53-60
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/runbooks/country-profiles-53-60.md'
+      - 'data/static/country-page-countries-53-60.json'
+      - 'data/static/country-page-sources-53-60.json'
+      - 'data/static/country-profiles-v2-5*.json'
+      - 'data/static/country-profiles-v2-60-belgium.json'
+      - 'src/lib/data.ts'
+      - 'scripts/check-country-profiles-53-60.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-53-60.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/country-pages/programme-roadmap.md'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/runbooks/country-profiles-53-60.md'
+      - 'data/static/country-page-countries-53-60.json'
+      - 'data/static/country-page-sources-53-60.json'
+      - 'data/static/country-profiles-v2-5*.json'
+      - 'data/static/country-profiles-v2-60-belgium.json'
+      - 'src/lib/data.ts'
+      - 'scripts/check-country-profiles-53-60.mjs'
+      - 'scripts/check-country-page-programme.mjs'
+      - 'scripts/check-country-detail-profile-runtime.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-country-page-programme-roadmap.mjs'
+      - '.github/workflows/country-profiles-53-60.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-profiles-53-60.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: npm install
+      - run: npm run build
