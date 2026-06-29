@@ -39,14 +39,14 @@ const content = Object.fromEntries(requiredFiles.map((file) => [file, read(file)
 
 const requiredPhrases = {
   'docs/project-roadmap.md': [
-    'Current Work ID: `WHR-CP-PUB-45-52`',
-    'Next Work ID: `WHR-ST2-53-60`',
+    'Current Work ID: `WHR-ST2-53-60`',
+    'Next Work ID: `WHR-NOTE-53-60`',
     'WHR-AUDIT-COUNTRY-CALENDAR-98',
     'WHR-CAL-BASELINE-RECONCILE',
     'WHR-CAL-PUBLIC-V1',
     'Candidate generation is not publication',
   ],
-  'START-HERE.md': ['WHR-CP-PUB-45-52', 'WHR-ST2-53-60', 'calendar-readiness-registry.json'],
+  'START-HERE.md': ['WHR-ST2-53-60', 'WHR-NOTE-53-60', 'calendar-readiness-registry.json'],
   'docs/governance/document-authority.md': [
     'Authority order',
     'Conversation history and PR numbers do not replace canonical repository documents',
@@ -129,5 +129,5 @@ if (errors.length) {
 
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log(`FILES_CHECKED: ${requiredFiles.length}`);
-console.log('CURRENT_WORK_ID: WHR-CP-PUB-45-52');
-console.log('NEXT_WORK_ID: WHR-ST2-53-60');
+console.log('CURRENT_WORK_ID: WHR-ST2-53-60');
+console.log('NEXT_WORK_ID: WHR-NOTE-53-60');

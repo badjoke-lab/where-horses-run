@@ -18,17 +18,18 @@ The PR-number assignments in the older schedule sections are historical. Active 
 
 ```text
 Latest completed Calendar Readiness change: PR #323
-Publication gate: PR #319 — entries 37-44 published after approved rendered preview
-Current Work ID: WHR-CP-PUB-45-52
-Next working branch: country-pages-45-52-publication-qa
+Latest country publication: PR #325 — entries 45-52 approved after rendered preview
+Publication gate: PR #325 — entries 45-52 published after approved rendered preview
+Current Work ID: WHR-ST2-53-60
+Next working branch: source-test-v2-53-60
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after entries 37-44 preview approval:
+Current tracker counts after entries 45-52 preview approval:
 
 ```text
-published:       44
-profile_ready:    8
+published:       52
+profile_ready:    0
 note_reviewed:    0
 source_tested:    0
 not_started:     46
@@ -38,16 +39,16 @@ total:           98
 Current route state:
 
 ```text
-formally published English routes:   44
-formally published Japanese routes:  44
-formally published total routes:     88
+formally published English routes:   52
+formally published Japanese routes:  52
+formally published total routes:    104
 profile-ready English routes:         0
 profile-ready Japanese routes:        0
 profile-ready total routes:           0
 final target routes:                196
 ```
 
-PR #323 completes Calendar Readiness decisions for entries 37-52. Profile v2 records for entries 45-52 are complete and publication QA is now active.
+PR #325 publishes entries 45-52 after GitHub QA and rendered-preview approval. Source Test v2 work for entries 53-60 is now active.
 
 ## 3. Operating model
 
@@ -134,7 +135,9 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #319 | merged | Published entries 37-44 after rendered-preview approval. |
 | #321 | merged | Closed Calendar Readiness for entries 01-20 with 30 system/source decisions. |
 | #322 | merged | Closed entries 21-36 with 21 additional system/source decisions; implementation remains not started. |
-| #323 | Calendar Readiness | Completes entries 37-52 with 19 additional system/source decisions; implementation remains not started. |
+| #323 | merged | Completed entries 37-52 with 19 additional system/source decisions; implementation remains not started. |
+| #324 | merged | Added reviewed Profile v2 records for entries 45-52. |
+| #325 | publication | Published entries 45-52 after rendered-preview approval. |
 
 ## 7. Publication gates
 
@@ -170,6 +173,17 @@ Rendered preview approval:
 4. Evidence artifact `rendered-preview-37-44` is artifact `7936442604` with digest `sha256:8d1f3c314a36ddaeb821115051f51d758aad103d5854a37e6babc82a921c53e0`.
 5. Entries 37-44 are recorded as `published` on 2026-06-28.
 6. PR #319 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
+
+### PR #325 — entries 45-52
+
+Rendered preview approval:
+
+1. `preview-country-pages-45-52` passed live checks for all 16 English/Japanese routes.
+2. Norway, Switzerland, Romania, and Slovakia passed English/Japanese desktop and Pixel 7 rendered review.
+3. Canonical, hreflang, language switching, official links, empty states, CJK rendering, horizontal overflow, prohibited output, and C-rank column suppression passed.
+4. Evidence artifact `rendered-preview-45-52` is artifact `7943936486` with digest `sha256:663817f1622d1d8328f042c6a7305f2202001b2290945407b4518a7078dc0014`.
+5. Entries 45-52 are recorded as `published` on 2026-06-29.
+6. PR #325 must merge without `[CF-Pages-Skip]`, followed by one production-deployment confirmation.
 
 ## 8. Wave 37-44
 
@@ -209,8 +223,8 @@ Entries: Norway, Finland, Netherlands, Switzerland, Poland, Romania, Serbia, and
 | ---: | --- | --- |
 | #309 | merged | Added official source tests and advanced all eight entries to `source_tested`. |
 | #310 | merged | Added reviewed notes and advanced all eight entries to `note_reviewed`. |
-| `WHR-CP-PROFILE-45-52` | complete | Added eight reviewed Profile v2 records and reached `profile_ready`. |
-| `WHR-CP-PUB-45-52` | next | QA and publish sixteen routes after one final rendered preview. |
+| #324 | merged | Added eight reviewed Profile v2 records and reached `profile_ready`. |
+| #325 | publication | Published all sixteen routes after rendered-preview approval. |
 
 All eight reviewed country ceilings remain C. Detailed capability in Ploiesti, Belgrade, and Slovakia is not generalized beyond the reviewed scope.
 
