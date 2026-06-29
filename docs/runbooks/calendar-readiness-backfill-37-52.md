@@ -1,6 +1,6 @@
 # Calendar Readiness backfill 37-52
 
-Status: in progress  
+Status: complete  
 Work ID: `WHR-CAL-BACKFILL-37-52`  
 PR: #323  
 Deployment: not required
@@ -16,7 +16,7 @@ prototype_ready: 6
 manual_ready: 13
 ```
 
-Italy, Norway, and Switzerland retain separate racing systems. Partial national coverage remains explicitly scoped. Technical Rank does not raise Public Ceiling. No active acquisition implementation is claimed.
+Italy, Norway, and Switzerland retain separate racing systems. Partial national coverage remains explicitly scoped. Technical Rank does not raise Public Ceiling. No active acquisition implementation is claimed. Calendar Readiness backfill 01-52 is complete.
 
 ## Checks
 
