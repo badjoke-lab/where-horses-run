@@ -1,0 +1,48 @@
+name: Rendered preview 53-60
+
+on:
+  push:
+    branches: [preview-country-pages-53-60]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22.12.0
+
+jobs:
+  rendered-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install project and browser
+        run: |
+          npm install
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Build site
+        run: npm run build
+      - name: Start local production preview
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          echo $! > /tmp/whr-preview.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4321/countries/cyprus/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Run rendered route checks
+        run: node scripts/rendered-preview-53-60.mjs
+      - name: Upload rendered evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-preview-53-60
+          path: artifacts/rendered-preview-53-60
+          if-no-files-found: error
+          retention-days: 90
