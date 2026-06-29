@@ -13,13 +13,14 @@ const deliveryIndex = headers.indexOf('delivery_no');
 const slugIndex = headers.indexOf('slug');
 const rows = lines.map((line) => line.split('\t'));
 const countries = new Map(rows.filter((row) => Number(row[deliveryIndex]) >= 37 && Number(row[deliveryIndex]) <= 52).map((row) => [row[slugIndex], row[deliveryIndex]]));
+const first52Countries = new Set(rows.filter((row) => Number(row[deliveryIndex]) >= 1 && Number(row[deliveryIndex]) <= 52).map((row) => row[slugIndex]));
 const expected = { malaysia:1, thailand:1, philippines:1, mauritius:1, argentina:1, germany:1, italy:2, spain:1, norway:2, finland:1, netherlands:1, switzerland:2, poland:1, romania:1, serbia:1, slovakia:1 };
 
-if (registry.bootstrap_status !== 'complete') fail('bootstrap_status must be complete');
-if (registry.programme_state?.countries_with_closed_decision !== 52) fail('closed country count must be 52');
-if (registry.programme_state?.readiness_records !== 70 || registry.records?.length !== 70) fail('readiness count must be 70');
-if (JSON.stringify(registry.programme_state?.next_backfill_work_ids ?? []) !== JSON.stringify(['WHR-ST2-53-60'])) fail('next_backfill_work_ids must point to WHR-ST2-53-60');
-if (inventory.records?.length !== 70) fail('authority inventory count must be 70');
+if (!['complete', 'source_test_v2_active', 'revalidation_required'].includes(registry.bootstrap_status)) fail(`unexpected bootstrap_status: ${registry.bootstrap_status}`);
+if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 52) fail('closed country count must be at least 52');
+if ((registry.programme_state?.readiness_records ?? 0) < 70 || (registry.records?.length ?? 0) < 70) fail('readiness count must retain at least 70');
+if (registry.programme_state?.readiness_records !== registry.records?.length) fail('programme readiness count must match registry length');
+if ((inventory.records?.length ?? 0) < 70) fail('authority inventory must retain at least 70 records');
 
 const authorityKeys = new Set((inventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
 if (authorityKeys.size !== inventory.records?.length) fail('authority keys must be unique');
@@ -40,8 +41,10 @@ for (const [country, delivery] of countries) {
 const countBy = (records) => records.reduce((counts, record) => ({ ...counts, [record.readiness]: (counts[record.readiness] ?? 0) + 1 }), {});
 const targetCounts = countBy(targets);
 if (targetCounts.prototype_ready !== 6 || targetCounts.manual_ready !== 13 || (targetCounts.link_only ?? 0) || (targetCounts.blocked ?? 0)) fail('target readiness mix must be prototype=6 manual=13 link=0 blocked=0');
-const allCounts = countBy(registry.records ?? []);
-if (allCounts.prototype_ready !== 35 || allCounts.manual_ready !== 27 || allCounts.blocked !== 4 || allCounts.link_only !== 4) fail('cumulative readiness mix is invalid');
+const baselineRecords = (registry.records ?? []).filter((record) => first52Countries.has(record.country_id));
+if (baselineRecords.length !== 70) fail(`entries 01-52 must retain 70 readiness records; found ${baselineRecords.length}`);
+const baselineCounts = countBy(baselineRecords);
+if (baselineCounts.prototype_ready !== 35 || baselineCounts.manual_ready !== 27 || baselineCounts.blocked !== 4 || baselineCounts.link_only !== 4) fail('entries 01-52 readiness mix is invalid');
 
 for (let delivery = 37; delivery <= 52; delivery += 1) {
   const value = String(delivery);
@@ -54,4 +57,4 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('CALENDAR_READINESS_BACKFILL_37_52_VALID countries=52 readiness=70 authority=70 target=19 prototype=6 manual=13');
+console.log(`CALENDAR_READINESS_BACKFILL_37_52_VALID countries=52 baseline_readiness=70 cumulative_readiness=${registry.records.length} target=19 prototype=6 manual=13`);
