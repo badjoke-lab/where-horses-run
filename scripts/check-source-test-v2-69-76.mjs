@@ -56,7 +56,7 @@ for (const [deliveryNo, slug, readiness, acquisition] of expected) {
   if (readiness === 'blocked' && (!record.blocked_reason || hasConfirmedField)) fail(slug + ': blocked boundary mismatch');
   if (readiness === 'link_only' && hasConfirmedField) fail(slug + ': link-only fields must remain false');
   const row = rows.find((candidate) => candidate[index.delivery_no] === deliveryNo);
-  if (!row || row[index.slug] !== slug || row[index.programme_status] !== 'source_tested') fail(slug + ': tracker status mismatch');
+  if (!row || row[index.slug] !== slug || !['source_tested', 'note_reviewed', 'profile_ready', 'page_qa', 'published'].includes(row[index.programme_status])) fail(slug + ': tracker status mismatch');
   if (row && row[index.acquisition_status] !== acquisition) fail(slug + ': acquisition status mismatch');
   if (row && (row[index.source_last_checked] !== '2026-06-29' || row[index.evidence_reviewed_at] !== '2026-06-29')) fail(slug + ': tracker date mismatch');
 }
