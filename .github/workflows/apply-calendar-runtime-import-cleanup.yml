@@ -39,8 +39,23 @@ jobs:
           retention-days: 30
       - name: Confirm static build
         run: |
-          npm install --package-lock=false
-          npm run build
+          set +e
+          npm install --package-lock=false > /tmp/calendar-runtime-build.log 2>&1
+          status=$?
+          if [ $status -eq 0 ]; then
+            npm run build >> /tmp/calendar-runtime-build.log 2>&1
+            status=$?
+          fi
+          cat /tmp/calendar-runtime-build.log
+          exit $status
+      - name: Upload build diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-runtime-build-diagnostic
+          path: /tmp/calendar-runtime-build.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Commit cleanup
         run: |
           rm -f scripts/apply-calendar-runtime-import-cleanup.mjs
