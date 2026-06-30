@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Apply JRA official host normalization
+        run: node scripts/apply-jra-official-host-normalization.mjs
       - name: Generate JRA candidate v1
         run: node scripts/generate-japan-jra-candidates.mjs
       - name: Validate candidate and promotion boundary
@@ -49,8 +51,9 @@ jobs:
           npm run build
       - name: Commit generated candidate
         run: |
+          rm -f scripts/apply-jra-official-host-normalization.mjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/candidates/japan-jra-candidates.json
+          git add -A
           git commit -m "Generate JRA Pipeline v1 candidate fixture"
           git push origin HEAD:calendar-jra-candidate-v1
