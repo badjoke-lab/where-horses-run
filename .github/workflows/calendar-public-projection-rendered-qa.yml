@@ -1,0 +1,72 @@
+name: Calendar public projection rendered QA
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-public-projection-release-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'src/pages/major-countries/preview-timetable.astro'
+      - 'scripts/check-calendar-public-projection-rendered-qa.mjs'
+      - '.github/workflows/calendar-public-projection-rendered-qa.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/calendar-public-projection-release-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'src/pages/major-countries/preview-timetable.astro'
+      - 'scripts/check-calendar-public-projection-rendered-qa.mjs'
+      - '.github/workflows/calendar-public-projection-rendered-qa.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  rendered-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Build preview
+        run: |
+          npm install --package-lock=false
+          npm run build
+      - name: Validate rendered Calendar surfaces
+        run: |
+          set +e
+          node scripts/check-calendar-public-projection-rendered-qa.mjs > /tmp/calendar-public-projection-rendered-qa.log 2>&1
+          status=$?
+          cat /tmp/calendar-public-projection-rendered-qa.log
+          exit $status
+      - name: Validate retired preview route
+        run: |
+          grep -q 'Legacy preview retired' dist/major-countries/preview-timetable/index.html
+          if grep -q 'normalized-calendar-preview__month' dist/major-countries/preview-timetable/index.html; then
+            echo 'Legacy normalized preview still renders.' >&2
+            exit 1
+          fi
+      - name: Package rendered preview
+        if: always()
+        run: tar -czf /tmp/calendar-public-projection-preview-dist.tgz dist
+      - name: Upload rendered preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-projection-preview-dist
+          path: /tmp/calendar-public-projection-preview-dist.tgz
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload rendered QA diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-projection-rendered-qa-diagnostic
+          path: /tmp/calendar-public-projection-rendered-qa.log
+          if-no-files-found: ignore
+          retention-days: 30

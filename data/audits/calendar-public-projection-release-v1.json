@@ -1,0 +1,444 @@
+{
+  "schema_version": "calendar-public-projection-release-audit-v1",
+  "work_id": "WHR-CAL-PIPELINE-V1",
+  "projection_generated_at": "2026-06-09T15:02:29.605Z",
+  "before": {
+    "meeting_generated_at": "2026-06-09T15:02:30.798Z",
+    "detail_generated_at": "2026-06-09T15:02:30.798Z",
+    "meeting_count": 39,
+    "detail_count": 5,
+    "detail_field_counts": {
+      "rows": 57,
+      "optional_fields": {
+        "race_name": 57,
+        "distance_m": 57,
+        "surface": 57,
+        "course_label": 57
+      }
+    }
+  },
+  "after": {
+    "meeting_generated_at": "2026-06-09T15:02:29.605Z",
+    "detail_generated_at": "2026-06-09T15:02:29.605Z",
+    "meeting_count": 23,
+    "detail_count": 5,
+    "detail_field_counts": {
+      "rows": 57,
+      "optional_fields": {
+        "race_name": 0,
+        "distance_m": 0,
+        "surface": 0,
+        "course_label": 0
+      }
+    }
+  },
+  "meetings": {
+    "added_ids": [],
+    "removed_ids": [
+      "banei-obihiro-racecourse-2026-05-30",
+      "banei-obihiro-racecourse-2026-05-31",
+      "banei-obihiro-racecourse-2026-06-01",
+      "nar-funabashi-racecourse-2026-06-01",
+      "nar-kanazawa-racecourse-2026-05-31",
+      "nar-kasamatsu-racecourse-2026-05-30",
+      "nar-kochi-racecourse-2026-05-30",
+      "nar-kochi-racecourse-2026-05-31",
+      "nar-mizusawa-racecourse-2026-05-31",
+      "nar-mizusawa-racecourse-2026-06-01",
+      "nar-obihiro-racecourse-2026-06-06",
+      "nar-saga-racecourse-2026-05-30",
+      "nar-saga-racecourse-2026-05-31",
+      "nar-saga-racecourse-2026-06-01",
+      "nar-sonoda-racecourse-2026-05-30",
+      "nar-urawa-racecourse-2026-05-30"
+    ],
+    "changed": [
+      {
+        "meeting_id": "era-abu-dhabi-turf-club-2026-04-04",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "era-abu-dhabi-turf-club-2026-04-11",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "era-al-ain-racecourse-2026-04-03",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "era-al-ain-racecourse-2026-04-10",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "era-meydan-racecourse-2026-04-01",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-06-24",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-07-15",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-21",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-27",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-01",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-04",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-12",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-kyoto-racecourse-2026-05-30",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-kyoto-racecourse-2026-05-31",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-05-30",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-05-31",
+        "fields": [
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank"
+        ]
+      }
+    ],
+    "rank_changes": [
+      {
+        "meeting_id": "era-abu-dhabi-turf-club-2026-04-04",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "C",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "era-abu-dhabi-turf-club-2026-04-11",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "C",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "era-al-ain-racecourse-2026-04-03",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "C",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "era-al-ain-racecourse-2026-04-10",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "C",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "era-meydan-racecourse-2026-04-01",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "C",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "A+",
+        "after_effective_public_rank": "A"
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-06-24",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-07-15",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-13",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-21",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-06-27",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-01",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-04",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "hkjc-sha-tin-racecourse-2026-07-12",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "C",
+        "after_effective_public_rank": "C"
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "A+",
+        "after_effective_public_rank": "A"
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "A+",
+        "after_effective_public_rank": "A"
+      },
+      {
+        "meeting_id": "jra-kyoto-racecourse-2026-05-30",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "B",
+        "after_effective_public_rank": "B"
+      },
+      {
+        "meeting_id": "jra-kyoto-racecourse-2026-05-31",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "B",
+        "after_effective_public_rank": "B"
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-05-30",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "B",
+        "after_effective_public_rank": "B"
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-05-31",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "B",
+        "after_effective_public_rank": "B"
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "A+",
+        "after_effective_public_rank": "A"
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+        "before_max_public_rank": "A+",
+        "after_max_public_rank": "A",
+        "before_effective_public_rank": "A+",
+        "after_effective_public_rank": "A"
+      }
+    ]
+  },
+  "details": {
+    "added_ids": [],
+    "removed_ids": [],
+    "changed": [
+      {
+        "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank",
+          "show_course",
+          "show_distance",
+          "show_race_name",
+          "show_surface",
+          "timetable_rows"
+        ]
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank",
+          "show_course",
+          "show_distance",
+          "show_race_name",
+          "show_surface",
+          "timetable_rows"
+        ]
+      },
+      {
+        "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank",
+          "show_course",
+          "show_distance",
+          "show_race_name",
+          "show_surface",
+          "timetable_rows"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank",
+          "show_course",
+          "show_distance",
+          "show_race_name",
+          "show_surface",
+          "timetable_rows"
+        ]
+      },
+      {
+        "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+        "fields": [
+          "effective_public_rank",
+          "max_public_rank",
+          "show_course",
+          "show_distance",
+          "show_race_name",
+          "show_surface",
+          "timetable_rows"
+        ]
+      }
+    ],
+    "optional_field_occurrence_delta": {
+      "race_name": -57,
+      "distance_m": -57,
+      "surface": -57,
+      "course_label": -57
+    }
+  },
+  "boundaries": {
+    "forbidden_key_findings": [],
+    "deterministic_generated_at_matches": true,
+    "public_schema_versions": [
+      "public-timetable-meeting-list-v0",
+      "public-timetable-meeting-details-v0"
+    ]
+  }
+}
