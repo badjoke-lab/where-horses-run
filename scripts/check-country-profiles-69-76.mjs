@@ -87,3 +87,4 @@ if (errors.length) {
 }
 console.log('COUNTRY_PROFILES_69_76_VALID countries=8 sources=8 profiles=8');
 console.log('PUBLIC_CEILINGS: C=8');
+await import('./check-country-profiles-77-84.mjs');
