@@ -1,0 +1,34 @@
+name: Apply public projection readiness index fix
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-pipeline-v1-public-projection
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply readiness index fix
+        run: node scripts/apply-public-projection-readiness-index-fix.mjs
+      - name: Validate projection
+        run: node scripts/check-calendar-pipeline-v1-public-projection.mjs
+      - name: Commit fix
+        run: |
+          rm -f scripts/apply-public-projection-readiness-index-fix.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "[CF-Pages-Skip] Handle shared Calendar Readiness source keys"
+          git push origin HEAD:calendar-pipeline-v1-public-projection
