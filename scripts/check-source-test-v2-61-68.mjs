@@ -19,12 +19,12 @@ const expected = [
 
 const authority = readJson('data/static/authority-source-inventory.json');
 const registry = readJson('data/static/calendar-readiness-registry.json');
-if (authority.records?.length !== 86) fail(`authority records must be 86; found ${authority.records?.length}`);
-if (registry.records?.length !== 86) fail(`readiness records must be 86; found ${registry.records?.length}`);
+if ((authority.records?.length ?? 0) < 86) fail(`authority records must retain at least 86; found ${authority.records?.length}`);
+if ((registry.records?.length ?? 0) < 86) fail(`readiness records must retain at least 86; found ${registry.records?.length}`);
 if (registry.bootstrap_status !== 'source_test_v2_active') fail('bootstrap_status must remain source_test_v2_active');
-if (registry.programme_state?.countries_with_closed_decision !== 68) fail('closed decision count must be 68');
-if (registry.programme_state?.readiness_records !== 86) fail('programme readiness count must be 86');
-if (JSON.stringify(registry.programme_state?.next_backfill_work_ids) !== JSON.stringify(['WHR-ST2-69-76'])) fail('next backfill must be WHR-ST2-69-76');
+if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 68) fail('closed decision count must be at least 68');
+if ((registry.programme_state?.readiness_records ?? 0) < 86) fail('programme readiness count must be at least 86');
+if (registry.programme_state?.readiness_records !== registry.records?.length) fail('programme readiness count must match registry length');
 
 const authorityKeys = new Set((authority.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
 if (authorityKeys.size !== authority.records?.length) fail('authority compound keys must be unique');
@@ -89,5 +89,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
-console.log('SOURCE_TEST_V2_61_68_VALID countries=8 authority=86 readiness=86');
+console.log(`SOURCE_TEST_V2_61_68_VALID countries=8 authority=${authority.records.length} readiness=${registry.records.length}`);
 console.log('READINESS_MIX manual_ready=3 prototype_ready=1 link_only=3 blocked=1');

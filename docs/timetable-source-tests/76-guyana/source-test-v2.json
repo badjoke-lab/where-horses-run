@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "76",
+  "country_id": "guyana",
+  "country_name_en": "Guyana",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "blocked",
+  "records": [{
+    "readiness_id": "guyana--horse-racing-authority-context--authority-act-2025",
+    "system_id": "horse-racing-authority-context",
+    "system_name_en": "Guyana Horse Racing Authority legal context",
+    "authority_source_key": "guyana/parliament-of-guyana/horse-racing-authority-act-2025",
+    "racecourse_ids": [],
+    "coverage_scope": "archive_or_explanatory",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "pdf",
+    "access_mode": "direct",
+    "automation_mode": "blocked",
+    "refresh_classes": ["event_driven", "manual"],
+    "readiness": "blocked",
+    "implementation_status": "not_started",
+    "fallback": "hide_from_current_calendar",
+    "source_status": "partial",
+    "revalidation_trigger": "Revalidate when the Guyana Horse Racing Authority or an officially recognised racecourse publishes a stable current calendar.",
+    "blocked_reason": "The official Act establishes the authority framework but does not provide a current meeting calendar.",
+    "limitations": ["The source is legal and explanatory rather than a current racing calendar.", "No current meeting dates, racecourses, or recurring calendar routes are approved.", "Unofficial event promotion must not generate current calendar rows."],
+    "notes": "Keep Guyana out of current-calendar output until a current official meeting source is reviewed."
+  }],
+  "public_safe": true
+}

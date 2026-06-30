@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "75",
+  "country_id": "estonia",
+  "country_name_en": "Estonia",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "single_racecourse",
+  "records": [{
+    "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
+    "system_id": "tuula-trotting-system",
+    "system_name_en": "Tuula Hipodroom trotting system",
+    "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
+    "racecourse_ids": [],
+    "coverage_scope": "single_racecourse",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "semi_automatic",
+    "refresh_classes": ["near_meeting", "monthly", "seasonal"],
+    "readiness": "prototype_ready",
+    "implementation_status": "not_started",
+    "fallback": "downgrade_to_C",
+    "source_status": "verified",
+    "revalidation_trigger": "Revalidate when the Hipodroom calendar structure or Tuula venue context changes.",
+    "blocked_reason": null,
+    "limitations": ["The reviewed scope covers Tuula Hipodroom only.", "Programme PDFs, participants, results, statistics, and wagering-related detail remain excluded.", "The public country layer remains limited to meeting date and racecourse."],
+    "notes": "Current official site activity supports a bounded C-level prototype for Tuula trotting meetings."
+  }],
+  "public_safe": true
+}

@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-06-29
+Last reviewed: 2026-06-30
 
 Read documents in this order:
 
@@ -41,16 +41,16 @@ data/static/calendar-readiness-registry.json
 scripts/check-calendar-contracts.mjs
 ```
 
-Previous completed Work ID: `WHR-PUB-61-68`
+Previous completed Work ID: `WHR-ST2-69-76`
 
 Current Work ID:
 
 ```text
-WHR-ST2-69-76
+WHR-NOTE-69-76
 ```
 
 Next Work ID:
 
 ```text
-WHR-NOTE-69-76
+WHR-PROFILE-69-76
 ```

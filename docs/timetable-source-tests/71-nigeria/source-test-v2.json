@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "71",
+  "country_id": "nigeria",
+  "country_name_en": "Nigeria",
+  "checked_date": "2026-06-29",
+  "evidence_reviewed_at": "2026-06-29",
+  "country_completeness": "link_only",
+  "records": [{
+    "readiness_id": "nigeria--hrfn-national-system--hrfn-home",
+    "system_id": "hrfn-national-system",
+    "system_name_en": "Horse Racing Federation of Nigeria system",
+    "authority_source_key": "nigeria/horse-racing-federation-of-nigeria/hrfn-home",
+    "racecourse_ids": [],
+    "coverage_scope": "authority_wide",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "link_only",
+    "refresh_classes": ["weekly", "event_driven", "manual"],
+    "readiness": "link_only",
+    "implementation_status": "not_started",
+    "fallback": "official_link_only",
+    "source_status": "partial",
+    "revalidation_trigger": "Revalidate when HRFN populates a stable upcoming-events calendar with meeting dates and locations.",
+    "blocked_reason": null,
+    "limitations": ["The official federation site identifies the national governing body, but its upcoming-events table did not provide reusable current meeting rows at review time.", "Past results and race highlights are outside the public calendar dataset.", "No current meeting fields are approved."],
+    "notes": "Retain an official-link-first treatment until the official upcoming-events section is populated and reviewed."
+  }],
+  "public_safe": true
+}
