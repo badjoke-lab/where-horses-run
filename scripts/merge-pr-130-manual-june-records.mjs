@@ -36,3 +36,4 @@ data.source_inputs = [...new Set([...(data.source_inputs || []), ...manualPaths]
 
 fs.writeFileSync(outputPath, `${JSON.stringify(data, null, 2)}\n`);
 console.log(`[pr-130-manual-june] merged ${manualPaths.length} manual inputs`);
+await import('./apply-profile-v2-77-84-loader.mjs');
