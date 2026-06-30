@@ -1,0 +1,45 @@
+name: Calendar runtime import boundary
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'data/generated/timetable/**'
+      - 'data/generated/timetables.json'
+      - 'data/generated/japan-active-timetable-records.json'
+      - 'data/candidates/**'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - '.github/workflows/calendar-runtime-import-boundary.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'data/generated/timetable/**'
+      - 'data/generated/timetables.json'
+      - 'data/generated/japan-active-timetable-records.json'
+      - 'data/candidates/**'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - '.github/workflows/calendar-runtime-import-boundary.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Traverse all production page dependencies
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm static build
+        run: |
+          npm install --package-lock=false
+          npm run build

@@ -147,8 +147,6 @@ import tomorrow from '../../data/generated/tomorrow.json';
 import calendar30d from '../../data/generated/calendar-30d.json';
 import fetchStatus from '../../data/generated/fetch-status.json';
 import liveFetchProbeStatus from '../../data/generated/live-fetch-probe-status.json';
-import timetables from '../../data/generated/timetables.json';
-import japanActiveTimetableRecords from '../../data/generated/japan-active-timetable-records.json';
 import { buildCountryDetailProfiles, type CountryDetailProfile } from './country-profile-runtime';
 
 export type Locale = 'en' | 'ja';
@@ -317,13 +315,6 @@ export type Source = (typeof allSources)[number];
 export type GlossaryEntry = (typeof glossary)[number];
 export type ArchiveEntry = (typeof archive)[number];
 
-const mergedTimetables = {
-  ...timetables,
-  records: [...(timetables.records ?? []), ...(japanActiveTimetableRecords.records ?? [])],
-  sources: [...new Set([...(timetables.sources ?? []), ...(japanActiveTimetableRecords.sources ?? [])])],
-  notes: [...(timetables.notes ?? []), ...(japanActiveTimetableRecords.notes ?? [])]
-} as const;
-
 export const siteData = {
   countries: allCountries,
   countryProfiles,
@@ -338,9 +329,7 @@ export const siteData = {
     tomorrow,
     calendar30d,
     fetchStatus,
-    liveFetchProbeStatus,
-    timetables: mergedTimetables,
-    japanActiveTimetableRecords
+    liveFetchProbeStatus
   }
 } as const;
 
