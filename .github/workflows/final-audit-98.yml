@@ -3,17 +3,18 @@ name: Final audit 98
 on:
   push:
     branches: [final-audit-98]
-  pull_request:
-    branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   canonicalize:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -33,6 +34,8 @@ jobs:
           retention-days: 90
       - name: Update canonical documentation
         run: node scripts/final-audit-98/update-docs.mjs
+      - name: Reconcile final audit output
+        run: node scripts/final-audit-98/finalize-output.mjs
       - run: npm install
       - name: Validate final canonical state
         run: |
@@ -43,13 +46,16 @@ jobs:
           node scripts/check-project-governance-docs.mjs
           node scripts/check-calendar-contracts.mjs
       - run: npm run build
-      - run: |
-          mkdir -p artifacts/final-audit-98
-          git diff --name-only > artifacts/final-audit-98/changed-files.txt
-          tar -czf artifacts/final-audit-98/canonical-files.tgz $(git diff --name-only)
-      - uses: actions/upload-artifact@v4
-        with:
-          name: final-audit-98-canonical
-          path: artifacts/final-audit-98
-          if-no-files-found: error
-          retention-days: 90
+      - name: Remove one-time audit scaffold
+        run: |
+          rm -f .github/workflows/final-audit-98.yml
+          rm -f scripts/final-audit-98.mjs
+          rm -rf scripts/final-audit-98
+      - name: Commit canonical audit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Complete final 98-country and Calendar audit"
+          git push origin HEAD:final-audit-98
