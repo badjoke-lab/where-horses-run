@@ -1,0 +1,37 @@
+name: Final audit 98
+
+on:
+  push:
+    branches: [final-audit-98]
+
+permissions:
+  contents: read
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/final-audit-98.mjs
+      - run: npm install
+      - run: |
+          node scripts/check-final-audit-98.mjs
+          node scripts/check-country-detail-profile-runtime.mjs
+          node scripts/check-country-page-programme.mjs
+          node scripts/check-country-page-programme-roadmap.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+      - run: npm run build
+      - run: |
+          mkdir -p artifacts/final-audit-98
+          git diff --name-only > artifacts/final-audit-98/changed-files.txt
+          tar -czf artifacts/final-audit-98/canonical-files.tgz $(git diff --name-only)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: final-audit-98-canonical
+          path: artifacts/final-audit-98
+          if-no-files-found: error
+          retention-days: 90
