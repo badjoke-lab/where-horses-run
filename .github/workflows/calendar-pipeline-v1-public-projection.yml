@@ -1,0 +1,71 @@
+name: Calendar pipeline v1 public projection
+
+on:
+  pull_request:
+    paths:
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-source-aliases-v1.json'
+      - 'docs/calendar/pipeline-v1-public-projection.md'
+      - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
+      - 'scripts/timetable/build-public-timetable-view.mjs'
+      - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
+      - 'src/data/publicationDisplayPolicies.json'
+      - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-source-aliases-v1.json'
+      - 'docs/calendar/pipeline-v1-public-projection.md'
+      - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
+      - 'scripts/timetable/build-public-timetable-view.mjs'
+      - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
+      - 'src/data/publicationDisplayPolicies.json'
+      - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate deterministic Public Ceiling projection
+        run: |
+          set +e
+          node scripts/check-calendar-pipeline-v1-public-projection.mjs > /tmp/public-projection-validation.log 2>&1
+          status=$?
+          cat /tmp/public-projection-validation.log
+          exit $status
+      - name: Upload projection diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-projection-validation-diagnostic
+          path: /tmp/public-projection-validation.log
+          if-no-files-found: error
+          retention-days: 30
+      - name: Confirm dry-run performs no public write
+        run: |
+          before_list="$(sha256sum data/generated/timetable/public/meeting-list.json)"
+          before_details="$(sha256sum data/generated/timetable/public/meeting-details.json)"
+          node scripts/timetable/build-public-timetable-view.mjs --dry-run >/tmp/public-projection-audit.json
+          test "$before_list" = "$(sha256sum data/generated/timetable/public/meeting-list.json)"
+          test "$before_details" = "$(sha256sum data/generated/timetable/public/meeting-details.json)"
+      - name: Confirm current site still builds
+        run: |
+          npm install --package-lock=false
+          npm run build
