@@ -17,5 +17,5 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: node scripts/check-source-test-v2-85-92.mjs
+      - run: git clone --depth 1 --branch source-test-v2-85-92 https://github.com/badjoke-lab/where-horses-run.git repo
+      - run: cd repo && node scripts/check-source-test-v2-85-92.mjs
