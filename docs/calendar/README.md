@@ -1,7 +1,7 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-06-28
+Last reviewed: 2026-07-01
 
 Use these files together:
 
@@ -10,7 +10,8 @@ Use these files together:
 - [`calendar-readiness-contract.md`](calendar-readiness-contract.md) — completion states for each racing system and source.
 - [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, and validator map.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, pilots, release, expansion, and operations.
-- [`current-baseline-audit.md`](current-baseline-audit.md) — current repository capabilities and gaps.
+- [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
+- [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
 - [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
@@ -22,10 +23,12 @@ Use these files together:
 data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
+data/audits/calendar-baseline-migration-map.json
 scripts/check-calendar-contracts.mjs
+scripts/check-calendar-baseline-reconciliation.mjs
 ```
 
-The registry begins empty with `pending_backfill_01_52`. This is an explicit bootstrap state, not a claim that reviewed countries lack racing or official sources.
+The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
 ## Operating rule
 
