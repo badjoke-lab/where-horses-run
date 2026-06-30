@@ -1,0 +1,55 @@
+name: Calendar pipeline v1 build boundary
+
+on:
+  pull_request:
+    paths:
+      - 'astro.config.mjs'
+      - 'package.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/calendar/pipeline-v1-build-boundary.md'
+      - 'scripts/check-calendar-build-boundary.mjs'
+      - 'scripts/timetable/**'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'package.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/calendar/pipeline-v1-build-boundary.md'
+      - 'scripts/check-calendar-build-boundary.mjs'
+      - 'scripts/timetable/**'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-read-only-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate build boundary
+        run: node scripts/check-calendar-build-boundary.mjs
+      - name: Install dependencies without repository mutation
+        run: npm install --package-lock=false
+      - name: Build static site
+        run: npm run build
+      - name: Prove build is repository-read-only
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Astro build modified or created repository files.' >&2
+            exit 1
+          fi
