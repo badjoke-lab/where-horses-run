@@ -1,0 +1,60 @@
+name: Calendar JRA candidate v1
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/generated/timetable/jra-normalized-timetable.json'
+      - 'data/generated/timetable/jra-normalized-meeting-details.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'docs/calendar/pipeline-v1-jra-reference-adapter.md'
+      - 'scripts/generate-japan-jra-candidates.mjs'
+      - 'scripts/check-japan-jra-candidate-generator.mjs'
+      - 'scripts/check-calendar-pipeline-v1-candidate-contract.mjs'
+      - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
+      - '.github/workflows/calendar-jra-candidate-v1.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/generated/timetable/jra-normalized-timetable.json'
+      - 'data/generated/timetable/jra-normalized-meeting-details.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'docs/calendar/pipeline-v1-jra-reference-adapter.md'
+      - 'scripts/generate-japan-jra-candidates.mjs'
+      - 'scripts/check-japan-jra-candidate-generator.mjs'
+      - 'scripts/check-calendar-pipeline-v1-candidate-contract.mjs'
+      - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
+      - '.github/workflows/calendar-jra-candidate-v1.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Verify deterministic JRA candidate output
+        run: node scripts/generate-japan-jra-candidates.mjs --check
+      - name: Validate JRA v1 reference adapter
+        run: node scripts/check-japan-jra-candidate-generator.mjs
+      - name: Validate shared candidate contract
+        run: node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+      - name: Confirm runtime boundary and static build
+        run: |
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          npm install --package-lock=false
+          npm run build
