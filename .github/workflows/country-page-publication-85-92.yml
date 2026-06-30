@@ -1,0 +1,36 @@
+name: Country page publication 85-92
+
+on:
+  push:
+    branches: [publication-85-92-check]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/country-pages/98-country-publication-transitions-85-92.tsv'
+      - 'docs/country-pages/programme-roadmap-2026-06-30-publication-85-92-addendum.md'
+      - 'docs/runbooks/country-pages-85-92-publication-final.md'
+      - 'docs/runbooks/rendered-preview-85-92-evidence.json'
+      - 'scripts/check-country-page-publication-85-92.mjs'
+      - 'scripts/merge-pr-130-manual-june-records.mjs'
+      - '.github/workflows/country-page-publication-85-92.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-page-publication-77-84.mjs
+      - run: node scripts/check-country-page-publication-85-92.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: npm install
+      - run: npm run build

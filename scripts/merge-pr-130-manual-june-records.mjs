@@ -40,3 +40,6 @@ await import('./apply-profile-v2-85-92-loader.mjs');
 if (fs.existsSync('docs/country-pages/98-country-publication-transitions-77-84.tsv')) {
   await import('./check-country-page-publication-77-84.mjs');
 }
+if (fs.existsSync('docs/country-pages/98-country-publication-transitions-85-92.tsv')) {
+  await import('./check-country-page-publication-85-92.mjs');
+}
