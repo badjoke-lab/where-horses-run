@@ -1,0 +1,41 @@
+name: Rendered preview 93-98
+
+on:
+  push:
+    branches: [preview-country-pages-93-98]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/static/country-page-countries-93-98.json'
+      - 'data/static/country-page-sources-93-98.json'
+      - 'data/static/country-profiles-v2-9*.json'
+      - 'src/**'
+      - 'scripts/rendered-preview-93-98.mjs'
+      - '.github/workflows/rendered-preview-93-98.yml'
+      - 'docs/runbooks/preview-trigger-93-98.md'
+
+permissions:
+  contents: read
+
+jobs:
+  rendered-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run preview -- --host 127.0.0.1 --port 4321 &
+      - run: sleep 8
+      - run: node scripts/rendered-preview-93-98.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rendered-preview-93-98
+          path: artifacts/rendered-preview-93-98
+          if-no-files-found: error
+          retention-days: 90
