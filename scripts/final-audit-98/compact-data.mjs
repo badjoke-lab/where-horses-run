@@ -73,6 +73,7 @@ if (canonicalTrackerRows.length !== 98 || canonicalTrackerRows.some((row) => row
   throw new Error('Canonical tracker must contain 98 published rows.');
 }
 writeTsv(trackerPath, tracker.headers, canonicalTrackerRows);
+console.log('FINAL_AUDIT_TRACKER_COMPACTED rows=98 published=98');
 
 const sourceTestFiles = listFiles('docs/timetable-source-tests').filter((file) => file.endsWith('/source-test-v2.json'));
 const sourceTests = new Map(sourceTestFiles.map((file) => [file, parseJson(file)]));
@@ -82,9 +83,11 @@ const authority = parseJson(authorityPath);
 const authorityMap = new Map(
   authority.records.map((record) => [`${record.country_id}/${record.authority_id}/${record.official_source_id}`, record])
 );
-const authorityOverlayFiles = listFiles('data/static').filter((file) =>
-  /authority-source-inventory-\d{2}-\d{2}\.json$/.test(file)
-);
+const authorityOverlayFiles = [
+  'data/static/authority-source-inventory-77-84.json',
+  'data/static/authority-source-inventory-85-92.json',
+  'data/static/authority-source-inventory-93-98.json'
+];
 
 function sourceKind(record) {
   if (record.confirmed_fields?.per_race_post_times || record.confirmed_fields?.first_race_time) return 'timetable';
@@ -103,7 +106,10 @@ function racecourseScope(coverage) {
 for (const file of authorityOverlayFiles) {
   const overlay = parseJson(file);
   for (const record of overlay.records ?? []) {
-    const [countryId, authorityId, officialSourceId] = record.authority_source_key.split('/');
+    const parts = record.authority_source_key.split('/');
+    const countryId = parts.shift();
+    const authorityId = parts.shift();
+    const officialSourceId = parts.join('-');
     if (!countryId || !authorityId || !officialSourceId) throw new Error(`${file}: invalid authority_source_key`);
     const summary = sourceTests.get(record.source_test_ref);
     if (!summary) throw new Error(`${file}: missing source test ${record.source_test_ref}`);
@@ -135,6 +141,7 @@ authority.records = [...authorityMap.values()].sort((a, b) =>
 );
 if (authority.records.length !== 116) throw new Error(`Expected 116 authority records; found ${authority.records.length}`);
 writeJson(authorityPath, authority);
+console.log('FINAL_AUDIT_AUTHORITY_COMPACTED records=116');
 
 const readinessPath = 'data/static/calendar-readiness-registry.json';
 const readiness = parseJson(readinessPath);
@@ -189,6 +196,7 @@ if (closedCountries.size !== 98 || readiness.records.length !== 116) {
   throw new Error(`Expected readiness 98 countries / 116 records; found ${closedCountries.size} / ${readiness.records.length}`);
 }
 writeJson(readinessPath, readiness);
+console.log('FINAL_AUDIT_READINESS_COMPACTED countries=98 records=116');
 
 await import('../apply-profile-v2-93-98-loader.mjs');
 const dataText = read('src/lib/data.ts');
