@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "83",
+  "country_id": "guatemala",
+  "country_name_en": "Guatemala",
+  "checked_date": "2026-06-30",
+  "evidence_reviewed_at": "2026-06-30",
+  "country_completeness": "link_only",
+  "records": [{
+    "readiness_id": "guatemala--todos-santos-traditional-race--juego-de-gallos-context",
+    "system_id": "todos-santos-traditional-race",
+    "system_name_en": "Todos Santos Cuchumatan traditional horse race",
+    "authority_source_key": "guatemala/ministry-of-culture/juego-de-gallos-context",
+    "racecourse_ids": [],
+    "coverage_scope": "single_racecourse",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "link_only",
+    "refresh_classes": ["seasonal", "event_driven", "manual"],
+    "readiness": "link_only",
+    "implementation_status": "not_started",
+    "fallback": "official_link_only",
+    "source_status": "partial",
+    "revalidation_trigger": "Revalidate when a Guatemalan public authority publishes a current dated notice for the next Todos Santos horse race.",
+    "blocked_reason": null,
+    "limitations": ["The reviewed government article documents a cultural tradition rather than a current 2026 meeting notice.", "The annual November 1 context is not sufficient by itself to create a future calendar row.", "The reviewed scope is limited to Todos Santos Cuchumatan and must not be generalised nationally."],
+    "notes": "Retain a cultural-context official link until a current dated event notice is published."
+  }],
+  "public_safe": true
+}

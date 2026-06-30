@@ -1,0 +1,53 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "77",
+  "country_id": "kazakhstan",
+  "country_name_en": "Kazakhstan",
+  "checked_date": "2026-06-30",
+  "evidence_reviewed_at": "2026-06-30",
+  "country_completeness": "partial",
+  "records": [
+    {
+      "readiness_id": "kazakhstan--baige-national-championship--baige-2026-calendar",
+      "system_id": "baige-national-championship",
+      "system_name_en": "Kazakhstan Baige Federation national championship",
+      "authority_source_key": "kazakhstan/baige-federation/baige-2026-calendar",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the Baige Federation changes the 2026 championship calendar or publishes a new season calendar.",
+      "blocked_reason": null,
+      "limitations": [
+        "The reviewed official calendar covers the Baige Federation championship and must not be generalised to every racing code or organiser in Kazakhstan.",
+        "Several calendar entries use city or event-stage labels rather than canonical racecourse identifiers.",
+        "Race times, participants, results, prize information, and betting material remain excluded."
+      ],
+      "notes": "The official 2026 federation calendar supports a bounded C-level prototype for meeting dates and venues."
+    }
+  ],
+  "public_safe": true
+}

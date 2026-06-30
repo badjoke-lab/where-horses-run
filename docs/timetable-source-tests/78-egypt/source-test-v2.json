@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "78",
+  "country_id": "egypt",
+  "country_name_en": "Egypt",
+  "checked_date": "2026-06-30",
+  "evidence_reviewed_at": "2026-06-30",
+  "country_completeness": "link_only",
+  "records": [{
+    "readiness_id": "egypt--arabian-racing-context--ifahr-members",
+    "system_id": "arabian-racing-context",
+    "system_name_en": "Egyptian Arabian horse-racing member context",
+    "authority_source_key": "egypt/ifahr/ifahr-members",
+    "racecourse_ids": [],
+    "coverage_scope": "system_only",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "html",
+    "access_mode": "direct",
+    "automation_mode": "link_only",
+    "refresh_classes": ["event_driven", "manual"],
+    "readiness": "link_only",
+    "implementation_status": "not_started",
+    "fallback": "official_link_only",
+    "source_status": "partial",
+    "revalidation_trigger": "Revalidate when an Egyptian racing authority or operator publishes a stable current meeting calendar.",
+    "blocked_reason": null,
+    "limitations": ["The reviewed international federation directory confirms Egyptian Arabian-racing membership context but is not a domestic meeting calendar.", "No current Egyptian meeting date or racecourse pairing is approved.", "No automation or nationwide coverage is claimed."],
+    "notes": "Retain an official-context link until a stable Egyptian calendar source is reviewed."
+  }],
+  "public_safe": true
+}
