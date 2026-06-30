@@ -1,0 +1,32 @@
+name: Export main worktree PR
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: export-main-20260701
+          fetch-depth: 0
+      - name: Prepare exact main snapshot
+        run: |
+          git fetch origin main
+          git rev-parse origin/main^{tree} > /tmp/main-tree-sha.txt
+          rm -f .github/workflows/export-main-worktree.yml
+          rm -f .github/workflows/export-main-worktree-pr.yml
+          tar -czf /tmp/main-worktree.tgz --exclude=.git .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-worktree-20260701
+          path: |
+            /tmp/main-worktree.tgz
+            /tmp/main-tree-sha.txt
+          if-no-files-found: error
+          retention-days: 7
