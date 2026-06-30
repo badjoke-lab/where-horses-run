@@ -4,7 +4,7 @@
   "adapter_id": "fixture-hkjc-candidate-v1",
   "country_id": "hong-kong",
   "authority_id": "hkjc",
-  "source_id": "hkjc-racecard-source-snapshot",
+  "source_id": "hkjc-fixture-list",
   "candidate_window": {
     "start_date": "2026-06-07",
     "end_date_exclusive": "2026-06-08",
@@ -16,7 +16,7 @@
       "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
       "country_id": "hong-kong",
       "authority_id": "hkjc",
-      "racing_system_id": "hong-kong-thoroughbred",
+      "racing_system_id": "hong-kong-hkjc-system",
       "racecourse_id": "sha-tin-racecourse",
       "date": "2026-06-07",
       "timezone": "Asia/Hong_Kong",
@@ -29,20 +29,20 @@
           "post_time_local": "12:45",
           "race_name": "Fixture programme summary",
           "distance_m": 1200,
-          "surface": "Turf",
-          "course_label": "A Course"
+          "surface": null,
+          "course_label": null
         },
         {
           "label": "Race 2",
           "post_time_local": "13:15",
           "race_name": null,
           "distance_m": 1400,
-          "surface": "Turf",
-          "course_label": "A Course"
+          "surface": null,
+          "course_label": null
         }
       ],
       "source": {
-        "source_id": "hkjc-racecard-source-snapshot",
+        "source_id": "hkjc-fixture-list",
         "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
         "checked_at": "2026-07-01T00:00:00.000Z",
         "extraction_method": "fixture_parser"
