@@ -70,6 +70,10 @@ type PublicMeetingDetailsDataset = {
 const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
 
+export function getPublicTimetableGeneratedAt(): string {
+  return meetingListDataset.generated_at;
+}
+
 export function getPublicTimetableMeetingRows(): readonly PublicTimetableMeetingRow[] {
   return meetingListDataset.meetings;
 }
