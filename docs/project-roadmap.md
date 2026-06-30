@@ -1,8 +1,8 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-NOTE-69-76`  
-Next Work ID: `WHR-PROFILE-69-76`  
+Current Work ID: `WHR-PROFILE-69-76`  
+Next Work ID: `WHR-PUB-69-76`  
 Last reviewed: 2026-06-30
 
 ## Purpose
@@ -38,8 +38,8 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 published country pages:       68
 page_qa:                        0
 profile_ready:                  0
-note_reviewed:                  0
-source_tested:                  8
+note_reviewed:                  8
+source_tested:                  0
 not_started:                   22
 total countries/regions:       98
 published routes:              68 EN + 68 JA = 136
@@ -190,7 +190,9 @@ Completed: `WHR-ST2-61-68` via PR #330, `WHR-NOTE-61-68` via PR #331, `WHR-PROFI
 
 Completed: `WHR-ST2-69-76` via PR #335 with eight Source Test v2 and Calendar Readiness decisions.
 
-Current Work ID: `WHR-NOTE-69-76`
+Completed: `WHR-NOTE-69-76` via PR #336 with eight reviewed public-safe country notes.
+
+Current Work ID: `WHR-PROFILE-69-76`
 
 ```text
 WHR-ST2-53-60 -> WHR-NOTE-53-60 -> WHR-PROFILE-53-60 -> WHR-PUB-53-60
