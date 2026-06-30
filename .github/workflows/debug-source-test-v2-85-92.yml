@@ -1,0 +1,21 @@
+name: Debug Source Test 85-92
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/check-source-test-v2-85-92.mjs'
+      - 'docs/timetable-source-tests/**'
+      - 'data/static/authority-source-inventory-85-92.json'
+      - 'data/static/calendar-readiness-registry-85-92.json'
+      - 'docs/country-pages/98-country-source-test-transitions-85-92.tsv'
+      - '.github/workflows/debug-source-test-v2-85-92.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/check-source-test-v2-85-92.mjs
