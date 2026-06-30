@@ -1,0 +1,33 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "82",
+  "country_id": "bolivia",
+  "country_name_en": "Bolivia",
+  "checked_date": "2026-06-30",
+  "evidence_reviewed_at": "2026-06-30",
+  "country_completeness": "blocked",
+  "records": [{
+    "readiness_id": "bolivia--local-racing-context--achacachi-planning-document",
+    "system_id": "local-racing-context",
+    "system_name_en": "Achacachi local horse-racing context",
+    "authority_source_key": "bolivia/achacachi-municipality/achacachi-planning-document",
+    "racecourse_ids": [],
+    "coverage_scope": "archive_or_explanatory",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "confirmed_fields": {"meeting_date": false, "racecourse": false, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+    "source_format": "pdf",
+    "access_mode": "direct",
+    "automation_mode": "blocked",
+    "refresh_classes": ["event_driven", "manual"],
+    "readiness": "blocked",
+    "implementation_status": "not_started",
+    "fallback": "hide_from_current_calendar",
+    "source_status": "stale",
+    "revalidation_trigger": "Revalidate when a Bolivian public authority or recognised racing operator publishes a stable current meeting calendar.",
+    "blocked_reason": "The reviewed public planning document mentions a local horse race but does not establish a current recurring calendar, authority-wide coverage, or a stable meeting source.",
+    "limitations": ["The evidence is local and planning-oriented rather than a current racing calendar.", "No current date and venue pairing is approved.", "The source must not be generalised to national Bolivian racing activity."],
+    "notes": "Keep Bolivia out of current-calendar output until a current official meeting source is reviewed."
+  }],
+  "public_safe": true
+}
