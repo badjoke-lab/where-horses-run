@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   canonicalize:
@@ -46,16 +46,36 @@ jobs:
           node scripts/check-project-governance-docs.mjs
           node scripts/check-calendar-contracts.mjs
       - run: npm run build
-      - name: Prepare canonical worktree
+      - name: Remove build-only and one-time output
         run: |
-          rm -f .github/workflows/final-audit-98.yml
+          git checkout origin/main -- \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/hkjc-normalized-meeting-details.sample.json \
+            data/generated/timetable/hkjc-normalized-timetable.sample.json \
+            data/generated/timetable/june-2026-calendar.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json
+          rm -f package-lock.json
           rm -f scripts/final-audit-98.mjs
           rm -rf scripts/final-audit-98
+      - name: Export canonical worktree
+        run: |
           rm -rf node_modules dist .astro artifacts
-          tar -czf /tmp/final-audit-98-worktree.tgz --exclude=.git .
+          tar -czf /tmp/final-audit-98-worktree.tgz \
+            --exclude=.git \
+            --exclude=.github/workflows/final-audit-98.yml \
+            .
       - uses: actions/upload-artifact@v4
         with:
-          name: final-audit-98-worktree
+          name: final-audit-98-clean-worktree
           path: /tmp/final-audit-98-worktree.tgz
           if-no-files-found: error
           retention-days: 90
+      - name: Commit canonical audit result to clean branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Complete final 98-country and Calendar audit"
+          git push --force origin HEAD:refs/heads/audit-98-canonical-20260701
