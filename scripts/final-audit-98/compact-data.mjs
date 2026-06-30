@@ -106,7 +106,13 @@ function racecourseScope(coverage) {
 for (const file of authorityOverlayFiles) {
   const overlay = parseJson(file);
   for (const record of overlay.records ?? []) {
-    const parts = record.authority_source_key.split('/');
+    if (record.authority_id && record.official_source_id) {
+      const key = `${record.country_id}/${record.authority_id}/${record.official_source_id}`;
+      authorityMap.set(key, record);
+      continue;
+    }
+
+    const parts = record.authority_source_key?.split('/') ?? [];
     const countryId = parts.shift();
     const authorityId = parts.shift();
     const officialSourceId = parts.join('-');
