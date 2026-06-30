@@ -8,6 +8,7 @@ import countryPageCountries3744 from '../../data/static/country-page-countries-3
 import countryPageCountries4552 from '../../data/static/country-page-countries-45-52.json';
 import countryPageCountries5360 from '../../data/static/country-page-countries-53-60.json';
 import countryPageCountries6168 from '../../data/static/country-page-countries-61-68.json';
+import countryPageCountries6976 from '../../data/static/country-page-countries-69-76.json';
 import countryProfilesV2 from '../../data/static/country-profiles-v2.json';
 import countryProfilesV205Chile from '../../data/static/country-profiles-v2-05-chile.json';
 import countryProfilesV206Peru from '../../data/static/country-profiles-v2-06-peru.json';
@@ -73,6 +74,14 @@ import countryProfilesV265Lebanon from '../../data/static/country-profiles-v2-65
 import countryProfilesV266Libya from '../../data/static/country-profiles-v2-66-libya.json';
 import countryProfilesV267MainlandChina from '../../data/static/country-profiles-v2-67-mainland-china.json';
 import countryProfilesV268Indonesia from '../../data/static/country-profiles-v2-68-indonesia.json';
+import countryProfilesV269Russia from '../../data/static/country-profiles-v2-69-russia.json';
+import countryProfilesV270Namibia from '../../data/static/country-profiles-v2-70-namibia.json';
+import countryProfilesV271Nigeria from '../../data/static/country-profiles-v2-71-nigeria.json';
+import countryProfilesV272Belize from '../../data/static/country-profiles-v2-72-belize.json';
+import countryProfilesV273Colombia from '../../data/static/country-profiles-v2-73-colombia.json';
+import countryProfilesV274Lithuania from '../../data/static/country-profiles-v2-74-lithuania.json';
+import countryProfilesV275Estonia from '../../data/static/country-profiles-v2-75-estonia.json';
+import countryProfilesV276Guyana from '../../data/static/country-profiles-v2-76-guyana.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
@@ -100,6 +109,7 @@ import countryPageSources3744 from '../../data/static/country-page-sources-37-44
 import countryPageSources4552 from '../../data/static/country-page-sources-45-52.json';
 import countryPageSources5360 from '../../data/static/country-page-sources-53-60.json';
 import countryPageSources6168 from '../../data/static/country-page-sources-61-68.json';
+import countryPageSources6976 from '../../data/static/country-page-sources-69-76.json';
 import glossary from '../../data/static/glossary.json';
 import archive from '../../data/static/archive.json';
 import countryRacingInventory from '../../data/static/country-racing-inventory.json';
@@ -125,7 +135,8 @@ const allCountries = [
   ...countryPageCountries3744,
   ...countryPageCountries4552,
   ...countryPageCountries5360,
-  ...countryPageCountries6168
+  ...countryPageCountries6168,
+  ...countryPageCountries6976
 ] as const;
 
 const allProfilesV2 = [
@@ -193,7 +204,15 @@ const allProfilesV2 = [
   ...countryProfilesV265Lebanon,
   ...countryProfilesV266Libya,
   ...countryProfilesV267MainlandChina,
-  ...countryProfilesV268Indonesia
+  ...countryProfilesV268Indonesia,
+  ...countryProfilesV269Russia,
+  ...countryProfilesV270Namibia,
+  ...countryProfilesV271Nigeria,
+  ...countryProfilesV272Belize,
+  ...countryProfilesV273Colombia,
+  ...countryProfilesV274Lithuania,
+  ...countryProfilesV275Estonia,
+  ...countryProfilesV276Guyana
 ] as const;
 
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
@@ -229,7 +248,8 @@ const allSources = [
   ...countryPageSources3744,
   ...countryPageSources4552,
   ...countryPageSources5360,
-  ...countryPageSources6168
+  ...countryPageSources6168,
+  ...countryPageSources6976
 ] as const;
 
 const countryProfiles = buildCountryDetailProfiles(allProfilesV2);

@@ -119,7 +119,7 @@ const counts = rows.reduce((result, row) => {
   result[row.programme_status] = (result[row.programme_status] ?? 0) + 1;
   return result;
 }, {});
-for (const [status, expected] of Object.entries({ published: 68, profile_ready: 0, source_tested: 0, note_reviewed: 8, page_qa: 0, not_started: 22 })) {
+for (const [status, expected] of Object.entries({ published: 68, profile_ready: 8, source_tested: 0, note_reviewed: 0, page_qa: 0, not_started: 22 })) {
   if ((counts[status] ?? 0) !== expected) fail(`tracker must contain ${expected} ${status} rows; found ${counts[status] ?? 0}`);
 }
 
@@ -137,4 +137,4 @@ await import('./check-source-test-v2-53-60.mjs');
 
 console.log('COUNTRY_PAGE_PROGRAMME_VALID');
 console.log('TRACKER_ROWS_VALID: 98');
-console.log('PROGRAMME_COUNTS: published=68 page_qa=0 profile_ready=0 source_tested=0 note_reviewed=8 not_started=22');
+console.log('PROGRAMME_COUNTS: published=68 page_qa=0 profile_ready=8 source_tested=0 note_reviewed=0 not_started=22');
