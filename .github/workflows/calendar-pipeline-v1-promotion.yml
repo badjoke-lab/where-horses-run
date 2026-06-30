@@ -1,0 +1,59 @@
+name: Calendar pipeline v1 promotion
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/pipeline-v1.sample.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'docs/calendar/pipeline-v1-promotion.md'
+      - 'scripts/check-calendar-pipeline-v1-promotion.mjs'
+      - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/timetable/promote-timetable.mjs'
+      - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
+      - 'src/lib/timetable/pipelineTypes.ts'
+      - '.github/workflows/calendar-pipeline-v1-promotion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/pipeline-v1.sample.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'docs/calendar/pipeline-v1-promotion.md'
+      - 'scripts/check-calendar-pipeline-v1-promotion.mjs'
+      - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/timetable/promote-timetable.mjs'
+      - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
+      - 'src/lib/timetable/pipelineTypes.ts'
+      - '.github/workflows/calendar-pipeline-v1-promotion.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate candidate contract
+        run: node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+      - name: Validate canonical promotion and negative cases
+        run: node scripts/check-calendar-pipeline-v1-promotion.mjs
+      - name: Confirm public projection and site build remain stable
+        run: |
+          before_list="$(sha256sum data/generated/timetable/public/meeting-list.json)"
+          before_details="$(sha256sum data/generated/timetable/public/meeting-details.json)"
+          npm install --package-lock=false
+          npm run build
+          test "$before_list" = "$(sha256sum data/generated/timetable/public/meeting-list.json)"
+          test "$before_details" = "$(sha256sum data/generated/timetable/public/meeting-details.json)"

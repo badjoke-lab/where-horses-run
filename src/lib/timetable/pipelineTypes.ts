@@ -1,6 +1,7 @@
 export type PipelineCapabilityRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 export type PipelineReviewStatus = 'needs_review' | 'approved' | 'rejected';
 export type PipelineConfidence = 'low' | 'medium' | 'high';
+export type PipelinePromotionTarget = 'canonical-timetable-v0';
 export type PipelineExtractionMethod =
   | 'manual_import'
   | 'fixture_parser'
@@ -53,7 +54,7 @@ export type TimetableCandidateReviewV1 = {
   readonly reviewed_at: string | null;
   readonly reviewer: string | null;
   readonly summary: string;
-  readonly promotion_target: string | null;
+  readonly promotion_target: PipelinePromotionTarget | null;
 };
 
 export type TimetableCandidateFileV1 = {
