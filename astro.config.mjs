@@ -1,16 +1,9 @@
 // @ts-check
-import { execFileSync } from 'node:child_process';
 import { defineConfig } from 'astro/config';
 
-const runTimetableBuilder = (script) => {
-  execFileSync(process.execPath, [script], {
-    cwd: process.cwd(),
-    stdio: 'inherit',
-  });
-};
-
-runTimetableBuilder('scripts/timetable/build-public-timetable-pipeline.mjs');
-
+// Static builds read committed public timetable projections only.
+// Candidate, canonical, and public-data generation run through explicit
+// reviewed pipeline commands and must never execute as an Astro config side effect.
 export default defineConfig({
   site: 'https://whr.badjoke-lab.com',
   trailingSlash: 'always'
