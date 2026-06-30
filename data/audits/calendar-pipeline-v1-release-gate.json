@@ -1,0 +1,85 @@
+{
+  "schema_version": "calendar-pipeline-v1-release-gate-v1",
+  "work_id": "WHR-CAL-PIPELINE-V1",
+  "status": "complete",
+  "completed_at": "2026-07-01",
+  "next_work_id": "WHR-CAL-DYNAMIC-DATES",
+  "following_work_id": "WHR-CAL-OPS-V1",
+  "public_release": {
+    "meeting_count": 23,
+    "detail_count": 5,
+    "projection_audit": "data/audits/calendar-public-projection-release-v1.json",
+    "rendered_qa_required": true
+  },
+  "reference_adapter": {
+    "adapter_id": "jra-normalized-programme-candidate-v1",
+    "candidate_path": "data/candidates/japan-jra-candidates.json",
+    "record_count": 4,
+    "review_status": "needs_review",
+    "actual_promotion_state": "blocked_by_freshness",
+    "live_schedule_active": false
+  },
+  "operational_state": {
+    "normal_build_read_only": true,
+    "public_runtime_reads_public_projection_only": true,
+    "candidate_generation_is_publication": false,
+    "human_promotion_required": true,
+    "public_projection_separate_from_promotion": true,
+    "scheduled_refresh_active": false,
+    "unattended_publication_active": false
+  },
+  "completed_layers": [
+    {
+      "id": "static-build-boundary",
+      "contract": "docs/calendar/pipeline-v1-build-boundary.md",
+      "validator": "scripts/check-calendar-build-boundary.mjs"
+    },
+    {
+      "id": "candidate-contract",
+      "contract": "docs/calendar/pipeline-v1-candidate-contract.md",
+      "validator": "scripts/check-calendar-pipeline-v1-candidate-contract.mjs"
+    },
+    {
+      "id": "canonical-promotion",
+      "contract": "docs/calendar/pipeline-v1-promotion.md",
+      "validator": "scripts/check-calendar-pipeline-v1-promotion.mjs"
+    },
+    {
+      "id": "deterministic-public-projection",
+      "contract": "docs/calendar/pipeline-v1-public-projection.md",
+      "validator": "scripts/check-calendar-pipeline-v1-public-projection.mjs"
+    },
+    {
+      "id": "production-runtime-import-boundary",
+      "contract": "docs/calendar/pipeline-v1-runtime-import-boundary.md",
+      "validator": "scripts/check-calendar-runtime-import-boundary.mjs"
+    },
+    {
+      "id": "jra-reference-adapter",
+      "contract": "docs/calendar/pipeline-v1-jra-reference-adapter.md",
+      "validator": "scripts/check-japan-jra-candidate-generator.mjs"
+    },
+    {
+      "id": "rendered-public-release-qa",
+      "contract": "docs/calendar/pipeline-v1-public-projection-preview.md",
+      "validator": "scripts/check-calendar-public-projection-rendered-qa.mjs"
+    }
+  ],
+  "required_validator_order": [
+    "scripts/check-calendar-build-boundary.mjs",
+    "scripts/check-calendar-pipeline-v1-candidate-contract.mjs",
+    "scripts/check-calendar-pipeline-v1-promotion.mjs",
+    "scripts/check-calendar-pipeline-v1-public-projection.mjs",
+    "scripts/check-calendar-runtime-import-boundary.mjs",
+    "scripts/check-japan-jra-candidate-generator.mjs"
+  ],
+  "not_completed_by_pipeline_v1": [
+    "dynamic Today and Tomorrow dates",
+    "rolling Calendar window",
+    "timezone-aware date selection",
+    "scheduled candidate operations",
+    "source-health and stale automation",
+    "pilot live refresh activation",
+    "unattended publication"
+  ]
+}

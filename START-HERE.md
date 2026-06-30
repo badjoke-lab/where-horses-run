@@ -25,6 +25,7 @@ Calendar work:
 8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
 9. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
 10. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+11. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -34,22 +35,24 @@ data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 data/audits/calendar-baseline-migration-map.json
+data/audits/calendar-pipeline-v1-release-gate.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
+scripts/check-calendar-pipeline-v1-release-gate.mjs
 ```
 
-Previous completed Work ID: `WHR-CAL-BASELINE-RECONCILE`
+Previous completed Work ID: `WHR-CAL-PIPELINE-V1`
 
 Current Work ID:
-
-```text
-WHR-CAL-PIPELINE-V1
-```
-
-Next Work ID:
 
 ```text
 WHR-CAL-DYNAMIC-DATES
 ```
 
-The 98-country bilingual page programme and Calendar baseline reconciliation are complete. The active task is to implement the reviewed pipeline v1 without activating unattended publication.
+Next Work ID:
+
+```text
+WHR-CAL-OPS-V1
+```
+
+The 98-country programme, Calendar baseline reconciliation, and Pipeline v1 foundation are complete. The active task is dynamic Today/Tomorrow and rolling Calendar date logic; scheduled source operation remains paused.

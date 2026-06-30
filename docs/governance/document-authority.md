@@ -51,6 +51,7 @@ Calendar human-readable contracts:
 - `docs/calendar/machine-readable-contracts.md`
 - `docs/calendar/implementation-roadmap.md`
 - `docs/calendar/baseline-reconciliation-map.md`
+- `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/specs/global-timetable-architecture.md` plus active addendum
 - `docs/specs/authority-source-inventory-schema.md` plus active addendum
 
@@ -62,8 +63,10 @@ Calendar machine-readable contracts:
 - `data/static/authority-source-inventory.schema.json`
 - `data/static/authority-source-inventory.json`
 - `data/audits/calendar-baseline-migration-map.json`
+- `data/audits/calendar-pipeline-v1-release-gate.json`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
+- `scripts/check-calendar-pipeline-v1-release-gate.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
