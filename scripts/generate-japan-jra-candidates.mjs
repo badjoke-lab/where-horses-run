@@ -4,6 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const outputPath = path.join(root, 'data/candidates/japan-jra-candidates.json');
 const checkOnly = process.argv.includes('--check');
+const readinessKey = 'japan/jra/jra-programme';
 
 function readJson(relativePath) {
   return JSON.parse(readFileSync(path.join(root, relativePath), 'utf8'));
@@ -15,55 +16,141 @@ function addDays(dateText, days) {
   return date.toISOString().slice(0, 10);
 }
 
-function candidateIdFor(record) {
-  return `japan-jra-${record.date}-${record.racecourse_id.replace(/-racecourse$/, '')}`;
+function candidateIdFor(meetingId) {
+  return `candidate-${meetingId}`;
+}
+
+function confidenceFor(rows) {
+  return rows.every((row) => row.metadata_status === 'verified') ? 'high' : 'medium';
+}
+
+function canonicalizeJraOfficialUrl(value, canonicalHost) {
+  const url = new URL(value);
+  if (!['jra.jp', 'www.jra.go.jp'].includes(url.hostname)) {
+    throw new Error(`Unexpected JRA official host: ${url.hostname}.`);
+  }
+  url.hostname = canonicalHost;
+  return url.toString();
 }
 
 function buildCandidateFile() {
-  const timetables = readJson('data/generated/timetables.json');
-  const generatedAt = timetables.generated_at;
-  const startDate = generatedAt.slice(0, 10);
-  const records = (timetables.records ?? [])
-    .filter((record) => record.country_id === 'japan')
-    .filter((record) => record.source_id === 'japan-jra-home')
-    .filter((record) => String(record.racing_type ?? '').includes('JRA'))
-    .map((record) => ({
-      candidate_id: candidateIdFor(record),
-      country_id: 'japan',
-      racing_system_id: 'jra',
-      racecourse_id: record.racecourse_id,
-      racecourse_name: record.racecourse_name,
-      date: record.date,
-      start_time_local: record.start_time_local,
-      timezone: record.timezone,
-      racing_type: record.racing_type,
-      source_id: record.source_id,
-      source_url: record.source_url,
-      source_checked_at: record.last_checked_at,
-      extraction_method: 'adapter_dry_run',
-      status: 'candidate',
-      confidence: record.confidence,
-      review_status: 'needs_review',
-      notes: 'JRA meeting-level candidate generated from the existing safe timetable seed. Official source remains final confirmation.'
-    }))
-    .sort((a, b) => `${a.date}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.racecourse_id}`));
+  const meetings = readJson('data/generated/timetable/jra-normalized-timetable.json');
+  const details = readJson('data/generated/timetable/jra-normalized-meeting-details.json');
+  const readinessRegistry = readJson('data/static/calendar-readiness-registry.json');
+  const authorityInventory = readJson('data/static/authority-source-inventory.json');
+  const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === readinessKey);
+  const authorityMatches = authorityInventory.records.filter((record) =>
+    record.country_id === 'japan' && record.authority_id === 'jra' && record.official_source_id === 'jra-programme'
+  );
+
+  if (meetings.schema_version !== 'jra-normalized-timetable-v0') {
+    throw new Error('Unexpected JRA normalized meeting schema.');
+  }
+  if (details.schema_version !== 'jra-normalized-meeting-details-v0') {
+    throw new Error('Unexpected JRA normalized detail schema.');
+  }
+  if (readinessRegistry.schema_version !== 'calendar-readiness-registry-v1') {
+    throw new Error('Unexpected Calendar Readiness registry schema.');
+  }
+  if (authorityInventory.schema_version !== 'authority-source-inventory-v1') {
+    throw new Error('Unexpected Authority/Source inventory schema.');
+  }
+  if (readinessMatches.length !== 1) {
+    throw new Error(`Expected one JRA programme readiness record, found ${readinessMatches.length}.`);
+  }
+  if (authorityMatches.length !== 1) {
+    throw new Error(`Expected one JRA programme authority/source record, found ${authorityMatches.length}.`);
+  }
+  const readiness = readinessMatches[0];
+  const authoritySource = authorityMatches[0];
+  const canonicalHost = new URL(authoritySource.official_source_url).hostname;
+  if (readiness.system_id !== 'japan-jra-system') {
+    throw new Error(`Unexpected JRA readiness system_id: ${readiness.system_id}.`);
+  }
+  if (readiness.technical_rank !== 'A+') {
+    throw new Error(`JRA reference adapter expects reviewed technical rank A+, received ${readiness.technical_rank}.`);
+  }
+  if (readiness.confirmed_fields?.per_race_post_times !== true) {
+    throw new Error('JRA readiness must confirm per-race post times.');
+  }
+  if (meetings.generated_at !== details.generated_at) {
+    throw new Error('JRA normalized meeting/detail timestamps must match.');
+  }
+  if (meetings.refresh_window.from !== details.refresh_window.from || meetings.refresh_window.to !== details.refresh_window.to) {
+    throw new Error('JRA normalized meeting/detail windows must match.');
+  }
+
+  const fields = readiness.confirmed_fields;
+  const detailsByMeetingId = new Map(details.details.map((detail) => [detail.meeting_id, detail]));
+  const records = meetings.records
+    .map((meeting) => {
+      const detail = detailsByMeetingId.get(meeting.meeting_id);
+      if (!detail) throw new Error(`Missing normalized JRA detail for ${meeting.meeting_id}.`);
+      if (detail.capability_rank !== meeting.capability_rank) {
+        throw new Error(`JRA capability rank mismatch for ${meeting.meeting_id}.`);
+      }
+      if (detail.timetable_rows.length === 0) {
+        throw new Error(`JRA detail has no timetable rows: ${meeting.meeting_id}.`);
+      }
+      if (Array.isArray(readiness.racecourse_ids) && readiness.racecourse_ids.length > 0 && !readiness.racecourse_ids.includes(meeting.racecourse_id)) {
+        throw new Error(`JRA meeting is outside reviewed racecourse scope: ${meeting.meeting_id}.`);
+      }
+
+      return {
+        candidate_id: candidateIdFor(meeting.meeting_id),
+        meeting_id: meeting.meeting_id,
+        country_id: 'japan',
+        authority_id: 'jra',
+        racing_system_id: readiness.system_id,
+        racecourse_id: meeting.racecourse_id,
+        date: meeting.date,
+        timezone: meeting.timezone,
+        capability_rank: readiness.technical_rank,
+        first_race_time_local: meeting.first_race_time_local,
+        last_race_time_local: meeting.last_race_time_local,
+        timetable_rows: detail.timetable_rows.map((row) => ({
+          label: row.label,
+          post_time_local: row.post_time_local,
+          race_name: fields.race_name === true ? row.race_name ?? null : null,
+          distance_m: fields.distance === true ? row.distance_m ?? null : null,
+          surface: fields.surface === true ? row.surface ?? null : null,
+          course_label: fields.course === true ? row.course_label ?? null : null
+        })),
+        source: {
+          source_id: 'jra-programme',
+          official_url: canonicalizeJraOfficialUrl(meeting.official_source_url, canonicalHost),
+          checked_at: detail.freshness.generated_at,
+          extraction_method: 'adapter_candidate'
+        },
+        confidence: confidenceFor(detail.timetable_rows),
+        review_status: 'needs_review',
+        notes: 'Generated from the reviewed JRA official programme normalizer. Optional programme fields are bounded by Calendar Readiness confirmed_fields. Candidate only; human review and canonical promotion remain separate.'
+      };
+    })
+    .sort((left, right) => `${left.date}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.racecourse_id}`));
+
+  if (records.length !== details.details.length) {
+    throw new Error('JRA normalized meeting/detail record counts must match.');
+  }
 
   return {
-    schema_version: 'timetable-candidates-v0',
-    generated_at: generatedAt,
-    source_adapter_id: 'japan-jra-dry-run-adapter',
+    schema_version: 'timetable-candidate-v1',
+    generated_at: meetings.generated_at,
+    adapter_id: 'jra-normalized-programme-candidate-v1',
     country_id: 'japan',
+    authority_id: 'jra',
+    source_id: 'jra-programme',
     candidate_window: {
-      start_date: startDate,
-      end_date_exclusive: addDays(startDate, 30),
+      start_date: meetings.refresh_window.from,
+      end_date_exclusive: addDays(meetings.refresh_window.to, 1),
       timezone: 'Asia/Tokyo'
     },
     records,
     review: {
-      review_status: 'needs_review',
+      status: 'needs_review',
       reviewed_at: null,
       reviewer: null,
-      summary: 'Dry-run candidate file generated from existing safe JRA meeting-level timetable seed. It is not published coverage until reviewed and promoted.',
+      summary: 'JRA official programme candidates generated by the Pipeline v1 reference adapter. They are not canonical or public data until reviewed and promoted.',
       promotion_target: null
     }
   };
@@ -82,9 +169,9 @@ if (checkOnly) {
     console.error('Japan JRA candidate output is stale. Run: npm run generate:japan-jra-candidates');
     process.exit(1);
   }
-  console.log('Japan JRA candidate output is up to date.');
+  console.log('Japan JRA Pipeline v1 candidate output is up to date.');
 } else {
   mkdirSync(path.dirname(outputPath), { recursive: true });
   writeFileSync(outputPath, serialized);
-  console.log(`Wrote ${path.relative(root, outputPath)} with ${candidateFile.records.length} records.`);
+  console.log(`Wrote ${path.relative(root, outputPath)} with ${candidateFile.records.length} Pipeline v1 records.`);
 }
