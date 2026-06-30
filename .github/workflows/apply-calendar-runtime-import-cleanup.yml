@@ -1,0 +1,37 @@
+name: Apply Calendar runtime import cleanup
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-runtime-import-guard
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Remove legacy timetable imports
+        run: node scripts/apply-calendar-runtime-import-cleanup.mjs
+      - name: Validate runtime import graph and build
+        run: |
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          npm install --package-lock=false
+          npm run build
+      - name: Commit cleanup
+        run: |
+          rm -f scripts/apply-calendar-runtime-import-cleanup.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove legacy timetable runtime imports"
+          git push origin HEAD:calendar-runtime-import-guard
