@@ -81,7 +81,13 @@ for (const record of records) {
   if (record.racing_system_id !== readiness?.system_id) fail(`${record.candidate_id}: racing_system_id mismatch.`);
   if (record.source?.source_id !== 'jra-programme') fail(`${record.candidate_id}: source identity mismatch.`);
   if (record.source?.extraction_method !== 'adapter_candidate') fail(`${record.candidate_id}: extraction method mismatch.`);
-  if (!record.source?.official_url?.startsWith('https://jra.jp/')) fail(`${record.candidate_id}: official URL must be JRA HTTPS.`);
+  try {
+    const candidateHost = new URL(record.source?.official_url).hostname;
+    const authorityHost = new URL(authoritySource?.official_source_url).hostname;
+    if (candidateHost !== authorityHost) fail(`${record.candidate_id}: official URL host must match the canonical inventory host.`);
+  } catch {
+    fail(`${record.candidate_id}: official URL must be valid HTTPS.`);
+  }
   if (record.source?.checked_at !== detail.freshness.generated_at) fail(`${record.candidate_id}: checked_at must come from normalized freshness.`);
   if (record.review_status !== 'needs_review') fail(`${record.candidate_id}: record must remain needs_review.`);
   if (record.capability_rank !== readiness?.technical_rank) fail(`${record.candidate_id}: candidate rank must follow reviewed technical rank.`);
@@ -126,6 +132,7 @@ for (const required of [
   'jra-normalized-timetable.json',
   'jra-normalized-meeting-details.json',
   'calendar-readiness-registry.json',
+  'authority-source-inventory.json',
   "schema_version: 'timetable-candidate-v1'",
   "source_id: 'jra-programme'",
   "review_status: 'needs_review'",
