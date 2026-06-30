@@ -1,0 +1,62 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-07-01T00:00:00.000Z",
+  "adapter_id": "fixture-hkjc-candidate-v1",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "source_id": "hkjc-racecard-source-snapshot",
+  "candidate_window": {
+    "start_date": "2026-06-07",
+    "end_date_exclusive": "2026-06-08",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-hkjc-sha-tin-2026-06-07",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-06-07",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-thoroughbred",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-06-07",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "A+",
+      "first_race_time_local": "12:45",
+      "last_race_time_local": "13:15",
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:45",
+          "race_name": "Fixture programme summary",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:15",
+          "race_name": null,
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "A Course"
+        }
+      ],
+      "source": {
+        "source_id": "hkjc-racecard-source-snapshot",
+        "official_url": "https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx",
+        "checked_at": "2026-07-01T00:00:00.000Z",
+        "extraction_method": "fixture_parser"
+      },
+      "confidence": "high",
+      "review_status": "needs_review",
+      "notes": "Contract fixture only. This candidate is not approved or published."
+    }
+  ],
+  "review": {
+    "status": "needs_review",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Pipeline v1 contract fixture awaiting human review.",
+    "promotion_target": null
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/timetable-candidate-v1.schema.json",
+  "title": "Where Horses Run timetable candidate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "adapter_id",
+    "country_id",
+    "authority_id",
+    "source_id",
+    "candidate_window",
+    "records",
+    "review"
+  ],
+  "properties": {
+    "schema_version": { "const": "timetable-candidate-v1" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "adapter_id": { "$ref": "#/$defs/id" },
+    "country_id": { "$ref": "#/$defs/id" },
+    "authority_id": { "$ref": "#/$defs/id" },
+    "source_id": { "$ref": "#/$defs/id" },
+    "candidate_window": { "$ref": "#/$defs/window" },
+    "records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/record" }
+    },
+    "review": { "$ref": "#/$defs/review" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "timeOrNull": {
+      "oneOf": [
+        { "type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$" },
+        { "type": "null" }
+      ]
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_date", "end_date_exclusive", "timezone"],
+      "properties": {
+        "start_date": { "$ref": "#/$defs/date" },
+        "end_date_exclusive": { "$ref": "#/$defs/date" },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "official_url", "checked_at", "extraction_method"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/id" },
+        "official_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "extraction_method": {
+          "enum": ["manual_import", "fixture_parser", "adapter_candidate", "reviewed_snapshot"]
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "post_time_local"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "post_time_local": { "type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$" },
+        "race_name": { "type": ["string", "null"] },
+        "distance_m": { "type": ["integer", "null"], "minimum": 1 },
+        "surface": { "type": ["string", "null"] },
+        "course_label": { "type": ["string", "null"] }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "meeting_id",
+        "country_id",
+        "authority_id",
+        "racing_system_id",
+        "racecourse_id",
+        "date",
+        "timezone",
+        "capability_rank",
+        "first_race_time_local",
+        "last_race_time_local",
+        "timetable_rows",
+        "source",
+        "confidence",
+        "review_status",
+        "notes"
+      ],
+      "properties": {
+        "candidate_id": { "$ref": "#/$defs/id" },
+        "meeting_id": { "$ref": "#/$defs/id" },
+        "country_id": { "$ref": "#/$defs/id" },
+        "authority_id": { "$ref": "#/$defs/id" },
+        "racing_system_id": { "$ref": "#/$defs/id" },
+        "racecourse_id": { "$ref": "#/$defs/id" },
+        "date": { "$ref": "#/$defs/date" },
+        "timezone": { "type": "string", "minLength": 3 },
+        "capability_rank": { "enum": ["C", "B", "B+", "A", "A+"] },
+        "first_race_time_local": { "$ref": "#/$defs/timeOrNull" },
+        "last_race_time_local": { "$ref": "#/$defs/timeOrNull" },
+        "timetable_rows": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/row" }
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "review_status": { "enum": ["needs_review", "approved", "rejected"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reviewed_at", "reviewer", "summary", "promotion_target"],
+      "properties": {
+        "status": { "enum": ["needs_review", "approved", "rejected"] },
+        "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
+        "reviewer": { "type": ["string", "null"] },
+        "summary": { "type": "string" },
+        "promotion_target": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
