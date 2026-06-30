@@ -1,0 +1,60 @@
+name: Rendered preview 69-76
+
+on:
+  push:
+    branches: [preview-country-pages-69-76]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22.12.0
+
+jobs:
+  rendered-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install project and browser
+        run: |
+          npm install
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Build site
+        run: npm run build
+      - name: Start local production preview
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4321/countries/russia/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Prepare rendered checker
+        run: |
+          base64 --decode scripts/rendered-preview-69-76.b64 > scripts/.rendered-preview-69-76.mjs
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/.rendered-preview-69-76.mjs')
+          s = p.read_text()
+          s = s.replace('artifacts/rendered-preview-61-68', 'artifacts/rendered-preview-69-76')
+          s = s.replace("['slovenia', 'croatia', 'dominican-republic', 'tunisia', 'lebanon', 'libya', 'mainland-china', 'indonesia']", "['russia', 'namibia', 'nigeria', 'belize', 'colombia', 'lithuania', 'estonia', 'guyana']")
+          s = s.replace("new Set(['slovenia', 'dominican-republic', 'mainland-china', 'indonesia'])", "new Set(['russia', 'belize', 'colombia', 'estonia'])")
+          s = s.replace('RENDERED_PREVIEW_61_68_VALID', 'RENDERED_PREVIEW_69_76_VALID')
+          p.write_text(s)
+          PY
+      - name: Run rendered route checks
+        run: node scripts/.rendered-preview-69-76.mjs
+      - name: Upload rendered evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-preview-69-76
+          path: artifacts/rendered-preview-69-76
+          if-no-files-found: error
+          retention-days: 90
