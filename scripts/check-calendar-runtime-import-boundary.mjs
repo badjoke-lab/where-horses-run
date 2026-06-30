@@ -91,6 +91,7 @@ for (const page of pages) {
       violations.push({ page: pagePath, dependency: currentPath, reason: directReason, chain: current.chain });
       continue;
     }
+    if (allowedPublicFiles.has(currentPath)) continue;
 
     const text = readFileSync(current.file, 'utf8');
     for (const marker of forbiddenPaths) {
