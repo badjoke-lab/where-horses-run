@@ -12,6 +12,7 @@ Use these files together:
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
+- [`pipeline-v1-build-boundary.md`](pipeline-v1-build-boundary.md) — static-build read boundary and explicit generation separation.
 - [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
@@ -26,6 +27,7 @@ data/static/calendar-readiness-registry.json
 data/audits/calendar-baseline-migration-map.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
+scripts/check-calendar-build-boundary.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
