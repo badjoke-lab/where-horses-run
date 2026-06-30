@@ -1,0 +1,34 @@
+name: Country notes 85-92
+
+on:
+  pull_request:
+    paths:
+      - 'docs/country-page-notes/8*.md'
+      - 'docs/country-page-notes/9*.md'
+      - 'docs/country-pages/98-country-note-transitions-85-92.tsv'
+      - 'docs/country-pages/programme-roadmap-2026-06-30-notes-85-92-addendum.md'
+      - 'docs/runbooks/country-notes-85-92.md'
+      - 'scripts/check-country-notes-85-92.mjs'
+      - '.github/workflows/country-notes-85-92.yml'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-source-test-v2-85-92.mjs
+      - run: node scripts/check-country-notes-85-92.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: npm install
+      - run: npm run build
