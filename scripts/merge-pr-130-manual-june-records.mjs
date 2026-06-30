@@ -52,3 +52,6 @@ if (fs.existsSync('docs/country-pages/98-country-note-transitions-93-98.tsv')) {
 if (fs.existsSync('docs/country-pages/98-country-profile-transitions-93-98.tsv')) {
   await import('./check-country-profiles-93-98.mjs');
 }
+if (fs.existsSync('docs/country-pages/98-country-publication-transitions-93-98.tsv')) {
+  await import('./check-country-page-publication-93-98.mjs');
+}
