@@ -46,9 +46,8 @@ jobs:
           node scripts/check-project-governance-docs.mjs
           node scripts/check-calendar-contracts.mjs
       - run: npm run build
-      - name: Remove one-time audit scaffold
+      - name: Remove one-time audit scripts
         run: |
-          rm -f .github/workflows/final-audit-98.yml
           rm -f scripts/final-audit-98.mjs
           rm -rf scripts/final-audit-98
       - name: Commit canonical audit result
