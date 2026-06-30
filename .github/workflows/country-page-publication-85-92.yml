@@ -1,0 +1,24 @@
+name: Country page publication 85-92
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-country-page-publication-77-84.mjs
+      - run: node scripts/check-country-page-publication-85-92.mjs
+      - run: node scripts/check-country-detail-profile-runtime.mjs
+      - run: node scripts/check-country-page-programme.mjs
+      - run: node scripts/check-country-page-programme-roadmap.mjs
+      - run: node scripts/check-project-governance-docs.mjs
+      - run: node scripts/check-calendar-contracts.mjs
+      - run: npm install
+      - run: npm run build
