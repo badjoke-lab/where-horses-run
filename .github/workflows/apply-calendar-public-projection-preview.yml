@@ -1,0 +1,47 @@
+name: Apply Calendar public projection preview
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-pipeline-v1-public-preview
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Preserve previous public projection
+        run: |
+          cp data/generated/timetable/public/meeting-list.json /tmp/meeting-list.before.json
+          cp data/generated/timetable/public/meeting-details.json /tmp/meeting-details.before.json
+      - name: Generate deterministic public projection
+        run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Build exact release audit
+        run: |
+          node scripts/build-calendar-public-projection-release-audit.mjs \
+            --before-list /tmp/meeting-list.before.json \
+            --before-details /tmp/meeting-details.before.json
+      - name: Validate projection and site
+        run: |
+          node scripts/check-calendar-pipeline-v1-public-projection.mjs
+          npm install --package-lock=false
+          npm run build
+      - name: Commit preview data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/timetable/public/meeting-list.json
+          git add data/generated/timetable/public/meeting-details.json
+          git add data/audits/calendar-public-projection-release-v1.json
+          git commit -m "Generate Calendar public projection preview"
+          git push origin HEAD:calendar-pipeline-v1-public-preview
