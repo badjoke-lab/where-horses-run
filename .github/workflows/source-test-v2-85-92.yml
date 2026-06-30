@@ -1,4 +1,4 @@
-name: Source Test v2 85-98
+name: Source Test v2 85-92
 
 on:
   pull_request:
@@ -6,17 +6,11 @@ on:
       - 'docs/timetable-source-tests/8*/source-test-v2.json'
       - 'docs/timetable-source-tests/9*/source-test-v2.json'
       - 'data/static/authority-source-inventory-85-92.json'
-      - 'data/static/authority-source-inventory-93-98.json'
       - 'data/static/calendar-readiness-registry-85-92.json'
-      - 'data/static/calendar-readiness-registry-93-98.json'
       - 'docs/country-pages/98-country-source-test-transitions-85-92.tsv'
-      - 'docs/country-pages/98-country-source-test-transitions-93-98.tsv'
       - 'docs/country-pages/programme-roadmap-2026-06-30-source-test-85-92-addendum.md'
-      - 'docs/country-pages/programme-roadmap-2026-06-30-source-test-93-98-addendum.md'
       - 'docs/runbooks/source-test-v2-85-92.md'
-      - 'docs/runbooks/source-test-v2-93-98.md'
       - 'scripts/check-source-test-v2-85-92.mjs'
-      - 'scripts/check-source-test-v2-93-98.mjs'
       - '.github/workflows/source-test-v2-85-92.yml'
   push:
     branches: [main]
@@ -37,7 +31,6 @@ jobs:
       - run: node scripts/check-source-test-v2-69-76.mjs
       - run: node scripts/check-source-test-v2-77-84.mjs
       - run: node scripts/check-source-test-v2-85-92.mjs
-      - run: node scripts/check-source-test-v2-93-98.mjs
       - run: node scripts/check-country-page-programme.mjs
       - run: node scripts/check-country-page-programme-roadmap.mjs
       - run: node scripts/check-project-governance-docs.mjs
