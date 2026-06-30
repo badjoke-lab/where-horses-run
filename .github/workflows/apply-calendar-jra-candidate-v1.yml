@@ -1,0 +1,40 @@
+name: Apply Calendar JRA candidate v1
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-jra-candidate-v1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Generate JRA candidate v1
+        run: node scripts/generate-japan-jra-candidates.mjs
+      - name: Validate candidate and promotion boundary
+        run: |
+          node scripts/check-japan-jra-candidate-generator.mjs
+          node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm static build
+        run: |
+          npm install --package-lock=false
+          npm run build
+      - name: Commit generated candidate
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/candidates/japan-jra-candidates.json
+          git commit -m "Generate JRA Pipeline v1 candidate fixture"
+          git push origin HEAD:calendar-jra-candidate-v1
