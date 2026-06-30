@@ -1,29 +1,38 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import { getGroupedTimetableMeetingRows } from '../../data/timetableMeetingRows';
+import {
+  getCurrentCalendarWindowGroups,
+  getTimetableDataState,
+  getTimetableDateContext,
+} from '../../data/timetableMeetingRows';
 
-const groupedCalendarRecords = getGroupedTimetableMeetingRows();
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const groups = getCurrentCalendarWindowGroups(context);
 ---
 
 <BaseLayout
-  title="June 2026 Calendar | Where Horses Run"
-  description="A simple date-first meeting calendar for June 2026, with one official source link per meeting and race timetable links only where race-by-race times are available."
+  title={`30-day racing calendar | Where Horses Run`}
+  description={`Reviewed public meetings from ${context.windowStart} through ${context.windowEndInclusive}.`}
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
-    <h1 id="page-title">June 2026 Calendar</h1>
+    <h1 id="page-title">30-day racing calendar</h1>
     <p class="hero__summary">
-      Meetings grouped by date. Rank controls how much timing detail is shown; official sources remain the final confirmation point.
+      Reviewed meetings from {context.windowStart} through {context.windowEndInclusive}, using {context.timeZone} as the reference timezone.
     </p>
   </section>
 
-  <section aria-label="June 2026 meetings by date">
+  <CalendarDateStatus context={context} dataState={dataState} />
+
+  <section aria-label="Rolling 30-day meeting list">
     <TimetableMeetingList
-      groups={groupedCalendarRecords}
-      emptyLabel="No June 2026 meetings are listed yet. Use official source links for final confirmation."
+      groups={groups}
+      emptyLabel={`No reviewed public meetings fall between ${context.windowStart} and ${context.windowEndInclusive}. Check official sources for current information.`}
     />
   </section>
 </BaseLayout>
