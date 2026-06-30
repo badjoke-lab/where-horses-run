@@ -59,8 +59,8 @@ for (const [index, profile] of profiles.entries()) {
   inspectKeys(profile, `profiles[${index}]`);
 }
 
-if (profiles.length !== 68) fail(`runtime must contain 68 profile-v2 records; found ${profiles.length}`);
-for (const countryId of ['japan', 'hong-kong', 'malaysia', 'thailand', 'philippines', 'mauritius', 'argentina', 'germany', 'italy', 'spain', 'norway', 'finland', 'netherlands', 'switzerland', 'poland', 'romania', 'serbia', 'slovakia', 'cyprus', 'panama', 'kuwait', 'kenya', 'pakistan', 'ecuador', 'venezuela', 'belgium', 'slovenia', 'croatia', 'dominican-republic', 'tunisia', 'lebanon', 'libya', 'mainland-china', 'indonesia']) {
+if (profiles.length !== 76) fail(`runtime must contain 76 profile-v2 records; found ${profiles.length}`);
+for (const countryId of ['japan', 'hong-kong', 'malaysia', 'thailand', 'philippines', 'mauritius', 'argentina', 'germany', 'italy', 'spain', 'norway', 'finland', 'netherlands', 'switzerland', 'poland', 'romania', 'serbia', 'slovakia', 'cyprus', 'panama', 'kuwait', 'kenya', 'pakistan', 'ecuador', 'venezuela', 'belgium', 'slovenia', 'croatia', 'dominican-republic', 'tunisia', 'lebanon', 'libya', 'mainland-china', 'indonesia', 'russia', 'namibia', 'nigeria', 'belize', 'colombia', 'lithuania', 'estonia', 'guyana']) {
   if (!seenCountryIds.has(countryId)) fail(`missing profile-v2 record: ${countryId}`);
 }
 
@@ -74,10 +74,10 @@ if (!runtimeText.includes('organiser_source_ids') || !runtimeText.includes('dist
 const dataText = read('src/lib/data.ts');
 if (!dataText.includes('const allProfilesV2 = [')) fail('data.ts must combine profile-v2 batches');
 if (!dataText.includes('buildCountryDetailProfiles(allProfilesV2)')) fail('data.ts must build the runtime profile collection');
-for (let deliveryNo = 13; deliveryNo <= 68; deliveryNo += 1) {
+for (let deliveryNo = 13; deliveryNo <= 76; deliveryNo += 1) {
   if (!dataText.includes(`countryProfilesV2${deliveryNo}`)) fail(`data.ts must load profile batch ${deliveryNo}`);
 }
-for (const token of ['countryPageCountries3744', 'countryPageSources3744', 'countryPageCountries4552', 'countryPageSources4552', 'countryPageCountries5360', 'countryPageSources5360', 'countryPageCountries6168', 'countryPageSources6168']) {
+for (const token of ['countryPageCountries3744', 'countryPageSources3744', 'countryPageCountries4552', 'countryPageSources4552', 'countryPageCountries5360', 'countryPageSources5360', 'countryPageCountries6168', 'countryPageSources6168', 'countryPageCountries6976', 'countryPageSources6976']) {
   if (!dataText.includes(token)) fail(`data.ts must load ${token}`);
 }
 

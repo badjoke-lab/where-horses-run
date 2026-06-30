@@ -19,21 +19,21 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ```text
 Latest completed Source Test v2 change: PR #335 — entries 69-76
 Latest completed reviewed-note change: PR #336 — entries 69-76
-Latest completed Profile v2 change: PR #332 — entries 61-68
+Latest completed Profile v2 change: PR #337 — entries 69-76
 Latest country publication: PR #333 — entries 61-68 approved after rendered preview
 Publication gate: PR #333 — entries 61-68 published after approved rendered preview
-Current Work ID: WHR-PROFILE-69-76
-Next working branch: country-profiles-69-76
+Current Work ID: WHR-PUB-69-76
+Next working branch: country-publish-69-76
 Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
 ```
 
-Current tracker counts after reviewed notes 69-76:
+Current tracker counts after Profile v2 69-76:
 
 ```text
 published:       68
 page_qa:          0
-profile_ready:    0
-note_reviewed:    8
+profile_ready:    8
+note_reviewed:    0
 source_tested:    0
 not_started:     22
 total:           98
@@ -48,13 +48,13 @@ formally published total routes:    136
 page-QA English routes:                0
 page-QA Japanese routes:               0
 page-QA total routes:                  0
-profile-ready English routes:           0
-profile-ready Japanese routes:          0
-profile-ready total routes:             0
+profile-ready English routes:           8
+profile-ready Japanese routes:          8
+profile-ready total routes:            16
 final target routes:                196
 ```
 
-PR #336 completes reviewed country notes for entries 69-76. Profile v2 work for entries 69-76 is now active.
+PR #337 completes reviewed bilingual Profile v2 records for entries 69-76. QA and publication work for entries 69-76 is now active.
 
 ## 3. Operating model
 
@@ -154,6 +154,7 @@ Do not publish runners or horses, participants, weights, odds, betting recommend
 | #333 | publication | Published entries 61-68 after rendered-preview approval. |
 | #335 | Source Test v2 | Closed official-source and Calendar Readiness decisions for entries 69-76. |
 | #336 | reviewed notes | Completed public-safe editorial notes for entries 69-76. |
+| #337 | Profile v2 | Added reviewed bilingual Profile v2 records and complete English/Japanese routes for entries 69-76. |
 
 ## 7. Publication gates
 
@@ -302,8 +303,8 @@ Entries: Russia, Namibia, Nigeria, Belize, Colombia, Lithuania, Estonia, and Guy
 | --- | --- | --- |
 | #335 / `WHR-ST2-69-76` | complete | Added eight Source Test v2 records, eight authority/source records, and eight Calendar Readiness decisions. |
 | #336 / `WHR-NOTE-69-76` | complete | Added eight reviewed public-safe country notes with explicit scope, limitations, and handoff rules. |
-| `WHR-PROFILE-69-76` | active | Add reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| `WHR-PUB-69-76` | queued | Run rendered-preview QA and publish all sixteen routes. |
+| #337 / `WHR-PROFILE-69-76` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
+| `WHR-PUB-69-76` | active | Run rendered-preview QA and publish all sixteen routes. |
 
 Readiness result: 3 prototype-ready, 3 link-only, and 2 blocked. Every technical rank and country public ceiling remains C.
 
@@ -311,7 +312,7 @@ Readiness result: 3 prototype-ready, 3 link-only, and 2 blocked. Every technical
 
 | Entries | Source test | Reviewed note | Profile v2 | QA and publish |
 | --- | --- | --- | --- | --- |
-| 69-76 | `WHR-ST2-69-76` complete | `WHR-NOTE-69-76` complete | `WHR-PROFILE-69-76` active | `WHR-PUB-69-76` queued |
+| 69-76 | `WHR-ST2-69-76` complete | `WHR-NOTE-69-76` complete | `WHR-PROFILE-69-76` complete | `WHR-PUB-69-76` active |
 | 77-84 | `WHR-ST2-77-84` | `WHR-NOTE-77-84` | `WHR-PROFILE-77-84` | `WHR-PUB-77-84` |
 | 85-92 | `WHR-ST2-85-92` | `WHR-NOTE-85-92` | `WHR-PROFILE-85-92` | `WHR-PUB-85-92` |
 | 93-98 | `WHR-ST2-93-98` | `WHR-NOTE-93-98` | `WHR-PROFILE-93-98` | `WHR-PUB-93-98` |
