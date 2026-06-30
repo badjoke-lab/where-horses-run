@@ -1,15 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
-import { getCurrentTimetableDate, getTimetableMeetingRowsForDate } from '../data/timetableMeetingRows';
+import {
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableMeetingRowsForDate,
+} from '../data/timetableMeetingRows';
 
-const currentTimetableDate = getCurrentTimetableDate();
-const todayRecords = getTimetableMeetingRowsForDate(currentTimetableDate);
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const todayRecords = getTimetableMeetingRowsForDate(context.today);
 ---
 
 <BaseLayout
-  title="Today's timetable | Where Horses Run"
-  description="Today's meeting list, with one official source link per meeting and race timetable links only where race-by-race times are available."
+  title={`Today's timetable — ${context.today} | Where Horses Run`}
+  description={`Reviewed public meeting information for ${context.today}, resolved in ${context.timeZone}. Official sources remain the final confirmation point.`}
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
@@ -17,15 +23,17 @@ const todayRecords = getTimetableMeetingRowsForDate(currentTimetableDate);
     <p class="hero__eyebrow">Today</p>
     <h1 id="page-title">Today's timetable</h1>
     <p class="hero__summary">
-      Meetings for {currentTimetableDate}. Rank controls how much timing detail is shown.
+      Meetings for {context.today} in the {context.timeZone} reference timezone. Rank controls how much timing detail is shown.
     </p>
   </section>
+
+  <CalendarDateStatus context={context} dataState={dataState} />
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
       records={todayRecords}
-      date={currentTimetableDate}
-      emptyLabel="No meetings are listed for today yet. Use official source links for final confirmation."
+      date={context.today}
+      emptyLabel={`No reviewed public meetings are listed for ${context.today}. Check official sources for current information.`}
     />
   </section>
 </BaseLayout>
