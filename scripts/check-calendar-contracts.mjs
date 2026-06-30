@@ -298,7 +298,9 @@ if (registry?.source_test_schema_ref !== paths.sourceSchema) fail(`${paths.regis
 requireAllowed(registry?.bootstrap_status, ['pending_backfill_01_52', 'backfill_in_progress', 'source_test_v2_active', 'complete'], `${paths.registry}.bootstrap_status`);
 if (!isPlainObject(registry?.programme_state)) fail(`${paths.registry}.programme_state must be an object.`);
 if (registry?.programme_state?.country_target !== 98) fail(`${paths.registry}.programme_state.country_target must be 98.`);
-requireStringArray(registry?.programme_state?.next_backfill_work_ids, `${paths.registry}.programme_state.next_backfill_work_ids`, { allowEmpty: false });
+const nextBackfillWorkIds = requireStringArray(registry?.programme_state?.next_backfill_work_ids, `${paths.registry}.programme_state.next_backfill_work_ids`);
+if (registry?.bootstrap_status === 'complete' && nextBackfillWorkIds.length !== 0) fail(`${paths.registry}.programme_state.next_backfill_work_ids must be empty when complete.`);
+if (registry?.bootstrap_status !== 'complete' && nextBackfillWorkIds.length === 0) fail(`${paths.registry}.programme_state.next_backfill_work_ids must not be empty before completion.`);
 if (!Array.isArray(registry?.records)) fail(`${paths.registry}.records must be an array.`);
 
 const rankOrder = new Map(expected.ranks.map((rank, index) => [rank, index]));
@@ -448,8 +450,8 @@ for (const [file, text, phrases] of [
   [paths.sourceContract, sourceContractText, [paths.sourceSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.readinessContract, readinessContractText, [paths.readinessSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.machineContract, machineContractText, [paths.sourceSchema, paths.readinessSchema, paths.registry, 'node scripts/check-calendar-contracts.mjs']],
-  [paths.roadmap, roadmapText, ['Current Work ID: `WHR-PUB-69-76`', 'Next Work ID: `WHR-ST2-77-84`']],
-  [paths.startHere, startHereText, ['WHR-PROFILE-69-76', 'WHR-PUB-69-76', 'WHR-ST2-77-84']],
+  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-BASELINE-RECONCILE`']],
+  [paths.startHere, startHereText, ['Previous completed Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`', 'WHR-CAL-BASELINE-RECONCILE']],
 ]) {
   for (const phrase of phrases) {
     if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
@@ -469,5 +471,5 @@ console.log(`RACECOURSE_IDS: ${racecourseCountry.size}`);
 console.log(`READINESS_RECORDS: ${registry.records.length}`);
 console.log(`CLOSED_COUNTRIES: ${closedCountries.size}`);
 console.log(`SOURCE_TEST_V2_FILES: ${sourceTestV2Files.length}`);
-console.log('CURRENT_WORK_ID: WHR-PUB-69-76');
-console.log('NEXT_WORK_ID: WHR-ST2-77-84');
+console.log('CURRENT_WORK_ID: WHR-CAL-BASELINE-RECONCILE');
+console.log('NEXT_WORK_ID: WHR-CAL-PIPELINE-V1');

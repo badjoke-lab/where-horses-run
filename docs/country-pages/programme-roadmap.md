@@ -1,10 +1,10 @@
 # Country page programme roadmap
 
-Status: active canonical roadmap  
+Status: complete canonical roadmap  
 Scope: country and region detail page programme  
 Canonical tracker: `docs/country-pages/98-country-tracker.tsv`  
 Completion contract: `docs/country-pages/completion-contract.md`  
-Last roadmap review: 2026-06-30
+Last roadmap review: 2026-07-01
 
 ## 1. Purpose
 
@@ -17,44 +17,37 @@ The PR-number assignments in the older schedule sections are historical. Active 
 ## 2. Current position
 
 ```text
-Latest completed Source Test v2 change: PR #335 — entries 69-76
-Latest completed reviewed-note change: PR #336 — entries 69-76
-Latest completed Profile v2 change: PR #337 — entries 69-76
-Latest country publication: PR #333 — entries 61-68 approved after rendered preview
-Publication gate: PR #333 — entries 61-68 published after approved rendered preview
-Current Work ID: WHR-PUB-69-76
-Next working branch: country-publish-69-76
-Final release gate: WHR-AUDIT-COUNTRY-CALENDAR-98
+Latest completed Source Test v2 change: PR #352 — entries 93-98
+Latest completed reviewed-note change: PR #353 — entries 93-98
+Latest completed Profile v2 change: PR #354 — entries 93-98
+Latest country publication: PR #356 — entries 93-98
+Completed Work ID: WHR-AUDIT-COUNTRY-CALENDAR-98
+Next product Work ID: WHR-CAL-BASELINE-RECONCILE
+Final release gate: passed
 ```
 
-Current tracker counts after Profile v2 69-76:
+Canonical tracker counts:
 
 ```text
-published:       68
+published:       98
 page_qa:          0
-profile_ready:    8
+profile_ready:    0
 note_reviewed:    0
 source_tested:    0
-not_started:     22
+not_started:      0
 total:           98
 ```
 
-Current route state:
+Canonical route state:
 
 ```text
-formally published English routes:   68
-formally published Japanese routes:  68
-formally published total routes:    136
-page-QA English routes:                0
-page-QA Japanese routes:               0
-page-QA total routes:                  0
-profile-ready English routes:           8
-profile-ready Japanese routes:          8
-profile-ready total routes:            16
-final target routes:                196
+published English routes:    98
+published Japanese routes:   98
+published total routes:     196
+bilingual routes exactly 196
 ```
 
-PR #337 completes reviewed bilingual Profile v2 records for entries 69-76. QA and publication work for entries 69-76 is now active.
+The country-page programme is complete. Historical transition files remain for audit evidence but are no longer the active state source.
 
 ## 3. Operating model
 
@@ -297,60 +290,49 @@ Readiness result: 3 manual-ready, 1 prototype-ready, 3 link-only, and 1 blocked.
 
 ## 12. Wave 69-76
 
-Entries: Russia, Namibia, Nigeria, Belize, Colombia, Lithuania, Estonia, and Guyana.
+| Work | Status | Result |
+| --- | --- | --- |
+| #335 / `WHR-ST2-69-76` | complete | Source Test v2 and Calendar Readiness. |
+| #336 / `WHR-NOTE-69-76` | complete | Reviewed public-safe notes. |
+| #338 / `WHR-PROFILE-69-76` | complete | Bilingual Profile v2 records and routes. |
+| #340 / `WHR-PUB-69-76` | complete | Published after preview PR #339 passed rendered QA. |
+
+## 13. Wave 77-84
 
 | Work | Status | Result |
 | --- | --- | --- |
-| #335 / `WHR-ST2-69-76` | complete | Added eight Source Test v2 records, eight authority/source records, and eight Calendar Readiness decisions. |
-| #336 / `WHR-NOTE-69-76` | complete | Added eight reviewed public-safe country notes with explicit scope, limitations, and handoff rules. |
-| #337 / `WHR-PROFILE-69-76` | complete | Added eight reviewed bilingual Profile v2 records and complete English/Japanese routes. |
-| `WHR-PUB-69-76` | active | Run rendered-preview QA and publish all sixteen routes. |
+| #341 / `WHR-ST2-77-84` | complete | Source Test v2 and Calendar Readiness. |
+| #342 / `WHR-NOTE-77-84` | complete | Reviewed public-safe notes. |
+| #343 / `WHR-PROFILE-77-84` | complete | Bilingual Profile v2 records and routes. |
+| #345 / `WHR-PUB-77-84` | complete | Published after preview PR #344 passed rendered QA. |
 
-Readiness result: 3 prototype-ready, 3 link-only, and 2 blocked. Every technical rank and country public ceiling remains C.
+## 14. Wave 85-92
 
-## 13. Remaining wave schedule
+| Work | Status | Result |
+| --- | --- | --- |
+| #348 / `WHR-ST2-85-92` | complete | Source Test v2 and Calendar Readiness. |
+| #346 / `WHR-NOTE-85-92` | complete | Reviewed public-safe notes. |
+| #347 / `WHR-PROFILE-85-92` | complete | Bilingual Profile v2 records and routes. |
+| #351 / `WHR-PUB-85-92` | complete | Published after preview PR #349 passed rendered QA; PR #350 was superseded. |
 
-| Entries | Source test | Reviewed note | Profile v2 | QA and publish |
-| --- | --- | --- | --- | --- |
-| 69-76 | `WHR-ST2-69-76` complete | `WHR-NOTE-69-76` complete | `WHR-PROFILE-69-76` complete | `WHR-PUB-69-76` active |
-| 77-84 | `WHR-ST2-77-84` | `WHR-NOTE-77-84` | `WHR-PROFILE-77-84` | `WHR-PUB-77-84` |
-| 85-92 | `WHR-ST2-85-92` | `WHR-NOTE-85-92` | `WHR-PROFILE-85-92` | `WHR-PUB-85-92` |
-| 93-98 | `WHR-ST2-93-98` | `WHR-NOTE-93-98` | `WHR-PROFILE-93-98` | `WHR-PUB-93-98` |
+## 15. Wave 93-98
 
-Each wave preserves separate authorities and racing systems, records incomplete coverage honestly, and publishes only routes satisfying the completion contract.
+| Work | Status | Result |
+| --- | --- | --- |
+| #352 / `WHR-ST2-93-98` | complete | Source Test v2 and Calendar Readiness. |
+| #353 / `WHR-NOTE-93-98` | complete | Reviewed explanatory and archive notes. |
+| #354 / `WHR-PROFILE-93-98` | complete | Final bilingual Profile v2 records and routes. |
+| #356 / `WHR-PUB-93-98` | complete | Published after preview PR #355 passed rendered QA. |
 
-## 14. Final release gate
+## 16. Final release gate
 
-### PR #340 — full programme audit
+Completed Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
 
-PR #340 adds no new country scope. Required checks:
+The canonical result is 98 published tracker rows, 98 English routes, 98 Japanese routes, 98 Profile v2 records, 116 authority/source records, and 116 Calendar Readiness records. All canonical validators and the production build must pass in the audit PR.
 
-```text
-tracker rows exactly 98
-English routes exactly 98
-Japanese routes exactly 98
-bilingual routes exactly 196
-no duplicate slugs
-no missing country IDs
-no dangling source IDs
-no dangling racecourse IDs
-all production profiles use v2
-page-kind listing rules are correct
-archive and explanatory pages are absent from current calendars
-published rows have review and publication dates
-all pages have explicit coverage and source states
-all public ceilings are enforced
-one meeting per list row
-prohibited fields are absent
-private and local source files are absent from the public build
-all validators pass
-full production build passes
-final programme report is generated
-```
+The country-page programme is complete. Calendar baseline reconciliation continues under the product roadmap.
 
-The programme closes only after PR #340 is merged and the tracker reports 98 published rows.
-
-## 15. Roadmap maintenance rules
+## 17. Roadmap maintenance rules
 
 Update this roadmap in the same PR whenever the working PR, publication gates, tracker counts, wave boundaries, completion conditions, final release criteria, or local-work requirements change.
 
