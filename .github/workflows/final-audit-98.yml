@@ -20,7 +20,15 @@ jobs:
       - name: Compact canonical data
         run: node scripts/final-audit-98/compact-data.mjs
       - name: Update canonical code
-        run: node scripts/final-audit-98/update-code.mjs
+        run: node scripts/final-audit-98/run-update-code.mjs
+      - name: Upload code diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-audit-98-code-diagnostic
+          path: artifacts/final-audit-98/update-code-error.txt
+          if-no-files-found: ignore
+          retention-days: 90
       - name: Update canonical documentation
         run: node scripts/final-audit-98/update-docs.mjs
       - run: npm install
