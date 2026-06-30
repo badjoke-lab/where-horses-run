@@ -132,8 +132,35 @@
         "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
         "reviewer": { "type": ["string", "null"] },
         "summary": { "type": "string" },
-        "promotion_target": { "type": ["string", "null"] }
-      }
+        "promotion_target": {
+          "oneOf": [
+            { "const": "canonical-timetable-v0" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "approved" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "reviewed_at": { "type": "string", "format": "date-time" },
+              "reviewer": { "type": "string", "minLength": 1 },
+              "promotion_target": { "const": "canonical-timetable-v0" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "needs_review" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "reviewed_at": { "type": "null" },
+              "reviewer": { "type": "null" },
+              "promotion_target": { "type": "null" }
+            }
+          }
+        }
+      ]
     }
   }
 }
