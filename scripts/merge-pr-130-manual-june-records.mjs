@@ -46,3 +46,6 @@ if (fs.existsSync('docs/country-pages/98-country-publication-transitions-85-92.t
 if (fs.existsSync('docs/country-pages/98-country-source-test-transitions-93-98.tsv')) {
   await import('./check-source-test-v2-93-98.mjs');
 }
+if (fs.existsSync('docs/country-pages/98-country-note-transitions-93-98.tsv')) {
+  await import('./check-country-notes-93-98.mjs');
+}
