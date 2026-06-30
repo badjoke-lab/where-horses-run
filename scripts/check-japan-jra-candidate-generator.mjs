@@ -22,6 +22,12 @@ const authorityInventory = readJson('data/static/authority-source-inventory.json
 const readinessRegistry = readJson('data/static/calendar-readiness-registry.json');
 const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === readinessKey);
 const readiness = readinessMatches[0];
+const authorityMatches = authorityInventory.records.filter((record) =>
+  record.country_id === 'japan' &&
+  record.authority_id === 'jra' &&
+  record.official_source_id === 'jra-programme'
+);
+const authoritySource = authorityMatches[0];
 const publicFiles = [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json'
@@ -35,6 +41,7 @@ const staleCheck = spawnSync(process.execPath, [generatorPath, '--check'], {
 if (staleCheck.status !== 0) fail(`JRA Pipeline v1 generator check failed: ${staleCheck.stderr || staleCheck.stdout}`);
 
 if (readinessMatches.length !== 1) fail(`Expected one JRA readiness record, found ${readinessMatches.length}.`);
+if (authorityMatches.length !== 1) fail(`Expected one JRA authority/source record, found ${authorityMatches.length}.`);
 if (readiness?.technical_rank !== 'A+') fail('JRA reference readiness must retain technical rank A+.');
 if (readiness?.public_ceiling !== 'A') fail('JRA reference readiness must retain public ceiling A.');
 if (readiness?.confirmed_fields?.per_race_post_times !== true) fail('JRA readiness must confirm per-race post times.');
@@ -127,39 +134,74 @@ for (const required of [
   if (!generator.includes(required)) fail(`JRA generator missing required contract marker: ${required}`);
 }
 
+const approved = structuredClone(candidates);
+approved.review = {
+  status: 'approved',
+  reviewed_at: '2026-06-10T00:00:00.000Z',
+  reviewer: 'jra-reference-adapter-validator',
+  summary: 'In-memory approval fixture for validating the reference adapter output.',
+  promotion_target: promotionTargetV1
+};
+approved.records = approved.records.map((record) => ({ ...record, review_status: 'approved' }));
+
+const promotionArgs = {
+  candidate: approved,
+  meetingsDataset: {
+    schema_version: 'canonical-timetable-v0',
+    generated_at: '2026-06-01T00:00:00.000Z',
+    input_sources: [],
+    meetings: []
+  },
+  detailsDataset: {
+    schema_version: 'canonical-meeting-details-v0',
+    generated_at: '2026-06-01T00:00:00.000Z',
+    input_sources: [],
+    details: []
+  },
+  authorityInventory,
+  readinessRegistry,
+  inputPath: outputPath
+};
+
+let actualPromotionState = 'pass';
 try {
-  const approved = structuredClone(candidates);
-  approved.review = {
-    status: 'approved',
-    reviewed_at: '2026-06-10T00:00:00.000Z',
-    reviewer: 'jra-reference-adapter-validator',
-    summary: 'In-memory approval fixture for validating the reference adapter output.',
-    promotion_target: promotionTargetV1
-  };
-  approved.records = approved.records.map((record) => ({ ...record, review_status: 'approved' }));
+  promoteApprovedCandidateV1(promotionArgs);
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.includes('source check predates reviewed source records')) actualPromotionState = 'blocked_by_freshness';
+  else fail(`JRA v1 output failed an unexpected canonical promotion gate: ${message}`);
+}
+
+try {
+  const structuralAuthority = structuredClone(authorityInventory);
+  const structuralReadiness = structuredClone(readinessRegistry);
+  const candidateCheckedDate = approved.records
+    .map((record) => record.source.checked_at.slice(0, 10))
+    .sort()
+    .at(-1);
+  const authorityRecord = structuralAuthority.records.find((record) =>
+    record.country_id === 'japan' && record.authority_id === 'jra' && record.official_source_id === 'jra-programme'
+  );
+  const readinessRecord = structuralReadiness.records.find((record) => record.authority_source_key === readinessKey);
+  authorityRecord.last_checked_date = candidateCheckedDate;
+  readinessRecord.checked_date = candidateCheckedDate;
+
   const promoted = promoteApprovedCandidateV1({
-    candidate: approved,
-    meetingsDataset: {
-      schema_version: 'canonical-timetable-v0',
-      generated_at: '2026-06-01T00:00:00.000Z',
-      input_sources: [],
-      meetings: []
-    },
-    detailsDataset: {
-      schema_version: 'canonical-meeting-details-v0',
-      generated_at: '2026-06-01T00:00:00.000Z',
-      input_sources: [],
-      details: []
-    },
-    authorityInventory,
-    readinessRegistry,
-    inputPath: outputPath
+    ...promotionArgs,
+    authorityInventory: structuralAuthority,
+    readinessRegistry: structuralReadiness
   });
-  if (promoted.meetingsDataset.meetings.length !== records.length) fail('Approved JRA fixture did not promote every meeting in memory.');
-  if (promoted.detailsDataset.details.length !== records.length) fail('Approved JRA A+ fixture did not promote every detail in memory.');
+  if (promoted.meetingsDataset.meetings.length !== records.length) fail('Structurally approved JRA fixture did not promote every meeting in memory.');
+  if (promoted.detailsDataset.details.length !== records.length) fail('Structurally approved JRA A+ fixture did not promote every detail in memory.');
   if (promoted.summary.public_projection_written !== false) fail('JRA promotion fixture must not write public projection.');
 } catch (error) {
-  fail(`JRA v1 output failed canonical promotion gates: ${error instanceof Error ? error.message : error}`);
+  fail(`JRA v1 output failed structural promotion gates: ${error instanceof Error ? error.message : error}`);
+}
+
+const sourceCheckedDate = records.map((record) => record.source.checked_at.slice(0, 10)).sort().at(-1);
+const registryMinimumDate = [authoritySource?.last_checked_date, readiness?.checked_date].filter(Boolean).sort().at(-1);
+if (actualPromotionState === 'blocked_by_freshness' && !(sourceCheckedDate < registryMinimumDate)) {
+  fail('JRA freshness gate reported stale input without an older source check date.');
 }
 
 const publicAfter = Object.fromEntries(publicFiles.map((file) => [file, hash(file)]));
@@ -174,5 +216,8 @@ if (errors.length) {
 console.log(`JAPAN_JRA_CANDIDATE_V1: pass records=${records.length}`);
 console.log('OUTPUT_BOUNDARY: candidate-only');
 console.log('REVIEW_STATE: needs_review');
-console.log('CANONICAL_PROMOTION_FIXTURE: pass');
+console.log(`ACTUAL_PROMOTION_GATE: ${actualPromotionState}`);
+console.log(`SOURCE_CHECKED_DATE: ${sourceCheckedDate}`);
+console.log(`REGISTRY_MINIMUM_DATE: ${registryMinimumDate}`);
+console.log('STRUCTURAL_PROMOTION_FIXTURE: pass');
 console.log('PUBLIC_PROJECTION_WRITTEN: false');
