@@ -71,3 +71,4 @@ if (errors.length) {
 }
 console.log('COUNTRY_NOTES_69_76_VALID reviewed=8 public_ceiling_C=8');
 console.log('READINESS_MIX prototype_ready=3 link_only=3 blocked=2');
+await import('./check-country-notes-77-84.mjs');
