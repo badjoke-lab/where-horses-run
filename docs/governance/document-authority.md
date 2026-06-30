@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-06-28
+Last reviewed: 2026-07-01
 
 ## Authority order
 
@@ -50,6 +50,7 @@ Calendar human-readable contracts:
 - `docs/calendar/calendar-readiness-contract.md`
 - `docs/calendar/machine-readable-contracts.md`
 - `docs/calendar/implementation-roadmap.md`
+- `docs/calendar/baseline-reconciliation-map.md`
 - `docs/specs/global-timetable-architecture.md` plus active addendum
 - `docs/specs/authority-source-inventory-schema.md` plus active addendum
 
@@ -60,7 +61,9 @@ Calendar machine-readable contracts:
 - `data/static/calendar-readiness-registry.json`
 - `data/static/authority-source-inventory.schema.json`
 - `data/static/authority-source-inventory.json`
+- `data/audits/calendar-baseline-migration-map.json`
 - `scripts/check-calendar-contracts.mjs`
+- `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
