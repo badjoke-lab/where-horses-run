@@ -1,0 +1,84 @@
+---
+type CalendarContext = {
+  today: string;
+  tomorrow: string;
+  timeZone: string;
+  referenceSource: string;
+  windowDays: number;
+  windowStart: string;
+  windowEndInclusive: string;
+  windowEndExclusive: string;
+};
+
+type CalendarDataState = {
+  status: string;
+  generatedDate: string;
+  earliestRecordDate: string | null;
+  latestRecordDate: string | null;
+  totalRecordCount: number;
+  windowRecordCount: number;
+};
+
+type Props = {
+  context: CalendarContext;
+  dataState: CalendarDataState;
+  lang?: 'en' | 'ja';
+};
+
+const { context, dataState, lang = 'en' } = Astro.props as Props;
+const sourceLabel = lang === 'ja'
+  ? context.referenceSource === 'reference_date_override'
+    ? '指定基準日'
+    : context.referenceSource === 'source_date_epoch'
+      ? '再現可能ビルド時刻'
+      : 'ビルド時刻'
+  : context.referenceSource === 'reference_date_override'
+    ? 'explicit reference date'
+    : context.referenceSource === 'source_date_epoch'
+      ? 'reproducible build timestamp'
+      : 'build clock';
+
+const statusText = lang === 'ja'
+  ? dataState.status === 'records_before_window'
+    ? `現在の公開データは表示期間より前のものです。最新の掲載開催日は ${dataState.latestRecordDate ?? '未掲載'}、公開データ生成日は ${dataState.generatedDate} です。最新情報は公式ソースで確認してください。`
+    : dataState.status === 'records_after_window'
+      ? `公開データには表示期間より後の開催のみがあります。最初の掲載開催日は ${dataState.earliestRecordDate ?? '未掲載'} です。`
+      : dataState.status === 'no_public_records'
+        ? '現在、確認済みの公開開催データはありません。最新情報は公式ソースで確認してください。'
+        : dataState.status === 'stale_generation_with_window_records'
+          ? `表示期間内の開催がありますが、公開データ生成日は ${dataState.generatedDate} です。最終確認は公式ソースで行ってください。`
+          : `表示期間内に ${dataState.windowRecordCount} 件の確認済み開催があります。公開データ生成日は ${dataState.generatedDate} です。`
+  : dataState.status === 'records_before_window'
+    ? `The current public data is older than this display window. The latest listed meeting date is ${dataState.latestRecordDate ?? 'not listed'}, and the public projection was generated on ${dataState.generatedDate}. Check official sources for current information.`
+    : dataState.status === 'records_after_window'
+      ? `The public data contains meetings only after this display window. The earliest listed meeting date is ${dataState.earliestRecordDate ?? 'not listed'}.`
+      : dataState.status === 'no_public_records'
+        ? 'No reviewed public meeting data is currently available. Check official sources for current information.'
+        : dataState.status === 'stale_generation_with_window_records'
+          ? `Meetings fall inside the display window, but the public projection was generated on ${dataState.generatedDate}. Use official sources for final confirmation.`
+          : `${dataState.windowRecordCount} reviewed meetings fall inside the display window. The public projection was generated on ${dataState.generatedDate}.`;
+---
+
+<aside class="calendar-date-status" data-calendar-data-status={dataState.status}>
+  <p>
+    {lang === 'ja' ? '基準日' : 'Reference date'}: <strong>{context.today}</strong>
+    · {lang === 'ja' ? '基準タイムゾーン' : 'Reference timezone'}: <strong>{context.timeZone}</strong>
+    · {lang === 'ja' ? '決定方法' : 'Resolved from'}: {sourceLabel}
+  </p>
+  <p>{statusText}</p>
+</aside>
+
+<style>
+  .calendar-date-status {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.45rem;
+    margin-block: 1.25rem;
+    padding: 0.85rem;
+  }
+
+  .calendar-date-status p {
+    margin: 0;
+  }
+</style>
