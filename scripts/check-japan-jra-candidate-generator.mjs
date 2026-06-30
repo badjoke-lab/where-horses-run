@@ -13,12 +13,15 @@ const hash = (file) => createHash('sha256').update(read(file)).digest('hex');
 
 const generatorPath = 'scripts/generate-japan-jra-candidates.mjs';
 const outputPath = 'data/candidates/japan-jra-candidates.json';
+const readinessKey = 'japan/jra/jra-programme';
 const generator = read(generatorPath);
 const candidates = readJson(outputPath);
 const normalizedMeetings = readJson('data/generated/timetable/jra-normalized-timetable.json');
 const normalizedDetails = readJson('data/generated/timetable/jra-normalized-meeting-details.json');
 const authorityInventory = readJson('data/static/authority-source-inventory.json');
 const readinessRegistry = readJson('data/static/calendar-readiness-registry.json');
+const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === readinessKey);
+const readiness = readinessMatches[0];
 const publicFiles = [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json'
@@ -30,6 +33,11 @@ const staleCheck = spawnSync(process.execPath, [generatorPath, '--check'], {
   encoding: 'utf8'
 });
 if (staleCheck.status !== 0) fail(`JRA Pipeline v1 generator check failed: ${staleCheck.stderr || staleCheck.stdout}`);
+
+if (readinessMatches.length !== 1) fail(`Expected one JRA readiness record, found ${readinessMatches.length}.`);
+if (readiness?.technical_rank !== 'A+') fail('JRA reference readiness must retain technical rank A+.');
+if (readiness?.public_ceiling !== 'A') fail('JRA reference readiness must retain public ceiling A.');
+if (readiness?.confirmed_fields?.per_race_post_times !== true) fail('JRA readiness must confirm per-race post times.');
 
 if (candidates.schema_version !== 'timetable-candidate-v1') fail('JRA candidates must use timetable-candidate-v1.');
 if (candidates.adapter_id !== 'jra-normalized-programme-candidate-v1') fail('Unexpected JRA adapter_id.');
@@ -63,18 +71,38 @@ for (const record of records) {
   }
   if (record.candidate_id !== `candidate-${record.meeting_id}`) fail(`${record.meeting_id}: candidate_id is unstable.`);
   if (record.country_id !== 'japan' || record.authority_id !== 'jra') fail(`${record.candidate_id}: country/authority mismatch.`);
-  if (record.racing_system_id !== 'japan-jra-system') fail(`${record.candidate_id}: racing_system_id mismatch.`);
+  if (record.racing_system_id !== readiness?.system_id) fail(`${record.candidate_id}: racing_system_id mismatch.`);
   if (record.source?.source_id !== 'jra-programme') fail(`${record.candidate_id}: source identity mismatch.`);
   if (record.source?.extraction_method !== 'adapter_candidate') fail(`${record.candidate_id}: extraction method mismatch.`);
   if (!record.source?.official_url?.startsWith('https://jra.jp/')) fail(`${record.candidate_id}: official URL must be JRA HTTPS.`);
   if (record.source?.checked_at !== detail.freshness.generated_at) fail(`${record.candidate_id}: checked_at must come from normalized freshness.`);
   if (record.review_status !== 'needs_review') fail(`${record.candidate_id}: record must remain needs_review.`);
-  if (record.capability_rank !== meeting.capability_rank || record.capability_rank !== detail.capability_rank) fail(`${record.candidate_id}: rank mismatch.`);
+  if (record.capability_rank !== readiness?.technical_rank) fail(`${record.candidate_id}: candidate rank must follow reviewed technical rank.`);
   if (record.first_race_time_local !== meeting.first_race_time_local) fail(`${record.candidate_id}: first time mismatch.`);
   if (record.last_race_time_local !== meeting.last_race_time_local) fail(`${record.candidate_id}: last time mismatch.`);
   if (record.timetable_rows.length !== detail.timetable_rows.length) fail(`${record.candidate_id}: timetable row count mismatch.`);
   if (record.timetable_rows[0]?.post_time_local !== record.first_race_time_local) fail(`${record.candidate_id}: first row/time mismatch.`);
   if (record.timetable_rows.at(-1)?.post_time_local !== record.last_race_time_local) fail(`${record.candidate_id}: last row/time mismatch.`);
+
+  for (let index = 0; index < record.timetable_rows.length; index += 1) {
+    const candidateRow = record.timetable_rows[index];
+    const normalizedRow = detail.timetable_rows[index];
+    if (candidateRow.label !== normalizedRow.label || candidateRow.post_time_local !== normalizedRow.post_time_local) {
+      fail(`${record.candidate_id}: row ${index + 1} label/post time mismatch.`);
+    }
+    for (const [candidateKey, normalizedKey, readinessKeyName] of [
+      ['race_name', 'race_name', 'race_name'],
+      ['distance_m', 'distance_m', 'distance'],
+      ['surface', 'surface', 'surface'],
+      ['course_label', 'course_label', 'course']
+    ]) {
+      const expected = readiness?.confirmed_fields?.[readinessKeyName] === true ? normalizedRow[normalizedKey] ?? null : null;
+      if (candidateRow[candidateKey] !== expected) {
+        fail(`${record.candidate_id}: row ${index + 1} ${candidateKey} does not respect confirmed_fields.`);
+      }
+    }
+  }
+
   const key = `${record.date}:${record.racecourse_id}:${record.source.source_id}`;
   if (seen.has(key)) fail(`Duplicate JRA candidate key: ${key}`);
   seen.add(key);
@@ -83,17 +111,18 @@ for (const record of records) {
 for (const forbidden of [
   'data/generated/timetables.json',
   'data/generated/timetable/canonical/',
-  'data/generated/timetable/public/',
-  'data/candidates/japan-jra-candidates.json'
+  'data/generated/timetable/public/'
 ]) {
-  if (forbidden !== outputPath && generator.includes(forbidden)) fail(`JRA generator must not read or write forbidden path: ${forbidden}`);
+  if (generator.includes(forbidden)) fail(`JRA generator must not read or write forbidden path: ${forbidden}`);
 }
 for (const required of [
   'jra-normalized-timetable.json',
   'jra-normalized-meeting-details.json',
+  'calendar-readiness-registry.json',
   "schema_version: 'timetable-candidate-v1'",
   "source_id: 'jra-programme'",
-  "review_status: 'needs_review'"
+  "review_status: 'needs_review'",
+  'confirmed_fields'
 ]) {
   if (!generator.includes(required)) fail(`JRA generator missing required contract marker: ${required}`);
 }
