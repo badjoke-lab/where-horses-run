@@ -1,0 +1,23 @@
+{
+  "work_id": "WHR-PUB-77-84",
+  "preview_pr": 344,
+  "preview_branch": "preview-country-pages-77-84",
+  "preview_head": "d935ad7871a7290c811f2333f41a671c38d683cf",
+  "rendered_run_id": 28425202956,
+  "rendered_job_id": 84226668699,
+  "artifact_id": 7972753658,
+  "artifact_name": "rendered-preview-77-84",
+  "artifact_digest": "sha256:6f187056bd17194bec2e8c1198d2c0c201090b11ceb5d81adaefd26b46ad6e19",
+  "checked_at": "2026-06-30T06:36:05.098Z",
+  "routes": 16,
+  "viewport_checks": 32,
+  "representative_screenshots": 16,
+  "representatives": ["kazakhstan", "vietnam", "guatemala", "honduras"],
+  "viewports": [
+    {"id": "desktop", "width": 1440, "height": 1200},
+    {"id": "pixel-7", "width": 412, "height": 915}
+  ],
+  "errors": 0,
+  "result": "passed",
+  "note": "The first preview run exposed a checker-only mismatch in the Japanese empty-state wording. The page wording was correct; the checker was aligned and the complete rendered gate then passed."
+}
