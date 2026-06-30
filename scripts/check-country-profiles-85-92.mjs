@@ -9,14 +9,14 @@ const parse = (file) => JSON.parse(read(file));
 const errors = [];
 const fail = (message) => errors.push(message);
 const expected = [
-  ['85','ghana','partial','official-link-only'],
-  ['86','saint-kitts-and-nevis','partial','official-link-only'],
-  ['87','jordan','partial','official-link-only'],
-  ['88','iraq','partial','official-link-only'],
-  ['89','azerbaijan','partial','official-link-only'],
-  ['90','mongolia','complete','meeting-date-only'],
-  ['91','botswana','complete','meeting-date-only'],
-  ['92','costa-rica','partial','official-link-only']
+  ['85','ghana','partial','official-link-only','country'],
+  ['86','saint-kitts-and-nevis','partial','official-link-only','special'],
+  ['87','jordan','partial','official-link-only','special'],
+  ['88','iraq','partial','official-link-only','special'],
+  ['89','azerbaijan','partial','official-link-only','special'],
+  ['90','mongolia','complete','meeting-date-only','special'],
+  ['91','botswana','complete','meeting-date-only','special'],
+  ['92','costa-rica','partial','official-link-only','explanatory']
 ];
 
 const countries = parse('data/static/country-page-countries-85-92.json');
@@ -35,14 +35,14 @@ for (const source of sources) {
   if (!source.url?.startsWith('https://')) fail(`${source.id}: official URL must use https`);
 }
 
-for (const [deliveryNo, slug, sourceStatus, timePattern] of expected) {
+for (const [deliveryNo, slug, sourceStatus, timePattern, pageKind] of expected) {
   const file = `data/static/country-profiles-v2-${deliveryNo}-${slug}.json`;
   if (!fs.existsSync(path.join(root, file))) { fail(`missing ${file}`); continue; }
   const batch = parse(file);
   if (!Array.isArray(batch) || batch.length !== 1) { fail(`${slug}: exactly one profile is required`); continue; }
   const profile = batch[0];
   if (profile.schema_version !== '2.0.0' || profile.country_id !== slug || profile.slug !== slug) fail(`${slug}: identity mismatch`);
-  if (profile.status !== 'reviewed' || profile.page_kind !== 'country') fail(`${slug}: profile state mismatch`);
+  if (profile.status !== 'reviewed' || profile.page_kind !== pageKind) fail(`${slug}: profile state mismatch`);
   if (profile.last_reviewed !== '2026-06-30') fail(`${slug}: review date mismatch`);
   if (profile.public_display_ceiling !== 'C') fail(`${slug}: public ceiling must be C`);
   if (profile.source_test_status !== sourceStatus) fail(`${slug}: source status mismatch`);
