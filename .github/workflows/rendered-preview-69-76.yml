@@ -3,6 +3,17 @@ name: Rendered preview 69-76
 on:
   push:
     branches: [preview-country-pages-69-76]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/static/country-page-countries-69-76.json'
+      - 'data/static/country-page-sources-69-76.json'
+      - 'data/static/country-profiles-v2-6*.json'
+      - 'data/static/country-profiles-v2-7*.json'
+      - 'src/**'
+      - 'scripts/rendered-preview-69-76.b64'
+      - '.github/workflows/rendered-preview-69-76.yml'
+      - 'docs/runbooks/preview-trigger-69-76.md'
 
 permissions:
   contents: read
