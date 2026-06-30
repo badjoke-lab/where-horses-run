@@ -2,7 +2,8 @@
 
 Status: complete for review  
 Work ID: `WHR-PUB-85-92`  
-Publication date: 2026-06-30
+Publication date: 2026-06-30  
+Publication PR: #350
 
 ## Scope
 
