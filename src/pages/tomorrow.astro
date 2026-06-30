@@ -1,15 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
-import { getTimetableMeetingRowsForDate, getTomorrowTimetableDate } from '../data/timetableMeetingRows';
+import {
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableMeetingRowsForDate,
+} from '../data/timetableMeetingRows';
 
-const tomorrowTimetableDate = getTomorrowTimetableDate();
-const tomorrowRecords = getTimetableMeetingRowsForDate(tomorrowTimetableDate);
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 ---
 
 <BaseLayout
-  title="Tomorrow's timetable | Where Horses Run"
-  description="Tomorrow's meeting list, with one official source link per meeting and race timetable links only where race-by-race times are available."
+  title={`Tomorrow's timetable — ${context.tomorrow} | Where Horses Run`}
+  description={`Reviewed public meeting information for ${context.tomorrow}, resolved from the ${context.timeZone} reference date.`}
   canonicalPath="/tomorrow/"
   alternatePath="/ja/tomorrow/"
 >
@@ -17,15 +23,17 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(tomorrowTimetableDate);
     <p class="hero__eyebrow">Tomorrow</p>
     <h1 id="page-title">Tomorrow's timetable</h1>
     <p class="hero__summary">
-      Meetings for {tomorrowTimetableDate}. Rank controls how much timing detail is shown.
+      Meetings for {context.tomorrow}, the day after the {context.today} reference date in {context.timeZone}.
     </p>
   </section>
+
+  <CalendarDateStatus context={context} dataState={dataState} />
 
   <section aria-label="Tomorrow meeting list">
     <TimetableMeetingList
       records={tomorrowRecords}
-      date={tomorrowTimetableDate}
-      emptyLabel="No meetings are listed for tomorrow yet. Use official source links for final confirmation."
+      date={context.tomorrow}
+      emptyLabel={`No reviewed public meetings are listed for ${context.tomorrow}. Check official sources for current information.`}
     />
   </section>
 </BaseLayout>
