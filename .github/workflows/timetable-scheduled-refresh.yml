@@ -1,10 +1,10 @@
-name: Timetable Scheduled Refresh
+name: Timetable Refresh Review
 
 on:
   workflow_dispatch:
     inputs:
       live_fetch:
-        description: Run live source fetch
+        description: Run live source fetch for manual review
         required: true
         default: "false"
         type: choice
@@ -15,15 +15,17 @@ on:
         description: Maximum sources to check
         required: true
         default: "24"
-  schedule:
-    - cron: "17 3 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  timetable-refresh:
+  timetable-refresh-review:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,15 +34,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: 22.12.0
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Run scheduled timetable refresh
+      - name: Run manual timetable refresh review
         env:
-          WHR_LIVE_FETCH: ${{ github.event_name == 'schedule' || inputs.live_fetch == 'true' && '1' || '0' }}
+          WHR_LIVE_FETCH: ${{ inputs.live_fetch == 'true' && '1' || '0' }}
           WHR_LIVE_FETCH_LIMIT: ${{ inputs.source_limit || '24' }}
           WHR_LIVE_FETCH_TIMEOUT_MS: "12000"
         run: |
@@ -50,19 +51,19 @@ jobs:
           node scripts/timetable/build-current-integrated.mjs
           node scripts/timetable/apply-live-source-snapshot.mjs
 
-      - name: Validate refresh outputs
+      - name: Validate refresh review outputs
         run: |
           node scripts/check-pr-123-scheduled-refresh-foundation.mjs
           node scripts/check-pr-124-refresh-health-report.mjs
           npm run check
 
-      - name: Create generated update PR
-        if: github.event_name == 'schedule' || inputs.live_fetch == 'true'
+      - name: Create reviewable generated update PR
+        if: inputs.live_fetch == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore: refresh timetable generated data"
           title: "chore: refresh timetable generated data"
-          body: "Automated timetable refresh output. Review source snapshots, generated timetable data, and validation results before merging."
+          body: "Manually requested timetable refresh output. Review source snapshots, generated timetable data, and validation results before merging."
           branch: "generated/timetable-refresh"
           delete-branch: true
           labels: "generated-data,timetable"
