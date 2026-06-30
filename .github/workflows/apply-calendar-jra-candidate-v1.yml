@@ -24,9 +24,25 @@ jobs:
         run: node scripts/generate-japan-jra-candidates.mjs
       - name: Validate candidate and promotion boundary
         run: |
-          node scripts/check-japan-jra-candidate-generator.mjs
-          node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
-          node scripts/check-calendar-runtime-import-boundary.mjs
+          set +e
+          {
+            node scripts/check-japan-jra-candidate-generator.mjs
+            status=$?
+            if [ $status -eq 0 ]; then node scripts/check-calendar-pipeline-v1-candidate-contract.mjs; status=$?; fi
+            if [ $status -eq 0 ]; then node scripts/check-calendar-runtime-import-boundary.mjs; status=$?; fi
+            exit $status
+          } > /tmp/jra-candidate-v1-validation.log 2>&1
+          status=$?
+          cat /tmp/jra-candidate-v1-validation.log
+          exit $status
+      - name: Upload JRA validation diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-candidate-v1-validation-diagnostic
+          path: /tmp/jra-candidate-v1-validation.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Confirm static build
         run: |
           npm install --package-lock=false
