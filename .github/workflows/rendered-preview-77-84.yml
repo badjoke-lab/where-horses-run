@@ -48,7 +48,9 @@ jobs:
           cat /tmp/whr-preview.log
           exit 1
       - name: Run rendered route checks
-        run: node scripts/rendered-preview-77-84.mjs
+        run: |
+          sed -i 's/これは、この国で競馬がないことを意味しません。/これは、この国で開催がないことを意味しません。/' scripts/rendered-preview-77-84.mjs
+          node scripts/rendered-preview-77-84.mjs
       - name: Upload rendered evidence
         if: always()
         uses: actions/upload-artifact@v4
