@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-PIPELINE-V1`  
-Next Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Next Work ID: `WHR-CAL-OPS-V1`  
 Last reviewed: 2026-07-01
 
 ## Purpose
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-The existing Calendar baseline has been classified in a reviewed migration map. The current product phase is pipeline v1: one bounded candidate envelope, human promotion, single canonical/public writers, runtime import guards, and grouped validation.
+The existing Calendar baseline and Pipeline v1 foundation are complete. The current product phase is dynamic dates: build-date/timezone-aware Today and Tomorrow selection, a rolling Calendar window, and safe empty/stale states without reactivating scheduled acquisition.
 
 ## Governing rules
 
@@ -212,8 +212,10 @@ scripts/check-calendar-baseline-reconciliation.mjs
 
 ## Phase 8 — activate the reviewed pipeline
 
-Status: current  
-Current Work ID: `WHR-CAL-PIPELINE-V1`
+Status: Pipeline v1 complete; dynamic dates current  
+Completed Work ID: `WHR-CAL-PIPELINE-V1`  
+Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Next Work ID: `WHR-CAL-OPS-V1`
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -221,7 +223,9 @@ WHR-CAL-DYNAMIC-DATES
 WHR-CAL-OPS-V1
 ```
 
-Deliver one adapter contract, fixture-backed parsing, candidate/promotion gates, dynamic dates, rolling window, stale/failure handling, scheduled candidate generation, reviewable update PRs, pause, and rollback.
+Pipeline v1 delivered the read-only build boundary, candidate v1 contract, human canonical promotion, deterministic public projection, production runtime import guard, JRA reference adapter, rendered public release QA, and grouped release gate.
+
+Dynamic Dates now replaces fixed preview dates with explicit build-date/timezone rules, Today/Tomorrow selection, a rolling Calendar window, and safe empty/stale handling. Operations and scheduling remain separate under `WHR-CAL-OPS-V1`.
 
 ## Phase 9 — pilot source activation
 

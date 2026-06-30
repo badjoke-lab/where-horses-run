@@ -53,8 +53,10 @@ Broad deletion remains prohibited until provenance and assertion migration is co
 
 ## Stage 5 — pipeline v1
 
-Status: current  
-Current Work ID: `WHR-CAL-PIPELINE-V1`
+Pipeline v1 status: complete  
+Completed Work ID: `WHR-CAL-PIPELINE-V1`  
+Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Next Work ID: `WHR-CAL-OPS-V1`
 
 Work IDs:
 
@@ -78,7 +80,13 @@ official source
 -> static build
 ```
 
+Completed Pipeline v1 outputs include one candidate contract, human promotion writer, deterministic public projection, public-only runtime imports, read-only builds, one JRA reference adapter, rendered release QA, and `data/audits/calendar-pipeline-v1-release-gate.json`.
+
+### Dynamic Dates — current
+
 Replace preview-era fixed dates with build-date aware Today/Tomorrow, a rolling Calendar window, explicit timezone rules, safe empty states, and historical/future-window handling.
+
+### Operations v1 — next
 
 Operations include candidate schedules, source-health and stale reports, reviewable generated-update PRs, pause/rollback controls, seasonal rollover, and source-breakage procedures. Do not use routine direct self-publication.
 

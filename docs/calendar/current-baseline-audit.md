@@ -68,6 +68,6 @@ No canonical/public data, source capability, Technical Rank, Public Ceiling, or 
 
 ## Next phase
 
-Current Work ID: `WHR-CAL-PIPELINE-V1`
+Current Work ID: `WHR-CAL-DYNAMIC-DATES`
 
-The next phase implements one shared candidate envelope, one human promotion path, one canonical writer, deterministic public projection, import guards, grouped validation, and a fixture-backed reference adapter. Dynamic dates and operations follow as separate Work IDs.
+Pipeline v1 now provides the shared candidate envelope, human promotion path, deterministic public projection, runtime import guard, grouped validation, and a JRA reference adapter. The current phase implements dynamic dates; operations remain separate.

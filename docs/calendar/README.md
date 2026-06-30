@@ -17,6 +17,7 @@ Use these files together:
 - [`pipeline-v1-promotion.md`](pipeline-v1-promotion.md) — approved-candidate registry gates and idempotent canonical promotion.
 - [`pipeline-v1-public-projection.md`](pipeline-v1-public-projection.md) — deterministic Public Ceiling and field-policy projection.
 - [`pipeline-v1-jra-reference-adapter.md`](pipeline-v1-jra-reference-adapter.md) — first source adapter migrated to the candidate v1 boundary.
+- [`pipeline-v1-release-gate.md`](pipeline-v1-release-gate.md) — grouped Pipeline v1 completion and remaining-work boundary.
 - [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
@@ -32,6 +33,7 @@ data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
 data/audits/calendar-baseline-migration-map.json
+data/audits/calendar-pipeline-v1-release-gate.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
@@ -39,6 +41,7 @@ scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 scripts/check-calendar-pipeline-v1-promotion.mjs
 scripts/check-calendar-pipeline-v1-public-projection.mjs
 scripts/check-japan-jra-candidate-generator.mjs
+scripts/check-calendar-pipeline-v1-release-gate.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
