@@ -3,6 +3,8 @@ name: Final audit 98
 on:
   push:
     branches: [final-audit-98]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
