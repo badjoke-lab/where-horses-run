@@ -5,11 +5,10 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   canonicalize:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,15 +46,16 @@ jobs:
           node scripts/check-project-governance-docs.mjs
           node scripts/check-calendar-contracts.mjs
       - run: npm run build
-      - name: Remove one-time audit scripts
+      - name: Prepare canonical worktree
         run: |
+          rm -f .github/workflows/final-audit-98.yml
           rm -f scripts/final-audit-98.mjs
           rm -rf scripts/final-audit-98
-      - name: Commit canonical audit result
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --cached --check
-          git commit -m "Complete final 98-country and Calendar audit"
-          git push origin HEAD:refs/heads/audit-98-canonical-20260701
+          rm -rf node_modules dist .astro artifacts
+          tar -czf /tmp/final-audit-98-worktree.tgz --exclude=.git .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: final-audit-98-worktree
+          path: /tmp/final-audit-98-worktree.tgz
+          if-no-files-found: error
+          retention-days: 90
