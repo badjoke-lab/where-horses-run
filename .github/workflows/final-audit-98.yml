@@ -19,6 +19,8 @@ jobs:
           node-version: 22.12.0
       - name: Compact canonical data
         run: node scripts/final-audit-98/compact-data.mjs
+      - name: Normalize audit generator quoting
+        run: node scripts/final-audit-98/normalize-update-code.mjs
       - name: Update canonical code
         run: node scripts/final-audit-98/run-update-code.mjs
       - name: Upload code diagnostic
