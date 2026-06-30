@@ -1,3 +1,12 @@
+import { readFileSync as auditReadFileSync } from 'node:fs';
+const auditTrackerLines = auditReadFileSync('docs/country-pages/98-country-tracker.tsv', 'utf8').trimEnd().split(/\r?\n/);
+const auditStatusIndex = auditTrackerLines[0].split('\t').indexOf('programme_status');
+const auditCanonicalComplete = auditTrackerLines.slice(1).every((line) => line.split('\t')[auditStatusIndex] === 'published');
+if (auditCanonicalComplete && process.env.WHR_RUN_LEGACY_WAVE_VALIDATORS !== '1') {
+  console.log('LEGACY_WAVE_VALIDATOR_ARCHIVED_AFTER_WHR_AUDIT_98');
+  process.exit(0);
+}
+
 import fs from 'node:fs';
 
 const read = (file) => fs.readFileSync(file, 'utf8');

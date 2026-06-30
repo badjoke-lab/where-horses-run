@@ -1,7 +1,7 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-06-28
+Last reviewed: 2026-07-01
 
 ## Purpose
 
@@ -19,12 +19,14 @@ Backfill entries 01-52 from reviewed evidence. Use Source Test v2 for entries 53
 
 ## Stage 3 — combined research handoff
 
+Status: complete  
 Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
 
 Generate readiness summaries, automation-mode counts, implementation priority, blocked/revalidation reports, source freshness, and country-page completion reports.
 
 ## Stage 4 — existing baseline reconciliation
 
+Status: current  
 Work ID: `WHR-CAL-BASELINE-RECONCILE`
 
 Audit source inventories, routes, local/manual snapshot contracts, adapters, fixtures, generators, promotion tools, generated data, display policies, pages, refresh commands, fixed dates, seeds, and PR-specific scripts.

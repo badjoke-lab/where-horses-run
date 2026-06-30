@@ -1,9 +1,10 @@
 # Where Horses Run project roadmap
 
 Status: active canonical project roadmap  
-Current Work ID: `WHR-PUB-69-76`  
-Next Work ID: `WHR-ST2-77-84`  
-Last reviewed: 2026-06-30
+Country-page programme: complete  
+Current Work ID: `WHR-CAL-BASELINE-RECONCILE`  
+Next Work ID: `WHR-CAL-PIPELINE-V1`  
+Last reviewed: 2026-07-01
 
 ## Purpose
 
@@ -35,42 +36,18 @@ Where Horses Run is a bilingual, static-first world racing calendar and timetabl
 ## Current position
 
 ```text
-published country pages:       68
-page_qa:                        0
-profile_ready:                  8
-note_reviewed:                  0
-source_tested:                  0
-not_started:                   22
-total countries/regions:       98
-published routes:              68 EN + 68 JA = 136
-final bilingual route target:  98 EN + 98 JA = 196
+published country pages:       98
+published routes:              98 EN + 98 JA = 196
+Profile v2 records:            98
+Calendar Readiness countries:  98
+Calendar Readiness records:   116
+Authority/source records:     116
+country-page programme: complete
 ```
 
-Publication debt:
+The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-- entries 29-36 are published after the approved rendered preview;
-- entries 37-44 are published after the approved rendered preview;
-- entries 45-52 are published after the approved rendered preview;
-- entries 53-60 are published after the approved rendered preview;
-- entries 61-68 are published after the approved rendered preview.
-
-Calendar baseline already exists:
-
-- Calendar, Today, Tomorrow, and meeting-detail surfaces;
-- C / B / B+ / A / A+ display handling;
-- canonical and public generated timetable datasets;
-- source, fixture, normalizer, candidate, promotion, and UI validators;
-- Japan JRA, NAR, and Banei candidate work;
-- Hong Kong and UAE acquisition work;
-- a major-country source registry and refresh commands.
-
-The baseline is not yet a complete continuously updated calendar:
-
-- Calendar/date helpers still contain June 2026 preview assumptions;
-- generated records include seed and preview dates;
-- the shared refresh core still reports `skeleton_no_live_fetch`;
-- registered parsers and cadences do not prove live acquisition;
-- Calendar Readiness decisions are closed through entry 76, covering 76 countries and 94 system/source records.
+The current product phase is baseline reconciliation. Existing Calendar schemas, registries, generated data, adapters, fixtures, promotion tools, display policies, fixed-date logic, seeds, and PR-specific scripts must be classified before pipeline v1 is activated.
 
 ## Governing rules
 
@@ -184,46 +161,37 @@ WHR-CP-PUB-45-52
 
 ## Phase 5 — complete entries 53-98 under Source Test v2
 
-Completed: `WHR-ST2-53-60` via PR #326, `WHR-NOTE-53-60` via PR #327, `WHR-PROFILE-53-60` via PR #328, and `WHR-PUB-53-60` via PR #329 after rendered-preview approval.
+Completed publication waves:
 
-Completed: `WHR-ST2-61-68` via PR #330, `WHR-NOTE-61-68` via PR #331, `WHR-PROFILE-61-68` via PR #332, and `WHR-PUB-61-68` via PR #333 after rendered-preview approval.
+- entries 53-60: PRs #326-#329;
+- entries 61-68: PRs #330-#333;
+- entries 69-76: PRs #335, #336, #338, and #340;
+- entries 77-84: PRs #341-#345;
+- entries 85-92: PRs #346-#351;
+- entries 93-98: PRs #352-#356.
 
-Completed: `WHR-ST2-69-76` via PR #335 with eight Source Test v2 and Calendar Readiness decisions.
-
-Completed: `WHR-NOTE-69-76` via PR #336 with eight reviewed public-safe country notes.
-
-Completed: `WHR-PROFILE-69-76` via PR #337 with eight reviewed bilingual Profile v2 records and complete English/Japanese routes.
-
-Current Work ID: `WHR-PUB-69-76`
-
-```text
-WHR-ST2-53-60 -> WHR-NOTE-53-60 -> WHR-PROFILE-53-60 -> WHR-PUB-53-60
-WHR-ST2-61-68 -> WHR-NOTE-61-68 -> WHR-PROFILE-61-68 -> WHR-PUB-61-68
-WHR-ST2-69-76 -> WHR-NOTE-69-76 -> WHR-PROFILE-69-76 -> WHR-PUB-69-76
-WHR-ST2-77-84 -> WHR-NOTE-77-84 -> WHR-PROFILE-77-84 -> WHR-PUB-77-84
-WHR-ST2-85-92 -> WHR-NOTE-85-92 -> WHR-PROFILE-85-92 -> WHR-PUB-85-92
-WHR-ST2-93-98 -> WHR-NOTE-93-98 -> WHR-PROFILE-93-98 -> WHR-PUB-93-98
-```
-
-Each wave remains Source Test, Reviewed Note, Profile v2, and QA/Publish, but Source Test v2 also closes the Calendar decision.
+Every wave completed Source Test v2, reviewed notes, bilingual Profile v2, rendered QA, and publication. Source Test v2 also closed the Calendar Readiness decision for each reviewed system/source.
 
 ## Phase 6 — combined 98-country and readiness audit
 
-Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
+Completed Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
 
-Required outcomes:
+Completed outcomes:
 
-- 98 tracker rows and 196 published bilingual routes;
-- every country has a calendar decision;
-- every reviewed system/source has a closed readiness state;
-- Technical Rank, Public Ceiling, automation mode, fallback, freshness, and revalidation are recorded where applicable;
-- no unexplained unknown state remains;
-- implementation priority and blocked/link-only reports are generated.
+- 98 canonical tracker rows and 196 published bilingual routes;
+- 98 countries with closed Calendar Readiness decisions;
+- 116 canonical authority/source records;
+- 116 canonical Calendar Readiness records;
+- canonical state no longer depends on transition overlays at runtime;
+- legacy wave validators are archived behind explicit opt-in;
+- Profile v2 runtime no longer depends on final-wave loader mutation;
+- final governance, Calendar, runtime, and production-build checks pass.
 
 This closes the 98-country research/page programme. It does not close the product.
 
 ## Phase 7 — reconcile the existing Calendar baseline
 
+Status: current  
 Work ID: `WHR-CAL-BASELINE-RECONCILE`
 
 Classify schemas, registries, generated data, candidate paths, display policies, refresh commands, fixed dates, seed data, and PR-specific scripts as:

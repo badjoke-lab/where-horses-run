@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-06-30
+Last reviewed: 2026-07-01
 
 Read documents in this order:
 
@@ -9,15 +9,14 @@ Read documents in this order:
 2. [`docs/project-roadmap.md`](docs/project-roadmap.md)
 3. [`docs/operations/deployment-and-ci-policy.md`](docs/operations/deployment-and-ci-policy.md)
 
-For country-page work:
+Country-page programme:
 
 4. [`docs/country-pages/programme-roadmap.md`](docs/country-pages/programme-roadmap.md)
-5. [`docs/country-pages/programme-roadmap-2026-06-28-addendum.md`](docs/country-pages/programme-roadmap-2026-06-28-addendum.md)
-6. [`docs/country-pages/completion-contract.md`](docs/country-pages/completion-contract.md)
-7. [`docs/country-pages/completion-contract-calendar-addendum.md`](docs/country-pages/completion-contract-calendar-addendum.md)
-8. [`docs/country-pages/98-country-tracker.tsv`](docs/country-pages/98-country-tracker.tsv)
+5. [`docs/country-pages/completion-contract.md`](docs/country-pages/completion-contract.md)
+6. [`docs/country-pages/98-country-tracker.tsv`](docs/country-pages/98-country-tracker.tsv)
+7. [`docs/runbooks/final-country-calendar-audit-98.md`](docs/runbooks/final-country-calendar-audit-98.md)
 
-For Calendar work:
+Calendar work:
 
 4. [`docs/calendar/README.md`](docs/calendar/README.md)
 5. [`docs/calendar/source-test-v2-contract.md`](docs/calendar/source-test-v2-contract.md)
@@ -25,32 +24,29 @@ For Calendar work:
 7. [`docs/calendar/machine-readable-contracts.md`](docs/calendar/machine-readable-contracts.md)
 8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
 9. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-10. [`docs/specs/global-timetable-architecture.md`](docs/specs/global-timetable-architecture.md)
-11. [`docs/specs/authority-source-inventory-schema.md`](docs/specs/authority-source-inventory-schema.md)
-
-For local source material and public-repository boundaries:
-
-- [`docs/governance/internal-source-handling.md`](docs/governance/internal-source-handling.md)
 
 Machine-readable Calendar files:
 
 ```text
+data/static/authority-source-inventory.json
 data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 scripts/check-calendar-contracts.mjs
 ```
 
-Previous completed Work ID: `WHR-PROFILE-69-76`
+Previous completed Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
 
 Current Work ID:
 
 ```text
-WHR-PUB-69-76
+WHR-CAL-BASELINE-RECONCILE
 ```
 
 Next Work ID:
 
 ```text
-WHR-ST2-77-84
+WHR-CAL-PIPELINE-V1
 ```
+
+The 98-country bilingual page programme is complete at 98 English and 98 Japanese routes. The active task is to reconcile the existing Calendar baseline before pipeline v1 is activated.
