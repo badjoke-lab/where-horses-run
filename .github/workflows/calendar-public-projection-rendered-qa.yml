@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/audits/calendar-public-projection-release-v1.json'
       - 'data/generated/timetable/public/**'
+      - 'src/pages/major-countries/preview-timetable.astro'
       - 'scripts/check-calendar-public-projection-rendered-qa.mjs'
       - '.github/workflows/calendar-public-projection-rendered-qa.yml'
   push:
@@ -13,6 +14,7 @@ on:
     paths:
       - 'data/audits/calendar-public-projection-release-v1.json'
       - 'data/generated/timetable/public/**'
+      - 'src/pages/major-countries/preview-timetable.astro'
       - 'scripts/check-calendar-public-projection-rendered-qa.mjs'
       - '.github/workflows/calendar-public-projection-rendered-qa.yml'
 
@@ -42,6 +44,13 @@ jobs:
           status=$?
           cat /tmp/calendar-public-projection-rendered-qa.log
           exit $status
+      - name: Validate retired preview route
+        run: |
+          grep -q 'Legacy preview retired' dist/major-countries/preview-timetable/index.html
+          if grep -q 'normalized-calendar-preview__month' dist/major-countries/preview-timetable/index.html; then
+            echo 'Legacy normalized preview still renders.' >&2
+            exit 1
+          fi
       - name: Package rendered preview
         if: always()
         run: tar -czf /tmp/calendar-public-projection-preview-dist.tgz dist
@@ -59,5 +68,5 @@ jobs:
         with:
           name: calendar-public-projection-rendered-qa-diagnostic
           path: /tmp/calendar-public-projection-rendered-qa.log
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 30
