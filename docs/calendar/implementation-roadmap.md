@@ -26,7 +26,7 @@ Generate readiness summaries, automation-mode counts, implementation priority, b
 
 ## Stage 4 — existing baseline reconciliation
 
-Status: current  
+Status: complete  
 Work ID: `WHR-CAL-BASELINE-RECONCILE`
 
 Audit source inventories, routes, local/manual snapshot contracts, adapters, fixtures, generators, promotion tools, generated data, display policies, pages, refresh commands, fixed dates, seeds, and PR-specific scripts.
@@ -41,9 +41,20 @@ replace
 archive
 ```
 
-Produce a reviewed migration map before broad deletion or replacement.
+Completed outputs:
+
+- `docs/calendar/baseline-reconciliation-map.md`;
+- `data/audits/calendar-baseline-migration-map.json`;
+- `scripts/check-calendar-baseline-reconciliation.mjs`;
+- read-only normal build/check;
+- paused incomplete daily refresh schedule.
+
+Broad deletion remains prohibited until provenance and assertion migration is complete.
 
 ## Stage 5 — pipeline v1
+
+Status: current  
+Current Work ID: `WHR-CAL-PIPELINE-V1`
 
 Work IDs:
 

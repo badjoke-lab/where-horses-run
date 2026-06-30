@@ -1,7 +1,9 @@
 # Current timetable data inventory
 
-Status: PR-237 inventory  
-Last updated: 2026-06-07
+Status: superseded by `WHR-CAL-BASELINE-RECONCILE`
+Last updated: 2026-07-01
+
+> This PR-237 inventory is retained as historical evidence. Its statements about missing canonical/public layers are no longer current. The authoritative component decisions are `docs/calendar/baseline-reconciliation-map.md` and `data/audits/calendar-baseline-migration-map.json`.
 
 This inventory records the current timetable data, scripts, and display surfaces before the project moves to the canonical timetable pipeline.
 

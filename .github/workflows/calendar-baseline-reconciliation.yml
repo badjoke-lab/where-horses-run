@@ -1,0 +1,52 @@
+name: Calendar baseline reconciliation
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'package.json'
+      - 'data/audits/calendar-baseline-migration-map.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/runbooks/current-timetable-data-inventory.md'
+      - 'scripts/check-calendar-baseline-reconciliation.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - '.github/workflows/calendar-baseline-reconciliation.yml'
+      - '.github/workflows/timetable-scheduled-refresh.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'package.json'
+      - 'data/audits/calendar-baseline-migration-map.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/runbooks/current-timetable-data-inventory.md'
+      - 'scripts/check-calendar-baseline-reconciliation.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - '.github/workflows/calendar-baseline-reconciliation.yml'
+      - '.github/workflows/timetable-scheduled-refresh.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Calendar baseline migration map and safeguards
+        run: node scripts/check-calendar-baseline-reconciliation.mjs
+      - name: Validate Calendar contracts
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Validate project governance
+        run: node scripts/check-project-governance-docs.mjs

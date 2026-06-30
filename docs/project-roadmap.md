@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-BASELINE-RECONCILE`  
-Next Work ID: `WHR-CAL-PIPELINE-V1`  
+Current Work ID: `WHR-CAL-PIPELINE-V1`  
+Next Work ID: `WHR-CAL-DYNAMIC-DATES`  
 Last reviewed: 2026-07-01
 
 ## Purpose
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-The current product phase is baseline reconciliation. Existing Calendar schemas, registries, generated data, adapters, fixtures, promotion tools, display policies, fixed-date logic, seeds, and PR-specific scripts must be classified before pipeline v1 is activated.
+The existing Calendar baseline has been classified in a reviewed migration map. The current product phase is pipeline v1: one bounded candidate envelope, human promotion, single canonical/public writers, runtime import guards, and grouped validation.
 
 ## Governing rules
 
@@ -191,20 +191,29 @@ This closes the 98-country research/page programme. It does not close the produc
 
 ## Phase 7 — reconcile the existing Calendar baseline
 
-Status: current  
+Status: complete  
 Work ID: `WHR-CAL-BASELINE-RECONCILE`
 
-Classify schemas, registries, generated data, candidate paths, display policies, refresh commands, fixed dates, seed data, and PR-specific scripts as:
+Completed through the reviewed human-readable and machine-readable migration map:
+
+- 37 component groups classified as retain, repair, migrate, replace, or archive;
+- normal production build/check made read-only;
+- incomplete daily refresh schedule paused;
+- no broad deletion before provenance and assertion migration;
+- no Technical Rank, Public Ceiling, or readiness change.
+
+Canonical result:
 
 ```text
-retain
-repair
-migrate
-replace
-archive
+docs/calendar/baseline-reconciliation-map.md
+data/audits/calendar-baseline-migration-map.json
+scripts/check-calendar-baseline-reconciliation.mjs
 ```
 
 ## Phase 8 — activate the reviewed pipeline
+
+Status: current  
+Current Work ID: `WHR-CAL-PIPELINE-V1`
 
 ```text
 WHR-CAL-PIPELINE-V1
