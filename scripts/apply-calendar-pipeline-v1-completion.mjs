@@ -90,6 +90,7 @@ replace('docs/governance/document-authority.md', [
 ]);
 
 replace('scripts/check-calendar-baseline-reconciliation.mjs', [
+  ["'docs/calendar/implementation-roadmap.md':['Status: complete','Status: current']", "'docs/calendar/implementation-roadmap.md':['Status: complete','Pipeline v1 status: complete','Current Work ID: `WHR-CAL-DYNAMIC-DATES`']"],
   ["'docs/project-roadmap.md':['Current Work ID: `WHR-CAL-PIPELINE-V1`']", "'docs/project-roadmap.md':['Current Work ID: `WHR-CAL-DYNAMIC-DATES`','Completed Work ID: `WHR-CAL-PIPELINE-V1`']"],
   ["'START-HERE.md':['WHR-CAL-PIPELINE-V1','WHR-CAL-DYNAMIC-DATES']", "'START-HERE.md':['Previous completed Work ID: `WHR-CAL-PIPELINE-V1`','WHR-CAL-DYNAMIC-DATES','WHR-CAL-OPS-V1']"],
   ["console.log('CURRENT_WORK_ID: WHR-CAL-PIPELINE-V1');\nconsole.log('NEXT_WORK_ID: WHR-CAL-DYNAMIC-DATES');", "console.log('CURRENT_WORK_ID: WHR-CAL-DYNAMIC-DATES');\nconsole.log('NEXT_WORK_ID: WHR-CAL-OPS-V1');"]
