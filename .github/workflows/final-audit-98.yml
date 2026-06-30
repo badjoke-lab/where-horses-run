@@ -17,9 +17,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: node scripts/final-audit-98.mjs
+      - name: Compact canonical data
+        run: node scripts/final-audit-98/compact-data.mjs
+      - name: Update canonical code
+        run: node scripts/final-audit-98/update-code.mjs
+      - name: Update canonical documentation
+        run: node scripts/final-audit-98/update-docs.mjs
       - run: npm install
-      - run: |
+      - name: Validate final canonical state
+        run: |
           node scripts/check-final-audit-98.mjs
           node scripts/check-country-detail-profile-runtime.mjs
           node scripts/check-country-page-programme.mjs
