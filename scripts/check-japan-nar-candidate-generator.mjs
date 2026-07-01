@@ -1,84 +1,60 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const errors = [];
+const fail = (message) => errors.push(message);
+const readJson = (file) => JSON.parse(readFileSync(path.join(root, file), 'utf8'));
 
-function fail(message) {
-  errors.push(message);
+const activePath = 'data/candidates/japan-nar-candidates.json';
+const archivePath = 'data/archive/timetable/candidates/japan-nar-candidates.v0.json';
+const controlPath = 'data/static/local-racing-pilot-control.json';
+const commandPath = 'scripts/generate-japan-nar-candidates.mjs';
+
+if (existsSync(path.join(root, activePath))) fail('Active file must be absent.');
+if (!existsSync(path.join(root, archivePath))) fail('Historical archive is missing.');
+
+const control = readJson(controlPath);
+if (control.mode !== 'link_only_review') fail('Mode must remain link_only_review.');
+if (control.candidate_mode !== 'disabled') fail('Candidate mode must remain disabled.');
+if (control.expected_technical_rank !== 'C' || control.expected_public_ceiling !== 'C') fail('Rank boundary must remain C/C.');
+
+const archived = readJson(archivePath);
+if (archived.schema_version !== 'timetable-candidates-v0') fail('Historical schema changed.');
+if (archived.source_adapter_id !== 'japan-nar-dry-run-adapter') fail('Historical adapter identity changed.');
+if (archived.generated_at !== '2026-05-29T00:00:00Z') fail('Historical timestamp changed.');
+if (archived.country_id !== 'japan') fail('Historical country changed.');
+if (archived.review?.review_status !== 'needs_review') fail('Historical review state changed.');
+if ((archived.records ?? []).length !== 12) fail('Historical record count must remain 12.');
+
+for (const record of archived.records ?? []) {
+  if (record.racing_system_id !== 'nar') fail(`${record.candidate_id}: system identity changed.`);
+  if (record.source_id !== 'japan-nar-home') fail(`${record.candidate_id}: source identity changed.`);
+  if (record.extraction_method !== 'adapter_dry_run') fail(`${record.candidate_id}: extraction method changed.`);
+  if (record.review_status !== 'needs_review') fail(`${record.candidate_id}: review state changed.`);
 }
 
-function readJson(relativePath) {
-  return JSON.parse(readFileSync(path.join(root, relativePath), 'utf8'));
-}
+const checkRun = spawnSync(process.execPath, [commandPath, '--check'], { cwd: root, encoding: 'utf8' });
+if (checkRun.status !== 0) fail(`Guard check failed: ${checkRun.stderr || checkRun.stdout}`);
+if (!checkRun.stdout.includes('legacy v0 artifact quarantined')) fail('Guard success marker is missing.');
 
-const generator = readFileSync(path.join(root, 'scripts/generate-japan-nar-candidates.mjs'), 'utf8');
-const candidates = readJson('data/candidates/japan-nar-candidates.json');
+const blockedRun = spawnSync(process.execPath, [commandPath], { cwd: root, encoding: 'utf8' });
+if (blockedRun.status === 0) fail('Direct execution must be rejected in link-only mode.');
+if (!`${blockedRun.stderr}${blockedRun.stdout}`.includes('current link-only readiness')) fail('Boundary explanation is missing.');
 
-const staleCheck = spawnSync(process.execPath, ['scripts/generate-japan-nar-candidates.mjs', '--check'], {
-  cwd: root,
-  encoding: 'utf8'
-});
-
-if (staleCheck.status !== 0) {
-  fail(`NAR candidate generator check failed: ${staleCheck.stderr || staleCheck.stdout}`);
-}
-
-if (candidates.schema_version !== 'timetable-candidates-v0') fail('NAR candidates must use timetable-candidates-v0.');
-if (candidates.source_adapter_id !== 'japan-nar-dry-run-adapter') fail('Unexpected source_adapter_id.');
-if (candidates.country_id !== 'japan') fail('NAR candidates must be country_id japan.');
-if (candidates.candidate_window?.timezone !== 'Asia/Tokyo') fail('NAR candidate timezone must be Asia/Tokyo.');
-if (candidates.review?.review_status !== 'needs_review') fail('NAR candidate file must remain needs_review.');
-
-const records = candidates.records ?? [];
-if (records.length !== 12) fail('NAR dry-run candidate output must contain the 12 existing safe NAR overlay records.');
-
-const seen = new Set();
-for (const record of records) {
-  if (record.country_id !== 'japan') fail(`${record.candidate_id}: country_id must be japan.`);
-  if (record.racing_system_id !== 'nar') fail(`${record.candidate_id}: racing_system_id must be nar.`);
-  if (record.source_id !== 'japan-nar-home') fail(`${record.candidate_id}: source_id must be japan-nar-home.`);
-  if (record.extraction_method !== 'adapter_dry_run') fail(`${record.candidate_id}: extraction_method must be adapter_dry_run.`);
-  if (record.status !== 'candidate') fail(`${record.candidate_id}: status must be candidate.`);
-  if (record.review_status !== 'needs_review') fail(`${record.candidate_id}: review_status must be needs_review.`);
-  if (!record.source_url?.startsWith('https://www.keiba.go.jp/')) fail(`${record.candidate_id}: source_url must be NAR URL.`);
-  if (!String(record.racing_type ?? '').includes('NAR')) fail(`${record.candidate_id}: racing_type must be NAR.`);
-
-  const key = `${record.date}:${record.racecourse_id}:${record.source_id}`;
-  if (seen.has(key)) fail(`Duplicate NAR candidate key: ${key}`);
-  seen.add(key);
-
-  const serialized = JSON.stringify(record).toLowerCase();
-  for (const forbidden of ['raw html', 'source body', 'racecard', 'entries', 'horse names', 'jockey names', 'odds', 'results', 'payouts', 'prediction', 'tips']) {
-    if (serialized.includes(forbidden)) fail(`${record.candidate_id}: forbidden marker found: ${forbidden}`);
-  }
-}
-
-for (const requiredKey of [
-  '2026-05-30:urawa-racecourse:japan-nar-home',
-  '2026-05-30:kasamatsu-racecourse:japan-nar-home',
-  '2026-05-30:sonoda-racecourse:japan-nar-home',
-  '2026-05-31:mizusawa-racecourse:japan-nar-home',
-  '2026-05-31:kanazawa-racecourse:japan-nar-home',
-  '2026-06-01:funabashi-racecourse:japan-nar-home'
-]) {
-  if (!seen.has(requiredKey)) fail(`Missing expected NAR candidate key: ${requiredKey}`);
-}
-
-for (const required of [
-  "source_id === 'japan-nar-home'",
-  "extraction_method: 'adapter_dry_run'",
-  "review_status: 'needs_review'",
-  "status: 'candidate'"
-]) {
-  if (!generator.includes(required)) fail(`Generator must include: ${required}`);
+const source = readFileSync(path.join(root, commandPath), 'utf8');
+for (const marker of ['writeFileSync', 'mkdirSync', 'data/generated/japan-active-timetable-records.json']) {
+  if (source.includes(marker)) fail(`Retired writer marker remains: ${marker}.`);
 }
 
 if (errors.length) {
-  console.error('Japan NAR candidate generator check failed:');
-  for (const error of errors) console.error(`- ${error}`);
+  console.error('Japan local-racing quarantine check failed:');
+  errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
 
-console.log('Japan NAR candidate generator check passed.');
+console.log('Japan local-racing quarantine check passed.');
+console.log('ACTIVE_FILE_PRESENT: false');
+console.log('ARCHIVED_RECORDS: 12');
+console.log('DIRECT_EXECUTION_ENABLED: false');
