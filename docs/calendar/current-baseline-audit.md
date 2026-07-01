@@ -68,6 +68,6 @@ No canonical/public data, source capability, Technical Rank, Public Ceiling, or 
 
 ## Next phase
 
-Current Work ID: `WHR-CAL-OPS-V1`
+Current Work ID: `WHR-CAL-JAPAN-JRA`
 
-Pipeline v1 and Dynamic Dates now provide the reviewed data flow, deterministic public projection, runtime boundary, explicit date/timezone rules, rolling windows, and visible stale states. The current phase establishes Operations v1 before the JRA pilot.
+Pipeline v1, Dynamic Dates, and Operations v1 now provide the reviewed data flow, deterministic projection, runtime/date boundaries, source-health status, review packages, and recovery controls. The current phase is the JRA pilot.

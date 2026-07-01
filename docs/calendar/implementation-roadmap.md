@@ -91,13 +91,21 @@ The site now uses explicit reference-date and timezone rules, Today/Tomorrow sel
 
 ### Operations v1
 
-Status: current  
-Current Work ID: `WHR-CAL-OPS-V1`  
-Next Work ID: `WHR-CAL-JAPAN-JRA`
+Operations v1 status: complete  
+Completed Work ID: `WHR-CAL-OPS-V1`
 
-Operations include source-health and stale reports, reviewable generated-update preparation, pause/rollback controls, seasonal rollover, and source-breakage procedures. Do not use routine direct self-publication.
+Operations now include deterministic source-health status, review-package preparation, pause/rollback controls, seasonal rollover, source-breakage escalation, and grouped validation. Scheduled and unattended publication remain disabled.
+
+### JRA pilot — current
+
+Current Work ID: `WHR-CAL-JAPAN-JRA`  
+Next Work ID: `WHR-CAL-JAPAN-NAR`
+
+The pilot must obtain a fresh reviewed JRA source fixture before candidate approval or promotion.
 
 ## Stage 6 — pilot activation
+
+Status: current — JRA pilot
 
 ```text
 WHR-CAL-JAPAN-JRA

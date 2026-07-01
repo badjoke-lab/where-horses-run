@@ -1,6 +1,6 @@
 # Calendar Operations v1 contract
 
-Status: active foundation  
+Status: complete  
 Work ID: `WHR-CAL-OPS-V1`  
 Started: 2026-07-01
 
@@ -84,11 +84,8 @@ node scripts/timetable/build-operations-review-package.mjs --check
 node scripts/check-calendar-operations-review-package.mjs
 ```
 
-## Remaining Operations v1 work
+## Completion
 
-- stale and source-health runbook;
-- seasonal rollover;
-- source-breakage escalation;
-- grouped Operations v1 release gate.
+Operations v1 is closed by `docs/calendar/operations-v1-release-gate.md` and `data/audits/calendar-operations-v1-release-gate.json`.
 
-The first live pilot remains `WHR-CAL-JAPAN-JRA` after Operations v1 completion.
+The current Work ID is `WHR-CAL-JAPAN-JRA`; the next pilot is `WHR-CAL-JAPAN-NAR`.

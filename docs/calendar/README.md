@@ -21,8 +21,11 @@ Use these files together:
 - [`dynamic-dates-contract.md`](dynamic-dates-contract.md) — explicit reference date, timezone, Today/Tomorrow, rolling window, and stale-state rules.
 - [`dynamic-dates-release-gate.md`](dynamic-dates-release-gate.md) — Dynamic Dates completion and Operations v1 boundary.
 - [`operations-v1-contract.md`](operations-v1-contract.md) — review-only operator status, thresholds, and no-write boundary.
+- [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
 - [`../runbooks/calendar-operations-status-review.md`](../runbooks/calendar-operations-status-review.md) — operator review order and escalation rules.
-- [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause, rollback, and source-breakage controls.
+- [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause and rollback controls.
+- [`../runbooks/calendar-seasonal-rollover.md`](../runbooks/calendar-seasonal-rollover.md) — seasonal fixture review and rollover.
+- [`../runbooks/calendar-source-breakage-escalation.md`](../runbooks/calendar-source-breakage-escalation.md) — warning, degraded, and blocked source incidents.
 - [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
@@ -40,7 +43,9 @@ data/candidates/japan-jra-candidates.json
 data/audits/calendar-baseline-migration-map.json
 data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
+data/audits/calendar-operations-v1-release-gate.json
 data/static/calendar-operations-control.json
+data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 scripts/check-calendar-contracts.mjs
@@ -56,6 +61,7 @@ scripts/check-calendar-dynamic-dates-rendered.mjs
 scripts/check-calendar-dynamic-dates-release-gate.mjs
 scripts/check-calendar-operations-status.mjs
 scripts/check-calendar-operations-review-package.mjs
+scripts/check-calendar-operations-v1-release-gate.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.

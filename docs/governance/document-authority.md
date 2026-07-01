@@ -54,6 +54,12 @@ Calendar human-readable contracts:
 - `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/calendar/dynamic-dates-release-gate.md`
 - `docs/calendar/operations-v1-contract.md`
+- `docs/calendar/operations-v1-release-gate.md`
+- `docs/runbooks/calendar-operations-status-review.md`
+- `docs/runbooks/calendar-operations-pause-rollback.md`
+- `docs/runbooks/calendar-seasonal-rollover.md`
+- `docs/runbooks/calendar-source-breakage-escalation.md`
+- `docs/calendar/operations-v1-contract.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/specs/global-timetable-architecture.md` plus active addendum
@@ -69,6 +75,11 @@ Calendar machine-readable contracts:
 - `data/audits/calendar-baseline-migration-map.json`
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
+- `data/audits/calendar-operations-v1-release-gate.json`
+- `data/static/calendar-operations-control.json`
+- `data/static/calendar-operations-seasonal-policy.json`
+- `data/generated/timetable/operations-status.json`
+- `data/generated/timetable/operations-review-package.json`
 - `data/static/calendar-operations-control.json`
 - `data/generated/timetable/operations-status.json`
 - `data/generated/timetable/operations-review-package.json`
@@ -76,6 +87,9 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-calendar-pipeline-v1-release-gate.mjs`
 - `scripts/check-calendar-dynamic-dates-release-gate.mjs`
+- `scripts/check-calendar-operations-status.mjs`
+- `scripts/check-calendar-operations-review-package.mjs`
+- `scripts/check-calendar-operations-v1-release-gate.mjs`
 - `scripts/check-calendar-operations-status.mjs`
 - `scripts/check-calendar-operations-review-package.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`

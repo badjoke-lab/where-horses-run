@@ -1,0 +1,63 @@
+{
+  "schema_version": "calendar-operations-v1-release-gate-v1",
+  "work_id": "WHR-CAL-OPS-V1",
+  "status": "complete",
+  "completed_at": "2026-07-01",
+  "next_work_id": "WHR-CAL-JAPAN-JRA",
+  "following_work_id": "WHR-CAL-JAPAN-NAR",
+  "completed_layers": [
+    "deterministic_operations_status",
+    "read_only_manual_review_workflow",
+    "deterministic_review_package",
+    "pause_and_rollback_control",
+    "seasonal_rollover_policy",
+    "source_breakage_escalation",
+    "grouped_operations_release_gate"
+  ],
+  "canonical_files": [
+    "data/generated/timetable/operations-status.json",
+    "data/generated/timetable/operations-review-package.json",
+    "data/static/calendar-operations-control.json",
+    "data/static/calendar-operations-seasonal-policy.json"
+  ],
+  "runbooks": [
+    "docs/runbooks/calendar-operations-status-review.md",
+    "docs/runbooks/calendar-operations-pause-rollback.md",
+    "docs/runbooks/calendar-seasonal-rollover.md",
+    "docs/runbooks/calendar-source-breakage-escalation.md"
+  ],
+  "boundaries": {
+    "scheduled_refresh_active": false,
+    "live_fetch_allowed": false,
+    "automatic_candidate_approval_allowed": false,
+    "automatic_canonical_write_allowed": false,
+    "automatic_public_write_allowed": false,
+    "pull_request_created_by_review_package": false,
+    "unattended_publication_allowed": false
+  },
+  "pilot_entry_requirements": [
+    "fresh_reviewed_source_fixture",
+    "source_specific_adapter_contract",
+    "candidate_generation_only",
+    "human_promotion_owner",
+    "fallback_and_rollback_verified",
+    "public_ceiling_unchanged_without_review",
+    "bilingual_rendered_validation"
+  ],
+  "required_validators": [
+    "scripts/check-calendar-operations-status.mjs",
+    "scripts/check-calendar-operations-review-package.mjs",
+    "scripts/check-calendar-pipeline-v1-release-gate.mjs",
+    "scripts/check-calendar-dynamic-dates-release-gate.mjs",
+    "scripts/check-calendar-runtime-import-boundary.mjs"
+  ],
+  "not_completed_by_operations_v1": [
+    "live JRA source acquisition",
+    "fresh JRA candidate generation",
+    "JRA human approval",
+    "JRA canonical promotion",
+    "JRA public projection release",
+    "scheduled multi-source operation",
+    "unattended publication"
+  ]
+}

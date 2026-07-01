@@ -1,0 +1,69 @@
+{
+  "schema_version": "calendar-operations-seasonal-policy-v1",
+  "work_id": "WHR-CAL-OPS-V1",
+  "mode": "review_only",
+  "seasonal_review": {
+    "maximum_age_days": 190,
+    "preseason_review_lead_days": 45,
+    "current_window_days": 30,
+    "requires_official_fixture_evidence": true,
+    "candidate_generation_allowed": true,
+    "automatic_approval_allowed": false,
+    "automatic_publication_allowed": false
+  },
+  "rollover_states": [
+    {
+      "state": "not_due",
+      "condition": "reviewed season coverage remains current and source age is within threshold",
+      "operator_action": "none"
+    },
+    {
+      "state": "preseason_review_due",
+      "condition": "known season start is within 45 days or the seasonal source exceeds its review threshold",
+      "operator_action": "review official fixture source and prepare bounded candidate data"
+    },
+    {
+      "state": "future_window_empty",
+      "condition": "the current 30-day public window is empty for an otherwise active seasonal system",
+      "operator_action": "confirm whether the system is out of season, delayed, or missing reviewed data"
+    },
+    {
+      "state": "source_breakage",
+      "condition": "the reviewed official route is unavailable, materially changed, or no longer authoritative",
+      "operator_action": "apply source-breakage escalation and recorded fallback"
+    }
+  ],
+  "source_breakage_levels": [
+    {
+      "level": "warning",
+      "condition": "official route responds but expected reviewed fields or navigation changed",
+      "public_action": "retain last reviewed projection only when fallback permits; show freshness and official-source warning"
+    },
+    {
+      "level": "degraded",
+      "condition": "official timetable route is unavailable or incomplete but an authoritative fallback remains",
+      "public_action": "downgrade or link-only according to Calendar Readiness fallback"
+    },
+    {
+      "level": "blocked",
+      "condition": "no reviewed authoritative source remains or source identity cannot be confirmed",
+      "public_action": "hide from current Calendar and keep candidate/promotion disabled"
+    }
+  ],
+  "required_evidence": [
+    "official_source_url",
+    "checked_date",
+    "season_or_window_covered",
+    "confirmed_fields",
+    "fallback_decision",
+    "human_reviewer"
+  ],
+  "forbidden_recovery_methods": [
+    "unofficial_mirror",
+    "restricted_access_bypass",
+    "raw_source_body_publication",
+    "participant_or_betting_data_expansion",
+    "automatic_rank_increase",
+    "direct_public_write"
+  ]
+}

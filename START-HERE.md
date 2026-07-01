@@ -27,6 +27,7 @@ Calendar work:
 10. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
 11. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
 12. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+13. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -38,24 +39,30 @@ data/static/calendar-readiness-registry.json
 data/audits/calendar-baseline-migration-map.json
 data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
+data/audits/calendar-operations-v1-release-gate.json
+data/static/calendar-operations-control.json
+data/static/calendar-operations-seasonal-policy.json
+data/generated/timetable/operations-status.json
+data/generated/timetable/operations-review-package.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
 scripts/check-calendar-dynamic-dates-release-gate.mjs
+scripts/check-calendar-operations-v1-release-gate.mjs
 ```
 
-Previous completed Work ID: `WHR-CAL-DYNAMIC-DATES`
+Previous completed Work ID: `WHR-CAL-OPS-V1`
 
 Current Work ID:
-
-```text
-WHR-CAL-OPS-V1
-```
-
-Next Work ID:
 
 ```text
 WHR-CAL-JAPAN-JRA
 ```
 
-The 98-country programme, Calendar baseline reconciliation, Pipeline v1, and Dynamic Dates are complete. The active task is Operations v1; scheduled source operation remains paused until its controls and runbooks are complete.
+Next Work ID:
+
+```text
+WHR-CAL-JAPAN-NAR
+```
+
+The 98-country programme, Calendar baseline reconciliation, Pipeline v1, Dynamic Dates, and Operations v1 are complete. The active task is the JRA source pilot; scheduling and unattended publication remain disabled.
