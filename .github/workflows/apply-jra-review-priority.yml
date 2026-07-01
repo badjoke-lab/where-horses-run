@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: jra-review-package-v2
+          ref: jra-review-package-v3
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -29,4 +29,4 @@ jobs:
           git add scripts/timetable/jra-final-review-package-core.mjs
           git add -u scripts/apply-jra-review-priority-fix.mjs
           git commit -m "Fix JRA review action priority"
-          git push origin HEAD:jra-review-package-v2
+          git push origin HEAD:jra-review-package-v3
