@@ -4,7 +4,35 @@
   "mode": "link_only_review",
   "source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
   "system_id": "japan-nar-system",
+  "allowed_hosts": ["www.keiba.go.jp", "keiba.go.jp"],
   "expected_readiness": "link_only",
   "expected_technical_rank": "C",
-  "expected_public_ceiling": "C"
+  "expected_public_ceiling": "C",
+  "acquisition_mode": "disabled",
+  "normalization_mode": "disabled",
+  "candidate_mode": "disabled",
+  "canonical_write_mode": "disabled",
+  "public_write_mode": "disabled",
+  "schedule_mode": "disabled",
+  "required_checks": [
+    "canonical_source_identity",
+    "official_host",
+    "link_only_readiness",
+    "technical_rank_c",
+    "public_ceiling_c",
+    "meeting_date_and_racecourse_only",
+    "no_candidate_file",
+    "no_local_racing_public_projection",
+    "no_jra_capability_generalization"
+  ],
+  "activation_prerequisites": [
+    "authority_specific_source_research",
+    "stable_venue_and_date_mapping",
+    "reviewed_scheduled_time_source",
+    "readiness_change_review",
+    "bounded_fixture_or_import_contract",
+    "human_review_owner",
+    "fallback_and_rollback_verified",
+    "bilingual_qa_plan"
+  ]
 }
