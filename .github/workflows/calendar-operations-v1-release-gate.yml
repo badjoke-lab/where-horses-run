@@ -1,0 +1,60 @@
+name: Calendar operations v1 release gate
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-operations-v1-release-gate.json'
+      - 'data/static/calendar-operations-control.json'
+      - 'data/static/calendar-operations-seasonal-policy.json'
+      - 'data/generated/timetable/operations-*.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/runbooks/calendar-*.md'
+      - 'scripts/check-calendar-*.mjs'
+      - '.github/workflows/calendar-operations-v1-release-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-operations-v1-release-gate.json'
+      - 'data/static/calendar-operations-control.json'
+      - 'data/static/calendar-operations-seasonal-policy.json'
+      - 'data/generated/timetable/operations-*.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/runbooks/calendar-*.md'
+      - 'scripts/check-calendar-*.mjs'
+      - '.github/workflows/calendar-operations-v1-release-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Operations v1 completion
+        run: node scripts/check-calendar-operations-v1-release-gate.mjs
+      - name: Validate governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-baseline-reconciliation.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
