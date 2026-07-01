@@ -28,6 +28,7 @@ Use these files together:
 - [`jra-final-program-intake-schema.md`](jra-final-program-intake-schema.md) — closed final-input keys, safety boundaries, and structural validation.
 - [`jra-final-normalized-handoff.md`](jra-final-normalized-handoff.md) — approved-final to normalized meeting/detail review artifact.
 - [`jra-final-review-package.md`](jra-final-review-package.md) — external final-fixture decision and optional normalized handoff package.
+- [`local-racing-link-only-pilot.md`](local-racing-link-only-pilot.md) — C-level link-only boundary and authority-specific activation blockers.
 - [`../runbooks/calendar-operations-status-review.md`](../runbooks/calendar-operations-status-review.md) — operator review order and escalation rules.
 - [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause and rollback controls.
 - [`../runbooks/calendar-seasonal-rollover.md`](../runbooks/calendar-seasonal-rollover.md) — seasonal fixture review and rollover.
@@ -54,6 +55,7 @@ data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
 data/static/jra-pilot-control.json
 data/static/jra-final-program-intake.schema.json
+data/static/local-racing-pilot-control.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 data/generated/timetable/jra-pilot-review.json
@@ -79,6 +81,7 @@ scripts/check-jra-final-confirmation-contract.mjs
 scripts/check-jra-final-program-intake-schema.mjs
 scripts/check-jra-final-normalized-handoff.mjs
 scripts/check-jra-review-package.mjs
+scripts/check-local-racing-pilot-foundation.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
