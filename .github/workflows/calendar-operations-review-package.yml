@@ -1,0 +1,37 @@
+name: Calendar operations review package
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-operations-control.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+      - 'scripts/timetable/build-operations-review-package.mjs'
+      - 'scripts/check-calendar-operations-review-package.mjs'
+      - '.github/workflows/calendar-operations-review.yml'
+      - '.github/workflows/calendar-operations-review-package.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/calendar-operations-control.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+      - 'scripts/timetable/build-operations-review-package.mjs'
+      - 'scripts/check-calendar-operations-review-package.mjs'
+      - '.github/workflows/calendar-operations-review.yml'
+      - '.github/workflows/calendar-operations-review-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-calendar-operations-review-package.mjs
+      - run: node scripts/timetable/build-operations-review-package.mjs --dry-run
+      - run: node scripts/check-calendar-operations-status.mjs

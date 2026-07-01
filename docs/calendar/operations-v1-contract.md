@@ -10,6 +10,8 @@ Operations v1 produces an operator-facing maintenance report from reviewed repos
 
 It does not fetch sources or change candidate, canonical, or public timetable data.
 
+The second layer adds a deterministic review package and canonical pause/rollback controls. The package prepares human review only; it does not create an update pull request.
+
 ## Command
 
 ```text
@@ -23,6 +25,16 @@ data/generated/timetable/operations-status.json
 ```
 
 The report contains source age, review thresholds, revalidation actions, blocked and unavailable states, JRA candidate freshness, public projection age, current-window counts, and stable operator actions.
+
+## Review package
+
+`scripts/timetable/build-operations-review-package.mjs` writes `data/generated/timetable/operations-review-package.json`.
+
+The package adds stable action priority, six SHA-256 input digests, required human checks, and pause/rollback instructions. It proposes no changed files and records `public_release_expected: false`.
+
+## Operations control
+
+`data/static/calendar-operations-control.json` is the canonical control. Current mode is `paused_review_only`; scheduled refresh, live fetch in the canonical review workflow, automatic approval, canonical/public writes, and unattended publication remain disabled.
 
 ## Review thresholds
 
@@ -53,7 +65,7 @@ human_review_required
 
 ## Manual workflow
 
-`.github/workflows/calendar-operations-review.yml` is read-only. It generates a report artifact for an optional reference date and has `contents: read` permission only.
+`.github/workflows/calendar-operations-review.yml` is read-only. It generates status and review-package artifacts for an optional reference date and has `contents: read` permission only.
 
 It does not commit, open update pull requests, run live source fetches, promote candidates, or publish.
 
@@ -68,13 +80,13 @@ The legacy timetable schedule remains paused. Operations v1 adds no cron trigger
 ```text
 node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01 --check
 node scripts/check-calendar-operations-status.mjs
+node scripts/timetable/build-operations-review-package.mjs --check
+node scripts/check-calendar-operations-review-package.mjs
 ```
 
 ## Remaining Operations v1 work
 
 - stale and source-health runbook;
-- update-package preparation;
-- pause and rollback ownership;
 - seasonal rollover;
 - source-breakage escalation;
 - grouped Operations v1 release gate.
