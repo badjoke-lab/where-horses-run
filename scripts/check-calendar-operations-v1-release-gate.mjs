@@ -25,8 +25,8 @@ const implementationRoadmap = read('docs/calendar/implementation-roadmap.md');
 if (manifest) {
   if (manifest.schema_version !== 'calendar-operations-v1-release-gate-v1') fail('unexpected Operations v1 release schema.');
   if (manifest.work_id !== 'WHR-CAL-OPS-V1' || manifest.status !== 'complete') fail('Operations v1 manifest must be complete.');
-  if (manifest.next_work_id !== 'WHR-CAL-JAPAN-JRA') fail('next Work ID must be JRA.');
-  if (manifest.following_work_id !== 'WHR-CAL-JAPAN-NAR') fail('following Work ID must be NAR.');
+  if (manifest.next_work_id !== 'WHR-CAL-JAPAN-JRA') fail('historical next Work ID must be JRA.');
+  if (manifest.following_work_id !== 'WHR-CAL-JAPAN-NAR') fail('historical following Work ID must be NAR.');
   if (!Array.isArray(manifest.completed_layers) || manifest.completed_layers.length !== 7) fail('seven completed Operations layers are required.');
   for (const file of [...(manifest.canonical_files ?? []), ...(manifest.runbooks ?? []), ...(manifest.required_validators ?? [])]) {
     if (!existsSync(path.join(root, file))) fail(`missing Operations v1 file: ${file}`);
@@ -70,9 +70,9 @@ for (const forbidden of ['contents: write', 'pull-requests: write', 'create-pull
 }
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`']]
+  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'docs/calendar/japan-a-plus-reconciliation-plan.md']],
+  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`', 'Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`', 'Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`']]
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
 }
@@ -85,7 +85,7 @@ if (errors.length) {
 
 console.log('CALENDAR_OPERATIONS_V1_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-OPS-V1');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-A-PLUS-RECONCILE');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
 console.log('UNATTENDED_PUBLICATION_ALLOWED: false');
