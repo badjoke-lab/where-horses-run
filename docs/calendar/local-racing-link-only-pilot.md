@@ -17,7 +17,7 @@ Public Ceiling: C
 confirmed fields: meeting date and racecourse only
 ```
 
-The first pilot slice therefore proves the link-only boundary. It does not build an adapter, normalized timetable, candidate, canonical record, or public projection.
+The first pilot slice therefore proves the link-only boundary. It does not build an adapter, normalized timetable, active candidate, canonical record, or public projection.
 
 ## Canonical source
 
@@ -30,6 +30,29 @@ https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop
 ```
 
 The authority inventory records the monthly convening route as a partial calendar source. Its inventory discovery rank does not override the reviewed C-level Calendar Readiness decision.
+
+## Legacy candidate quarantine
+
+The repository previously contained:
+
+```text
+data/candidates/japan-nar-candidates.json
+```
+
+It was a `timetable-candidates-v0` dry-run artifact generated on 2026-05-29 from the legacy safe timetable overlay. It used the historical `nar` system ID, `japan-nar-home` source ID, and descriptive text instead of Pipeline v1 meeting/timetable fields.
+
+It is retained for traceability at:
+
+```text
+data/archive/timetable/candidates/japan-nar-candidates.v0.json
+```
+
+The active candidate path is now absent. The old generator command has been replaced by a guard:
+
+- `--check` confirms link-only control, active-file absence, and archive integrity;
+- direct execution fails until Calendar Readiness is reviewed and changed.
+
+The archived 12 records remain `needs_review` historical evidence. They are not active candidates and cannot be promoted.
 
 ## Control
 
@@ -61,7 +84,8 @@ The deterministic review verifies:
 - only meeting date and racecourse confirmed;
 - `not_started` implementation state;
 - official-link fallback;
-- absence of a local-racing candidate file;
+- absence of an active local-racing candidate file;
+- presence, integrity, count, and digest of the archived v0 artifact;
 - absence of local-racing public meetings and details;
 - explicit isolation from JRA capability.
 
@@ -95,7 +119,7 @@ Before a later implementation PR:
 
 ## Boundary
 
-This foundation performs no network fetch and creates no normalized data, candidate, canonical data, public projection, schedule, or publication.
+This foundation performs no network fetch and creates no normalized data, active candidate, canonical data, public projection, schedule, or publication.
 
 It must not generalize JRA A/A+ capability to regional local racing. It also must not imply that one monthly convening page is a complete national timetable feed.
 
@@ -103,6 +127,7 @@ It must not generalize JRA A/A+ capability to regional local racing. It also mus
 
 ```text
 node scripts/check-local-racing-pilot-foundation.mjs
+node scripts/check-japan-nar-candidate-generator.mjs
 ```
 
-The validator also proves deterministic output and that existing candidate and public files remain unchanged.
+The validators prove deterministic review output, archive integrity, active candidate absence, direct-generator rejection, and unchanged archive/public files.
