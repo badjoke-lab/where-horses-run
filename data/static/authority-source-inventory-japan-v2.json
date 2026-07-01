@@ -1,0 +1,38 @@
+{
+  "schema_version": "authority-source-inventory-japan-v2",
+  "approved_at": "2026-07-02",
+  "supersedes_records": [
+    "japan/jra/jra-programme",
+    "japan/nar-local-government-racing/nar-monthly-convene-info",
+    "japan/banei-tokachi/banei-official-schedule"
+  ],
+  "records": [
+    {
+      "authority_source_key": "japan/jra/jra-programme",
+      "system_id": "japan-jra-system",
+      "capability_rank": "A+",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "reviewed_pipeline_v1",
+      "notes": "JRA A+ capability and A+ public ceiling are approved. Individual meetings remain limited to reviewed canonical fields and human-approved publication."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
+      "system_id": "japan-nar-system",
+      "capability_rank": "A+",
+      "source_status": "partial",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "authority_specific_review",
+      "notes": "NAR and local-government racing have an approved A+ system ceiling. Authority and racecourse routes remain separate and individual meeting output remains evidence-bound."
+    },
+    {
+      "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
+      "system_id": "japan-banei-system",
+      "capability_rank": "A+",
+      "source_status": "partial",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "banei_specific_review",
+      "notes": "Banei Tokachi has an approved A+ system ceiling. Banei terminology and field interpretation remain separate from flat-racing assumptions."
+    }
+  ]
+}
