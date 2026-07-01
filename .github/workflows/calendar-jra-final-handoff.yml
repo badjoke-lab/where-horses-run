@@ -1,0 +1,55 @@
+name: Calendar JRA final handoff
+
+on:
+  pull_request:
+    paths:
+      - 'docs/calendar/jra-final-normalized-handoff.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/timetable/jra-final-normalized-handoff-core.mjs'
+      - 'scripts/timetable/build-jra-final-normalized-handoff.mjs'
+      - 'scripts/check-jra-final-normalized-handoff.mjs'
+      - '.github/workflows/calendar-jra-final-handoff.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/calendar/jra-final-normalized-handoff.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/timetable/jra-final-normalized-handoff-core.mjs'
+      - 'scripts/timetable/build-jra-final-normalized-handoff.mjs'
+      - 'scripts/check-jra-final-normalized-handoff.mjs'
+      - '.github/workflows/calendar-jra-final-handoff.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate final normalized handoff
+        run: node scripts/check-jra-final-normalized-handoff.mjs
+      - name: Validate final confirmation and planned intake
+        run: |
+          node scripts/check-jra-final-confirmation-contract.mjs
+          node scripts/check-jra-planned-intake.mjs
+      - name: Validate candidate and runtime boundaries
+        run: |
+          node scripts/check-japan-jra-candidate-generator.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
