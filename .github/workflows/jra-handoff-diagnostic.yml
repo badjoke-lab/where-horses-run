@@ -1,0 +1,32 @@
+name: JRA handoff diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: jra-candidate-handoff
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Run validator
+        run: |
+          set +e
+          node scripts/check-jra-final-normalized-handoff.mjs > /tmp/jra-handoff.log 2>&1
+          status=$?
+          cat /tmp/jra-handoff.log
+          exit $status
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-handoff-diagnostic
+          path: /tmp/jra-handoff.log
+          retention-days: 30
