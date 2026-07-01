@@ -1,0 +1,57 @@
+name: Calendar dynamic dates release gate
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-dynamic-dates-release-gate.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'scripts/check-calendar-*.mjs'
+      - '.github/workflows/calendar-dynamic-dates-release-gate.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-dynamic-dates-release-gate.json'
+      - 'docs/calendar/**'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'scripts/check-calendar-*.mjs'
+      - '.github/workflows/calendar-dynamic-dates-release-gate.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Dynamic Dates completion
+        run: node scripts/check-calendar-dynamic-dates-release-gate.mjs
+      - name: Validate Calendar governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-baseline-reconciliation.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build current static site
+        run: npm run build
+      - name: Prove release gate leaves repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
