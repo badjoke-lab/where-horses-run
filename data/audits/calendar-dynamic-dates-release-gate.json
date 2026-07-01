@@ -1,0 +1,74 @@
+{
+  "schema_version": "calendar-dynamic-dates-release-gate-v1",
+  "work_id": "WHR-CAL-DYNAMIC-DATES",
+  "status": "complete",
+  "completed_at": "2026-07-01",
+  "next_work_id": "WHR-CAL-OPS-V1",
+  "following_work_id": "WHR-CAL-JAPAN-JRA",
+  "date_contract": {
+    "default_timezone": "UTC",
+    "reference_precedence": [
+      "WHR_CALENDAR_REFERENCE_DATE",
+      "SOURCE_DATE_EPOCH",
+      "build_clock"
+    ],
+    "window_days": 30,
+    "window_start_inclusive": true,
+    "window_end_exclusive": true,
+    "fixed_historical_fallback": false
+  },
+  "public_surfaces": [
+    "/calendar/",
+    "/ja/calendar/",
+    "/today/",
+    "/ja/today/",
+    "/tomorrow/",
+    "/ja/tomorrow/",
+    "country upcoming-meeting sections"
+  ],
+  "data_states": [
+    "current_window_available",
+    "no_public_records",
+    "records_before_window",
+    "records_after_window",
+    "stale_generation_with_window_records"
+  ],
+  "rendered_fixtures": [
+    {
+      "reference_date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "expected_state": "current_window_available",
+      "purpose": "reviewed JRA meeting and next-day rendering"
+    },
+    {
+      "reference_date": "2026-07-01",
+      "timezone": "Asia/Tokyo",
+      "expected_state": "stale_generation_with_window_records",
+      "purpose": "stale projection with in-window HKJC meetings and empty Tomorrow"
+    }
+  ],
+  "boundaries": {
+    "canonical_data_changed": false,
+    "public_projection_changed": false,
+    "publication_rank_changed": false,
+    "scheduled_refresh_active": false,
+    "unattended_publication_active": false,
+    "one_meeting_per_list_row": true,
+    "meeting_details_outside_window_retained": true
+  },
+  "required_validators": [
+    "scripts/check-calendar-dynamic-dates.mjs",
+    "scripts/check-calendar-runtime-import-boundary.mjs",
+    "scripts/check-calendar-pipeline-v1-release-gate.mjs"
+  ],
+  "not_completed_by_dynamic_dates": [
+    "scheduled candidate collection",
+    "source-health report generation",
+    "automatic stale issue or pull-request creation",
+    "reviewable generated-update pull requests",
+    "pause and rollback command ownership",
+    "seasonal source rollover automation",
+    "live JRA pilot activation",
+    "unattended publication"
+  ]
+}
