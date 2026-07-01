@@ -102,6 +102,11 @@ Historical transition record from the state closed by PR #323:
 > Current Work ID: `WHR-CAL-BACKFILL-37-52`  
 > Next Work ID: `WHR-CP-PROFILE-45-52`
 
+Superseded transition record from the state closed by the Japan A+ policy correction. The following exact labels are retained only for completed-gate compatibility and are not the active state at the top of this document:
+
+> Current Work ID: `WHR-CAL-JAPAN-NAR`  
+> Next Work ID: `WHR-CAL-JAPAN-BANEI`
+
 ## Phase 0 — governance alignment
 
 Status: complete
