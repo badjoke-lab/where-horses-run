@@ -1,0 +1,37 @@
+name: Apply local racing pilot index
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-nar-link-only-pilot
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/apply-local-racing-pilot-index.mjs
+      - run: node scripts/timetable/build-local-racing-pilot-review.mjs
+      - run: node scripts/check-local-racing-pilot-foundation.mjs
+      - name: Commit indexes and review baseline
+        run: |
+          rm -f scripts/apply-local-racing-pilot-index.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/project-roadmap.md
+          git add docs/calendar/implementation-roadmap.md
+          git add docs/calendar/README.md
+          git add docs/governance/document-authority.md
+          git add data/generated/timetable/local-racing-pilot-review.json
+          git add -u scripts/apply-local-racing-pilot-index.mjs
+          git commit -m "Index local racing pilot foundation"
+          git push origin HEAD:calendar-nar-link-only-pilot
