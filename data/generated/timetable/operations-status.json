@@ -1,0 +1,2667 @@
+{
+  "schema_version": "calendar-operations-status-v1",
+  "as_of_date": "2026-07-01",
+  "generated_at": "2026-07-01T00:00:00.000Z",
+  "mode": "review_only_no_network",
+  "boundaries": {
+    "network_fetch_performed": false,
+    "canonical_written": false,
+    "public_projection_written": false,
+    "scheduled_refresh_active": false
+  },
+  "source_summary": {
+    "readiness_record_count": 116,
+    "revalidation_due_count": 43,
+    "blocked_count": 18,
+    "unavailable_count": 2,
+    "action_counts": {
+      "blocked_review": 18,
+      "manual_revalidation_due": 17,
+      "none": 54,
+      "source_revalidation_due": 26,
+      "source_unavailable_review": 1
+    }
+  },
+  "candidate_summary": {
+    "path": "data/candidates/japan-jra-candidates.json",
+    "adapter_id": "jra-normalized-programme-candidate-v1",
+    "review_status": "needs_review",
+    "record_count": 4,
+    "source_checked_date": "2026-06-09",
+    "registry_minimum_date": "2026-06-17",
+    "promotion_blocked_by_freshness": true,
+    "action": "refresh_before_promotion"
+  },
+  "public_projection": {
+    "generated_at": "2026-06-09T15:02:29.605Z",
+    "generated_date": "2026-06-09",
+    "age_days": 22,
+    "meeting_count": 23,
+    "detail_count": 5,
+    "earliest_meeting_date": "2026-04-01",
+    "latest_meeting_date": "2026-07-15",
+    "current_window_start": "2026-07-01",
+    "current_window_end_exclusive": "2026-07-31",
+    "current_window_meeting_count": 5,
+    "stale_for_current_window": true
+  },
+  "sources": [
+    {
+      "readiness_id": "bolivia--local-racing-context--achacachi-planning-document",
+      "country_id": "bolivia",
+      "authority_source_key": "bolivia/achacachi-municipality/achacachi-planning-document",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "brazil--brazil-sorocaba-system--sorocaba-programme",
+      "country_id": "brazil",
+      "authority_source_key": "brazil/jockey-club-de-sorocaba/sorocaba-programme",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "colombia--national-racing-regulatory-context--coljuegos-horse-racing-regulation",
+      "country_id": "colombia",
+      "authority_source_key": "colombia/coljuegos/coljuegos-horse-racing-regulation",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "costa-rica--equestrian-sport-context--icoder-protocol",
+      "country_id": "costa-rica",
+      "authority_source_key": "costa-rica/icoder/equestrian-protocol",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "stale",
+      "refresh_classes": [
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "el-salvador--equestrian-sport-context--indes-fesades",
+      "country_id": "el-salvador",
+      "authority_source_key": "el-salvador/indes/fesades-equestrian-context",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "greece--markopoulo-racing-archive--opap-cessation",
+      "country_id": "greece",
+      "authority_source_key": "greece/opap-horse-races/cessation-2024",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "verified",
+      "refresh_classes": [
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "archive_last_verified"
+    },
+    {
+      "readiness_id": "guyana--horse-racing-authority-context--authority-act-2025",
+      "country_id": "guyana",
+      "authority_source_key": "guyana/parliament-of-guyana/horse-racing-authority-act-2025",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "honduras--national-sport-context--condepor-sport-portal",
+      "country_id": "honduras",
+      "authority_source_key": "honduras/condepor/condepor-sport-portal",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "not_verified",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "macau--jockey-club-archive--government-termination",
+      "country_id": "macau",
+      "authority_source_key": "macau/msar-government/concession-termination-2024",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "verified",
+      "refresh_classes": [
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "archive_last_verified"
+    },
+    {
+      "readiness_id": "mainland-china--conghua-racing-system--hkjc-conghua-launch",
+      "country_id": "mainland-china",
+      "authority_source_key": "mainland-china/hong-kong-jockey-club/hkjc-conghua-launch",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "seasonal"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "mexico--mexico-candidate-route--hipodromo-site-candidate",
+      "country_id": "mexico",
+      "authority_source_key": "mexico/hipodromo-de-las-americas/hipodromo-site-candidate",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "unavailable",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "morocco--sorec-racing-information-system--sorec-racing-and-racecourses",
+      "country_id": "morocco",
+      "authority_source_key": "morocco/sorec/sorec-racing-and-racecourses",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "not_verified",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-10",
+      "age_days": 21,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "nicaragua--juigalpa-racing-context--municipal-archive",
+      "country_id": "nicaragua",
+      "authority_source_key": "nicaragua/juigalpa-municipality/archived-race-notice",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "oman--oman-source-led-racing-system--oman-official-news-and-club-channel",
+      "country_id": "oman",
+      "authority_source_key": "oman/oman-racing-evidence-network/oman-official-news-and-club-channel",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "saint-kitts-and-nevis--nevis-racing-context--law-commission-index",
+      "country_id": "saint-kitts-and-nevis",
+      "authority_source_key": "saint-kitts-and-nevis/law-commission/law-commission-index",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "singapore--turf-club-archive--tote-board-closure",
+      "country_id": "singapore",
+      "authority_source_key": "singapore/tote-board/stc-last-race",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "verified",
+      "refresh_classes": [
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "archive_last_verified"
+    },
+    {
+      "readiness_id": "tanzania--gaming-law-horse-racing-context--gaming-act-2023",
+      "country_id": "tanzania",
+      "authority_source_key": "tanzania/gaming-board/gaming-act-2023",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "venezuela--inh-national-racing-system--inh-meeting-statistics",
+      "country_id": "venezuela",
+      "authority_source_key": "venezuela/instituto-nacional-de-hipodromos/inh-meeting-statistics",
+      "readiness": "blocked",
+      "implementation_status": "not_started",
+      "automation_mode": "blocked",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "blocked_review",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "australia--australia-racing-australia-thoroughbred--racing-australia-racebooks",
+      "country_id": "australia",
+      "authority_source_key": "australia/racing-australia/racing-australia-racebooks",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "partial",
+      "refresh_classes": [
+        "daily",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "austria--austria-reviewed-system--krieau-race-newspapers",
+      "country_id": "austria",
+      "authority_source_key": "austria/wiener-trabrenn-verein/krieau-race-newspapers",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "barbados--barbados-reviewed-system--barbados-programmes",
+      "country_id": "barbados",
+      "authority_source_key": "barbados/barbados-turf-club/barbados-programmes",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "brazil--brazil-cidade-jardim-system--cidade-jardim-programme",
+      "country_id": "brazil",
+      "authority_source_key": "brazil/jockey-club-de-sao-paulo/cidade-jardim-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "partial",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "brazil--brazil-cristal-system--cristal-programme",
+      "country_id": "brazil",
+      "authority_source_key": "brazil/jockey-club-do-rio-grande-do-sul/cristal-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "brazil--brazil-gavea-system--gavea-programme",
+      "country_id": "brazil",
+      "authority_source_key": "brazil/jockey-club-brasileiro/gavea-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "czech-republic--czech-chuchle-system--chuchle-racing-calendar",
+      "country_id": "czech-republic",
+      "authority_source_key": "czech-republic/chuchle-arena/chuchle-racing-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "czech-republic--czech-most-system--most-racing-calendar",
+      "country_id": "czech-republic",
+      "authority_source_key": "czech-republic/hipodrom-most/most-racing-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "denmark--denmark-klampenborg-system--klampenborg-calendar",
+      "country_id": "denmark",
+      "authority_source_key": "denmark/klampenborg-galopbane/klampenborg-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "hungary--hungary-reviewed-system--kincsem-programmes",
+      "country_id": "hungary",
+      "authority_source_key": "hungary/kincsem-park/kincsem-programmes",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "new-zealand--new-zealand-harness-system--hrnz-raceday-calendar",
+      "country_id": "new-zealand",
+      "authority_source_key": "new-zealand/harness-racing-new-zealand/hrnz-raceday-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
+      "country_id": "puerto-rico",
+      "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-programmes",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "sweden--sweden-svensk-galopp-system--svensk-galopp-calendar",
+      "country_id": "sweden",
+      "authority_source_key": "sweden/svensk-galopp/svensk-galopp-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",
+      "country_id": "trinidad-and-tobago",
+      "authority_source_key": "trinidad-and-tobago/arima-race-club/arima-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
+      "country_id": "united-kingdom",
+      "authority_source_key": "united-kingdom/british-horseracing-authority/bha-fixtures",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 8,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "uruguay--uruguay-hru-system--hru-calendar",
+      "country_id": "uruguay",
+      "authority_source_key": "uruguay/hru/hru-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",
+      "country_id": "zimbabwe",
+      "authority_source_key": "zimbabwe/mashonaland-turf-club/zimracing-racecards",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "algeria--arabian-racing-context--ifahr-members",
+      "country_id": "algeria",
+      "authority_source_key": "algeria/ifahr/ifahr-members",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "azerbaijan--national-racing-context--araf-home",
+      "country_id": "azerbaijan",
+      "authority_source_key": "azerbaijan/azerbaijan-equestrian-federation/araf-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
+      "country_id": "belgium",
+      "authority_source_key": "belgium/belgian-federation-horse-racing/belgium-racing-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "belize--national-racing-schedule--horse-racing-belize-schedule",
+      "country_id": "belize",
+      "authority_source_key": "belize/horse-racing-investments-limited/horse-racing-belize-schedule",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "botswana--kokotsha-horse-race--dailynews-2026-notice",
+      "country_id": "botswana",
+      "authority_source_key": "botswana/government-dailynews/kokotsha-2026-notice",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "canada--canada-ontario-racing-system--ontario-race-dates",
+      "country_id": "canada",
+      "authority_source_key": "canada/ontario-racing/ontario-race-dates",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "croatia--croatian-gallop-system--hgs-2026-calendar",
+      "country_id": "croatia",
+      "authority_source_key": "croatia/hrvatski-galopski-savez/hgs-2026-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "cyprus--nicosia-national-racing-system--nrc-meetings-schedule",
+      "country_id": "cyprus",
+      "authority_source_key": "cyprus/nicosia-race-club/nrc-meetings-schedule",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "czech-republic--czech-national-calendar-system--dostihy-calendar",
+      "country_id": "czech-republic",
+      "authority_source_key": "czech-republic/czech-racing-calendar/dostihy-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "denmark--denmark-dansk-galop-system--dansk-galop-guidance",
+      "country_id": "denmark",
+      "authority_source_key": "denmark/dansk-galop/dansk-galop-guidance",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
+      "country_id": "dominican-republic",
+      "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "ecuador--miguel-salem-dibo-system--msd-calendar",
+      "country_id": "ecuador",
+      "authority_source_key": "ecuador/hipodromo-miguel-salem-dibo/msd-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "egypt--arabian-racing-context--ifahr-members",
+      "country_id": "egypt",
+      "authority_source_key": "egypt/ifahr/ifahr-members",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
+      "country_id": "estonia",
+      "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "finland--finland-suomen-hippos-harness-system--hippos-calendar-2026",
+      "country_id": "finland",
+      "authority_source_key": "finland/suomen-hippos/hippos-calendar-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "ghana--national-horse-racing-context--nsa-association-list",
+      "country_id": "ghana",
+      "authority_source_key": "ghana/national-sports-authority/nsa-association-list",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "guatemala--todos-santos-traditional-race--juego-de-gallos-context",
+      "country_id": "guatemala",
+      "authority_source_key": "guatemala/ministry-of-culture/juego-de-gallos-context",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "india--india-madras-race-club--madras-home",
+      "country_id": "india",
+      "authority_source_key": "india/madras-race-club/madras-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "india--india-rctc-system--rctc-home",
+      "country_id": "india",
+      "authority_source_key": "india/royal-calcutta-turf-club/rctc-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "indonesia--pordasi-racing-system--pordasi-race-calendar-2026",
+      "country_id": "indonesia",
+      "authority_source_key": "indonesia/pordasi/pordasi-race-calendar-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_import",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "iran--arabian-racing-context--ifahr-members",
+      "country_id": "iran",
+      "authority_source_key": "iran/ifahr/ifahr-members",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "iraq--arabian-racing-context--ifahr-members",
+      "country_id": "iraq",
+      "authority_source_key": "iraq/ifahr/ifahr-members",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "italy--italy-masaf-gallop-system--masaf-calendar-2026",
+      "country_id": "italy",
+      "authority_source_key": "italy/masaf/masaf-calendar-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "italy--italy-masaf-trot-system--masaf-calendar-2026",
+      "country_id": "italy",
+      "authority_source_key": "italy/masaf/masaf-calendar-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "japan--japan-banei-system--banei-official-schedule",
+      "country_id": "japan",
+      "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "japan--japan-nar-system--nar-monthly-convene-info",
+      "country_id": "japan",
+      "authority_source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "kazakhstan--baige-national-championship--baige-2026-calendar",
+      "country_id": "kazakhstan",
+      "authority_source_key": "kazakhstan/baige-federation/baige-2026-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "monthly",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "kenya--ngong-jck-racing-system--jck-upcoming-race-dates",
+      "country_id": "kenya",
+      "authority_source_key": "kenya/jockey-club-of-kenya/jck-upcoming-race-dates",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "monthly",
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 35,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "kuwait--hec-racing-app-system--hec-racing-app",
+      "country_id": "kuwait",
+      "authority_source_key": "kuwait/hunting-equestrian-club/hec-racing-app",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "lebanon--beirut-racing-system--ifahr-lebanon-member-page",
+      "country_id": "lebanon",
+      "authority_source_key": "lebanon/lebanon-racing-authority/ifahr-lebanon-member-page",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "libya--national-racing-system--official-racing-page",
+      "country_id": "libya",
+      "authority_source_key": "libya/libyan-racing-body/official-racing-page",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
+      "country_id": "lithuania",
+      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "malaysia--malaysia-mra-system--mra-fixtures",
+      "country_id": "malaysia",
+      "authority_source_key": "malaysia/mra/mra-fixtures",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "malta--malta-reviewed-system--malta-racing-calendar",
+      "country_id": "malta",
+      "authority_source_key": "malta/malta-racing-club/malta-racing-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "martinique--martinique-reviewed-system--carrere-calendar",
+      "country_id": "martinique",
+      "authority_source_key": "martinique/hippodrome-de-carrere/carrere-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "mauritius--mauritius-champ-de-mars-system--mtc-calendar-2026",
+      "country_id": "mauritius",
+      "authority_source_key": "mauritius/mtc-jockey-club/mtc-calendar-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "mongolia--bayangobi-local-race--gov-mn-2026-notice",
+      "country_id": "mongolia",
+      "authority_source_key": "mongolia/ulaanbadrakh-soum/government-2026-race-notice",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "namibia--racing-context--sports-commission-portal",
+      "country_id": "namibia",
+      "authority_source_key": "namibia/sports-commission/sports-commission-portal",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "netherlands--netherlands-ndr-racing-calendar-system--ndr-koerskalender-2026",
+      "country_id": "netherlands",
+      "authority_source_key": "netherlands/ndr/ndr-koerskalender-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "nigeria--hrfn-national-system--hrfn-home",
+      "country_id": "nigeria",
+      "authority_source_key": "nigeria/horse-racing-federation-of-nigeria/hrfn-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "weekly",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 8,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "norway--norway-dnt-harness-system--dnt-terminliste-2026",
+      "country_id": "norway",
+      "authority_source_key": "norway/det-norske-travselskap/dnt-terminliste-2026",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "norway--norway-ovrevoll-gallop-system--ovrevoll-fixtures",
+      "country_id": "norway",
+      "authority_source_key": "norway/ovrevoll/ovrevoll-fixtures",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "pakistan--lahore-race-club-system--lrc-events",
+      "country_id": "pakistan",
+      "authority_source_key": "pakistan/lahore-race-club/lrc-events",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "stale",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
+      "country_id": "panama",
+      "authority_source_key": "panama/hipica-de-panama/presidente-remon-programa-oficial",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "philippines--philippines-philracom-system--philracom-calendar",
+      "country_id": "philippines",
+      "authority_source_key": "philippines/philracom/philracom-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "poland--poland-pkwk-national-plan-system--pkwk-2026-plan",
+      "country_id": "poland",
+      "authority_source_key": "poland/pkwk/pkwk-2026-plan",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "russia--rostov-racing-system--rostov-2026-season-notice",
+      "country_id": "russia",
+      "authority_source_key": "russia/rostov-hippodrome/rostov-2026-season-notice",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "slovenia--slovenian-trotting-system--slovenian-trotting-home",
+      "country_id": "slovenia",
+      "authority_source_key": "slovenia/kasaska-zveza-slovenije/slovenian-trotting-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "switzerland--switzerland-galop-suisse-system--galop-suisse-calendar",
+      "country_id": "switzerland",
+      "authority_source_key": "switzerland/galop-suisse/galop-suisse-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "switzerland--switzerland-suisse-trot-system--suisse-trot-calendar",
+      "country_id": "switzerland",
+      "authority_source_key": "switzerland/suisse-trot/suisse-trot-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "thailand--thailand-rbsc-system--rbsc-events",
+      "country_id": "thailand",
+      "authority_source_key": "thailand/rbsc/rbsc-events",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "tunisia--sch-national-racing-system--sch-official-calendar",
+      "country_id": "tunisia",
+      "authority_source_key": "tunisia/societe-des-courses-hippiques/sch-official-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 2,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "united-arab-emirates--uae-national-racing-system--era-season-calendar",
+      "country_id": "united-arab-emirates",
+      "authority_source_key": "united-arab-emirates/emirates-racing-authority/era-season-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 120,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "vietnam--bac-ha-traditional-racing--lao-cai-2026-festival",
+      "country_id": "vietnam",
+      "authority_source_key": "vietnam/lao-cai-province/lao-cai-2026-festival",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "argentina--argentina-palermo-system--palermo-schedules",
+      "country_id": "argentina",
+      "authority_source_key": "argentina/hipodromo-palermo/palermo-schedules",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "bahrain--bahrain-turf-club-system--btc-racecard-route",
+      "country_id": "bahrain",
+      "authority_source_key": "bahrain/bahrain-turf-club/btc-racecard-route",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "canada--canada-standardbred-system--standardbred-canada-racing",
+      "country_id": "canada",
+      "authority_source_key": "canada/standardbred-canada/standardbred-canada-racing",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "chile--chile-venue-programme-network--teletrak-calendar",
+      "country_id": "chile",
+      "authority_source_key": "chile/teletrak-venue-network/teletrak-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-10",
+      "age_days": 21,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "france--france-france-galop-system--france-galop-calendar",
+      "country_id": "france",
+      "authority_source_key": "france/france-galop/france-galop-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "france--france-letrot-system--letrot-upcoming",
+      "country_id": "france",
+      "authority_source_key": "france/letrot/letrot-upcoming",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
+      "country_id": "germany",
+      "authority_source_key": "germany/deutscher-galopp/deutscher-galopp-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
+      "country_id": "hong-kong",
+      "authority_source_key": "hong-kong/hkjc/hkjc-fixture-list",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "india--india-bangalore-turf-club--bangalore-fixtures",
+      "country_id": "india",
+      "authority_source_key": "india/bangalore-turf-club/bangalore-fixtures",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "india--india-rwitc-system--rwitc-calendar",
+      "country_id": "india",
+      "authority_source_key": "india/royal-western-india-turf-club/rwitc-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "ireland--ireland-hri-system--hri-fixtures",
+      "country_id": "ireland",
+      "authority_source_key": "ireland/horse-racing-ireland/hri-fixtures",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "jamaica--jamaica-reviewed-system--caymanas-race-cards",
+      "country_id": "jamaica",
+      "authority_source_key": "jamaica/caymanas-park-svrel/caymanas-race-cards",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-18",
+      "age_days": 13,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "japan--japan-jra-system--jra-programme",
+      "country_id": "japan",
+      "authority_source_key": "japan/jra/jra-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "new-zealand--new-zealand-thoroughbred-system--loveracing-race-info",
+      "country_id": "new-zealand",
+      "authority_source_key": "new-zealand/new-zealand-thoroughbred-racing/loveracing-race-info",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "peru--peru-monterrico-programme-system--monterrico-upcoming-programmes",
+      "country_id": "peru",
+      "authority_source_key": "peru/hipodromo-de-monterrico/monterrico-upcoming-programmes",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
+      "country_id": "qatar",
+      "authority_source_key": "qatar/qatar-racing-and-equestrian-club/qrec-season-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-15",
+      "age_days": 16,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "romania--romania-ploiesti-system--ploiesti-racing-notices",
+      "country_id": "romania",
+      "authority_source_key": "romania/csm-ploiesti/ploiesti-racing-notices",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "saudi-arabia--saudi-arabia-jcsa-system--jcsa-races",
+      "country_id": "saudi-arabia",
+      "authority_source_key": "saudi-arabia/jockey-club-of-saudi-arabia/jcsa-races",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "serbia--serbia-belgrade-hippodrome-system--belgrade-2026-season",
+      "country_id": "serbia",
+      "authority_source_key": "serbia/belgrade-hippodrome/belgrade-2026-season",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "slovakia--slovakia-zavodisko-system--zavodisko-2026-calendar",
+      "country_id": "slovakia",
+      "authority_source_key": "slovakia/zavodisko/zavodisko-2026-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "south-africa--south-africa-4racing-system--four-racing-programme",
+      "country_id": "south-africa",
+      "authority_source_key": "south-africa/four-racing/four-racing-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "south-africa--south-africa-gold-circle-system--gold-circle-programme",
+      "country_id": "south-africa",
+      "authority_source_key": "south-africa/gold-circle/gold-circle-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-17",
+      "age_days": 14,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "south-korea--kra-national-racing-system--kra-today-race",
+      "country_id": "south-korea",
+      "authority_source_key": "south-korea/korea-racing-authority/kra-today-race",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-09",
+      "age_days": 22,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
+      "country_id": "spain",
+      "authority_source_key": "spain/hipodromo-zarzuela/zarzuela-programme-2026",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "turkey--tjk-national-racing-system--tjk-daily-programme",
+      "country_id": "turkey",
+      "authority_source_key": "turkey/turkiye-jokey-kulubu/tjk-daily-programme",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-10",
+      "age_days": 21,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "united-states--united-states-equibase-thoroughbred--equibase-entries",
+      "country_id": "united-states",
+      "authority_source_key": "united-states/equibase/equibase-entries",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "partial",
+      "refresh_classes": [
+        "daily",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-20",
+      "age_days": 11,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "jordan--horse-racing-context--rjef-home",
+      "country_id": "jordan",
+      "authority_source_key": "jordan/royal-jordanian-equestrian-federation/rjef-home",
+      "readiness": "link_only",
+      "implementation_status": "not_started",
+      "automation_mode": "link_only",
+      "source_status": "unavailable",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "checked_date": "2026-06-30",
+      "age_days": 1,
+      "threshold_days": 90,
+      "revalidation_due": false,
+      "action": "source_unavailable_review",
+      "fallback": "official_link_only"
+    }
+  ],
+  "operator_actions": [
+    {
+      "type": "blocked_review",
+      "key": "bolivia--local-racing-context--achacachi-planning-document",
+      "country_id": "bolivia",
+      "reason": "readiness=blocked; source_status=stale"
+    },
+    {
+      "type": "blocked_review",
+      "key": "brazil--brazil-sorocaba-system--sorocaba-programme",
+      "country_id": "brazil",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "colombia--national-racing-regulatory-context--coljuegos-horse-racing-regulation",
+      "country_id": "colombia",
+      "reason": "readiness=blocked; source_status=stale"
+    },
+    {
+      "type": "blocked_review",
+      "key": "costa-rica--equestrian-sport-context--icoder-protocol",
+      "country_id": "costa-rica",
+      "reason": "readiness=blocked; source_status=stale"
+    },
+    {
+      "type": "blocked_review",
+      "key": "el-salvador--equestrian-sport-context--indes-fesades",
+      "country_id": "el-salvador",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "greece--markopoulo-racing-archive--opap-cessation",
+      "country_id": "greece",
+      "reason": "readiness=blocked; source_status=verified"
+    },
+    {
+      "type": "blocked_review",
+      "key": "guyana--horse-racing-authority-context--authority-act-2025",
+      "country_id": "guyana",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "honduras--national-sport-context--condepor-sport-portal",
+      "country_id": "honduras",
+      "reason": "readiness=blocked; source_status=not_verified"
+    },
+    {
+      "type": "blocked_review",
+      "key": "macau--jockey-club-archive--government-termination",
+      "country_id": "macau",
+      "reason": "readiness=blocked; source_status=verified"
+    },
+    {
+      "type": "blocked_review",
+      "key": "mainland-china--conghua-racing-system--hkjc-conghua-launch",
+      "country_id": "mainland-china",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "mexico--mexico-candidate-route--hipodromo-site-candidate",
+      "country_id": "mexico",
+      "reason": "readiness=blocked; source_status=unavailable"
+    },
+    {
+      "type": "blocked_review",
+      "key": "morocco--sorec-racing-information-system--sorec-racing-and-racecourses",
+      "country_id": "morocco",
+      "reason": "readiness=blocked; source_status=not_verified"
+    },
+    {
+      "type": "blocked_review",
+      "key": "nicaragua--juigalpa-racing-context--municipal-archive",
+      "country_id": "nicaragua",
+      "reason": "readiness=blocked; source_status=stale"
+    },
+    {
+      "type": "blocked_review",
+      "key": "oman--oman-source-led-racing-system--oman-official-news-and-club-channel",
+      "country_id": "oman",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "saint-kitts-and-nevis--nevis-racing-context--law-commission-index",
+      "country_id": "saint-kitts-and-nevis",
+      "reason": "readiness=blocked; source_status=stale"
+    },
+    {
+      "type": "blocked_review",
+      "key": "singapore--turf-club-archive--tote-board-closure",
+      "country_id": "singapore",
+      "reason": "readiness=blocked; source_status=verified"
+    },
+    {
+      "type": "blocked_review",
+      "key": "tanzania--gaming-law-horse-racing-context--gaming-act-2023",
+      "country_id": "tanzania",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "blocked_review",
+      "key": "venezuela--inh-national-racing-system--inh-meeting-statistics",
+      "country_id": "venezuela",
+      "reason": "readiness=blocked; source_status=partial"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "australia--australia-racing-australia-thoroughbred--racing-australia-racebooks",
+      "country_id": "australia",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "austria--austria-reviewed-system--krieau-race-newspapers",
+      "country_id": "austria",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "barbados--barbados-reviewed-system--barbados-programmes",
+      "country_id": "barbados",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "brazil--brazil-cidade-jardim-system--cidade-jardim-programme",
+      "country_id": "brazil",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "brazil--brazil-cristal-system--cristal-programme",
+      "country_id": "brazil",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "brazil--brazil-gavea-system--gavea-programme",
+      "country_id": "brazil",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "czech-republic--czech-chuchle-system--chuchle-racing-calendar",
+      "country_id": "czech-republic",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "czech-republic--czech-most-system--most-racing-calendar",
+      "country_id": "czech-republic",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "denmark--denmark-klampenborg-system--klampenborg-calendar",
+      "country_id": "denmark",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "hungary--hungary-reviewed-system--kincsem-programmes",
+      "country_id": "hungary",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "new-zealand--new-zealand-harness-system--hrnz-raceday-calendar",
+      "country_id": "new-zealand",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
+      "country_id": "puerto-rico",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "sweden--sweden-svensk-galopp-system--svensk-galopp-calendar",
+      "country_id": "sweden",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",
+      "country_id": "trinidad-and-tobago",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
+      "country_id": "united-kingdom",
+      "reason": "checked 11 days ago; threshold 8 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "uruguay--uruguay-hru-system--hru-calendar",
+      "country_id": "uruguay",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",
+      "country_id": "zimbabwe",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "refresh_before_promotion",
+      "key": "data/candidates/japan-jra-candidates.json",
+      "country_id": "japan",
+      "reason": "candidate source 2026-06-09 predates registry 2026-06-17"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "argentina--argentina-palermo-system--palermo-schedules",
+      "country_id": "argentina",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "bahrain--bahrain-turf-club-system--btc-racecard-route",
+      "country_id": "bahrain",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "canada--canada-standardbred-system--standardbred-canada-racing",
+      "country_id": "canada",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "chile--chile-venue-programme-network--teletrak-calendar",
+      "country_id": "chile",
+      "reason": "checked 21 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "france--france-france-galop-system--france-galop-calendar",
+      "country_id": "france",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "france--france-letrot-system--letrot-upcoming",
+      "country_id": "france",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
+      "country_id": "germany",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
+      "country_id": "hong-kong",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "india--india-bangalore-turf-club--bangalore-fixtures",
+      "country_id": "india",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "india--india-rwitc-system--rwitc-calendar",
+      "country_id": "india",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "ireland--ireland-hri-system--hri-fixtures",
+      "country_id": "ireland",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "jamaica--jamaica-reviewed-system--caymanas-race-cards",
+      "country_id": "jamaica",
+      "reason": "checked 13 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "japan--japan-jra-system--jra-programme",
+      "country_id": "japan",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "new-zealand--new-zealand-thoroughbred-system--loveracing-race-info",
+      "country_id": "new-zealand",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "peru--peru-monterrico-programme-system--monterrico-upcoming-programmes",
+      "country_id": "peru",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
+      "country_id": "qatar",
+      "reason": "checked 16 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "romania--romania-ploiesti-system--ploiesti-racing-notices",
+      "country_id": "romania",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "saudi-arabia--saudi-arabia-jcsa-system--jcsa-races",
+      "country_id": "saudi-arabia",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "serbia--serbia-belgrade-hippodrome-system--belgrade-2026-season",
+      "country_id": "serbia",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "slovakia--slovakia-zavodisko-system--zavodisko-2026-calendar",
+      "country_id": "slovakia",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "south-africa--south-africa-4racing-system--four-racing-programme",
+      "country_id": "south-africa",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "south-africa--south-africa-gold-circle-system--gold-circle-programme",
+      "country_id": "south-africa",
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "south-korea--kra-national-racing-system--kra-today-race",
+      "country_id": "south-korea",
+      "reason": "checked 22 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
+      "country_id": "spain",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "turkey--tjk-national-racing-system--tjk-daily-programme",
+      "country_id": "turkey",
+      "reason": "checked 21 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "united-states--united-states-equibase-thoroughbred--equibase-entries",
+      "country_id": "united-states",
+      "reason": "checked 11 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_unavailable_review",
+      "key": "jordan--horse-racing-context--rjef-home",
+      "country_id": "jordan",
+      "reason": "readiness=link_only; source_status=unavailable"
+    }
+  ]
+}

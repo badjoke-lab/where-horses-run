@@ -1,0 +1,49 @@
+name: Calendar operations review
+
+on:
+  workflow_dispatch:
+    inputs:
+      reference_date:
+        description: Optional YYYY-MM-DD review date; blank uses current UTC date
+        required: false
+        default: ""
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Resolve review date
+        id: date
+        env:
+          INPUT_DATE: ${{ inputs.reference_date }}
+        run: |
+          if [ -n "$INPUT_DATE" ]; then
+            echo "value=$INPUT_DATE" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build review-only operations artifact
+        run: |
+          node scripts/timetable/build-operations-status.mjs \
+            --reference-date "${{ steps.date.outputs.value }}" \
+            --output /tmp/calendar-operations-status.json
+      - name: Validate artifact boundary
+        run: |
+          node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('/tmp/calendar-operations-status.json')); if(x.boundaries.network_fetch_performed||x.boundaries.canonical_written||x.boundaries.public_projection_written||x.boundaries.scheduled_refresh_active) process.exit(1);"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-operations-status-${{ steps.date.outputs.value }}
+          path: /tmp/calendar-operations-status.json
+          if-no-files-found: error
+          retention-days: 30
