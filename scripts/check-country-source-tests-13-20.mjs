@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import './check-japan-a-plus-source-profile.mjs';
 
 const root = process.cwd();
 const errors = [];
