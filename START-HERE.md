@@ -79,3 +79,12 @@ WHR-CAL-JAPAN-JRA-A-PLUS
 ```
 
 The 98-country programme, Calendar baseline reconciliation, Pipeline v1, Dynamic Dates, Operations v1, and the JRA implementation foundation are complete. Japan policy approves Technical Rank A+ and Public Ceiling A+ separately for JRA, NAR/local-government racing, and Banei Tokachi. The active task aligns older C/A registry, profile, source-summary, validator, roadmap, and generated-output assumptions. Candidate generation, canonical/public writes, scheduling, and unattended publication remain review-controlled or disabled as defined by the active controls.
+
+## Superseded transition record
+
+The following labels record the state closed when the earlier local-racing C pilot was superseded. They are historical compatibility markers, not the active Current or Next Work IDs.
+
+Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`
+
+- `WHR-CAL-JAPAN-NAR`
+- `WHR-CAL-JAPAN-BANEI`
