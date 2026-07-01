@@ -20,7 +20,21 @@ jobs:
         with:
           node-version: 22.12.0
       - run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
-      - run: node scripts/check-calendar-operations-status.mjs
+      - name: Validate baseline
+        run: |
+          set +e
+          node scripts/check-calendar-operations-status.mjs > /tmp/calendar-operations-status.log 2>&1
+          status=$?
+          cat /tmp/calendar-operations-status.log
+          exit $status
+      - name: Upload validation diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-operations-status-diagnostic
+          path: /tmp/calendar-operations-status.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Commit baseline
         run: |
           git config user.name "github-actions[bot]"
