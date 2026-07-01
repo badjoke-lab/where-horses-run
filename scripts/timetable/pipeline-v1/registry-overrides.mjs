@@ -80,3 +80,13 @@ export function resolveAuthoritySourceInventory(baseInventory, japanOverride) {
   }
   return resolved;
 }
+
+export function resolveCalendarReadinessRegistryForProjection(baseRegistry, japanOverride, runtimeControl) {
+  const resolved = resolveCalendarReadinessRegistry(baseRegistry, japanOverride, runtimeControl);
+  for (const record of resolved.records) {
+    if (record.public_projection_activation === 'pending_pilot') {
+      record.automation_mode = 'link_only';
+    }
+  }
+  return resolved;
+}

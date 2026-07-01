@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildPublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
+import { resolveCalendarReadinessRegistryForProjection } from './pipeline-v1/registry-overrides.mjs';
 
 const root = process.cwd();
 const paths = {
@@ -8,6 +9,8 @@ const paths = {
   canonicalDetails: 'data/generated/timetable/canonical/meeting-details.json',
   policy: 'src/data/publicationDisplayPolicies.json',
   readiness: 'data/static/calendar-readiness-registry.json',
+  japanReadiness: 'data/static/calendar-readiness-japan-v2.json',
+  japanRuntime: 'data/static/japan-a-plus-runtime-control.json',
   aliases: 'data/static/timetable-source-aliases-v1.json',
   publicMeetings: 'data/generated/timetable/public/meeting-list.json',
   publicDetails: 'data/generated/timetable/public/meeting-details.json'
@@ -41,9 +44,18 @@ try {
     canonicalMeetings: readJson(paths.canonicalMeetings),
     canonicalDetails: readJson(paths.canonicalDetails),
     policyData: readJson(paths.policy),
-    readinessRegistry: readJson(paths.readiness),
+    readinessRegistry: resolveCalendarReadinessRegistryForProjection(
+      readJson(paths.readiness),
+      readJson(paths.japanReadiness),
+      readJson(paths.japanRuntime)
+    ),
     sourceAliases: readJson(paths.aliases)
   });
+
+  result.meetingListDataset.readiness_override_source = paths.japanReadiness;
+  result.meetingDetailsDataset.readiness_override_source = paths.japanReadiness;
+  result.meetingListDataset.readiness_control_source = paths.japanRuntime;
+  result.meetingDetailsDataset.readiness_control_source = paths.japanRuntime;
 
   const meetingListContent = serialize(result.meetingListDataset);
   const meetingDetailsContent = serialize(result.meetingDetailsDataset);
