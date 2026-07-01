@@ -1,0 +1,66 @@
+name: Calendar JRA final intake schema
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/jra-final-program-intake.schema.json'
+      - 'docs/calendar/jra-final-program-intake-schema.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/timetable/jra-final-program-intake-validation.mjs'
+      - 'scripts/timetable/jra-final-confirmation-core.mjs'
+      - 'scripts/check-jra-final-program-intake-schema.mjs'
+      - 'scripts/check-jra-final-confirmation-contract.mjs'
+      - 'scripts/check-jra-final-normalized-handoff.mjs'
+      - '.github/workflows/calendar-jra-final-intake-schema.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/jra-final-program-intake.schema.json'
+      - 'docs/calendar/jra-final-program-intake-schema.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/timetable/jra-final-program-intake-validation.mjs'
+      - 'scripts/timetable/jra-final-confirmation-core.mjs'
+      - 'scripts/check-jra-final-program-intake-schema.mjs'
+      - 'scripts/check-jra-final-confirmation-contract.mjs'
+      - 'scripts/check-jra-final-normalized-handoff.mjs'
+      - '.github/workflows/calendar-jra-final-intake-schema.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate final intake schema
+        run: node scripts/check-jra-final-program-intake-schema.mjs
+      - name: Validate downstream JRA gates
+        run: |
+          node scripts/check-jra-final-confirmation-contract.mjs
+          node scripts/check-jra-final-normalized-handoff.mjs
+          node scripts/check-jra-planned-intake.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+      - name: Validate pipeline and runtime boundaries
+        run: |
+          node scripts/check-japan-jra-candidate-generator.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

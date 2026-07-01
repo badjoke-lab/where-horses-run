@@ -68,9 +68,21 @@ function expectBlockers(label, review, required, forbidden = []) {
   }
 }
 
-const plannedStage = evaluate(makeFinal({ sourceStage: 'planned_program' }));
-expectBlockers('planned-stage fixture', plannedStage, ['source_stage_not_final', 'human_review_required']);
-if (plannedStage.candidate_generation.permitted) fail('planned-stage fixture must not permit candidate generation.');
+function expectThrow(label, action, marker) {
+  try {
+    action();
+    fail(`${label} did not throw.`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!message.includes(marker)) fail(`${label} threw unexpected error: ${message}`);
+  }
+}
+
+expectThrow(
+  'planned-stage fixture',
+  () => evaluate(makeFinal({ sourceStage: 'planned_program' })),
+  'final.source_stage must be final_program'
+);
 
 const beforeCutoff = evaluate(makeFinal({
   generatedAt: '2026-07-02T06:59:00.000Z',
@@ -81,7 +93,6 @@ if (beforeCutoff.source.final_confirmation_time_pass) fail('pre-cutoff fixture m
 
 const needsReview = evaluate(makeFinal());
 expectBlockers('final fixture awaiting review', needsReview, ['human_review_required'], [
-  'source_stage_not_final',
   'final_confirmation_too_early',
   'source_fixture_predates_registry',
   'final_program_structure_invalid'
@@ -126,9 +137,7 @@ const badHost = makeFinal({
   reviewedAt: '2026-07-02T08:00:00.000Z'
 });
 badHost.records[0].source.official_url = 'https://example.com/final-program';
-const badHostReview = evaluate(badHost);
-expectBlockers('bad-host fixture', badHostReview, ['final_program_structure_invalid']);
-if (badHostReview.candidate_generation.permitted) fail('bad-host fixture must not permit candidate generation.');
+expectThrow('bad-host fixture', () => evaluate(badHost), 'allowed JRA host');
 
 const badScope = makeFinal({
   reviewStatus: 'approved',
@@ -136,8 +145,7 @@ const badScope = makeFinal({
   reviewedAt: '2026-07-02T08:00:00.000Z'
 });
 badScope.records[0].racing_system_id = 'invented-system';
-const badScopeReview = evaluate(badScope);
-expectBlockers('bad-scope fixture', badScopeReview, ['final_program_structure_invalid']);
+expectThrow('bad-scope fixture', () => evaluate(badScope), 'racing_system_id must match JRA pilot control');
 
 const staleFinal = evaluate(makeFinal({
   generatedAt: '2026-07-02T07:30:00.000Z',
@@ -155,13 +163,16 @@ const earlyReview = evaluate(makeFinal({
 }));
 expectBlockers('review-before-fixture fixture', earlyReview, ['review_predates_final_fixture']);
 
-for (const review of [plannedStage, beforeCutoff, needsReview, approved, changed, badHostReview, badScopeReview, staleFinal, earlyReview]) {
+for (const review of [beforeCutoff, needsReview, approved, changed, staleFinal, earlyReview]) {
   for (const key of ['network_fetch_performed', 'candidate_generated', 'candidate_approved', 'canonical_written', 'public_projection_written']) {
     if (review.boundaries?.[key] !== false) fail(`final-confirmation boundary ${key} must remain false.`);
   }
 }
 
 const source = readFileSync(path.join(root, 'scripts/timetable/jra-final-confirmation-core.mjs'), 'utf8');
+for (const required of ['assertJraFinalProgramIntake', 'jra-final-program-intake-validation.mjs']) {
+  if (!source.includes(required)) fail(`final-confirmation core missing ${required}.`);
+}
 for (const forbidden of ['writeFileSync', 'fetch(', 'axios', 'data/generated/timetable/public/meeting-list.json', 'data/candidates/japan-jra-candidates.json']) {
   if (source.includes(forbidden)) fail(`final-confirmation core contains forbidden marker ${forbidden}.`);
 }
@@ -173,7 +184,7 @@ if (errors.length) {
 }
 
 console.log('JRA_FINAL_CONFIRMATION_CONTRACT: pass');
-console.log('PLANNED_STAGE_BLOCKED: true');
+console.log('WRONG_SOURCE_STAGE_REJECTED: true');
 console.log('PRE_CUTOFF_BLOCKED: true');
 console.log('HUMAN_REVIEW_REQUIRED: true');
 console.log('APPROVED_FINAL_FIXTURE_PERMITTED: true');

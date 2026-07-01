@@ -24,6 +24,7 @@ function finalFixture({ approved = true, generatedAt = '2026-07-02T07:30:00.000Z
   final.schema_version = 'jra-final-program-intake-v1';
   final.source_stage = 'final_program';
   final.generated_at = generatedAt;
+  final.review_status = approved ? 'approved' : 'needs_review';
   final.review = {
     status: approved ? 'approved' : 'needs_review',
     reviewer: approved ? 'jra-handoff-validator' : null,
@@ -32,7 +33,11 @@ function finalFixture({ approved = true, generatedAt = '2026-07-02T07:30:00.000Z
   final.records = final.records.map((record) => ({
     ...record,
     source_stage: 'final_program',
-    source: { ...record.source, checked_at: generatedAt },
+    source: {
+      ...record.source,
+      checked_at: generatedAt,
+      acquisition_method: 'reviewed_final_program_fixture'
+    },
     timetable_rows: record.timetable_rows.map((row, index) => ({
       ...row,
       race_name: optional ? `Reviewed Race ${index + 1}` : null,
@@ -89,7 +94,7 @@ expectBlocked('unreviewed fixture', finalFixture({ approved: false }), 'human_re
 expectBlocked('pre-cutoff fixture', finalFixture({ generatedAt: '2026-07-02T06:59:00.000Z' }), 'final_confirmation_too_early');
 const badHost = finalFixture();
 badHost.records[0].source.official_url = 'https://example.com/final';
-expectBlocked('invalid-host fixture', badHost, 'final_program_structure_invalid');
+expectBlocked('invalid-host fixture', badHost, 'allowed JRA host');
 
 for (const key of ['network_fetch_performed','repository_write_performed','candidate_generated','candidate_approved','canonical_written','public_projection_written']) {
   if (verified.boundaries[key] !== false) fail(`boundary ${key} must be false.`);

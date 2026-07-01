@@ -16,8 +16,10 @@ data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 data/static/authority-source-inventory.schema.json
 data/static/authority-source-inventory.json
+data/static/jra-final-program-intake.schema.json
 scripts/check-calendar-contracts.mjs
 scripts/check-authority-source-inventory-schema.mjs
+scripts/check-jra-final-program-intake-schema.mjs
 .github/workflows/calendar-contracts.yml
 ```
 
@@ -64,6 +66,10 @@ Actual records are added only by evidence-based backfill or Source Test v2 work.
 
 The authority inventory records source capability and candidate status. It does not claim Calendar Readiness, implementation status, or a live fetch path. Its capability rank enum is aligned to C / B / B+ / A / A+.
 
+## JRA final-program intake
+
+`data/static/jra-final-program-intake.schema.json` defines the closed input accepted before JRA final confirmation. The companion validator rejects unknown keys, invalid identity/date/time structures, duplicate meetings, unreviewed approval metadata, prohibited detail fields, and any claimed candidate/canonical/public write. No actual final fixture is committed by the schema foundation.
+
 ## Stable references
 
 Each readiness record links to:
@@ -102,6 +108,7 @@ Run:
 ```text
 node scripts/check-calendar-contracts.mjs
 node scripts/check-authority-source-inventory-schema.mjs
+node scripts/check-jra-final-program-intake-schema.mjs
 ```
 
 The validators check:

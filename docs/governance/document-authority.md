@@ -58,6 +58,7 @@ Calendar human-readable contracts:
 - `docs/calendar/jra-pilot-foundation.md`
 - `docs/calendar/jra-planned-program-intake.md`
 - `docs/calendar/jra-final-confirmation-contract.md`
+- `docs/calendar/jra-final-program-intake-schema.md`
 - `docs/calendar/jra-final-normalized-handoff.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
@@ -80,6 +81,7 @@ Calendar machine-readable contracts:
 - `data/static/calendar-operations-control.json`
 - `data/static/calendar-operations-seasonal-policy.json`
 - `data/static/jra-pilot-control.json`
+- `data/static/jra-final-program-intake.schema.json`
 - `data/generated/timetable/operations-status.json`
 - `data/generated/timetable/operations-review-package.json`
 - `data/generated/timetable/jra-pilot-review.json`
@@ -95,6 +97,7 @@ Calendar machine-readable contracts:
 - `scripts/check-jra-pilot-foundation.mjs`
 - `scripts/check-jra-planned-intake.mjs`
 - `scripts/check-jra-final-confirmation-contract.mjs`
+- `scripts/check-jra-final-program-intake-schema.mjs`
 - `scripts/check-jra-final-normalized-handoff.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
