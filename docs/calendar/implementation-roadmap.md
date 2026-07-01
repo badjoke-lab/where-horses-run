@@ -82,13 +82,20 @@ official source
 
 Completed Pipeline v1 outputs include one candidate contract, human promotion writer, deterministic public projection, public-only runtime imports, read-only builds, one JRA reference adapter, rendered release QA, and `data/audits/calendar-pipeline-v1-release-gate.json`.
 
-### Dynamic Dates — current
+### Dynamic Dates
 
-Replace preview-era fixed dates with build-date aware Today/Tomorrow, a rolling Calendar window, explicit timezone rules, safe empty states, and historical/future-window handling.
+Dynamic Dates status: complete  
+Completed Work ID: `WHR-CAL-DYNAMIC-DATES`
 
-### Operations v1 — next
+The site now uses explicit reference-date and timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states.
 
-Operations include candidate schedules, source-health and stale reports, reviewable generated-update PRs, pause/rollback controls, seasonal rollover, and source-breakage procedures. Do not use routine direct self-publication.
+### Operations v1
+
+Status: current  
+Current Work ID: `WHR-CAL-OPS-V1`  
+Next Work ID: `WHR-CAL-JAPAN-JRA`
+
+Operations include source-health and stale reports, reviewable generated-update preparation, pause/rollback controls, seasonal rollover, and source-breakage procedures. Do not use routine direct self-publication.
 
 ## Stage 6 — pilot activation
 
