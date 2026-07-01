@@ -91,9 +91,9 @@ if (/^\s*schedule:/m.test(refreshWorkflow) || refreshWorkflow.includes('cron:'))
 if (!refreshWorkflow.includes('workflow_dispatch:') || !refreshWorkflow.includes('default: "false"')) fail('manual refresh review must default live_fetch to false.');
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],
-  ['docs/project-roadmap.md', projectRoadmap, ['Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`', 'Completed Work ID: `WHR-CAL-OPS-V1`']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Pipeline v1 status: complete', 'Dynamic Dates status: complete', 'Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`']]
+  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'docs/calendar/japan-a-plus-reconciliation-plan.md']],
+  ['docs/project-roadmap.md', projectRoadmap, ['Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`', 'Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`', 'Completed Work ID: `WHR-CAL-OPS-V1`']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Pipeline v1 status: complete', 'Dynamic Dates status: complete', 'Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`', 'Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`']]
 ]) {
   markers.forEach((marker) => { if (!text.includes(marker)) fail(`${file} must include ${marker}.`); });
 }
@@ -113,5 +113,5 @@ console.log(`PUBLIC_MEETINGS: ${publicList.meetings.length}`);
 console.log(`PUBLIC_DETAILS: ${publicDetails.details.length}`);
 console.log(`JRA_REFERENCE_CANDIDATES: ${jraCandidates.records.length}`);
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-A-PLUS-RECONCILE');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
