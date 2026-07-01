@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { resolveCalendarReadinessRegistry, resolveAuthoritySourceInventory } from './timetable/pipeline-v1/registry-overrides.mjs';
 
 const root = process.cwd();
 const outputPath = path.join(root, 'data/candidates/japan-jra-candidates.json');
@@ -36,8 +37,15 @@ function canonicalizeJraOfficialUrl(value, canonicalHost) {
 function buildCandidateFile() {
   const meetings = readJson('data/generated/timetable/jra-normalized-timetable.json');
   const details = readJson('data/generated/timetable/jra-normalized-meeting-details.json');
-  const readinessRegistry = readJson('data/static/calendar-readiness-registry.json');
-  const authorityInventory = readJson('data/static/authority-source-inventory.json');
+  const readinessRegistry = resolveCalendarReadinessRegistry(
+    readJson('data/static/calendar-readiness-registry.json'),
+    readJson('data/static/calendar-readiness-japan-v2.json'),
+    readJson('data/static/japan-a-plus-runtime-control.json')
+  );
+  const authorityInventory = resolveAuthoritySourceInventory(
+    readJson('data/static/authority-source-inventory.json'),
+    readJson('data/static/authority-source-inventory-japan-v2.json')
+  );
   const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === readinessKey);
   const authorityMatches = authorityInventory.records.filter((record) =>
     record.country_id === 'japan' && record.authority_id === 'jra' && record.official_source_id === 'jra-programme'
