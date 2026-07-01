@@ -1,0 +1,51 @@
+{
+  "schema_version": "japan-a-plus-runtime-control-v1",
+  "approved_at": "2026-07-02",
+  "records": [
+    {
+      "system_id": "japan-jra-system",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "public_projection_activation": "active"
+    },
+    {
+      "system_id": "japan-nar-system",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "public_projection_activation": "pending_pilot"
+    },
+    {
+      "system_id": "japan-banei-system",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "public_projection_activation": "pending_pilot"
+    }
+  ]
+}
