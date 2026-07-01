@@ -1,0 +1,51 @@
+{
+  "schema_version": "jra-planned-program-review-v1",
+  "work_id": "WHR-CAL-JAPAN-JRA",
+  "generated_at": "2026-07-01T00:00:00.000Z",
+  "source_stage": "planned_program",
+  "final_confirmation_after": "2026-07-02T16:00:00+09:00",
+  "boundaries": {
+    "network_fetch_performed": false,
+    "source_body_stored": false,
+    "candidate_generated": false,
+    "candidate_approved": false,
+    "canonical_written": false,
+    "public_projection_written": false
+  },
+  "source": {
+    "registry_minimum_date": "2026-06-17",
+    "intake_checked_date": "2026-07-01",
+    "freshness_pass": true,
+    "source_stage_accepted": true,
+    "source_stage_final": false,
+    "official_host_pass": true
+  },
+  "scope": {
+    "intake_racecourse_ids": [
+      "fukushima-racecourse",
+      "hakodate-racecourse",
+      "kokura-racecourse"
+    ],
+    "reviewed_racecourse_ids": [],
+    "racecourse_scope_pass": true
+  },
+  "records": {
+    "meeting_count": 6,
+    "timetable_row_count": 72,
+    "row_shape_pass": true,
+    "optional_fields_null": true
+  },
+  "candidate_generation": {
+    "allowed_by_control": true,
+    "required_source_stage": "final_program",
+    "permitted_now": false,
+    "blockers": [
+      "source_stage_not_final"
+    ]
+  },
+  "next_actions": [
+    "wait_for_or_confirm_final_jra_programme",
+    "regenerate_final_program_intake",
+    "generate_candidate_v1_only_after_all_blockers_clear"
+  ]
+}

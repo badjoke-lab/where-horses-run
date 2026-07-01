@@ -5,6 +5,8 @@
   "source_key": "japan/jra/jra-programme",
   "system_id": "japan-jra-system",
   "allowed_hosts": ["www.jra.go.jp", "jra.jp"],
+  "accepted_source_stages": ["planned_program", "final_program"],
+  "candidate_generation_requires_source_stage": "final_program",
   "network_fetch_allowed": false,
   "candidate_generation_allowed": true,
   "automatic_approval_allowed": false,
@@ -19,6 +21,7 @@
     "racecourse_scope",
     "technical_rank",
     "confirmed_fields",
+    "source_stage_final",
     "needs_review_state",
     "no_public_write"
   ],

@@ -1,0 +1,37 @@
+name: Calendar JRA planned intake
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/generated/timetable/jra-planned-program-*.json'
+      - 'docs/calendar/jra-planned-program-intake.md'
+      - 'scripts/timetable/build-jra-planned-program-*.mjs'
+      - 'scripts/check-jra-planned-intake.mjs'
+      - '.github/workflows/calendar-jra-planned-intake.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/generated/timetable/jra-planned-program-*.json'
+      - 'docs/calendar/jra-planned-program-intake.md'
+      - 'scripts/timetable/build-jra-planned-program-*.mjs'
+      - 'scripts/check-jra-planned-intake.mjs'
+      - '.github/workflows/calendar-jra-planned-intake.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/check-jra-planned-intake.mjs
+      - run: node scripts/timetable/build-jra-planned-program-review.mjs --dry-run
+      - run: node scripts/check-jra-pilot-foundation.mjs
+      - run: node scripts/check-calendar-operations-v1-release-gate.mjs
+      - run: node scripts/check-calendar-runtime-import-boundary.mjs
