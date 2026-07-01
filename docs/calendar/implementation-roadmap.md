@@ -113,6 +113,13 @@ Canonical implementation plan:
 
 Completion requires active documents, registries, profiles, source summaries, controls, validators, and generated public data to agree without enabling unattended publication.
 
+### Superseded pilot transition
+
+The following exact labels record the earlier local-racing C-pilot state. They are retained only for completed release-gate compatibility and are not the active state above:
+
+> Current Work ID: `WHR-CAL-JAPAN-NAR`  
+> Next Work ID: `WHR-CAL-JAPAN-BANEI`
+
 ## Stage 6 — Japan pilot activation
 
 Status: follows reconciliation
