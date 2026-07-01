@@ -43,17 +43,17 @@ for (const [name, html] of Object.entries(pages)) {
 if (!pages.calendarEn.includes('30-day racing calendar')) fail('English Calendar title is not dynamic.');
 if (!pages.calendarJa.includes('30日間の開催カレンダー')) fail('Japanese Calendar title is not dynamic.');
 
-const knownMeetingLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
+const oldMeetingLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
 if (referenceDate === '2026-06-06') {
   for (const [name, html] of Object.entries(pages)) {
     if (!html.includes('data-calendar-data-status="current_window_available"')) {
       fail(`${name} must report current_window_available for the fixture date.`);
     }
   }
-  if (!pages.todayEn.includes(knownMeetingLink) || !pages.todayJa.includes(knownMeetingLink)) {
+  if (!pages.todayEn.includes(oldMeetingLink) || !pages.todayJa.includes(oldMeetingLink)) {
     fail('Today pages do not render the known June 6 JRA meeting.');
   }
-  if (!pages.calendarEn.includes(knownMeetingLink) || !pages.calendarJa.includes(knownMeetingLink)) {
+  if (!pages.calendarEn.includes(oldMeetingLink) || !pages.calendarJa.includes(oldMeetingLink)) {
     fail('Calendar pages do not render the known June 6 JRA meeting.');
   }
   if (!pages.tomorrowEn.includes('2026-06-07') || !pages.tomorrowJa.includes('2026-06-07')) {
@@ -63,15 +63,19 @@ if (referenceDate === '2026-06-06') {
 
 if (referenceDate === '2026-07-01') {
   for (const [name, html] of Object.entries(pages)) {
-    if (!html.includes('data-calendar-data-status="records_before_window"')) {
-      fail(`${name} must report records_before_window for the July 1 reference date.`);
+    if (!html.includes('data-calendar-data-status="stale_generation_with_window_records"')) {
+      fail(`${name} must report stale_generation_with_window_records for the July 1 reference date.`);
     }
-    if (html.includes(knownMeetingLink)) fail(`${name} leaks an old June meeting into the current window.`);
+    if (html.includes(oldMeetingLink)) fail(`${name} leaks an old June meeting into the current window.`);
   }
-  if (!pages.todayEn.includes('No reviewed public meetings are listed')) fail('English Today empty state is missing.');
-  if (!pages.todayJa.includes('確認済み公開開催')) fail('Japanese Today empty state is missing.');
-  if (!pages.calendarEn.includes('No reviewed public meetings fall between')) fail('English Calendar empty state is missing.');
-  if (!pages.calendarJa.includes('この30日間に確認済み公開開催はありません')) fail('Japanese Calendar empty state is missing.');
+  if (!pages.todayEn.includes('Sha Tin Racecourse') || !pages.todayJa.includes('Sha Tin Racecourse')) {
+    fail('July 1 Today pages do not render the reviewed Sha Tin meeting.');
+  }
+  if (!pages.calendarEn.includes('Happy Valley Racecourse') || !pages.calendarJa.includes('Happy Valley Racecourse')) {
+    fail('July rolling Calendar pages do not render later reviewed meetings.');
+  }
+  if (!pages.tomorrowEn.includes('No reviewed public meetings are listed')) fail('English Tomorrow empty state is missing.');
+  if (!pages.tomorrowJa.includes('確認済み公開開催')) fail('Japanese Tomorrow empty state is missing.');
 }
 
 if (errors.length) {
