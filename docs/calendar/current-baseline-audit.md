@@ -68,6 +68,6 @@ No canonical/public data, source capability, Technical Rank, Public Ceiling, or 
 
 ## Next phase
 
-Current Work ID: `WHR-CAL-DYNAMIC-DATES`
+Current Work ID: `WHR-CAL-OPS-V1`
 
-Pipeline v1 now provides the shared candidate envelope, human promotion path, deterministic public projection, runtime import guard, grouped validation, and a JRA reference adapter. The current phase implements dynamic dates; operations remain separate.
+Pipeline v1 and Dynamic Dates now provide the reviewed data flow, deterministic public projection, runtime boundary, explicit date/timezone rules, rolling windows, and visible stale states. The current phase establishes Operations v1 before the JRA pilot.

@@ -90,9 +90,9 @@ for (const [file, markers] of Object.entries({
   'docs/calendar/baseline-reconciliation-map.md':['Normal build is read-only','Incomplete daily refresh is paused'],
   'docs/calendar/current-baseline-audit.md':['Status: reconciled'],
   'docs/runbooks/current-timetable-data-inventory.md':['Status: superseded'],
-  'docs/calendar/implementation-roadmap.md':['Status: complete','Pipeline v1 status: complete','Current Work ID: `WHR-CAL-DYNAMIC-DATES`'],
-  'docs/project-roadmap.md':['Current Work ID: `WHR-CAL-DYNAMIC-DATES`','Completed Work ID: `WHR-CAL-PIPELINE-V1`'],
-  'START-HERE.md':['Previous completed Work ID: `WHR-CAL-PIPELINE-V1`','WHR-CAL-DYNAMIC-DATES','WHR-CAL-OPS-V1'],
+  'docs/calendar/implementation-roadmap.md':['Status: complete','Pipeline v1 status: complete','Dynamic Dates status: complete','Current Work ID: `WHR-CAL-OPS-V1`'],
+  'docs/project-roadmap.md':['Current Work ID: `WHR-CAL-OPS-V1`','Completed Work ID: `WHR-CAL-DYNAMIC-DATES`'],
+  'START-HERE.md':['Previous completed Work ID: `WHR-CAL-DYNAMIC-DATES`','WHR-CAL-OPS-V1','WHR-CAL-JAPAN-JRA'],
 })) {
   const text = read(file);
   markers.forEach((marker) => { if (!text.includes(marker)) fail(`${file} must include ${marker}.`); });
@@ -105,5 +105,5 @@ if (errors.length) {
 }
 const counts = map.components.reduce((out, item) => ({ ...out, [item.classification]: (out[item.classification] ?? 0) + 1 }), {});
 console.log(`CALENDAR_BASELINE_RECONCILIATION: pass components=${map.components.length} retain=${counts.retain} repair=${counts.repair} migrate=${counts.migrate} replace=${counts.replace} archive=${counts.archive}`);
-console.log('CURRENT_WORK_ID: WHR-CAL-DYNAMIC-DATES');
-console.log('NEXT_WORK_ID: WHR-CAL-OPS-V1');
+console.log('CURRENT_WORK_ID: WHR-CAL-OPS-V1');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-JRA');

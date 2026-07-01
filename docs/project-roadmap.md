@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
-Next Work ID: `WHR-CAL-OPS-V1`  
+Current Work ID: `WHR-CAL-OPS-V1`  
+Next Work ID: `WHR-CAL-JAPAN-JRA`  
 Last reviewed: 2026-07-01
 
 ## Purpose
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-The existing Calendar baseline and Pipeline v1 foundation are complete. The current product phase is dynamic dates: build-date/timezone-aware Today and Tomorrow selection, a rolling Calendar window, and safe empty/stale states without reactivating scheduled acquisition.
+The existing Calendar baseline, Pipeline v1 foundation, and Dynamic Dates are complete. The current product phase is Operations v1: source-health and stale reports, reviewable update preparation, pause and rollback controls, seasonal rollover, and operator runbooks without unattended publication.
 
 ## Governing rules
 
@@ -212,10 +212,11 @@ scripts/check-calendar-baseline-reconciliation.mjs
 
 ## Phase 8 — activate the reviewed pipeline
 
-Status: Pipeline v1 complete; dynamic dates current  
+Status: Pipeline v1 and Dynamic Dates complete; Operations v1 current  
 Completed Work ID: `WHR-CAL-PIPELINE-V1`  
-Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
-Next Work ID: `WHR-CAL-OPS-V1`
+Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Current Work ID: `WHR-CAL-OPS-V1`  
+Next Work ID: `WHR-CAL-JAPAN-JRA`
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -225,7 +226,7 @@ WHR-CAL-OPS-V1
 
 Pipeline v1 delivered the read-only build boundary, candidate v1 contract, human canonical promotion, deterministic public projection, production runtime import guard, JRA reference adapter, rendered public release QA, and grouped release gate.
 
-Dynamic Dates now replaces fixed preview dates with explicit build-date/timezone rules, Today/Tomorrow selection, a rolling Calendar window, and safe empty/stale handling. Operations and scheduling remain separate under `WHR-CAL-OPS-V1`.
+Dynamic Dates replaced fixed preview dates with explicit date/timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states. Operations v1 now adds controlled maintenance and recovery ownership while scheduling remains paused.
 
 ## Phase 9 — pilot source activation
 
