@@ -25,6 +25,7 @@ Use these files together:
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — current JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
+- [`jra-final-program-intake-schema.md`](jra-final-program-intake-schema.md) — closed final-input keys, safety boundaries, and structural validation.
 - [`jra-final-normalized-handoff.md`](jra-final-normalized-handoff.md) — approved-final to normalized meeting/detail review artifact.
 - [`../runbooks/calendar-operations-status-review.md`](../runbooks/calendar-operations-status-review.md) — operator review order and escalation rules.
 - [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause and rollback controls.
@@ -51,6 +52,7 @@ data/audits/calendar-operations-v1-release-gate.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
 data/static/jra-pilot-control.json
+data/static/jra-final-program-intake.schema.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 data/generated/timetable/jra-pilot-review.json
@@ -73,6 +75,7 @@ scripts/check-calendar-operations-v1-release-gate.mjs
 scripts/check-jra-pilot-foundation.mjs
 scripts/check-jra-planned-intake.mjs
 scripts/check-jra-final-confirmation-contract.mjs
+scripts/check-jra-final-program-intake-schema.mjs
 scripts/check-jra-final-normalized-handoff.mjs
 ```
 
