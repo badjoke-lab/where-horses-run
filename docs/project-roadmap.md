@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-OPS-V1`  
-Next Work ID: `WHR-CAL-JAPAN-JRA`  
+Current Work ID: `WHR-CAL-JAPAN-JRA`  
+Next Work ID: `WHR-CAL-JAPAN-NAR`  
 Last reviewed: 2026-07-01
 
 ## Purpose
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-The existing Calendar baseline, Pipeline v1 foundation, and Dynamic Dates are complete. The current product phase is Operations v1: source-health and stale reports, reviewable update preparation, pause and rollback controls, seasonal rollover, and operator runbooks without unattended publication.
+The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, and Operations v1 are complete. The current product phase is the JRA source pilot: obtain a fresh reviewed official fixture, generate bounded candidates, retain human promotion, and prove fallback and rollback without unattended publication.
 
 ## Governing rules
 
@@ -212,11 +212,12 @@ scripts/check-calendar-baseline-reconciliation.mjs
 
 ## Phase 8 — activate the reviewed pipeline
 
-Status: Pipeline v1 and Dynamic Dates complete; Operations v1 current  
+Status: Pipeline v1, Dynamic Dates, and Operations v1 complete; JRA pilot current  
 Completed Work ID: `WHR-CAL-PIPELINE-V1`  
 Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
-Current Work ID: `WHR-CAL-OPS-V1`  
-Next Work ID: `WHR-CAL-JAPAN-JRA`
+Completed Work ID: `WHR-CAL-OPS-V1`  
+Current Work ID: `WHR-CAL-JAPAN-JRA`  
+Next Work ID: `WHR-CAL-JAPAN-NAR`
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -226,7 +227,7 @@ WHR-CAL-OPS-V1
 
 Pipeline v1 delivered the read-only build boundary, candidate v1 contract, human canonical promotion, deterministic public projection, production runtime import guard, JRA reference adapter, rendered public release QA, and grouped release gate.
 
-Dynamic Dates replaced fixed preview dates with explicit date/timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states. Operations v1 now adds controlled maintenance and recovery ownership while scheduling remains paused.
+Dynamic Dates replaced fixed preview dates with explicit date/timezone rules. Operations v1 delivered source-health status, review packages, pause/rollback controls, seasonal rollover, and source-breakage escalation. The JRA pilot now starts from a freshness-blocked reference candidate and requires fresh reviewed evidence.
 
 ## Phase 9 — pilot source activation
 
