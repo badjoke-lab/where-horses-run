@@ -1,0 +1,33 @@
+name: Apply JRA final confirmation index
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-jra-final-confirmation
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/apply-jra-final-confirmation-index.mjs
+      - run: node scripts/check-jra-final-confirmation-contract.mjs
+      - name: Commit document indexes
+        run: |
+          rm -f scripts/apply-jra-final-confirmation-index.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/calendar/README.md
+          git add docs/governance/document-authority.md
+          git add -u scripts/apply-jra-final-confirmation-index.mjs
+          git commit -m "Index JRA final confirmation contract"
+          git push origin HEAD:calendar-jra-final-confirmation
