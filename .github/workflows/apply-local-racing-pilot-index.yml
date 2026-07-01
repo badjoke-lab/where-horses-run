@@ -1,4 +1,4 @@
-name: Apply local racing pilot index
+name: Apply local racing current state
 
 on:
   pull_request:
@@ -19,19 +19,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: node scripts/apply-local-racing-pilot-index.mjs
-      - run: node scripts/timetable/build-local-racing-pilot-review.mjs
-      - run: node scripts/check-local-racing-pilot-foundation.mjs
-      - name: Commit indexes and review baseline
+      - name: Apply current-state updates
+        run: node scripts/apply-local-racing-current-state.mjs
+      - name: Regenerate review baseline
+        run: node scripts/timetable/build-local-racing-pilot-review.mjs
+      - name: Validate current state
         run: |
+          node scripts/check-local-racing-pilot-foundation.mjs
+          node scripts/check-japan-nar-candidate-generator.mjs
+          node scripts/check-calendar-baseline-reconciliation.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-calendar-dynamic-dates-release-gate.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+      - name: Commit validated state and remove temporary helpers
+        run: |
+          rm -f scripts/apply-local-racing-current-state.mjs
           rm -f scripts/apply-local-racing-pilot-index.mjs
+          rm -f .github/workflows/apply-local-racing-pilot-index.yml
+          rm -f .github/workflows/local-racing-pilot-diagnostic.yml
+          rm -f .github/workflows/export-local-racing-branch.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/project-roadmap.md
-          git add docs/calendar/implementation-roadmap.md
-          git add docs/calendar/README.md
-          git add docs/governance/document-authority.md
-          git add data/generated/timetable/local-racing-pilot-review.json
-          git add -u scripts/apply-local-racing-pilot-index.mjs
-          git commit -m "Index local racing pilot foundation"
+          git add -A
+          git commit -m "Complete local racing link-only foundation"
           git push origin HEAD:calendar-nar-link-only-pilot
