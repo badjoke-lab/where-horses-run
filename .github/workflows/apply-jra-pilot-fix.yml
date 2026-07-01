@@ -1,0 +1,39 @@
+name: Apply JRA pilot fix
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-jra-pilot-foundation
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/apply-jra-pilot-validator-fix.mjs
+      - run: node scripts/apply-jra-doc-index.mjs
+      - run: node scripts/timetable/build-jra-pilot-review.mjs
+      - run: node scripts/check-jra-pilot-foundation.mjs
+      - name: Commit JRA pilot baseline
+        run: |
+          rm -f scripts/apply-jra-pilot-validator-fix.mjs
+          rm -f scripts/apply-jra-doc-index.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/check-jra-pilot-foundation.mjs
+          git add data/generated/timetable/jra-pilot-review.json
+          git add docs/calendar/README.md
+          git add docs/governance/document-authority.md
+          git add -u scripts/apply-jra-pilot-validator-fix.mjs
+          git add -u scripts/apply-jra-doc-index.mjs
+          git commit -m "Generate JRA pilot review baseline"
+          git push origin HEAD:calendar-jra-pilot-foundation
