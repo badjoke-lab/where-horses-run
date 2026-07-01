@@ -42,9 +42,24 @@ jobs:
           WHR_CALENDAR_REFERENCE_DATE: '2026-07-01'
           WHR_CALENDAR_TIMEZONE: 'Asia/Tokyo'
         run: |
+          set +e
           rm -rf dist
-          npm run build
-          node scripts/check-calendar-dynamic-dates-rendered.mjs
+          npm run build > /tmp/dynamic-dates-current.log 2>&1
+          status=$?
+          if [ $status -eq 0 ]; then
+            node scripts/check-calendar-dynamic-dates-rendered.mjs >> /tmp/dynamic-dates-current.log 2>&1
+            status=$?
+          fi
+          cat /tmp/dynamic-dates-current.log
+          exit $status
+      - name: Upload current-window diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynamic-dates-current-window-diagnostic
+          path: /tmp/dynamic-dates-current.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Commit Dynamic Dates migration
         run: |
           rm -f scripts/apply-calendar-dynamic-date-core.mjs
