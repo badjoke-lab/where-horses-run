@@ -75,6 +75,14 @@ The control fixes:
 node scripts/timetable/build-local-racing-pilot-review.mjs --dry-run
 ```
 
+The committed deterministic baseline is:
+
+```text
+data/generated/timetable/local-racing-pilot-review.json
+```
+
+It records `foundation.pass: true` and `activation.ready: false`, together with the archived candidate digest and the unchanged public-projection state.
+
 The deterministic review verifies:
 
 - unique Authority/Source and Calendar Readiness identity;
