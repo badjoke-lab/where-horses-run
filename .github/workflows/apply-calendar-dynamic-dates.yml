@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Apply Dynamic Dates migration
-        run: node scripts/apply-calendar-dynamic-date-core.mjs
+        run: |
+          node scripts/apply-calendar-dynamic-date-core.mjs
+          node scripts/apply-calendar-dynamic-date-copy-fix.mjs
       - name: Validate source contract
         run: |
           node scripts/check-calendar-dynamic-dates.mjs
@@ -63,6 +65,7 @@ jobs:
       - name: Commit Dynamic Dates migration
         run: |
           rm -f scripts/apply-calendar-dynamic-date-core.mjs
+          rm -f scripts/apply-calendar-dynamic-date-copy-fix.mjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
