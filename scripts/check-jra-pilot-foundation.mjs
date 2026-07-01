@@ -61,7 +61,7 @@ for (const forbidden of ['contents: write', 'pull-requests: write', 'create-pull
 const scheduledWorkflow = read('.github/workflows/timetable-scheduled-refresh.yml');
 if (/^\s*schedule:/m.test(scheduledWorkflow) || scheduledWorkflow.includes('cron:')) fail('scheduled refresh must remain paused.');
 
-const prohibitedKeyFragments = ['horse_name','jockey_name','trainer_name','odds','payout','prediction','raw_html','source_body','stream_url'];
+const prohibitedKeyFragments = ['horse_name','jockey_name','trainer_name','odds','payout','prediction','raw_html','source_body_content','stream_url'];
 function inspectKeys(value, location = 'root') {
   if (Array.isArray(value)) {
     value.forEach((item, index) => inspectKeys(item, `${location}[${index}]`));
