@@ -14,13 +14,13 @@ for (const file of files) if (!fs.existsSync(file)) errors.push('missing: ' + fi
 const start = fs.readFileSync('START-HERE.md', 'utf8');
 const roadmap = fs.readFileSync('docs/project-roadmap.md', 'utf8');
 const registry = fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8');
-for (const phrase of ['Previous completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-JAPAN-JRA', 'WHR-CAL-JAPAN-NAR']) if (!start.includes(phrase)) errors.push('START-HERE missing ' + phrase);
-for (const phrase of ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-JRA`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE', '98 EN + 98 JA = 196']) if (!roadmap.includes(phrase)) errors.push('roadmap missing ' + phrase);
+for (const phrase of ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']) if (!start.includes(phrase)) errors.push('START-HERE missing ' + phrase);
+for (const phrase of ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE', '98 EN + 98 JA = 196']) if (!roadmap.includes(phrase)) errors.push('roadmap missing ' + phrase);
 for (const phrase of ['"bootstrap_status": "complete"', '"countries_with_closed_decision": 98', '"readiness_records": 116', '"next_backfill_work_ids": []']) if (!registry.includes(phrase)) errors.push('registry missing ' + phrase);
 if (errors.length) {
   for (const error of errors) console.error('ERROR: ' + error);
   process.exit(1);
 }
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-JRA');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');

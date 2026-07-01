@@ -68,6 +68,6 @@ No canonical/public data, source capability, Technical Rank, Public Ceiling, or 
 
 ## Next phase
 
-Current Work ID: `WHR-CAL-JAPAN-JRA`
+Current Work ID: `WHR-CAL-JAPAN-NAR`
 
-Pipeline v1, Dynamic Dates, and Operations v1 now provide the reviewed data flow, deterministic projection, runtime/date boundaries, source-health status, review packages, and recovery controls. The current phase is the JRA pilot.
+Pipeline v1, Dynamic Dates, and Operations v1 now provide the reviewed data flow, deterministic projection, runtime/date boundaries, source-health status, review packages, and recovery controls. The JRA implementation foundation is complete but still awaits fresh reviewed final evidence. The current phase is the regional local-racing link-only pilot.

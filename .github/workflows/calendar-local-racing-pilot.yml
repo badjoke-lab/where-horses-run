@@ -1,0 +1,57 @@
+name: Calendar local racing pilot
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/local-racing-pilot-control.json'
+      - 'docs/calendar/local-racing-link-only-pilot.md'
+      - 'docs/calendar/README.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'scripts/timetable/build-local-racing-pilot-review.mjs'
+      - 'scripts/check-local-racing-pilot-foundation.mjs'
+      - '.github/workflows/calendar-local-racing-pilot.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/local-racing-pilot-control.json'
+      - 'docs/calendar/local-racing-link-only-pilot.md'
+      - 'docs/calendar/README.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'scripts/timetable/build-local-racing-pilot-review.mjs'
+      - 'scripts/check-local-racing-pilot-foundation.mjs'
+      - '.github/workflows/calendar-local-racing-pilot.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate local racing pilot foundation
+        run: node scripts/check-local-racing-pilot-foundation.mjs
+      - name: Validate existing JRA and operations boundaries
+        run: |
+          node scripts/check-jra-final-program-intake-schema.mjs
+          node scripts/check-jra-final-confirmation-contract.mjs
+          node scripts/check-jra-final-normalized-handoff.mjs
+          node scripts/check-jra-review-package.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

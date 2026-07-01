@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-JAPAN-JRA`  
-Next Work ID: `WHR-CAL-JAPAN-NAR`  
+Current Work ID: `WHR-CAL-JAPAN-NAR`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI`  
 Last reviewed: 2026-07-01
 
 ## Purpose
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain as historical evidence; active state is read from the canonical tracker and registries.
 
-The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, and Operations v1 are complete. The current product phase is the JRA source pilot: obtain a fresh reviewed official fixture, generate bounded candidates, retain human promotion, and prove fallback and rollback without unattended publication.
+The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, and Operations v1 are complete. The JRA implementation foundation is complete and remains pending a fresh reviewed official final fixture. The current product phase is the regional local-racing link-only pilot, which must preserve its C-level boundary until authority-specific timetable evidence supports a reviewed readiness change.
 
 ## Governing rules
 
@@ -212,12 +212,12 @@ scripts/check-calendar-baseline-reconciliation.mjs
 
 ## Phase 8 — activate the reviewed pipeline
 
-Status: Pipeline v1, Dynamic Dates, and Operations v1 complete; JRA pilot current  
+Status: Pipeline v1, Dynamic Dates, and Operations v1 complete; local-racing link-only pilot current  
 Completed Work ID: `WHR-CAL-PIPELINE-V1`  
 Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
 Completed Work ID: `WHR-CAL-OPS-V1`  
-Current Work ID: `WHR-CAL-JAPAN-JRA`  
-Next Work ID: `WHR-CAL-JAPAN-NAR`
+Current Work ID: `WHR-CAL-JAPAN-NAR`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI`
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -227,7 +227,7 @@ WHR-CAL-OPS-V1
 
 Pipeline v1 delivered the read-only build boundary, candidate v1 contract, human canonical promotion, deterministic public projection, production runtime import guard, JRA reference adapter, rendered public release QA, and grouped release gate.
 
-Dynamic Dates replaced fixed preview dates with explicit date/timezone rules. Operations v1 delivered source-health status, review packages, pause/rollback controls, seasonal rollover, and source-breakage escalation. The JRA pilot now starts from a freshness-blocked reference candidate and requires fresh reviewed evidence.
+Dynamic Dates replaced fixed preview dates with explicit date/timezone rules. Operations v1 delivered source-health status, review packages, pause/rollback controls, seasonal rollover, and source-breakage escalation. The JRA pilot now has closed input, confirmation, normalized-handoff, and operator-package boundaries but still requires fresh reviewed final evidence. The local-racing pilot starts from link-only C-level readiness and does not permit candidate generation.
 
 ## Phase 9 — pilot source activation
 

@@ -79,9 +79,9 @@ if (!scheduledWorkflow.includes('workflow_dispatch:') || !scheduledWorkflow.incl
 }
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Previous completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-JAPAN-JRA', 'WHR-CAL-JAPAN-NAR']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Current Work ID: `WHR-CAL-JAPAN-JRA`', 'Next Work ID: `WHR-CAL-JAPAN-NAR`']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-JRA`']]
+  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],
+  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`']]
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
 }
@@ -94,6 +94,6 @@ if (errors.length) {
 
 console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-JRA');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');

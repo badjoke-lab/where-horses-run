@@ -55,8 +55,8 @@ Broad deletion remains prohibited until provenance and assertion migration is co
 
 Pipeline v1 status: complete  
 Completed Work ID: `WHR-CAL-PIPELINE-V1`  
-Current Work ID: `WHR-CAL-DYNAMIC-DATES`  
-Next Work ID: `WHR-CAL-OPS-V1`
+Current Work ID: `WHR-CAL-JAPAN-NAR`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI`
 
 Work IDs:
 
@@ -96,16 +96,17 @@ Completed Work ID: `WHR-CAL-OPS-V1`
 
 Operations now include deterministic source-health status, review-package preparation, pause/rollback controls, seasonal rollover, source-breakage escalation, and grouped validation. Scheduled and unattended publication remain disabled.
 
-### JRA pilot — current
+### JRA pilot — implementation foundation complete
 
-Current Work ID: `WHR-CAL-JAPAN-JRA`  
-Next Work ID: `WHR-CAL-JAPAN-NAR`
+Completed implementation Work ID: `WHR-CAL-JAPAN-JRA`  
+Current Work ID: `WHR-CAL-JAPAN-NAR`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI`
 
-The pilot must obtain a fresh reviewed JRA source fixture before candidate approval or promotion.
+The JRA implementation boundary is complete but still requires a fresh reviewed final fixture before candidate approval or promotion. The current regional local-racing pilot remains link-only at C and blocks candidate work until authority-specific timetable evidence supports a readiness change.
 
 ## Stage 6 — pilot activation
 
-Status: current — JRA pilot
+Status: current — regional local-racing link-only pilot
 
 ```text
 WHR-CAL-JAPAN-JRA

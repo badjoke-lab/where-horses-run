@@ -42,6 +42,8 @@ data/audits/calendar-dynamic-dates-release-gate.json
 data/audits/calendar-operations-v1-release-gate.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
+data/static/local-racing-pilot-control.json
+data/generated/timetable/local-racing-pilot-review.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 scripts/check-calendar-contracts.mjs
@@ -49,20 +51,21 @@ scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
 scripts/check-calendar-dynamic-dates-release-gate.mjs
 scripts/check-calendar-operations-v1-release-gate.mjs
+scripts/check-local-racing-pilot-foundation.mjs
 ```
 
-Previous completed Work ID: `WHR-CAL-OPS-V1`
+Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`
 
 Current Work ID:
-
-```text
-WHR-CAL-JAPAN-JRA
-```
-
-Next Work ID:
 
 ```text
 WHR-CAL-JAPAN-NAR
 ```
 
-The 98-country programme, Calendar baseline reconciliation, Pipeline v1, Dynamic Dates, and Operations v1 are complete. The active task is the JRA source pilot; scheduling and unattended publication remain disabled.
+Next Work ID:
+
+```text
+WHR-CAL-JAPAN-BANEI
+```
+
+The 98-country programme, Calendar baseline reconciliation, Pipeline v1, Dynamic Dates, Operations v1, and the JRA implementation foundation are complete. JRA still awaits fresh reviewed final evidence. The active task is the regional local-racing link-only pilot; candidate generation, scheduling, and unattended publication remain disabled.

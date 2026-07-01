@@ -60,6 +60,7 @@ Calendar human-readable contracts:
 - `docs/calendar/jra-final-confirmation-contract.md`
 - `docs/calendar/jra-final-program-intake-schema.md`
 - `docs/calendar/jra-final-normalized-handoff.md`
+- `docs/calendar/local-racing-link-only-pilot.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/runbooks/calendar-seasonal-rollover.md`
@@ -82,11 +83,14 @@ Calendar machine-readable contracts:
 - `data/static/calendar-operations-seasonal-policy.json`
 - `data/static/jra-pilot-control.json`
 - `data/static/jra-final-program-intake.schema.json`
+- `data/static/local-racing-pilot-control.json`
 - `data/generated/timetable/operations-status.json`
 - `data/generated/timetable/operations-review-package.json`
 - `data/generated/timetable/jra-pilot-review.json`
 - `data/generated/timetable/jra-planned-program-intake.json`
 - `data/generated/timetable/jra-planned-program-review.json`
+- `data/generated/timetable/local-racing-pilot-review.json`
+- `data/archive/timetable/candidates/japan-nar-candidates.v0.json`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-calendar-pipeline-v1-release-gate.mjs`
@@ -99,6 +103,7 @@ Calendar machine-readable contracts:
 - `scripts/check-jra-final-confirmation-contract.mjs`
 - `scripts/check-jra-final-program-intake-schema.mjs`
 - `scripts/check-jra-final-normalized-handoff.mjs`
+- `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
