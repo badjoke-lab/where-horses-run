@@ -1,0 +1,76 @@
+{
+  "schema_version": "jra-pilot-review-v1",
+  "work_id": "WHR-CAL-JAPAN-JRA",
+  "generated_at": "2026-06-09T15:02:29.605Z",
+  "mode": "fixture_review_only",
+  "boundaries": {
+    "network_fetch_performed": false,
+    "source_body_stored": false,
+    "candidate_modified": false,
+    "candidate_approved": false,
+    "canonical_written": false,
+    "public_projection_written": false,
+    "scheduled_operation_active": false
+  },
+  "input_digests": {
+    "control_sha256": "5bf5c7717fd8ffa13a217d2293b3e12e8c98721d56f88bc29fd700e4112f30e8",
+    "inventory_sha256": "40c46fa563d5d8f55535655de901dce1a534806f14733cca9adc1f7f4b985e81",
+    "readiness_sha256": "d8746b25eece8fe4b707feeb09fca17967178943b43481e3e1b1359e34f7c188",
+    "normalized_meetings_sha256": "ac42ab3a0272c4ec8bc8d56fc6cdcfee6941b9a31d717ec4cc9e406cdf7a9b8f",
+    "normalized_details_sha256": "0e83aebcb7b71770b93983008afb1dee60bba3e72b8ac276db42c13d6011eb18",
+    "candidate_sha256": "f71bb9a077eeef250af514d9c73643400d4e98b9a3e49452ba9a8270b051957e",
+    "public_meeting_list_sha256": "2734113f9cf55c36f6f0813ed110d1ee7b53188b35a4544c568fe13f386e404d",
+    "public_meeting_details_sha256": "df93ca32496983e3fff93a66a4e856e8d96357f52dc2526442c7a99a790416ed"
+  },
+  "source": {
+    "source_key": "japan/jra/jra-programme",
+    "system_id": "japan-jra-system",
+    "inventory_host": "www.jra.go.jp",
+    "candidate_hosts": [
+      "www.jra.go.jp"
+    ],
+    "inventory_checked_date": "2026-06-17",
+    "readiness_checked_date": "2026-06-17",
+    "registry_minimum_date": "2026-06-17",
+    "candidate_source_checked_date": "2026-06-09",
+    "freshness_pass": false,
+    "official_host_pass": true
+  },
+  "normalized": {
+    "meeting_count": 4,
+    "detail_count": 4,
+    "candidate_count": 4,
+    "meeting_ids": [
+      "jra-hanshin-racecourse-2026-06-06",
+      "jra-hanshin-racecourse-2026-06-07",
+      "jra-tokyo-racecourse-2026-06-06",
+      "jra-tokyo-racecourse-2026-06-07"
+    ],
+    "parity_pass": true,
+    "racecourse_scope_pass": true,
+    "technical_rank_pass": true,
+    "confirmed_fields_pass": true
+  },
+  "candidate": {
+    "path": "data/candidates/japan-jra-candidates.json",
+    "adapter_id": "jra-normalized-programme-candidate-v1",
+    "review_status": "needs_review",
+    "needs_review_pass": true,
+    "promotion_ready": false,
+    "blockers": [
+      "source_fixture_predates_registry"
+    ]
+  },
+  "public_projection": {
+    "meeting_count": 23,
+    "detail_count": 5,
+    "generated_at": "2026-06-09T15:02:29.605Z",
+    "changed_by_review": false
+  },
+  "next_actions": [
+    "obtain_fresh_reviewed_jra_fixture",
+    "regenerate_normalized_jra_data",
+    "regenerate_candidate_v1",
+    "repeat_human_review"
+  ]
+}

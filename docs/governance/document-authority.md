@@ -55,13 +55,11 @@ Calendar human-readable contracts:
 - `docs/calendar/dynamic-dates-release-gate.md`
 - `docs/calendar/operations-v1-contract.md`
 - `docs/calendar/operations-v1-release-gate.md`
+- `docs/calendar/jra-pilot-foundation.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/runbooks/calendar-seasonal-rollover.md`
 - `docs/runbooks/calendar-source-breakage-escalation.md`
-- `docs/calendar/operations-v1-contract.md`
-- `docs/runbooks/calendar-operations-status-review.md`
-- `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/specs/global-timetable-architecture.md` plus active addendum
 - `docs/specs/authority-source-inventory-schema.md` plus active addendum
 
@@ -78,11 +76,10 @@ Calendar machine-readable contracts:
 - `data/audits/calendar-operations-v1-release-gate.json`
 - `data/static/calendar-operations-control.json`
 - `data/static/calendar-operations-seasonal-policy.json`
+- `data/static/jra-pilot-control.json`
 - `data/generated/timetable/operations-status.json`
 - `data/generated/timetable/operations-review-package.json`
-- `data/static/calendar-operations-control.json`
-- `data/generated/timetable/operations-status.json`
-- `data/generated/timetable/operations-review-package.json`
+- `data/generated/timetable/jra-pilot-review.json`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-calendar-pipeline-v1-release-gate.mjs`
@@ -90,8 +87,7 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-operations-status.mjs`
 - `scripts/check-calendar-operations-review-package.mjs`
 - `scripts/check-calendar-operations-v1-release-gate.mjs`
-- `scripts/check-calendar-operations-status.mjs`
-- `scripts/check-calendar-operations-review-package.mjs`
+- `scripts/check-jra-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
