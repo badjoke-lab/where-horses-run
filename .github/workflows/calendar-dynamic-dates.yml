@@ -1,0 +1,85 @@
+name: Calendar dynamic dates
+
+on:
+  pull_request:
+    paths:
+      - 'src/lib/timetable/calendarDateContext.mjs'
+      - 'src/data/timetableMeetingRows.ts'
+      - 'src/components/CalendarDateStatus.astro'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/pages/calendar/index.astro'
+      - 'src/pages/today.astro'
+      - 'src/pages/tomorrow.astro'
+      - 'src/pages/ja/calendar/index.astro'
+      - 'src/pages/ja/today.astro'
+      - 'src/pages/ja/tomorrow.astro'
+      - 'docs/calendar/dynamic-dates-contract.md'
+      - 'scripts/check-calendar-dynamic-dates.mjs'
+      - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
+      - '.github/workflows/calendar-dynamic-dates.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/lib/timetable/calendarDateContext.mjs'
+      - 'src/data/timetableMeetingRows.ts'
+      - 'src/components/CalendarDateStatus.astro'
+      - 'src/components/CountryDetailPage.astro'
+      - 'src/pages/calendar/index.astro'
+      - 'src/pages/today.astro'
+      - 'src/pages/tomorrow.astro'
+      - 'src/pages/ja/calendar/index.astro'
+      - 'src/pages/ja/today.astro'
+      - 'src/pages/ja/tomorrow.astro'
+      - 'docs/calendar/dynamic-dates-contract.md'
+      - 'scripts/check-calendar-dynamic-dates.mjs'
+      - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
+      - '.github/workflows/calendar-dynamic-dates.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate date and timezone contract
+        run: node scripts/check-calendar-dynamic-dates.mjs
+      - name: Validate runtime and Pipeline v1 boundaries
+        run: |
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build fixture window with reviewed meetings
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-06-06'
+          WHR_CALENDAR_TIMEZONE: 'Asia/Tokyo'
+        run: |
+          rm -rf dist
+          npm run build
+          node scripts/check-calendar-dynamic-dates-rendered.mjs
+      - name: Build current empty/stale window
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-01'
+          WHR_CALENDAR_TIMEZONE: 'Asia/Tokyo'
+        run: |
+          rm -rf dist
+          npm run build
+          node scripts/check-calendar-dynamic-dates-rendered.mjs
+      - name: Prove validation leaves the repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Dynamic Dates validation modified repository files.' >&2
+            exit 1
+          fi

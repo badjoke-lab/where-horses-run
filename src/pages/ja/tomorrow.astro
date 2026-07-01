@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import { getTimetableMeetingRowsForDate, getTomorrowTimetableDate } from '../../data/timetableMeetingRows';
+import { getTimetableDataState, getTimetableDateContext, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
 
-const tomorrowTimetableDate = getTomorrowTimetableDate();
-const tomorrowRecords = getTimetableMeetingRowsForDate(tomorrowTimetableDate);
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 ---
 
 <BaseLayout
@@ -18,16 +20,18 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(tomorrowTimetableDate);
     <p class="hero__eyebrow">Tomorrow</p>
     <h1 id="page-title">明日の開催時刻表</h1>
     <p class="hero__summary">
-      {tomorrowTimetableDate} の開催情報です。表示ランクに応じて時刻情報を出し分けます。
+      {context.tomorrow} の開催情報です。表示ランクに応じて時刻情報を出し分けます。
     </p>
   </section>
+
+  <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
 
   <section aria-label="明日の開催一覧">
     <TimetableMeetingList
       records={tomorrowRecords}
-      date={tomorrowTimetableDate}
+      date={context.tomorrow}
       lang="ja"
-      emptyLabel="明日の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+      emptyLabel="明日の確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
     />
   </section>
 </BaseLayout>

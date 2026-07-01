@@ -18,6 +18,7 @@ Use these files together:
 - [`pipeline-v1-public-projection.md`](pipeline-v1-public-projection.md) — deterministic Public Ceiling and field-policy projection.
 - [`pipeline-v1-jra-reference-adapter.md`](pipeline-v1-jra-reference-adapter.md) — first source adapter migrated to the candidate v1 boundary.
 - [`pipeline-v1-release-gate.md`](pipeline-v1-release-gate.md) — grouped Pipeline v1 completion and remaining-work boundary.
+- [`dynamic-dates-contract.md`](dynamic-dates-contract.md) — explicit reference date, timezone, Today/Tomorrow, rolling window, and stale-state rules.
 - [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
@@ -42,6 +43,8 @@ scripts/check-calendar-pipeline-v1-promotion.mjs
 scripts/check-calendar-pipeline-v1-public-projection.mjs
 scripts/check-japan-jra-candidate-generator.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
+scripts/check-calendar-dynamic-dates.mjs
+scripts/check-calendar-dynamic-dates-rendered.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.

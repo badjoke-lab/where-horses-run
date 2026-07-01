@@ -1,7 +1,14 @@
 import {
+  getPublicTimetableGeneratedAt,
   getPublicTimetableMeetingRows,
   type PublicTimetableMeetingRow,
 } from '../lib/timetable/publicTimetableViewModel';
+import {
+  createCalendarDateContext,
+  evaluateCalendarDataState,
+  filterRecordsForDate,
+  filterRecordsForWindow,
+} from '../lib/timetable/calendarDateContext.mjs';
 
 export type CalendarRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 
@@ -112,7 +119,19 @@ export function getTimetableMeetingRows(): TimetableMeetingRow[] {
 }
 
 export function getTimetableMeetingRowsForDate(date: string): TimetableMeetingRow[] {
-  return getTimetableMeetingRows().filter((record) => record.date === date);
+  return filterRecordsForDate(getTimetableMeetingRows(), date) as TimetableMeetingRow[];
+}
+
+export function getTimetableMeetingRowsForWindow(startDate: string, endDateExclusive: string): TimetableMeetingRow[] {
+  return filterRecordsForWindow(getTimetableMeetingRows(), startDate, endDateExclusive) as TimetableMeetingRow[];
+}
+
+export function getTimetableDateContext() {
+  return createCalendarDateContext();
+}
+
+export function getCurrentCalendarWindowMeetingRows(context = getTimetableDateContext()) {
+  return getTimetableMeetingRowsForWindow(context.windowStart, context.windowEndExclusive);
 }
 
 export function getGroupedTimetableMeetingRows(
@@ -129,13 +148,22 @@ export function getGroupedTimetableMeetingRows(
     .sort((left, right) => left.date.localeCompare(right.date));
 }
 
+export function getCurrentCalendarWindowGroups(context = getTimetableDateContext()) {
+  return getGroupedTimetableMeetingRows(getCurrentCalendarWindowMeetingRows(context));
+}
+
+export function getTimetableDataState(context = getTimetableDateContext()) {
+  return evaluateCalendarDataState({
+    records: getTimetableMeetingRows(),
+    generatedAt: getPublicTimetableGeneratedAt(),
+    context,
+  });
+}
+
 export function getCurrentTimetableDate() {
-  const buildDate = new Date().toISOString().slice(0, 10);
-  return buildDate.startsWith('2026-06-') ? buildDate : '2026-06-07';
+  return getTimetableDateContext().today;
 }
 
 export function getTomorrowTimetableDate() {
-  const tomorrowDate = new Date(`${getCurrentTimetableDate()}T00:00:00.000Z`);
-  tomorrowDate.setUTCDate(tomorrowDate.getUTCDate() + 1);
-  return tomorrowDate.toISOString().slice(0, 10);
+  return getTimetableDateContext().tomorrow;
 }

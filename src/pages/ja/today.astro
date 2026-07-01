@@ -1,15 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import { getCurrentTimetableDate, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
+import {
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableMeetingRowsForDate,
+} from '../../data/timetableMeetingRows';
 
-const currentTimetableDate = getCurrentTimetableDate();
-const todayRecords = getTimetableMeetingRowsForDate(currentTimetableDate);
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const todayRecords = getTimetableMeetingRowsForDate(context.today);
 ---
 
 <BaseLayout
-  title="今日の開催時刻表 | 競馬どこ？"
-  description="今日の開催一覧を1開催1行で表示し、利用可能な時刻情報、詳細ページ、公式ソースを案内します。"
+  title={`今日の開催時刻表 — ${context.today} | 競馬どこ？`}
+  description={`${context.timeZone}を基準にした${context.today}の確認済み公開開催情報です。最終確認は公式ソースで行ってください。`}
   lang="ja"
   canonicalPath="/ja/today/"
   alternatePath="/today/"
@@ -18,16 +24,18 @@ const todayRecords = getTimetableMeetingRowsForDate(currentTimetableDate);
     <p class="hero__eyebrow">Today</p>
     <h1 id="page-title">今日の開催時刻表</h1>
     <p class="hero__summary">
-      {currentTimetableDate} の開催情報です。表示ランクに応じて時刻情報を出し分けます。
+      {context.timeZone}を基準とした{context.today}の開催情報です。表示ランクに応じて時刻情報を出し分けます。
     </p>
   </section>
+
+  <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
 
   <section aria-label="今日の開催一覧">
     <TimetableMeetingList
       records={todayRecords}
-      date={currentTimetableDate}
+      date={context.today}
       lang="ja"
-      emptyLabel="今日の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+      emptyLabel={`${context.today}の確認済み公開開催はありません。最新情報は公式ソースで確認してください。`}
     />
   </section>
 </BaseLayout>
