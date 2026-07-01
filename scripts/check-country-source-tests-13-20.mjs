@@ -5,7 +5,7 @@ const root = process.cwd();
 const errors = [];
 const fail = (message) => errors.push(message);
 const expected = [
-  ['13', 'japan', 'Partial', 'A+ for JRA'],
+  ['13', 'japan', 'Partial', 'A+'],
   ['14', 'hong-kong', 'Complete', 'A+'],
   ['15', 'new-zealand', 'Partial', 'A+ for thoroughbred samples'],
   ['16', 'south-africa', 'Partial', 'A+ on tested operator pages'],
@@ -42,6 +42,16 @@ for (const [deliveryNo, slug, status, rank] of expected) {
     for (const url of summary.official_sources) {
       if (typeof url !== 'string' || !url.startsWith('https://')) fail(`${slug} has invalid official source URL: ${url}`);
     }
+  }
+}
+
+const japan = summaries.get('13');
+if (japan) {
+  if (japan.public_ceiling !== 'A+') fail('japan public_ceiling must be A+');
+  const expectedSystems = ['JRA', 'NAR and local-government racing', 'Banei Tokachi'];
+  if (JSON.stringify(japan.systems) !== JSON.stringify(expectedSystems)) fail('japan systems must preserve the approved three-system split');
+  if (!japan.decision?.includes('Individual meeting output remains limited to reviewed canonical fields')) {
+    fail('japan decision must preserve the evidence-bound meeting rule');
   }
 }
 
@@ -95,4 +105,6 @@ if (errors.length) {
 console.log('COUNTRY_SOURCE_TESTS_13_20_VALID');
 console.log('SUMMARY_FILES: 8');
 console.log('TRACKER: entries 13-20 published');
+console.log('JAPAN_TECHNICAL_RANK: A+');
+console.log('JAPAN_PUBLIC_CEILING: A+');
 console.log('PUBLIC_BOUNDARY: no prohibited public fields');
