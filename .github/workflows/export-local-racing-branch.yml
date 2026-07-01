@@ -1,0 +1,23 @@
+name: Export local racing branch
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-nar-link-only-pilot
+      - name: Create branch archive
+        run: tar --exclude=.git -czf /tmp/local-racing-branch.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-racing-branch
+          path: /tmp/local-racing-branch.tar.gz
+          retention-days: 7
