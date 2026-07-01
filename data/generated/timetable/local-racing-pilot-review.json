@@ -53,17 +53,22 @@
     "confirmed_fields_pass": true
   },
   "repository_state": {
-    "candidate_path": "data/candidates/japan-nar-candidates.json",
-    "candidate_absent": true,
+    "active_candidate_path": "data/candidates/japan-nar-candidates.json",
+    "active_candidate_absent": true,
+    "archived_candidate_path": "data/archive/timetable/candidates/japan-nar-candidates.v0.json",
+    "archived_candidate_present": true,
+    "archived_candidate_valid": true,
+    "archived_candidate_record_count": 12,
     "public_meeting_ids": [],
     "public_detail_ids": [],
     "public_projection_absent": true,
     "jra_isolation_pass": true
   },
   "input_digests": {
-    "control_sha256": "b70a15898c13e2dfade8017861ab26f7b33c19bec41a865259c22b894455b475",
+    "control_sha256": "b8799ebfe9cd88644265ac76546a0599e41ff5217bb4ea41a3d5e0b8dd28cf09",
     "inventory_sha256": "40c46fa563d5d8f55535655de901dce1a534806f14733cca9adc1f7f4b985e81",
     "readiness_sha256": "d8746b25eece8fe4b707feeb09fca17967178943b43481e3e1b1359e34f7c188",
+    "archived_candidate_sha256": "952318f28fd269702f0e94218e8fc21a5b82949ebd1a1958a97e27049c18e95e",
     "public_meeting_list_sha256": "2734113f9cf55c36f6f0813ed110d1ee7b53188b35a4544c568fe13f386e404d",
     "public_meeting_details_sha256": "df93ca32496983e3fff93a66a4e856e8d96357f52dc2526442c7a99a790416ed"
   },

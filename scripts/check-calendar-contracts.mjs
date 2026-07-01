@@ -450,8 +450,8 @@ for (const [file, text, phrases] of [
   [paths.sourceContract, sourceContractText, [paths.sourceSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.readinessContract, readinessContractText, [paths.readinessSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.machineContract, machineContractText, [paths.sourceSchema, paths.readinessSchema, paths.registry, 'node scripts/check-calendar-contracts.mjs']],
-  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-JRA`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE']],
-  [paths.startHere, startHereText, ['Previous completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-JAPAN-JRA', 'WHR-CAL-JAPAN-NAR']],
+  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE']],
+  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],
 ]) {
   for (const phrase of phrases) {
     if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
@@ -471,5 +471,5 @@ console.log(`RACECOURSE_IDS: ${racecourseCountry.size}`);
 console.log(`READINESS_RECORDS: ${registry.records.length}`);
 console.log(`CLOSED_COUNTRIES: ${closedCountries.size}`);
 console.log(`SOURCE_TEST_V2_FILES: ${sourceTestV2Files.length}`);
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-JRA');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');

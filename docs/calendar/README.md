@@ -61,6 +61,8 @@ data/generated/timetable/operations-review-package.json
 data/generated/timetable/jra-pilot-review.json
 data/generated/timetable/jra-planned-program-intake.json
 data/generated/timetable/jra-planned-program-review.json
+data/generated/timetable/local-racing-pilot-review.json
+data/archive/timetable/candidates/japan-nar-candidates.v0.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
