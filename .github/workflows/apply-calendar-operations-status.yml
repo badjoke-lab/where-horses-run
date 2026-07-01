@@ -1,0 +1,30 @@
+name: Apply Calendar operations status
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: calendar-ops-status
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+      - run: node scripts/check-calendar-operations-status.mjs
+      - name: Commit baseline
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/timetable/operations-status.json
+          git commit -m "Generate Calendar operations status baseline"
+          git push origin HEAD:calendar-ops-status
