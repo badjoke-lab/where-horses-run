@@ -1,0 +1,54 @@
+name: Calendar JRA final review package
+
+on:
+  pull_request:
+    paths:
+      - 'docs/calendar/jra-final-review-package.md'
+      - 'docs/calendar/README.md'
+      - 'scripts/timetable/jra-final-review-package-core.mjs'
+      - 'scripts/timetable/build-jra-final-review-package.mjs'
+      - 'scripts/check-jra-review-package.mjs'
+      - '.github/workflows/calendar-jra-final-review-package.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/calendar/jra-final-review-package.md'
+      - 'docs/calendar/README.md'
+      - 'scripts/timetable/jra-final-review-package-core.mjs'
+      - 'scripts/timetable/build-jra-final-review-package.mjs'
+      - 'scripts/check-jra-review-package.mjs'
+      - '.github/workflows/calendar-jra-final-review-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate final review package
+        run: node scripts/check-jra-review-package.mjs
+      - name: Validate final intake and handoff gates
+        run: |
+          node scripts/check-jra-final-program-intake-schema.mjs
+          node scripts/check-jra-final-confirmation-contract.mjs
+          node scripts/check-jra-final-normalized-handoff.mjs
+      - name: Validate candidate and runtime boundaries
+        run: |
+          node scripts/check-japan-jra-candidate-generator.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
