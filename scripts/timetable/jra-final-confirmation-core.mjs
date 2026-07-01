@@ -1,3 +1,5 @@
+import { assertJraFinalProgramIntake } from './jra-final-program-intake-validation.mjs';
+
 const DATE_TIME_ERROR = 'must be a valid ISO date-time';
 
 function assert(condition, message) {
@@ -40,10 +42,10 @@ function compareRows(plannedRows, finalRows) {
 
 export function evaluateJraFinalConfirmation({ planned, final, control, readinessRegistry, authorityInventory }) {
   assert(planned?.schema_version === 'jra-planned-program-intake-v1', 'planned intake schema is invalid');
-  assert(final?.schema_version === 'jra-final-program-intake-v1', 'final intake schema is invalid');
   assert(control?.schema_version === 'jra-pilot-control-v1', 'JRA pilot control schema is invalid');
   assert(readinessRegistry?.schema_version === 'calendar-readiness-registry-v1', 'Calendar Readiness schema is invalid');
   assert(authorityInventory?.schema_version === 'authority-source-inventory-v1', 'Authority/Source schema is invalid');
+  assertJraFinalProgramIntake(final, control);
 
   const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === control.source_key);
   assert(readinessMatches.length === 1, 'JRA readiness source must be unique');
@@ -54,14 +56,12 @@ export function evaluateJraFinalConfirmation({ planned, final, control, readines
   assert(inventory, 'JRA authority/source record is missing');
 
   const blockers = [];
-  if (final.source_stage !== 'final_program') blockers.push('source_stage_not_final');
-
   const cutoff = parseTime(planned.final_confirmation_after, 'planned.final_confirmation_after');
   const finalGeneratedAt = parseTime(final.generated_at, 'final.generated_at');
   if (finalGeneratedAt < cutoff) blockers.push('final_confirmation_too_early');
 
   const registryMinimumDate = maxDate([readiness.checked_date, inventory.last_checked_date]);
-  const finalCheckedDates = final.records.map((record) => record.source?.checked_at?.slice(0, 10)).filter(Boolean).sort();
+  const finalCheckedDates = final.records.map((record) => record.source.checked_at.slice(0, 10)).sort();
   const finalCheckedDate = finalCheckedDates.at(-1) ?? null;
   if (!finalCheckedDate || finalCheckedDate < registryMinimumDate) blockers.push('source_fixture_predates_registry');
 
@@ -88,19 +88,13 @@ export function evaluateJraFinalConfirmation({ planned, final, control, readines
   const officialHost = hostOf(inventory.official_source_url, 'inventory official source');
   let structuralPass = true;
   for (const record of final.records) {
-    if (record.country_id !== 'japan' || record.authority_id !== 'jra' || record.racing_system_id !== control.system_id) structuralPass = false;
-    if (record.source?.source_id !== 'jra-programme') structuralPass = false;
-    if (!control.allowed_hosts.includes(hostOf(record.source.official_url, `${record.meeting_id} official source`))) structuralPass = false;
     if (hostOf(record.source.official_url, `${record.meeting_id} official source`) !== officialHost) structuralPass = false;
     if (readiness.racecourse_ids.length > 0 && !readiness.racecourse_ids.includes(record.racecourse_id)) structuralPass = false;
-    if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length === 0) structuralPass = false;
-    if (record.timetable_rows?.[0]?.post_time_local !== record.first_race_time_local) structuralPass = false;
-    if (record.timetable_rows?.at(-1)?.post_time_local !== record.last_race_time_local) structuralPass = false;
   }
   if (!structuralPass) blockers.push('final_program_structure_invalid');
 
-  const review = final.review ?? {};
-  const approved = review.status === 'approved' && typeof review.reviewer === 'string' && review.reviewer.trim() && typeof review.reviewed_at === 'string';
+  const review = final.review;
+  const approved = review.status === 'approved';
   if (!approved) blockers.push('human_review_required');
   else if (parseTime(review.reviewed_at, 'final.review.reviewed_at') < finalGeneratedAt) blockers.push('review_predates_final_fixture');
 
@@ -126,10 +120,10 @@ export function evaluateJraFinalConfirmation({ planned, final, control, readines
       has_changes: addedMeetingIds.length > 0 || removedMeetingIds.length > 0 || changedMeetings.length > 0
     },
     review: {
-      status: review.status ?? 'needs_review',
-      reviewer: review.reviewer ?? null,
-      reviewed_at: review.reviewed_at ?? null,
-      approved: Boolean(approved)
+      status: review.status,
+      reviewer: review.reviewer,
+      reviewed_at: review.reviewed_at,
+      approved
     },
     candidate_generation: {
       permitted: uniqueBlockers.length === 0,
