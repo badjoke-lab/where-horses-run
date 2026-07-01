@@ -7,10 +7,8 @@ import {
   siteData,
   type Country
 } from '../lib/data';
-import {
-  getPublicTimetableGeneratedAt,
-  getPublicTimetableMeetingRowsByCountry
-} from '../lib/timetable/publicTimetableViewModel';
+import { getPublicTimetableMeetingRowsByCountry } from '../lib/timetable/publicTimetableViewModel';
+import { createCalendarDateContext, filterRecordsForWindow } from '../lib/timetable/calendarDateContext.mjs';
 
 interface Props {
   country: Country;
@@ -77,17 +75,12 @@ const timetableRecords = getPublicTimetableMeetingRowsByCountry(country.id).map(
   detail_path: record.detail_path
 }));
 const countryInventory = siteData.countryRacingInventory.countries.find((entry) => entry.country_id === country.id);
-const generatedDate = getPublicTimetableGeneratedAt().slice(0, 10);
-const windowStart = generatedDate ? new Date(generatedDate + 'T00:00:00.000Z') : null;
-const windowEnd = windowStart
-  ? new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate() + 30))
-  : null;
-const activeWindowRecords = windowStart && windowEnd
-  ? timetableRecords.filter((record) => {
-      const recordDate = new Date(record.date + 'T00:00:00.000Z');
-      return recordDate >= windowStart && recordDate < windowEnd;
-    })
-  : [];
+const calendarContext = createCalendarDateContext();
+const activeWindowRecords = filterRecordsForWindow(
+  timetableRecords,
+  calendarContext.windowStart,
+  calendarContext.windowEndExclusive
+);
 const upcomingMeetings = [...activeWindowRecords].sort((a, b) =>
   ((a.date ?? '') + '-' + (a.start_time_local ?? '')).localeCompare(
     (b.date ?? '') + '-' + (b.start_time_local ?? '')

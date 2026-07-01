@@ -1,31 +1,36 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
-import { getGroupedTimetableMeetingRows } from '../../../data/timetableMeetingRows';
+import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
 
-const groupedCalendarRecords = getGroupedTimetableMeetingRows();
+const context = getTimetableDateContext();
+const dataState = getTimetableDataState(context);
+const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
 ---
 
 <BaseLayout
-  title="2026年6月 開催カレンダー | 競馬どこ？"
-  description="2026年6月の開催情報を日付別に1開催1行で表示し、詳細情報と公式ソースへのリンクを案内します。"
+  title="30日間の開催カレンダー | 競馬どこ？"
+  description="基準日から30日間の確認済み公開開催情報を日付別に案内します。"
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Calendar</p>
-    <h1 id="page-title">2026年6月 開催カレンダー</h1>
+    <h1 id="page-title">30日間の開催カレンダー</h1>
     <p class="hero__summary">
-      開催情報を日付別に表示します。表示ランクに応じて時刻情報を出し分け、最終確認先として公式ソースを案内します。
+      {context.windowStart}から{context.windowEndInclusive}までの確認済み開催を表示します。基準タイムゾーンは{context.timeZone}です。
     </p>
   </section>
 
-  <section aria-label="2026年6月の開催一覧">
+  <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
+
+  <section aria-label="30日間の開催一覧">
     <TimetableMeetingList
       groups={groupedCalendarRecords}
       lang="ja"
-      emptyLabel="2026年6月の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+      emptyLabel="この30日間に確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
     />
   </section>
 </BaseLayout>
