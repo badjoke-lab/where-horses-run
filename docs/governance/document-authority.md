@@ -56,6 +56,8 @@ Calendar human-readable contracts:
 - `docs/calendar/operations-v1-contract.md`
 - `docs/calendar/operations-v1-release-gate.md`
 - `docs/calendar/jra-pilot-foundation.md`
+- `docs/calendar/jra-planned-program-intake.md`
+- `docs/calendar/jra-final-confirmation-contract.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/runbooks/calendar-seasonal-rollover.md`
@@ -80,6 +82,8 @@ Calendar machine-readable contracts:
 - `data/generated/timetable/operations-status.json`
 - `data/generated/timetable/operations-review-package.json`
 - `data/generated/timetable/jra-pilot-review.json`
+- `data/generated/timetable/jra-planned-program-intake.json`
+- `data/generated/timetable/jra-planned-program-review.json`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-calendar-pipeline-v1-release-gate.mjs`
@@ -88,6 +92,8 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-operations-review-package.mjs`
 - `scripts/check-calendar-operations-v1-release-gate.mjs`
 - `scripts/check-jra-pilot-foundation.mjs`
+- `scripts/check-jra-planned-intake.mjs`
+- `scripts/check-jra-final-confirmation-contract.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.

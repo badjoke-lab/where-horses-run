@@ -23,6 +23,8 @@ Use these files together:
 - [`operations-v1-contract.md`](operations-v1-contract.md) — review-only operator status, thresholds, and no-write boundary.
 - [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — current JRA fixture review, blocker, and no-write pilot boundary.
+- [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
+- [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
 - [`../runbooks/calendar-operations-status-review.md`](../runbooks/calendar-operations-status-review.md) — operator review order and escalation rules.
 - [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause and rollback controls.
 - [`../runbooks/calendar-seasonal-rollover.md`](../runbooks/calendar-seasonal-rollover.md) — seasonal fixture review and rollover.
@@ -51,6 +53,8 @@ data/static/jra-pilot-control.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 data/generated/timetable/jra-pilot-review.json
+data/generated/timetable/jra-planned-program-intake.json
+data/generated/timetable/jra-planned-program-review.json
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
@@ -66,6 +70,8 @@ scripts/check-calendar-operations-status.mjs
 scripts/check-calendar-operations-review-package.mjs
 scripts/check-calendar-operations-v1-release-gate.mjs
 scripts/check-jra-pilot-foundation.mjs
+scripts/check-jra-planned-intake.mjs
+scripts/check-jra-final-confirmation-contract.mjs
 ```
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
