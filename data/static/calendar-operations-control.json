@@ -1,0 +1,35 @@
+{
+  "schema_version": "calendar-operations-control-v1",
+  "work_id": "WHR-CAL-OPS-V1",
+  "mode": "paused_review_only",
+  "scheduled_refresh_active": false,
+  "live_fetch_allowed": false,
+  "automatic_candidate_approval_allowed": false,
+  "automatic_canonical_write_allowed": false,
+  "automatic_public_write_allowed": false,
+  "unattended_publication_allowed": false,
+  "allowed_manual_outputs": [
+    "operations_status_artifact",
+    "operations_review_package_artifact"
+  ],
+  "activation_prerequisites": [
+    "operations_v1_release_gate_complete",
+    "source_specific_pilot_contract_complete",
+    "fresh_source_fixture_reviewed",
+    "pause_and_rollback_runbook_verified",
+    "human_promotion_owner_assigned"
+  ],
+  "pause_actions": [
+    "keep_schedule_trigger_absent",
+    "keep_live_fetch_disabled",
+    "keep_candidates_unapproved",
+    "keep_last_reviewed_public_projection",
+    "use_official_source_fallback"
+  ],
+  "rollback_actions": [
+    "revert_generated_review_package_commit",
+    "restore_previous_candidate_or_canonical commit through reviewed pull request",
+    "regenerate public projection from restored canonical data",
+    "run bilingual rendered validation before release"
+  ]
+}
