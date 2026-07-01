@@ -7,17 +7,17 @@ for (const forbidden of ['horse_name', 'jockey', 'trainer', 'odds', 'payout', 'p
   if (serialized.includes(forbidden)) fail(\`operations status contains prohibited key fragment \${forbidden}.\`);
 }`;
 const newBlock = `const prohibitedKeyFragments = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'sample_text', 'stream_url'];
-function inspectKeys(value, location = '$') {
+function inspectKeys(value, location = 'root') {
   if (Array.isArray(value)) {
-    value.forEach((item, index) => inspectKeys(item, \`\${location}[\${index}]\`));
+    value.forEach((item, index) => inspectKeys(item, location + '[' + index + ']'));
     return;
   }
   if (!value || typeof value !== 'object') return;
   for (const [key, child] of Object.entries(value)) {
     const lower = key.toLowerCase();
     const fragment = prohibitedKeyFragments.find((item) => lower.includes(item));
-    if (fragment) fail(\`operations status contains prohibited key \${location}.\${key}.\`);
-    inspectKeys(child, \`\${location}.\${key}\`);
+    if (fragment) fail('operations status contains prohibited key ' + location + '.' + key + '.');
+    inspectKeys(child, location + '.' + key);
   }
 }
 inspectKeys(status);`;
