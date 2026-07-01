@@ -1,0 +1,55 @@
+name: Calendar JRA pilot foundation
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/generated/timetable/jra-pilot-review.json'
+      - 'data/generated/timetable/jra-normalized-*.json'
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'docs/calendar/jra-pilot-foundation.md'
+      - 'scripts/timetable/build-jra-pilot-review.mjs'
+      - 'scripts/check-jra-pilot-foundation.mjs'
+      - '.github/workflows/calendar-jra-pilot-review.yml'
+      - '.github/workflows/calendar-jra-pilot-foundation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/generated/timetable/jra-pilot-review.json'
+      - 'data/generated/timetable/jra-normalized-*.json'
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'docs/calendar/jra-pilot-foundation.md'
+      - 'scripts/timetable/build-jra-pilot-review.mjs'
+      - 'scripts/check-jra-pilot-foundation.mjs'
+      - '.github/workflows/calendar-jra-pilot-review.yml'
+      - '.github/workflows/calendar-jra-pilot-foundation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate JRA pilot review foundation
+        run: node scripts/check-jra-pilot-foundation.mjs
+      - name: Confirm review-only dry run
+        run: node scripts/timetable/build-jra-pilot-review.mjs --dry-run
+      - name: Validate existing candidate and operations boundaries
+        run: |
+          node scripts/check-japan-jra-candidate-generator.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
