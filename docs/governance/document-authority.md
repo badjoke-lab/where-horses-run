@@ -58,6 +58,7 @@ Calendar human-readable contracts:
 - `docs/calendar/jra-pilot-foundation.md`
 - `docs/calendar/jra-planned-program-intake.md`
 - `docs/calendar/jra-final-confirmation-contract.md`
+- `docs/calendar/jra-final-normalized-handoff.md`
 - `docs/runbooks/calendar-operations-status-review.md`
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/runbooks/calendar-seasonal-rollover.md`
@@ -94,6 +95,7 @@ Calendar machine-readable contracts:
 - `scripts/check-jra-pilot-foundation.mjs`
 - `scripts/check-jra-planned-intake.mjs`
 - `scripts/check-jra-final-confirmation-contract.mjs`
+- `scripts/check-jra-final-normalized-handoff.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
