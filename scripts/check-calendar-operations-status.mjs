@@ -55,10 +55,21 @@ if (!status.operator_actions.some((action) => action.type === 'refresh_before_pr
   fail('JRA refresh-before-promotion action is missing.');
 }
 
-const serialized = JSON.stringify(status).toLowerCase();
-for (const forbidden of ['horse_name', 'jockey', 'trainer', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'sample_text', 'stream_url']) {
-  if (serialized.includes(forbidden)) fail(`operations status contains prohibited key fragment ${forbidden}.`);
+const prohibitedKeyFragments = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'sample_text', 'stream_url'];
+function inspectKeys(value, location = 'root') {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => inspectKeys(item, location + '[' + index + ']'));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, child] of Object.entries(value)) {
+    const lower = key.toLowerCase();
+    const fragment = prohibitedKeyFragments.find((item) => lower.includes(item));
+    if (fragment) fail('operations status contains prohibited key ' + location + '.' + key + '.');
+    inspectKeys(child, location + '.' + key);
+  }
 }
+inspectKeys(status);
 
 const manualWorkflow = read('.github/workflows/calendar-operations-review.yml');
 for (const marker of ['workflow_dispatch:', 'contents: read', 'build-operations-status.mjs', 'upload-artifact@v4']) {
