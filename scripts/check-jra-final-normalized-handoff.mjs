@@ -71,8 +71,19 @@ for (const detail of verified.normalized_details.details) {
 }
 
 const partial = build(finalFixture({ optional: false }));
-if (!partial.normalized_meetings.records.every((record) => ['race_name','distance','surface','course'].every((field) => record.missing_fields.includes(field)))) fail('partial missing_fields are incomplete.');
-if (!partial.normalized_details.details.every((detail) => detail.timetable_rows.every((row) => row.metadata_status === 'partial'))) fail('partial rows are not marked partial.');
+const expectedMissingFields = [
+  ['race_name', 'race_name'],
+  ['distance', 'distance'],
+  ['surface', 'surface'],
+  ['course', 'course']
+].filter(([, readinessKey]) => readiness.confirmed_fields?.[readinessKey] === true).map(([field]) => field);
+if (!partial.normalized_meetings.records.every((record) => JSON.stringify(record.missing_fields) === JSON.stringify(expectedMissingFields))) {
+  fail('partial missing_fields do not follow Calendar Readiness.');
+}
+const expectedPartialStatus = expectedMissingFields.length ? 'partial' : 'verified';
+if (!partial.normalized_details.details.every((detail) => detail.timetable_rows.every((row) => row.metadata_status === expectedPartialStatus))) {
+  fail('partial row status does not follow Calendar Readiness.');
+}
 
 expectBlocked('unreviewed fixture', finalFixture({ approved: false }), 'human_review_required');
 expectBlocked('pre-cutoff fixture', finalFixture({ generatedAt: '2026-07-02T06:59:00.000Z' }), 'final_confirmation_too_early');
@@ -109,5 +120,6 @@ if (errors.length) {
 console.log('JRA_FINAL_NORMALIZED_HANDOFF: pass');
 console.log('VERIFIED_MEETINGS: 6');
 console.log('VERIFIED_DETAILS: 6');
+console.log(`PARTIAL_STATUS: ${expectedPartialStatus}`);
 console.log('DIRECT_REPOSITORY_OUTPUT: blocked');
 console.log('CANDIDATE_OR_PUBLIC_DATA_CHANGED: false');
