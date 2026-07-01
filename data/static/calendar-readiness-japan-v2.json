@@ -1,0 +1,42 @@
+{
+  "schema_version": "japan-calendar-readiness-v2",
+  "approved_at": "2026-07-01",
+  "supersedes_records": [
+    "japan--japan-jra-system--jra-programme",
+    "japan--japan-nar-system--nar-monthly-convene-info",
+    "japan--japan-banei-system--banei-official-schedule"
+  ],
+  "records": [
+    {
+      "system_id": "japan-jra-system",
+      "authority_source_key": "japan/jra/jra-programme",
+      "technical_rank": "A+",
+      "public_ceiling": "A+",
+      "readiness": "prototype_ready",
+      "implementation_status": "prototype",
+      "automation_mode": "semi_automatic",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "system_id": "japan-nar-system",
+      "authority_source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
+      "technical_rank": "A+",
+      "public_ceiling": "A+",
+      "readiness": "prototype_ready",
+      "implementation_status": "prototype",
+      "automation_mode": "semi_automatic",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "system_id": "japan-banei-system",
+      "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
+      "technical_rank": "A+",
+      "public_ceiling": "A+",
+      "readiness": "prototype_ready",
+      "implementation_status": "prototype",
+      "automation_mode": "semi_automatic",
+      "fallback": "downgrade_to_C"
+    }
+  ],
+  "record_display_rule": "Each meeting remains at the highest rank supported by reviewed canonical fields."
+}
