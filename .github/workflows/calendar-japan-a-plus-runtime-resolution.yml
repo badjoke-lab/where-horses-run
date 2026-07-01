@@ -1,0 +1,38 @@
+name: Calendar Japan A+ runtime resolution
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-readiness-japan-v2.json'
+      - 'data/static/authority-source-inventory-japan-v2.json'
+      - 'data/static/japan-a-plus-runtime-control.json'
+      - 'scripts/timetable/pipeline-v1/registry-overrides.mjs'
+      - 'scripts/check-japan-a-plus-runtime-resolution.mjs'
+      - '.github/workflows/calendar-japan-a-plus-runtime-resolution.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/calendar-readiness-japan-v2.json'
+      - 'data/static/authority-source-inventory-japan-v2.json'
+      - 'data/static/japan-a-plus-runtime-control.json'
+      - 'scripts/timetable/pipeline-v1/registry-overrides.mjs'
+      - 'scripts/check-japan-a-plus-runtime-resolution.mjs'
+      - '.github/workflows/calendar-japan-a-plus-runtime-resolution.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Japan A+ runtime resolution
+        run: node scripts/check-japan-a-plus-runtime-resolution.mjs
+      - name: Validate shared Calendar contracts
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
