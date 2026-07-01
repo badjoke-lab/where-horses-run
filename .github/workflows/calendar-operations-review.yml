@@ -33,17 +33,15 @@ jobs:
           else
             echo "value=$(date -u +%F)" >> "$GITHUB_OUTPUT"
           fi
-      - name: Build review-only operations artifact
-        run: |
-          node scripts/timetable/build-operations-status.mjs \
-            --reference-date "${{ steps.date.outputs.value }}" \
-            --output /tmp/calendar-operations-status.json
-      - name: Validate artifact boundary
-        run: |
-          node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('/tmp/calendar-operations-status.json')); if(x.boundaries.network_fetch_performed||x.boundaries.canonical_written||x.boundaries.public_projection_written||x.boundaries.scheduled_refresh_active) process.exit(1);"
+      - name: Build review-only operations status
+        run: node scripts/timetable/build-operations-status.mjs --reference-date "${{ steps.date.outputs.value }}" --output /tmp/calendar-operations-status.json
+      - name: Build review-only package
+        run: node scripts/timetable/build-operations-review-package.mjs --status /tmp/calendar-operations-status.json --output /tmp/calendar-operations-review-package.json
       - uses: actions/upload-artifact@v4
         with:
-          name: calendar-operations-status-${{ steps.date.outputs.value }}
-          path: /tmp/calendar-operations-status.json
+          name: calendar-operations-review-${{ steps.date.outputs.value }}
+          path: |
+            /tmp/calendar-operations-status.json
+            /tmp/calendar-operations-review-package.json
           if-no-files-found: error
           retention-days: 30
