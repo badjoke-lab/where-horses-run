@@ -1,0 +1,42 @@
+{
+  "schema_version": "pr-191-jra-calendar-day-display-adapter-v0",
+  "last_checked": "2026-06-05",
+  "purpose": "Define calendar and day-page adapter output for normalized JRA section records. Monthly calendar and day summaries consume summary records only. A race rows remain detail-page data only.",
+  "depends_on": ["PR-184", "PR-186", "PR-190"],
+  "source_records": "data/generated/timetable/pr-187-jra-normalized-section-records.json",
+  "monthly_calendar_adapter": {
+    "input": "summary_records",
+    "output": "monthly_rows",
+    "group_by": "meeting_date",
+    "row_shape": ["meeting_id", "meeting_date", "system", "racecourse", "rank", "first_race_time", "last_race_time", "race_count", "detail_page_path", "source_url", "verification_status", "last_checked"],
+    "must_not_include": ["race_times", "races", "race_rows"]
+  },
+  "day_page_adapter": {
+    "input": "summary_records",
+    "output": "day_page_meetings",
+    "group_by": "meeting_date",
+    "meeting_shape": ["meeting_id", "racecourse", "meeting_id_or_code", "rank", "first_race_time", "last_race_time", "race_count", "detail_page_path", "source_url", "verification_status"],
+    "must_not_include": ["race_times", "races", "race_rows"]
+  },
+  "detail_link_policy": {
+    "rank_A": "show detail_page_path on monthly and day summary rows",
+    "rank_B_plus": "show first_race_time and last_race_time only; detail link not required",
+    "detail_record_source": "detail_records"
+  },
+  "sample_monthly_rows": [
+    {"date":"2026-01-04","meetings":["jra-2026-01-04-nakayama","jra-2026-01-04-kyoto"]},
+    {"date":"2026-01-10","meetings":["jra-2026-01-10-nakayama","jra-2026-01-10-kyoto"]},
+    {"date":"2026-01-11","meetings":["jra-2026-01-11-nakayama","jra-2026-01-11-kyoto"]}
+  ],
+  "sample_day_pages": [
+    {"date":"2026-01-04","meeting_count":2,"uses_summary_records_only":true},
+    {"date":"2026-01-10","meeting_count":2,"uses_summary_records_only":true},
+    {"date":"2026-01-11","meeting_count":2,"uses_summary_records_only":true}
+  ],
+  "promotion_decision": {
+    "promote_jra_in_this_pr": false,
+    "rank_gate_applied": false,
+    "auto_fetch_route_added": false,
+    "this_pr_adds_display_adapter_contract_only": true
+  }
+}
