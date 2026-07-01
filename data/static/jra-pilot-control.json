@@ -1,0 +1,33 @@
+{
+  "schema_version": "jra-pilot-control-v1",
+  "work_id": "WHR-CAL-JAPAN-JRA",
+  "mode": "fixture_review_only",
+  "source_key": "japan/jra/jra-programme",
+  "system_id": "japan-jra-system",
+  "allowed_hosts": ["www.jra.go.jp", "jra.jp"],
+  "network_fetch_allowed": false,
+  "candidate_generation_allowed": true,
+  "automatic_approval_allowed": false,
+  "automatic_canonical_write_allowed": false,
+  "automatic_public_write_allowed": false,
+  "scheduled_operation_allowed": false,
+  "unattended_publication_allowed": false,
+  "freshness_rule": "source_check_on_or_after_registry_minimum",
+  "required_checks": [
+    "official_host",
+    "meeting_detail_parity",
+    "racecourse_scope",
+    "technical_rank",
+    "confirmed_fields",
+    "needs_review_state",
+    "no_public_write"
+  ],
+  "activation_prerequisites": [
+    "fresh_reviewed_fixture",
+    "validated_parser_or_import",
+    "candidate_v1_passes",
+    "human_promotion_owner",
+    "fallback_and_rollback_verified",
+    "bilingual_qa_plan"
+  ]
+}
