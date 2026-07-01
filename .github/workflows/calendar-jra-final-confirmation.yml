@@ -1,0 +1,57 @@
+name: Calendar JRA final confirmation
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/generated/timetable/jra-planned-program-intake.json'
+      - 'docs/calendar/jra-final-confirmation-contract.md'
+      - 'scripts/timetable/jra-final-confirmation-core.mjs'
+      - 'scripts/check-jra-final-confirmation-contract.mjs'
+      - '.github/workflows/calendar-jra-final-confirmation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/static/jra-pilot-control.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/generated/timetable/jra-planned-program-intake.json'
+      - 'docs/calendar/jra-final-confirmation-contract.md'
+      - 'scripts/timetable/jra-final-confirmation-core.mjs'
+      - 'scripts/check-jra-final-confirmation-contract.mjs'
+      - '.github/workflows/calendar-jra-final-confirmation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate final-confirmation contract
+        run: node scripts/check-jra-final-confirmation-contract.mjs
+      - name: Validate planned intake and pilot foundation
+        run: |
+          node scripts/check-jra-planned-intake.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+      - name: Validate operations and runtime boundaries
+        run: |
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Prove clean worktree
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
