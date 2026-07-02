@@ -22,6 +22,15 @@ jobs:
           node-version: 22.12.0
       - name: Validate launcher syntax
         run: sh -n refresh-jra-manual
+      - name: Validate isolated checkout contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F -- '--filter=blob:none' refresh-jra-manual
+          grep -F -- '--no-checkout' refresh-jra-manual
+          grep -F 'sparse-checkout init --no-cone' refresh-jra-manual
+          grep -F '!/docs/' refresh-jra-manual
+          grep -F 'trap cleanup' refresh-jra-manual
       - name: Validate Node syntax
         run: node --check scripts/timetable/manual-refresh-jra.mjs
       - name: Validate command contract
