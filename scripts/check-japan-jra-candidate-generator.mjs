@@ -162,7 +162,7 @@ for (const required of [
 const approved = structuredClone(candidates);
 approved.review = {
   status: 'approved',
-  reviewed_at: '2026-06-10T00:00:00.000Z',
+  reviewed_at: candidates.generated_at,
   reviewer: 'jra-reference-adapter-validator',
   summary: 'In-memory approval fixture for validating the reference adapter output.',
   promotion_target: promotionTargetV1
