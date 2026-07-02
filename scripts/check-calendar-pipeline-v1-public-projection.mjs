@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildPublicProjectionV1, publicProjectionRanksV1 } from './timetable/pipeline-v1/public-projection-core.mjs';
+import { loadCalendarReadinessV1 } from './timetable/load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -17,7 +18,6 @@ const paths = {
   canonicalMeetings: 'data/generated/timetable/canonical/meetings.json',
   canonicalDetails: 'data/generated/timetable/canonical/meeting-details.json',
   policy: 'src/data/publicationDisplayPolicies.json',
-  readiness: 'data/static/calendar-readiness-registry.json',
   aliases: 'data/static/timetable-source-aliases-v1.json',
   authority: 'data/static/authority-source-inventory.json',
   publicMeetings: 'data/generated/timetable/public/meeting-list.json',
@@ -27,7 +27,7 @@ const paths = {
 const canonicalMeetings = parse(paths.canonicalMeetings);
 const canonicalDetails = parse(paths.canonicalDetails);
 const policyData = parse(paths.policy);
-const readinessRegistry = parse(paths.readiness);
+const readinessRegistry = loadCalendarReadinessV1(root);
 const sourceAliases = parse(paths.aliases);
 const authorityInventory = parse(paths.authority);
 const publicBefore = {
@@ -202,7 +202,7 @@ for (const forbidden of ['new Date(', 'Date.now(', 'data/candidates/', 'source_s
 for (const forbidden of ['data/candidates/', 'hkjc-racecard-source-snapshot.json', 'normalized-timetable.json', 'timetables.json']) {
   if (writer.includes(forbidden)) fail(`projection writer reads non-canonical input: ${forbidden}`);
 }
-for (const required of ['canonicalMeetings', 'canonicalDetails', 'readinessRegistry', 'sourceAliases', 'PUBLIC_PROJECTION_WRITE_MODE: deterministic-public-only']) {
+for (const required of ['canonicalMeetings', 'canonicalDetails', 'readinessRegistry', 'sourceAliases', 'loadCalendarReadinessV1', 'PUBLIC_PROJECTION_WRITE_MODE: deterministic-public-only']) {
   if (!writer.includes(required)) fail(`projection writer missing ${required}`);
 }
 
