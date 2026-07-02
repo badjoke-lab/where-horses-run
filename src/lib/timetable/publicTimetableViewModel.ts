@@ -1,5 +1,6 @@
 import meetingListData from '../../../data/generated/timetable/public/meeting-list.json';
 import meetingDetailsData from '../../../data/generated/timetable/public/meeting-details.json';
+import japanAPlusOverridesData from '../../../data/generated/timetable/public/japan-a-plus-overrides.json';
 import type { CapabilityRank } from './canonicalTypes.ts';
 
 export type PublicTimetableMeetingRow = {
@@ -67,41 +68,87 @@ type PublicMeetingDetailsDataset = {
   readonly details: readonly PublicTimetableMeetingDetail[];
 };
 
+type JapanMeetingOverride = Pick<
+  PublicTimetableMeetingRow,
+  'meeting_id' | 'max_public_rank' | 'effective_public_rank'
+>;
+
+type JapanDetailOverride = Pick<
+  PublicTimetableMeetingDetail,
+  | 'meeting_id'
+  | 'max_public_rank'
+  | 'effective_public_rank'
+  | 'show_race_name'
+  | 'show_distance'
+  | 'show_surface'
+  | 'show_course'
+  | 'timetable_rows'
+>;
+
+type JapanAPlusPublicOverrides = {
+  readonly schema_version: 'japan-a-plus-public-overrides-v1';
+  readonly generated_at: string;
+  readonly meeting_overrides: readonly JapanMeetingOverride[];
+  readonly detail_overrides: readonly JapanDetailOverride[];
+};
+
 const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
+const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;
+
+if (
+  japanAPlusOverrides.generated_at !== meetingListDataset.generated_at ||
+  japanAPlusOverrides.generated_at !== meetingDetailsDataset.generated_at
+) {
+  throw new Error('Japan A+ public overrides do not match the public timetable generation timestamp.');
+}
+
+const meetingOverrideIndex = new Map(
+  japanAPlusOverrides.meeting_overrides.map((override) => [override.meeting_id, override]),
+);
+const detailOverrideIndex = new Map(
+  japanAPlusOverrides.detail_overrides.map((override) => [override.meeting_id, override]),
+);
+
+const publicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings.map(
+  (meeting) => {
+    const override = meetingOverrideIndex.get(meeting.meeting_id);
+    return override ? { ...meeting, ...override } : meeting;
+  },
+);
+
+const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
+  meetingDetailsDataset.details.map((detail) => {
+    const override = detailOverrideIndex.get(detail.meeting_id);
+    return override ? { ...detail, ...override } : detail;
+  });
 
 export function getPublicTimetableGeneratedAt(): string {
   return meetingListDataset.generated_at;
 }
 
 export function getPublicTimetableMeetingRows(): readonly PublicTimetableMeetingRow[] {
-  return meetingListDataset.meetings;
+  return publicMeetingRows;
 }
 
 export function getPublicTimetableMeetingRowsByCountry(
   countryId: string,
 ): readonly PublicTimetableMeetingRow[] {
-  return meetingListDataset.meetings.filter(
-    (meeting) => meeting.country_id === countryId,
-  );
+  return publicMeetingRows.filter((meeting) => meeting.country_id === countryId);
 }
 
 export function getPublicTimetableMeetingRowsByRacecourse(
   racecourseId: string,
 ): readonly PublicTimetableMeetingRow[] {
-  return meetingListDataset.meetings.filter(
-    (meeting) => meeting.racecourse_id === racecourseId,
-  );
+  return publicMeetingRows.filter((meeting) => meeting.racecourse_id === racecourseId);
 }
 
 export function getPublicTimetableMeetingDetail(
   meetingId: string,
 ): PublicTimetableMeetingDetail | undefined {
-  return meetingDetailsDataset.details.find(
-    (detail) => detail.meeting_id === meetingId,
-  );
+  return publicMeetingDetails.find((detail) => detail.meeting_id === meetingId);
 }
 
 export function getPublicTimetableMeetingDetails(): readonly PublicTimetableMeetingDetail[] {
-  return meetingDetailsDataset.details;
+  return publicMeetingDetails;
 }
