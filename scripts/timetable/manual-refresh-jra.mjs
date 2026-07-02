@@ -15,6 +15,16 @@ const generatedPaths = [
   'data/generated/timetable/public/meeting-details.json',
 ];
 
+let rollbackGenerated = false;
+process.on('exit', (code) => {
+  if (code !== 0 && rollbackGenerated) {
+    spawnSync('git', ['restore', '--staged', '--worktree', '--', ...generatedPaths], {
+      cwd: root,
+      stdio: 'ignore',
+    });
+  }
+});
+
 function fail(message) {
   console.error(`\n[JRA manual refresh] ERROR: ${message}`);
   process.exit(1);
@@ -135,6 +145,7 @@ run('git', ['pull', '--ff-only', 'origin', 'main']);
 
 if (changedPaths().length) fail('Working tree changed while updating main. Aborting.');
 
+rollbackGenerated = true;
 run(process.execPath, [
   'scripts/timetable/refresh-jra.mjs',
   `--from=${range.from}`,
@@ -155,6 +166,7 @@ if (unexpected.length) {
 
 const generatedChanges = allChanges.filter((file) => generatedPaths.includes(file));
 if (!generatedChanges.length) {
+  rollbackGenerated = false;
   console.log(`\n[JRA manual refresh] No data changes for ${month}. No branch or PR was created.`);
   process.exit(0);
 }
@@ -165,11 +177,13 @@ run('git', ['add', '--', ...generatedPaths]);
 
 const staged = spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: root });
 if (staged.status === 0) {
+  rollbackGenerated = false;
   console.log('\n[JRA manual refresh] No staged differences. Nothing to push.');
   process.exit(0);
 }
 
 run('git', ['commit', '-m', `Update JRA programme for ${month}`]);
+rollbackGenerated = false;
 run('git', ['push', '--force-with-lease', '--set-upstream', 'origin', branch]);
 
 const title = `Update JRA ${month} programme`;
