@@ -1,13 +1,13 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildPublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const paths = {
   canonicalMeetings: 'data/generated/timetable/canonical/meetings.json',
   canonicalDetails: 'data/generated/timetable/canonical/meeting-details.json',
   policy: 'src/data/publicationDisplayPolicies.json',
-  readiness: 'data/static/calendar-readiness-registry.json',
   aliases: 'data/static/timetable-source-aliases-v1.json',
   publicMeetings: 'data/generated/timetable/public/meeting-list.json',
   publicDetails: 'data/generated/timetable/public/meeting-details.json'
@@ -37,11 +37,12 @@ function atomicWrite(relativePath, content) {
 }
 
 try {
+  const readinessRegistry = loadCalendarReadinessV1(root);
   const result = buildPublicProjectionV1({
     canonicalMeetings: readJson(paths.canonicalMeetings),
     canonicalDetails: readJson(paths.canonicalDetails),
     policyData: readJson(paths.policy),
-    readinessRegistry: readJson(paths.readiness),
+    readinessRegistry,
     sourceAliases: readJson(paths.aliases)
   });
 
