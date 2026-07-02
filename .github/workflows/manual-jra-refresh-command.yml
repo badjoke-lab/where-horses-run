@@ -5,6 +5,7 @@ on:
     paths:
       - 'refresh-jra-manual'
       - 'scripts/timetable/manual-refresh-jra.mjs'
+      - 'scripts/timetable/sync-jra-derived-artifacts.mjs'
       - 'docs/calendar/manual-jra-refresh.md'
       - '.github/workflows/manual-jra-refresh-command.yml'
   workflow_dispatch:
@@ -32,7 +33,9 @@ jobs:
           grep -F '!/docs/' refresh-jra-manual
           grep -F 'trap cleanup' refresh-jra-manual
       - name: Validate Node syntax
-        run: node --check scripts/timetable/manual-refresh-jra.mjs
+        run: |
+          node --check scripts/timetable/manual-refresh-jra.mjs
+          node --check scripts/timetable/sync-jra-derived-artifacts.mjs
       - name: Validate command contract
         shell: bash
         run: |
@@ -40,7 +43,16 @@ jobs:
           grep -F "scripts/timetable/refresh-jra.mjs" scripts/timetable/manual-refresh-jra.mjs
           grep -F "scripts/timetable/build-japan-a-plus-public-overrides.mjs" scripts/timetable/manual-refresh-jra.mjs
           grep -F "scripts/check-japan-a-plus-public-overrides.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/timetable/sync-jra-derived-artifacts.mjs" scripts/timetable/manual-refresh-jra.mjs
           grep -F "data/generated/timetable/public/japan-a-plus-overrides.json" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "data/candidates/japan-jra-candidates.json" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "data/generated/timetable/jra-pilot-review.json" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "data/generated/timetable/operations-status.json" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "data/generated/timetable/operations-review-package.json" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/check-japan-jra-candidate-generator.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/check-jra-pilot-foundation.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/check-calendar-operations-status.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/check-calendar-operations-review-package.mjs" scripts/timetable/manual-refresh-jra.mjs
           grep -F "a_plus_meetings" scripts/timetable/manual-refresh-jra.mjs
           grep -F "isExpectedNonRacing403" scripts/timetable/manual-refresh-jra.mjs
           grep -F "}).trimEnd();" scripts/timetable/manual-refresh-jra.mjs
