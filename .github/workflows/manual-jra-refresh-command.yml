@@ -39,9 +39,11 @@ jobs:
           set -euo pipefail
           grep -F "scripts/timetable/refresh-jra.mjs" scripts/timetable/manual-refresh-jra.mjs
           grep -F "a_plus_meetings" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "isExpectedNonRacing403" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "'install', '--package-lock=false', '--no-audit', '--no-fund'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'push', '--force-with-lease'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'pr', 'create'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "rollbackGenerated" scripts/timetable/manual-refresh-jra.mjs
           ! grep -E '^[[:space:]]+(schedule:|- cron:)' .github/workflows/manual-jra-refresh-command.yml
-      - run: npm install --package-lock=false
+      - run: npm install --package-lock=false --no-audit --no-fund
       - run: npm run build
