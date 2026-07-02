@@ -88,6 +88,14 @@ function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 }
 
+function isExpectedNonRacing403(entry) {
+  if (entry?.status !== 'http_error' || entry?.http_status !== 403) return false;
+  const date = new Date(`${entry.date}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return false;
+  const day = date.getUTCDay();
+  return day >= 1 && day <= 5;
+}
+
 function validateReport(report, range) {
   if (report.refresh_window?.from !== range.from || report.refresh_window?.to !== range.to) {
     fail('Refresh report date range does not match the requested month.');
@@ -105,8 +113,14 @@ function validateReport(report, range) {
     fail(`Not every publishable meeting reached A+ (publishable=${report.publishable_meetings}, A+=${report.a_plus_meetings}, A=${report.a_level_meetings}).`);
   }
 
-  const badStatuses = (report.statuses ?? []).filter((entry) =>
-    !['meetings_extracted', 'no_racing_page'].includes(entry.status)
+  const statuses = report.statuses ?? [];
+  const expectedNonRacing403s = statuses.filter(isExpectedNonRacing403);
+  if (expectedNonRacing403s.length) {
+    console.log(`[JRA manual refresh] Treated ${expectedNonRacing403s.length} weekday 403 responses as non-racing dates.`);
+  }
+
+  const badStatuses = statuses.filter((entry) =>
+    !['meetings_extracted', 'no_racing_page'].includes(entry.status) && !isExpectedNonRacing403(entry)
   );
   if (badStatuses.length) {
     fail(`Source failures were recorded: ${badStatuses.map((entry) => `${entry.date}:${entry.status}:${entry.http_status ?? entry.network_error ?? 'unknown'}`).join(', ')}`);
