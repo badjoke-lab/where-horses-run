@@ -25,15 +25,25 @@ const result = buildPublicProjectionV1({
   sourceAliases: readJson('data/static/timetable-source-aliases-v1.json'),
 });
 
-const meetingId = 'jra-hanshin-racecourse-2026-06-06';
-const decision = result.audit.decisions.find((item) => item.meeting_id === meetingId);
-const detail = result.meetingDetailsDataset.details.find((item) => item.meeting_id === meetingId);
-assert(decision, 'missing JRA projection decision fixture');
+const decision = result.audit.decisions.find((item) =>
+  item.readiness_id === jraReadiness.readiness_id &&
+  item.effective_public_rank === 'A+' &&
+  result.meetingDetailsDataset.details.some((detail) => detail.meeting_id === item.meeting_id)
+);
+const detail = decision
+  ? result.meetingDetailsDataset.details.find((item) => item.meeting_id === decision.meeting_id)
+  : null;
+assert(decision, 'missing current JRA A+ projection decision fixture');
+assert(decision.max_public_rank === 'A+', 'JRA fixture maximum public rank must be A+');
 assert(decision.effective_public_rank === 'A+', 'JRA fixture must project at A+');
-assert(detail, 'missing JRA A+ detail fixture');
+assert(detail, 'missing current JRA A+ detail fixture');
 assert(detail.show_race_name && detail.show_distance && detail.show_surface && detail.show_course, 'JRA A+ detail flags are incomplete');
+assert(detail.timetable_rows.length > 0, 'JRA A+ detail must contain timetable rows');
 assert(detail.timetable_rows.every((row) =>
-  'race_name' in row && 'distance_m' in row && 'surface' in row && 'course_label' in row
+  'race_name' in row && row.race_name &&
+  Number.isInteger(row.distance_m) && row.distance_m > 0 &&
+  'surface' in row && row.surface &&
+  'course_label' in row && row.course_label
 ), 'JRA A+ timetable rows are incomplete');
 
-console.log('JRA_READINESS_AMENDMENT: pass');
+console.log(`JRA_READINESS_AMENDMENT: pass meeting=${decision.meeting_id} rows=${detail.timetable_rows.length}`);
