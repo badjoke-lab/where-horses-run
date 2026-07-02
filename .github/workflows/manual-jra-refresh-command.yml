@@ -33,6 +33,6 @@ jobs:
           grep -F "'push', '--force-with-lease'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'pr', 'create'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "rollbackGenerated" scripts/timetable/manual-refresh-jra.mjs
-          ! grep -E "schedule:|cron:" .github/workflows/manual-jra-refresh-command.yml
+          ! grep -E '^[[:space:]]+(schedule:|- cron:)' .github/workflows/manual-jra-refresh-command.yml
       - run: npm install --package-lock=false
       - run: npm run build
