@@ -26,7 +26,7 @@ for (const key of ['network_fetch_allowed','automatic_approval_allowed','automat
 }
 if (control.candidate_generation_allowed !== true) fail('candidate generation must remain allowed.');
 
-if (Object.keys(review.input_digests ?? {}).length !== 8) fail('eight JRA pilot input digests are required.');
+if (Object.keys(review.input_digests ?? {}).length !== 11) fail('eleven JRA pilot input digests are required.');
 for (const [key, value] of Object.entries(review.input_digests ?? {})) {
   if (!key.endsWith('_sha256') || !/^[a-f0-9]{64}$/.test(value)) fail(`invalid digest ${key}.`);
 }
