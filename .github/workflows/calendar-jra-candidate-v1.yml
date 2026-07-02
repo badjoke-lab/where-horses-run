@@ -45,28 +45,64 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Check whether JRA derived artifacts are current
+        id: candidate_check
+        continue-on-error: true
+        run: node scripts/generate-japan-jra-candidates.mjs --check
+      - name: Synchronize the trusted operator refresh branch
+        if: >-
+          steps.candidate_check.outcome == 'failure' &&
+          github.event_name == 'pull_request' &&
+          startsWith(github.head_ref, 'automation/jra-manual-') &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          TARGET_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          node scripts/timetable/sync-jra-derived-artifacts.mjs
+          node scripts/generate-japan-jra-candidates.mjs --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- \
+            data/candidates/japan-jra-candidates.json \
+            data/generated/timetable/jra-pilot-review.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo 'JRA derived artifacts are already synchronized.'
+          else
+            git commit -m 'Synchronize JRA derived review artifacts'
+            git push origin "HEAD:${TARGET_BRANCH}"
+          fi
       - name: Verify deterministic JRA candidate output
         run: node scripts/generate-japan-jra-candidates.mjs --check
       - name: Validate JRA v1 reference adapter
         run: node scripts/check-japan-jra-candidate-generator.mjs
       - name: Validate shared candidate contract
         run: node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+      - name: Validate synchronized review artifacts
+        run: |
+          node scripts/check-jra-pilot-foundation.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
       - name: Confirm runtime boundary and static build
         run: |
           node scripts/check-calendar-runtime-import-boundary.mjs
           npm install --package-lock=false
           npm run build
-      - name: Generate synchronized JRA diagnostic artifacts
+      - name: Generate diagnostic artifacts
         if: failure()
         run: |
           node scripts/timetable/sync-jra-derived-artifacts.mjs
@@ -76,7 +112,7 @@ jobs:
           cp data/generated/timetable/jra-pilot-review.json /tmp/jra-derived-artifacts/data/generated/timetable/
           cp data/generated/timetable/operations-status.json /tmp/jra-derived-artifacts/data/generated/timetable/
           cp data/generated/timetable/operations-review-package.json /tmp/jra-derived-artifacts/data/generated/timetable/
-      - name: Upload synchronized JRA diagnostic artifacts
+      - name: Upload diagnostic artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
