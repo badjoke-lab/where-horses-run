@@ -30,11 +30,13 @@ The launcher does not modify or depend on the current local working tree. It cre
 4. Checks that `git`, `gh`, and `npm` are installed and that `gh` is authenticated.
 5. Runs the existing `scripts/timetable/refresh-jra.mjs` Japanese programme-page fetcher for the whole selected month.
 6. Rejects the result unless at least one meeting is extracted and every publishable meeting reaches A+.
-7. Rejects HTTP, network, parser, runtime-boundary, and build failures.
-8. Restores generated timetable files automatically when validation fails.
-9. If data changed, commits only the approved generated timetable files to `automation/jra-manual-YYYY-MM`.
-10. Pushes the branch and creates or updates a review PR.
-11. Leaves production unchanged until the review PR is merged.
+7. Runs the runtime-boundary check.
+8. Installs the temporary checkout's build dependencies without creating a package lock file.
+9. Builds the site with Astro.
+10. Restores generated timetable files automatically when validation or build fails.
+11. If data changed, commits only the approved generated timetable files to `automation/jra-manual-YYYY-MM`.
+12. Pushes the branch and creates or updates a review PR.
+13. Leaves production unchanged until the review PR is merged.
 
 ## Published fields
 
@@ -51,4 +53,4 @@ It does not store raw HTML, runners, horses, jockeys, trainers, odds, results, p
 
 ## Failure behavior
 
-A failed acquisition, incomplete A+ result, unexpected file change, runtime-boundary failure, or build failure does not push a branch and does not create a PR. The previously merged site data remains in place, and the original working directory is not changed.
+A failed acquisition, incomplete A+ result, dependency-install failure, unexpected file change, runtime-boundary failure, or build failure does not push a branch and does not create a PR. The previously merged site data remains in place, and the original working directory is not changed.
