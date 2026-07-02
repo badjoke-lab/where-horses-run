@@ -1,1 +1,0 @@
-Temporary branch marker for the JRA official PDF fetch probe. The probe verifies that GitHub-hosted Actions can download official JRA static PDF sources before any production acquisition path is changed.
