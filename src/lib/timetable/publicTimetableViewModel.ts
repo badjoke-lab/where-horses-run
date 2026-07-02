@@ -1,6 +1,7 @@
 import meetingListData from '../../../data/generated/timetable/public/meeting-list.json';
 import meetingDetailsData from '../../../data/generated/timetable/public/meeting-details.json';
 import japanAPlusOverridesData from '../../../data/generated/timetable/public/japan-a-plus-overrides.json';
+import jraCurrentMonthData from '../../../data/generated/timetable/public/jra-current-month.json';
 import type { CapabilityRank } from './canonicalTypes.ts';
 
 export type PublicTimetableMeetingRow = {
@@ -92,9 +93,21 @@ type JapanAPlusPublicOverrides = {
   readonly detail_overrides: readonly JapanDetailOverride[];
 };
 
+type JraCurrentMonthPublicDataset = {
+  readonly schema_version: 'jra-current-month-public-v1';
+  readonly status: 'awaiting_first_fetch' | 'fetched_official_programme';
+  readonly month: string;
+  readonly generated_at: string;
+  readonly source_notice: string;
+  readonly source_pages: readonly string[];
+  readonly meetings: readonly PublicTimetableMeetingRow[];
+  readonly details: readonly PublicTimetableMeetingDetail[];
+};
+
 const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
 const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;
+const jraCurrentMonthDataset = jraCurrentMonthData as JraCurrentMonthPublicDataset;
 
 if (
   japanAPlusOverrides.generated_at !== meetingListDataset.generated_at ||
@@ -110,21 +123,36 @@ const detailOverrideIndex = new Map(
   japanAPlusOverrides.detail_overrides.map((override) => [override.meeting_id, override]),
 );
 
-const publicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings.map(
-  (meeting) => {
-    const override = meetingOverrideIndex.get(meeting.meeting_id);
-    return override ? { ...meeting, ...override } : meeting;
-  },
-);
+const historicalMeetingRows = meetingListDataset.meetings.map((meeting) => {
+  const override = meetingOverrideIndex.get(meeting.meeting_id);
+  return override ? { ...meeting, ...override } : meeting;
+});
+const historicalMeetingDetails = meetingDetailsDataset.details.map((detail) => {
+  const override = detailOverrideIndex.get(detail.meeting_id);
+  return override ? { ...detail, ...override } : detail;
+});
 
-const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
-  meetingDetailsDataset.details.map((detail) => {
-    const override = detailOverrideIndex.get(detail.meeting_id);
-    return override ? { ...detail, ...override } : detail;
-  });
+function mergeByMeetingId<T extends { readonly meeting_id: string }>(
+  historical: readonly T[],
+  current: readonly T[],
+): readonly T[] {
+  const index = new Map(historical.map((record) => [record.meeting_id, record]));
+  for (const record of current) index.set(record.meeting_id, record);
+  return [...index.values()].sort((left, right) => left.meeting_id.localeCompare(right.meeting_id));
+}
+
+const publicMeetingRows = mergeByMeetingId(
+  historicalMeetingRows,
+  jraCurrentMonthDataset.meetings,
+).sort((left, right) => `${left.date}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.racecourse_id}`));
+
+const publicMeetingDetails = mergeByMeetingId(
+  historicalMeetingDetails,
+  jraCurrentMonthDataset.details,
+).sort((left, right) => `${left.date}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.racecourse_id}`));
 
 export function getPublicTimetableGeneratedAt(): string {
-  return meetingListDataset.generated_at;
+  return [meetingListDataset.generated_at, jraCurrentMonthDataset.generated_at].sort().at(-1) ?? meetingListDataset.generated_at;
 }
 
 export function getPublicTimetableMeetingRows(): readonly PublicTimetableMeetingRow[] {
