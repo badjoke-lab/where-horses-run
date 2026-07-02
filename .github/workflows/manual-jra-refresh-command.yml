@@ -38,6 +38,9 @@ jobs:
         run: |
           set -euo pipefail
           grep -F "scripts/timetable/refresh-jra.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/timetable/build-japan-a-plus-public-overrides.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "scripts/check-japan-a-plus-public-overrides.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "data/generated/timetable/public/japan-a-plus-overrides.json" scripts/timetable/manual-refresh-jra.mjs
           grep -F "a_plus_meetings" scripts/timetable/manual-refresh-jra.mjs
           grep -F "isExpectedNonRacing403" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'install', '--package-lock=false', '--no-audit', '--no-fund'" scripts/timetable/manual-refresh-jra.mjs
@@ -45,5 +48,7 @@ jobs:
           grep -F "'pr', 'create'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "rollbackGenerated" scripts/timetable/manual-refresh-jra.mjs
           ! grep -E '^[[:space:]]+(schedule:|- cron:)' .github/workflows/manual-jra-refresh-command.yml
+      - name: Validate current Japan A+ override synchronization
+        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
       - run: npm install --package-lock=false --no-audit --no-fund
       - run: npm run build
