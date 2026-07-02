@@ -29,7 +29,8 @@ const forbiddenPaths = [
 const allowedPublicFiles = new Set([
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
-  'data/generated/timetable/public/japan-a-plus-overrides.json'
+  'data/generated/timetable/public/japan-a-plus-overrides.json',
+  'data/generated/timetable/public/jra-current-month.json'
 ]);
 
 function toRepoPath(file) {
