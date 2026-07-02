@@ -1,7 +1,7 @@
 {
   "schema_version": "calendar-operations-status-v1",
-  "as_of_date": "2026-07-01",
-  "generated_at": "2026-07-01T00:00:00.000Z",
+  "as_of_date": "2026-07-02",
+  "generated_at": "2026-07-02T00:00:00.000Z",
   "mode": "review_only_no_network",
   "boundaries": {
     "network_fetch_performed": false,
@@ -11,14 +11,14 @@
   },
   "source_summary": {
     "readiness_record_count": 116,
-    "revalidation_due_count": 43,
+    "revalidation_due_count": 50,
     "blocked_count": 18,
     "unavailable_count": 2,
     "action_counts": {
       "blocked_review": 18,
-      "manual_revalidation_due": 17,
-      "none": 54,
-      "source_revalidation_due": 26,
+      "manual_revalidation_due": 19,
+      "none": 47,
+      "source_revalidation_due": 31,
       "source_unavailable_review": 1
     }
   },
@@ -26,24 +26,24 @@
     "path": "data/candidates/japan-jra-candidates.json",
     "adapter_id": "jra-normalized-programme-candidate-v1",
     "review_status": "needs_review",
-    "record_count": 4,
-    "source_checked_date": "2026-06-09",
+    "record_count": 24,
+    "source_checked_date": "2026-07-02",
     "registry_minimum_date": "2026-06-17",
-    "promotion_blocked_by_freshness": true,
-    "action": "refresh_before_promotion"
+    "promotion_blocked_by_freshness": false,
+    "action": "human_review_required"
   },
   "public_projection": {
-    "generated_at": "2026-06-09T15:02:29.605Z",
-    "generated_date": "2026-06-09",
-    "age_days": 22,
-    "meeting_count": 23,
-    "detail_count": 5,
+    "generated_at": "2026-07-02T16:48:23.831Z",
+    "generated_date": "2026-07-02",
+    "age_days": 0,
+    "meeting_count": 45,
+    "detail_count": 26,
     "earliest_meeting_date": "2026-04-01",
-    "latest_meeting_date": "2026-07-15",
-    "current_window_start": "2026-07-01",
-    "current_window_end_exclusive": "2026-07-31",
-    "current_window_meeting_count": 5,
-    "stale_for_current_window": true
+    "latest_meeting_date": "2026-07-26",
+    "current_window_start": "2026-07-02",
+    "current_window_end_exclusive": "2026-08-01",
+    "current_window_meeting_count": 28,
+    "stale_for_current_window": false
   },
   "sources": [
     {
@@ -59,7 +59,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -78,7 +78,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -97,7 +97,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -115,7 +115,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -134,7 +134,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -152,7 +152,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -171,7 +171,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -190,7 +190,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -208,7 +208,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -227,7 +227,7 @@
         "seasonal"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -246,7 +246,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -265,7 +265,7 @@
         "manual"
       ],
       "checked_date": "2026-06-10",
-      "age_days": 21,
+      "age_days": 22,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -284,7 +284,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -304,7 +304,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -323,7 +323,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -341,7 +341,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -360,7 +360,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -379,7 +379,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "blocked_review",
@@ -398,7 +398,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -418,7 +418,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -438,7 +438,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -457,7 +457,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -476,7 +476,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -495,7 +495,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -514,7 +514,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -533,7 +533,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -552,7 +552,27 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "ecuador--miguel-salem-dibo-system--msd-calendar",
+      "country_id": "ecuador",
+      "authority_source_key": "ecuador/hipodromo-miguel-salem-dibo/msd-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -572,7 +592,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -591,7 +611,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -610,7 +630,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -629,7 +649,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -648,11 +668,31 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
       "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "tunisia--sch-national-racing-system--sch-official-calendar",
+      "country_id": "tunisia",
+      "authority_source_key": "tunisia/societe-des-courses-hippiques/sch-official-calendar",
+      "readiness": "manual_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "manual_confirmation",
+      "source_status": "partial",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "manual_revalidation_due",
+      "fallback": "official_link_only"
     },
     {
       "readiness_id": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
@@ -668,7 +708,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 8,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -687,7 +727,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -706,7 +746,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "manual_revalidation_due",
@@ -725,7 +765,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -744,31 +784,11 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
-      "country_id": "belgium",
-      "authority_source_key": "belgium/belgian-federation-horse-racing/belgium-racing-calendar",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "daily",
-        "weekly",
-        "near_meeting"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "belize--national-racing-schedule--horse-racing-belize-schedule",
@@ -784,7 +804,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -804,7 +824,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 2,
       "revalidation_due": false,
       "action": "none",
@@ -823,7 +843,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -843,7 +863,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -863,7 +883,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -882,7 +902,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -901,47 +921,8 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 35,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
-      "country_id": "dominican-republic",
-      "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "weekly",
-        "near_meeting"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "downgrade_to_C"
-    },
-    {
-      "readiness_id": "ecuador--miguel-salem-dibo-system--msd-calendar",
-      "country_id": "ecuador",
-      "authority_source_key": "ecuador/hipodromo-miguel-salem-dibo/msd-calendar",
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "manual_confirmation",
-      "source_status": "partial",
-      "refresh_classes": [
-        "weekly",
-        "near_meeting",
-        "manual"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
@@ -959,31 +940,11 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
-      "country_id": "estonia",
-      "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "near_meeting",
-        "monthly",
-        "seasonal"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "finland--finland-suomen-hippos-harness-system--hippos-calendar-2026",
@@ -998,7 +959,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1017,7 +978,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1037,7 +998,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1056,7 +1017,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1075,7 +1036,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1095,7 +1056,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -1114,7 +1075,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1133,7 +1094,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1152,7 +1113,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1171,7 +1132,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1190,7 +1151,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -1209,7 +1170,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -1229,7 +1190,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -1249,7 +1210,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 35,
       "revalidation_due": false,
       "action": "none",
@@ -1268,7 +1229,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1287,7 +1248,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1306,31 +1267,11 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
-      "country_id": "lithuania",
-      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "near_meeting",
-        "monthly",
-        "seasonal"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "malaysia--malaysia-mra-system--mra-fixtures",
@@ -1345,7 +1286,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1364,7 +1305,7 @@
         "manual"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1383,7 +1324,7 @@
         "manual"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1402,7 +1343,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1422,7 +1363,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1441,7 +1382,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1460,7 +1401,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1480,7 +1421,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 8,
       "revalidation_due": false,
       "action": "none",
@@ -1499,7 +1440,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1518,7 +1459,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1537,30 +1478,11 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
-      "country_id": "panama",
-      "authority_source_key": "panama/hipica-de-panama/presidente-remon-programa-oficial",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "weekly",
-        "near_meeting"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "philippines--philippines-philracom-system--philracom-calendar",
@@ -1575,7 +1497,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1594,7 +1516,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1613,7 +1535,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1632,7 +1554,7 @@
         "manual"
       ],
       "checked_date": "2026-06-29",
-      "age_days": 2,
+      "age_days": 3,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1651,7 +1573,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1670,7 +1592,7 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1689,28 +1611,8 @@
         "manual"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 120,
-      "revalidation_due": false,
-      "action": "none",
-      "fallback": "official_link_only"
-    },
-    {
-      "readiness_id": "tunisia--sch-national-racing-system--sch-official-calendar",
-      "country_id": "tunisia",
-      "authority_source_key": "tunisia/societe-des-courses-hippiques/sch-official-calendar",
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "manual_confirmation",
-      "source_status": "partial",
-      "refresh_classes": [
-        "monthly",
-        "near_meeting",
-        "manual"
-      ],
-      "checked_date": "2026-06-29",
-      "age_days": 2,
-      "threshold_days": 2,
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
@@ -1728,7 +1630,7 @@
         "manual"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 120,
       "revalidation_due": false,
       "action": "none",
@@ -1748,7 +1650,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "none",
@@ -1768,7 +1670,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1787,11 +1689,31 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
       "fallback": "hide_from_current_calendar"
+    },
+    {
+      "readiness_id": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
+      "country_id": "belgium",
+      "authority_source_key": "belgium/belgian-federation-horse-racing/belgium-racing-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "canada--canada-standardbred-system--standardbred-canada-racing",
@@ -1806,7 +1728,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1825,7 +1747,46 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-10",
-      "age_days": 21,
+      "age_days": 22,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
+      "country_id": "dominican-republic",
+      "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
+      "country_id": "estonia",
+      "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1845,7 +1806,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1865,7 +1826,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1885,7 +1846,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1905,7 +1866,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1925,7 +1886,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1945,7 +1906,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1965,7 +1926,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -1984,7 +1945,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-18",
-      "age_days": 13,
+      "age_days": 14,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2004,7 +1965,27 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
+      "country_id": "lithuania",
+      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "near_meeting",
+        "monthly",
+        "seasonal"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2023,7 +2004,26 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
+      "threshold_days": 2,
+      "revalidation_due": true,
+      "action": "source_revalidation_due",
+      "fallback": "downgrade_to_C"
+    },
+    {
+      "readiness_id": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
+      "country_id": "panama",
+      "authority_source_key": "panama/hipica-de-panama/presidente-remon-programa-oficial",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-06-29",
+      "age_days": 3,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2042,7 +2042,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2061,7 +2061,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-15",
-      "age_days": 16,
+      "age_days": 17,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2081,7 +2081,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2101,7 +2101,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2121,7 +2121,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2141,7 +2141,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2160,7 +2160,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2179,7 +2179,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-17",
-      "age_days": 14,
+      "age_days": 15,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2199,7 +2199,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-09",
-      "age_days": 22,
+      "age_days": 23,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2219,7 +2219,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2239,7 +2239,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-10",
-      "age_days": 21,
+      "age_days": 22,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2258,7 +2258,7 @@
         "near_meeting"
       ],
       "checked_date": "2026-06-20",
-      "age_days": 11,
+      "age_days": 12,
       "threshold_days": 2,
       "revalidation_due": true,
       "action": "source_revalidation_due",
@@ -2277,7 +2277,7 @@
         "manual"
       ],
       "checked_date": "2026-06-30",
-      "age_days": 1,
+      "age_days": 2,
       "threshold_days": 90,
       "revalidation_due": false,
       "action": "source_unavailable_review",
@@ -2394,268 +2394,310 @@
       "reason": "readiness=blocked; source_status=partial"
     },
     {
+      "type": "human_review_required",
+      "key": "data/candidates/japan-jra-candidates.json",
+      "country_id": "japan",
+      "reason": "candidate review_status=needs_review"
+    },
+    {
       "type": "manual_revalidation_due",
       "key": "australia--australia-racing-australia-thoroughbred--racing-australia-racebooks",
       "country_id": "australia",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "austria--austria-reviewed-system--krieau-race-newspapers",
       "country_id": "austria",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "barbados--barbados-reviewed-system--barbados-programmes",
       "country_id": "barbados",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-cidade-jardim-system--cidade-jardim-programme",
       "country_id": "brazil",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-cristal-system--cristal-programme",
       "country_id": "brazil",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-gavea-system--gavea-programme",
       "country_id": "brazil",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "czech-republic--czech-chuchle-system--chuchle-racing-calendar",
       "country_id": "czech-republic",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "czech-republic--czech-most-system--most-racing-calendar",
       "country_id": "czech-republic",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "denmark--denmark-klampenborg-system--klampenborg-calendar",
       "country_id": "denmark",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "ecuador--miguel-salem-dibo-system--msd-calendar",
+      "country_id": "ecuador",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "hungary--hungary-reviewed-system--kincsem-programmes",
       "country_id": "hungary",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "new-zealand--new-zealand-harness-system--hrnz-raceday-calendar",
       "country_id": "new-zealand",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
       "country_id": "puerto-rico",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "sweden--sweden-svensk-galopp-system--svensk-galopp-calendar",
       "country_id": "sweden",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",
       "country_id": "trinidad-and-tobago",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
+    },
+    {
+      "type": "manual_revalidation_due",
+      "key": "tunisia--sch-national-racing-system--sch-official-calendar",
+      "country_id": "tunisia",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
       "country_id": "united-kingdom",
-      "reason": "checked 11 days ago; threshold 8 days"
+      "reason": "checked 12 days ago; threshold 8 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "uruguay--uruguay-hru-system--hru-calendar",
       "country_id": "uruguay",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "manual_revalidation_due",
       "key": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",
       "country_id": "zimbabwe",
-      "reason": "checked 14 days ago; threshold 2 days"
-    },
-    {
-      "type": "refresh_before_promotion",
-      "key": "data/candidates/japan-jra-candidates.json",
-      "country_id": "japan",
-      "reason": "candidate source 2026-06-09 predates registry 2026-06-17"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "argentina--argentina-palermo-system--palermo-schedules",
       "country_id": "argentina",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "bahrain--bahrain-turf-club-system--btc-racecard-route",
       "country_id": "bahrain",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
+      "country_id": "belgium",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "canada--canada-standardbred-system--standardbred-canada-racing",
       "country_id": "canada",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "chile--chile-venue-programme-network--teletrak-calendar",
       "country_id": "chile",
-      "reason": "checked 21 days ago; threshold 2 days"
+      "reason": "checked 22 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
+      "country_id": "dominican-republic",
+      "reason": "checked 3 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
+      "country_id": "estonia",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "france--france-france-galop-system--france-galop-calendar",
       "country_id": "france",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "france--france-letrot-system--letrot-upcoming",
       "country_id": "france",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
       "country_id": "germany",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
       "country_id": "hong-kong",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "india--india-bangalore-turf-club--bangalore-fixtures",
       "country_id": "india",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "india--india-rwitc-system--rwitc-calendar",
       "country_id": "india",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "ireland--ireland-hri-system--hri-fixtures",
       "country_id": "ireland",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "jamaica--jamaica-reviewed-system--caymanas-race-cards",
       "country_id": "jamaica",
-      "reason": "checked 13 days ago; threshold 2 days"
+      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "japan--japan-jra-system--jra-programme",
       "country_id": "japan",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "lithuania--trotting-league-system--trotting-league-2026-calendar",
+      "country_id": "lithuania",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "new-zealand--new-zealand-thoroughbred-system--loveracing-race-info",
       "country_id": "new-zealand",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
+    },
+    {
+      "type": "source_revalidation_due",
+      "key": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
+      "country_id": "panama",
+      "reason": "checked 3 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "peru--peru-monterrico-programme-system--monterrico-upcoming-programmes",
       "country_id": "peru",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
       "country_id": "qatar",
-      "reason": "checked 16 days ago; threshold 2 days"
+      "reason": "checked 17 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "romania--romania-ploiesti-system--ploiesti-racing-notices",
       "country_id": "romania",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "saudi-arabia--saudi-arabia-jcsa-system--jcsa-races",
       "country_id": "saudi-arabia",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "serbia--serbia-belgrade-hippodrome-system--belgrade-2026-season",
       "country_id": "serbia",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "slovakia--slovakia-zavodisko-system--zavodisko-2026-calendar",
       "country_id": "slovakia",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "south-africa--south-africa-4racing-system--four-racing-programme",
       "country_id": "south-africa",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "south-africa--south-africa-gold-circle-system--gold-circle-programme",
       "country_id": "south-africa",
-      "reason": "checked 14 days ago; threshold 2 days"
+      "reason": "checked 15 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "south-korea--kra-national-racing-system--kra-today-race",
       "country_id": "south-korea",
-      "reason": "checked 22 days ago; threshold 2 days"
+      "reason": "checked 23 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
       "country_id": "spain",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "turkey--tjk-national-racing-system--tjk-daily-programme",
       "country_id": "turkey",
-      "reason": "checked 21 days ago; threshold 2 days"
+      "reason": "checked 22 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
       "key": "united-states--united-states-equibase-thoroughbred--equibase-entries",
       "country_id": "united-states",
-      "reason": "checked 11 days ago; threshold 2 days"
+      "reason": "checked 12 days ago; threshold 2 days"
     },
     {
       "type": "source_unavailable_review",

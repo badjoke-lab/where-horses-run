@@ -1,7 +1,7 @@
 {
   "schema_version": "jra-pilot-review-v1",
   "work_id": "WHR-CAL-JAPAN-JRA",
-  "generated_at": "2026-06-09T15:02:29.605Z",
+  "generated_at": "2026-07-02T16:48:23.831Z",
   "mode": "fixture_review_only",
   "boundaries": {
     "network_fetch_performed": false,
@@ -19,11 +19,11 @@
     "readiness_sha256": "d8746b25eece8fe4b707feeb09fca17967178943b43481e3e1b1359e34f7c188",
     "readiness_japan_v2_sha256": "1d44f99202cc9f8e8fd4d93a0d525aae6cccad2102476b59fc2a4a3ddde2dd6f",
     "japan_runtime_control_sha256": "09e3b0500111b935eb2b2c88c26b04cd3e53ca6799e893c5157093da22b967d6",
-    "normalized_meetings_sha256": "ac42ab3a0272c4ec8bc8d56fc6cdcfee6941b9a31d717ec4cc9e406cdf7a9b8f",
-    "normalized_details_sha256": "0e83aebcb7b71770b93983008afb1dee60bba3e72b8ac276db42c13d6011eb18",
-    "candidate_sha256": "bf44693808f8421f230a950fa273f59f2e4a5802b2c91d92d6f38c2dec32b6c2",
-    "public_meeting_list_sha256": "2734113f9cf55c36f6f0813ed110d1ee7b53188b35a4544c568fe13f386e404d",
-    "public_meeting_details_sha256": "df93ca32496983e3fff93a66a4e856e8d96357f52dc2526442c7a99a790416ed"
+    "normalized_meetings_sha256": "94965e81f86318e3f746655cd54309efdc163afa2e82c5bee5dfd615de83aeae",
+    "normalized_details_sha256": "d7b04b70f30427ad01b964a9d1580026fba19e3aa5a381ce963ee496cec1c6e5",
+    "candidate_sha256": "38d464ec0f887afdef0d11c6653c8dac107a9d3aebdfa998839b0201c64939ca",
+    "public_meeting_list_sha256": "9ee31b58b4fa48e44f4257e5a587a810ed2fd6729cda7f627da56380fc1f919c",
+    "public_meeting_details_sha256": "50dd5affd924e3ae0096afa7d99b9f69cf129afd49e86ed541ee625d23677ac7"
   },
   "source": {
     "source_key": "japan/jra/jra-programme",
@@ -35,19 +35,39 @@
     "inventory_checked_date": "2026-06-17",
     "readiness_checked_date": "2026-06-17",
     "registry_minimum_date": "2026-06-17",
-    "candidate_source_checked_date": "2026-06-09",
-    "freshness_pass": false,
+    "candidate_source_checked_date": "2026-07-02",
+    "freshness_pass": true,
     "official_host_pass": true
   },
   "normalized": {
-    "meeting_count": 4,
-    "detail_count": 4,
-    "candidate_count": 4,
+    "meeting_count": 24,
+    "detail_count": 24,
+    "candidate_count": 24,
     "meeting_ids": [
-      "jra-hanshin-racecourse-2026-06-06",
-      "jra-hanshin-racecourse-2026-06-07",
-      "jra-tokyo-racecourse-2026-06-06",
-      "jra-tokyo-racecourse-2026-06-07"
+      "jra-chukyo-racecourse-2026-07-25",
+      "jra-chukyo-racecourse-2026-07-26",
+      "jra-fukushima-racecourse-2026-07-04",
+      "jra-fukushima-racecourse-2026-07-05",
+      "jra-fukushima-racecourse-2026-07-11",
+      "jra-fukushima-racecourse-2026-07-12",
+      "jra-fukushima-racecourse-2026-07-18",
+      "jra-fukushima-racecourse-2026-07-19",
+      "jra-hakodate-racecourse-2026-07-04",
+      "jra-hakodate-racecourse-2026-07-05",
+      "jra-hakodate-racecourse-2026-07-11",
+      "jra-hakodate-racecourse-2026-07-12",
+      "jra-hakodate-racecourse-2026-07-18",
+      "jra-hakodate-racecourse-2026-07-19",
+      "jra-kokura-racecourse-2026-07-04",
+      "jra-kokura-racecourse-2026-07-05",
+      "jra-kokura-racecourse-2026-07-11",
+      "jra-kokura-racecourse-2026-07-12",
+      "jra-kokura-racecourse-2026-07-18",
+      "jra-kokura-racecourse-2026-07-19",
+      "jra-niigata-racecourse-2026-07-25",
+      "jra-niigata-racecourse-2026-07-26",
+      "jra-sapporo-racecourse-2026-07-25",
+      "jra-sapporo-racecourse-2026-07-26"
     ],
     "parity_pass": true,
     "racecourse_scope_pass": true,
@@ -59,21 +79,18 @@
     "adapter_id": "jra-normalized-programme-candidate-v1",
     "review_status": "needs_review",
     "needs_review_pass": true,
-    "promotion_ready": false,
-    "blockers": [
-      "source_fixture_predates_registry"
-    ]
+    "promotion_ready": true,
+    "blockers": []
   },
   "public_projection": {
-    "meeting_count": 23,
-    "detail_count": 5,
-    "generated_at": "2026-06-09T15:02:29.605Z",
+    "meeting_count": 45,
+    "detail_count": 26,
+    "generated_at": "2026-07-02T16:48:23.831Z",
     "changed_by_review": false
   },
   "next_actions": [
-    "obtain_fresh_reviewed_jra_fixture",
-    "regenerate_normalized_jra_data",
-    "regenerate_candidate_v1",
-    "repeat_human_review"
+    "assign_human_reviewer",
+    "review_candidate_v1",
+    "run_canonical_promotion_dry_run"
   ]
 }

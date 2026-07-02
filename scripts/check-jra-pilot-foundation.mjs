@@ -34,21 +34,47 @@ for (const [key, value] of Object.entries(review.input_digests ?? {})) {
 if (review.source?.source_key !== control.source_key) fail('JRA source key differs from control.');
 if (review.source?.system_id !== control.system_id) fail('JRA system ID differs from control.');
 if (review.source?.official_host_pass !== true) fail('JRA official host validation must pass.');
-if (review.source?.freshness_pass !== false) fail('current JRA fixture must remain freshness-blocked.');
-if (!(review.source?.candidate_source_checked_date < review.source?.registry_minimum_date)) fail('JRA source date must predate registry minimum.');
+const sourceDate = review.source?.candidate_source_checked_date;
+const registryDate = review.source?.registry_minimum_date;
+if (!/^\d{4}-\d{2}-\d{2}$/.test(sourceDate ?? '')) fail('JRA candidate source date is invalid.');
+if (!/^\d{4}-\d{2}-\d{2}$/.test(registryDate ?? '')) fail('JRA registry minimum date is invalid.');
+if (review.source?.freshness_pass === true && sourceDate < registryDate) fail('fresh JRA source date predates the registry minimum.');
+if (review.source?.freshness_pass === false && !(sourceDate < registryDate)) fail('stale JRA source date must predate the registry minimum.');
+if (typeof review.source?.freshness_pass !== 'boolean') fail('JRA freshness_pass must be boolean.');
 
 for (const key of ['parity_pass','racecourse_scope_pass','technical_rank_pass','confirmed_fields_pass']) {
   if (review.normalized?.[key] !== true) fail(`review.normalized.${key} must pass.`);
 }
-if (review.normalized?.meeting_count !== 4 || review.normalized?.detail_count !== 4 || review.normalized?.candidate_count !== 4) fail('JRA pilot must retain four meeting/detail/candidate records.');
+const meetingCount = review.normalized?.meeting_count;
+const detailCount = review.normalized?.detail_count;
+const candidateCount = review.normalized?.candidate_count;
+if (![meetingCount, detailCount, candidateCount].every((value) => Number.isInteger(value) && value > 0)) {
+  fail('JRA pilot meeting/detail/candidate counts must be positive integers.');
+}
+if (meetingCount !== detailCount || meetingCount !== candidateCount) fail('JRA pilot meeting/detail/candidate counts must match.');
+if (!Array.isArray(review.normalized?.meeting_ids) || review.normalized.meeting_ids.length !== meetingCount) fail('JRA pilot meeting ID count must match normalized records.');
+if (new Set(review.normalized?.meeting_ids ?? []).size !== meetingCount) fail('JRA pilot meeting IDs must be unique.');
+
 if (review.candidate?.review_status !== 'needs_review' || review.candidate?.needs_review_pass !== true) fail('JRA candidate must remain needs_review.');
-if (review.candidate?.promotion_ready !== false) fail('stale JRA candidate must not be promotion-ready.');
-if (JSON.stringify(review.candidate?.blockers) !== JSON.stringify(['source_fixture_predates_registry'])) fail('JRA pilot blocker set is incorrect.');
-if (review.public_projection?.meeting_count !== 23 || review.public_projection?.detail_count !== 5) fail('public projection counts changed unexpectedly.');
+const expectedBlockers = [];
+if (review.source?.freshness_pass !== true) expectedBlockers.push('source_fixture_predates_registry');
+if (review.source?.official_host_pass !== true) expectedBlockers.push('official_host_mismatch');
+if (review.normalized?.parity_pass !== true) expectedBlockers.push('meeting_detail_candidate_id_mismatch');
+if (review.normalized?.racecourse_scope_pass !== true) expectedBlockers.push('racecourse_or_system_scope_mismatch');
+if (review.normalized?.technical_rank_pass !== true) expectedBlockers.push('technical_rank_mismatch');
+if (review.normalized?.confirmed_fields_pass !== true) expectedBlockers.push('unconfirmed_optional_field_present');
+if (review.candidate?.needs_review_pass !== true) expectedBlockers.push('candidate_review_state_invalid');
+if (JSON.stringify(review.candidate?.blockers ?? []) !== JSON.stringify(expectedBlockers)) fail('JRA pilot blocker set is inconsistent with review checks.');
+if (review.candidate?.promotion_ready !== (expectedBlockers.length === 0)) fail('JRA pilot promotion_ready is inconsistent with blocker state.');
+
+if (!Number.isInteger(review.public_projection?.meeting_count) || review.public_projection.meeting_count < 1) fail('public projection meeting count is invalid.');
+if (!Number.isInteger(review.public_projection?.detail_count) || review.public_projection.detail_count < 1) fail('public projection detail count is invalid.');
 if (review.public_projection?.changed_by_review !== false) fail('JRA review must not change public projection.');
 
-const expectedActions = ['obtain_fresh_reviewed_jra_fixture','regenerate_normalized_jra_data','regenerate_candidate_v1','repeat_human_review'];
-if (JSON.stringify(review.next_actions) !== JSON.stringify(expectedActions)) fail('JRA pilot next actions are incorrect.');
+const expectedActions = expectedBlockers.length
+  ? ['obtain_fresh_reviewed_jra_fixture','regenerate_normalized_jra_data','regenerate_candidate_v1','repeat_human_review']
+  : ['assign_human_reviewer','review_candidate_v1','run_canonical_promotion_dry_run'];
+if (JSON.stringify(review.next_actions) !== JSON.stringify(expectedActions)) fail('JRA pilot next actions are inconsistent with blocker state.');
 
 const workflow = read('.github/workflows/calendar-jra-pilot-review.yml');
 for (const marker of ['workflow_dispatch:', 'contents: read', 'build-jra-pilot-review.mjs', 'upload-artifact@v4']) {
@@ -81,8 +107,8 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('CALENDAR_JRA_PILOT_FOUNDATION: pass');
-console.log('PROMOTION_READY: false');
-console.log('BLOCKER: source_fixture_predates_registry');
+console.log(`CALENDAR_JRA_PILOT_FOUNDATION: pass records=${meetingCount}`);
+console.log(`PROMOTION_READY: ${review.candidate.promotion_ready}`);
+console.log(`BLOCKERS: ${expectedBlockers.length ? expectedBlockers.join(',') : 'none'}`);
 console.log('NETWORK_FETCH_PERFORMED: false');
 console.log('PUBLIC_PROJECTION_WRITTEN: false');

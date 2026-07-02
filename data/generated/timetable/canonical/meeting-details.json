@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-06-09T15:02:29.605Z",
+  "generated_at": "2026-07-02T16:48:23.831Z",
   "input_sources": [
     "src/data/normalizedTimetableMeetingDetails.ts",
     "data/generated/timetable/hkjc-normalized-meeting-details.sample.json",
@@ -8,548 +8,152 @@
   ],
   "details": [
     {
-      "meeting_id": "jra-hanshin-racecourse-2026-06-06",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racecourse_id": "hanshin-racecourse",
-      "date": "2026-06-06",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "jra-calendar-date-program",
-        "route_id": "jra-calendar-date-page",
-        "source_status": "verified",
-        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
-        "source_label": "JRA official calendar/program page",
-        "extraction_method": "live_fetch_program_row_parser",
-        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
-      },
-      "freshness": {
-        "last_checked_date": "2026-06-09",
-        "generated_at": "2026-06-09T15:02:29.605Z",
-        "stale_after_date": null,
-        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "09:50",
-          "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "10:25",
-          "race_name": "3歳未勝利",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "10:55",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "11:25",
-          "race_name": "3歳未勝利",
-          "distance_m": 1200,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "12:15",
-          "race_name": "2歳新馬",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "12:45",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:15",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "13:45",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 2200,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "14:20",
-          "race_name": "城崎特別 3歳以上1勝クラス",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "14:55",
-          "race_name": "加古川特別 3歳以上2勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "15:30",
-          "race_name": "垂水ステークス 3歳以上3勝クラス",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "16:15",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        }
-      ],
-      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
-    },
-    {
-      "meeting_id": "jra-tokyo-racecourse-2026-06-06",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racecourse_id": "tokyo-racecourse",
-      "date": "2026-06-06",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "jra-calendar-date-program",
-        "route_id": "jra-calendar-date-page",
-        "source_status": "verified",
-        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
-        "source_label": "JRA official calendar/program page",
-        "extraction_method": "live_fetch_program_row_parser",
-        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
-      },
-      "freshness": {
-        "last_checked_date": "2026-06-09",
-        "generated_at": "2026-06-09T15:02:29.605Z",
-        "stale_after_date": null,
-        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "10:05",
-          "race_name": "障害3歳以上未勝利",
-          "distance_m": 3000,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "10:40",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "11:10",
-          "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "11:40",
-          "race_name": "2歳新馬",
-          "distance_m": 1400,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "12:30",
-          "race_name": "2歳新馬",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "13:00",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:30",
-          "race_name": "3歳未勝利",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "14:00",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "14:35",
-          "race_name": "稲城特別 3歳以上1勝クラス",
-          "distance_m": 2400,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "15:10",
-          "race_name": "テレビ山梨杯 3歳以上2勝クラス",
-          "distance_m": 1400,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "15:45",
-          "race_name": "麦秋ステークス 3歳以上3勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "16:30",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        }
-      ],
-      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
-    },
-    {
-      "meeting_id": "jra-hanshin-racecourse-2026-06-07",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racecourse_id": "hanshin-racecourse",
-      "date": "2026-06-07",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "jra-calendar-date-program",
-        "route_id": "jra-calendar-date-page",
-        "source_status": "verified",
-        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
-        "source_label": "JRA official calendar/program page",
-        "extraction_method": "live_fetch_program_row_parser",
-        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
-      },
-      "freshness": {
-        "last_checked_date": "2026-06-09",
-        "generated_at": "2026-06-09T15:02:29.605Z",
-        "stale_after_date": null,
-        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "09:45",
-          "race_name": "障害3歳以上未勝利",
-          "distance_m": 2970,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "10:20",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "10:50",
-          "race_name": "3歳未勝利",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "11:20",
-          "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "12:10",
-          "race_name": "2歳新馬",
-          "distance_m": 1400,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "12:40",
-          "race_name": "3歳未勝利",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:10",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "13:40",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1400,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "14:10",
-          "race_name": "洲本特別 3歳以上2勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "14:45",
-          "race_name": "三木特別 3歳以上2勝クラス",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Outer Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "15:20",
-          "race_name": "水無月ステークス 3歳以上オープン",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "16:15",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
-        }
-      ],
-      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
-    },
-    {
       "meeting_id": "jra-tokyo-racecourse-2026-06-07",
       "country_id": "japan",
       "authority_id": "jra",
       "racecourse_id": "tokyo-racecourse",
       "date": "2026-06-07",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
+      "capability_rank": "A",
       "source_trace": {
-        "source_id": "jra-calendar-date-program",
-        "route_id": "jra-calendar-date-page",
+        "source_id": "jra-calendar",
+        "route_id": "jra-calendar-status-route",
         "source_status": "verified",
         "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
-        "source_label": "JRA official calendar/program page",
-        "extraction_method": "live_fetch_program_row_parser",
-        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
-        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+        "source_label": "Official source",
+        "extraction_method": "manual_review",
+        "source_snapshot_path": null,
+        "normalized_from_path": "src/data/normalizedTimetableMeetingDetails.ts"
       },
       "freshness": {
-        "last_checked_date": "2026-06-09",
-        "generated_at": "2026-06-09T15:02:29.605Z",
+        "last_checked_date": "2026-06-06",
+        "generated_at": "2026-06-07T03:30:00.000Z",
         "stale_after_date": null,
-        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+        "freshness_note": "Transitional detail rows converted to canonical until source-specific JRA acquisition exists."
       },
       "timetable_rows": [
         {
           "label": "Race 1",
           "post_time_local": "10:05",
-          "race_name": "3歳未勝利",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 2",
           "post_time_local": "10:35",
-          "race_name": "3歳未勝利",
-          "distance_m": 2100,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 3",
           "post_time_local": "11:05",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 4",
           "post_time_local": "11:35",
-          "race_name": "3歳未勝利",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 5",
           "post_time_local": "12:25",
-          "race_name": "2歳新馬",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 6",
           "post_time_local": "12:55",
-          "race_name": "3歳未勝利",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 7",
           "post_time_local": "13:25",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 8",
           "post_time_local": "13:55",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 9",
-          "post_time_local": "14:25",
-          "race_name": "香港ジョッキークラブトロフィー 3歳以上2勝クラス",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
+          "post_time_local": "14:30",
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 10",
-          "post_time_local": "15:00",
-          "race_name": "八王子特別 3歳以上2勝クラス",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "post_time_local": "15:05",
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 11",
-          "post_time_local": "15:40",
-          "race_name": "第76回 農林水産省賞典 安田記念（GⅠ） 3歳以上オープン",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Course",
-          "metadata_status": "verified"
+          "post_time_local": "15:45",
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         },
         {
           "label": "Race 12",
           "post_time_local": "16:30",
-          "race_name": "小金井特別 3歳以上2勝クラス",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Dirt Course",
-          "metadata_status": "verified"
+          "race_name": null,
+          "distance_m": null,
+          "surface": null,
+          "course_label": null,
+          "metadata_status": "verified",
+          "source_label": "Official source"
         }
       ],
-      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+      "summary_note": "Public-safe JRA A-level detail rows converted from the transitional detail module. Only race labels and post times are stored."
     },
     {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
@@ -668,6 +272,3270 @@
         }
       ],
       "summary_note": "Public-safe HKJC timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-04",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-04",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0704.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "2歳新馬",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "伊達特別 3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "横手特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "TUF杯 3歳以上3勝クラス",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-04",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-04",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0704.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "恵山特別 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "竜飛崎特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "TVh杯 3歳以上3勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-04",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-04",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0704.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2860,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "小郡特別 3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "雲仙特別 3歳以上2勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "博多ステークス 3歳以上3勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0705.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "郡山特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "白河特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "ジュライステークス 3歳以上オープン",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0705.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "立待岬特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "横津岳特別 3歳以上2勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "大沼ステークス（L） 3歳以上オープン",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0705.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2860,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "2歳新馬",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "青島特別 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "九州スポーツ杯 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "サマースプリントシリーズ 第61回 テレビ西日本賞 北九州記念（GⅢ） 3歳以上オープン",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-11",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0711.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "障害3歳以上オープン",
+          "distance_m": 3380,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "信夫山特別 3歳以上2勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "会津ステークス 3歳以上3勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "安達太良ステークス 3歳以上オープン",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-11",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0711.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "北斗特別 3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "HTB杯 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "五稜郭ステークス 3歳以上3勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-11",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0711.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "英彦山特別 3歳以上1勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "耶馬渓特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "釜山ステークス 3歳以上3勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-12",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-12",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0712.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2770,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "織姫賞 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "天の川ステークス 3歳以上3勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "サマー2000シリーズ 第62回 七夕賞（GⅢ） 3歳以上オープン",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "彦星賞 3歳以上2勝クラス",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-12",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-12",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0712.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "北海ハンデキャップ 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "噴火湾特別 3歳以上2勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "巴賞 3歳以上オープン",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-12",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-12",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0712.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "八女特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "西部スポニチ賞 3歳以上2勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "阿蘇ステークス 3歳以上オープン",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-18",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-18",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0718.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "開成山特別 3歳以上1勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "米沢特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "阿武隈ステークス 3歳以上3勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-18",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-18",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0718.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 2400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "湯浜特別 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "潮騒特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "デルマーサラブレッドクラブ賞 マリーンステークス 3歳以上オープン",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-18",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-18",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0718.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2860,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "ソレイユジャンプステークス 障害3歳以上オープン",
+          "distance_m": 3390,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "ひまわり賞 2歳オープン",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "熊本城特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "テレQ杯 3歳以上3勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-fukushima-racecourse-2026-07-19",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "fukushima-racecourse",
+      "date": "2026-07-19",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0719.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:55",
+          "race_name": "2歳未勝利",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "南相馬市市制施行20周年記念 南相馬特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:55",
+          "race_name": "猪苗代特別 3歳以上2勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "福島テレビ賞 3歳以上オープン",
+          "distance_m": 1150,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:15",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-hakodate-racecourse-2026-07-19",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "hakodate-racecourse",
+      "date": "2026-07-19",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0719.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "かもめ島特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:45",
+          "race_name": "駒場特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:20",
+          "race_name": "第58回 函館2歳ステークス（GⅢ） 2歳オープン",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:05",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-kokura-racecourse-2026-07-19",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "kokura-racecourse",
+      "date": "2026-07-19",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0719.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:05",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2860,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:30",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:35",
+          "race_name": "不知火特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "15:10",
+          "race_name": "宮崎ステークス 3歳以上3勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:45",
+          "race_name": "サマー2000シリーズ 第62回 農林水産省賞典 小倉記念（GⅢ） 3歳以上オープン",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:30",
+          "race_name": "筑紫特別 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-chukyo-racecourse-2026-07-25",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "chukyo-racecourse",
+      "date": "2026-07-25",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0725.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:40",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:00",
+          "race_name": "四日市特別 3歳以上2勝クラス",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:35",
+          "race_name": "関ケ原ステークス 3歳以上3勝クラス",
+          "distance_m": 2200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:10",
+          "race_name": "香嵐渓特別 3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:45",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-niigata-racecourse-2026-07-25",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "niigata-racecourse",
+      "date": "2026-07-25",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0725.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "2歳新馬",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "11:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:10",
+          "race_name": "豊栄特別 3歳以上2勝クラス",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:45",
+          "race_name": "新潟日報賞 3歳以上3勝クラス",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:20",
+          "race_name": "清津峡特別 3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:55",
+          "race_name": "障害3歳以上オープン",
+          "distance_m": 2850,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:30",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-sapporo-racecourse-2026-07-25",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "sapporo-racecourse",
+      "date": "2026-07-25",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0725.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1500,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:50",
+          "race_name": "ライラック賞 3歳以上2勝クラス",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:25",
+          "race_name": "TVh賞 3歳以上3勝クラス",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:00",
+          "race_name": "桑園特別 3歳以上2勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-chukyo-racecourse-2026-07-26",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "chukyo-racecourse",
+      "date": "2026-07-26",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0726.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:40",
+          "race_name": "2歳未勝利",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:10",
+          "race_name": "2歳新馬",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 2200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:10",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "11:40",
+          "race_name": "3歳未勝利",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:00",
+          "race_name": "木曽川特別 3歳以上2勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:35",
+          "race_name": "第43回 東海ステークス（GⅢ） 3歳以上オープン",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:10",
+          "race_name": "遠州灘特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:45",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-niigata-racecourse-2026-07-26",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "niigata-racecourse",
+      "date": "2026-07-26",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0726.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "3歳未勝利",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "11:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:10",
+          "race_name": "出雲崎特別 3歳以上2勝クラス",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:45",
+          "race_name": "サマーマイルシリーズ 第61回 関屋記念（GⅢ） 3歳以上オープン",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:20",
+          "race_name": "麒麟山特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:55",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2850,
+          "surface": "Turf",
+          "course_label": "Turf Outer Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:00",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "jra-sapporo-racecourse-2026-07-26",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "sapporo-racecourse",
+      "date": "2026-07-26",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-calendar-date-program",
+        "route_id": "jra-calendar-date-page",
+        "source_status": "verified",
+        "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0726.html",
+        "source_label": "JRA official calendar/program page",
+        "extraction_method": "live_fetch_program_row_parser",
+        "source_snapshot_path": "data/generated/timetable/jra-race-time-snapshot.json",
+        "normalized_from_path": "data/generated/timetable/jra-normalized-meeting-details.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-02",
+        "generated_at": "2026-07-02T16:48:23.831Z",
+        "stale_after_date": null,
+        "freshness_note": "Live JRA official program-row extraction with A+ attempted before fallback."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:00",
+          "race_name": "2歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:00",
+          "race_name": "3歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:30",
+          "race_name": "3歳未勝利",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:20",
+          "race_name": "2歳新馬",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:50",
+          "race_name": "3歳未勝利",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:50",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1500,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:20",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:50",
+          "race_name": "羊ヶ丘特別 3歳以上2勝クラス",
+          "distance_m": 1500,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:25",
+          "race_name": "札幌日経賞（L） 3歳以上オープン",
+          "distance_m": 2600,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:00",
+          "race_name": "厚岸特別 3歳以上1勝クラス",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf Course",
+          "metadata_status": "verified"
+        }
+      ],
+      "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
     }
   ]
 }

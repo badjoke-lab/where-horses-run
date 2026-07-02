@@ -6,6 +6,9 @@ on:
       - 'data/candidates/japan-jra-candidates.json'
       - 'data/generated/timetable/jra-normalized-timetable.json'
       - 'data/generated/timetable/jra-normalized-meeting-details.json'
+      - 'data/generated/timetable/jra-pilot-review.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/timetable-candidate-v1.schema.json'
@@ -13,6 +16,7 @@ on:
       - 'scripts/generate-japan-jra-candidates.mjs'
       - 'scripts/check-japan-jra-candidate-generator.mjs'
       - 'scripts/check-calendar-pipeline-v1-candidate-contract.mjs'
+      - 'scripts/timetable/sync-jra-derived-artifacts.mjs'
       - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
       - '.github/workflows/calendar-jra-candidate-v1.yml'
   push:
@@ -22,6 +26,9 @@ on:
       - 'data/candidates/japan-jra-candidates.json'
       - 'data/generated/timetable/jra-normalized-timetable.json'
       - 'data/generated/timetable/jra-normalized-meeting-details.json'
+      - 'data/generated/timetable/jra-pilot-review.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/timetable-candidate-v1.schema.json'
@@ -29,6 +36,7 @@ on:
       - 'scripts/generate-japan-jra-candidates.mjs'
       - 'scripts/check-japan-jra-candidate-generator.mjs'
       - 'scripts/check-calendar-pipeline-v1-candidate-contract.mjs'
+      - 'scripts/timetable/sync-jra-derived-artifacts.mjs'
       - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
       - '.github/workflows/calendar-jra-candidate-v1.yml'
 
@@ -53,8 +61,31 @@ jobs:
         run: node scripts/check-japan-jra-candidate-generator.mjs
       - name: Validate shared candidate contract
         run: node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+      - name: Validate synchronized review artifacts
+        run: |
+          node scripts/check-jra-pilot-foundation.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
       - name: Confirm runtime boundary and static build
         run: |
           node scripts/check-calendar-runtime-import-boundary.mjs
           npm install --package-lock=false
           npm run build
+      - name: Generate diagnostic artifacts
+        if: failure()
+        run: |
+          node scripts/timetable/sync-jra-derived-artifacts.mjs
+          mkdir -p /tmp/jra-derived-artifacts/data/candidates
+          mkdir -p /tmp/jra-derived-artifacts/data/generated/timetable
+          cp data/candidates/japan-jra-candidates.json /tmp/jra-derived-artifacts/data/candidates/
+          cp data/generated/timetable/jra-pilot-review.json /tmp/jra-derived-artifacts/data/generated/timetable/
+          cp data/generated/timetable/operations-status.json /tmp/jra-derived-artifacts/data/generated/timetable/
+          cp data/generated/timetable/operations-review-package.json /tmp/jra-derived-artifacts/data/generated/timetable/
+      - name: Upload diagnostic artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synchronized-jra-derived-artifacts
+          path: /tmp/jra-derived-artifacts
+          if-no-files-found: error
+          retention-days: 30

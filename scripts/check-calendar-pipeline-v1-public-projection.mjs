@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildPublicProjectionV1, publicProjectionRanksV1 } from './timetable/pipeline-v1/public-projection-core.mjs';
+import { loadCalendarReadinessV1 } from './timetable/load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -17,7 +18,6 @@ const paths = {
   canonicalMeetings: 'data/generated/timetable/canonical/meetings.json',
   canonicalDetails: 'data/generated/timetable/canonical/meeting-details.json',
   policy: 'src/data/publicationDisplayPolicies.json',
-  readiness: 'data/static/calendar-readiness-registry.json',
   aliases: 'data/static/timetable-source-aliases-v1.json',
   authority: 'data/static/authority-source-inventory.json',
   publicMeetings: 'data/generated/timetable/public/meeting-list.json',
@@ -27,7 +27,7 @@ const paths = {
 const canonicalMeetings = parse(paths.canonicalMeetings);
 const canonicalDetails = parse(paths.canonicalDetails);
 const policyData = parse(paths.policy);
-const readinessRegistry = parse(paths.readiness);
+const readinessRegistry = loadCalendarReadinessV1(root);
 const sourceAliases = parse(paths.aliases);
 const authorityInventory = parse(paths.authority);
 const publicBefore = {
@@ -107,18 +107,28 @@ if (first) {
     }
   }
 
-  const jraId = 'jra-hanshin-racecourse-2026-06-06';
-  const jraDecision = decisionById.get(jraId);
-  const jraDetail = detailById.get(jraId);
-  if (!jraDecision) fail('missing JRA audit decision fixture');
+  const jraDecision = first.audit.decisions.find((decision) =>
+    decision.readiness_id === 'japan--japan-jra-system--jra-programme' &&
+    decision.effective_public_rank === 'A+' &&
+    detailById.has(decision.meeting_id)
+  );
+  const jraDetail = jraDecision ? detailById.get(jraDecision.meeting_id) : null;
+  if (!jraDecision) fail('missing current JRA A+ audit decision fixture');
   else {
-    if (jraDecision.policy_max_public_rank !== 'A+') fail('JRA policy fixture must remain A+ for ceiling intersection test');
-    if (jraDecision.readiness_public_ceiling !== 'A') fail('JRA readiness fixture must cap public output at A');
-    if (jraDecision.max_public_rank !== 'A' || jraDecision.effective_public_rank !== 'A') fail('JRA A+ canonical record must project at A');
+    if (jraDecision.policy_max_public_rank !== 'A+') fail('JRA policy fixture must remain A+');
+    if (jraDecision.readiness_public_ceiling !== 'A+') fail('JRA readiness fixture must permit A+ public output');
+    if (jraDecision.max_public_rank !== 'A+' || jraDecision.effective_public_rank !== 'A+') fail('JRA A+ canonical record must project at A+');
   }
-  if (!jraDetail) fail('JRA A projection must retain timetable detail');
-  else if (jraDetail.timetable_rows.some((row) => Object.keys(row).some((key) => !['label', 'post_time_local'].includes(key)))) {
-    fail('JRA A projection must strip all A+ programme-summary fields');
+  if (!jraDetail) fail('JRA A+ projection must retain timetable detail');
+  else {
+    if (!jraDetail.show_race_name || !jraDetail.show_distance || !jraDetail.show_surface || !jraDetail.show_course) {
+      fail('JRA A+ projection must enable all approved programme-summary fields');
+    }
+    if (jraDetail.timetable_rows.some((row) =>
+      !('race_name' in row) || !('distance_m' in row) || !('surface' in row) || !('course_label' in row)
+    )) {
+      fail('JRA A+ projection has incomplete programme-summary rows');
+    }
   }
 
   const hkjcId = 'hkjc-happy-valley-racecourse-2026-06-10';
@@ -192,7 +202,7 @@ for (const forbidden of ['new Date(', 'Date.now(', 'data/candidates/', 'source_s
 for (const forbidden of ['data/candidates/', 'hkjc-racecard-source-snapshot.json', 'normalized-timetable.json', 'timetables.json']) {
   if (writer.includes(forbidden)) fail(`projection writer reads non-canonical input: ${forbidden}`);
 }
-for (const required of ['canonicalMeetings', 'canonicalDetails', 'readinessRegistry', 'sourceAliases', 'PUBLIC_PROJECTION_WRITE_MODE: deterministic-public-only']) {
+for (const required of ['canonicalMeetings', 'canonicalDetails', 'readinessRegistry', 'sourceAliases', 'loadCalendarReadinessV1', 'PUBLIC_PROJECTION_WRITE_MODE: deterministic-public-only']) {
   if (!writer.includes(required)) fail(`projection writer missing ${required}`);
 }
 

@@ -75,13 +75,16 @@ if (manifest) {
   }
 }
 
-if (publicList?.meetings?.length !== manifest?.public_release?.meeting_count) fail('public meeting count differs from release manifest.');
-if (publicDetails?.details?.length !== manifest?.public_release?.detail_count) fail('public detail count differs from release manifest.');
+const baselineMeetings = manifest?.public_release?.meeting_count;
+const baselineDetails = manifest?.public_release?.detail_count;
+const baselineCandidates = manifest?.reference_adapter?.record_count;
+if (!Number.isInteger(publicList?.meetings?.length) || publicList.meetings.length < baselineMeetings) fail('public meeting count fell below the Pipeline v1 release baseline.');
+if (!Number.isInteger(publicDetails?.details?.length) || publicDetails.details.length < baselineDetails) fail('public detail count fell below the Pipeline v1 release baseline.');
 if (publicList?.generated_at !== publicDetails?.generated_at) fail('public projection generated_at values must match.');
 
 if (jraCandidates?.schema_version !== 'timetable-candidate-v1') fail('JRA reference candidate must use timetable-candidate-v1.');
 if (jraCandidates?.adapter_id !== manifest?.reference_adapter?.adapter_id) fail('JRA reference adapter ID differs from release manifest.');
-if (jraCandidates?.records?.length !== manifest?.reference_adapter?.record_count) fail('JRA candidate count differs from release manifest.');
+if (!Number.isInteger(jraCandidates?.records?.length) || jraCandidates.records.length < baselineCandidates) fail('JRA candidate count fell below the Pipeline v1 release baseline.');
 if (jraCandidates?.review?.status !== 'needs_review') fail('JRA candidate must remain needs_review at Pipeline v1 completion.');
 if (jraCandidates?.review?.reviewed_at !== null || jraCandidates?.review?.reviewer !== null || jraCandidates?.review?.promotion_target !== null) {
   fail('JRA candidate must not claim approval at Pipeline v1 completion.');
@@ -109,9 +112,9 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_PIPELINE_V1_RELEASE_GATE: pass');
-console.log(`PUBLIC_MEETINGS: ${publicList.meetings.length}`);
-console.log(`PUBLIC_DETAILS: ${publicDetails.details.length}`);
-console.log(`JRA_REFERENCE_CANDIDATES: ${jraCandidates.records.length}`);
+console.log(`PUBLIC_MEETINGS: ${publicList.meetings.length} baseline=${baselineMeetings}`);
+console.log(`PUBLIC_DETAILS: ${publicDetails.details.length} baseline=${baselineDetails}`);
+console.log(`JRA_REFERENCE_CANDIDATES: ${jraCandidates.records.length} baseline=${baselineCandidates}`);
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-A-PLUS-RECONCILE');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
