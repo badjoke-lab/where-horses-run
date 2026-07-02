@@ -14,6 +14,10 @@ const generatedPaths = [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
   'data/generated/timetable/public/japan-a-plus-overrides.json',
+  'data/candidates/japan-jra-candidates.json',
+  'data/generated/timetable/jra-pilot-review.json',
+  'data/generated/timetable/operations-status.json',
+  'data/generated/timetable/operations-review-package.json',
 ];
 
 let rollbackGenerated = false;
@@ -173,6 +177,12 @@ validateReport(report, range);
 run(process.execPath, ['scripts/check-calendar-runtime-import-boundary.mjs']);
 run(process.execPath, ['scripts/timetable/build-japan-a-plus-public-overrides.mjs']);
 run(process.execPath, ['scripts/check-japan-a-plus-public-overrides.mjs']);
+run(process.execPath, ['scripts/timetable/sync-jra-derived-artifacts.mjs']);
+run(process.execPath, ['scripts/generate-japan-jra-candidates.mjs', '--check']);
+run(process.execPath, ['scripts/check-japan-jra-candidate-generator.mjs']);
+run(process.execPath, ['scripts/check-jra-pilot-foundation.mjs']);
+run(process.execPath, ['scripts/check-calendar-operations-status.mjs']);
+run(process.execPath, ['scripts/check-calendar-operations-review-package.mjs']);
 run('npm', ['install', '--package-lock=false', '--no-audit', '--no-fund']);
 run('npm', ['run', 'build']);
 
@@ -204,6 +214,7 @@ run('git', ['commit', '-m', `Update JRA programme for ${month}`]);
 rollbackGenerated = false;
 run('git', ['push', '--force-with-lease', '--set-upstream', 'origin', branch]);
 
+const candidate = readJson('data/candidates/japan-jra-candidates.json');
 const title = `Update JRA ${month} programme`;
 const body = [
   `Operator-triggered local refresh for ${month}.`,
@@ -212,6 +223,7 @@ const body = [
   `- Range: ${range.from} to ${range.to}`,
   `- Meetings: ${report.publishable_meetings}`,
   `- A+ meetings: ${report.a_plus_meetings}`,
+  `- Candidate records: ${candidate.records.length}`,
   `- Publication remains review-controlled`,
 ].join('\n');
 
