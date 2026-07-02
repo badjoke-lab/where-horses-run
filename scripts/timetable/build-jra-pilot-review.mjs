@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { resolveCalendarReadinessRegistry, resolveAuthoritySourceInventory } from './pipeline-v1/registry-overrides.mjs';
 
 const root = process.cwd();
 const argv = process.argv.slice(2);
@@ -18,8 +19,15 @@ const sha256 = (file) => createHash('sha256').update(readText(file)).digest('hex
 const maxDate = (values) => values.filter(Boolean).sort().at(-1) ?? null;
 
 const control = readJson('data/static/jra-pilot-control.json');
-const inventory = readJson('data/static/authority-source-inventory.json');
-const readiness = readJson('data/static/calendar-readiness-registry.json');
+const inventory = resolveAuthoritySourceInventory(
+  readJson('data/static/authority-source-inventory.json'),
+  readJson('data/static/authority-source-inventory-japan-v2.json')
+);
+const readiness = resolveCalendarReadinessRegistry(
+  readJson('data/static/calendar-readiness-registry.json'),
+  readJson('data/static/calendar-readiness-japan-v2.json'),
+  readJson('data/static/japan-a-plus-runtime-control.json')
+);
 const meetings = readJson('data/generated/timetable/jra-normalized-timetable.json');
 const details = readJson('data/generated/timetable/jra-normalized-meeting-details.json');
 const candidate = readJson('data/candidates/japan-jra-candidates.json');
@@ -86,7 +94,10 @@ const review = {
   input_digests: {
     control_sha256: sha256('data/static/jra-pilot-control.json'),
     inventory_sha256: sha256('data/static/authority-source-inventory.json'),
+    inventory_japan_v2_sha256: sha256('data/static/authority-source-inventory-japan-v2.json'),
     readiness_sha256: sha256('data/static/calendar-readiness-registry.json'),
+    readiness_japan_v2_sha256: sha256('data/static/calendar-readiness-japan-v2.json'),
+    japan_runtime_control_sha256: sha256('data/static/japan-a-plus-runtime-control.json'),
     normalized_meetings_sha256: sha256('data/generated/timetable/jra-normalized-timetable.json'),
     normalized_details_sha256: sha256('data/generated/timetable/jra-normalized-meeting-details.json'),
     candidate_sha256: sha256('data/candidates/japan-jra-candidates.json'),

@@ -15,15 +15,18 @@ if (check && dryRun) throw new Error('--check and --dry-run are mutually exclusi
 const statusPath = valueOf('--status') ?? 'data/generated/timetable/operations-status.json';
 const outputPath = valueOf('--output') ?? 'data/generated/timetable/operations-review-package.json';
 const controlPath = 'data/static/calendar-operations-control.json';
+const jraDigestOverlayPath = 'data/static/calendar-operations-jra-candidate-digest-v2.json';
 const readText = (file) => readFileSync(path.isAbsolute(file) ? file : path.join(root, file), 'utf8');
 const readJson = (file) => JSON.parse(readText(file));
 const sha256 = (file) => createHash('sha256').update(readText(file)).digest('hex');
 const status = readJson(statusPath);
 const control = readJson(controlPath);
+const jraDigestOverlay = readJson(jraDigestOverlayPath);
 
 if (status.schema_version !== 'calendar-operations-status-v1') throw new Error('Unexpected operations status schema.');
 if (control.schema_version !== 'calendar-operations-control-v1') throw new Error('Unexpected operations control schema.');
 if (control.mode !== 'paused_review_only') throw new Error('Operations control must remain paused_review_only.');
+if (jraDigestOverlay.schema_version !== 'calendar-operations-jra-candidate-digest-v2') throw new Error('Unexpected JRA candidate digest overlay schema.');
 
 const priorities = {
   refresh_before_promotion: 1,
@@ -112,8 +115,17 @@ if (dryRun) {
 }
 const absoluteOutput = path.isAbsolute(outputPath) ? outputPath : path.join(root, outputPath);
 if (check) {
-  if (!existsSync(absoluteOutput) || readFileSync(absoluteOutput, 'utf8') !== serialized) throw new Error('Operations review package is stale.');
+  if (!existsSync(absoluteOutput)) throw new Error('Operations review package is missing.');
+  const committed = JSON.parse(readFileSync(absoluteOutput, 'utf8'));
+  const expected = structuredClone(reviewPackage);
+  if (jraDigestOverlay.base_package_path !== outputPath) throw new Error('JRA candidate digest overlay base package path is incorrect.');
+  if (jraDigestOverlay.candidate_path !== 'data/candidates/japan-jra-candidates.json') throw new Error('JRA candidate digest overlay candidate path is incorrect.');
+  if (committed.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.base_candidate_sha256) throw new Error('Operations base package candidate digest differs from the overlay base digest.');
+  if (expected.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.current_candidate_sha256) throw new Error('Current JRA candidate digest differs from the active overlay digest.');
+  expected.input_digests.jra_candidate_sha256 = jraDigestOverlay.base_candidate_sha256;
+  if (JSON.stringify(committed) !== JSON.stringify(expected)) throw new Error('Operations review package is stale outside the approved JRA candidate digest overlay.');
   console.log(`CALENDAR_OPERATIONS_REVIEW_PACKAGE: current as_of=${reviewPackage.as_of_date}`);
+  console.log('JRA_CANDIDATE_DIGEST_RESOLUTION: v2-overlay');
   process.exit(0);
 }
 mkdirSync(path.dirname(absoluteOutput), { recursive: true });

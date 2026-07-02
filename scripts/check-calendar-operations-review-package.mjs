@@ -10,6 +10,7 @@ const parse = (file) => JSON.parse(read(file));
 const packagePath = 'data/generated/timetable/operations-review-package.json';
 const reviewPackage = parse(packagePath);
 const control = parse('data/static/calendar-operations-control.json');
+const jraDigestOverlay = parse('data/static/calendar-operations-jra-candidate-digest-v2.json');
 
 const check = spawnSync(process.execPath, [
   'scripts/timetable/build-operations-review-package.mjs',
@@ -21,6 +22,12 @@ if (reviewPackage.schema_version !== 'calendar-operations-review-package-v1') fa
 if (reviewPackage.work_id !== 'WHR-CAL-OPS-V1') fail('review package Work ID is incorrect.');
 if (reviewPackage.mode !== 'paused_review_only') fail('review package must remain paused_review_only.');
 if (control.mode !== reviewPackage.mode) fail('review package and control mode differ.');
+if (jraDigestOverlay.schema_version !== 'calendar-operations-jra-candidate-digest-v2') fail('unexpected JRA candidate digest overlay schema.');
+if (reviewPackage.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.base_candidate_sha256) fail('base package JRA candidate digest differs from overlay.');
+if (jraDigestOverlay.candidate_path !== 'data/candidates/japan-jra-candidates.json') fail('JRA candidate digest overlay path is incorrect.');
+for (const key of ['candidate_approval_performed','canonical_write_performed','public_write_performed','unattended_publication_allowed']) {
+  if (jraDigestOverlay.boundaries?.[key] !== false) fail(`JRA digest overlay boundary ${key} must be false.`);
+}
 
 for (const key of ['network_fetch_performed', 'repository_write_performed', 'candidate_approval_performed', 'canonical_write_performed', 'public_write_performed', 'pull_request_created']) {
   if (reviewPackage.boundaries?.[key] !== false) fail(`boundaries.${key} must be false.`);
@@ -79,3 +86,4 @@ console.log(`CALENDAR_OPERATIONS_REVIEW_PACKAGE: pass actions=${reviewPackage.ac
 console.log('MODE: paused_review_only');
 console.log('PROPOSED_CHANGED_FILES: 0');
 console.log('PUBLIC_RELEASE_EXPECTED: false');
+console.log('JRA_CANDIDATE_DIGEST_RESOLUTION: v2-overlay');

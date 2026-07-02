@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { promoteApprovedCandidateV1, promotionTargetV1 } from './timetable/pipeline-v1/promotion-core.mjs';
+import { resolveCalendarReadinessRegistry, resolveAuthoritySourceInventory } from './timetable/pipeline-v1/registry-overrides.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -18,8 +19,15 @@ const generator = read(generatorPath);
 const candidates = readJson(outputPath);
 const normalizedMeetings = readJson('data/generated/timetable/jra-normalized-timetable.json');
 const normalizedDetails = readJson('data/generated/timetable/jra-normalized-meeting-details.json');
-const authorityInventory = readJson('data/static/authority-source-inventory.json');
-const readinessRegistry = readJson('data/static/calendar-readiness-registry.json');
+const authorityInventory = resolveAuthoritySourceInventory(
+  readJson('data/static/authority-source-inventory.json'),
+  readJson('data/static/authority-source-inventory-japan-v2.json')
+);
+const readinessRegistry = resolveCalendarReadinessRegistry(
+  readJson('data/static/calendar-readiness-registry.json'),
+  readJson('data/static/calendar-readiness-japan-v2.json'),
+  readJson('data/static/japan-a-plus-runtime-control.json')
+);
 const readinessMatches = readinessRegistry.records.filter((record) => record.authority_source_key === readinessKey);
 const readiness = readinessMatches[0];
 const authorityMatches = authorityInventory.records.filter((record) =>
@@ -43,7 +51,7 @@ if (staleCheck.status !== 0) fail(`JRA Pipeline v1 generator check failed: ${sta
 if (readinessMatches.length !== 1) fail(`Expected one JRA readiness record, found ${readinessMatches.length}.`);
 if (authorityMatches.length !== 1) fail(`Expected one JRA authority/source record, found ${authorityMatches.length}.`);
 if (readiness?.technical_rank !== 'A+') fail('JRA reference readiness must retain technical rank A+.');
-if (readiness?.public_ceiling !== 'A') fail('JRA reference readiness must retain public ceiling A.');
+if (readiness?.public_ceiling !== 'A+') fail('JRA reference readiness must retain public ceiling A+.');
 if (readiness?.confirmed_fields?.per_race_post_times !== true) fail('JRA readiness must confirm per-race post times.');
 
 if (candidates.schema_version !== 'timetable-candidate-v1') fail('JRA candidates must use timetable-candidate-v1.');
@@ -133,6 +141,11 @@ for (const required of [
   'jra-normalized-meeting-details.json',
   'calendar-readiness-registry.json',
   'authority-source-inventory.json',
+  'authority-source-inventory-japan-v2.json',
+  'calendar-readiness-japan-v2.json',
+  'japan-a-plus-runtime-control.json',
+  'resolveCalendarReadinessRegistry',
+  'resolveAuthoritySourceInventory',
   "schema_version: 'timetable-candidate-v1'",
   "source_id: 'jra-programme'",
   "review_status: 'needs_review'",
