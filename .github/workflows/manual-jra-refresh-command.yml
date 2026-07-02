@@ -1,0 +1,38 @@
+name: Manual JRA refresh command
+
+on:
+  pull_request:
+    paths:
+      - 'refresh-jra-manual'
+      - 'scripts/timetable/manual-refresh-jra.mjs'
+      - 'docs/calendar/manual-jra-refresh.md'
+      - '.github/workflows/manual-jra-refresh-command.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate launcher syntax
+        run: sh -n refresh-jra-manual
+      - name: Validate Node syntax
+        run: node --check scripts/timetable/manual-refresh-jra.mjs
+      - name: Validate command contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F "scripts/timetable/refresh-jra.mjs" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "a_plus_meetings" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "'push', '--force-with-lease'" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "'pr', 'create'" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "rollbackGenerated" scripts/timetable/manual-refresh-jra.mjs
+          ! grep -E '^[[:space:]]+(schedule:|- cron:)' .github/workflows/manual-jra-refresh-command.yml
+      - run: npm install --package-lock=false
+      - run: npm run build
