@@ -139,7 +139,7 @@ const month = resolveMonth(process.argv.slice(2));
 const range = monthRange(month);
 console.log(`\n[JRA manual refresh] Target month: ${month} (${range.from} to ${range.to})`);
 
-run('git', ['fetch', 'origin', 'main']);
+run('git', ['fetch', 'origin']);
 run('git', ['switch', 'main']);
 run('git', ['pull', '--ff-only', 'origin', 'main']);
 
