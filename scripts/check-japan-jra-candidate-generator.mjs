@@ -11,6 +11,11 @@ const fail = (message) => errors.push(message);
 const read = (file) => readFileSync(path.join(root, file), 'utf8');
 const readJson = (file) => JSON.parse(read(file));
 const hash = (file) => createHash('sha256').update(read(file)).digest('hex');
+const addDays = (dateText, days) => {
+  const date = new Date(`${dateText}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+};
 
 const generatorPath = 'scripts/generate-japan-jra-candidates.mjs';
 const outputPath = 'data/candidates/japan-jra-candidates.json';
@@ -63,7 +68,7 @@ if (candidates.generated_at !== normalizedMeetings.generated_at || candidates.ge
   fail('JRA candidate generated_at must come from matching normalized inputs.');
 }
 if (candidates.candidate_window?.start_date !== normalizedMeetings.refresh_window.from) fail('JRA candidate window start is incorrect.');
-if (candidates.candidate_window?.end_date_exclusive !== '2026-06-08') fail('JRA candidate window end must be exclusive.');
+if (candidates.candidate_window?.end_date_exclusive !== addDays(normalizedMeetings.refresh_window.to, 1)) fail('JRA candidate window end must be exclusive.');
 if (candidates.candidate_window?.timezone !== 'Asia/Tokyo') fail('JRA candidate timezone must be Asia/Tokyo.');
 if (candidates.review?.status !== 'needs_review') fail('JRA candidate envelope must remain needs_review.');
 if (candidates.review?.reviewed_at !== null || candidates.review?.reviewer !== null || candidates.review?.promotion_target !== null) {
@@ -222,6 +227,9 @@ const sourceCheckedDate = records.map((record) => record.source.checked_at.slice
 const registryMinimumDate = [authoritySource?.last_checked_date, readiness?.checked_date].filter(Boolean).sort().at(-1);
 if (actualPromotionState === 'blocked_by_freshness' && !(sourceCheckedDate < registryMinimumDate)) {
   fail('JRA freshness gate reported stale input without an older source check date.');
+}
+if (actualPromotionState === 'pass' && sourceCheckedDate < registryMinimumDate) {
+  fail('JRA promotion gate passed despite an older source check date.');
 }
 
 const publicAfter = Object.fromEntries(publicFiles.map((file) => [file, hash(file)]));
