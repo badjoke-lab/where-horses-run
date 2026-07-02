@@ -16,6 +16,7 @@ const statusPath = valueOf('--status') ?? 'data/generated/timetable/operations-s
 const outputPath = valueOf('--output') ?? 'data/generated/timetable/operations-review-package.json';
 const controlPath = 'data/static/calendar-operations-control.json';
 const jraDigestOverlayPath = 'data/static/calendar-operations-jra-candidate-digest-v2.json';
+const candidatePath = 'data/candidates/japan-jra-candidates.json';
 const readText = (file) => readFileSync(path.isAbsolute(file) ? file : path.join(root, file), 'utf8');
 const readJson = (file) => JSON.parse(readText(file));
 const sha256 = (file) => createHash('sha256').update(readText(file)).digest('hex');
@@ -42,11 +43,13 @@ const actions = status.operator_actions.map((action) => ({
   priority: priorities[action.type] ?? 99,
   required_decision: action.type === 'refresh_before_promotion'
     ? 'obtain a fresh reviewed source capture before approval'
-    : action.type === 'blocked_review'
-      ? 'retain block unless new evidence resolves the recorded reason'
-      : action.type === 'source_unavailable_review'
-        ? 'confirm official route and apply fallback'
-        : 'review source evidence and prepare a bounded candidate or registry update'
+    : action.type === 'human_review_required'
+      ? 'assign a human reviewer before any candidate approval or canonical promotion'
+      : action.type === 'blocked_review'
+        ? 'retain block unless new evidence resolves the recorded reason'
+        : action.type === 'source_unavailable_review'
+          ? 'confirm official route and apply fallback'
+          : 'review source evidence and prepare a bounded candidate or registry update'
 })).sort((a, b) => a.priority - b.priority || `${a.country_id}:${a.key}`.localeCompare(`${b.country_id}:${b.key}`));
 
 const actionCounts = {};
@@ -72,7 +75,7 @@ const reviewPackage = {
     readiness_registry_sha256: sha256('data/static/calendar-readiness-registry.json'),
     authority_inventory_sha256: sha256('data/static/authority-source-inventory.json'),
     public_meeting_list_sha256: sha256('data/generated/timetable/public/meeting-list.json'),
-    jra_candidate_sha256: sha256('data/candidates/japan-jra-candidates.json')
+    jra_candidate_sha256: sha256(candidatePath)
   },
   summary: {
     operator_action_count: actions.length,
@@ -117,11 +120,20 @@ const absoluteOutput = path.isAbsolute(outputPath) ? outputPath : path.join(root
 if (check) {
   if (!existsSync(absoluteOutput)) throw new Error('Operations review package is missing.');
   const committed = JSON.parse(readFileSync(absoluteOutput, 'utf8'));
+  const currentCandidateDigest = sha256(candidatePath);
+
+  if (committed.input_digests?.jra_candidate_sha256 === currentCandidateDigest) {
+    if (JSON.stringify(committed) !== JSON.stringify(reviewPackage)) throw new Error('Operations review package is stale.');
+    console.log(`CALENDAR_OPERATIONS_REVIEW_PACKAGE: current as_of=${reviewPackage.as_of_date}`);
+    console.log('JRA_CANDIDATE_DIGEST_RESOLUTION: direct-current');
+    process.exit(0);
+  }
+
   const expected = structuredClone(reviewPackage);
   if (jraDigestOverlay.base_package_path !== outputPath) throw new Error('JRA candidate digest overlay base package path is incorrect.');
-  if (jraDigestOverlay.candidate_path !== 'data/candidates/japan-jra-candidates.json') throw new Error('JRA candidate digest overlay candidate path is incorrect.');
+  if (jraDigestOverlay.candidate_path !== candidatePath) throw new Error('JRA candidate digest overlay candidate path is incorrect.');
   if (committed.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.base_candidate_sha256) throw new Error('Operations base package candidate digest differs from the overlay base digest.');
-  if (expected.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.current_candidate_sha256) throw new Error('Current JRA candidate digest differs from the active overlay digest.');
+  if (currentCandidateDigest !== jraDigestOverlay.current_candidate_sha256) throw new Error('Current JRA candidate digest differs from the active overlay digest.');
   expected.input_digests.jra_candidate_sha256 = jraDigestOverlay.base_candidate_sha256;
   if (JSON.stringify(committed) !== JSON.stringify(expected)) throw new Error('Operations review package is stale outside the approved JRA candidate digest overlay.');
   console.log(`CALENDAR_OPERATIONS_REVIEW_PACKAGE: current as_of=${reviewPackage.as_of_date}`);
