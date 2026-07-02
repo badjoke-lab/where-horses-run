@@ -170,6 +170,7 @@ const report = readJson('data/generated/timetable/jra-refresh-report.json');
 validateReport(report, range);
 
 run(process.execPath, ['scripts/check-calendar-runtime-import-boundary.mjs']);
+run('npm', ['install', '--package-lock=false', '--no-audit', '--no-fund']);
 run('npm', ['run', 'build']);
 
 const allChanges = changedPaths();
