@@ -69,6 +69,11 @@ for (const meeting of meetingList.meetings) {
       if (html.includes(header)) fail(`${detailPath} renders A+ table header at public rank A: ${header}`);
     }
   }
+  if (detail.effective_public_rank === 'A+') {
+    for (const header of ['<th>Race name</th>', '<th>Distance</th>', '<th>Surface</th>', '<th>Course</th>']) {
+      if (!html.includes(header)) fail(`${detailPath} is missing A+ table header ${header}`);
+    }
+  }
 }
 
 const htmlFiles = listHtml(path.join(root, 'dist'));
@@ -90,13 +95,23 @@ for (const detail of meetingDetails.details) {
       if (extra.length) fail(`${detail.meeting_id} A detail row contains optional fields: ${extra.join(', ')}`);
     }
   }
+  if (detail.effective_public_rank === 'A+') {
+    if (!detail.show_race_name || !detail.show_distance || !detail.show_surface || !detail.show_course) {
+      fail(`${detail.meeting_id} A+ detail is missing approved display flags`);
+    }
+    for (const row of detail.timetable_rows) {
+      for (const key of ['race_name', 'distance_m', 'surface', 'course_label']) {
+        if (!(key in row) || row[key] === null || row[key] === '') fail(`${detail.meeting_id} A+ detail row is missing ${key}`);
+      }
+    }
+  }
 }
 
 if (audit.boundaries.forbidden_key_findings.length !== 0) fail('release audit contains forbidden key findings');
-if (audit.after.meeting_count !== meetingList.meetings.length) fail('release audit meeting count differs from public JSON');
-if (audit.after.detail_count !== meetingDetails.details.length) fail('release audit detail count differs from public JSON');
-if (audit.details.optional_field_occurrence_delta.race_name !== -57) fail('expected reviewed race_name removal count changed');
-if (audit.details.optional_field_occurrence_delta.distance_m !== -57) fail('expected reviewed distance removal count changed');
+if (meetingList.meetings.length < audit.after.meeting_count) fail('current public meeting count fell below the historical release audit baseline');
+if (meetingDetails.details.length < audit.after.detail_count) fail('current public detail count fell below the historical release audit baseline');
+if (audit.details.optional_field_occurrence_delta.race_name !== -57) fail('historical reviewed race_name removal count changed');
+if (audit.details.optional_field_occurrence_delta.distance_m !== -57) fail('historical reviewed distance removal count changed');
 
 if (errors.length) {
   console.error(`CALENDAR_PUBLIC_PROJECTION_RENDERED_QA: failed (${errors.length})`);
@@ -105,6 +120,8 @@ if (errors.length) {
 }
 
 console.log(`CALENDAR_PUBLIC_PROJECTION_RENDERED_QA: pass html_files=${htmlFiles.length} meetings=${meetingList.meetings.length} details=${meetingDetails.details.length}`);
+console.log(`HISTORICAL_BASELINE_MEETINGS: ${audit.after.meeting_count}`);
+console.log(`HISTORICAL_BASELINE_DETAILS: ${audit.after.detail_count}`);
 console.log(`REMOVED_LINK_ONLY_MEETINGS: ${audit.meetings.removed_ids.length}`);
 console.log('BILINGUAL_CORE_ROUTES: pass');
 console.log('A_PLUS_FIELD_LEAKS: 0');
