@@ -1,39 +1,79 @@
 {
   "schema_version": "jra-refresh-report-v0",
-  "generated_at": "2026-06-09T15:02:29.605Z",
+  "generated_at": "2026-07-02T16:48:23.831Z",
   "refresh_window": {
-    "from": "2026-06-06",
-    "to": "2026-06-07"
+    "from": "2026-07-01",
+    "to": "2026-07-31"
   },
-  "dates_checked": 2,
-  "meetings_extracted": 4,
-  "publishable_meetings": 4,
-  "a_plus_meetings": 4,
+  "dates_checked": 31,
+  "meetings_extracted": 24,
+  "publishable_meetings": 24,
+  "a_plus_meetings": 24,
   "a_level_meetings": 0,
   "statuses": [
     {
-      "date": "2026-06-06",
-      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+      "date": "2026-07-01",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0701.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0701.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-02",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0702.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0702.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-03",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0703.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0703.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-04",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0704.html",
       "status": "meetings_extracted",
       "http_status": 200,
-      "final_url": "https://jra.jp/keiba/calendar2026/2026/6/0606.html",
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0704.html",
       "content_type": "text/html",
-      "body_size": 65061,
+      "body_size": 69068,
       "encoding": "shift_jis",
-      "meeting_count": 2,
+      "meeting_count": 3,
       "ranks": {
-        "A+": 2
+        "A+": 3
       },
       "meeting_diagnostics": [
         {
-          "meeting_id": "jra-tokyo-racecourse-2026-06-06",
+          "meeting_id": "jra-fukushima-racecourse-2026-07-04",
           "rank": "A+",
           "race_count": 12,
           "missing_fields": [],
           "incomplete_races": []
         },
         {
-          "meeting_id": "jra-hanshin-racecourse-2026-06-06",
+          "meeting_id": "jra-kokura-racecourse-2026-07-04",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-04",
           "rank": "A+",
           "race_count": 12,
           "missing_fields": [],
@@ -42,34 +82,483 @@
       ]
     },
     {
-      "date": "2026-06-07",
-      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+      "date": "2026-07-05",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0705.html",
       "status": "meetings_extracted",
       "http_status": 200,
-      "final_url": "https://jra.jp/keiba/calendar2026/2026/6/0607.html",
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0705.html",
       "content_type": "text/html",
-      "body_size": 65225,
+      "body_size": 69226,
       "encoding": "shift_jis",
-      "meeting_count": 2,
+      "meeting_count": 3,
       "ranks": {
-        "A+": 2
+        "A+": 3
       },
       "meeting_diagnostics": [
         {
-          "meeting_id": "jra-tokyo-racecourse-2026-06-07",
+          "meeting_id": "jra-fukushima-racecourse-2026-07-05",
           "rank": "A+",
           "race_count": 12,
           "missing_fields": [],
           "incomplete_races": []
         },
         {
-          "meeting_id": "jra-hanshin-racecourse-2026-06-07",
+          "meeting_id": "jra-kokura-racecourse-2026-07-05",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-05",
           "rank": "A+",
           "race_count": 12,
           "missing_fields": [],
           "incomplete_races": []
         }
       ]
+    },
+    {
+      "date": "2026-07-06",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0706.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0706.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-07",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0707.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0707.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-08",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0708.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0708.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-09",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0709.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0709.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-10",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0710.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0710.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-11",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0711.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0711.html",
+      "content_type": "text/html",
+      "body_size": 69115,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-fukushima-racecourse-2026-07-11",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-kokura-racecourse-2026-07-11",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-11",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-12",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0712.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0712.html",
+      "content_type": "text/html",
+      "body_size": 69191,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-fukushima-racecourse-2026-07-12",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-kokura-racecourse-2026-07-12",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-12",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-13",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0713.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0713.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-14",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0714.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0714.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-15",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0715.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0715.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-16",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0716.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0716.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-17",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0717.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0717.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-18",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0718.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0718.html",
+      "content_type": "text/html",
+      "body_size": 68730,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-fukushima-racecourse-2026-07-18",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-kokura-racecourse-2026-07-18",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-18",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-19",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0719.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0719.html",
+      "content_type": "text/html",
+      "body_size": 68786,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-fukushima-racecourse-2026-07-19",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-kokura-racecourse-2026-07-19",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-hakodate-racecourse-2026-07-19",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-20",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0720.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0720.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-21",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0721.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0721.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-22",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0722.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0722.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-23",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0723.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0723.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-24",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0724.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0724.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-25",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0725.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0725.html",
+      "content_type": "text/html",
+      "body_size": 68659,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-niigata-racecourse-2026-07-25",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-chukyo-racecourse-2026-07-25",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-sapporo-racecourse-2026-07-25",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-26",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0726.html",
+      "status": "meetings_extracted",
+      "http_status": 200,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0726.html",
+      "content_type": "text/html",
+      "body_size": 68716,
+      "encoding": "shift_jis",
+      "meeting_count": 3,
+      "ranks": {
+        "A+": 3
+      },
+      "meeting_diagnostics": [
+        {
+          "meeting_id": "jra-niigata-racecourse-2026-07-26",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-chukyo-racecourse-2026-07-26",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        },
+        {
+          "meeting_id": "jra-sapporo-racecourse-2026-07-26",
+          "rank": "A+",
+          "race_count": 12,
+          "missing_fields": [],
+          "incomplete_races": []
+        }
+      ]
+    },
+    {
+      "date": "2026-07-27",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0727.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0727.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-28",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0728.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0728.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-29",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0729.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0729.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-30",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0730.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0730.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
+    },
+    {
+      "date": "2026-07-31",
+      "official_source_url": "https://jra.jp/keiba/calendar2026/2026/7/0731.html",
+      "status": "http_error",
+      "http_status": 403,
+      "final_url": "https://jra.jp/keiba/calendar2026/2026/7/0731.html",
+      "content_type": "text/html",
+      "body_size": 56039,
+      "encoding": "shift_jis",
+      "network_error": null
     }
   ]
 }
