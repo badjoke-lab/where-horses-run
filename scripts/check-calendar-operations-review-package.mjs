@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -7,10 +8,13 @@ const errors = [];
 const fail = (message) => errors.push(message);
 const read = (file) => readFileSync(path.join(root, file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
+const sha256 = (file) => createHash('sha256').update(read(file)).digest('hex');
 const packagePath = 'data/generated/timetable/operations-review-package.json';
+const candidatePath = 'data/candidates/japan-jra-candidates.json';
 const reviewPackage = parse(packagePath);
 const control = parse('data/static/calendar-operations-control.json');
 const jraDigestOverlay = parse('data/static/calendar-operations-jra-candidate-digest-v2.json');
+const currentCandidateDigest = sha256(candidatePath);
 
 const check = spawnSync(process.execPath, [
   'scripts/timetable/build-operations-review-package.mjs',
@@ -23,8 +27,19 @@ if (reviewPackage.work_id !== 'WHR-CAL-OPS-V1') fail('review package Work ID is 
 if (reviewPackage.mode !== 'paused_review_only') fail('review package must remain paused_review_only.');
 if (control.mode !== reviewPackage.mode) fail('review package and control mode differ.');
 if (jraDigestOverlay.schema_version !== 'calendar-operations-jra-candidate-digest-v2') fail('unexpected JRA candidate digest overlay schema.');
-if (reviewPackage.input_digests?.jra_candidate_sha256 !== jraDigestOverlay.base_candidate_sha256) fail('base package JRA candidate digest differs from overlay.');
-if (jraDigestOverlay.candidate_path !== 'data/candidates/japan-jra-candidates.json') fail('JRA candidate digest overlay path is incorrect.');
+if (jraDigestOverlay.candidate_path !== candidatePath) fail('JRA candidate digest overlay path is incorrect.');
+
+let digestResolution = 'invalid';
+if (reviewPackage.input_digests?.jra_candidate_sha256 === currentCandidateDigest) {
+  digestResolution = 'direct-current';
+} else if (
+  reviewPackage.input_digests?.jra_candidate_sha256 === jraDigestOverlay.base_candidate_sha256 &&
+  currentCandidateDigest === jraDigestOverlay.current_candidate_sha256
+) {
+  digestResolution = 'v2-overlay';
+} else {
+  fail('JRA candidate digest is neither current nor covered by the approved overlay.');
+}
 for (const key of ['candidate_approval_performed','canonical_write_performed','public_write_performed','unattended_publication_allowed']) {
   if (jraDigestOverlay.boundaries?.[key] !== false) fail(`JRA digest overlay boundary ${key} must be false.`);
 }
@@ -43,8 +58,9 @@ for (let index = 1; index < reviewPackage.actions.length; index += 1) {
   const current = reviewPackage.actions[index];
   if (previous.priority > current.priority) fail('review actions are not ordered by priority.');
 }
-if (!reviewPackage.actions.some((action) => action.type === 'refresh_before_promotion' && action.country_id === 'japan')) {
-  fail('JRA refresh-before-promotion action is missing.');
+const expectedJraAction = reviewPackage.summary?.jra_refresh_required ? 'refresh_before_promotion' : 'human_review_required';
+if (!reviewPackage.actions.some((action) => action.type === expectedJraAction && action.country_id === 'japan' && action.key === candidatePath)) {
+  fail(`JRA ${expectedJraAction} action is missing.`);
 }
 
 if (!Array.isArray(reviewPackage.proposed_review?.changed_files) || reviewPackage.proposed_review.changed_files.length !== 0) {
@@ -86,4 +102,5 @@ console.log(`CALENDAR_OPERATIONS_REVIEW_PACKAGE: pass actions=${reviewPackage.ac
 console.log('MODE: paused_review_only');
 console.log('PROPOSED_CHANGED_FILES: 0');
 console.log('PUBLIC_RELEASE_EXPECTED: false');
-console.log('JRA_CANDIDATE_DIGEST_RESOLUTION: v2-overlay');
+console.log(`JRA_ACTION: ${expectedJraAction}`);
+console.log(`JRA_CANDIDATE_DIGEST_RESOLUTION: ${digestResolution}`);
