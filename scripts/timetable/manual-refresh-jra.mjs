@@ -13,6 +13,7 @@ const generatedPaths = [
   'data/generated/timetable/canonical/meeting-details.json',
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
+  'data/generated/timetable/public/japan-a-plus-overrides.json',
 ];
 
 let rollbackGenerated = false;
@@ -170,6 +171,8 @@ const report = readJson('data/generated/timetable/jra-refresh-report.json');
 validateReport(report, range);
 
 run(process.execPath, ['scripts/check-calendar-runtime-import-boundary.mjs']);
+run(process.execPath, ['scripts/timetable/build-japan-a-plus-public-overrides.mjs']);
+run(process.execPath, ['scripts/check-japan-a-plus-public-overrides.mjs']);
 run('npm', ['install', '--package-lock=false', '--no-audit', '--no-fund']);
 run('npm', ['run', 'build']);
 
