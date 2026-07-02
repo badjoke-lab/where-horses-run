@@ -1,0 +1,93 @@
+name: JRA current month refresh
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/fetch-jra-current-month.mjs'
+      - 'scripts/check-jra-current-month-public.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - 'data/generated/timetable/public/jra-current-month.json'
+      - '.github/workflows/jra-current-month-refresh.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/timetable/fetch-jra-current-month.mjs'
+      - 'scripts/check-jra-current-month-public.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - '.github/workflows/jra-current-month-refresh.yml'
+  schedule:
+    - cron: '20 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Exercise live JRA fetch and parser
+        run: node scripts/timetable/fetch-jra-current-month.mjs --dry-run
+      - name: Validate committed dataset
+        run: node scripts/check-jra-current-month-public.mjs
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: jra-current-month-refresh
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Fetch JRA official programme
+        run: node scripts/timetable/fetch-jra-current-month.mjs
+      - name: Validate generated dataset
+        run: node scripts/check-jra-current-month-public.mjs
+      - name: Install dependencies
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
+      - name: Create or update review PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/generated/timetable/public/jra-current-month.json; then
+            echo 'No JRA current-month changes.'
+            exit 0
+          fi
+          month="$(node -p "require('./data/generated/timetable/public/jra-current-month.json').month")"
+          branch='automation/jra-current-month'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -B "$branch"
+          git add data/generated/timetable/public/jra-current-month.json
+          git commit -m "Update JRA official programme for ${month}"
+          git push --force origin "HEAD:${branch}"
+          existing="$(gh pr list --head "$branch" --base main --state open --json number --jq '.[0].number // empty')"
+          body="Automated review PR generated from JRA official programme pages. Month: ${month}. Publication remains review-controlled."
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --title "Update JRA ${month} official programme" --body "$body"
+          else
+            gh pr create --base main --head "$branch" --title "Update JRA ${month} official programme" --body "$body"
+          fi
