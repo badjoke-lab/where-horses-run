@@ -1,0 +1,40 @@
+name: Calendar Japan A+ public overrides
+
+on:
+  pull_request:
+    paths:
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/check-japan-a-plus-public-overrides.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - '.github/workflows/calendar-japan-a-plus-public-overrides.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+      - 'src/lib/timetable/publicTimetableViewModel.ts'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/check-japan-a-plus-public-overrides.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
+      - '.github/workflows/calendar-japan-a-plus-public-overrides.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Japan A+ public overrides
+        run: node scripts/check-japan-a-plus-public-overrides.mjs
+      - name: Validate public-only runtime imports
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build site
+        run: npm run build
