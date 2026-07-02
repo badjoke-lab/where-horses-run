@@ -45,7 +45,7 @@ function capture(command, args) {
     cwd: root,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
-  }).trim();
+  }).trimEnd();
 }
 
 function commandExists(command) {

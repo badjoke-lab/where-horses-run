@@ -43,6 +43,8 @@ jobs:
           grep -F "data/generated/timetable/public/japan-a-plus-overrides.json" scripts/timetable/manual-refresh-jra.mjs
           grep -F "a_plus_meetings" scripts/timetable/manual-refresh-jra.mjs
           grep -F "isExpectedNonRacing403" scripts/timetable/manual-refresh-jra.mjs
+          grep -F "}).trimEnd();" scripts/timetable/manual-refresh-jra.mjs
+          ! grep -F "}).trim();" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'install', '--package-lock=false', '--no-audit', '--no-fund'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'push', '--force-with-lease'" scripts/timetable/manual-refresh-jra.mjs
           grep -F "'pr', 'create'" scripts/timetable/manual-refresh-jra.mjs
