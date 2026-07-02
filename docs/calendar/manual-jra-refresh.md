@@ -18,18 +18,23 @@ To select another month:
 sh refresh-jra-manual 2026-07
 ```
 
+## Isolation behavior
+
+The launcher does not modify or depend on the current local working tree. It creates a temporary partial clone, excludes the `docs/` directory from checkout, runs the refresh there, and removes the temporary clone when finished. This avoids unrelated local edits and antivirus false positives in country-note Markdown files.
+
 ## What the command does
 
-1. Requires a clean working tree.
-2. Checks that `git`, `gh`, and `npm` are installed and that `gh` is authenticated.
-3. Updates the local `main` branch with `origin/main` using fast-forward only.
-4. Runs the existing `scripts/timetable/refresh-jra.mjs` Japanese programme-page fetcher for the whole selected month.
-5. Rejects the result unless at least one meeting is extracted and every publishable meeting reaches A+.
-6. Rejects HTTP, network, parser, runtime-boundary, and build failures.
-7. Restores generated timetable files automatically when validation fails.
-8. If data changed, commits only the approved generated timetable files to `automation/jra-manual-YYYY-MM`.
-9. Pushes the branch and creates or updates a review PR.
-10. Leaves production unchanged until the review PR is merged.
+1. Reads the repository's `origin` URL.
+2. Creates an isolated temporary partial clone without checking out blobs first.
+3. Enables sparse checkout and excludes `docs/`.
+4. Checks that `git`, `gh`, and `npm` are installed and that `gh` is authenticated.
+5. Runs the existing `scripts/timetable/refresh-jra.mjs` Japanese programme-page fetcher for the whole selected month.
+6. Rejects the result unless at least one meeting is extracted and every publishable meeting reaches A+.
+7. Rejects HTTP, network, parser, runtime-boundary, and build failures.
+8. Restores generated timetable files automatically when validation fails.
+9. If data changed, commits only the approved generated timetable files to `automation/jra-manual-YYYY-MM`.
+10. Pushes the branch and creates or updates a review PR.
+11. Leaves production unchanged until the review PR is merged.
 
 ## Published fields
 
@@ -46,4 +51,4 @@ It does not store raw HTML, runners, horses, jockeys, trainers, odds, results, p
 
 ## Failure behavior
 
-A failed acquisition, incomplete A+ result, unexpected file change, runtime-boundary failure, or build failure does not push a branch and does not create a PR. The previously merged site data remains in place.
+A failed acquisition, incomplete A+ result, unexpected file change, runtime-boundary failure, or build failure does not push a branch and does not create a PR. The previously merged site data remains in place, and the original working directory is not changed.
