@@ -35,6 +35,11 @@ function assertHtml(relativePath, markers = []) {
   return html;
 }
 
+function hasTableHeader(html, label) {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`<th(?:\\s[^>]*)?>\\s*${escaped}\\s*</th>`, 'i').test(html);
+}
+
 for (const route of [
   'dist/calendar/index.html',
   'dist/ja/calendar/index.html',
@@ -64,14 +69,12 @@ for (const meeting of meetingList.meetings) {
     if (!html.includes(`>${row.post_time_local}<`)) fail(`${detailPath} does not render post time ${row.post_time_local}`);
   }
 
-  if (detail.effective_public_rank === 'A') {
-    for (const header of ['<th>Race name</th>', '<th>Distance</th>', '<th>Surface</th>', '<th>Course</th>']) {
-      if (html.includes(header)) fail(`${detailPath} renders A+ table header at public rank A: ${header}`);
+  for (const header of ['Race name', 'Distance', 'Surface', 'Course']) {
+    if (detail.effective_public_rank === 'A' && hasTableHeader(html, header)) {
+      fail(`${detailPath} renders A+ table header at public rank A: ${header}`);
     }
-  }
-  if (detail.effective_public_rank === 'A+') {
-    for (const header of ['<th>Race name</th>', '<th>Distance</th>', '<th>Surface</th>', '<th>Course</th>']) {
-      if (!html.includes(header)) fail(`${detailPath} is missing A+ table header ${header}`);
+    if (detail.effective_public_rank === 'A+' && !hasTableHeader(html, header)) {
+      fail(`${detailPath} is missing A+ table header ${header}`);
     }
   }
 }
