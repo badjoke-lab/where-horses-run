@@ -1,0 +1,63 @@
+name: Calendar NAR fixture operator
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'collect-nar-fixtures-manual'
+      - 'docs/calendar/manual-nar-fixture-collection.md'
+      - 'data/static/nar-flat-racecourse-compatibility-v1.json'
+      - 'scripts/timetable/collect-nar-complete-fixtures-v2.mjs'
+      - 'scripts/timetable/manual-collect-nar-fixtures.mjs'
+      - 'scripts/check-calendar-nar-complete-fixture-set.mjs'
+      - 'scripts/check-calendar-nar-fixture-operator.mjs'
+      - '.github/workflows/calendar-nar-fixture-operator.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'collect-nar-fixtures-manual'
+      - 'docs/calendar/manual-nar-fixture-collection.md'
+      - 'data/static/nar-flat-racecourse-compatibility-v1.json'
+      - 'scripts/timetable/collect-nar-complete-fixtures-v2.mjs'
+      - 'scripts/timetable/manual-collect-nar-fixtures.mjs'
+      - 'scripts/check-calendar-nar-complete-fixture-set.mjs'
+      - 'scripts/check-calendar-nar-fixture-operator.mjs'
+      - '.github/workflows/calendar-nar-fixture-operator.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate shell launcher
+        run: sh -n collect-nar-fixtures-manual
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/collect-nar-complete-fixtures-v2.mjs
+          node --check scripts/timetable/manual-collect-nar-fixtures.mjs
+          node --check scripts/check-calendar-nar-complete-fixture-set.mjs
+          node --check scripts/check-calendar-nar-fixture-operator.mjs
+      - name: Validate operator contract
+        run: node scripts/check-calendar-nar-fixture-operator.mjs
+      - name: Validate empty fixture-set state before operator run
+        run: node scripts/check-calendar-nar-complete-fixture-set.mjs --allow-empty
+      - name: Validate all-fourteen compatibility
+        run: node scripts/check-calendar-nar-14-racecourse-compatibility.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm no hosted fetch or schedule
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-fixture-operator.yml
+          ! grep -F 'collect-nar-complete-fixtures-v2.mjs --all' .github/workflows/calendar-nar-fixture-operator.yml
+          echo 'Collection runs only through the local operator launcher.'
