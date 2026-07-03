@@ -1,137 +1,232 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-03
+Last reviewed: 2026-07-02
 
-## Current state
+## Purpose
 
-Completed Work IDs:
+This roadmap begins with Calendar Readiness and continues through maintained public operation. The repository already has timetable foundations; they must be reconciled and activated rather than duplicated.
 
-- `WHR-CAL-CONTRACT-02`
-- `WHR-AUDIT-COUNTRY-CALENDAR-98`
-- `WHR-CAL-BASELINE-RECONCILE`
-- `WHR-CAL-PIPELINE-V1`
-- `WHR-CAL-DYNAMIC-DATES`
-- `WHR-CAL-OPS-V1`
-- `WHR-CAL-JAPAN-A-PLUS-RECONCILE`
+## Stage 1 — contract implementation
 
+Work ID: `WHR-CAL-CONTRACT-02`
+
+Deliver machine-readable Source Test v2 and Readiness schemas, a readiness registry, stable system/source keys, reference validation, enum consistency checks, and roadmap/documentation validation. Do not activate live acquisition.
+
+## Stage 2 — readiness backfill and new research
+
+Backfill entries 01-52 from reviewed evidence. Use Source Test v2 for entries 53-98. A parser name or planned cadence is not proof that a live route works.
+
+## Stage 3 — combined research handoff
+
+Status: complete  
+Work ID: `WHR-AUDIT-COUNTRY-CALENDAR-98`
+
+Generate readiness summaries, automation-mode counts, implementation priority, blocked/revalidation reports, source freshness, and country-page completion reports.
+
+## Stage 4 — existing baseline reconciliation
+
+Status: complete  
+Work ID: `WHR-CAL-BASELINE-RECONCILE`
+
+Audit source inventories, routes, local/manual snapshot contracts, adapters, fixtures, generators, promotion tools, generated data, display policies, pages, refresh commands, fixed dates, seeds, and PR-specific scripts.
+
+Classify each component:
+
+```text
+retain
+repair
+migrate
+replace
+archive
+```
+
+Completed outputs:
+
+- `docs/calendar/baseline-reconciliation-map.md`;
+- `data/audits/calendar-baseline-migration-map.json`;
+- `scripts/check-calendar-baseline-reconciliation.mjs`;
+- read-only normal build/check;
+- paused incomplete daily refresh schedule.
+
+Broad deletion remains prohibited until provenance and assertion migration is complete.
+
+## Stage 5 — pipeline v1
+
+Pipeline v1 status: complete  
+Completed Work ID: `WHR-CAL-PIPELINE-V1`  
+Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Completed Work ID: `WHR-CAL-OPS-V1`  
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
-## Standard Calendar flow
+Standard flow:
 
 ```text
 official source
 -> reviewed adapter or manual import
--> candidate
+-> extracted candidate
 -> normalization
 -> validation
 -> human promotion
 -> canonical meeting data
--> public projection
+-> public display projection
 -> static build
 ```
 
-Candidate generation is not publication. Normal build and check remain read-only. Scheduling and unattended canonical or public writes remain disabled.
-
-## Completed foundations
-
-### Contracts and 98-country readiness
-
-Source Test v2, Calendar Readiness, stable system/source identifiers, the 98-country readiness backfill, and the combined audit are complete.
-
-### Baseline reconciliation
-
-The earlier timetable implementation was classified as retain, repair, migrate, replace, or archive. Normal production build/check became read-only and the incomplete scheduled refresh was paused.
-
-### Pipeline v1
-
-Pipeline v1 provides the candidate contract, human promotion, deterministic public projection, production runtime import boundary, JRA reference adapter, rendered QA, and grouped release gate.
+Completed Pipeline v1 outputs include one candidate contract, human promotion writer, deterministic public projection, public-only runtime imports, read-only builds, one JRA reference adapter, rendered release QA, and `data/audits/calendar-pipeline-v1-release-gate.json`.
 
 ### Dynamic Dates
 
-Calendar, Today, and Tomorrow use explicit reference-date and timezone rules with a rolling 30-day window and visible current, stale, and empty states.
+Dynamic Dates status: complete  
+Completed Work ID: `WHR-CAL-DYNAMIC-DATES`
+
+The site now uses explicit reference-date and timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states.
 
 ### Operations v1
 
-Operations v1 provides source-health status, review packages, pause and rollback controls, seasonal rollover, and source-breakage escalation.
+Operations v1 status: complete  
+Completed Work ID: `WHR-CAL-OPS-V1`
 
-## Japan A+ policy reconciliation — complete
+Operations include deterministic source-health status, review-package preparation, pause/rollback controls, seasonal rollover, source-breakage escalation, and grouped validation. Scheduled and unattended publication remain disabled.
 
-JRA central racing, NAR/local-government racing, and Banei Tokachi each have:
+### Japan A+ policy
 
-- Technical Rank A+;
-- Public Ceiling A+;
-- separate source identity and terminology;
-- evidence-bound meeting output;
-- review-controlled publication.
+Approved policy:
 
-Active Japan state is resolved through:
+- JRA central racing: Technical Rank A+ / Public Ceiling A+;
+- NAR and local-government racing: Technical Rank A+ / Public Ceiling A+;
+- Banei Tokachi: Technical Rank A+ / Public Ceiling A+.
 
-- `data/static/calendar-readiness-japan-v2.json`;
-- `data/static/authority-source-inventory-japan-v2.json`;
-- `data/static/japan-a-plus-runtime-control.json`;
-- `data/static/japan-a-plus-policy.json`.
+The three systems remain separate. Individual meetings remain limited to the highest rank supported by reviewed canonical fields. System-level A+ does not invent unavailable meeting details.
 
-The historical base registries remain provenance records. JRA projection is active. NAR and Banei remain pending separate pilots.
+### Japan A+ reconciliation — complete
 
-Completion records:
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
-- `docs/calendar/japan-a-plus-reconciliation-plan.md`;
-- `data/audits/japan-a-plus-reconciliation-completion.json`;
-- `scripts/check-japan-a-plus-reconciliation-completion.mjs`.
+The approved A+ policy, v2 controls, Profile v2, Source Test summary, resolved registries, reviewed note, validators, roadmaps, and JRA public projection are aligned. Historical base records remain provenance and are superseded for active Japan resolution.
 
-## Japan pilot sequence
+Canonical implementation plan:
 
-```text
-WHR-CAL-JAPAN-JRA-A-PLUS
--> WHR-CAL-JAPAN-NAR-A-PLUS
--> WHR-CAL-JAPAN-BANEI-A-PLUS
--> WHR-CAL-JAPAN-INTEGRATION
-```
+- `docs/calendar/japan-a-plus-reconciliation-plan.md`.
 
-### JRA A+ — current
+Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json` without enabling unattended publication.
 
-The July 2026 implementation contains 24 reviewed A+ meetings and 300 public-safe timetable rows. The current stage formalizes the pilot completion contract, refresh ownership, freshness, fallback, rollback, and release gate.
-
-Approved public meeting-detail fields are limited to race label, scheduled post time, race name, distance, surface, and course label.
-
-### NAR A+ — next
-
-Build authority- and racecourse-specific route mapping. Do not flatten local-government racing into a JRA-like national feed. The old NAR branch is not merged directly; only unique reusable knowledge may be migrated into Pipeline v1.
-
-### Banei A+
-
-Use Banei-specific routes and terminology. Do not impose flat-racing surface or course assumptions.
-
-### Japan integration
-
-Validate same-day three-system output across Calendar, Today, Tomorrow, country, racecourse, and meeting pages with freshness, fallback, rollback, and bilingual QA.
-
-## Later stages
-
-1. `WHR-CAL-HONG-KONG-HKJC`
-2. `WHR-CAL-UAE-ERA`
-3. `WHR-CAL-PUBLIC-V1`
-4. racecourse-page and page-link strengthening
-5. glossary, racing types, search, filtering, and SEO
-6. expansion cohorts
-7. steady-state maintenance
-
-Calendar Public v1 requires dynamic date views, maintained approved pilots, one meeting per list row, visible source and freshness state, safe downgrade/fallback, bilingual responsive QA, and operations ownership.
-
-Participant, betting, result, payout, prediction, complete-racecard, raw-source, embedded-video, and direct-stream output remain excluded.
-
-## Historical transition markers
-
-These exact labels are retained for completed-gate compatibility and are not active:
+### Completed reconciliation transition
 
 > Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 > Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
 
+### Superseded pilot transition
+
+The following exact labels record the earlier local-racing C-pilot state. They are retained only for completed release-gate compatibility and are not the active state above:
+
 > Current Work ID: `WHR-CAL-JAPAN-NAR`  
 > Next Work ID: `WHR-CAL-JAPAN-BANEI`
 
-## Per-PR review
+## Stage 6 — Japan pilot activation
 
-Each Calendar PR records its Work ID, canonical documents reviewed, registry/control changes, runtime behaviour, display boundary, validation results, out-of-scope work, and next Work ID. Deployment follows `docs/operations/deployment-and-ci-policy.md`.
+Status: current  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+
+```text
+WHR-CAL-JAPAN-JRA-A-PLUS
+WHR-CAL-JAPAN-NAR-A-PLUS
+WHR-CAL-JAPAN-BANEI-A-PLUS
+WHR-CAL-JAPAN-INTEGRATION
+```
+
+### JRA A+ pilot
+
+The July 2026 implementation produced 24 reviewed A+ meetings and 288 July timetable rows, with candidate, canonical, public, operations, and rendered-QA layers synchronized. Complete the pilot contract, refresh ownership, freshness, fallback, rollback, and release gate before moving to NAR.
+
+### NAR A+ pilot
+
+Build authority- and racecourse-specific route mapping. Do not flatten local-government racing into a JRA-like national feed. Candidate generation and promotion remain evidence-bound and human-controlled.
+
+### Banei A+ pilot
+
+Use Banei-specific source routes and terminology. Do not impose flat-racing surface/course assumptions. Candidate generation and promotion remain evidence-bound and human-controlled.
+
+### Japan integration
+
+Verify same-day three-system handling, Calendar/Today/Tomorrow output, country and racecourse links, source health, freshness, fallback, rollback, and bilingual rendered QA.
+
+Each pilot requires reviewed source/readiness records, stable IDs, fixture-backed extraction, bounded candidates, prohibited-field guards, normalized validation, human promotion, public-rank enforcement, freshness/stale handling, fallback/rollback, bilingual rendered QA, and operations documentation.
+
+A pilot may be automatic, semi-automatic, or manual. The mode must match evidence. Scheduling and unattended publication remain disabled unless separately approved.
+
+## Stage 7 — additional pilot activation
+
+```text
+WHR-CAL-HONG-KONG-HKJC
+WHR-CAL-UAE-ERA
+```
+
+HKJC and UAE follow the same Pipeline v1, human-promotion, display-boundary, stale, fallback, rollback, and bilingual QA requirements.
+
+## Stage 8 — Calendar public v1
+
+Work ID: `WHR-CAL-PUBLIC-V1`
+
+Release criteria:
+
+- dynamic Calendar, Today, and Tomorrow;
+- maintained approved-pilot records;
+- one meeting per list row;
+- C/B/B+/A/A+ boundaries;
+- visible coverage, source status, and freshness where required;
+- safe stale/failure downgrade and official fallback;
+- no participant, betting, result, payout, prediction, complete-racecard, raw-source, embedded-video, or direct-stream output;
+- bilingual responsive QA;
+- operations and recovery ownership.
+
+## Stage 9 — racecourse pages and product navigation
+
+After Calendar Public v1, strengthen racecourse pages and the page-link architecture:
+
+- one canonical page per racecourse;
+- current and next meeting state;
+- recent reviewed meetings;
+- course and distance profile;
+- official sources and freshness;
+- country, Calendar, racing-type, and glossary links;
+- bilingual responsive QA.
+
+## Stage 10 — glossary, racing types, search, filtering, and SEO
+
+Implement the reviewed glossary and terminology boundary, local names, readings and pronunciation metadata where supported, racing-type navigation, search/filter controls, no-JavaScript fallback, metadata, sitemap, canonical/hreflang, structured data, and methodology/coverage pages.
+
+## Stage 11 — expansion cohorts
+
+Choose systems from the priority matrix using source stability, coverage completeness, timetable depth, bounded complexity, maintenance cost, publication safety, season timing, and user value.
+
+Cohorts may mix automatic A/A+, automatic or semi-automatic C/B/B+, manual PDF/import, and link-only systems.
+
+## Stage 12 — steady-state maintenance
+
+Daily: candidate/error review and Today/Tomorrow sanity checks.  
+Weekly: stale/source-health review, manual updates, broken-link triage.  
+Monthly: source/readiness revalidation and priority updates.  
+Seasonally: fixture rollover, off-season/restart handling, archive review.
+
+## Per-PR document review
+
+Each Calendar PR reviews:
+
+1. `docs/governance/document-authority.md`;
+2. `docs/project-roadmap.md`;
+3. this roadmap;
+4. the active phase plan, including `docs/calendar/japan-a-plus-reconciliation-plan.md` while that Work ID is current;
+5. `docs/operations/deployment-and-ci-policy.md`;
+6. applicable machine-readable policies, readiness records, controls, source records, profile records, and public display boundaries.
+
+The PR records its Work ID, documents and specifications reviewed, registry/control changes, runtime behaviour, display boundary, validation results, out-of-scope work, and next Work ID.
+
+## Deployment rule
+
+Follow `docs/operations/deployment-and-ci-policy.md`. Research, contracts, fixtures, candidates, and non-public runtime work use GitHub validation without Cloudflare preview. Rendered releases use one final preview when materially required and one production deployment after approval.
