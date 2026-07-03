@@ -1,0 +1,17 @@
+{
+  "schema_version": "nar-candidate-adapter-audit-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "phase": "candidate_only_adapter",
+  "status": "complete",
+  "completed_at": "2026-07-03",
+  "input": "data/fixtures/timetable/nar/route-probe-v1.json",
+  "output": "data/candidates/nar-route-probe-candidates.json",
+  "adapter": "scripts/timetable/build-nar-route-probe-candidates.mjs",
+  "candidate_count": 2,
+  "promotion_eligible_count": 0,
+  "review_status": "needs_review",
+  "canonical_write": "disabled",
+  "public_write": "disabled",
+  "schedule_mode": "disabled",
+  "next_phase": "complete_meeting_fixture"
+}
