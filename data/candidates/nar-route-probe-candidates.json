@@ -1,0 +1,80 @@
+{
+  "schema_version": "nar-route-probe-candidates-v1",
+  "generated_from": "data/fixtures/timetable/nar/route-probe-v1.json",
+  "generated_at": "2026-07-03",
+  "adapter_id": "nar-route-probe-candidate-adapter-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "review": {
+    "status": "needs_review",
+    "promotion_eligible": false,
+    "reason": "complete meeting coverage has not been established"
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-nar-urawa-2026-06-26-r11",
+      "probe_id": "nar-urawa-2026-06-26-r11",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "urawa-racecourse",
+      "venue_code": "18",
+      "date": "2026-06-26",
+      "timezone": "Asia/Tokyo",
+      "evidence_scope": "single_race_route_probe",
+      "capability_observed": "A+_field_shape",
+      "meeting_completeness": "not_established",
+      "promotion_eligible": false,
+      "review_status": "needs_review",
+      "timetable_rows": [
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "鎌北湖特別Ｂ２二",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left"
+        }
+      ],
+      "source": {
+        "list_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_RaceList?k_babaCode=18&k_raceDate=2026%2F06%2F26",
+        "detail_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_DebaTable?k_babaCode=18&k_raceDate=2026%2F06%2F26&k_raceNo=11",
+        "source_status": "verified",
+        "fixture_path": "data/fixtures/timetable/nar/route-probe-v1.json"
+      },
+      "notes": "Single-race route evidence only. This record cannot be promoted as a complete meeting."
+    },
+    {
+      "candidate_id": "candidate-nar-funabashi-2026-07-03-r10",
+      "probe_id": "nar-funabashi-2026-07-03-r10",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "funabashi-racecourse",
+      "venue_code": "19",
+      "date": "2026-07-03",
+      "timezone": "Asia/Tokyo",
+      "evidence_scope": "single_race_route_probe",
+      "capability_observed": "A+_field_shape",
+      "meeting_completeness": "not_established",
+      "promotion_eligible": false,
+      "review_status": "needs_review",
+      "timetable_rows": [
+        {
+          "label": "Race 10",
+          "post_time_local": "19:10",
+          "race_name": "ラベンダースプリントＢ２選抜馬",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left"
+        }
+      ],
+      "source": {
+        "list_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_RaceList?k_babaCode=19&k_raceDate=2026%2F07%2F03",
+        "detail_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_DebaTable?k_babaCode=19&k_raceDate=2026%2F07%2F03&k_raceNo=10",
+        "source_status": "verified",
+        "fixture_path": "data/fixtures/timetable/nar/route-probe-v1.json"
+      },
+      "notes": "Single-race route evidence only. This record cannot be promoted as a complete meeting."
+    }
+  ]
+}
