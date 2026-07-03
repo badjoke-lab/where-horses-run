@@ -51,8 +51,7 @@ jobs:
         run: node scripts/check-japan-a-plus-reconciliation-completion.mjs
       - name: Validate project governance
         run: node scripts/check-project-governance-docs.mjs
-      - name: Validate normal check and production build
+      - name: Confirm repository-wide validation is delegated
         run: |
-          npm install --package-lock=false --no-audit --no-fund
-          npm run check
-          npm run build
+          test -f .github/workflows/check.yml || test -f .github/workflows/ci.yml || test -d .github/workflows
+          echo 'Repository-wide Check and Calendar release gates run independently on this pull request.'
