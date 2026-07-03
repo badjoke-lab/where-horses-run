@@ -1,0 +1,48 @@
+name: Calendar NAR complete fixture set
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/timetable/nar/complete-meetings/**'
+      - 'data/generated/timetable/nar-complete-fixture-report.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/timetable/nar/complete-meetings/**'
+      - 'data/generated/timetable/nar-complete-fixture-report.json'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate all fourteen complete fixtures
+        run: node scripts/check-calendar-nar-complete-fixture-set.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Validate changed-file boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git fetch --no-tags origin "${{ github.base_ref }}"
+            changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+            while IFS= read -r file; do
+              [[ -z "$file" ]] && continue
+              case "$file" in
+                data/fixtures/timetable/nar/complete-meetings/*.json|data/generated/timetable/nar-complete-fixture-report.json) ;;
+                *) echo "Unexpected fixture PR path: $file"; exit 1 ;;
+              esac
+            done <<< "$changed"
+          fi
