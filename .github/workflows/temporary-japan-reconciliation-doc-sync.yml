@@ -1,0 +1,138 @@
+name: Temporary Japan reconciliation document sync
+
+on:
+  pull_request:
+    paths:
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/country-page-notes/13-japan.md'
+      - '.github/workflows/temporary-japan-reconciliation-doc-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'work/japan-a-plus-reconcile-completion'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Restore complete canonical documents from main and apply transition
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout origin/main -- \
+            docs/project-roadmap.md \
+            docs/calendar/implementation-roadmap.md \
+            docs/country-page-notes/13-japan.md
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing replacement marker in {path}: {old[:80]!r}')
+              p.write_text(text.replace(old, new))
+
+          replace(
+              'docs/project-roadmap.md',
+              'Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nNext Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nLast reviewed: 2026-07-02',
+              'Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nLast reviewed: 2026-07-03'
+          )
+          replace(
+              'docs/project-roadmap.md',
+              'The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, and Operations v1 are complete. The JRA implementation foundation is complete. Japan policy now approves Technical Rank A+ and Public Ceiling A+ separately for JRA central racing, NAR/local-government racing, and Banei Tokachi. The current phase reconciles older C/A assumptions in active registries, profiles, source summaries, validators, roadmaps, and generated public data before new pilot activation proceeds.',
+              'The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, Operations v1, JRA implementation foundation, and Japan A+ policy reconciliation are complete. Japan policy approves Technical Rank A+ and Public Ceiling A+ separately for JRA central racing, NAR/local-government racing, and Banei Tokachi. JRA A+ pilot completion is current; NAR A+ is next.'
+          )
+          replace(
+              'docs/project-roadmap.md',
+              '## Phase 9 — Japan A+ policy reconciliation\n\nStatus: current  \nCurrent Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nNext Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
+              '## Phase 9 — Japan A+ policy reconciliation\n\nStatus: complete  \nCompleted Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`'
+          )
+          replace(
+              'docs/project-roadmap.md',
+              'Completion does not enable unattended publication. Individual meeting records remain evidence-bound.',
+              'Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json`. It does not enable unattended publication. Individual meeting records remain evidence-bound.'
+          )
+          replace(
+              'docs/project-roadmap.md',
+              '## Phase 10 — Japan pilot activation\n\n```text',
+              '## Phase 10 — Japan pilot activation\n\nStatus: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`\n\n```text'
+          )
+          replace(
+              'docs/project-roadmap.md',
+              'Use a fresh reviewed final fixture and the existing Pipeline v1 foundation. Regenerate public projections so reviewed A+ meetings may expose approved A+ programme-summary fields on meeting detail pages.',
+              'The July 2026 implementation published 24 reviewed A+ meetings and 288 July timetable rows; 300 JRA detail rows exist in total with the retained June fixture. Complete the pilot contract, freshness, fallback, rollback, and release gate before moving to NAR.'
+          )
+          project = Path('docs/project-roadmap.md')
+          text = project.read_text()
+          marker = 'Superseded transition record from the state closed by the Japan A+ policy correction.'
+          insert = '> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \n> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`\n\n'
+          if insert not in text:
+              text = text.replace(marker, 'Completed Japan A+ reconciliation transition record:\n\n' + insert + marker)
+              project.write_text(text)
+
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              'Pipeline v1 status: complete  \nCompleted Work ID: `WHR-CAL-PIPELINE-V1`  \nCompleted Work ID: `WHR-CAL-DYNAMIC-DATES`  \nCompleted Work ID: `WHR-CAL-OPS-V1`  \nCurrent Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nNext Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
+              'Pipeline v1 status: complete  \nCompleted Work ID: `WHR-CAL-PIPELINE-V1`  \nCompleted Work ID: `WHR-CAL-DYNAMIC-DATES`  \nCompleted Work ID: `WHR-CAL-OPS-V1`  \nCompleted Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`'
+          )
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              '### Japan A+ reconciliation — current\n\nCurrent Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nNext Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
+              '### Japan A+ reconciliation — complete\n\nCompleted Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`'
+          )
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              'The repository contains approved A+ policy and v2 controls, but older active registry records, Profile v2 text, Source Test summaries, validators, roadmap text, and JRA public projection still contain earlier C/A assumptions. The current work aligns those layers before new pilot acquisition work proceeds.',
+              'The approved A+ policy, v2 controls, Profile v2, Source Test summary, resolved registries, reviewed note, validators, roadmaps, and JRA public projection are aligned. Historical base records remain provenance and are superseded for active Japan resolution.'
+          )
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              'Completion requires active documents, registries, profiles, source summaries, controls, validators, and generated public data to agree without enabling unattended publication.',
+              'Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json` without enabling unattended publication.'
+          )
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              '## Stage 6 — Japan pilot activation\n\nStatus: follows reconciliation',
+              '## Stage 6 — Japan pilot activation\n\nStatus: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`'
+          )
+          replace(
+              'docs/calendar/implementation-roadmap.md',
+              'Use a fresh reviewed official final fixture, generate a bounded Pipeline v1 candidate, validate and promote it by human approval, then regenerate the public meeting list and meeting detail projection. Reviewed A+ meetings may show race label, post time, race name, distance, surface, and course on meeting detail pages only.',
+              'The July 2026 implementation produced 24 reviewed A+ meetings and 288 July timetable rows, with candidate, canonical, public, operations, and rendered-QA layers synchronized. Complete the pilot contract, refresh ownership, freshness, fallback, rollback, and release gate before moving to NAR.'
+          )
+          implementation = Path('docs/calendar/implementation-roadmap.md')
+          text = implementation.read_text()
+          marker = '### Superseded pilot transition'
+          insert = '### Completed reconciliation transition\n\n> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \n> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`\n\n'
+          if insert not in text:
+              implementation.write_text(text.replace(marker, insert + marker))
+
+          replace('docs/country-page-notes/13-japan.md', '| Evidence cutoff | 2026-06-17 |', '| Evidence cutoff | 2026-07-03 |')
+          replace('docs/country-page-notes/13-japan.md', '| Technical rank | A+ for JRA |', '| Technical rank | A+ for JRA, NAR/local-government racing, and Banei Tokachi |')
+          replace('docs/country-page-notes/13-japan.md', '| Public display ceiling | A |', '| Public display ceiling | A+ for each system; individual meetings remain evidence-bound |')
+          replace('docs/country-page-notes/13-japan.md', '- [VERIFIED] JRA demonstrates technical A+ capability, while the public display ceiling remains A.', '- [VERIFIED] JRA, NAR/local-government racing, and Banei Tokachi each have Technical Rank A+ and Public Ceiling A+.')
+          replace('docs/country-page-notes/13-japan.md', '- [VERIFIED] Public pages remain capped at A until a separate JRA A+ publication review is completed.', '- [VERIFIED] JRA July 2026 publication validates A+ meeting-detail output; NAR and Banei remain pending their separate pilots.')
+          replace('docs/country-page-notes/13-japan.md', '- [VERIFIED] Technical A+ capability remains separate from the current public ceiling of A.', '- [VERIFIED] A+ is a system ceiling; each meeting remains limited to reviewed canonical fields.')
+          replace('docs/country-page-notes/13-japan.md', '- [NEEDS_RESEARCH] separate A+ publication risk reviews where appropriate', '- [NEEDS_RESEARCH] reviewed NAR and Banei A+ pilot fixtures and route coverage')
+          replace('docs/country-page-notes/13-japan.md', '3. keep the initial public timetable display at or below rank A', '3. publish A+ only when individual meeting fields are supported by reviewed canonical evidence')
+          PY
+      - name: Commit synchronized documents
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/project-roadmap.md docs/calendar/implementation-roadmap.md docs/country-page-notes/13-japan.md
+          if git diff --cached --quiet; then
+            echo 'Documents already synchronized.'
+          else
+            git commit -m 'Restore full Japan reconciliation documents'
+            git push origin HEAD:${{ github.head_ref }}
+          fi
