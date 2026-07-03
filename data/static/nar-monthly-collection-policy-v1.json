@@ -1,0 +1,50 @@
+{
+  "schema_version": "nar-monthly-collection-policy-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "status": "draft_contract",
+  "checked_at": "2026-07-04",
+  "scope": {
+    "target_month": "2026-07",
+    "racecourses_checked": 14,
+    "flat_racecourses": 14,
+    "banei_excluded": true
+  },
+  "preconditions": {
+    "all_14_complete_fixture_set_required": true,
+    "fixture_validator": "scripts/check-calendar-nar-complete-fixture-set.mjs",
+    "fixture_directory": "data/fixtures/timetable/nar/complete-meetings",
+    "minimum_fixture_count": 14
+  },
+  "classification": {
+    "meeting_complete": "Official RaceList and all corresponding DebaTable rows are complete for one venue-date.",
+    "no_meeting_in_target_month": "The selected month schedule has no meeting for the venue; this is not a failure.",
+    "meeting_incomplete": "A meeting exists, but race-number continuity or required A+ fields are incomplete.",
+    "source_unavailable": "The official source route cannot be fetched or returns an unexpected non-meeting error.",
+    "parser_failure": "The route is reachable but the collector cannot identify meeting structure safely."
+  },
+  "success_condition": {
+    "all_fourteen_racecourses_classified": true,
+    "every_actual_meeting_is_complete_or_blocked": true,
+    "inactive_racecourses_are_recorded_as_no_meeting": true,
+    "silent_omission_allowed": false,
+    "publication_effect": "none"
+  },
+  "write_boundary": {
+    "allowed_outputs": [
+      "data/generated/timetable/nar-monthly-collection-report.json",
+      "data/candidates/nar-monthly-meeting-candidates.json"
+    ],
+    "candidate_write": "needs_review_only",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "raw_source_storage": "disabled",
+    "schedule_mode": "disabled"
+  },
+  "promotion_boundary": {
+    "candidate_review_status": "needs_review",
+    "candidate_promotion_eligible": false,
+    "human_review_required_before_canonical": true,
+    "complete_fixture_coverage_is_not_publication": true,
+    "monthly_collection_is_not_publication": true
+  }
+}

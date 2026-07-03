@@ -1,0 +1,53 @@
+name: Calendar NAR monthly collection policy
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/calendar/nar-monthly-collection-contract.md'
+      - 'data/static/nar-monthly-collection-policy-v1.json'
+      - 'scripts/timetable/build-nar-monthly-schedule-plan.mjs'
+      - 'scripts/check-calendar-nar-monthly-collection-policy.mjs'
+      - '.github/workflows/calendar-nar-monthly-collection-policy.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/calendar/nar-monthly-collection-contract.md'
+      - 'data/static/nar-monthly-collection-policy-v1.json'
+      - 'scripts/timetable/build-nar-monthly-schedule-plan.mjs'
+      - 'scripts/check-calendar-nar-monthly-collection-policy.mjs'
+      - '.github/workflows/calendar-nar-monthly-collection-policy.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/build-nar-monthly-schedule-plan.mjs
+          node --check scripts/check-calendar-nar-monthly-collection-policy.mjs
+      - name: Validate monthly no-meeting policy
+        run: node scripts/check-calendar-nar-monthly-collection-policy.mjs
+      - name: Validate previous NAR contracts
+        run: |
+          node scripts/check-calendar-nar-14-racecourse-compatibility.mjs
+          node scripts/check-calendar-nar-fixture-operator.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm hosted monthly fetch is not scheduled
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-monthly-collection-policy.yml
+          ! grep -F 'build-nar-monthly-schedule-plan.mjs --month' .github/workflows/calendar-nar-monthly-collection-policy.yml
+          echo 'Monthly schedule planning remains operator-triggered.'

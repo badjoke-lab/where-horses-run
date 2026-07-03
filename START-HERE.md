@@ -31,11 +31,12 @@ Calendar work:
 14. [`docs/calendar/nar-candidate-adapter.md`](docs/calendar/nar-candidate-adapter.md)
 15. [`docs/calendar/nar-14-racecourse-compatibility-audit.md`](docs/calendar/nar-14-racecourse-compatibility-audit.md)
 16. [`docs/calendar/manual-nar-fixture-collection.md`](docs/calendar/manual-nar-fixture-collection.md)
-17. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-18. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-19. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-20. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-21. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+17. [`docs/calendar/nar-monthly-collection-contract.md`](docs/calendar/nar-monthly-collection-contract.md)
+18. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+19. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+20. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+21. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+22. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -53,6 +54,7 @@ data/static/banei-pilot-control.json
 data/static/nar-source-route-architecture-v1.json
 data/static/nar-venue-code-research-seed-v1.json
 data/static/nar-flat-racecourse-compatibility-v1.json
+data/static/nar-monthly-collection-policy-v1.json
 data/fixtures/timetable/nar/route-probe-v1.json
 data/candidates/nar-route-probe-candidates.json
 data/audits/calendar-baseline-migration-map.json
@@ -71,6 +73,7 @@ data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 collect-nar-fixtures-manual
 scripts/timetable/build-nar-route-probe-candidates.mjs
+scripts/timetable/build-nar-monthly-schedule-plan.mjs
 scripts/timetable/collect-nar-complete-fixtures.mjs
 scripts/timetable/collect-nar-complete-fixtures-v2.mjs
 scripts/timetable/manual-collect-nar-fixtures.mjs
@@ -85,6 +88,7 @@ scripts/check-calendar-nar-source-architecture.mjs
 scripts/check-calendar-nar-fixture-probe.mjs
 scripts/check-calendar-nar-candidate-adapter.mjs
 scripts/check-calendar-nar-14-racecourse-compatibility.mjs
+scripts/check-calendar-nar-monthly-collection-policy.mjs
 scripts/check-calendar-nar-complete-fixture-set.mjs
 scripts/check-calendar-nar-fixture-operator.mjs
 scripts/check-project-governance-docs.mjs
@@ -113,7 +117,7 @@ Next Work ID:
 WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, the bounded probe, the non-promotable adapter, and all-fourteen compatibility review are complete. The operator command now collects and validates one complete meeting fixture for every flat-racing racecourse in an isolated checkout and creates a review PR only after 14/14 success. Scheduling and unattended candidate/canonical/public writes remain disabled.
+The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, the bounded probe, the non-promotable adapter, all-fourteen compatibility review, and the fixture operator are complete. Monthly collection is separated from fixture compatibility: every flat-racing racecourse is checked, venues without target-month meetings are recorded as no_meeting_in_target_month, and only actual meetings are collected as review-only candidates. Scheduling and unattended candidate/canonical/public writes remain disabled.
 
 ## Completed transition records
 
