@@ -13,15 +13,17 @@ if (errors.length === 0) {
   for (const phrase of [
     'Status: active',
     'Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+    'Completed phases: source architecture; bounded fixture probe',
+    'Current phase: candidate-only adapter',
+    'Next phase: review and promotion',
     'Next Work ID after completion: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-    'bounded Urawa/Funabashi fixture probe',
-    'candidate-only venue-aware adapter',
-    'human promotion to canonical data',
+    'human-approved canonical promotion',
     'scheduling remains disabled',
   ]) {
     if (!plan.includes(phrase)) errors.push(`NAR pilot plan missing: ${phrase}`);
   }
   if (!start.includes('docs/calendar/nar-a-plus-pilot-plan.md')) errors.push('START-HERE does not link the NAR pilot plan.');
+  if (!start.includes('docs/calendar/nar-fixture-probe.md')) errors.push('START-HERE does not link the NAR fixture probe.');
 }
 
 if (errors.length) {
@@ -31,5 +33,6 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_NAR_PILOT_PLAN: pass');
-console.log('CURRENT_PHASE: source_architecture');
-console.log('NEXT_PHASE: bounded_fixture_probe');
+console.log('COMPLETED_PHASES: source_architecture,bounded_fixture_probe');
+console.log('CURRENT_PHASE: candidate_only_adapter');
+console.log('NEXT_PHASE: review_and_promotion');
