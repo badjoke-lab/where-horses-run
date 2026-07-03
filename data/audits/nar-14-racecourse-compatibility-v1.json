@@ -1,0 +1,33 @@
+{
+  "schema_version": "nar-14-racecourse-compatibility-audit-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "status": "complete",
+  "completed_at": "2026-07-04",
+  "matrix_path": "data/static/nar-flat-racecourse-compatibility-v1.json",
+  "flat_racecourses_in_scope": 14,
+  "route_code_compatibility_confirmed": 14,
+  "single_race_probes_complete": 2,
+  "complete_meeting_fixtures_complete": 0,
+  "public_nar_meetings": 0,
+  "target_month": "2026-07",
+  "target_month_active_racecourses": 12,
+  "target_month_inactive_racecourses": [
+    "mizusawa-racecourse",
+    "himeji-racecourse"
+  ],
+  "fixture_requirement": {
+    "required_count": 14,
+    "one_per_racecourse": true,
+    "seasonal_racecourse_exemption": false,
+    "monthly_collection_after_fixture_coverage": true
+  },
+  "boundaries": {
+    "candidate_write": "disabled",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "raw_source_storage": "disabled",
+    "schedule_mode": "disabled",
+    "publication_effect": "none"
+  },
+  "next_phase": "all_14_complete_meeting_fixture_collection"
+}
