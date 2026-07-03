@@ -13,7 +13,8 @@ on:
       - 'data/generated/timetable/jra-refresh-report.json'
       - 'data/generated/timetable/public/**'
       - 'data/static/japan-a-plus-runtime-control.json'
-      - 'scripts/check-calendar-jra-pilot-completion.mjs'
+      - 'scripts/check-calendar-jra-a-plus-pilot-completion.mjs'
+      - 'scripts/check-calendar-jra-pilot-completion-v2.mjs'
       - 'scripts/timetable/manual-refresh-jra.mjs'
       - 'scripts/timetable/sync-jra-derived-artifacts.mjs'
       - '.github/workflows/calendar-jra-pilot-completion.yml'
@@ -22,7 +23,8 @@ on:
       - main
     paths:
       - 'data/audits/calendar-jra-a-plus-pilot-completion.json'
-      - 'scripts/check-calendar-jra-pilot-completion.mjs'
+      - 'scripts/check-calendar-jra-a-plus-pilot-completion.mjs'
+      - 'scripts/check-calendar-jra-pilot-completion-v2.mjs'
       - '.github/workflows/calendar-jra-pilot-completion.yml'
 
 concurrency:
@@ -44,7 +46,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          node scripts/check-calendar-jra-pilot-completion.mjs > /tmp/jra-pilot-completion.log 2>&1
+          node scripts/check-calendar-jra-a-plus-pilot-completion.mjs > /tmp/jra-pilot-completion.log 2>&1
           status=$?
           cat /tmp/jra-pilot-completion.log
           exit $status
