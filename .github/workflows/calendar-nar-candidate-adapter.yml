@@ -1,0 +1,58 @@
+name: Calendar NAR candidate adapter
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/calendar/nar-a-plus-pilot-plan.md'
+      - 'docs/calendar/nar-candidate-adapter.md'
+      - 'data/fixtures/timetable/nar/route-probe-v1.json'
+      - 'data/candidates/nar-route-probe-candidates.json'
+      - 'data/audits/nar-candidate-adapter-v1.json'
+      - 'scripts/timetable/build-nar-route-probe-candidates.mjs'
+      - 'scripts/check-calendar-nar-candidate-adapter.mjs'
+      - 'scripts/check-calendar-nar-plan-current.mjs'
+      - 'scripts/check-calendar-nar-pilot-plan.mjs'
+      - '.github/workflows/calendar-nar-candidate-adapter.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/calendar/nar-candidate-adapter.md'
+      - 'data/candidates/nar-route-probe-candidates.json'
+      - 'data/audits/nar-candidate-adapter-v1.json'
+      - 'scripts/timetable/build-nar-route-probe-candidates.mjs'
+      - 'scripts/check-calendar-nar-candidate-adapter.mjs'
+      - '.github/workflows/calendar-nar-candidate-adapter.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Regenerate candidate evidence
+        run: node scripts/timetable/build-nar-route-probe-candidates.mjs
+      - name: Prove deterministic candidate output
+        run: git diff --exit-code -- data/candidates/nar-route-probe-candidates.json
+      - name: Validate candidate adapter
+        run: node scripts/check-calendar-nar-candidate-adapter.mjs
+      - name: Validate active NAR plan
+        run: node scripts/check-calendar-nar-pilot-plan.mjs
+      - name: Validate previous NAR phases
+        run: |
+          node scripts/check-calendar-nar-source-architecture.mjs
+          node scripts/check-calendar-nar-fixture-probe.mjs
+      - name: Validate project governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Confirm full checks are delegated
+        run: echo 'Repository-wide Check and Calendar release gates run independently on this pull request.'
