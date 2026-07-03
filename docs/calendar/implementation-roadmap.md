@@ -57,8 +57,9 @@ Pipeline v1 status: complete
 Completed Work ID: `WHR-CAL-PIPELINE-V1`  
 Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
 Completed Work ID: `WHR-CAL-OPS-V1`  
-Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 Standard flow:
 
@@ -100,18 +101,24 @@ Approved policy:
 
 The three systems remain separate. Individual meetings remain limited to the highest rank supported by reviewed canonical fields. System-level A+ does not invent unavailable meeting details.
 
-### Japan A+ reconciliation — current
+### Japan A+ reconciliation — complete
 
-Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
-The repository contains approved A+ policy and v2 controls, but older active registry records, Profile v2 text, Source Test summaries, validators, roadmap text, and JRA public projection still contain earlier C/A assumptions. The current work aligns those layers before new pilot acquisition work proceeds.
+The approved A+ policy, v2 controls, Profile v2, Source Test summary, resolved registries, reviewed note, validators, roadmaps, and JRA public projection are aligned. Historical base records remain provenance and are superseded for active Japan resolution.
 
 Canonical implementation plan:
 
 - `docs/calendar/japan-a-plus-reconciliation-plan.md`.
 
-Completion requires active documents, registries, profiles, source summaries, controls, validators, and generated public data to agree without enabling unattended publication.
+Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json` without enabling unattended publication.
+
+### Completed reconciliation transition
+
+> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
 
 ### Superseded pilot transition
 
@@ -122,7 +129,9 @@ The following exact labels record the earlier local-racing C-pilot state. They a
 
 ## Stage 6 — Japan pilot activation
 
-Status: follows reconciliation
+Status: current  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -133,7 +142,7 @@ WHR-CAL-JAPAN-INTEGRATION
 
 ### JRA A+ pilot
 
-Use a fresh reviewed official final fixture, generate a bounded Pipeline v1 candidate, validate and promote it by human approval, then regenerate the public meeting list and meeting detail projection. Reviewed A+ meetings may show race label, post time, race name, distance, surface, and course on meeting detail pages only.
+The July 2026 implementation produced 24 reviewed A+ meetings and 288 July timetable rows, with candidate, canonical, public, operations, and rendered-QA layers synchronized. Complete the pilot contract, refresh ownership, freshness, fallback, rollback, and release gate before moving to NAR.
 
 ### NAR A+ pilot
 

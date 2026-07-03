@@ -7,10 +7,10 @@
 | Country | Japan |
 | Slug | japan |
 | Note status | reviewed |
-| Evidence cutoff | 2026-06-17 |
+| Evidence cutoff | 2026-07-03 |
 | Source-test status | Partial |
-| Technical rank | A+ for JRA |
-| Public display ceiling | A |
+| Technical rank | A+ for JRA, NAR/local-government racing, and Banei Tokachi |
+| Public display ceiling | A+ for each system; individual meetings remain evidence-bound |
 | Source-test directory | `docs/timetable-source-tests/13-japan/` |
 | Revalidation trigger | Material JRA, NAR or Banei source-route change; separate publication QA for the legacy seed profile |
 
@@ -25,7 +25,7 @@
 
 - [VERIFIED] Japan must remain divided into JRA central racing, regional local-government racing represented through NAR and individual authorities, and Banei Tokachi.
 - [VERIFIED] The reviewed JRA routes confirm dated meetings, racecourses, ordered race labels and per-race post times.
-- [VERIFIED] JRA demonstrates technical A+ capability, while the public display ceiling remains A.
+- [VERIFIED] JRA, NAR/local-government racing, and Banei Tokachi each have Technical Rank A+ and Public Ceiling A+.
 - [VERIFIED] Official NAR and Banei routes are confirmed for navigation and source attribution.
 - [VERIFIED] The source test did not establish one reusable national timetable covering all three systems.
 
@@ -69,7 +69,7 @@
 ## Programme format
 
 - [VERIFIED] JRA provides the fields required for a complete per-race timetable and additional common programme fields.
-- [VERIFIED] Public pages remain capped at A until a separate JRA A+ publication review is completed.
+- [VERIFIED] JRA July 2026 publication validates A+ meeting-detail output; NAR and Banei remain pending their separate pilots.
 - [VERIFIED] NAR and Banei completeness must be assessed independently rather than inherited from JRA.
 
 ## Current source landscape
@@ -88,7 +88,7 @@
 
 - [VERIFIED] JRA technical capability must not be applied automatically to NAR or Banei.
 - [VERIFIED] A national combined racecard or dense programme table would obscure the three-system boundary.
-- [VERIFIED] Technical A+ capability remains separate from the current public ceiling of A.
+- [VERIFIED] A+ is a system ceiling; each meeting remains limited to reviewed canonical fields.
 
 ## Claims not yet safe for publication
 
@@ -101,7 +101,7 @@
 - [NEEDS_RESEARCH] current NAR authority and racecourse inventory
 - [NEEDS_RESEARCH] Banei timetable completeness and terminology
 - [NEEDS_RESEARCH] system-specific seasonality and meeting patterns
-- [NEEDS_RESEARCH] separate A+ publication risk reviews where appropriate
+- [NEEDS_RESEARCH] reviewed NAR and Banei A+ pilot fixtures and route coverage
 
 ## Source-test references
 
@@ -116,7 +116,7 @@ When profile-v2 and publication QA are completed:
 
 1. preserve the JRA, NAR and Banei separation
 2. use authority-specific labels and links
-3. keep the initial public timetable display at or below rank A
+3. publish A+ only when individual meeting fields are supported by reviewed canonical evidence
 4. do not infer NAR or Banei completeness from JRA capability
 5. write separate natural English and Japanese copy
 6. exclude participant, betting, result, raw-source and direct-stream content

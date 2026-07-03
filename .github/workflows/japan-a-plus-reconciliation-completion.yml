@@ -1,0 +1,57 @@
+name: Japan A+ reconciliation completion
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/japan-a-plus-reconciliation-plan.md'
+      - 'docs/country-page-notes/13-japan.md'
+      - 'docs/timetable-source-tests/13-japan/final-summary.json'
+      - 'data/static/country-profiles-v2-13-japan.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-readiness-japan-v2.json'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/authority-source-inventory-japan-v2.json'
+      - 'data/static/japan-a-plus-policy.json'
+      - 'data/static/japan-a-plus-runtime-control.json'
+      - 'data/static/local-racing-pilot-control-v2.json'
+      - 'data/static/banei-pilot-control.json'
+      - 'data/generated/timetable/public/**'
+      - 'data/audits/japan-a-plus-reconciliation-completion.json'
+      - 'scripts/check-japan-a-plus-reconciliation-completion.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/timetable/pipeline-v1/registry-overrides.mjs'
+      - '.github/workflows/japan-a-plus-reconciliation-completion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/japan-a-plus-reconciliation-completion.json'
+      - 'scripts/check-japan-a-plus-reconciliation-completion.mjs'
+      - '.github/workflows/japan-a-plus-reconciliation-completion.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate Japan A+ reconciliation completion
+        run: node scripts/check-japan-a-plus-reconciliation-completion.mjs
+      - name: Validate project governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Confirm repository-wide validation is delegated
+        run: |
+          test -f .github/workflows/check.yml || test -f .github/workflows/ci.yml || test -d .github/workflows
+          echo 'Repository-wide Check and Calendar release gates run independently on this pull request.'

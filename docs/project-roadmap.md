@@ -2,9 +2,9 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Last reviewed: 2026-07-02
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Last reviewed: 2026-07-03
 
 ## Purpose
 
@@ -47,7 +47,7 @@ country-page programme: complete
 
 The 98-country bilingual publication programme and its final canonical audit are complete. Transition overlays remain historical evidence; active state is read from canonical trackers and registries.
 
-The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, and Operations v1 are complete. The JRA implementation foundation is complete. Japan policy now approves Technical Rank A+ and Public Ceiling A+ separately for JRA central racing, NAR/local-government racing, and Banei Tokachi. The current phase reconciles older C/A assumptions in active registries, profiles, source summaries, validators, roadmaps, and generated public data before new pilot activation proceeds.
+The existing Calendar baseline, Pipeline v1 foundation, Dynamic Dates, Operations v1, JRA implementation foundation, and Japan A+ policy reconciliation are complete. Japan policy approves Technical Rank A+ and Public Ceiling A+ separately for JRA central racing, NAR/local-government racing, and Banei Tokachi. JRA A+ pilot completion is current; NAR A+ is next.
 
 Current implementation plan:
 
@@ -101,6 +101,11 @@ Historical transition record from the state closed by PR #323:
 
 > Current Work ID: `WHR-CAL-BACKFILL-37-52`  
 > Next Work ID: `WHR-CP-PROFILE-45-52`
+
+Completed Japan A+ reconciliation transition record:
+
+> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
 
 Superseded transition record from the state closed by the Japan A+ policy correction. The following exact labels are retained only for completed-gate compatibility and are not the active state at the top of this document:
 
@@ -229,9 +234,10 @@ Dynamic Dates replaced fixed preview dates with explicit date/timezone rules. Op
 
 ## Phase 9 — Japan A+ policy reconciliation
 
-Status: current  
-Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+Status: complete  
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 Approved policy:
 
@@ -251,9 +257,13 @@ The three systems remain separate. Current work aligns:
 - public projection and JRA A+ detail output;
 - canonical project and Calendar roadmaps.
 
-Completion does not enable unattended publication. Individual meeting records remain evidence-bound.
+Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json`. It does not enable unattended publication. Individual meeting records remain evidence-bound.
 
 ## Phase 10 — Japan pilot activation
+
+Status: current  
+Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -266,7 +276,7 @@ Each pilot must pass source review, acquisition or reviewed import, fixture-back
 
 ### JRA A+
 
-Use a fresh reviewed final fixture and the existing Pipeline v1 foundation. Regenerate public projections so reviewed A+ meetings may expose approved A+ programme-summary fields on meeting detail pages.
+The July 2026 implementation published 24 reviewed A+ meetings and 288 July timetable rows; 300 JRA detail rows exist in total with the retained June fixture. Complete the pilot contract, freshness, fallback, rollback, and release gate before moving to NAR.
 
 ### NAR A+
 
