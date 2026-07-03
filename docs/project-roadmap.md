@@ -2,8 +2,8 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
 Last reviewed: 2026-07-03
 
 ## Purpose
@@ -101,6 +101,11 @@ Historical transition record from the state closed by PR #323:
 
 > Current Work ID: `WHR-CAL-BACKFILL-37-52`  
 > Next Work ID: `WHR-CP-PROFILE-45-52`
+
+Completed JRA A+ pilot transition record:
+
+> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 Completed Japan A+ reconciliation transition record:
 
@@ -235,9 +240,7 @@ Dynamic Dates replaced fixed preview dates with explicit date/timezone rules. Op
 ## Phase 9 — Japan A+ policy reconciliation
 
 Status: complete  
-Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`
 
 Approved policy:
 
@@ -262,8 +265,9 @@ Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.js
 ## Phase 10 — Japan pilot activation
 
 Status: current  
-Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -274,13 +278,13 @@ WHR-CAL-JAPAN-INTEGRATION
 
 Each pilot must pass source review, acquisition or reviewed import, fixture-backed extraction, normalization, validation, prohibited-field guards, human promotion, public-rank enforcement, freshness/stale handling, fallback/rollback, bilingual rendered QA, and operations documentation.
 
-### JRA A+
+### JRA A+ — complete
 
-The July 2026 implementation published 24 reviewed A+ meetings and 288 July timetable rows; 300 JRA detail rows exist in total with the retained June fixture. Complete the pilot contract, freshness, fallback, rollback, and release gate before moving to NAR.
+Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The operator-triggered refresh, 24 July meetings, 288 July rows, 300 total JRA rows, synchronized artifacts, fallback, rollback, and release gate are recorded in `docs/calendar/jra-a-plus-pilot-completion.md`.
 
-### NAR A+
+### NAR A+ — current
 
-Build authority- and racecourse-specific route mapping. Do not flatten local-government racing into a JRA-like national feed.
+Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping. Do not flatten local-government racing into a JRA-like national feed.
 
 ### Banei A+
 

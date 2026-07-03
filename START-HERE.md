@@ -24,11 +24,12 @@ Calendar work:
 7. [`docs/calendar/machine-readable-contracts.md`](docs/calendar/machine-readable-contracts.md)
 8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
 9. [`docs/calendar/japan-a-plus-reconciliation-plan.md`](docs/calendar/japan-a-plus-reconciliation-plan.md)
-10. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-11. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-12. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-13. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-14. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+10. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
+11. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+12. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+13. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+14. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+15. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -48,6 +49,7 @@ data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
 data/audits/calendar-operations-v1-release-gate.json
 data/audits/japan-a-plus-reconciliation-completion.json
+data/audits/calendar-jra-a-plus-pilot-completion.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
@@ -58,6 +60,7 @@ scripts/check-calendar-pipeline-v1-release-gate.mjs
 scripts/check-calendar-dynamic-dates-release-gate.mjs
 scripts/check-calendar-operations-v1-release-gate.mjs
 scripts/check-japan-a-plus-reconciliation-completion.mjs
+scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
@@ -69,28 +72,30 @@ WHR-CAL-DYNAMIC-DATES
 WHR-CAL-OPS-V1
 WHR-CAL-JAPAN-JRA
 WHR-CAL-JAPAN-A-PLUS-RECONCILE
+WHR-CAL-JAPAN-JRA-A-PLUS
 ```
 
 Current Work ID:
 
 ```text
-WHR-CAL-JAPAN-JRA-A-PLUS
+WHR-CAL-JAPAN-NAR-A-PLUS
 ```
 
 Next Work ID:
 
 ```text
-WHR-CAL-JAPAN-NAR-A-PLUS
+WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-The 98-country programme, Calendar baseline reconciliation, Pipeline v1, Dynamic Dates, Operations v1, JRA implementation foundation, and Japan A+ policy reconciliation are complete. JRA, NAR/local-government racing, and Banei Tokachi each have Technical Rank A+ and Public Ceiling A+, but remain separate systems. JRA A+ is the active implementation stage. NAR and Banei activation remain pending their own pilots. Candidate generation, canonical/public writes, scheduling, and unattended publication remain review-controlled or disabled.
+The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. JRA operates through an operator-triggered, review-controlled local refresh path. NAR/local-government racing is the active pilot and requires authority- and racecourse-specific source architecture. Banei follows as a separate pilot. Scheduling and unattended canonical/public writes remain disabled.
 
-## Completed transition record
-
-The previous active transition was:
+## Completed transition records
 
 > Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 > Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+
+> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 ## Superseded transition record
 

@@ -6,7 +6,7 @@ const files = [
   'docs/governance/internal-source-handling.md', 'docs/calendar/README.md',
   'docs/calendar/source-test-v2-contract.md', 'docs/calendar/calendar-readiness-contract.md',
   'docs/calendar/machine-readable-contracts.md', 'docs/calendar/implementation-roadmap.md',
-  'docs/calendar/japan-a-plus-reconciliation-plan.md',
+  'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/jra-a-plus-pilot-completion.md',
   'docs/calendar/current-baseline-audit.md', 'docs/calendar/baseline-reconciliation-map.md',
   'docs/calendar/pipeline-v1-release-gate.md', 'docs/calendar/dynamic-dates-release-gate.md',
   'docs/calendar/operations-v1-contract.md', 'docs/calendar/operations-v1-release-gate.md',
@@ -19,9 +19,11 @@ const files = [
   'data/audits/calendar-baseline-migration-map.json', 'data/audits/calendar-pipeline-v1-release-gate.json',
   'data/audits/calendar-dynamic-dates-release-gate.json', 'data/audits/calendar-operations-v1-release-gate.json',
   'data/audits/japan-a-plus-reconciliation-completion.json',
+  'data/audits/calendar-jra-a-plus-pilot-completion.json',
   'data/static/calendar-operations-control.json', 'data/static/calendar-operations-seasonal-policy.json',
   'docs/runbooks/final-country-calendar-audit-98.md',
-  'scripts/check-japan-a-plus-reconciliation-completion.mjs'
+  'scripts/check-japan-a-plus-reconciliation-completion.mjs',
+  'scripts/check-calendar-jra-pilot-completion.mjs'
 ];
 for (const file of files) if (!fs.existsSync(file)) errors.push('missing: ' + file);
 
@@ -29,6 +31,7 @@ const start = fs.readFileSync('START-HERE.md', 'utf8');
 const roadmap = fs.readFileSync('docs/project-roadmap.md', 'utf8');
 const implementationRoadmap = fs.readFileSync('docs/calendar/implementation-roadmap.md', 'utf8');
 const reconciliationPlan = fs.readFileSync('docs/calendar/japan-a-plus-reconciliation-plan.md', 'utf8');
+const jraCompletion = fs.readFileSync('docs/calendar/jra-a-plus-pilot-completion.md', 'utf8');
 const registry = fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8');
 const japanReadiness = fs.readFileSync('data/static/calendar-readiness-japan-v2.json', 'utf8');
 const japanPolicy = fs.readFileSync('data/static/japan-a-plus-policy.json', 'utf8');
@@ -37,15 +40,17 @@ for (const phrase of [
   'WHR-CAL-JAPAN-A-PLUS-RECONCILE',
   'WHR-CAL-JAPAN-JRA-A-PLUS',
   'WHR-CAL-JAPAN-NAR-A-PLUS',
-  'data/audits/japan-a-plus-reconciliation-completion.json'
+  'WHR-CAL-JAPAN-BANEI-A-PLUS',
+  'data/audits/calendar-jra-a-plus-pilot-completion.json'
 ]) {
   if (!start.includes(phrase)) errors.push('START-HERE missing ' + phrase);
 }
 
 for (const phrase of [
   'Country-page programme: complete',
-  'Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
-  'Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
+  'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
   'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`',
   'Completed Work ID: `WHR-CAL-OPS-V1`',
   'WHR-CAL-BASELINE-RECONCILE',
@@ -55,8 +60,9 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  'Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
-  'Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
+  'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
   'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`',
   'JRA central racing',
   'NAR and local-government racing',
@@ -66,7 +72,7 @@ for (const phrase of [
 }
 
 if (!reconciliationPlan.includes('Status: complete')) errors.push('reconciliation plan must be complete.');
-if (!reconciliationPlan.includes('Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`')) errors.push('reconciliation plan next Work ID is incorrect.');
+if (!jraCompletion.includes('Status: complete') || !jraCompletion.includes('Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`')) errors.push('JRA pilot completion record is incomplete.');
 
 for (const phrase of ['"bootstrap_status": "complete"', '"countries_with_closed_decision": 98', '"readiness_records": 116', '"next_backfill_work_ids": []']) {
   if (!registry.includes(phrase)) errors.push('registry missing ' + phrase);
@@ -83,6 +89,6 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
-console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-A-PLUS-RECONCILE');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
+console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
+console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
