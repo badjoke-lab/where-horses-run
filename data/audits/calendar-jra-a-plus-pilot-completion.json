@@ -1,0 +1,62 @@
+{
+  "schema_version": "calendar-jra-a-plus-pilot-completion-v1",
+  "work_id": "WHR-CAL-JAPAN-JRA-A-PLUS",
+  "status": "complete",
+  "completed_at": "2026-07-03",
+  "next_work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "following_work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "source": {
+    "authority_source_key": "japan/jra/jra-programme",
+    "system_id": "japan-jra-system",
+    "technical_rank": "A+",
+    "public_ceiling": "A+",
+    "acquisition_mode": "operator_triggered_local",
+    "timezone": "Asia/Tokyo"
+  },
+  "public_baseline": {
+    "review_month": "2026-07",
+    "july_a_plus_meetings": 24,
+    "july_timetable_rows": 288,
+    "total_jra_public_details": 25,
+    "total_jra_public_rows": 300,
+    "allowed_fields": [
+      "label",
+      "post_time_local",
+      "race_name",
+      "distance_m",
+      "surface",
+      "course_label"
+    ]
+  },
+  "synchronized_layers": [
+    "jra-race-time-snapshot",
+    "jra-normalized-timetable",
+    "jra-normalized-meeting-details",
+    "jra-refresh-report",
+    "japan-jra-candidates",
+    "canonical-meetings",
+    "canonical-meeting-details",
+    "public-meeting-list",
+    "public-meeting-details",
+    "japan-a-plus-overrides",
+    "jra-pilot-review",
+    "operations-status",
+    "operations-review-package"
+  ],
+  "boundaries": {
+    "review_pr_required": true,
+    "scheduled_refresh_active": false,
+    "github_hosted_source_fetch_active": false,
+    "unattended_canonical_write_active": false,
+    "unattended_public_write_active": false,
+    "raw_source_stored": false,
+    "restricted_fields_allowed": false
+  },
+  "rollback": {
+    "generated_files_restored_on_failure": true,
+    "original_working_tree_unchanged": true,
+    "previously_merged_public_data_retained": true,
+    "official_source_fallback_retained": true
+  },
+  "implementation_prs": [401, 402]
+}
