@@ -32,7 +32,7 @@ function commandExists(command) {
 }
 
 function changedPaths() {
-  return capture('git', ['status', '--porcelain'])
+  return capture('git', ['status', '--porcelain', '--untracked-files=all'])
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3).trim());
