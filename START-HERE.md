@@ -27,11 +27,12 @@ Calendar work:
 10. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
 11. [`docs/calendar/nar-a-plus-pilot-plan.md`](docs/calendar/nar-a-plus-pilot-plan.md)
 12. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
-13. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-14. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-15. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-16. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-17. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+13. [`docs/calendar/nar-fixture-probe.md`](docs/calendar/nar-fixture-probe.md)
+14. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+15. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+16. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+17. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+18. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -48,6 +49,7 @@ data/static/local-racing-pilot-control-v2.json
 data/static/banei-pilot-control.json
 data/static/nar-source-route-architecture-v1.json
 data/static/nar-venue-code-research-seed-v1.json
+data/fixtures/timetable/nar/route-probe-v1.json
 data/audits/calendar-baseline-migration-map.json
 data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
@@ -55,6 +57,7 @@ data/audits/calendar-operations-v1-release-gate.json
 data/audits/japan-a-plus-reconciliation-completion.json
 data/audits/calendar-jra-a-plus-pilot-completion.json
 data/audits/nar-legacy-pr281-migration.json
+data/audits/nar-fixture-probe-v1.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
@@ -67,6 +70,7 @@ scripts/check-calendar-operations-v1-release-gate.mjs
 scripts/check-japan-a-plus-reconciliation-completion.mjs
 scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-calendar-nar-source-architecture.mjs
+scripts/check-calendar-nar-fixture-probe.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
@@ -93,7 +97,7 @@ Next Work ID:
 WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. JRA operates through an operator-triggered, review-controlled local refresh path. NAR/local-government racing is the active pilot. Its source architecture is authority- and racecourse-specific, starts with a bounded Urawa/Funabashi fixture probe, and remains candidate-only until human promotion. Banei follows as a separate pilot. Scheduling and unattended canonical/public writes remain disabled.
+The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. JRA operates through an operator-triggered, review-controlled local refresh path. NAR/local-government racing is the active pilot. Its source architecture is authority- and racecourse-specific. The bounded Urawa/Funabashi fixture probe is complete; the next phase is a candidate-only adapter. Banei follows as a separate pilot. Scheduling and unattended canonical/public writes remain disabled.
 
 ## Completed transition records
 

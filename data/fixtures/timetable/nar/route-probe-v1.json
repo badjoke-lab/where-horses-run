@@ -1,0 +1,66 @@
+{
+  "schema_version": "nar-route-probe-fixture-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "checked_at": "2026-07-03",
+  "purpose": "Bounded public-safe route probe for the first NAR A+ pilot cohort.",
+  "storage_policy": "public_safe_fields_only_no_raw_source",
+  "publication_effect": "none",
+  "observations": [
+    {
+      "probe_id": "nar-urawa-2026-06-26-r11",
+      "venue_code": "18",
+      "racecourse_id": "urawa-racecourse",
+      "racecourse_name_en": "Urawa",
+      "racecourse_name_ja": "浦和",
+      "date": "2026-06-26",
+      "race_number": 11,
+      "list_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_RaceList?k_babaCode=18&k_raceDate=2026%2F06%2F26",
+      "detail_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_DebaTable?k_babaCode=18&k_raceDate=2026%2F06%2F26&k_raceNo=11",
+      "source_status": "verified",
+      "public_safe_fields": {
+        "label": "Race 11",
+        "post_time_local": "18:55",
+        "race_name": "鎌北湖特別Ｂ２二",
+        "distance_m": 1500,
+        "surface": "Dirt",
+        "course_label": "Dirt Course / Left"
+      }
+    },
+    {
+      "probe_id": "nar-funabashi-2026-07-03-r10",
+      "venue_code": "19",
+      "racecourse_id": "funabashi-racecourse",
+      "racecourse_name_en": "Funabashi",
+      "racecourse_name_ja": "船橋",
+      "date": "2026-07-03",
+      "race_number": 10,
+      "list_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_RaceList?k_babaCode=19&k_raceDate=2026%2F07%2F03",
+      "detail_url": "https://sp.keiba.go.jp/KeibaWebSP/TodayRaceInfo/S_DebaTable?k_babaCode=19&k_raceDate=2026%2F07%2F03&k_raceNo=10",
+      "source_status": "verified",
+      "public_safe_fields": {
+        "label": "Race 10",
+        "post_time_local": "19:10",
+        "race_name": "ラベンダースプリントＢ２選抜馬",
+        "distance_m": 1200,
+        "surface": "Dirt",
+        "course_label": "Dirt Course / Left"
+      }
+    }
+  ],
+  "excluded_fields": [
+    "runner_list",
+    "horse_name",
+    "jockey_name",
+    "trainer_name",
+    "draw",
+    "weight",
+    "body_weight",
+    "odds",
+    "result",
+    "payout",
+    "prediction",
+    "raw_html",
+    "embedded_video",
+    "direct_stream_url"
+  ]
+}
