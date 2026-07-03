@@ -5,49 +5,17 @@
   "completed_at": "2026-07-03",
   "next_work_id": "WHR-CAL-JAPAN-JRA-A-PLUS",
   "following_work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
-  "active_resolution": {
-    "base_readiness_registry": "data/static/calendar-readiness-registry.json",
-    "japan_readiness_overlay": "data/static/calendar-readiness-japan-v2.json",
-    "base_authority_inventory": "data/static/authority-source-inventory.json",
-    "japan_authority_overlay": "data/static/authority-source-inventory-japan-v2.json",
-    "runtime_control": "data/static/japan-a-plus-runtime-control.json",
-    "policy": "data/static/japan-a-plus-policy.json"
-  },
   "systems": [
-    {
-      "system_id": "japan-jra-system",
-      "authority_source_key": "japan/jra/jra-programme",
-      "technical_rank": "A+",
-      "public_ceiling": "A+",
-      "public_projection_activation": "active"
-    },
-    {
-      "system_id": "japan-nar-system",
-      "authority_source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
-      "technical_rank": "A+",
-      "public_ceiling": "A+",
-      "public_projection_activation": "pending_pilot"
-    },
-    {
-      "system_id": "japan-banei-system",
-      "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
-      "technical_rank": "A+",
-      "public_ceiling": "A+",
-      "public_projection_activation": "pending_pilot"
-    }
+    {"system_id":"japan-jra-system","authority_source_key":"japan/jra/jra-programme","technical_rank":"A+","public_ceiling":"A+","public_projection_activation":"active"},
+    {"system_id":"japan-nar-system","authority_source_key":"japan/nar-local-government-racing/nar-monthly-convene-info","technical_rank":"A+","public_ceiling":"A+","public_projection_activation":"pending_pilot"},
+    {"system_id":"japan-banei-system","authority_source_key":"japan/banei-tokachi/banei-official-schedule","technical_rank":"A+","public_ceiling":"A+","public_projection_activation":"pending_pilot"}
   ],
   "jra_public_baseline": {
     "month": "2026-07",
     "minimum_a_plus_meetings": 24,
-    "minimum_timetable_rows": 300,
-    "allowed_fields": [
-      "label",
-      "post_time_local",
-      "race_name",
-      "distance_m",
-      "surface",
-      "course_label"
-    ]
+    "minimum_timetable_rows": 288,
+    "total_jra_detail_rows_at_completion": 300,
+    "allowed_fields": ["label","post_time_local","race_name","distance_m","surface","course_label"]
   },
   "boundaries": {
     "systems_remain_separate": true,
@@ -56,18 +24,8 @@
     "scheduled_refresh_active": false,
     "unattended_canonical_write_active": false,
     "unattended_public_write_active": false,
-    "participant_or_betting_fields_allowed": false
+    "restricted_fields_allowed": false
   },
-  "aligned_files": [
-    "docs/country-page-notes/13-japan.md",
-    "docs/timetable-source-tests/13-japan/final-summary.json",
-    "data/static/country-profiles-v2-13-japan.json",
-    "data/static/calendar-readiness-japan-v2.json",
-    "data/static/authority-source-inventory-japan-v2.json",
-    "data/static/japan-a-plus-runtime-control.json",
-    "data/static/local-racing-pilot-control-v2.json",
-    "data/static/banei-pilot-control.json"
-  ],
   "legacy_handling": {
     "base_registry_role": "historical_provenance",
     "old_nar_c_control": "superseded",
