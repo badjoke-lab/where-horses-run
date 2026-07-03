@@ -25,12 +25,13 @@ Calendar work:
 8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
 9. [`docs/calendar/japan-a-plus-reconciliation-plan.md`](docs/calendar/japan-a-plus-reconciliation-plan.md)
 10. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
-11. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
-12. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-13. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-14. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-15. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-16. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+11. [`docs/calendar/nar-a-plus-pilot-plan.md`](docs/calendar/nar-a-plus-pilot-plan.md)
+12. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
+13. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+14. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+15. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+16. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+17. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
