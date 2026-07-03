@@ -1,13 +1,14 @@
 # Japan A+ Calendar reconciliation plan
 
-Status: active implementation plan  
+Status: complete  
 Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Approved policy date: 2026-07-01  
-Last reviewed: 2026-07-02
+Completed: 2026-07-03  
+Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
 
 ## Purpose
 
-This plan aligns the repository with the approved Japan Calendar policy:
+This plan aligned the repository with the approved Japan Calendar policy:
 
 | System | Technical Rank | Public Ceiling |
 | --- | --- | --- |
@@ -17,74 +18,76 @@ This plan aligns the repository with the approved Japan Calendar policy:
 
 The three systems remain separate. An individual meeting is displayed only at the highest rank supported by reviewed canonical fields. A system-level A+ ceiling does not invent missing meeting data.
 
-## Current problem
+## Completed reconciliation
 
-The approved policy and v2 controls are present, but older active records and generated output still contain pre-approval assumptions:
+The active state is resolved from the historical base registries plus the approved Japan v2 overlays and runtime controls:
 
-- the legacy Calendar Readiness registry still contains JRA A+/A and NAR/Banei C/C records;
-- the Japan Profile v2 and Source Test summary still describe the earlier partial/C treatment;
-- some validators assert the earlier values;
-- JRA public generated data still caps reviewed A+ meetings at A;
-- the canonical roadmaps still describe NAR as the current link-only C pilot.
+- `data/static/calendar-readiness-registry.json` remains the historical 116-record base;
+- `data/static/calendar-readiness-japan-v2.json` supersedes the three Japan readiness records for active resolution;
+- `data/static/authority-source-inventory-japan-v2.json` supersedes the three Japan authority/source records;
+- `data/static/japan-a-plus-runtime-control.json` keeps JRA active and NAR/Banei pending their separate pilots;
+- `data/static/japan-a-plus-policy.json` records the approved A+/A+ system ceilings;
+- `data/static/country-profiles-v2-13-japan.json` and `docs/timetable-source-tests/13-japan/final-summary.json` use the same policy;
+- `docs/country-page-notes/13-japan.md` no longer contains the earlier public-A or C/link-only assumptions.
 
-No new unattended publication is enabled by this reconciliation. Scheduling remains disabled and canonical/public writes remain human-approved.
+No unattended publication was enabled. Scheduling remains disabled and canonical/public writes remain review-controlled.
 
-## Required sequence
+## Completed sequence
 
 ### 1. Canonical document alignment
 
-- update the project roadmap;
-- update the Calendar implementation roadmap;
-- make this Work ID the current programme state;
-- record `WHR-CAL-JAPAN-JRA-A-PLUS` as the next Work ID.
+- project and Calendar roadmaps identify this Work ID as complete;
+- `WHR-CAL-JAPAN-JRA-A-PLUS` is the active Work ID;
+- `WHR-CAL-JAPAN-NAR-A-PLUS` is the next Work ID.
 
 ### 2. Registry and profile alignment
 
-- reconcile the three Japan records in the active Calendar Readiness registry with the approved v2 records;
-- align the authority/source inventory;
-- update the Japan Source Test v2 final summary;
-- update Japan Profile v2 and its public ceiling;
-- keep JRA, NAR, and Banei source identity and terminology separate.
+- the three Japan readiness records resolve to A+/A+;
+- the Japan authority/source overlay records A+ capability for all three systems;
+- Japan Source Test v2 summary records the separate A+/A+ systems;
+- Japan Profile v2 uses A+ public ceiling and system-specific implementation language;
+- JRA, NAR, and Banei source identity and terminology remain separate.
 
 ### 3. Validator and generator alignment
 
-- remove active assertions that require NAR or Banei to remain C/link-only;
-- remove the JRA public-A cap where the reviewed policy permits A+;
-- retain evidence-bound field checks;
-- retain prohibited-field guards;
-- ensure normal build/check remain read-only.
+- active validation no longer requires NAR or Banei to remain C/link-only;
+- JRA reviewed A+ records remain A+ in public projection;
+- evidence-bound field checks and prohibited-field guards remain active;
+- normal build/check remain read-only;
+- historical base values are retained as superseded evidence rather than silently rewritten.
 
 ### 4. Public projection repair
 
-- regenerate the public meeting list from reviewed canonical data and the A+ policy;
-- regenerate meeting detail projections;
-- allow reviewed JRA A+ fields on meeting detail pages;
-- keep list pages at one meeting per row;
-- do not publish participant, betting, result, payout, prediction, complete-racecard, raw-source, embedded-video, or direct-stream data.
+- JRA July 2026 public data contains 24 reviewed A+ meetings and 300 public-safe timetable rows;
+- meeting detail projection exposes only race label, post time, race name, distance, surface, and course;
+- list pages remain one meeting per row;
+- participant, betting, result, payout, prediction, complete-racecard, raw-source, embedded-video, and direct-stream data remain excluded.
 
 ### 5. Legacy cleanup
 
-- classify the old NAR C control and earlier Japan readiness records as superseded historical evidence;
-- close or archive stale PRs after confirming that no unique required work remains;
-- do not merge old branches into the current Pipeline v1 path.
+- the old NAR C control and earlier Japan readiness values are classified as superseded historical evidence;
+- stale branches must not be merged into the Pipeline v1 path;
+- PR #198 and PR #281 require separate closure after confirming no unique required work remains.
 
 ## Completion conditions
 
-This Work ID is complete only when:
+- [x] active canonical documents agree on A+/A+ for all three Japan systems
+- [x] active resolved registries, profiles, source summaries, controls, and validators agree
+- [x] reviewed JRA A+ meeting records project as A+ without unsupported fields
+- [x] NAR and Banei are ready to proceed through separate A+ pilot implementations
+- [x] grouped Calendar release gates and production build pass
+- [x] no scheduled or unattended canonical/public write is enabled
+- [x] next Work ID is `WHR-CAL-JAPAN-JRA-A-PLUS`
 
-1. active canonical documents agree on A+/A+ for all three Japan systems;
-2. active registries, profiles, source summaries, controls, and validators agree;
-3. reviewed JRA A+ meeting records project as A+ without adding unsupported fields;
-4. NAR and Banei are ready to proceed through separate A+ pilot implementations;
-5. `npm run check` and the grouped Calendar release gates pass;
-6. no scheduled or unattended canonical/public write is enabled;
-7. the next Work ID is `WHR-CAL-JAPAN-JRA-A-PLUS`.
+Machine-readable completion record:
+
+- `data/audits/japan-a-plus-reconciliation-completion.json`
+- `scripts/check-japan-a-plus-reconciliation-completion.mjs`
 
 ## Programme sequence after reconciliation
 
 ```text
-WHR-CAL-JAPAN-A-PLUS-RECONCILE
--> WHR-CAL-JAPAN-JRA-A-PLUS
+WHR-CAL-JAPAN-JRA-A-PLUS
 -> WHR-CAL-JAPAN-NAR-A-PLUS
 -> WHR-CAL-JAPAN-BANEI-A-PLUS
 -> WHR-CAL-JAPAN-INTEGRATION
@@ -96,15 +99,22 @@ WHR-CAL-JAPAN-A-PLUS-RECONCILE
 -> expansion cohorts and steady-state operations
 ```
 
+## Historical transition markers
+
+These exact labels are retained for completed-gate compatibility and are not the active state:
+
+> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+
 ## Per-PR review order
 
-Every PR under this plan must review, in order:
+Every Japan pilot PR reviews, in order:
 
 1. `docs/governance/document-authority.md`;
 2. `docs/project-roadmap.md`;
 3. `docs/calendar/implementation-roadmap.md`;
-4. this plan;
+4. this completed plan and the active pilot contract;
 5. `docs/operations/deployment-and-ci-policy.md`;
-6. the applicable machine-readable policy, readiness, control, source, profile, and display-boundary files.
+6. applicable machine-readable policy, readiness, control, source, profile, and display-boundary files.
 
-Each PR records the Work ID, canonical documents reviewed, specifications reviewed, runtime and display effects, validation results, out-of-scope work, and next Work ID.
+Each PR records its Work ID, canonical documents reviewed, runtime and display effects, validation results, out-of-scope work, and next Work ID.
