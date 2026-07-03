@@ -1,0 +1,57 @@
+name: Calendar NAR 14-racecourse compatibility
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/calendar/nar-a-plus-pilot-plan.md'
+      - 'docs/calendar/nar-14-racecourse-compatibility-audit.md'
+      - 'data/static/nar-flat-racecourse-compatibility-v1.json'
+      - 'data/audits/nar-14-racecourse-compatibility-v1.json'
+      - 'scripts/timetable/collect-nar-complete-fixtures.mjs'
+      - 'scripts/check-calendar-nar-14-racecourse-compatibility.mjs'
+      - 'scripts/check-calendar-nar-plan-current.mjs'
+      - '.github/workflows/calendar-nar-14-racecourse-compatibility.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/calendar/nar-14-racecourse-compatibility-audit.md'
+      - 'data/static/nar-flat-racecourse-compatibility-v1.json'
+      - 'data/audits/nar-14-racecourse-compatibility-v1.json'
+      - 'scripts/timetable/collect-nar-complete-fixtures.mjs'
+      - 'scripts/check-calendar-nar-14-racecourse-compatibility.mjs'
+      - '.github/workflows/calendar-nar-14-racecourse-compatibility.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate collector syntax
+        run: node --check scripts/timetable/collect-nar-complete-fixtures.mjs
+      - name: Validate all-fourteen compatibility matrix
+        run: node scripts/check-calendar-nar-14-racecourse-compatibility.mjs
+      - name: Validate active NAR plan
+        run: node scripts/check-calendar-nar-pilot-plan.mjs
+      - name: Validate previous NAR phases
+        run: |
+          node scripts/check-calendar-nar-source-architecture.mjs
+          node scripts/check-calendar-nar-fixture-probe.mjs
+          node scripts/check-calendar-nar-candidate-adapter.mjs
+      - name: Validate project governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Confirm collection remains operator-triggered
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-14-racecourse-compatibility.yml
+          echo 'No network fetch or write action runs in GitHub Actions.'
