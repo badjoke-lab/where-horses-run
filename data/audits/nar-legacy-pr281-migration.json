@@ -1,0 +1,37 @@
+{
+  "schema_version": "nar-legacy-pr281-migration-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "legacy_pr": 281,
+  "decision": "do_not_merge",
+  "reviewed_at": "2026-07-03",
+  "retain_as_research_seed": [
+    "fourteen venue-code candidates",
+    "RaceList and DebaTable parameter shapes",
+    "UTF-8 and Shift_JIS decoding selection",
+    "time distance surface direction and course parsing ideas",
+    "request timeout delay and diagnostics"
+  ],
+  "repair_before_use": [
+    "revalidate every venue code",
+    "separate authority and racecourse route ownership",
+    "replace heuristic race-name extraction with reviewed fixture assertions",
+    "validate host aliases and redirects",
+    "add source freshness and fallback decisions"
+  ],
+  "replace": [
+    "direct canonical writes",
+    "direct public projection writes",
+    "all-venue all-date unbounded acquisition",
+    "post-hoc mutation of canonical and public race names"
+  ],
+  "target_pipeline": [
+    "official route review",
+    "public-safe fixture",
+    "candidate-only adapter",
+    "validation",
+    "human promotion",
+    "deterministic public projection",
+    "rendered QA"
+  ],
+  "publication_effect": "none"
+}
