@@ -1,0 +1,46 @@
+name: Calendar JRA A+ pilot completion
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/jra-a-plus-pilot-completion.md'
+      - 'docs/calendar/manual-jra-refresh.md'
+      - 'data/audits/calendar-jra-a-plus-pilot-completion.json'
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/generated/timetable/jra-refresh-report.json'
+      - 'data/generated/timetable/public/**'
+      - 'data/static/japan-a-plus-runtime-control.json'
+      - 'scripts/check-calendar-jra-pilot-completion.mjs'
+      - 'scripts/timetable/manual-refresh-jra.mjs'
+      - 'scripts/timetable/sync-jra-derived-artifacts.mjs'
+      - '.github/workflows/calendar-jra-pilot-completion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/calendar-jra-a-plus-pilot-completion.json'
+      - 'scripts/check-calendar-jra-pilot-completion.mjs'
+      - '.github/workflows/calendar-jra-pilot-completion.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate JRA A+ pilot completion
+        run: node scripts/check-calendar-jra-pilot-completion.mjs
+      - name: Confirm repository-wide gates run separately
+        run: echo 'Repository-wide Check and Calendar release gates validate the full build on this pull request.'
