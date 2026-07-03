@@ -41,6 +41,20 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Validate JRA A+ pilot completion
-        run: node scripts/check-calendar-jra-pilot-completion.mjs
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-jra-pilot-completion.mjs > /tmp/jra-pilot-completion.log 2>&1
+          status=$?
+          cat /tmp/jra-pilot-completion.log
+          exit $status
+      - name: Upload completion diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-pilot-completion-diagnostic
+          path: /tmp/jra-pilot-completion.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Confirm repository-wide gates run separately
         run: echo 'Repository-wide Check and Calendar release gates validate the full build on this pull request.'
