@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed: 2026-07-03
 
-The first probe covers venue codes 18 and 19 with one reviewed example each. The fixture stores only the approved timetable summary fields and is not used by production runtime.
+The first probe covers venue codes 18 and 19 with one reviewed example each. The fixture stores only the approved timetable summary fields and is not used by production runtime. It is test evidence only.
 
 Current write state:
 
