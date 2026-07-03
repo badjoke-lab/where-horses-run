@@ -2,6 +2,11 @@
 
 JRA updates are operator-triggered. There is no schedule, cron job, always-on PC requirement, self-hosted runner, or GitHub-hosted fetch.
 
+Completion and operating boundary:
+
+- `docs/calendar/jra-a-plus-pilot-completion.md`
+- `data/audits/calendar-jra-a-plus-pilot-completion.json`
+
 ## Run
 
 From the repository root:
@@ -32,12 +37,13 @@ The launcher does not modify or depend on the current local working tree. It cre
 6. Rejects the result unless at least one meeting is extracted and every publishable meeting reaches A+.
 7. Runs the runtime-boundary check.
 8. Regenerates and validates `japan-a-plus-overrides.json` against the new public timetable generation timestamp.
-9. Installs the temporary checkout's build dependencies without creating a package lock file.
-10. Builds the site with Astro.
-11. Restores generated timetable files automatically when validation or build fails.
-12. If data changed, commits only the approved generated timetable files to `automation/jra-manual-YYYY-MM`.
-13. Pushes the branch and creates or updates a review PR.
-14. Leaves production unchanged until the review PR is merged.
+9. Synchronizes the JRA candidate, pilot-review, operations-status, and operations-review artifacts.
+10. Installs the temporary checkout's build dependencies without creating a package lock file.
+11. Builds the site with Astro.
+12. Restores generated timetable files automatically when validation or build fails.
+13. If data changed, commits only approved generated timetable and review artifacts to `automation/jra-manual-YYYY-MM`.
+14. Pushes the branch and creates or updates a review PR.
+15. Leaves production unchanged until the review PR is merged.
 
 ## Published fields
 
