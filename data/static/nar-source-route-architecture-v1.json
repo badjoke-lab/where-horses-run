@@ -1,0 +1,40 @@
+{
+  "schema_version": "nar-source-route-architecture-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "status": "architecture_review",
+  "checked_date": "2026-07-03",
+  "country_id": "japan",
+  "system_id": "japan-nar-system",
+  "authority_id": "nar-local-government-racing",
+  "technical_rank": "A+",
+  "public_ceiling": "A+",
+  "public_projection_activation": "pending_pilot",
+  "official_hosts": ["www.keiba.go.jp", "www2.keiba.go.jp", "keiba.go.jp"],
+  "routes": {
+    "course_guide": "https://www.keiba.go.jp/guide/course/",
+    "race_list_template": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList",
+    "race_detail_template": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable",
+    "race_list_parameters": ["k_babaCode", "k_raceDate"],
+    "race_detail_parameters": ["k_babaCode", "k_raceDate", "k_raceNo"]
+  },
+  "pilot_venue_codes": ["18", "19"],
+  "venue_seed_path": "data/static/nar-venue-code-research-seed-v1.json",
+  "candidate_contract": {
+    "output_boundary": "candidate_only",
+    "review_status": "needs_review",
+    "canonical_write": "human_approval_only",
+    "public_write": "human_approval_only",
+    "schedule_mode": "disabled",
+    "raw_source_storage": "disabled",
+    "allowed_public_fields": ["label", "post_time_local", "race_name", "distance_m", "surface", "course_label"]
+  },
+  "activation_requirements": [
+    "selected venue live route review",
+    "reviewed public-safe fixture",
+    "venue-specific parser validation",
+    "A+ field completeness validation",
+    "human promotion",
+    "bilingual rendered QA",
+    "freshness fallback and rollback evidence"
+  ]
+}

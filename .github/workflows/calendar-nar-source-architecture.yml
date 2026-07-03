@@ -1,0 +1,52 @@
+name: Calendar NAR source architecture
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'docs/calendar/nar-a-plus-pilot-plan.md'
+      - 'docs/calendar/nar-a-plus-source-architecture.md'
+      - 'data/static/nar-source-route-architecture-v1.json'
+      - 'data/static/nar-venue-code-research-seed-v1.json'
+      - 'data/static/local-racing-pilot-control-v2.json'
+      - 'data/static/japan-a-plus-runtime-control.json'
+      - 'data/audits/nar-legacy-pr281-migration.json'
+      - 'scripts/check-calendar-nar-source-architecture.mjs'
+      - 'scripts/check-calendar-nar-pilot-plan.mjs'
+      - '.github/workflows/calendar-nar-source-architecture.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/calendar/nar-a-plus-pilot-plan.md'
+      - 'docs/calendar/nar-a-plus-source-architecture.md'
+      - 'data/static/nar-source-route-architecture-v1.json'
+      - 'data/static/nar-venue-code-research-seed-v1.json'
+      - 'data/audits/nar-legacy-pr281-migration.json'
+      - 'scripts/check-calendar-nar-source-architecture.mjs'
+      - 'scripts/check-calendar-nar-pilot-plan.mjs'
+      - '.github/workflows/calendar-nar-source-architecture.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate NAR source architecture
+        run: node scripts/check-calendar-nar-source-architecture.mjs
+      - name: Validate NAR pilot plan
+        run: node scripts/check-calendar-nar-pilot-plan.mjs
+      - name: Validate existing governance
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Confirm full repository checks are delegated
+        run: echo 'Repository-wide Check and Calendar release gates run independently on this pull request.'
