@@ -12,9 +12,7 @@ permissions:
 
 jobs:
   sync:
-    if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.head_ref == 'work/jra-pilot-complete'
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'work/jra-pilot-complete'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,75 +25,56 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          def replace(path, old, new):
+          def once(path, old, new):
               p = Path(path)
               text = p.read_text()
               if old not in text:
                   raise SystemExit(f'missing marker in {path}: {old[:100]!r}')
-              p.write_text(text.replace(old, new))
+              p.write_text(text.replace(old, new, 1))
 
-          replace(
-              'docs/project-roadmap.md',
-              'Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-              'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`'
-          )
-          replace(
-              'docs/project-roadmap.md',
-              'Status: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-              'Status: current  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`'
-          )
-          replace(
-              'docs/project-roadmap.md',
-              '### JRA A+\n\nThe July 2026 implementation published 24 reviewed A+ meetings and 288 July timetable rows; 300 JRA detail rows exist in total with the retained June fixture. Complete the pilot contract, freshness, fallback, rollback, and release gate before moving to NAR.',
-              '### JRA A+ — complete\n\nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The reviewed local refresh path, 24 July meetings, 288 July rows, 300 total JRA detail rows, candidate/canonical/public synchronization, freshness, fallback, rollback, and release gate are recorded in `docs/calendar/jra-a-plus-pilot-completion.md`.'
-          )
-          replace(
-              'docs/project-roadmap.md',
-              '### NAR A+\n\nBuild authority- and racecourse-specific route mapping.',
-              '### NAR A+ — current\n\nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping.'
-          )
-          p = Path('docs/project-roadmap.md')
-          text = p.read_text()
+          once('docs/project-roadmap.md',
+            'Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nLast reviewed: 2026-07-03',
+            'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  \nLast reviewed: 2026-07-03')
+          once('docs/project-roadmap.md',
+            'Status: complete  \nCompleted Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+            'Status: complete  \nCompleted Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`')
+          once('docs/project-roadmap.md',
+            'Status: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+            'Status: current  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`')
+          once('docs/project-roadmap.md',
+            '### JRA A+\n\nThe July 2026 implementation published 24 reviewed A+ meetings and 288 July timetable rows; 300 JRA detail rows exist in total with the retained June fixture. Complete the pilot contract, freshness, fallback, rollback, and release gate before moving to NAR.',
+            '### JRA A+ — complete\n\nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The operator-triggered refresh, 24 July meetings, 288 July rows, 300 total JRA rows, synchronized artifacts, fallback, rollback, and release gate are recorded in `docs/calendar/jra-a-plus-pilot-completion.md`.')
+          once('docs/project-roadmap.md',
+            '### NAR A+\n\nBuild authority- and racecourse-specific route mapping.',
+            '### NAR A+ — current\n\nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping.')
+          p = Path('docs/project-roadmap.md'); text = p.read_text()
           marker = 'Completed Japan A+ reconciliation transition record:'
           insert = 'Completed JRA A+ pilot transition record:\n\n> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \n> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`\n\n'
-          if insert not in text:
-              p.write_text(text.replace(marker, insert + marker))
+          if insert not in text: p.write_text(text.replace(marker, insert + marker, 1))
 
-          replace(
-              'docs/calendar/implementation-roadmap.md',
-              'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-              'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`'
-          )
-          replace(
-              'docs/calendar/implementation-roadmap.md',
-              'Status: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-              'Status: current  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`'
-          )
-          replace(
-              'docs/calendar/implementation-roadmap.md',
-              '### JRA A+ pilot\n\nThe July 2026 implementation produced 24 reviewed A+ meetings and 288 July timetable rows, with candidate, canonical, public, operations, and rendered-QA layers synchronized. Complete the pilot contract, refresh ownership, freshness, fallback, rollback, and release gate before moving to NAR.',
-              '### JRA A+ pilot — complete\n\nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The operator-triggered local refresh, 24 July A+ meetings, 288 July rows, synchronized candidate/canonical/public/operations layers, freshness, fallback, rollback, and release gate are recorded in `docs/calendar/jra-a-plus-pilot-completion.md`.'
-          )
-          replace(
-              'docs/calendar/implementation-roadmap.md',
-              '### NAR A+ pilot\n\nBuild authority- and racecourse-specific route mapping.',
-              '### NAR A+ pilot — current\n\nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping.'
-          )
-          p = Path('docs/calendar/implementation-roadmap.md')
-          text = p.read_text()
+          once('docs/calendar/implementation-roadmap.md',
+            'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+            'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`')
+          once('docs/calendar/implementation-roadmap.md',
+            'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+            'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`')
+          once('docs/calendar/implementation-roadmap.md',
+            'Status: current  \nCurrent Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+            'Status: current  \nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  \nNext Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`')
+          once('docs/calendar/implementation-roadmap.md',
+            '### JRA A+ pilot\n\nThe July 2026 implementation produced 24 reviewed A+ meetings and 288 July timetable rows, with candidate, canonical, public, operations, and rendered-QA layers synchronized. Complete the pilot contract, refresh ownership, freshness, fallback, rollback, and release gate before moving to NAR.',
+            '### JRA A+ pilot — complete\n\nCompleted Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The operator-triggered local refresh, 24 July meetings, 288 July rows, synchronized layers, fallback, rollback, and release gate are recorded in `docs/calendar/jra-a-plus-pilot-completion.md`.')
+          once('docs/calendar/implementation-roadmap.md',
+            '### NAR A+ pilot\n\nBuild authority- and racecourse-specific route mapping.',
+            '### NAR A+ pilot — current\n\nCurrent Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping.')
+          p = Path('docs/calendar/implementation-roadmap.md'); text = p.read_text()
           marker = '### Completed reconciliation transition'
           insert = '### Completed JRA A+ transition\n\n> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  \n> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`\n\n'
-          if insert not in text:
-              p.write_text(text.replace(marker, insert + marker))
+          if insert not in text: p.write_text(text.replace(marker, insert + marker, 1))
           PY
       - name: Commit roadmap transition
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add docs/project-roadmap.md docs/calendar/implementation-roadmap.md
-          if git diff --cached --quiet; then
-            echo 'Roadmaps already advanced.'
-          else
-            git commit -m 'Advance Calendar work to NAR A+ pilot'
-            git push origin HEAD:${{ github.head_ref }}
-          fi
+          git diff --cached --quiet || (git commit -m 'Advance Calendar work to NAR A+ pilot' && git push origin HEAD:${{ github.head_ref }})
