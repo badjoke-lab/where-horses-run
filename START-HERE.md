@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-03
+Last reviewed: 2026-07-04
 
 Read documents in this order:
 
@@ -29,11 +29,12 @@ Calendar work:
 12. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
 13. [`docs/calendar/nar-fixture-probe.md`](docs/calendar/nar-fixture-probe.md)
 14. [`docs/calendar/nar-candidate-adapter.md`](docs/calendar/nar-candidate-adapter.md)
-15. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-16. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-17. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-18. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-19. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+15. [`docs/calendar/nar-14-racecourse-compatibility-audit.md`](docs/calendar/nar-14-racecourse-compatibility-audit.md)
+16. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+17. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+18. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+19. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+20. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -50,6 +51,7 @@ data/static/local-racing-pilot-control-v2.json
 data/static/banei-pilot-control.json
 data/static/nar-source-route-architecture-v1.json
 data/static/nar-venue-code-research-seed-v1.json
+data/static/nar-flat-racecourse-compatibility-v1.json
 data/fixtures/timetable/nar/route-probe-v1.json
 data/candidates/nar-route-probe-candidates.json
 data/audits/calendar-baseline-migration-map.json
@@ -61,11 +63,13 @@ data/audits/calendar-jra-a-plus-pilot-completion.json
 data/audits/nar-legacy-pr281-migration.json
 data/audits/nar-fixture-probe-v1.json
 data/audits/nar-candidate-adapter-v1.json
+data/audits/nar-14-racecourse-compatibility-v1.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 scripts/timetable/build-nar-route-probe-candidates.mjs
+scripts/timetable/collect-nar-complete-fixtures.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -76,6 +80,7 @@ scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-calendar-nar-source-architecture.mjs
 scripts/check-calendar-nar-fixture-probe.mjs
 scripts/check-calendar-nar-candidate-adapter.mjs
+scripts/check-calendar-nar-14-racecourse-compatibility.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
@@ -102,7 +107,7 @@ Next Work ID:
 WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, the bounded Urawa/Funabashi route probe, and the non-promotable candidate adapter are complete. The current phase is complete-meeting fixture collection. Scheduling and unattended canonical/public writes remain disabled.
+The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, the bounded Urawa/Funabashi route probe, the non-promotable candidate adapter, and the all-fourteen racecourse compatibility audit are complete. The current phase requires complete-meeting fixture coverage for all fourteen flat-racing racecourses, followed by selected-month collection of every actual meeting. Scheduling and unattended candidate/canonical/public writes remain disabled.
 
 ## Completed transition records
 
