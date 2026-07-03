@@ -59,7 +59,7 @@ for (const phrase of [
   'Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
   'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`',
   'JRA central racing',
-  'NAR/local-government racing',
+  'NAR and local-government racing',
   'Banei Tokachi'
 ]) {
   if (!implementationRoadmap.includes(phrase)) errors.push('implementation roadmap missing ' + phrase);
