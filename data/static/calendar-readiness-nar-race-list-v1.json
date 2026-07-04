@@ -1,0 +1,66 @@
+{
+  "schema_version": "calendar-readiness-nar-race-list-v1",
+  "records": [
+    {
+      "readiness_id": "japan--japan-nar-system--nar-race-list-deba-table",
+      "country_id": "japan",
+      "country_tracker_delivery_no": "13",
+      "system_id": "japan-nar-system",
+      "system_name_en": "Regional local racing flat-racing programme system",
+      "authority_source_key": "japan/nar-local-government-racing/nar-race-list-deba-table",
+      "racecourse_ids": [
+        "monbetsu-racecourse",
+        "morioka-racecourse",
+        "mizusawa-racecourse",
+        "urawa-racecourse",
+        "funabashi-racecourse",
+        "oi-racecourse",
+        "kawasaki-racecourse",
+        "kanazawa-racecourse",
+        "kasamatsu-racecourse",
+        "nagoya-racecourse",
+        "sonoda-racecourse",
+        "himeji-racecourse",
+        "kochi-racecourse",
+        "saga-racecourse"
+      ],
+      "coverage_scope": "subset_of_authority_racecourses",
+      "technical_rank": "A+",
+      "public_ceiling": "A+",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "source_format": "mixed",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "manual_operation",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-07-04",
+      "evidence_reviewed_at": "2026-07-04",
+      "revalidation_trigger": "Revalidate when the NAR MonthlyConveneInfo, RaceList, or DebaTable route family changes, or when a racecourse-specific parser no longer satisfies complete-meeting validation.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/nar-14-racecourse-compatibility-audit.md",
+      "limitations": [
+        "Obihiro Banei racing is outside this flat-racing source record and remains a separate Work ID.",
+        "The initial reviewed monthly promotion batch covers actual meetings through 2026-07-04; later dates require another operator collection and review cycle.",
+        "Collection and promotion remain operator-triggered and human-reviewed; unattended publication remains disabled."
+      ],
+      "notes": "The reviewed fourteen-racecourse fixture set and selected-month run support A+ public-safe timetable fields for complete meetings from official NAR RaceList and DebaTable routes."
+    }
+  ]
+}

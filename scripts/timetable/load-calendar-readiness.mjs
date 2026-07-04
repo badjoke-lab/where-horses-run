@@ -2,8 +2,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const BASE_PATH = 'data/static/calendar-readiness-registry.json';
+const NAR_RACE_LIST_PATH = 'data/static/calendar-readiness-nar-race-list-v1.json';
 const AMENDMENTS_PATH = 'data/static/calendar-readiness-amendments-v1.json';
-const ALLOWED_FIELDS = new Set(['public_ceiling', 'confirmed_fields', 'reason']);
+const AMENDMENT_FIELDS = new Set(['public_ceiling', 'confirmed_fields', 'reason']);
 
 function readJson(root, relativePath) {
   return JSON.parse(readFileSync(path.join(root, relativePath), 'utf8'));
@@ -13,8 +14,29 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-export function loadCalendarReadinessV1(root) {
-  const base = readJson(root, BASE_PATH);
+function applySupplement(root, base) {
+  if (!existsSync(path.join(root, NAR_RACE_LIST_PATH))) return base;
+
+  const supplement = readJson(root, NAR_RACE_LIST_PATH);
+  assert(supplement?.schema_version === 'calendar-readiness-nar-race-list-v1', 'NAR Calendar Readiness supplement schema is invalid');
+  assert(Array.isArray(supplement.records), 'NAR Calendar Readiness supplement records must be an array');
+
+  const ids = new Set(base.records.map((record) => record.readiness_id));
+  const sourceKeys = new Set(base.records.map((record) => record.authority_source_key));
+  for (const record of supplement.records) {
+    assert(!ids.has(record.readiness_id), `duplicate readiness supplement ID: ${record.readiness_id}`);
+    assert(!sourceKeys.has(record.authority_source_key), `duplicate readiness supplement source key: ${record.authority_source_key}`);
+    ids.add(record.readiness_id);
+    sourceKeys.add(record.authority_source_key);
+  }
+
+  return {
+    ...base,
+    records: [...base.records, ...supplement.records],
+  };
+}
+
+function applyAmendments(root, base) {
   if (!existsSync(path.join(root, AMENDMENTS_PATH))) return base;
 
   const amendments = readJson(root, AMENDMENTS_PATH);
@@ -32,7 +54,7 @@ export function loadCalendarReadinessV1(root) {
 
     for (const key of Object.keys(amendment)) {
       if (key === 'readiness_id') continue;
-      assert(ALLOWED_FIELDS.has(key), `Calendar Readiness amendment ${amendment.readiness_id} has unsupported field ${key}`);
+      assert(AMENDMENT_FIELDS.has(key), `Calendar Readiness amendment ${amendment.readiness_id} has unsupported field ${key}`);
     }
 
     if (amendment.public_ceiling != null) {
@@ -68,7 +90,13 @@ export function loadCalendarReadinessV1(root) {
   };
 }
 
+export function loadCalendarReadinessV1(root) {
+  const base = readJson(root, BASE_PATH);
+  return applyAmendments(root, applySupplement(root, base));
+}
+
 export const calendarReadinessPathsV1 = Object.freeze({
   base: BASE_PATH,
+  nar_race_list: NAR_RACE_LIST_PATH,
   amendments: AMENDMENTS_PATH,
 });

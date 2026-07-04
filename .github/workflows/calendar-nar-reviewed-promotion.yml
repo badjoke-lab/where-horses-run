@@ -1,0 +1,82 @@
+name: Calendar NAR reviewed promotion
+
+on:
+  pull_request:
+    paths:
+      - 'promote-nar-monthly-manual'
+      - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
+      - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
+      - 'scripts/check-calendar-nar-reviewed-promotion-operator.mjs'
+      - 'data/static/authority-source-inventory-nar-race-list-v1.json'
+      - 'data/static/calendar-readiness-nar-race-list-v1.json'
+      - 'data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json'
+      - 'docs/calendar/manual-nar-reviewed-promotion.md'
+      - '.github/workflows/calendar-nar-reviewed-promotion.yml'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'promote-nar-monthly-manual'
+      - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
+      - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
+      - 'scripts/check-calendar-nar-reviewed-promotion-operator.mjs'
+      - 'data/static/authority-source-inventory-nar-race-list-v1.json'
+      - 'data/static/calendar-readiness-nar-race-list-v1.json'
+      - 'data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json'
+      - 'docs/calendar/manual-nar-reviewed-promotion.md'
+      - '.github/workflows/calendar-nar-reviewed-promotion.yml'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate shell launcher
+        run: sh -n promote-nar-monthly-manual
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/manual-promote-reviewed-nar-monthly.mjs
+          node --check scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs
+          node --check scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node --check scripts/timetable/load-authority-source-inventory.mjs
+          node --check scripts/timetable/load-calendar-readiness.mjs
+          node --check scripts/timetable/promote-approved-candidate-v1.mjs
+          node --check scripts/check-calendar-nar-reviewed-promotion.mjs
+          node --check scripts/check-calendar-nar-reviewed-promotion-operator.mjs
+      - name: Validate reviewed promotion operator contract
+        run: node scripts/check-calendar-nar-reviewed-promotion-operator.mjs
+      - name: Validate merged monthly source and review decision
+        run: node scripts/check-calendar-nar-reviewed-promotion.mjs --allow-missing-generated
+      - name: Validate NAR monthly source candidates
+        run: node scripts/check-calendar-nar-monthly-candidate-set.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm operator-only promotion
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-reviewed-promotion.yml
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-reviewed-promotion-output.yml
+          echo 'NAR reviewed promotion remains operator-triggered and human-reviewed.'

@@ -1,12 +1,12 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { promoteApprovedCandidateV1 } from './pipeline-v1/promotion-core.mjs';
+import { loadAuthoritySourceInventoryV1 } from './load-authority-source-inventory.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json';
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
-const authorityInventoryPath = 'data/static/authority-source-inventory.json';
-const readinessRegistryPath = 'data/static/calendar-readiness-registry.json';
 
 const args = new Map();
 const flags = new Set();
@@ -55,8 +55,8 @@ try {
     candidate: readJson(normalizedInput),
     meetingsDataset: readJson(canonicalMeetingsPath),
     detailsDataset: readJson(canonicalDetailsPath),
-    authorityInventory: readJson(authorityInventoryPath),
-    readinessRegistry: readJson(readinessRegistryPath),
+    authorityInventory: loadAuthoritySourceInventoryV1(root),
+    readinessRegistry: loadCalendarReadinessV1(root),
     inputPath: normalizedInput
   });
 
