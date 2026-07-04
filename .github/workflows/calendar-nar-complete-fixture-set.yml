@@ -36,7 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            git fetch --no-tags origin "${{ github.base_ref }}"
+            git fetch --no-tags --depth=1 origin "+refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}"
             changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
