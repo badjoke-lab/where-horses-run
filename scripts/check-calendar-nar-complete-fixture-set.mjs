@@ -29,8 +29,9 @@ const rowKeys = new Set([
   'surface', 'course_label', 'source_trace',
 ]);
 const traceKeys = new Set([
-  'list_url', 'detail_url', 'detail_http_status', 'detail_encoding', 'detail_parsed',
+  'list_url', 'detail_url', 'detail_http_status', 'detail_encoding', 'detail_parsed', 'course_metadata_source',
 ]);
+const validMetadataSources = new Set(['deba_table', 'race_list_and_racecourse_matrix']);
 
 function inspectForbidden(value, location = 'root') {
   if (Array.isArray(value)) {
@@ -110,7 +111,15 @@ for (const file of files) {
       for (const key of Object.keys(row.source_trace)) if (!traceKeys.has(key)) fail(`${prefix} row ${index + 1} trace unexpected key ${key}.`);
       if (row.source_trace.list_url !== fixture.source.official_race_list_url) fail(`${prefix} row ${index + 1} list trace differs.`);
       if (!row.source_trace.detail_url?.includes(`k_raceNo=${raceNumber}`)) fail(`${prefix} row ${index + 1} detail trace differs.`);
-      if (row.source_trace.detail_http_status !== 200 || row.source_trace.detail_parsed !== true) fail(`${prefix} row ${index + 1} detail was not verified.`);
+      if (row.source_trace.detail_http_status !== 200) fail(`${prefix} row ${index + 1} detail was not fetched.`);
+      if (!validMetadataSources.has(row.source_trace.course_metadata_source)) fail(`${prefix} row ${index + 1} metadata source differs.`);
+      if (row.source_trace.course_metadata_source === 'deba_table' && row.source_trace.detail_parsed !== true) fail(`${prefix} row ${index + 1} DebaTable metadata was not parsed.`);
+      if (row.source_trace.course_metadata_source === 'race_list_and_racecourse_matrix') {
+        if (row.source_trace.detail_parsed !== false) fail(`${prefix} row ${index + 1} fallback must record detail_parsed=false.`);
+        if (matrixRecord.surfaces?.length !== 1 || !matrixRecord.surfaces.includes('dirt')) fail(`${prefix} row ${index + 1} fallback is only allowed for single-surface dirt racecourses.`);
+        if (!['left', 'right'].includes(matrixRecord.course_direction)) fail(`${prefix} row ${index + 1} fallback requires fixed direction.`);
+        if (row.surface !== 'Dirt') fail(`${prefix} row ${index + 1} fallback must resolve to Dirt.`);
+      }
     }
   });
 

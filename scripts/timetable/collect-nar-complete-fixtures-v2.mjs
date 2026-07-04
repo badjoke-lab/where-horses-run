@@ -184,10 +184,10 @@ function parseListRows(html, record) {
     const hrefRace = block.match(/[?&]k_raceNo=(\d{1,2})(?:&|["'])/i);
     const raceMatch = hrefRace ?? plain.match(/(?:^|\s)(\d{1,2})\s*R(?:\s|$)/i);
     const timeMatch = plain.match(/(?:^|\s)(\d{1,2}:\d{2})(?:\s|$)/);
-    const courseMatch = plain.match(/(?:ダート|芝)?\s*([右左])?\s*(\d{3,4})\s*[mｍＭ]/);
+    const courseMatch = plain.match(/(?:(ダート|芝))?\s*([右左])?\s*(\d{3,4})\s*[mｍＭ]/);
     if (!raceMatch || !timeMatch || !courseMatch) continue;
     const raceNumber = Number(raceMatch[1]);
-    const distance = Number(courseMatch[2]);
+    const distance = Number(courseMatch[3]);
     if (raceNumber < 1 || raceNumber > 30 || distance < 600 || distance > 6000) continue;
     const name = raceName(block, raceNumber);
     if (!name) continue;
@@ -197,10 +197,53 @@ function parseListRows(html, record) {
       post_time_local: normalizeTime(timeMatch[1]),
       race_name: name,
       distance_m: distance,
+      list_surface_raw: courseMatch[1] ?? null,
+      list_direction_raw: courseMatch[2] ?? null,
       detail_url: detailUrl(record, raceNumber),
     });
   }
   return [...rows.values()].sort((a, b) => a.race_number - b.race_number);
+}
+
+function courseLabel(surface, direction) {
+  const labels = [surface === 'Turf' ? 'Turf Course' : 'Dirt Course'];
+  if (direction === 'right') labels.push('Right');
+  if (direction === 'left') labels.push('Left');
+  return labels.join(' / ');
+}
+
+function surfaceFromRaw(raw) {
+  if (raw === '芝') return 'Turf';
+  if (raw === 'ダート') return 'Dirt';
+  return null;
+}
+
+function directionFromRaw(raw) {
+  if (raw === '右') return 'right';
+  if (raw === '左') return 'left';
+  return null;
+}
+
+function directionFromRecord(record) {
+  if (record.course_direction === 'left') return 'left';
+  if (record.course_direction === 'right') return 'right';
+  return null;
+}
+
+function safeRaceListFallback(row, record) {
+  const surface = surfaceFromRaw(row.list_surface_raw)
+    ?? (record.surfaces?.length === 1 && record.surfaces.includes('dirt') ? 'Dirt' : null);
+  const direction = directionFromRaw(row.list_direction_raw) ?? directionFromRecord(record);
+  if (!surface || !direction) return null;
+  if (surface === 'Turf' && !record.surfaces?.includes('turf')) return null;
+  if (surface === 'Dirt' && !record.surfaces?.includes('dirt')) return null;
+  if (!Number.isInteger(row.distance_m)) return null;
+  return {
+    surface,
+    distance_m: row.distance_m,
+    course_label: courseLabel(surface, direction),
+    source: 'race_list_and_racecourse_matrix',
+  };
 }
 
 function parseDetail(html) {
@@ -228,7 +271,7 @@ function parseDetail(html) {
   if (/外/.test(courseRaw)) labels.push('Outer');
   if (/右/.test(courseRaw)) labels.push('Right');
   if (/左/.test(courseRaw)) labels.push('Left');
-  return { surface, distance_m: distance, course_label: [...new Set(labels)].join(' / ') };
+  return { surface, distance_m: distance, course_label: [...new Set(labels)].join(' / '), source: 'deba_table' };
 }
 
 function missingFields(row) {
@@ -259,7 +302,8 @@ async function collect(record) {
   for (const row of parsed) {
     await sleep(delayMs);
     const detail = await fetchPage(row.detail_url, record.name_ja);
-    const metadata = detail.ok ? parseDetail(detail.body) : null;
+    const detailMetadata = detail.ok ? parseDetail(detail.body) : null;
+    const metadata = detailMetadata ?? safeRaceListFallback(row, record);
     rows.push({
       race_number: row.race_number,
       label: row.label,
@@ -273,7 +317,8 @@ async function collect(record) {
         detail_url: row.detail_url,
         detail_http_status: detail.status,
         detail_encoding: detail.encoding,
-        detail_parsed: Boolean(metadata),
+        detail_parsed: Boolean(detailMetadata),
+        course_metadata_source: metadata?.source ?? null,
       },
     });
   }
