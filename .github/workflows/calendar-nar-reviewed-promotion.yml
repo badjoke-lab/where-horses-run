@@ -6,6 +6,7 @@ on:
       - 'promote-nar-monthly-manual'
       - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
       - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/promote-approved-candidate-v1.mjs'
@@ -24,6 +25,7 @@ on:
       - 'promote-nar-monthly-manual'
       - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
       - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
+      - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/promote-approved-candidate-v1.mjs'
@@ -59,6 +61,7 @@ jobs:
         run: |
           node --check scripts/timetable/manual-promote-reviewed-nar-monthly.mjs
           node --check scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs
+          node --check scripts/timetable/build-japan-a-plus-public-overrides.mjs
           node --check scripts/timetable/load-authority-source-inventory.mjs
           node --check scripts/timetable/load-calendar-readiness.mjs
           node --check scripts/timetable/promote-approved-candidate-v1.mjs
