@@ -6,6 +6,7 @@ const read = (file) => fs.readFileSync(file, 'utf8');
 
 const launcher = read('collect-nar-monthly-manual');
 const manual = read('scripts/timetable/manual-collect-nar-monthly.mjs');
+const scheduleNormalizer = read('scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs');
 const collector = read('scripts/timetable/collect-nar-monthly-candidates.mjs');
 const validator = read('scripts/check-calendar-nar-monthly-candidate-set.mjs');
 const runbook = read('docs/calendar/manual-nar-monthly-collection.md');
@@ -16,7 +17,7 @@ for (const marker of ['--filter=blob:none', '--no-checkout', 'sparse-checkout in
   if (!launcher.includes(marker)) fail(`launcher missing ${marker}.`);
 }
 for (const marker of [
-  'collect-nar-monthly-candidates.mjs',
+  'normalize-nar-monthly-schedule-fetch.mjs',
   'check-calendar-nar-monthly-candidate-set.mjs',
   'check-calendar-runtime-import-boundary.mjs',
   "'install', '--package-lock=false', '--no-audit', '--no-fund'",
@@ -27,6 +28,17 @@ for (const marker of [
   'promotion_eligible=false',
 ]) {
   if (!manual.includes(marker)) fail(`manual script missing ${marker}.`);
+}
+for (const marker of [
+  'extractRaceListLiterals',
+  'decodeEntitiesDeep',
+  'queryValueCaseInsensitive',
+  'MonthlyConveneInfoTop',
+  "await import('./collect-nar-monthly-candidates.mjs')",
+  'scheduleMeetingLinks.length > 0 && report.meetings_discovered === 0',
+  'Monthly schedule link count mismatch',
+]) {
+  if (!scheduleNormalizer.includes(marker)) fail(`schedule normalizer missing ${marker}.`);
 }
 for (const marker of [
   'MonthlyConveneInfoTop',
@@ -45,7 +57,7 @@ for (const marker of [
   if (!collector.includes(marker)) fail(`collector missing ${marker}.`);
 }
 for (const forbidden of ['canonical/meetings.json', 'canonical/meeting-details.json', 'public/meeting-list.json', 'public/meeting-details.json', 'build-public-timetable-view.mjs', 'promote-timetable']) {
-  if (collector.includes(forbidden)) fail(`collector must not reference ${forbidden}.`);
+  if (collector.includes(forbidden) || scheduleNormalizer.includes(forbidden)) fail(`monthly collection must not reference ${forbidden}.`);
 }
 for (const marker of ['--allow-empty', 'RACECOURSES_CLASSIFIED', 'PROMOTION_ELIGIBLE: 0', 'PUBLICATION_EFFECT: none', 'forbidden key fragment']) {
   if (!validator.includes(marker)) fail(`validator missing ${marker}.`);
@@ -65,6 +77,7 @@ if (errors.length) {
 }
 console.log('CALENDAR_NAR_MONTHLY_OPERATOR: pass');
 console.log('RACECOURSES_CLASSIFIED: 14');
+console.log('SCHEDULE_LINK_NORMALIZATION: guarded');
 console.log('CANDIDATE_WRITE: needs_review_only');
 console.log('CANONICAL_WRITE: disabled');
 console.log('PUBLIC_WRITE: disabled');
