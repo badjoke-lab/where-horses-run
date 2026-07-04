@@ -51,6 +51,8 @@ for (const marker of [
   'continuousFromOne',
   'parseListRows',
   'parseDetail',
+  'safeRaceListFallback',
+  'race_list_and_racecourse_matrix',
   "expected_race_numbers: expected",
   "promotion_eligible: false",
   "review: {",
@@ -76,6 +78,8 @@ for (const marker of [
   'missing complete fixture for',
   'promotion_eligible',
   'detail_http_status',
+  'course_metadata_source',
+  'single-surface dirt racecourses',
   'unexpected key',
 ]) {
   if (!fixtureCheck.includes(marker)) fail(`fixture-set validator missing ${marker}.`);
