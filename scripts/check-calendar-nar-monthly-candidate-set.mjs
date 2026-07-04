@@ -48,6 +48,8 @@ if (candidates?.work_id !== 'WHR-CAL-JAPAN-NAR-A-PLUS' || report?.work_id !== 'W
 if (candidates?.review?.status !== 'needs_review' || candidates?.review?.promotion_eligible !== false) fail('monthly candidates must remain needs_review and not promotion eligible.');
 if (candidates?.review?.canonical_write !== 'disabled' || candidates?.review?.public_write !== 'disabled') fail('monthly candidate canonical/public writes must be disabled.');
 if (candidates?.review?.raw_source_storage !== 'disabled') fail('raw source storage must be disabled.');
+if (!String(report?.official_schedule_url ?? '').startsWith('https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop')) fail('report official schedule URL is missing or invalid.');
+if (candidates?.source?.official_schedule_url !== report?.official_schedule_url) fail('candidate/report official schedule URL differs.');
 
 const venueStatuses = candidates?.venue_statuses ?? [];
 if (venueStatuses.length !== 14 || report?.racecourses_checked !== 14) fail('monthly set must classify all fourteen racecourses.');
@@ -66,8 +68,11 @@ for (const record of matrix.records) if (!seen.has(record.racecourse_id)) fail(`
 
 const meetings = candidates?.meetings ?? [];
 const blockers = candidates?.blockers ?? [];
+const statusMeetingCount = venueStatuses.reduce((sum, status) => sum + Number(status.meeting_count ?? 0), 0);
 if (report?.complete_meeting_candidates !== meetings.length) fail('report candidate count differs.');
 if (report?.blocked_meetings !== blockers.length) fail('report blocker count differs.');
+if (report?.meetings_discovered !== statusMeetingCount) fail('report discovered count differs from in-scope venue meeting counts.');
+if (report?.meetings_discovered !== meetings.length + blockers.length) fail('every discovered in-scope meeting must be either a complete candidate or blocker.');
 if (report?.promotion_eligible_candidates !== 0 || report?.publication_effect !== 'none') fail('report promotion/publication boundary differs.');
 
 const meetingIds = new Set();
@@ -120,6 +125,7 @@ if (errors.length) {
 }
 console.log('CALENDAR_NAR_MONTHLY_CANDIDATE_SET: pass');
 console.log(`RACECOURSES_CLASSIFIED: ${venueStatuses.length}`);
+console.log(`MEETINGS_DISCOVERED: ${report.meetings_discovered}`);
 console.log(`MEETING_CANDIDATES: ${meetings.length}`);
 console.log(`BLOCKED_MEETINGS: ${blockers.length}`);
 console.log('PROMOTION_ELIGIBLE: 0');
