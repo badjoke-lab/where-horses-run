@@ -2,6 +2,7 @@ import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildPublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
 import { resolveCalendarReadinessRegistryForProjection } from './pipeline-v1/registry-overrides.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const outputPath = 'data/generated/timetable/public/japan-a-plus-overrides.json';
@@ -18,7 +19,7 @@ const result = buildPublicProjectionV1({
   canonicalDetails: readJson('data/generated/timetable/canonical/meeting-details.json'),
   policyData: readJson('src/data/publicationDisplayPolicies.json'),
   readinessRegistry: resolveCalendarReadinessRegistryForProjection(
-    readJson('data/static/calendar-readiness-registry.json'),
+    loadCalendarReadinessV1(root),
     readJson('data/static/calendar-readiness-japan-v2.json'),
     readJson('data/static/japan-a-plus-runtime-control.json')
   ),
