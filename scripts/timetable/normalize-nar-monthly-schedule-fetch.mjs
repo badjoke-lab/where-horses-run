@@ -98,17 +98,17 @@ globalThis.fetch = async (input, init) => {
   const syntheticAnchors = scheduleMeetingLinks
     .map((url) => `<a href="${url.replaceAll('&', '&amp;')}"></a>`)
     .join('\n');
-  const augmented = Buffer.concat([body, Buffer.from(`\n${syntheticAnchors}\n`, 'ascii')]);
-  const augmentedArrayBuffer = augmented.buffer.slice(
-    augmented.byteOffset,
-    augmented.byteOffset + augmented.byteLength,
+  const normalizedBody = Buffer.from(`<html><body>\n${syntheticAnchors}\n</body></html>\n`, 'utf8');
+  const normalizedArrayBuffer = normalizedBody.buffer.slice(
+    normalizedBody.byteOffset,
+    normalizedBody.byteOffset + normalizedBody.byteLength,
   );
 
   return {
     ok: response.ok,
     status: response.status,
     url: response.url,
-    arrayBuffer: async () => augmentedArrayBuffer,
+    arrayBuffer: async () => normalizedArrayBuffer,
   };
 };
 
