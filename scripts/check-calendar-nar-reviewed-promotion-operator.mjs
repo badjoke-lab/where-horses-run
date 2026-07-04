@@ -10,6 +10,7 @@ const builder = read('scripts/timetable/build-reviewed-nar-monthly-promotion-can
 const validator = read('scripts/check-calendar-nar-reviewed-promotion.mjs');
 const readinessLoader = read('scripts/timetable/load-calendar-readiness.mjs');
 const authorityLoader = read('scripts/timetable/load-authority-source-inventory.mjs');
+const overrideBuilder = read('scripts/timetable/build-japan-a-plus-public-overrides.mjs');
 const readinessSupplement = read('data/static/calendar-readiness-nar-race-list-v1.json');
 const authoritySupplement = read('data/static/authority-source-inventory-nar-race-list-v1.json');
 const review = read('data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json');
@@ -80,6 +81,9 @@ for (const marker of ['calendar-readiness-nar-race-list-v1.json', 'applySuppleme
 }
 for (const marker of ['authority-source-inventory-nar-race-list-v1.json', 'supplement.records']) {
   if (!authorityLoader.includes(marker)) fail(`authority loader missing ${marker}.`);
+}
+for (const marker of ['loadCalendarReadinessV1', 'resolveCalendarReadinessRegistryForProjection']) {
+  if (!overrideBuilder.includes(marker)) fail(`Japan override builder missing reviewed readiness integration ${marker}.`);
 }
 for (const marker of ['"technical_rank": "A+"', '"public_ceiling": "A+"', '"readiness": "prototype_ready"', '"automation_mode": "semi_automatic"', '"racecourse_ids"']) {
   if (!readinessSupplement.includes(marker)) fail(`readiness supplement missing ${marker}.`);
