@@ -1,0 +1,62 @@
+name: Calendar NAR monthly operator
+
+on:
+  pull_request:
+    paths:
+      - 'collect-nar-monthly-manual'
+      - 'docs/calendar/manual-nar-monthly-collection.md'
+      - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/manual-collect-nar-monthly.mjs'
+      - 'scripts/check-calendar-nar-monthly-candidate-set.mjs'
+      - 'scripts/check-calendar-nar-monthly-operator.mjs'
+      - '.github/workflows/calendar-nar-monthly-operator.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'collect-nar-monthly-manual'
+      - 'docs/calendar/manual-nar-monthly-collection.md'
+      - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/manual-collect-nar-monthly.mjs'
+      - 'scripts/check-calendar-nar-monthly-candidate-set.mjs'
+      - 'scripts/check-calendar-nar-monthly-operator.mjs'
+      - '.github/workflows/calendar-nar-monthly-operator.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate shell launcher
+        run: sh -n collect-nar-monthly-manual
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/collect-nar-monthly-candidates.mjs
+          node --check scripts/timetable/manual-collect-nar-monthly.mjs
+          node --check scripts/check-calendar-nar-monthly-candidate-set.mjs
+          node --check scripts/check-calendar-nar-monthly-operator.mjs
+      - name: Validate monthly operator contract
+        run: node scripts/check-calendar-nar-monthly-operator.mjs
+      - name: Validate empty monthly candidate state before operator run
+        run: node scripts/check-calendar-nar-monthly-candidate-set.mjs --allow-empty
+      - name: Validate policy and fixture precondition
+        run: |
+          node scripts/check-calendar-nar-monthly-collection-policy.mjs
+          node scripts/check-calendar-nar-complete-fixture-set.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm collection remains operator-triggered
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-monthly-operator.yml
+          ! grep -F 'collect-nar-monthly-candidates.mjs --month' .github/workflows/calendar-nar-monthly-operator.yml
+          echo 'NAR monthly collection runs only through the local operator launcher.'
