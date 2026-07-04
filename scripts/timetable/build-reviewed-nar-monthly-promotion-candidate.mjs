@@ -6,6 +6,7 @@ const sourcePath = 'data/candidates/nar-monthly-meeting-candidates.json';
 const reportPath = 'data/generated/timetable/nar-monthly-collection-report.json';
 const reviewPath = 'data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json';
 const outputPath = 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json';
+const canonicalSourceId = 'nar-race-list-deba-table';
 const checkOnly = process.argv.includes('--check');
 
 function readJson(relativePath) {
@@ -103,7 +104,7 @@ const records = meetings.map((meeting) => {
     last_race_time_local: timetableRows.at(-1).post_time_local,
     timetable_rows: timetableRows,
     source: {
-      source_id: 'nar-monthly-convene-info',
+      source_id: canonicalSourceId,
       official_url: meeting.source.official_race_list_url,
       checked_at: source.generated_at,
       extraction_method: 'adapter_candidate',
@@ -122,7 +123,7 @@ const output = {
   adapter_id: 'nar-monthly-reviewed-promotion-candidate-v1',
   country_id: 'japan',
   authority_id: 'nar-local-government-racing',
-  source_id: 'nar-monthly-convene-info',
+  source_id: canonicalSourceId,
   candidate_window: {
     start_date: `${source.target_month}-01`,
     end_date_exclusive: endExclusive(source.through_date),
