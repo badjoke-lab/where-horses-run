@@ -4,6 +4,9 @@ import path from 'node:path';
 const nativeFetch = globalThis.fetch;
 const root = process.cwd();
 const reportPath = path.join(root, 'data/generated/timetable/nar-monthly-collection-report.json');
+const matrixPath = path.join(root, 'data/static/nar-flat-racecourse-compatibility-v1.json');
+const matrix = JSON.parse(fs.readFileSync(matrixPath, 'utf8'));
+const flatVenueCodes = new Set(matrix.records.map((record) => record.venue_code));
 let scheduleMeetingLinks = [];
 
 function decodeEntitiesDeep(value) {
@@ -45,7 +48,7 @@ function extractRaceListLiterals(rawHtml) {
         if (!/\/TodayRaceInfo\/RaceList$/i.test(url.pathname)) continue;
         const venueCode = queryValueCaseInsensitive(url, 'k_babaCode')?.padStart(2, '0');
         const rawDate = queryValueCaseInsensitive(url, 'k_raceDate');
-        if (!venueCode || !rawDate) continue;
+        if (!venueCode || !rawDate || !flatVenueCodes.has(venueCode)) continue;
         const date = rawDate.replaceAll('/', '-');
         const canonical = new URL('https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList');
         canonical.searchParams.set('k_babaCode', venueCode);
@@ -95,14 +98,18 @@ globalThis.fetch = async (input, init) => {
   const syntheticAnchors = scheduleMeetingLinks
     .map((url) => `<a href="${url.replaceAll('&', '&amp;')}"></a>`)
     .join('\n');
-  const augmented = Buffer.concat([body, Buffer.from(`\n${syntheticAnchors}\n`, 'ascii')]);
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  return new Response(augmented, {
+  const normalizedBody = Buffer.from(`<html><body>\n${syntheticAnchors}\n</body></html>\n`, 'utf8');
+  const normalizedArrayBuffer = normalizedBody.buffer.slice(
+    normalizedBody.byteOffset,
+    normalizedBody.byteOffset + normalizedBody.byteLength,
+  );
+
+  return {
+    ok: response.ok,
     status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
+    url: response.url,
+    arrayBuffer: async () => normalizedArrayBuffer,
+  };
 };
 
 await import('./collect-nar-monthly-candidates.mjs');
@@ -110,9 +117,9 @@ await import('./collect-nar-monthly-candidates.mjs');
 if (!fs.existsSync(reportPath)) throw new Error('NAR monthly collection report was not written.');
 const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
 if (scheduleMeetingLinks.length > 0 && report.meetings_discovered === 0) {
-  throw new Error(`Monthly schedule contains ${scheduleMeetingLinks.length} RaceList links inside the requested boundary, but collector discovered zero meetings.`);
+  throw new Error(`Monthly schedule contains ${scheduleMeetingLinks.length} in-scope RaceList links inside the requested boundary, but collector discovered zero meetings.`);
 }
 if (report.meetings_discovered !== scheduleMeetingLinks.length) {
   throw new Error(`Monthly schedule link count mismatch: normalized=${scheduleMeetingLinks.length} collector=${report.meetings_discovered}.`);
 }
-console.log(`[nar-monthly] normalized schedule RaceList links: ${scheduleMeetingLinks.length}`);
+console.log(`[nar-monthly] normalized in-scope schedule RaceList links: ${scheduleMeetingLinks.length}`);
