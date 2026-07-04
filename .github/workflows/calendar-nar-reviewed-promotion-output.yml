@@ -1,0 +1,71 @@
+name: Calendar NAR reviewed promotion output
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate approved candidate determinism
+        run: node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
+      - name: Validate canonical promotion determinism
+        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json --check
+      - name: Validate public projection determinism
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Validate Japan A+ runtime override synchronization
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+      - name: Validate reviewed NAR canonical and public projection
+        run: node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Validate changed-file boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
+            while IFS= read -r file; do
+              [[ -z "$file" ]] && continue
+              case "$file" in
+                data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json) ;;
+                *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
+              esac
+            done <<< "$changed"
+          fi
+      - name: Install dependencies
+        run: npm install --package-lock=false --no-audit --no-fund
+      - name: Build site
+        run: npm run build
