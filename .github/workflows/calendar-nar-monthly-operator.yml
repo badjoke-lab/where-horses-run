@@ -6,6 +6,7 @@ on:
       - 'collect-nar-monthly-manual'
       - 'docs/calendar/manual-nar-monthly-collection.md'
       - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs'
       - 'scripts/timetable/manual-collect-nar-monthly.mjs'
       - 'scripts/check-calendar-nar-monthly-candidate-set.mjs'
       - 'scripts/check-calendar-nar-monthly-operator.mjs'
@@ -17,6 +18,7 @@ on:
       - 'collect-nar-monthly-manual'
       - 'docs/calendar/manual-nar-monthly-collection.md'
       - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs'
       - 'scripts/timetable/manual-collect-nar-monthly.mjs'
       - 'scripts/check-calendar-nar-monthly-candidate-set.mjs'
       - 'scripts/check-calendar-nar-monthly-operator.mjs'
@@ -42,6 +44,7 @@ jobs:
       - name: Validate Node syntax
         run: |
           node --check scripts/timetable/collect-nar-monthly-candidates.mjs
+          node --check scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs
           node --check scripts/timetable/manual-collect-nar-monthly.mjs
           node --check scripts/check-calendar-nar-monthly-candidate-set.mjs
           node --check scripts/check-calendar-nar-monthly-operator.mjs
@@ -58,5 +61,5 @@ jobs:
       - name: Confirm collection remains operator-triggered
         run: |
           ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-nar-monthly-operator.yml
-          ! grep -F 'collect-nar-monthly-candidates.mjs --month' .github/workflows/calendar-nar-monthly-operator.yml
+          ! grep -F 'normalize-nar-monthly-schedule-fetch.mjs --month' .github/workflows/calendar-nar-monthly-operator.yml
           echo 'NAR monthly collection runs only through the local operator launcher.'
