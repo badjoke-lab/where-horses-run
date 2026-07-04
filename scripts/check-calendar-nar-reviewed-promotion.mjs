@@ -15,6 +15,8 @@ const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json'
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publicMeetingsPath = 'data/generated/timetable/public/meeting-list.json';
 const publicDetailsPath = 'data/generated/timetable/public/meeting-details.json';
+const canonicalSourceId = 'nar-race-list-deba-table';
+const canonicalSourceKey = `japan/nar-local-government-racing/${canonicalSourceId}`;
 const errors = [];
 const fail = (message) => errors.push(message);
 
@@ -60,20 +62,22 @@ const readinessRegistry = loadCalendarReadinessV1(root);
 const authority = authorityInventory.records.find((record) =>
   record.country_id === 'japan' &&
   record.authority_id === 'nar-local-government-racing' &&
-  record.official_source_id === 'nar-monthly-convene-info'
+  record.official_source_id === canonicalSourceId
 );
-const readiness = readinessRegistry.records.find((record) =>
+const readiness = readinessRegistry.records.find((record) => record.authority_source_key === canonicalSourceKey);
+const legacyReadiness = readinessRegistry.records.find((record) =>
   record.authority_source_key === 'japan/nar-local-government-racing/nar-monthly-convene-info'
 );
-if (!authority) fail('resolved NAR authority/source record is missing.');
-if (authority?.capability_rank !== 'A+') fail('resolved NAR authority/source capability must be A+.');
-if (authority?.adapter_candidate_status === 'blocked') fail('resolved NAR authority/source must permit candidate promotion.');
-if (!readiness) fail('resolved NAR Calendar Readiness record is missing.');
-if (readiness?.technical_rank !== 'A+' || readiness?.public_ceiling !== 'A+') fail('resolved NAR readiness ranks must be A+.');
-if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic') fail('resolved NAR readiness mode differs.');
+if (!authority) fail('resolved NAR RaceList authority/source record is missing.');
+if (authority?.capability_rank !== 'A+') fail('resolved NAR RaceList authority/source capability must be A+.');
+if (authority?.adapter_candidate_status === 'blocked') fail('resolved NAR RaceList authority/source must permit candidate promotion.');
+if (!readiness) fail('resolved NAR RaceList Calendar Readiness record is missing.');
+if (readiness?.technical_rank !== 'A+' || readiness?.public_ceiling !== 'A+') fail('resolved NAR RaceList readiness ranks must be A+.');
+if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic') fail('resolved NAR RaceList readiness mode differs.');
 for (const field of ['meeting_date', 'racecourse', 'first_race_time', 'last_race_time', 'per_race_post_times', 'race_name', 'distance', 'surface', 'course']) {
-  if (readiness?.confirmed_fields?.[field] !== true) fail(`resolved NAR confirmed field must be true: ${field}`);
+  if (readiness?.confirmed_fields?.[field] !== true) fail(`resolved NAR RaceList confirmed field must be true: ${field}`);
 }
+if (legacyReadiness?.readiness !== 'link_only') fail('legacy NAR monthly-convene source must remain link_only; broad legacy activation is forbidden.');
 
 const approvedExists = fs.existsSync(path.join(root, approvedPath));
 if (!approvedExists && !allowMissingGenerated) fail(`approved candidate file is missing: ${approvedPath}`);
@@ -81,7 +85,7 @@ let approved = null;
 if (approvedExists) {
   approved = readJson(approvedPath);
   if (approved.schema_version !== 'timetable-candidate-v1') fail('approved candidate schema differs.');
-  if (approved.country_id !== 'japan' || approved.authority_id !== 'nar-local-government-racing' || approved.source_id !== 'nar-monthly-convene-info') fail('approved candidate envelope identity differs.');
+  if (approved.country_id !== 'japan' || approved.authority_id !== 'nar-local-government-racing' || approved.source_id !== canonicalSourceId) fail('approved candidate envelope identity differs.');
   if (approved.review?.status !== 'approved' || approved.review?.reviewer !== review.review.reviewer || approved.review?.reviewed_at !== review.review.reviewed_at) fail('approved candidate review metadata differs.');
   if ((approved.records ?? []).length !== reviewIds.length) fail('approved candidate record count differs.');
   const approvedMeetingIds = sorted((approved.records ?? []).map((record) => record.meeting_id));
@@ -89,7 +93,7 @@ if (approvedExists) {
 
   for (const record of approved.records ?? []) {
     if (record.capability_rank !== 'A+' || record.review_status !== 'approved' || record.confidence !== 'high') fail(`${record.meeting_id} approved status/rank differs.`);
-    if (record.source?.source_id !== 'nar-monthly-convene-info' || record.source?.extraction_method !== 'adapter_candidate') fail(`${record.meeting_id} source identity differs.`);
+    if (record.source?.source_id !== canonicalSourceId || record.source?.extraction_method !== 'adapter_candidate') fail(`${record.meeting_id} source identity differs.`);
     if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length < 2) fail(`${record.meeting_id} timetable rows are incomplete.`);
     record.timetable_rows?.forEach((row, index) => {
       if (row.label !== `Race ${index + 1}`) fail(`${record.meeting_id} row ${index + 1} label differs.`);
@@ -120,6 +124,7 @@ if (requirePromoted) {
         continue;
       }
       if (meeting.capability_rank !== 'A+' || detail.capability_rank !== 'A+') fail(`${record.meeting_id} canonical rank differs.`);
+      if (meeting.source_trace?.source_id !== canonicalSourceId || detail.source_trace?.source_id !== canonicalSourceId) fail(`${record.meeting_id} canonical source differs.`);
       if (publicMeeting.effective_public_rank !== 'A+' || publicMeeting.max_public_rank !== 'A+') fail(`${record.meeting_id} public meeting rank differs.`);
       if (publicDetail.effective_public_rank !== 'A+' || publicDetail.max_public_rank !== 'A+') fail(`${record.meeting_id} public detail rank differs.`);
       for (const field of ['show_race_name', 'show_distance', 'show_surface', 'show_course']) {
@@ -143,3 +148,4 @@ console.log('CALENDAR_NAR_REVIEWED_PROMOTION: pass');
 console.log(`REVIEWED_MEETINGS: ${reviewIds.length}`);
 console.log(`APPROVED_CANDIDATE_PRESENT: ${approvedExists}`);
 console.log(`PROMOTED_PROJECTION_CHECKED: ${requirePromoted}`);
+console.log('LEGACY_NAR_MONTHLY_SOURCE_ACTIVATED: false');
