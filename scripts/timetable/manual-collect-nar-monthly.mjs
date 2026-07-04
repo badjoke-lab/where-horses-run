@@ -52,7 +52,7 @@ run('git', ['switch', 'main']);
 run('git', ['pull', '--ff-only', 'origin', 'main']);
 if (changedPaths().length) fail('Working tree changed while updating main.');
 
-const collectorArgs = ['scripts/timetable/collect-nar-monthly-candidates.mjs', `--month=${args.month}`, '--allow-blockers'];
+const collectorArgs = ['scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs', `--month=${args.month}`, '--allow-blockers'];
 if (args.throughDate) collectorArgs.push(`--through-date=${args.throughDate}`);
 run(process.execPath, collectorArgs);
 run(process.execPath, ['scripts/check-calendar-nar-monthly-candidate-set.mjs']);
