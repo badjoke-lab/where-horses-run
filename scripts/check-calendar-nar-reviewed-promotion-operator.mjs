@@ -90,10 +90,10 @@ for (const marker of ['authority-source-inventory-nar-race-list-v1.json', 'suppl
 for (const marker of ['loadCalendarReadinessV1', 'resolveCalendarReadinessRegistryForProjection']) {
   if (!overrideBuilder.includes(marker)) fail(`Japan override builder missing reviewed readiness integration ${marker}.`);
 }
-for (const marker of ['loadCalendarReadinessV1', 'operations-status.json']) {
+for (const marker of ['operations-status.json', '--reference-date']) {
   if (!operationsBuilder.includes(marker)) fail(`operations status builder missing ${marker}.`);
 }
-for (const marker of ['loadCalendarReadinessV1', 'public meeting count differs from current public JSON']) {
+for (const marker of ['public meeting count differs from current public JSON', 'public detail count differs from current public JSON']) {
   if (!operationsValidator.includes(marker)) fail(`operations status validator missing ${marker}.`);
 }
 for (const marker of ['"technical_rank": "A+"', '"public_ceiling": "A+"', '"readiness": "prototype_ready"', '"automation_mode": "semi_automatic"', '"racecourse_ids"']) {
