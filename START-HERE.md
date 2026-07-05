@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-04
+Last reviewed: 2026-07-05
 
 Read documents in this order:
 
@@ -24,20 +24,22 @@ Calendar work:
 7. [`docs/calendar/machine-readable-contracts.md`](docs/calendar/machine-readable-contracts.md)
 8. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
 9. [`docs/calendar/japan-a-plus-reconciliation-plan.md`](docs/calendar/japan-a-plus-reconciliation-plan.md)
-10. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
-11. [`docs/calendar/nar-a-plus-pilot-plan.md`](docs/calendar/nar-a-plus-pilot-plan.md)
-12. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
-13. [`docs/calendar/nar-fixture-probe.md`](docs/calendar/nar-fixture-probe.md)
-14. [`docs/calendar/nar-candidate-adapter.md`](docs/calendar/nar-candidate-adapter.md)
-15. [`docs/calendar/nar-14-racecourse-compatibility-audit.md`](docs/calendar/nar-14-racecourse-compatibility-audit.md)
-16. [`docs/calendar/manual-nar-fixture-collection.md`](docs/calendar/manual-nar-fixture-collection.md)
-17. [`docs/calendar/nar-monthly-collection-contract.md`](docs/calendar/nar-monthly-collection-contract.md)
-18. [`docs/calendar/manual-nar-monthly-collection.md`](docs/calendar/manual-nar-monthly-collection.md)
-19. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-20. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-21. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-22. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-23. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+10. [`docs/calendar/japan-full-month-scope-policy.md`](docs/calendar/japan-full-month-scope-policy.md)
+11. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
+12. [`docs/calendar/nar-a-plus-pilot-plan.md`](docs/calendar/nar-a-plus-pilot-plan.md)
+13. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
+14. [`docs/calendar/nar-fixture-probe.md`](docs/calendar/nar-fixture-probe.md)
+15. [`docs/calendar/nar-candidate-adapter.md`](docs/calendar/nar-candidate-adapter.md)
+16. [`docs/calendar/nar-14-racecourse-compatibility-audit.md`](docs/calendar/nar-14-racecourse-compatibility-audit.md)
+17. [`docs/calendar/manual-nar-fixture-collection.md`](docs/calendar/manual-nar-fixture-collection.md)
+18. [`docs/calendar/nar-monthly-collection-contract.md`](docs/calendar/nar-monthly-collection-contract.md)
+19. [`docs/calendar/manual-nar-monthly-collection.md`](docs/calendar/manual-nar-monthly-collection.md)
+20. [`docs/calendar/banei-a-plus-full-month-plan.md`](docs/calendar/banei-a-plus-full-month-plan.md)
+21. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
+22. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
+23. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
+24. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
+25. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
 
 Machine-readable Calendar files:
 
@@ -60,6 +62,7 @@ data/fixtures/timetable/nar/route-probe-v1.json
 data/fixtures/timetable/nar/complete-meetings/
 data/candidates/nar-route-probe-candidates.json
 data/candidates/nar-monthly-meeting-candidates.json
+data/candidates/nar-monthly-2026-07-full-month-candidates.json
 data/audits/calendar-baseline-migration-map.json
 data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
@@ -75,15 +78,20 @@ data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 data/generated/timetable/nar-monthly-collection-report.json
+data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json
 collect-nar-fixtures-manual
 collect-nar-monthly-manual
+collect-nar-full-month-manual
 scripts/timetable/build-nar-route-probe-candidates.mjs
 scripts/timetable/build-nar-monthly-schedule-plan.mjs
 scripts/timetable/collect-nar-complete-fixtures.mjs
 scripts/timetable/collect-nar-complete-fixtures-v2.mjs
 scripts/timetable/collect-nar-monthly-candidates.mjs
+scripts/timetable/parse-nar-monthly-schedule-grid.mjs
+scripts/timetable/normalize-nar-full-month-schedule-fetch.mjs
 scripts/timetable/manual-collect-nar-fixtures.mjs
 scripts/timetable/manual-collect-nar-monthly.mjs
+scripts/timetable/manual-collect-nar-full-month.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -100,6 +108,8 @@ scripts/check-calendar-nar-complete-fixture-set.mjs
 scripts/check-calendar-nar-fixture-operator.mjs
 scripts/check-calendar-nar-monthly-candidate-set.mjs
 scripts/check-calendar-nar-monthly-operator.mjs
+scripts/check-calendar-nar-full-month-parser.mjs
+scripts/check-calendar-nar-full-month-candidate-set.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
@@ -126,7 +136,11 @@ Next Work ID:
 WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, the bounded probe, the non-promotable adapter, all-fourteen compatibility review, fixture operator, and all-fourteen complete fixture set are complete. The monthly operator now classifies every flat-racing racecourse, writes no-meeting venues explicitly, and creates review-only monthly candidates. Scheduling and unattended candidate/canonical/public writes remain disabled.
+The 98-country programme, Calendar foundations, Japan A+ reconciliation, and the JRA A+ pilot are complete. NAR/local-government racing is the active pilot. Source architecture, bounded probe, candidate adapter, all-fourteen compatibility review, fixture operator, complete fixture set, and the first reviewed A+ promotion through 2026-07-04 are complete.
+
+The 2026-07-04 promotion is valid partial A+ data, not NAR monthly completion. The active NAR phase requires full July coverage from 2026-07-01 through 2026-07-31. The full-month collector uses the official monthly schedule grid to retain every scheduled racecourse/date and RaceList/DebaTable routes to add A+ detail when available. Future scheduled meetings remain explicit pending-detail records rather than omissions or no-meeting classifications. Scheduling and unattended candidate/canonical/public writes remain disabled.
+
+After NAR month-wide completion, Banei uses the same full July boundary under its separate parser and Work ID.
 
 ## Completed transition records
 

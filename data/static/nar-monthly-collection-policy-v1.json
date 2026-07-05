@@ -1,10 +1,13 @@
 {
   "schema_version": "nar-monthly-collection-policy-v1",
   "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
-  "status": "draft_contract",
-  "checked_at": "2026-07-04",
+  "status": "active_contract",
+  "checked_at": "2026-07-05",
   "scope": {
     "target_month": "2026-07",
+    "month_start": "2026-07-01",
+    "month_end": "2026-07-31",
+    "partial_cutoff_completion_allowed": false,
     "racecourses_checked": 14,
     "flat_racecourses": 14,
     "banei_excluded": true
@@ -15,24 +18,31 @@
     "fixture_directory": "data/fixtures/timetable/nar/complete-meetings",
     "minimum_fixture_count": 14
   },
+  "source_layers": {
+    "monthly_schedule_grid": "Defines every official racecourse/date pair for the full month.",
+    "race_list_and_deba_table": "Provide A+ timetable detail when official meeting detail is available."
+  },
   "classification": {
-    "meeting_complete": "Official RaceList and all corresponding DebaTable rows are complete for one venue-date.",
-    "no_meeting_in_target_month": "The selected month schedule has no meeting for the venue; this is not a failure.",
-    "meeting_incomplete": "A meeting exists, but race-number continuity or required A+ fields are incomplete.",
-    "source_unavailable": "The official source route cannot be fetched or returns an unexpected non-meeting error.",
-    "parser_failure": "The route is reachable but the collector cannot identify meeting structure safely."
+    "meeting_complete": "Official RaceList and required detail rows are complete for one venue-date.",
+    "scheduled_pending_details": "The full-month schedule contains the future meeting, but complete official detail is not available yet.",
+    "no_meeting_in_target_month": "The full selected month has no meeting for the venue; this is not a failure.",
+    "meeting_incomplete": "A past or current meeting exists, but race continuity or required A+ fields are incomplete.",
+    "source_unavailable": "A past or current official source route cannot be fetched safely.",
+    "parser_failure": "A past or current route is reachable but cannot be parsed safely."
   },
   "success_condition": {
+    "full_calendar_month_required": true,
     "all_fourteen_racecourses_classified": true,
-    "every_actual_meeting_is_complete_or_blocked": true,
+    "every_scheduled_meeting_has_explicit_state": true,
+    "future_detail_gaps_are_pending_not_omitted": true,
     "inactive_racecourses_are_recorded_as_no_meeting": true,
     "silent_omission_allowed": false,
     "publication_effect": "none"
   },
   "write_boundary": {
     "allowed_outputs": [
-      "data/generated/timetable/nar-monthly-collection-report.json",
-      "data/candidates/nar-monthly-meeting-candidates.json"
+      "data/candidates/nar-monthly-2026-07-full-month-candidates.json",
+      "data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json"
     ],
     "candidate_write": "needs_review_only",
     "canonical_write": "disabled",
@@ -44,7 +54,8 @@
     "candidate_review_status": "needs_review",
     "candidate_promotion_eligible": false,
     "human_review_required_before_canonical": true,
-    "complete_fixture_coverage_is_not_publication": true,
+    "partial_promotions_may_remain_valid": true,
+    "partial_promotions_do_not_complete_month": true,
     "monthly_collection_is_not_publication": true
   }
 }

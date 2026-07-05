@@ -2,28 +2,14 @@
 
 Status: active  
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Completed phases: source architecture; bounded fixture probe; candidate-only adapter; all-14 racecourse compatibility audit  
-Current phase: all-14 complete-meeting fixture collection  
-Next phase: selected-month all-meeting collection and candidate review  
-Next Work ID after completion: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-
-## Sequence
-
-1. source architecture — complete;
-2. bounded route probe — complete;
-3. public-safe test fixture — complete;
-4. non-promotable candidate adapter — complete;
-5. all-fourteen racecourse compatibility audit — complete;
-6. one complete meeting fixture for each of the fourteen flat-racing racecourses — current;
-7. selected-month collection of every actual meeting at every active flat-racing racecourse;
-8. candidate validation and review;
-9. reviewed canonical promotion;
-10. public projection and bilingual QA;
-11. freshness and rollback audit.
+Target month: 2026-07  
+Required boundary: 2026-07-01 through 2026-07-31 inclusive  
+Current phase: full-month schedule coverage and month-wide detail completion  
+Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ## Scope
 
-The flat-racing NAR scope is fourteen racecourses:
+The NAR flat-racing scope is fourteen racecourses:
 
 ```text
 Monbetsu, Morioka, Mizusawa, Urawa, Funabashi, Oi, Kawasaki,
@@ -32,32 +18,45 @@ Kanazawa, Kasamatsu, Nagoya, Sonoda, Himeji, Kochi, Saga
 
 Obihiro remains a separate Banei Work ID.
 
-Two single-race probes are not completion evidence. Every flat-racing racecourse requires at least one complete meeting fixture. After that compatibility coverage is complete, the selected-month collection must cover every actual meeting at every active racecourse.
+The reviewed A+ promotion through 2026-07-04 is valid partial data. It is not completion evidence for the NAR monthly Work ID. Completion requires the whole July calendar month.
 
-Mizusawa and Himeji have no meetings in July 2026. They still require seasonal 2026 fixtures and are not excluded from the fourteen-racecourse completion requirement.
+## Sequence
 
-## Current boundary
+1. source architecture — complete;
+2. route probe — complete;
+3. candidate adapter — complete;
+4. all-fourteen compatibility audit — complete;
+5. complete fixture coverage 14/14 — complete;
+6. first reviewed A+ promotion through 2026-07-04 — complete as partial month data;
+7. extract every July schedule date for all fourteen racecourses — current;
+8. retain future scheduled meetings whose detail is not available yet;
+9. add A+ detail as official RaceList and DebaTable data becomes available;
+10. review and promote the remaining July meetings;
+11. public projection and bilingual QA;
+12. freshness and rollback audit.
 
-The complete-fixture collector may write only reviewed fixture output and a diagnostic report. It must not write candidates, canonical meetings, public projections, or production runtime data.
+## Source layers
 
-Every complete fixture must contain continuous race numbers from 1 through the final race and the approved six fields for every row:
+Month-wide coverage must not depend only on RaceList links already exposed for near-term dates.
 
-- race label;
-- scheduled post time;
-- race name;
-- distance;
-- surface;
-- course label.
+The pipeline uses the official monthly schedule to establish every scheduled racecourse/date in July. RaceList and DebaTable provide A+ timetable detail when available.
+
+A future scheduled meeting with unavailable detail must remain an explicit pending meeting. It must not be classified as `no_meeting_in_target_month` and must not be silently omitted.
+
+Mizusawa and Himeji have no July 2026 meetings. They remain part of the fourteen-racecourse classification and are explicitly recorded as no-meeting venues.
 
 ## Completion conditions
 
-- route and venue-code compatibility is recorded for all fourteen racecourses;
-- complete-meeting fixture coverage reaches 14/14;
-- seasonal racecourses are not silently omitted;
-- the selected-month run checks all fourteen codes;
-- every actual meeting is complete or has an explicit blocker;
-- fixture fields stay inside the public boundary;
-- complete meetings have continuous race numbers and times;
+- exact window: 2026-07-01 through 2026-07-31;
+- all fourteen racecourses classified;
+- every official July meeting date represented;
+- future detail gaps recorded explicitly;
+- every past or current meeting A+ complete or explicitly blocked;
+- partial cutoff output never treated as monthly completion;
 - publication remains reviewed;
-- scheduling remains disabled;
+- unattended scheduled writes remain disabled;
 - bilingual QA and rollback evidence pass.
+
+## Banei handoff
+
+The following Banei Work ID uses the same full-month rule for July 2026. A partial cutoff or a one-meeting fixture is not Banei monthly completion. Banei detail parsing remains separate from flat-racing assumptions.
