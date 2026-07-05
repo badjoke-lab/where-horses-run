@@ -13,6 +13,8 @@ const authorityLoader = read('scripts/timetable/load-authority-source-inventory.
 const overrideBuilder = read('scripts/timetable/build-japan-a-plus-public-overrides.mjs');
 const operationsBuilder = read('scripts/timetable/build-operations-status.mjs');
 const operationsValidator = read('scripts/check-calendar-operations-status.mjs');
+const operationsReviewBuilder = read('scripts/timetable/build-operations-review-package.mjs');
+const operationsReviewValidator = read('scripts/check-calendar-operations-review-package.mjs');
 const readinessSupplement = read('data/static/calendar-readiness-nar-race-list-v1.json');
 const authoritySupplement = read('data/static/authority-source-inventory-nar-race-list-v1.json');
 const review = read('data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json');
@@ -33,6 +35,8 @@ const orderedCommands = [
   'check-japan-a-plus-public-overrides.mjs',
   'build-operations-status.mjs',
   'check-calendar-operations-status.mjs',
+  'build-operations-review-package.mjs',
+  'check-calendar-operations-review-package.mjs',
   "check-calendar-nar-reviewed-promotion.mjs', '--require-promoted",
   'check-calendar-runtime-import-boundary.mjs',
   "'run', 'build'",
@@ -53,6 +57,7 @@ for (const marker of [
   'data/generated/timetable/public/meeting-details.json',
   'data/generated/timetable/public/japan-a-plus-overrides.json',
   'data/generated/timetable/operations-status.json',
+  'data/generated/timetable/operations-review-package.json',
   'automation/nar-promote-',
   'Expected changed file missing',
   'All 16 reviewed meetings must be present in public details at A+.',
@@ -96,6 +101,12 @@ for (const marker of ['operations-status.json', '--reference-date']) {
 for (const marker of ['public meeting count differs from current public JSON', 'public detail count differs from current public JSON']) {
   if (!operationsValidator.includes(marker)) fail(`operations status validator missing ${marker}.`);
 }
+for (const marker of ['operations-review-package.json', 'operations_status_sha256', 'public_meeting_list_sha256']) {
+  if (!operationsReviewBuilder.includes(marker)) fail(`operations review package builder missing ${marker}.`);
+}
+for (const marker of ['review package check failed', 'JRA_CANDIDATE_DIGEST_RESOLUTION']) {
+  if (!operationsReviewValidator.includes(marker)) fail(`operations review package validator missing ${marker}.`);
+}
 for (const marker of ['"technical_rank": "A+"', '"public_ceiling": "A+"', '"readiness": "prototype_ready"', '"automation_mode": "semi_automatic"', '"racecourse_ids"']) {
   if (!readinessSupplement.includes(marker)) fail(`readiness supplement missing ${marker}.`);
 }
@@ -128,4 +139,5 @@ console.log('REVIEWED_MEETINGS: 16');
 console.log('SOURCE_SCOPE: nar-race-list-deba-table');
 console.log('LEGACY_NAR_MONTHLY_SOURCE_ACTIVATED: false');
 console.log('OPERATIONS_STATUS_SYNCHRONIZED: true');
+console.log('OPERATIONS_REVIEW_PACKAGE_SYNCHRONIZED: true');
 console.log('SCHEDULED_FETCH: disabled');
