@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const argv = process.argv.slice(2);
@@ -32,7 +33,7 @@ const thresholdOf = (classes) => {
 
 const referenceDate = asDate(valueOf('--reference-date') ?? process.env.WHR_CALENDAR_REFERENCE_DATE ?? new Date().toISOString().slice(0, 10), 'reference date');
 const outputPath = valueOf('--output') ?? 'data/generated/timetable/operations-status.json';
-const readiness = readJson('data/static/calendar-readiness-registry.json');
+const readiness = loadCalendarReadinessV1(root);
 const inventory = readJson('data/static/authority-source-inventory.json');
 const meetings = readJson('data/generated/timetable/public/meeting-list.json');
 const details = readJson('data/generated/timetable/public/meeting-details.json');
