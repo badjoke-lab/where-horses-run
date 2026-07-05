@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { loadCalendarReadinessV1 } from './timetable/load-calendar-readiness.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -9,7 +10,7 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 const statusPath = 'data/generated/timetable/operations-status.json';
 const status = parse(statusPath);
-const readiness = parse('data/static/calendar-readiness-registry.json');
+const readiness = loadCalendarReadinessV1(root);
 const candidate = parse('data/candidates/japan-jra-candidates.json');
 const publicMeetings = parse('data/generated/timetable/public/meeting-list.json');
 const publicDetails = parse('data/generated/timetable/public/meeting-details.json');
