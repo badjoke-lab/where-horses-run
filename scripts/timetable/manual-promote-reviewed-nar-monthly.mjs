@@ -7,6 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const approvedCandidatePath = 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json';
 const operationsStatusPath = 'data/generated/timetable/operations-status.json';
 const operationsReviewPackagePath = 'data/generated/timetable/operations-review-package.json';
+const jraPilotReviewPath = 'data/generated/timetable/jra-pilot-review.json';
 const generatedPaths = [
   approvedCandidatePath,
   'data/generated/timetable/canonical/meetings.json',
@@ -16,6 +17,7 @@ const generatedPaths = [
   'data/generated/timetable/public/japan-a-plus-overrides.json',
   operationsStatusPath,
   operationsReviewPackagePath,
+  jraPilotReviewPath,
 ];
 
 function fail(message) {
@@ -84,6 +86,8 @@ run(process.execPath, ['scripts/timetable/promote-approved-candidate-v1.mjs', '-
 run(process.execPath, ['scripts/timetable/build-public-timetable-view.mjs']);
 run(process.execPath, ['scripts/timetable/build-japan-a-plus-public-overrides.mjs']);
 run(process.execPath, ['scripts/check-japan-a-plus-public-overrides.mjs']);
+run(process.execPath, ['scripts/timetable/build-jra-pilot-review.mjs']);
+run(process.execPath, ['scripts/check-jra-pilot-foundation.mjs']);
 run(process.execPath, ['scripts/timetable/build-operations-status.mjs', '--reference-date', operationsReferenceDate]);
 run(process.execPath, ['scripts/check-calendar-operations-status.mjs']);
 run(process.execPath, ['scripts/timetable/build-operations-review-package.mjs']);
@@ -132,7 +136,7 @@ const body = [
   '- Canonical meetings promoted: 16',
   '- Canonical details promoted: 16',
   '- Public A+ meetings/details expected: 16',
-  '- Operations status and review package synchronized to the promoted public projection',
+  '- JRA pilot review plus operations status and review package synchronized to the promoted public projection',
   '- Source scope: nar-race-list-deba-table only',
   '- Legacy nar-monthly-convene-info source remains link_only',
   '- Banei remains outside this Work ID',
