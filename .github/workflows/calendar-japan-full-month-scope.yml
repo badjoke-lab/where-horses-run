@@ -1,0 +1,34 @@
+name: Calendar Japan full-month scope
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate launcher
+        run: sh -n collect-nar-full-month-manual
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/parse-nar-monthly-schedule-grid.mjs
+          node --check scripts/timetable/normalize-nar-full-month-schedule-fetch.mjs
+          node --check scripts/timetable/manual-collect-nar-full-month.mjs
+          node --check scripts/check-calendar-nar-full-month-parser.mjs
+          node --check scripts/check-calendar-nar-full-month-candidate-set.mjs
+          node --check scripts/check-calendar-nar-monthly-collection-policy.mjs
+      - name: Validate parser contract
+        run: node scripts/check-calendar-nar-full-month-parser.mjs
+      - name: Validate policy contract
+        run: node scripts/check-calendar-nar-monthly-collection-policy.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
