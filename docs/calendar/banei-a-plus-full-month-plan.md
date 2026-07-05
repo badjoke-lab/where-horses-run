@@ -13,7 +13,7 @@ The July scope must include every official Obihiro Banei meeting from 2026-07-01
 
 ## Separation from NAR flat racing
 
-Banei remains a separate Work ID and parser path. It must not inherit flat-racing assumptions for:
+Banei remains a separate Work ID and parser path. Banei detail parsing remains separate from the NAR flat-racing detail parser. It must not inherit flat-racing assumptions for:
 
 - surface;
 - course direction;
