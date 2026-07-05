@@ -10,6 +10,7 @@ on:
       - 'data/generated/timetable/public/meeting-details.json'
       - 'data/generated/timetable/public/japan-a-plus-overrides.json'
       - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
   push:
     branches:
       - main
@@ -21,6 +22,7 @@ on:
       - 'data/generated/timetable/public/meeting-details.json'
       - 'data/generated/timetable/public/japan-a-plus-overrides.json'
       - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -49,8 +51,10 @@ jobs:
         run: |
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
           node scripts/check-japan-a-plus-public-overrides.mjs
-      - name: Validate operations status synchronization
-        run: node scripts/check-calendar-operations-status.mjs
+      - name: Validate operations artifacts synchronization
+        run: |
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
       - name: Validate reviewed NAR canonical and public projection
         run: node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
       - name: Validate runtime boundary
@@ -64,7 +68,7 @@ jobs:
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
               case "$file" in
-                data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/operations-status.json) ;;
+                data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
                 *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
               esac
             done <<< "$changed"
