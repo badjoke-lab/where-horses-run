@@ -11,6 +11,8 @@ const validator = read('scripts/check-calendar-nar-reviewed-promotion.mjs');
 const readinessLoader = read('scripts/timetable/load-calendar-readiness.mjs');
 const authorityLoader = read('scripts/timetable/load-authority-source-inventory.mjs');
 const overrideBuilder = read('scripts/timetable/build-japan-a-plus-public-overrides.mjs');
+const operationsBuilder = read('scripts/timetable/build-operations-status.mjs');
+const operationsValidator = read('scripts/check-calendar-operations-status.mjs');
 const readinessSupplement = read('data/static/calendar-readiness-nar-race-list-v1.json');
 const authoritySupplement = read('data/static/authority-source-inventory-nar-race-list-v1.json');
 const review = read('data/reviews/nar-monthly-2026-07-through-2026-07-04-review.json');
@@ -29,6 +31,8 @@ const orderedCommands = [
   'build-public-timetable-view.mjs',
   'build-japan-a-plus-public-overrides.mjs',
   'check-japan-a-plus-public-overrides.mjs',
+  'build-operations-status.mjs',
+  'check-calendar-operations-status.mjs',
   "check-calendar-nar-reviewed-promotion.mjs', '--require-promoted",
   'check-calendar-runtime-import-boundary.mjs',
   "'run', 'build'",
@@ -48,6 +52,7 @@ for (const marker of [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
   'data/generated/timetable/public/japan-a-plus-overrides.json',
+  'data/generated/timetable/operations-status.json',
   'automation/nar-promote-',
   'Expected changed file missing',
   'All 16 reviewed meetings must be present in public details at A+.',
@@ -85,6 +90,12 @@ for (const marker of ['authority-source-inventory-nar-race-list-v1.json', 'suppl
 for (const marker of ['loadCalendarReadinessV1', 'resolveCalendarReadinessRegistryForProjection']) {
   if (!overrideBuilder.includes(marker)) fail(`Japan override builder missing reviewed readiness integration ${marker}.`);
 }
+for (const marker of ['loadCalendarReadinessV1', 'operations-status.json']) {
+  if (!operationsBuilder.includes(marker)) fail(`operations status builder missing ${marker}.`);
+}
+for (const marker of ['loadCalendarReadinessV1', 'public meeting count differs from current public JSON']) {
+  if (!operationsValidator.includes(marker)) fail(`operations status validator missing ${marker}.`);
+}
 for (const marker of ['"technical_rank": "A+"', '"public_ceiling": "A+"', '"readiness": "prototype_ready"', '"automation_mode": "semi_automatic"', '"racecourse_ids"']) {
   if (!readinessSupplement.includes(marker)) fail(`readiness supplement missing ${marker}.`);
 }
@@ -116,4 +127,5 @@ console.log('CALENDAR_NAR_REVIEWED_PROMOTION_OPERATOR: pass');
 console.log('REVIEWED_MEETINGS: 16');
 console.log('SOURCE_SCOPE: nar-race-list-deba-table');
 console.log('LEGACY_NAR_MONTHLY_SOURCE_ACTIVATED: false');
+console.log('OPERATIONS_STATUS_SYNCHRONIZED: true');
 console.log('SCHEDULED_FETCH: disabled');
