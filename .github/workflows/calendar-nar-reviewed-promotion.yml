@@ -7,9 +7,11 @@ on:
       - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
       - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
       - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/timetable/build-operations-status.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/check-calendar-operations-status.mjs'
       - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-reviewed-promotion-operator.mjs'
       - 'data/static/authority-source-inventory-nar-race-list-v1.json'
@@ -26,9 +28,11 @@ on:
       - 'scripts/timetable/manual-promote-reviewed-nar-monthly.mjs'
       - 'scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs'
       - 'scripts/timetable/build-japan-a-plus-public-overrides.mjs'
+      - 'scripts/timetable/build-operations-status.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/promote-approved-candidate-v1.mjs'
+      - 'scripts/check-calendar-operations-status.mjs'
       - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-reviewed-promotion-operator.mjs'
       - 'data/static/authority-source-inventory-nar-race-list-v1.json'
@@ -62,9 +66,11 @@ jobs:
           node --check scripts/timetable/manual-promote-reviewed-nar-monthly.mjs
           node --check scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs
           node --check scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node --check scripts/timetable/build-operations-status.mjs
           node --check scripts/timetable/load-authority-source-inventory.mjs
           node --check scripts/timetable/load-calendar-readiness.mjs
           node --check scripts/timetable/promote-approved-candidate-v1.mjs
+          node --check scripts/check-calendar-operations-status.mjs
           node --check scripts/check-calendar-nar-reviewed-promotion.mjs
           node --check scripts/check-calendar-nar-reviewed-promotion-operator.mjs
       - name: Validate reviewed promotion operator contract
