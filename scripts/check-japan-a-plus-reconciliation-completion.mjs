@@ -22,6 +22,7 @@ const profile = parse('data/static/country-profiles-v2-13-japan.json')[0];
 const sourceSummary = parse('docs/timetable-source-tests/13-japan/final-summary.json');
 const narControl = parse('data/static/local-racing-pilot-control-v2.json');
 const baneiControl = parse('data/static/banei-pilot-control.json');
+const canonicalDetails = parse('data/generated/timetable/canonical/meeting-details.json');
 const publicMeetings = parse('data/generated/timetable/public/meeting-list.json');
 const publicDetails = parse('data/generated/timetable/public/meeting-details.json');
 const scheduledWorkflow = read('.github/workflows/timetable-scheduled-refresh.yml');
@@ -135,10 +136,15 @@ for (const detail of julyJraDetails) {
   }
 }
 
-for (const authorityId of ['nar-local-government-racing', 'banei-tokachi']) {
-  if (publicDetails.details.some((detail) => detail.country_id === 'japan' && detail.authority_id === authorityId && detail.effective_public_rank === 'A+')) {
-    fail(`${authorityId} must remain pending pilot rather than public A+.`);
+const canonicalDetailById = new Map(canonicalDetails.details.map((detail) => [detail.meeting_id, detail]));
+for (const detail of publicDetails.details.filter((detail) => detail.country_id === 'japan' && detail.authority_id === 'nar-local-government-racing' && detail.effective_public_rank === 'A+')) {
+  const canonical = canonicalDetailById.get(detail.meeting_id);
+  if (canonical?.source_trace?.source_id !== 'nar-race-list-deba-table') {
+    fail(`${detail.meeting_id} NAR A+ is not backed by the reviewed RaceList/DebaTable source.`);
   }
+}
+if (publicDetails.details.some((detail) => detail.country_id === 'japan' && detail.authority_id === 'banei-tokachi' && detail.effective_public_rank === 'A+')) {
+  fail('banei-tokachi must remain pending pilot rather than public A+.');
 }
 
 for (const stale of [
