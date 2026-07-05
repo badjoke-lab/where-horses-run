@@ -5,7 +5,7 @@ Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 
 ## Purpose
 
-This command promotes the reviewed NAR monthly candidate batch through 2026-07-04 into canonical timetable datasets, rebuilds the deterministic public projection, synchronizes the Japan A+ runtime override file plus operations status and review package snapshots, validates the reviewed sixteen-meeting set, builds the site, and opens a review PR.
+This command promotes the reviewed NAR monthly candidate batch through 2026-07-04 into canonical timetable datasets, rebuilds the deterministic public projection, synchronizes the Japan A+ runtime override file plus JRA pilot review, operations status, and operations review package snapshots, validates the reviewed sixteen-meeting set, builds the site, and opens a review PR.
 
 The command is pinned to the reviewed batch. A later cutoff requires a new monthly collection and review decision before promotion.
 
@@ -38,6 +38,7 @@ data/generated/timetable/canonical/meeting-details.json
 data/generated/timetable/public/meeting-list.json
 data/generated/timetable/public/meeting-details.json
 data/generated/timetable/public/japan-a-plus-overrides.json
+data/generated/timetable/jra-pilot-review.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 ```
@@ -46,7 +47,7 @@ Any other changed path aborts the operator before push.
 
 ## Validation sequence
 
-The operator validates the merged monthly candidate set and pinned review decision, generates the approved standard candidate bundle, promotes it to canonical datasets, rebuilds public projection data, synchronizes Japan A+ runtime overrides, rebuilds operations status while preserving its existing `as_of_date`, rebuilds the operations review package from the synchronized status and public projection digests, verifies both operations artifacts, verifies all sixteen reviewed meetings at canonical and public A+, checks the production runtime import boundary, and builds the static site.
+The operator validates the merged monthly candidate set and pinned review decision, generates the approved standard candidate bundle, promotes it to canonical datasets, rebuilds public projection data, synchronizes Japan A+ runtime overrides, rebuilds the JRA pilot review from the synchronized public projection digests and counts, rebuilds operations status while preserving its existing `as_of_date`, rebuilds the operations review package from the synchronized status and public projection digests, verifies all derived review artifacts, verifies all sixteen reviewed meetings at canonical and public A+, checks the production runtime import boundary, and builds the static site.
 
 The generated PR remains a separate review gate. The NAR batch is not considered published until that PR is reviewed and merged and deployment validation succeeds.
 

@@ -11,6 +11,8 @@ const validator = read('scripts/check-calendar-nar-reviewed-promotion.mjs');
 const readinessLoader = read('scripts/timetable/load-calendar-readiness.mjs');
 const authorityLoader = read('scripts/timetable/load-authority-source-inventory.mjs');
 const overrideBuilder = read('scripts/timetable/build-japan-a-plus-public-overrides.mjs');
+const jraPilotReviewBuilder = read('scripts/timetable/build-jra-pilot-review.mjs');
+const jraPilotReviewValidator = read('scripts/check-jra-pilot-foundation.mjs');
 const operationsBuilder = read('scripts/timetable/build-operations-status.mjs');
 const operationsValidator = read('scripts/check-calendar-operations-status.mjs');
 const operationsReviewBuilder = read('scripts/timetable/build-operations-review-package.mjs');
@@ -33,6 +35,8 @@ const orderedCommands = [
   'build-public-timetable-view.mjs',
   'build-japan-a-plus-public-overrides.mjs',
   'check-japan-a-plus-public-overrides.mjs',
+  'build-jra-pilot-review.mjs',
+  'check-jra-pilot-foundation.mjs',
   'build-operations-status.mjs',
   'check-calendar-operations-status.mjs',
   'build-operations-review-package.mjs',
@@ -56,6 +60,7 @@ for (const marker of [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
   'data/generated/timetable/public/japan-a-plus-overrides.json',
+  'data/generated/timetable/jra-pilot-review.json',
   'data/generated/timetable/operations-status.json',
   'data/generated/timetable/operations-review-package.json',
   'automation/nar-promote-',
@@ -94,6 +99,12 @@ for (const marker of ['authority-source-inventory-nar-race-list-v1.json', 'suppl
 }
 for (const marker of ['loadCalendarReadinessV1', 'resolveCalendarReadinessRegistryForProjection']) {
   if (!overrideBuilder.includes(marker)) fail(`Japan override builder missing reviewed readiness integration ${marker}.`);
+}
+for (const marker of ['jra-pilot-review.json', 'public_meeting_list_sha256', 'public_meeting_details_sha256']) {
+  if (!jraPilotReviewBuilder.includes(marker)) fail(`JRA pilot review builder missing ${marker}.`);
+}
+for (const marker of ['JRA pilot review check failed', 'public projection meeting count is invalid', 'public projection detail count is invalid']) {
+  if (!jraPilotReviewValidator.includes(marker)) fail(`JRA pilot review validator missing ${marker}.`);
 }
 for (const marker of ['operations-status.json', '--reference-date']) {
   if (!operationsBuilder.includes(marker)) fail(`operations status builder missing ${marker}.`);
@@ -138,6 +149,7 @@ console.log('CALENDAR_NAR_REVIEWED_PROMOTION_OPERATOR: pass');
 console.log('REVIEWED_MEETINGS: 16');
 console.log('SOURCE_SCOPE: nar-race-list-deba-table');
 console.log('LEGACY_NAR_MONTHLY_SOURCE_ACTIVATED: false');
+console.log('JRA_PILOT_REVIEW_SYNCHRONIZED: true');
 console.log('OPERATIONS_STATUS_SYNCHRONIZED: true');
 console.log('OPERATIONS_REVIEW_PACKAGE_SYNCHRONIZED: true');
 console.log('SCHEDULED_FETCH: disabled');
