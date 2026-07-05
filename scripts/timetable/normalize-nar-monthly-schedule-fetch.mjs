@@ -1,27 +1,66 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseNarMonthlyScheduleGrid } from './parse-nar-monthly-schedule-grid.mjs';
 
 const nativeFetch = globalThis.fetch;
 const root = process.cwd();
 const reportPath = path.join(root, 'data/generated/timetable/nar-monthly-collection-report.json');
 const matrixPath = path.join(root, 'data/static/nar-flat-racecourse-compatibility-v1.json');
 const matrix = JSON.parse(fs.readFileSync(matrixPath, 'utf8'));
-let scheduledMeetings = [];
+const flatVenueCodes = new Set(matrix.records.map((record) => record.venue_code));
+let scheduleMeetingLinks = [];
 
-function decodeScheduleBody(buffer) {
-  const tokens = ['月別開催日程', '門別', '盛岡', '浦和', '船橋', '大井', '川崎', '金沢', '笠松', '名古屋', '園田', '高知', '佐賀'];
-  return ['utf-8', 'shift_jis']
-    .map((encoding) => {
+function decodeEntitiesDeep(value) {
+  let current = String(value ?? '');
+  for (let i = 0; i < 3; i += 1) {
+    const next = current
+      .replace(/&amp;/gi, '&')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;|&apos;/gi, "'")
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>');
+    if (next === current) break;
+    current = next;
+  }
+  return current;
+}
+
+function queryValueCaseInsensitive(url, key) {
+  const target = key.toLowerCase();
+  for (const [name, value] of url.searchParams.entries()) {
+    if (name.toLowerCase() === target) return value;
+  }
+  return null;
+}
+
+function extractRaceListLiterals(rawHtml) {
+  const candidates = new Set();
+  const patterns = [
+    /(?:https?:\/\/www\.keiba\.go\.jp)?\/KeibaWeb\/TodayRaceInfo\/RaceList\?[^"'<>\s]+/gi,
+    /(?:\.\.\/|\.\/|\/)?TodayRaceInfo\/RaceList\?[^"'<>\s]+/gi,
+    /["']([^"']*RaceList\?[^"']+)["']/gi,
+  ];
+
+  for (const pattern of patterns) {
+    for (const match of rawHtml.matchAll(pattern)) {
+      const literal = decodeEntitiesDeep(match[1] ?? match[0]);
       try {
-        const body = new TextDecoder(encoding).decode(buffer);
-        const score = tokens.reduce((sum, token) => sum + body.split(token).length - 1, 0);
-        return { encoding, body, score };
+        const url = new URL(literal, 'https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/');
+        if (!/\/TodayRaceInfo\/RaceList$/i.test(url.pathname)) continue;
+        const venueCode = queryValueCaseInsensitive(url, 'k_babaCode')?.padStart(2, '0');
+        const rawDate = queryValueCaseInsensitive(url, 'k_raceDate');
+        if (!venueCode || !rawDate || !flatVenueCodes.has(venueCode)) continue;
+        const date = rawDate.replaceAll('/', '-');
+        const canonical = new URL('https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList');
+        canonical.searchParams.set('k_babaCode', venueCode);
+        canonical.searchParams.set('k_raceDate', date.replaceAll('-', '/'));
+        candidates.add(canonical.toString());
       } catch {
-        return { encoding, body: '', score: -1 };
+        // Ignore malformed literals; the collector validates the canonicalized set.
       }
-    })
-    .sort((a, b) => b.score - a.score)[0];
+    }
+  }
+
+  return [...candidates].sort();
 }
 
 function requestedBoundary(argv) {
@@ -36,14 +75,11 @@ function requestedBoundary(argv) {
   return { month, throughDate };
 }
 
+function linkDate(url) {
+  return new URL(url).searchParams.get('k_raceDate')?.replaceAll('/', '-') ?? null;
+}
+
 const boundary = requestedBoundary(process.argv.slice(2));
-const venueScope = matrix.records.map((record) => ({
-  venue_code: record.venue_code,
-  racecourse_id: record.racecourse_id,
-  name_en: record.name_en,
-  name_ja: record.name_ja,
-  schedule_aliases: record.name_ja === '大井' ? ['大井'] : [],
-}));
 
 globalThis.fetch = async (input, init) => {
   const response = await nativeFetch(input, init);
@@ -51,15 +87,16 @@ globalThis.fetch = async (input, init) => {
   if (!requestUrl.includes('/MonthlyConveneInfo/MonthlyConveneInfoTop')) return response;
 
   const body = Buffer.from(await response.arrayBuffer());
-  const decoded = decodeScheduleBody(body);
-  const parsed = parseNarMonthlyScheduleGrid({ html: decoded.body, month: boundary.month, venues: venueScope });
-  scheduledMeetings = parsed.records
-    .flatMap((record) => record.meetings.map((meeting) => ({ ...meeting, venue_code: record.venue_code, racecourse_id: record.racecourse_id })))
-    .filter((meeting) => !boundary.throughDate || meeting.date <= boundary.throughDate)
-    .sort((a, b) => a.venue_code.localeCompare(b.venue_code) || a.date.localeCompare(b.date));
+  const rawHtml = body.toString('latin1');
+  scheduleMeetingLinks = extractRaceListLiterals(rawHtml)
+    .filter((url) => {
+      const date = linkDate(url);
+      if (!date || !date.startsWith(boundary.month)) return false;
+      return !boundary.throughDate || date <= boundary.throughDate;
+    });
 
-  const syntheticAnchors = scheduledMeetings
-    .map((meeting) => `<a href="${meeting.race_list_url.replaceAll('&', '&amp;')}"></a>`)
+  const syntheticAnchors = scheduleMeetingLinks
+    .map((url) => `<a href="${url.replaceAll('&', '&amp;')}"></a>`)
     .join('\n');
   const normalizedBody = Buffer.from(`<html><body>\n${syntheticAnchors}\n</body></html>\n`, 'utf8');
   const normalizedArrayBuffer = normalizedBody.buffer.slice(
@@ -79,10 +116,10 @@ await import('./collect-nar-monthly-candidates.mjs');
 
 if (!fs.existsSync(reportPath)) throw new Error('NAR monthly collection report was not written.');
 const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
-if (scheduledMeetings.length === 0) {
-  throw new Error('Monthly schedule parser discovered zero in-scope meetings.');
+if (scheduleMeetingLinks.length > 0 && report.meetings_discovered === 0) {
+  throw new Error(`Monthly schedule contains ${scheduleMeetingLinks.length} in-scope RaceList links inside the requested boundary, but collector discovered zero meetings.`);
 }
-if (report.meetings_scheduled !== scheduledMeetings.length) {
-  throw new Error(`Monthly schedule count mismatch: schedule=${scheduledMeetings.length} report=${report.meetings_scheduled}.`);
+if (report.meetings_discovered !== scheduleMeetingLinks.length) {
+  throw new Error(`Monthly schedule link count mismatch: normalized=${scheduleMeetingLinks.length} collector=${report.meetings_discovered}.`);
 }
-console.log(`[nar-monthly] full-month scheduled meetings in scope: ${scheduledMeetings.length}`);
+console.log(`[nar-monthly] normalized in-scope schedule RaceList links: ${scheduleMeetingLinks.length}`);
