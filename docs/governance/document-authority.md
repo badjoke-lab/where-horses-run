@@ -50,6 +50,7 @@ Calendar human-readable contracts:
 - `docs/calendar/calendar-readiness-contract.md`
 - `docs/calendar/machine-readable-contracts.md`
 - `docs/calendar/incremental-coverage-contract.md`
+- `docs/calendar/coverage-observation-schema.md`
 - `docs/calendar/implementation-roadmap.md`
 - `docs/calendar/japan-full-month-scope-policy.md`
 - `docs/calendar/nar-a-plus-pilot-plan.md`
@@ -78,6 +79,7 @@ Calendar machine-readable contracts:
 - `data/static/source-test-v2.schema.json`
 - `data/static/calendar-readiness.schema.json`
 - `data/static/calendar-readiness-registry.json`
+- `data/static/calendar-coverage-observation.schema.json`
 - `data/static/authority-source-inventory.schema.json`
 - `data/static/authority-source-inventory.json`
 - `data/static/timetable-candidate-v1.schema.json`
@@ -97,6 +99,8 @@ Calendar machine-readable contracts:
 - `data/generated/timetable/jra-planned-program-review.json`
 - `data/generated/timetable/local-racing-pilot-review.json`
 - `data/archive/timetable/candidates/japan-nar-candidates.v0.json`
+- `scripts/timetable/coverage-observation-validation.mjs`
+- `scripts/check-calendar-coverage-observation-schema.mjs`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
 - `scripts/check-calendar-pipeline-v1-release-gate.mjs`
@@ -112,8 +116,6 @@ Calendar machine-readable contracts:
 - `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
-A future shared Coverage Observation schema and validator become canonical machine-readable contracts when implemented under the incremental coverage sequence.
-
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
 
 ## Required PR discipline
@@ -122,7 +124,7 @@ Before work begins:
 
 1. assign or confirm the stable Work ID;
 2. read the applicable canonical documents;
-3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`;
+3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md` and the applicable machine-readable contract;
 4. confirm tracker or registry state;
 5. record whether Cloudflare is required.
 
