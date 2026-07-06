@@ -3,49 +3,52 @@
 Status: active entry point  
 Last reviewed: 2026-07-06
 
-Read documents in this order:
+## Required reading
 
-1. [`docs/governance/document-authority.md`](docs/governance/document-authority.md)
-2. [`docs/project-roadmap.md`](docs/project-roadmap.md)
-3. [`docs/operations/deployment-and-ci-policy.md`](docs/operations/deployment-and-ci-policy.md)
+1. `docs/governance/document-authority.md`
+2. `docs/project-roadmap.md`
+3. `docs/operations/deployment-and-ci-policy.md`
 
 Country-page programme:
 
-4. [`docs/country-pages/programme-roadmap.md`](docs/country-pages/programme-roadmap.md)
-5. [`docs/country-pages/completion-contract.md`](docs/country-pages/completion-contract.md)
-6. [`docs/country-pages/98-country-tracker.tsv`](docs/country-pages/98-country-tracker.tsv)
-7. [`docs/runbooks/final-country-calendar-audit-98.md`](docs/runbooks/final-country-calendar-audit-98.md)
+```text
+docs/country-pages/programme-roadmap.md
+docs/country-pages/completion-contract.md
+docs/country-pages/98-country-tracker.tsv
+docs/runbooks/final-country-calendar-audit-98.md
+```
 
 Calendar work:
 
-4. [`docs/calendar/README.md`](docs/calendar/README.md)
-5. [`docs/calendar/source-test-v2-contract.md`](docs/calendar/source-test-v2-contract.md)
-6. [`docs/calendar/calendar-readiness-contract.md`](docs/calendar/calendar-readiness-contract.md)
-7. [`docs/calendar/machine-readable-contracts.md`](docs/calendar/machine-readable-contracts.md)
-8. [`docs/calendar/incremental-coverage-contract.md`](docs/calendar/incremental-coverage-contract.md)
-9. [`docs/calendar/coverage-observation-schema.md`](docs/calendar/coverage-observation-schema.md)
-10. [`docs/calendar/implementation-roadmap.md`](docs/calendar/implementation-roadmap.md)
-11. [`docs/calendar/japan-a-plus-reconciliation-plan.md`](docs/calendar/japan-a-plus-reconciliation-plan.md)
-12. [`docs/calendar/japan-full-month-scope-policy.md`](docs/calendar/japan-full-month-scope-policy.md)
-13. [`docs/calendar/jra-a-plus-pilot-completion.md`](docs/calendar/jra-a-plus-pilot-completion.md)
-14. [`docs/calendar/nar-a-plus-pilot-plan.md`](docs/calendar/nar-a-plus-pilot-plan.md)
-15. [`docs/calendar/nar-a-plus-source-architecture.md`](docs/calendar/nar-a-plus-source-architecture.md)
-16. [`docs/calendar/nar-fixture-probe.md`](docs/calendar/nar-fixture-probe.md)
-17. [`docs/calendar/nar-candidate-adapter.md`](docs/calendar/nar-candidate-adapter.md)
-18. [`docs/calendar/nar-14-racecourse-compatibility-audit.md`](docs/calendar/nar-14-racecourse-compatibility-audit.md)
-19. [`docs/calendar/manual-nar-fixture-collection.md`](docs/calendar/manual-nar-fixture-collection.md)
-20. [`docs/calendar/nar-monthly-collection-contract.md`](docs/calendar/nar-monthly-collection-contract.md)
-21. [`docs/calendar/manual-nar-monthly-collection.md`](docs/calendar/manual-nar-monthly-collection.md)
-22. [`docs/calendar/banei-a-plus-full-month-plan.md`](docs/calendar/banei-a-plus-full-month-plan.md)
-23. [`docs/calendar/current-baseline-audit.md`](docs/calendar/current-baseline-audit.md)
-24. [`docs/calendar/baseline-reconciliation-map.md`](docs/calendar/baseline-reconciliation-map.md)
-25. [`docs/calendar/pipeline-v1-release-gate.md`](docs/calendar/pipeline-v1-release-gate.md)
-26. [`docs/calendar/dynamic-dates-release-gate.md`](docs/calendar/dynamic-dates-release-gate.md)
-27. [`docs/calendar/operations-v1-release-gate.md`](docs/calendar/operations-v1-release-gate.md)
+```text
+docs/calendar/README.md
+docs/calendar/source-test-v2-contract.md
+docs/calendar/calendar-readiness-contract.md
+docs/calendar/machine-readable-contracts.md
+docs/calendar/incremental-coverage-contract.md
+docs/calendar/coverage-observation-schema.md
+docs/calendar/validation-responsibility-contract.md
+docs/calendar/implementation-roadmap.md
+docs/calendar/japan-a-plus-reconciliation-plan.md
+docs/calendar/japan-full-month-scope-policy.md
+docs/calendar/jra-a-plus-pilot-completion.md
+docs/calendar/nar-a-plus-pilot-plan.md
+docs/calendar/nar-a-plus-source-architecture.md
+docs/calendar/nar-fixture-probe.md
+docs/calendar/nar-candidate-adapter.md
+docs/calendar/nar-14-racecourse-compatibility-audit.md
+docs/calendar/manual-nar-fixture-collection.md
+docs/calendar/nar-monthly-collection-contract.md
+docs/calendar/manual-nar-monthly-collection.md
+docs/calendar/banei-a-plus-full-month-plan.md
+docs/calendar/current-baseline-audit.md
+docs/calendar/baseline-reconciliation-map.md
+docs/calendar/pipeline-v1-release-gate.md
+docs/calendar/dynamic-dates-release-gate.md
+docs/calendar/operations-v1-release-gate.md
+```
 
-## Active Calendar architecture rule
-
-All later Calendar work must use the cross-system model:
+## Active Calendar model
 
 ```text
 Meeting / Schedule Layer
@@ -55,23 +58,28 @@ Timetable Detail Layer
 Coverage Observation
 ```
 
-Normal maintenance rules:
+Validation roles:
 
-- operator runs may occur at irregular times;
-- date windows may vary and overlap;
-- selected-meeting retries are allowed;
-- a source may expose only part of the requested future range;
-- valid partial batches may be reviewed and promoted;
-- a meeting may enter at C, B, B+, A, or A+ according to reviewed evidence;
+```text
+Batch Validation
+Promotion Validation
+Coverage Audit
+Completion Audit
+```
+
+Rules:
+
+- operator runs may be irregular;
+- windows may vary, overlap, cross month boundaries, or target selected meetings;
+- shorter source horizons and valid partial batches are allowed;
+- meetings may enter at C, B, B+, A, or A+ according to reviewed evidence;
 - absence from one run is not deletion or cancellation;
-- a later lower-detail observation must not automatically regress a higher reviewed rank;
-- coverage and completion claims are separate from batch and promotion validation.
+- later lower-detail observation does not automatically regress higher reviewed rank;
+- normal promotion rejects rank regression;
+- corrective downgrade is a separate explicit reviewed path;
+- month/season completeness belongs only to explicit Completion Audit.
 
-A full-month or season-wide requirement applies only to an explicit completion audit for that defined scope.
-
-## Machine-readable Calendar files
-
-Core shared files:
+## Core machine-readable Calendar files
 
 ```text
 data/static/authority-source-inventory.json
@@ -81,6 +89,7 @@ data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 data/static/calendar-readiness-japan-v2.json
 data/static/calendar-coverage-observation.schema.json
+data/static/calendar-validation-responsibilities-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/japan-a-plus-policy.json
 data/static/japan-a-plus-runtime-control.json
@@ -97,7 +106,9 @@ data/static/calendar-operations-seasonal-policy.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 scripts/timetable/coverage-observation-validation.mjs
+scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
+scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -108,7 +119,7 @@ scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
-Active and historical NAR-specific files, audits, and tooling include:
+## NAR references
 
 ```text
 data/static/nar-source-route-architecture-v1.json
@@ -152,9 +163,11 @@ scripts/check-calendar-nar-full-month-parser.mjs
 scripts/check-calendar-nar-full-month-candidate-set.mjs
 ```
 
-The July full-month NAR candidate/report pair is generated by its operator and serves a bounded completion-audit role. It is not the common normal-update contract.
+The July full-month NAR path is a bounded Completion Audit, not the ordinary update contract.
 
-## Completed implementation Work IDs
+## Current work
+
+Completed implementation Work IDs:
 
 ```text
 WHR-CAL-PIPELINE-V1
@@ -177,48 +190,36 @@ Next Work ID:
 WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
-## Current position
+Completed NAR/shared prerequisite work:
 
-The 98-country programme, Calendar foundations, Japan A+ reconciliation, and JRA A+ pilot are complete.
-
-NAR/local-government racing is the active pilot. Completed NAR and shared prerequisite work includes:
-
-- source architecture;
-- bounded route probe;
-- candidate adapter;
-- all-fourteen compatibility review;
+- NAR source architecture and bounded probe;
+- candidate adapter and 14-racecourse compatibility;
 - 14/14 complete fixture set;
 - first reviewed A+ promotion through 2026-07-04;
-- July full-month schedule collector and bounded audit path;
-- full-month candidate PR validation;
-- cross-system incremental coverage contract;
-- Coverage Observation schema and validator foundation.
+- July bounded completion-audit tooling;
+- incremental coverage contract;
+- Coverage Observation schema and validator;
+- Batch / Promotion / Coverage / Completion responsibility split;
+- normal promotion rank-regression guard;
+- explicit corrective-downgrade boundary.
 
-The first reviewed NAR promotion is valid partial A+ data. It is not reverted and does not have to wait for July completion.
+Active sequence:
 
-Before collecting the next NAR data batch, the active sequence is:
+1. refactor NAR ordinary collection away from fixed July completion gating;
+2. support arbitrary and overlapping windows plus selected-meeting retries;
+3. emit Coverage Observation and explicit retry targets;
+4. collect, review, and promote the next source-visible NAR batch;
+5. run July Completion Audit only when claiming July coverage complete;
+6. complete freshness, rollback, public projection, and bilingual QA;
+7. hand off to Banei under the same common contract with Banei-specific parsing.
 
-1. split batch, promotion, coverage, and completion validation responsibilities;
-2. refactor NAR ordinary collection away from the fixed July completion gate;
-3. support arbitrary and overlapping windows plus selected-meeting retries;
-4. emit Coverage Observation and explicit retry-target outputs from the ordinary operator path;
-5. collect, review, and promote the next valid source-visible NAR batch;
-6. run July completion audit only when claiming July coverage complete;
-7. complete public projection, freshness, rollback, and bilingual QA.
-
-After the shared contract and NAR implementation are complete, Banei uses the same incremental operating contract with Banei-specific parsing and terminology. Banei's July full-month requirement is likewise a separate completion audit, not an ordinary promotion gate.
-
-## Completed transition records
+## Historical transition markers
 
 > Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 > Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
 
 > Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 > Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-
-## Superseded transition record
-
-The following labels record the state closed when the earlier local-racing C pilot was superseded. They are historical compatibility markers, not the active Current or Next Work IDs.
 
 Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`
 
