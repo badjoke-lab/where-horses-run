@@ -1,0 +1,53 @@
+name: Calendar Banei full month
+
+on:
+  pull_request:
+    paths:
+      - 'collect-banei-full-month-manual'
+      - 'scripts/timetable/collect-banei-full-month-calendar.mjs'
+      - 'scripts/timetable/manual-collect-banei-full-month.mjs'
+      - 'scripts/check-calendar-banei-full-month-candidate-set.mjs'
+      - 'data/static/banei-pilot-control.json'
+      - 'docs/calendar/banei-a-plus-full-month-plan.md'
+      - '.github/workflows/calendar-banei-full-month.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'collect-banei-full-month-manual'
+      - 'scripts/timetable/collect-banei-full-month-calendar.mjs'
+      - 'scripts/timetable/manual-collect-banei-full-month.mjs'
+      - 'scripts/check-calendar-banei-full-month-candidate-set.mjs'
+      - 'data/static/banei-pilot-control.json'
+      - 'docs/calendar/banei-a-plus-full-month-plan.md'
+      - '.github/workflows/calendar-banei-full-month.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate launcher
+        run: sh -n collect-banei-full-month-manual
+      - name: Validate Node syntax
+        run: |
+          node --check scripts/timetable/collect-banei-full-month-calendar.mjs
+          node --check scripts/timetable/manual-collect-banei-full-month.mjs
+          node --check scripts/check-calendar-banei-full-month-candidate-set.mjs
+      - name: Validate empty generated state
+        run: node scripts/check-calendar-banei-full-month-candidate-set.mjs --allow-empty
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Confirm manual-only boundary
+        run: |
+          ! grep -R -E '^\s*(schedule:|- cron:)' .github/workflows/calendar-banei-full-month.yml
+          grep -F '2026-07-01' data/static/banei-pilot-control.json
+          grep -F '2026-07-31' data/static/banei-pilot-control.json
+          grep -F 'partial_cutoff_completion_allowed' data/static/banei-pilot-control.json
+          echo 'Banei full-month collection remains operator-triggered and review-only.'
