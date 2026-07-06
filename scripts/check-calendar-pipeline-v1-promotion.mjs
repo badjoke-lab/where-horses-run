@@ -1,7 +1,12 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { promoteApprovedCandidateV1, promotionTargetV1 } from './timetable/pipeline-v1/promotion-core.mjs';
+import {
+  correctiveDowngradeReasonsV1,
+  promoteApprovedCandidateV1,
+  promotionModesV1,
+  promotionTargetV1,
+} from './timetable/pipeline-v1/promotion-core.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -25,6 +30,7 @@ function expectThrow(label, action, marker) {
 const sample = parse('data/candidates/pipeline-v1.sample.json');
 const authorityInventory = parse('data/static/authority-source-inventory.json');
 const readinessRegistry = parse('data/static/calendar-readiness-registry.json');
+const responsibilityMap = parse('data/static/calendar-validation-responsibilities-v1.json');
 const publicPaths = [
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json'
@@ -73,6 +79,9 @@ if (first) {
   if (first.meetingsDataset.meetings.length !== 1) fail('valid promotion must create one canonical meeting');
   if (first.detailsDataset.details.length !== 1) fail('valid A+ promotion must create one canonical detail');
   if (first.summary.public_projection_written !== false) fail('promotion summary must state public projection was not written');
+  if (first.summary.promotion_mode !== 'normal') fail('ordinary promotion must report normal mode');
+  if (first.summary.downgrade_reason !== null) fail('ordinary promotion must not report downgrade reason');
+  if (first.summary.downgraded_meeting_ids.length !== 0) fail('ordinary promotion must not report downgrade IDs');
   if (first.meetingsDataset.generated_at !== approved.review.reviewed_at) fail('canonical generated_at must equal reviewed_at');
   if (!first.meetingsDataset.input_sources.includes(baseArgs.inputPath)) fail('canonical input_sources must include candidate path');
   const meeting = first.meetingsDataset.meetings[0];
@@ -101,18 +110,58 @@ if (first) {
   lowerRank.records[0].first_race_time_local = '12:45';
   lowerRank.records[0].last_race_time_local = null;
   lowerRank.records[0].timetable_rows = [];
+
+  expectThrow('normal rank regression', () => promoteApprovedCandidateV1({
+    ...baseArgs,
+    candidate: lowerRank,
+    meetingsDataset: first.meetingsDataset,
+    detailsDataset: first.detailsDataset
+  }), 'not allowed in normal promotion');
+
   try {
-    const lowered = promoteApprovedCandidateV1({
+    const corrected = promoteApprovedCandidateV1({
       ...baseArgs,
       candidate: lowerRank,
       meetingsDataset: first.meetingsDataset,
-      detailsDataset: first.detailsDataset
+      detailsDataset: first.detailsDataset,
+      promotionMode: 'corrective_downgrade',
+      downgradeReason: 'official_correction'
     });
-    if (lowered.detailsDataset.details.length !== 0) fail('lower-rank promotion must remove stale A/A+ canonical detail');
-    if (!lowered.summary.removed_detail_ids.includes(lowerRank.records[0].meeting_id)) fail('removed detail must be reported');
+    if (corrected.meetingsDataset.meetings[0].capability_rank !== 'B') fail('corrective downgrade did not update canonical rank');
+    if (corrected.detailsDataset.details.length !== 0) fail('corrective lower-rank promotion must remove stale A/A+ detail');
+    if (!corrected.summary.removed_detail_ids.includes(lowerRank.records[0].meeting_id)) fail('corrective downgrade must report removed detail');
+    if (!corrected.summary.downgraded_meeting_ids.includes(lowerRank.records[0].meeting_id)) fail('corrective downgrade must report downgraded meeting');
+    if (corrected.summary.promotion_mode !== 'corrective_downgrade') fail('corrective mode not reported');
+    if (corrected.summary.downgrade_reason !== 'official_correction') fail('corrective reason not reported');
+    if (corrected.summary.public_projection_written !== false) fail('corrective downgrade must remain canonical-only');
   } catch (error) {
-    fail(`reviewed lower-rank promotion failed: ${error instanceof Error ? error.message : error}`);
+    fail(`explicit corrective downgrade failed: ${error instanceof Error ? error.message : error}`);
   }
+
+  expectThrow('corrective downgrade missing reason', () => promoteApprovedCandidateV1({
+    ...baseArgs,
+    candidate: lowerRank,
+    meetingsDataset: first.meetingsDataset,
+    detailsDataset: first.detailsDataset,
+    promotionMode: 'corrective_downgrade'
+  }), 'requires an allowed downgrade reason');
+
+  expectThrow('corrective downgrade invalid reason', () => promoteApprovedCandidateV1({
+    ...baseArgs,
+    candidate: lowerRank,
+    meetingsDataset: first.meetingsDataset,
+    detailsDataset: first.detailsDataset,
+    promotionMode: 'corrective_downgrade',
+    downgradeReason: 'routine_refresh'
+  }), 'requires an allowed downgrade reason');
+
+  expectThrow('corrective mode without actual regression', () => promoteApprovedCandidateV1({
+    ...baseArgs,
+    meetingsDataset: first.meetingsDataset,
+    detailsDataset: first.detailsDataset,
+    promotionMode: 'corrective_downgrade',
+    downgradeReason: 'official_correction'
+  }), 'requires at least one actual rank regression');
 }
 
 expectThrow('needs-review envelope', () => promoteApprovedCandidateV1({ ...baseArgs, candidate: sample }), 'not approved');
@@ -183,12 +232,18 @@ identityCollisionMeetings.meetings.push({
 });
 expectThrow('meeting identity collision', () => promoteApprovedCandidateV1({ ...baseArgs, meetingsDataset: identityCollisionMeetings }), 'identity collision');
 
+if (JSON.stringify(promotionModesV1) !== JSON.stringify(['normal', 'corrective_downgrade'])) fail('promotion modes differ from contract');
+if (JSON.stringify(correctiveDowngradeReasonsV1) !== JSON.stringify(responsibilityMap.promotion_policy.allowed_corrective_reasons)) fail('corrective downgrade reasons differ from responsibility map');
+if (responsibilityMap.promotion_policy.normal_rank_regression_allowed !== false) fail('responsibility map must prohibit normal rank regression');
+if (responsibilityMap.promotion_policy.ordinary_cli_exposes_corrective_mode !== false) fail('ordinary CLI must not expose corrective mode');
+
 const publicAfter = Object.fromEntries(publicPaths.map((file) => [file, hash(file)]));
 if (stable(publicBefore) !== stable(publicAfter)) fail('promotion validation modified public projection files');
 
 const cli = read('scripts/timetable/promote-approved-candidate-v1.mjs');
 const core = read('scripts/timetable/pipeline-v1/promotion-core.mjs');
 if (cli.includes('data/generated/timetable/public/')) fail('promotion CLI must not reference public projection output paths');
+if (cli.includes('corrective_downgrade') || cli.includes('downgradeReason')) fail('ordinary promotion CLI must not expose corrective downgrade mode');
 if (core.includes('writeFileSync') || core.includes('renameSync')) fail('promotion core must remain pure and perform no file writes');
 for (const marker of ['canonicalMeetingsPath', 'canonicalDetailsPath', 'PUBLIC_PROJECTION_WRITTEN: false']) {
   if (!cli.includes(marker)) fail(`promotion CLI missing ${marker}`);
@@ -202,5 +257,7 @@ if (errors.length) {
 
 console.log('CALENDAR_PIPELINE_V1_PROMOTION: pass');
 console.log('PROMOTION_TARGET: canonical-timetable-v0');
+console.log('NORMAL_RANK_REGRESSION_ALLOWED: false');
+console.log('CORRECTIVE_DOWNGRADE_EXPLICIT: true');
 console.log('IDEMPOTENT: true');
 console.log('PUBLIC_PROJECTION_WRITTEN: false');
