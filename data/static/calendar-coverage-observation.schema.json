@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-coverage-observation.schema.json",
+  "title": "Where Horses Run Calendar coverage observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "system_id",
+    "source_id",
+    "checked_at",
+    "requested_scope",
+    "observed_scope",
+    "collection_mode",
+    "records_discovered",
+    "records_updated",
+    "unresolved_dates",
+    "unresolved_meeting_ids",
+    "source_errors",
+    "coverage_claim",
+    "completion_audit_ref"
+  ],
+  "properties": {
+    "schema_version": { "const": "calendar-coverage-observation-v1" },
+    "run_id": { "$ref": "#/$defs/id" },
+    "system_id": { "$ref": "#/$defs/id" },
+    "source_id": { "$ref": "#/$defs/id" },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "requested_scope": { "$ref": "#/$defs/scope" },
+    "observed_scope": { "$ref": "#/$defs/scope" },
+    "collection_mode": {
+      "enum": [
+        "date_window",
+        "single_date",
+        "selected_meetings",
+        "source_visible_horizon"
+      ]
+    },
+    "records_discovered": { "type": "integer", "minimum": 0 },
+    "records_updated": { "type": "integer", "minimum": 0 },
+    "unresolved_dates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/date" },
+      "uniqueItems": true
+    },
+    "unresolved_meeting_ids": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "source_errors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/sourceError" }
+    },
+    "coverage_claim": {
+      "enum": [
+        "none",
+        "partial",
+        "source_window_complete",
+        "audited_complete"
+      ]
+    },
+    "completion_audit_ref": {
+      "oneOf": [
+        { "type": "string", "pattern": "^(?:data|docs)/[A-Za-z0-9_./-]+$" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "coverage_claim": { "const": "audited_complete" } },
+        "required": ["coverage_claim"]
+      },
+      "then": {
+        "properties": {
+          "completion_audit_ref": { "type": "string", "pattern": "^(?:data|docs)/[A-Za-z0-9_./-]+$" }
+        }
+      },
+      "else": {
+        "properties": {
+          "completion_audit_ref": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "scope": {
+      "oneOf": [
+        { "$ref": "#/$defs/dateWindowScope" },
+        { "$ref": "#/$defs/singleDateScope" },
+        { "$ref": "#/$defs/selectedMeetingsScope" },
+        { "$ref": "#/$defs/sourceVisibleHorizonScope" },
+        { "$ref": "#/$defs/notObservedScope" }
+      ]
+    },
+    "dateWindowScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "start_date", "end_date_exclusive", "timezone"],
+      "properties": {
+        "kind": { "const": "date_window" },
+        "start_date": { "$ref": "#/$defs/date" },
+        "end_date_exclusive": { "$ref": "#/$defs/date" },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "singleDateScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "date", "timezone"],
+      "properties": {
+        "kind": { "const": "single_date" },
+        "date": { "$ref": "#/$defs/date" },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "selectedMeetingsScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "meeting_ids", "timezone"],
+      "properties": {
+        "kind": { "const": "selected_meetings" },
+        "meeting_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "sourceVisibleHorizonScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "start_date", "end_date_exclusive", "timezone"],
+      "properties": {
+        "kind": { "const": "source_visible_horizon" },
+        "start_date": { "$ref": "#/$defs/date" },
+        "end_date_exclusive": { "$ref": "#/$defs/date" },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "notObservedScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "timezone"],
+      "properties": {
+        "kind": { "const": "not_observed" },
+        "timezone": { "type": "string", "minLength": 3 }
+      }
+    },
+    "sourceError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "scope_ref", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "source_unavailable",
+            "parser_failure",
+            "rate_limited",
+            "unexpected_response",
+            "other"
+          ]
+        },
+        "scope_ref": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "message": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    }
+  }
+}

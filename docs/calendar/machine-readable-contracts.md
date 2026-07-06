@@ -6,7 +6,7 @@ Last reviewed: 2026-07-06
 
 ## Purpose
 
-This document connects the human-readable Source Test v2 and Calendar Readiness contracts to the files and validators that enforce them. It also defines the implementation boundary for the cross-system incremental coverage model.
+This document connects the human-readable Source Test v2, Calendar Readiness, candidate, Coverage Observation, and source-inventory contracts to the schemas and validators that enforce them.
 
 ## Governing acquisition contract
 
@@ -36,10 +36,13 @@ Normal operator updates may use arbitrary and overlapping windows. A partial sou
 data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
+data/static/calendar-coverage-observation.schema.json
 data/static/authority-source-inventory.schema.json
 data/static/authority-source-inventory.json
 data/static/timetable-candidate-v1.schema.json
 data/static/jra-final-program-intake.schema.json
+scripts/timetable/coverage-observation-validation.mjs
+scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-authority-source-inventory-schema.mjs
 scripts/check-calendar-pipeline-v1-candidate-contract.mjs
@@ -47,7 +50,7 @@ scripts/check-jra-final-program-intake-schema.mjs
 .github/workflows/calendar-contracts.yml
 ```
 
-A future shared Coverage Observation schema and validator must be added under the implementation sequence defined by the incremental coverage contract. Until then, source-specific reports must not make implicit completeness claims from missing records.
+The Calendar contracts workflow validates the shared contract/registry set, Coverage Observation schema, and authority-source compatibility together.
 
 ## Source Test v2 schema
 
@@ -70,13 +73,13 @@ Future Source Test v2 outputs use:
 docs/timetable-source-tests/<delivery>-<slug>/source-test-v2.json
 ```
 
-Entries 01-52 predate this schema. Their existing reviewed summaries remain valid evidence and are converted during the three backfill Work IDs. Do not rename or rewrite all historical summaries merely to satisfy the newer filename.
+Entries 01-52 predate this schema. Their existing reviewed summaries remain valid evidence and were converted during the completed backfill Work IDs.
 
 ## Calendar Readiness registry
 
 `data/static/calendar-readiness-registry.json` is the canonical machine-readable readiness registry.
 
-The initial registry deliberately contained no country records. Actual records are added only by evidence-based backfill or Source Test v2 work. Parser names, intended cadences, old Auto Level labels, and candidate status do not by themselves justify a readiness record.
+Actual records are added only by evidence-based backfill or Source Test v2 work. Parser names, intended cadences, old Auto Level labels, and candidate status do not by themselves justify a readiness record.
 
 ## Authority source inventory relationship
 
@@ -98,22 +101,61 @@ The candidate window is not inherently monthly. Source-specific operators may re
 
 A candidate window describes the batch scope. It does not itself assert that every meeting in that range was publicly available or collected.
 
-Any future machine-readable coverage metadata must distinguish:
+## Coverage Observation contract
+
+The machine-readable Coverage Observation contract is:
+
+```text
+data/static/calendar-coverage-observation.schema.json
+docs/calendar/coverage-observation-schema.md
+scripts/timetable/coverage-observation-validation.mjs
+scripts/check-calendar-coverage-observation-schema.mjs
+```
+
+A Coverage Observation distinguishes:
 
 ```text
 requested scope
 observed source scope
+collection mode
 records discovered
-unresolved dates or meetings
+records updated
+unresolved dates
+unresolved meeting IDs
 source errors
 coverage claim
+completion audit reference
 ```
 
-The coverage claim must be explicit. Missing records must never be interpreted as deletion or non-scheduling solely from absence in one run.
+Supported collection modes are:
+
+```text
+date_window
+single_date
+selected_meetings
+source_visible_horizon
+```
+
+Supported coverage claims are:
+
+```text
+none
+partial
+source_window_complete
+audited_complete
+```
+
+`partial` is a normal valid state. Requested scope and observed scope may differ.
+
+`audited_complete` is the only coverage claim that requires `completion_audit_ref`. It must contain no unresolved dates, unresolved meeting IDs, or source errors.
+
+The schema supports `not_observed` as an observed-scope state when the source scope could not be established safely. This does not mean no meeting exists.
+
+Coverage Observation is operational evidence. It cannot directly delete or downgrade canonical/public data.
 
 ## Validation responsibility split
 
-Calendar validation is divided conceptually into four roles.
+Calendar validation is divided into four roles.
 
 ### Batch validation
 
@@ -159,7 +201,7 @@ Freshness and source-health changes are separate from capability rank.
 
 ## JRA final-program intake
 
-`data/static/jra-final-program-intake.schema.json` defines the closed input accepted before JRA final confirmation. The companion validator rejects unknown keys, invalid identity/date/time structures, duplicate meetings, unreviewed approval metadata, prohibited detail fields, and any claimed candidate/canonical/public write. No actual final fixture is committed by the schema foundation.
+`data/static/jra-final-program-intake.schema.json` defines the closed input accepted before JRA final confirmation. The companion validator rejects unknown keys, invalid identity/date/time structures, duplicate meetings, unreviewed approval metadata, prohibited detail fields, and any claimed candidate/canonical/public write.
 
 ## Stable references
 
@@ -188,11 +230,6 @@ Calendar Readiness
 Automation Mode
 Implementation Status
 Source Status
-```
-
-The incremental coverage model adds another independent operational concern:
-
-```text
 Coverage Observation / Coverage Claim
 ```
 
@@ -204,14 +241,20 @@ Run:
 
 ```text
 node scripts/check-calendar-contracts.mjs
+node scripts/check-calendar-coverage-observation-schema.mjs
 node scripts/check-authority-source-inventory-schema.mjs
 node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 node scripts/check-jra-final-program-intake-schema.mjs
 ```
 
-Existing validators check:
+The validators check:
 
 - enum agreement across Source Test v2, Calendar Readiness, and authority inventory rank schemas;
+- Coverage Observation schema/validation-core agreement;
+- valid shorter observed horizons under `partial`;
+- selected-meeting retry observations;
+- `audited_complete` audit-reference and no-unresolved-item rules;
+- public-safe exclusion of raw, participant, betting, credential, and direct-stream key families;
 - 98-country tracker references;
 - authority/source keys;
 - racecourse IDs;
@@ -219,17 +262,15 @@ Existing validators check:
 - Public Ceiling not exceeding Technical Rank;
 - readiness/automation/fallback closure rules;
 - registry counts;
-- public-safe exclusions;
-- current and next Work IDs in roadmap documents;
-- future `source-test-v2.json` files when they are added.
+- current and next Work IDs in roadmap documents.
 
-The next shared contract implementation work must add explicit validation for coverage observation and the batch/promotion/coverage/completion responsibility split before source-specific operators are generalized.
+The next shared implementation work is the explicit batch/promotion/coverage/completion validator separation, followed by NAR ordinary-operator refactoring.
 
 ## Change discipline
 
 Any PR that changes an enum, required field, closure rule, stable ID, reference source, merge rule, coverage claim, or completion condition must update together:
 
-- the affected machine-readable schema when implemented;
+- the affected machine-readable schema;
 - the human-readable contract;
 - this document;
 - the validator;

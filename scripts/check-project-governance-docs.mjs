@@ -6,6 +6,7 @@ const files = [
   'docs/governance/internal-source-handling.md', 'docs/calendar/README.md',
   'docs/calendar/source-test-v2-contract.md', 'docs/calendar/calendar-readiness-contract.md',
   'docs/calendar/machine-readable-contracts.md', 'docs/calendar/incremental-coverage-contract.md',
+  'docs/calendar/coverage-observation-schema.md',
   'docs/calendar/implementation-roadmap.md', 'docs/calendar/japan-full-month-scope-policy.md',
   'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/jra-a-plus-pilot-completion.md',
   'docs/calendar/nar-a-plus-pilot-plan.md', 'docs/calendar/nar-a-plus-source-architecture.md',
@@ -19,6 +20,7 @@ const files = [
   'docs/country-pages/completion-contract.md', 'docs/country-page-notes/13-japan.md',
   'data/static/source-test-v2.schema.json', 'data/static/calendar-readiness.schema.json',
   'data/static/calendar-readiness-registry.json', 'data/static/calendar-readiness-japan-v2.json',
+  'data/static/calendar-coverage-observation.schema.json',
   'data/static/authority-source-inventory-japan-v2.json', 'data/static/japan-a-plus-policy.json',
   'data/static/japan-a-plus-runtime-control.json', 'data/static/local-racing-pilot-control-v2.json',
   'data/static/banei-pilot-control.json', 'data/static/nar-source-route-architecture-v1.json',
@@ -32,6 +34,8 @@ const files = [
   'data/audits/nar-14-racecourse-compatibility-v1.json',
   'data/static/calendar-operations-control.json', 'data/static/calendar-operations-seasonal-policy.json',
   'docs/runbooks/final-country-calendar-audit-98.md',
+  'scripts/timetable/coverage-observation-validation.mjs',
+  'scripts/check-calendar-coverage-observation-schema.mjs',
   'scripts/check-japan-a-plus-reconciliation-completion.mjs',
   'scripts/check-calendar-jra-pilot-completion.mjs',
   'scripts/check-calendar-nar-source-architecture.mjs',
@@ -46,6 +50,8 @@ const start = fs.readFileSync('START-HERE.md', 'utf8');
 const roadmap = fs.readFileSync('docs/project-roadmap.md', 'utf8');
 const implementationRoadmap = fs.readFileSync('docs/calendar/implementation-roadmap.md', 'utf8');
 const incremental = fs.readFileSync('docs/calendar/incremental-coverage-contract.md', 'utf8');
+const coverageSchemaDoc = fs.readFileSync('docs/calendar/coverage-observation-schema.md', 'utf8');
+const coverageSchema = fs.readFileSync('data/static/calendar-coverage-observation.schema.json', 'utf8');
 const reconciliationPlan = fs.readFileSync('docs/calendar/japan-a-plus-reconciliation-plan.md', 'utf8');
 const jraCompletion = fs.readFileSync('docs/calendar/jra-a-plus-pilot-completion.md', 'utf8');
 const narMonthly = fs.readFileSync('docs/calendar/nar-monthly-collection-contract.md', 'utf8');
@@ -60,6 +66,9 @@ for (const phrase of [
   'WHR-CAL-JAPAN-NAR-A-PLUS',
   'WHR-CAL-JAPAN-BANEI-A-PLUS',
   'docs/calendar/incremental-coverage-contract.md',
+  'docs/calendar/coverage-observation-schema.md',
+  'data/static/calendar-coverage-observation.schema.json',
+  'scripts/check-calendar-coverage-observation-schema.mjs',
   'data/audits/calendar-jra-a-plus-pilot-completion.json',
   'docs/calendar/nar-monthly-collection-contract.md',
   'data/static/nar-monthly-collection-policy-v1.json',
@@ -93,8 +102,8 @@ for (const phrase of [
   'JRA central racing',
   'NAR and local-government racing',
   'Banei Tokachi',
-  'Coverage Observation',
-  'batch, promotion, coverage, and completion'
+  'Coverage Observation schema and validator foundation',
+  'split batch, promotion, coverage, and completion validation responsibilities'
 ]) {
   if (!implementationRoadmap.includes(phrase)) errors.push('implementation roadmap missing ' + phrase);
 }
@@ -110,6 +119,30 @@ for (const phrase of [
   'Completion audit'
 ]) {
   if (!incremental.includes(phrase)) errors.push('incremental coverage contract missing ' + phrase);
+}
+
+for (const phrase of [
+  'requested_scope',
+  'observed_scope',
+  '`partial` is a normal successful state',
+  '`audited_complete`',
+  'completion_audit_ref',
+  'selected_meetings',
+  'source_visible_horizon'
+]) {
+  if (!coverageSchemaDoc.includes(phrase)) errors.push('coverage schema document missing ' + phrase);
+}
+for (const phrase of [
+  'calendar-coverage-observation-v1',
+  'requested_scope',
+  'observed_scope',
+  'partial',
+  'audited_complete',
+  'completion_audit_ref',
+  'selected_meetings',
+  'source_visible_horizon'
+]) {
+  if (!coverageSchema.includes(phrase)) errors.push('coverage schema missing ' + phrase);
 }
 
 if (!reconciliationPlan.includes('Status: complete')) errors.push('reconciliation plan must be complete.');
@@ -148,6 +181,6 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
-console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
+console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');

@@ -115,22 +115,27 @@ Operations include deterministic source-health status, review-package preparatio
 
 ### Shared incremental coverage contract — prerequisite implementation inside the active NAR phase
 
-Before the NAR pilot is generalized and before the Banei implementation begins, implement the cross-system rules defined in:
+The cross-system contract is:
 
 ```text
 docs/calendar/incremental-coverage-contract.md
 ```
 
-Required implementation sequence:
+Completed shared prerequisite work:
 
-1. preserve arbitrary candidate windows and allow irregular operator timing;
-2. introduce a common Coverage Observation contract and machine-readable schema;
-3. separate batch, promotion, coverage, and completion validation responsibilities;
-4. ensure valid partial batches can be promoted without month-wide completeness;
-5. ensure absence in one run is not deletion or implicit cancellation;
-6. prevent accidental rank regression from lower-detail later observations;
-7. refactor NAR normal incremental acquisition away from the July completion audit;
-8. use the same common contract for Banei, HKJC, UAE, and later systems.
+1. preserve arbitrary candidate windows and allow irregular operator timing — contract complete;
+2. introduce a common Coverage Observation contract and machine-readable schema — complete;
+3. validate partial shorter source horizons, selected-meeting retries, and audited-complete reference rules — complete.
+
+Active shared implementation sequence:
+
+1. separate batch, promotion, coverage, and completion validation responsibilities;
+2. ensure valid partial batches can be promoted without month-wide completeness;
+3. ensure absence in one run is not deletion or implicit cancellation in operator merge behavior;
+4. prevent accidental rank regression from lower-detail later observations;
+5. refactor NAR normal incremental acquisition away from the July completion audit;
+6. emit Coverage Observation and retry-target outputs from the ordinary operator path;
+7. use the same common contract for Banei, HKJC, UAE, and later systems.
 
 The active top-level Work ID remains `WHR-CAL-JAPAN-NAR-A-PLUS` while this prerequisite is implemented because it was discovered during the NAR pilot and blocks safe continuation of that pilot. It is not a NAR-only exception.
 
@@ -189,17 +194,20 @@ Completed so far:
 - 14/14 complete fixture set;
 - first reviewed partial A+ promotion through 2026-07-04;
 - July full-month schedule collector and audit path;
-- dedicated generated full-month candidate PR validation.
+- dedicated generated full-month candidate PR validation;
+- cross-system incremental coverage contract;
+- Coverage Observation schema and validator foundation.
 
 Current sequence:
 
-1. implement the shared incremental coverage contract and validation split;
+1. split batch, promotion, coverage, and completion validation responsibilities;
 2. refactor NAR acquisition into ordinary incremental batches plus a separate July completion audit;
-3. collect the next available NAR schedule/detail batch using arbitrary-window or retry semantics;
-4. review and promote valid records independently of unresolved dates elsewhere in July;
-5. maintain coverage observations and retry targets;
-6. run July completion audit only when claiming July coverage complete;
-7. perform public projection, freshness, rollback, and bilingual QA.
+3. support arbitrary windows, overlap-safe retries, and selected-meeting retries in the ordinary operator;
+4. emit Coverage Observation and explicit retry targets;
+5. collect the next available NAR schedule/detail batch;
+6. review and promote valid records independently of unresolved dates elsewhere in July;
+7. run July completion audit only when claiming July coverage complete;
+8. perform public projection, freshness, rollback, and bilingual QA.
 
 Do not flatten local-government racing into a JRA-like national feed. Candidate generation and promotion remain evidence-bound and human-controlled.
 
@@ -302,9 +310,10 @@ Each Calendar PR reviews:
 2. `docs/project-roadmap.md`;
 3. this roadmap;
 4. `docs/calendar/incremental-coverage-contract.md`;
-5. the active system-specific phase plan;
-6. `docs/operations/deployment-and-ci-policy.md`;
-7. applicable machine-readable policies, readiness records, controls, source records, profile records, and public display boundaries.
+5. `docs/calendar/coverage-observation-schema.md` when acquisition or coverage state changes;
+6. the active system-specific phase plan;
+7. `docs/operations/deployment-and-ci-policy.md`;
+8. applicable machine-readable policies, readiness records, controls, source records, profile records, and public display boundaries.
 
 The PR records its Work ID, documents and specifications reviewed, registry/control changes, runtime behaviour, display boundary, validation results, out-of-scope work, and next Work ID.
 
