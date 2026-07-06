@@ -131,7 +131,18 @@ for (const phrase of [
   'source_visible_horizon'
 ]) {
   if (!coverageSchemaDoc.includes(phrase)) errors.push('coverage schema document missing ' + phrase);
-  if (!coverageSchema.includes(phrase.replaceAll('`', ''))) errors.push('coverage schema missing ' + phrase);
+}
+for (const phrase of [
+  'calendar-coverage-observation-v1',
+  'requested_scope',
+  'observed_scope',
+  'partial',
+  'audited_complete',
+  'completion_audit_ref',
+  'selected_meetings',
+  'source_visible_horizon'
+]) {
+  if (!coverageSchema.includes(phrase)) errors.push('coverage schema missing ' + phrase);
 }
 
 if (!reconciliationPlan.includes('Status: complete')) errors.push('reconciliation plan must be complete.');
