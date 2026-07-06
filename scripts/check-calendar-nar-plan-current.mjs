@@ -2,19 +2,28 @@ import fs from 'node:fs';
 
 const plan = fs.readFileSync('docs/calendar/nar-a-plus-pilot-plan.md', 'utf8');
 const start = fs.readFileSync('START-HERE.md', 'utf8');
+const incremental = fs.readFileSync('docs/calendar/incremental-coverage-contract.md', 'utf8');
 const required = [
   'WHR-CAL-JAPAN-NAR-A-PLUS',
-  'Required boundary: 2026-07-01 through 2026-07-31 inclusive',
-  'Current phase: full-month schedule coverage and month-wide detail completion',
+  'Current phase: shared incremental coverage implementation and NAR operator refactor',
   'first reviewed A+ promotion through 2026-07-04',
   'valid partial data',
-  'every July schedule date',
-  'future scheduled meetings',
-  'partial cutoff output never treated as monthly completion',
+  'arbitrary and overlapping windows',
+  'selected-meeting retries',
+  'July completion audit',
   'WHR-CAL-JAPAN-BANEI-A-PLUS',
 ];
 const errors = required.filter((value) => !plan.includes(value));
+for (const phrase of [
+  'No country, authority, or racing system may require month-wide completeness',
+  'partial` is a normal successful state',
+  'Absence is not deletion',
+  'Validation split',
+]) {
+  if (!incremental.includes(phrase)) errors.push(`incremental contract missing ${phrase}`);
+}
 for (const link of [
+  'docs/calendar/incremental-coverage-contract.md',
   'docs/calendar/nar-a-plus-pilot-plan.md',
   'docs/calendar/nar-14-racecourse-compatibility-audit.md',
   'docs/calendar/nar-monthly-collection-contract.md',
@@ -30,7 +39,8 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('CALENDAR_NAR_PLAN_CURRENT: pass');
-console.log('CURRENT_PHASE: full_month_schedule_and_detail_completion');
-console.log('MONTH_BOUNDARY: 2026-07-01..2026-07-31');
+console.log('CURRENT_PHASE: incremental_coverage_implementation_and_operator_refactor');
+console.log('ORDINARY_PARTIAL_PROMOTION_ALLOWED: true');
+console.log('JULY_COMPLETION_AUDIT_SEPARATE: true');
 console.log('PARTIAL_PROMOTION_THROUGH_2026_07_04: valid_not_complete');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
