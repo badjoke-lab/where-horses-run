@@ -11,12 +11,13 @@ Use these files together:
 - [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, validator, and incremental coverage implementation map.
 - [`incremental-coverage-contract.md`](incremental-coverage-contract.md) — cross-system arbitrary-window, partial-success, coverage-observation, merge, and completion-audit rules.
 - [`coverage-observation-schema.md`](coverage-observation-schema.md) — machine-readable requested/observed scope, partial coverage, source-error, and completion-audit claim contract.
+- [`validation-responsibility-contract.md`](validation-responsibility-contract.md) — Batch / Promotion / Coverage / Completion responsibility and blocking boundaries.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, shared incremental coverage implementation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
 - [`pipeline-v1-build-boundary.md`](pipeline-v1-build-boundary.md) — static-build read boundary and explicit generation separation.
 - [`pipeline-v1-candidate-contract.md`](pipeline-v1-candidate-contract.md) — bounded candidate envelope, rank limits, and human-review rules.
-- [`pipeline-v1-promotion.md`](pipeline-v1-promotion.md) — approved-candidate registry gates and idempotent canonical promotion.
+- [`pipeline-v1-promotion.md`](pipeline-v1-promotion.md) — approved-candidate registry gates, monotonic normal promotion, and explicit corrective downgrade boundary.
 - [`pipeline-v1-public-projection.md`](pipeline-v1-public-projection.md) — deterministic Public Ceiling and field-policy projection.
 - [`pipeline-v1-jra-reference-adapter.md`](pipeline-v1-jra-reference-adapter.md) — first source adapter migrated to the candidate v1 boundary.
 - [`pipeline-v1-release-gate.md`](pipeline-v1-release-gate.md) — grouped Pipeline v1 completion and remaining-work boundary.
@@ -51,6 +52,7 @@ data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 data/static/calendar-coverage-observation.schema.json
+data/static/calendar-validation-responsibilities-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -73,6 +75,7 @@ data/generated/timetable/local-racing-pilot-review.json
 data/archive/timetable/candidates/japan-nar-candidates.v0.json
 scripts/timetable/coverage-observation-validation.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
+scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
@@ -98,7 +101,7 @@ scripts/check-local-racing-pilot-foundation.mjs
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
-The Coverage Observation schema foundation is active. The next shared contract work is explicit validator separation for batch, promotion, coverage, and completion responsibilities, followed by NAR ordinary-operator refactoring.
+Coverage Observation and validation responsibility foundations are active. The next implementation step is NAR ordinary-operator refactoring for arbitrary windows, overlap-safe retries, selected-meeting retries, observation output, and explicit retry targets.
 
 ## Operating rule
 
@@ -114,4 +117,4 @@ Detailed local captures remain outside the repository. The public repository may
 
 ## Maintenance
 
-Every Calendar PR must review `incremental-coverage-contract.md` and update the applicable roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
+Every Calendar PR must review `incremental-coverage-contract.md`, `validation-responsibility-contract.md`, and the applicable source-specific plan. Update the relevant roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
