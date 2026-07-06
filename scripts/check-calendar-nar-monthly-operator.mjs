@@ -11,6 +11,7 @@ const collector = read('scripts/timetable/collect-nar-monthly-candidates.mjs');
 const validator = read('scripts/check-calendar-nar-monthly-candidate-set.mjs');
 const candidateWorkflow = read('.github/workflows/calendar-nar-monthly-candidate-set.yml');
 const runbook = read('docs/calendar/manual-nar-monthly-collection.md');
+const incremental = read('docs/calendar/incremental-coverage-contract.md');
 const policy = read('data/static/nar-monthly-collection-policy-v1.json');
 const scheduled = read('.github/workflows/timetable-scheduled-refresh.yml');
 
@@ -78,8 +79,19 @@ for (const marker of [
 for (const marker of ['fetch-depth: 0', 'github.event.pull_request.base.sha', 'github.event.pull_request.head.sha']) {
   if (!candidateWorkflow.includes(marker)) fail(`candidate workflow missing ${marker}.`);
 }
-for (const marker of ['sh ./collect-nar-monthly-manual 2026-07', '2026-07-04', 'no_meeting_in_target_month', 'Canonical and public writes remain disabled', 'Publication requires a later human-approved promotion PR']) {
+for (const marker of [
+  'Status: transitional operator runbook',
+  'sh ./collect-nar-monthly-manual 2026-07',
+  '2026-07-04',
+  'no_meeting_in_target_month',
+  'Canonical and public writes remain disabled',
+  'Publication requires later human-approved promotion',
+  'arbitrary windows, overlapping retries, selected-meeting retries',
+]) {
   if (!runbook.includes(marker)) fail(`runbook missing ${marker}.`);
+}
+for (const marker of ['Arbitrary collection windows', 'Absence is not deletion', 'Validation split']) {
+  if (!incremental.includes(marker)) fail(`incremental contract missing ${marker}.`);
 }
 for (const marker of ['"candidate_write": "needs_review_only"', '"canonical_write": "disabled"', '"public_write": "disabled"', '"schedule_mode": "disabled"']) {
   if (!policy.includes(marker)) fail(`policy missing ${marker}.`);
@@ -92,6 +104,7 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('CALENDAR_NAR_MONTHLY_OPERATOR: pass');
+console.log('LEGACY_OPERATOR_STATUS: transitional');
 console.log('RACECOURSES_CLASSIFIED: 14');
 console.log('SCHEDULE_LINK_NORMALIZATION: flat-scope-guarded');
 console.log('MEETING_ACCOUNTING: guarded');
