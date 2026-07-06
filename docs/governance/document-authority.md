@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-07-01
+Last reviewed: 2026-07-06
 
 ## Authority order
 
@@ -49,7 +49,12 @@ Calendar human-readable contracts:
 - `docs/calendar/source-test-v2-contract.md`
 - `docs/calendar/calendar-readiness-contract.md`
 - `docs/calendar/machine-readable-contracts.md`
+- `docs/calendar/incremental-coverage-contract.md`
 - `docs/calendar/implementation-roadmap.md`
+- `docs/calendar/japan-full-month-scope-policy.md`
+- `docs/calendar/nar-a-plus-pilot-plan.md`
+- `docs/calendar/nar-monthly-collection-contract.md`
+- `docs/calendar/banei-a-plus-full-month-plan.md`
 - `docs/calendar/baseline-reconciliation-map.md`
 - `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/calendar/dynamic-dates-release-gate.md`
@@ -65,7 +70,7 @@ Calendar human-readable contracts:
 - `docs/runbooks/calendar-operations-pause-rollback.md`
 - `docs/runbooks/calendar-seasonal-rollover.md`
 - `docs/runbooks/calendar-source-breakage-escalation.md`
-- `docs/specs/global-timetable-architecture.md` plus active addendum
+- `docs/specs/global-timetable-architecture.md`
 - `docs/specs/authority-source-inventory-schema.md` plus active addendum
 
 Calendar machine-readable contracts:
@@ -75,6 +80,7 @@ Calendar machine-readable contracts:
 - `data/static/calendar-readiness-registry.json`
 - `data/static/authority-source-inventory.schema.json`
 - `data/static/authority-source-inventory.json`
+- `data/static/timetable-candidate-v1.schema.json`
 - `data/audits/calendar-baseline-migration-map.json`
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
@@ -106,16 +112,19 @@ Calendar machine-readable contracts:
 - `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
+A future shared Coverage Observation schema and validator become canonical machine-readable contracts when implemented under the incremental coverage sequence.
+
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
 
 ## Required PR discipline
 
 Before work begins:
 
-1. assign a stable Work ID;
+1. assign or confirm the stable Work ID;
 2. read the applicable canonical documents;
-3. confirm tracker or registry state;
-4. record whether Cloudflare is required.
+3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`;
+4. confirm tracker or registry state;
+5. record whether Cloudflare is required.
 
 The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
 
@@ -129,6 +138,7 @@ Tracker or registry changes
 Runtime behaviour changes
 Public display boundary
 Calendar readiness changes
+Coverage and completion-claim changes
 Deployment and preview requirement
 Completion conditions
 Next Work ID
