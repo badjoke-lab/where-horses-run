@@ -22,6 +22,10 @@ on:
       - 'docs/calendar/banei-a-plus-full-month-plan.md'
       - '.github/workflows/calendar-banei-full-month.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
