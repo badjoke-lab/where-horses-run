@@ -1,25 +1,33 @@
 # Calendar pipeline v1 — canonical promotion
 
-Status: implemented foundation  
+Status: implemented foundation with incremental rank guard  
 Work ID: `WHR-CAL-PIPELINE-V1`  
-Implemented: 2026-07-01
+Implemented: 2026-07-01  
+Rank guard reviewed: 2026-07-06
 
 ## Purpose
 
-This stage is the only Pipeline v1 path from an approved `timetable-candidate-v1` file into canonical timetable data.
+This stage is the normal Pipeline v1 path from an approved `timetable-candidate-v1` file into canonical timetable data.
 
 ```text
 approved candidate
 -> authority/source and Calendar Readiness checks
 -> rank and confirmed-field checks
 -> identity and provenance checks
--> idempotent canonical meeting merge
--> idempotent canonical detail merge/removal
+-> normal rank-regression guard
+-> idempotent canonical meeting/detail merge
 ```
 
 It does not write public JSON. Public projection remains a separate deterministic stage.
 
-## Command
+Validation responsibility is governed by:
+
+```text
+docs/calendar/validation-responsibility-contract.md
+data/static/calendar-validation-responsibilities-v1.json
+```
+
+## Ordinary command
 
 ```text
 npm run promote:timetable -- --input data/candidates/<approved-file>.json
@@ -37,12 +45,14 @@ Verify that committed canonical output already matches an approved candidate:
 npm run promote:timetable -- --input data/candidates/<approved-file>.json --check
 ```
 
-The command accepts candidate files only from `data/candidates/` and writes only:
+The ordinary CLI accepts candidate files only from `data/candidates/` and writes only:
 
 ```text
 data/generated/timetable/canonical/meetings.json
 data/generated/timetable/canonical/meeting-details.json
 ```
+
+The ordinary CLI is normal-mode only. It does not expose corrective downgrade mode.
 
 ## Approval gate
 
@@ -92,13 +102,64 @@ The writer also checks reviewed field availability:
 
 Public Ceiling is not raised here. It remains enforced by the later public-projection stage.
 
+## Normal promotion rank rule
+
+Normal promotion is monotonic with respect to reviewed meeting rank.
+
+Allowed examples:
+
+```text
+C -> B
+B -> B+
+B+ -> A
+A -> A+
+A+ -> A+
+```
+
+Rejected in normal promotion:
+
+```text
+A+ -> A
+A+ -> C
+A -> B+
+B+ -> B
+```
+
+A later lower-detail source observation is not an instruction to discard previously reviewed detail.
+
+The ordinary CLI cannot request downgrade mode.
+
+## Corrective downgrade rule
+
+A downgrade is permitted only through explicit core mode:
+
+```text
+corrective_downgrade
+```
+
+and one allowed reviewed reason:
+
+```text
+official_correction
+discovered_data_error
+source_invalidation
+publication_policy_change
+rollback
+```
+
+Corrective mode requires at least one actual rank regression. It remains canonical-only and does not write public projection data.
+
+The ordinary promotion CLI does not expose this mode. A future corrective operator must be separately controlled and reviewed rather than inferred from an ordinary lower-rank candidate.
+
 ## Idempotency and identity
 
 The canonical key is `meeting_id`.
 
-Applying the same approved candidate repeatedly produces byte-equivalent canonical objects. Existing meetings may be replaced only when country, authority, racecourse, date, and timezone identity remain unchanged.
+Applying the same approved candidate repeatedly produces byte-equivalent canonical objects. Existing meetings may be updated only when country, authority, racecourse, date, and timezone identity remain unchanged.
 
-A reviewed lower-rank replacement removes a stale A/A+ meeting-detail record when the new canonical meeting no longer contains per-race rows.
+In normal mode, lower-rank replacement is rejected before canonical output is produced.
+
+In explicit corrective mode, a downgrade below A removes the stale A/A+ meeting-detail record and reports both the downgraded meeting ID and removed detail ID.
 
 ## Provenance
 
@@ -112,18 +173,21 @@ Promoted canonical records preserve:
 - reviewer and review time in freshness notes;
 - candidate notes.
 
-The canonical dataset `generated_at` value is the human review timestamp, not the wall-clock execution time. This keeps repeated promotion deterministic.
+The canonical dataset `generated_at` value is the human review timestamp, not wall-clock execution time. This keeps repeated promotion deterministic.
 
 ## Public boundary
 
-The promotion core is pure and performs no file writes. The CLI performs atomic replacement of the two canonical files only.
+The promotion core is pure and performs no file writes. The ordinary CLI performs atomic replacement of the two canonical files only.
 
 The validator proves that:
 
 - public meeting-list and meeting-detail JSON hashes do not change;
-- the CLI contains no public output path;
+- the ordinary CLI contains no public output path;
+- the ordinary CLI does not expose corrective downgrade mode;
 - the core contains no filesystem write operation;
-- forbidden or unconfirmed fields are rejected before canonical output.
+- forbidden or unconfirmed fields are rejected before canonical output;
+- normal rank regression is rejected;
+- corrective downgrade requires explicit mode and an allowed reason.
 
 ## Transitional code
 
@@ -131,6 +195,15 @@ The validator proves that:
 
 Source-specific v0 candidate generators must be migrated to `timetable-candidate-v1` before using this promotion path.
 
-## Next Pipeline v1 slice
+## Current follow-up
 
-Implement deterministic public projection from canonical meeting/detail datasets plus publication policy. That stage must enforce Public Ceiling and must not read candidates or source snapshots directly.
+The next shared Calendar implementation step is NAR ordinary-operator refactoring under the four validation responsibilities:
+
+```text
+Batch Validation
+Promotion Validation
+Coverage Audit
+Completion Audit
+```
+
+The NAR July full-month validator remains a completion-audit path and must not become an ordinary partial-promotion gate.
