@@ -10,6 +10,14 @@ const ALLOWED_READINESS = new Set(['ready', 'prototype_ready', 'manual_ready']);
 const BLOCKED_AUTOMATION = new Set(['blocked', 'link_only', 'not_applicable']);
 const BLOCKED_SOURCE_STATUS = new Set(['not_verified', 'unavailable']);
 const PROMOTION_TARGET = 'canonical-timetable-v0';
+const PROMOTION_MODES = new Set(['normal', 'corrective_downgrade']);
+const CORRECTIVE_DOWNGRADE_REASONS = new Set([
+  'official_correction',
+  'discovered_data_error',
+  'source_invalidation',
+  'publication_policy_change',
+  'rollback'
+]);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -26,6 +34,12 @@ function rankAtMost(actual, maximum, label) {
   assert(RANK_ORDER.has(actual), `${label} has unsupported rank ${actual}`);
   assert(RANK_ORDER.has(maximum), `${label} has unsupported reviewed maximum ${maximum}`);
   assert(RANK_ORDER.get(actual) <= RANK_ORDER.get(maximum), `${label} rank ${actual} exceeds reviewed maximum ${maximum}`);
+}
+
+function rankIsLower(actual, existing) {
+  assert(RANK_ORDER.has(actual), `unsupported candidate rank ${actual}`);
+  assert(RANK_ORDER.has(existing), `unsupported existing canonical rank ${existing}`);
+  return RANK_ORDER.get(actual) < RANK_ORDER.get(existing);
 }
 
 function hostOf(value, label) {
@@ -206,8 +220,17 @@ export function promoteApprovedCandidateV1({
   detailsDataset,
   authorityInventory,
   readinessRegistry,
-  inputPath
+  inputPath,
+  promotionMode = 'normal',
+  downgradeReason = null
 }) {
+  assert(PROMOTION_MODES.has(promotionMode), `unsupported promotion mode ${promotionMode}`);
+  if (promotionMode === 'normal') {
+    assert(downgradeReason === null, 'normal promotion must not provide downgradeReason');
+  } else {
+    assert(CORRECTIVE_DOWNGRADE_REASONS.has(downgradeReason), 'corrective_downgrade requires an allowed downgrade reason');
+  }
+
   assert(candidate?.schema_version === 'timetable-candidate-v1', 'candidate must use timetable-candidate-v1');
   assert(authorityInventory?.schema_version === 'authority-source-inventory-v1', 'authority inventory schema is invalid');
   assert(readinessRegistry?.schema_version === 'calendar-readiness-registry-v1', 'Calendar Readiness registry schema is invalid');
@@ -240,6 +263,7 @@ export function promoteApprovedCandidateV1({
   const promotedMeetings = [];
   const promotedDetails = [];
   const removedDetailIds = [];
+  const downgradedMeetingIds = [];
 
   for (const record of candidate.records) {
     assert(record.country_id === candidate.country_id, `${record.candidate_id} country_id differs from envelope`);
@@ -266,13 +290,25 @@ export function promoteApprovedCandidateV1({
     assert(record.source.checked_at.slice(0, 10) >= minimumCheckedDate, `${record.candidate_id} source check predates reviewed source records`);
     assert(hostOf(record.source.official_url, `${record.candidate_id}.source.official_url`) === hostOf(authoritySource.official_source_url, 'authority source URL'), `${record.candidate_id} official source hostname differs from inventory`);
 
-    assertIdentityCollision(existingMeetings.get(record.meeting_id), record, 'canonical meeting');
+    const existingMeeting = existingMeetings.get(record.meeting_id);
+    assertIdentityCollision(existingMeeting, record, 'canonical meeting');
     assertIdentityCollision(existingDetails.get(record.meeting_id), record, 'canonical meeting detail');
+
+    if (existingMeeting && rankIsLower(record.capability_rank, existingMeeting.capability_rank)) {
+      if (promotionMode !== 'corrective_downgrade') {
+        throw new Error(`${record.candidate_id} rank regression ${existingMeeting.capability_rank} -> ${record.capability_rank} is not allowed in normal promotion`);
+      }
+      downgradedMeetingIds.push(record.meeting_id);
+    }
 
     promotedMeetings.push(makeMeeting(record, authoritySource, inputPath, review));
     const detail = makeDetail(record, authoritySource, inputPath, review);
     if (detail) promotedDetails.push(detail);
     else if (existingDetails.has(record.meeting_id)) removedDetailIds.push(record.meeting_id);
+  }
+
+  if (promotionMode === 'corrective_downgrade') {
+    assert(downgradedMeetingIds.length > 0, 'corrective_downgrade mode requires at least one actual rank regression');
   }
 
   for (const record of promotedMeetings) existingMeetings.set(record.meeting_id, record);
@@ -301,12 +337,17 @@ export function promoteApprovedCandidateV1({
       reviewer: review.reviewer,
       input_path: inputPath,
       source_key: `${candidate.country_id}/${candidate.authority_id}/${candidate.source_id}`,
+      promotion_mode: promotionMode,
+      downgrade_reason: downgradeReason,
       promoted_meeting_ids: promotedMeetings.map((record) => record.meeting_id).sort(),
       promoted_detail_ids: promotedDetails.map((record) => record.meeting_id).sort(),
       removed_detail_ids: removedDetailIds.sort(),
+      downgraded_meeting_ids: downgradedMeetingIds.sort(),
       public_projection_written: false
     }
   };
 }
 
 export const promotionTargetV1 = PROMOTION_TARGET;
+export const promotionModesV1 = Object.freeze([...PROMOTION_MODES]);
+export const correctiveDowngradeReasonsV1 = Object.freeze([...CORRECTIVE_DOWNGRADE_REASONS]);
