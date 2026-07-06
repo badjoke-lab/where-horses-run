@@ -1,0 +1,49 @@
+name: Calendar NAR full-month candidate set
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-monthly-2026-07-full-month-candidates.json'
+      - 'data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/nar-monthly-2026-07-full-month-candidates.json'
+      - 'data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate NAR full-month candidate set
+        run: node scripts/check-calendar-nar-full-month-candidate-set.mjs
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Validate changed-file boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
+            while IFS= read -r file; do
+              [[ -z "$file" ]] && continue
+              case "$file" in
+                data/candidates/nar-monthly-2026-07-full-month-candidates.json|data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json) ;;
+                *) echo "Unexpected NAR full-month candidate PR path: $file"; exit 1 ;;
+              esac
+            done <<< "$changed"
+          fi
