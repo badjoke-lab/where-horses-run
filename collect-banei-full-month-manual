@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+SOURCE_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REMOTE_URL=$(git -C "$SOURCE_ROOT" remote get-url origin)
+TEMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/where-horses-run-banei-full-month.XXXXXX")
+TEMP_REPO="$TEMP_ROOT/repo"
+
+cleanup() {
+  rm -rf "$TEMP_ROOT"
+}
+trap cleanup EXIT HUP INT TERM
+
+echo "[Banei full-month collection] Creating an isolated temporary checkout..."
+git clone --quiet --filter=blob:none --no-checkout "$REMOTE_URL" "$TEMP_REPO"
+git -C "$TEMP_REPO" sparse-checkout init --no-cone
+printf '/*\n!/docs/\n' > "$TEMP_REPO/.git/info/sparse-checkout"
+git -C "$TEMP_REPO" checkout --quiet main
+
+cd "$TEMP_REPO"
+node scripts/timetable/manual-collect-banei-full-month.mjs "$@"

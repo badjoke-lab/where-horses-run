@@ -1,14 +1,43 @@
 {
-  "schema_version": "banei-pilot-control-v2",
+  "schema_version": "banei-pilot-control-v3",
   "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
-  "mode": "a_plus_pipeline_review",
+  "mode": "a_plus_full_month_pipeline_review",
   "source_key": "japan/banei-tokachi/banei-official-schedule",
   "system_id": "japan-banei-system",
+  "racecourse_id": "obihiro-racecourse",
   "allowed_hosts": ["www.banei-keiba.or.jp", "banei-keiba.or.jp"],
   "expected_readiness": "prototype_ready",
   "expected_technical_rank": "A+",
   "expected_public_ceiling": "A+",
   "candidate_mode": "review_only",
   "public_write_mode": "human_approval_only",
-  "schedule_mode": "disabled"
+  "schedule_mode": "disabled",
+  "monthly_scope": {
+    "target_month": "2026-07",
+    "month_start": "2026-07-01",
+    "month_end": "2026-07-31",
+    "full_calendar_month_required": true,
+    "partial_cutoff_completion_allowed": false,
+    "expected_meeting_dates": [
+      "2026-07-04",
+      "2026-07-05",
+      "2026-07-06",
+      "2026-07-11",
+      "2026-07-12",
+      "2026-07-13",
+      "2026-07-18",
+      "2026-07-19",
+      "2026-07-20",
+      "2026-07-25",
+      "2026-07-26",
+      "2026-07-27"
+    ],
+    "future_detail_gaps": "explicit_pending",
+    "silent_omission_allowed": false
+  },
+  "field_semantics": {
+    "flat_racing_surface_assumptions_allowed": false,
+    "flat_racing_course_direction_assumptions_allowed": false,
+    "banei_specific_detail_review_required": true
+  }
 }
