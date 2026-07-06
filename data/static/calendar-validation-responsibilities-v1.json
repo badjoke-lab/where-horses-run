@@ -1,0 +1,82 @@
+{
+  "schema_version": "calendar-validation-responsibilities-v1",
+  "status": "active",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "checked_at": "2026-07-06",
+  "roles": [
+    {
+      "role": "batch_validation",
+      "question": "Are records from the current run structurally valid, source-safe, rank-consistent, and internally coherent?",
+      "may_block_current_batch": true,
+      "may_block_unrelated_valid_batch": false,
+      "may_require_declared_scope_completeness": false,
+      "may_write_canonical": false,
+      "may_write_public": false,
+      "canonical_validators": [
+        "scripts/check-calendar-pipeline-v1-candidate-contract.mjs"
+      ]
+    },
+    {
+      "role": "promotion_validation",
+      "question": "May this human-approved candidate safely update canonical meeting data?",
+      "may_block_current_batch": true,
+      "may_block_unrelated_valid_batch": false,
+      "may_require_declared_scope_completeness": false,
+      "may_write_canonical": false,
+      "may_write_public": false,
+      "canonical_validators": [
+        "scripts/check-calendar-pipeline-v1-promotion.mjs"
+      ]
+    },
+    {
+      "role": "coverage_audit",
+      "question": "What scope was requested, what source scope was observed, and what remains unresolved or should be retried?",
+      "may_block_current_batch": false,
+      "may_block_unrelated_valid_batch": false,
+      "may_require_declared_scope_completeness": false,
+      "may_write_canonical": false,
+      "may_write_public": false,
+      "canonical_validators": [
+        "scripts/check-calendar-coverage-observation-schema.mjs"
+      ]
+    },
+    {
+      "role": "completion_audit",
+      "question": "Is an explicit declared scope complete according to its reviewed authoritative schedule expectation?",
+      "may_block_current_batch": false,
+      "may_block_unrelated_valid_batch": false,
+      "may_require_declared_scope_completeness": true,
+      "may_write_canonical": false,
+      "may_write_public": false,
+      "canonical_validators": [
+        "scripts/check-calendar-nar-full-month-candidate-set.mjs"
+      ]
+    }
+  ],
+  "promotion_policy": {
+    "normal_mode": "monotonic_rank",
+    "normal_rank_regression_allowed": false,
+    "corrective_mode": "corrective_downgrade",
+    "corrective_downgrade_requires_explicit_reason": true,
+    "allowed_corrective_reasons": [
+      "official_correction",
+      "discovered_data_error",
+      "source_invalidation",
+      "publication_policy_change",
+      "rollback"
+    ],
+    "ordinary_cli_exposes_corrective_mode": false,
+    "corrective_public_projection_write": false
+  },
+  "coverage_policy": {
+    "partial_is_valid_state": true,
+    "requested_and_observed_scope_may_differ": true,
+    "absence_is_deletion": false,
+    "coverage_incompleteness_blocks_unrelated_promotion": false
+  },
+  "completion_policy": {
+    "completion_is_explicit_claim": true,
+    "completion_failure_invalidates_existing_valid_promotions": false,
+    "source_specific_completion_auditors_allowed": true
+  }
+}
