@@ -1,11 +1,25 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-02
+Last reviewed: 2026-07-06
 
 ## Purpose
 
 This roadmap begins with Calendar Readiness and continues through maintained public operation. The repository already has timetable foundations; they must be reconciled and activated rather than duplicated.
+
+All active and future Calendar source work follows `docs/calendar/incremental-coverage-contract.md`.
+
+The common operating model separates:
+
+```text
+Meeting / Schedule Layer
++
+Timetable Detail Layer
++
+Coverage Observation
+```
+
+Ordinary updates may be partial, irregular, overlapping, and retried. A complete month or season is an audited claim, not a prerequisite for valid partial batch promotion.
 
 ## Stage 1 — contract implementation
 
@@ -69,11 +83,18 @@ official source
 -> reviewed adapter or manual import
 -> extracted candidate
 -> normalization
--> validation
--> human promotion
+-> batch validation
+-> human review
+-> promotion validation
 -> canonical meeting data
--> public display projection
+-> deterministic public display projection
 -> static build
+
+parallel operational view:
+coverage observation
+-> coverage audit
+-> retry targets
+-> optional completion audit for explicit scope claims
 ```
 
 Completed Pipeline v1 outputs include one candidate contract, human promotion writer, deterministic public projection, public-only runtime imports, read-only builds, one JRA reference adapter, rendered release QA, and `data/audits/calendar-pipeline-v1-release-gate.json`.
@@ -83,7 +104,7 @@ Completed Pipeline v1 outputs include one candidate contract, human promotion wr
 Dynamic Dates status: complete  
 Completed Work ID: `WHR-CAL-DYNAMIC-DATES`
 
-The site now uses explicit reference-date and timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states.
+The site uses explicit reference-date and timezone rules, Today/Tomorrow selection, a rolling 30-day window, and visible current/stale/empty states.
 
 ### Operations v1
 
@@ -91,6 +112,27 @@ Operations v1 status: complete
 Completed Work ID: `WHR-CAL-OPS-V1`
 
 Operations include deterministic source-health status, review-package preparation, pause/rollback controls, seasonal rollover, source-breakage escalation, and grouped validation. Scheduled and unattended publication remain disabled.
+
+### Shared incremental coverage contract — prerequisite implementation inside the active NAR phase
+
+Before the NAR pilot is generalized and before the Banei implementation begins, implement the cross-system rules defined in:
+
+```text
+docs/calendar/incremental-coverage-contract.md
+```
+
+Required implementation sequence:
+
+1. preserve arbitrary candidate windows and allow irregular operator timing;
+2. introduce a common Coverage Observation contract and machine-readable schema;
+3. separate batch, promotion, coverage, and completion validation responsibilities;
+4. ensure valid partial batches can be promoted without month-wide completeness;
+5. ensure absence in one run is not deletion or implicit cancellation;
+6. prevent accidental rank regression from lower-detail later observations;
+7. refactor NAR normal incremental acquisition away from the July completion audit;
+8. use the same common contract for Banei, HKJC, UAE, and later systems.
+
+The active top-level Work ID remains `WHR-CAL-JAPAN-NAR-A-PLUS` while this prerequisite is implemented because it was discovered during the NAR pilot and blocks safe continuation of that pilot. It is not a NAR-only exception.
 
 ### Japan A+ policy
 
@@ -101,6 +143,8 @@ Approved policy:
 - Banei Tokachi: Technical Rank A+ / Public Ceiling A+.
 
 The three systems remain separate. Individual meetings remain limited to the highest rank supported by reviewed canonical fields. System-level A+ does not invent unavailable meeting details.
+
+The acquisition architecture does not require a C-only intermediate publication. A meeting may enter at C, B, B+, A, or A+ according to reviewed evidence.
 
 ### Japan A+ reconciliation — complete
 
@@ -113,23 +157,6 @@ Canonical implementation plan:
 - `docs/calendar/japan-a-plus-reconciliation-plan.md`.
 
 Completion is recorded by `data/audits/japan-a-plus-reconciliation-completion.json` without enabling unattended publication.
-
-### Completed JRA A+ transition
-
-> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-
-### Completed reconciliation transition
-
-> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
-
-### Superseded pilot transition
-
-The following exact labels record the earlier local-racing C-pilot state. They are retained only for completed release-gate compatibility and are not the active state above:
-
-> Current Work ID: `WHR-CAL-JAPAN-NAR`  
-> Next Work ID: `WHR-CAL-JAPAN-BANEI`
 
 ## Stage 6 — Japan pilot activation
 
@@ -151,17 +178,52 @@ Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`. The operator-triggered local refr
 
 ### NAR A+ pilot — current
 
-Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`. Build authority- and racecourse-specific route mapping. Do not flatten local-government racing into a JRA-like national feed. Candidate generation and promotion remain evidence-bound and human-controlled.
+Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`.
+
+Completed so far:
+
+- source architecture;
+- bounded route probe;
+- candidate adapter;
+- all-fourteen compatibility review;
+- 14/14 complete fixture set;
+- first reviewed partial A+ promotion through 2026-07-04;
+- July full-month schedule collector and audit path;
+- dedicated generated full-month candidate PR validation.
+
+Current sequence:
+
+1. implement the shared incremental coverage contract and validation split;
+2. refactor NAR acquisition into ordinary incremental batches plus a separate July completion audit;
+3. collect the next available NAR schedule/detail batch using arbitrary-window or retry semantics;
+4. review and promote valid records independently of unresolved dates elsewhere in July;
+5. maintain coverage observations and retry targets;
+6. run July completion audit only when claiming July coverage complete;
+7. perform public projection, freshness, rollback, and bilingual QA.
+
+Do not flatten local-government racing into a JRA-like national feed. Candidate generation and promotion remain evidence-bound and human-controlled.
 
 ### Banei A+ pilot
 
-Use Banei-specific source routes and terminology. Do not impose flat-racing surface/course assumptions. Candidate generation and promotion remain evidence-bound and human-controlled.
+Banei follows the same shared incremental coverage contract but uses Banei-specific source routes, terminology, and detail semantics.
+
+The Banei sequence is:
+
+1. implement schedule and detail acquisition under arbitrary-window and partial-success semantics;
+2. allow direct higher-rank candidates when the official source supports them;
+3. preserve meeting existence when detail is pending;
+4. review and promote valid partial batches independently;
+5. maintain retry targets and coverage observations;
+6. use a separate July completion audit only when claiming July coverage complete;
+7. complete freshness, rollback, and bilingual QA.
+
+Do not impose flat-racing surface/course assumptions.
 
 ### Japan integration
 
-Verify same-day three-system handling, Calendar/Today/Tomorrow output, country and racecourse links, source health, freshness, fallback, rollback, and bilingual rendered QA.
+Verify same-day three-system handling, Calendar/Today/Tomorrow output, country and racecourse links, source health, freshness, fallback, rollback, arbitrary-window overlap safety, and bilingual rendered QA.
 
-Each pilot requires reviewed source/readiness records, stable IDs, fixture-backed extraction, bounded candidates, prohibited-field guards, normalized validation, human promotion, public-rank enforcement, freshness/stale handling, fallback/rollback, bilingual rendered QA, and operations documentation.
+Each pilot requires reviewed source/readiness records, stable IDs, fixture-backed extraction, bounded candidates, prohibited-field guards, normalized validation, human promotion, public-rank enforcement, freshness/stale handling, fallback/rollback, bilingual rendered QA, operations documentation, and compliance with the incremental coverage contract.
 
 A pilot may be automatic, semi-automatic, or manual. The mode must match evidence. Scheduling and unattended publication remain disabled unless separately approved.
 
@@ -172,7 +234,9 @@ WHR-CAL-HONG-KONG-HKJC
 WHR-CAL-UAE-ERA
 ```
 
-HKJC and UAE follow the same Pipeline v1, human-promotion, display-boundary, stale, fallback, rollback, and bilingual QA requirements.
+HKJC and UAE follow the same Pipeline v1, incremental coverage, human-promotion, display-boundary, stale, fallback, rollback, and bilingual QA requirements.
+
+The source adapter may be split into schedule/detail routes or may emit the highest available rank directly. Neither system may use month-wide completeness as a prerequisite for ordinary valid partial promotions.
 
 ## Stage 8 — Calendar public v1
 
@@ -185,7 +249,8 @@ Release criteria:
 - one meeting per list row;
 - C/B/B+/A/A+ boundaries;
 - visible coverage, source status, and freshness where required;
-- safe stale/failure downgrade and official fallback;
+- partial coverage represented honestly without blocking valid reviewed records;
+- safe stale/failure handling and official fallback;
 - no participant, betting, result, payout, prediction, complete-racecard, raw-source, embedded-video, or direct-stream output;
 - bilingual responsive QA;
 - operations and recovery ownership.
@@ -212,12 +277,22 @@ Choose systems from the priority matrix using source stability, coverage complet
 
 Cohorts may mix automatic A/A+, automatic or semi-automatic C/B/B+, manual PDF/import, and link-only systems.
 
+Every implemented system inherits the shared incremental coverage contract. Expansion planning must distinguish source capability from source horizon and completion claims.
+
 ## Stage 12 — steady-state maintenance
 
-Daily: candidate/error review and Today/Tomorrow sanity checks.  
-Weekly: stale/source-health review, manual updates, broken-link triage.  
-Monthly: source/readiness revalidation and priority updates.  
-Seasonally: fixture rollover, off-season/restart handling, archive review.
+The operating schedule is a priority guide, not a guarantee that every action occurs on a fixed date.
+
+Operator-triggered maintenance may be irregular. Valid operations include arbitrary-window collection, overlapping retries, selected-meeting retries, and source-visible-horizon runs.
+
+Recommended review rhythms remain:
+
+- frequent: candidate/error review and Today/Tomorrow sanity checks when an operator run occurs;
+- weekly target: stale/source-health review, manual updates, broken-link triage;
+- monthly target: source/readiness revalidation, coverage audit review, and priority updates;
+- seasonal target: fixture rollover, off-season/restart handling, archive review.
+
+Missing a nominal maintenance day does not invalidate later incremental updates.
 
 ## Per-PR document review
 
@@ -226,9 +301,10 @@ Each Calendar PR reviews:
 1. `docs/governance/document-authority.md`;
 2. `docs/project-roadmap.md`;
 3. this roadmap;
-4. the active phase plan, including `docs/calendar/japan-a-plus-reconciliation-plan.md` while that Work ID is current;
-5. `docs/operations/deployment-and-ci-policy.md`;
-6. applicable machine-readable policies, readiness records, controls, source records, profile records, and public display boundaries.
+4. `docs/calendar/incremental-coverage-contract.md`;
+5. the active system-specific phase plan;
+6. `docs/operations/deployment-and-ci-policy.md`;
+7. applicable machine-readable policies, readiness records, controls, source records, profile records, and public display boundaries.
 
 The PR records its Work ID, documents and specifications reviewed, registry/control changes, runtime behaviour, display boundary, validation results, out-of-scope work, and next Work ID.
 

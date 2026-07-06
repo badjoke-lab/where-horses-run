@@ -1,44 +1,126 @@
-# Banei A+ full-month plan
+# Banei A+ incremental plan and July completion audit
 
 Status: queued next Work ID  
 Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
-Target month: 2026-07  
-Required boundary: 2026-07-01 through 2026-07-31 inclusive
+Pilot audit month: 2026-07  
+Last reviewed: 2026-07-06
 
-## Rule
+## Governing contract
 
-Banei monthly completion uses the whole selected calendar month. A one-meeting fixture or a partial cutoff is not completion evidence.
+Banei follows:
 
-The July scope must include every official Obihiro Banei meeting from 2026-07-01 through 2026-07-31. Future scheduled meetings remain explicit pending-detail records until official race detail is available.
+```text
+docs/calendar/incremental-coverage-contract.md
+```
+
+The Banei implementation must support irregular manual runs, arbitrary and overlapping date windows, selected-meeting retries, partial source horizons, and valid partial promotion batches.
+
+The July full-month check is a completion audit, not a gate on ordinary valid updates.
+
+## Shared model
+
+Banei uses the common three-concern model:
+
+```text
+Meeting / Schedule Layer
++
+Timetable Detail Layer
++
+Coverage Observation
+```
+
+A Banei meeting may enter at C or at any higher reviewed rank supported by the official source. The implementation must not force an artificial C-only publication step when the source directly supports B, B+, A, or A+.
 
 ## Separation from NAR flat racing
 
-Banei remains a separate Work ID and parser path. Banei detail parsing remains separate from the NAR flat-racing detail parser. It must not inherit flat-racing assumptions for:
+Banei remains a separate Work ID and parser path. Banei detail parsing must not inherit flat-racing assumptions for:
 
 - surface;
 - course direction;
 - course label construction;
-- distance interpretation beyond reviewed Banei semantics.
+- distance interpretation beyond reviewed Banei semantics;
+- terminology and race programme labels.
 
-## Sequence
+Only shared pipeline rules are inherited: stable identity, review boundaries, arbitrary windows, partial success, overlap safety, coverage observations, no implicit deletion, and no accidental rank regression.
 
-1. verify the full July Obihiro schedule;
-2. create a complete meeting fixture with Banei-specific field semantics;
-3. collect every July meeting date;
-4. retain future meetings as pending detail when required;
-5. add complete race times and race metadata from reviewed official sources;
-6. validate and review the month-wide candidate set;
-7. promote reviewed canonical records;
-8. regenerate public projection and perform bilingual QA;
-9. complete freshness and rollback audit.
+## Ordinary incremental sequence
 
-## Completion conditions
+1. review official Banei schedule and detail source responsibilities;
+2. create Banei-specific fixture evidence and parser semantics;
+3. implement arbitrary-window schedule acquisition;
+4. implement detail acquisition or combined acquisition according to official source behavior;
+5. record requested and observed scopes separately;
+6. allow valid partial candidate batches;
+7. review and promote valid records independently of unresolved meetings elsewhere;
+8. retain retry targets for pending, unavailable, or parser-failure states;
+9. continue irregular manual refreshes and overlapping retries;
+10. complete freshness, rollback, and bilingual QA.
 
-- exact window: 2026-07-01 through 2026-07-31;
-- every official July Obihiro Banei meeting represented;
-- future detail gaps explicit;
-- every past/current meeting complete or explicitly blocked;
+## Ordinary batch conditions
+
+A valid Banei batch may contain:
+
+- one meeting;
+- several meetings;
+- a partial month;
+- a cross-month window;
+- an overlapping retry window;
+- selected meeting IDs;
+- all currently source-visible meetings.
+
+The batch succeeds when its produced records are valid and its unresolved scope is reported honestly.
+
+It does not require every July meeting to be available.
+
+## Absence and rank rules
+
+Absence from one run is not cancellation or deletion.
+
+A lower-detail later observation must not automatically overwrite a higher reviewed rank.
+
+Examples:
+
+```text
+existing A+ + later schedule-only observation -> keep A+
+existing C + later reviewed A+ -> promote to A+
+missing from one run -> keep prior reviewed record, update coverage/source-health state separately
+```
+
+Reviewed correction, cancellation/change evidence, source invalidation, publication-policy change, or rollback may still justify explicit revision.
+
+## July 2026 completion audit
+
+The separate July completion audit covers:
+
+```text
+2026-07-01 through 2026-07-31 inclusive
+```
+
+A July completion claim requires:
+
+- every official July Obihiro Banei meeting represented or explicitly blocked;
+- future or unavailable detail gaps explicit;
+- no silent omissions;
 - Banei terminology and course semantics independently validated;
-- partial cutoff output never treated as monthly completion;
-- publication remains human-reviewed;
-- unattended scheduled writes remain disabled.
+- every available reviewed detail represented at the highest supported rank;
+- public projection and bilingual QA pass;
+- freshness and rollback evidence pass;
+- partial cutoff output never treated as month completion.
+
+An incomplete completion audit reports gaps and retry targets. It must not block unrelated valid Banei partial batches from review or promotion.
+
+## Handoff from NAR
+
+Banei begins only after the shared incremental coverage contract and validation split have been implemented during the active NAR phase.
+
+Banei should reuse the common contracts and validators for:
+
+- arbitrary windows;
+- coverage observation;
+- batch validation;
+- promotion validation;
+- coverage audit;
+- completion audit;
+- stable merge behavior.
+
+It must not reuse NAR-specific flat-racing parsing assumptions.

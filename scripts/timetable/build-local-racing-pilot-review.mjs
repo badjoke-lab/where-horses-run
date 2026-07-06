@@ -73,12 +73,18 @@ const archivePass = Boolean(
   archivedCandidate?.records?.length === 12
 );
 
+// The historical link-only pilot is source-scoped. New reviewed NAR A+ records from
+// the separate RaceList/DebaTable source are allowed to coexist. This review only
+// proves that the quarantined v0 dry-run candidate identities did not leak.
+const legacyMeetingIds = new Set((archivedCandidate?.records ?? []).map((record) =>
+  `nar-${record.racecourse_id}-${record.date}`
+));
 const publicMeetingIds = publicList.meetings
-  .filter((record) => record.authority_id === 'nar-local-government-racing')
+  .filter((record) => legacyMeetingIds.has(record.meeting_id))
   .map((record) => record.meeting_id)
   .sort();
 const publicDetailIds = publicDetails.details
-  .filter((record) => record.authority_id === 'nar-local-government-racing')
+  .filter((record) => legacyMeetingIds.has(record.meeting_id))
   .map((record) => record.meeting_id)
   .sort();
 const publicProjectionAbsent = publicMeetingIds.length === 0 && publicDetailIds.length === 0;
@@ -98,15 +104,15 @@ if (!fallbackPass) foundationBlockers.push('fallback_not_official_link_only');
 if (!activeCandidateAbsent) foundationBlockers.push('active_candidate_must_not_exist');
 if (!archivePresent) foundationBlockers.push('legacy_candidate_archive_missing');
 else if (!archivePass) foundationBlockers.push('legacy_candidate_archive_invalid');
-if (!publicProjectionAbsent) foundationBlockers.push('local_racing_public_projection_must_not_exist');
+if (!publicProjectionAbsent) foundationBlockers.push('legacy_local_racing_candidate_projection_must_not_exist');
 if (!jraIsolationPass) foundationBlockers.push('jra_capability_isolation_missing');
 
 const registryMinimumDate = maxDate([inventoryRecord.last_checked_date, readinessRecord.checked_date]);
 const generatedDate = maxDate([registryMinimumDate, readinessRecord.evidence_reviewed_at]) ?? '1970-01-01';
 const activationBlockers = [
-  'authority_specific_timetable_not_reviewed',
-  'stable_scheduled_time_source_not_confirmed',
-  'readiness_change_required_before_candidate'
+  'legacy_source_remains_link_only',
+  'legacy_candidate_path_remains_quarantined',
+  'legacy_source_readiness_change_required_before_candidate'
 ];
 
 const review = {
@@ -178,10 +184,9 @@ const review = {
     scheduled_operation_active: false
   },
   next_actions: [
-    'review_authority_specific_sources',
-    'map_venue_and_date_routes_without_flattening_authorities',
-    'confirm_stable_scheduled_time_source',
-    'submit_readiness_change_before_any_candidate_work'
+    'keep_legacy_monthly_convene_source_link_only',
+    'keep_legacy_v0_candidate_quarantined',
+    'use_active_nar_race_list_deba_table_path_for_reviewed_incremental_work'
   ]
 };
 

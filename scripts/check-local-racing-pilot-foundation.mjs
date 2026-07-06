@@ -62,7 +62,7 @@ if (readinessRecord) {
   if (!readinessRecord.limitations.some((value) => value.includes('must not be flattened'))) fail('authority-specific isolation limitation is missing.');
 }
 
-if (existsSync(path.join(root, activePath))) fail('Active local-racing candidate file must not exist.');
+if (existsSync(path.join(root, activePath))) fail('Legacy active local-racing candidate file must not exist.');
 if (!existsSync(path.join(root, archivePath))) fail('Legacy local-racing archive is missing.');
 const archived = parse(archivePath);
 if (archived.schema_version !== 'timetable-candidates-v0') fail('Legacy archive schema changed.');
@@ -74,7 +74,7 @@ if ((archived.records ?? []).length !== 12) fail('Legacy archive must retain 12 
 const guardRun = spawnSync(process.execPath, ['scripts/generate-japan-nar-candidates.mjs','--check'], { cwd: root, encoding: 'utf8' });
 if (guardRun.status !== 0) fail(`legacy quarantine guard failed: ${guardRun.stderr || guardRun.stdout}`);
 const directRun = spawnSync(process.execPath, ['scripts/generate-japan-nar-candidates.mjs'], { cwd: root, encoding: 'utf8' });
-if (directRun.status === 0) fail('Direct candidate generation must remain disabled.');
+if (directRun.status === 0) fail('Direct legacy candidate generation must remain disabled.');
 
 const temp = mkdtempSync(path.join(os.tmpdir(), 'whr-local-racing-pilot-'));
 try {
@@ -89,18 +89,18 @@ try {
     const review = JSON.parse(readFileSync(outputA, 'utf8'));
     if (review.schema_version !== 'local-racing-pilot-review-v1') fail('review schema is incorrect.');
     if (review.work_id !== 'WHR-CAL-JAPAN-NAR') fail('review Work ID is incorrect.');
-    if (review.foundation.pass !== true || review.foundation.blockers.length !== 0) fail('current link-only foundation must pass.');
-    if (review.activation.ready !== false) fail('activation must remain false.');
-    for (const blocker of ['authority_specific_timetable_not_reviewed','stable_scheduled_time_source_not_confirmed','readiness_change_required_before_candidate']) {
-      if (!review.activation.blockers.includes(blocker)) fail(`activation blocker ${blocker} is missing.`);
+    if (review.foundation.pass !== true || review.foundation.blockers.length !== 0) fail('legacy link-only foundation quarantine must pass.');
+    if (review.activation.ready !== false) fail('legacy source activation must remain false.');
+    for (const blocker of ['legacy_source_remains_link_only','legacy_candidate_path_remains_quarantined','legacy_source_readiness_change_required_before_candidate']) {
+      if (!review.activation.blockers.includes(blocker)) fail(`legacy activation blocker ${blocker} is missing.`);
     }
-    if (review.activation.candidate_generation_allowed !== false) fail('candidate generation must remain unavailable.');
-    if (review.repository_state.active_candidate_absent !== true) fail('active candidate absence was not recorded.');
+    if (review.activation.candidate_generation_allowed !== false) fail('legacy source candidate generation must remain unavailable.');
+    if (review.repository_state.active_candidate_absent !== true) fail('legacy active candidate absence was not recorded.');
     if (review.repository_state.archived_candidate_present !== true) fail('archive presence was not recorded.');
     if (review.repository_state.archived_candidate_valid !== true) fail('archive validity was not recorded.');
     if (review.repository_state.archived_candidate_record_count !== 12) fail('archive record count is incorrect.');
-    if (review.repository_state.public_projection_absent !== true) fail('public projection absence was not recorded.');
-    if (review.repository_state.public_meeting_ids.length !== 0 || review.repository_state.public_detail_ids.length !== 0) fail('NAR public IDs must remain empty.');
+    if (review.repository_state.public_projection_absent !== true) fail('legacy v0 candidate identities leaked into public projection.');
+    if (review.repository_state.public_meeting_ids.length !== 0 || review.repository_state.public_detail_ids.length !== 0) fail('legacy v0 public IDs must remain empty.');
     if (review.repository_state.jra_isolation_pass !== true) fail('JRA isolation check failed.');
     if (!/^[a-f0-9]{64}$/.test(review.input_digests.archived_candidate_sha256 ?? '')) fail('archive digest is missing.');
     for (const key of ['network_fetch_performed','normalized_data_created','candidate_created','canonical_written','public_projection_written','scheduled_operation_active']) {
@@ -109,7 +109,7 @@ try {
   }
 
   const dryRun = spawnSync(process.execPath, ['scripts/timetable/build-local-racing-pilot-review.mjs','--dry-run'], { cwd: root, encoding: 'utf8' });
-  if (dryRun.status !== 0 || !dryRun.stdout.includes('authority_specific_timetable_not_reviewed')) fail('review builder dry-run failed.');
+  if (dryRun.status !== 0 || !dryRun.stdout.includes('legacy_source_remains_link_only')) fail('review builder dry-run failed.');
   if (!dryRun.stdout.includes('archived_candidate_valid')) fail('review builder dry-run omits archive state.');
 } finally {
   rmSync(temp, { recursive: true, force: true });
@@ -130,9 +130,9 @@ if (errors.length) {
 }
 
 console.log('LOCAL_RACING_PILOT_FOUNDATION: pass');
-console.log('FOUNDATION_PASS: true');
-console.log('ACTIVATION_READY: false');
-console.log('ACTIVE_CANDIDATE_PRESENT: false');
+console.log('LEGACY_SOURCE_FOUNDATION_PASS: true');
+console.log('LEGACY_SOURCE_ACTIVATION_READY: false');
+console.log('LEGACY_ACTIVE_CANDIDATE_PRESENT: false');
 console.log('LEGACY_V0_ARCHIVE_RECORDS: 12');
-console.log('NAR_PUBLIC_PROJECTION_PRESENT: false');
-console.log('JRA_CAPABILITY_GENERALIZED: false');
+console.log('LEGACY_V0_PUBLIC_PROJECTION_PRESENT: false');
+console.log('CURRENT_NAR_REVIEWED_PATH_BLOCKED_BY_LEGACY_CHECK: false');
