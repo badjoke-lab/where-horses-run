@@ -1,15 +1,16 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-07-01
+Last reviewed: 2026-07-06
 
 Use these files together:
 
 - [`../project-roadmap.md`](../project-roadmap.md) — full product sequence and current Work ID.
 - [`source-test-v2-contract.md`](source-test-v2-contract.md) — required source-research output.
 - [`calendar-readiness-contract.md`](calendar-readiness-contract.md) — completion states for each racing system and source.
-- [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, and validator map.
-- [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, pilots, release, expansion, and operations.
+- [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, validator, and incremental coverage implementation map.
+- [`incremental-coverage-contract.md`](incremental-coverage-contract.md) — cross-system arbitrary-window, partial-success, coverage-observation, merge, and completion-audit rules.
+- [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, shared incremental coverage implementation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
 - [`pipeline-v1-build-boundary.md`](pipeline-v1-build-boundary.md) — static-build read boundary and explicit generation separation.
@@ -22,18 +23,22 @@ Use these files together:
 - [`dynamic-dates-release-gate.md`](dynamic-dates-release-gate.md) — Dynamic Dates completion and Operations v1 boundary.
 - [`operations-v1-contract.md`](operations-v1-contract.md) — review-only operator status, thresholds, and no-write boundary.
 - [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
-- [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — current JRA fixture review, blocker, and no-write pilot boundary.
+- [`japan-full-month-scope-policy.md`](japan-full-month-scope-policy.md) — July completion-audit policy; full-month completeness is not an ordinary update gate.
+- [`nar-a-plus-pilot-plan.md`](nar-a-plus-pilot-plan.md) — active NAR pilot state and incremental refactor sequence.
+- [`nar-monthly-collection-contract.md`](nar-monthly-collection-contract.md) — NAR ordinary incremental collection versus July completion-audit split.
+- [`banei-a-plus-full-month-plan.md`](banei-a-plus-full-month-plan.md) — queued Banei incremental plan and separate July completion audit.
+- [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
 - [`jra-final-program-intake-schema.md`](jra-final-program-intake-schema.md) — closed final-input keys, safety boundaries, and structural validation.
 - [`jra-final-normalized-handoff.md`](jra-final-normalized-handoff.md) — approved-final to normalized meeting/detail review artifact.
 - [`jra-final-review-package.md`](jra-final-review-package.md) — external final-fixture decision and optional normalized handoff package.
-- [`local-racing-link-only-pilot.md`](local-racing-link-only-pilot.md) — C-level link-only boundary and authority-specific activation blockers.
+- [`local-racing-link-only-pilot.md`](local-racing-link-only-pilot.md) — historical C-level link-only boundary and authority-specific activation blockers.
 - [`../runbooks/calendar-operations-status-review.md`](../runbooks/calendar-operations-status-review.md) — operator review order and escalation rules.
 - [`../runbooks/calendar-operations-pause-rollback.md`](../runbooks/calendar-operations-pause-rollback.md) — canonical pause and rollback controls.
 - [`../runbooks/calendar-seasonal-rollover.md`](../runbooks/calendar-seasonal-rollover.md) — seasonal fixture review and rollover.
 - [`../runbooks/calendar-source-breakage-escalation.md`](../runbooks/calendar-source-breakage-escalation.md) — warning, degraded, and blocked source incidents.
-- [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) and its active addendum.
+- [`../specs/global-timetable-architecture.md`](../specs/global-timetable-architecture.md) — global meeting/detail/coverage architecture.
 - [`../specs/authority-source-inventory-schema.md`](../specs/authority-source-inventory-schema.md) and its active addendum.
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
 - [`../operations/deployment-and-ci-policy.md`](../operations/deployment-and-ci-policy.md).
@@ -56,6 +61,7 @@ data/static/calendar-operations-seasonal-policy.json
 data/static/jra-pilot-control.json
 data/static/jra-final-program-intake.schema.json
 data/static/local-racing-pilot-control.json
+data/static/nar-monthly-collection-policy-v1.json
 data/generated/timetable/operations-status.json
 data/generated/timetable/operations-review-package.json
 data/generated/timetable/jra-pilot-review.json
@@ -88,11 +94,15 @@ scripts/check-local-racing-pilot-foundation.mjs
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
+The next machine-readable contract work must add shared Coverage Observation schema support and explicit validator separation for batch, promotion, coverage, and completion responsibilities.
+
 ## Operating rule
 
 Calendar work starts from reviewed source tests, authority/source records, country-page notes, and Calendar Readiness records. It must not begin from generic country assumptions.
 
-Country-page completion, source capability, Public Ceiling, Calendar Readiness, and implementation status share stable identifiers but remain separate states.
+Country-page completion, source capability, Public Ceiling, Calendar Readiness, implementation status, source health, and coverage claim remain separate states.
+
+Ordinary updates may be partial and irregular. A completion claim is validated separately.
 
 ## Local research boundary
 
@@ -100,4 +110,4 @@ Detailed local captures remain outside the repository. The public repository may
 
 ## Maintenance
 
-Every Calendar PR must update the applicable roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
+Every Calendar PR must review `incremental-coverage-contract.md` and update the applicable roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
