@@ -1,13 +1,35 @@
 # Manual NAR monthly collection
 
-Status: active operator runbook  
-Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Status: transitional operator runbook  
+Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Last reviewed: 2026-07-06
+
+## Governing contract
+
+Read first:
+
+```text
+docs/calendar/incremental-coverage-contract.md
+docs/calendar/nar-monthly-collection-contract.md
+```
+
+This existing command remains available for the legacy monthly candidate path. Its old cutoff-based semantics must not be treated as the future common Calendar update contract.
+
+The next NAR implementation work will refactor ordinary collection to support arbitrary windows, overlapping retries, selected-meeting retries, coverage observation, and separation of ordinary batches from the July completion audit.
 
 ## Purpose
 
-This command collects review-only NAR monthly meeting candidates after the all-fourteen fixture set has been approved. It checks every flat-racing NAR racecourse for the selected month, collects every discovered RaceList meeting through the optional cutoff date, and records venues without selected-month meetings explicitly.
+The current command collects review-only NAR monthly meeting candidates after the all-fourteen fixture set has been approved. It checks the fourteen flat-racing NAR racecourses against the selected month source path and collects discovered RaceList meetings through the optional cutoff date.
 
-## Run
+This command predates the shared incremental coverage contract. Therefore:
+
+- a successful run may produce useful partial candidates;
+- its absence results must not be generalized into deletion or cancellation;
+- its cutoff result is not month-completion evidence;
+- its `no_meeting_in_target_month` interpretation is not the common rule for arbitrary-window operation;
+- later implementation must not require this exact monthly shape for other systems.
+
+## Current run
 
 From the repository root:
 
@@ -15,7 +37,7 @@ From the repository root:
 sh ./collect-nar-monthly-manual 2026-07
 ```
 
-For an in-progress month, use a cutoff date so future meetings are not treated as parser failures:
+For the existing in-progress-month command shape:
 
 ```bash
 sh ./collect-nar-monthly-manual 2026-07 2026-07-04
@@ -23,7 +45,7 @@ sh ./collect-nar-monthly-manual 2026-07 2026-07-04
 
 The launcher creates an isolated temporary checkout. Local uncommitted work and the original working tree are not used or modified.
 
-## Scope
+## Current scope
 
 The command classifies all fourteen flat-racing racecourses:
 
@@ -34,37 +56,43 @@ Kanazawa, Kasamatsu, Nagoya, Sonoda, Himeji, Kochi, Saga
 
 Obihiro remains outside this command and is handled by the separate Banei Work ID.
 
-## Output
+## Current output
 
 ```text
 data/candidates/nar-monthly-meeting-candidates.json
 data/generated/timetable/nar-monthly-collection-report.json
 ```
 
-Every candidate remains:
+Every candidate remains review-only:
 
 ```text
 review.status: needs_review
 review.promotion_eligible: false
 ```
 
-Canonical and public writes remain disabled.
+Canonical and public writes remain disabled during collection.
 
-## Venue states
+## Legacy venue states
 
-- `has_target_month_meetings`: at least one official RaceList link was discovered for the selected month and cutoff range.
-- `no_meeting_in_target_month`: no RaceList link was discovered for that racecourse in the selected month and cutoff range.
+The existing implementation currently uses:
 
-A no-meeting venue is not a failure. It is an explicit monthly status record.
+- `has_target_month_meetings`;
+- `no_meeting_in_target_month`.
+
+These states are valid only under the exact source and scope assumptions of the legacy monthly command.
+
+For future arbitrary-window operation, absence in one run must instead remain `not_observed` unless a reviewed complete schedule source establishes a stronger conclusion.
 
 ## Meeting states
 
-- `meeting_complete`: the meeting has continuous race numbers and all required A+ public fields.
-- `meeting_incomplete`: a meeting exists, but required rows or fields are incomplete.
-- `source_unavailable`: the official source route cannot be fetched safely.
-- `parser_failure`: the source is reachable but cannot be parsed safely.
+The current implementation uses:
 
-Blockers are written to the report and candidate file, but they are not promotion-eligible.
+- `meeting_complete`;
+- `meeting_incomplete`;
+- `source_unavailable`;
+- `parser_failure`.
+
+The refactored path will also support explicit pending-detail and coverage-observation states as defined by the common contract.
 
 ## Boundary
 
@@ -76,4 +104,27 @@ data/generated/timetable/public/**
 src/**
 ```
 
-Raw source storage remains disabled. Scheduling remains disabled. Publication requires a later human-approved promotion PR.
+Raw source storage remains disabled. Scheduling remains disabled. Publication requires later human-approved promotion.
+
+## Replacement direction
+
+Do not generalize this runbook to Banei, HKJC, UAE, or later systems.
+
+The replacement direction is:
+
+```text
+arbitrary operator scope
+-> batch candidate output
+-> batch validation
+-> human review
+-> promotion validation
+-> canonical/public update
+
+parallel:
+coverage observation
+-> gap report
+-> retry targets
+-> optional completion audit
+```
+
+Until the refactor is merged, use this command only within its documented transitional boundary.
