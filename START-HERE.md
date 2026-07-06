@@ -84,9 +84,27 @@ data/static/japan-a-plus-policy.json
 data/static/japan-a-plus-runtime-control.json
 data/static/local-racing-pilot-control-v2.json
 data/static/banei-pilot-control.json
+data/audits/calendar-baseline-migration-map.json
+data/audits/calendar-pipeline-v1-release-gate.json
+data/audits/calendar-dynamic-dates-release-gate.json
+data/audits/calendar-operations-v1-release-gate.json
+data/audits/japan-a-plus-reconciliation-completion.json
+data/audits/calendar-jra-a-plus-pilot-completion.json
+data/static/calendar-operations-control.json
+data/static/calendar-operations-seasonal-policy.json
+data/generated/timetable/operations-status.json
+data/generated/timetable/operations-review-package.json
+scripts/check-calendar-contracts.mjs
+scripts/check-calendar-baseline-reconciliation.mjs
+scripts/check-calendar-pipeline-v1-release-gate.mjs
+scripts/check-calendar-dynamic-dates-release-gate.mjs
+scripts/check-calendar-operations-v1-release-gate.mjs
+scripts/check-japan-a-plus-reconciliation-completion.mjs
+scripts/check-calendar-jra-pilot-completion.mjs
+scripts/check-project-governance-docs.mjs
 ```
 
-Active NAR-specific files and tooling include:
+Active and historical NAR-specific files, audits, and tooling include:
 
 ```text
 data/static/nar-source-route-architecture-v1.json
@@ -97,7 +115,13 @@ data/fixtures/timetable/nar/route-probe-v1.json
 data/fixtures/timetable/nar/complete-meetings/
 data/candidates/nar-route-probe-candidates.json
 data/candidates/nar-monthly-meeting-candidates.json
+data/candidates/nar-monthly-2026-07-full-month-candidates.json
 data/generated/timetable/nar-monthly-collection-report.json
+data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json
+data/audits/nar-legacy-pr281-migration.json
+data/audits/nar-fixture-probe-v1.json
+data/audits/nar-candidate-adapter-v1.json
+data/audits/nar-14-racecourse-compatibility-v1.json
 collect-nar-fixtures-manual
 collect-nar-monthly-manual
 collect-nar-full-month-manual
