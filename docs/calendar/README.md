@@ -10,6 +10,7 @@ Use these files together:
 - [`calendar-readiness-contract.md`](calendar-readiness-contract.md) — completion states for each racing system and source.
 - [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, validator, and incremental coverage implementation map.
 - [`incremental-coverage-contract.md`](incremental-coverage-contract.md) — cross-system arbitrary-window, partial-success, coverage-observation, merge, and completion-audit rules.
+- [`coverage-observation-schema.md`](coverage-observation-schema.md) — machine-readable requested/observed scope, partial coverage, source-error, and completion-audit claim contract.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, shared incremental coverage implementation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
@@ -49,6 +50,7 @@ Use these files together:
 data/static/source-test-v2.schema.json
 data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
+data/static/calendar-coverage-observation.schema.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -69,6 +71,8 @@ data/generated/timetable/jra-planned-program-intake.json
 data/generated/timetable/jra-planned-program-review.json
 data/generated/timetable/local-racing-pilot-review.json
 data/archive/timetable/candidates/japan-nar-candidates.v0.json
+scripts/timetable/coverage-observation-validation.mjs
+scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
@@ -94,7 +98,7 @@ scripts/check-local-racing-pilot-foundation.mjs
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
-The next machine-readable contract work must add shared Coverage Observation schema support and explicit validator separation for batch, promotion, coverage, and completion responsibilities.
+The Coverage Observation schema foundation is active. The next shared contract work is explicit validator separation for batch, promotion, coverage, and completion responsibilities, followed by NAR ordinary-operator refactoring.
 
 ## Operating rule
 
