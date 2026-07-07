@@ -24,11 +24,19 @@ const requiredFiles = [
   'scripts/timetable/nar-incremental-core.mjs',
   'scripts/timetable/collect-nar-incremental.mjs',
   'scripts/timetable/run-nar-incremental-local.mjs',
+  'scripts/timetable/nar-incremental-v2-core.mjs',
+  'scripts/timetable/nar-incremental-v2-reconcile.mjs',
+  'scripts/timetable/normalize-nar-schedule-aware-month.mjs',
+  'scripts/timetable/collect-nar-incremental-v2.mjs',
+  'scripts/timetable/collect-nar-incremental-v2-reconciled.mjs',
+  'scripts/timetable/run-nar-incremental-v2-local.mjs',
   'scripts/check-calendar-coverage-observation-schema.mjs',
   'scripts/check-calendar-validation-responsibilities.mjs',
   'scripts/check-calendar-pipeline-v1-promotion.mjs',
   'scripts/check-calendar-nar-incremental-core.mjs',
-  'scripts/check-calendar-nar-incremental.mjs'
+  'scripts/check-calendar-nar-incremental.mjs',
+  'scripts/check-calendar-nar-incremental-v2-core.mjs',
+  'scripts/check-calendar-nar-incremental-v2.mjs'
 ];
 
 for (const file of requiredFiles) {
@@ -65,6 +73,11 @@ requirePhrases(start, 'START-HERE', [
   'scripts/check-calendar-validation-responsibilities.mjs',
   'scripts/timetable/nar-incremental-core.mjs',
   'scripts/check-calendar-nar-incremental-core.mjs',
+  'scripts/timetable/nar-incremental-v2-core.mjs',
+  'scripts/timetable/normalize-nar-schedule-aware-month.mjs',
+  'scripts/timetable/run-nar-incremental-v2-local.mjs',
+  'scripts/check-calendar-nar-incremental-v2-core.mjs',
+  '2026-07-08 <= date < 2026-08-01',
   'refactor NAR ordinary collection away from fixed July completion gating'
 ]);
 
@@ -89,7 +102,10 @@ requirePhrases(roadmap, 'project roadmap', [
   'NAR ordinary-operator refactoring',
   'NAR incremental operator foundation',
   'selected-meeting scope support',
-  'retry-target artifact generation'
+  'retry-target artifact generation',
+  'schedule-aware immutable NAR incremental v2 local operator',
+  'reviewed and published NAR incremental detail through 2026-07-07',
+  '2026-07-08 through 2026-07-31'
 ]);
 
 requirePhrases(implementationRoadmap, 'implementation roadmap', [
@@ -109,7 +125,12 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'NAR incremental core',
   'cross-month window grouping',
   'selected-meeting scope parsing',
-  'explicit NAR retry-target generation'
+  'explicit NAR retry-target generation',
+  'immutable batch-specific v2 paths',
+  'Schedule Layer grid observation',
+  'Schedule-to-C and Detail-to-A+ candidate split',
+  'selected-meeting retry reconciliation',
+  '2026-07-08 through 2026-07-31'
 ]);
 
 requirePhrases(incremental, 'incremental coverage contract', [
@@ -150,6 +171,12 @@ requirePhrases(narIncrementalRunbook, 'NAR incremental runbook', [
   'selected-meeting retries',
   'Coverage Observation output',
   'explicit date and meeting retry targets',
+  'Schedule Layer observation and C candidate creation',
+  'Detail Layer acquisition and direct A+ candidate creation',
+  'immutable batch-specific output paths',
+  'july-2026-08-through-31-run-001',
+  'scheduled_pending_details',
+  'detail_retry_required',
   'scheduled_retry: disabled',
   'canonical_write: disabled',
   'public_write: disabled'
@@ -192,6 +219,8 @@ console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
 console.log('NAR_INCREMENTAL_OPERATOR_FOUNDATION: active');
+console.log('NAR_SCHEDULE_AWARE_IMMUTABLE_V2: active');
+console.log('NEXT_NAR_COLLECTION_SCOPE: 2026-07-08..2026-07-31');
 console.log('NORMAL_PROMOTION_RANK_REGRESSION_ALLOWED: false');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
