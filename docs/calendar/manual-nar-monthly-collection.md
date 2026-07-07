@@ -1,8 +1,8 @@
 # Manual NAR monthly collection
 
-Status: transitional operator runbook  
+Status: legacy compatibility operator runbook  
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-07
 
 ## Governing contract
 
@@ -11,15 +11,22 @@ Read first:
 ```text
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/nar-monthly-collection-contract.md
+docs/calendar/manual-nar-incremental-collection.md
 ```
 
-This existing command remains available for the legacy monthly candidate path. Its old cutoff-based semantics must not be treated as the future common Calendar update contract.
+This command remains available for the legacy monthly candidate path and bounded compatibility checks. It is not the ordinary NAR update contract.
 
-The next NAR implementation work will refactor ordinary collection to support arbitrary windows, overlapping retries, selected-meeting retries, coverage observation, and separation of ordinary batches from the July completion audit.
+The ordinary NAR operator is documented in:
+
+```text
+docs/calendar/manual-nar-incremental-collection.md
+```
+
+That path supports arbitrary windows, overlapping retries, selected-meeting retries, Coverage Observation, and explicit retry targets.
 
 ## Purpose
 
-The current command collects review-only NAR monthly meeting candidates after the all-fourteen fixture set has been approved. It checks the fourteen flat-racing NAR racecourses against the selected month source path and collects discovered RaceList meetings through the optional cutoff date.
+The legacy command collects review-only NAR monthly meeting candidates after the all-fourteen fixture set has been approved. It checks the fourteen flat-racing NAR racecourses against the selected month source path and collects discovered RaceList meetings through the optional cutoff date.
 
 This command predates the shared incremental coverage contract. Therefore:
 
@@ -27,9 +34,9 @@ This command predates the shared incremental coverage contract. Therefore:
 - its absence results must not be generalized into deletion or cancellation;
 - its cutoff result is not month-completion evidence;
 - its `no_meeting_in_target_month` interpretation is not the common rule for arbitrary-window operation;
-- later implementation must not require this exact monthly shape for other systems.
+- later systems must not require this exact monthly shape.
 
-## Current run
+## Legacy command
 
 From the repository root:
 
@@ -37,7 +44,7 @@ From the repository root:
 sh ./collect-nar-monthly-manual 2026-07
 ```
 
-For the existing in-progress-month command shape:
+For the existing cutoff form:
 
 ```bash
 sh ./collect-nar-monthly-manual 2026-07 2026-07-04
@@ -45,7 +52,7 @@ sh ./collect-nar-monthly-manual 2026-07 2026-07-04
 
 The launcher creates an isolated temporary checkout. Local uncommitted work and the original working tree are not used or modified.
 
-## Current scope
+## Scope
 
 The command classifies all fourteen flat-racing racecourses:
 
@@ -56,7 +63,7 @@ Kanazawa, Kasamatsu, Nagoya, Sonoda, Himeji, Kochi, Saga
 
 Obihiro remains outside this command and is handled by the separate Banei Work ID.
 
-## Current output
+## Legacy output
 
 ```text
 data/candidates/nar-monthly-meeting-candidates.json
@@ -74,25 +81,25 @@ Canonical and public writes remain disabled during collection.
 
 ## Legacy venue states
 
-The existing implementation currently uses:
+The legacy implementation uses:
 
 - `has_target_month_meetings`;
 - `no_meeting_in_target_month`.
 
-These states are valid only under the exact source and scope assumptions of the legacy monthly command.
+These states are valid only under the exact source and scope assumptions of the monthly command.
 
-For future arbitrary-window operation, absence in one run must instead remain `not_observed` unless a reviewed complete schedule source establishes a stronger conclusion.
+For arbitrary-window operation, absence in one run remains unresolved unless a reviewed complete schedule source establishes a stronger conclusion.
 
 ## Meeting states
 
-The current implementation uses:
+The legacy implementation uses:
 
 - `meeting_complete`;
 - `meeting_incomplete`;
 - `source_unavailable`;
 - `parser_failure`.
 
-The refactored path will also support explicit pending-detail and coverage-observation states as defined by the common contract.
+The ordinary incremental path also records requested/observed scope, unresolved dates, unresolved meeting IDs, source errors, and retry targets under the common contracts.
 
 ## Boundary
 
@@ -106,25 +113,27 @@ src/**
 
 Raw source storage remains disabled. Scheduling remains disabled. Publication requires later human-approved promotion.
 
-## Replacement direction
+## Ordinary replacement path
 
-Do not generalize this runbook to Banei, HKJC, UAE, or later systems.
+Do not generalize this legacy runbook to Banei, HKJC, UAE, or later systems.
 
-The replacement direction is:
+The ordinary path is:
 
 ```text
-arbitrary operator scope
--> batch candidate output
--> batch validation
+arbitrary or selected operator scope
+-> incremental candidate output
+-> Batch Validation
 -> human review
--> promotion validation
+-> Promotion Validation
 -> canonical/public update
 
 parallel:
-coverage observation
--> gap report
+Coverage Observation
+-> Coverage Audit
 -> retry targets
--> optional completion audit
+
+separate only when claimed:
+Completion Audit
 ```
 
-Until the refactor is merged, use this command only within its documented transitional boundary.
+Use the legacy monthly command only for compatibility work or bounded historical/pilot checks. Use the incremental operator runbook for ordinary NAR maintenance.
