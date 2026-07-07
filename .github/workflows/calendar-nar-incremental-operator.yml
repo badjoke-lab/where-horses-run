@@ -1,0 +1,52 @@
+name: Calendar NAR incremental operator
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/nar-incremental-core.mjs'
+      - 'scripts/timetable/collect-nar-incremental.mjs'
+      - 'scripts/timetable/run-nar-incremental-local.mjs'
+      - 'scripts/check-calendar-nar-incremental-core.mjs'
+      - 'scripts/check-calendar-nar-incremental.mjs'
+      - 'docs/calendar/**'
+      - '.github/workflows/calendar-nar-incremental-operator.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/nar-incremental-core.mjs'
+      - 'scripts/timetable/collect-nar-incremental.mjs'
+      - 'scripts/timetable/run-nar-incremental-local.mjs'
+      - 'scripts/check-calendar-nar-incremental-core.mjs'
+      - 'scripts/check-calendar-nar-incremental.mjs'
+      - 'docs/calendar/**'
+      - '.github/workflows/calendar-nar-incremental-operator.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/nar-incremental-core.mjs
+          node --check scripts/timetable/collect-nar-incremental.mjs
+          node --check scripts/timetable/run-nar-incremental-local.mjs
+          node --check scripts/check-calendar-nar-incremental-core.mjs
+          node --check scripts/check-calendar-nar-incremental.mjs
+      - name: Validate incremental core semantics
+        run: node scripts/check-calendar-nar-incremental-core.mjs
+      - name: Validate incremental output boundary
+        run: node scripts/check-calendar-nar-incremental.mjs --allow-empty
+      - name: Validate shared coverage contract
+        run: node scripts/check-calendar-coverage-observation-schema.mjs
+      - name: Validate validation responsibility split
+        run: node scripts/check-calendar-validation-responsibilities.mjs
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
