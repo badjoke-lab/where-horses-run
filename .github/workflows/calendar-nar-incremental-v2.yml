@@ -11,6 +11,7 @@ on:
       - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/**'
       - '.github/workflows/calendar-nar-incremental-v2.yml'
   push:
@@ -25,6 +26,7 @@ on:
       - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/**'
       - '.github/workflows/calendar-nar-incremental-v2.yml'
 
@@ -53,6 +55,7 @@ jobs:
           node --check scripts/timetable/run-nar-incremental-v2-local.mjs
           node --check scripts/check-calendar-nar-incremental-v2-core.mjs
           node --check scripts/check-calendar-nar-incremental-v2.mjs
+          node --check scripts/check-project-governance-docs.mjs
       - name: Validate v2 core semantics
         run: node scripts/check-calendar-nar-incremental-v2-core.mjs
       - name: Validate empty immutable batch boundary
@@ -61,5 +64,7 @@ jobs:
         run: node scripts/check-calendar-coverage-observation-schema.mjs
       - name: Validate validation responsibility split
         run: node scripts/check-calendar-validation-responsibilities.mjs
+      - name: Validate governance alignment
+        run: node scripts/check-project-governance-docs.mjs
       - name: Validate runtime import boundary
         run: node scripts/check-calendar-runtime-import-boundary.mjs
