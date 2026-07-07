@@ -264,7 +264,9 @@ export function buildCoverageAndRetries({ parsedArgs, aggregate, checkedAt }) {
       end_date_exclusive: horizonEnd,
       timezone: 'Asia/Tokyo',
     };
-    unresolvedDates = datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive);
+    unresolvedDates = horizonEnd < parsedArgs.requestedScope.end_date_exclusive
+      ? datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive)
+      : [];
   } else {
     observedScope = { kind: 'not_observed', timezone: 'Asia/Tokyo' };
     unresolvedDates = datesInWindow(parsedArgs.requestedScope.start_date, parsedArgs.requestedScope.end_date_exclusive);
@@ -304,7 +306,9 @@ export function buildCoverageAndRetries({ parsedArgs, aggregate, checkedAt }) {
 
   const reasonCounts = {};
   for (const blocker of aggregate.blockers) reasonCounts[blocker.status] = (reasonCounts[blocker.status] ?? 0) + 1;
-  if (unresolvedDates.length > blockerDates.length) reasonCounts.source_horizon_pending = unresolvedDates.length - unique(blockerDates).length;
+  const uniqueBlockerDates = unique(blockerDates);
+  const horizonPendingCount = unresolvedDates.filter((date) => !uniqueBlockerDates.includes(date)).length;
+  if (horizonPendingCount > 0) reasonCounts.source_horizon_pending = horizonPendingCount;
 
   const retries = {
     schema_version: 'nar-incremental-retry-targets-v1',
