@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/tmp-update-nar-actions-doc-state.mjs'
+      - 'scripts/tmp-clean-doc-diff-whitespace.mjs'
       - '.github/workflows/tmp-update-nar-actions-doc-state.yml'
   push:
     branches:
@@ -28,6 +29,8 @@ jobs:
           node-version: 22.12.0
       - name: Apply exact documentation state transitions
         run: node scripts/tmp-update-nar-actions-doc-state.mjs
+      - name: Clean changed-line whitespace only
+        run: node scripts/tmp-clean-doc-diff-whitespace.mjs
       - name: Validate diff formatting
         run: git diff --check
       - name: Commit documentation state
