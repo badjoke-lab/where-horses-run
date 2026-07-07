@@ -1,0 +1,64 @@
+name: Temporary NAR July remainder approved batch build
+
+on:
+  push:
+    branches:
+      - work/nar-july-remainder-promotion-batch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-nar-july-remainder-approved-build
+  cancel-in-progress: false
+
+jobs:
+  build-approved-candidates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/nar-july-remainder-promotion-batch
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: node --check scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs
+
+      - name: Build approved source-compatible envelopes
+        run: node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs
+
+      - name: Validate deterministic rebuild
+        run: node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
+
+      - name: Dry-run A+ promotion
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json
+          --dry-run
+
+      - name: Dry-run C promotion
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json
+          --dry-run
+
+      - name: Validate diff formatting
+        run: git diff --check
+
+      - name: Commit generated approved envelopes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json \
+            data/candidates/nar-incremental-v2-july-remainder-c-approved.json
+          if git diff --cached --quiet; then
+            echo "Approved envelopes already current."
+            exit 0
+          fi
+          git commit -m "[CF-Pages-Skip] Generate NAR July remainder approved envelopes"
+          git push origin HEAD:work/nar-july-remainder-promotion-batch
