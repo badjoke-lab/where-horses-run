@@ -3,7 +3,6 @@ name: Calendar NAR reviewed promotion output
 on:
   pull_request:
     paths:
-      - 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
@@ -12,11 +11,12 @@ on:
       - 'data/generated/timetable/jra-pilot-review.json'
       - 'data/generated/timetable/operations-status.json'
       - 'data/generated/timetable/operations-review-package.json'
+      - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
   push:
     branches:
       - main
     paths:
-      - 'data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
@@ -25,6 +25,8 @@ on:
       - 'data/generated/timetable/jra-pilot-review.json'
       - 'data/generated/timetable/operations-status.json'
       - 'data/generated/timetable/operations-review-package.json'
+      - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -43,10 +45,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate approved candidate determinism
-        run: node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
-      - name: Validate canonical promotion determinism
-        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json --check
+      - name: Validate historical and latest approved candidate determinism
+        run: |
+          node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
+          node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
+      - name: Validate latest canonical promotion determinism
+        run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs \
+            --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json \
+            --check
       - name: Validate public projection determinism
         run: node scripts/timetable/build-public-timetable-view.mjs --check
       - name: Validate Japan A+ runtime override synchronization
@@ -59,8 +66,35 @@ jobs:
         run: |
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
-      - name: Validate reviewed NAR canonical and public projection
-        run: node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
+      - name: Validate historical and incremental NAR promoted sets
+        run: |
+          node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
+          node scripts/check-calendar-nar-incremental-reviewed-promotion.mjs --require-promoted
+      - name: Validate no canonical or public IDs were removed
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const { execFileSync } = require('child_process');
+          const baseSha = process.env.BASE_SHA;
+          const datasets = [
+            ['data/generated/timetable/canonical/meetings.json', 'meetings', 'meeting_id'],
+            ['data/generated/timetable/canonical/meeting-details.json', 'details', 'meeting_id'],
+            ['data/generated/timetable/public/meeting-list.json', 'meetings', 'meeting_id'],
+            ['data/generated/timetable/public/meeting-details.json', 'details', 'meeting_id'],
+          ];
+          for (const [file, key, idKey] of datasets) {
+            const baseText = execFileSync('git', ['show', `${baseSha}:${file}`], { encoding: 'utf8' });
+            const base = JSON.parse(baseText)[key];
+            const head = JSON.parse(fs.readFileSync(file, 'utf8'))[key];
+            const headIds = new Set(head.map((record) => record[idKey]));
+            const missing = base.map((record) => record[idKey]).filter((id) => !headIds.has(id));
+            if (missing.length) throw new Error(`${file} removed IDs: ${missing.join(', ')}`);
+            console.log(`${file}: base=${base.length} head=${head.length} removed=0`);
+          }
+          NODE
       - name: Validate runtime boundary
         run: node scripts/check-calendar-runtime-import-boundary.mjs
       - name: Validate changed-file boundary
@@ -72,7 +106,7 @@ jobs:
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
               case "$file" in
-                data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
+                .github/workflows/calendar-nar-reviewed-promotion-output.yml|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
                 *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
               esac
             done <<< "$changed"
