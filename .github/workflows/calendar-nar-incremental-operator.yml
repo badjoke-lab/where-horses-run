@@ -18,19 +18,24 @@ jobs:
           node-version: 22.12.0
       - name: Collect review-only NAR window
         run: |
+          set -o pipefail
           node scripts/timetable/run-nar-incremental-local.mjs \
             --start-date=2026-07-05 \
-            --end-date-exclusive=2026-07-08
+            --end-date-exclusive=2026-07-08 \
+            2>&1 | tee nar-next-window-collection.log
       - name: Validate generated artifacts
+        if: success()
         run: |
           node scripts/check-calendar-nar-incremental.mjs
           node scripts/check-calendar-runtime-import-boundary.mjs
           git status --short
-      - name: Upload review artifacts
+      - name: Upload review diagnostics and artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nar-next-window-review-${{ github.run_id }}
           path: |
+            nar-next-window-collection.log
             data/candidates/nar-incremental-meeting-candidates.json
             data/generated/timetable/nar-incremental-collection-report.json
             data/generated/timetable/nar-coverage-observation.json
