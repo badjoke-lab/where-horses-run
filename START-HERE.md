@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-07
 
 ## Required reading
 
@@ -27,6 +27,7 @@ docs/calendar/nar-candidate-adapter.md
 docs/calendar/nar-14-racecourse-compatibility-audit.md
 docs/calendar/manual-nar-fixture-collection.md
 docs/calendar/nar-monthly-collection-contract.md
+docs/calendar/manual-nar-incremental-collection.md
 docs/calendar/manual-nar-monthly-collection.md
 docs/calendar/banei-a-plus-full-month-plan.md
 docs/calendar/current-baseline-audit.md
@@ -124,6 +125,11 @@ data/audits/nar-legacy-pr281-migration.json
 data/audits/nar-fixture-probe-v1.json
 data/audits/nar-candidate-adapter-v1.json
 data/audits/nar-14-racecourse-compatibility-v1.json
+scripts/timetable/nar-incremental-core.mjs
+scripts/timetable/collect-nar-incremental.mjs
+scripts/timetable/run-nar-incremental-local.mjs
+scripts/check-calendar-nar-incremental-core.mjs
+scripts/check-calendar-nar-incremental.mjs
 collect-nar-fixtures-manual
 collect-nar-monthly-manual
 collect-nar-full-month-manual
@@ -179,17 +185,26 @@ Completed NAR/shared prerequisites:
 - Coverage Observation schema and validator;
 - Batch / Promotion / Coverage / Completion responsibility split;
 - normal promotion rank-regression guard;
-- explicit corrective-downgrade boundary.
+- explicit corrective-downgrade boundary;
+- NAR incremental operator foundation for arbitrary and cross-month windows;
+- deterministic overlap aggregation;
+- selected-meeting scope support;
+- Coverage Observation and retry-target artifact generation;
+- local review-only operator and dedicated CI workflow.
+
+Historical implementation marker retained for governance compatibility: refactor NAR ordinary collection away from fixed July completion gating.
 
 Active sequence:
 
-1. refactor NAR ordinary collection away from fixed July completion gating;
-2. support arbitrary and overlapping windows plus selected-meeting retries;
-3. emit Coverage Observation and explicit retry targets;
-4. collect, review, and promote the next source-visible NAR batch;
-5. run July Completion Audit only when claiming July coverage complete;
-6. complete freshness, rollback, public projection, and bilingual QA;
-7. hand off to Banei under the same common contract with Banei-specific parsing.
+1. validate PR #429 incremental operator CI and output/publication boundaries;
+2. merge the NAR ordinary incremental operator foundation;
+3. run the next explicit source-visible NAR date window;
+4. review generated candidates, Coverage Observation, and retry targets;
+5. promote valid records independently of unresolved dates elsewhere;
+6. run irregular window or selected-meeting retries as required;
+7. run July Completion Audit only when claiming July coverage complete;
+8. complete freshness, rollback, public projection, and bilingual QA;
+9. hand off to Banei under the same common contract with Banei-specific parsing.
 
 ## Historical compatibility markers
 
