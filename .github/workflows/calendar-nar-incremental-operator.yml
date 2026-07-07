@@ -16,6 +16,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Apply review-only core patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/timetable/nar-incremental-core.mjs')
+          text = path.read_text()
+          old_tail = "    unresolvedDates = datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive);"
+          new_tail = "    unresolvedDates = horizonEnd < parsedArgs.requestedScope.end_date_exclusive\n      ? datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive)\n      : [];"
+          old_reason = "  if (unresolvedDates.length > blockerDates.length) reasonCounts.source_horizon_pending = unresolvedDates.length - unique(blockerDates).length;"
+          new_reason = "  const uniqueBlockerDates = unique(blockerDates);\n  const horizonPendingCount = unresolvedDates.filter((date) => !uniqueBlockerDates.includes(date)).length;\n  if (horizonPendingCount > 0) reasonCounts.source_horizon_pending = horizonPendingCount;"
+          if old_tail not in text:
+              raise SystemExit('empty-tail target not found')
+          if old_reason not in text:
+              raise SystemExit('retry-count target not found')
+          text = text.replace(old_tail, new_tail).replace(old_reason, new_reason)
+          path.write_text(text)
+          PY
+          node --check scripts/timetable/nar-incremental-core.mjs
+          node scripts/check-calendar-nar-incremental-core.mjs
       - name: Collect review-only NAR window
         run: |
           set -o pipefail
@@ -36,6 +55,7 @@ jobs:
           name: nar-next-window-review-${{ github.run_id }}
           path: |
             nar-next-window-collection.log
+            scripts/timetable/nar-incremental-core.mjs
             data/candidates/nar-incremental-meeting-candidates.json
             data/generated/timetable/nar-incremental-collection-report.json
             data/generated/timetable/nar-coverage-observation.json
