@@ -107,7 +107,28 @@ scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
-## NAR references
+## NAR ordinary operator references
+
+```text
+scripts/timetable/nar-incremental-core.mjs
+scripts/timetable/collect-nar-incremental.mjs
+scripts/timetable/run-nar-incremental-local.mjs
+scripts/check-calendar-nar-incremental-core.mjs
+scripts/check-calendar-nar-incremental.mjs
+
+scripts/timetable/nar-incremental-v2-core.mjs
+scripts/timetable/nar-incremental-v2-reconcile.mjs
+scripts/timetable/normalize-nar-schedule-aware-month.mjs
+scripts/timetable/collect-nar-incremental-v2.mjs
+scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
+scripts/timetable/run-nar-incremental-v2-local.mjs
+scripts/check-calendar-nar-incremental-v2-core.mjs
+scripts/check-calendar-nar-incremental-v2.mjs
+```
+
+Future ordinary NAR collection uses v2 immutable batch paths. The old fixed-path v1 incremental artifacts remain historical evidence for the reviewed July 5–7 batch and must not be overwritten.
+
+## NAR compatibility and audit references
 
 ```text
 data/static/nar-source-route-architecture-v1.json
@@ -125,11 +146,6 @@ data/audits/nar-legacy-pr281-migration.json
 data/audits/nar-fixture-probe-v1.json
 data/audits/nar-candidate-adapter-v1.json
 data/audits/nar-14-racecourse-compatibility-v1.json
-scripts/timetable/nar-incremental-core.mjs
-scripts/timetable/collect-nar-incremental.mjs
-scripts/timetable/run-nar-incremental-local.mjs
-scripts/check-calendar-nar-incremental-core.mjs
-scripts/check-calendar-nar-incremental.mjs
 collect-nar-fixtures-manual
 collect-nar-monthly-manual
 collect-nar-full-month-manual
@@ -174,7 +190,7 @@ WHR-CAL-JAPAN-JRA-A-PLUS
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
-Completed NAR/shared prerequisites:
+Completed NAR/shared work:
 
 - NAR source architecture and bounded probe;
 - candidate adapter and 14-racecourse compatibility;
@@ -190,21 +206,23 @@ Completed NAR/shared prerequisites:
 - deterministic overlap aggregation;
 - selected-meeting scope support;
 - Coverage Observation and retry-target artifact generation;
-- local review-only operator and dedicated CI workflow.
+- local review-only operator and dedicated CI workflow;
+- reviewed and published NAR incremental detail through 2026-07-07.
 
 Historical implementation marker retained for governance compatibility: refactor NAR ordinary collection away from fixed July completion gating.
 
 Active sequence:
 
-1. validate PR #429 incremental operator CI and output/publication boundaries;
-2. merge the NAR ordinary incremental operator foundation;
-3. run the next explicit source-visible NAR date window;
-4. review generated candidates, Coverage Observation, and retry targets;
-5. promote valid records independently of unresolved dates elsewhere;
-6. run irregular window or selected-meeting retries as required;
-7. run July Completion Audit only when claiming July coverage complete;
-8. complete freshness, rollback, public projection, and bilingual QA;
-9. hand off to Banei under the same common contract with Banei-specific parsing.
+1. validate and merge schedule-aware immutable NAR v2 local operator;
+2. locally run `2026-07-08 <= date < 2026-08-01` with a unique batch ID;
+3. review C Schedule candidates and A+ Detail candidates;
+4. review Coverage Observation, source errors, unresolved IDs, and retry targets;
+5. promote valid records independently of unresolved detail elsewhere;
+6. run irregular selected-meeting retries as required;
+7. promote reviewed C meetings to A+ when later detail becomes available;
+8. run July Completion Audit only when claiming July coverage complete;
+9. complete freshness, rollback, public projection, and bilingual QA;
+10. hand off to Banei under the same common contract with Banei-specific parsing.
 
 ## Historical compatibility markers
 
