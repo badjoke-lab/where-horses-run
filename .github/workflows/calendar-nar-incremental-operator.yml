@@ -1,56 +1,41 @@
-name: Calendar NAR incremental operator
+name: NAR next-window review collection
 
 on:
-  pull_request:
-    paths:
-      - 'scripts/timetable/nar-incremental-core.mjs'
-      - 'scripts/timetable/collect-nar-incremental.mjs'
-      - 'scripts/timetable/run-nar-incremental-local.mjs'
-      - 'scripts/check-calendar-nar-incremental-core.mjs'
-      - 'scripts/check-calendar-nar-incremental.mjs'
-      - 'docs/calendar/**'
-      - '.github/workflows/calendar-nar-incremental-operator.yml'
   push:
     branches:
-      - main
+      - work/nar-next-window
     paths:
-      - 'scripts/timetable/nar-incremental-core.mjs'
-      - 'scripts/timetable/collect-nar-incremental.mjs'
-      - 'scripts/timetable/run-nar-incremental-local.mjs'
-      - 'scripts/check-calendar-nar-incremental-core.mjs'
-      - 'scripts/check-calendar-nar-incremental.mjs'
-      - 'docs/calendar/**'
       - '.github/workflows/calendar-nar-incremental-operator.yml'
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  validate:
+  collect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Check Node syntax
+      - name: Collect review-only NAR window
         run: |
-          node --check scripts/timetable/nar-incremental-core.mjs
-          node --check scripts/timetable/collect-nar-incremental.mjs
-          node --check scripts/timetable/run-nar-incremental-local.mjs
-          node --check scripts/check-calendar-nar-incremental-core.mjs
-          node --check scripts/check-calendar-nar-incremental.mjs
-      - name: Validate incremental core semantics
-        run: node scripts/check-calendar-nar-incremental-core.mjs
-      - name: Validate incremental output boundary
-        run: node scripts/check-calendar-nar-incremental.mjs --allow-empty
-      - name: Validate shared coverage contract
-        run: node scripts/check-calendar-coverage-observation-schema.mjs
-      - name: Validate validation responsibility split
-        run: node scripts/check-calendar-validation-responsibilities.mjs
-      - name: Validate runtime import boundary
-        run: node scripts/check-calendar-runtime-import-boundary.mjs
+          node scripts/timetable/run-nar-incremental-local.mjs \
+            --start-date=2026-07-05 \
+            --end-date-exclusive=2026-07-08
+      - name: Validate generated artifacts
+        run: |
+          node scripts/check-calendar-nar-incremental.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          git status --short
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-next-window-review-${{ github.run_id }}
+          path: |
+            data/candidates/nar-incremental-meeting-candidates.json
+            data/generated/timetable/nar-incremental-collection-report.json
+            data/generated/timetable/nar-coverage-observation.json
+            data/generated/timetable/nar-retry-targets.json
+          if-no-files-found: error
+          retention-days: 7
