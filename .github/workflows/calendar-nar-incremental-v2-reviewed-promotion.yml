@@ -1,0 +1,88 @@
+name: Calendar NAR incremental v2 reviewed promotion
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/**'
+      - 'data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/**'
+      - 'data/reviews/nar-incremental-v2-july-remainder-review.json'
+      - 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json'
+      - 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json'
+      - 'data/static/authority-source-inventory-nar-schedule-grid-v1.json'
+      - 'data/static/calendar-readiness-nar-schedule-grid-v1.json'
+      - 'scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
+      - '.github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/reviews/nar-incremental-v2-july-remainder-review.json'
+      - 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json'
+      - 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json'
+      - 'data/static/authority-source-inventory-nar-schedule-grid-v1.json'
+      - 'data/static/calendar-readiness-nar-schedule-grid-v1.json'
+      - 'scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
+      - '.github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs
+          node --check scripts/timetable/load-authority-source-inventory.mjs
+          node --check scripts/timetable/load-calendar-readiness.mjs
+          node --check scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
+
+      - name: Validate deterministic approved envelopes
+        run: node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
+
+      - name: Validate pinned review, source separation, ranks, and retry alignment
+        run: node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
+
+      - name: Dry-run A+ normal promotion
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json
+          --dry-run
+
+      - name: Dry-run C normal promotion
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json
+          --dry-run
+
+      - name: Validate shared Coverage Observation contract
+        run: node scripts/check-calendar-coverage-observation-schema.mjs
+
+      - name: Validate validation responsibility split
+        run: node scripts/check-calendar-validation-responsibilities.mjs
+
+      - name: Validate governance alignment
+        run: node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
