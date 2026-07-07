@@ -143,8 +143,8 @@ requirePhrases(controlPlane, 'control plane contract', [
   'C < B < B+ < A < A+',
   'Review Queue',
   'Rank-aware Retry Queue',
-  'NAR primary runner: github_actions',
-  'NAR fallback runner: local'
+  'primary runner: github_actions',
+  'fallback runner: local'
 ]);
 
 requirePhrases(controlPlan, 'control plane implementation plan', [
