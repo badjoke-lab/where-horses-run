@@ -1,11 +1,6 @@
-name: Temporary NAR Actions documentation state update
+name: Temporary NAR Actions docs cleanup
 
 on:
-  pull_request:
-    paths:
-      - 'scripts/tmp-update-nar-actions-doc-state.mjs'
-      - 'scripts/tmp-clean-doc-diff-whitespace.mjs'
-      - '.github/workflows/tmp-update-nar-actions-doc-state.yml'
   push:
     branches:
       - work/nar-actions-manual-dispatch
@@ -18,36 +13,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update-docs:
+  cleanup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: work/nar-actions-manual-dispatch
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - name: Apply exact documentation state transitions
-        run: node scripts/tmp-update-nar-actions-doc-state.mjs
-      - name: Clean changed-line whitespace only
-        run: node scripts/tmp-clean-doc-diff-whitespace.mjs
-      - name: Validate diff formatting
-        run: git diff --check
-      - name: Commit documentation state
+      - name: Remove temporary documentation updater files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            START-HERE.md \
-            docs/project-roadmap.md \
-            docs/calendar/implementation-roadmap.md \
-            docs/calendar/acquisition-control-plane-implementation-plan.md \
-            docs/calendar/manual-nar-incremental-collection.md \
-            docs/calendar/nar-a-plus-pilot-plan.md \
-            docs/calendar/README.md
-          if git diff --cached --quiet; then
-            echo "Documentation state already current."
-            exit 0
-          fi
-          git commit -m "[CF-Pages-Skip] Advance NAR Actions control-plane state"
+          git rm \
+            .github/workflows/tmp-update-nar-actions-doc-state.yml \
+            scripts/tmp-update-nar-actions-doc-state.mjs \
+            scripts/tmp-clean-doc-diff-whitespace.mjs
+          git commit -m "[CF-Pages-Skip] Remove temporary NAR Actions docs updater"
           git push origin HEAD:work/nar-actions-manual-dispatch
