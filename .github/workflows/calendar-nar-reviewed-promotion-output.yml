@@ -13,6 +13,7 @@ on:
       - 'data/generated/timetable/operations-review-package.json'
       - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
   push:
     branches:
@@ -28,6 +29,7 @@ on:
       - 'data/generated/timetable/operations-review-package.json'
       - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
 
 concurrency:
@@ -53,16 +55,10 @@ jobs:
           node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
       - name: Validate cumulative canonical promotion determinism
-        run: |
-          node scripts/timetable/promote-approved-candidate-v1.mjs \
-            --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json \
-            --check
-          node scripts/timetable/promote-approved-candidate-v1.mjs \
-            --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json \
-            --check
-          node scripts/timetable/promote-approved-candidate-v1.mjs \
-            --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json \
-            --check
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
       - name: Validate public projection determinism
         run: node scripts/timetable/build-public-timetable-view.mjs --check
       - name: Validate Japan A+ runtime override synchronization
@@ -116,7 +112,7 @@ jobs:
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
               case "$file" in
-                .github/workflows/calendar-nar-reviewed-promotion-output.yml|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
+                .github/workflows/calendar-nar-reviewed-promotion-output.yml|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
                 *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
               esac
             done <<< "$changed"
