@@ -54,8 +54,12 @@ export function loadReviewedNarV2Context() {
   const scheduleCandidates = batch.schedule_candidates ?? [];
   const detailIds = sorted(detailCandidates.map((x) => x.candidate_id));
   const scheduleIds = sorted(scheduleCandidates.map((x) => x.meeting_id));
-  assert(same(detailIds, sorted(review.approved_detail_a_plus_ids ?? [])), 'approved A+ set differs');
-  assert(same(scheduleIds, sorted(review.approved_schedule_c_ids ?? [])), 'approved C set differs');
+  const detailSelection = review.approved_selection?.detail_candidates;
+  const scheduleSelection = review.approved_selection?.schedule_candidates;
+  assert(detailSelection?.selection === 'all_records_in_pinned_batch_category', 'detail selection rule differs');
+  assert(scheduleSelection?.selection === 'all_records_in_pinned_batch_category', 'schedule selection rule differs');
+  assert(detailSelection?.required_rank === 'A+' && detailSelection?.expected_count === detailIds.length, 'detail selection count/rank differs');
+  assert(scheduleSelection?.required_rank === 'C' && scheduleSelection?.expected_count === scheduleIds.length, 'schedule selection count/rank differs');
   assert(detailIds.length === 11 && scheduleIds.length === 71, 'reviewed counts differ');
   assert(new Set([...detailIds, ...scheduleIds]).size === 82, 'reviewed IDs are not unique');
   assert(coverage.coverage_claim === 'source_window_complete', 'schedule coverage claim differs');
