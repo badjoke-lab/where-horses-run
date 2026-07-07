@@ -256,6 +256,14 @@ Every Calendar PR reads:
 
 ## Historical transition markers
 
+Completed historical implementation markers retained for release-gate compatibility:
+
+Completed Work ID: `WHR-CAL-PIPELINE-V1`  
+Completed Work ID: `WHR-CAL-DYNAMIC-DATES`  
+Completed Work ID: `WHR-CAL-OPS-V1`  
+Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
+Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+
 Completed JRA A+ transition:
 
 > Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
