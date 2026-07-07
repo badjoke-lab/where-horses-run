@@ -2,58 +2,95 @@
 
 Status: active contract  
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Pilot audit month: 2026-07
+Pilot audit month: 2026-07  
+Last reviewed: 2026-07-08
 
 ## Purpose
 
-This contract defines the NAR-specific application of the cross-system incremental coverage model.
+This contract defines the NAR-specific application of the cross-system incremental coverage and Acquisition Control Plane models.
 
 The July full-month collector remains useful as a bounded audit and pilot benchmark. It must not become the normal gate for accepting, reviewing, promoting, or publishing otherwise valid partial NAR batches.
 
-The governing common contract is:
+Governing common contracts:
 
 ```text
 docs/calendar/incremental-coverage-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
 ```
 
 ## Required distinction
 
-NAR work separates four concerns:
+NAR work separates:
 
 ```text
-ordinary incremental batch
+ordinary incremental collection
+runner execution environment
 promotion of reviewed records
 coverage audit and retry planning
+rank-aware retry state
 explicit July completion audit
 ```
 
 Fixture compatibility proves parser compatibility with one complete meeting per racecourse. It is not schedule completeness.
 
-A successful incremental batch may contain one meeting, many meetings, an arbitrary date window, an overlapping retry window, or selected meeting IDs.
+A successful incremental batch may contain one meeting, many meetings, an arbitrary date window, an overlapping retry window, a cross-month window, or selected meeting IDs.
 
 ## Source layers
 
 NAR uses two official-source responsibilities:
 
-1. schedule evidence — establishes known racecourse/date meeting identity for the scope observed;
+1. Schedule evidence — establishes known racecourse/date meeting identity for the observed scope;
 2. RaceList and DebaTable — provide B/B+/A/A+ timetable detail when available and safely parsed.
 
-A single operator run may use both responsibilities. The logical separation does not require every meeting to pass through an artificial C-only publication step.
+The present NAR v2 adapter may commonly classify meetings as C or A+ based on currently observed source behavior. That outcome is source-specific and must not redefine the shared five-rank model.
 
-If complete A+ evidence is available, the meeting may proceed directly as an A+ candidate.
+A single Collection Job may use both source responsibilities. The logical separation does not require every meeting to pass through an artificial C-only publication step.
+
+If complete higher-rank evidence is available, the meeting may proceed directly at the highest supported rank.
+
+## Runner model
+
+Current state:
+
+```text
+local v2 runner: available
+bounded GitHub Actions acquisition: successful
+formal workflow_dispatch normal operation: pending
+```
+
+Target state after formal workflow activation:
+
+```text
+primary runner: github_actions
+fallback runner: local
+```
+
+Runner choice must not alter:
+
+- batch identity semantics;
+- rank semantics;
+- Coverage Observation;
+- review requirements;
+- retry semantics;
+- promotion rules;
+- publication boundaries.
+
+Temporary diagnostic workflows are not the canonical steady-state operation.
 
 ## Incremental operator semantics
 
-After the shared operator refactor, NAR collection must support:
+NAR collection supports:
 
 - arbitrary date windows;
 - overlapping windows;
+- cross-month windows;
 - selected-meeting retries;
 - irregular operator run dates;
-- source-visible-horizon collection;
 - valid partial success;
 - explicit unresolved states;
-- deterministic merge by stable meeting identity.
+- deterministic merge by stable meeting identity;
+- immutable batch-specific outputs.
 
 Requested range and observed source range must be recorded separately.
 
@@ -66,13 +103,35 @@ A requested month or wider range that is only partly exposed by the official sou
 | `meeting_complete` | Official detail exists and all fields required for the claimed meeting rank are complete. |
 | `scheduled_pending_details` | Meeting existence is known, but reviewed detail is not yet available. |
 | `not_observed` | The current run did not establish the meeting state. |
-| `not_scheduled` | A reviewed complete schedule source explicitly establishes no meeting in the audited scope. |
+| `not_scheduled` | A reviewed complete Schedule source explicitly establishes no meeting in the audited scope. |
 | `meeting_incomplete` | A meeting exists but the claimed detail rank cannot be safely completed. |
 | `source_unavailable` | The official source route cannot be fetched safely. |
 | `parser_failure` | The source is reachable but cannot be parsed safely. |
 | `cancelled_or_changed` | Reviewed official evidence explicitly supersedes prior meeting state. |
 
-`no_meeting_in_target_month` remains valid only inside a defined full-month completion audit that has a reviewed complete schedule source for that exact month. It must not be inferred from absence in an ordinary partial batch.
+`no_meeting_in_target_month` remains valid only inside a defined full-month Completion Audit that has a reviewed complete Schedule source for that exact month. It must not be inferred from absence in an ordinary partial batch.
+
+## Five-rank semantics
+
+NAR follows the shared order:
+
+```text
+C < B < B+ < A < A+
+```
+
+Current and future NAR source adapters must classify evidence honestly:
+
+```text
+meeting only -> C
++ first race time -> B
++ final race start time -> B+
++ complete per-race post times -> A
++ permitted reviewed programme summary -> A+
+```
+
+The implementation must not infer a final race time from a meeting end time or fabricate missing race rows.
+
+Direct monotonic transitions are allowed when evidence supports them.
 
 ## Absence and merge rule
 
@@ -83,8 +142,9 @@ A meeting missing from a later run must not be removed, cancelled, or downgraded
 For the same stable meeting identity:
 
 ```text
-existing A+ + later C-only observation -> keep A+
-existing A + later B observation -> keep A
+existing A+ + later C observation -> keep A+
+existing A + later B+ observation -> keep A
+existing B+ + later B observation -> keep B+
 existing C + later reviewed A+ -> promote to A+
 ```
 
@@ -97,6 +157,7 @@ Ordinary incremental batches should produce review artifacts that record:
 - requested scope;
 - observed scope;
 - meeting candidates;
+- rank distribution;
 - pending detail;
 - unresolved dates or meeting IDs;
 - source errors;
@@ -125,19 +186,44 @@ The following are not ordinary batch failure conditions by themselves:
 - future dates are not yet exposed by the source;
 - only part of the requested range is observed;
 - another valid meeting elsewhere in the month remains unresolved;
-- the current run overlaps a prior run.
+- the current run overlaps a prior run;
+- different meetings resolve to different supported ranks.
 
 ## Promotion rule
 
 Valid reviewed records may be promoted in partial batches.
 
-Existing reviewed A+ promotions through 2026-07-04 remain valid partial data. Later reviewed batches may be promoted independently as official data becomes available.
+Reviewed NAR detail through 2026-07-07 is already published. Later reviewed batches may be promoted independently as official data becomes available.
 
-Promotion validation must not require July completion.
+Promotion Validation must not require July completion.
 
-## July 2026 completion audit
+Normal promotion remains monotonic across C/B/B+/A/A+.
 
-The existing full-month tooling is retained as a separate July completion-audit path.
+## Retry transition
+
+Current NAR v2 artifacts record retry date targets, meeting targets, and reason counts.
+
+The Acquisition Control Plane will move NAR into a Rank-aware Retry Queue with:
+
+```text
+current_reviewed_rank
+latest_observed_rank
+collection_target_rank
+missing_fields
+retry_reason
+retry_scope
+primary_runner
+fallback_runner
+adapter_id
+retry timing/backoff
+attempt history
+```
+
+The queue must support broad date-window retry and selected-meeting retry.
+
+## July 2026 Completion Audit
+
+The existing full-month tooling is retained as a separate July Completion Audit path.
 
 The audit scope is:
 
@@ -145,7 +231,7 @@ The audit scope is:
 2026-07-01 through 2026-07-31 inclusive
 ```
 
-The July completion audit may claim completion only when:
+The July Completion Audit may claim completion only when:
 
 - all fourteen NAR flat-racing racecourses are classified for the audit scope;
 - every official July meeting date is represented or explicitly blocked;
@@ -155,7 +241,7 @@ The July completion audit may claim completion only when:
 - the public projection and bilingual QA for the audited scope pass;
 - freshness and rollback evidence pass.
 
-A failed or incomplete July completion audit reports gaps and retry targets. It does not invalidate valid reviewed partial promotions.
+A failed or incomplete July Completion Audit reports gaps and retry targets. It does not invalidate valid reviewed partial promotions.
 
 ## Existing July full-month artifacts
 
@@ -168,13 +254,35 @@ data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json
 
 These files are audit/pilot artifacts. They do not define the global rule for ordinary Calendar updates.
 
+## Current repository state
+
+The July 8–31 immutable review batch is committed with:
+
+```text
+schedule-confirmed meetings: 82
+A+ detail candidates:         11
+C schedule candidates:        71
+schedule errors:               0
+coverage claim:                source_window_complete
+pending detail retries:       71
+```
+
+Current order:
+
+1. finish review/promotion/publication for this batch;
+2. close temporary diagnostic PRs without merge;
+3. formalize NAR Actions manual dispatch;
+4. keep local fallback;
+5. register NAR in the Acquisition Registry;
+6. connect NAR to Collection Job/Plan, Review Queue, and Rank-aware Retry Queue contracts.
+
 ## Validation responsibility split
 
-NAR implementation must separate:
+NAR implementation separates:
 
-1. batch validation;
-2. promotion validation;
-3. coverage audit;
-4. July completion audit.
+1. Batch Validation;
+2. Promotion Validation;
+3. Coverage Audit;
+4. July Completion Audit.
 
-The next implementation work must refactor current NAR operator and validator responsibilities to match this split before the pilot continues with additional data collection.
+The source-specific NAR path now feeds the shared control-plane programme. Future orchestration work must follow the common contracts rather than introducing new NAR-only job, plan, review, or retry formats.
