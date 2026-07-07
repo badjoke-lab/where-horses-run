@@ -1,0 +1,44 @@
+name: Calendar NAR incremental promotion batch
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-incremental-*-approved.json'
+      - 'data/reviews/nar-incremental-*-review.json'
+      - 'scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs'
+      - '.github/workflows/calendar-nar-incremental-promotion-batch.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/nar-incremental-*-approved.json'
+      - 'data/reviews/nar-incremental-*-review.json'
+      - 'scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs'
+      - '.github/workflows/calendar-nar-incremental-promotion-batch.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate builder syntax
+        run: node --check scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs
+      - name: Validate approved batch determinism
+        run: node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
+      - name: Validate normal promotion dry run
+        run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs \
+            --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json \
+            --dry-run
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
