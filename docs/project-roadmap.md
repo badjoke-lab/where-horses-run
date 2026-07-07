@@ -43,9 +43,9 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-NAR A+ is current. The first reviewed promotion through 2026-07-04 remains valid partial data. July full-month tooling is a bounded Completion Audit path, not the ordinary update gate.
+NAR A+ is current. Reviewed NAR detail is now published through 2026-07-07. The July full-month tooling remains a bounded Completion Audit path, not the ordinary update gate.
 
-The following shared prerequisite work discovered during NAR is complete:
+Completed NAR/common foundations include:
 
 - cross-system incremental coverage contract;
 - Coverage Observation schema and validator;
@@ -55,9 +55,10 @@ The following shared prerequisite work discovered during NAR is complete:
 - NAR incremental operator foundation for arbitrary and cross-month windows;
 - deterministic overlap aggregation;
 - selected-meeting scope support;
-- Coverage Observation and retry-target artifact generation.
+- Coverage Observation and retry-target artifact generation;
+- reviewed and published incremental NAR detail through 2026-07-07.
 
-The active next work is NAR ordinary-operator validation and the next explicit source-visible collection window.
+The active implementation is the schedule-aware immutable NAR incremental v2 local operator. The next operational target is 2026-07-08 through 2026-07-31 inclusive.
 
 ## Governing Calendar model
 
@@ -122,7 +123,7 @@ Candidate generation is not publication. Scheduled and unattended canonical/publ
 
 Status: complete with active incremental extensions.
 
-Canonical additions now include:
+Canonical common contracts include:
 
 ```text
 docs/calendar/incremental-coverage-contract.md
@@ -194,18 +195,33 @@ Completed:
 - Coverage Observation generation;
 - explicit retry-target generation;
 - local review-only operator;
-- dedicated NAR incremental operator CI workflow.
+- dedicated NAR incremental operator CI workflow;
+- review, promotion, rendered QA, and publication for 10 incremental meetings on 2026-07-05 through 2026-07-07.
 
 Historical implementation marker retained for compatibility: NAR ordinary-operator refactoring.
 
+Current v2 implementation:
+
+```text
+local manual run
+-> immutable batch ID/path
+-> Monthly Schedule Layer observation
+-> known meeting identities
+-> A+ Detail candidates where complete
+-> C Schedule candidates where detail is pending
+-> Coverage Observation
+-> explicit retry targets
+-> human review before promotion
+```
+
 Current sequence:
 
-1. validate PR #429 incremental operator core, output, coverage, and runtime boundaries;
-2. merge the NAR ordinary incremental operator foundation;
-3. collect the next source-visible NAR batch with an explicit requested window;
-4. review candidates, observed scope, unresolved dates, unresolved meeting IDs, source errors, and retry targets;
-5. promote valid reviewed records independently of unresolved dates elsewhere;
-6. run irregular date-window or selected-meeting retries as needed;
+1. complete CI validation and merge of the schedule-aware immutable v2 local operator;
+2. locally collect 2026-07-08 through 2026-07-31 using one immutable batch ID;
+3. review Schedule-confirmed C candidates and Detail-complete A+ candidates;
+4. review Coverage Observation, unresolved meeting IDs, source errors, and retry targets;
+5. promote valid C and A+ records independently of later retries;
+6. run irregular selected-meeting retries and promote C to A+ when reviewed detail becomes available;
 7. run July Completion Audit only when claiming July coverage complete;
 8. complete freshness, rollback, public projection, and bilingual QA.
 
