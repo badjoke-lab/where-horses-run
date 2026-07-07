@@ -1,4 +1,4 @@
-name: NAR next-window review collection
+name: NAR incremental promotion batch generator
 
 on:
   pull_request:
@@ -9,78 +9,39 @@ permissions:
   contents: write
 
 jobs:
-  collect:
+  generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Apply review-only core patch
+      - name: Switch to promotion batch branch
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          path = Path('scripts/timetable/nar-incremental-core.mjs')
-          text = path.read_text()
-          old_tail = "    unresolvedDates = datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive);"
-          new_tail = "    unresolvedDates = horizonEnd < parsedArgs.requestedScope.end_date_exclusive\n      ? datesInWindow(horizonEnd, parsedArgs.requestedScope.end_date_exclusive)\n      : [];"
-          old_reason = "  if (unresolvedDates.length > blockerDates.length) reasonCounts.source_horizon_pending = unresolvedDates.length - unique(blockerDates).length;"
-          new_reason = "  const uniqueBlockerDates = unique(blockerDates);\n  const horizonPendingCount = unresolvedDates.filter((date) => !uniqueBlockerDates.includes(date)).length;\n  if (horizonPendingCount > 0) reasonCounts.source_horizon_pending = horizonPendingCount;"
-          if old_tail not in text:
-              raise SystemExit('empty-tail target not found')
-          if old_reason not in text:
-              raise SystemExit('retry-count target not found')
-          text = text.replace(old_tail, new_tail).replace(old_reason, new_reason)
-          path.write_text(text)
-          PY
-          node --check scripts/timetable/nar-incremental-core.mjs
-          node scripts/check-calendar-nar-incremental-core.mjs
-      - name: Collect review-only NAR window
+          git fetch origin work/nar-incremental-promotion-batch
+          git switch -C work/nar-incremental-promotion-batch origin/work/nar-incremental-promotion-batch
+      - name: Validate builder syntax
+        run: node --check scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs
+      - name: Generate approved promotion batch
         run: |
-          set -o pipefail
-          node scripts/timetable/run-nar-incremental-local.mjs \
-            --start-date=2026-07-05 \
-            --end-date-exclusive=2026-07-08 \
-            2>&1 | tee nar-next-window-collection.log
-      - name: Validate generated artifacts
+          node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs
+          node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
+      - name: Validate normal promotion dry run
         run: |
-          node scripts/check-calendar-nar-incremental.mjs
-          node scripts/check-calendar-runtime-import-boundary.mjs
-          git status --short
-      - name: Upload review diagnostics and artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nar-next-window-review-${{ github.run_id }}
-          path: |
-            nar-next-window-collection.log
-            scripts/timetable/nar-incremental-core.mjs
-            data/candidates/nar-incremental-meeting-candidates.json
-            data/generated/timetable/nar-incremental-collection-report.json
-            data/generated/timetable/nar-coverage-observation.json
-            data/generated/timetable/nar-retry-targets.json
-          if-no-files-found: error
-          retention-days: 7
-      - name: Commit review payload to review branch
+          node scripts/timetable/promote-approved-candidate-v1.mjs \
+            --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json \
+            --dry-run
+      - name: Confirm generated path boundary
         run: |
-          mkdir -p /tmp/nar-review-payload/scripts/timetable
-          mkdir -p /tmp/nar-review-payload/data/candidates
-          mkdir -p /tmp/nar-review-payload/data/generated/timetable
-          cp scripts/timetable/nar-incremental-core.mjs /tmp/nar-review-payload/scripts/timetable/
-          cp data/candidates/nar-incremental-meeting-candidates.json /tmp/nar-review-payload/data/candidates/
-          cp data/generated/timetable/nar-incremental-collection-report.json /tmp/nar-review-payload/data/generated/timetable/
-          cp data/generated/timetable/nar-coverage-observation.json /tmp/nar-review-payload/data/generated/timetable/
-          cp data/generated/timetable/nar-retry-targets.json /tmp/nar-review-payload/data/generated/timetable/
-          git fetch origin work/nar-window-review
-          git switch -C work/nar-window-review origin/work/nar-window-review
-          cp /tmp/nar-review-payload/scripts/timetable/nar-incremental-core.mjs scripts/timetable/
-          cp /tmp/nar-review-payload/data/candidates/nar-incremental-meeting-candidates.json data/candidates/
-          cp /tmp/nar-review-payload/data/generated/timetable/*.json data/generated/timetable/
+          changed=$(git status --porcelain --untracked-files=all | sed 's/^...//')
+          echo "$changed"
+          test "$changed" = "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      - name: Commit generated approved batch
+        run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add scripts/timetable/nar-incremental-core.mjs
-          git add data/candidates/nar-incremental-meeting-candidates.json
-          git add data/generated/timetable/nar-incremental-collection-report.json
-          git add data/generated/timetable/nar-coverage-observation.json
-          git add data/generated/timetable/nar-retry-targets.json
-          git commit -m "Add NAR incremental review window 2026-07-05 to 2026-07-07"
-          git push origin HEAD:work/nar-window-review
+          git add data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json
+          git commit -m "Add approved NAR incremental promotion batch"
+          git push origin HEAD:work/nar-incremental-promotion-batch
