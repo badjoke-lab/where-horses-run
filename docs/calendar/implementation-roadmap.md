@@ -1,7 +1,7 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-07
+Last reviewed: 2026-07-08
 
 ## Purpose
 
@@ -11,6 +11,8 @@ All Calendar work follows:
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/coverage-observation-schema.md
 docs/calendar/validation-responsibility-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
 ```
 
 The shared architecture is:
@@ -21,6 +23,8 @@ Meeting / Schedule Layer
 Timetable Detail Layer
 +
 Coverage Observation
++
+Acquisition Control Plane
 ```
 
 Ordinary updates may be partial, irregular, overlapping, and retried. Completion is an explicit audited claim.
@@ -57,13 +61,17 @@ Operations v1 status: complete
 Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
+Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 Standard flow:
 
 ```text
 official source
+-> runner
 -> adapter or reviewed import
+-> field observation
+-> C/B/B+/A/A+ classification
 -> candidate
 -> Batch Validation
 -> human review
@@ -75,7 +83,7 @@ official source
 parallel:
 Coverage Observation
 -> Coverage Audit
--> retry targets
+-> Rank-aware Retry Queue
 -> optional Completion Audit
 ```
 
@@ -90,6 +98,8 @@ Calendar, Today, Tomorrow, and rolling 30-day views use explicit date/timezone r
 Operations v1 status: complete.
 
 Source health, review packages, pause/rollback, seasonal rollover, and source-breakage escalation are implemented. Scheduled and unattended publication remain disabled.
+
+Operations v1 is not retroactively redefined by the Acquisition Control Plane. A later Operations v2 layer may expose Collection Plans, job state, Review Queue, Retry Queue, and campaign status.
 
 ## Shared incremental coverage implementation
 
@@ -116,35 +126,46 @@ Completed:
 19. reviewed collection, promotion, rendered QA, and publication of NAR detail through 2026-07-07;
 20. immutable batch-specific v2 paths;
 21. Schedule Layer grid observation for known meeting identities;
-22. Schedule-to-C and Detail-to-A+ candidate split;
+22. Schedule-to-C and Detail-to-A+ candidate split for current NAR source behavior;
 23. future `scheduled_pending_details` state;
 24. past/current `detail_retry_required` state;
-25. selected-meeting retry reconciliation.
+25. selected-meeting retry reconciliation;
+26. July 8–31 NAR immutable review batch with 82 schedule-confirmed meetings;
+27. successful bounded NAR acquisition from GitHub Actions.
 
 The validation responsibility split is complete.
 
-Historical implementation marker retained for governance compatibility: refactor NAR ordinary collection away from fixed July Completion Audit gating.
-
-Current shared implementation sequence:
-
-1. validate and merge the schedule-aware immutable NAR v2 local operator;
-2. locally collect 2026-07-08 through 2026-07-31 with a unique batch ID;
-3. review C Schedule candidates, A+ Detail candidates, Coverage Observation, and retry targets;
-4. promote valid reviewed records independently of unresolved detail elsewhere;
-5. repeat irregular selected-meeting retries as needed;
-6. promote reviewed C meetings to A+ when later detail becomes safely available;
-7. run July Completion Audit only when claiming July coverage complete;
-8. reuse the common contracts for Banei, HKJC, UAE, and later systems.
+The current NAR source implementation may observe C and A+ as its present output states. This does not define the shared global model, which remains five-rank capable.
 
 ## Promotion rule
 
 Normal promotion is monotonic by reviewed rank.
 
 ```text
-C -> B      allowed
-B -> A      allowed
-A -> A+     allowed
-A+ -> C     rejected in normal promotion
+C < B < B+ < A < A+
+```
+
+Allowed examples:
+
+```text
+C -> B
+C -> B+
+C -> A
+C -> A+
+B -> B+
+B -> A
+B -> A+
+B+ -> A
+B+ -> A+
+A -> A+
+```
+
+Rejected in normal promotion:
+
+```text
+A+ -> C
+A -> B+
+B+ -> B
 ```
 
 A corrective downgrade is a separately controlled reviewed path. Ordinary source refresh must not infer downgrade from lower-detail observation.
@@ -164,18 +185,28 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 Status: current  
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next shared Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
+Subsequent source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
 WHR-CAL-JAPAN-NAR-A-PLUS
+WHR-CAL-ACQUISITION-CONTROL-PLANE
 WHR-CAL-JAPAN-BANEI-A-PLUS
 WHR-CAL-JAPAN-INTEGRATION
 ```
 
-### JRA A+ — complete
+### JRA A+ — complete source pilot
 
 The JRA A+ reference implementation is complete. It remains a reference, not a rule requiring future fixed-month batch completeness.
+
+Steady-state acquisition direction:
+
+```text
+primary runner: local
+```
+
+JRA later becomes the first required compatibility test for the shared local multi-job runner.
 
 ### NAR A+ — current
 
@@ -200,62 +231,270 @@ Completed:
 - Coverage Observation and retry-target artifact generation;
 - local review-only operator;
 - dedicated incremental operator CI definition;
-- reviewed and published incremental NAR detail through 2026-07-07.
+- schedule-aware immutable v2 implementation;
+- reviewed and published incremental NAR detail through 2026-07-07;
+- July 8–31 review batch collection and immutable commit.
 
-Current implementation:
+Current July 8–31 batch:
 
 ```text
-local manual v2 run
--> immutable batch ID and paths
--> Monthly Schedule grid observation
--> known racecourse/date identities
--> A+ candidate when Detail is complete
--> C candidate when only Schedule is established
--> Coverage Observation
--> retry targets
--> review before promotion
+schedule-confirmed meetings: 82
+A+ detail candidates:         11
+C schedule candidates:        71
+schedule errors:               0
+coverage claim:                source_window_complete
+pending detail retries:       71
 ```
 
-Current sequence:
+Current NAR sequence:
 
-1. complete CI validation and review of schedule-aware immutable v2;
-2. locally collect the 2026-07-08 through 2026-07-31 window;
-3. review schedule-confirmed C candidates and detail-complete A+ candidates;
-4. review unresolved IDs, source errors, and retry targets;
-5. promote valid C and A+ records independently;
-6. run irregular selected-meeting retries where required;
-7. promote C to A+ through normal monotonic promotion when later detail is reviewed;
-8. run July Completion Audit only when claiming July coverage complete;
-9. complete freshness, rollback, public projection, and bilingual QA.
+1. finish review decision and approved candidate generation;
+2. validate 11 A+ and 71 C promotion paths;
+3. perform canonical promotion;
+4. rebuild public projection;
+5. run rendered bilingual QA and release checks;
+6. publish reviewed output;
+7. preserve rank-aware retry work for pending meetings;
+8. close temporary diagnostic acquisition PRs without merge;
+9. formalize NAR Actions manual dispatch;
+10. retain local fallback.
+
+Target NAR operating profile after formal workflow release:
+
+```text
+primary runner: github_actions
+fallback runner: local
+```
 
 Do not flatten local-government racing into a JRA-like feed.
 
-### Banei A+ — next
+## Stage 7 — Acquisition Control Plane foundation
 
-Banei inherits the common incremental contracts but uses Banei-specific source routes, terminology, distance interpretation, and course semantics.
+Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+
+Purpose:
+
+```text
+one shared operating model
+for
+local acquisition
+GitHub Actions acquisition
+reviewed import
+multi-system collection plans
+five-rank result classification
+review state
+rank-aware retry state
+```
+
+The foundation is implemented in this order:
+
+### ACP-0 — documentation alignment
+
+- canonical contract;
+- implementation plan;
+- roadmap and authority alignment;
+- NAR runner transition documentation;
+- five-rank operating semantics.
+
+### ACP-1 — NAR formal workflow dispatch
+
+- bounded manual inputs;
+- date-window and selected-meeting modes;
+- immutable batch outputs;
+- validation and artifact upload;
+- no approval/promotion/publication;
+- local fallback retained.
+
+### ACP-2 — Acquisition Registry
+
+Implement machine-readable routing/capability records for at least:
+
+```text
+japan-jra-system
+japan-nar-system
+japan-banei-system
+```
+
+Registry fields include runner profile, source/adapter profile, Technical Rank, Collection Target Rank, Public Ceiling, supported ranks, scope modes, and retry support.
+
+### ACP-3 — Collection Job schema
+
+One schedulable request with:
+
+```text
+job identity
+campaign identity
+system identity
+runner policy
+scope mode
+requested scope
+rank strategy
+target rank
+reason
+```
+
+### ACP-4 — Collection Plan schema
+
+One campaign may contain many independent jobs with different:
+
+```text
+systems
+runners
+date windows
+reasons
+target ranks
+```
+
+### ACP-5 — five-rank classifier contract
+
+Test common C/B/B+/A/A+ shapes and direct monotonic transitions.
+
+B and B+ are first-class states, not future placeholders.
+
+### ACP-6 — Collection Result Manifest
+
+Every job receives one concise summary with five rank counts, coverage state, unresolved state, source errors, and artifact references.
+
+### ACP-7 — Review Queue
+
+Expose validated batches awaiting review with:
+
+```text
+C count
+B count
+B+ count
+A count
+A+ count
+coverage claim
+unresolved counts
+source error count
+review state
+promotion state
+```
+
+### ACP-8 — Rank-aware Retry Queue
+
+Represent rank gaps such as:
+
+```text
+C -> best available
+B -> B+
+B+ -> A
+A -> A+
+```
+
+Retry records include current reviewed rank, latest observed rank, collection target rank, missing fields, reason, runner, adapter, backoff metadata, and attempt history.
+
+### ACP-9 — shared runner semantics
+
+- Actions jobs consume Collection Jobs;
+- local jobs consume the same Collection Jobs;
+- runner selection does not create incompatible result models;
+- JRA validates local compatibility;
+- NAR validates Actions-primary/local-fallback compatibility.
+
+## Banei handoff gate
+
+Banei begins after the minimum control-plane foundation exists:
+
+1. Acquisition Registry schema and initial records;
+2. Collection Job schema;
+3. Collection Plan schema;
+4. five-rank classifier contract;
+5. Review Queue foundation;
+6. Rank-aware Retry Queue foundation;
+7. runner-neutral batch/result semantics.
+
+Full Actions matrix execution, full scheduler, and automatic PR generation are not required before Banei starts.
+
+### Banei A+ — subsequent
+
+Banei inherits the shared control-plane and incremental contracts but uses Banei-specific source routes, terminology, distance interpretation, and course semantics.
 
 Banei sequence:
 
-1. implement arbitrary-window schedule/detail acquisition;
-2. allow direct higher-rank candidate output when supported;
-3. preserve meeting identity while detail is pending;
-4. review/promote valid partial batches independently;
-5. maintain Coverage Observation and retry targets;
-6. use July whole-month validation only for an explicit Completion Audit claim;
-7. complete freshness, rollback, and bilingual QA.
+1. register runner/source/adapter profile;
+2. implement arbitrary-window Schedule/Detail acquisition;
+3. classify best available rank across C/B/B+/A/A+;
+4. preserve meeting identity while higher detail is pending;
+5. emit Coverage Observation and rank-aware retry state;
+6. review/promote valid partial batches independently;
+7. use July whole-month validation only for an explicit Completion Audit claim;
+8. complete freshness, rollback, and bilingual QA.
 
-## Stage 7 — additional pilots
+## Stage 8 — multi-system execution
+
+After the minimum foundation and Banei start:
+
+### Actions multi-job execution
+
+- consume one Collection Plan;
+- filter hosted-capable jobs;
+- permit different scopes per system;
+- isolate job failure;
+- preserve independent batch artifacts;
+- emit campaign summary.
+
+### Local multi-job execution
+
+- consume the same Collection Plan;
+- filter local jobs;
+- route jobs to source-specific adapters;
+- permit different scopes per system;
+- preserve independent batches;
+- continue bounded independent jobs after isolated failure where safe.
+
+### Review cohort planner
+
+Group review-ready batches by risk and compatibility, not merely by collection time.
+
+One campaign may produce several review PRs.
+
+## Stage 9 — review automation and scheduling
+
+### Automatic review PR preparation
+
+The system may prepare deterministic review PRs with candidate diffs, coverage summaries, rank distributions, and retry summaries.
+
+The automation stop point remains:
+
+```text
+HUMAN REVIEW REQUIRED
+```
+
+### Due-job planner
+
+Generate explicit jobs from:
+
+```text
+source freshness thresholds
+meeting proximity
+source publication horizon
+season state
+rank gaps
+retry backoff
+coverage gaps
+source health
+```
+
+### Scheduled steady-state maintenance
+
+Add regular refresh and bounded retry scheduling only after job generation, queue state, runner routing, and human review boundaries are stable.
+
+Unattended publication remains disabled.
+
+## Stage 10 — additional pilots
 
 ```text
 WHR-CAL-HONG-KONG-HKJC
 WHR-CAL-UAE-ERA
 ```
 
-HKJC and UAE inherit Pipeline v1, incremental coverage, Coverage Observation, validation responsibility, human review, public boundary, freshness, fallback, rollback, and bilingual QA requirements.
+HKJC and UAE inherit Pipeline v1, incremental coverage, Coverage Observation, validation responsibility, Acquisition Control Plane Job/Plan semantics, five-rank classification, human review, public boundary, freshness, fallback, rollback, and bilingual QA requirements.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
-## Stage 8 — Calendar public v1
+## Stage 11 — Calendar public v1
 
 Work ID: `WHR-CAL-PUBLIC-V1`
 
@@ -269,27 +508,52 @@ Release criteria include:
 - honest partial coverage;
 - safe stale/failure handling;
 - bilingual responsive QA;
+- review and retry operations ownership;
 - no participant, betting, result, payout, prediction, full-racecard, raw-source, embedded-video, or direct-stream output.
 
-## Stages 9–12
+## Later product stages
 
-### Stage 9 — racecourse pages and product navigation
+### Racecourse pages and product navigation
 
 Strengthen canonical racecourse pages, current/next meeting state, recent reviewed meetings, course/distance profile, official sources, freshness, and cross-navigation.
 
-### Stage 10 — glossary, racing types, search, filtering, SEO
+### Glossary, racing types, search, filtering, SEO
 
 Implement reviewed terminology, local names, readings/pronunciation metadata where supported, navigation, search/filtering, metadata, sitemap, canonical/hreflang, structured data, methodology, coverage, and limitations pages.
 
-### Stage 11 — expansion cohorts
+### Expansion cohorts
 
-Choose systems by source stability, coverage, timetable depth, maintenance cost, publication safety, season timing, and user value. Every system inherits the common incremental and validation contracts.
+Choose systems by source stability, coverage, timetable depth, maintenance cost, publication safety, season timing, and user value. Every system inherits the common incremental and Acquisition Control Plane contracts.
 
-### Stage 12 — steady-state maintenance
+### Steady-state maintenance
 
-Operator-triggered maintenance may be irregular. Valid operations include arbitrary windows, overlap retries, selected-meeting retries, and source-visible-horizon runs.
+Valid operations include arbitrary windows, overlap retries, selected-meeting retries, source-visible-horizon runs, multi-system Plans, different scopes per job, Actions execution, local execution, and rank-gap retries.
 
-Nominal daily, weekly, monthly, and seasonal rhythms are priority targets, not prerequisites for later valid updates.
+Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, not prerequisites for later valid updates.
+
+## Immediate execution order
+
+From the current repository state:
+
+```text
+1. merge control-plane documentation alignment
+2. finish NAR 82-meeting review/promotion/publication
+3. close temporary diagnostic PRs #430 and #435 without merge
+4. formalize NAR Actions manual dispatch
+5. add Acquisition Registry
+6. add Collection Job schema
+7. add Collection Plan schema
+8. add five-rank classifier contract tests
+9. add Result Manifest
+10. add Review Queue
+11. add Rank-aware Retry Queue
+12. connect Actions and local runners to shared job semantics
+13. begin Banei on the shared foundation
+14. expand multi-system execution
+15. add automatic review PR preparation
+16. add due-job planning and scheduled bounded retries
+17. add Operations v2 operator view
+```
 
 ## Per-PR document review
 
@@ -301,9 +565,11 @@ Calendar PRs review:
 4. `docs/calendar/incremental-coverage-contract.md`;
 5. `docs/calendar/coverage-observation-schema.md`;
 6. `docs/calendar/validation-responsibility-contract.md`;
-7. active source-specific plan;
-8. deployment/CI policy;
-9. applicable machine-readable policies, registries, controls, and display boundaries.
+7. `docs/calendar/acquisition-control-plane-contract.md`;
+8. `docs/calendar/acquisition-control-plane-implementation-plan.md`;
+9. active source-specific plan;
+10. deployment/CI policy;
+11. applicable machine-readable policies, registries, controls, and display boundaries.
 
 ## Deployment rule
 
