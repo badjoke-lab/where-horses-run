@@ -1,0 +1,113 @@
+name: Temporary NAR July remainder promotion output
+
+on:
+  push:
+    branches:
+      - work/nar-july-remainder-promotion-output
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-nar-july-remainder-promotion-output
+  cancel-in-progress: false
+
+jobs:
+  generate-output:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/nar-july-remainder-promotion-output
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Promote C schedule meetings
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json
+
+      - name: Promote A+ detail meetings
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json
+
+      - name: Rebuild public projection
+        run: node scripts/timetable/build-public-timetable-view.mjs
+
+      - name: Synchronize Japan A+ override
+        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+
+      - name: Synchronize JRA pilot review
+        run: node scripts/timetable/build-jra-pilot-review.mjs
+
+      - name: Synchronize operations status
+        run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-02
+
+      - name: Synchronize operations review package
+        run: node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate deterministic approved envelopes
+        run: node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
+
+      - name: Validate C promotion determinism
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json
+          --check
+
+      - name: Validate A+ promotion determinism
+        run: >-
+          node scripts/timetable/promote-approved-candidate-v1.mjs
+          --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json
+          --check
+
+      - name: Validate public and synchronized outputs
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Validate historical and current promoted sets
+        run: |
+          node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
+          node scripts/check-calendar-nar-incremental-reviewed-promotion.mjs --require-promoted
+          node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs --require-promoted
+
+      - name: Validate runtime boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Install dependencies
+        run: npm install --package-lock=false --no-audit --no-fund
+
+      - name: Build site
+        run: npm run build
+
+      - name: Check generated diff formatting
+        run: git diff --check
+
+      - name: Commit generated promotion output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/jra-pilot-review.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo "Promotion outputs already current."
+            exit 0
+          fi
+          git commit -m "Promote NAR July remainder meetings"
+          git push origin HEAD:work/nar-july-remainder-promotion-output
