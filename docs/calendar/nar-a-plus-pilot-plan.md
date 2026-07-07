@@ -1,10 +1,10 @@
 # NAR A+ pilot plan
 
-Status: active  
+Status: source pilot publication complete; maintenance retries continue
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Pilot audit month: 2026-07  
-Current phase: July remainder review/promotion and runner transition  
-Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
+Current phase: Acquisition Control Plane integration and detail retries
+Current shared Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
 Last reviewed: 2026-07-08
 
@@ -34,7 +34,7 @@ Kanazawa, Kasamatsu, Nagoya, Sonoda, Himeji, Kochi, Saga
 
 Obihiro remains a separate Banei Work ID.
 
-Reviewed NAR detail through 2026-07-07 is already published. The July 2026 full-month path remains a bounded Completion Audit and pilot benchmark. It is not the normal promotion gate for later incremental batches.
+Reviewed NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch contributes 11 A+ detail records and 71 C schedule records; the C records remain detail-retry work. The July 2026 full-month path remains a bounded Completion Audit and pilot benchmark. It is not the normal promotion gate for later incremental batches.
 
 ## Shared acquisition model
 
@@ -66,16 +66,10 @@ For NAR specifically:
 Current implemented state:
 
 ```text
-local v2 runner: available
-bounded GitHub Actions acquisition: successful
-formal workflow_dispatch normal operation: pending
-```
-
-Target profile after the formal workflow-dispatch path is merged and validated:
-
-```text
 primary runner: github_actions
+formal workflow_dispatch normal operation: active
 fallback runner: local
+scheduled publication: disabled
 ```
 
 Temporary diagnostic workflows must be closed without merge after their bounded purpose is complete.
@@ -97,7 +91,11 @@ The formal Actions workflow must remain review-only and must not approve, promot
 11. arbitrary/cross-month/selected-meeting v1 operator foundation — complete;
 12. schedule-aware immutable v2 batch path — complete;
 13. reviewed promotion and publication through 2026-07-07 — complete;
-14. July 8–31 immutable review batch collection — complete.
+14. July 8–31 immutable review batch collection — complete;
+15. pinned review and source-separated C/A+ approval envelopes — complete;
+16. canonical promotion, public projection, rendered QA, and release-gate validation — complete;
+17. temporary PR #430/#435 closure without merge — complete;
+18. formal Actions manual-dispatch operator — complete.
 
 ## Current July 8–31 batch
 
@@ -112,22 +110,15 @@ coverage claim:                source_window_complete
 pending detail retries:       71
 ```
 
-This batch is currently awaiting completion of review decision, approved candidate generation, promotion, projection, QA, and publication.
+This batch is reviewed, promoted, projected, QA-validated, and published from main. The 71 C meetings remain explicit detail-retry targets.
 
 ## Current sequence
 
-1. finalize the exact review decision for the 82-meeting batch;
-2. generate source-compatible approved promotion envelopes;
-3. validate 11 A+ and 71 C promotion paths;
-4. perform canonical promotion;
-5. rebuild public projection;
-6. run rendered bilingual QA and release checks;
-7. publish reviewed output;
-8. preserve pending meetings as retry work;
-9. close temporary diagnostic PRs #430 and #435 without merge;
-10. formalize NAR Actions manual dispatch;
-11. retain local fallback;
-12. hand NAR into the shared Acquisition Registry / Job / Plan / Review Queue / Retry Queue model.
+1. keep the 71 C meetings in explicit detail-retry work;
+2. use Actions manual dispatch as primary acquisition runner;
+3. retain the local v2 runner as fallback;
+4. register NAR in the shared Acquisition Registry;
+5. connect NAR to Collection Job / Plan / Review Queue / Rank-aware Retry Queue semantics.
 
 ## Source layers
 
@@ -192,10 +183,10 @@ Failure of the Completion Audit must not roll back or block unrelated valid part
 
 ## Control-plane handoff
 
-After the current NAR publication path:
+Current control-plane handoff:
 
 ```text
-formal NAR Actions workflow
+formal NAR Actions workflow active
 -> Acquisition Registry
 -> Collection Job schema
 -> Collection Plan schema

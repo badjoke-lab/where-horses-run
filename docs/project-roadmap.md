@@ -2,9 +2,9 @@
 
 Status: active canonical project roadmap  
 Country-page programme: complete  
-Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Last reviewed: 2026-07-08
 
 ## Purpose
@@ -44,20 +44,20 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-NAR A+ is current.
+The NAR source pilot publication sequence is complete and the Acquisition Control Plane is current.
 
-Reviewed NAR detail through 2026-07-07 has been promoted and published. The schedule-aware immutable v2 operator is merged. The July 8–31 review batch is committed and contains:
+Reviewed NAR schedule coverage through 2026-07-31 has been promoted and published. The July 8–31 batch contains:
 
 ```text
 schedule-confirmed meetings: 82
-A+ detail candidates:         11
-C schedule candidates:        71
+A+ detail records:            11
+C schedule records:           71
 schedule errors:               0
 coverage claim:                source_window_complete
 pending detail retries:       71
 ```
 
-The 82-meeting batch is currently in review/promotion preparation. It is not yet fully promoted or published.
+The 71 C records remain explicit detail-retry work. Formal NAR `workflow_dispatch` acquisition is active with GitHub Actions as primary runner and local execution as fallback.
 
 The July full-month tooling remains a bounded Completion Audit path, not the ordinary update gate.
 
@@ -191,11 +191,11 @@ System A+ is a ceiling, not invented meeting detail.
 
 ## Japan pilot activation
 
-Status: current  
+Status: NAR source pilot complete; shared control-plane foundation current
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Shared next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Subsequent source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ### JRA A+
 
@@ -237,22 +237,23 @@ Completed:
 - schedule-aware immutable v2 batch paths;
 - Schedule Layer and Detail Layer combined observation;
 - review, promotion, rendered QA, and publication for 10 incremental meetings on 2026-07-05 through 2026-07-07;
-- July 8–31 review batch collection and immutable main-branch commit for 82 meetings.
+- July 8–31 immutable batch collection for 82 meetings;
+- pinned human review and source-separated approved C/A+ envelopes;
+- canonical promotion and public projection for all 82 reviewed meetings;
+- rendered QA and Pipeline v1 release-gate validation;
+- closure of temporary diagnostic PRs #430 and #435 without merge;
+- formal Actions manual-dispatch operator with immutable review-artifact upload.
 
-Current NAR sequence:
+Current NAR maintenance state:
 
-1. finalize the 82-meeting review decision and approved promotion envelopes;
-2. validate 11 A+ and 71 C normal promotion paths;
-3. promote canonical records;
-4. rebuild public projection;
-5. run rendered bilingual QA and release checks;
-6. publish the reviewed batch;
-7. retain the 71 C meetings as detail retry targets;
-8. close temporary diagnostic acquisition PRs without merge;
-9. formalize NAR Actions manual dispatch;
-10. keep local execution as fallback.
+1. the July 8–31 batch is reviewed, promoted, projected, QA-validated, and published from main;
+2. 11 meetings are A+ detail-complete;
+3. 71 meetings remain C schedule identities and explicit detail retry targets;
+4. formal Actions manual dispatch is the primary operator path;
+5. local v2 execution remains the fallback and development path;
+6. NAR now hands off into the shared Registry / Job / Plan / Review Queue / Retry Queue model.
 
-Target operating profile after the formal workflow is merged:
+Active operating profile:
 
 ```text
 NAR primary runner: github_actions
@@ -286,8 +287,8 @@ Rank-aware Retry Queue
 
 The foundation sequence is:
 
-1. NAR formal Actions manual-dispatch path;
-2. Acquisition Registry schema and Japan profiles;
+1. NAR formal Actions manual-dispatch path — complete;
+2. Acquisition Registry schema and Japan profiles — current;
 3. Collection Job schema and fixtures;
 4. Collection Plan schema and fixtures;
 5. common C/B/B+/A/A+ classifier contract tests;
@@ -428,6 +429,11 @@ Completed Work ID: `WHR-CAL-DYNAMIC-DATES`
 Completed Work ID: `WHR-CAL-OPS-V1`  
 Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+
+Completed NAR transition:
+
+> Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+> Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 
 Completed JRA A+ transition:
 

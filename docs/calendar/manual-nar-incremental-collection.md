@@ -1,7 +1,8 @@
 # Manual NAR incremental collection
 
-Status: active operator runbook with runner transition  
-Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Status: active operator runbook
+Primary Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+NAR maintenance context: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Last reviewed: 2026-07-08
 
 ## Governing contracts
@@ -26,16 +27,11 @@ The July full-month path remains a separate bounded Completion Audit path.
 Current implemented state:
 
 ```text
-local v2 runner: available and canonical
-bounded GitHub Actions acquisition: proven successful
-formal workflow_dispatch operation: not yet canonical
-```
-
-Target state after the formal workflow-dispatch implementation is merged and validated:
-
-```text
 primary runner: github_actions
+formal workflow_dispatch operation: active
 fallback runner: local
+immutable review artifact upload: active
+scheduled publication: disabled
 ```
 
 Temporary diagnostic Actions workflows must not be treated as the permanent operating interface.
@@ -120,9 +116,9 @@ node scripts/timetable/run-nar-incremental-v2-local.mjs \
 
 Multiple meeting IDs may also be supplied with comma-separated `--meeting-ids=`.
 
-## Formal Actions workflow target
+## Formal Actions workflow
 
-The formal NAR workflow-dispatch path must accept bounded operator inputs equivalent to the local v2 runner.
+The canonical operator entry point is `.github/workflows/calendar-nar-incremental-v2-operator.yml`. It accepts bounded operator inputs equivalent to the local v2 runner and uploads review artifacts without repository writes.
 
 Required input concepts:
 
@@ -144,7 +140,7 @@ Required behavior:
 6. expose failure clearly;
 7. perform no approval, promotion, canonical write, public write, or deployment.
 
-The formal workflow is an implementation step under `WHR-CAL-ACQUISITION-CONTROL-PLANE`.
+The formal workflow is active under `WHR-CAL-ACQUISITION-CONTROL-PLANE`. Inputs are validated by `nar-incremental-v2-actions-core.mjs`; the workflow launcher is `run-nar-incremental-v2-actions.mjs`; the operator contract is checked by `check-calendar-nar-incremental-v2-actions-operator.mjs`.
 
 ## Batch identity rule
 
@@ -367,6 +363,7 @@ Dedicated CI also validates:
 
 ```text
 scripts/check-calendar-nar-incremental-v2-core.mjs
+scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
 ```
 
 Current synthetic cases cover:
@@ -415,9 +412,7 @@ Completion Audit
 
 ## Current repository position
 
-Published NAR detail is complete through 2026-07-07 for the reviewed promoted batches.
-
-The July 8–31 immutable review batch is committed with:
+Reviewed NAR schedule coverage through 2026-07-31 is promoted and projected. The July 8–31 published batch contains:
 
 ```text
 schedule-confirmed meetings: 82
@@ -428,15 +423,15 @@ coverage claim:                source_window_complete
 pending detail retries:       71
 ```
 
-The next source-specific steps are review, approved candidate generation, promotion, projection, QA, and publication for that batch.
+The 11 A+ meetings are detail-complete. The 71 C meetings are published schedule identities and remain explicit detail-retry targets.
 
-After publication:
+Current handoff:
 
 ```text
-formal NAR Actions manual dispatch
--> primary hosted runner
+primary hosted runner active
 -> local fallback retained
--> shared Acquisition Registry / Job / Plan integration
+-> Acquisition Registry current
+-> Job / Plan / Review Queue / Retry Queue integration next
 ```
 
 ## Relationship to v1, legacy monthly, and July Completion Audit

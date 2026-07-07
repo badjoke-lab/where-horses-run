@@ -138,15 +138,12 @@ Do not invent parallel ad hoc schemas outside the control-plane contract.
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
-NAR detail through 2026-07-07 is published. The July 8–31 immutable review batch is committed with 82 schedule-confirmed meetings: 11 A+ and 71 C, with zero schedule errors and 71 pending detail retries.
+NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch contains 82 schedule-confirmed meetings: 11 A+ and 71 C, with zero schedule errors and 71 pending detail retries. Temporary diagnostic PRs are closed, and formal Actions manual dispatch is active with local fallback.
 
 The immediate sequence is:
 
 ```text
-finish NAR review/promotion/publication
--> close temporary diagnostic PRs without merge
--> formalize NAR Actions manual dispatch
--> Acquisition Registry
+Acquisition Registry
 -> Collection Job / Collection Plan schemas
 -> five-rank classifier contract
 -> Result Manifest / Review Queue / Rank-aware Retry Queue
