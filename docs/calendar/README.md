@@ -1,7 +1,7 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-07
 
 Use these files together:
 
@@ -26,8 +26,10 @@ Use these files together:
 - [`operations-v1-contract.md`](operations-v1-contract.md) — review-only operator status, thresholds, and no-write boundary.
 - [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
 - [`japan-full-month-scope-policy.md`](japan-full-month-scope-policy.md) — July completion-audit policy; full-month completeness is not an ordinary update gate.
-- [`nar-a-plus-pilot-plan.md`](nar-a-plus-pilot-plan.md) — active NAR pilot state and incremental refactor sequence.
+- [`nar-a-plus-pilot-plan.md`](nar-a-plus-pilot-plan.md) — active NAR pilot state and incremental operator sequence.
 - [`nar-monthly-collection-contract.md`](nar-monthly-collection-contract.md) — NAR ordinary incremental collection versus July completion-audit split.
+- [`manual-nar-incremental-collection.md`](manual-nar-incremental-collection.md) — active ordinary NAR arbitrary-window, overlap, selected-meeting, coverage-observation, and retry-target operator runbook.
+- [`manual-nar-monthly-collection.md`](manual-nar-monthly-collection.md) — legacy compatibility monthly operator runbook.
 - [`banei-a-plus-full-month-plan.md`](banei-a-plus-full-month-plan.md) — queued Banei incremental plan and separate July completion audit.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
@@ -74,8 +76,13 @@ data/generated/timetable/jra-planned-program-review.json
 data/generated/timetable/local-racing-pilot-review.json
 data/archive/timetable/candidates/japan-nar-candidates.v0.json
 scripts/timetable/coverage-observation-validation.mjs
+scripts/timetable/nar-incremental-core.mjs
+scripts/timetable/collect-nar-incremental.mjs
+scripts/timetable/run-nar-incremental-local.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
+scripts/check-calendar-nar-incremental-core.mjs
+scripts/check-calendar-nar-incremental.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-build-boundary.mjs
@@ -101,7 +108,7 @@ scripts/check-local-racing-pilot-foundation.mjs
 
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
-Coverage Observation and validation responsibility foundations are active. The next implementation step is NAR ordinary-operator refactoring for arbitrary windows, overlap-safe retries, selected-meeting retries, observation output, and explicit retry targets.
+Coverage Observation and validation responsibility foundations are active. The NAR ordinary incremental operator foundation now implements arbitrary/cross-month windows, overlap-safe aggregation, selected-meeting scope, Coverage Observation, and explicit retry targets; it remains review-only until CI and human review complete.
 
 ## Operating rule
 
