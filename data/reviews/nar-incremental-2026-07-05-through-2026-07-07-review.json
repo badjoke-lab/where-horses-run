@@ -1,0 +1,37 @@
+{
+  "schema_version": "nar-incremental-review-decision-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "source_candidate_path": "data/candidates/nar-incremental-meeting-candidates.json",
+  "source_candidate_blob_sha": "17f764a37639074f3d396ba90be945acc37ff097",
+  "source_generated_at": "2026-07-07T12:29:53.387Z",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-07-05",
+    "end_date_exclusive": "2026-07-08",
+    "timezone": "Asia/Tokyo"
+  },
+  "review": {
+    "status": "approved",
+    "reviewer": "badjoke-lab",
+    "reviewed_at": "2026-07-07T12:42:01Z",
+    "promotion_target": "canonical-timetable-v0"
+  },
+  "approved_candidate_ids": [
+    "nar-kanazawa-racecourse-2026-07-05",
+    "nar-kanazawa-racecourse-2026-07-07",
+    "nar-kawasaki-racecourse-2026-07-06",
+    "nar-kawasaki-racecourse-2026-07-07",
+    "nar-kochi-racecourse-2026-07-05",
+    "nar-monbetsu-racecourse-2026-07-07",
+    "nar-morioka-racecourse-2026-07-05",
+    "nar-morioka-racecourse-2026-07-06",
+    "nar-morioka-racecourse-2026-07-07",
+    "nar-saga-racecourse-2026-07-05"
+  ],
+  "expected_counts": {
+    "meetings_discovered": 10,
+    "complete_meeting_candidates": 10,
+    "blocked_meetings": 0
+  },
+  "decision": "Approve exactly the listed complete public-safe incremental NAR meeting candidates for bounded canonical promotion. No unlisted meeting, blocker, raw source content, participant data, betting data, result data, or prediction data is approved."
+}
