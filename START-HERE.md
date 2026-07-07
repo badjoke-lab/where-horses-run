@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-07
+Last reviewed: 2026-07-08
 
 ## Required reading
 
@@ -16,6 +16,8 @@ docs/calendar/machine-readable-contracts.md
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/coverage-observation-schema.md
 docs/calendar/validation-responsibility-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -45,6 +47,8 @@ Meeting / Schedule Layer
 Timetable Detail Layer
 +
 Coverage Observation
++
+Acquisition Control Plane
 ```
 
 Validation roles:
@@ -56,18 +60,61 @@ Coverage Audit
 Completion Audit
 ```
 
+Operational flow:
+
+```text
+Collection Plan
+-> independent Collection Jobs
+-> runner routing
+-> source-specific adapters
+-> field observation
+-> C/B/B+/A/A+ classification
+-> Batch Validation
+-> Coverage Observation
+-> Review Queue
+-> Rank-aware Retry Queue
+-> human review
+-> Promotion Validation
+-> canonical promotion
+-> public projection
+```
+
 Rules:
 
 - operator runs may be irregular;
 - windows may vary, overlap, cross month boundaries, or target selected meetings;
+- one campaign may contain multiple systems with different date ranges;
 - shorter source horizons and valid partial batches are allowed;
 - meetings may enter at C, B, B+, A, or A+ according to reviewed evidence;
+- direct promotion may skip intermediate ranks when evidence supports a higher rank;
+- B and B+ are first-class operational states;
 - absence from one run is not deletion or cancellation;
 - normal promotion rejects rank regression;
 - corrective downgrade is a separate explicit reviewed path;
-- month or season completeness belongs only to explicit Completion Audit.
+- runner choice does not change batch, rank, coverage, review, or promotion semantics;
+- month or season completeness belongs only to explicit Completion Audit;
+- unattended publication remains disabled unless separately approved.
 
-## Shared machine-readable references
+## Runner model
+
+Runner routing is system/source/adapter specific, not country-only.
+
+Initial operating direction:
+
+```text
+JRA
+primary runner: local
+
+NAR
+current: local runner available + bounded Actions success evidence
+target after formal workflow activation:
+  primary runner: github_actions
+  fallback runner: local
+```
+
+Do not manage future systems by operator memory. The Acquisition Registry will become the routing source of truth.
+
+## Shared implemented machine-readable references
 
 ```text
 data/static/authority-source-inventory.json
@@ -107,6 +154,24 @@ scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-project-governance-docs.mjs
 ```
 
+## Planned control-plane machine-readable references
+
+Implementation must create canonical schemas/validators for:
+
+```text
+Acquisition Registry
+Collection Job
+Collection Plan
+Collection Result Manifest
+Review Queue
+Rank-aware Retry Queue
+five-rank classifier contract
+runner compatibility
+control-plane release gate
+```
+
+Do not create parallel ad hoc job/queue formats outside the control-plane contract.
+
 ## NAR ordinary operator references
 
 ```text
@@ -127,6 +192,8 @@ scripts/check-calendar-nar-incremental-v2.mjs
 ```
 
 Future ordinary NAR collection uses v2 immutable batch paths. The old fixed-path v1 incremental artifacts remain historical evidence for the reviewed July 5–7 batch and must not be overwritten.
+
+The formal NAR Actions workflow-dispatch path is a scheduled implementation step. Temporary diagnostic workflows are not the canonical normal operation.
 
 ## NAR compatibility and audit references
 
@@ -188,41 +255,46 @@ WHR-CAL-JAPAN-JRA-A-PLUS
 ```
 
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
+Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
-Completed NAR/shared work:
+Current NAR status:
 
-- NAR source architecture and bounded probe;
-- candidate adapter and 14-racecourse compatibility;
-- 14/14 complete fixture set;
-- first reviewed A+ promotion through 2026-07-04;
-- July bounded completion-audit tooling;
-- incremental coverage contract;
-- Coverage Observation schema and validator;
-- Batch / Promotion / Coverage / Completion responsibility split;
-- normal promotion rank-regression guard;
-- explicit corrective-downgrade boundary;
-- NAR incremental operator foundation for arbitrary and cross-month windows;
-- deterministic overlap aggregation;
-- selected-meeting scope support;
-- Coverage Observation and retry-target artifact generation;
-- local review-only operator and dedicated CI workflow;
-- reviewed and published NAR incremental detail through 2026-07-07.
+```text
+published through 2026-07-07
+July 8–31 review batch committed
+schedule-confirmed: 82
+A+: 11
+C: 71
+schedule errors: 0
+coverage: source_window_complete
+pending detail retries: 71
+promotion/publication of this batch: pending
+```
 
-Historical implementation marker retained for governance compatibility: refactor NAR ordinary collection away from fixed July completion gating.
+## Active sequence
 
-Active sequence:
-
-1. validate and merge schedule-aware immutable NAR v2 local operator;
-2. locally run `2026-07-08 <= date < 2026-08-01` with a unique batch ID;
-3. review C Schedule candidates and A+ Detail candidates;
-4. review Coverage Observation, source errors, unresolved IDs, and retry targets;
-5. promote valid records independently of unresolved detail elsewhere;
-6. run irregular selected-meeting retries as required;
-7. promote reviewed C meetings to A+ when later detail becomes available;
-8. run July Completion Audit only when claiming July coverage complete;
-9. complete freshness, rollback, public projection, and bilingual QA;
-10. hand off to Banei under the same common contract with Banei-specific parsing.
+```text
+1. merge control-plane documentation alignment
+2. finish NAR 82-meeting review/promotion/publication
+3. close temporary diagnostic PRs #430 and #435 without merge
+4. formalize NAR Actions manual dispatch
+5. add Acquisition Registry
+6. add Collection Job schema
+7. add Collection Plan schema
+8. add five-rank classifier contract tests
+9. add Collection Result Manifest
+10. add Review Queue
+11. add Rank-aware Retry Queue
+12. connect Actions and local runners to shared job semantics
+13. begin Banei on the shared foundation
+14. add Actions multi-job execution
+15. add local multi-job execution
+16. add review cohort planner
+17. add automatic review PR preparation
+18. add due-job planning and scheduled bounded retries
+19. add Operations v2 operator view
+```
 
 ## Historical compatibility markers
 
