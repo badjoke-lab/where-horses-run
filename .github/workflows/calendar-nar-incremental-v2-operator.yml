@@ -41,6 +41,7 @@ concurrency:
 jobs:
   collect-review-artifacts:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       WHR_BATCH_ID: ${{ inputs.batch_id }}
       WHR_MODE: ${{ inputs.mode }}
