@@ -2,7 +2,18 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const BASE_PATH = 'data/static/authority-source-inventory.json';
-const NAR_RACE_LIST_PATH = 'data/static/authority-source-inventory-nar-race-list-v1.json';
+const SUPPLEMENTS = Object.freeze([
+  {
+    key: 'nar_race_list',
+    path: 'data/static/authority-source-inventory-nar-race-list-v1.json',
+    schemaVersion: 'authority-source-inventory-nar-race-list-v1',
+  },
+  {
+    key: 'nar_schedule_grid',
+    path: 'data/static/authority-source-inventory-nar-schedule-grid-v1.json',
+    schemaVersion: 'authority-source-inventory-nar-schedule-grid-v1',
+  },
+]);
 
 function readJson(root, relativePath) {
   return JSON.parse(readFileSync(path.join(root, relativePath), 'utf8'));
@@ -18,26 +29,30 @@ function sourceKey(record) {
 
 export function loadAuthoritySourceInventoryV1(root) {
   const base = readJson(root, BASE_PATH);
-  if (!existsSync(path.join(root, NAR_RACE_LIST_PATH))) return base;
+  const records = [...base.records];
+  const seen = new Set(records.map(sourceKey));
 
-  const supplement = readJson(root, NAR_RACE_LIST_PATH);
-  assert(supplement?.schema_version === 'authority-source-inventory-nar-race-list-v1', 'NAR authority/source supplement schema is invalid');
-  assert(Array.isArray(supplement.records), 'NAR authority/source supplement records must be an array');
+  for (const supplementDef of SUPPLEMENTS) {
+    if (!existsSync(path.join(root, supplementDef.path))) continue;
+    const supplement = readJson(root, supplementDef.path);
+    assert(supplement?.schema_version === supplementDef.schemaVersion, `${supplementDef.key} authority/source supplement schema is invalid`);
+    assert(Array.isArray(supplement.records), `${supplementDef.key} authority/source supplement records must be an array`);
 
-  const seen = new Set(base.records.map(sourceKey));
-  for (const record of supplement.records) {
-    const key = sourceKey(record);
-    assert(!seen.has(key), `duplicate authority/source supplement key: ${key}`);
-    seen.add(key);
+    for (const record of supplement.records) {
+      const key = sourceKey(record);
+      assert(!seen.has(key), `duplicate authority/source supplement key: ${key}`);
+      seen.add(key);
+      records.push(record);
+    }
   }
 
   return {
     ...base,
-    records: [...base.records, ...supplement.records],
+    records,
   };
 }
 
 export const authoritySourceInventoryPathsV1 = Object.freeze({
   base: BASE_PATH,
-  nar_race_list: NAR_RACE_LIST_PATH,
+  ...Object.fromEntries(SUPPLEMENTS.map((entry) => [entry.key, entry.path])),
 });
