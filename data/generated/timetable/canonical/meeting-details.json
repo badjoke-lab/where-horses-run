@@ -1,7 +1,8 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-07-04T15:27:24Z",
+  "generated_at": "2026-07-07T12:42:01Z",
   "input_sources": [
+    "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json",
     "data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json",
     "data/generated/timetable/hkjc-normalized-meeting-details.sample.json",
     "data/generated/timetable/jra-normalized-meeting-details.json",
@@ -3293,6 +3294,282 @@
       "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
     },
     {
+      "meeting_id": "nar-kanazawa-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kanazawa-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F07%2F05",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:45",
+          "race_name": "Ｃ１六",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:25",
+          "race_name": "ホップステップぴんみんカップＣ１五",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:05",
+          "race_name": "Ｃ１四",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:40",
+          "race_name": "Ｃ１三",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:20",
+          "race_name": "さわやかさやか賞Ｃ１二",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:55",
+          "race_name": "３歳Ａ４",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:30",
+          "race_name": "３歳Ａ３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:05",
+          "race_name": "ゆいおうえんそうしんの誕生日記念Ｂ１四",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:40",
+          "race_name": "特別",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:15",
+          "race_name": "重賞",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "特別",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-kochi-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kochi-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F07%2F05",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:25",
+          "race_name": "特別",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "16:00",
+          "race_name": "３歳－６",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:35",
+          "race_name": "３歳－５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "17:05",
+          "race_name": "３歳－４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:35",
+          "race_name": "３歳－３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "18:10",
+          "race_name": "Ａ－３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:45",
+          "race_name": "Ｃ３－１２",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "19:20",
+          "race_name": "Ｃ３－１１",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "19:50",
+          "race_name": "Ａ－２",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "20:20",
+          "race_name": "特別",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:50",
+          "race_name": "ファイナルレース３歳－７記者選抜",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
       "meeting_id": "jra-kokura-racecourse-2026-07-05",
       "country_id": "japan",
       "authority_id": "jra",
@@ -3427,6 +3704,1170 @@
         }
       ],
       "summary_note": "Public-safe JRA race name/condition, scheduled post time, distance, surface, and official course notation."
+    },
+    {
+      "meeting_id": "nar-morioka-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "morioka-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F07%2F05",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:25",
+          "race_name": "Ｃ２八組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:00",
+          "race_name": "Ｃ２七組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:35",
+          "race_name": "Ｃ２六組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:10",
+          "race_name": "３歳Ｃ１三組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:45",
+          "race_name": "３歳Ｃ１二組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:25",
+          "race_name": "Ｃ１",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:00",
+          "race_name": "Ｃ１",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:35",
+          "race_name": "Ｃ１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:15",
+          "race_name": "Ｃ１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "16:50",
+          "race_name": "碁石海岸賞Ｃ１二組",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:25",
+          "race_name": "重賞",
+          "distance_m": 2400,
+          "surface": "Turf",
+          "course_label": "Turf Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:00",
+          "race_name": "プルメリア賞Ｃ１一組",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-saga-racecourse-2026-07-05",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "saga-racecourse",
+      "date": "2026-07-05",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F07%2F05",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:50",
+          "race_name": "脳みそ夫さん来場記念３歳－４組",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "16:25",
+          "race_name": "３歳－３組",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "17:00",
+          "race_name": "Ｃ２－１１組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "17:30",
+          "race_name": "Ｃ２－１０組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "18:05",
+          "race_name": "重賞",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "18:40",
+          "race_name": "ＵＭＡＴＥＮＡ賞Ｃ１－６組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "19:10",
+          "race_name": "ＵＭＡＴＥＮＡ有村のあ生誕賞Ｃ１－５組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "19:40",
+          "race_name": "ロベリア賞Ａ２",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "20:10",
+          "race_name": "特別",
+          "distance_m": 1750,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "20:40",
+          "race_name": "ＳＡＧＡリベンジャーズＣ２－１２組",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-07-06",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-07-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F07%2F06",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:00",
+          "race_name": "Ｃ３一 二",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:30",
+          "race_name": "Ｃ３一 二",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:00",
+          "race_name": "エクレール賞３歳未格付選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:30",
+          "race_name": "アゲハチョウ賞２歳２",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:00",
+          "race_name": "天衣無縫賞２歳未格付選定牝馬",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:30",
+          "race_name": "稲光賞Ｃ２選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:00",
+          "race_name": "ランポ賞３歳４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:30",
+          "race_name": "特別",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "19:05",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:40",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:15",
+          "race_name": "特別",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:50",
+          "race_name": "閃光賞Ｃ１選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-morioka-racecourse-2026-07-06",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "morioka-racecourse",
+      "date": "2026-07-06",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F07%2F06",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:50",
+          "race_name": "Ｃ２",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:25",
+          "race_name": "Ｃ２",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:00",
+          "race_name": "Ｃ２五組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:35",
+          "race_name": "Ｃ２四組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:10",
+          "race_name": "３歳Ｃ２三組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:45",
+          "race_name": "３歳Ｃ２二組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:15",
+          "race_name": "３歳Ｃ２一組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:50",
+          "race_name": "Ｃ１五組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:25",
+          "race_name": "Ｃ１四組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:05",
+          "race_name": "イグナイター特別Ｃ１三組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:40",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:15",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-kanazawa-racecourse-2026-07-07",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kanazawa-racecourse",
+      "date": "2026-07-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F07%2F07",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:25",
+          "race_name": "３歳Ｂ７",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:00",
+          "race_name": "３歳Ｂ６",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:35",
+          "race_name": "帝統くんお誕生日おめでとう乾杯３歳Ｂ５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:10",
+          "race_name": "３歳Ｂ４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:45",
+          "race_name": "３歳Ｂ３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:20",
+          "race_name": "祝！ゆっきー支店長就任記念３歳Ｂ２",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:55",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:35",
+          "race_name": "特別",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:15",
+          "race_name": "第２１回生誕記念幸せを運ぶこんなぎＢ１三",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:50",
+          "race_name": "Ｂ１二",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:25",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:00",
+          "race_name": "特別",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-07-07",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-07-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F07%2F07",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:00",
+          "race_name": "Ｃ３三 四",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:30",
+          "race_name": "Ｃ３三 四",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:00",
+          "race_name": "３歳８",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:30",
+          "race_name": "フラッシュ賞３歳未格付選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:00",
+          "race_name": "特別",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:33",
+          "race_name": "コリアンダー賞Ｃ３選定馬",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:03",
+          "race_name": "稲魂賞Ｃ２選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:33",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "19:05",
+          "race_name": "流星光底賞Ｂ３選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:40",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:15",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:50",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-07-07",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-07-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F07%2F07",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:20",
+          "race_name": "２歳 未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:50",
+          "race_name": "２歳牝馬 未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:25",
+          "race_name": "Ｊ認 アタックチャレンジ２歳未勝利",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:00",
+          "race_name": "３歳以上 Ｃ４－３",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:35",
+          "race_name": "３歳以上 Ｃ４－２",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:10",
+          "race_name": "３歳以上 Ｃ４－２",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:45",
+          "race_name": "特別",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:15",
+          "race_name": "特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:50",
+          "race_name": "３歳以上 Ｃ４－３",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:25",
+          "race_name": "特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:00",
+          "race_name": "特別",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:35",
+          "race_name": "特別",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Outer / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
+    },
+    {
+      "meeting_id": "nar-morioka-racecourse-2026-07-07",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "morioka-racecourse",
+      "date": "2026-07-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F07%2F07",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-07",
+        "generated_at": "2026-07-07T12:29:53.387Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T12:42:01Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:40",
+          "race_name": "Ｃ２三組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:15",
+          "race_name": "Ｃ２二組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:50",
+          "race_name": "Ｃ２一組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:25",
+          "race_name": "３歳Ｃ２五組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:00",
+          "race_name": "３歳Ｃ２四組",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:35",
+          "race_name": "Ｃ１",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:10",
+          "race_name": "Ｃ１",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:45",
+          "race_name": "Ｃ１",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:20",
+          "race_name": "Ｃ１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "16:55",
+          "race_name": "べラジオオペラ特別Ｃ１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:35",
+          "race_name": "特別",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:10",
+          "race_name": "重賞",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the reviewed NAR incremental public-safe candidate set. The promoted record contains only meeting identity and the six approved timetable fields."
     },
     {
       "meeting_id": "jra-fukushima-racecourse-2026-07-11",
