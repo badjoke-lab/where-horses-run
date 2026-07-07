@@ -1,4 +1,4 @@
-name: NAR incremental promotion batch generator
+name: NAR incremental promotion output generator
 
 on:
   pull_request:
@@ -18,30 +18,82 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Switch to promotion batch branch
+      - name: Switch to promotion output branch
         run: |
-          git fetch origin work/nar-incremental-promotion-batch
-          git switch -C work/nar-incremental-promotion-batch origin/work/nar-incremental-promotion-batch
-      - name: Validate builder syntax
-        run: node --check scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs
-      - name: Generate approved promotion batch
-        run: |
-          node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs
-          node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
-      - name: Validate normal promotion dry run
+          git fetch origin work/nar-promotion-output
+          git switch -C work/nar-promotion-output origin/work/nar-promotion-output
+      - name: Validate approved batch determinism
+        run: node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
+      - name: Promote canonical data
         run: |
           node scripts/timetable/promote-approved-candidate-v1.mjs \
+            --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json
+          node scripts/timetable/promote-approved-candidate-v1.mjs \
             --input data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json \
-            --dry-run
+            --check
+      - name: Rebuild public projection and synchronized review artifacts
+        run: |
+          reference_date=$(node -e "const x=require('./data/generated/timetable/operations-status.json'); process.stdout.write(x.as_of_date)")
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-jra-pilot-review.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date "$reference_date"
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/timetable/build-operations-review-package.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+      - name: Validate promoted 10-meeting public set
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const approved = JSON.parse(fs.readFileSync('data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json', 'utf8'));
+          const meetings = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings;
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details;
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8')).details;
+          const ids = new Set(approved.records.map((record) => record.meeting_id));
+          const canonicalMeetings = meetings.filter((record) => ids.has(record.meeting_id));
+          const canonicalDetails = details.filter((record) => ids.has(record.meeting_id));
+          const promotedPublic = publicDetails.filter((record) => ids.has(record.meeting_id));
+          if (approved.records.length !== 10) throw new Error(`approved records=${approved.records.length}`);
+          if (canonicalMeetings.length !== 10) throw new Error(`canonical meetings=${canonicalMeetings.length}`);
+          if (canonicalDetails.length !== 10) throw new Error(`canonical details=${canonicalDetails.length}`);
+          if (promotedPublic.length !== 10) throw new Error(`public details=${promotedPublic.length}`);
+          if (canonicalMeetings.some((record) => record.capability_rank !== 'A+')) throw new Error('canonical meeting rank differs');
+          if (canonicalDetails.some((record) => record.capability_rank !== 'A+')) throw new Error('canonical detail rank differs');
+          if (promotedPublic.some((record) => record.effective_public_rank !== 'A+')) throw new Error('public effective rank differs');
+          console.log('NAR_INCREMENTAL_PROMOTED_SET: pass meetings=10 details=10 public=10 rank=A+');
+          NODE
+      - name: Validate runtime and build
+        run: |
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          npm install --package-lock=false --no-audit --no-fund
+          npm run build
       - name: Confirm generated path boundary
         run: |
-          changed=$(git status --porcelain --untracked-files=all | sed 's/^...//')
-          echo "$changed"
-          test "$changed" = "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json"
-      - name: Commit generated approved batch
+          changed=$(git status --porcelain --untracked-files=all | sed 's/^...//' | sort)
+          printf '%s\n' "$changed"
+          expected=$(printf '%s\n' \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/jra-pilot-review.json \
+            data/generated/timetable/operations-review-package.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json | sort)
+          test "$changed" = "$expected"
+      - name: Commit promotion output
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json
-          git commit -m "Add approved NAR incremental promotion batch"
-          git push origin HEAD:work/nar-incremental-promotion-batch
+          git add data/generated/timetable/canonical/meeting-details.json
+          git add data/generated/timetable/canonical/meetings.json
+          git add data/generated/timetable/jra-pilot-review.json
+          git add data/generated/timetable/operations-review-package.json
+          git add data/generated/timetable/operations-status.json
+          git add data/generated/timetable/public/japan-a-plus-overrides.json
+          git add data/generated/timetable/public/meeting-details.json
+          git add data/generated/timetable/public/meeting-list.json
+          git commit -m "Promote approved NAR incremental meetings through 2026-07-07"
+          git push origin HEAD:work/nar-promotion-output
