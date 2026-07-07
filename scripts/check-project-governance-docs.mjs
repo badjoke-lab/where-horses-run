@@ -12,6 +12,7 @@ const requiredFiles = [
   'docs/calendar/implementation-roadmap.md',
   'docs/calendar/nar-a-plus-pilot-plan.md',
   'docs/calendar/nar-monthly-collection-contract.md',
+  'docs/calendar/manual-nar-incremental-collection.md',
   'docs/calendar/banei-a-plus-full-month-plan.md',
   'data/static/calendar-coverage-observation.schema.json',
   'data/static/calendar-validation-responsibilities-v1.json',
@@ -20,9 +21,14 @@ const requiredFiles = [
   'data/static/japan-a-plus-policy.json',
   'scripts/timetable/coverage-observation-validation.mjs',
   'scripts/timetable/pipeline-v1/promotion-core.mjs',
+  'scripts/timetable/nar-incremental-core.mjs',
+  'scripts/timetable/collect-nar-incremental.mjs',
+  'scripts/timetable/run-nar-incremental-local.mjs',
   'scripts/check-calendar-coverage-observation-schema.mjs',
   'scripts/check-calendar-validation-responsibilities.mjs',
-  'scripts/check-calendar-pipeline-v1-promotion.mjs'
+  'scripts/check-calendar-pipeline-v1-promotion.mjs',
+  'scripts/check-calendar-nar-incremental-core.mjs',
+  'scripts/check-calendar-nar-incremental.mjs'
 ];
 
 for (const file of requiredFiles) {
@@ -40,6 +46,7 @@ const validationMap = read('data/static/calendar-validation-responsibilities-v1.
 const registry = read('data/static/calendar-readiness-registry.json');
 const japanReadiness = read('data/static/calendar-readiness-japan-v2.json');
 const japanPolicy = read('data/static/japan-a-plus-policy.json');
+const narIncrementalRunbook = read('docs/calendar/manual-nar-incremental-collection.md');
 
 function requirePhrases(text, label, phrases) {
   for (const phrase of phrases) {
@@ -53,8 +60,11 @@ requirePhrases(start, 'START-HERE', [
   'docs/calendar/incremental-coverage-contract.md',
   'docs/calendar/coverage-observation-schema.md',
   'docs/calendar/validation-responsibility-contract.md',
+  'docs/calendar/manual-nar-incremental-collection.md',
   'data/static/calendar-validation-responsibilities-v1.json',
   'scripts/check-calendar-validation-responsibilities.mjs',
+  'scripts/timetable/nar-incremental-core.mjs',
+  'scripts/check-calendar-nar-incremental-core.mjs',
   'refactor NAR ordinary collection away from fixed July completion gating'
 ]);
 
@@ -76,7 +86,10 @@ requirePhrases(roadmap, 'project roadmap', [
   'Coverage Audit',
   'Completion Audit',
   'normal promotion rank-regression guard',
-  'NAR ordinary-operator refactoring'
+  'NAR ordinary-operator refactoring',
+  'NAR incremental operator foundation',
+  'selected-meeting scope support',
+  'retry-target artifact generation'
 ]);
 
 requirePhrases(implementationRoadmap, 'implementation roadmap', [
@@ -92,7 +105,11 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Coverage Observation schema and validator foundation',
   'Batch / Promotion / Coverage / Completion responsibility split',
   'normal promotion rank-regression rejection',
-  'refactor NAR ordinary collection away from fixed July Completion Audit gating'
+  'refactor NAR ordinary collection away from fixed July Completion Audit gating',
+  'NAR incremental core',
+  'cross-month window grouping',
+  'selected-meeting scope parsing',
+  'explicit NAR retry-target generation'
 ]);
 
 requirePhrases(incremental, 'incremental coverage contract', [
@@ -125,6 +142,17 @@ requirePhrases(validationDoc, 'validation responsibility contract', [
   'corrective_downgrade',
   'ordinary promotion CLI remains normal-mode only',
   'must not block unrelated valid partial promotions'
+]);
+
+requirePhrases(narIncrementalRunbook, 'NAR incremental runbook', [
+  'arbitrary date windows up to 93 days',
+  'windows that cross month boundaries',
+  'selected-meeting retries',
+  'Coverage Observation output',
+  'explicit date and meeting retry targets',
+  'scheduled_retry: disabled',
+  'canonical_write: disabled',
+  'public_write: disabled'
 ]);
 
 requirePhrases(validationMap, 'validation responsibility map', [
@@ -163,6 +191,7 @@ if (errors.length) {
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
+console.log('NAR_INCREMENTAL_OPERATOR_FOUNDATION: active');
 console.log('NORMAL_PROMOTION_RANK_REGRESSION_ALLOWED: false');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
