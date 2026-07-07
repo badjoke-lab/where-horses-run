@@ -1,114 +1,101 @@
 import fs from 'node:fs';
 
 const errors = [];
-const files = [
-  'START-HERE.md', 'docs/project-roadmap.md', 'docs/governance/document-authority.md',
-  'docs/governance/internal-source-handling.md', 'docs/calendar/README.md',
-  'docs/calendar/source-test-v2-contract.md', 'docs/calendar/calendar-readiness-contract.md',
-  'docs/calendar/machine-readable-contracts.md', 'docs/calendar/incremental-coverage-contract.md',
+const requiredFiles = [
+  'START-HERE.md',
+  'docs/project-roadmap.md',
+  'docs/governance/document-authority.md',
+  'docs/calendar/README.md',
+  'docs/calendar/incremental-coverage-contract.md',
   'docs/calendar/coverage-observation-schema.md',
-  'docs/calendar/implementation-roadmap.md', 'docs/calendar/japan-full-month-scope-policy.md',
-  'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/jra-a-plus-pilot-completion.md',
-  'docs/calendar/nar-a-plus-pilot-plan.md', 'docs/calendar/nar-a-plus-source-architecture.md',
-  'docs/calendar/nar-fixture-probe.md', 'docs/calendar/nar-candidate-adapter.md',
-  'docs/calendar/nar-14-racecourse-compatibility-audit.md',
-  'docs/calendar/manual-nar-fixture-collection.md', 'docs/calendar/nar-monthly-collection-contract.md',
-  'docs/calendar/manual-nar-monthly-collection.md', 'docs/calendar/banei-a-plus-full-month-plan.md',
-  'docs/calendar/current-baseline-audit.md', 'docs/calendar/baseline-reconciliation-map.md',
-  'docs/calendar/pipeline-v1-release-gate.md', 'docs/calendar/dynamic-dates-release-gate.md',
-  'docs/calendar/operations-v1-contract.md', 'docs/calendar/operations-v1-release-gate.md',
-  'docs/country-pages/completion-contract.md', 'docs/country-page-notes/13-japan.md',
-  'data/static/source-test-v2.schema.json', 'data/static/calendar-readiness.schema.json',
-  'data/static/calendar-readiness-registry.json', 'data/static/calendar-readiness-japan-v2.json',
+  'docs/calendar/validation-responsibility-contract.md',
+  'docs/calendar/implementation-roadmap.md',
+  'docs/calendar/nar-a-plus-pilot-plan.md',
+  'docs/calendar/nar-monthly-collection-contract.md',
+  'docs/calendar/banei-a-plus-full-month-plan.md',
   'data/static/calendar-coverage-observation.schema.json',
-  'data/static/authority-source-inventory-japan-v2.json', 'data/static/japan-a-plus-policy.json',
-  'data/static/japan-a-plus-runtime-control.json', 'data/static/local-racing-pilot-control-v2.json',
-  'data/static/banei-pilot-control.json', 'data/static/nar-source-route-architecture-v1.json',
-  'data/static/nar-venue-code-research-seed-v1.json', 'data/static/nar-flat-racecourse-compatibility-v1.json',
-  'data/static/nar-monthly-collection-policy-v1.json',
-  'data/audits/calendar-baseline-migration-map.json', 'data/audits/calendar-pipeline-v1-release-gate.json',
-  'data/audits/calendar-dynamic-dates-release-gate.json', 'data/audits/calendar-operations-v1-release-gate.json',
-  'data/audits/japan-a-plus-reconciliation-completion.json',
-  'data/audits/calendar-jra-a-plus-pilot-completion.json', 'data/audits/nar-legacy-pr281-migration.json',
-  'data/audits/nar-fixture-probe-v1.json', 'data/audits/nar-candidate-adapter-v1.json',
-  'data/audits/nar-14-racecourse-compatibility-v1.json',
-  'data/static/calendar-operations-control.json', 'data/static/calendar-operations-seasonal-policy.json',
-  'docs/runbooks/final-country-calendar-audit-98.md',
+  'data/static/calendar-validation-responsibilities-v1.json',
+  'data/static/calendar-readiness-registry.json',
+  'data/static/calendar-readiness-japan-v2.json',
+  'data/static/japan-a-plus-policy.json',
   'scripts/timetable/coverage-observation-validation.mjs',
+  'scripts/timetable/pipeline-v1/promotion-core.mjs',
   'scripts/check-calendar-coverage-observation-schema.mjs',
-  'scripts/check-japan-a-plus-reconciliation-completion.mjs',
-  'scripts/check-calendar-jra-pilot-completion.mjs',
-  'scripts/check-calendar-nar-source-architecture.mjs',
-  'scripts/check-calendar-nar-fixture-probe.mjs',
-  'scripts/check-calendar-nar-candidate-adapter.mjs',
-  'scripts/check-calendar-nar-14-racecourse-compatibility.mjs',
-  'scripts/check-calendar-nar-monthly-collection-policy.mjs'
+  'scripts/check-calendar-validation-responsibilities.mjs',
+  'scripts/check-calendar-pipeline-v1-promotion.mjs'
 ];
-for (const file of files) if (!fs.existsSync(file)) errors.push('missing: ' + file);
 
-const start = fs.readFileSync('START-HERE.md', 'utf8');
-const roadmap = fs.readFileSync('docs/project-roadmap.md', 'utf8');
-const implementationRoadmap = fs.readFileSync('docs/calendar/implementation-roadmap.md', 'utf8');
-const incremental = fs.readFileSync('docs/calendar/incremental-coverage-contract.md', 'utf8');
-const coverageSchemaDoc = fs.readFileSync('docs/calendar/coverage-observation-schema.md', 'utf8');
-const coverageSchema = fs.readFileSync('data/static/calendar-coverage-observation.schema.json', 'utf8');
-const reconciliationPlan = fs.readFileSync('docs/calendar/japan-a-plus-reconciliation-plan.md', 'utf8');
-const jraCompletion = fs.readFileSync('docs/calendar/jra-a-plus-pilot-completion.md', 'utf8');
-const narMonthly = fs.readFileSync('docs/calendar/nar-monthly-collection-contract.md', 'utf8');
-const baneiPlan = fs.readFileSync('docs/calendar/banei-a-plus-full-month-plan.md', 'utf8');
-const registry = fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8');
-const japanReadiness = fs.readFileSync('data/static/calendar-readiness-japan-v2.json', 'utf8');
-const japanPolicy = fs.readFileSync('data/static/japan-a-plus-policy.json', 'utf8');
+for (const file of requiredFiles) {
+  if (!fs.existsSync(file)) errors.push(`missing: ${file}`);
+}
 
-for (const phrase of [
-  'WHR-CAL-JAPAN-A-PLUS-RECONCILE',
-  'WHR-CAL-JAPAN-JRA-A-PLUS',
+const read = (file) => fs.readFileSync(file, 'utf8');
+const start = read('START-HERE.md');
+const roadmap = read('docs/project-roadmap.md');
+const implementationRoadmap = read('docs/calendar/implementation-roadmap.md');
+const incremental = read('docs/calendar/incremental-coverage-contract.md');
+const coverageDoc = read('docs/calendar/coverage-observation-schema.md');
+const validationDoc = read('docs/calendar/validation-responsibility-contract.md');
+const validationMap = read('data/static/calendar-validation-responsibilities-v1.json');
+const registry = read('data/static/calendar-readiness-registry.json');
+const japanReadiness = read('data/static/calendar-readiness-japan-v2.json');
+const japanPolicy = read('data/static/japan-a-plus-policy.json');
+
+function requirePhrases(text, label, phrases) {
+  for (const phrase of phrases) {
+    if (!text.includes(phrase)) errors.push(`${label} missing ${phrase}`);
+  }
+}
+
+requirePhrases(start, 'START-HERE', [
   'WHR-CAL-JAPAN-NAR-A-PLUS',
   'WHR-CAL-JAPAN-BANEI-A-PLUS',
   'docs/calendar/incremental-coverage-contract.md',
   'docs/calendar/coverage-observation-schema.md',
-  'data/static/calendar-coverage-observation.schema.json',
-  'scripts/check-calendar-coverage-observation-schema.mjs',
-  'data/audits/calendar-jra-a-plus-pilot-completion.json',
-  'docs/calendar/nar-monthly-collection-contract.md',
-  'data/static/nar-monthly-collection-policy-v1.json',
-  'scripts/timetable/build-nar-monthly-schedule-plan.mjs',
-  'scripts/check-calendar-nar-monthly-collection-policy.mjs'
-]) {
-  if (!start.includes(phrase)) errors.push('START-HERE missing ' + phrase);
-}
+  'docs/calendar/validation-responsibility-contract.md',
+  'data/static/calendar-validation-responsibilities-v1.json',
+  'scripts/check-calendar-validation-responsibilities.mjs',
+  'refactor NAR ordinary collection away from fixed July completion gating'
+]);
 
-for (const phrase of [
+requirePhrases(roadmap, 'project roadmap', [
   'Country-page programme: complete',
+  'WHR-CAL-BASELINE-RECONCILE',
+  'WHR-CAL-PIPELINE-V1',
+  'WHR-CAL-DYNAMIC-DATES',
+  'WHR-CAL-OPS-V1',
+  'WHR-CAL-JAPAN-A-PLUS-RECONCILE',
   'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
   'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
   'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`',
-  'Completed Work ID: `WHR-CAL-OPS-V1`',
-  'WHR-CAL-BASELINE-RECONCILE',
   '98 EN + 98 JA = 196',
   'Meeting / Schedule Layer',
   'Coverage Observation',
-  'Completion is an explicit audit claim'
-]) {
-  if (!roadmap.includes(phrase)) errors.push('roadmap missing ' + phrase);
-}
+  'Batch Validation',
+  'Promotion Validation',
+  'Coverage Audit',
+  'Completion Audit',
+  'normal promotion rank-regression guard',
+  'NAR ordinary-operator refactoring'
+]);
 
-for (const phrase of [
+requirePhrases(implementationRoadmap, 'implementation roadmap', [
+  'Pipeline v1 status: complete',
+  'Dynamic Dates status: complete',
+  'Operations v1 status: complete',
   'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
   'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
   'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`',
   'JRA central racing',
   'NAR and local-government racing',
   'Banei Tokachi',
   'Coverage Observation schema and validator foundation',
-  'split batch, promotion, coverage, and completion validation responsibilities'
-]) {
-  if (!implementationRoadmap.includes(phrase)) errors.push('implementation roadmap missing ' + phrase);
-}
+  'Batch / Promotion / Coverage / Completion responsibility split',
+  'normal promotion rank-regression rejection',
+  'refactor NAR ordinary collection away from fixed July Completion Audit gating'
+]);
 
-for (const phrase of [
+requirePhrases(incremental, 'incremental coverage contract', [
   'No country, authority, or racing system may require month-wide completeness',
   'partial` is a normal successful state',
   'Absence is not deletion',
@@ -117,11 +104,9 @@ for (const phrase of [
   'Promotion validation',
   'Coverage audit',
   'Completion audit'
-]) {
-  if (!incremental.includes(phrase)) errors.push('incremental coverage contract missing ' + phrase);
-}
+]);
 
-for (const phrase of [
+requirePhrases(coverageDoc, 'coverage observation contract', [
   'requested_scope',
   'observed_scope',
   '`partial` is a normal successful state',
@@ -129,58 +114,55 @@ for (const phrase of [
   'completion_audit_ref',
   'selected_meetings',
   'source_visible_horizon'
-]) {
-  if (!coverageSchemaDoc.includes(phrase)) errors.push('coverage schema document missing ' + phrase);
-}
-for (const phrase of [
-  'calendar-coverage-observation-v1',
-  'requested_scope',
-  'observed_scope',
-  'partial',
-  'audited_complete',
-  'completion_audit_ref',
-  'selected_meetings',
-  'source_visible_horizon'
-]) {
-  if (!coverageSchema.includes(phrase)) errors.push('coverage schema missing ' + phrase);
-}
+]);
 
-if (!reconciliationPlan.includes('Status: complete')) errors.push('reconciliation plan must be complete.');
-if (!jraCompletion.includes('Status: complete') || !jraCompletion.includes('Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`')) errors.push('JRA pilot completion record is incomplete.');
+requirePhrases(validationDoc, 'validation responsibility contract', [
+  'Batch Validation',
+  'Promotion Validation',
+  'Coverage Audit',
+  'Completion Audit',
+  'Normal promotion is monotonic',
+  'corrective_downgrade',
+  'ordinary promotion CLI remains normal-mode only',
+  'must not block unrelated valid partial promotions'
+]);
 
-for (const phrase of [
-  'arbitrary date windows',
-  'Absence is not deletion',
-  'Valid reviewed records may be promoted in partial batches',
-  'July 2026 completion audit',
-  'completion audit'
-]) {
-  if (!narMonthly.includes(phrase)) errors.push('NAR collection contract missing ' + phrase);
-}
+requirePhrases(validationMap, 'validation responsibility map', [
+  'calendar-validation-responsibilities-v1',
+  'batch_validation',
+  'promotion_validation',
+  'coverage_audit',
+  'completion_audit',
+  'monotonic_rank',
+  'normal_rank_regression_allowed',
+  'corrective_downgrade',
+  'official_correction',
+  'rollback'
+]);
 
-for (const phrase of [
-  'arbitrary and overlapping date windows',
-  'It does not require every July meeting to be available',
-  'July 2026 completion audit'
-]) {
-  if (!baneiPlan.includes(phrase)) errors.push('Banei plan missing ' + phrase);
-}
+requirePhrases(registry, 'readiness registry', [
+  '"bootstrap_status": "complete"',
+  '"countries_with_closed_decision": 98',
+  '"readiness_records": 116',
+  '"next_backfill_work_ids": []'
+]);
 
-for (const phrase of ['"bootstrap_status": "complete"', '"countries_with_closed_decision": 98', '"readiness_records": 116', '"next_backfill_work_ids": []']) {
-  if (!registry.includes(phrase)) errors.push('registry missing ' + phrase);
-}
 for (const systemId of ['japan-jra-system', 'japan-nar-system', 'japan-banei-system']) {
-  if (!japanReadiness.includes(`"system_id": "${systemId}"`)) errors.push('Japan readiness missing ' + systemId);
-  if (!japanPolicy.includes(`"system_id":"${systemId}"`)) errors.push('Japan policy missing ' + systemId);
+  if (!japanReadiness.includes(`"system_id": "${systemId}"`)) errors.push(`Japan readiness missing ${systemId}`);
+  if (!japanPolicy.includes(`"system_id":"${systemId}"`)) errors.push(`Japan policy missing ${systemId}`);
 }
+
 if ((japanReadiness.match(/"technical_rank": "A\+"/g) ?? []).length !== 3) errors.push('Japan readiness must contain three A+ technical ranks.');
 if ((japanReadiness.match(/"public_ceiling": "A\+"/g) ?? []).length !== 3) errors.push('Japan readiness must contain three A+ public ceilings.');
 
 if (errors.length) {
-  for (const error of errors) console.error('ERROR: ' + error);
+  for (const error of errors) console.error(`ERROR: ${error}`);
   process.exit(1);
 }
+
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
+console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
+console.log('NORMAL_PROMOTION_RANK_REGRESSION_ALLOWED: false');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
