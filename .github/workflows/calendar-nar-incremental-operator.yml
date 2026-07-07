@@ -6,7 +6,7 @@ on:
       - '.github/workflows/calendar-nar-incremental-operator.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   collect:
@@ -43,13 +43,11 @@ jobs:
             --end-date-exclusive=2026-07-08 \
             2>&1 | tee nar-next-window-collection.log
       - name: Validate generated artifacts
-        if: success()
         run: |
           node scripts/check-calendar-nar-incremental.mjs
           node scripts/check-calendar-runtime-import-boundary.mjs
           git status --short
       - name: Upload review diagnostics and artifacts
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nar-next-window-review-${{ github.run_id }}
@@ -62,3 +60,27 @@ jobs:
             data/generated/timetable/nar-retry-targets.json
           if-no-files-found: error
           retention-days: 7
+      - name: Commit review payload to review branch
+        run: |
+          mkdir -p /tmp/nar-review-payload/scripts/timetable
+          mkdir -p /tmp/nar-review-payload/data/candidates
+          mkdir -p /tmp/nar-review-payload/data/generated/timetable
+          cp scripts/timetable/nar-incremental-core.mjs /tmp/nar-review-payload/scripts/timetable/
+          cp data/candidates/nar-incremental-meeting-candidates.json /tmp/nar-review-payload/data/candidates/
+          cp data/generated/timetable/nar-incremental-collection-report.json /tmp/nar-review-payload/data/generated/timetable/
+          cp data/generated/timetable/nar-coverage-observation.json /tmp/nar-review-payload/data/generated/timetable/
+          cp data/generated/timetable/nar-retry-targets.json /tmp/nar-review-payload/data/generated/timetable/
+          git fetch origin work/nar-window-review
+          git switch -C work/nar-window-review origin/work/nar-window-review
+          cp /tmp/nar-review-payload/scripts/timetable/nar-incremental-core.mjs scripts/timetable/
+          cp /tmp/nar-review-payload/data/candidates/nar-incremental-meeting-candidates.json data/candidates/
+          cp /tmp/nar-review-payload/data/generated/timetable/*.json data/generated/timetable/
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/timetable/nar-incremental-core.mjs
+          git add data/candidates/nar-incremental-meeting-candidates.json
+          git add data/generated/timetable/nar-incremental-collection-report.json
+          git add data/generated/timetable/nar-coverage-observation.json
+          git add data/generated/timetable/nar-retry-targets.json
+          git commit -m "Add NAR incremental review window 2026-07-05 to 2026-07-07"
+          git push origin HEAD:work/nar-window-review
