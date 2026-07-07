@@ -1,8 +1,8 @@
 # Manual NAR incremental collection
 
-Status: active operator runbook  
+Status: active operator runbook with runner transition  
 Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Last reviewed: 2026-07-07
+Last reviewed: 2026-07-08
 
 ## Governing contracts
 
@@ -12,82 +12,166 @@ Read first:
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/coverage-observation-schema.md
 docs/calendar/validation-responsibility-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
 docs/calendar/nar-monthly-collection-contract.md
 ```
 
-This runbook defines the ordinary NAR local update path. The July full-month path remains a separate bounded Completion Audit path.
+This runbook defines the NAR v2 source-specific acquisition path.
+
+The July full-month path remains a separate bounded Completion Audit path.
+
+## Current and target runner model
+
+Current implemented state:
+
+```text
+local v2 runner: available and canonical
+bounded GitHub Actions acquisition: proven successful
+formal workflow_dispatch operation: not yet canonical
+```
+
+Target state after the formal workflow-dispatch implementation is merged and validated:
+
+```text
+primary runner: github_actions
+fallback runner: local
+```
+
+Temporary diagnostic Actions workflows must not be treated as the permanent operating interface.
+
+The Actions primary path and the local fallback path must produce compatible immutable batch semantics and pass the same review, coverage, and promotion boundaries.
+
+No scheduled automatic publication is enabled.
 
 ## Purpose
 
-The v2 operator supports:
+The v2 NAR adapter path supports:
 
 - arbitrary date windows up to 93 days;
 - windows that cross month boundaries;
 - overlapping retry windows;
 - selected-meeting retries;
 - irregular operator run dates;
-- Schedule Layer observation and C candidate creation;
-- Detail Layer acquisition and direct A+ candidate creation;
+- Schedule Layer observation;
+- Detail Layer acquisition;
 - Coverage Observation output;
 - explicit date and meeting retry targets;
 - immutable batch-specific output paths.
 
-Collection does not approve, promote, publish, schedule later retries, or write canonical/public data.
+Collection does not approve, promote, publish, or write canonical/public data.
 
-## Normal operating location
+## Current NAR source result behavior
 
-Ordinary collection is run manually on the operator's local checkout.
+The present NAR v2 source path commonly produces:
 
-GitHub Actions is not the normal acquisition environment. A temporary Actions harness may be used only as a bounded diagnostic or migration aid when the current execution environment cannot reach the official source. Such a harness must not be merged into the normal production workflow.
+```text
+Schedule-confirmed meeting without complete detail
+-> C candidate
 
-No scheduled automatic collection or retry is enabled.
+complete RaceList/DebaTable detail
+-> A+ candidate
+```
 
-## Local commands
+This is a NAR source-specific observed behavior, not a global Calendar rule.
 
-### July 8–31 window
+The shared Acquisition Control Plane remains capable of:
+
+```text
+C
+B
+B+
+A
+A+
+```
+
+If a future NAR adapter or source path safely supports B, B+, or A observations, those ranks must flow through the shared five-rank contract rather than being forced to C or A+.
+
+## Local fallback commands
+
+The local runner remains the fallback and development operator path.
+
+### Date window
 
 ```bash
 node scripts/timetable/run-nar-incremental-v2-local.mjs \
-  --batch-id=july-2026-08-through-31-run-001 \
-  --start-date=2026-07-08 \
-  --end-date-exclusive=2026-08-01
+  --batch-id=nar-window-run-001 \
+  --start-date=2026-08-01 \
+  --end-date-exclusive=2026-09-01
 ```
 
 ### Cross-month window
 
 ```bash
 node scripts/timetable/run-nar-incremental-v2-local.mjs \
-  --batch-id=july-august-overlap-run-001 \
-  --start-date=2026-07-20 \
-  --end-date-exclusive=2026-08-10
+  --batch-id=nar-cross-month-run-001 \
+  --start-date=2026-08-20 \
+  --end-date-exclusive=2026-09-11
 ```
 
 ### Selected-meeting retry
 
 ```bash
 node scripts/timetable/run-nar-incremental-v2-local.mjs \
-  --batch-id=selected-retry-run-001 \
-  --meeting-id=nar-monbetsu-racecourse-2026-07-21 \
-  --meeting-id=nar-oi-racecourse-2026-07-22
+  --batch-id=nar-selected-retry-001 \
+  --meeting-id=nar-monbetsu-racecourse-2026-08-21 \
+  --meeting-id=nar-oi-racecourse-2026-08-22
 ```
 
 Multiple meeting IDs may also be supplied with comma-separated `--meeting-ids=`.
 
+## Formal Actions workflow target
+
+The formal NAR workflow-dispatch path must accept bounded operator inputs equivalent to the local v2 runner.
+
+Required input concepts:
+
+```text
+batch_id
+mode
+start_date
+end_date_exclusive
+meeting_ids
+```
+
+Required behavior:
+
+1. validate mutually exclusive scope modes;
+2. run the NAR v2 acquisition path;
+3. preserve immutable batch-specific outputs;
+4. run batch, coverage, responsibility, and runtime-boundary validators;
+5. upload review artifacts;
+6. expose failure clearly;
+7. perform no approval, promotion, canonical write, public write, or deployment.
+
+The formal workflow is an implementation step under `WHR-CAL-ACQUISITION-CONTROL-PLANE`.
+
 ## Batch identity rule
 
-Every v2 run requires a unique lowercase kebab-case `--batch-id`.
+Every v2 run requires a unique lowercase kebab-case `batch_id`.
 
-The batch ID is part of the output path. Once written, that batch path is immutable: the operator must create a new batch ID for another run or retry.
+The batch ID is part of the output path. Once written, that batch path is immutable.
 
-This prevents a later local collection from overwriting evidence already pinned by a review decision.
+Use a new batch ID for every regular refresh or retry.
+
+Example:
+
+```text
+nar-august-run-001
+nar-august-retry-002
+nar-selected-retry-003
+```
+
+This prevents a later run from overwriting evidence already pinned by a review decision.
 
 ## Scope rule
 
-A run uses exactly one mode:
+A run uses exactly one scope mode.
+
+Current NAR v2 modes:
 
 ```text
 date_window
-or
 selected_meetings
 ```
 
@@ -101,9 +185,9 @@ start_date <= meeting.date < end_date_exclusive
 
 The ordinary date-window path is bounded to at most 93 days per run.
 
-## One local run, two source responsibilities
+## One run, two source responsibilities
 
-The v2 operator combines the two logical source layers without flattening them:
+The NAR v2 operator combines two logical source layers without flattening them:
 
 ```text
 requested scope
@@ -124,13 +208,13 @@ known racecourse/date meeting identities
 
 The Schedule Layer uses the monthly schedule grid, including schedule marker cells. It is not limited to meetings that already expose a usable RaceList detail link.
 
-The Detail Layer uses the NAR RaceList and DebaTable acquisition path and emits A+ only when all six approved timetable fields are complete.
+The Detail Layer uses the NAR RaceList and DebaTable acquisition path and emits A+ only when all required approved timetable fields are complete.
 
 A meeting must not appear simultaneously as both an A+ detail candidate and a C schedule candidate in the same date-window batch.
 
 ## Schedule candidate states
 
-Schedule-confirmed meetings without usable A+ detail use rank C and one of these states:
+Schedule-confirmed meetings without usable A+ detail use rank C and one of these current NAR states:
 
 ```text
 scheduled_pending_details
@@ -168,7 +252,7 @@ data/generated/timetable/nar-incremental-batches/<batch-id>/coverage-observation
 data/generated/timetable/nar-incremental-batches/<batch-id>/retry-targets.json
 ```
 
-The old fixed-path v1 artifacts remain historical evidence for the already reviewed July 5–7 batch. Future ordinary runs must use v2 immutable batch paths rather than overwrite the v1 files.
+The old fixed-path v1 artifacts remain historical evidence for the reviewed July 5–7 batch. Future ordinary runs must use v2 immutable batch paths rather than overwrite the v1 files.
 
 ## Candidate boundary
 
@@ -188,19 +272,17 @@ A successful collection run is not approval and is not publication.
 
 The batch records requested and observed scope separately.
 
-When the schedule source is successfully observed for the requested date window, schedule coverage may be:
+When the Schedule source is successfully observed for the requested date window, schedule coverage may be:
 
 ```text
 coverage_claim: source_window_complete
 ```
 
-while individual meetings still remain in `unresolved_meeting_ids` because their timetable details are pending.
-
-This distinction is intentional:
+while individual meetings remain in `unresolved_meeting_ids` because timetable detail is pending.
 
 ```text
 Schedule coverage complete
-≠
+!=
 Detail coverage complete
 ```
 
@@ -213,11 +295,11 @@ unresolved_meeting_ids: [...]
 source_errors: [...]
 ```
 
-Valid A+ candidates elsewhere in the batch are not invalidated by unrelated unresolved detail.
+Valid higher-rank candidates elsewhere in the batch are not invalidated by unrelated unresolved detail.
 
-## Retry targets
+## Retry targets and future rank-aware queue
 
-The retry artifact mirrors unresolved coverage state:
+The current NAR v2 retry artifact mirrors unresolved coverage state:
 
 ```text
 date_targets
@@ -225,7 +307,7 @@ meeting_targets
 reason_counts
 ```
 
-Retry execution remains manual and irregular:
+Current retry execution is operator-triggered and irregular.
 
 ```text
 scheduled_retry: disabled
@@ -233,7 +315,22 @@ canonical_write: disabled
 public_write: disabled
 ```
 
-Selected-meeting retry directly targets known stable meeting IDs. When current schedule observation does not reconfirm a selected meeting and detail fetch also fails, the reconciliation layer keeps that ID and date in retry targets rather than dropping it.
+Selected-meeting retry directly targets known stable meeting IDs. When current Schedule observation does not reconfirm a selected meeting and detail fetch also fails, the reconciliation layer keeps that ID and date in retry targets rather than dropping it.
+
+The future shared Rank-aware Retry Queue will add:
+
+```text
+current_reviewed_rank
+latest_observed_rank
+collection_target_rank
+missing_fields
+retry_reason
+runner/adapter profile
+backoff metadata
+attempt history
+```
+
+NAR must integrate with that shared queue rather than maintain a permanently separate retry model.
 
 ## Overlap and merge rule
 
@@ -241,12 +338,16 @@ Overlapping windows are allowed.
 
 Within one batch, stable meeting identities must be unique. Exact duplicate evidence collapses deterministically; conflicting duplicate content must fail.
 
-Across batches, promotion remains monotonic:
+Across batches, promotion remains monotonic.
+
+Examples:
 
 ```text
 existing C + reviewed A+ detail -> promote to A+
 existing A+ + later C observation -> keep A+
 ```
+
+The shared model also permits B/B+/A transitions where future NAR evidence supports them.
 
 Absence in a later run is not deletion, cancellation, or rank downgrade.
 
@@ -268,7 +369,7 @@ Dedicated CI also validates:
 scripts/check-calendar-nar-incremental-v2-core.mjs
 ```
 
-This fixes synthetic cases for:
+Current synthetic cases cover:
 
 - immutable batch paths;
 - Schedule-to-C candidate flow;
@@ -276,6 +377,8 @@ This fixes synthetic cases for:
 - future detail pending;
 - past detail retry;
 - selected-meeting retry preservation.
+
+The shared control-plane programme will add common five-rank classifier tests outside the source-specific NAR validator.
 
 ## Publication boundary
 
@@ -287,14 +390,15 @@ data/generated/timetable/public/**
 src/**
 ```
 
-It must not perform promotion, public projection, Cloudflare deployment, scheduled retry, or unattended publication.
+It must not perform approval, promotion, public projection, Cloudflare deployment, or unattended publication.
 
-The safe flow remains:
+The safe flow is:
 
 ```text
-local Schedule + Detail collection
+NAR collection
 -> immutable review batch
 -> Batch Validation
+-> Review Queue
 -> human review
 -> Promotion Validation
 -> canonical update
@@ -303,13 +407,39 @@ local Schedule + Detail collection
 parallel:
 Coverage Observation
 -> Coverage Audit
--> retry targets
+-> Rank-aware Retry Queue
 
 separate only when claimed:
 Completion Audit
 ```
 
-## Relationship to v1, legacy monthly, and July completion audit
+## Current repository position
+
+Published NAR detail is complete through 2026-07-07 for the reviewed promoted batches.
+
+The July 8–31 immutable review batch is committed with:
+
+```text
+schedule-confirmed meetings: 82
+A+ detail candidates:         11
+C schedule candidates:        71
+schedule errors:               0
+coverage claim:                source_window_complete
+pending detail retries:       71
+```
+
+The next source-specific steps are review, approved candidate generation, promotion, projection, QA, and publication for that batch.
+
+After publication:
+
+```text
+formal NAR Actions manual dispatch
+-> primary hosted runner
+-> local fallback retained
+-> shared Acquisition Registry / Job / Plan integration
+```
+
+## Relationship to v1, legacy monthly, and July Completion Audit
 
 The old fixed-path v1 incremental artifacts are historical evidence for the reviewed July 5–7 collection and must not be overwritten.
 
