@@ -112,7 +112,14 @@ Completed:
 15. ordinary Coverage Observation generation;
 16. explicit NAR retry-target generation;
 17. local review-only operator entry point;
-18. dedicated NAR incremental operator CI workflow.
+18. dedicated NAR incremental operator CI workflow;
+19. reviewed collection, promotion, rendered QA, and publication of NAR detail through 2026-07-07;
+20. immutable batch-specific v2 paths;
+21. Schedule Layer grid observation for known meeting identities;
+22. Schedule-to-C and Detail-to-A+ candidate split;
+23. future `scheduled_pending_details` state;
+24. past/current `detail_retry_required` state;
+25. selected-meeting retry reconciliation.
 
 The validation responsibility split is complete.
 
@@ -120,12 +127,12 @@ Historical implementation marker retained for governance compatibility: refactor
 
 Current shared implementation sequence:
 
-1. validate PR #429 NAR incremental operator core, output, coverage, and runtime boundaries;
-2. merge the operator foundation;
-3. collect the next source-visible NAR batch with an explicit requested window;
-4. review generated candidates, Coverage Observation, and retry targets;
-5. promote valid reviewed records independently of unresolved dates elsewhere;
-6. repeat irregular date-window or selected-meeting retries as needed;
+1. validate and merge the schedule-aware immutable NAR v2 local operator;
+2. locally collect 2026-07-08 through 2026-07-31 with a unique batch ID;
+3. review C Schedule candidates, A+ Detail candidates, Coverage Observation, and retry targets;
+4. promote valid reviewed records independently of unresolved detail elsewhere;
+5. repeat irregular selected-meeting retries as needed;
+6. promote reviewed C meetings to A+ when later detail becomes safely available;
 7. run July Completion Audit only when claiming July coverage complete;
 8. reuse the common contracts for Banei, HKJC, UAE, and later systems.
 
@@ -192,17 +199,34 @@ Completed:
 - selected-meeting scope support;
 - Coverage Observation and retry-target artifact generation;
 - local review-only operator;
-- dedicated incremental operator CI definition.
+- dedicated incremental operator CI definition;
+- reviewed and published incremental NAR detail through 2026-07-07.
+
+Current implementation:
+
+```text
+local manual v2 run
+-> immutable batch ID and paths
+-> Monthly Schedule grid observation
+-> known racecourse/date identities
+-> A+ candidate when Detail is complete
+-> C candidate when only Schedule is established
+-> Coverage Observation
+-> retry targets
+-> review before promotion
+```
 
 Current sequence:
 
-1. complete CI validation and review of the NAR ordinary incremental operator;
-2. collect the next source-visible NAR batch with an explicit requested window;
-3. review candidates, observed scope, unresolved dates, unresolved meeting IDs, source errors, and retry targets;
-4. promote valid records independently of unresolved dates elsewhere;
-5. run irregular date-window and selected-meeting retries where required;
-6. run July Completion Audit only when claiming July coverage complete;
-7. complete freshness, rollback, public projection, and bilingual QA.
+1. complete CI validation and review of schedule-aware immutable v2;
+2. locally collect the 2026-07-08 through 2026-07-31 window;
+3. review schedule-confirmed C candidates and detail-complete A+ candidates;
+4. review unresolved IDs, source errors, and retry targets;
+5. promote valid C and A+ records independently;
+6. run irregular selected-meeting retries where required;
+7. promote C to A+ through normal monotonic promotion when later detail is reviewed;
+8. run July Completion Audit only when claiming July coverage complete;
+9. complete freshness, rollback, public projection, and bilingual QA.
 
 Do not flatten local-government racing into a JRA-like feed.
 
