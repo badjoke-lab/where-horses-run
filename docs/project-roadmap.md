@@ -86,6 +86,8 @@ Rules:
 - corrective downgrade is a separately controlled reviewed path;
 - Completion Audit is the only role that may require every expected meeting in its declared scope.
 
+Completion is an explicit audit claim.
+
 ## Publication pipeline
 
 ```text
