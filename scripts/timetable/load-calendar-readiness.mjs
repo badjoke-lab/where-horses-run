@@ -2,7 +2,18 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const BASE_PATH = 'data/static/calendar-readiness-registry.json';
-const NAR_RACE_LIST_PATH = 'data/static/calendar-readiness-nar-race-list-v1.json';
+const SUPPLEMENTS = Object.freeze([
+  {
+    key: 'nar_race_list',
+    path: 'data/static/calendar-readiness-nar-race-list-v1.json',
+    schemaVersion: 'calendar-readiness-nar-race-list-v1',
+  },
+  {
+    key: 'nar_schedule_grid',
+    path: 'data/static/calendar-readiness-nar-schedule-grid-v1.json',
+    schemaVersion: 'calendar-readiness-nar-schedule-grid-v1',
+  },
+]);
 const AMENDMENTS_PATH = 'data/static/calendar-readiness-amendments-v1.json';
 const AMENDMENT_FIELDS = new Set(['public_ceiling', 'confirmed_fields', 'reason']);
 
@@ -14,25 +25,29 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function applySupplement(root, base) {
-  if (!existsSync(path.join(root, NAR_RACE_LIST_PATH))) return base;
+function applySupplements(root, base) {
+  const records = [...base.records];
+  const ids = new Set(records.map((record) => record.readiness_id));
+  const sourceKeys = new Set(records.map((record) => record.authority_source_key));
 
-  const supplement = readJson(root, NAR_RACE_LIST_PATH);
-  assert(supplement?.schema_version === 'calendar-readiness-nar-race-list-v1', 'NAR Calendar Readiness supplement schema is invalid');
-  assert(Array.isArray(supplement.records), 'NAR Calendar Readiness supplement records must be an array');
+  for (const supplementDef of SUPPLEMENTS) {
+    if (!existsSync(path.join(root, supplementDef.path))) continue;
+    const supplement = readJson(root, supplementDef.path);
+    assert(supplement?.schema_version === supplementDef.schemaVersion, `${supplementDef.key} Calendar Readiness supplement schema is invalid`);
+    assert(Array.isArray(supplement.records), `${supplementDef.key} Calendar Readiness supplement records must be an array`);
 
-  const ids = new Set(base.records.map((record) => record.readiness_id));
-  const sourceKeys = new Set(base.records.map((record) => record.authority_source_key));
-  for (const record of supplement.records) {
-    assert(!ids.has(record.readiness_id), `duplicate readiness supplement ID: ${record.readiness_id}`);
-    assert(!sourceKeys.has(record.authority_source_key), `duplicate readiness supplement source key: ${record.authority_source_key}`);
-    ids.add(record.readiness_id);
-    sourceKeys.add(record.authority_source_key);
+    for (const record of supplement.records) {
+      assert(!ids.has(record.readiness_id), `duplicate readiness supplement ID: ${record.readiness_id}`);
+      assert(!sourceKeys.has(record.authority_source_key), `duplicate readiness supplement source key: ${record.authority_source_key}`);
+      ids.add(record.readiness_id);
+      sourceKeys.add(record.authority_source_key);
+      records.push(record);
+    }
   }
 
   return {
     ...base,
-    records: [...base.records, ...supplement.records],
+    records,
   };
 }
 
@@ -92,11 +107,11 @@ function applyAmendments(root, base) {
 
 export function loadCalendarReadinessV1(root) {
   const base = readJson(root, BASE_PATH);
-  return applyAmendments(root, applySupplement(root, base));
+  return applyAmendments(root, applySupplements(root, base));
 }
 
 export const calendarReadinessPathsV1 = Object.freeze({
   base: BASE_PATH,
-  nar_race_list: NAR_RACE_LIST_PATH,
+  ...Object.fromEntries(SUPPLEMENTS.map((entry) => [entry.key, entry.path])),
   amendments: AMENDMENTS_PATH,
 });

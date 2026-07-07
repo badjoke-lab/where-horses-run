@@ -1,0 +1,33 @@
+{
+  "schema_version": "nar-incremental-v2-review-decision-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "source_batch_path": "data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/batch.json",
+  "source_batch_blob_sha": "b181be4891cc6dbe23a7a4dd5aa40b0ca75628f7",
+  "source_generated_at": "2026-07-07T15:38:58.003Z",
+  "batch_id": "july-2026-08-through-31-run-001",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-07-08",
+    "end_date_exclusive": "2026-08-01",
+    "timezone": "Asia/Tokyo"
+  },
+  "review": {
+    "status": "approved",
+    "reviewer": "badjoke-lab",
+    "reviewed_at": "2026-07-07T21:08:00Z",
+    "promotion_target": "canonical-timetable-v0"
+  },
+  "approval_scope": "entire_pinned_batch",
+  "approved_rank_counts": {
+    "C": 71,
+    "A+": 11
+  },
+  "expected_counts": {
+    "scheduled_meetings": 82,
+    "complete_detail_candidates": 11,
+    "schedule_only_candidates": 71,
+    "detail_blockers": 71,
+    "schedule_errors": 0
+  },
+  "decision": "Approve the entire immutable pinned batch exactly as reviewed: 11 complete public-safe A+ detail candidates and 71 C schedule-confirmed meeting candidates. Promotion must preserve source separation by emitting distinct approved envelopes for the RaceList/DebaTable detail source and the MonthlyConveneInfo schedule-grid source. No raw source content, participant data, betting data, result data, payout data, prediction data, or stream data is approved."
+}
