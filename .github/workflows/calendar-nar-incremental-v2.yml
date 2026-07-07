@@ -1,0 +1,65 @@
+name: Calendar NAR incremental v2
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/nar-incremental-v2-core.mjs'
+      - 'scripts/timetable/nar-incremental-v2-reconcile.mjs'
+      - 'scripts/timetable/normalize-nar-schedule-aware-month.mjs'
+      - 'scripts/timetable/collect-nar-incremental-v2.mjs'
+      - 'scripts/timetable/collect-nar-incremental-v2-reconciled.mjs'
+      - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'docs/calendar/**'
+      - '.github/workflows/calendar-nar-incremental-v2.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/nar-incremental-v2-core.mjs'
+      - 'scripts/timetable/nar-incremental-v2-reconcile.mjs'
+      - 'scripts/timetable/normalize-nar-schedule-aware-month.mjs'
+      - 'scripts/timetable/collect-nar-incremental-v2.mjs'
+      - 'scripts/timetable/collect-nar-incremental-v2-reconciled.mjs'
+      - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'docs/calendar/**'
+      - '.github/workflows/calendar-nar-incremental-v2.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/nar-incremental-v2-core.mjs
+          node --check scripts/timetable/nar-incremental-v2-reconcile.mjs
+          node --check scripts/timetable/normalize-nar-schedule-aware-month.mjs
+          node --check scripts/timetable/collect-nar-incremental-v2.mjs
+          node --check scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
+          node --check scripts/timetable/run-nar-incremental-v2-local.mjs
+          node --check scripts/check-calendar-nar-incremental-v2-core.mjs
+          node --check scripts/check-calendar-nar-incremental-v2.mjs
+      - name: Validate v2 core semantics
+        run: node scripts/check-calendar-nar-incremental-v2-core.mjs
+      - name: Validate empty immutable batch boundary
+        run: node scripts/check-calendar-nar-incremental-v2.mjs --batch-id=ci-empty-batch-001 --allow-empty
+      - name: Validate shared Coverage Observation contract
+        run: node scripts/check-calendar-coverage-observation-schema.mjs
+      - name: Validate validation responsibility split
+        run: node scripts/check-calendar-validation-responsibilities.mjs
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
