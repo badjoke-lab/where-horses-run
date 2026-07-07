@@ -199,7 +199,7 @@ requirePhrases(narRunbook, 'NAR runbook', [
   'formal workflow_dispatch operation: not yet canonical',
   'arbitrary date windows up to 93 days',
   'selected-meeting retries',
-  'C/B/B+/A/A+',
+  'C\nB\nB+\nA\nA+',
   'scheduled_pending_details',
   'detail_retry_required',
   'Rank-aware Retry Queue',
