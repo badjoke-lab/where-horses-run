@@ -83,7 +83,7 @@ A later lower-detail observation is not enough to remove previously reviewed det
 
 ### Corrective downgrade rule
 
-A downgrade may occur only through an explicit corrective mode with a reviewed reason.
+A downgrade may occur only through explicit `corrective_downgrade` mode with a reviewed reason.
 
 Allowed corrective reason classes are:
 
@@ -115,7 +115,7 @@ Coverage Audit may report:
 - retry targets;
 - coverage claim state.
 
-Coverage Audit incompleteness is reportable state. It must not block unrelated valid Batch or Promotion Validation.
+Coverage Audit incompleteness is reportable state. It must not block unrelated valid Batch or Promotion Validation and must not block unrelated valid partial promotions.
 
 Coverage Audit does not claim a whole month or season complete unless a separate Completion Audit proves that claim.
 
