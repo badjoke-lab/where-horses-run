@@ -19,7 +19,7 @@ if (!batchIdArg) {
 }
 const batchId = batchIdArg.slice('--batch-id='.length);
 
-run(process.execPath, ['scripts/timetable/collect-nar-incremental-v2.mjs', ...scopeArgs]);
+run(process.execPath, ['scripts/timetable/collect-nar-incremental-v2-reconciled.mjs', ...scopeArgs]);
 run(process.execPath, ['scripts/check-calendar-nar-incremental-core.mjs']);
 run(process.execPath, ['scripts/check-calendar-nar-incremental-v2.mjs', `--batch-id=${batchId}`]);
 run(process.execPath, ['scripts/check-calendar-coverage-observation-schema.mjs']);
