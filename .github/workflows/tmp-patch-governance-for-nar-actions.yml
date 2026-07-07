@@ -1,0 +1,39 @@
+name: Temporary NAR Actions governance patch
+
+on:
+  push:
+    branches:
+      - work/nar-actions-manual-dispatch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-patch-governance-for-nar-actions
+  cancel-in-progress: false
+
+jobs:
+  patch-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/nar-actions-manual-dispatch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch governance validator
+        run: node scripts/tmp-patch-governance-for-nar-actions.mjs
+      - name: Validate governance state
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary patch files and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm \
+            .github/workflows/tmp-patch-governance-for-nar-actions.yml \
+            scripts/tmp-patch-governance-for-nar-actions.mjs
+          git add scripts/check-project-governance-docs.mjs
+          git diff --check --cached
+          git commit -m "[CF-Pages-Skip] Advance governance validator to NAR Actions state"
+          git push origin HEAD:work/nar-actions-manual-dispatch
