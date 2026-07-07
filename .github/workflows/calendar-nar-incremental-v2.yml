@@ -6,13 +6,15 @@ on:
       - '.github/workflows/calendar-nar-incremental-v2.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   collect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -25,7 +27,6 @@ jobs:
             --end-date-exclusive=2026-08-01 \
             2>&1 | tee nar-july-remainder-v2.log
       - name: Upload review artifacts
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nar-july-remainder-v2-${{ github.run_id }}
@@ -35,5 +36,22 @@ jobs:
             data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/collection-report.json
             data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/coverage-observation.json
             data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/retry-targets.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
+      - name: Commit batch payload to clean review branch
+        run: |
+          mkdir -p /tmp/nar-v2-payload/data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001
+          mkdir -p /tmp/nar-v2-payload/data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001
+          cp data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/batch.json /tmp/nar-v2-payload/data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/
+          cp data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/*.json /tmp/nar-v2-payload/data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/
+          git fetch origin work/nar-july-remainder-v2-review
+          git switch -C work/nar-july-remainder-v2-review origin/work/nar-july-remainder-v2-review
+          cp /tmp/nar-v2-payload/data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/batch.json data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/
+          mkdir -p data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001
+          cp /tmp/nar-v2-payload/data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/*.json data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/candidates/nar-incremental-batches/july-2026-08-through-31-run-001/batch.json
+          git add data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/*.json
+          git commit -m "Add NAR July remainder v2 review batch"
+          git push origin HEAD:work/nar-july-remainder-v2-review
