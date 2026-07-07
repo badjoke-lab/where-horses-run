@@ -1,9 +1,7 @@
 name: NAR next-window review collection
 
 on:
-  push:
-    branches:
-      - work/nar-next-window
+  pull_request:
     paths:
       - '.github/workflows/calendar-nar-incremental-operator.yml'
 
