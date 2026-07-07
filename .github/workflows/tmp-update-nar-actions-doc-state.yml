@@ -1,6 +1,10 @@
 name: Temporary NAR Actions documentation state update
 
 on:
+  pull_request:
+    paths:
+      - 'scripts/tmp-update-nar-actions-doc-state.mjs'
+      - '.github/workflows/tmp-update-nar-actions-doc-state.yml'
   push:
     branches:
       - work/nar-actions-manual-dispatch
