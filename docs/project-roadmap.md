@@ -56,7 +56,7 @@ Completed NAR/common foundations include:
 - deterministic overlap aggregation;
 - selected-meeting scope support;
 - Coverage Observation and retry-target artifact generation;
-- reviewed and published incremental NAR detail through 2026-07-07.
+- reviewed and published NAR incremental detail through 2026-07-07.
 
 The active implementation is the schedule-aware immutable NAR incremental v2 local operator. The next operational target is 2026-07-08 through 2026-07-31 inclusive.
 
