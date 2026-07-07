@@ -141,6 +141,7 @@ for (const validator of [
   'scripts/check-calendar-pipeline-v1-candidate-contract.mjs',
   'scripts/check-calendar-pipeline-v1-promotion.mjs',
   'scripts/check-calendar-coverage-observation-schema.mjs',
+  'scripts/check-project-governance-docs.mjs',
 ]) {
   const result = spawnSync(process.execPath, [validator], { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
   process.stdout.write(result.stdout ?? '');
