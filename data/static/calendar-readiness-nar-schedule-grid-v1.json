@@ -1,0 +1,66 @@
+{
+  "schema_version": "calendar-readiness-nar-schedule-grid-v1",
+  "records": [
+    {
+      "readiness_id": "japan--japan-nar-system--nar-monthly-schedule-grid",
+      "country_id": "japan",
+      "country_tracker_delivery_no": "13",
+      "system_id": "japan-nar-system",
+      "system_name_en": "Regional local racing flat-racing schedule system",
+      "authority_source_key": "japan/nar-local-government-racing/nar-monthly-schedule-grid",
+      "racecourse_ids": [
+        "monbetsu-racecourse",
+        "morioka-racecourse",
+        "mizusawa-racecourse",
+        "urawa-racecourse",
+        "funabashi-racecourse",
+        "oi-racecourse",
+        "kawasaki-racecourse",
+        "kanazawa-racecourse",
+        "kasamatsu-racecourse",
+        "nagoya-racecourse",
+        "sonoda-racecourse",
+        "himeji-racecourse",
+        "kochi-racecourse",
+        "saga-racecourse"
+      ],
+      "coverage_scope": "subset_of_authority_racecourses",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "query_parameter",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "manual_operation",
+      "fallback": "official_link_only",
+      "source_status": "verified",
+      "checked_date": "2026-07-07",
+      "evidence_reviewed_at": "2026-07-08",
+      "revalidation_trigger": "Revalidate when the NAR MonthlyConveneInfo schedule-grid route or schedule-marker interpretation changes, or when a racecourse/date identity can no longer be reproduced safely.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/manual-nar-incremental-collection.md",
+      "limitations": [
+        "This source establishes meeting identity only and does not itself confirm race times or programme-summary fields.",
+        "Obihiro Banei is excluded from this flat-racing schedule source profile.",
+        "Collection remains operator-triggered and review is required before canonical promotion or publication."
+      ],
+      "notes": "The reviewed July 8-31 v2 batch demonstrated bounded schedule-grid acquisition with 82 meeting identities, zero schedule errors, and explicit pending-detail retry state."
+    }
+  ]
+}
