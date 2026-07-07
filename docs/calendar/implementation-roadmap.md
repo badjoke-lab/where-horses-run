@@ -1,7 +1,7 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-07
 
 ## Purpose
 
@@ -104,19 +104,30 @@ Completed:
 7. Batch / Promotion / Coverage / Completion responsibility split;
 8. machine-readable validation responsibility map;
 9. normal promotion rank-regression rejection;
-10. explicit corrective-downgrade boundary and reason set.
+10. explicit corrective-downgrade boundary and reason set;
+11. NAR incremental core for arbitrary date windows;
+12. cross-month window grouping;
+13. deterministic overlap aggregation;
+14. selected-meeting scope parsing;
+15. ordinary Coverage Observation generation;
+16. explicit NAR retry-target generation;
+17. local review-only operator entry point;
+18. dedicated NAR incremental operator CI workflow.
 
 The validation responsibility split is complete.
 
+Historical implementation marker retained for governance compatibility: refactor NAR ordinary collection away from fixed July Completion Audit gating.
+
 Current shared implementation sequence:
 
-1. refactor NAR ordinary collection away from fixed July Completion Audit gating;
-2. support arbitrary windows and overlap-safe retries;
-3. support selected-meeting retries;
-4. emit Coverage Observation from ordinary operation;
-5. emit explicit retry targets;
-6. continue NAR reviewed incremental promotion;
-7. reuse the common contracts for Banei, HKJC, UAE, and later systems.
+1. validate PR #429 NAR incremental operator core, output, coverage, and runtime boundaries;
+2. merge the operator foundation;
+3. collect the next source-visible NAR batch with an explicit requested window;
+4. review generated candidates, Coverage Observation, and retry targets;
+5. promote valid reviewed records independently of unresolved dates elsewhere;
+6. repeat irregular date-window or selected-meeting retries as needed;
+7. run July Completion Audit only when claiming July coverage complete;
+8. reuse the common contracts for Banei, HKJC, UAE, and later systems.
 
 ## Promotion rule
 
@@ -174,18 +185,24 @@ Completed:
 - cross-system incremental coverage contract;
 - Coverage Observation schema and validator foundation;
 - validation responsibility split;
-- monotonic normal promotion guard.
+- monotonic normal promotion guard;
+- NAR incremental core implementation;
+- arbitrary and cross-month date-window support;
+- overlap-safe deterministic aggregation;
+- selected-meeting scope support;
+- Coverage Observation and retry-target artifact generation;
+- local review-only operator;
+- dedicated incremental operator CI definition.
 
 Current sequence:
 
-1. refactor NAR ordinary operator for arbitrary windows;
-2. make overlap-safe retries deterministic;
-3. add selected-meeting retries;
-4. emit Coverage Observation and retry targets;
-5. collect the next source-visible NAR batch;
-6. review and promote valid records independently of unresolved dates elsewhere;
-7. run July Completion Audit only when claiming July coverage complete;
-8. complete freshness, rollback, public projection, and bilingual QA.
+1. complete CI validation and review of the NAR ordinary incremental operator;
+2. collect the next source-visible NAR batch with an explicit requested window;
+3. review candidates, observed scope, unresolved dates, unresolved meeting IDs, source errors, and retry targets;
+4. promote valid records independently of unresolved dates elsewhere;
+5. run irregular date-window and selected-meeting retries where required;
+6. run July Completion Audit only when claiming July coverage complete;
+7. complete freshness, rollback, public projection, and bilingual QA.
 
 Do not flatten local-government racing into a JRA-like feed.
 
