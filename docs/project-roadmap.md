@@ -4,7 +4,7 @@ Status: active canonical project roadmap
 Country-page programme: complete  
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-07
 
 ## Purpose
 
@@ -51,9 +51,13 @@ The following shared prerequisite work discovered during NAR is complete:
 - Coverage Observation schema and validator;
 - Batch / Promotion / Coverage / Completion responsibility split;
 - normal promotion rank-regression guard;
-- explicit corrective-downgrade boundary.
+- explicit corrective-downgrade boundary;
+- NAR incremental operator foundation for arbitrary and cross-month windows;
+- deterministic overlap aggregation;
+- selected-meeting scope support;
+- Coverage Observation and retry-target artifact generation.
 
-The active next work is NAR ordinary-operator refactoring.
+The active next work is NAR ordinary-operator validation and the next explicit source-visible collection window.
 
 ## Governing Calendar model
 
@@ -182,16 +186,26 @@ Completed:
 - incremental coverage contract;
 - Coverage Observation contract;
 - validation responsibility split;
-- monotonic normal promotion guard.
+- monotonic normal promotion guard;
+- NAR incremental core;
+- arbitrary and cross-month date-window support;
+- overlap-safe deterministic aggregation;
+- selected-meeting scope support;
+- Coverage Observation generation;
+- explicit retry-target generation;
+- local review-only operator;
+- dedicated NAR incremental operator CI workflow.
+
+Historical implementation marker retained for compatibility: NAR ordinary-operator refactoring.
 
 Current sequence:
 
-1. refactor NAR ordinary collection away from fixed July Completion Audit gating;
-2. support arbitrary windows and overlap-safe retries;
-3. support selected-meeting retries;
-4. emit Coverage Observation and explicit retry targets;
-5. collect the next source-visible NAR batch;
-6. review and promote valid records independently of unresolved dates elsewhere;
+1. validate PR #429 incremental operator core, output, coverage, and runtime boundaries;
+2. merge the NAR ordinary incremental operator foundation;
+3. collect the next source-visible NAR batch with an explicit requested window;
+4. review candidates, observed scope, unresolved dates, unresolved meeting IDs, source errors, and retry targets;
+5. promote valid reviewed records independently of unresolved dates elsewhere;
+6. run irregular date-window or selected-meeting retries as needed;
 7. run July Completion Audit only when claiming July coverage complete;
 8. complete freshness, rollback, public projection, and bilingual QA.
 
