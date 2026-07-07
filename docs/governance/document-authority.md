@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-08
 
 ## Authority order
 
@@ -51,6 +51,9 @@ Calendar human-readable contracts:
 - `docs/calendar/machine-readable-contracts.md`
 - `docs/calendar/incremental-coverage-contract.md`
 - `docs/calendar/coverage-observation-schema.md`
+- `docs/calendar/validation-responsibility-contract.md`
+- `docs/calendar/acquisition-control-plane-contract.md`
+- `docs/calendar/acquisition-control-plane-implementation-plan.md`
 - `docs/calendar/implementation-roadmap.md`
 - `docs/calendar/japan-full-month-scope-policy.md`
 - `docs/calendar/nar-a-plus-pilot-plan.md`
@@ -116,6 +119,8 @@ Calendar machine-readable contracts:
 - `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
 
+The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are planned canonical artifacts. Until those schemas are implemented, `docs/calendar/acquisition-control-plane-contract.md` and its implementation plan govern their semantics and implementation order.
+
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
 
 ## Required PR discipline
@@ -124,7 +129,7 @@ Before work begins:
 
 1. assign or confirm the stable Work ID;
 2. read the applicable canonical documents;
-3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md` and the applicable machine-readable contract;
+3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, and the applicable machine-readable contract;
 4. confirm tracker or registry state;
 5. record whether Cloudflare is required.
 

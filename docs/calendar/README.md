@@ -1,18 +1,20 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-07-07
+Last reviewed: 2026-07-08
 
 Use these files together:
 
 - [`../project-roadmap.md`](../project-roadmap.md) — full product sequence and current Work ID.
 - [`source-test-v2-contract.md`](source-test-v2-contract.md) — required source-research output.
 - [`calendar-readiness-contract.md`](calendar-readiness-contract.md) — completion states for each racing system and source.
-- [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, validator, and incremental coverage implementation map.
-- [`incremental-coverage-contract.md`](incremental-coverage-contract.md) — cross-system arbitrary-window, partial-success, coverage-observation, merge, and completion-audit rules.
+- [`machine-readable-contracts.md`](machine-readable-contracts.md) — schema, registry, stable-reference, validator, and control-plane implementation map.
+- [`incremental-coverage-contract.md`](incremental-coverage-contract.md) — cross-system arbitrary-window, partial-success, five-rank, runner-neutral, retry, merge, and completion-audit rules.
 - [`coverage-observation-schema.md`](coverage-observation-schema.md) — machine-readable requested/observed scope, partial coverage, source-error, and completion-audit claim contract.
 - [`validation-responsibility-contract.md`](validation-responsibility-contract.md) — Batch / Promotion / Coverage / Completion responsibility and blocking boundaries.
-- [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, shared incremental coverage implementation, pilots, release, expansion, and operations.
+- [`acquisition-control-plane-contract.md`](acquisition-control-plane-contract.md) — shared Collection Plan, Job, runner routing, five-rank classification, Review Queue, and Rank-aware Retry Queue contract.
+- [`acquisition-control-plane-implementation-plan.md`](acquisition-control-plane-implementation-plan.md) — staged implementation schedule from current NAR completion through shared runners, Banei handoff, multi-system execution, review PR preparation, and scheduling.
+- [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, NAR completion, control-plane foundation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
 - [`pipeline-v1-build-boundary.md`](pipeline-v1-build-boundary.md) — static-build read boundary and explicit generation separation.
@@ -23,12 +25,12 @@ Use these files together:
 - [`pipeline-v1-release-gate.md`](pipeline-v1-release-gate.md) — grouped Pipeline v1 completion and remaining-work boundary.
 - [`dynamic-dates-contract.md`](dynamic-dates-contract.md) — explicit reference date, timezone, Today/Tomorrow, rolling window, and stale-state rules.
 - [`dynamic-dates-release-gate.md`](dynamic-dates-release-gate.md) — Dynamic Dates completion and Operations v1 boundary.
-- [`operations-v1-contract.md`](operations-v1-contract.md) — review-only operator status, thresholds, and no-write boundary.
+- [`operations-v1-contract.md`](operations-v1-contract.md) — completed review-only status/report layer; later control-plane Operations v2 is additive.
 - [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
 - [`japan-full-month-scope-policy.md`](japan-full-month-scope-policy.md) — July completion-audit policy; full-month completeness is not an ordinary update gate.
 - [`nar-a-plus-pilot-plan.md`](nar-a-plus-pilot-plan.md) — active NAR pilot state and incremental operator sequence.
 - [`nar-monthly-collection-contract.md`](nar-monthly-collection-contract.md) — NAR ordinary incremental collection versus July completion-audit split.
-- [`manual-nar-incremental-collection.md`](manual-nar-incremental-collection.md) — active local Schedule + Detail v2 operator, immutable batch paths, C/A+ candidate split, Coverage Observation, and manual retry runbook.
+- [`manual-nar-incremental-collection.md`](manual-nar-incremental-collection.md) — NAR v2 operation, immutable batch paths, current local command support, target Actions-primary/local-fallback transition, coverage, and retry runbook.
 - [`manual-nar-monthly-collection.md`](manual-nar-monthly-collection.md) — legacy compatibility monthly operator runbook.
 - [`banei-a-plus-full-month-plan.md`](banei-a-plus-full-month-plan.md) — queued Banei incremental plan and separate July completion audit.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
@@ -47,7 +49,7 @@ Use these files together:
 - [`../specs/timetable-data-flow-and-display-contract.md`](../specs/timetable-data-flow-and-display-contract.md).
 - [`../operations/deployment-and-ci-policy.md`](../operations/deployment-and-ci-policy.md).
 
-## Machine-readable entry points
+## Implemented machine-readable entry points
 
 ```text
 data/static/source-test-v2.schema.json
@@ -114,15 +116,49 @@ scripts/check-jra-review-package.mjs
 scripts/check-local-racing-pilot-foundation.mjs
 ```
 
+## Planned control-plane machine-readable entry points
+
+The exact paths will be fixed by implementation PRs, but the required artifact classes are:
+
+```text
+Acquisition Registry schema + registry
+Collection Job schema
+Collection Plan schema
+Collection Result Manifest schema
+Review Queue schema
+Rank-aware Retry Queue schema
+five-rank classifier validator
+runner compatibility validators
+control-plane release gate
+```
+
+Do not invent parallel ad hoc schemas outside the control-plane contract.
+
+## Current programme state
+
 The readiness registry contains the 116 reviewed system/source decisions consolidated by the final 98-country audit. The baseline migration map governs how existing Calendar implementation is retained, repaired, migrated, replaced, or archived.
 
-Coverage Observation and validation responsibility foundations are active. The NAR ordinary operator has published reviewed NAR detail through 2026-07-07 and is being advanced to the schedule-aware immutable v2 local workflow. The next operational collection target is 2026-07-08 through 2026-07-31 inclusive.
+NAR detail through 2026-07-07 is published. The July 8–31 immutable review batch is committed with 82 schedule-confirmed meetings: 11 A+ and 71 C, with zero schedule errors and 71 pending detail retries.
+
+The immediate sequence is:
+
+```text
+finish NAR review/promotion/publication
+-> close temporary diagnostic PRs without merge
+-> formalize NAR Actions manual dispatch
+-> Acquisition Registry
+-> Collection Job / Collection Plan schemas
+-> five-rank classifier contract
+-> Result Manifest / Review Queue / Rank-aware Retry Queue
+-> shared Actions/local job semantics
+-> Banei on the shared foundation
+```
 
 ## Operating rule
 
-Calendar work starts from reviewed source tests, authority/source records, country-page notes, and Calendar Readiness records. It must not begin from generic country assumptions.
+Calendar work starts from reviewed source tests, authority/source records, country-page notes, Calendar Readiness records, and the Acquisition Control Plane contracts. It must not begin from generic country assumptions or operator memory.
 
-Country-page completion, source capability, Public Ceiling, Calendar Readiness, implementation status, source health, and coverage claim remain separate states.
+Country-page completion, source capability, Collection Target Rank, Public Ceiling, Calendar Readiness, runner profile, implementation status, source health, coverage claim, review state, promotion state, and publication state remain separate facts.
 
 Ordinary updates may be partial and irregular. A completion claim is validated separately.
 
@@ -132,4 +168,4 @@ Detailed local captures remain outside the repository. The public repository may
 
 ## Maintenance
 
-Every Calendar PR must review `incremental-coverage-contract.md`, `validation-responsibility-contract.md`, and the applicable source-specific plan. Update the relevant roadmap, readiness registry, source record, runbook, schema, contract, or validator when its state or rule changes.
+Every Calendar PR must review `incremental-coverage-contract.md`, `validation-responsibility-contract.md`, `acquisition-control-plane-contract.md`, `acquisition-control-plane-implementation-plan.md`, and the applicable source-specific plan. Update the relevant roadmap, readiness registry, acquisition registry, source record, runbook, schema, contract, queue contract, or validator when its state or rule changes.

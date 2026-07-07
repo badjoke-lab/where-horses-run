@@ -2,7 +2,7 @@
 
 Status: active canonical implementation contract  
 Work ID: `WHR-CAL-CONTRACT-02`  
-Last reviewed: 2026-07-06
+Last reviewed: 2026-07-08
 
 ## Purpose
 
@@ -14,6 +14,8 @@ Read together:
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/coverage-observation-schema.md
 docs/calendar/validation-responsibility-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
 ```
 
 The shared model is:
@@ -24,6 +26,8 @@ Meeting / Schedule Layer
 Timetable Detail Layer
 +
 Coverage Observation
++
+Acquisition Control Plane
 ```
 
 Validation is separated into:
@@ -36,6 +40,8 @@ Completion Audit
 ```
 
 ## Canonical files
+
+Implemented machine-readable contracts:
 
 ```text
 data/static/source-test-v2.schema.json
@@ -59,20 +65,43 @@ scripts/check-calendar-pipeline-v1-promotion.mjs
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
-## Source capability and readiness
+Planned control-plane canonical artifacts:
 
-Source Test v2, authority/source inventory, and Calendar Readiness keep these states separate:
+```text
+Acquisition Registry schema + registry
+Collection Job schema
+Collection Plan schema
+Collection Result Manifest schema
+Review Queue schema
+Rank-aware Retry Queue schema
+associated validators and release gates
+```
+
+Until those machine-readable artifacts are implemented, their semantics and implementation order are governed by:
+
+```text
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/acquisition-control-plane-implementation-plan.md
+```
+
+## Source capability, operation, and readiness
+
+Source Test v2, authority/source inventory, Calendar Readiness, and the planned Acquisition Registry keep these states separate:
 
 ```text
 Technical Rank
+Collection Target Rank
 Public Ceiling
 Calendar Readiness
+Runner Profile
 Automation Mode
 Implementation Status
 Source Status
 ```
 
 A source may support C, B, B+, A, or A+. A meeting may enter the pipeline directly at the highest reviewed rank supported by its evidence. No artificial C-only intermediate publication is required.
+
+The planned Acquisition Registry will route system/source/adapter profiles to runners without changing candidate or promotion semantics.
 
 ## Candidate windows
 
@@ -87,6 +116,8 @@ candidate_window.timezone
 Candidate windows are not inherently monthly. Operators may use arbitrary windows, overlapping retries, one-date runs, or selected-meeting retries when their source-specific contract supports them.
 
 A candidate window describes batch scope. It does not claim that every meeting in the range was available or collected.
+
+Different Collection Jobs in one plan may use different windows.
 
 ## Coverage Observation
 
@@ -172,19 +203,176 @@ scripts/check-calendar-nar-full-month-candidate-set.mjs
 
 This is a bounded NAR July completion-audit validator. It is not an ordinary Batch or Promotion gate.
 
-## Rank and merge rules
+## Five-rank result contract
+
+Common result and queue schemas must preserve:
+
+```text
+C
+B
+B+
+A
+A+
+```
+
+Field-shape semantics:
+
+```text
+C  meeting only
+B  first race time only
+B+ first and final race times, no race rows
+A  complete per-race post-time rows
+A+ A plus permitted reviewed programme-summary fields
+```
+
+The planned rank classifier contract must test all five shapes and direct monotonic upgrades.
 
 Normal incremental behavior:
 
 ```text
 A+ + later C observation -> keep A+
 A + later B+ observation -> keep A
+B+ + later B observation -> keep B+
 C + later reviewed A+ -> promote to A+
+B + later reviewed A -> promote to A
 ```
 
 A reviewed downgrade requires the separately controlled corrective path. Freshness and source-health changes remain separate from rank.
 
+## Planned Acquisition Registry
+
+The Acquisition Registry must represent at least:
+
+```text
+system_id
+country_id
+authority_id
+primary_runner
+fallback_runner
+schedule_source_id
+detail_source_id
+schedule_adapter_id
+detail_adapter_id
+technical_capability_rank
+collection_target_rank
+public_ceiling
+supported_observation_ranks
+supported scope modes
+rank-upgrade retry support
+```
+
+Initial required system profiles:
+
+```text
+japan-jra-system
+japan-nar-system
+japan-banei-system
+```
+
+JRA and NAR must be representable without hard-coding runner choice into the common orchestration layer.
+
+## Planned Collection Job and Plan contracts
+
+The Collection Job schema will define one schedulable acquisition request.
+
+Conceptual required fields:
+
+```text
+job_id
+campaign_id
+system_id
+runner_policy
+collection_mode
+requested_scope
+rank_strategy
+target_rank
+reason
+requested_at
+```
+
+The Collection Plan schema will allow one campaign to contain multiple independent jobs with different systems, runners, scopes, and target ranks.
+
+```text
+one campaign
+many independent jobs
+independent validation
+independent review state
+```
+
+Plan grouping must not imply one review PR or one promotion batch.
+
+## Planned Collection Result Manifest
+
+Every job should have a compact result summary containing:
+
+```text
+campaign_id
+job_id
+batch_id
+system_id
+runner_used
+requested_scope
+observed_scope
+coverage_claim
+records_discovered
+records_updated
+rank_counts.C
+rank_counts.B
+rank_counts.B+
+rank_counts.A
+rank_counts.A+
+unresolved dates/meetings
+source errors
+artifact references
+```
+
+The manifest summarizes but does not replace candidate or Coverage Observation artifacts.
+
+## Planned Review Queue
+
+The Review Queue machine-readable contract must expose:
+
+```text
+campaign/job/batch identity
+system
+runner
+scope
+coverage claim
+C/B/B+/A/A+ counts
+unresolved counts
+source error count
+review state
+promotion state
+```
+
+The queue is the shared operator view of validated batches awaiting review.
+
+## Planned Rank-aware Retry Queue
+
+The Retry Queue contract must retain:
+
+```text
+meeting_id
+system_id
+current_reviewed_rank
+latest_observed_rank
+collection_target_rank
+missing_fields
+retry_reason
+retry_scope
+primary_runner
+fallback_runner
+adapter_id
+next_eligible_retry_at
+attempt_count
+last_attempt_at
+```
+
+Retry must support C/B/B+/A/A+ upgrade gaps and direct jumps to the highest newly supported rank.
+
 ## Validation commands
+
+Current implemented validators:
 
 ```text
 node scripts/check-calendar-contracts.mjs
@@ -198,19 +386,24 @@ node scripts/check-jra-final-program-intake-schema.mjs
 
 These validators prove schema consistency, stable references, partial shorter source horizons, selected-meeting retry observations, completion-claim boundaries, four-role separation, normal rank-regression rejection, and corrective-path isolation.
 
+Control-plane implementation must add dedicated validators for Registry, Job, Plan, five-rank classifier, Result Manifest, Review Queue, and Rank-aware Retry Queue contracts.
+
 ## Current next implementation
 
-The shared contract and validator responsibility foundations are complete.
+The shared coverage and validation foundations are complete.
 
 Next:
 
-1. refactor NAR ordinary collection away from fixed July completion gating;
-2. support arbitrary windows and overlap-safe retries;
-3. support selected-meeting retries;
-4. emit Coverage Observation and explicit retry targets;
-5. continue NAR incremental review and promotion;
-6. keep July full-month validation as a separate completion audit.
+1. finish the current NAR July remainder promotion/publication path;
+2. formalize NAR Actions manual dispatch with local fallback;
+3. implement Acquisition Registry schema and initial Japan profiles;
+4. implement Collection Job and Collection Plan schemas;
+5. implement five-rank classifier contract tests;
+6. implement Collection Result Manifest, Review Queue, and Rank-aware Retry Queue schemas;
+7. connect Actions and local runners to common job semantics;
+8. begin Banei on the shared control-plane foundation;
+9. add multi-system execution, review-PR preparation, and scheduling incrementally.
 
 ## Change discipline
 
-Changes to enums, stable IDs, merge rules, coverage claims, validation responsibilities, corrective downgrade rules, or completion conditions must update the affected machine-readable schema/map, human contract, validator, and roadmap together.
+Changes to enums, stable IDs, runner classes, job modes, rank strategies, merge rules, coverage claims, queue states, validation responsibilities, corrective downgrade rules, or completion conditions must update the affected machine-readable schema/map, human contract, validator, and roadmap together.

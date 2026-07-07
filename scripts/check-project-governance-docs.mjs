@@ -6,9 +6,12 @@ const requiredFiles = [
   'docs/project-roadmap.md',
   'docs/governance/document-authority.md',
   'docs/calendar/README.md',
+  'docs/calendar/machine-readable-contracts.md',
   'docs/calendar/incremental-coverage-contract.md',
   'docs/calendar/coverage-observation-schema.md',
   'docs/calendar/validation-responsibility-contract.md',
+  'docs/calendar/acquisition-control-plane-contract.md',
+  'docs/calendar/acquisition-control-plane-implementation-plan.md',
   'docs/calendar/implementation-roadmap.md',
   'docs/calendar/nar-a-plus-pilot-plan.md',
   'docs/calendar/nar-monthly-collection-contract.md',
@@ -48,13 +51,16 @@ const start = read('START-HERE.md');
 const roadmap = read('docs/project-roadmap.md');
 const implementationRoadmap = read('docs/calendar/implementation-roadmap.md');
 const incremental = read('docs/calendar/incremental-coverage-contract.md');
+const controlPlane = read('docs/calendar/acquisition-control-plane-contract.md');
+const controlPlan = read('docs/calendar/acquisition-control-plane-implementation-plan.md');
+const machineContracts = read('docs/calendar/machine-readable-contracts.md');
 const coverageDoc = read('docs/calendar/coverage-observation-schema.md');
 const validationDoc = read('docs/calendar/validation-responsibility-contract.md');
 const validationMap = read('data/static/calendar-validation-responsibilities-v1.json');
 const registry = read('data/static/calendar-readiness-registry.json');
 const japanReadiness = read('data/static/calendar-readiness-japan-v2.json');
 const japanPolicy = read('data/static/japan-a-plus-policy.json');
-const narIncrementalRunbook = read('docs/calendar/manual-nar-incremental-collection.md');
+const narRunbook = read('docs/calendar/manual-nar-incremental-collection.md');
 
 function requirePhrases(text, label, phrases) {
   for (const phrase of phrases) {
@@ -64,84 +70,106 @@ function requirePhrases(text, label, phrases) {
 
 requirePhrases(start, 'START-HERE', [
   'WHR-CAL-JAPAN-NAR-A-PLUS',
+  'WHR-CAL-ACQUISITION-CONTROL-PLANE',
   'WHR-CAL-JAPAN-BANEI-A-PLUS',
-  'docs/calendar/incremental-coverage-contract.md',
-  'docs/calendar/coverage-observation-schema.md',
-  'docs/calendar/validation-responsibility-contract.md',
-  'docs/calendar/manual-nar-incremental-collection.md',
-  'data/static/calendar-validation-responsibilities-v1.json',
-  'scripts/check-calendar-validation-responsibilities.mjs',
-  'scripts/timetable/nar-incremental-core.mjs',
-  'scripts/check-calendar-nar-incremental-core.mjs',
-  'scripts/timetable/nar-incremental-v2-core.mjs',
-  'scripts/timetable/normalize-nar-schedule-aware-month.mjs',
-  'scripts/timetable/run-nar-incremental-v2-local.mjs',
-  'scripts/check-calendar-nar-incremental-v2-core.mjs',
-  '2026-07-08 <= date < 2026-08-01',
-  'refactor NAR ordinary collection away from fixed July completion gating'
+  'docs/calendar/acquisition-control-plane-contract.md',
+  'docs/calendar/acquisition-control-plane-implementation-plan.md',
+  'Collection Plan',
+  'Review Queue',
+  'Rank-aware Retry Queue',
+  'C/B/B+/A/A+',
+  'primary runner: local',
+  'primary runner: github_actions'
 ]);
 
 requirePhrases(roadmap, 'project roadmap', [
   'Country-page programme: complete',
-  'WHR-CAL-BASELINE-RECONCILE',
-  'WHR-CAL-PIPELINE-V1',
-  'WHR-CAL-DYNAMIC-DATES',
-  'WHR-CAL-OPS-V1',
-  'WHR-CAL-JAPAN-A-PLUS-RECONCILE',
-  'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
   'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  '98 EN + 98 JA = 196',
-  'Meeting / Schedule Layer',
-  'Coverage Observation',
-  'Batch Validation',
-  'Promotion Validation',
-  'Coverage Audit',
-  'Completion Audit',
-  'normal promotion rank-regression guard',
-  'NAR ordinary-operator refactoring',
-  'NAR incremental operator foundation',
-  'selected-meeting scope support',
-  'retry-target artifact generation',
-  'schedule-aware immutable NAR incremental v2 local operator',
-  'reviewed and published NAR incremental detail through 2026-07-07',
-  '2026-07-08 through 2026-07-31'
+  'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'schedule-confirmed meetings: 82',
+  'A+ detail candidates:         11',
+  'C schedule candidates:        71',
+  'Acquisition Control Plane',
+  'Acquisition Registry',
+  'Collection Job schema',
+  'Collection Plan schema',
+  'Review Queue foundation',
+  'Rank-aware Retry Queue foundation',
+  'C/B/B+/A/A+'
 ]);
 
 requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Pipeline v1 status: complete',
   'Dynamic Dates status: complete',
   'Operations v1 status: complete',
-  'Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`',
-  'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Next Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'JRA central racing',
-  'NAR and local-government racing',
-  'Banei Tokachi',
-  'Coverage Observation schema and validator foundation',
-  'Batch / Promotion / Coverage / Completion responsibility split',
-  'normal promotion rank-regression rejection',
-  'refactor NAR ordinary collection away from fixed July Completion Audit gating',
-  'NAR incremental core',
-  'cross-month window grouping',
-  'selected-meeting scope parsing',
-  'explicit NAR retry-target generation',
-  'immutable batch-specific v2 paths',
-  'Schedule Layer grid observation',
-  'Schedule-to-C and Detail-to-A+ candidate split',
-  'selected-meeting retry reconciliation',
-  '2026-07-08 through 2026-07-31'
+  'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Stage 7 — Acquisition Control Plane foundation',
+  'ACP-2 — Acquisition Registry',
+  'ACP-3 — Collection Job schema',
+  'ACP-4 — Collection Plan schema',
+  'ACP-5 — five-rank classifier contract',
+  'ACP-7 — Review Queue',
+  'ACP-8 — Rank-aware Retry Queue',
+  'Banei handoff gate'
 ]);
 
 requirePhrases(incremental, 'incremental coverage contract', [
   'No country, authority, or racing system may require month-wide completeness',
-  'partial` is a normal successful state',
+  '`partial` is a normal successful state',
+  'Five-rank operational model',
+  'Runner-neutral collection',
+  'Multi-system Collection Plans',
   'Absence is not deletion',
   'Rank regression rule',
-  'Batch validation',
-  'Promotion validation',
-  'Coverage audit',
-  'Completion audit'
+  'Rank-aware retry model',
+  'Batch Validation',
+  'Promotion Validation',
+  'Coverage Audit',
+  'Completion Audit'
+]);
+
+requirePhrases(controlPlane, 'control plane contract', [
+  'what to collect',
+  'where and how collection runs',
+  'github_actions',
+  'local',
+  'reviewed_import',
+  'Acquisition Registry',
+  'Collection Plan',
+  'Collection Job',
+  'Five first-class timetable ranks',
+  'C < B < B+ < A < A+',
+  'Review Queue',
+  'Rank-aware Retry Queue',
+  'primary runner: github_actions',
+  'fallback runner: local'
+]);
+
+requirePhrases(controlPlan, 'control plane implementation plan', [
+  'ACP-0 — documentation and transition alignment',
+  'ACP-1 — finish NAR July remainder publication',
+  'ACP-2 — NAR formal workflow-dispatch operation',
+  'ACP-3 — Acquisition Registry',
+  'ACP-4 — Collection Job schema',
+  'ACP-5 — Collection Plan schema',
+  'ACP-6 — shared five-rank classifier contract',
+  'ACP-8 — Review Queue',
+  'ACP-9 — Rank-aware Retry Queue',
+  'ACP-10 — Actions multi-job runner',
+  'ACP-11 — local multi-job runner',
+  'Banei handoff gate'
+]);
+
+requirePhrases(machineContracts, 'machine-readable contracts', [
+  'Acquisition Registry schema + registry',
+  'Collection Job schema',
+  'Collection Plan schema',
+  'Collection Result Manifest schema',
+  'Review Queue schema',
+  'Rank-aware Retry Queue schema',
+  'Five-rank result contract'
 ]);
 
 requirePhrases(coverageDoc, 'coverage observation contract', [
@@ -165,21 +193,19 @@ requirePhrases(validationDoc, 'validation responsibility contract', [
   'must not block unrelated valid partial promotions'
 ]);
 
-requirePhrases(narIncrementalRunbook, 'NAR incremental runbook', [
+requirePhrases(narRunbook, 'NAR runbook', [
+  'primary runner: github_actions',
+  'fallback runner: local',
+  'formal workflow_dispatch operation: not yet canonical',
   'arbitrary date windows up to 93 days',
-  'windows that cross month boundaries',
   'selected-meeting retries',
-  'Coverage Observation output',
-  'explicit date and meeting retry targets',
-  'Schedule Layer observation and C candidate creation',
-  'Detail Layer acquisition and direct A+ candidate creation',
-  'immutable batch-specific output paths',
-  'july-2026-08-through-31-run-001',
+  'C\nB\nB+\nA\nA+',
   'scheduled_pending_details',
   'detail_retry_required',
-  'scheduled_retry: disabled',
-  'canonical_write: disabled',
-  'public_write: disabled'
+  'Rank-aware Retry Queue',
+  'schedule-confirmed meetings: 82',
+  'A+ detail candidates:         11',
+  'C schedule candidates:        71'
 ]);
 
 requirePhrases(validationMap, 'validation responsibility map', [
@@ -218,9 +244,9 @@ if (errors.length) {
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
-console.log('NAR_INCREMENTAL_OPERATOR_FOUNDATION: active');
-console.log('NAR_SCHEDULE_AWARE_IMMUTABLE_V2: active');
-console.log('NEXT_NAR_COLLECTION_SCOPE: 2026-07-08..2026-07-31');
-console.log('NORMAL_PROMOTION_RANK_REGRESSION_ALLOWED: false');
+console.log('ACQUISITION_CONTROL_PLANE_CONTRACT: adopted');
+console.log('FIVE_RANK_OPERATIONAL_MODEL: C/B/B+/A/A+');
+console.log('NAR_RUNNER_TARGET: github_actions primary / local fallback');
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('NEXT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('SUBSEQUENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
