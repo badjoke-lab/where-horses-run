@@ -72,6 +72,9 @@ data/fixtures/calendar-review-queue-invalid-cases-v1.json
 data/static/calendar-rank-aware-retry-queue.schema.json
 data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json
 data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
+data/static/calendar-runner-compatibility-contract-v1.json
+data/fixtures/calendar-runner-compatibility-fixtures-v1.json
+data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
@@ -79,6 +82,7 @@ scripts/timetable/five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
 scripts/timetable/review-queue-validation.mjs
 scripts/timetable/rank-aware-retry-queue-validation.mjs
+scripts/timetable/runner-compatibility.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -94,6 +98,7 @@ scripts/check-calendar-five-rank-classifier.mjs
 scripts/check-calendar-collection-result-manifest.mjs
 scripts/check-calendar-review-queue.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
+scripts/check-calendar-runner-compatibility.mjs
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
@@ -102,13 +107,13 @@ scripts/check-calendar-rank-aware-retry-queue.mjs
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml
 .github/workflows/calendar-rank-aware-retry-queue.yml
+.github/workflows/calendar-runner-compatibility.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-runner compatibility validators
 control-plane release gate
 ```
 
@@ -136,7 +141,7 @@ Source Status
 
 A source may support C, B, B+, A, or A+. A meeting may enter the pipeline directly at the highest reviewed rank supported by its evidence. No artificial C-only intermediate publication is required.
 
-The Acquisition Registry routes system/source/adapter profiles to runners without changing candidate or promotion semantics.
+The Acquisition Registry routes system/source/adapter profiles to runners without changing candidate or promotion semantics. The implemented runner compatibility foundation resolves Job runner policy, Registry route, executor identity, Coverage Observation, and Collection Result Manifest semantics across NAR Actions/local and JRA local paths.
 
 ## Candidate windows
 

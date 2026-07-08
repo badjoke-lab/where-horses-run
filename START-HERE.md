@@ -21,6 +21,7 @@ docs/calendar/acquisition-control-plane-implementation-plan.md
 docs/calendar/collection-result-manifest.md
 docs/calendar/review-queue.md
 docs/calendar/rank-aware-retry-queue.md
+docs/calendar/runner-compatibility.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -115,7 +116,7 @@ formal workflow_dispatch operator: active
 scheduled publication: disabled
 ```
 
-Do not manage future systems by operator memory. The Acquisition Registry will become the routing source of truth.
+Do not manage future systems by operator memory. The Acquisition Registry is the routing source of truth, and the runner compatibility foundation validates that supported runner paths converge on common Coverage Observation and Result Manifest semantics.
 
 ## Shared implemented machine-readable references
 
@@ -175,6 +176,9 @@ data/fixtures/calendar-review-queue-invalid-cases-v1.json
 data/static/calendar-rank-aware-retry-queue.schema.json
 data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json
 data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
+data/static/calendar-runner-compatibility-contract-v1.json
+data/fixtures/calendar-runner-compatibility-fixtures-v1.json
+data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
 scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
@@ -183,10 +187,13 @@ scripts/timetable/review-queue-validation.mjs
 scripts/check-calendar-review-queue.mjs
 scripts/timetable/rank-aware-retry-queue-validation.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
+scripts/timetable/runner-compatibility.mjs
+scripts/check-calendar-runner-compatibility.mjs
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml
 .github/workflows/calendar-rank-aware-retry-queue.yml
+.github/workflows/calendar-runner-compatibility.yml
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -202,7 +209,6 @@ scripts/check-project-governance-docs.mjs
 Implementation must create canonical schemas/validators for:
 
 ```text
-runner compatibility
 control-plane release gate
 ```
 
