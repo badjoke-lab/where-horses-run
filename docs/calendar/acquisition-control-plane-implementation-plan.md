@@ -520,7 +520,7 @@ The system must not:
 
 ## Stage ACP-14 — due-job planner and scheduling
 
-Status: current.
+Status: complete. Policy-driven planning now converts freshness, meeting proximity, source horizon, season state, coverage gaps, due rank retries, retry backoff, and source health into explicit validated Collection Jobs before execution. The daily scheduler is artifact-only and does not execute acquisition Jobs, approve candidates, promote data, publish, or deploy.
 
 Goal: generate regular refresh and retry jobs from policy rather than memory.
 
@@ -542,6 +542,8 @@ The planner must produce explicit Collection Jobs before execution.
 Initial scheduler policy should prefer conservative bounded frequency and avoid unnecessary repeated source load.
 
 ## Stage ACP-15 — Operations v2 operator view
+
+Status: current.
 
 Goal: extend the existing Operations v1 read-only status layer into an acquisition/review operations view.
 

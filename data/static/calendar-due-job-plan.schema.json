@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-due-job-plan.schema.json",
+  "title": "Where Horses Run Calendar due-job plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_version", "generated_at", "planning_date", "collection_plan", "decisions", "scheduler_boundary"],
+  "properties": {
+    "schema_version": { "const": "calendar-due-job-plan-v1" },
+    "policy_version": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "planning_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "collection_plan": { "$ref": "#/$defs/collectionPlan" },
+    "decisions": { "type": "array", "items": { "$ref": "#/$defs/decision" } },
+    "scheduler_boundary": { "$ref": "#/$defs/schedulerBoundary" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "runnerPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "runner"],
+      "properties": {
+        "mode": { "enum": ["registry_primary", "registry_primary_or_fallback", "exact"] },
+        "runner": { "oneOf": [{ "enum": ["github_actions", "local", "reviewed_import"] }, { "type": "null" }] }
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "job_id", "campaign_id", "system_id", "runner_policy", "collection_mode", "requested_scope", "rank_strategy", "target_rank", "reason", "requested_at"],
+      "properties": {
+        "schema_version": { "const": "calendar-collection-job-v1" },
+        "job_id": { "$ref": "#/$defs/id" },
+        "campaign_id": { "$ref": "#/$defs/id" },
+        "system_id": { "$ref": "#/$defs/id" },
+        "runner_policy": { "$ref": "#/$defs/runnerPolicy" },
+        "collection_mode": { "enum": ["date_window", "single_date", "selected_meetings", "source_visible_horizon"] },
+        "requested_scope": { "type": "object" },
+        "rank_strategy": { "enum": ["best_available", "target_rank"] },
+        "target_rank": { "oneOf": [{ "enum": ["C", "B", "B+", "A", "A+"] }, { "type": "null" }] },
+        "reason": { "enum": ["regular_refresh", "coverage_gap", "rank_upgrade_retry", "source_revalidation", "manual_recovery", "completion_audit_support"] },
+        "requested_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "collectionPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "plan_id", "campaign_id", "created_at", "jobs"],
+      "properties": {
+        "schema_version": { "const": "calendar-collection-plan-v1" },
+        "plan_id": { "$ref": "#/$defs/id" },
+        "campaign_id": { "$ref": "#/$defs/id" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system_id", "trigger", "disposition", "job_id", "detail"],
+      "properties": {
+        "system_id": { "$ref": "#/$defs/id" },
+        "trigger": { "enum": ["policy_disabled", "season_inactive", "source_health", "source_horizon", "coverage_gap", "rank_retry", "regular_refresh", "not_due"] },
+        "disposition": { "enum": ["job_planned", "not_due", "excluded"] },
+        "job_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "detail": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "schedulerBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cadence_hours", "artifact_only", "jobs_executed", "automatic_approval", "automatic_promotion", "automatic_publication", "automatic_deployment"],
+      "properties": {
+        "cadence_hours": { "type": "integer", "minimum": 1 },
+        "artifact_only": { "const": true },
+        "jobs_executed": { "const": false },
+        "automatic_approval": { "const": false },
+        "automatic_promotion": { "const": false },
+        "automatic_publication": { "const": false },
+        "automatic_deployment": { "const": false }
+      }
+    }
+  }
+}
