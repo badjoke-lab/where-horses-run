@@ -327,7 +327,7 @@ Historical B/B+ route investigations may be used as fixtures, but historical res
 
 ## Stage ACP-7 — Collection Result Manifest
 
-Status: current.
+Status: complete. The schema, validation core, valid and invalid fixtures, Job/Registry/Coverage cross-checks, contract documentation, and dedicated CI are implemented.
 
 Goal: give every job one concise machine-readable result summary.
 
@@ -358,6 +358,8 @@ artifact_refs
 The manifest is a summary, not a replacement for source-specific candidate and Coverage Observation artifacts.
 
 ## Stage ACP-8 — Review Queue
+
+Status: current.
 
 Goal: provide one operator-facing view of validated batches awaiting review.
 

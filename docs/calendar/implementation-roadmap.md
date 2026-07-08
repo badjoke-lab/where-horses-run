@@ -359,11 +359,11 @@ Test common C/B/B+/A/A+ shapes and direct monotonic transitions.
 
 B and B+ are first-class states, not future placeholders.
 
-### ACP-6 — Collection Result Manifest — current
+### ACP-6 — Collection Result Manifest — complete
 
 Every job receives one concise summary with five rank counts, coverage state, unresolved state, source errors, and artifact references.
 
-### ACP-7 — Review Queue
+### ACP-7 — Review Queue — current
 
 Expose validated batches awaiting review with:
 
@@ -544,18 +544,14 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. add Collection Job schema
-2. add Collection Plan schema
-3. add five-rank classifier contract tests
-4. add Result Manifest
-5. add Review Queue
-6. add Rank-aware Retry Queue
-7. connect Actions and local runners to shared job semantics
-8. begin Banei on the shared foundation
-9. expand multi-system execution
-10. add automatic review PR preparation
-11. add due-job planning and scheduled bounded retries
-12. add Operations v2 operator view
+1. add Review Queue
+2. add Rank-aware Retry Queue
+3. connect Actions and local runners to shared job semantics
+4. begin Banei on the shared foundation
+5. expand multi-system execution
+6. add automatic review PR preparation
+7. add due-job planning and scheduled bounded retries
+8. add Operations v2 operator view
 ```
 
 ## Per-PR document review
