@@ -43,3 +43,5 @@ jobs:
             docs/calendar/acquisition-control-plane-implementation-plan.md
           git commit -m "[CF-Pages-Skip] Advance Result Manifest state"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+# Temporary workflow. Remove after the documentation state commit lands.
