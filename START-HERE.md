@@ -106,10 +106,10 @@ JRA
 primary runner: local
 
 NAR
-current: local runner available + bounded Actions success evidence
-target after formal workflow activation:
-  primary runner: github_actions
-  fallback runner: local
+primary runner: github_actions
+fallback runner: local
+formal workflow_dispatch operator: active
+scheduled publication: disabled
 ```
 
 Do not manage future systems by operator memory. The Acquisition Registry will become the routing source of truth.
@@ -187,13 +187,17 @@ scripts/timetable/normalize-nar-schedule-aware-month.mjs
 scripts/timetable/collect-nar-incremental-v2.mjs
 scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
 scripts/timetable/run-nar-incremental-v2-local.mjs
+scripts/timetable/nar-incremental-v2-actions-core.mjs
+scripts/timetable/run-nar-incremental-v2-actions.mjs
 scripts/check-calendar-nar-incremental-v2-core.mjs
 scripts/check-calendar-nar-incremental-v2.mjs
+scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
+.github/workflows/calendar-nar-incremental-v2-operator.yml
 ```
 
 Future ordinary NAR collection uses v2 immutable batch paths. The old fixed-path v1 incremental artifacts remain historical evidence for the reviewed July 5–7 batch and must not be overwritten.
 
-The formal NAR Actions workflow-dispatch path is a scheduled implementation step. Temporary diagnostic workflows are not the canonical normal operation.
+The formal NAR Actions workflow-dispatch path is active as the primary operator entry point. The local v2 runner remains the fallback and development path. Temporary diagnostic workflows are closed and are not part of normal operation.
 
 ## NAR compatibility and audit references
 
@@ -254,46 +258,45 @@ WHR-CAL-JAPAN-A-PLUS-RECONCILE
 WHR-CAL-JAPAN-JRA-A-PLUS
 ```
 
-Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 Current NAR status:
 
 ```text
-published through 2026-07-07
-July 8–31 review batch committed
+published schedule coverage through 2026-07-31
+July 8–31 reviewed batch: published
 schedule-confirmed: 82
 A+: 11
 C: 71
 schedule errors: 0
 coverage: source_window_complete
 pending detail retries: 71
-promotion/publication of this batch: pending
+primary runner: github_actions
+fallback runner: local
 ```
+
+The 71 C meetings are published schedule identities, not A+ detail-complete meetings. They remain explicit retry work.
 
 ## Active sequence
 
 ```text
-1. merge control-plane documentation alignment
-2. finish NAR 82-meeting review/promotion/publication
-3. close temporary diagnostic PRs #430 and #435 without merge
-4. formalize NAR Actions manual dispatch
-5. add Acquisition Registry
-6. add Collection Job schema
-7. add Collection Plan schema
-8. add five-rank classifier contract tests
-9. add Collection Result Manifest
-10. add Review Queue
-11. add Rank-aware Retry Queue
-12. connect Actions and local runners to shared job semantics
-13. begin Banei on the shared foundation
-14. add Actions multi-job execution
-15. add local multi-job execution
-16. add review cohort planner
-17. add automatic review PR preparation
-18. add due-job planning and scheduled bounded retries
-19. add Operations v2 operator view
+1. add Acquisition Registry
+2. add Collection Job schema
+3. add Collection Plan schema
+4. add five-rank classifier contract tests
+5. add Collection Result Manifest
+6. add Review Queue
+7. add Rank-aware Retry Queue
+8. connect Actions and local runners to shared job semantics
+9. begin Banei on the shared foundation
+10. add Actions multi-job execution
+11. add local multi-job execution
+12. add review cohort planner
+13. add automatic review PR preparation
+14. add due-job planning and scheduled bounded retries
+15. add Operations v2 operator view
 ```
 
 ## Historical compatibility markers
@@ -303,6 +306,9 @@ promotion/publication of this batch: pending
 
 > Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 > Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+
+> Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+> Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 
 Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`
 

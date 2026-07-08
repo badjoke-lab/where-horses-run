@@ -68,7 +68,7 @@ for (const phrase of [
   'arbitrary date windows',
   'Absence is not deletion',
   'Valid reviewed records may be promoted in partial batches',
-  'July 2026 completion audit',
+  'July 2026 Completion Audit',
 ]) {
   if (!contract.includes(phrase)) fail(`NAR collection contract missing: ${phrase}`);
 }

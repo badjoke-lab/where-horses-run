@@ -1,0 +1,58 @@
+name: Calendar NAR incremental v2 Actions operator contract
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/nar-incremental-v2-actions-core.mjs'
+      - 'scripts/timetable/run-nar-incremental-v2-actions.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-actions-operator.mjs'
+      - '.github/workflows/calendar-nar-incremental-v2-operator.yml'
+      - '.github/workflows/calendar-nar-incremental-v2-actions-operator-contract.yml'
+      - 'docs/calendar/**'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/nar-incremental-v2-actions-core.mjs'
+      - 'scripts/timetable/run-nar-incremental-v2-actions.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-actions-operator.mjs'
+      - '.github/workflows/calendar-nar-incremental-v2-operator.yml'
+      - '.github/workflows/calendar-nar-incremental-v2-actions-operator-contract.yml'
+      - 'docs/calendar/**'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/nar-incremental-v2-actions-core.mjs
+          node --check scripts/timetable/run-nar-incremental-v2-actions.mjs
+          node --check scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
+      - name: Validate Actions operator contract
+        run: node scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
+      - name: Validate NAR v2 core semantics
+        run: node scripts/check-calendar-nar-incremental-v2-core.mjs
+      - name: Validate shared Coverage Observation contract
+        run: node scripts/check-calendar-coverage-observation-schema.mjs
+      - name: Validate validation responsibility split
+        run: node scripts/check-calendar-validation-responsibilities.mjs
+      - name: Validate governance alignment
+        run: node scripts/check-project-governance-docs.mjs
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs

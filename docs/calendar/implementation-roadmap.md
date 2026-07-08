@@ -60,9 +60,13 @@ Dynamic Dates status: complete
 Operations v1 status: complete  
 Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+
+Completed transition marker:
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 
 Standard flow:
 
@@ -131,7 +135,9 @@ Completed:
 24. past/current `detail_retry_required` state;
 25. selected-meeting retry reconciliation;
 26. July 8–31 NAR immutable review batch with 82 schedule-confirmed meetings;
-27. successful bounded NAR acquisition from GitHub Actions.
+27. successful bounded NAR acquisition from GitHub Actions;
+28. reviewed promotion and publication of the July 8–31 82-meeting batch;
+29. formal read-only Actions manual-dispatch operator with immutable review-artifact upload.
 
 The validation responsibility split is complete.
 
@@ -182,11 +188,11 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: current  
+Status: NAR source pilot complete; shared control-plane foundation current
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
-Next shared Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Subsequent source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Next source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -208,7 +214,7 @@ primary runner: local
 
 JRA later becomes the first required compatibility test for the shared local multi-job runner.
 
-### NAR A+ — current
+### NAR A+ — published source pilot with ongoing detail retries
 
 Completed:
 
@@ -233,7 +239,12 @@ Completed:
 - dedicated incremental operator CI definition;
 - schedule-aware immutable v2 implementation;
 - reviewed and published incremental NAR detail through 2026-07-07;
-- July 8–31 review batch collection and immutable commit.
+- July 8–31 review batch collection and immutable commit;
+- pinned review and source-compatible C/A+ approval envelopes;
+- canonical promotion and public projection of all 82 reviewed meetings;
+- rendered bilingual QA and release-gate validation;
+- temporary diagnostic PR closure without merge;
+- formal Actions manual-dispatch operator with local fallback.
 
 Current July 8–31 batch:
 
@@ -246,20 +257,16 @@ coverage claim:                source_window_complete
 pending detail retries:       71
 ```
 
-Current NAR sequence:
+Current NAR maintenance state:
 
-1. finish review decision and approved candidate generation;
-2. validate 11 A+ and 71 C promotion paths;
-3. perform canonical promotion;
-4. rebuild public projection;
-5. run rendered bilingual QA and release checks;
-6. publish reviewed output;
-7. preserve rank-aware retry work for pending meetings;
-8. close temporary diagnostic acquisition PRs without merge;
-9. formalize NAR Actions manual dispatch;
-10. retain local fallback.
+1. 82 reviewed July 8–31 meetings are promoted and projected;
+2. 11 are A+ detail-complete;
+3. 71 remain C schedule identities and explicit retry targets;
+4. Actions manual dispatch is the primary acquisition runner;
+5. local execution remains fallback;
+6. shared Registry / Job / Plan / Queue integration is next.
 
-Target NAR operating profile after formal workflow release:
+Active NAR operating profile:
 
 ```text
 primary runner: github_actions
@@ -296,7 +303,7 @@ The foundation is implemented in this order:
 - NAR runner transition documentation;
 - five-rank operating semantics.
 
-### ACP-1 — NAR formal workflow dispatch
+### ACP-1 — NAR formal workflow dispatch — complete
 
 - bounded manual inputs;
 - date-window and selected-meeting modes;
@@ -536,23 +543,19 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. merge control-plane documentation alignment
-2. finish NAR 82-meeting review/promotion/publication
-3. close temporary diagnostic PRs #430 and #435 without merge
-4. formalize NAR Actions manual dispatch
-5. add Acquisition Registry
-6. add Collection Job schema
-7. add Collection Plan schema
-8. add five-rank classifier contract tests
-9. add Result Manifest
-10. add Review Queue
-11. add Rank-aware Retry Queue
-12. connect Actions and local runners to shared job semantics
-13. begin Banei on the shared foundation
-14. expand multi-system execution
-15. add automatic review PR preparation
-16. add due-job planning and scheduled bounded retries
-17. add Operations v2 operator view
+1. add Acquisition Registry
+2. add Collection Job schema
+3. add Collection Plan schema
+4. add five-rank classifier contract tests
+5. add Result Manifest
+6. add Review Queue
+7. add Rank-aware Retry Queue
+8. connect Actions and local runners to shared job semantics
+9. begin Banei on the shared foundation
+10. expand multi-system execution
+11. add automatic review PR preparation
+12. add due-job planning and scheduled bounded retries
+13. add Operations v2 operator view
 ```
 
 ## Per-PR document review

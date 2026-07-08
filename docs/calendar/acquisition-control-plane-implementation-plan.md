@@ -29,9 +29,10 @@ At the time this plan is adopted:
 - JRA acquisition is local-first because hosted acquisition was not reliable for the source path;
 - NAR acquisition has succeeded in GitHub Actions during bounded runs;
 - NAR has a schedule-aware immutable v2 batch path;
-- the July 8–31 NAR review batch has 82 schedule-confirmed meetings, including 11 A+ detail candidates and 71 C schedule candidates;
-- the current NAR promotion/publication sequence is not yet complete;
-- temporary diagnostic PRs/workflows must not become the normal operating model;
+- the July 8–31 NAR batch has 82 published schedule-confirmed meetings, including 11 A+ detail records and 71 C schedule records;
+- the 71 C meetings remain explicit detail-retry work;
+- temporary diagnostic PRs #430 and #435 are closed without merge;
+- formal NAR workflow-dispatch acquisition is active with GitHub Actions primary and local fallback;
 - Banei remains the next source-specific pilot after the shared control-plane foundation is established.
 
 ## Programme order
@@ -54,13 +55,13 @@ Banei must not be used as a reason to skip the control-plane foundation, and the
 
 ## Work IDs
 
-Current source-specific work:
+Completed source-specific work:
 
 ```text
 WHR-CAL-JAPAN-NAR-A-PLUS
 ```
 
-Next shared work:
+Current shared work:
 
 ```text
 WHR-CAL-ACQUISITION-CONTROL-PLANE
@@ -76,7 +77,7 @@ Later shared automation work may remain under the control-plane Work ID until th
 
 ## Stage ACP-0 — documentation and transition alignment
 
-Status: current documentation task.
+Status: complete.
 
 Deliverables:
 
@@ -98,7 +99,7 @@ all shared operating plans explicitly preserve C/B/B+/A/A+
 
 ## Stage ACP-1 — finish NAR July remainder publication
 
-Dependency: existing NAR review batch.
+Status: complete.
 
 Deliverables:
 
@@ -115,7 +116,7 @@ The current observed NAR batch is allowed to contain only C and A+ because those
 
 ## Stage ACP-2 — NAR formal workflow-dispatch operation
 
-Goal: replace temporary diagnostic Actions harnesses with a canonical manual-dispatch workflow.
+Status: complete. The canonical manual-dispatch workflow accepts bounded date-window or selected-meeting input, writes immutable review artifacts only, validates shared boundaries, and uploads the four review artifacts without approval or publication side effects.
 
 Inputs must support at least:
 
@@ -147,6 +148,8 @@ NAR fallback runner: local
 The local runner remains supported and must produce equivalent common batch semantics.
 
 ## Stage ACP-3 — Acquisition Registry
+
+Status: current.
 
 Goal: remove runner and capability knowledge from operator memory.
 

@@ -1,0 +1,96 @@
+name: Calendar NAR incremental v2 manual operator
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_id:
+        description: Unique lowercase kebab-case immutable batch ID
+        required: true
+        type: string
+      mode:
+        description: Collection scope mode
+        required: true
+        type: choice
+        options:
+          - date_window
+          - selected_meetings
+      start_date:
+        description: YYYY-MM-DD, required only for date_window mode
+        required: false
+        type: string
+      end_date_exclusive:
+        description: YYYY-MM-DD exclusive end, required only for date_window mode
+        required: false
+        type: string
+      meeting_ids:
+        description: Comma, whitespace, or newline separated stable NAR meeting IDs for selected_meetings mode
+        required: false
+        type: string
+      checked_at:
+        description: Optional ISO date-time override for reproducible reviewed runs
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nar-v2-manual-${{ inputs.batch_id }}
+  cancel-in-progress: false
+
+jobs:
+  collect-review-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      WHR_BATCH_ID: ${{ inputs.batch_id }}
+      WHR_MODE: ${{ inputs.mode }}
+      WHR_START_DATE: ${{ inputs.start_date }}
+      WHR_END_DATE_EXCLUSIVE: ${{ inputs.end_date_exclusive }}
+      WHR_MEETING_IDS: ${{ inputs.meeting_ids }}
+      WHR_CHECKED_AT: ${{ inputs.checked_at }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/nar-incremental-v2-actions-core.mjs
+          node --check scripts/timetable/run-nar-incremental-v2-actions.mjs
+          node --check scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
+
+      - name: Validate operator contract before collection
+        run: node scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
+
+      - name: Collect immutable NAR v2 review batch
+        run: node scripts/timetable/run-nar-incremental-v2-actions.mjs
+
+      - name: Validate generated batch boundary
+        run: node scripts/check-calendar-nar-incremental-v2.mjs "--batch-id=${WHR_BATCH_ID}"
+
+      - name: Validate shared Coverage Observation contract
+        run: node scripts/check-calendar-coverage-observation-schema.mjs
+
+      - name: Validate validation responsibility split
+        run: node scripts/check-calendar-validation-responsibilities.mjs
+
+      - name: Validate governance alignment
+        run: node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Upload immutable review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-v2-${{ inputs.batch_id }}-review-artifacts
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            data/candidates/nar-incremental-batches/${{ inputs.batch_id }}/batch.json
+            data/generated/timetable/nar-incremental-batches/${{ inputs.batch_id }}/collection-report.json
+            data/generated/timetable/nar-incremental-batches/${{ inputs.batch_id }}/coverage-observation.json
+            data/generated/timetable/nar-incremental-batches/${{ inputs.batch_id }}/retry-targets.json

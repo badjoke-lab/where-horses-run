@@ -84,12 +84,13 @@ requirePhrases(start, 'START-HERE', [
 
 requirePhrases(roadmap, 'project roadmap', [
   'Country-page programme: complete',
-  'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
-  'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
   'schedule-confirmed meetings: 82',
-  'A+ detail candidates:         11',
-  'C schedule candidates:        71',
+  'A+ detail records:            11',
+  'C schedule records:           71',
+  'pending detail retries:       71',
   'Acquisition Control Plane',
   'Acquisition Registry',
   'Collection Job schema',
@@ -103,8 +104,9 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Pipeline v1 status: complete',
   'Dynamic Dates status: complete',
   'Operations v1 status: complete',
-  'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
-  'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
+  'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'ACP-1 — NAR formal workflow dispatch — complete',
   'Stage 7 — Acquisition Control Plane foundation',
   'ACP-2 — Acquisition Registry',
   'ACP-3 — Collection Job schema',
@@ -196,7 +198,8 @@ requirePhrases(validationDoc, 'validation responsibility contract', [
 requirePhrases(narRunbook, 'NAR runbook', [
   'primary runner: github_actions',
   'fallback runner: local',
-  'formal workflow_dispatch operation: not yet canonical',
+  'formal workflow_dispatch operation: active',
+  'immutable review artifact upload: active',
   'arbitrary date windows up to 93 days',
   'selected-meeting retries',
   'C\nB\nB+\nA\nA+',
@@ -246,7 +249,8 @@ console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
 console.log('ACQUISITION_CONTROL_PLANE_CONTRACT: adopted');
 console.log('FIVE_RANK_OPERATIONAL_MODEL: C/B/B+/A/A+');
-console.log('NAR_RUNNER_TARGET: github_actions primary / local fallback');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
-console.log('NEXT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('SUBSEQUENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('NAR_ACTIONS_OPERATOR: active');
+console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
+console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
+console.log('CURRENT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');

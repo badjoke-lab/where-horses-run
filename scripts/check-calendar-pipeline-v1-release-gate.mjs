@@ -94,9 +94,9 @@ if (/^\s*schedule:/m.test(refreshWorkflow) || refreshWorkflow.includes('cron:'))
 if (!refreshWorkflow.includes('workflow_dispatch:') || !refreshWorkflow.includes('default: "false"')) fail('manual refresh review must default live_fetch to false.');
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/incremental-coverage-contract.md', 'docs/calendar/acquisition-control-plane-contract.md']],
-  ['docs/project-roadmap.md', projectRoadmap, ['Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'Completion is an explicit audit claim']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Pipeline v1 status: complete', 'Dynamic Dates status: complete', 'Operations v1 status: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Subsequent Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Coverage Observation', 'Acquisition Control Plane']]
+  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'WHR-CAL-JAPAN-NAR-A-PLUS', 'WHR-CAL-ACQUISITION-CONTROL-PLANE', 'docs/calendar/incremental-coverage-contract.md', 'docs/calendar/acquisition-control-plane-contract.md']],
+  ['docs/project-roadmap.md', projectRoadmap, ['Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'Completion is an explicit audit claim']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Pipeline v1 status: complete', 'Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Next source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Coverage Observation', 'Acquisition Control Plane']]
 ]) {
   markers.forEach((marker) => { if (!text.includes(marker)) fail(`${file} must include ${marker}.`); });
 }
@@ -116,6 +116,6 @@ console.log(`PUBLIC_MEETINGS: ${publicList.meetings.length} baseline=${baselineM
 console.log(`PUBLIC_DETAILS: ${publicDetails.details.length} baseline=${baselineDetails}`);
 console.log(`JRA_REFERENCE_CANDIDATES: ${jraCandidates.records.length} baseline=${baselineCandidates}`);
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
-console.log('NEXT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('SUBSEQUENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
+console.log('CURRENT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
