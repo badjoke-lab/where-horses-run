@@ -476,7 +476,7 @@ The automation stop point remains:
 HUMAN REVIEW REQUIRED
 ```
 
-### Due-job planner — current
+### Due-job planner — complete
 
 Generate explicit jobs from:
 
@@ -491,11 +491,15 @@ coverage gaps
 source health
 ```
 
-### Scheduled steady-state maintenance
+### Scheduled steady-state maintenance — planning active, execution disabled
 
 Add regular refresh and bounded retry scheduling only after job generation, queue state, runner routing, and human review boundaries are stable.
 
 Unattended publication remains disabled.
+
+## Operations v2 — current
+
+Build the unified operator view over due plans, Collection Jobs, Result Manifests, Review Queue, Retry Queue, source health, freshness, promotion state, and publication state.
 
 ## Stage 10 — additional pilots
 

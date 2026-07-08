@@ -26,6 +26,7 @@ docs/calendar/actions-multi-job-runner.md
 docs/calendar/local-multi-job-runner.md
 docs/calendar/review-cohort-planner.md
 docs/calendar/review-pr-preparation.md
+docs/calendar/due-job-planner.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -190,6 +191,10 @@ data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json
 data/static/calendar-review-pr-package.schema.json
 data/fixtures/calendar-review-pr-preparation-fixtures-v1.json
 data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json
+data/static/calendar-due-job-policy-v1.json
+data/static/calendar-due-job-plan.schema.json
+data/fixtures/calendar-due-job-planner-fixtures-v1.json
+data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
 scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
@@ -215,10 +220,14 @@ scripts/check-calendar-review-cohort-planner.mjs
 scripts/timetable/review-pr-preparation.mjs
 scripts/timetable/prepare-calendar-review-pr-packages.mjs
 scripts/check-calendar-review-pr-preparation.mjs
+scripts/timetable/due-job-planner.mjs
+scripts/timetable/plan-calendar-due-jobs.mjs
+scripts/check-calendar-due-job-planner.mjs
 .github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-review-cohort-planner.yml
 .github/workflows/calendar-review-pr-preparation.yml
+.github/workflows/calendar-due-job-planner.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml
