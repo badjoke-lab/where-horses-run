@@ -1,0 +1,206 @@
+{
+  "schema_version": "calendar-five-rank-classifier-fixtures-v1",
+  "classification_cases": [
+    {
+      "case_id": "rank-c-meeting-only",
+      "expected_rank": "C",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-01",
+        "date": "2026-08-01",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": null,
+        "last_race_time_local": null,
+        "timetable_rows": []
+      }
+    },
+    {
+      "case_id": "rank-b-first-race-only",
+      "expected_rank": "B",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-02",
+        "date": "2026-08-02",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": null,
+        "timetable_rows": []
+      }
+    },
+    {
+      "case_id": "rank-b-plus-first-and-last",
+      "expected_rank": "B+",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-03",
+        "date": "2026-08-03",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": "16:40",
+        "timetable_rows": []
+      }
+    },
+    {
+      "case_id": "rank-a-per-race-time-table",
+      "expected_rank": "A",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-04",
+        "date": "2026-08-04",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": "10:45",
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": "10:05"
+          },
+          {
+            "label": "Race 2",
+            "post_time_local": "10:45"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "rank-a-partial-summary-fields-remain-a",
+      "expected_rank": "A",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-05",
+        "date": "2026-08-05",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": "10:45",
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": "10:05",
+            "race_name": "Opening Race",
+            "distance_m": null,
+            "surface": "Turf",
+            "course_label": "Outer"
+          },
+          {
+            "label": "Race 2",
+            "post_time_local": "10:45",
+            "race_name": null,
+            "distance_m": 1600,
+            "surface": "Turf",
+            "course_label": "Outer"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "rank-a-plus-complete-summary",
+      "expected_rank": "A+",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-06",
+        "date": "2026-08-06",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": "10:45",
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": "10:05",
+            "race_name": "Opening Race",
+            "distance_m": 1200,
+            "surface": "Turf",
+            "course_label": "Outer"
+          },
+          {
+            "label": "Race 2",
+            "post_time_local": "10:45",
+            "race_name": "Second Race",
+            "distance_m": 1600,
+            "surface": "Turf",
+            "course_label": "Outer"
+          }
+        ]
+      }
+    }
+  ],
+  "normal_update_cases": [
+    { "case_id": "c-to-b", "current_reviewed_rank": "C", "observed_rank": "B", "expected_rank": "B" },
+    { "case_id": "b-to-b-plus", "current_reviewed_rank": "B", "observed_rank": "B+", "expected_rank": "B+" },
+    { "case_id": "b-plus-to-a", "current_reviewed_rank": "B+", "observed_rank": "A", "expected_rank": "A" },
+    { "case_id": "a-to-a-plus", "current_reviewed_rank": "A", "observed_rank": "A+", "expected_rank": "A+" },
+    { "case_id": "direct-c-to-a-plus", "current_reviewed_rank": "C", "observed_rank": "A+", "expected_rank": "A+" },
+    { "case_id": "a-plus-later-c-no-downgrade", "current_reviewed_rank": "A+", "observed_rank": "C", "expected_rank": "A+" },
+    { "case_id": "a-later-b-plus-no-downgrade", "current_reviewed_rank": "A", "observed_rank": "B+", "expected_rank": "A" },
+    { "case_id": "b-plus-equal-observation", "current_reviewed_rank": "B+", "observed_rank": "B+", "expected_rank": "B+" }
+  ],
+  "invalid_shape_cases": [
+    {
+      "case_id": "missing-meeting-identity",
+      "observation": {
+        "meeting_id": null,
+        "date": "2026-08-01",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": null,
+        "last_race_time_local": null,
+        "timetable_rows": []
+      }
+    },
+    {
+      "case_id": "last-time-without-first",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-02",
+        "date": "2026-08-02",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": null,
+        "last_race_time_local": "16:40",
+        "timetable_rows": []
+      }
+    },
+    {
+      "case_id": "rows-without-boundary-times",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-03",
+        "date": "2026-08-03",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": null,
+        "last_race_time_local": null,
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": "10:05"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "row-missing-post-time",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-04",
+        "date": "2026-08-04",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:05",
+        "last_race_time_local": "10:45",
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": ""
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "row-boundary-time-mismatch",
+      "observation": {
+        "meeting_id": "fixture-racecourse-2026-08-05",
+        "date": "2026-08-05",
+        "racecourse_id": "fixture-racecourse",
+        "first_race_time_local": "10:00",
+        "last_race_time_local": "10:45",
+        "timetable_rows": [
+          {
+            "label": "Race 1",
+            "post_time_local": "10:05"
+          },
+          {
+            "label": "Race 2",
+            "post_time_local": "10:45"
+          }
+        ]
+      }
+    }
+  ]
+}
