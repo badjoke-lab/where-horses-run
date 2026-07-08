@@ -391,7 +391,7 @@ A C-heavy batch and a B/B+-heavy batch must be distinguishable without opening r
 
 ## Stage ACP-9 — Rank-aware Retry Queue
 
-Status: current.
+Status: complete. The schema, validation core, valid and invalid fixtures, rank-gap rules, Registry/canonical cross-checks, deterministic NAR July 71-entry projection, contract documentation, and dedicated CI are implemented.
 
 Goal: replace generic retry target lists with structured rank-gap work.
 
@@ -431,6 +431,8 @@ A later successful retry may jump directly to the highest supported rank.
 The queue must not retry meetings already at their effective collection target unless the reason is source revalidation or explicit completion-audit support.
 
 ## Stage ACP-10 — Actions multi-job runner
+
+Status: current. Shared runner compatibility begins with Actions execution consuming common Job/Plan/Manifest/Queue semantics.
 
 Goal: execute multiple hosted-capable jobs independently.
 

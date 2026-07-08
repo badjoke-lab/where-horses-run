@@ -380,7 +380,7 @@ review state
 promotion state
 ```
 
-### ACP-8 — Rank-aware Retry Queue — current
+### ACP-8 — Rank-aware Retry Queue — complete
 
 Represent rank gaps such as:
 
@@ -393,7 +393,7 @@ A -> A+
 
 Retry records include current reviewed rank, latest observed rank, collection target rank, missing fields, reason, runner, adapter, backoff metadata, and attempt history.
 
-### ACP-9 — shared runner semantics
+### ACP-9 — shared runner semantics — current
 
 - Actions jobs consume Collection Jobs;
 - local jobs consume the same Collection Jobs;
@@ -544,13 +544,12 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. add Rank-aware Retry Queue
-2. connect Actions and local runners to shared job semantics
-3. begin Banei on the shared foundation
-4. expand multi-system execution
-5. add automatic review PR preparation
-6. add due-job planning and scheduled bounded retries
-7. add Operations v2 operator view
+1. connect Actions and local runners to shared job semantics
+2. begin Banei on the shared foundation
+3. expand multi-system execution
+4. add automatic review PR preparation
+5. add due-job planning and scheduled bounded retries
+6. add Operations v2 operator view
 ```
 
 ## Per-PR document review

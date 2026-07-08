@@ -20,6 +20,7 @@ docs/calendar/acquisition-control-plane-contract.md
 docs/calendar/acquisition-control-plane-implementation-plan.md
 docs/calendar/collection-result-manifest.md
 docs/calendar/review-queue.md
+docs/calendar/rank-aware-retry-queue.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -171,15 +172,21 @@ data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json
 data/static/calendar-review-queue.schema.json
 data/fixtures/calendar-review-queue-v1.json
 data/fixtures/calendar-review-queue-invalid-cases-v1.json
+data/static/calendar-rank-aware-retry-queue.schema.json
+data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json
+data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
 scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
 scripts/check-calendar-collection-result-manifest.mjs
 scripts/timetable/review-queue-validation.mjs
 scripts/check-calendar-review-queue.mjs
+scripts/timetable/rank-aware-retry-queue-validation.mjs
+scripts/check-calendar-rank-aware-retry-queue.mjs
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml
+.github/workflows/calendar-rank-aware-retry-queue.yml
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -195,7 +202,6 @@ scripts/check-project-governance-docs.mjs
 Implementation must create canonical schemas/validators for:
 
 ```text
-Rank-aware Retry Queue
 runner compatibility
 control-plane release gate
 ```

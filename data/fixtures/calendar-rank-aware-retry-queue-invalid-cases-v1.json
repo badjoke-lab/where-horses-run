@@ -1,0 +1,130 @@
+{
+  "schema_version": "calendar-rank-aware-retry-queue-invalid-cases-v1",
+  "base_meeting_id": "nar-kanazawa-racecourse-2026-07-12",
+  "cases": [
+    {
+      "case_id": "target-not-above-current",
+      "validation_mode": "rank_gap",
+      "patches": [
+        { "op": "set", "path": ["collection_target_rank"], "value": "C" },
+        { "op": "set", "path": ["retry_reason"], "value": "rank_upgrade_retry" }
+      ]
+    },
+    {
+      "case_id": "latest-observation-already-meets-target",
+      "validation_mode": "rank_gap",
+      "patches": [
+        { "op": "set", "path": ["current_reviewed_rank"], "value": "B" },
+        { "op": "set", "path": ["latest_observed_rank"], "value": "B+" },
+        { "op": "set", "path": ["collection_target_rank"], "value": "B+" },
+        { "op": "set", "path": ["retry_reason"], "value": "rank_upgrade_retry" }
+      ]
+    },
+    {
+      "case_id": "empty-missing-fields-for-upgrade",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["missing_fields"], "value": [] }
+      ]
+    },
+    {
+      "case_id": "selected-scope-omits-meeting",
+      "validation_mode": "structural_entry",
+      "patches": [
+        {
+          "op": "set",
+          "path": ["retry_scope"],
+          "value": {
+            "mode": "selected_meetings",
+            "meeting_ids": ["nar-oi-racecourse-2026-07-20"]
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "positive-attempt-without-last-attempt",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["attempt_count"], "value": 2 },
+        { "op": "set", "path": ["last_attempt_at"], "value": null }
+      ]
+    },
+    {
+      "case_id": "zero-attempt-with-last-attempt",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["attempt_count"], "value": 0 },
+        { "op": "set", "path": ["last_attempt_at"], "value": "2026-07-08T10:00:00Z" }
+      ]
+    },
+    {
+      "case_id": "next-eligible-before-last-attempt",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["attempt_count"], "value": 1 },
+        { "op": "set", "path": ["last_attempt_at"], "value": "2026-07-08T10:00:00Z" },
+        { "op": "set", "path": ["next_eligible_retry_at"], "value": "2026-07-08T09:00:00Z" }
+      ]
+    },
+    {
+      "case_id": "primary-runner-registry-mismatch",
+      "validation_mode": "registry_cross_check",
+      "patches": [
+        { "op": "set", "path": ["primary_runner"], "value": "local" }
+      ]
+    },
+    {
+      "case_id": "fallback-runner-registry-mismatch",
+      "validation_mode": "registry_cross_check",
+      "patches": [
+        { "op": "set", "path": ["fallback_runner"], "value": "reviewed_import" }
+      ]
+    },
+    {
+      "case_id": "adapter-registry-mismatch",
+      "validation_mode": "registry_cross_check",
+      "patches": [
+        { "op": "set", "path": ["adapter_id"], "value": "nar-schedule-aware-month-v1" }
+      ]
+    },
+    {
+      "case_id": "jra-selected-retry-not-supported",
+      "validation_mode": "registry_cross_check",
+      "patches": [
+        { "op": "set", "path": ["meeting_id"], "value": "jra-kyoto-racecourse-2026-05-30" },
+        { "op": "set", "path": ["system_id"], "value": "japan-jra-system" },
+        { "op": "set", "path": ["current_reviewed_rank"], "value": "B" },
+        { "op": "set", "path": ["latest_observed_rank"], "value": "B" },
+        { "op": "set", "path": ["collection_target_rank"], "value": "best_available" },
+        { "op": "set", "path": ["missing_fields"], "value": [] },
+        { "op": "set", "path": ["retry_reason"], "value": "source_revalidation" },
+        { "op": "set", "path": ["retry_scope"], "value": { "mode": "selected_meetings", "meeting_ids": ["jra-kyoto-racecourse-2026-05-30"] } },
+        { "op": "set", "path": ["primary_runner"], "value": "local" },
+        { "op": "set", "path": ["fallback_runner"], "value": "reviewed_import" },
+        { "op": "set", "path": ["adapter_id"], "value": "jra-normalized-programme-candidate-v1" }
+      ]
+    },
+    {
+      "case_id": "jra-cross-month-retry-not-supported",
+      "validation_mode": "registry_cross_check",
+      "patches": [
+        { "op": "set", "path": ["meeting_id"], "value": "jra-kyoto-racecourse-2026-05-30" },
+        { "op": "set", "path": ["system_id"], "value": "japan-jra-system" },
+        { "op": "set", "path": ["current_reviewed_rank"], "value": "B" },
+        { "op": "set", "path": ["latest_observed_rank"], "value": "B" },
+        { "op": "set", "path": ["collection_target_rank"], "value": "best_available" },
+        { "op": "set", "path": ["missing_fields"], "value": [] },
+        { "op": "set", "path": ["retry_reason"], "value": "source_revalidation" },
+        { "op": "set", "path": ["retry_scope"], "value": { "mode": "date_window", "start_date": "2026-05-01", "end_date_exclusive": "2026-06-02", "timezone": "Asia/Tokyo" } },
+        { "op": "set", "path": ["primary_runner"], "value": "local" },
+        { "op": "set", "path": ["fallback_runner"], "value": "reviewed_import" },
+        { "op": "set", "path": ["adapter_id"], "value": "jra-normalized-programme-candidate-v1" }
+      ]
+    },
+    {
+      "case_id": "duplicate-system-meeting-entry",
+      "validation_mode": "structural_queue",
+      "queue_mutation": "duplicate_base_entry"
+    }
+  ]
+}
