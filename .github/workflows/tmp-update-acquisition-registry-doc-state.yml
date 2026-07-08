@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/tmp-update-acquisition-registry-doc-state.mjs'
+      - 'scripts/tmp-patch-acquisition-registry-validator.mjs'
       - '.github/workflows/tmp-update-acquisition-registry-doc-state.yml'
   push:
     branches:
@@ -28,6 +29,8 @@ jobs:
           node-version: 22.12.0
       - name: Apply exact documentation transitions
         run: node scripts/tmp-update-acquisition-registry-doc-state.mjs
+      - name: Align validator with implemented documentation markers
+        run: node scripts/tmp-patch-acquisition-registry-validator.mjs
       - name: Validate Acquisition Registry after documentation update
         run: node scripts/check-calendar-acquisition-registry.mjs
       - name: Validate diff formatting
@@ -42,10 +45,12 @@ jobs:
             docs/calendar/implementation-roadmap.md \
             docs/calendar/acquisition-control-plane-implementation-plan.md \
             docs/calendar/machine-readable-contracts.md \
-            docs/calendar/README.md
+            docs/calendar/README.md \
+            scripts/check-calendar-acquisition-registry.mjs
           git rm \
             .github/workflows/tmp-update-acquisition-registry-doc-state.yml \
-            scripts/tmp-update-acquisition-registry-doc-state.mjs
+            scripts/tmp-update-acquisition-registry-doc-state.mjs \
+            scripts/tmp-patch-acquisition-registry-validator.mjs
           git diff --cached --check
           git commit -m "[CF-Pages-Skip] Advance Acquisition Registry state"
           git push origin HEAD:work/calendar-acquisition-registry
