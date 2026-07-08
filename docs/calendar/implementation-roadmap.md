@@ -466,7 +466,7 @@ One campaign may produce several review PRs.
 
 ## Stage 9 — review automation and scheduling
 
-### Automatic review PR preparation — current
+### Automatic review PR preparation — complete
 
 The system may prepare deterministic review PRs with candidate diffs, coverage summaries, rank distributions, and retry summaries.
 
@@ -476,7 +476,7 @@ The automation stop point remains:
 HUMAN REVIEW REQUIRED
 ```
 
-### Due-job planner
+### Due-job planner — current
 
 Generate explicit jobs from:
 

@@ -1,0 +1,112 @@
+name: Calendar review PR preparation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'data/static/calendar-review-pr-package.schema.json'
+      - 'data/fixtures/calendar-review-pr-preparation-fixtures-v1.json'
+      - 'data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json'
+      - 'data/static/calendar-review-cohort-plan.schema.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/review-pr-preparation.mjs'
+      - 'scripts/timetable/prepare-calendar-review-pr-packages.mjs'
+      - 'scripts/check-calendar-review-pr-preparation.mjs'
+      - 'scripts/check-calendar-review-cohort-planner.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
+      - 'scripts/check-calendar-rank-aware-retry-queue.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/review-pr-preparation.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-review-pr-preparation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-review-pr-package.schema.json'
+      - 'data/fixtures/calendar-review-pr-preparation-fixtures-v1.json'
+      - 'data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json'
+      - 'scripts/timetable/review-pr-preparation.mjs'
+      - 'scripts/timetable/prepare-calendar-review-pr-packages.mjs'
+      - 'scripts/check-calendar-review-pr-preparation.mjs'
+      - 'docs/calendar/review-pr-preparation.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-review-pr-preparation.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/review-pr-preparation.mjs
+          node --check scripts/timetable/prepare-calendar-review-pr-packages.mjs
+          node --check scripts/check-calendar-review-pr-preparation.mjs
+
+      - name: Validate deterministic review PR package preparation
+        run: node scripts/check-calendar-review-pr-preparation.mjs
+
+      - name: Validate Review Cohort, Queue, and Retry dependencies
+        run: |
+          node scripts/check-calendar-review-cohort-planner.mjs
+          node scripts/check-calendar-review-queue.mjs
+          node scripts/check-calendar-rank-aware-retry-queue.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
+
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Prepare deterministic review PR package
+        run: |
+          node scripts/timetable/prepare-calendar-review-pr-packages.mjs \
+            --fixture=data/fixtures/calendar-review-pr-preparation-fixtures-v1.json \
+            --output=.calendar-review-pr-packages.json
+          grep -q 'human review required' .calendar-review-pr-packages.json
+
+      - name: Upload human review required package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-review-pr-packages-human-review-required
+          path: .calendar-review-pr-packages.json
+          retention-days: 14

@@ -499,7 +499,7 @@ It must not combine batches merely because they were collected at the same time.
 
 ## Stage ACP-13 — automatic review PR preparation
 
-Status: current.
+Status: complete. Validated Review Cohorts are converted into deterministic human-review packages containing candidate diff summaries, Coverage summaries, five-rank distributions, retry summaries, artifact references, bounded checklists, and proposed PR metadata. Package preparation stops at `pending_human_review`; no PR creation, approval, promotion, publication, or deployment permission is granted.
 
 Goal: move validated data automatically to the human-review boundary.
 
@@ -519,6 +519,8 @@ The system must not:
 - publish unattended.
 
 ## Stage ACP-14 — due-job planner and scheduling
+
+Status: current.
 
 Goal: generate regular refresh and retry jobs from policy rather than memory.
 

@@ -1,0 +1,162 @@
+{
+  "schema_version": "calendar-review-pr-preparation-fixtures-v1",
+  "queue": {
+    "schema_version": "calendar-review-queue-v1",
+    "generated_at": "2026-07-08T17:00:00Z",
+    "entries": [
+      {
+        "campaign_id": "jra-review-prep",
+        "job_id": "jra-review-prep-job",
+        "batch_id": "jra-review-prep-batch",
+        "system_id": "japan-jra-system",
+        "runner_used": "local",
+        "requested_scope": { "start_date": "2026-07-01", "end_date_exclusive": "2026-07-08", "timezone": "Asia/Tokyo" },
+        "coverage_claim": "source_window_complete",
+        "rank_counts": { "C": 0, "B": 0, "B+": 0, "A": 0, "A+": 2 },
+        "unresolved_dates_count": 0,
+        "unresolved_meeting_ids_count": 0,
+        "source_error_count": 0,
+        "review_state": "review_ready",
+        "promotion_state": "not_ready",
+        "manifest_ref": "data/generated/timetable/review-prep/jra-review-prep-batch/manifest.json"
+      },
+      {
+        "campaign_id": "nar-review-prep",
+        "job_id": "nar-coverage-prep-job",
+        "batch_id": "nar-coverage-prep-batch",
+        "system_id": "japan-nar-system",
+        "runner_used": "github_actions",
+        "requested_scope": { "start_date": "2026-08-01", "end_date_exclusive": "2026-08-08", "timezone": "Asia/Tokyo" },
+        "coverage_claim": "source_window_complete",
+        "rank_counts": { "C": 1, "B": 0, "B+": 0, "A": 0, "A+": 1 },
+        "unresolved_dates_count": 0,
+        "unresolved_meeting_ids_count": 1,
+        "source_error_count": 0,
+        "review_state": "review_ready",
+        "promotion_state": "not_ready",
+        "manifest_ref": "data/generated/timetable/review-prep/nar-coverage-prep-batch/manifest.json"
+      },
+      {
+        "campaign_id": "nar-source-recovery",
+        "job_id": "nar-source-recovery-prep-job",
+        "batch_id": "nar-source-recovery-prep-batch",
+        "system_id": "japan-nar-system",
+        "runner_used": "github_actions",
+        "requested_scope": { "start_date": "2026-09-01", "end_date_exclusive": "2026-10-01", "timezone": "Asia/Tokyo" },
+        "coverage_claim": "none",
+        "rank_counts": { "C": 0, "B": 0, "B+": 0, "A": 0, "A+": 0 },
+        "unresolved_dates_count": 0,
+        "unresolved_meeting_ids_count": 0,
+        "source_error_count": 1,
+        "review_state": "review_ready",
+        "promotion_state": "not_ready",
+        "manifest_ref": "data/generated/timetable/review-prep/nar-source-recovery-prep-batch/manifest.json"
+      },
+      {
+        "campaign_id": "hkjc-ceiling-review",
+        "job_id": "hkjc-ceiling-review-job",
+        "batch_id": "hkjc-ceiling-review-batch",
+        "system_id": "hong-kong-hkjc-system",
+        "runner_used": "github_actions",
+        "requested_scope": { "start_date": "2026-08-01", "end_date_exclusive": "2026-08-08", "timezone": "Asia/Hong_Kong" },
+        "coverage_claim": "source_window_complete",
+        "rank_counts": { "C": 0, "B": 0, "B+": 0, "A": 0, "A+": 1 },
+        "unresolved_dates_count": 0,
+        "unresolved_meeting_ids_count": 0,
+        "source_error_count": 0,
+        "review_state": "review_ready",
+        "promotion_state": "not_ready",
+        "manifest_ref": "data/generated/timetable/review-prep/hkjc-ceiling-review-batch/manifest.json"
+      }
+    ]
+  },
+  "artifact_catalog": {
+    "schema_version": "calendar-review-pr-artifact-catalog-fixture-v1",
+    "batches": [
+      {
+        "batch_id": "jra-review-prep-batch",
+        "manifest_ref": "data/generated/timetable/review-prep/jra-review-prep-batch/manifest.json",
+        "candidate_ref": "data/generated/timetable/review-prep/jra-review-prep-batch/candidate.json",
+        "coverage_observation_ref": "data/generated/timetable/review-prep/jra-review-prep-batch/coverage.json",
+        "collection_report_ref": "data/generated/timetable/review-prep/jra-review-prep-batch/report.json",
+        "candidate_records": [
+          { "meeting_id": "jra-tokyo-racecourse-2026-07-04", "observed_rank": "A+" },
+          { "meeting_id": "jra-kokura-racecourse-2026-07-05", "observed_rank": "A+" }
+        ]
+      },
+      {
+        "batch_id": "nar-coverage-prep-batch",
+        "manifest_ref": "data/generated/timetable/review-prep/nar-coverage-prep-batch/manifest.json",
+        "candidate_ref": "data/generated/timetable/review-prep/nar-coverage-prep-batch/candidate.json",
+        "coverage_observation_ref": "data/generated/timetable/review-prep/nar-coverage-prep-batch/coverage.json",
+        "collection_report_ref": "data/generated/timetable/review-prep/nar-coverage-prep-batch/report.json",
+        "candidate_records": [
+          { "meeting_id": "nar-oi-racecourse-2026-08-03", "observed_rank": "C" },
+          { "meeting_id": "nar-monbetsu-racecourse-2026-08-04", "observed_rank": "A+" }
+        ]
+      },
+      {
+        "batch_id": "nar-source-recovery-prep-batch",
+        "manifest_ref": "data/generated/timetable/review-prep/nar-source-recovery-prep-batch/manifest.json",
+        "candidate_ref": null,
+        "coverage_observation_ref": "data/generated/timetable/review-prep/nar-source-recovery-prep-batch/coverage.json",
+        "collection_report_ref": "data/generated/timetable/review-prep/nar-source-recovery-prep-batch/report.json",
+        "candidate_records": []
+      },
+      {
+        "batch_id": "hkjc-ceiling-review-batch",
+        "manifest_ref": "data/generated/timetable/review-prep/hkjc-ceiling-review-batch/manifest.json",
+        "candidate_ref": "data/generated/timetable/review-prep/hkjc-ceiling-review-batch/candidate.json",
+        "coverage_observation_ref": "data/generated/timetable/review-prep/hkjc-ceiling-review-batch/coverage.json",
+        "collection_report_ref": "data/generated/timetable/review-prep/hkjc-ceiling-review-batch/report.json",
+        "candidate_records": [
+          { "meeting_id": "hkjc-sha-tin-racecourse-2026-08-02", "observed_rank": "A+" }
+        ]
+      }
+    ]
+  },
+  "canonical_meetings": [
+    { "meeting_id": "jra-tokyo-racecourse-2026-07-04", "capability_rank": "A" },
+    { "meeting_id": "jra-kokura-racecourse-2026-07-05", "capability_rank": "A+" },
+    { "meeting_id": "nar-oi-racecourse-2026-08-03", "capability_rank": "C" },
+    { "meeting_id": "nar-monbetsu-racecourse-2026-08-04", "capability_rank": "C" }
+  ],
+  "retry_queue": {
+    "schema_version": "calendar-rank-aware-retry-queue-v1",
+    "generated_at": "2026-07-08T17:00:00Z",
+    "entries": [
+      {
+        "meeting_id": "nar-oi-racecourse-2026-08-03",
+        "system_id": "japan-nar-system",
+        "current_reviewed_rank": "C",
+        "latest_observed_rank": "C",
+        "collection_target_rank": "best_available",
+        "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+        "retry_reason": "scheduled_pending_details",
+        "retry_scope": {
+          "mode": "selected_meetings",
+          "meeting_ids": ["nar-oi-racecourse-2026-08-03"]
+        },
+        "primary_runner": "github_actions",
+        "fallback_runner": "local",
+        "adapter_id": "nar-monthly-detail-candidate-v1",
+        "next_eligible_retry_at": null,
+        "attempt_count": 0,
+        "last_attempt_at": null
+      }
+    ]
+  },
+  "expected": {
+    "package_count": 4,
+    "jra_diff": {
+      "candidate_count": 2,
+      "new_count": 0,
+      "upgrade_count": 1,
+      "unchanged_count": 1,
+      "lower_observation_count": 0
+    },
+    "nar_retry_count": 1,
+    "source_failure_candidate_count": 0,
+    "hkjc_dependency": "public_ceiling_projection_required"
+  }
+}

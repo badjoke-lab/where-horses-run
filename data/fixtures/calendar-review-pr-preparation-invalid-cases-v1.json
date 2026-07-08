@@ -1,0 +1,77 @@
+{
+  "schema_version": "calendar-review-pr-preparation-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "candidate-diff-count-drift",
+      "mutation": "increment",
+      "path": ["packages", 0, "candidate_diff_summary", "new_count"],
+      "value": 1
+    },
+    {
+      "case_id": "coverage-batch-count-drift",
+      "mutation": "increment",
+      "path": ["packages", 0, "coverage_summary", "batch_count"],
+      "value": 1
+    },
+    {
+      "case_id": "retry-total-drift",
+      "mutation": "increment",
+      "path": ["packages", 0, "retry_summary", "matched_retry_count"],
+      "value": 1
+    },
+    {
+      "case_id": "manifest-ref-drift",
+      "mutation": "set",
+      "path": ["packages", 0, "batch_artifacts", 0, "manifest_ref"],
+      "value": "data/generated/timetable/review-prep/wrong/manifest.json"
+    },
+    {
+      "case_id": "unsafe-candidate-ref",
+      "mutation": "set",
+      "path": ["packages", 0, "batch_artifacts", 0, "candidate_ref"],
+      "value": "data/../private.json"
+    },
+    {
+      "case_id": "human-review-label-removed",
+      "mutation": "set",
+      "path": ["packages", 0, "proposed_pr", "labels"],
+      "value": []
+    },
+    {
+      "case_id": "review-state-approved",
+      "mutation": "set",
+      "path": ["packages", 0, "proposed_pr", "review_state"],
+      "value": "approved"
+    },
+    {
+      "case_id": "pr-body-human-boundary-removed",
+      "mutation": "set",
+      "path": ["packages", 0, "proposed_pr", "body_markdown"],
+      "value": "Review package without explicit boundary marker."
+    },
+    {
+      "case_id": "pull-request-created-flag-enabled",
+      "mutation": "set",
+      "path": ["packages", 0, "boundaries", "pull_request_created"],
+      "value": true
+    },
+    {
+      "case_id": "candidate-approved-flag-enabled",
+      "mutation": "set",
+      "path": ["packages", 0, "boundaries", "candidate_approved"],
+      "value": true
+    },
+    {
+      "case_id": "promotion-performed-flag-enabled",
+      "mutation": "set",
+      "path": ["packages", 0, "boundaries", "promotion_performed"],
+      "value": true
+    },
+    {
+      "case_id": "package-system-drift",
+      "mutation": "set",
+      "path": ["packages", 0, "system_id"],
+      "value": "japan-nar-system"
+    }
+  ]
+}

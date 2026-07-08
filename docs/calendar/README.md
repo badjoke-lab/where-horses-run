@@ -21,6 +21,7 @@ Use these files together:
 - [`actions-multi-job-runner.md`](actions-multi-job-runner.md) — hosted Job filtering, executor-mode support, isolated matrix execution, per-Job artifacts/status, and campaign summary contract.
 - [`local-multi-job-runner.md`](local-multi-job-runner.md) — local Job filtering, worktree-isolated JRA review-only execution, independent batches and statuses, Review Queue snapshot, and campaign summary contract.
 - [`review-cohort-planner.md`](review-cohort-planner.md) — source-compatible, risk-bounded review grouping, public-display risk, promotion dependency, source-failure isolation, and human-review proposal contract.
+- [`review-pr-preparation.md`](review-pr-preparation.md) — deterministic candidate diff, Coverage, retry, checklist, PR metadata, and pending-human-review package boundary.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, NAR completion, control-plane foundation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
@@ -90,6 +91,9 @@ data/fixtures/calendar-local-multi-job-fixtures-v1.json
 data/static/calendar-review-cohort-plan.schema.json
 data/fixtures/calendar-review-cohort-planner-fixtures-v1.json
 data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json
+data/static/calendar-review-pr-package.schema.json
+data/fixtures/calendar-review-pr-preparation-fixtures-v1.json
+data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -148,9 +152,13 @@ scripts/timetable/run-calendar-local-plan.mjs
 scripts/check-calendar-local-multi-job.mjs
 scripts/timetable/review-cohort-planner.mjs
 scripts/check-calendar-review-cohort-planner.mjs
+scripts/timetable/review-pr-preparation.mjs
+scripts/timetable/prepare-calendar-review-pr-packages.mjs
+scripts/check-calendar-review-pr-preparation.mjs
 .github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-review-cohort-planner.yml
+.github/workflows/calendar-review-pr-preparation.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
@@ -207,7 +215,7 @@ NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch con
 The immediate sequence is:
 
 ```text
-Automatic review PR preparation (current)
+Due-job planner and scheduling policy (current)
 + Banei source-specific implementation may proceed on the satisfied minimum handoff gate
 ```
 
