@@ -337,6 +337,8 @@ Plan grouping must not imply one review PR or one promotion batch.
 
 ## Implemented Collection Result Manifest
 
+The Collection Result Manifest schema, validation core, fixtures, validator, contract documentation, and dedicated CI are implemented.
+
 Every Collection Job result has a compact result summary containing:
 
 ```text
