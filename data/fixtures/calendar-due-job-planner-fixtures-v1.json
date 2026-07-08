@@ -1,0 +1,136 @@
+{
+  "schema_version": "calendar-due-job-planner-fixtures-v1",
+  "state": {
+    "schema_version": "calendar-due-job-planner-state-v1",
+    "as_of": "2026-07-08T18:00:00Z",
+    "system_states": [
+      {
+        "system_id": "japan-jra-system",
+        "timezone": "Asia/Tokyo",
+        "season_state": "active",
+        "source_health": "healthy",
+        "last_successful_collection_at": "2026-07-06T12:00:00Z",
+        "last_source_revalidation_at": null,
+        "source_visible_horizon_end_exclusive": null,
+        "next_meeting_date": "2026-07-11",
+        "coverage_gaps": []
+      },
+      {
+        "system_id": "japan-nar-system",
+        "timezone": "Asia/Tokyo",
+        "season_state": "active",
+        "source_health": "healthy",
+        "last_successful_collection_at": "2026-07-08T12:00:00Z",
+        "last_source_revalidation_at": "2026-07-08T06:00:00Z",
+        "source_visible_horizon_end_exclusive": "2026-07-16",
+        "next_meeting_date": "2026-07-09",
+        "coverage_gaps": [
+          {
+            "start_date": "2026-08-01",
+            "end_date_exclusive": "2026-08-05",
+            "timezone": "Asia/Tokyo"
+          }
+        ]
+      },
+      {
+        "system_id": "hong-kong-hkjc-system",
+        "timezone": "Asia/Hong_Kong",
+        "season_state": "active",
+        "source_health": "degraded",
+        "last_successful_collection_at": "2026-07-01T00:00:00Z",
+        "last_source_revalidation_at": "2026-07-06T12:00:00Z",
+        "source_visible_horizon_end_exclusive": null,
+        "next_meeting_date": "2026-07-12",
+        "coverage_gaps": []
+      },
+      {
+        "system_id": "japan-banei-system",
+        "timezone": "Asia/Tokyo",
+        "season_state": "active",
+        "source_health": "healthy",
+        "last_successful_collection_at": "2026-06-20T00:00:00Z",
+        "last_source_revalidation_at": null,
+        "source_visible_horizon_end_exclusive": null,
+        "next_meeting_date": "2026-07-12",
+        "coverage_gaps": []
+      }
+    ],
+    "retry_queue": {
+      "schema_version": "calendar-rank-aware-retry-queue-v1",
+      "generated_at": "2026-07-08T18:00:00Z",
+      "entries": [
+        {
+          "meeting_id": "nar-oi-racecourse-2026-07-10",
+          "system_id": "japan-nar-system",
+          "current_reviewed_rank": "C",
+          "latest_observed_rank": "C",
+          "collection_target_rank": "best_available",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "scheduled_pending_details",
+          "retry_scope": { "mode": "selected_meetings", "meeting_ids": ["nar-oi-racecourse-2026-07-10"] },
+          "primary_runner": "github_actions",
+          "fallback_runner": "local",
+          "adapter_id": "nar-monthly-detail-candidate-v1",
+          "next_eligible_retry_at": null,
+          "attempt_count": 0,
+          "last_attempt_at": null
+        },
+        {
+          "meeting_id": "nar-monbetsu-racecourse-2026-07-11",
+          "system_id": "japan-nar-system",
+          "current_reviewed_rank": "C",
+          "latest_observed_rank": "C",
+          "collection_target_rank": "A+",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "detail_retry_required",
+          "retry_scope": { "mode": "selected_meetings", "meeting_ids": ["nar-monbetsu-racecourse-2026-07-11"] },
+          "primary_runner": "github_actions",
+          "fallback_runner": "local",
+          "adapter_id": "nar-monthly-detail-candidate-v1",
+          "next_eligible_retry_at": "2026-07-08T17:00:00Z",
+          "attempt_count": 1,
+          "last_attempt_at": "2026-07-08T12:00:00Z"
+        },
+        {
+          "meeting_id": "nar-kanazawa-racecourse-2026-07-12",
+          "system_id": "japan-nar-system",
+          "current_reviewed_rank": "C",
+          "latest_observed_rank": "C",
+          "collection_target_rank": "best_available",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "scheduled_pending_details",
+          "retry_scope": { "mode": "selected_meetings", "meeting_ids": ["nar-kanazawa-racecourse-2026-07-12"] },
+          "primary_runner": "github_actions",
+          "fallback_runner": "local",
+          "adapter_id": "nar-monthly-detail-candidate-v1",
+          "next_eligible_retry_at": "2026-07-10T00:00:00Z",
+          "attempt_count": 1,
+          "last_attempt_at": "2026-07-08T12:00:00Z"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "job_count": 5,
+    "by_reason": {
+      "regular_refresh": 2,
+      "coverage_gap": 1,
+      "rank_upgrade_retry": 1,
+      "source_revalidation": 1,
+      "manual_recovery": 0,
+      "completion_audit_support": 0
+    },
+    "by_system": {
+      "japan-jra-system": 1,
+      "japan-nar-system": 3,
+      "hong-kong-hkjc-system": 1
+    },
+    "planned_decision_count": 5,
+    "not_due_decision_count": 0,
+    "excluded_decision_count": 1,
+    "nar_retry_meeting_ids": [
+      "nar-monbetsu-racecourse-2026-07-11",
+      "nar-oi-racecourse-2026-07-10"
+    ]
+  }
+}
