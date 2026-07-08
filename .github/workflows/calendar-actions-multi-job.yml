@@ -59,7 +59,10 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Validate Actions multi-job contracts and isolation
-        run: node scripts/check-calendar-actions-multi-job.mjs
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/check-calendar-actions-multi-job.mjs 2>&1 | tail -100
       - name: Validate runner compatibility dependency
         run: node scripts/check-calendar-runner-compatibility.mjs
       - name: Validate runtime import boundary
