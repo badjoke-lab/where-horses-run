@@ -28,6 +28,10 @@ function deterministicBatchId(plan, job) {
   return `${plan.plan_id}-${job.job_id}-run-001`;
 }
 
+function executorFor(contract, systemId, runner) {
+  return contract?.executors?.find((entry) => entry.system_id === systemId && entry.runner === runner) ?? null;
+}
+
 export function planActionsMultiJobV1(plan, registry, compatibilityContract) {
   const planErrors = validateCollectionPlanV1(plan, registry);
   if (planErrors.length) throw new Error(`invalid Collection Plan: ${planErrors.join('; ')}`);
@@ -46,6 +50,21 @@ export function planActionsMultiJobV1(plan, registry, compatibilityContract) {
       excluded.push({ job_id: job.job_id, reason: 'non_actions_runner', runner });
       continue;
     }
+    const executor = executorFor(compatibilityContract, job.system_id, runner);
+    if (!executor) {
+      excluded.push({ job_id: job.job_id, reason: 'unsupported_actions_executor', detail: `executor mapping missing for ${job.system_id}/${runner}` });
+      continue;
+    }
+    if (!Array.isArray(executor.supported_collection_modes) || !executor.supported_collection_modes.includes(job.collection_mode)) {
+      excluded.push({
+        job_id: job.job_id,
+        reason: 'unsupported_collection_mode',
+        runner,
+        collection_mode: job.collection_mode,
+      });
+      continue;
+    }
+
     const batchId = deterministicBatchId(plan, job);
     try {
       const execution = compileRunnerExecutionV1(job, {
