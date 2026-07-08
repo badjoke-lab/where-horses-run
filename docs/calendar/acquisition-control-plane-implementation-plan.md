@@ -359,7 +359,7 @@ The manifest is a summary, not a replacement for source-specific candidate and C
 
 ## Stage ACP-8 — Review Queue
 
-Status: current.
+Status: complete. The schema, validation core, valid and invalid fixtures, Manifest projection cross-checks, deterministic summary, contract documentation, and dedicated CI are implemented.
 
 Goal: provide one operator-facing view of validated batches awaiting review.
 
@@ -390,6 +390,8 @@ The queue must display all five rank counts.
 A C-heavy batch and a B/B+-heavy batch must be distinguishable without opening raw candidate files.
 
 ## Stage ACP-9 — Rank-aware Retry Queue
+
+Status: current.
 
 Goal: replace generic retry target lists with structured rank-gap work.
 

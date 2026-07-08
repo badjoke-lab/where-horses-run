@@ -66,11 +66,15 @@ data/fixtures/calendar-five-rank-classifier-fixtures-v1.json
 data/static/calendar-collection-result-manifest.schema.json
 data/fixtures/calendar-collection-result-manifests-v1.json
 data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json
+data/static/calendar-review-queue.schema.json
+data/fixtures/calendar-review-queue-v1.json
+data/fixtures/calendar-review-queue-invalid-cases-v1.json
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
 scripts/timetable/five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
+scripts/timetable/review-queue-validation.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -84,19 +88,20 @@ scripts/check-calendar-collection-job.mjs
 scripts/check-calendar-collection-plan.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/check-calendar-collection-result-manifest.mjs
+scripts/check-calendar-review-queue.mjs
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
+.github/workflows/calendar-review-queue.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-Review Queue schema
 Rank-aware Retry Queue schema
 associated validators and release gates
 ```
@@ -364,9 +369,11 @@ artifact references
 
 The manifest summarizes but does not replace candidate or Coverage Observation artifacts.
 
-## Planned Review Queue
+## Implemented Review Queue
 
-The Review Queue machine-readable contract must expose:
+The Review Queue schema, validation core, fixtures, Manifest projection cross-checks, deterministic summary, validator, contract documentation, and dedicated CI are implemented.
+
+The Review Queue machine-readable contract exposes:
 
 ```text
 campaign/job/batch identity
@@ -435,7 +442,7 @@ Next:
 3. implement Acquisition Registry schema and initial Japan profiles;
 4. implement Collection Job and Collection Plan schemas;
 5. implement five-rank classifier contract tests;
-6. implement Review Queue and Rank-aware Retry Queue schemas;
+6. implement Rank-aware Retry Queue schema;
 7. connect Actions and local runners to common job semantics;
 8. begin Banei on the shared control-plane foundation;
 9. add multi-system execution, review-PR preparation, and scheduling incrementally.

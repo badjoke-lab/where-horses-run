@@ -163,7 +163,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, and Collection Result Manifest are implemented. Review Queue and Rank-aware Retry Queue foundations are current next work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, and Review Queue are implemented. Rank-aware Retry Queue foundation is current next work.
 
 ### Country research and publication
 
@@ -293,8 +293,8 @@ The foundation sequence is:
 4. Collection Plan schema and fixtures — complete;
 5. common C/B/B+/A/A+ classifier contract tests — complete;
 6. Collection Result Manifest — complete;
-7. Review Queue foundation — current;
-8. Rank-aware Retry Queue foundation;
+7. Review Queue foundation — complete;
+8. Rank-aware Retry Queue foundation — current;
 9. Actions and local runner compatibility with common Job/Plan semantics.
 
 Minimum gate before Banei resumes:

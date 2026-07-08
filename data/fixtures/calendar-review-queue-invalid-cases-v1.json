@@ -1,0 +1,78 @@
+{
+  "schema_version": "calendar-review-queue-invalid-cases-v1",
+  "base_batch_id": "jra-august-local-window-001-run-001",
+  "cases": [
+    {
+      "case_id": "rank-count-manifest-mismatch",
+      "validation_mode": "manifest_cross_check",
+      "patches": [
+        { "op": "set", "path": ["rank_counts", "A"], "value": 3 }
+      ]
+    },
+    {
+      "case_id": "unresolved-date-count-manifest-mismatch",
+      "validation_mode": "manifest_cross_check",
+      "patches": [
+        { "op": "set", "path": ["unresolved_dates_count"], "value": 2 }
+      ]
+    },
+    {
+      "case_id": "source-error-count-manifest-mismatch",
+      "validation_mode": "manifest_cross_check",
+      "patches": [
+        { "op": "set", "path": ["source_error_count"], "value": 2 }
+      ]
+    },
+    {
+      "case_id": "batch-identity-manifest-mismatch",
+      "validation_mode": "manifest_cross_check",
+      "patches": [
+        { "op": "set", "path": ["batch_id"], "value": "wrong-batch" }
+      ]
+    },
+    {
+      "case_id": "unsafe-manifest-ref",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["manifest_ref"], "value": "data/../private.json" }
+      ]
+    },
+    {
+      "case_id": "review-ready-cannot-be-published",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["review_state"], "value": "review_ready" },
+        { "op": "set", "path": ["promotion_state"], "value": "published" }
+      ]
+    },
+    {
+      "case_id": "rejected-cannot-be-promotion-ready",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "set", "path": ["review_state"], "value": "rejected" },
+        { "op": "set", "path": ["promotion_state"], "value": "promotion_ready" }
+      ]
+    },
+    {
+      "case_id": "missing-b-plus-rank",
+      "validation_mode": "structural_entry",
+      "patches": [
+        { "op": "delete", "path": ["rank_counts", "B+"] }
+      ]
+    },
+    {
+      "case_id": "duplicate-batch-id",
+      "validation_mode": "structural_queue",
+      "queue_mutation": "duplicate_base_entry"
+    },
+    {
+      "case_id": "invalid-generated-at",
+      "validation_mode": "structural_queue",
+      "queue_patch": {
+        "op": "set",
+        "path": ["generated_at"],
+        "value": "not-a-date"
+      }
+    }
+  ]
+}

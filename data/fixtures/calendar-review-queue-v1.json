@@ -1,0 +1,111 @@
+{
+  "schema_version": "calendar-review-queue-v1",
+  "generated_at": "2026-07-08T11:30:00Z",
+  "entries": [
+    {
+      "campaign_id": "japan-july-completion-audit-support",
+      "job_id": "nar-july-completion-support-001",
+      "batch_id": "july-2026-08-through-31-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "requested_scope": {
+        "start_date": "2026-07-01",
+        "end_date_exclusive": "2026-08-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "coverage_claim": "source_window_complete",
+      "rank_counts": {
+        "C": 71,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 11
+      },
+      "unresolved_dates_count": 0,
+      "unresolved_meeting_ids_count": 71,
+      "source_error_count": 0,
+      "review_state": "approved",
+      "promotion_state": "published",
+      "manifest_ref": "data/generated/timetable/manifests/july-2026-08-through-31-run-001.json"
+    },
+    {
+      "campaign_id": "august-2026-regular-refresh",
+      "job_id": "jra-august-local-window-001",
+      "batch_id": "jra-august-local-window-001-run-001",
+      "system_id": "japan-jra-system",
+      "runner_used": "local",
+      "requested_scope": {
+        "start_date": "2026-08-10",
+        "end_date_exclusive": "2026-09-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "coverage_claim": "partial",
+      "rank_counts": {
+        "C": 0,
+        "B": 0,
+        "B+": 1,
+        "A": 2,
+        "A+": 1
+      },
+      "unresolved_dates_count": 1,
+      "unresolved_meeting_ids_count": 0,
+      "source_error_count": 0,
+      "review_state": "review_ready",
+      "promotion_state": "not_ready",
+      "manifest_ref": "data/generated/timetable/manifests/jra-august-local-window-001-run-001.json"
+    },
+    {
+      "campaign_id": "nar-august-retry-001",
+      "job_id": "nar-selected-retry-001",
+      "batch_id": "nar-selected-retry-001-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "local",
+      "requested_scope": {
+        "meeting_ids": [
+          "nar-monbetsu-racecourse-2026-08-21",
+          "nar-oi-racecourse-2026-08-22"
+        ]
+      },
+      "coverage_claim": "source_window_complete",
+      "rank_counts": {
+        "C": 0,
+        "B": 1,
+        "B+": 0,
+        "A": 0,
+        "A+": 1
+      },
+      "unresolved_dates_count": 0,
+      "unresolved_meeting_ids_count": 0,
+      "source_error_count": 0,
+      "review_state": "reviewing",
+      "promotion_state": "not_ready",
+      "manifest_ref": "data/generated/timetable/manifests/nar-selected-retry-001-run-001.json"
+    },
+    {
+      "campaign_id": "nar-source-revalidation-001",
+      "job_id": "nar-source-horizon-001",
+      "batch_id": "nar-source-horizon-001-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "requested_scope": {
+        "start_date": "2026-08-01",
+        "end_date_exclusive": "2026-10-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "coverage_claim": "none",
+      "rank_counts": {
+        "C": 0,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 0
+      },
+      "unresolved_dates_count": 0,
+      "unresolved_meeting_ids_count": 0,
+      "source_error_count": 1,
+      "review_state": "review_ready",
+      "promotion_state": "not_ready",
+      "manifest_ref": "data/generated/timetable/manifests/nar-source-horizon-001-run-001.json"
+    }
+  ]
+}

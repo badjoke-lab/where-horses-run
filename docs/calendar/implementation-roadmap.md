@@ -363,7 +363,7 @@ B and B+ are first-class states, not future placeholders.
 
 Every job receives one concise summary with five rank counts, coverage state, unresolved state, source errors, and artifact references.
 
-### ACP-7 — Review Queue — current
+### ACP-7 — Review Queue — complete
 
 Expose validated batches awaiting review with:
 
@@ -380,7 +380,7 @@ review state
 promotion state
 ```
 
-### ACP-8 — Rank-aware Retry Queue
+### ACP-8 — Rank-aware Retry Queue — current
 
 Represent rank gaps such as:
 
@@ -544,14 +544,13 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. add Review Queue
-2. add Rank-aware Retry Queue
-3. connect Actions and local runners to shared job semantics
-4. begin Banei on the shared foundation
-5. expand multi-system execution
-6. add automatic review PR preparation
-7. add due-job planning and scheduled bounded retries
-8. add Operations v2 operator view
+1. add Rank-aware Retry Queue
+2. connect Actions and local runners to shared job semantics
+3. begin Banei on the shared foundation
+4. expand multi-system execution
+5. add automatic review PR preparation
+6. add due-job planning and scheduled bounded retries
+7. add Operations v2 operator view
 ```
 
 ## Per-PR document review
