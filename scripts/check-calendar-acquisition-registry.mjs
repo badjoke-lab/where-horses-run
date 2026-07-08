@@ -10,6 +10,7 @@ import {
 const root = process.cwd();
 const schemaPath = 'data/static/calendar-acquisition-registry.schema.json';
 const registryPath = 'data/static/calendar-acquisition-registry.json';
+const readinessRegistryPath = 'data/static/calendar-readiness-registry.json';
 const japanReadinessPath = 'data/static/calendar-readiness-japan-v2.json';
 const japanPolicyPath = 'data/static/japan-a-plus-policy.json';
 const controlContractPath = 'docs/calendar/acquisition-control-plane-contract.md';
@@ -17,51 +18,35 @@ const implementationPlanPath = 'docs/calendar/acquisition-control-plane-implemen
 const machineContractPath = 'docs/calendar/machine-readable-contracts.md';
 const errors = [];
 const rankOrder = new Map(['C', 'B', 'B+', 'A', 'A+'].map((rank, index) => [rank, index]));
-const requiredInitialSystems = ['japan-jra-system', 'japan-nar-system', 'japan-banei-system'];
+const requiredProfiles = ['japan-jra-system', 'japan-nar-system', 'japan-banei-system', 'hong-kong-hkjc-system'];
 const pendingCapableFields = new Set(['fallback_runner', 'schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']);
 const prohibitedKeyFragments = [
   'odds', 'payout', 'prediction', 'tip', 'entries', 'result', 'runner_name', 'horse_name', 'jockey', 'trainer',
   'raw_html', 'raw_body', 'source_body', 'credential', 'cookie', 'secret', 'private_note',
 ];
 
-function fail(message) {
-  errors.push(message);
-}
-
-function readText(relativePath) {
+const fail = (message) => errors.push(message);
+const readText = (relativePath) => {
   const absolute = path.join(root, relativePath);
   if (!existsSync(absolute)) {
     fail(`${relativePath} must exist.`);
     return '';
   }
   return readFileSync(absolute, 'utf8');
-}
-
-function readJson(relativePath) {
+};
+const readJson = (relativePath) => {
   const text = readText(relativePath);
   if (!text) return null;
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    fail(`${relativePath} must parse as JSON: ${error.message}`);
-    return null;
-  }
-}
-
-function isObject(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function nonEmptyString(value) {
-  return typeof value === 'string' && value.trim().length > 0;
-}
-
+  try { return JSON.parse(text); }
+  catch (error) { fail(`${relativePath} must parse as JSON: ${error.message}`); return null; }
+};
+const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+const nonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
 function exactArray(actual, expected, label) {
   if (!Array.isArray(actual) || actual.length !== expected.length || expected.some((value, index) => actual[index] !== value)) {
     fail(`${label} must equal ${JSON.stringify(expected)}.`);
   }
 }
-
 function walkKeys(value, trail = []) {
   if (Array.isArray(value)) {
     value.forEach((entry, index) => walkKeys(entry, [...trail, String(index)]));
@@ -80,6 +65,7 @@ function walkKeys(value, trail = []) {
 const schema = readJson(schemaPath);
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const authorityInventory = loadAuthoritySourceInventoryV1(root);
+const readinessRegistry = readJson(readinessRegistryPath);
 const japanReadiness = readJson(japanReadinessPath);
 const japanPolicy = readJson(japanPolicyPath);
 const controlContract = readText(controlContractPath);
@@ -116,27 +102,26 @@ if (registry?.work_id !== 'WHR-CAL-ACQUISITION-CONTROL-PLANE') fail('Acquisition
 if (!Array.isArray(registry?.records)) fail('Acquisition Registry records must be an array.');
 
 const authoritySourceKeys = new Set((authorityInventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
-const readinessBySystem = new Map((japanReadiness?.records ?? []).map((record) => [record.system_id, record]));
-const policyBySystem = new Map((japanPolicy?.records ?? []).map((record) => [record.system_id, record]));
+const globalReadinessBySystem = new Map((readinessRegistry?.records ?? []).map((record) => [record.system_id, record]));
+const japanReadinessBySystem = new Map((japanReadiness?.records ?? []).map((record) => [record.system_id, record]));
+const japanPolicyBySystem = new Map((japanPolicy?.records ?? []).map((record) => [record.system_id, record]));
 
 const adapterEvidence = new Map([
-  ['jra-normalized-programme-candidate-v1', {
-    path: 'data/candidates/japan-jra-candidates.json',
-    marker: '"adapter_id":"jra-normalized-programme-candidate-v1"',
-  }],
-  ['nar-schedule-aware-month-v1', {
-    path: 'scripts/timetable/normalize-nar-schedule-aware-month.mjs',
-    marker: 'parseNarMonthlyScheduleGrid',
-  }],
-  ['nar-monthly-detail-candidate-v1', {
-    path: 'scripts/timetable/collect-nar-monthly-candidates.mjs',
-    marker: '--allow-blockers',
-  }],
-  ['japan-banei-dry-run-adapter', {
-    path: 'data/candidates/japan-banei-candidates.json',
-    marker: '"source_adapter_id": "japan-banei-dry-run-adapter"',
-  }],
+  ['jra-normalized-programme-candidate-v1', { path: 'data/candidates/japan-jra-candidates.json', marker: '"adapter_id":"jra-normalized-programme-candidate-v1"' }],
+  ['nar-schedule-aware-month-v1', { path: 'scripts/timetable/normalize-nar-schedule-aware-month.mjs', marker: 'parseNarMonthlyScheduleGrid' }],
+  ['nar-monthly-detail-candidate-v1', { path: 'scripts/timetable/collect-nar-monthly-candidates.mjs', marker: '--allow-blockers' }],
+  ['japan-banei-dry-run-adapter', { path: 'data/candidates/japan-banei-candidates.json', marker: '"source_adapter_id": "japan-banei-dry-run-adapter"' }],
+  ['hong-kong-hkjc-dry-run-adapter', { path: 'data/candidates/hong-kong-hkjc-candidates.json', marker: '"source_adapter_id": "hong-kong-hkjc-dry-run-adapter"' }],
 ]);
+
+function approvedCeilingFor(record) {
+  if (record.country_id === 'japan') return japanPolicyBySystem.get(record.system_id)?.public_ceiling ?? null;
+  return globalReadinessBySystem.get(record.system_id)?.public_ceiling ?? null;
+}
+function reviewedTechnicalRankFor(record) {
+  if (record.country_id === 'japan') return japanReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
+  return globalReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
+}
 
 function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
   const localErrors = [];
@@ -145,9 +130,7 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
 
   for (const field of expectedRecordFields) if (!Object.hasOwn(record, field)) push(`missing ${field}`);
   for (const key of Object.keys(record)) if (!expectedRecordFields.includes(key)) push(`unexpected field ${key}`);
-  for (const field of ['system_id', 'country_id', 'authority_id', 'operator_notes']) {
-    if (!nonEmptyString(record[field])) push(`${field} must be a non-empty string`);
-  }
+  for (const field of ['system_id', 'country_id', 'authority_id', 'operator_notes']) if (!nonEmptyString(record[field])) push(`${field} must be a non-empty string`);
   if (!expectedStatuses.includes(record.profile_status)) push(`unknown profile_status ${record.profile_status}`);
   if (!expectedRunners.includes(record.primary_runner)) push(`unknown or missing primary_runner ${record.primary_runner}`);
   if (record.fallback_runner !== null && !expectedRunners.includes(record.fallback_runner)) push(`unknown fallback_runner ${record.fallback_runner}`);
@@ -156,43 +139,29 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
   for (const field of ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']) {
     if (record[field] !== null && !nonEmptyString(record[field])) push(`${field} must be a non-empty string or null`);
   }
-
   if (!expectedRanks.includes(record.technical_capability_rank)) push(`invalid technical_capability_rank ${record.technical_capability_rank}`);
   if (!expectedTargetRanks.includes(record.collection_target_rank)) push(`invalid collection_target_rank ${record.collection_target_rank}`);
   if (!expectedRanks.includes(record.public_ceiling)) push(`invalid public_ceiling ${record.public_ceiling}`);
-
   if (rankOrder.has(record.collection_target_rank) && rankOrder.has(record.technical_capability_rank)
-    && rankOrder.get(record.collection_target_rank) > rankOrder.get(record.technical_capability_rank)) {
-    push('collection_target_rank exceeds technical_capability_rank');
-  }
+    && rankOrder.get(record.collection_target_rank) > rankOrder.get(record.technical_capability_rank)) push('collection_target_rank exceeds technical_capability_rank');
   if (rankOrder.has(record.public_ceiling) && rankOrder.has(record.technical_capability_rank)
-    && rankOrder.get(record.public_ceiling) > rankOrder.get(record.technical_capability_rank)) {
-    push('public_ceiling exceeds technical_capability_rank');
-  }
+    && rankOrder.get(record.public_ceiling) > rankOrder.get(record.technical_capability_rank)) push('public_ceiling exceeds technical_capability_rank');
 
-  const policyCeiling = policyCeilingOverride ?? policyBySystem.get(record.system_id)?.public_ceiling;
+  const policyCeiling = policyCeilingOverride ?? approvedCeilingFor(record);
   if (policyCeiling && rankOrder.has(record.public_ceiling) && rankOrder.has(policyCeiling)
-    && rankOrder.get(record.public_ceiling) > rankOrder.get(policyCeiling)) {
-    push(`public_ceiling exceeds approved policy ceiling ${policyCeiling}`);
-  }
+    && rankOrder.get(record.public_ceiling) > rankOrder.get(policyCeiling)) push(`public_ceiling exceeds approved policy ceiling ${policyCeiling}`);
 
-  if (!Array.isArray(record.supported_observation_ranks) || record.supported_observation_ranks.length === 0) {
-    push('supported_observation_ranks must be a non-empty array');
-  } else {
+  if (!Array.isArray(record.supported_observation_ranks) || record.supported_observation_ranks.length === 0) push('supported_observation_ranks must be a non-empty array');
+  else {
     if (new Set(record.supported_observation_ranks).size !== record.supported_observation_ranks.length) push('supported_observation_ranks contains duplicates');
     for (const rank of record.supported_observation_ranks) {
       if (!expectedRanks.includes(rank)) push(`unsupported observation rank ${rank}`);
       else if (rankOrder.has(record.technical_capability_rank) && rankOrder.get(rank) > rankOrder.get(record.technical_capability_rank)) push(`observation rank ${rank} exceeds technical capability`);
     }
   }
-
   for (const field of supportFields) if (typeof record[field] !== 'boolean') push(`${field} must be boolean`);
-
-  if (!Array.isArray(record.pending_fields) || new Set(record.pending_fields).size !== record.pending_fields.length) {
-    push('pending_fields must be a unique array');
-  } else {
-    for (const field of record.pending_fields) if (!pendingCapableFields.has(field)) push(`unsupported pending field ${field}`);
-  }
+  if (!Array.isArray(record.pending_fields) || new Set(record.pending_fields).size !== record.pending_fields.length) push('pending_fields must be a unique array');
+  else for (const field of record.pending_fields) if (!pendingCapableFields.has(field)) push(`unsupported pending field ${field}`);
 
   const operationalFields = ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id'];
   if (record.profile_status === 'active') {
@@ -200,9 +169,7 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
     if (record.pending_fields?.length) push('active profile must not retain pending_fields');
   }
   if (record.profile_status === 'provisional') {
-    for (const field of pendingCapableFields) {
-      if (record[field] === null && !record.pending_fields?.includes(field)) push(`null ${field} must be listed in pending_fields`);
-    }
+    for (const field of pendingCapableFields) if (record[field] === null && !record.pending_fields?.includes(field)) push(`null ${field} must be listed in pending_fields`);
   }
 
   for (const field of ['schedule_source_id', 'detail_source_id']) {
@@ -212,32 +179,22 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
       if (!authoritySourceKeys.has(key)) push(`${field} does not resolve authority/source key ${key}`);
     }
   }
-
   for (const field of ['schedule_adapter_id', 'detail_adapter_id']) {
     const adapterId = record[field];
     if (adapterId === null) continue;
     const evidence = adapterEvidence.get(adapterId);
-    if (!evidence) {
-      push(`${field} has no reviewed adapter evidence mapping for ${adapterId}`);
-      continue;
-    }
-    const text = readText(evidence.path);
-    if (!text.includes(evidence.marker)) push(`${field} adapter evidence marker missing for ${adapterId}`);
+    if (!evidence) push(`${field} has no reviewed adapter evidence mapping for ${adapterId}`);
+    else if (!readText(evidence.path).includes(evidence.marker)) push(`${field} adapter evidence marker missing for ${adapterId}`);
   }
 
   if (record.supports_selected_meetings) {
-    if (record.profile_status !== 'active' || record.schedule_adapter_id === null || record.detail_adapter_id === null) {
-      push('selected-meeting support requires an active complete adapter path');
-    }
+    if (record.profile_status !== 'active' || record.schedule_adapter_id === null || record.detail_adapter_id === null) push('selected-meeting support requires an active complete adapter path');
     if (record.system_id === 'japan-nar-system') {
       const scheduleAdapter = readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs');
       const actionsCore = readText('scripts/timetable/nar-incremental-v2-actions-core.mjs');
       if (!scheduleAdapter.includes('--meeting-ids=') || !actionsCore.includes('selected_meetings')) push('NAR selected-meeting adapter evidence is missing');
-    } else {
-      push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
-    }
+    } else push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
   }
-
   return localErrors;
 }
 
@@ -248,43 +205,39 @@ for (const [index, record] of (registry?.records ?? []).entries()) {
   if (seenSystems.has(record.system_id)) fail(`${label}: duplicate system_id ${record.system_id}`);
   seenSystems.add(record.system_id);
 
-  const readiness = readinessBySystem.get(record.system_id);
-  const policy = policyBySystem.get(record.system_id);
-  if (!readiness) fail(`${label}: Japan readiness record missing for ${record.system_id}`);
-  if (!policy) fail(`${label}: Japan A+ policy record missing for ${record.system_id}`);
-  if (readiness && record.technical_capability_rank !== readiness.technical_rank) fail(`${label}: technical capability differs from Japan readiness`);
-  if (policy && record.public_ceiling !== policy.public_ceiling) fail(`${label}: public ceiling differs from Japan policy`);
+  const technicalRank = reviewedTechnicalRankFor(record);
+  const approvedCeiling = approvedCeilingFor(record);
+  if (!technicalRank) fail(`${label}: reviewed technical rank missing for ${record.system_id}`);
+  if (!approvedCeiling) fail(`${label}: reviewed public ceiling missing for ${record.system_id}`);
+  if (technicalRank && record.technical_capability_rank !== technicalRank) fail(`${label}: technical capability differs from reviewed readiness`);
+  if (approvedCeiling && record.public_ceiling !== approvedCeiling) fail(`${label}: public ceiling differs from reviewed policy/readiness`);
 }
-for (const systemId of requiredInitialSystems) if (!seenSystems.has(systemId)) fail(`initial Acquisition Registry profile missing ${systemId}`);
+for (const systemId of requiredProfiles) if (!seenSystems.has(systemId)) fail(`required Acquisition Registry profile missing ${systemId}`);
 
 try {
   const map = acquisitionProfileMapV1(registry);
   if (map.size !== registry.records.length) fail('Acquisition Registry loader map size differs.');
-  for (const systemId of requiredInitialSystems) {
-    if (resolveAcquisitionProfileV1(registry, systemId).system_id !== systemId) fail(`loader resolution differs for ${systemId}`);
-  }
+  for (const systemId of requiredProfiles) if (resolveAcquisitionProfileV1(registry, systemId).system_id !== systemId) fail(`loader resolution differs for ${systemId}`);
 } catch (error) {
   fail(`Acquisition Registry loader failed: ${error.message}`);
 }
 
 walkKeys(registry);
-
 for (const [file, text, phrases] of [
   [controlContractPath, controlContract, ['Acquisition Registry', 'primary_runner', 'supported_observation_ranks', 'supports_selected_meetings']],
   [implementationPlanPath, implementationPlan, ['Stage ACP-3 — Acquisition Registry', 'Banei values may remain explicitly pending', 'missing primary runner']],
   [machineContractPath, machineContract, ['data/static/calendar-acquisition-registry.schema.json', 'data/static/calendar-acquisition-registry.json', 'japan-jra-system', 'japan-nar-system', 'japan-banei-system']],
-]) {
-  for (const phrase of phrases) if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
-}
+]) for (const phrase of phrases) if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
 
 const narProfile = registry.records.find((record) => record.system_id === 'japan-nar-system');
 if (narProfile?.primary_runner !== 'github_actions' || narProfile?.fallback_runner !== 'local') fail('NAR runner profile must be github_actions primary with local fallback.');
 const jraProfile = registry.records.find((record) => record.system_id === 'japan-jra-system');
 if (jraProfile?.primary_runner !== 'local') fail('JRA primary runner must remain local.');
 const baneiProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
-if (baneiProfile?.profile_status !== 'provisional' || baneiProfile?.detail_source_id !== null || baneiProfile?.detail_adapter_id !== null) {
-  fail('Banei initial profile must preserve explicit pending detail source/adapter state.');
-}
+if (baneiProfile?.profile_status !== 'provisional' || baneiProfile?.detail_source_id !== null || baneiProfile?.detail_adapter_id !== null) fail('Banei initial profile must preserve explicit pending detail source/adapter state.');
+const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
+if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== 'local') fail('HKJC provisional profile must preserve grounded Actions/local generator routing.');
+if (hkjcProfile?.detail_source_id !== null || hkjcProfile?.detail_adapter_id !== null) fail('HKJC provisional profile must not claim implemented detail acquisition.');
 
 const negativeBase = structuredClone(narProfile);
 const negativeCases = [
@@ -295,20 +248,18 @@ const negativeCases = [
   ['selected meeting without adapter', { ...negativeBase, detail_adapter_id: null, supports_selected_meetings: true }, {}],
   ['missing primary runner', { ...negativeBase, primary_runner: null }, {}],
 ];
-for (const [name, profile, options] of negativeCases) {
-  if (validateProfile(profile, `negative:${name}`, options).length === 0) fail(`negative contract case unexpectedly passed: ${name}`);
-}
+for (const [name, profile, options] of negativeCases) if (validateProfile(profile, `negative:${name}`, options).length === 0) fail(`negative contract case unexpectedly passed: ${name}`);
 
 if (errors.length) {
   console.error(`CALENDAR_ACQUISITION_REGISTRY: failed (${errors.length})`);
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
-
 console.log('CALENDAR_ACQUISITION_REGISTRY: pass');
 console.log(`PROFILES: ${registry.records.length}`);
 console.log(`ACTIVE_PROFILES: ${registry.records.filter((record) => record.profile_status === 'active').length}`);
 console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.profile_status === 'provisional').length}`);
-console.log('INITIAL_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system');
+console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
+console.log('HKJC_PROFILE: provisional bounded generator / github_actions primary / local fallback');
 console.log('BANEI_DETAIL_PROFILE: pending');
