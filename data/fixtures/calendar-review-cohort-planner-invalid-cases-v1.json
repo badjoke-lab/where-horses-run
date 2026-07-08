@@ -1,0 +1,75 @@
+{
+  "schema_version": "calendar-review-cohort-planner-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "schedule-source-drift",
+      "mutation": "set",
+      "path": ["cohorts", 0, "schedule_source_id"],
+      "value": "wrong-source"
+    },
+    {
+      "case_id": "public-ceiling-drift",
+      "mutation": "set",
+      "path": ["cohorts", 0, "public_ceiling"],
+      "value": "C"
+    },
+    {
+      "case_id": "display-risk-drift",
+      "mutation": "set",
+      "path": ["cohorts", 0, "public_display_risk"],
+      "value": "meeting_only"
+    },
+    {
+      "case_id": "promotion-dependency-drift",
+      "mutation": "set",
+      "path": ["cohorts", 0, "promotion_dependency"],
+      "value": "source_recovery_required"
+    },
+    {
+      "case_id": "rank-aggregate-drift",
+      "mutation": "increment",
+      "path": ["cohorts", 0, "rank_counts", "C"],
+      "value": 1
+    },
+    {
+      "case_id": "batch-count-drift",
+      "mutation": "increment",
+      "path": ["cohorts", 0, "batch_count"],
+      "value": 1
+    },
+    {
+      "case_id": "automatic-approval-enabled",
+      "mutation": "set",
+      "path": ["cohorts", 0, "proposal", "automatic_approval"],
+      "value": true
+    },
+    {
+      "case_id": "automatic-promotion-enabled",
+      "mutation": "set",
+      "path": ["cohorts", 0, "proposal", "automatic_promotion"],
+      "value": true
+    },
+    {
+      "case_id": "unsafe-manifest-ref",
+      "mutation": "set",
+      "path": ["cohorts", 0, "batches", 0, "manifest_ref"],
+      "value": "data/../private.json"
+    },
+    {
+      "case_id": "excluded-reason-drift",
+      "mutation": "set",
+      "path": ["excluded", 0, "reason"],
+      "value": "rejected"
+    },
+    {
+      "case_id": "missing-batch-accounting",
+      "mutation": "remove_first_batch_and_fix_count",
+      "path": ["cohorts", 0]
+    },
+    {
+      "case_id": "duplicate-batch-accounting",
+      "mutation": "duplicate_first_batch",
+      "path": ["cohorts", 0]
+    }
+  ]
+}
