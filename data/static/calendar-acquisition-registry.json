@@ -1,0 +1,87 @@
+{
+  "schema_version": "calendar-acquisition-registry-v1",
+  "schema_ref": "data/static/calendar-acquisition-registry.schema.json",
+  "work_id": "WHR-CAL-ACQUISITION-CONTROL-PLANE",
+  "records": [
+    {
+      "system_id": "japan-jra-system",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "profile_status": "active",
+      "primary_runner": "local",
+      "fallback_runner": "reviewed_import",
+      "schedule_source_id": "jra-programme",
+      "detail_source_id": "jra-programme",
+      "schedule_adapter_id": "jra-normalized-programme-candidate-v1",
+      "detail_adapter_id": "jra-normalized-programme-candidate-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A+",
+      "supported_observation_ranks": [
+        "A+"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "JRA remains local-primary because final-program intake and human confirmation are bounded review steps. Reviewed import is the compatible fallback. Current evidence-backed candidate output is A+ and no broader scope-mode capability is claimed here."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": "local",
+      "schedule_source_id": "nar-monthly-schedule-grid",
+      "detail_source_id": "nar-race-list-deba-table",
+      "schedule_adapter_id": "nar-incremental-v2-reviewed-schedule-promotion-v1",
+      "detail_adapter_id": "nar-incremental-v2-reviewed-detail-promotion-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A+",
+      "supported_observation_ranks": [
+        "C",
+        "A+"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": true,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "Formal workflow_dispatch acquisition is the primary path and the local v2 runner is the fallback. Current reviewed v2 source behavior produces C schedule identities or complete A+ detail; this source-specific observation set does not narrow the shared five-rank model."
+    },
+    {
+      "system_id": "japan-banei-system",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "profile_status": "provisional",
+      "primary_runner": "reviewed_import",
+      "fallback_runner": null,
+      "schedule_source_id": "banei-official-schedule",
+      "detail_source_id": null,
+      "schedule_adapter_id": "japan-banei-dry-run-adapter",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A+",
+      "supported_observation_ranks": [
+        "B"
+      ],
+      "supports_date_window": false,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "fallback_runner",
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "Provisional profile only. The existing reviewed-import/dry-run path establishes a meeting-level schedule adapter with first-race time evidence, while Banei-specific detail source, detail adapter, fallback runner, and broader scope/retry support remain pending source-specific implementation."
+    }
+  ]
+}
