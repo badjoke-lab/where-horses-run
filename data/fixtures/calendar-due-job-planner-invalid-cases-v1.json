@@ -1,0 +1,65 @@
+{
+  "schema_version": "calendar-due-job-planner-invalid-cases-v1",
+  "plan_cases": [
+    {
+      "case_id": "artifact-only-disabled",
+      "mutation": "set",
+      "path": ["scheduler_boundary", "artifact_only"],
+      "value": false
+    },
+    {
+      "case_id": "jobs-executed-enabled",
+      "mutation": "set",
+      "path": ["scheduler_boundary", "jobs_executed"],
+      "value": true
+    },
+    {
+      "case_id": "automatic-publication-enabled",
+      "mutation": "set",
+      "path": ["scheduler_boundary", "automatic_publication"],
+      "value": true
+    },
+    {
+      "case_id": "decision-unknown-job",
+      "mutation": "set_first_planned_decision_job",
+      "value": "unknown-job"
+    },
+    {
+      "case_id": "missing-planned-decision",
+      "mutation": "remove_first_planned_decision"
+    },
+    {
+      "case_id": "job-source-route-injected",
+      "mutation": "set",
+      "path": ["collection_plan", "jobs", 0, "source_id"],
+      "value": "forbidden-source"
+    }
+  ],
+  "policy_cases": [
+    {
+      "case_id": "policy-executes-jobs",
+      "mutation": "set",
+      "path": ["scheduler", "execute_jobs"],
+      "value": true
+    },
+    {
+      "case_id": "policy-auto-approval",
+      "mutation": "set",
+      "path": ["scheduler", "automatic_approval"],
+      "value": true
+    },
+    {
+      "case_id": "policy-rank-retry-without-registry-support",
+      "mutation": "set_rule",
+      "system_id": "japan-jra-system",
+      "path": ["rank_retry", "enabled"],
+      "value": true
+    },
+    {
+      "case_id": "policy-max-jobs-zero",
+      "mutation": "set",
+      "path": ["scheduler", "max_jobs_per_plan"],
+      "value": 0
+    }
+  ]
+}
