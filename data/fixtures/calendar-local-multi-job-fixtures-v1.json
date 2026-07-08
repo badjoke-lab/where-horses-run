@@ -1,0 +1,47 @@
+{
+  "schema_version": "calendar-local-multi-job-fixtures-v1",
+  "plans": [
+    {
+      "schema_version": "calendar-collection-plan-v1",
+      "plan_id": "jra-two-window-local-001",
+      "campaign_id": "jra-local-isolation-validation",
+      "created_at": "2026-07-08T15:00:00Z",
+      "jobs": [
+        {
+          "schema_version": "calendar-collection-job-v1",
+          "job_id": "jra-july-local-isolation-job-001",
+          "campaign_id": "jra-local-isolation-validation",
+          "system_id": "japan-jra-system",
+          "runner_policy": { "mode": "exact", "runner": "local" },
+          "collection_mode": "date_window",
+          "requested_scope": {
+            "start_date": "2026-07-01",
+            "end_date_exclusive": "2026-08-01",
+            "timezone": "Asia/Tokyo"
+          },
+          "rank_strategy": "best_available",
+          "target_rank": null,
+          "reason": "regular_refresh",
+          "requested_at": "2026-07-08T15:00:00Z"
+        },
+        {
+          "schema_version": "calendar-collection-job-v1",
+          "job_id": "jra-august-local-isolation-job-001",
+          "campaign_id": "jra-local-isolation-validation",
+          "system_id": "japan-jra-system",
+          "runner_policy": { "mode": "exact", "runner": "local" },
+          "collection_mode": "date_window",
+          "requested_scope": {
+            "start_date": "2026-08-10",
+            "end_date_exclusive": "2026-08-31",
+            "timezone": "Asia/Tokyo"
+          },
+          "rank_strategy": "best_available",
+          "target_rank": null,
+          "reason": "regular_refresh",
+          "requested_at": "2026-07-08T15:00:00Z"
+        }
+      ]
+    }
+  ]
+}
