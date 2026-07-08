@@ -320,6 +320,7 @@ Implemented machine-readable routing/capability records for at least:
 japan-jra-system
 japan-nar-system
 japan-banei-system
+hong-kong-hkjc-system (provisional bounded-generator profile)
 ```
 
 Registry fields include runner profile, source/adapter profile, Technical Rank, Collection Target Rank, Public Ceiling, supported ranks, scope modes, and retry support.
@@ -340,7 +341,7 @@ target rank
 reason
 ```
 
-### ACP-4 — Collection Plan schema — current
+### ACP-4 — Collection Plan schema — complete
 
 One campaign may contain many independent jobs with different:
 
@@ -352,7 +353,7 @@ reasons
 target ranks
 ```
 
-### ACP-5 — five-rank classifier contract
+### ACP-5 — five-rank classifier contract — current
 
 Test common C/B/B+/A/A+ shapes and direct monotonic transitions.
 

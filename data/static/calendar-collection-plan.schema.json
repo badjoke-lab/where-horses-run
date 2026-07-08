@@ -1,0 +1,33 @@
+{
+  "schema_version": "calendar-collection-plan-schema-v1",
+  "purpose": "Defines one Calendar acquisition campaign containing independently valid Collection Jobs without forcing shared runner, scope, rank target, review cohort, or promotion transaction semantics.",
+  "required_fields": [
+    "schema_version",
+    "plan_id",
+    "campaign_id",
+    "created_at",
+    "jobs"
+  ],
+  "job_schema_version": "calendar-collection-job-v1",
+  "closure_rules": [
+    "plan_id and campaign_id must be lowercase kebab-case stable identifiers",
+    "created_at must be a valid date-time",
+    "jobs must be a non-empty array",
+    "every job must validate independently against the Collection Job contract and Acquisition Registry",
+    "every job campaign_id must equal the plan campaign_id",
+    "job_id values must be unique within the plan",
+    "jobs may use different systems runners scopes collection modes rank strategies target ranks and reasons",
+    "one lower-rank target must not change another job target rank or strategy",
+    "one execution source error must remain scoped to its job and must not rewrite unrelated outcomes",
+    "a Collection Plan is not a common review cohort",
+    "a Collection Plan is not a common promotion transaction",
+    "a Collection Plan must not duplicate source IDs adapter IDs credentials source bodies publication state or promotion state"
+  ],
+  "explicit_exclusions": [
+    "no source_id or adapter_id duplication at plan level",
+    "no source bodies or raw HTML",
+    "no participant horse jockey trainer betting odds result payout prediction or tip data",
+    "no credentials cookies tokens restricted-access details or bypass instructions",
+    "no approval promotion publication or deployment side effects"
+  ]
+}

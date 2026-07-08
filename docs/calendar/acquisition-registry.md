@@ -43,6 +43,7 @@ The first registry version contains:
 japan-jra-system
 japan-nar-system
 japan-banei-system
+hong-kong-hkjc-system
 ```
 
 ### JRA
@@ -100,6 +101,27 @@ fallback_runner: pending
 
 This profile records only current evidence. It does not infer NAR-compatible detail acquisition, runner fallback, arbitrary windows, selected-meeting support, source-visible horizon support, or rank-upgrade retry support.
 
+### Hong Kong / HKJC
+
+The HKJC profile is provisional and exists to support the already-implemented bounded safe-generator path.
+
+```text
+profile_status: provisional
+primary_runner: github_actions
+fallback_runner: local
+schedule_source_id: hkjc-fixture-list
+schedule_adapter_id: hong-kong-hkjc-dry-run-adapter
+detail_source_id: pending
+detail_adapter_id: pending
+technical_capability_rank: A+
+public_ceiling: A
+supports_date_window: true
+```
+
+The runner profile is grounded in merged generator/check integration and local validation commands. It does not claim live fetch, arbitrary source parsing, selected-meeting support, cross-month support, or implemented detail acquisition.
+
+The reviewed HKJC Readiness record remains the authority for Technical Rank A+ and Public Ceiling A.
+
 ## Rank rules
 
 Rank order is:
@@ -144,14 +166,16 @@ The validator rejects at least:
 - unsupported adapter identities;
 - provisional null fields that are not explicitly declared pending.
 
-The validator cross-checks the initial Japan profiles against:
+The validator cross-checks registered profiles against reviewed readiness/policy, Authority/Source inventory, and concrete adapter evidence.
+
+For Japan it uses:
 
 ```text
 data/static/calendar-readiness-japan-v2.json
 data/static/japan-a-plus-policy.json
-Authority/Source inventory and supplements
-concrete adapter implementation evidence
 ```
+
+For HKJC it uses the reviewed global Calendar Readiness record plus Authority/Source and candidate-adapter evidence.
 
 ## Loader boundary
 
@@ -177,8 +201,8 @@ It must not contain:
 
 Registry changes have no approval, promotion, public projection, or deployment side effect.
 
-## Next stage
+## Downstream use
 
-The next control-plane implementation stage is the Collection Job schema.
+Collection Jobs reference `system_id` and consume Registry routing metadata without duplicating source-specific runner knowledge. Collection Plans group independently valid Jobs without copying source/adapter routing metadata into the Plan layer.
 
-Collection Jobs will reference `system_id` and consume Registry routing metadata without duplicating source-specific runner knowledge inside every job.
+The current control-plane implementation stage after Job and Plan contracts is the shared five-rank classifier contract.

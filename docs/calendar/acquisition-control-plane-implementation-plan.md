@@ -256,7 +256,7 @@ Add fixtures covering:
 
 ## Stage ACP-5 — Collection Plan schema
 
-Status: current.
+Status: complete. The schema, validation core, valid multi-system fixtures, negative fixtures, rank-isolation checks, source-error-isolation checks, contract documentation, and dedicated CI are implemented.
 
 Goal: allow one campaign to contain multiple systems with independent scopes.
 
@@ -283,6 +283,8 @@ Required tests:
 A plan must not imply one review PR or one promotion transaction.
 
 ## Stage ACP-6 — shared five-rank classifier contract
+
+Status: current.
 
 Goal: make C/B/B+/A/A+ classification a tested common layer.
 
