@@ -1,5 +1,6 @@
 import { validateCollectionPlanV1, summarizeCollectionPlanOutcomesV1 } from './collection-plan-validation.mjs';
 import { compileRunnerExecutionV1, resolveRunnerForJobV1 } from './runner-compatibility.mjs';
+import { validateCollectionResultManifestV1 } from './collection-result-manifest-validation.mjs';
 import {
   buildReviewQueueEntryFromManifestV1,
   validateReviewQueueV1,
@@ -120,16 +121,37 @@ export function validateLocalJobStatusV1(status, plannedJob) {
   return errors;
 }
 
-export function buildLocalReviewQueueSnapshotV1(localPlan, manifestRecords) {
+export function buildLocalReviewQueueSnapshotV1(localPlan, manifestRecords, statusRecords = []) {
+  const plannedByJobId = new Map(localPlan.jobs.map((item) => [item.job_id, item]));
+  const statusByJobId = new Map(statusRecords.map((status) => [status.job_id, status]));
+  const seenJobs = new Set();
   const entries = [];
+
   for (const record of manifestRecords ?? []) {
     if (!['success', 'partial'].includes(record.status)) continue;
-    entries.push(buildReviewQueueEntryFromManifestV1(record.manifest, {
+    const manifest = record.manifest;
+    const planned = plannedByJobId.get(manifest?.job_id);
+    if (!planned) throw new Error(`local manifest references unknown Job ${manifest?.job_id}`);
+    if (seenJobs.has(manifest.job_id)) throw new Error(`duplicate local manifest Job ${manifest.job_id}`);
+    seenJobs.add(manifest.job_id);
+
+    const status = statusByJobId.get(manifest.job_id);
+    if (!status) throw new Error(`local manifest missing status for ${manifest.job_id}`);
+    if (status.status !== record.status) throw new Error(`local manifest record status differs for ${manifest.job_id}`);
+    const execution = planned.execution;
+    for (const key of ['campaign_id', 'job_id', 'batch_id', 'system_id', 'runner_used']) {
+      if (manifest[key] !== execution[key]) throw new Error(`local manifest ${key} differs from planned execution for ${manifest.job_id}`);
+    }
+    const manifestErrors = validateCollectionResultManifestV1(manifest);
+    if (manifestErrors.length) throw new Error(`local manifest invalid for ${manifest.job_id}: ${manifestErrors.join('; ')}`);
+
+    entries.push(buildReviewQueueEntryFromManifestV1(manifest, {
       review_state: 'review_ready',
       promotion_state: 'not_ready',
       manifest_ref: record.manifest_ref,
     }));
   }
+
   const queue = {
     schema_version: 'calendar-review-queue-v1',
     generated_at: localPlan.generated_at,
@@ -160,7 +182,7 @@ export function summarizeLocalCampaignV1(plan, localPlan, statusRecords, manifes
 
   const localJobs = localPlan.jobs.map((item) => plan.jobs.find((job) => job.job_id === item.job_id));
   const planSummary = summarizeCollectionPlanOutcomesV1({ ...plan, jobs: localJobs }, outcomes);
-  const reviewQueue = buildLocalReviewQueueSnapshotV1(localPlan, manifestRecords);
+  const reviewQueue = buildLocalReviewQueueSnapshotV1(localPlan, manifestRecords, statuses);
   return {
     schema_version: SUMMARY_SCHEMA_VERSION,
     plan_id: plan.plan_id,
