@@ -1,0 +1,79 @@
+name: Calendar five-rank classifier
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-five-rank-classifier-contract-v1.json'
+      - 'data/fixtures/calendar-five-rank-classifier-fixtures-v1.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'scripts/timetable/five-rank-classifier.mjs'
+      - 'scripts/timetable/pipeline-v1/promotion-core.mjs'
+      - 'scripts/check-calendar-five-rank-classifier.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/five-rank-classifier.md'
+      - 'docs/calendar/incremental-coverage-contract.md'
+      - 'docs/calendar/validation-responsibility-contract.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-five-rank-classifier.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-five-rank-classifier-contract-v1.json'
+      - 'data/fixtures/calendar-five-rank-classifier-fixtures-v1.json'
+      - 'scripts/timetable/five-rank-classifier.mjs'
+      - 'scripts/check-calendar-five-rank-classifier.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/five-rank-classifier.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-five-rank-classifier.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/five-rank-classifier.mjs
+          node --check scripts/check-calendar-five-rank-classifier.mjs
+
+      - name: Validate five-rank classification and monotonic update rules
+        run: node scripts/check-calendar-five-rank-classifier.mjs
+
+      - name: Validate promotion monotonicity dependency
+        run: node scripts/check-calendar-pipeline-v1-promotion.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check

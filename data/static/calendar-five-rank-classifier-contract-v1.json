@@ -1,0 +1,80 @@
+{
+  "schema_version": "calendar-five-rank-classifier-contract-v1",
+  "work_id": "WHR-CAL-ACQUISITION-CONTROL-PLANE",
+  "rank_order": [
+    "C",
+    "B",
+    "B+",
+    "A",
+    "A+"
+  ],
+  "classification_shapes": {
+    "C": {
+      "meeting_identity_required": true,
+      "first_race_time_required": false,
+      "last_race_time_required": false,
+      "per_race_rows_required": false,
+      "a_plus_summary_fields_required": false
+    },
+    "B": {
+      "meeting_identity_required": true,
+      "first_race_time_required": true,
+      "last_race_time_required": false,
+      "per_race_rows_required": false,
+      "a_plus_summary_fields_required": false
+    },
+    "B+": {
+      "meeting_identity_required": true,
+      "first_race_time_required": true,
+      "last_race_time_required": true,
+      "per_race_rows_required": false,
+      "a_plus_summary_fields_required": false
+    },
+    "A": {
+      "meeting_identity_required": true,
+      "first_race_time_required": true,
+      "last_race_time_required": true,
+      "per_race_rows_required": true,
+      "a_plus_summary_fields_required": false
+    },
+    "A+": {
+      "meeting_identity_required": true,
+      "first_race_time_required": true,
+      "last_race_time_required": true,
+      "per_race_rows_required": true,
+      "a_plus_summary_fields_required": true
+    }
+  },
+  "a_plus_row_fields": [
+    "label",
+    "post_time_local",
+    "race_name",
+    "distance_m",
+    "surface",
+    "course_label"
+  ],
+  "normal_update_rules": [
+    "classification returns the highest evidence-backed rank directly",
+    "no C-only intermediate step is required",
+    "C to A+ direct classification is valid when A+ evidence is complete",
+    "normal reviewed-rank updates are monotonic",
+    "later lower-detail observation does not downgrade a higher reviewed rank",
+    "equal-rank observation preserves the reviewed rank",
+    "corrective downgrade is outside the normal classifier and requires the explicit corrective path"
+  ],
+  "invalid_shape_rules": [
+    "meeting identity is required",
+    "last race time without first race time is invalid",
+    "per-race rows require first and last race times",
+    "per-race rows require non-empty label and valid post time on every row",
+    "A+ requires all six approved public-safe timetable summary fields on every row",
+    "rows may classify as A when A timing fields are complete but A+ summary fields are incomplete"
+  ],
+  "explicit_exclusions": [
+    "no participant horse jockey trainer betting odds result payout prediction or tip fields",
+    "no source bodies or raw HTML",
+    "no publication ceiling calculation",
+    "no review approval side effects",
+    "no promotion publication or deployment side effects"
+  ]
+}

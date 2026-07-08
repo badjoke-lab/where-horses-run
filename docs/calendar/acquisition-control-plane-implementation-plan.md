@@ -284,7 +284,7 @@ A plan must not imply one review PR or one promotion transaction.
 
 ## Stage ACP-6 — shared five-rank classifier contract
 
-Status: current.
+Status: complete. The machine-readable contract, classifier core, classification fixtures, transition/regression fixtures, invalid-shape fixtures, cross-contract validator, documentation, and dedicated CI are implemented.
 
 Goal: make C/B/B+/A/A+ classification a tested common layer.
 
@@ -326,6 +326,8 @@ The classifier must not infer last race time from meeting end time or infer miss
 Historical B/B+ route investigations may be used as fixtures, but historical research state must not be silently promoted.
 
 ## Stage ACP-7 — Collection Result Manifest
+
+Status: current.
 
 Goal: give every job one concise machine-readable result summary.
 

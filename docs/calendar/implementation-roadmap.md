@@ -353,13 +353,13 @@ reasons
 target ranks
 ```
 
-### ACP-5 — five-rank classifier contract — current
+### ACP-5 — five-rank classifier contract — complete
 
 Test common C/B/B+/A/A+ shapes and direct monotonic transitions.
 
 B and B+ are first-class states, not future placeholders.
 
-### ACP-6 — Collection Result Manifest
+### ACP-6 — Collection Result Manifest — current
 
 Every job receives one concise summary with five rank counts, coverage state, unresolved state, source errors, and artifact references.
 

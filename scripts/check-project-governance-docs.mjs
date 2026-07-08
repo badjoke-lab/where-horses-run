@@ -169,6 +169,7 @@ requirePhrases(machineContracts, 'machine-readable contracts', [
   'data/static/calendar-acquisition-registry.json',
   'data/static/calendar-collection-job.schema.json',
   'data/static/calendar-collection-plan.schema.json',
+  'data/static/calendar-five-rank-classifier-contract-v1.json',
   'Collection Result Manifest schema',
   'Review Queue schema',
   'Rank-aware Retry Queue schema',
