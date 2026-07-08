@@ -58,8 +58,12 @@ data/static/calendar-acquisition-registry.json
 data/static/calendar-collection-job.schema.json
 data/fixtures/calendar-collection-jobs-v1.json
 data/fixtures/calendar-collection-job-invalid-cases-v1.json
+data/static/calendar-collection-plan.schema.json
+data/fixtures/calendar-collection-plans-v1.json
+data/fixtures/calendar-collection-plan-invalid-cases-v1.json
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
+scripts/timetable/collection-plan-validation.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -70,16 +74,17 @@ scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 scripts/check-calendar-pipeline-v1-promotion.mjs
 scripts/check-calendar-acquisition-registry.mjs
 scripts/check-calendar-collection-job.mjs
+scripts/check-calendar-collection-plan.mjs
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
+.github/workflows/calendar-collection-plan.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-Collection Plan schema
 Collection Result Manifest schema
 Review Queue schema
 Rank-aware Retry Queue schema

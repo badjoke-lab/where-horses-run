@@ -155,6 +155,12 @@ data/fixtures/calendar-collection-job-invalid-cases-v1.json
 scripts/timetable/collection-job-validation.mjs
 scripts/check-calendar-collection-job.mjs
 .github/workflows/calendar-collection-job.yml
+data/static/calendar-collection-plan.schema.json
+data/fixtures/calendar-collection-plans-v1.json
+data/fixtures/calendar-collection-plan-invalid-cases-v1.json
+scripts/timetable/collection-plan-validation.mjs
+scripts/check-calendar-collection-plan.mjs
+.github/workflows/calendar-collection-plan.yml
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -170,8 +176,6 @@ scripts/check-project-governance-docs.mjs
 Implementation must create canonical schemas/validators for:
 
 ```text
-Collection Job
-Collection Plan
 Collection Result Manifest
 Review Queue
 Rank-aware Retry Queue
@@ -292,19 +296,18 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. add Collection Plan schema
-2. add five-rank classifier contract tests
-3. add Collection Result Manifest
-4. add Review Queue
-5. add Rank-aware Retry Queue
-6. connect Actions and local runners to shared job semantics
-7. begin Banei on the shared foundation
-8. add Actions multi-job execution
-9. add local multi-job execution
-10. add review cohort planner
-11. add automatic review PR preparation
-12. add due-job planning and scheduled bounded retries
-13. add Operations v2 operator view
+1. add five-rank classifier contract tests
+2. add Collection Result Manifest
+3. add Review Queue
+4. add Rank-aware Retry Queue
+5. connect Actions and local runners to shared job semantics
+6. begin Banei on the shared foundation
+7. add Actions multi-job execution
+8. add local multi-job execution
+9. add review cohort planner
+10. add automatic review PR preparation
+11. add due-job planning and scheduled bounded retries
+12. add Operations v2 operator view
 ```
 
 ## Historical compatibility markers
