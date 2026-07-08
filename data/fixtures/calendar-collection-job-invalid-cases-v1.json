@@ -1,0 +1,212 @@
+{
+  "schema_version": "calendar-collection-job-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "mixed-date-window-and-selected-meetings",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-mixed-scope-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-09-01",
+          "timezone": "Asia/Tokyo",
+          "meeting_ids": [
+            "nar-oi-racecourse-2026-08-22"
+          ]
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "unknown-system",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-unknown-system-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "unknown-racing-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "single_date",
+        "requested_scope": {
+          "date": "2026-08-10",
+          "timezone": "UTC"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "manual_recovery",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "jra-exact-runner-mismatch",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-jra-runner-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "exact",
+          "runner": "github_actions"
+        },
+        "collection_mode": "single_date",
+        "requested_scope": {
+          "date": "2026-08-10",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "jra-selected-meetings-unsupported",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-jra-selected-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "selected_meetings",
+        "requested_scope": {
+          "meeting_ids": [
+            "jra-tokyo-racecourse-2026-08-10"
+          ]
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "jra-cross-month-window-unsupported",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-jra-cross-month-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-20",
+          "end_date_exclusive": "2026-09-10",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "best-available-with-target-rank",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-best-available-target-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "single_date",
+        "requested_scope": {
+          "date": "2026-08-20",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": "A+",
+        "reason": "regular_refresh",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "rank-upgrade-without-target-strategy",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-rank-upgrade-strategy-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary_or_fallback",
+          "runner": null
+        },
+        "collection_mode": "selected_meetings",
+        "requested_scope": {
+          "meeting_ids": [
+            "nar-oi-racecourse-2026-08-22"
+          ]
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "rank_upgrade_retry",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "banei-date-window-unsupported",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-banei-window-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-banei-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-09-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    },
+    {
+      "case_id": "completion-audit-with-selected-meetings",
+      "job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "invalid-completion-audit-selected-001",
+        "campaign_id": "invalid-fixtures",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "selected_meetings",
+        "requested_scope": {
+          "meeting_ids": [
+            "nar-oi-racecourse-2026-07-01"
+          ]
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "completion_audit_support",
+        "requested_at": "2026-07-08T05:00:00Z"
+      }
+    }
+  ]
+}
