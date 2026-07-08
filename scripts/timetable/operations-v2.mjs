@@ -334,6 +334,14 @@ export function validateOperationsV2V1(output, registry) {
   const acquisition = output.acquisition_summary;
   if (!acquisition || !JOB_STATUSES.every((status) => Number.isInteger(acquisition.job_counts?.[status]) && acquisition.job_counts[status] >= 0)) errors.push('acquisition job counts invalid');
   else if (acquisition.recent_result_count !== acquisition.job_counts.success + acquisition.job_counts.partial + acquisition.job_counts.failure) errors.push('recent result count does not close');
+  const publication = output.publication_summary;
+  if (!publication || !PUBLICATION_STATES.includes(publication.state)) errors.push('publication summary state invalid');
+  if (publication?.generated_at !== null && !validDateTime(publication?.generated_at)) errors.push('publication summary generated_at invalid');
+  for (const key of ['meeting_count', 'detail_count']) {
+    if (!Number.isInteger(publication?.[key]) || publication[key] < 0) errors.push(`publication summary ${key} invalid`);
+  }
+  if (typeof publication?.stale_for_current_window !== 'boolean') errors.push('publication summary stale flag invalid');
+
   if (!Array.isArray(output.systems)) errors.push('systems must be an array');
   else {
     const seen = new Set();
