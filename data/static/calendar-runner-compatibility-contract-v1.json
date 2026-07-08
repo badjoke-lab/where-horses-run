@@ -1,0 +1,48 @@
+{
+  "schema_version": "calendar-runner-compatibility-contract-v1",
+  "result_contract": "calendar-collection-result-manifest-v1",
+  "coverage_contract": "calendar-coverage-observation-v1",
+  "execution_contract": "calendar-runner-execution-v1",
+  "executors": [
+    {
+      "system_id": "japan-nar-system",
+      "runner": "github_actions",
+      "executor_id": "nar-incremental-v2-actions",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
+      "output_model": "nar-incremental-v2-batch"
+    },
+    {
+      "system_id": "japan-nar-system",
+      "runner": "local",
+      "executor_id": "nar-incremental-v2-local",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-nar-incremental-v2-local.mjs",
+      "output_model": "nar-incremental-v2-batch"
+    },
+    {
+      "system_id": "japan-jra-system",
+      "runner": "local",
+      "executor_id": "jra-refresh-local",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/refresh-jra.mjs",
+      "output_model": "jra-refresh-report-v0"
+    },
+    {
+      "system_id": "japan-jra-system",
+      "runner": "reviewed_import",
+      "executor_id": "jra-reviewed-import",
+      "invocation_kind": "reviewed_import",
+      "entry_point": null,
+      "output_model": "jra-reviewed-import"
+    }
+  ],
+  "side_effect_boundary": {
+    "approval": false,
+    "promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "publication": false,
+    "deployment": false
+  }
+}
