@@ -396,7 +396,8 @@ Retry records include current reviewed rank, latest observed rank, collection ta
 ### ACP-9 — shared runner semantics — current
 
 Runner-neutral compatibility foundation: complete.
-Actions multi-job execution: current.
+Actions multi-job execution: complete.
+Local multi-job execution: current.
 
 - Actions jobs consume Collection Jobs;
 - local jobs consume the same Collection Jobs;
@@ -439,7 +440,7 @@ Banei sequence:
 
 After the minimum foundation and Banei start:
 
-### Actions multi-job execution
+### Actions multi-job execution — complete
 
 - consume one Collection Plan;
 - filter hosted-capable jobs;
@@ -448,7 +449,7 @@ After the minimum foundation and Banei start:
 - preserve independent batch artifacts;
 - emit campaign summary.
 
-### Local multi-job execution
+### Local multi-job execution — current
 
 - consume the same Collection Plan;
 - filter local jobs;
@@ -549,9 +550,9 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. connect Actions and local runners to shared job semantics
-2. begin Banei on the shared foundation
-3. expand multi-system execution
+1. implement local multi-job execution and JRA shared local Job path
+2. begin Banei source-specific implementation on the satisfied minimum gate
+3. add review cohort planning
 4. add automatic review PR preparation
 5. add due-job planning and scheduled bounded retries
 6. add Operations v2 operator view

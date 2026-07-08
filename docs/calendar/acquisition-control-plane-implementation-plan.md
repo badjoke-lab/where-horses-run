@@ -432,7 +432,9 @@ The queue must not retry meetings already at their effective collection target u
 
 ## Stage ACP-10 — Actions multi-job runner
 
-Status: current. Shared runner compatibility begins with Actions execution consuming common Job/Plan/Manifest/Queue semantics.
+Status: complete. The formal manual-dispatch workflow consumes a validated Plan, filters hosted-capable Jobs, checks executor collection-mode support, runs independent Jobs with fail-fast disabled, preserves independent status/batch artifacts, and emits an isolation-preserving campaign summary.
+
+Shared runner compatibility continues through ACP-11 local execution.
 
 Runner-neutral compatibility foundation: complete. NAR Actions-primary/local-fallback and JRA local result adapters now converge on common Coverage Observation and Collection Result Manifest semantics. This satisfies the runner-neutral batch/result semantics part of the Banei handoff gate without completing the full Actions multi-job stage or full Runner Gate.
 
@@ -451,6 +453,8 @@ Implementation requirements:
 Do not require all systems in a campaign to succeed before valid review-ready batches appear.
 
 ## Stage ACP-11 — local multi-job runner
+
+Status: current.
 
 Goal: allow the operator to execute all pending local jobs with one plan command.
 

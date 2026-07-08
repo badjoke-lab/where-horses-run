@@ -18,6 +18,7 @@ Use these files together:
 - [`review-queue.md`](review-queue.md) — validated-batch operator inventory, five-rank visibility, Manifest projection, and review/promotion state contract.
 - [`rank-aware-retry-queue.md`](rank-aware-retry-queue.md) — rank-gap, missing-field, retry reason/scope, Registry routing, backoff, and NAR 71-target projection contract.
 - [`runner-compatibility.md`](runner-compatibility.md) — Job runner-policy resolution, Registry route, executor mapping, NAR Actions/local result neutrality, JRA local normalization, and Banei handoff semantics.
+- [`actions-multi-job-runner.md`](actions-multi-job-runner.md) — hosted Job filtering, executor-mode support, isolated matrix execution, per-Job artifacts/status, and campaign summary contract.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, NAR completion, control-plane foundation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
@@ -129,6 +130,13 @@ scripts/timetable/rank-aware-retry-queue-validation.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
 scripts/timetable/runner-compatibility.mjs
 scripts/check-calendar-runner-compatibility.mjs
+scripts/timetable/actions-multi-job-core.mjs
+scripts/timetable/plan-actions-multi-job.mjs
+scripts/timetable/run-calendar-actions-job.mjs
+scripts/timetable/run-hkjc-bounded-generator-job.mjs
+scripts/timetable/summarize-actions-multi-job.mjs
+scripts/check-calendar-actions-multi-job.mjs
+.github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
