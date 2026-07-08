@@ -1,0 +1,63 @@
+{
+  "schema_version": "calendar-operations-v2-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "network-fetch-enabled",
+      "mutation": "set",
+      "path": ["boundaries", "network_fetch_performed"],
+      "value": true
+    },
+    {
+      "case_id": "job-execution-enabled",
+      "mutation": "set",
+      "path": ["boundaries", "job_execution_performed"],
+      "value": true
+    },
+    {
+      "case_id": "recent-result-count-drift",
+      "mutation": "increment",
+      "path": ["acquisition_summary", "recent_result_count"],
+      "value": 1
+    },
+    {
+      "case_id": "unsafe-operations-v1-ref",
+      "mutation": "set",
+      "path": ["operations_v1_ref"],
+      "value": "data/../private.json"
+    },
+    {
+      "case_id": "system-authority-drift",
+      "mutation": "set",
+      "path": ["systems", 0, "authority_id"],
+      "value": "wrong-authority"
+    },
+    {
+      "case_id": "system-runner-drift",
+      "mutation": "set",
+      "path": ["systems", 0, "primary_runner"],
+      "value": "reviewed_import"
+    },
+    {
+      "case_id": "unsupported-source-health",
+      "mutation": "set",
+      "path": ["systems", 0, "source_health"],
+      "value": "broken"
+    },
+    {
+      "case_id": "missing-system-row",
+      "mutation": "remove_last_system"
+    },
+    {
+      "case_id": "none-attention-mixed",
+      "mutation": "set",
+      "path": ["systems", 0, "operator_attention"],
+      "value": ["none", "freshness"]
+    },
+    {
+      "case_id": "publication-state-invalid",
+      "mutation": "set",
+      "path": ["publication_summary", "state"],
+      "value": "published"
+    }
+  ]
+}
