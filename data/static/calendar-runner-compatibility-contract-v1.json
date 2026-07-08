@@ -35,6 +35,14 @@
       "invocation_kind": "reviewed_import",
       "entry_point": null,
       "output_model": "jra-reviewed-import"
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "runner": "github_actions",
+      "executor_id": "hkjc-bounded-generator-actions",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-hkjc-bounded-generator-job.mjs",
+      "output_model": "hkjc-bounded-dry-run-batch"
     }
   ],
   "side_effect_boundary": {
