@@ -6,6 +6,7 @@ import { validateCollectionResultManifestV1 } from './collection-result-manifest
 const root = process.cwd();
 const arg = process.argv.find((item) => item.startsWith('--execution='));
 if (!arg) throw new Error('--execution=<path> is required');
+const checkOnly = process.argv.includes('--check-only');
 const executionPath = arg.slice('--execution='.length);
 const execution = JSON.parse(fs.readFileSync(path.resolve(root, executionPath), 'utf8'));
 
@@ -75,7 +76,6 @@ if (!hasOverlap) {
 
 const outputDirRelative = `data/generated/timetable/actions-multi-job/${execution.batch_id}`;
 const outputDir = path.join(root, outputDirRelative);
-fs.mkdirSync(outputDir, { recursive: true });
 const candidateRef = `${outputDirRelative}/candidates.json`;
 const coverageRef = `${outputDirRelative}/coverage-observation.json`;
 const manifestRef = `${outputDirRelative}/result-manifest.json`;
@@ -163,13 +163,16 @@ const report = {
   publication_effect: 'none',
 };
 
-for (const [file, value] of [
-  ['candidates.json', candidate],
-  ['coverage-observation.json', coverage],
-  ['result-manifest.json', manifest],
-  ['collection-report.json', report],
-]) {
-  fs.writeFileSync(path.join(outputDir, file), `${JSON.stringify(value, null, 2)}\n`);
+if (!checkOnly) {
+  fs.mkdirSync(outputDir, { recursive: true });
+  for (const [file, value] of [
+    ['candidates.json', candidate],
+    ['coverage-observation.json', coverage],
+    ['result-manifest.json', manifest],
+    ['collection-report.json', report],
+  ]) {
+    fs.writeFileSync(path.join(outputDir, file), `${JSON.stringify(value, null, 2)}\n`);
+  }
 }
 
 console.log(JSON.stringify({
@@ -178,4 +181,5 @@ console.log(JSON.stringify({
   records_discovered: records.length,
   source_error_count: sourceErrors.length,
   output_dir: outputDirRelative,
+  check_only: checkOnly,
 }));
