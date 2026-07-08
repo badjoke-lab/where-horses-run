@@ -479,7 +479,7 @@ JRA is the first required local-runner compatibility test.
 
 ## Stage ACP-12 — review cohort planner
 
-Status: current.
+Status: complete. The deterministic planner consumes Review Queue and Acquisition Registry state, fully accounts for Queue entries, groups review-ready batches by source compatibility, review kind, public display risk, and promotion dependency, isolates source failures, preserves five-rank and coverage aggregates, and emits human-review-only proposal metadata.
 
 Goal: group review-ready batches into risk-bounded review PR proposals.
 
@@ -498,6 +498,8 @@ The planner may propose several PRs from one campaign.
 It must not combine batches merely because they were collected at the same time.
 
 ## Stage ACP-13 — automatic review PR preparation
+
+Status: current.
 
 Goal: move validated data automatically to the human-review boundary.
 

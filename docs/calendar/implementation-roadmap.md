@@ -458,7 +458,7 @@ After the minimum foundation and Banei start:
 - preserve independent batches;
 - continue bounded independent jobs after isolated failure where safe.
 
-### Review cohort planner — current
+### Review cohort planner — complete
 
 Group review-ready batches by risk and compatibility, not merely by collection time.
 
@@ -466,7 +466,7 @@ One campaign may produce several review PRs.
 
 ## Stage 9 — review automation and scheduling
 
-### Automatic review PR preparation
+### Automatic review PR preparation — current
 
 The system may prepare deterministic review PRs with candidate diffs, coverage summaries, rank distributions, and retry summaries.
 

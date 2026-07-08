@@ -1,0 +1,83 @@
+name: Calendar Review Cohort Planner
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-review-cohort-plan.schema.json'
+      - 'data/fixtures/calendar-review-cohort-planner-fixtures-v1.json'
+      - 'data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json'
+      - 'data/fixtures/calendar-review-queue-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/review-cohort-planner.mjs'
+      - 'scripts/check-calendar-review-cohort-planner.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/review-cohort-planner.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-review-cohort-planner.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-review-cohort-plan.schema.json'
+      - 'data/fixtures/calendar-review-cohort-planner-fixtures-v1.json'
+      - 'data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/review-cohort-planner.mjs'
+      - 'scripts/check-calendar-review-cohort-planner.mjs'
+      - 'docs/calendar/review-cohort-planner.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-review-cohort-planner.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/review-cohort-planner.mjs
+          node --check scripts/check-calendar-review-cohort-planner.mjs
+
+      - name: Validate Review Cohort Planner contract and fixtures
+        run: node scripts/check-calendar-review-cohort-planner.mjs
+
+      - name: Validate Review Queue and Registry dependencies
+        run: |
+          node scripts/check-calendar-review-queue.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
