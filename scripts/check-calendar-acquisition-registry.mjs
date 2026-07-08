@@ -272,7 +272,7 @@ walkKeys(registry);
 for (const [file, text, phrases] of [
   [controlContractPath, controlContract, ['Acquisition Registry', 'primary_runner', 'supported_observation_ranks', 'supports_selected_meetings']],
   [implementationPlanPath, implementationPlan, ['Stage ACP-3 — Acquisition Registry', 'Banei values may remain explicitly pending', 'missing primary runner']],
-  [machineContractPath, machineContract, ['Acquisition Registry schema + registry', 'japan-jra-system', 'japan-nar-system', 'japan-banei-system']],
+  [machineContractPath, machineContract, ['data/static/calendar-acquisition-registry.schema.json', 'data/static/calendar-acquisition-registry.json', 'japan-jra-system', 'japan-nar-system', 'japan-banei-system']],
 ]) {
   for (const phrase of phrases) if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
 }

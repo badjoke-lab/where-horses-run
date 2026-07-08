@@ -57,6 +57,8 @@ data/static/calendar-readiness.schema.json
 data/static/calendar-readiness-registry.json
 data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
+data/static/calendar-acquisition-registry.schema.json
+data/static/calendar-acquisition-registry.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -87,6 +89,9 @@ scripts/timetable/normalize-nar-schedule-aware-month.mjs
 scripts/timetable/collect-nar-incremental-v2.mjs
 scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
 scripts/timetable/run-nar-incremental-v2-local.mjs
+scripts/timetable/load-calendar-acquisition-registry.mjs
+scripts/check-calendar-acquisition-registry.mjs
+.github/workflows/calendar-acquisition-registry.yml
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-nar-incremental-core.mjs
@@ -121,7 +126,6 @@ scripts/check-local-racing-pilot-foundation.mjs
 The exact paths will be fixed by implementation PRs, but the required artifact classes are:
 
 ```text
-Acquisition Registry schema + registry
 Collection Job schema
 Collection Plan schema
 Collection Result Manifest schema
@@ -143,8 +147,8 @@ NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch con
 The immediate sequence is:
 
 ```text
-Acquisition Registry
--> Collection Job / Collection Plan schemas
+Collection Job schema
+-> Collection Plan schema
 -> five-rank classifier contract
 -> Result Manifest / Review Queue / Rank-aware Retry Queue
 -> shared Actions/local job semantics

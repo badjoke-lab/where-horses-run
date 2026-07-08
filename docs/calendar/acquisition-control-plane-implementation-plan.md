@@ -149,7 +149,7 @@ The local runner remains supported and must produce equivalent common batch sema
 
 ## Stage ACP-3 — Acquisition Registry
 
-Status: current.
+Status: complete. The machine-readable registry, schema, loader, validator, initial Japan profiles, and CI are implemented.
 
 Goal: remove runner and capability knowledge from operator memory.
 
@@ -198,6 +198,8 @@ Validation must reject:
 - missing primary runner.
 
 ## Stage ACP-4 — Collection Job schema
+
+Status: current.
 
 Goal: define one schedulable acquisition request format.
 
