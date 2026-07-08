@@ -289,8 +289,8 @@ The foundation sequence is:
 
 1. NAR formal Actions manual-dispatch path — complete;
 2. Acquisition Registry schema and Japan profiles — complete;
-3. Collection Job schema and fixtures — current;
-4. Collection Plan schema and fixtures;
+3. Collection Job schema and fixtures — complete;
+4. Collection Plan schema and fixtures — current;
 5. common C/B/B+/A/A+ classifier contract tests;
 6. Collection Result Manifest;
 7. Review Queue foundation;

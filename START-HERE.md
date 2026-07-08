@@ -149,6 +149,12 @@ scripts/check-calendar-validation-responsibilities.mjs
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/check-calendar-acquisition-registry.mjs
 .github/workflows/calendar-acquisition-registry.yml
+data/static/calendar-collection-job.schema.json
+data/fixtures/calendar-collection-jobs-v1.json
+data/fixtures/calendar-collection-job-invalid-cases-v1.json
+scripts/timetable/collection-job-validation.mjs
+scripts/check-calendar-collection-job.mjs
+.github/workflows/calendar-collection-job.yml
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -286,20 +292,19 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. add Collection Job schema
-2. add Collection Plan schema
-3. add five-rank classifier contract tests
-4. add Collection Result Manifest
-5. add Review Queue
-6. add Rank-aware Retry Queue
-7. connect Actions and local runners to shared job semantics
-8. begin Banei on the shared foundation
-9. add Actions multi-job execution
-10. add local multi-job execution
-11. add review cohort planner
-12. add automatic review PR preparation
-13. add due-job planning and scheduled bounded retries
-14. add Operations v2 operator view
+1. add Collection Plan schema
+2. add five-rank classifier contract tests
+3. add Collection Result Manifest
+4. add Review Queue
+5. add Rank-aware Retry Queue
+6. connect Actions and local runners to shared job semantics
+7. begin Banei on the shared foundation
+8. add Actions multi-job execution
+9. add local multi-job execution
+10. add review cohort planner
+11. add automatic review PR preparation
+12. add due-job planning and scheduled bounded retries
+13. add Operations v2 operator view
 ```
 
 ## Historical compatibility markers

@@ -1,0 +1,97 @@
+{
+  "schema_version": "calendar-collection-job-schema-v1",
+  "purpose": "Defines one schedulable Calendar acquisition request that references Acquisition Registry system identity and does not duplicate source or adapter routing knowledge.",
+  "required_fields": [
+    "schema_version",
+    "job_id",
+    "campaign_id",
+    "system_id",
+    "runner_policy",
+    "collection_mode",
+    "requested_scope",
+    "rank_strategy",
+    "target_rank",
+    "reason",
+    "requested_at"
+  ],
+  "runner_policy_modes": [
+    "registry_primary",
+    "registry_primary_or_fallback",
+    "exact"
+  ],
+  "runner_classes": [
+    "github_actions",
+    "local",
+    "reviewed_import"
+  ],
+  "collection_modes": [
+    "date_window",
+    "single_date",
+    "selected_meetings",
+    "source_visible_horizon"
+  ],
+  "rank_strategies": [
+    "best_available",
+    "target_rank"
+  ],
+  "rank_enum": [
+    "C",
+    "B",
+    "B+",
+    "A",
+    "A+"
+  ],
+  "reason_enum": [
+    "regular_refresh",
+    "coverage_gap",
+    "rank_upgrade_retry",
+    "source_revalidation",
+    "manual_recovery",
+    "completion_audit_support"
+  ],
+  "scope_contracts": {
+    "date_window": [
+      "start_date",
+      "end_date_exclusive",
+      "timezone"
+    ],
+    "single_date": [
+      "date",
+      "timezone"
+    ],
+    "selected_meetings": [
+      "meeting_ids"
+    ],
+    "source_visible_horizon": [
+      "start_date",
+      "end_date_exclusive",
+      "timezone"
+    ]
+  },
+  "closure_rules": [
+    "job_id and campaign_id must be lowercase kebab-case stable identifiers",
+    "system_id must resolve in the Acquisition Registry",
+    "runner_policy registry_primary requires runner null",
+    "runner_policy registry_primary_or_fallback requires runner null and a non-null registry fallback_runner",
+    "runner_policy exact requires runner equal to the registry primary_runner or fallback_runner",
+    "requested_scope must contain exactly the fields for collection_mode",
+    "date_window and source_visible_horizon require start_date before end_date_exclusive",
+    "date_window requires supports_date_window and cross-month windows additionally require supports_cross_month_window",
+    "single_date requires supports_date_window",
+    "selected_meetings requires supports_selected_meetings and a non-empty unique meeting_ids array",
+    "source_visible_horizon requires supports_source_visible_horizon",
+    "best_available requires target_rank null",
+    "target_rank strategy requires target_rank not above registry technical_capability_rank",
+    "rank_upgrade_retry requires supports_rank_upgrade_retry and target_rank strategy",
+    "completion_audit_support requires date_window mode",
+    "requested_at must be a valid date-time",
+    "Collection Jobs must not carry source IDs adapter IDs credentials source bodies publication state or promotion state"
+  ],
+  "explicit_exclusions": [
+    "no source_id or adapter_id duplication inside jobs",
+    "no source bodies or raw HTML",
+    "no participant horse jockey trainer betting odds result payout prediction or tip data",
+    "no credentials cookies tokens restricted-access details or bypass instructions",
+    "no approval promotion publication or deployment side effects"
+  ]
+}

@@ -55,7 +55,11 @@ data/static/timetable-candidate-v1.schema.json
 data/static/jra-final-program-intake.schema.json
 data/static/calendar-acquisition-registry.schema.json
 data/static/calendar-acquisition-registry.json
+data/static/calendar-collection-job.schema.json
+data/fixtures/calendar-collection-jobs-v1.json
+data/fixtures/calendar-collection-job-invalid-cases-v1.json
 scripts/timetable/load-calendar-acquisition-registry.mjs
+scripts/timetable/collection-job-validation.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -65,15 +69,16 @@ scripts/check-authority-source-inventory-schema.mjs
 scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 scripts/check-calendar-pipeline-v1-promotion.mjs
 scripts/check-calendar-acquisition-registry.mjs
+scripts/check-calendar-collection-job.mjs
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
+.github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-Collection Job schema
 Collection Plan schema
 Collection Result Manifest schema
 Review Queue schema

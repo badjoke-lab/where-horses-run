@@ -1,0 +1,81 @@
+name: Calendar Collection Job
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-collection-job.schema.json'
+      - 'data/static/calendar-acquisition-registry.schema.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/fixtures/calendar-collection-jobs-v1.json'
+      - 'data/fixtures/calendar-collection-job-invalid-cases-v1.json'
+      - 'scripts/timetable/collection-job-validation.mjs'
+      - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-collection-job.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/collection-job.md'
+      - 'docs/calendar/acquisition-control-plane-contract.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-collection-job.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-collection-job.schema.json'
+      - 'data/fixtures/calendar-collection-jobs-v1.json'
+      - 'data/fixtures/calendar-collection-job-invalid-cases-v1.json'
+      - 'scripts/timetable/collection-job-validation.mjs'
+      - 'scripts/check-calendar-collection-job.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/collection-job.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-collection-job.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/collection-job-validation.mjs
+          node --check scripts/check-calendar-collection-job.mjs
+
+      - name: Validate Collection Job contract and fixtures
+        run: node scripts/check-calendar-collection-job.mjs
+
+      - name: Validate Acquisition Registry dependency
+        run: node scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check

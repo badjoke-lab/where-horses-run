@@ -59,6 +59,9 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 data/static/calendar-acquisition-registry.schema.json
 data/static/calendar-acquisition-registry.json
+data/static/calendar-collection-job.schema.json
+data/fixtures/calendar-collection-jobs-v1.json
+data/fixtures/calendar-collection-job-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -91,7 +94,10 @@ scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
 scripts/timetable/run-nar-incremental-v2-local.mjs
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/check-calendar-acquisition-registry.mjs
+scripts/timetable/collection-job-validation.mjs
+scripts/check-calendar-collection-job.mjs
 .github/workflows/calendar-acquisition-registry.yml
+.github/workflows/calendar-collection-job.yml
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-nar-incremental-core.mjs
@@ -126,7 +132,6 @@ scripts/check-local-racing-pilot-foundation.mjs
 The exact paths will be fixed by implementation PRs, but the required artifact classes are:
 
 ```text
-Collection Job schema
 Collection Plan schema
 Collection Result Manifest schema
 Review Queue schema
