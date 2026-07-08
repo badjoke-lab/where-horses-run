@@ -5,13 +5,14 @@ const start = fs.readFileSync('START-HERE.md', 'utf8');
 const incremental = fs.readFileSync('docs/calendar/incremental-coverage-contract.md', 'utf8');
 const required = [
   'WHR-CAL-JAPAN-NAR-A-PLUS',
-  'Current phase: shared incremental coverage implementation and NAR operator refactor',
-  'first reviewed A+ promotion through 2026-07-04',
-  'valid partial data',
-  'arbitrary and overlapping windows',
-  'selected-meeting retries',
-  'July completion audit',
-  'WHR-CAL-JAPAN-BANEI-A-PLUS',
+  'Status: source pilot publication complete; maintenance retries continue',
+  'Current phase: Acquisition Control Plane integration and detail retries',
+  'Reviewed NAR schedule coverage through 2026-07-31 is published',
+  '71 C schedule records',
+  'formal workflow_dispatch normal operation: active',
+  'primary runner: github_actions',
+  'fallback runner: local',
+  'WHR-CAL-ACQUISITION-CONTROL-PLANE',
 ];
 const errors = required.filter((value) => !plan.includes(value));
 for (const phrase of [
@@ -39,8 +40,10 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('CALENDAR_NAR_PLAN_CURRENT: pass');
-console.log('CURRENT_PHASE: incremental_coverage_implementation_and_operator_refactor');
-console.log('ORDINARY_PARTIAL_PROMOTION_ALLOWED: true');
-console.log('JULY_COMPLETION_AUDIT_SEPARATE: true');
-console.log('PARTIAL_PROMOTION_THROUGH_2026_07_04: valid_not_complete');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('SOURCE_PILOT_PUBLICATION: complete');
+console.log('PUBLISHED_SCHEDULE_COVERAGE_THROUGH: 2026-07-31');
+console.log('PENDING_DETAIL_RETRIES: 71');
+console.log('PRIMARY_RUNNER: github_actions');
+console.log('FALLBACK_RUNNER: local');
+console.log('CURRENT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
