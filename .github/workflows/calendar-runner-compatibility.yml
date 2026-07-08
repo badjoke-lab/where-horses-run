@@ -74,7 +74,10 @@ jobs:
           node --check scripts/check-calendar-runner-compatibility.mjs
 
       - name: Validate runner compatibility and real result normalization
-        run: node scripts/check-calendar-runner-compatibility.mjs
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/check-calendar-runner-compatibility.mjs 2>&1 | tail -100
 
       - name: Validate shared Job, Coverage, Manifest, and Registry dependencies
         run: |
