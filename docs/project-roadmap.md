@@ -291,8 +291,8 @@ The foundation sequence is:
 2. Acquisition Registry schema and Japan profiles — complete;
 3. Collection Job schema and fixtures — complete;
 4. Collection Plan schema and fixtures — complete;
-5. common C/B/B+/A/A+ classifier contract tests — current;
-6. Collection Result Manifest;
+5. common C/B/B+/A/A+ classifier contract tests — complete;
+6. Collection Result Manifest — current;
 7. Review Queue foundation;
 8. Rank-aware Retry Queue foundation;
 9. Actions and local runner compatibility with common Job/Plan semantics.
