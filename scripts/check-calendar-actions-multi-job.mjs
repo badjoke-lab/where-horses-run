@@ -135,10 +135,10 @@ for (const forbidden of ['promote-timetable', 'deploy', 'wrangler pages deploy']
 const docs = readText('docs/calendar/actions-multi-job-runner.md');
 for (const phrase of [
   'fail-fast: false',
-  'one Job failure does not rewrite another Job result',
+  'One Job failure does not rewrite another Job result',
   'source_error',
   'full Runner Gate is not complete',
-  'scheduled execution remains disabled',
+  'Scheduled execution remains disabled',
 ]) {
   if (!docs.includes(phrase)) fail(`Actions multi-job contract missing ${phrase}.`);
 }
