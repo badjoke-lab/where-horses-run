@@ -1,0 +1,89 @@
+name: Calendar local multi-job runner
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-local-multi-job-fixtures-v1.json'
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/generated/timetable/jra-refresh-report.json'
+      - 'data/generated/timetable/jra-race-time-snapshot.json'
+      - 'scripts/timetable/local-multi-job-core.mjs'
+      - 'scripts/timetable/run-jra-local-review-job.mjs'
+      - 'scripts/timetable/run-calendar-local-plan.mjs'
+      - 'scripts/check-calendar-local-multi-job.mjs'
+      - 'docs/calendar/local-multi-job-runner.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-local-multi-job.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-local-multi-job-fixtures-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/generated/timetable/jra-refresh-report.json'
+      - 'data/generated/timetable/jra-race-time-snapshot.json'
+      - 'scripts/timetable/local-multi-job-core.mjs'
+      - 'scripts/timetable/run-jra-local-review-job.mjs'
+      - 'scripts/timetable/run-calendar-local-plan.mjs'
+      - 'scripts/check-calendar-local-multi-job.mjs'
+      - 'docs/calendar/local-multi-job-runner.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-local-multi-job.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/local-multi-job-core.mjs
+          node --check scripts/timetable/run-jra-local-review-job.mjs
+          node --check scripts/timetable/run-calendar-local-plan.mjs
+          node --check scripts/check-calendar-local-multi-job.mjs
+
+      - name: Validate local multi-job isolation and JRA review-only normalization
+        run: node scripts/check-calendar-local-multi-job.mjs
+
+      - name: Validate shared runner, Manifest, and Review Queue dependencies
+        run: |
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
