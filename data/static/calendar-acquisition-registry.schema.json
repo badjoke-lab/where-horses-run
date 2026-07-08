@@ -1,0 +1,84 @@
+{
+  "schema_version": "calendar-acquisition-registry-schema-v1",
+  "purpose": "Defines source-specific runner routing, adapter identity, rank capability, scope support, and retry capability for Calendar acquisition systems.",
+  "record_key": ["system_id"],
+  "required_registry_fields": [
+    "schema_version",
+    "schema_ref",
+    "work_id",
+    "records"
+  ],
+  "required_record_fields": [
+    "system_id",
+    "country_id",
+    "authority_id",
+    "profile_status",
+    "primary_runner",
+    "fallback_runner",
+    "schedule_source_id",
+    "detail_source_id",
+    "schedule_adapter_id",
+    "detail_adapter_id",
+    "technical_capability_rank",
+    "collection_target_rank",
+    "public_ceiling",
+    "supported_observation_ranks",
+    "supports_date_window",
+    "supports_cross_month_window",
+    "supports_selected_meetings",
+    "supports_source_visible_horizon",
+    "supports_rank_upgrade_retry",
+    "pending_fields",
+    "operator_notes"
+  ],
+  "profile_status_enum": [
+    "active",
+    "provisional"
+  ],
+  "runner_enum": [
+    "github_actions",
+    "local",
+    "reviewed_import"
+  ],
+  "rank_enum": [
+    "C",
+    "B",
+    "B+",
+    "A",
+    "A+"
+  ],
+  "collection_target_rank_enum": [
+    "best_available",
+    "C",
+    "B",
+    "B+",
+    "A",
+    "A+"
+  ],
+  "scope_support_fields": [
+    "supports_date_window",
+    "supports_cross_month_window",
+    "supports_selected_meetings",
+    "supports_source_visible_horizon",
+    "supports_rank_upgrade_retry"
+  ],
+  "closure_rules": [
+    "every record must contain a non-empty primary_runner from runner_enum",
+    "fallback_runner may be null but when present must use runner_enum and differ from primary_runner",
+    "technical_capability_rank and public_ceiling must use rank_enum",
+    "collection_target_rank must be best_available or a rank not above technical_capability_rank",
+    "public_ceiling must not exceed the approved system policy ceiling",
+    "supported_observation_ranks must be a non-empty unique subset of rank_enum",
+    "active profiles require non-null schedule_source_id, detail_source_id, schedule_adapter_id, and detail_adapter_id",
+    "provisional profiles may use null source or adapter fields only when each null field is named in pending_fields",
+    "supports_selected_meetings may be true only when an active adapter path exists and system-specific operation supports selected meeting input",
+    "all source IDs must resolve to the reviewed authority/source inventory when non-null",
+    "technical_capability_rank and public_ceiling must agree with reviewed Japan system policy for initial Japan profiles"
+  ],
+  "explicit_exclusions": [
+    "no source bodies or raw HTML",
+    "no participant horse jockey trainer betting odds result payout prediction or tip data",
+    "no credentials cookies tokens restricted-access details or bypass instructions",
+    "no approval promotion publication or deployment side effects"
+  ]
+}
