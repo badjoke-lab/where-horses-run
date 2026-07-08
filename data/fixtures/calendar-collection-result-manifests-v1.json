@@ -1,0 +1,436 @@
+{
+  "schema_version": "calendar-collection-result-manifest-fixtures-v1",
+  "cases": [
+    {
+      "case_id": "nar-july-remainder-source-window-complete",
+      "manifest": {
+        "schema_version": "calendar-collection-result-manifest-v1",
+        "campaign_id": "japan-july-completion-audit-support",
+        "job_id": "nar-july-completion-support-001",
+        "batch_id": "july-2026-08-through-31-run-001",
+        "system_id": "japan-nar-system",
+        "runner_used": "github_actions",
+        "requested_scope": {
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "date_window",
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "coverage_claim": "source_window_complete",
+        "records_discovered": 82,
+        "records_updated": 82,
+        "rank_counts": {
+          "C": 71,
+          "B": 0,
+          "B+": 0,
+          "A": 0,
+          "A+": 11
+        },
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [
+          "nar-retry-meeting-001",
+          "nar-retry-meeting-002",
+          "nar-retry-meeting-003",
+          "nar-retry-meeting-004",
+          "nar-retry-meeting-005",
+          "nar-retry-meeting-006",
+          "nar-retry-meeting-007",
+          "nar-retry-meeting-008",
+          "nar-retry-meeting-009",
+          "nar-retry-meeting-010",
+          "nar-retry-meeting-011",
+          "nar-retry-meeting-012",
+          "nar-retry-meeting-013",
+          "nar-retry-meeting-014",
+          "nar-retry-meeting-015",
+          "nar-retry-meeting-016",
+          "nar-retry-meeting-017",
+          "nar-retry-meeting-018",
+          "nar-retry-meeting-019",
+          "nar-retry-meeting-020",
+          "nar-retry-meeting-021",
+          "nar-retry-meeting-022",
+          "nar-retry-meeting-023",
+          "nar-retry-meeting-024",
+          "nar-retry-meeting-025",
+          "nar-retry-meeting-026",
+          "nar-retry-meeting-027",
+          "nar-retry-meeting-028",
+          "nar-retry-meeting-029",
+          "nar-retry-meeting-030",
+          "nar-retry-meeting-031",
+          "nar-retry-meeting-032",
+          "nar-retry-meeting-033",
+          "nar-retry-meeting-034",
+          "nar-retry-meeting-035",
+          "nar-retry-meeting-036",
+          "nar-retry-meeting-037",
+          "nar-retry-meeting-038",
+          "nar-retry-meeting-039",
+          "nar-retry-meeting-040",
+          "nar-retry-meeting-041",
+          "nar-retry-meeting-042",
+          "nar-retry-meeting-043",
+          "nar-retry-meeting-044",
+          "nar-retry-meeting-045",
+          "nar-retry-meeting-046",
+          "nar-retry-meeting-047",
+          "nar-retry-meeting-048",
+          "nar-retry-meeting-049",
+          "nar-retry-meeting-050",
+          "nar-retry-meeting-051",
+          "nar-retry-meeting-052",
+          "nar-retry-meeting-053",
+          "nar-retry-meeting-054",
+          "nar-retry-meeting-055",
+          "nar-retry-meeting-056",
+          "nar-retry-meeting-057",
+          "nar-retry-meeting-058",
+          "nar-retry-meeting-059",
+          "nar-retry-meeting-060",
+          "nar-retry-meeting-061",
+          "nar-retry-meeting-062",
+          "nar-retry-meeting-063",
+          "nar-retry-meeting-064",
+          "nar-retry-meeting-065",
+          "nar-retry-meeting-066",
+          "nar-retry-meeting-067",
+          "nar-retry-meeting-068",
+          "nar-retry-meeting-069",
+          "nar-retry-meeting-070",
+          "nar-retry-meeting-071"
+        ],
+        "source_errors": [],
+        "artifact_refs": {
+          "candidate_ref": "data/candidates/batches/nar/july-2026-08-through-31-run-001/candidates.json",
+          "coverage_observation_ref": "data/candidates/batches/nar/july-2026-08-through-31-run-001/coverage-observation.json",
+          "collection_report_ref": "data/candidates/batches/nar/july-2026-08-through-31-run-001/collection-report.json"
+        }
+      },
+      "coverage_observation": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "july-2026-08-through-31-run-001",
+        "system_id": "japan-nar-system",
+        "source_id": "nar-monthly-schedule-grid",
+        "checked_at": "2026-07-08T01:00:00Z",
+        "requested_scope": {
+          "kind": "date_window",
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "date_window",
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "collection_mode": "date_window",
+        "records_discovered": 82,
+        "records_updated": 82,
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [
+          "nar-retry-meeting-001",
+          "nar-retry-meeting-002",
+          "nar-retry-meeting-003",
+          "nar-retry-meeting-004",
+          "nar-retry-meeting-005",
+          "nar-retry-meeting-006",
+          "nar-retry-meeting-007",
+          "nar-retry-meeting-008",
+          "nar-retry-meeting-009",
+          "nar-retry-meeting-010",
+          "nar-retry-meeting-011",
+          "nar-retry-meeting-012",
+          "nar-retry-meeting-013",
+          "nar-retry-meeting-014",
+          "nar-retry-meeting-015",
+          "nar-retry-meeting-016",
+          "nar-retry-meeting-017",
+          "nar-retry-meeting-018",
+          "nar-retry-meeting-019",
+          "nar-retry-meeting-020",
+          "nar-retry-meeting-021",
+          "nar-retry-meeting-022",
+          "nar-retry-meeting-023",
+          "nar-retry-meeting-024",
+          "nar-retry-meeting-025",
+          "nar-retry-meeting-026",
+          "nar-retry-meeting-027",
+          "nar-retry-meeting-028",
+          "nar-retry-meeting-029",
+          "nar-retry-meeting-030",
+          "nar-retry-meeting-031",
+          "nar-retry-meeting-032",
+          "nar-retry-meeting-033",
+          "nar-retry-meeting-034",
+          "nar-retry-meeting-035",
+          "nar-retry-meeting-036",
+          "nar-retry-meeting-037",
+          "nar-retry-meeting-038",
+          "nar-retry-meeting-039",
+          "nar-retry-meeting-040",
+          "nar-retry-meeting-041",
+          "nar-retry-meeting-042",
+          "nar-retry-meeting-043",
+          "nar-retry-meeting-044",
+          "nar-retry-meeting-045",
+          "nar-retry-meeting-046",
+          "nar-retry-meeting-047",
+          "nar-retry-meeting-048",
+          "nar-retry-meeting-049",
+          "nar-retry-meeting-050",
+          "nar-retry-meeting-051",
+          "nar-retry-meeting-052",
+          "nar-retry-meeting-053",
+          "nar-retry-meeting-054",
+          "nar-retry-meeting-055",
+          "nar-retry-meeting-056",
+          "nar-retry-meeting-057",
+          "nar-retry-meeting-058",
+          "nar-retry-meeting-059",
+          "nar-retry-meeting-060",
+          "nar-retry-meeting-061",
+          "nar-retry-meeting-062",
+          "nar-retry-meeting-063",
+          "nar-retry-meeting-064",
+          "nar-retry-meeting-065",
+          "nar-retry-meeting-066",
+          "nar-retry-meeting-067",
+          "nar-retry-meeting-068",
+          "nar-retry-meeting-069",
+          "nar-retry-meeting-070",
+          "nar-retry-meeting-071"
+        ],
+        "source_errors": [],
+        "coverage_claim": "source_window_complete",
+        "completion_audit_ref": null
+      }
+    },
+    {
+      "case_id": "jra-local-partial-window",
+      "manifest": {
+        "schema_version": "calendar-collection-result-manifest-v1",
+        "campaign_id": "august-2026-regular-refresh",
+        "job_id": "jra-august-local-window-001",
+        "batch_id": "jra-august-local-window-001-run-001",
+        "system_id": "japan-jra-system",
+        "runner_used": "local",
+        "requested_scope": {
+          "start_date": "2026-08-10",
+          "end_date_exclusive": "2026-09-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "source_visible_horizon",
+          "start_date": "2026-08-10",
+          "end_date_exclusive": "2026-08-24",
+          "timezone": "Asia/Tokyo"
+        },
+        "coverage_claim": "partial",
+        "records_discovered": 4,
+        "records_updated": 3,
+        "rank_counts": {
+          "C": 0,
+          "B": 0,
+          "B+": 1,
+          "A": 2,
+          "A+": 1
+        },
+        "unresolved_dates": [
+          "2026-08-24"
+        ],
+        "unresolved_meeting_ids": [],
+        "source_errors": [],
+        "artifact_refs": {
+          "candidate_ref": "data/candidates/jra-august-local-window-001.json",
+          "coverage_observation_ref": "data/generated/timetable/jra-august-local-window-001-coverage.json",
+          "collection_report_ref": null
+        }
+      },
+      "coverage_observation": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "jra-august-local-window-001-run-001",
+        "system_id": "japan-jra-system",
+        "source_id": "jra-programme",
+        "checked_at": "2026-07-08T02:00:00Z",
+        "requested_scope": {
+          "kind": "date_window",
+          "start_date": "2026-08-10",
+          "end_date_exclusive": "2026-09-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "source_visible_horizon",
+          "start_date": "2026-08-10",
+          "end_date_exclusive": "2026-08-24",
+          "timezone": "Asia/Tokyo"
+        },
+        "collection_mode": "date_window",
+        "records_discovered": 4,
+        "records_updated": 3,
+        "unresolved_dates": [
+          "2026-08-24"
+        ],
+        "unresolved_meeting_ids": [],
+        "source_errors": [],
+        "coverage_claim": "partial",
+        "completion_audit_ref": null
+      }
+    },
+    {
+      "case_id": "nar-selected-retry-fallback-success",
+      "manifest": {
+        "schema_version": "calendar-collection-result-manifest-v1",
+        "campaign_id": "nar-august-retry-001",
+        "job_id": "nar-selected-retry-001",
+        "batch_id": "nar-selected-retry-001-run-001",
+        "system_id": "japan-nar-system",
+        "runner_used": "local",
+        "requested_scope": {
+          "meeting_ids": [
+            "nar-monbetsu-racecourse-2026-08-21",
+            "nar-oi-racecourse-2026-08-22"
+          ]
+        },
+        "observed_scope": {
+          "kind": "selected_meetings",
+          "meeting_ids": [
+            "nar-monbetsu-racecourse-2026-08-21",
+            "nar-oi-racecourse-2026-08-22"
+          ],
+          "timezone": "Asia/Tokyo"
+        },
+        "coverage_claim": "source_window_complete",
+        "records_discovered": 2,
+        "records_updated": 2,
+        "rank_counts": {
+          "C": 0,
+          "B": 1,
+          "B+": 0,
+          "A": 0,
+          "A+": 1
+        },
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [],
+        "source_errors": [],
+        "artifact_refs": {
+          "candidate_ref": "data/candidates/nar-selected-retry-001.json",
+          "coverage_observation_ref": "data/generated/timetable/nar-selected-retry-001-coverage.json",
+          "collection_report_ref": "data/generated/timetable/nar-selected-retry-001-report.json"
+        }
+      },
+      "coverage_observation": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "nar-selected-retry-001-run-001",
+        "system_id": "japan-nar-system",
+        "source_id": "nar-race-list-deba-table",
+        "checked_at": "2026-07-08T03:00:00Z",
+        "requested_scope": {
+          "kind": "selected_meetings",
+          "meeting_ids": [
+            "nar-monbetsu-racecourse-2026-08-21",
+            "nar-oi-racecourse-2026-08-22"
+          ],
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "selected_meetings",
+          "meeting_ids": [
+            "nar-monbetsu-racecourse-2026-08-21",
+            "nar-oi-racecourse-2026-08-22"
+          ],
+          "timezone": "Asia/Tokyo"
+        },
+        "collection_mode": "selected_meetings",
+        "records_discovered": 2,
+        "records_updated": 2,
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [],
+        "source_errors": [],
+        "coverage_claim": "source_window_complete",
+        "completion_audit_ref": null
+      }
+    },
+    {
+      "case_id": "nar-source-error-no-observation",
+      "manifest": {
+        "schema_version": "calendar-collection-result-manifest-v1",
+        "campaign_id": "nar-source-revalidation-001",
+        "job_id": "nar-source-horizon-001",
+        "batch_id": "nar-source-horizon-001-run-001",
+        "system_id": "japan-nar-system",
+        "runner_used": "github_actions",
+        "requested_scope": {
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-10-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "not_observed",
+          "timezone": "Asia/Tokyo"
+        },
+        "coverage_claim": "none",
+        "records_discovered": 0,
+        "records_updated": 0,
+        "rank_counts": {
+          "C": 0,
+          "B": 0,
+          "B+": 0,
+          "A": 0,
+          "A+": 0
+        },
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [],
+        "source_errors": [
+          {
+            "code": "source_unavailable",
+            "scope_ref": "requested_scope",
+            "message": "Official source route unavailable during this bounded run."
+          }
+        ],
+        "artifact_refs": {
+          "candidate_ref": null,
+          "coverage_observation_ref": "data/generated/timetable/nar-source-horizon-001-coverage.json",
+          "collection_report_ref": "data/generated/timetable/nar-source-horizon-001-report.json"
+        }
+      },
+      "coverage_observation": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "nar-source-horizon-001-run-001",
+        "system_id": "japan-nar-system",
+        "source_id": "nar-monthly-schedule-grid",
+        "checked_at": "2026-07-08T04:00:00Z",
+        "requested_scope": {
+          "kind": "source_visible_horizon",
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-10-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "observed_scope": {
+          "kind": "not_observed",
+          "timezone": "Asia/Tokyo"
+        },
+        "collection_mode": "source_visible_horizon",
+        "records_discovered": 0,
+        "records_updated": 0,
+        "unresolved_dates": [],
+        "unresolved_meeting_ids": [],
+        "source_errors": [
+          {
+            "code": "source_unavailable",
+            "scope_ref": "requested_scope",
+            "message": "Official source route unavailable during this bounded run."
+          }
+        ],
+        "coverage_claim": "none",
+        "completion_audit_ref": null
+      }
+    }
+  ]
+}
