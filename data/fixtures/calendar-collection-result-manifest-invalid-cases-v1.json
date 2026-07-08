@@ -1,0 +1,166 @@
+{
+  "schema_version": "calendar-collection-result-manifest-invalid-cases-v1",
+  "base_case_id": "nar-july-remainder-source-window-complete",
+  "cases": [
+    {
+      "case_id": "rank-count-sum-mismatch",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "rank_counts",
+            "C"
+          ],
+          "value": 70
+        }
+      ]
+    },
+    {
+      "case_id": "records-updated-exceeds-discovered",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "records_updated"
+          ],
+          "value": 83
+        }
+      ]
+    },
+    {
+      "case_id": "unsupported-runner",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "runner_used"
+          ],
+          "value": "remote_server"
+        }
+      ]
+    },
+    {
+      "case_id": "duplicate-unresolved-date",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "unresolved_dates"
+          ],
+          "value": [
+            "2026-07-15",
+            "2026-07-15"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "unsafe-artifact-parent-ref",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "artifact_refs",
+            "candidate_ref"
+          ],
+          "value": "data/../private.json"
+        }
+      ]
+    },
+    {
+      "case_id": "invalid-source-error-shape",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "source_errors"
+          ],
+          "value": [
+            {
+              "code": "source_unavailable",
+              "scope_ref": "requested_scope"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "audited-complete-with-unresolved",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "coverage_claim"
+          ],
+          "value": "audited_complete"
+        },
+        {
+          "path": [
+            "unresolved_dates"
+          ],
+          "value": [
+            "2026-07-31"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "unexpected-top-level-field",
+      "validation_mode": "structural",
+      "patches": [
+        {
+          "path": [
+            "publication_state"
+          ],
+          "value": "published"
+        }
+      ]
+    },
+    {
+      "case_id": "job-campaign-mismatch",
+      "validation_mode": "job_cross_check",
+      "patches": [
+        {
+          "path": [
+            "campaign_id"
+          ],
+          "value": "wrong-campaign"
+        }
+      ]
+    },
+    {
+      "case_id": "exact-runner-mismatch",
+      "validation_mode": "job_cross_check",
+      "patches": [
+        {
+          "path": [
+            "job_id"
+          ],
+          "value": "nar-b-to-b-plus-retry-001"
+        },
+        {
+          "path": [
+            "campaign_id"
+          ],
+          "value": "nar-rank-upgrade-retry-001"
+        },
+        {
+          "path": [
+            "runner_used"
+          ],
+          "value": "local"
+        },
+        {
+          "path": [
+            "requested_scope"
+          ],
+          "value": {
+            "meeting_ids": [
+              "nar-oi-racecourse-2026-08-22"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
