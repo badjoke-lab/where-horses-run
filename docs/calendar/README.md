@@ -15,6 +15,7 @@ Use these files together:
 - [`acquisition-control-plane-contract.md`](acquisition-control-plane-contract.md) — shared Collection Plan, Job, runner routing, five-rank classification, Review Queue, and Rank-aware Retry Queue contract.
 - [`acquisition-control-plane-implementation-plan.md`](acquisition-control-plane-implementation-plan.md) — staged implementation schedule from current NAR completion through shared runners, Banei handoff, multi-system execution, review PR preparation, and scheduling.
 - [`collection-result-manifest.md`](collection-result-manifest.md) — one-result-per-Job identity, runner, scope, coverage, five-rank accounting, unresolved state, source-error, and artifact-reference contract.
+- [`review-queue.md`](review-queue.md) — validated-batch operator inventory, five-rank visibility, Manifest projection, and review/promotion state contract.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, NAR completion, control-plane foundation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
@@ -71,6 +72,9 @@ data/fixtures/calendar-five-rank-classifier-fixtures-v1.json
 data/static/calendar-collection-result-manifest.schema.json
 data/fixtures/calendar-collection-result-manifests-v1.json
 data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json
+data/static/calendar-review-queue.schema.json
+data/fixtures/calendar-review-queue-v1.json
+data/fixtures/calendar-review-queue-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -111,11 +115,14 @@ scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
 scripts/check-calendar-collection-result-manifest.mjs
+scripts/timetable/review-queue-validation.mjs
+scripts/check-calendar-review-queue.mjs
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
+.github/workflows/calendar-review-queue.yml
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-nar-incremental-core.mjs
@@ -150,7 +157,6 @@ scripts/check-local-racing-pilot-foundation.mjs
 The exact paths will be fixed by implementation PRs, but the required artifact classes are:
 
 ```text
-Review Queue schema
 Rank-aware Retry Queue schema
 runner compatibility validators
 control-plane release gate
@@ -167,8 +173,7 @@ NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch con
 The immediate sequence is:
 
 ```text
-Review Queue
--> Rank-aware Retry Queue
+Rank-aware Retry Queue
 -> shared Actions/local job semantics
 -> Banei on the shared foundation
 ```
