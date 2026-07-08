@@ -75,11 +75,15 @@ data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
 data/static/calendar-runner-compatibility-contract-v1.json
 data/fixtures/calendar-runner-compatibility-fixtures-v1.json
 data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
+data/fixtures/calendar-local-multi-job-fixtures-v1.json
 scripts/timetable/actions-multi-job-core.mjs
 scripts/timetable/plan-actions-multi-job.mjs
 scripts/timetable/run-calendar-actions-job.mjs
 scripts/timetable/run-hkjc-bounded-generator-job.mjs
 scripts/timetable/summarize-actions-multi-job.mjs
+scripts/timetable/local-multi-job-core.mjs
+scripts/timetable/run-jra-local-review-job.mjs
+scripts/timetable/run-calendar-local-plan.mjs
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
@@ -105,7 +109,9 @@ scripts/check-calendar-review-queue.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
 scripts/check-calendar-runner-compatibility.mjs
 scripts/check-calendar-actions-multi-job.mjs
+scripts/check-calendar-local-multi-job.mjs
 .github/workflows/calendar-actions-multi-job.yml
+.github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
@@ -148,7 +154,7 @@ Source Status
 
 A source may support C, B, B+, A, or A+. A meeting may enter the pipeline directly at the highest reviewed rank supported by its evidence. No artificial C-only intermediate publication is required.
 
-The Acquisition Registry routes system/source/adapter profiles to runners without changing candidate or promotion semantics. The implemented runner compatibility foundation resolves Job runner policy, Registry route, executor identity, Coverage Observation, and Collection Result Manifest semantics across NAR Actions/local and JRA local paths.
+The Acquisition Registry routes system/source/adapter profiles to runners without changing candidate or promotion semantics. The implemented runner compatibility foundation resolves Job runner policy, Registry route, executor identity, Coverage Observation, and Collection Result Manifest semantics across NAR Actions/local and JRA local paths. Formal Actions and local multi-job runners are implemented for the required first Runner Gate set.
 
 ## Candidate windows
 

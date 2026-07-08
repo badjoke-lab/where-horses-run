@@ -163,7 +163,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, and Actions multi-job execution are implemented. Local multi-job execution and JRA shared local Job integration are current shared work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, and local multi-job execution with JRA shared local Job integration are implemented. Review Cohort Planner is current shared work.
 
 ### Country research and publication
 
@@ -199,7 +199,7 @@ Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 
 ### JRA A+
 
-Status: complete source pilot; steady-state runner integration pending.
+Status: complete source pilot; shared local runner integration complete.
 
 The JRA reference implementation remains valid, but it does not create a rule requiring future fixed-month batch completeness.
 
@@ -209,7 +209,7 @@ Current acquisition direction:
 primary runner: local
 ```
 
-JRA must later consume shared Collection Job/Plan semantics so local execution does not require the operator to reconstruct source-specific commands manually.
+JRA now consumes shared Collection Plan/Job semantics through the local multi-job runner, which isolates legacy collector writes in a temporary worktree and emits review-boundary batch artifacts.
 
 ### NAR A+
 
@@ -297,7 +297,8 @@ The foundation sequence is:
 8. Rank-aware Retry Queue foundation — complete;
 9. runner-neutral compatibility foundation across Job/Registry/Coverage/Manifest semantics — complete;
 10. Actions multi-job execution — complete;
-11. local multi-job execution and JRA shared local Job integration — current runner-gate work.
+11. local multi-job execution and JRA shared local Job integration — complete;
+12. Review Cohort Planner — current.
 
 Minimum gate before Banei resumes:
 
@@ -312,6 +313,8 @@ runner-neutral result semantics
 ```
 
 Minimum Banei handoff gate status: satisfied.
+
+Required first Runner Gate status: complete.
 
 Full Actions matrix execution, scheduler, and automatic PR generation are not prerequisites for starting Banei.
 

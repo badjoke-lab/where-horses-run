@@ -19,6 +19,7 @@ Use these files together:
 - [`rank-aware-retry-queue.md`](rank-aware-retry-queue.md) — rank-gap, missing-field, retry reason/scope, Registry routing, backoff, and NAR 71-target projection contract.
 - [`runner-compatibility.md`](runner-compatibility.md) — Job runner-policy resolution, Registry route, executor mapping, NAR Actions/local result neutrality, JRA local normalization, and Banei handoff semantics.
 - [`actions-multi-job-runner.md`](actions-multi-job-runner.md) — hosted Job filtering, executor-mode support, isolated matrix execution, per-Job artifacts/status, and campaign summary contract.
+- [`local-multi-job-runner.md`](local-multi-job-runner.md) — local Job filtering, worktree-isolated JRA review-only execution, independent batches and statuses, Review Queue snapshot, and campaign summary contract.
 - [`implementation-roadmap.md`](implementation-roadmap.md) — reconciliation, pipeline activation, NAR completion, control-plane foundation, pilots, release, expansion, and operations.
 - [`current-baseline-audit.md`](current-baseline-audit.md) — reconciled repository capabilities and gaps.
 - [`baseline-reconciliation-map.md`](baseline-reconciliation-map.md) — reviewed retain/repair/migrate/replace/archive decisions and execution order.
@@ -84,6 +85,7 @@ data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
 data/static/calendar-runner-compatibility-contract-v1.json
 data/fixtures/calendar-runner-compatibility-fixtures-v1.json
 data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
+data/fixtures/calendar-local-multi-job-fixtures-v1.json
 data/static/timetable-candidate-v1.schema.json
 data/static/timetable-source-aliases-v1.json
 data/candidates/japan-jra-candidates.json
@@ -136,7 +138,12 @@ scripts/timetable/run-calendar-actions-job.mjs
 scripts/timetable/run-hkjc-bounded-generator-job.mjs
 scripts/timetable/summarize-actions-multi-job.mjs
 scripts/check-calendar-actions-multi-job.mjs
+scripts/timetable/local-multi-job-core.mjs
+scripts/timetable/run-jra-local-review-job.mjs
+scripts/timetable/run-calendar-local-plan.mjs
+scripts/check-calendar-local-multi-job.mjs
 .github/workflows/calendar-actions-multi-job.yml
+.github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
@@ -193,8 +200,8 @@ NAR schedule coverage through 2026-07-31 is published. The July 8–31 batch con
 The immediate sequence is:
 
 ```text
-Actions multi-job execution (current)
-+ Banei source-specific implementation may begin on the satisfied minimum handoff gate
+Review Cohort Planner (current)
++ Banei source-specific implementation may proceed on the satisfied minimum handoff gate
 ```
 
 ## Operating rule

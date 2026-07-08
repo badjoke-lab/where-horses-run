@@ -454,7 +454,7 @@ Do not require all systems in a campaign to succeed before valid review-ready ba
 
 ## Stage ACP-11 — local multi-job runner
 
-Status: current.
+Status: complete. The shared local runner consumes Collection Plans, filters local Jobs, preserves independent batches and status artifacts, runs JRA collection inside an isolated temporary worktree, validates Coverage Observation and Result Manifest artifacts, builds Review Queue snapshots, and preserves bounded Job failure isolation.
 
 Goal: allow the operator to execute all pending local jobs with one plan command.
 
@@ -478,6 +478,8 @@ The implementation must:
 JRA is the first required local-runner compatibility test.
 
 ## Stage ACP-12 — review cohort planner
+
+Status: current.
 
 Goal: group review-ready batches into risk-bounded review PR proposals.
 

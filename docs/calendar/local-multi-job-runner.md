@@ -24,7 +24,7 @@ Collection Plan
 -> build campaign summary
 ```
 
-One bounded Job failure does not stop the next independent local Job.
+One bounded Job failure does not stop the next independent local Job. The invariant is: one bounded Job failure does not stop the next independent local Job.
 
 The runner does not turn one Plan into one promotion transaction or one all-or-nothing batch.
 
