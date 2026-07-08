@@ -27,16 +27,8 @@ updateFile('docs/calendar/acquisition-control-plane-implementation-plan.md', [
 ]);
 
 updateFile('docs/calendar/implementation-roadmap.md', [
-  [
-    '### Review cohort planner — current',
-    '### Review cohort planner — complete',
-    'review cohort complete',
-  ],
-  [
-    '### Automatic review PR preparation\n',
-    '### Automatic review PR preparation — current\n',
-    'automatic review PR current',
-  ],
+  ['### Review cohort planner — current', '### Review cohort planner — complete', 'review cohort complete'],
+  ['### Automatic review PR preparation\n', '### Automatic review PR preparation — current\n', 'automatic review PR current'],
 ]);
 
 updateFile('docs/project-roadmap.md', [
@@ -45,11 +37,7 @@ updateFile('docs/project-roadmap.md', [
     'The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, local multi-job execution with JRA shared local Job integration, and Review Cohort Planner are implemented. Automatic review PR preparation is current shared work.',
     'programme summary',
   ],
-  [
-    '12. Review Cohort Planner — current.',
-    '12. Review Cohort Planner — complete;\n13. automatic review PR preparation — current.',
-    'foundation sequence',
-  ],
+  ['12. Review Cohort Planner — current.', '12. Review Cohort Planner — complete;\n13. automatic review PR preparation — current.', 'foundation sequence'],
 ]);
 
 updateFile('docs/calendar/machine-readable-contracts.md', [
@@ -120,8 +108,8 @@ updateFile('START-HERE.md', [
     'review cohort scripts',
   ],
   [
-    '.github/workflows/calendar-local-multi-job.yml\nscripts/check-calendar-contracts.mjs',
-    '.github/workflows/calendar-local-multi-job.yml\n.github/workflows/calendar-review-cohort-planner.yml\nscripts/check-calendar-contracts.mjs',
+    '.github/workflows/calendar-local-multi-job.yml\n.github/workflows/calendar-five-rank-classifier.yml',
+    '.github/workflows/calendar-local-multi-job.yml\n.github/workflows/calendar-review-cohort-planner.yml\n.github/workflows/calendar-five-rank-classifier.yml',
     'review cohort workflow',
   ],
 ]);
