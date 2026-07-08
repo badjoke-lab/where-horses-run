@@ -1,0 +1,165 @@
+{
+  "schema_version": "calendar-collection-job-fixtures-v1",
+  "jobs": [
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-august-window-001",
+      "campaign_id": "august-2026-regular-refresh",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "registry_primary",
+        "runner": null
+      },
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-08-01",
+        "end_date_exclusive": "2026-09-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "regular_refresh",
+      "requested_at": "2026-07-08T04:00:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "jra-august-local-window-001",
+      "campaign_id": "august-2026-regular-refresh",
+      "system_id": "japan-jra-system",
+      "runner_policy": {
+        "mode": "registry_primary",
+        "runner": null
+      },
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-08-10",
+        "end_date_exclusive": "2026-09-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "regular_refresh",
+      "requested_at": "2026-07-08T04:00:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-selected-retry-001",
+      "campaign_id": "nar-august-retry-001",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "registry_primary_or_fallback",
+        "runner": null
+      },
+      "collection_mode": "selected_meetings",
+      "requested_scope": {
+        "meeting_ids": [
+          "nar-monbetsu-racecourse-2026-08-21",
+          "nar-oi-racecourse-2026-08-22"
+        ]
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "coverage_gap",
+      "requested_at": "2026-07-08T04:05:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-b-to-b-plus-retry-001",
+      "campaign_id": "nar-rank-upgrade-retry-001",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "exact",
+        "runner": "github_actions"
+      },
+      "collection_mode": "selected_meetings",
+      "requested_scope": {
+        "meeting_ids": [
+          "nar-oi-racecourse-2026-08-22"
+        ]
+      },
+      "rank_strategy": "target_rank",
+      "target_rank": "B+",
+      "reason": "rank_upgrade_retry",
+      "requested_at": "2026-07-08T04:10:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-a-to-a-plus-retry-001",
+      "campaign_id": "nar-rank-upgrade-retry-001",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "exact",
+        "runner": "local"
+      },
+      "collection_mode": "selected_meetings",
+      "requested_scope": {
+        "meeting_ids": [
+          "nar-kawasaki-racecourse-2026-08-24"
+        ]
+      },
+      "rank_strategy": "target_rank",
+      "target_rank": "A+",
+      "reason": "rank_upgrade_retry",
+      "requested_at": "2026-07-08T04:15:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-source-horizon-001",
+      "campaign_id": "nar-source-revalidation-001",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "registry_primary",
+        "runner": null
+      },
+      "collection_mode": "source_visible_horizon",
+      "requested_scope": {
+        "start_date": "2026-08-01",
+        "end_date_exclusive": "2026-10-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "source_revalidation",
+      "requested_at": "2026-07-08T04:20:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "jra-single-date-recovery-001",
+      "campaign_id": "jra-manual-recovery-001",
+      "system_id": "japan-jra-system",
+      "runner_policy": {
+        "mode": "exact",
+        "runner": "reviewed_import"
+      },
+      "collection_mode": "single_date",
+      "requested_scope": {
+        "date": "2026-08-23",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "manual_recovery",
+      "requested_at": "2026-07-08T04:25:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-july-completion-support-001",
+      "campaign_id": "japan-july-completion-audit-support",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "registry_primary_or_fallback",
+        "runner": null
+      },
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-07-01",
+        "end_date_exclusive": "2026-08-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "completion_audit_support",
+      "requested_at": "2026-07-08T04:30:00Z"
+    }
+  ]
+}
