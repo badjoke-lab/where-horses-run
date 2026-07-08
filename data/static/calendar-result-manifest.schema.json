@@ -1,0 +1,61 @@
+{
+  "schema_version": "calendar-result-manifest-schema-v1",
+  "purpose": "Defines one concise machine-readable Collection Job result summary without replacing source-specific candidates, collection reports, Coverage Observation, retry artifacts, review, promotion, or publication state.",
+  "required_fields": [
+    "schema_version",
+    "campaign_id",
+    "job_id",
+    "batch_id",
+    "system_id",
+    "runner_used",
+    "requested_scope",
+    "observed_scope",
+    "coverage_claim",
+    "records_discovered",
+    "records_updated",
+    "rank_counts",
+    "unresolved_dates",
+    "unresolved_meeting_ids",
+    "source_errors",
+    "artifact_refs",
+    "generated_at"
+  ],
+  "runner_enum": [
+    "github_actions",
+    "local",
+    "reviewed_import"
+  ],
+  "rank_count_fields": [
+    "C",
+    "B",
+    "B+",
+    "A",
+    "A+"
+  ],
+  "coverage_claim_enum": [
+    "none",
+    "partial",
+    "source_window_complete",
+    "audited_complete"
+  ],
+  "closure_rules": [
+    "campaign_id and job_id must exactly match the Collection Job",
+    "system_id must exactly match the Collection Job and Coverage Observation",
+    "runner_used must be permitted by Collection Job runner_policy and Acquisition Registry routing",
+    "requested_scope must equal the Collection Job scope normalized to Coverage Observation scope shape",
+    "observed_scope coverage_claim records_discovered records_updated unresolved_dates unresolved_meeting_ids and source_errors must exactly mirror Coverage Observation",
+    "rank_counts must contain exactly C B B+ A A+ non-negative integer fields",
+    "the sum of rank_counts must not exceed records_discovered",
+    "artifact_refs must be a non-empty unique array of repository data paths",
+    "artifact_refs must include the Coverage Observation artifact used to build the manifest",
+    "generated_at must be a valid date-time not earlier than the Coverage Observation checked_at",
+    "the manifest is a summary and must not contain review approval promotion publication or deployment state"
+  ],
+  "explicit_exclusions": [
+    "no source bodies or raw HTML",
+    "no participant horse jockey trainer betting odds result payout prediction or tip data",
+    "no credentials cookies tokens restricted-access details or bypass instructions",
+    "no review approval promotion publication or deployment fields",
+    "no silent replacement of source-specific candidate report coverage or retry artifacts"
+  ]
+}
