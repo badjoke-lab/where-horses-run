@@ -1,0 +1,129 @@
+{
+  "schema_version": "calendar-collection-plan-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "system-runner-mismatch",
+      "plan": {
+        "schema_version": "calendar-collection-plan-v1",
+        "plan_id": "invalid-runner-plan-001",
+        "campaign_id": "invalid-plan-fixtures",
+        "created_at": "2026-07-08T07:00:00Z",
+        "jobs": [
+          {
+            "schema_version": "calendar-collection-job-v1",
+            "job_id": "invalid-jra-actions-job-001",
+            "campaign_id": "invalid-plan-fixtures",
+            "system_id": "japan-jra-system",
+            "runner_policy": { "mode": "exact", "runner": "github_actions" },
+            "collection_mode": "single_date",
+            "requested_scope": { "date": "2026-08-23", "timezone": "Asia/Tokyo" },
+            "rank_strategy": "best_available",
+            "target_rank": null,
+            "reason": "regular_refresh",
+            "requested_at": "2026-07-08T07:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "mixed-date-window-and-selected-meeting-scope",
+      "plan": {
+        "schema_version": "calendar-collection-plan-v1",
+        "plan_id": "invalid-mixed-scope-plan-001",
+        "campaign_id": "invalid-plan-fixtures",
+        "created_at": "2026-07-08T07:00:00Z",
+        "jobs": [
+          {
+            "schema_version": "calendar-collection-job-v1",
+            "job_id": "invalid-mixed-scope-job-001",
+            "campaign_id": "invalid-plan-fixtures",
+            "system_id": "japan-nar-system",
+            "runner_policy": { "mode": "registry_primary", "runner": null },
+            "collection_mode": "date_window",
+            "requested_scope": {
+              "start_date": "2026-08-01",
+              "end_date_exclusive": "2026-09-01",
+              "timezone": "Asia/Tokyo",
+              "meeting_ids": ["nar-oi-racecourse-2026-08-22"]
+            },
+            "rank_strategy": "best_available",
+            "target_rank": null,
+            "reason": "regular_refresh",
+            "requested_at": "2026-07-08T07:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "duplicate-job-id",
+      "plan": {
+        "schema_version": "calendar-collection-plan-v1",
+        "plan_id": "invalid-duplicate-job-plan-001",
+        "campaign_id": "invalid-plan-fixtures",
+        "created_at": "2026-07-08T07:00:00Z",
+        "jobs": [
+          {
+            "schema_version": "calendar-collection-job-v1",
+            "job_id": "duplicate-job-001",
+            "campaign_id": "invalid-plan-fixtures",
+            "system_id": "japan-nar-system",
+            "runner_policy": { "mode": "registry_primary", "runner": null },
+            "collection_mode": "single_date",
+            "requested_scope": { "date": "2026-08-20", "timezone": "Asia/Tokyo" },
+            "rank_strategy": "best_available",
+            "target_rank": null,
+            "reason": "regular_refresh",
+            "requested_at": "2026-07-08T07:00:00Z"
+          },
+          {
+            "schema_version": "calendar-collection-job-v1",
+            "job_id": "duplicate-job-001",
+            "campaign_id": "invalid-plan-fixtures",
+            "system_id": "japan-nar-system",
+            "runner_policy": { "mode": "registry_primary", "runner": null },
+            "collection_mode": "single_date",
+            "requested_scope": { "date": "2026-08-21", "timezone": "Asia/Tokyo" },
+            "rank_strategy": "best_available",
+            "target_rank": null,
+            "reason": "regular_refresh",
+            "requested_at": "2026-07-08T07:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "campaign-id-mismatch",
+      "plan": {
+        "schema_version": "calendar-collection-plan-v1",
+        "plan_id": "invalid-campaign-plan-001",
+        "campaign_id": "plan-campaign",
+        "created_at": "2026-07-08T07:00:00Z",
+        "jobs": [
+          {
+            "schema_version": "calendar-collection-job-v1",
+            "job_id": "wrong-campaign-job-001",
+            "campaign_id": "different-campaign",
+            "system_id": "japan-nar-system",
+            "runner_policy": { "mode": "registry_primary", "runner": null },
+            "collection_mode": "single_date",
+            "requested_scope": { "date": "2026-08-20", "timezone": "Asia/Tokyo" },
+            "rank_strategy": "best_available",
+            "target_rank": null,
+            "reason": "regular_refresh",
+            "requested_at": "2026-07-08T07:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "empty-jobs",
+      "plan": {
+        "schema_version": "calendar-collection-plan-v1",
+        "plan_id": "invalid-empty-plan-001",
+        "campaign_id": "invalid-plan-fixtures",
+        "created_at": "2026-07-08T07:00:00Z",
+        "jobs": []
+      }
+    }
+  ]
+}
