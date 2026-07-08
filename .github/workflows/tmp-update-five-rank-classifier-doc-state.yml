@@ -1,0 +1,48 @@
+name: Temporary five-rank classifier documentation state update
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/tmp-update-five-rank-classifier-doc-state.mjs'
+      - '.github/workflows/tmp-update-five-rank-classifier-doc-state.yml'
+  push:
+    branches:
+      - work/calendar-five-rank-classifier
+
+permissions:
+  contents: write
+
+jobs:
+  update-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-five-rank-classifier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply exact documentation transitions
+        run: node scripts/tmp-update-five-rank-classifier-doc-state.mjs
+      - name: Validate classifier and governance
+        run: |
+          node scripts/check-calendar-five-rank-classifier.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Commit docs state and remove temporary updater
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            START-HERE.md \
+            docs/project-roadmap.md \
+            docs/calendar/implementation-roadmap.md \
+            docs/calendar/acquisition-control-plane-implementation-plan.md \
+            docs/calendar/machine-readable-contracts.md \
+            docs/calendar/README.md \
+            scripts/check-project-governance-docs.mjs
+          git rm \
+            .github/workflows/tmp-update-five-rank-classifier-doc-state.yml \
+            scripts/tmp-update-five-rank-classifier-doc-state.mjs
+          git diff --cached --check
+          git commit -m "[CF-Pages-Skip] Advance five-rank classifier state"
+          git push origin HEAD:work/calendar-five-rank-classifier
