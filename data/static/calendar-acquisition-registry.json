@@ -82,6 +82,34 @@
         "detail_adapter_id"
       ],
       "operator_notes": "Provisional profile only. The existing reviewed-import/dry-run path establishes a meeting-level schedule adapter with first-race time evidence, while Banei-specific detail source, detail adapter, fallback runner, and broader scope/retry support remain pending source-specific implementation."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "profile_status": "provisional",
+      "primary_runner": "github_actions",
+      "fallback_runner": "local",
+      "schedule_source_id": "hkjc-fixture-list",
+      "detail_source_id": null,
+      "schedule_adapter_id": "hong-kong-hkjc-dry-run-adapter",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "Provisional bounded-generator profile. Merge history provides a dry-run HKJC candidate adapter, an approved active-window review bundle, local validation commands, and top-level check integration suitable for GitHub Actions execution. This profile does not claim live fetch, arbitrary source parsing, or implemented detail acquisition."
     }
   ]
 }
