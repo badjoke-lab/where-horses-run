@@ -167,7 +167,7 @@ requirePhrases(controlPlan, 'control plane implementation plan', [
 requirePhrases(machineContracts, 'machine-readable contracts', [
   'data/static/calendar-acquisition-registry.schema.json',
   'data/static/calendar-acquisition-registry.json',
-  'Collection Job schema',
+  'data/static/calendar-collection-job.schema.json',
   'Collection Plan schema',
   'Collection Result Manifest schema',
   'Review Queue schema',
