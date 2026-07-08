@@ -1,0 +1,83 @@
+name: Calendar Acquisition Registry
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-acquisition-registry.schema.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-japan-v2.json'
+      - 'data/static/japan-a-plus-policy.json'
+      - 'data/static/authority-source-inventory*.json'
+      - 'data/candidates/japan-jra-candidates.json'
+      - 'data/candidates/japan-banei-candidates.json'
+      - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/normalize-nar-schedule-aware-month.mjs'
+      - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/acquisition-control-plane-contract.md'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/acquisition-registry.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-acquisition-registry.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-acquisition-registry.schema.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/acquisition-registry.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/project-roadmap.md'
+      - 'START-HERE.md'
+      - '.github/workflows/calendar-acquisition-registry.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/load-calendar-acquisition-registry.mjs
+          node --check scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate Acquisition Registry contract and initial profiles
+        run: node scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate authority/source compatibility
+        run: node scripts/check-authority-source-inventory-schema.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check

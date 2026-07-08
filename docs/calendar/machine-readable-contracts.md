@@ -53,6 +53,9 @@ data/static/authority-source-inventory.schema.json
 data/static/authority-source-inventory.json
 data/static/timetable-candidate-v1.schema.json
 data/static/jra-final-program-intake.schema.json
+data/static/calendar-acquisition-registry.schema.json
+data/static/calendar-acquisition-registry.json
+scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -61,14 +64,15 @@ scripts/check-calendar-contracts.mjs
 scripts/check-authority-source-inventory-schema.mjs
 scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 scripts/check-calendar-pipeline-v1-promotion.mjs
+scripts/check-calendar-acquisition-registry.mjs
 .github/workflows/calendar-contracts.yml
+.github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-Acquisition Registry schema + registry
 Collection Job schema
 Collection Plan schema
 Collection Result Manifest schema
@@ -86,7 +90,7 @@ docs/calendar/acquisition-control-plane-implementation-plan.md
 
 ## Source capability, operation, and readiness
 
-Source Test v2, authority/source inventory, Calendar Readiness, and the planned Acquisition Registry keep these states separate:
+Source Test v2, authority/source inventory, Calendar Readiness, and the implemented Acquisition Registry keep these states separate:
 
 ```text
 Technical Rank
@@ -101,7 +105,7 @@ Source Status
 
 A source may support C, B, B+, A, or A+. A meeting may enter the pipeline directly at the highest reviewed rank supported by its evidence. No artificial C-only intermediate publication is required.
 
-The planned Acquisition Registry will route system/source/adapter profiles to runners without changing candidate or promotion semantics.
+The Acquisition Registry routes system/source/adapter profiles to runners without changing candidate or promotion semantics.
 
 ## Candidate windows
 
@@ -239,9 +243,19 @@ B + later reviewed A -> promote to A
 
 A reviewed downgrade requires the separately controlled corrective path. Freshness and source-health changes remain separate from rank.
 
-## Planned Acquisition Registry
+## Implemented Acquisition Registry
 
-The Acquisition Registry must represent at least:
+Canonical files:
+
+```text
+data/static/calendar-acquisition-registry.schema.json
+data/static/calendar-acquisition-registry.json
+scripts/timetable/load-calendar-acquisition-registry.mjs
+scripts/check-calendar-acquisition-registry.mjs
+.github/workflows/calendar-acquisition-registry.yml
+```
+
+The Acquisition Registry represents at least:
 
 ```text
 system_id
@@ -269,7 +283,7 @@ japan-nar-system
 japan-banei-system
 ```
 
-JRA and NAR must be representable without hard-coding runner choice into the common orchestration layer.
+JRA and NAR are represented without hard-coding runner choice into the common orchestration layer. The initial Banei profile is provisional and preserves explicit pending detail source/adapter state instead of inventing unsupported acquisition capability.
 
 ## Planned Collection Job and Plan contracts
 

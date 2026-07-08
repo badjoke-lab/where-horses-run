@@ -125,6 +125,8 @@ data/static/calendar-readiness-registry.json
 data/static/calendar-readiness-japan-v2.json
 data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
+data/static/calendar-acquisition-registry.schema.json
+data/static/calendar-acquisition-registry.json
 data/static/timetable-candidate-v1.schema.json
 data/static/japan-a-plus-policy.json
 data/static/japan-a-plus-runtime-control.json
@@ -144,6 +146,9 @@ scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
+scripts/timetable/load-calendar-acquisition-registry.mjs
+scripts/check-calendar-acquisition-registry.mjs
+.github/workflows/calendar-acquisition-registry.yml
 scripts/check-calendar-contracts.mjs
 scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
@@ -159,7 +164,6 @@ scripts/check-project-governance-docs.mjs
 Implementation must create canonical schemas/validators for:
 
 ```text
-Acquisition Registry
 Collection Job
 Collection Plan
 Collection Result Manifest
@@ -282,21 +286,20 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. add Acquisition Registry
-2. add Collection Job schema
-3. add Collection Plan schema
-4. add five-rank classifier contract tests
-5. add Collection Result Manifest
-6. add Review Queue
-7. add Rank-aware Retry Queue
-8. connect Actions and local runners to shared job semantics
-9. begin Banei on the shared foundation
-10. add Actions multi-job execution
-11. add local multi-job execution
-12. add review cohort planner
-13. add automatic review PR preparation
-14. add due-job planning and scheduled bounded retries
-15. add Operations v2 operator view
+1. add Collection Job schema
+2. add Collection Plan schema
+3. add five-rank classifier contract tests
+4. add Collection Result Manifest
+5. add Review Queue
+6. add Rank-aware Retry Queue
+7. connect Actions and local runners to shared job semantics
+8. begin Banei on the shared foundation
+9. add Actions multi-job execution
+10. add local multi-job execution
+11. add review cohort planner
+12. add automatic review PR preparation
+13. add due-job planning and scheduled bounded retries
+14. add Operations v2 operator view
 ```
 
 ## Historical compatibility markers

@@ -288,8 +288,8 @@ Rank-aware Retry Queue
 The foundation sequence is:
 
 1. NAR formal Actions manual-dispatch path — complete;
-2. Acquisition Registry schema and Japan profiles — current;
-3. Collection Job schema and fixtures;
+2. Acquisition Registry schema and Japan profiles — complete;
+3. Collection Job schema and fixtures — current;
 4. Collection Plan schema and fixtures;
 5. common C/B/B+/A/A+ classifier contract tests;
 6. Collection Result Manifest;

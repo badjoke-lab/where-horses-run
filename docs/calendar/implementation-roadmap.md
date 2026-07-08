@@ -312,9 +312,9 @@ The foundation is implemented in this order:
 - no approval/promotion/publication;
 - local fallback retained.
 
-### ACP-2 — Acquisition Registry
+### ACP-2 — Acquisition Registry — complete
 
-Implement machine-readable routing/capability records for at least:
+Implemented machine-readable routing/capability records for at least:
 
 ```text
 japan-jra-system
@@ -324,7 +324,7 @@ japan-banei-system
 
 Registry fields include runner profile, source/adapter profile, Technical Rank, Collection Target Rank, Public Ceiling, supported ranks, scope modes, and retry support.
 
-### ACP-3 — Collection Job schema
+### ACP-3 — Collection Job schema — current
 
 One schedulable request with:
 
@@ -543,19 +543,18 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. add Acquisition Registry
-2. add Collection Job schema
-3. add Collection Plan schema
-4. add five-rank classifier contract tests
-5. add Result Manifest
-6. add Review Queue
-7. add Rank-aware Retry Queue
-8. connect Actions and local runners to shared job semantics
-9. begin Banei on the shared foundation
-10. expand multi-system execution
-11. add automatic review PR preparation
-12. add due-job planning and scheduled bounded retries
-13. add Operations v2 operator view
+1. add Collection Job schema
+2. add Collection Plan schema
+3. add five-rank classifier contract tests
+4. add Result Manifest
+5. add Review Queue
+6. add Rank-aware Retry Queue
+7. connect Actions and local runners to shared job semantics
+8. begin Banei on the shared foundation
+9. expand multi-system execution
+10. add automatic review PR preparation
+11. add due-job planning and scheduled bounded retries
+12. add Operations v2 operator view
 ```
 
 ## Per-PR document review
