@@ -1,0 +1,45 @@
+name: Temporary governance Acquisition Registry patch
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/tmp-patch-governance-acquisition-registry.mjs'
+      - '.github/workflows/tmp-patch-governance-acquisition-registry.yml'
+  push:
+    branches:
+      - work/calendar-acquisition-registry
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-patch-governance-acquisition-registry
+  cancel-in-progress: false
+
+jobs:
+  patch-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-acquisition-registry
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch governance validator
+        run: node scripts/tmp-patch-governance-acquisition-registry.mjs
+      - name: Validate governance and Acquisition Registry
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Remove temporary patch files and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/check-project-governance-docs.mjs
+          git rm \
+            .github/workflows/tmp-patch-governance-acquisition-registry.yml \
+            scripts/tmp-patch-governance-acquisition-registry.mjs
+          git diff --cached --check
+          git commit -m "[CF-Pages-Skip] Align governance with Acquisition Registry state"
+          git push origin HEAD:work/calendar-acquisition-registry
