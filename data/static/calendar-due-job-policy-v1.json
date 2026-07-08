@@ -1,0 +1,121 @@
+{
+  "schema_version": "calendar-due-job-policy-v1",
+  "policy_version": "calendar-due-job-policy-2026-07-08",
+  "scheduler": {
+    "cadence_hours": 24,
+    "max_jobs_per_plan": 12,
+    "artifact_retention_days": 14,
+    "artifact_only": true,
+    "execute_jobs": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "automatic_deployment": false
+  },
+  "system_rules": [
+    {
+      "system_id": "japan-jra-system",
+      "enabled": true,
+      "regular_refresh": {
+        "enabled": true,
+        "freshness_threshold_hours": 24,
+        "meeting_proximity_days": 3,
+        "proximity_min_age_hours": 12,
+        "window_days": 7,
+        "horizon_buffer_days": 2
+      },
+      "coverage_gap": {
+        "enabled": true,
+        "max_window_days": 7
+      },
+      "source_revalidation": {
+        "enabled": true,
+        "min_interval_hours": 24,
+        "window_days": 7
+      },
+      "rank_retry": {
+        "enabled": false,
+        "max_selected_meetings_per_job": 0,
+        "max_attempt_count": 0
+      }
+    },
+    {
+      "system_id": "japan-nar-system",
+      "enabled": true,
+      "regular_refresh": {
+        "enabled": true,
+        "freshness_threshold_hours": 24,
+        "meeting_proximity_days": 2,
+        "proximity_min_age_hours": 12,
+        "window_days": 14,
+        "horizon_buffer_days": 3
+      },
+      "coverage_gap": {
+        "enabled": true,
+        "max_window_days": 14
+      },
+      "source_revalidation": {
+        "enabled": true,
+        "min_interval_hours": 12,
+        "window_days": 14
+      },
+      "rank_retry": {
+        "enabled": true,
+        "max_selected_meetings_per_job": 25,
+        "max_attempt_count": 4
+      }
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "enabled": true,
+      "regular_refresh": {
+        "enabled": true,
+        "freshness_threshold_hours": 72,
+        "meeting_proximity_days": 3,
+        "proximity_min_age_hours": 24,
+        "window_days": 7,
+        "horizon_buffer_days": 2
+      },
+      "coverage_gap": {
+        "enabled": true,
+        "max_window_days": 7
+      },
+      "source_revalidation": {
+        "enabled": true,
+        "min_interval_hours": 24,
+        "window_days": 7
+      },
+      "rank_retry": {
+        "enabled": false,
+        "max_selected_meetings_per_job": 0,
+        "max_attempt_count": 0
+      }
+    },
+    {
+      "system_id": "japan-banei-system",
+      "enabled": false,
+      "regular_refresh": {
+        "enabled": false,
+        "freshness_threshold_hours": 168,
+        "meeting_proximity_days": 3,
+        "proximity_min_age_hours": 24,
+        "window_days": 7,
+        "horizon_buffer_days": 2
+      },
+      "coverage_gap": {
+        "enabled": false,
+        "max_window_days": 7
+      },
+      "source_revalidation": {
+        "enabled": false,
+        "min_interval_hours": 24,
+        "window_days": 7
+      },
+      "rank_retry": {
+        "enabled": false,
+        "max_selected_meetings_per_job": 0,
+        "max_attempt_count": 0
+      }
+    }
+  ]
+}
