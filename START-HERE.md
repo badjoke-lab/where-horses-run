@@ -24,6 +24,7 @@ docs/calendar/rank-aware-retry-queue.md
 docs/calendar/runner-compatibility.md
 docs/calendar/actions-multi-job-runner.md
 docs/calendar/local-multi-job-runner.md
+docs/calendar/review-cohort-planner.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -182,6 +183,9 @@ data/static/calendar-runner-compatibility-contract-v1.json
 data/fixtures/calendar-runner-compatibility-fixtures-v1.json
 data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
 data/fixtures/calendar-local-multi-job-fixtures-v1.json
+data/static/calendar-review-cohort-plan.schema.json
+data/fixtures/calendar-review-cohort-planner-fixtures-v1.json
+data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json
 scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
@@ -202,8 +206,11 @@ scripts/timetable/local-multi-job-core.mjs
 scripts/timetable/run-jra-local-review-job.mjs
 scripts/timetable/run-calendar-local-plan.mjs
 scripts/check-calendar-local-multi-job.mjs
+scripts/timetable/review-cohort-planner.mjs
+scripts/check-calendar-review-cohort-planner.mjs
 .github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-local-multi-job.yml
+.github/workflows/calendar-review-cohort-planner.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml

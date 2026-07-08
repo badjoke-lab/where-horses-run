@@ -163,7 +163,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, and local multi-job execution with JRA shared local Job integration are implemented. Review Cohort Planner is current shared work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, local multi-job execution with JRA shared local Job integration, and Review Cohort Planner are implemented. Automatic review PR preparation is current shared work.
 
 ### Country research and publication
 
@@ -298,7 +298,8 @@ The foundation sequence is:
 9. runner-neutral compatibility foundation across Job/Registry/Coverage/Manifest semantics — complete;
 10. Actions multi-job execution — complete;
 11. local multi-job execution and JRA shared local Job integration — complete;
-12. Review Cohort Planner — current.
+12. Review Cohort Planner — complete;
+13. automatic review PR preparation — current.
 
 Minimum gate before Banei resumes:
 
