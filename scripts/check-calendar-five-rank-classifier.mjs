@@ -112,9 +112,10 @@ for (const marker of [
 
 for (const phrase of [
   'Five-rank operational model',
-  'A source or adapter may produce the highest rank justified by the current evidence',
+  'The common contract does not require sequential intermediate writes.',
+  'C -> A+',
   'Rank regression rule',
-  'Normal operation does not silently downgrade reviewed rank',
+  'normal incremental merge behavior is monotonic with respect to reviewed detail',
 ]) if (!incrementalContract.includes(phrase)) fail(`incremental contract missing ${phrase}.`);
 
 for (const phrase of [
