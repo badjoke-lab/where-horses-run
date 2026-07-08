@@ -63,10 +63,14 @@ data/fixtures/calendar-collection-plans-v1.json
 data/fixtures/calendar-collection-plan-invalid-cases-v1.json
 data/static/calendar-five-rank-classifier-contract-v1.json
 data/fixtures/calendar-five-rank-classifier-fixtures-v1.json
+data/static/calendar-collection-result-manifest.schema.json
+data/fixtures/calendar-collection-result-manifests-v1.json
+data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
 scripts/timetable/five-rank-classifier.mjs
+scripts/timetable/collection-result-manifest-validation.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
@@ -79,18 +83,19 @@ scripts/check-calendar-acquisition-registry.mjs
 scripts/check-calendar-collection-job.mjs
 scripts/check-calendar-collection-plan.mjs
 scripts/check-calendar-five-rank-classifier.mjs
+scripts/check-calendar-collection-result-manifest.mjs
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
 .github/workflows/calendar-collection-plan.yml
 .github/workflows/calendar-five-rank-classifier.yml
+.github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-validation-responsibilities.yml
 ```
 
 Planned control-plane canonical artifacts:
 
 ```text
-Collection Result Manifest schema
 Review Queue schema
 Rank-aware Retry Queue schema
 associated validators and release gates
@@ -330,9 +335,11 @@ independent review state
 
 Plan grouping must not imply one review PR or one promotion batch.
 
-## Planned Collection Result Manifest
+## Implemented Collection Result Manifest
 
-Every job should have a compact result summary containing:
+The Collection Result Manifest schema, validation core, fixtures, validator, contract documentation, and dedicated CI are implemented.
+
+Every Collection Job result has a compact result summary containing:
 
 ```text
 campaign_id
@@ -428,7 +435,7 @@ Next:
 3. implement Acquisition Registry schema and initial Japan profiles;
 4. implement Collection Job and Collection Plan schemas;
 5. implement five-rank classifier contract tests;
-6. implement Collection Result Manifest, Review Queue, and Rank-aware Retry Queue schemas;
+6. implement Review Queue and Rank-aware Retry Queue schemas;
 7. connect Actions and local runners to common job semantics;
 8. begin Banei on the shared control-plane foundation;
 9. add multi-system execution, review-PR preparation, and scheduling incrementally.
