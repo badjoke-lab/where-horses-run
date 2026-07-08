@@ -23,6 +23,7 @@ docs/calendar/review-queue.md
 docs/calendar/rank-aware-retry-queue.md
 docs/calendar/runner-compatibility.md
 docs/calendar/actions-multi-job-runner.md
+docs/calendar/local-multi-job-runner.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -117,7 +118,7 @@ formal workflow_dispatch operator: active
 scheduled publication: disabled
 ```
 
-Do not manage future systems by operator memory. The Acquisition Registry is the routing source of truth, and the runner compatibility foundation validates that supported runner paths converge on common Coverage Observation and Result Manifest semantics.
+Do not manage future systems by operator memory. The Acquisition Registry is the routing source of truth, and the runner compatibility foundation validates that supported runner paths converge on common Coverage Observation and Result Manifest semantics. The required first Runner Gate is complete across NAR Actions semantics, NAR local fallback semantics, and the JRA shared local Job path.
 
 ## Shared implemented machine-readable references
 
@@ -180,6 +181,7 @@ data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
 data/static/calendar-runner-compatibility-contract-v1.json
 data/fixtures/calendar-runner-compatibility-fixtures-v1.json
 data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
+data/fixtures/calendar-local-multi-job-fixtures-v1.json
 scripts/timetable/five-rank-classifier.mjs
 scripts/check-calendar-five-rank-classifier.mjs
 scripts/timetable/collection-result-manifest-validation.mjs
@@ -196,7 +198,12 @@ scripts/timetable/run-calendar-actions-job.mjs
 scripts/timetable/run-hkjc-bounded-generator-job.mjs
 scripts/timetable/summarize-actions-multi-job.mjs
 scripts/check-calendar-actions-multi-job.mjs
+scripts/timetable/local-multi-job-core.mjs
+scripts/timetable/run-jra-local-review-job.mjs
+scripts/timetable/run-calendar-local-plan.mjs
+scripts/check-calendar-local-multi-job.mjs
 .github/workflows/calendar-actions-multi-job.yml
+.github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml

@@ -393,11 +393,11 @@ A -> A+
 
 Retry records include current reviewed rank, latest observed rank, collection target rank, missing fields, reason, runner, adapter, backoff metadata, and attempt history.
 
-### ACP-9 — shared runner semantics — current
+### ACP-9 — shared runner semantics — complete
 
 Runner-neutral compatibility foundation: complete.
 Actions multi-job execution: complete.
-Local multi-job execution: current.
+Local multi-job execution: complete.
 
 - Actions jobs consume Collection Jobs;
 - local jobs consume the same Collection Jobs;
@@ -449,7 +449,7 @@ After the minimum foundation and Banei start:
 - preserve independent batch artifacts;
 - emit campaign summary.
 
-### Local multi-job execution — current
+### Local multi-job execution — complete
 
 - consume the same Collection Plan;
 - filter local jobs;
@@ -458,7 +458,7 @@ After the minimum foundation and Banei start:
 - preserve independent batches;
 - continue bounded independent jobs after isolated failure where safe.
 
-### Review cohort planner
+### Review cohort planner — current
 
 Group review-ready batches by risk and compatibility, not merely by collection time.
 
