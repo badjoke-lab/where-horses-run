@@ -1,0 +1,134 @@
+{
+  "schema_version": "calendar-operations-v2-fixtures-v1",
+  "generated_at": "2026-07-08T18:00:00Z",
+  "runtime_statuses": [
+    {
+      "job_id": "due-japan-jra-regular-refresh-001",
+      "campaign_id": "scheduled-planning-2026-07-08",
+      "system_id": "japan-jra-system",
+      "status": "queued",
+      "updated_at": "2026-07-08T17:55:00Z"
+    },
+    {
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "campaign_id": "scheduled-planning-2026-07-08",
+      "system_id": "japan-nar-system",
+      "status": "running",
+      "updated_at": "2026-07-08T17:56:00Z"
+    },
+    {
+      "job_id": "due-japan-nar-rank-retry-001",
+      "campaign_id": "scheduled-planning-2026-07-08",
+      "system_id": "japan-nar-system",
+      "status": "success",
+      "updated_at": "2026-07-08T17:40:00Z"
+    },
+    {
+      "job_id": "due-japan-nar-source-horizon-001",
+      "campaign_id": "scheduled-planning-2026-07-08",
+      "system_id": "japan-nar-system",
+      "status": "partial",
+      "updated_at": "2026-07-08T17:45:00Z"
+    },
+    {
+      "job_id": "recent-hkjc-failure-001",
+      "campaign_id": "recent-operations-history",
+      "system_id": "hong-kong-hkjc-system",
+      "status": "failure",
+      "updated_at": "2026-07-08T12:00:00Z"
+    },
+    {
+      "job_id": "recent-jra-success-001",
+      "campaign_id": "recent-operations-history",
+      "system_id": "japan-jra-system",
+      "status": "success",
+      "updated_at": "2026-07-08T12:30:00Z"
+    },
+    {
+      "job_id": "recent-nar-not-run-001",
+      "campaign_id": "recent-operations-history",
+      "system_id": "japan-nar-system",
+      "status": "not_run",
+      "updated_at": "2026-07-08T13:00:00Z"
+    }
+  ],
+  "source_states": [
+    {
+      "system_id": "japan-jra-system",
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-07-08T12:00:00Z",
+      "freshness_threshold_hours": 24
+    },
+    {
+      "system_id": "japan-nar-system",
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-07-07T00:00:00Z",
+      "freshness_threshold_hours": 24
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "source_health": "degraded",
+      "last_successful_collection_at": "2026-07-01T00:00:00Z",
+      "freshness_threshold_hours": 72
+    },
+    {
+      "system_id": "japan-banei-system",
+      "source_health": "unknown",
+      "last_successful_collection_at": null,
+      "freshness_threshold_hours": 168
+    }
+  ],
+  "publication_snapshot": {
+    "state": "stale",
+    "generated_at": "2026-07-07T00:00:00Z",
+    "meeting_count": 100,
+    "detail_count": 60,
+    "stale_for_current_window": true,
+    "by_system": [
+      { "system_id": "japan-jra-system", "state": "current" },
+      { "system_id": "japan-nar-system", "state": "stale" },
+      { "system_id": "hong-kong-hkjc-system", "state": "unknown" },
+      { "system_id": "japan-banei-system", "state": "unknown" }
+    ]
+  },
+  "expected": {
+    "acquisition_job_counts": {
+      "planned": 1,
+      "queued": 1,
+      "running": 1,
+      "success": 2,
+      "partial": 1,
+      "failure": 1,
+      "not_run": 1
+    },
+    "due_plan_job_count": 5,
+    "recent_result_count": 4,
+    "review_entry_count": 10,
+    "review_state_counts": {
+      "review_ready": 7,
+      "reviewing": 1,
+      "approved": 1,
+      "rejected": 1
+    },
+    "promotion_state_counts": {
+      "not_ready": 9,
+      "promotion_ready": 1,
+      "promoted": 0,
+      "published": 0
+    },
+    "retry_entry_count": 3,
+    "retry_due_count": 2,
+    "retry_deferred_count": 1,
+    "rank_distribution": {
+      "C": 40,
+      "B": 1,
+      "B+": 1,
+      "A": 2,
+      "A+": 50
+    },
+    "human_review_required_count": 6,
+    "public_ceiling_projection_required_count": 0,
+    "publication_state": "stale",
+    "system_count": 4
+  }
+}
