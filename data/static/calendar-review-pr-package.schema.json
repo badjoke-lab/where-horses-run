@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-review-pr-package.schema.json",
+  "title": "Where Horses Run Calendar review PR package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "source_cohort_plan_generated_at", "packages"],
+  "properties": {
+    "schema_version": { "const": "calendar-review-pr-package-v1" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "source_cohort_plan_generated_at": { "type": "string", "format": "date-time" },
+    "packages": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/package" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "repoRef": { "type": "string", "pattern": "^(?:data|docs)/[A-Za-z0-9_./+-]+$" },
+    "rankCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["C", "B", "B+", "A", "A+"],
+      "properties": {
+        "C": { "type": "integer", "minimum": 0 },
+        "B": { "type": "integer", "minimum": 0 },
+        "B+": { "type": "integer", "minimum": 0 },
+        "A": { "type": "integer", "minimum": 0 },
+        "A+": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "diffSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_count", "new_count", "upgrade_count", "unchanged_count", "lower_observation_count", "transitions"],
+      "properties": {
+        "candidate_count": { "type": "integer", "minimum": 0 },
+        "new_count": { "type": "integer", "minimum": 0 },
+        "upgrade_count": { "type": "integer", "minimum": 0 },
+        "unchanged_count": { "type": "integer", "minimum": 0 },
+        "lower_observation_count": { "type": "integer", "minimum": 0 },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from_rank", "to_rank", "count"],
+            "properties": {
+              "from_rank": { "oneOf": [{ "enum": ["C", "B", "B+", "A", "A+"] }, { "type": "null" }] },
+              "to_rank": { "enum": ["C", "B", "B+", "A", "A+"] },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "coverageSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_count", "claim_counts", "unresolved_dates_count", "unresolved_meeting_ids_count", "source_error_count"],
+      "properties": {
+        "batch_count": { "type": "integer", "minimum": 1 },
+        "claim_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["none", "partial", "source_window_complete", "audited_complete"],
+          "properties": {
+            "none": { "type": "integer", "minimum": 0 },
+            "partial": { "type": "integer", "minimum": 0 },
+            "source_window_complete": { "type": "integer", "minimum": 0 },
+            "audited_complete": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "unresolved_dates_count": { "type": "integer", "minimum": 0 },
+        "unresolved_meeting_ids_count": { "type": "integer", "minimum": 0 },
+        "source_error_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "retrySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["matched_retry_count", "due_now_count", "deferred_count", "by_reason"],
+      "properties": {
+        "matched_retry_count": { "type": "integer", "minimum": 0 },
+        "due_now_count": { "type": "integer", "minimum": 0 },
+        "deferred_count": { "type": "integer", "minimum": 0 },
+        "by_reason": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "batchArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_id", "manifest_ref", "candidate_ref", "coverage_observation_ref", "collection_report_ref"],
+      "properties": {
+        "batch_id": { "$ref": "#/$defs/id" },
+        "manifest_ref": { "$ref": "#/$defs/repoRef" },
+        "candidate_ref": { "oneOf": [{ "$ref": "#/$defs/repoRef" }, { "type": "null" }] },
+        "coverage_observation_ref": { "$ref": "#/$defs/repoRef" },
+        "collection_report_ref": { "oneOf": [{ "$ref": "#/$defs/repoRef" }, { "type": "null" }] }
+      }
+    },
+    "proposedPr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch_name", "title", "labels", "body_markdown", "review_state"],
+      "properties": {
+        "branch_name": { "type": "string", "pattern": "^review/[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "labels": { "type": "array", "const": ["human review required"] },
+        "body_markdown": { "type": "string", "minLength": 1 },
+        "review_state": { "const": "pending_human_review" }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pull_request_created", "candidate_approved", "promotion_performed", "canonical_write_performed", "public_write_performed", "publication_performed", "deployment_performed"],
+      "properties": {
+        "pull_request_created": { "const": false },
+        "candidate_approved": { "const": false },
+        "promotion_performed": { "const": false },
+        "canonical_write_performed": { "const": false },
+        "public_write_performed": { "const": false },
+        "publication_performed": { "const": false },
+        "deployment_performed": { "const": false }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package_id", "cohort_id", "system_id", "cohort_kind", "public_display_risk", "promotion_dependency", "rank_counts", "candidate_diff_summary", "coverage_summary", "retry_summary", "batch_artifacts", "checklist", "proposed_pr", "boundaries"],
+      "properties": {
+        "package_id": { "$ref": "#/$defs/id" },
+        "cohort_id": { "$ref": "#/$defs/id" },
+        "system_id": { "$ref": "#/$defs/id" },
+        "cohort_kind": { "enum": ["candidate_review", "coverage_review", "source_failure_review"] },
+        "public_display_risk": { "enum": ["meeting_only", "time_summary", "race_timetable", "programme_summary", "none"] },
+        "promotion_dependency": { "enum": ["promotion_validation_required", "coverage_review_required", "source_recovery_required", "public_ceiling_projection_required"] },
+        "rank_counts": { "$ref": "#/$defs/rankCounts" },
+        "candidate_diff_summary": { "$ref": "#/$defs/diffSummary" },
+        "coverage_summary": { "$ref": "#/$defs/coverageSummary" },
+        "retry_summary": { "$ref": "#/$defs/retrySummary" },
+        "batch_artifacts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/batchArtifact" } },
+        "checklist": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "proposed_pr": { "$ref": "#/$defs/proposedPr" },
+        "boundaries": { "$ref": "#/$defs/boundaries" }
+      }
+    }
+  }
+}
