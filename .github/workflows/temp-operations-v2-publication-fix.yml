@@ -1,0 +1,35 @@
+name: Temporary Operations v2 publication validation fixer
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/fix-operations-v2-publication-validation.mjs'
+      - '.github/workflows/temp-operations-v2-publication-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Fix publication summary validation
+        run: node scripts/fix-operations-v2-publication-validation.mjs
+      - name: Commit validation fix
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/timetable/operations-v2.mjs
+          git commit -m "[CF-Pages-Skip] Validate Operations v2 publication summary"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
