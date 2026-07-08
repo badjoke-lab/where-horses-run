@@ -170,9 +170,9 @@ for (const phrase of [
   'collection time is not a grouping key',
   'system/source compatibility',
   'public display risk',
-  'source failure isolation',
+  'Source failure isolation',
   'human review required',
-  'one campaign may produce several review proposals',
+  'One campaign may produce several review proposals',
 ]) {
   if (!docs.includes(phrase)) fail(`Review Cohort Planner contract missing ${phrase}.`);
 }
