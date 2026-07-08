@@ -22,6 +22,7 @@ docs/calendar/collection-result-manifest.md
 docs/calendar/review-queue.md
 docs/calendar/rank-aware-retry-queue.md
 docs/calendar/runner-compatibility.md
+docs/calendar/actions-multi-job-runner.md
 docs/calendar/implementation-roadmap.md
 docs/calendar/japan-a-plus-reconciliation-plan.md
 docs/calendar/japan-full-month-scope-policy.md
@@ -189,6 +190,13 @@ scripts/timetable/rank-aware-retry-queue-validation.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
 scripts/timetable/runner-compatibility.mjs
 scripts/check-calendar-runner-compatibility.mjs
+scripts/timetable/actions-multi-job-core.mjs
+scripts/timetable/plan-actions-multi-job.mjs
+scripts/timetable/run-calendar-actions-job.mjs
+scripts/timetable/run-hkjc-bounded-generator-job.mjs
+scripts/timetable/summarize-actions-multi-job.mjs
+scripts/check-calendar-actions-multi-job.mjs
+.github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-five-rank-classifier.yml
 .github/workflows/calendar-collection-result-manifest.yml
 .github/workflows/calendar-review-queue.yml

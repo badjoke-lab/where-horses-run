@@ -10,7 +10,8 @@
       "executor_id": "nar-incremental-v2-actions",
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
-      "output_model": "nar-incremental-v2-batch"
+      "output_model": "nar-incremental-v2-batch",
+      "supported_collection_modes": ["date_window", "selected_meetings"]
     },
     {
       "system_id": "japan-nar-system",
@@ -18,7 +19,8 @@
       "executor_id": "nar-incremental-v2-local",
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/run-nar-incremental-v2-local.mjs",
-      "output_model": "nar-incremental-v2-batch"
+      "output_model": "nar-incremental-v2-batch",
+      "supported_collection_modes": ["date_window", "selected_meetings"]
     },
     {
       "system_id": "japan-jra-system",
@@ -26,7 +28,8 @@
       "executor_id": "jra-refresh-local",
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/refresh-jra.mjs",
-      "output_model": "jra-refresh-report-v0"
+      "output_model": "jra-refresh-report-v0",
+      "supported_collection_modes": ["date_window"]
     },
     {
       "system_id": "japan-jra-system",
@@ -34,7 +37,17 @@
       "executor_id": "jra-reviewed-import",
       "invocation_kind": "reviewed_import",
       "entry_point": null,
-      "output_model": "jra-reviewed-import"
+      "output_model": "jra-reviewed-import",
+      "supported_collection_modes": ["single_date"]
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "runner": "github_actions",
+      "executor_id": "hkjc-bounded-generator-actions",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-hkjc-bounded-generator-job.mjs",
+      "output_model": "hkjc-bounded-dry-run-batch",
+      "supported_collection_modes": ["date_window"]
     }
   ],
   "side_effect_boundary": {

@@ -163,7 +163,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, and runner-neutral compatibility foundation are implemented. Actions multi-job execution remains current shared work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, and Actions multi-job execution are implemented. Local multi-job execution and JRA shared local Job integration are current shared work.
 
 ### Country research and publication
 
@@ -296,8 +296,8 @@ The foundation sequence is:
 7. Review Queue foundation — complete;
 8. Rank-aware Retry Queue foundation — complete;
 9. runner-neutral compatibility foundation across Job/Registry/Coverage/Manifest semantics — complete;
-10. Actions multi-job execution — current;
-11. JRA shared local Job execution — subsequent runner-gate work.
+10. Actions multi-job execution — complete;
+11. local multi-job execution and JRA shared local Job integration — current runner-gate work.
 
 Minimum gate before Banei resumes:
 

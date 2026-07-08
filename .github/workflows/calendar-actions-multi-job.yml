@@ -1,0 +1,169 @@
+name: Calendar Actions multi-job runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      plan_id:
+        description: Validated Collection Plan fixture to execute
+        required: true
+        type: choice
+        options:
+          - japan-dual-runner-august-001
+          - nar-hkjc-actions-window-001
+          - nar-refresh-and-selected-retry-001
+          - rank-isolation-plan-001
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/plan-actions-multi-job.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'scripts/check-calendar-actions-multi-job.mjs'
+      - 'docs/calendar/actions-multi-job-runner.md'
+      - '.github/workflows/calendar-actions-multi-job.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/plan-actions-multi-job.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'scripts/check-calendar-actions-multi-job.mjs'
+      - 'docs/calendar/actions-multi-job-runner.md'
+      - '.github/workflows/calendar-actions-multi-job.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-actions-multi-job-${{ github.event.inputs.plan_id || github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - id: checker
+        name: Validate Actions multi-job contracts and isolation
+        continue-on-error: true
+        shell: bash
+        run: node scripts/check-calendar-actions-multi-job.mjs > .actions-multi-job-check.log 2>&1
+      - name: Upload checker diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-actions-multi-job-check-log
+          path: .actions-multi-job-check.log
+          retention-days: 1
+      - name: Fail when checker failed
+        if: steps.checker.outcome == 'failure'
+        run: |
+          cat .actions-multi-job-check.log
+          exit 1
+      - name: Validate runner compatibility dependency
+        run: node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check diff formatting
+        run: git diff --check
+
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - id: plan
+        name: Compile hosted-capable Job matrix
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-id="${{ inputs.plan_id }}" \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+          echo "matrix=$(cat .calendar-actions-matrix.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-actions-plan-${{ inputs.plan_id }}
+          path: .calendar-actions-plan.json
+          retention-days: 14
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Write immutable execution specification
+        env:
+          EXECUTION_JSON: ${{ toJson(matrix.execution) }}
+        run: printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
+      - name: Run independent hosted Job
+        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=.calendar-execution.json
+      - name: Upload independent Job artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-actions-job-${{ matrix.job_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            data/generated/timetable/actions-multi-job-status/${{ matrix.batch_id }}.json
+            data/generated/timetable/nar-incremental-batches/${{ matrix.batch_id }}/
+            data/candidates/nar-incremental-batches/${{ matrix.batch_id }}/
+            data/generated/timetable/actions-multi-job/${{ matrix.batch_id }}/
+
+  summarize:
+    if: always() && github.event_name == 'workflow_dispatch'
+    needs:
+      - prepare
+      - execute
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: calendar-actions-job-*
+          merge-multiple: true
+          path: .actions-job-artifacts
+      - name: Build campaign summary without rewriting independent outcomes
+        run: |
+          node scripts/timetable/summarize-actions-multi-job.mjs \
+            --plan-id="${{ inputs.plan_id }}" \
+            --status-root=.actions-job-artifacts \
+            --output=.calendar-actions-campaign-summary.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-actions-campaign-summary-${{ inputs.plan_id }}
+          path: .calendar-actions-campaign-summary.json
+          retention-days: 14

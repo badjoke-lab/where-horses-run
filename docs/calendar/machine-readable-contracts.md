@@ -75,6 +75,11 @@ data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
 data/static/calendar-runner-compatibility-contract-v1.json
 data/fixtures/calendar-runner-compatibility-fixtures-v1.json
 data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
+scripts/timetable/actions-multi-job-core.mjs
+scripts/timetable/plan-actions-multi-job.mjs
+scripts/timetable/run-calendar-actions-job.mjs
+scripts/timetable/run-hkjc-bounded-generator-job.mjs
+scripts/timetable/summarize-actions-multi-job.mjs
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
@@ -99,6 +104,8 @@ scripts/check-calendar-collection-result-manifest.mjs
 scripts/check-calendar-review-queue.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
 scripts/check-calendar-runner-compatibility.mjs
+scripts/check-calendar-actions-multi-job.mjs
+.github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
