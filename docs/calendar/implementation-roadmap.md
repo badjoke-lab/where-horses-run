@@ -324,7 +324,7 @@ japan-banei-system
 
 Registry fields include runner profile, source/adapter profile, Technical Rank, Collection Target Rank, Public Ceiling, supported ranks, scope modes, and retry support.
 
-### ACP-3 — Collection Job schema — current
+### ACP-3 — Collection Job schema — complete
 
 One schedulable request with:
 
@@ -340,7 +340,7 @@ target rank
 reason
 ```
 
-### ACP-4 — Collection Plan schema
+### ACP-4 — Collection Plan schema — current
 
 One campaign may contain many independent jobs with different:
 

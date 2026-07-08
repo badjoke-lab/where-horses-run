@@ -199,7 +199,7 @@ Validation must reject:
 
 ## Stage ACP-4 — Collection Job schema
 
-Status: current.
+Status: complete. The schema, validation core, valid fixtures, negative fixtures, contract documentation, and dedicated CI are implemented.
 
 Goal: define one schedulable acquisition request format.
 
@@ -255,6 +255,8 @@ Add fixtures covering:
 - invalid mixed date-window and selected-meeting scope.
 
 ## Stage ACP-5 — Collection Plan schema
+
+Status: current.
 
 Goal: allow one campaign to contain multiple systems with independent scopes.
 
