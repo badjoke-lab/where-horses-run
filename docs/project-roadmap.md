@@ -163,7 +163,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, and Rank-aware Retry Queue are implemented. Shared Actions/local runner compatibility is current next work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, and runner-neutral compatibility foundation are implemented. Actions multi-job execution remains current shared work.
 
 ### Country research and publication
 
@@ -295,7 +295,9 @@ The foundation sequence is:
 6. Collection Result Manifest — complete;
 7. Review Queue foundation — complete;
 8. Rank-aware Retry Queue foundation — complete;
-9. Actions and local runner compatibility with common Job/Plan/Manifest/Queue semantics — current.
+9. runner-neutral compatibility foundation across Job/Registry/Coverage/Manifest semantics — complete;
+10. Actions multi-job execution — current;
+11. JRA shared local Job execution — subsequent runner-gate work.
 
 Minimum gate before Banei resumes:
 
@@ -308,6 +310,8 @@ Review Queue foundation
 Rank-aware Retry Queue foundation
 runner-neutral result semantics
 ```
+
+Minimum Banei handoff gate status: satisfied.
 
 Full Actions matrix execution, scheduler, and automatic PR generation are not prerequisites for starting Banei.
 

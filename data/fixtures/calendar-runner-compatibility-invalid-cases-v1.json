@@ -1,0 +1,80 @@
+{
+  "schema_version": "calendar-runner-compatibility-invalid-cases-v1",
+  "cases": [
+    {
+      "case_id": "nar-unregistered-reviewed-import",
+      "validation_mode": "compile",
+      "job_id": "nar-july-remainder-compatibility-001",
+      "batch_id": "nar-invalid-run-001",
+      "requested_runner": "reviewed_import"
+    },
+    {
+      "case_id": "jra-unregistered-github-actions",
+      "validation_mode": "compile",
+      "job_id": "jra-july-local-compatibility-001",
+      "batch_id": "jra-invalid-run-001",
+      "requested_runner": "github_actions"
+    },
+    {
+      "case_id": "invalid-batch-id",
+      "validation_mode": "compile",
+      "job_id": "nar-july-remainder-compatibility-001",
+      "batch_id": "INVALID BATCH",
+      "requested_runner": null
+    },
+    {
+      "case_id": "executor-id-drift",
+      "validation_mode": "execution_cross_check",
+      "base_execution_case_id": "nar-primary-actions",
+      "patches": [
+        {
+          "path": ["executor_id"],
+          "value": "nar-incremental-v2-local"
+        }
+      ]
+    },
+    {
+      "case_id": "result-contract-drift",
+      "validation_mode": "execution_cross_check",
+      "base_execution_case_id": "jra-primary-local",
+      "patches": [
+        {
+          "path": ["result_contract"],
+          "value": "legacy-jra-result-v0"
+        }
+      ]
+    },
+    {
+      "case_id": "source-route-drift",
+      "validation_mode": "execution_cross_check",
+      "base_execution_case_id": "nar-primary-actions",
+      "patches": [
+        {
+          "path": ["source_route", "detail_adapter_id"],
+          "value": "nar-schedule-aware-month-v1"
+        }
+      ]
+    },
+    {
+      "case_id": "publication-side-effect-enabled",
+      "validation_mode": "execution_structural",
+      "base_execution_case_id": "nar-primary-actions",
+      "patches": [
+        {
+          "path": ["side_effect_boundary", "publication"],
+          "value": true
+        }
+      ]
+    },
+    {
+      "case_id": "jra-report-scope-mismatch",
+      "validation_mode": "jra_normalization",
+      "job_id": "jra-july-local-compatibility-001",
+      "batch_id": "jra-july-local-run-001",
+      "report_patch": {
+        "path": ["refresh_window", "to"],
+        "value": "2026-07-30"
+      }
+    }
+  ]
+}

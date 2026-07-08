@@ -434,6 +434,8 @@ The queue must not retry meetings already at their effective collection target u
 
 Status: current. Shared runner compatibility begins with Actions execution consuming common Job/Plan/Manifest/Queue semantics.
 
+Runner-neutral compatibility foundation: complete. NAR Actions-primary/local-fallback and JRA local result adapters now converge on common Coverage Observation and Collection Result Manifest semantics. This satisfies the runner-neutral batch/result semantics part of the Banei handoff gate without completing the full Actions multi-job stage or full Runner Gate.
+
 Goal: execute multiple hosted-capable jobs independently.
 
 Implementation requirements:

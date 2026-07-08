@@ -1,0 +1,98 @@
+{
+  "schema_version": "calendar-runner-compatibility-fixtures-v1",
+  "jobs": [
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "nar-july-remainder-compatibility-001",
+      "campaign_id": "japan-runner-compatibility-001",
+      "system_id": "japan-nar-system",
+      "runner_policy": {
+        "mode": "registry_primary_or_fallback",
+        "runner": null
+      },
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-07-08",
+        "end_date_exclusive": "2026-08-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "regular_refresh",
+      "requested_at": "2026-07-08T12:30:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "jra-july-local-compatibility-001",
+      "campaign_id": "japan-runner-compatibility-001",
+      "system_id": "japan-jra-system",
+      "runner_policy": {
+        "mode": "registry_primary",
+        "runner": null
+      },
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-07-01",
+        "end_date_exclusive": "2026-08-01",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "regular_refresh",
+      "requested_at": "2026-07-08T12:35:00Z"
+    },
+    {
+      "schema_version": "calendar-collection-job-v1",
+      "job_id": "jra-single-date-reviewed-import-compatibility-001",
+      "campaign_id": "japan-runner-compatibility-001",
+      "system_id": "japan-jra-system",
+      "runner_policy": {
+        "mode": "exact",
+        "runner": "reviewed_import"
+      },
+      "collection_mode": "single_date",
+      "requested_scope": {
+        "date": "2026-07-04",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "manual_recovery",
+      "requested_at": "2026-07-08T12:40:00Z"
+    }
+  ],
+  "execution_cases": [
+    {
+      "case_id": "nar-primary-actions",
+      "job_id": "nar-july-remainder-compatibility-001",
+      "batch_id": "nar-july-remainder-actions-run-001",
+      "requested_runner": null,
+      "expected_runner": "github_actions",
+      "expected_executor_id": "nar-incremental-v2-actions"
+    },
+    {
+      "case_id": "nar-local-fallback",
+      "job_id": "nar-july-remainder-compatibility-001",
+      "batch_id": "nar-july-remainder-local-run-001",
+      "requested_runner": "local",
+      "expected_runner": "local",
+      "expected_executor_id": "nar-incremental-v2-local"
+    },
+    {
+      "case_id": "jra-primary-local",
+      "job_id": "jra-july-local-compatibility-001",
+      "batch_id": "jra-july-local-run-001",
+      "requested_runner": null,
+      "expected_runner": "local",
+      "expected_executor_id": "jra-refresh-local"
+    },
+    {
+      "case_id": "jra-exact-reviewed-import",
+      "job_id": "jra-single-date-reviewed-import-compatibility-001",
+      "batch_id": "jra-reviewed-import-run-001",
+      "requested_runner": null,
+      "expected_runner": "reviewed_import",
+      "expected_executor_id": "jra-reviewed-import"
+    }
+  ]
+}

@@ -395,6 +395,9 @@ Retry records include current reviewed rank, latest observed rank, collection ta
 
 ### ACP-9 — shared runner semantics — current
 
+Runner-neutral compatibility foundation: complete.
+Actions multi-job execution: current.
+
 - Actions jobs consume Collection Jobs;
 - local jobs consume the same Collection Jobs;
 - runner selection does not create incompatible result models;
@@ -412,6 +415,8 @@ Banei begins after the minimum control-plane foundation exists:
 5. Review Queue foundation;
 6. Rank-aware Retry Queue foundation;
 7. runner-neutral batch/result semantics.
+
+Minimum Banei handoff gate status: satisfied.
 
 Full Actions matrix execution, full scheduler, and automatic PR generation are not required before Banei starts.
 
