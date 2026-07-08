@@ -1,0 +1,278 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
+import {
+  normalizeJraRefreshReportToCoverageV1,
+  validateRunnerExecutionV1,
+} from './runner-compatibility.mjs';
+import { validateCoverageObservation } from './coverage-observation-validation.mjs';
+import {
+  validateCollectionResultManifestAgainstCoverageV1,
+  validateCollectionResultManifestAgainstJobV1,
+  validateCollectionResultManifestV1,
+} from './collection-result-manifest-validation.mjs';
+
+const root = process.cwd();
+const args = new Map(process.argv.slice(2).map((arg) => {
+  const index = arg.indexOf('=');
+  return index === -1 ? [arg, true] : [arg.slice(0, index), arg.slice(index + 1)];
+}));
+const executionPath = args.get('--execution');
+const jobPath = args.get('--job');
+const checkOnly = args.has('--check-only');
+const sourceRootArg = args.get('--source-root');
+if (!executionPath || !jobPath) throw new Error('--execution and --job are required');
+
+const execution = JSON.parse(fs.readFileSync(path.resolve(root, executionPath), 'utf8'));
+const job = JSON.parse(fs.readFileSync(path.resolve(root, jobPath), 'utf8'));
+const registry = loadCalendarAcquisitionRegistryV1(root);
+const compatibility = JSON.parse(fs.readFileSync(path.join(root, 'data/static/calendar-runner-compatibility-contract-v1.json'), 'utf8'));
+const executionErrors = validateRunnerExecutionV1(execution, job, registry, compatibility);
+if (executionErrors.length) throw new Error(`JRA local execution invalid: ${executionErrors.join('; ')}`);
+if (execution.system_id !== 'japan-jra-system') throw new Error('JRA local executor requires japan-jra-system');
+if (execution.runner_used !== 'local') throw new Error('JRA local executor requires local runner');
+if (execution.executor_id !== 'jra-refresh-local') throw new Error('JRA local executor_id mismatch');
+if (execution.collection_mode !== 'date_window') throw new Error('JRA local review executor currently supports date_window only');
+
+function previousDate(endDateExclusive) {
+  const date = new Date(`${endDateExclusive}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() - 1);
+  return date.toISOString().slice(0, 10);
+}
+
+function run(command, commandArgs, cwd) {
+  const result = spawnSync(command, commandArgs, { cwd, stdio: 'inherit' });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`${command} ${commandArgs.join(' ')} exited with status ${result.status}`);
+}
+
+function readJson(base, relativePath) {
+  return JSON.parse(fs.readFileSync(path.join(base, relativePath), 'utf8'));
+}
+
+function confidenceForRank(rank) {
+  if (rank === 'A+') return 'high';
+  if (rank === 'A' || rank === 'B+') return 'medium';
+  return 'low';
+}
+
+function buildCandidate(snapshot, report) {
+  if (snapshot?.schema_version !== 'jra-race-time-snapshot-v0') throw new Error('JRA snapshot schema mismatch');
+  const meetings = (snapshot.observations ?? [])
+    .flatMap((observation) => observation.meetings ?? [])
+    .sort((left, right) => `${left.date}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.racecourse_id}`));
+  if (meetings.length !== report.meetings_extracted) {
+    throw new Error(`JRA snapshot/report meeting count mismatch ${meetings.length} != ${report.meetings_extracted}`);
+  }
+  return {
+    schema_version: 'timetable-candidate-v1',
+    generated_at: report.generated_at,
+    adapter_id: 'jra-normalized-programme-candidate-v1',
+    country_id: 'japan',
+    authority_id: 'jra',
+    source_id: 'jra-programme',
+    candidate_window: {
+      start_date: job.requested_scope.start_date,
+      end_date_exclusive: job.requested_scope.end_date_exclusive,
+      timezone: job.requested_scope.timezone,
+    },
+    records: meetings.map((meeting) => ({
+      candidate_id: `candidate-${meeting.meeting_id}`,
+      meeting_id: meeting.meeting_id,
+      country_id: 'japan',
+      authority_id: 'jra',
+      racing_system_id: 'japan-jra-system',
+      racecourse_id: meeting.racecourse_id,
+      date: meeting.date,
+      timezone: meeting.timezone,
+      capability_rank: meeting.capability_rank,
+      first_race_time_local: meeting.first_race_time_local,
+      last_race_time_local: meeting.last_race_time_local,
+      timetable_rows: (meeting.timetable_rows ?? []).map((row) => ({
+        label: row.label,
+        post_time_local: row.post_time_local,
+        race_name: row.race_name ?? null,
+        distance_m: row.distance_m ?? null,
+        surface: row.surface ?? null,
+        course_label: row.course_label ?? null,
+      })),
+      source: {
+        source_id: 'jra-programme',
+        official_url: meeting.official_source_url,
+        checked_at: report.generated_at,
+        extraction_method: 'adapter_candidate',
+      },
+      confidence: confidenceForRank(meeting.capability_rank),
+      review_status: 'needs_review',
+      notes: 'Generated by the local multi-job JRA review-only executor. Candidate only; human review and Promotion Validation remain separate.',
+    })),
+    review: {
+      status: 'needs_review',
+      reviewed_at: null,
+      reviewer: null,
+      summary: 'JRA local multi-job candidate batch. Review is required before any canonical or public promotion.',
+      promotion_target: null,
+    },
+  };
+}
+
+function rankCounts(candidate) {
+  const counts = { C: 0, B: 0, 'B+': 0, A: 0, 'A+': 0 };
+  for (const record of candidate.records) {
+    if (!Object.hasOwn(counts, record.capability_rank)) throw new Error(`unsupported JRA candidate rank ${record.capability_rank}`);
+    counts[record.capability_rank] += 1;
+  }
+  return counts;
+}
+
+function validateCandidate(candidate) {
+  const errors = [];
+  if (candidate.schema_version !== 'timetable-candidate-v1') errors.push('candidate schema_version differs');
+  if (candidate.adapter_id !== 'jra-normalized-programme-candidate-v1') errors.push('candidate adapter_id differs');
+  if (candidate.review?.status !== 'needs_review') errors.push('candidate review status must be needs_review');
+  const ids = new Set();
+  for (const [index, record] of candidate.records.entries()) {
+    if (ids.has(record.meeting_id)) errors.push(`duplicate candidate meeting_id ${record.meeting_id}`);
+    ids.add(record.meeting_id);
+    if (record.review_status !== 'needs_review') errors.push(`candidate record[${index}] review_status must be needs_review`);
+    if (record.racing_system_id !== 'japan-jra-system') errors.push(`candidate record[${index}] system differs`);
+    if (!['C', 'B', 'B+', 'A', 'A+'].includes(record.capability_rank)) errors.push(`candidate record[${index}] rank differs`);
+  }
+  return errors;
+}
+
+function collectSourceArtifacts(sourceRoot) {
+  const report = readJson(sourceRoot, 'data/generated/timetable/jra-refresh-report.json');
+  const snapshot = readJson(sourceRoot, 'data/generated/timetable/jra-race-time-snapshot.json');
+  const normalized = readJson(sourceRoot, 'data/generated/timetable/jra-normalized-timetable.json');
+  const details = readJson(sourceRoot, 'data/generated/timetable/jra-normalized-meeting-details.json');
+  return { report, snapshot, normalized, details };
+}
+
+let sourceRoot = sourceRootArg ? path.resolve(root, sourceRootArg) : null;
+let tempParent = null;
+let tempWorktree = null;
+try {
+  if (!sourceRoot) {
+    tempParent = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-jra-local-review-'));
+    tempWorktree = path.join(tempParent, 'repo');
+    run('git', ['worktree', 'add', '--detach', tempWorktree, 'HEAD'], root);
+    const from = job.requested_scope.start_date;
+    const to = previousDate(job.requested_scope.end_date_exclusive);
+    run(process.execPath, ['scripts/timetable/refresh-jra.mjs', `--from=${from}`, `--to=${to}`], tempWorktree);
+    sourceRoot = tempWorktree;
+  }
+
+  const { report, snapshot, normalized, details } = collectSourceArtifacts(sourceRoot);
+  const candidate = buildCandidate(snapshot, report);
+  const candidateErrors = validateCandidate(candidate);
+  if (candidateErrors.length) throw new Error(`JRA candidate invalid: ${candidateErrors.join('; ')}`);
+
+  const coverage = normalizeJraRefreshReportToCoverageV1({
+    job,
+    batch_id: execution.batch_id,
+    report,
+  });
+  const coverageValidation = validateCoverageObservation(coverage);
+  if (!coverageValidation.valid) throw new Error(`JRA Coverage invalid: ${coverageValidation.errors.join('; ')}`);
+
+  const counts = rankCounts(candidate);
+  const rankTotal = Object.values(counts).reduce((sum, value) => sum + value, 0);
+  if (rankTotal !== coverage.records_discovered) {
+    throw new Error(`JRA rank count total ${rankTotal} differs from records_discovered ${coverage.records_discovered}`);
+  }
+
+  const batchRootRelative = `data/generated/timetable/local-multi-job/${execution.batch_id}`;
+  const candidateRef = `${batchRootRelative}/candidate.json`;
+  const coverageRef = `${batchRootRelative}/coverage-observation.json`;
+  const manifestRef = `${batchRootRelative}/result-manifest.json`;
+  const reportRef = `${batchRootRelative}/collection-report.json`;
+  const manifest = {
+    schema_version: 'calendar-collection-result-manifest-v1',
+    campaign_id: job.campaign_id,
+    job_id: job.job_id,
+    batch_id: execution.batch_id,
+    system_id: job.system_id,
+    runner_used: execution.runner_used,
+    requested_scope: structuredClone(job.requested_scope),
+    observed_scope: structuredClone(coverage.observed_scope),
+    coverage_claim: coverage.coverage_claim,
+    records_discovered: coverage.records_discovered,
+    records_updated: coverage.records_updated,
+    rank_counts: counts,
+    unresolved_dates: structuredClone(coverage.unresolved_dates),
+    unresolved_meeting_ids: structuredClone(coverage.unresolved_meeting_ids),
+    source_errors: structuredClone(coverage.source_errors),
+    artifact_refs: {
+      candidate_ref: candidateRef,
+      coverage_observation_ref: coverageRef,
+      collection_report_ref: reportRef,
+    },
+  };
+
+  const structuralErrors = validateCollectionResultManifestV1(manifest);
+  const jobErrors = validateCollectionResultManifestAgainstJobV1(manifest, job, registry);
+  const coverageErrors = validateCollectionResultManifestAgainstCoverageV1(manifest, coverage);
+  const manifestErrors = [...structuralErrors, ...jobErrors, ...coverageErrors];
+  if (manifestErrors.length) throw new Error(`JRA Result Manifest invalid: ${manifestErrors.join('; ')}`);
+
+  const outcome = coverage.source_errors.length > 0 && coverage.records_discovered === 0
+    ? 'source_error'
+    : coverage.coverage_claim === 'partial'
+      ? 'partial'
+      : 'success';
+  const collectionReport = {
+    schema_version: 'calendar-local-jra-collection-report-v1',
+    campaign_id: execution.campaign_id,
+    job_id: execution.job_id,
+    batch_id: execution.batch_id,
+    system_id: execution.system_id,
+    runner_used: execution.runner_used,
+    outcome,
+    records_discovered: coverage.records_discovered,
+    records_updated: coverage.records_updated,
+    rank_counts: counts,
+    source_error_count: coverage.source_errors.length,
+    candidate_ref: candidateRef,
+    coverage_observation_ref: coverageRef,
+    result_manifest_ref: manifestRef,
+    source_refresh_report_ref: `${batchRootRelative}/source-refresh-report.json`,
+    publication_effect: 'none',
+  };
+
+  if (!checkOnly) {
+    const batchRoot = path.join(root, batchRootRelative);
+    fs.mkdirSync(batchRoot, { recursive: true });
+    const outputs = [
+      ['candidate.json', candidate],
+      ['coverage-observation.json', coverage],
+      ['result-manifest.json', manifest],
+      ['collection-report.json', collectionReport],
+      ['source-refresh-report.json', report],
+      ['source-snapshot.json', snapshot],
+      ['normalized-meetings.json', normalized],
+      ['normalized-details.json', details],
+    ];
+    for (const [filename, value] of outputs) {
+      fs.writeFileSync(path.join(batchRoot, filename), `${JSON.stringify(value, null, 2)}\n`);
+    }
+  }
+
+  console.log(JSON.stringify({
+    batch_id: execution.batch_id,
+    outcome,
+    records_discovered: coverage.records_discovered,
+    records_updated: coverage.records_updated,
+    rank_counts: counts,
+    source_error_count: coverage.source_errors.length,
+    manifest_ref: manifestRef,
+    check_only: checkOnly,
+  }));
+} finally {
+  if (tempWorktree) {
+    spawnSync('git', ['worktree', 'remove', '--force', tempWorktree], { cwd: root, stdio: 'ignore' });
+  }
+  if (tempParent) fs.rmSync(tempParent, { recursive: true, force: true });
+}
