@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-review-cohort-plan.schema.json",
+  "title": "Where Horses Run Calendar review cohort plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "source_queue_generated_at", "cohorts", "excluded"],
+  "properties": {
+    "schema_version": { "const": "calendar-review-cohort-plan-v1" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "source_queue_generated_at": { "type": "string", "format": "date-time" },
+    "cohorts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/cohort" }
+    },
+    "excluded": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/excluded" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "repoRef": {
+      "type": "string",
+      "pattern": "^(?:data|docs)/[A-Za-z0-9_./+-]+$"
+    },
+    "rankCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["C", "B", "B+", "A", "A+"],
+      "properties": {
+        "C": { "type": "integer", "minimum": 0 },
+        "B": { "type": "integer", "minimum": 0 },
+        "B+": { "type": "integer", "minimum": 0 },
+        "A": { "type": "integer", "minimum": 0 },
+        "A+": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "batchRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "campaign_id",
+        "job_id",
+        "batch_id",
+        "manifest_ref",
+        "coverage_claim",
+        "rank_counts",
+        "unresolved_dates_count",
+        "unresolved_meeting_ids_count",
+        "source_error_count"
+      ],
+      "properties": {
+        "campaign_id": { "$ref": "#/$defs/id" },
+        "job_id": { "$ref": "#/$defs/id" },
+        "batch_id": { "$ref": "#/$defs/id" },
+        "manifest_ref": { "$ref": "#/$defs/repoRef" },
+        "coverage_claim": { "enum": ["none", "partial", "source_window_complete", "audited_complete"] },
+        "rank_counts": { "$ref": "#/$defs/rankCounts" },
+        "unresolved_dates_count": { "type": "integer", "minimum": 0 },
+        "unresolved_meeting_ids_count": { "type": "integer", "minimum": 0 },
+        "source_error_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "review_label", "human_review_required", "automatic_approval", "automatic_promotion"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "review_label": { "const": "human review required" },
+        "human_review_required": { "const": true },
+        "automatic_approval": { "const": false },
+        "automatic_promotion": { "const": false }
+      }
+    },
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cohort_id",
+        "cohort_kind",
+        "system_id",
+        "authority_id",
+        "schedule_source_id",
+        "detail_source_id",
+        "public_ceiling",
+        "public_display_risk",
+        "promotion_dependency",
+        "batch_count",
+        "rank_counts",
+        "unresolved_dates_count",
+        "unresolved_meeting_ids_count",
+        "source_error_count",
+        "batches",
+        "proposal"
+      ],
+      "properties": {
+        "cohort_id": { "$ref": "#/$defs/id" },
+        "cohort_kind": { "enum": ["candidate_review", "coverage_review", "source_failure_review"] },
+        "system_id": { "$ref": "#/$defs/id" },
+        "authority_id": { "$ref": "#/$defs/id" },
+        "schedule_source_id": { "$ref": "#/$defs/id" },
+        "detail_source_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "public_ceiling": { "enum": ["C", "B", "B+", "A", "A+"] },
+        "public_display_risk": { "enum": ["meeting_only", "time_summary", "race_timetable", "programme_summary", "none"] },
+        "promotion_dependency": {
+          "enum": [
+            "promotion_validation_required",
+            "coverage_review_required",
+            "source_recovery_required",
+            "public_ceiling_projection_required"
+          ]
+        },
+        "batch_count": { "type": "integer", "minimum": 1 },
+        "rank_counts": { "$ref": "#/$defs/rankCounts" },
+        "unresolved_dates_count": { "type": "integer", "minimum": 0 },
+        "unresolved_meeting_ids_count": { "type": "integer", "minimum": 0 },
+        "source_error_count": { "type": "integer", "minimum": 0 },
+        "batches": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/batchRef" }
+        },
+        "proposal": { "$ref": "#/$defs/proposal" }
+      }
+    },
+    "excluded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["campaign_id", "job_id", "batch_id", "system_id", "reason"],
+      "properties": {
+        "campaign_id": { "$ref": "#/$defs/id" },
+        "job_id": { "$ref": "#/$defs/id" },
+        "batch_id": { "$ref": "#/$defs/id" },
+        "system_id": { "$ref": "#/$defs/id" },
+        "reason": { "enum": ["already_reviewing", "already_reviewed_or_promoted", "rejected"] }
+      }
+    }
+  }
+}
