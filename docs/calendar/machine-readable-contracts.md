@@ -79,6 +79,9 @@ data/fixtures/calendar-local-multi-job-fixtures-v1.json
 data/static/calendar-review-cohort-plan.schema.json
 data/fixtures/calendar-review-cohort-planner-fixtures-v1.json
 data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json
+data/static/calendar-review-pr-package.schema.json
+data/fixtures/calendar-review-pr-preparation-fixtures-v1.json
+data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json
 scripts/timetable/actions-multi-job-core.mjs
 scripts/timetable/plan-actions-multi-job.mjs
 scripts/timetable/run-calendar-actions-job.mjs
@@ -88,6 +91,8 @@ scripts/timetable/local-multi-job-core.mjs
 scripts/timetable/run-jra-local-review-job.mjs
 scripts/timetable/run-calendar-local-plan.mjs
 scripts/timetable/review-cohort-planner.mjs
+scripts/timetable/review-pr-preparation.mjs
+scripts/timetable/prepare-calendar-review-pr-packages.mjs
 scripts/timetable/load-calendar-acquisition-registry.mjs
 scripts/timetable/collection-job-validation.mjs
 scripts/timetable/collection-plan-validation.mjs
@@ -115,9 +120,11 @@ scripts/check-calendar-runner-compatibility.mjs
 scripts/check-calendar-actions-multi-job.mjs
 scripts/check-calendar-local-multi-job.mjs
 scripts/check-calendar-review-cohort-planner.mjs
+scripts/check-calendar-review-pr-preparation.mjs
 .github/workflows/calendar-actions-multi-job.yml
 .github/workflows/calendar-local-multi-job.yml
 .github/workflows/calendar-review-cohort-planner.yml
+.github/workflows/calendar-review-pr-preparation.yml
 .github/workflows/calendar-contracts.yml
 .github/workflows/calendar-acquisition-registry.yml
 .github/workflows/calendar-collection-job.yml
