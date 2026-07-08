@@ -1,0 +1,160 @@
+{
+  "schema_version": "calendar-rank-aware-retry-queue-fixtures-v1",
+  "queue": {
+    "schema_version": "calendar-rank-aware-retry-queue-v1",
+    "generated_at": "2026-07-08T12:00:00Z",
+    "entries": [
+      {
+        "meeting_id": "nar-kanazawa-racecourse-2026-07-12",
+        "system_id": "japan-nar-system",
+        "current_reviewed_rank": "C",
+        "latest_observed_rank": "C",
+        "collection_target_rank": "best_available",
+        "missing_fields": [
+          "timetable_rows",
+          "race_name",
+          "distance_m",
+          "surface",
+          "course_label"
+        ],
+        "retry_reason": "scheduled_pending_details",
+        "retry_scope": {
+          "mode": "date_window",
+          "start_date": "2026-07-08",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "primary_runner": "github_actions",
+        "fallback_runner": "local",
+        "adapter_id": "nar-monthly-detail-candidate-v1",
+        "next_eligible_retry_at": null,
+        "attempt_count": 0,
+        "last_attempt_at": null
+      },
+      {
+        "meeting_id": "nar-monbetsu-racecourse-2026-07-14",
+        "system_id": "japan-nar-system",
+        "current_reviewed_rank": "C",
+        "latest_observed_rank": "C",
+        "collection_target_rank": "best_available",
+        "missing_fields": [
+          "timetable_rows",
+          "race_name",
+          "distance_m",
+          "surface",
+          "course_label"
+        ],
+        "retry_reason": "detail_retry_required",
+        "retry_scope": {
+          "mode": "selected_meetings",
+          "meeting_ids": [
+            "nar-monbetsu-racecourse-2026-07-14"
+          ]
+        },
+        "primary_runner": "github_actions",
+        "fallback_runner": "local",
+        "adapter_id": "nar-monthly-detail-candidate-v1",
+        "next_eligible_retry_at": "2026-07-09T00:00:00Z",
+        "attempt_count": 1,
+        "last_attempt_at": "2026-07-08T12:00:00Z"
+      },
+      {
+        "meeting_id": "jra-kyoto-racecourse-2026-05-30",
+        "system_id": "japan-jra-system",
+        "current_reviewed_rank": "B",
+        "latest_observed_rank": "B",
+        "collection_target_rank": "best_available",
+        "missing_fields": [],
+        "retry_reason": "source_revalidation",
+        "retry_scope": {
+          "mode": "single_date",
+          "date": "2026-05-30",
+          "timezone": "Asia/Tokyo"
+        },
+        "primary_runner": "local",
+        "fallback_runner": "reviewed_import",
+        "adapter_id": "jra-normalized-programme-candidate-v1",
+        "next_eligible_retry_at": null,
+        "attempt_count": 0,
+        "last_attempt_at": null
+      },
+      {
+        "meeting_id": "nar-kanazawa-racecourse-2026-07-05",
+        "system_id": "japan-nar-system",
+        "current_reviewed_rank": "A+",
+        "latest_observed_rank": "A+",
+        "collection_target_rank": "best_available",
+        "missing_fields": [],
+        "retry_reason": "completion_audit_support",
+        "retry_scope": {
+          "mode": "date_window",
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
+        },
+        "primary_runner": "github_actions",
+        "fallback_runner": "local",
+        "adapter_id": "nar-schedule-aware-month-v1",
+        "next_eligible_retry_at": null,
+        "attempt_count": 0,
+        "last_attempt_at": null
+      }
+    ]
+  },
+  "transition_cases": [
+    {
+      "case_id": "c-to-best-available",
+      "current_reviewed_rank": "C",
+      "latest_observed_rank": "C",
+      "collection_target_rank": "best_available",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    },
+    {
+      "case_id": "b-to-b-plus",
+      "current_reviewed_rank": "B",
+      "latest_observed_rank": "B",
+      "collection_target_rank": "B+",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    },
+    {
+      "case_id": "b-plus-to-a",
+      "current_reviewed_rank": "B+",
+      "latest_observed_rank": "B+",
+      "collection_target_rank": "A",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    },
+    {
+      "case_id": "a-to-a-plus",
+      "current_reviewed_rank": "A",
+      "latest_observed_rank": "A",
+      "collection_target_rank": "A+",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    },
+    {
+      "case_id": "direct-c-to-a-plus",
+      "current_reviewed_rank": "C",
+      "latest_observed_rank": "C",
+      "collection_target_rank": "A+",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    },
+    {
+      "case_id": "lower-latest-observation-does-not-downgrade-current",
+      "current_reviewed_rank": "A",
+      "latest_observed_rank": "B+",
+      "collection_target_rank": "A+",
+      "retry_reason": "rank_upgrade_retry",
+      "technical_capability_rank": "A+",
+      "expected_valid": true
+    }
+  ]
+}
