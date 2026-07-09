@@ -3,6 +3,7 @@ name: Temporary Banei bilingual public-display diagnostics
 on:
   pull_request:
     paths:
+      - 'scripts/update-banei-bilingual-qa-policy-id.mjs'
       - '.github/workflows/temp-banei-bilingual-public-display-diagnostics.yml'
 
 permissions:
@@ -20,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Fix Banei QA policy ID
+        run: node scripts/update-banei-bilingual-qa-policy-id.mjs
       - name: Capture pure projection diagnostics
         run: |
           mkdir -p .diagnostics
@@ -28,10 +31,12 @@ jobs:
           status=$?
           echo "EXIT_STATUS=${status}" >> .diagnostics/banei-bilingual-public-display.log
           exit 0
-      - name: Commit diagnostics
+      - name: Commit checker and diagnostics
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .diagnostics/banei-bilingual-public-display.log
-          git commit -m "[CF-Pages-Skip] Capture Banei bilingual public-display diagnostics"
+          git add \
+            scripts/check-calendar-banei-bilingual-public-display-qa.mjs \
+            .diagnostics/banei-bilingual-public-display.log
+          git commit -m "[CF-Pages-Skip] Fix Banei bilingual QA policy ID"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
