@@ -1,0 +1,141 @@
+name: Calendar Banei detail adapter
+
+on:
+  workflow_dispatch:
+    inputs:
+      meeting_date:
+        description: 'Known Banei meeting date for bounded live source smoke test (YYYY-MM-DD)'
+        required: true
+        default: '2026-07-04'
+  pull_request:
+    paths:
+      - 'scripts/timetable/banei-detail-core.mjs'
+      - 'scripts/timetable/collect-banei-detail-window.mjs'
+      - 'scripts/check-calendar-banei-detail-adapter.mjs'
+      - 'docs/calendar/banei-detail-adapter.md'
+      - 'data/fixtures/calendar-banei-control-plane-bridge-v1.json'
+      - '.github/workflows/calendar-banei-detail-adapter.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/banei-detail-core.mjs'
+      - 'scripts/timetable/collect-banei-detail-window.mjs'
+      - 'scripts/check-calendar-banei-detail-adapter.mjs'
+      - 'docs/calendar/banei-detail-adapter.md'
+      - 'data/fixtures/calendar-banei-control-plane-bridge-v1.json'
+      - '.github/workflows/calendar-banei-detail-adapter.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-detail-core.mjs
+          node --check scripts/timetable/collect-banei-detail-window.mjs
+          node --check scripts/check-calendar-banei-detail-adapter.mjs
+
+      - name: Validate Banei-specific RaceList and DebaTable parser semantics
+        run: node scripts/check-calendar-banei-detail-adapter.mjs
+
+      - name: Validate shared Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
+
+  live-smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Validate adapter before live source request
+        run: node scripts/check-calendar-banei-detail-adapter.mjs
+
+      - name: Compute bounded one-day scope
+        id: scope
+        env:
+          MEETING_DATE: ${{ inputs.meeting_date || '2026-07-04' }}
+        run: |
+          node - <<'NODE' >> "$GITHUB_OUTPUT"
+          const date = process.env.MEETING_DATE;
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('meeting_date must be YYYY-MM-DD');
+          const next = new Date(`${date}T00:00:00Z`);
+          if (Number.isNaN(next.getTime())) throw new Error('meeting_date invalid');
+          next.setUTCDate(next.getUTCDate() + 1);
+          console.log(`meeting_date=${date}`);
+          console.log(`end_date_exclusive=${next.toISOString().slice(0, 10)}`);
+          console.log(`batch_id=banei-live-smoke-${date}`);
+          NODE
+
+      - name: Collect one bounded Banei detail meeting
+        env:
+          MEETING_DATE: ${{ steps.scope.outputs.meeting_date }}
+          END_DATE_EXCLUSIVE: ${{ steps.scope.outputs.end_date_exclusive }}
+          BATCH_ID: ${{ steps.scope.outputs.batch_id }}
+        run: |
+          rm -rf .banei-detail-live-smoke
+          node scripts/timetable/collect-banei-detail-window.mjs \
+            --input=data/fixtures/calendar-banei-control-plane-bridge-v1.json \
+            --start-date="$MEETING_DATE" \
+            --end-date-exclusive="$END_DATE_EXCLUSIVE" \
+            --batch-id="$BATCH_ID" \
+            --output-root=.banei-detail-live-smoke \
+            --delay-ms=140
+
+      - name: Validate live smoke artifacts
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const candidate = JSON.parse(fs.readFileSync('.banei-detail-live-smoke/candidate.json', 'utf8'));
+          const coverage = JSON.parse(fs.readFileSync('.banei-detail-live-smoke/coverage-observation.json', 'utf8'));
+          const report = JSON.parse(fs.readFileSync('.banei-detail-live-smoke/collection-report.json', 'utf8'));
+          if (candidate.records.length !== 1) throw new Error(`expected one A+ candidate, got ${candidate.records.length}`);
+          const record = candidate.records[0];
+          if (record.capability_rank !== 'A+') throw new Error(`expected A+, got ${record.capability_rank}`);
+          if (record.timetable_rows.length < 1) throw new Error('live A+ candidate has no timetable rows');
+          if (!record.timetable_rows.every((row) => row.surface === 'Dirt' && row.course_label === 'Banei Straight Course')) {
+            throw new Error('live Banei row metadata differs');
+          }
+          if (coverage.coverage_claim !== 'source_window_complete' || coverage.unresolved_meeting_ids.length !== 0) {
+            throw new Error(`live coverage incomplete: ${coverage.coverage_claim}`);
+          }
+          if (report.publication_effect !== 'none' || report.promotion_eligible_candidates !== 0) {
+            throw new Error('live smoke side-effect boundary differs');
+          }
+          console.log(`BANEI_LIVE_SMOKE: pass rows=${record.timetable_rows.length}`);
+          NODE
+
+      - name: Upload bounded live smoke evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: banei-detail-live-smoke-${{ steps.scope.outputs.meeting_date }}
+          path: .banei-detail-live-smoke
+          retention-days: 7
