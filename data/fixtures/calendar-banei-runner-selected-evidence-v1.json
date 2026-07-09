@@ -1,0 +1,77 @@
+{
+  "schema_version": "calendar-banei-runner-selected-evidence-v1",
+  "generated_at": "2026-07-09T03:52:55.150Z",
+  "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "system_id": "japan-banei-system",
+  "execution_environment": "github_actions",
+  "schedule_evidence": {
+    "source_id": "banei-official-schedule",
+    "source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+    "target_month": "2026-07",
+    "month_start": "2026-07-01",
+    "month_end": "2026-07-31",
+    "meetings_scheduled": 12,
+    "meeting_dates": [
+      "2026-07-04",
+      "2026-07-05",
+      "2026-07-06",
+      "2026-07-11",
+      "2026-07-12",
+      "2026-07-13",
+      "2026-07-18",
+      "2026-07-19",
+      "2026-07-20",
+      "2026-07-25",
+      "2026-07-26",
+      "2026-07-27"
+    ],
+    "time_summary_available": 6,
+    "pending_detail_meetings": 6,
+    "schedule_scope_complete": true,
+    "partial_cutoff_completion_allowed": false,
+    "review_status": "needs_review",
+    "publication_effect": "none"
+  },
+  "selected_detail_evidence": {
+    "source_id": "nar-banei-race-list-deba-table",
+    "adapter_id": "banei-nar-race-list-detail-v1",
+    "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+    "meeting_date": "2026-07-04",
+    "observed_rank": "A+",
+    "race_row_count": 12,
+    "first_race_time_local": "14:30",
+    "last_race_time_local": "20:30",
+    "scope_mode": "selected_meetings",
+    "coverage_claim": "source_window_complete",
+    "records_discovered": 1,
+    "records_updated": 1,
+    "unresolved_meeting_count": 0,
+    "source_error_count": 0,
+    "blocked_meetings": 0,
+    "publication_effect": "none"
+  },
+  "runner_convergence": {
+    "same_execution_environment": true,
+    "schedule_live_success": true,
+    "selected_detail_live_success": true,
+    "date_window_detail_live_success_already_recorded": true,
+    "evidence_supports_github_actions_primary_candidate": true,
+    "fallback_policy_requires_separate_decision": true
+  },
+  "artifact_digests_sha256": {
+    "schedule_candidate": "bcb922c17b80c5bf6eba6c3e7846ab29a62f98fa36b5b4a40b961cbcec2e2a86",
+    "schedule_report": "53cef11a0b2246ec7857fb1aa8e276f65927ddc9f33b72804bdd430778b812ec",
+    "selected_candidate": "061e4157b2a69a6b3b6a2cb8f1f06b0158e658822e0e2b716dd36eea685ecca3",
+    "selected_coverage_observation": "7739c54e8308657d69cdd1ee52e7f83e8079cd63e1053255f045965627d4e942",
+    "selected_collection_report": "00faed4ab677d98ab8874593573c94f628667e407de0c9d0890a71226d218c6d"
+  },
+  "boundaries": {
+    "automatic_approval": false,
+    "promotion_performed": false,
+    "canonical_write_performed": false,
+    "public_write_performed": false,
+    "publication_performed": false,
+    "deployment_performed": false,
+    "raw_source_storage": false
+  }
+}
