@@ -1,0 +1,73 @@
+name: Calendar Operations v2 retry state
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/operations-v2.mjs'
+      - 'data/static/calendar-operations-v2.schema.json'
+      - 'data/fixtures/calendar-operations-v2-fixtures-v1.json'
+      - 'scripts/check-calendar-operations-v2.mjs'
+      - 'docs/calendar/operations-v2.md'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/fixtures/calendar-due-job-planner-fixtures-v1.json'
+      - '.github/workflows/calendar-operations-v2-retry-state.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/operations-v2.mjs'
+      - 'data/static/calendar-operations-v2.schema.json'
+      - 'data/fixtures/calendar-operations-v2-fixtures-v1.json'
+      - 'scripts/check-calendar-operations-v2.mjs'
+      - 'docs/calendar/operations-v2.md'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/fixtures/calendar-due-job-planner-fixtures-v1.json'
+      - '.github/workflows/calendar-operations-v2-retry-state.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/operations-v2.mjs
+          node --check scripts/check-calendar-operations-v2.mjs
+      - name: Validate Operations v2 retry operational state
+        run: node scripts/check-calendar-operations-v2.mjs
+      - name: Validate Banei retry activation and proof dependencies
+        run: |
+          node scripts/check-calendar-banei-retry-activation.mjs
+          node scripts/check-calendar-banei-retry-execution-proof.mjs
+      - name: Validate Retry Queue and Due-job Planner dependencies
+        run: |
+          node scripts/check-calendar-rank-aware-retry-queue.mjs
+          node scripts/check-calendar-due-job-planner.mjs
+      - name: Validate Registry and runner dependencies
+        run: |
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate contracts, governance, and runtime boundary
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check read-only side-effect boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const schema = JSON.parse(fs.readFileSync('data/static/calendar-operations-v2.schema.json', 'utf8'));
+          for (const [key, definition] of Object.entries(schema.$defs.boundaries.properties)) {
+            if (definition.const !== false) throw new Error(`Operations v2 boundary ${key} is not false`);
+          }
+          console.log('OPERATIONS_V2_SIDE_EFFECT_BOUNDARY: read-only');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check

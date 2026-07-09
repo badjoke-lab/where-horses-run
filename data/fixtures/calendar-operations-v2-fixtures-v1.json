@@ -85,10 +85,22 @@
     "detail_count": 60,
     "stale_for_current_window": true,
     "by_system": [
-      { "system_id": "japan-jra-system", "state": "current" },
-      { "system_id": "japan-nar-system", "state": "stale" },
-      { "system_id": "hong-kong-hkjc-system", "state": "unknown" },
-      { "system_id": "japan-banei-system", "state": "unknown" }
+      {
+        "system_id": "japan-jra-system",
+        "state": "current"
+      },
+      {
+        "system_id": "japan-nar-system",
+        "state": "stale"
+      },
+      {
+        "system_id": "hong-kong-hkjc-system",
+        "state": "unknown"
+      },
+      {
+        "system_id": "japan-banei-system",
+        "state": "unknown"
+      }
     ]
   },
   "expected": {
@@ -129,6 +141,47 @@
     "human_review_required_count": 6,
     "public_ceiling_projection_required_count": 0,
     "publication_state": "stale",
-    "system_count": 4
+    "system_count": 4,
+    "retry_attempted_count": 3,
+    "retry_attempt_limit_reached_count": 0,
+    "retry_next_deferred_eligible_at": "2026-07-10T00:00:00Z",
+    "system_retry_state": {
+      "japan-jra-system": {
+        "entry_count": 0,
+        "due_count": 0,
+        "deferred_count": 0,
+        "attempted_count": 0,
+        "attempt_limit_reached_count": 0,
+        "next_eligible_at": null,
+        "attempt_limit": 0
+      },
+      "japan-nar-system": {
+        "entry_count": 3,
+        "due_count": 2,
+        "deferred_count": 1,
+        "attempted_count": 2,
+        "attempt_limit_reached_count": 0,
+        "next_eligible_at": "2026-07-10T00:00:00Z",
+        "attempt_limit": 4
+      },
+      "hong-kong-hkjc-system": {
+        "entry_count": 0,
+        "due_count": 0,
+        "deferred_count": 0,
+        "attempted_count": 0,
+        "attempt_limit_reached_count": 0,
+        "next_eligible_at": null,
+        "attempt_limit": 0
+      },
+      "japan-banei-system": {
+        "entry_count": 2,
+        "due_count": 2,
+        "deferred_count": 0,
+        "attempted_count": 1,
+        "attempt_limit_reached_count": 0,
+        "next_eligible_at": null,
+        "attempt_limit": 3
+      }
+    }
   }
 }

@@ -127,6 +127,24 @@ published
 
 The view does not change Queue state.
 
+## Retry operational state
+
+Operations v2 exposes retry Queue state without executing retry Jobs. The operator view distinguishes due versus deferred entries and surfaces attempt count state, next eligible retry time, configured attempt limit, and retry backoff attention. These fields are read-only summaries derived from Retry Queue and Due-job policy inputs.
+
+Per-system rows expose:
+
+```text
+retry_entry_count
+retry_due_count
+retry_deferred_count
+retry_attempted_count
+retry_attempt_limit_reached_count
+retry_next_eligible_at
+retry_attempt_limit
+```
+
+A system with deferred retry work receives retry_backoff operator attention. A system with due work receives retry_due. The view does not mutate Queue state, increment attempt count, change next eligible time, or execute a Job.
+
 ## Retry Queue summary
 
 The view aggregates:
