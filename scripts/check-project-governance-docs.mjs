@@ -99,7 +99,8 @@ requirePhrases(roadmap, 'project roadmap', [
   'Review Queue foundation',
   'Rank-aware Retry Queue foundation',
   'C/B/B+/A/A+',
-  'Banei A+ — active operational integration',
+  '## Banei A+',
+  'Status: active operational integration.',
   'proposal-only post-run Retry Queue reconciliation'
 ]);
 
