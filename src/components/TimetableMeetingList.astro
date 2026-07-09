@@ -58,11 +58,37 @@ const text = lang === 'ja'
       sourceRequired: 'Use the official source for final confirmation.',
     };
 
+const jaRacecourseLabelById: Record<string, string> = {
+  'tokyo-racecourse': '東京競馬場',
+  'obihiro-racecourse': '帯広競馬場',
+  'sha-tin-racecourse': '沙田競馬場',
+  'happy-valley-racecourse': 'ハッピーバレー競馬場',
+  'meydan-racecourse': 'メイダン競馬場',
+};
+const jaAuthorityLabelById: Record<string, string> = {
+  jra: 'JRA',
+  hkjc: 'HKJC',
+  'nar-local-government-racing': '地方競馬',
+  'banei-tokachi': 'ばんえい十勝',
+  'emirates-racing-authority': 'エミレーツ競馬協会',
+};
+const jaCountryLabelById: Record<string, string> = {
+  japan: '日本',
+  'hong-kong': '香港',
+  'united-arab-emirates': 'アラブ首長国連邦',
+};
+
 const displayTime = (value: string | null) => value ?? text.notListed;
 const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';
 const shouldShowLast = (record: TimetableMeetingRow) =>
   record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+';
 const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detailPath}` : detailPath;
+const displayRacecourse = (record: TimetableMeetingRow) =>
+  lang === 'ja' ? jaRacecourseLabelById[record.racecourse_id] ?? record.racecourse_name : record.racecourse_name;
+const displayAuthority = (record: TimetableMeetingRow) =>
+  lang === 'ja' ? jaAuthorityLabelById[record.authority_id] ?? record.authority_label : record.authority_label;
+const displayCountry = (record: TimetableMeetingRow) =>
+  lang === 'ja' ? jaCountryLabelById[record.country_id] ?? record.country_label : record.country_label;
 ---
 
 {groups.length > 0 ? (
@@ -74,18 +100,18 @@ const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detail
           {group.records.map((record) => (
             <li class="meeting-card">
               <div class="meeting-card__main">
-                <span class="meeting-card__course">{record.racecourse_name}</span>
+                <span class="meeting-card__course">{displayRacecourse(record)}</span>
                 <span class="meeting-card__rank">{text.rank}: {record.capability_rank}</span>
               </div>
 
               <dl class="meeting-card__meta">
                 <div>
                   <dt>{text.authority}</dt>
-                  <dd>{record.authority_label}</dd>
+                  <dd>{displayAuthority(record)}</dd>
                 </div>
                 <div>
                   <dt>{text.country}</dt>
-                  <dd>{record.country_label}</dd>
+                  <dd>{displayCountry(record)}</dd>
                 </div>
                 {shouldShowFirst(record) && (
                   <div>
