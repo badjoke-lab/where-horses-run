@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-banei-retry-queue-apply-approval.schema.json",
+  "title": "Where Horses Run Banei Retry Queue Apply Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision",
+    "reviewed_by",
+    "reviewed_at",
+    "source_queue_sha256",
+    "proposal_sha256",
+    "proposed_queue_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "calendar-banei-retry-queue-apply-approval-v1"
+    },
+    "decision": {
+      "const": "approved"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "minLength": 2
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_queue_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "proposal_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "proposed_queue_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
