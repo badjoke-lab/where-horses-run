@@ -1,0 +1,74 @@
+name: Temporary Banei runner and selected evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/temp-banei-runner-selected-evidence.yml'
+      - 'scripts/timetable/summarize-banei-runner-selected-evidence.mjs'
+      - 'scripts/check-calendar-banei-runner-selected-evidence.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  evidence:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Validate Banei collectors before live source requests
+        run: |
+          node scripts/check-calendar-banei-full-month-candidate-set.mjs --allow-empty
+          node scripts/check-calendar-banei-detail-adapter.mjs
+
+      - name: Collect Banei July full-month schedule on GitHub Actions
+        run: node scripts/timetable/collect-banei-full-month-calendar.mjs
+
+      - name: Collect one selected Banei detail meeting on same runner
+        run: |
+          rm -rf .banei-selected-live-evidence
+          node scripts/timetable/collect-banei-detail-window.mjs \
+            --input=data/candidates/banei-monthly-2026-07-full-month-candidates.json \
+            --meeting-id=banei-obihiro-racecourse-2026-07-04 \
+            --batch-id=banei-selected-live-evidence-2026-07-04 \
+            --output-root=.banei-selected-live-evidence \
+            --delay-ms=140
+
+      - name: Build public-safe runner convergence evidence
+        run: |
+          node scripts/timetable/summarize-banei-runner-selected-evidence.mjs \
+            --schedule-candidate=data/candidates/banei-monthly-2026-07-full-month-candidates.json \
+            --schedule-report=data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json \
+            --selected-root=.banei-selected-live-evidence \
+            --output=data/fixtures/calendar-banei-runner-selected-evidence-v1.json
+          node scripts/check-calendar-banei-runner-selected-evidence.mjs
+
+      - name: Remove live temporary outputs and restore tracked generated paths
+        run: |
+          rm -rf .banei-selected-live-evidence
+          git restore --worktree --staged \
+            data/candidates/banei-monthly-2026-07-full-month-candidates.json \
+            data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json 2>/dev/null || true
+          git clean -f \
+            data/candidates/banei-monthly-2026-07-full-month-candidates.json \
+            data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json 2>/dev/null || true
+
+      - name: Commit evidence summary only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fixtures/calendar-banei-runner-selected-evidence-v1.json
+          if git diff --cached --quiet; then
+            echo "Evidence summary already current."
+            exit 0
+          fi
+          git commit -m "[CF-Pages-Skip] Record Banei runner convergence and selected evidence"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
