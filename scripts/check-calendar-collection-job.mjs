@@ -93,7 +93,7 @@ for (const requiredCase of [
   'jra-cross-month-window-unsupported',
   'best-available-with-target-rank',
   'rank-upgrade-without-target-strategy',
-  'banei-selected-meetings-unsupported',
+  'banei-source-visible-horizon-unsupported',
   'completion-audit-with-selected-meetings',
 ]) {
   if (!invalidCaseIds.has(requiredCase)) fail(`required invalid case missing: ${requiredCase}`);

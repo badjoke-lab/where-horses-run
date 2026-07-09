@@ -61,6 +61,14 @@ if (!exact(mixedModes, ['date_window', 'selected_meetings'])) fail('NAR refresh/
 const selected = narMixed?.jobs.find((entry) => entry.execution.collection_mode === 'selected_meetings');
 if (selected?.execution.target_rank !== 'A+' || selected?.execution.reason !== 'rank_upgrade_retry') fail('selected retry rank target/reason were not preserved.');
 
+const baneiActions = compiled.get('banei-actions-window-selected-001');
+if (!baneiActions || baneiActions.jobs.length !== 2 || baneiActions.excluded.length !== 0) fail('Banei Actions Plan must compile two hosted Jobs.');
+const baneiModes = (baneiActions?.jobs ?? []).map((entry) => entry.execution.collection_mode).sort();
+if (!exact(baneiModes, ['date_window', 'selected_meetings'])) fail('Banei Actions Plan must preserve date-window and selected-meeting modes.');
+if (!(baneiActions?.jobs ?? []).every((entry) => entry.execution.executor_id === 'banei-schedule-detail-actions')) fail('Banei hosted executor mapping differs.');
+if (new Set((baneiActions?.jobs ?? []).map((entry) => entry.batch_id)).size !== 2) fail('Banei hosted Jobs must have independent batch IDs.');
+if (!(baneiActions?.jobs ?? []).every((entry) => entry.execution.runner_used === 'github_actions')) fail('Banei hosted Jobs must resolve to GitHub Actions primary runner.');
+
 const rankIsolation = compiled.get('rank-isolation-plan-001');
 if (!rankIsolation || rankIsolation.jobs.length !== 0) fail('rank-isolation Plan should have no currently executable Actions Jobs.');
 if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'nar-low-rank-target-job-001' && entry.reason === 'unsupported_collection_mode')) fail('NAR single-date Job must be excluded by executor mode support.');
@@ -156,6 +164,7 @@ if (errors.length) {
 console.log('CALENDAR_ACTIONS_MULTI_JOB: pass');
 console.log(`PLANS_COMPILED: ${compiled.size}`);
 console.log(`NAR_HKJC_HOSTED_JOBS: ${eastAsia.jobs.length}`);
+console.log(`BANEI_HOSTED_JOBS: ${baneiActions.jobs.length}`);
 console.log('INDEPENDENT_WINDOWS: pass');
 console.log('INDEPENDENT_OUTCOMES: pass');
 console.log('MISSING_STATUS_TO_NOT_RUN: pass');
