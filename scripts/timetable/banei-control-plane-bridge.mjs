@@ -230,7 +230,7 @@ export function buildBaneiControlPlaneBridgeV1(input, {
     result_manifest: manifest,
     review_queue: reviewQueue,
     retry_activation: {
-      state: 'blocked_pending_detail_adapter_and_registry_support',
+      state: 'blocked_pending_selected_meeting_runner_and_retry_execution_evidence',
       unresolved_meeting_count: unresolvedMeetingIds.length,
       automatic_retry_queue_write: false,
     },

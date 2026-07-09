@@ -91,7 +91,7 @@ for (const phrase of [
   'supports_date_window: true',
   'supports_selected_meetings: false',
   'supports_rank_upgrade_retry: false',
-  'Due-job Planner Banei policy also remains disabled',
+  'The Banei Due-job Planner system rule also remains disabled.',
 ]) {
   if (!docs.includes(phrase)) fail(`Banei Registry activation contract missing ${phrase}.`);
 }
