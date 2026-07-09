@@ -11,6 +11,7 @@ on:
           - japan-dual-runner-august-001
           - nar-hkjc-actions-window-001
           - nar-refresh-and-selected-retry-001
+          - banei-reviewed-retry-ops-001
           - rank-isolation-plan-001
   pull_request:
     paths:
@@ -21,9 +22,12 @@ on:
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/timetable/run-banei-actions-job.mjs'
+      - 'scripts/timetable/banei-actions-executor-core.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'docs/calendar/actions-multi-job-runner.md'
+      - 'docs/calendar/banei-retry-manual-operator.md'
       - '.github/workflows/calendar-actions-multi-job.yml'
   push:
     branches:
@@ -36,9 +40,12 @@ on:
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/timetable/run-banei-actions-job.mjs'
+      - 'scripts/timetable/banei-actions-executor-core.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'docs/calendar/actions-multi-job-runner.md'
+      - 'docs/calendar/banei-retry-manual-operator.md'
       - '.github/workflows/calendar-actions-multi-job.yml'
 
 permissions:
