@@ -1,0 +1,94 @@
+name: Calendar Banei control-plane bridge
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-banei-control-plane-bridge-v1.json'
+      - 'data/static/banei-pilot-control.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/banei-control-plane-bridge.mjs'
+      - 'scripts/timetable/build-banei-control-plane-bridge.mjs'
+      - 'scripts/check-calendar-banei-control-plane-bridge.mjs'
+      - 'scripts/check-calendar-banei-full-month-candidate-set.mjs'
+      - 'scripts/check-calendar-collection-result-manifest.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
+      - 'docs/calendar/banei-control-plane-bridge.md'
+      - 'docs/calendar/banei-a-plus-full-month-plan.md'
+      - '.github/workflows/calendar-banei-control-plane-bridge.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-banei-control-plane-bridge-v1.json'
+      - 'data/static/banei-pilot-control.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/banei-control-plane-bridge.mjs'
+      - 'scripts/timetable/build-banei-control-plane-bridge.mjs'
+      - 'scripts/check-calendar-banei-control-plane-bridge.mjs'
+      - 'scripts/check-calendar-banei-full-month-candidate-set.mjs'
+      - 'scripts/check-calendar-collection-result-manifest.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
+      - 'docs/calendar/banei-control-plane-bridge.md'
+      - 'docs/calendar/banei-a-plus-full-month-plan.md'
+      - '.github/workflows/calendar-banei-control-plane-bridge.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-control-plane-bridge.mjs
+          node --check scripts/timetable/build-banei-control-plane-bridge.mjs
+          node --check scripts/check-calendar-banei-control-plane-bridge.mjs
+
+      - name: Validate Banei shared control-plane bridge
+        run: node scripts/check-calendar-banei-control-plane-bridge.mjs
+
+      - name: Build bounded bridge fixture artifacts
+        run: |
+          rm -rf .banei-control-plane-bridge-check
+          node scripts/timetable/build-banei-control-plane-bridge.mjs \
+            --input=data/fixtures/calendar-banei-control-plane-bridge-v1.json \
+            --output-root=.banei-control-plane-bridge-check
+          test -f .banei-control-plane-bridge-check/candidate.json
+          test -f .banei-control-plane-bridge-check/coverage-observation.json
+          test -f .banei-control-plane-bridge-check/result-manifest.json
+          test -f .banei-control-plane-bridge-check/review-queue.json
+          grep -q '"publication": false' .banei-control-plane-bridge-check/bridge-summary.json
+          rm -rf .banei-control-plane-bridge-check
+
+      - name: Validate existing Banei full-month foundation
+        run: node scripts/check-calendar-banei-full-month-candidate-set.mjs --allow-empty
+
+      - name: Validate shared Manifest and Review Queue dependencies
+        run: |
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check repository cleanliness and diff formatting
+        run: |
+          test -z "$(git status --short)"
+          git diff --check
