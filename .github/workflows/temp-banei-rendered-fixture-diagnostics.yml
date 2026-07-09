@@ -1,0 +1,40 @@
+name: Temporary Banei rendered fixture diagnostics
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/temp-banei-rendered-fixture-diagnostics.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --package-lock=false
+      - name: Capture rendered fixture diagnostics
+        run: |
+          mkdir -p .diagnostics
+          set +e
+          node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs > .diagnostics/banei-rendered-fixture.log 2>&1
+          status=$?
+          echo "EXIT_STATUS=${status}" >> .diagnostics/banei-rendered-fixture.log
+          exit 0
+      - name: Commit diagnostics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .diagnostics/banei-rendered-fixture.log
+          git commit -m "[CF-Pages-Skip] Capture Banei rendered fixture diagnostics"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
