@@ -62,26 +62,25 @@
       "primary_runner": "reviewed_import",
       "fallback_runner": null,
       "schedule_source_id": "banei-official-schedule",
-      "detail_source_id": null,
+      "detail_source_id": "nar-banei-race-list-deba-table",
       "schedule_adapter_id": "japan-banei-dry-run-adapter",
-      "detail_adapter_id": null,
+      "detail_adapter_id": "banei-nar-race-list-detail-v1",
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
       "supported_observation_ranks": [
-        "B"
+        "B",
+        "A+"
       ],
-      "supports_date_window": false,
+      "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [
-        "fallback_runner",
-        "detail_source_id",
-        "detail_adapter_id"
+        "fallback_runner"
       ],
-      "operator_notes": "Provisional profile only. The existing reviewed-import/dry-run path establishes a meeting-level schedule adapter with first-race time evidence, while Banei-specific detail source, detail adapter, fallback runner, and broader scope/retry support remain pending source-specific implementation."
+      "operator_notes": "Provisional profile with evidence-backed Banei detail source and adapter. The 2026-07-04 bounded GitHub Actions live smoke produced one complete A+ candidate with 12 public-safe rows, source_window_complete coverage, zero unresolved meetings, and zero source errors. Date-window detail capability is enabled. System routing remains reviewed_import-primary until schedule/detail runner policy is unified; selected-meeting support, rank-upgrade retry, cross-month support, and source-visible-horizon support remain disabled."
     },
     {
       "system_id": "hong-kong-hkjc-system",
