@@ -1,8 +1,8 @@
 # Calendar acquisition control plane implementation plan
 
-Status: adopted programme plan  
+Status: completed foundation programme; retained as canonical implementation history  
 Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-09
 
 ## Purpose
 
@@ -33,7 +33,7 @@ At the time this plan is adopted:
 - the 71 C meetings remain explicit detail-retry work;
 - temporary diagnostic PRs #430 and #435 are closed without merge;
 - formal NAR workflow-dispatch acquisition is active with GitHub Actions primary and local fallback;
-- Banei remains the next source-specific pilot after the shared control-plane foundation is established.
+- the shared control-plane foundation is complete and Banei is the active source-specific operational integration work.
 
 ## Programme order
 
@@ -61,16 +61,22 @@ Completed source-specific work:
 WHR-CAL-JAPAN-NAR-A-PLUS
 ```
 
-Current shared work:
+Completed shared work:
 
 ```text
 WHR-CAL-ACQUISITION-CONTROL-PLANE
 ```
 
-Subsequent source-specific work:
+Current source-specific work:
 
 ```text
 WHR-CAL-JAPAN-BANEI-A-PLUS
+```
+
+Next source-specific work:
+
+```text
+WHR-CAL-HONG-KONG-HKJC
 ```
 
 Later shared automation work may remain under the control-plane Work ID until the foundation release gate is closed, then move to a separately named operations-automation Work ID if scope grows materially.
@@ -543,7 +549,7 @@ Initial scheduler policy should prefer conservative bounded frequency and avoid 
 
 ## Stage ACP-15 — Operations v2 operator view
 
-Status: current.
+Status: complete. The read-only operator view covers acquisition state, Review Queue, Retry Queue, rank distributions, source health, freshness, promotion/publication state, and retry due/deferred, attempt-count, next-eligible, backoff, and attempt-limit state without Job execution or Queue mutation.
 
 Goal: extend the existing Operations v1 read-only status layer into an acquisition/review operations view.
 
@@ -577,9 +583,7 @@ Banei implementation resumes after the minimum shared foundation exists:
 6. Rank-aware Retry Queue foundation;
 7. runner-neutral batch/result semantics.
 
-Actions matrix and full scheduler completion are not prerequisites for starting Banei.
-
-This prevents overbuilding the control plane while still ensuring Banei enters the shared operating model from its first implementation.
+Actions matrix and full scheduler completion were not prerequisites for starting Banei. The handoff gate is satisfied and the later Actions/local multi-job, review, scheduling, and Operations stages are also complete. Banei now operates on the shared model.
 
 ## Later-system adoption gate
 
@@ -623,22 +627,15 @@ Actual GitHub PR numbers do not need to match these programme labels.
 
 ## Immediate sequence from current repository state
 
-The immediate sequence is:
+The foundation programme is complete. The current handoff sequence is:
 
 ```text
-1. merge this documentation alignment
-2. finish current NAR 82-meeting review/promotion/publication sequence
-3. close temporary diagnostic PRs #430 and #435 without merge
-4. formalize NAR Actions manual dispatch
-5. implement Acquisition Registry
-6. implement Job and Plan schemas
-7. implement five-rank classifier contract tests
-8. implement Review Queue and Rank-aware Retry Queue foundations
-9. connect Actions and local runners to common job semantics
-10. begin Banei on the shared foundation
-11. expand multi-system execution
-12. add automatic review PR preparation
-13. add due-job scheduling and automatic bounded retries
+1. keep Banei authoritative Queue application separate until stale-write, atomic replacement, and rollback safeguards exist
+2. complete Banei freshness and rollback operating evidence
+3. complete Banei bilingual QA and remaining public-display review
+4. keep manual reviewed retry execution while unattended execution remains disabled
+5. decide Banei handoff completion explicitly
+6. then begin the next source-specific pilot
 ```
 
 ## Release gates

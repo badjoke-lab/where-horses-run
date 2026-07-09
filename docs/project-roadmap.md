@@ -3,9 +3,10 @@
 Status: active canonical project roadmap  
 Country-page programme: complete  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Last reviewed: 2026-07-08
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Last reviewed: 2026-07-09
 
 ## Purpose
 
@@ -44,7 +45,7 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-The NAR source pilot publication sequence is complete and the Acquisition Control Plane is current.
+The NAR source pilot and Acquisition Control Plane foundation are complete. Banei A+ is the current source-specific work, now in operational integration after source, adapter, runner, retry, operator-view, manual operator, and proposal-only Queue reconciliation foundations were validated.
 
 Reviewed NAR schedule coverage through 2026-07-31 has been promoted and published. The July 8–31 batch contains:
 
@@ -163,7 +164,7 @@ data/static/calendar-coverage-observation.schema.json
 data/static/calendar-validation-responsibilities-v1.json
 ```
 
-The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, local multi-job execution with JRA shared local Job integration, Review Cohort Planner, deterministic review PR package preparation, and policy-driven Due-job Planner with artifact-only daily scheduling are implemented. Operations v2 operator view is current shared work.
+The Acquisition Registry, Collection Job, Collection Plan, shared five-rank classifier, Collection Result Manifest, Review Queue, Rank-aware Retry Queue, runner-neutral compatibility foundation, Actions multi-job execution, local multi-job execution with JRA shared local Job integration, Review Cohort Planner, deterministic review PR package preparation, policy-driven Due-job Planner with artifact-only daily scheduling, and Operations v2 operator view are implemented. Operations v2 also exposes retry due/deferred, attempt-count, next-eligible, backoff, and attempt-limit state without executing Jobs or mutating Queue state.
 
 ### Country research and publication
 
@@ -191,11 +192,12 @@ System A+ is a ceiling, not invented meeting detail.
 
 ## Japan pilot activation
 
-Status: NAR source pilot complete; shared control-plane foundation current
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei operational integration current
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
 ### JRA A+
 
@@ -301,7 +303,7 @@ The foundation sequence is:
 12. Review Cohort Planner — complete;
 13. automatic review PR preparation — complete;
 14. due-job planner and artifact-only scheduling policy — complete;
-15. Operations v2 operator view — current.
+15. Operations v2 operator view — complete, including retry attempt/backoff state.
 
 Minimum gate before Banei resumes:
 
@@ -323,13 +325,41 @@ Full Actions matrix execution, scheduler, and automatic PR generation are not pr
 
 ## Banei A+
 
-Banei follows the minimum shared control-plane foundation.
+Status: active operational integration.
 
-Banei inherits common incremental, validation, Job/Plan, rank, review, and retry contracts but uses Banei-specific source routes, terminology, distance interpretation, and course semantics.
+Banei follows the completed shared control-plane foundation and uses Banei-specific source routes, terminology, distance interpretation, and course semantics. It does not inherit NAR flat-racing parser assumptions. Ordinary Banei updates may be partial and irregular; July full-month completeness remains a separate Completion Audit claim.
 
-Banei must not inherit NAR flat-racing parser assumptions.
+Completed Banei foundations:
 
-Ordinary Banei updates may be partial and irregular. July full-month completeness remains a separate Completion Audit claim.
+- July full-month schedule foundation with 12 reviewed meeting dates;
+- shared control-plane bridge with C/B/B+ schedule evidence;
+- Banei-specific RaceList/DebaTable A+ adapter;
+- bounded live A+ evidence with 12 public-safe timetable rows;
+- Banei detail Authority Source Inventory and Registry activation;
+- GitHub Actions runner convergence for full-month schedule, date-window detail, and selected-meeting detail;
+- shared Banei Actions executor with schedule fallback plus A+ replacement;
+- rank-upgrade retry proof, bounded retry activation, and Due-job planning limits;
+- Operations v2 due/deferred, attempt-count, next-eligible, backoff, and attempt-limit state;
+- successful reviewed retry Job through the standard Actions planner and dispatcher;
+- formal manual workflow_dispatch operator route for the reviewed retry Plan;
+- proposal-only post-run Retry Queue reconciliation with input Queue immutability.
+
+Current Banei boundary:
+
+```text
+primary runner: github_actions
+fallback runner: reviewed_import
+date-window: enabled
+selected-meeting: enabled
+rank-upgrade retry planning: enabled
+regular refresh planning: disabled
+coverage-gap planning: disabled
+source revalidation planning: disabled
+scheduler Job execution: disabled
+automatic approval/promotion/publication: disabled
+```
+
+Current handoff: proposal-only reconciliation is complete. Any authoritative Queue state application remains a separate explicit operator action requiring stale-write protection, atomic replacement semantics, and rollback evidence. Banei freshness, rollback, bilingual QA, and remaining public-display review stay ahead of any broader public rollout.
 
 ## Multi-system operations expansion
 
@@ -344,7 +374,7 @@ automatic review PR preparation
 due-job planner — complete
 artifact-only scheduled planning — complete
 scheduled acquisition execution — disabled
-Operations v2 operator view — current
+Operations v2 operator view — complete, including retry operational state
 ```
 
 The preferred automation stop point is:
