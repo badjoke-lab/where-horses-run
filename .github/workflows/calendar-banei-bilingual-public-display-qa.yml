@@ -28,6 +28,10 @@ on:
       - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - '.github/workflows/calendar-banei-bilingual-public-display-qa.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
