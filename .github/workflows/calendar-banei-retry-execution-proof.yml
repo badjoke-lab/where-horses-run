@@ -73,7 +73,7 @@ jobs:
       - name: Validate runtime import boundary
         run: node scripts/check-calendar-runtime-import-boundary.mjs
 
-      - name: Check canonical activation remains disabled
+      - name: Check canonical activation is proof-bounded
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
@@ -81,9 +81,11 @@ jobs:
           const policy = JSON.parse(fs.readFileSync('data/static/calendar-due-job-policy-v1.json', 'utf8'));
           const profile = registry.records.find((entry) => entry.system_id === 'japan-banei-system');
           const rule = policy.system_rules.find((entry) => entry.system_id === 'japan-banei-system');
-          if (profile.supports_rank_upgrade_retry !== false) throw new Error('canonical Banei Registry retry support must remain false');
-          if (rule.enabled !== false || rule.rank_retry.enabled !== false) throw new Error('canonical Banei Due-job retry policy must remain false');
-          console.log('CANONICAL_BANEI_RETRY_ACTIVATION: false');
+          if (profile.supports_rank_upgrade_retry !== true) throw new Error('canonical Banei Registry retry support must be enabled');
+          if (rule.enabled !== true || rule.rank_retry.enabled !== true) throw new Error('canonical Banei rank-retry planning must be enabled');
+          if (rule.regular_refresh.enabled || rule.coverage_gap.enabled || rule.source_revalidation.enabled) throw new Error('unrelated Banei automation must remain disabled');
+          if (rule.rank_retry.max_selected_meetings_per_job !== 2 || rule.rank_retry.max_attempt_count !== 3) throw new Error('Banei retry limits differ from proof');
+          console.log('CANONICAL_BANEI_RETRY_ACTIVATION: proof-bounded');
           NODE
 
       - name: Check diff formatting
