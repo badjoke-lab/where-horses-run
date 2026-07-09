@@ -184,8 +184,8 @@ try {
     if (!jaDetail.includes(phrase)) fail(`Japanese meeting detail missing ${phrase}.`);
   }
 
-  const enRows = (enDetail.match(/<tr>/g) ?? []).length;
-  const jaRows = (jaDetail.match(/<tr>/g) ?? []).length;
+  const enRows = (enDetail.match(/<tr(?:\s|>)/g) ?? []).length;
+  const jaRows = (jaDetail.match(/<tr(?:\s|>)/g) ?? []).length;
   const expectedRowsWithHeader = candidate.timetable_rows.length + 1;
   if (enRows !== expectedRowsWithHeader) fail(`English detail row count differs: ${enRows} != ${expectedRowsWithHeader}`);
   if (jaRows !== expectedRowsWithHeader) fail(`Japanese detail row count differs: ${jaRows} != ${expectedRowsWithHeader}`);
