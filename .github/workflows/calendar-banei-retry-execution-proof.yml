@@ -1,0 +1,90 @@
+name: Calendar Banei retry execution proof
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-banei-retry-execution-proof-v1.json'
+      - 'scripts/timetable/banei-retry-execution-proof.mjs'
+      - 'scripts/check-calendar-banei-retry-execution-proof.mjs'
+      - 'docs/calendar/banei-retry-execution-proof.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - '.github/workflows/calendar-banei-retry-execution-proof.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-banei-retry-execution-proof-v1.json'
+      - 'scripts/timetable/banei-retry-execution-proof.mjs'
+      - 'scripts/check-calendar-banei-retry-execution-proof.mjs'
+      - 'docs/calendar/banei-retry-execution-proof.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - '.github/workflows/calendar-banei-retry-execution-proof.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-retry-execution-proof.mjs
+          node --check scripts/check-calendar-banei-retry-execution-proof.mjs
+
+      - name: Validate Banei retry execution proof
+        run: node scripts/check-calendar-banei-retry-execution-proof.mjs
+
+      - name: Validate shared Retry Queue and Due-job Planner contracts
+        run: |
+          node scripts/check-calendar-rank-aware-retry-queue.mjs
+          node scripts/check-calendar-due-job-planner.mjs
+
+      - name: Validate Banei executor and runner dependencies
+        run: |
+          node scripts/check-calendar-banei-actions-executor.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate Manifest, Review Queue, and Operations dependencies
+        run: |
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+          node scripts/check-calendar-operations-v2.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check canonical activation remains disabled
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const registry = JSON.parse(fs.readFileSync('data/static/calendar-acquisition-registry.json', 'utf8'));
+          const policy = JSON.parse(fs.readFileSync('data/static/calendar-due-job-policy-v1.json', 'utf8'));
+          const profile = registry.records.find((entry) => entry.system_id === 'japan-banei-system');
+          const rule = policy.system_rules.find((entry) => entry.system_id === 'japan-banei-system');
+          if (profile.supports_rank_upgrade_retry !== false) throw new Error('canonical Banei Registry retry support must remain false');
+          if (rule.enabled !== false || rule.rank_retry.enabled !== false) throw new Error('canonical Banei Due-job retry policy must remain false');
+          console.log('CANONICAL_BANEI_RETRY_ACTIVATION: false');
+          NODE
+
+      - name: Check diff formatting
+        run: git diff --check

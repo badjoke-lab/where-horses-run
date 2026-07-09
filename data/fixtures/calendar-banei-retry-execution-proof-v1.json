@@ -1,0 +1,107 @@
+{
+  "schema_version": "calendar-banei-retry-execution-proof-fixture-v1",
+  "as_of": "2026-07-09T06:00:00Z",
+  "backoff_policy": {
+    "base_hours": 6,
+    "max_hours": 48
+  },
+  "candidate_policy": {
+    "max_selected_meetings_per_job": 2,
+    "max_attempt_count": 3
+  },
+  "planner_state": {
+    "schema_version": "calendar-due-job-planner-state-v1",
+    "as_of": "2026-07-09T06:00:00Z",
+    "system_states": [
+      {
+        "system_id": "japan-banei-system",
+        "timezone": "Asia/Tokyo",
+        "season_state": "active",
+        "source_health": "healthy",
+        "last_successful_collection_at": "2026-07-09T04:00:00Z",
+        "last_source_revalidation_at": null,
+        "source_visible_horizon_end_exclusive": null,
+        "next_meeting_date": "2026-07-11",
+        "coverage_gaps": []
+      }
+    ],
+    "retry_queue": {
+      "schema_version": "calendar-rank-aware-retry-queue-v1",
+      "generated_at": "2026-07-09T06:00:00Z",
+      "entries": [
+        {
+          "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+          "system_id": "japan-banei-system",
+          "current_reviewed_rank": "B",
+          "latest_observed_rank": "B",
+          "collection_target_rank": "A+",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "rank_upgrade_retry",
+          "retry_scope": {
+            "mode": "selected_meetings",
+            "meeting_ids": ["banei-obihiro-racecourse-2026-07-04"]
+          },
+          "primary_runner": "github_actions",
+          "fallback_runner": "reviewed_import",
+          "adapter_id": "banei-nar-race-list-detail-v1",
+          "next_eligible_retry_at": null,
+          "attempt_count": 0,
+          "last_attempt_at": null
+        },
+        {
+          "meeting_id": "banei-obihiro-racecourse-2026-07-05",
+          "system_id": "japan-banei-system",
+          "current_reviewed_rank": "B",
+          "latest_observed_rank": "B",
+          "collection_target_rank": "A+",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "rank_upgrade_retry",
+          "retry_scope": {
+            "mode": "selected_meetings",
+            "meeting_ids": ["banei-obihiro-racecourse-2026-07-05"]
+          },
+          "primary_runner": "github_actions",
+          "fallback_runner": "reviewed_import",
+          "adapter_id": "banei-nar-race-list-detail-v1",
+          "next_eligible_retry_at": "2026-07-09T05:00:00Z",
+          "attempt_count": 0,
+          "last_attempt_at": null
+        },
+        {
+          "meeting_id": "banei-obihiro-racecourse-2026-07-06",
+          "system_id": "japan-banei-system",
+          "current_reviewed_rank": "B+",
+          "latest_observed_rank": "B+",
+          "collection_target_rank": "A+",
+          "missing_fields": ["timetable_rows", "race_name", "distance_m", "surface", "course_label"],
+          "retry_reason": "rank_upgrade_retry",
+          "retry_scope": {
+            "mode": "selected_meetings",
+            "meeting_ids": ["banei-obihiro-racecourse-2026-07-06"]
+          },
+          "primary_runner": "github_actions",
+          "fallback_runner": "reviewed_import",
+          "adapter_id": "banei-nar-race-list-detail-v1",
+          "next_eligible_retry_at": "2026-07-10T06:00:00Z",
+          "attempt_count": 1,
+          "last_attempt_at": "2026-07-08T06:00:00Z"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "due_meeting_ids": [
+      "banei-obihiro-racecourse-2026-07-04",
+      "banei-obihiro-racecourse-2026-07-05"
+    ],
+    "deferred_meeting_ids": [
+      "banei-obihiro-racecourse-2026-07-06"
+    ],
+    "planned_job_count": 1,
+    "planned_target_rank": "A+",
+    "successful_meeting_id": "banei-obihiro-racecourse-2026-07-04",
+    "failed_meeting_id": "banei-obihiro-racecourse-2026-07-05",
+    "failure_next_eligible_retry_at": "2026-07-09T12:00:00.000Z",
+    "remaining_queue_count": 2
+  }
+}
