@@ -1,0 +1,70 @@
+{
+  "schema_version": "calendar-banei-retry-ops-evidence-v1",
+  "generated_at": "2026-07-09T05:30:36.432Z",
+  "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "control_plane_work_id": "WHR-CAL-ACQUISITION-CONTROL-PLANE",
+  "plan_id": "banei-reviewed-retry-ops-001",
+  "campaign_id": "banei-reviewed-retry-operations",
+  "job_id": "banei-reviewed-retry-job-001",
+  "batch_id": "banei-reviewed-retry-ops-001-banei-reviewed-retry-job-001-run-001",
+  "system_id": "japan-banei-system",
+  "runner_used": "github_actions",
+  "executor_id": "banei-schedule-detail-actions",
+  "collection_mode": "selected_meetings",
+  "reason": "rank_upgrade_retry",
+  "rank_strategy": "target_rank",
+  "target_rank": "A+",
+  "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+  "meeting_date": "2026-07-04",
+  "status": "success",
+  "observed_rank": "A+",
+  "race_row_count": 12,
+  "first_race_time_local": "14:30",
+  "last_race_time_local": "20:30",
+  "row_semantics": {
+    "all_rows_distance_200m": true,
+    "all_rows_surface_dirt": true,
+    "all_rows_course_banei_straight": true
+  },
+  "coverage": {
+    "claim": "source_window_complete",
+    "records_discovered": 1,
+    "records_updated": 1,
+    "unresolved_meeting_count": 0,
+    "source_error_count": 0
+  },
+  "result_manifest": {
+    "rank_counts": {
+      "C": 0,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 1
+    },
+    "unresolved_meeting_count": 0,
+    "source_error_count": 0
+  },
+  "review_queue": {
+    "entry_count": 1,
+    "review_state": "review_ready",
+    "promotion_state": "not_ready"
+  },
+  "artifact_digests_sha256": {
+    "status": "a4e0c73e07c3617e6449946bf9a815a3ce974db362880b1421cabde9302aa2fc",
+    "candidate": "a0aa9a0eadfc40d0aea7872e0d6000d0f68c75c6e23cc97f58173687a267467c",
+    "coverage_observation": "dab1ffcf7d50948fbefc61348e5751bb5c7bdff5b993abdc591d6e707e219ccd",
+    "result_manifest": "b14197864354a08348e0b74ca4177e8a0d2285b82d6271cb4ed2c141401b3b63",
+    "review_queue": "c2a09b2ea04d81119aee5f9f102eaeaa10546a376162a6abf9f96b077f399b66",
+    "collection_report": "9ef6d5d0c488a908984e203b5f1ea250cca9c52a5fd2f8054eca4920a043005d"
+  },
+  "boundaries": {
+    "scheduler_automatic_execution": false,
+    "automatic_approval": false,
+    "promotion_performed": false,
+    "canonical_write_performed": false,
+    "public_write_performed": false,
+    "publication_performed": false,
+    "deployment_performed": false,
+    "raw_source_storage": false
+  }
+}
