@@ -69,7 +69,7 @@ if (output) {
     if (queue.entries[0].review_state !== 'review_ready' || queue.entries[0].promotion_state !== 'not_ready') fail('Review Queue initial state differs.');
   }
 
-  if (output.retry_activation.state !== 'blocked_pending_selected_meeting_runner_and_retry_execution_evidence') fail('Retry activation state differs.');
+  if (output.retry_activation.state !== 'blocked_pending_retry_execution_evidence') fail('Retry activation state differs.');
   if (output.retry_activation.automatic_retry_queue_write !== false) fail('automatic Retry Queue write must remain disabled.');
   if (output.retry_activation.unresolved_meeting_count !== 3) fail('retry blocker unresolved count differs.');
   if (Object.values(output.boundaries).some((value) => value !== false)) fail('bridge side-effect boundary enabled.');
@@ -78,13 +78,14 @@ if (output) {
 const baneiProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
 if (!baneiProfile) fail('Banei Registry profile missing.');
 else {
-  if (baneiProfile.profile_status !== 'provisional') fail('Banei Registry profile must remain provisional in bridge stage.');
-  if (baneiProfile.primary_runner !== 'reviewed_import') fail('Banei bridge stage must not silently change primary runner.');
+  if (baneiProfile.profile_status !== 'active') fail('Banei Registry profile must be active after runner convergence proof.');
+  if (baneiProfile.primary_runner !== 'github_actions') fail('Banei primary runner must be github_actions after convergence proof.');
+  if (baneiProfile.fallback_runner !== 'reviewed_import') fail('Banei fallback runner must remain reviewed_import.');
   if (baneiProfile.detail_source_id !== 'nar-banei-race-list-deba-table') fail('Banei evidence-backed detail source differs.');
   if (baneiProfile.detail_adapter_id !== 'banei-nar-race-list-detail-v1') fail('Banei evidence-backed detail adapter differs.');
   if (baneiProfile.supports_date_window !== true) fail('Banei evidence-backed date-window support differs.');
-  if (baneiProfile.supports_selected_meetings !== false) fail('Banei selected-meeting support must remain disabled without live proof.');
-  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank retry must remain disabled until selected-meeting, runner, and retry execution evidence exists.');
+  if (baneiProfile.supports_selected_meetings !== true) fail('Banei selected-meeting support must be enabled after bounded live proof.');
+  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank retry must remain disabled until retry execution evidence exists.');
 }
 
 if (control.monthly_scope?.expected_meeting_dates?.length !== 12) fail('Banei July control must retain twelve expected meeting dates.');
@@ -149,5 +150,5 @@ console.log('COVERAGE: partial / unresolved=3');
 console.log('RESULT_MANIFEST: pass');
 console.log('REVIEW_QUEUE: review_ready / not_ready');
 console.log('RETRY_ACTIVATION: blocked');
-console.log('REGISTRY_PROFILE: provisional / reviewed_import');
+console.log('REGISTRY_PROFILE: active / github_actions primary / reviewed_import fallback');
 console.log('SIDE_EFFECT_BOUNDARY: pass');
