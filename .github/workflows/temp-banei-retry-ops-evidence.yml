@@ -1,0 +1,85 @@
+name: Temporary Banei retry operations evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/temp-banei-retry-ops-evidence.yml'
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'scripts/timetable/summarize-banei-retry-ops-evidence.mjs'
+      - 'scripts/check-calendar-banei-retry-ops-evidence.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  evidence:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Validate standard planner and Banei dependencies
+        run: |
+          node scripts/check-calendar-collection-plan.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-banei-retry-activation.mjs
+          node scripts/check-calendar-banei-actions-executor.mjs
+
+      - name: Compile one reviewed retry Job through standard Actions planner
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-id=banei-reviewed-retry-ops-001 \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
+          if (!Array.isArray(matrix.include) || matrix.include.length !== 1) throw new Error(`expected one hosted Job, got ${matrix.include?.length}`);
+          const item = matrix.include[0];
+          if (item.execution.executor_id !== 'banei-schedule-detail-actions') throw new Error('Banei executor mapping differs');
+          fs.writeFileSync('.calendar-execution.json', `${JSON.stringify(item.execution, null, 2)}\n`);
+          fs.writeFileSync('.calendar-batch-id', `${item.execution.batch_id}\n`);
+          NODE
+
+      - name: Execute one reviewed retry Job through standard dispatcher
+        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=.calendar-execution.json
+
+      - name: Build public-safe operational evidence summary
+        run: |
+          BATCH_ID="$(cat .calendar-batch-id)"
+          node scripts/timetable/summarize-banei-retry-ops-evidence.mjs \
+            --execution=.calendar-execution.json \
+            --status="data/generated/timetable/actions-multi-job-status/${BATCH_ID}.json" \
+            --batch-root="data/generated/timetable/actions-multi-job/${BATCH_ID}" \
+            --output=data/fixtures/calendar-banei-retry-ops-evidence-v1.json
+          node scripts/check-calendar-banei-retry-ops-evidence.mjs
+
+      - name: Remove live execution artifacts and temporary planner files
+        run: |
+          BATCH_ID="$(cat .calendar-batch-id)"
+          rm -rf \
+            "data/generated/timetable/actions-multi-job/${BATCH_ID}" \
+            "data/generated/timetable/actions-multi-job-status/${BATCH_ID}.json" \
+            .calendar-actions-plan.json \
+            .calendar-actions-matrix.json \
+            .calendar-execution.json \
+            .calendar-batch-id
+
+      - name: Commit evidence summary only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fixtures/calendar-banei-retry-ops-evidence-v1.json
+          if git diff --cached --quiet; then
+            echo "Evidence summary already current."
+            exit 0
+          fi
+          git commit -m "[CF-Pages-Skip] Record reviewed Banei retry operations evidence"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
