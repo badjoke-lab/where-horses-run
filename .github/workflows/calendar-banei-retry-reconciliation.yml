@@ -1,0 +1,83 @@
+name: Calendar Banei retry Queue reconciliation
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/banei-retry-reconciliation.mjs'
+      - 'scripts/timetable/reconcile-banei-retry-queue.mjs'
+      - 'scripts/check-calendar-banei-retry-reconciliation.mjs'
+      - 'docs/calendar/banei-retry-reconciliation.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/fixtures/calendar-banei-retry-execution-proof-v1.json'
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - '.github/workflows/calendar-banei-retry-reconciliation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/banei-retry-reconciliation.mjs'
+      - 'scripts/timetable/reconcile-banei-retry-queue.mjs'
+      - 'scripts/check-calendar-banei-retry-reconciliation.mjs'
+      - 'docs/calendar/banei-retry-reconciliation.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/fixtures/calendar-banei-retry-execution-proof-v1.json'
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - '.github/workflows/calendar-banei-retry-reconciliation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-retry-reconciliation.mjs
+          node --check scripts/timetable/reconcile-banei-retry-queue.mjs
+          node --check scripts/check-calendar-banei-retry-reconciliation.mjs
+      - name: Validate proposal-only Banei retry reconciliation
+        run: node scripts/check-calendar-banei-retry-reconciliation.mjs
+      - name: Validate retry proof, activation, and Queue dependencies
+        run: |
+          node scripts/check-calendar-banei-retry-execution-proof.mjs
+          node scripts/check-calendar-banei-retry-activation.mjs
+          node scripts/check-calendar-rank-aware-retry-queue.mjs
+      - name: Validate Banei executor, Manifest, and Review Queue dependencies
+        run: |
+          node scripts/check-calendar-banei-actions-executor.mjs
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+      - name: Validate Operations and runner dependencies
+        run: |
+          node scripts/check-calendar-operations-v2.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate contracts, governance, and runtime boundary
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check proposal-only boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const core = fs.readFileSync('scripts/timetable/banei-retry-reconciliation.mjs', 'utf8');
+          const cli = fs.readFileSync('scripts/timetable/reconcile-banei-retry-queue.mjs', 'utf8');
+          if (!core.includes("mode: 'proposal_only'")) throw new Error('proposal_only mode missing');
+          if (!core.includes('input_queue_write_performed: false')) throw new Error('input Queue write boundary missing');
+          if (!core.includes('canonical_write_performed: false')) throw new Error('canonical write boundary missing');
+          if (!cli.includes('--check-only')) throw new Error('check-only mode missing');
+          console.log('RECONCILIATION_MODE: proposal_only');
+          console.log('INPUT_QUEUE_WRITE: false');
+          console.log('CANONICAL_WRITE: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
