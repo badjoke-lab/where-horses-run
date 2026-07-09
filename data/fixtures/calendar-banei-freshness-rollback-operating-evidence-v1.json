@@ -1,0 +1,30 @@
+{
+  "schema_version": "calendar-banei-freshness-rollback-operating-evidence-fixture-v1",
+  "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "source_evidence_ref": "data/fixtures/calendar-banei-retry-ops-evidence-v1.json",
+  "freshness_threshold_hours": 168,
+  "current_scenario": {
+    "as_of": "2026-07-09T06:30:36.432Z",
+    "expected_source_health": "healthy",
+    "expected_freshness_age_hours": 1,
+    "expected_freshness_attention": false,
+    "expected_success_job_count": 1
+  },
+  "threshold_breach_scenario": {
+    "as_of": "2026-07-16T05:30:36.432Z",
+    "expected_source_health": "healthy",
+    "expected_freshness_age_hours": 168,
+    "expected_freshness_attention": true
+  },
+  "rollback_rehearsal": {
+    "apply_at": "2026-07-09T15:00:00Z",
+    "rollback_at": "2026-07-09T16:00:00Z",
+    "expected_before_entry_count": 3,
+    "expected_after_entry_count": 2,
+    "expected_apply_mode": "explicit_operator_apply",
+    "expected_rollback_mode": "explicit_operator_rollback",
+    "expected_restored_byte_equal": true,
+    "expected_stale_apply_rejected": true,
+    "expected_stale_rollback_rejected": true
+  }
+}
