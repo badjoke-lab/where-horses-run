@@ -342,14 +342,6 @@ export function validateOperationsV2V1(output, registry) {
   }
   if (typeof publication?.stale_for_current_window !== 'boolean') errors.push('publication summary stale flag invalid');
 
-  const publication = output.publication_summary;
-  if (!publication || !PUBLICATION_STATES.includes(publication.state)) errors.push('publication summary state invalid');
-  if (publication?.generated_at !== null && !validDateTime(publication?.generated_at)) errors.push('publication summary generated_at invalid');
-  for (const key of ['meeting_count', 'detail_count']) {
-    if (!Number.isInteger(publication?.[key]) || publication[key] < 0) errors.push(`publication summary ${key} invalid`);
-  }
-  if (typeof publication?.stale_for_current_window !== 'boolean') errors.push('publication summary stale flag invalid');
-
   if (!Array.isArray(output.systems)) errors.push('systems must be an array');
   else {
     const seen = new Set();
