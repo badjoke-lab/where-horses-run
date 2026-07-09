@@ -159,7 +159,7 @@ for (const phrase of [
   'selected-meeting',
   'Registry activation is separate',
   'no flat-racing matrix fallback',
-  'human review',
+  'Human review',
 ]) {
   if (!docs.includes(phrase)) fail(`Banei detail adapter contract missing ${phrase}.`);
 }
