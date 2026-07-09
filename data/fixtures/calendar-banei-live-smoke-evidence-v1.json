@@ -1,0 +1,50 @@
+{
+  "schema_version": "calendar-banei-live-smoke-evidence-v1",
+  "generated_at": "2026-07-09T03:18:18.146Z",
+  "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "system_id": "japan-banei-system",
+  "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+  "meeting_date": "2026-07-04",
+  "source_id": "nar-banei-race-list-deba-table",
+  "adapter_id": "banei-nar-race-list-detail-v1",
+  "source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F07%2F04",
+  "observed_rank": "A+",
+  "race_row_count": 12,
+  "first_race_time_local": "14:30",
+  "last_race_time_local": "20:30",
+  "row_semantics": {
+    "all_rows_have_post_time": true,
+    "all_rows_have_race_name": true,
+    "all_rows_distance_200m": true,
+    "all_rows_surface_dirt": true,
+    "all_rows_course_banei_straight": true
+  },
+  "coverage": {
+    "claim": "source_window_complete",
+    "records_discovered": 1,
+    "records_updated": 1,
+    "unresolved_date_count": 0,
+    "unresolved_meeting_count": 0,
+    "source_error_count": 0
+  },
+  "runner_evidence": {
+    "environment": "github_actions",
+    "scope_mode": "date_window",
+    "meetings_targeted": 1,
+    "complete_a_plus_candidates": 1,
+    "blocked_meetings": 0
+  },
+  "artifact_digests_sha256": {
+    "candidate": "eee22b57c08a4eb8fc3877c120be1ee74382cf10173aebf31393a1d561119585",
+    "coverage_observation": "2ef928e12bbcd522be4c69ee0e315276cc0836d8d9856ff4148c160e0e4c9b6f",
+    "collection_report": "a7824bf0e8a32332338c27308b01834c308d1b26409ab1b5f6b9c6cea6734e2a"
+  },
+  "review_boundary": {
+    "candidate_review_status": "needs_review",
+    "promotion_eligible_candidates": 0,
+    "publication_effect": "none",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "raw_source_storage": "disabled"
+  }
+}
