@@ -193,9 +193,13 @@ for (const phrase of [
   if (!docs.includes(phrase)) fail(`Due-job planner contract missing ${phrase}.`);
 }
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Stage ACP-14 — due-job planner and scheduling', 'Status: complete.', 'Stage ACP-15 — Operations v2 operator view', 'Status: current.']) {
-  if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+for (const heading of ['Stage ACP-14 — due-job planner and scheduling', 'Stage ACP-15 — Operations v2 operator view']) {
+  if (!implementationPlan.includes(heading)) fail(`control-plane implementation plan missing ${heading}.`);
 }
+const acp14Section = implementationPlan.split('## Stage ACP-14 — due-job planner and scheduling')[1]?.split('## Stage ACP-15 — Operations v2 operator view')[0] ?? '';
+const acp15Section = implementationPlan.split('## Stage ACP-15 — Operations v2 operator view')[1] ?? '';
+if (!acp14Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-14 complete.');
+if (!acp15Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-15 complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_DUE_JOB_PLANNER: failed (${errors.length})`);

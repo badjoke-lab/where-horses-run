@@ -151,9 +151,13 @@ for (const phrase of [
   if (!docs.includes(phrase)) fail(`Actions multi-job contract missing ${phrase}.`);
 }
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Stage ACP-10 — Actions multi-job runner', 'Status: complete.', 'Stage ACP-11 — local multi-job runner', 'Status: current.']) {
-  if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+for (const heading of ['Stage ACP-10 — Actions multi-job runner', 'Stage ACP-11 — local multi-job runner']) {
+  if (!implementationPlan.includes(heading)) fail(`control-plane implementation plan missing ${heading}.`);
 }
+const acp10Section = implementationPlan.split('## Stage ACP-10 — Actions multi-job runner')[1]?.split('## Stage ACP-11 — local multi-job runner')[0] ?? '';
+const acp11Section = implementationPlan.split('## Stage ACP-11 — local multi-job runner')[1]?.split('## Stage ACP-12 — review cohort planner')[0] ?? '';
+if (!acp10Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-10 complete.');
+if (!acp11Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-11 complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_ACTIONS_MULTI_JOB: failed (${errors.length})`);

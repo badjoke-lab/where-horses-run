@@ -85,8 +85,9 @@ requirePhrases(start, 'START-HERE', [
 requirePhrases(roadmap, 'project roadmap', [
   'Country-page programme: complete',
   'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
-  'Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`',
   'schedule-confirmed meetings: 82',
   'A+ detail records:            11',
   'C schedule records:           71',
@@ -97,7 +98,10 @@ requirePhrases(roadmap, 'project roadmap', [
   'Collection Plan schema',
   'Review Queue foundation',
   'Rank-aware Retry Queue foundation',
-  'C/B/B+/A/A+'
+  'C/B/B+/A/A+',
+  '## Banei A+',
+  'Status: active operational integration.',
+  'proposal-only post-run Retry Queue reconciliation'
 ]);
 
 requirePhrases(implementationRoadmap, 'implementation roadmap', [
@@ -105,16 +109,21 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Dynamic Dates status: complete',
   'Operations v1 status: complete',
   'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
+  'Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
+  'Next source Work ID: `WHR-CAL-HONG-KONG-HKJC`',
   'ACP-1 — NAR formal workflow dispatch — complete',
   'Stage 7 — Acquisition Control Plane foundation',
+  'Status: complete.',
   'ACP-2 — Acquisition Registry',
   'ACP-3 — Collection Job schema',
   'ACP-4 — Collection Plan schema',
   'ACP-5 — five-rank classifier contract',
   'ACP-7 — Review Queue',
   'ACP-8 — Rank-aware Retry Queue',
-  'Banei handoff gate'
+  'Banei handoff gate',
+  'Banei A+ — active operational integration',
+  'Operations v2 — complete'
 ]);
 
 requirePhrases(incremental, 'incremental coverage contract', [
@@ -161,7 +170,10 @@ requirePhrases(controlPlan, 'control plane implementation plan', [
   'ACP-9 — Rank-aware Retry Queue',
   'ACP-10 — Actions multi-job runner',
   'ACP-11 — local multi-job runner',
-  'Banei handoff gate'
+  'Banei handoff gate',
+  'Status: completed foundation programme',
+  'Current source-specific work:',
+  'WHR-CAL-JAPAN-BANEI-A-PLUS'
 ]);
 
 requirePhrases(machineContracts, 'machine-readable contracts', [
@@ -249,10 +261,10 @@ if (errors.length) {
 console.log('PROJECT_GOVERNANCE_DOCS_VALID');
 console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
 console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
-console.log('ACQUISITION_CONTROL_PLANE_CONTRACT: adopted');
+console.log('ACQUISITION_CONTROL_PLANE_CONTRACT: completed foundation');
 console.log('FIVE_RANK_OPERATIONAL_MODEL: C/B/B+/A/A+');
 console.log('NAR_ACTIONS_OPERATOR: active');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
-console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
-console.log('CURRENT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-HONG-KONG-HKJC');

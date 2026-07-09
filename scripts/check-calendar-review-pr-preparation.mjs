@@ -167,9 +167,11 @@ for (const phrase of [
   if (!docs.includes(phrase)) fail(`Review PR preparation contract missing ${phrase}.`);
 }
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Stage ACP-13 — automatic review PR preparation', 'Status: complete.', 'Stage ACP-14 — due-job planner and scheduling', 'Status: current.']) {
+for (const phrase of ['Stage ACP-13 — automatic review PR preparation', 'Status: complete.', 'Stage ACP-14 — due-job planner and scheduling']) {
   if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
 }
+const acp14Section = implementationPlan.split('## Stage ACP-14 — due-job planner and scheduling')[1]?.split('## Stage ACP-15 — Operations v2 operator view')[0] ?? '';
+if (!acp14Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-14 complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_REVIEW_PR_PREPARATION: failed (${errors.length})`);

@@ -1,7 +1,7 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-09
 
 ## Purpose
 
@@ -60,9 +60,10 @@ Dynamic Dates status: complete
 Operations v1 status: complete  
 Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
 Completed transition marker:
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
@@ -188,11 +189,12 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: NAR source pilot complete; shared control-plane foundation current
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei operational integration current
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Next source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Next source Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -264,7 +266,7 @@ Current NAR maintenance state:
 3. 71 remain C schedule identities and explicit retry targets;
 4. Actions manual dispatch is the primary acquisition runner;
 5. local execution remains fallback;
-6. shared Registry / Job / Plan / Queue integration is next.
+6. shared Registry / Job / Plan / Queue integration is complete; NAR remains in steady-state retry maintenance.
 
 Active NAR operating profile:
 
@@ -277,7 +279,9 @@ Do not flatten local-government racing into a JRA-like feed.
 
 ## Stage 7 — Acquisition Control Plane foundation
 
-Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Status: complete.
+
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 
 Purpose:
 
@@ -421,20 +425,33 @@ Minimum Banei handoff gate status: satisfied.
 
 Full Actions matrix execution, full scheduler, and automatic PR generation are not required before Banei starts.
 
-### Banei A+ — subsequent
+### Banei A+ — active operational integration
 
 Banei inherits the shared control-plane and incremental contracts but uses Banei-specific source routes, terminology, distance interpretation, and course semantics.
 
-Banei sequence:
+Completed sequence:
 
-1. register runner/source/adapter profile;
-2. implement arbitrary-window Schedule/Detail acquisition;
-3. classify best available rank across C/B/B+/A/A+;
-4. preserve meeting identity while higher detail is pending;
-5. emit Coverage Observation and rank-aware retry state;
-6. review/promote valid partial batches independently;
-7. use July whole-month validation only for an explicit Completion Audit claim;
-8. complete freshness, rollback, and bilingual QA.
+1. runner/source/adapter profile and Banei-specific Authority Source Inventory;
+2. full-month schedule foundation and bounded date-window/selected-meeting detail acquisition;
+3. C/B/B+ schedule evidence and A+ detail classification;
+4. schedule fallback preservation while higher detail is unresolved;
+5. Coverage Observation, Result Manifest, Review Queue, and rank-aware retry integration;
+6. GitHub Actions primary runner convergence with reviewed-import fallback;
+7. shared Banei Actions executor and standard Actions multi-job routing;
+8. retry execution proof with due/deferred planning, success removal, failure retention, attempt accounting, backoff, and max-attempt suppression;
+9. proof-bounded retry planning activation with unrelated Banei automation disabled;
+10. Operations v2 retry operational state;
+11. successful reviewed retry Job through the standard planner/dispatcher;
+12. formal manual operator route;
+13. proposal-only Queue reconciliation with no automatic Queue write.
+
+Current sequence:
+
+1. keep authoritative Queue application separate until stale-write guard, atomic replacement, and rollback evidence exist;
+2. complete Banei freshness and rollback operating evidence;
+3. complete bilingual QA and remaining public-display review;
+4. use July whole-month validation only for explicit Completion Audit claims;
+5. preserve human review before promotion/publication.
 
 ## Stage 8 — multi-system execution
 
@@ -497,9 +514,9 @@ Add regular refresh and bounded retry scheduling only after job generation, queu
 
 Unattended publication remains disabled.
 
-## Operations v2 — current
+## Operations v2 — complete
 
-Build the unified operator view over due plans, Collection Jobs, Result Manifests, Review Queue, Retry Queue, source health, freshness, promotion state, and publication state.
+The unified read-only operator view covers due plans, Collection Jobs, Result Manifests, Review Queue, Retry Queue, source health, freshness, promotion state, publication state, and retry operational state including due/deferred counts, attempt counts, next-eligible time, backoff attention, and attempt limits. It does not execute Jobs or mutate Queue state.
 
 ## Stage 10 — additional pilots
 
@@ -554,12 +571,12 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. implement local multi-job execution and JRA shared local Job path
-2. begin Banei source-specific implementation on the satisfied minimum gate
-3. add review cohort planning
-4. add automatic review PR preparation
-5. add due-job planning and scheduled bounded retries
-6. add Operations v2 operator view
+1. Banei authoritative Queue apply remains separate until stale-write, atomic replacement, and rollback safeguards exist
+2. complete Banei freshness and rollback operating evidence
+3. complete Banei bilingual QA and remaining public-display review
+4. keep reviewed manual retry execution while unattended execution remains disabled
+5. begin the next source pilot only after the Banei handoff boundary is explicitly accepted
+6. continue Calendar Public v1 release-readiness work
 ```
 
 ## Per-PR document review
