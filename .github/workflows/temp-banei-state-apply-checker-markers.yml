@@ -1,0 +1,35 @@
+name: Temporary Banei state apply checker marker updater
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/update-banei-state-apply-checker-markers.mjs'
+      - '.github/workflows/temp-banei-state-apply-checker-markers.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Update checker documentation markers
+        run: node scripts/update-banei-state-apply-checker-markers.mjs
+      - name: Commit checker marker synchronization
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/check-calendar-banei-retry-queue-state-apply.mjs
+          git commit -m "[CF-Pages-Skip] Fix Banei state apply checker document markers"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
