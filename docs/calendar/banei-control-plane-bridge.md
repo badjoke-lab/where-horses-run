@@ -200,25 +200,25 @@ Review Queue entry creation does not mean candidate approval.
 
 Retry Queue activation remains blocked during this bridge stage.
 
-The blocker is explicit:
+The current blocker is explicit:
 
 ```text
-blocked_pending_detail_adapter_and_registry_support
+blocked_pending_selected_meeting_runner_and_retry_execution_evidence
 ```
 
-Reasons:
+The detail source and A+ detail adapter are now evidence-backed and registered. Retry activation remains blocked because:
 
-1. the Registry has no Banei detail source ID;
-2. the Registry has no Banei detail adapter ID;
-3. rank-upgrade retry support is false;
-4. selected-meeting retry support is false;
-5. no source-specific Banei detail runner has yet been validated.
+1. selected-meeting execution has not been proven by bounded live evidence;
+2. system-level runner policy is not yet converged across schedule and detail paths;
+3. retry backoff and attempt accounting have not been executed for Banei;
+4. failure isolation and retry-specific Manifest semantics have not been proven;
+5. rank-upgrade retry support remains false in the Registry.
 
 The bridge still records unresolved meeting IDs in Coverage Observation and the Result Manifest.
 
 It does not discard unresolved work merely because automatic Retry Queue projection remains disabled.
 
-The next source-specific detail implementation may activate Retry Queue only after Registry capability is updated from evidence.
+Retry Queue activation may occur only after selected-meeting, runner-routing, and retry execution evidence is reviewed and the Registry capability is updated from that evidence.
 
 ## Separation from flat-racing assumptions
 
@@ -313,7 +313,7 @@ This bridge stage is complete when:
 - Collection Result Manifest validates and cross-checks Coverage;
 - Review Queue entry validates and cross-checks Manifest;
 - unresolved meeting IDs remain visible;
-- Retry Queue activation remains blocked until detail adapter and Registry support exist;
+- Retry Queue activation remains blocked until selected-meeting, runner-routing, and retry execution evidence exist;
 - Banei Registry remains provisional and reviewed_import-based;
 - full-month July control retains 12 expected dates and no-partial-cutoff rule;
 - flat-racing assumptions remain prohibited;
@@ -321,19 +321,18 @@ This bridge stage is complete when:
 
 ## Next handoff
 
-After the bridge, the next Banei source-specific step is detail-source implementation and arbitrary-window acquisition.
+The detail source, A+ adapter, and bounded date-window capability are now evidence-backed.
 
-That work must establish actual evidence for:
+The next Banei source-specific step is runner-policy convergence and selected-meeting execution proof. That work must establish actual evidence for:
 
 ```text
-detail source identity
-detail adapter identity
-runner behavior
-arbitrary date-window behavior
-selected-meeting behavior if supported
-Banei-specific timetable row semantics
-Banei-safe A+ summary fields
-retry capability
+schedule acquisition runner behavior
+detail acquisition runner behavior
+selected-meeting execution
+retry backoff and attempt accounting
+failure isolation
+retry-specific Result Manifest semantics
+Retry Queue update behavior
 ```
 
-Only after that evidence exists may the Registry profile and Retry Queue capability be expanded.
+Only after that evidence exists may selected-meeting and rank-upgrade retry capability be enabled.

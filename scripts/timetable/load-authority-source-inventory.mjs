@@ -13,6 +13,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/authority-source-inventory-nar-schedule-grid-v1.json',
     schemaVersion: 'authority-source-inventory-nar-schedule-grid-v1',
   },
+  {
+    key: 'banei_detail',
+    path: 'data/static/authority-source-inventory-banei-detail-v1.json',
+    schemaVersion: 'authority-source-inventory-banei-detail-v1',
+  },
 ]);
 
 function readJson(root, relativePath) {

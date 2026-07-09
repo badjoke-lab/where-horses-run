@@ -1,0 +1,68 @@
+name: Calendar Banei detail Registry activation
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/authority-source-inventory-banei-detail-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-banei-detail-registry-activation.mjs'
+      - 'docs/calendar/banei-detail-registry-activation.md'
+      - '.github/workflows/calendar-banei-detail-registry-activation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/authority-source-inventory-banei-detail-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-banei-detail-registry-activation.mjs'
+      - 'docs/calendar/banei-detail-registry-activation.md'
+      - '.github/workflows/calendar-banei-detail-registry-activation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/load-authority-source-inventory.mjs
+          node --check scripts/check-calendar-acquisition-registry.mjs
+          node --check scripts/check-calendar-banei-detail-registry-activation.mjs
+
+      - name: Validate Banei detail Registry activation boundary
+        run: node scripts/check-calendar-banei-detail-registry-activation.mjs
+
+      - name: Validate shared Acquisition Registry and live evidence
+        run: |
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-banei-live-smoke-evidence.mjs
+          node scripts/check-calendar-banei-detail-adapter.mjs
+
+      - name: Validate due-job policy remains conservative
+        run: node scripts/check-calendar-due-job-planner.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check

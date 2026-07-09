@@ -69,7 +69,7 @@ if (output) {
     if (queue.entries[0].review_state !== 'review_ready' || queue.entries[0].promotion_state !== 'not_ready') fail('Review Queue initial state differs.');
   }
 
-  if (output.retry_activation.state !== 'blocked_pending_detail_adapter_and_registry_support') fail('Retry activation state differs.');
+  if (output.retry_activation.state !== 'blocked_pending_selected_meeting_runner_and_retry_execution_evidence') fail('Retry activation state differs.');
   if (output.retry_activation.automatic_retry_queue_write !== false) fail('automatic Retry Queue write must remain disabled.');
   if (output.retry_activation.unresolved_meeting_count !== 3) fail('retry blocker unresolved count differs.');
   if (Object.values(output.boundaries).some((value) => value !== false)) fail('bridge side-effect boundary enabled.');
@@ -80,8 +80,11 @@ if (!baneiProfile) fail('Banei Registry profile missing.');
 else {
   if (baneiProfile.profile_status !== 'provisional') fail('Banei Registry profile must remain provisional in bridge stage.');
   if (baneiProfile.primary_runner !== 'reviewed_import') fail('Banei bridge stage must not silently change primary runner.');
-  if (baneiProfile.detail_adapter_id !== null) fail('Banei detail adapter must remain null until source-specific detail implementation exists.');
-  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank retry must remain disabled until Registry support is implemented.');
+  if (baneiProfile.detail_source_id !== 'nar-banei-race-list-deba-table') fail('Banei evidence-backed detail source differs.');
+  if (baneiProfile.detail_adapter_id !== 'banei-nar-race-list-detail-v1') fail('Banei evidence-backed detail adapter differs.');
+  if (baneiProfile.supports_date_window !== true) fail('Banei evidence-backed date-window support differs.');
+  if (baneiProfile.supports_selected_meetings !== false) fail('Banei selected-meeting support must remain disabled without live proof.');
+  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank retry must remain disabled until selected-meeting, runner, and retry execution evidence exists.');
 }
 
 if (control.monthly_scope?.expected_meeting_dates?.length !== 12) fail('Banei July control must retain twelve expected meeting dates.');
