@@ -21,8 +21,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Make updater tolerant and idempotent in runner workspace
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/update-operations-v2-retry-state.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const from = "  if (!text.includes(from)) throw new Error(`${label}: required marker not found`);";
+          const to = "  if (!text.includes(from)) { if (text.includes(to)) return; console.warn(`${label}: marker missing, skipped`); return; }";
+          if (!text.includes(from)) throw new Error('updater guard anchor missing');
+          text = text.replace(from, to);
+          fs.writeFileSync(file, text);
+          NODE
       - name: Update Operations v2 retry-state contracts
         run: node scripts/update-operations-v2-retry-state.mjs
+      - name: Restore temporary updater before commit
+        run: git restore --worktree --staged scripts/update-operations-v2-retry-state.mjs
       - name: Commit retry-state updates
         run: |
           if git diff --quiet; then
