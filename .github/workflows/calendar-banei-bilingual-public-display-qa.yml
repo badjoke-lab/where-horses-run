@@ -1,0 +1,92 @@
+name: Calendar Banei bilingual public-display QA
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/data/publicationDisplayPolicies.json'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
+      - '.github/workflows/calendar-banei-bilingual-public-display-qa.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/data/publicationDisplayPolicies.json'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
+      - '.github/workflows/calendar-banei-bilingual-public-display-qa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/check-calendar-banei-bilingual-public-display-qa.mjs
+          node --check scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
+      - name: Validate Banei pure projection and bilingual route contract
+        run: node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Validate rendered Banei bilingual fixture in temporary worktree
+        run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
+      - name: Validate existing public projection and runtime boundaries
+        run: |
+          node scripts/check-calendar-pipeline-v1-public-projection.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          node scripts/check-calendar-public-projection-rendered-qa.mjs
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Prove committed public projection JSON is unchanged in PR
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json)"
+          if [ -n "$changed" ]; then
+            printf '%s\n' "$changed"
+            exit 1
+          fi
+          echo 'COMMITTED_PUBLIC_PROJECTION_JSON_CHANGED: false'
+      - name: Check workflow and QA safety boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-banei-bilingual-public-display-qa.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('PUBLIC_FIXTURE_BUILD_LOCATION: temporary worktree');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
