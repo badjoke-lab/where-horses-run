@@ -258,9 +258,11 @@ for (const phrase of [
 }
 
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Runner-neutral compatibility foundation: complete.', 'Stage ACP-10 — Actions multi-job runner', 'Status: current.']) {
+for (const phrase of ['Runner-neutral compatibility foundation: complete.', 'Stage ACP-10 — Actions multi-job runner']) {
   if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
 }
+const acp10Section = implementationPlan.split('## Stage ACP-10 — Actions multi-job runner')[1]?.split('## Stage ACP-11 — local multi-job runner')[0] ?? '';
+if (!acp10Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-10 complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_RUNNER_COMPATIBILITY: failed (${errors.length})`);
