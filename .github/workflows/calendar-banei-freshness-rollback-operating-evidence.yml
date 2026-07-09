@@ -1,0 +1,74 @@
+name: Calendar Banei freshness and rollback operating evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-banei-freshness-rollback-operating-evidence-v1.json'
+      - 'data/fixtures/calendar-banei-retry-ops-evidence-v1.json'
+      - 'scripts/timetable/banei-freshness-rollback-operating-evidence.mjs'
+      - 'scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs'
+      - 'scripts/timetable/banei-retry-queue-state-apply.mjs'
+      - 'scripts/check-calendar-banei-retry-queue-state-apply.mjs'
+      - 'scripts/timetable/operations-v2.mjs'
+      - 'docs/calendar/banei-freshness-rollback-operating-evidence.md'
+      - '.github/workflows/calendar-banei-freshness-rollback-operating-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-banei-freshness-rollback-operating-evidence-v1.json'
+      - 'data/fixtures/calendar-banei-retry-ops-evidence-v1.json'
+      - 'scripts/timetable/banei-freshness-rollback-operating-evidence.mjs'
+      - 'scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs'
+      - 'scripts/timetable/banei-retry-queue-state-apply.mjs'
+      - 'scripts/check-calendar-banei-retry-queue-state-apply.mjs'
+      - 'scripts/timetable/operations-v2.mjs'
+      - 'docs/calendar/banei-freshness-rollback-operating-evidence.md'
+      - '.github/workflows/calendar-banei-freshness-rollback-operating-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-freshness-rollback-operating-evidence.mjs
+          node --check scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs
+      - name: Validate Banei freshness and rollback operating evidence
+        run: node scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs
+      - name: Validate successful Banei Job evidence dependency
+        run: node scripts/check-calendar-banei-retry-ops-evidence.mjs
+      - name: Validate guarded Queue state apply dependency
+        run: node scripts/check-calendar-banei-retry-queue-state-apply.mjs
+      - name: Validate Operations v2 and retry dependencies
+        run: |
+          node scripts/check-calendar-operations-v2.mjs
+          node scripts/check-calendar-banei-retry-reconciliation.mjs
+          node scripts/check-calendar-banei-retry-activation.mjs
+      - name: Validate contracts, governance, and runtime boundary
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-banei-freshness-rollback-operating-evidence.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('AUTOMATIC_QUEUE_MUTATION: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
