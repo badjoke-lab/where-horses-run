@@ -326,10 +326,10 @@ for (const phrase of [
   'stale-write guard',
   'same-directory temporary file',
   'atomic rename',
-  'rollback evidence before replacement',
+  'Rollback evidence before replacement',
   'validation-only by default',
-  'explicit --apply',
-  'explicit --restore',
+  'explicit `--apply`',
+  'explicit `--restore`',
   'no automatic acquisition execution',
 ]) {
   if (!docs.includes(phrase)) fail(`state apply contract missing ${phrase}.`);
