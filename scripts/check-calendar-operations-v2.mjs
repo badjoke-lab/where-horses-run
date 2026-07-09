@@ -73,6 +73,9 @@ if (output) {
   if (output.retry_summary.entry_count !== expected.retry_entry_count
     || output.retry_summary.due_now_count !== expected.retry_due_count
     || output.retry_summary.deferred_count !== expected.retry_deferred_count) fail('Retry Queue counts differ.');
+  if (output.retry_summary.attempted_entry_count !== expected.retry_attempted_count) fail('Retry attempted count differs.');
+  if (output.retry_summary.attempt_limit_reached_count !== expected.retry_attempt_limit_reached_count) fail('Retry attempt-limit count differs.');
+  if (output.retry_summary.next_deferred_eligible_at !== expected.retry_next_deferred_eligible_at) fail('Retry next deferred eligible time differs.');
   if (!exact(output.rank_distribution, expected.rank_distribution)) fail(`rank distribution differs: ${JSON.stringify(output.rank_distribution)}`);
   if (output.promotion_summary.human_review_required_count !== expected.human_review_required_count) fail('human review cohort count differs.');
   if (output.promotion_summary.public_ceiling_projection_required_count !== expected.public_ceiling_projection_required_count) fail('Public Ceiling dependency count differs.');
@@ -80,6 +83,21 @@ if (output) {
   if (output.systems.length !== expected.system_count) fail(`system row count differs: ${output.systems.length}`);
 
   const bySystem = new Map(output.systems.map((row) => [row.system_id, row]));
+  for (const [systemId, expectedRetry] of Object.entries(expected.system_retry_state)) {
+    const row = bySystem.get(systemId);
+    if (!row) continue;
+    const actual = {
+      entry_count: row.retry_entry_count,
+      due_count: row.retry_due_count,
+      deferred_count: row.retry_deferred_count,
+      attempted_count: row.retry_attempted_count,
+      attempt_limit_reached_count: row.retry_attempt_limit_reached_count,
+      next_eligible_at: row.retry_next_eligible_at,
+      attempt_limit: row.retry_attempt_limit,
+    };
+    if (!exact(actual, expectedRetry)) fail(`${systemId} retry operational state differs: ${JSON.stringify(actual)}`);
+  }
+
   const jra = bySystem.get('japan-jra-system');
   if (!jra) fail('JRA Operations v2 row missing.');
   else {
@@ -93,7 +111,7 @@ if (output) {
   else {
     if (nar.due_job_count !== 3) fail(`NAR due Job count differs: ${nar.due_job_count}`);
     if (nar.retry_due_count !== 2) fail(`NAR retry due count differs: ${nar.retry_due_count}`);
-    for (const attention of ['freshness', 'running_work', 'partial_result', 'review_queue', 'retry_due', 'publication_stale']) {
+    for (const attention of ['freshness', 'running_work', 'partial_result', 'review_queue', 'retry_due', 'retry_backoff', 'publication_stale']) {
       if (!nar.operator_attention.includes(attention)) fail(`NAR attention missing ${attention}.`);
     }
   }
@@ -173,6 +191,10 @@ for (const phrase of [
   'success / partial / failure',
   'Review Queue',
   'Retry Queue',
+  'due versus deferred',
+  'attempt count',
+  'next eligible',
+  'retry backoff',
   'rank distributions',
   'source health',
   'freshness',
@@ -200,6 +222,7 @@ console.log(`REVIEW_ENTRIES: ${output?.review_summary.entry_count ?? 0}`);
 console.log(`RETRY_ENTRIES: ${output?.retry_summary.entry_count ?? 0}`);
 console.log('ACQUISITION_STATE_ACCOUNTING: pass');
 console.log('REVIEW_RETRY_RANK_AGGREGATION: pass');
+console.log('RETRY_ATTEMPT_BACKOFF_STATE: pass');
 console.log('SOURCE_HEALTH_AND_FRESHNESS: pass');
 console.log('PROMOTION_AND_PUBLICATION_STATE: pass');
 console.log('OPERATIONS_V1_ADDITIVE_REFERENCE: pass');

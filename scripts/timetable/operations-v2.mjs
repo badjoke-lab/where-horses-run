@@ -64,6 +64,38 @@ function sourceStateFor(sourceStates, systemId) {
   return sourceStates?.find((state) => state.system_id === systemId) ?? null;
 }
 
+function retryPolicyFor(duePolicy, systemId) {
+  return duePolicy?.system_rules?.find((rule) => rule.system_id === systemId)?.rank_retry ?? null;
+}
+
+function retryOperationalState(entries, generatedAt, attemptLimit) {
+  let dueCount = 0;
+  let deferredCount = 0;
+  let attemptedCount = 0;
+  let attemptLimitReachedCount = 0;
+  const deferredTimes = [];
+  for (const entry of entries) {
+    const due = entry.next_eligible_retry_at === null || Date.parse(entry.next_eligible_retry_at) <= Date.parse(generatedAt);
+    if (due) dueCount += 1;
+    else {
+      deferredCount += 1;
+      deferredTimes.push(entry.next_eligible_retry_at);
+    }
+    if (entry.attempt_count > 0) attemptedCount += 1;
+    if (attemptLimit > 0 && entry.attempt_count >= attemptLimit) attemptLimitReachedCount += 1;
+  }
+  deferredTimes.sort();
+  return {
+    entry_count: entries.length,
+    due_count: dueCount,
+    deferred_count: deferredCount,
+    attempted_count: attemptedCount,
+    attempt_limit_reached_count: attemptLimitReachedCount,
+    next_eligible_at: deferredTimes[0] ?? null,
+    attempt_limit: attemptLimit,
+  };
+}
+
 function publicationStateFor(publicationBySystem, systemId, fallbackState) {
   return publicationBySystem?.find((entry) => entry.system_id === systemId)?.state ?? fallbackState;
 }
@@ -164,7 +196,7 @@ function systemJobCounts(systemId, duePlan, runtimeStatuses) {
   return counts;
 }
 
-function attentionFor({ sourceHealth, freshnessAge, freshnessThreshold, jobCounts, reviewReady, retryDue, promotionReady, publicationState }) {
+function attentionFor({ sourceHealth, freshnessAge, freshnessThreshold, jobCounts, reviewReady, retryDue, retryDeferred, promotionReady, publicationState }) {
   const attention = [];
   if (sourceHealth !== 'healthy') attention.push('source_health');
   if (freshnessAge === null || freshnessAge >= freshnessThreshold) attention.push('freshness');
@@ -174,6 +206,7 @@ function attentionFor({ sourceHealth, freshnessAge, freshnessThreshold, jobCount
   if (jobCounts.partial > 0) attention.push('partial_result');
   if (reviewReady > 0) attention.push('review_queue');
   if (retryDue > 0) attention.push('retry_due');
+  if (retryDeferred > 0) attention.push('retry_backoff');
   if (promotionReady > 0) attention.push('promotion_ready');
   if (publicationState === 'stale') attention.push('publication_stale');
   return attention.length ? attention : ['none'];
@@ -222,11 +255,21 @@ export function buildOperationsV2V1({
   const retryReasonCounts = {};
   let retryDue = 0;
   let retryDeferred = 0;
+  let retryAttempted = 0;
+  let retryAttemptLimitReached = 0;
+  const retryDeferredTimes = [];
   for (const entry of retryQueue.entries) {
     retryReasonCounts[entry.retry_reason] = (retryReasonCounts[entry.retry_reason] ?? 0) + 1;
     if (entry.next_eligible_retry_at === null || Date.parse(entry.next_eligible_retry_at) <= Date.parse(generatedAt)) retryDue += 1;
-    else retryDeferred += 1;
+    else {
+      retryDeferred += 1;
+      retryDeferredTimes.push(entry.next_eligible_retry_at);
+    }
+    if (entry.attempt_count > 0) retryAttempted += 1;
+    const limit = retryPolicyFor(duePolicy, entry.system_id)?.max_attempt_count ?? 0;
+    if (limit > 0 && entry.attempt_count >= limit) retryAttemptLimitReached += 1;
   }
+  retryDeferredTimes.sort();
 
   const publicCeilingDependencies = reviewCohortPlan.cohorts.filter((cohort) => cohort.promotion_dependency === 'public_ceiling_projection_required').length;
   const humanReviewRequired = reviewCohortPlan.cohorts.length;
@@ -246,7 +289,9 @@ export function buildOperationsV2V1({
       systemPromotions[entry.promotion_state] += 1;
       addRanks(systemRanks, entry.rank_counts);
     }
-    const systemRetryDue = systemRetryEntries.filter((entry) => entry.next_eligible_retry_at === null || Date.parse(entry.next_eligible_retry_at) <= Date.parse(generatedAt)).length;
+    const retryPolicy = retryPolicyFor(duePolicy, profile.system_id);
+    const systemRetryState = retryOperationalState(systemRetryEntries, generatedAt, retryPolicy?.max_attempt_count ?? 0);
+    const systemRetryDue = systemRetryState.due_count;
     const publicationState = publicationStateFor(publicationSnapshot.by_system, profile.system_id, publicationSnapshot.state);
     return {
       system_id: profile.system_id,
@@ -257,7 +302,13 @@ export function buildOperationsV2V1({
       due_job_count: duePlan.collection_plan.jobs.filter((job) => job.system_id === profile.system_id).length,
       job_counts: systemJobs,
       review_ready_count: systemReviewReady,
-      retry_due_count: systemRetryDue,
+      retry_entry_count: systemRetryState.entry_count,
+      retry_due_count: systemRetryState.due_count,
+      retry_deferred_count: systemRetryState.deferred_count,
+      retry_attempted_count: systemRetryState.attempted_count,
+      retry_attempt_limit_reached_count: systemRetryState.attempt_limit_reached_count,
+      retry_next_eligible_at: systemRetryState.next_eligible_at,
+      retry_attempt_limit: systemRetryState.attempt_limit,
       rank_distribution: systemRanks,
       promotion_state_counts: systemPromotions,
       publication_state: publicationState,
@@ -268,6 +319,7 @@ export function buildOperationsV2V1({
         jobCounts: systemJobs,
         reviewReady: systemReviewReady,
         retryDue: systemRetryDue,
+        retryDeferred: systemRetryState.deferred_count,
         promotionReady: systemPromotions.promotion_ready,
         publicationState,
       }),
@@ -294,6 +346,9 @@ export function buildOperationsV2V1({
       entry_count: retryQueue.entries.length,
       due_now_count: retryDue,
       deferred_count: retryDeferred,
+      attempted_entry_count: retryAttempted,
+      attempt_limit_reached_count: retryAttemptLimitReached,
+      next_deferred_eligible_at: retryDeferredTimes[0] ?? null,
       by_reason: Object.fromEntries(Object.entries(retryReasonCounts).sort(([left], [right]) => left.localeCompare(right))),
     },
     rank_distribution: rankCounts,
@@ -334,6 +389,11 @@ export function validateOperationsV2V1(output, registry) {
   const acquisition = output.acquisition_summary;
   if (!acquisition || !JOB_STATUSES.every((status) => Number.isInteger(acquisition.job_counts?.[status]) && acquisition.job_counts[status] >= 0)) errors.push('acquisition job counts invalid');
   else if (acquisition.recent_result_count !== acquisition.job_counts.success + acquisition.job_counts.partial + acquisition.job_counts.failure) errors.push('recent result count does not close');
+  const retry = output.retry_summary;
+  for (const key of ['entry_count', 'due_now_count', 'deferred_count', 'attempted_entry_count', 'attempt_limit_reached_count']) {
+    if (!Number.isInteger(retry?.[key]) || retry[key] < 0) errors.push(`retry summary ${key} invalid`);
+  }
+  if (retry?.next_deferred_eligible_at !== null && !validDateTime(retry?.next_deferred_eligible_at)) errors.push('retry summary next deferred eligible time invalid');
   const publication = output.publication_summary;
   if (!publication || !PUBLICATION_STATES.includes(publication.state)) errors.push('publication summary state invalid');
   if (publication?.generated_at !== null && !validDateTime(publication?.generated_at)) errors.push('publication summary generated_at invalid');
@@ -353,6 +413,11 @@ export function validateOperationsV2V1(output, registry) {
         if (row.primary_runner !== profile.primary_runner) errors.push(`systems[${index}] primary runner differs`);
       }
       if (!SOURCE_HEALTH.includes(row.source_health)) errors.push(`systems[${index}] source health invalid`);
+      for (const key of ['retry_entry_count', 'retry_due_count', 'retry_deferred_count', 'retry_attempted_count', 'retry_attempt_limit_reached_count', 'retry_attempt_limit']) {
+        if (!Number.isInteger(row[key]) || row[key] < 0) errors.push(`systems[${index}] ${key} invalid`);
+      }
+      if (row.retry_due_count + row.retry_deferred_count !== row.retry_entry_count) errors.push(`systems[${index}] retry due/deferred counts do not close`);
+      if (row.retry_next_eligible_at !== null && !validDateTime(row.retry_next_eligible_at)) errors.push(`systems[${index}] retry next eligible time invalid`);
       if (!PUBLICATION_STATES.includes(row.publication_state)) errors.push(`systems[${index}] publication state invalid`);
       if (!Array.isArray(row.operator_attention) || row.operator_attention.length === 0) errors.push(`systems[${index}] operator attention invalid`);
       if (row.operator_attention?.includes('none') && row.operator_attention.length !== 1) errors.push(`systems[${index}] none attention must be exclusive`);

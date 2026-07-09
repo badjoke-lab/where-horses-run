@@ -19,35 +19,87 @@
     "systems"
   ],
   "properties": {
-    "schema_version": { "const": "calendar-operations-v2" },
-    "generated_at": { "type": "string", "format": "date-time" },
-    "mode": { "const": "read_only_control_plane_view" },
-    "operations_v1_ref": { "$ref": "#/$defs/repoRef" },
-    "boundaries": { "$ref": "#/$defs/boundaries" },
-    "acquisition_summary": { "$ref": "#/$defs/acquisitionSummary" },
-    "review_summary": { "$ref": "#/$defs/reviewSummary" },
-    "retry_summary": { "$ref": "#/$defs/retrySummary" },
-    "rank_distribution": { "$ref": "#/$defs/rankCounts" },
-    "promotion_summary": { "$ref": "#/$defs/promotionSummary" },
-    "publication_summary": { "$ref": "#/$defs/publicationSummary" },
+    "schema_version": {
+      "const": "calendar-operations-v2"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "const": "read_only_control_plane_view"
+    },
+    "operations_v1_ref": {
+      "$ref": "#/$defs/repoRef"
+    },
+    "boundaries": {
+      "$ref": "#/$defs/boundaries"
+    },
+    "acquisition_summary": {
+      "$ref": "#/$defs/acquisitionSummary"
+    },
+    "review_summary": {
+      "$ref": "#/$defs/reviewSummary"
+    },
+    "retry_summary": {
+      "$ref": "#/$defs/retrySummary"
+    },
+    "rank_distribution": {
+      "$ref": "#/$defs/rankCounts"
+    },
+    "promotion_summary": {
+      "$ref": "#/$defs/promotionSummary"
+    },
+    "publication_summary": {
+      "$ref": "#/$defs/publicationSummary"
+    },
     "systems": {
       "type": "array",
-      "items": { "$ref": "#/$defs/systemRow" }
+      "items": {
+        "$ref": "#/$defs/systemRow"
+      }
     }
   },
   "$defs": {
-    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-    "repoRef": { "type": "string", "pattern": "^(?:data|docs)/[A-Za-z0-9_./+-]+$" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "repoRef": {
+      "type": "string",
+      "pattern": "^(?:data|docs)/[A-Za-z0-9_./+-]+$"
+    },
     "rankCounts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["C", "B", "B+", "A", "A+"],
+      "required": [
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
+      ],
       "properties": {
-        "C": { "type": "integer", "minimum": 0 },
-        "B": { "type": "integer", "minimum": 0 },
-        "B+": { "type": "integer", "minimum": 0 },
-        "A": { "type": "integer", "minimum": 0 },
-        "A+": { "type": "integer", "minimum": 0 }
+        "C": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "B": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "B+": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "A": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "A+": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "boundaries": {
@@ -64,106 +116,289 @@
         "deployment_performed"
       ],
       "properties": {
-        "network_fetch_performed": { "const": false },
-        "job_execution_performed": { "const": false },
-        "approval_performed": { "const": false },
-        "promotion_performed": { "const": false },
-        "canonical_write_performed": { "const": false },
-        "public_write_performed": { "const": false },
-        "publication_performed": { "const": false },
-        "deployment_performed": { "const": false }
+        "network_fetch_performed": {
+          "const": false
+        },
+        "job_execution_performed": {
+          "const": false
+        },
+        "approval_performed": {
+          "const": false
+        },
+        "promotion_performed": {
+          "const": false
+        },
+        "canonical_write_performed": {
+          "const": false
+        },
+        "public_write_performed": {
+          "const": false
+        },
+        "publication_performed": {
+          "const": false
+        },
+        "deployment_performed": {
+          "const": false
+        }
       }
     },
     "jobStatusCounts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["planned", "queued", "running", "success", "partial", "failure", "not_run"],
+      "required": [
+        "planned",
+        "queued",
+        "running",
+        "success",
+        "partial",
+        "failure",
+        "not_run"
+      ],
       "properties": {
-        "planned": { "type": "integer", "minimum": 0 },
-        "queued": { "type": "integer", "minimum": 0 },
-        "running": { "type": "integer", "minimum": 0 },
-        "success": { "type": "integer", "minimum": 0 },
-        "partial": { "type": "integer", "minimum": 0 },
-        "failure": { "type": "integer", "minimum": 0 },
-        "not_run": { "type": "integer", "minimum": 0 }
+        "planned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queued": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "running": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "success": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "partial": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failure": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_run": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "acquisitionSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["job_counts", "due_plan_job_count", "recent_result_count"],
+      "required": [
+        "job_counts",
+        "due_plan_job_count",
+        "recent_result_count"
+      ],
       "properties": {
-        "job_counts": { "$ref": "#/$defs/jobStatusCounts" },
-        "due_plan_job_count": { "type": "integer", "minimum": 0 },
-        "recent_result_count": { "type": "integer", "minimum": 0 }
+        "job_counts": {
+          "$ref": "#/$defs/jobStatusCounts"
+        },
+        "due_plan_job_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recent_result_count": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "reviewStateCounts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["review_ready", "reviewing", "approved", "rejected"],
+      "required": [
+        "review_ready",
+        "reviewing",
+        "approved",
+        "rejected"
+      ],
       "properties": {
-        "review_ready": { "type": "integer", "minimum": 0 },
-        "reviewing": { "type": "integer", "minimum": 0 },
-        "approved": { "type": "integer", "minimum": 0 },
-        "rejected": { "type": "integer", "minimum": 0 }
+        "review_ready": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "approved": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "promotionStateCounts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["not_ready", "promotion_ready", "promoted", "published"],
+      "required": [
+        "not_ready",
+        "promotion_ready",
+        "promoted",
+        "published"
+      ],
       "properties": {
-        "not_ready": { "type": "integer", "minimum": 0 },
-        "promotion_ready": { "type": "integer", "minimum": 0 },
-        "promoted": { "type": "integer", "minimum": 0 },
-        "published": { "type": "integer", "minimum": 0 }
+        "not_ready": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "promotion_ready": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "promoted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "published": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "reviewSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entry_count", "by_review_state", "by_promotion_state"],
+      "required": [
+        "entry_count",
+        "by_review_state",
+        "by_promotion_state"
+      ],
       "properties": {
-        "entry_count": { "type": "integer", "minimum": 0 },
-        "by_review_state": { "$ref": "#/$defs/reviewStateCounts" },
-        "by_promotion_state": { "$ref": "#/$defs/promotionStateCounts" }
+        "entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_review_state": {
+          "$ref": "#/$defs/reviewStateCounts"
+        },
+        "by_promotion_state": {
+          "$ref": "#/$defs/promotionStateCounts"
+        }
       }
     },
     "retrySummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entry_count", "due_now_count", "deferred_count", "by_reason"],
+      "required": [
+        "entry_count",
+        "due_now_count",
+        "deferred_count",
+        "attempted_entry_count",
+        "attempt_limit_reached_count",
+        "next_deferred_eligible_at",
+        "by_reason"
+      ],
       "properties": {
-        "entry_count": { "type": "integer", "minimum": 0 },
-        "due_now_count": { "type": "integer", "minimum": 0 },
-        "deferred_count": { "type": "integer", "minimum": 0 },
+        "entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "due_now_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deferred_count": {
+          "type": "integer",
+          "minimum": 0
+        },
         "by_reason": {
           "type": "object",
-          "additionalProperties": { "type": "integer", "minimum": 0 }
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "attempted_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attempt_limit_reached_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "next_deferred_eligible_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
     "promotionSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["by_state", "human_review_required_count", "public_ceiling_projection_required_count"],
+      "required": [
+        "by_state",
+        "human_review_required_count",
+        "public_ceiling_projection_required_count"
+      ],
       "properties": {
-        "by_state": { "$ref": "#/$defs/promotionStateCounts" },
-        "human_review_required_count": { "type": "integer", "minimum": 0 },
-        "public_ceiling_projection_required_count": { "type": "integer", "minimum": 0 }
+        "by_state": {
+          "$ref": "#/$defs/promotionStateCounts"
+        },
+        "human_review_required_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "public_ceiling_projection_required_count": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "publicationSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["state", "generated_at", "meeting_count", "detail_count", "stale_for_current_window"],
+      "required": [
+        "state",
+        "generated_at",
+        "meeting_count",
+        "detail_count",
+        "stale_for_current_window"
+      ],
       "properties": {
-        "state": { "enum": ["current", "stale", "unknown"] },
-        "generated_at": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
-        "meeting_count": { "type": "integer", "minimum": 0 },
-        "detail_count": { "type": "integer", "minimum": 0 },
-        "stale_for_current_window": { "type": "boolean" }
+        "state": {
+          "enum": [
+            "current",
+            "stale",
+            "unknown"
+          ]
+        },
+        "generated_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meeting_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "detail_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stale_for_current_window": {
+          "type": "boolean"
+        }
       }
     },
     "systemRow": {
@@ -178,29 +413,129 @@
         "due_job_count",
         "job_counts",
         "review_ready_count",
+        "retry_entry_count",
         "retry_due_count",
+        "retry_deferred_count",
+        "retry_attempted_count",
+        "retry_attempt_limit_reached_count",
+        "retry_next_eligible_at",
+        "retry_attempt_limit",
         "rank_distribution",
         "promotion_state_counts",
         "publication_state",
         "operator_attention"
       ],
       "properties": {
-        "system_id": { "$ref": "#/$defs/id" },
-        "authority_id": { "$ref": "#/$defs/id" },
-        "primary_runner": { "enum": ["github_actions", "local", "reviewed_import"] },
-        "source_health": { "enum": ["healthy", "degraded", "unavailable", "unknown"] },
-        "freshness_age_hours": { "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
-        "due_job_count": { "type": "integer", "minimum": 0 },
-        "job_counts": { "$ref": "#/$defs/jobStatusCounts" },
-        "review_ready_count": { "type": "integer", "minimum": 0 },
-        "retry_due_count": { "type": "integer", "minimum": 0 },
-        "rank_distribution": { "$ref": "#/$defs/rankCounts" },
-        "promotion_state_counts": { "$ref": "#/$defs/promotionStateCounts" },
-        "publication_state": { "enum": ["current", "stale", "unknown"] },
+        "system_id": {
+          "$ref": "#/$defs/id"
+        },
+        "authority_id": {
+          "$ref": "#/$defs/id"
+        },
+        "primary_runner": {
+          "enum": [
+            "github_actions",
+            "local",
+            "reviewed_import"
+          ]
+        },
+        "source_health": {
+          "enum": [
+            "healthy",
+            "degraded",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "freshness_age_hours": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "due_job_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "job_counts": {
+          "$ref": "#/$defs/jobStatusCounts"
+        },
+        "review_ready_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_due_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rank_distribution": {
+          "$ref": "#/$defs/rankCounts"
+        },
+        "promotion_state_counts": {
+          "$ref": "#/$defs/promotionStateCounts"
+        },
+        "publication_state": {
+          "enum": [
+            "current",
+            "stale",
+            "unknown"
+          ]
+        },
         "operator_attention": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "enum": ["source_health", "freshness", "queued_work", "running_work", "recent_failure", "partial_result", "review_queue", "retry_due", "promotion_ready", "publication_stale", "none"] }
+          "items": {
+            "enum": [
+              "source_health",
+              "freshness",
+              "queued_work",
+              "running_work",
+              "recent_failure",
+              "partial_result",
+              "review_queue",
+              "retry_due",
+              "retry_backoff",
+              "promotion_ready",
+              "publication_stale",
+              "none"
+            ]
+          }
+        },
+        "retry_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_deferred_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_attempted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_attempt_limit_reached_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_next_eligible_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retry_attempt_limit": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     }
