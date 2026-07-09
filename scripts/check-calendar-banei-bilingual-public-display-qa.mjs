@@ -40,7 +40,7 @@ else {
   }
 }
 
-const baneiPolicy = policyData.policies.find((policy) => policy.id === 'japan-banei-a-plus');
+const baneiPolicy = policyData.policies.find((policy) => policy.id === 'banei-reviewed-a-plus');
 if (!baneiPolicy) fail('Banei publication policy missing.');
 else {
   if (baneiPolicy.max_public_rank !== 'A+') fail('Banei policy public maximum differs.');
@@ -177,7 +177,7 @@ if (projection) {
     if (projection.meetingDetailsDataset.details.length !== 1) fail('Banei detail projection count differs.');
     if (meeting.effective_public_rank !== 'A+' || detail.effective_public_rank !== 'A+') fail('Banei detail-source fixture must project at A+.');
     if (decision.readiness_id !== 'japan--japan-banei-system--nar-banei-race-list-deba-table') fail(`Banei A+ decision uses wrong Readiness record: ${decision.readiness_id}`);
-    if (decision.policy_id !== 'japan-banei-a-plus') fail(`Banei decision policy differs: ${decision.policy_id}`);
+    if (decision.policy_id !== 'banei-reviewed-a-plus') fail(`Banei decision policy differs: ${decision.policy_id}`);
     if (meeting.detail_path !== `/timetable/meetings/${meetingId}/`) fail('Banei meeting detail path differs.');
 
     const listForbidden = ['timetable_rows', 'race_name', 'distance_m', 'surface', 'course_label'];
@@ -212,7 +212,7 @@ if (projection) {
 
 if (candidate) {
   const aPolicy = structuredClone(policyData);
-  const policy = aPolicy.policies.find((entry) => entry.id === 'japan-banei-a-plus');
+  const policy = aPolicy.policies.find((entry) => entry.id === 'banei-reviewed-a-plus');
   policy.max_public_rank = 'A';
   let aProjection = null;
   try { aProjection = buildProjection(aPolicy); } catch (error) { fail(`Banei A downgrade fixture failed: ${error.message}`); }
@@ -227,7 +227,7 @@ if (candidate) {
   }
 
   const noNamePolicy = structuredClone(policyData);
-  const noName = noNamePolicy.policies.find((entry) => entry.id === 'japan-banei-a-plus');
+  const noName = noNamePolicy.policies.find((entry) => entry.id === 'banei-reviewed-a-plus');
   noName.a_plus_fields.show_race_name = false;
   let noNameProjection = null;
   try { noNameProjection = buildProjection(noNamePolicy); } catch (error) { fail(`Banei race-name-off fixture failed: ${error.message}`); }
