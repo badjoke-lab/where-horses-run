@@ -177,10 +177,10 @@ In Registry terms:
 supports_cross_month_window: false
 supports_selected_meetings: true
 supports_source_visible_horizon: false
-supports_rank_upgrade_retry: false
+supports_rank_upgrade_retry: true
 ```
 
-The Banei Due-job Planner system rule also remains disabled.
+The Banei Due-job Planner system rule is enabled only for bounded rank-retry planning.
 
 ## Selected-meeting support update
 
@@ -190,24 +190,9 @@ Selected-meeting support means an explicit reviewed Collection Job may target st
 
 It does not mean rank-upgrade retry is enabled.
 
-## Why rank-upgrade retry remains disabled
+## Rank-upgrade retry activation update
 
-Rank-upgrade retry requires more than an A+ parser and selected-meeting execution capability.
-
-It still requires evidence for:
-
-```text
-retry backoff semantics
-attempt accounting
-retry reason mapping
-failure isolation across retry attempts
-Coverage and Result Manifest normalization after retry
-Review Queue behavior after retry
-Retry Queue update behavior
-retry-specific Due-job policy
-```
-
-Those capabilities are not activated by this contract.
+Rank-upgrade retry is now enabled from the merged execution proof. The proof validates due/deferred selection, selected-meeting Job generation, one success and one failure-isolated partial result, success removal, failure retention, attempt accounting, 6h then 12h exponential backoff, max-attempt suppression, Coverage and Result Manifest normalization, and Review Queue behavior. The Banei Due-job rule is enabled only for bounded rank-retry planning; unrelated automation remains disabled.
 
 ## Adapter evidence mapping
 

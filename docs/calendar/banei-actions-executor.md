@@ -343,30 +343,11 @@ Raw source bodies are not stored.
 
 ## Rank-upgrade retry boundary
 
-Rank-upgrade retry remains disabled.
-
-Selected-meeting execution evidence is necessary but not sufficient for retry activation.
-
-Retry activation still requires explicit proof for:
-
-```text
-retry backoff
-attempt accounting
-retry reason mapping
-failure isolation across retry attempts
-Retry Queue update behavior
-retry-specific Due-job policy
-```
-
-The executor therefore supports selected Collection Jobs without claiming automatic retry policy.
+Rank-upgrade retry capability is enabled from merged execution proof. The proof validates due/deferred planning, selected-meeting Job generation, success removal, failure retention, attempt accounting, exponential backoff, max-attempt suppression, and Manifest/Review Queue behavior. The executor supports explicit reviewed retry Jobs. Scheduler execution remains disabled, so planning eligibility does not mean unattended execution.
 
 ## Due-job policy boundary
 
-The Banei Due-job Planner rule remains disabled.
-
-The runner may execute an explicit reviewed Collection Plan, but the daily planner does not yet generate Banei Jobs automatically.
-
-This keeps schedule maintenance policy separate from runner capability.
+The Banei Due-job Planner system rule is enabled only for bounded rank-retry planning. Regular refresh, coverage-gap planning, and source revalidation remain disabled. The shared scheduler remains artifact-only and does not execute planned Jobs automatically.
 
 ## Public and safety boundary
 
@@ -425,20 +406,10 @@ This executor stage is complete when:
 - Review Queue validates and cross-checks Manifest;
 - shared Actions dispatcher recognizes the executor;
 - Actions multi-job planning assigns independent Banei batch IDs;
-- rank-upgrade retry remains disabled;
-- Banei Due-job policy remains disabled;
+- rank-upgrade retry is enabled from reviewed proof;
+- Banei Due-job policy is enabled only for bounded rank-retry planning;
 - no approval, promotion, public write, publication, or deployment side effect occurs.
 
 ## Next handoff
 
-After the Actions executor is validated, the next source-specific Banei stage is retry execution proof.
-
-That proof should cover:
-
-1. one explicit Retry Queue entry;
-2. due versus deferred backoff behavior;
-3. attempt count increment;
-4. selected-meeting Job generation from retry state;
-5. one successful retry and one failure-isolated case;
-6. Result Manifest and Review Queue behavior after retry;
-7. only then, Registry `supports_rank_upgrade_retry` and Banei Due-job retry policy activation.
+The retry execution proof and conservative activation are complete. The next Banei stage is operational integration: surface due/deferred/attempt/backoff status in the normal operator view, run an explicit reviewed retry Job through the standard Actions multi-job path, and record real operational evidence while unattended execution remains disabled.

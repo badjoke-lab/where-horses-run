@@ -112,7 +112,9 @@ if (output) {
   if (!banei) fail('Banei Operations v2 row missing.');
   else {
     if (banei.source_health !== 'unknown' || banei.freshness_age_hours !== null) fail('Banei unknown source/freshness state differs.');
-    if (!exact(banei.operator_attention, ['source_health', 'freshness'])) fail(`Banei attention differs: ${JSON.stringify(banei.operator_attention)}`);
+    if (banei.due_job_count !== 1) fail(`Banei due Job count differs: ${banei.due_job_count}`);
+    if (banei.retry_due_count !== 2) fail(`Banei retry due count differs: ${banei.retry_due_count}`);
+    if (!exact(banei.operator_attention, ['source_health', 'freshness', 'retry_due'])) fail(`Banei attention differs: ${JSON.stringify(banei.operator_attention)}`);
   }
 
   if (output.operations_v1_ref !== 'data/generated/timetable/operations-status.json') fail('Operations v1 additive reference differs.');

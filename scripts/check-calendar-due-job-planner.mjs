@@ -76,8 +76,14 @@ if (plan) {
   const hkjc = jobs.find((job) => job.system_id === 'hong-kong-hkjc-system');
   if (!hkjc || hkjc.reason !== 'source_revalidation' || hkjc.collection_mode !== 'date_window') fail('HKJC bounded source revalidation Job missing.');
 
-  if (jobs.some((job) => job.system_id === 'japan-banei-system')) fail('policy-disabled Banei must not receive a due Job.');
-  if (!plan.decisions.some((decision) => decision.system_id === 'japan-banei-system' && decision.trigger === 'policy_disabled' && decision.disposition === 'excluded')) fail('Banei policy-disabled decision missing.');
+  const baneiRetry = jobs.find((job) => job.system_id === 'japan-banei-system' && job.reason === 'rank_upgrade_retry');
+  if (!baneiRetry) fail('Banei rank retry Job missing.');
+  else {
+    if (!exact(baneiRetry.requested_scope.meeting_ids, fixtures.expected.banei_retry_meeting_ids)) fail(`Banei due retry IDs differ: ${JSON.stringify(baneiRetry.requested_scope.meeting_ids)}`);
+    if (baneiRetry.collection_mode !== 'selected_meetings') fail('Banei retry Job must use selected_meetings.');
+    if (baneiRetry.target_rank !== 'A+' || baneiRetry.rank_strategy !== 'target_rank') fail('Banei retry target must resolve to A+ target_rank.');
+    if (baneiRetry.runner_policy.mode !== 'registry_primary_or_fallback') fail('Banei retry Job must preserve reviewed-import fallback eligibility.');
+  }
   if (plan.scheduler_boundary.artifact_only !== true || Object.entries(plan.scheduler_boundary).some(([key, value]) => key !== 'cadence_hours' && key !== 'artifact_only' && value !== false)) {
     fail('Due-job scheduler boundary has enabled side effects.');
   }
@@ -203,6 +209,7 @@ console.log('FRESHNESS_AND_PROXIMITY: pass');
 console.log('SOURCE_HORIZON: pass');
 console.log('COVERAGE_GAP: pass');
 console.log('RANK_RETRY_BACKOFF: pass');
+console.log('BANEI_RANK_RETRY_PLANNING: enabled / batch=2 / attempts=3');
 console.log('SOURCE_HEALTH_REVALIDATION: pass');
 console.log('SEASON_SUPPRESSION: pass');
 console.log('MAX_JOB_CAP: pass');

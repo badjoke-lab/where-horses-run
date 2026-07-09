@@ -250,8 +250,8 @@ if (baneiProfile?.profile_status !== 'active'
   || baneiProfile?.detail_adapter_id !== 'banei-nar-race-list-detail-v1'
   || baneiProfile?.supports_date_window !== true
   || baneiProfile?.supports_selected_meetings !== true
-  || baneiProfile?.supports_rank_upgrade_retry !== false) {
-  fail('Banei active runner profile must preserve GitHub Actions primary routing, reviewed-import fallback, evidence-backed detail source/adapter, date-window and selected support, and disabled rank retry.');
+  || baneiProfile?.supports_rank_upgrade_retry !== true) {
+  fail('Banei active runner profile must preserve GitHub Actions primary routing, reviewed-import fallback, evidence-backed detail source/adapter, date-window, selected-meeting, and rank-retry support.');
 }
 const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
 if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== 'local') fail('HKJC provisional profile must preserve grounded Actions/local generator routing.');
@@ -280,4 +280,4 @@ console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('HKJC_PROFILE: provisional bounded generator / github_actions primary / local fallback');
-console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected enabled / rank retry disabled');
+console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
