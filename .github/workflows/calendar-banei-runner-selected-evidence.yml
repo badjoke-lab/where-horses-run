@@ -1,0 +1,57 @@
+name: Calendar Banei runner and selected evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-banei-runner-selected-evidence-v1.json'
+      - 'scripts/timetable/summarize-banei-runner-selected-evidence.mjs'
+      - 'scripts/check-calendar-banei-runner-selected-evidence.mjs'
+      - '.github/workflows/calendar-banei-runner-selected-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-banei-runner-selected-evidence-v1.json'
+      - 'scripts/timetable/summarize-banei-runner-selected-evidence.mjs'
+      - 'scripts/check-calendar-banei-runner-selected-evidence.mjs'
+      - '.github/workflows/calendar-banei-runner-selected-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/summarize-banei-runner-selected-evidence.mjs
+          node --check scripts/check-calendar-banei-runner-selected-evidence.mjs
+
+      - name: Validate Banei runner convergence and selected-meeting evidence
+        run: node scripts/check-calendar-banei-runner-selected-evidence.mjs
+
+      - name: Validate Banei schedule, detail, and Registry dependencies
+        run: |
+          node scripts/check-calendar-banei-full-month-candidate-set.mjs --allow-empty
+          node scripts/check-calendar-banei-detail-adapter.mjs
+          node scripts/check-calendar-banei-live-smoke-evidence.mjs
+          node scripts/check-calendar-banei-detail-registry-activation.mjs
+
+      - name: Validate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
+
+      - name: Check diff formatting
+        run: git diff --check
