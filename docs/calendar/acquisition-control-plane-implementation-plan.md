@@ -627,15 +627,14 @@ Actual GitHub PR numbers do not need to match these programme labels.
 
 ## Immediate sequence from current repository state
 
-The foundation programme is complete. The current handoff sequence is:
+The foundation programme is complete. Guarded explicit Banei Retry Queue state apply and rollback are also implemented with reviewed approval binding, exact SHA-256 stale-write guards, durable atomic replacement, backup-first rollback evidence, and explicit operator-only mutation. The current handoff sequence is:
 
 ```text
-1. keep Banei authoritative Queue application separate until stale-write, atomic replacement, and rollback safeguards exist
-2. complete Banei freshness and rollback operating evidence
-3. complete Banei bilingual QA and remaining public-display review
-4. keep manual reviewed retry execution while unattended execution remains disabled
-5. decide Banei handoff completion explicitly
-6. then begin the next source-specific pilot
+1. complete Banei freshness and rollback operating evidence
+2. complete Banei bilingual QA and remaining public-display review
+3. keep manual reviewed retry execution while unattended execution remains disabled
+4. decide Banei handoff completion explicitly
+5. then begin the next source-specific pilot
 ```
 
 ## Release gates

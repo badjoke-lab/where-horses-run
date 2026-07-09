@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
@@ -26,8 +27,16 @@ if (!Number.isInteger(baseHours) || baseHours < 1) throw new Error('--base-backo
 if (!Number.isInteger(maxHours) || maxHours < baseHours) throw new Error('--max-backoff-hours must be an integer >= base backoff');
 if (Number.isNaN(Date.parse(asOf))) throw new Error('--as-of must be a valid ISO date-time');
 
+function readText(relativePath) {
+  return fs.readFileSync(path.resolve(root, relativePath), 'utf8');
+}
+
 function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.resolve(root, relativePath), 'utf8'));
+  return JSON.parse(readText(relativePath));
+}
+
+function sha256Text(text) {
+  return crypto.createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
 function writeJson(relativePath, value) {
@@ -36,7 +45,8 @@ function writeJson(relativePath, value) {
   fs.writeFileSync(absolute, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-const queue = readJson(queuePath);
+const queueText = readText(queuePath);
+const queue = JSON.parse(queueText);
 const execution = readJson(executionPath);
 const candidate = readJson(path.join(batchRoot, 'candidates.json'));
 const manifest = readJson(path.join(batchRoot, 'result-manifest.json'));
@@ -55,6 +65,7 @@ const proposal = buildBaneiRetryReconciliationProposalV1({
     base_hours: baseHours,
     max_hours: maxHours,
   },
+  source_queue_sha256: sha256Text(queueText),
 });
 
 if (!checkOnly) {
@@ -72,6 +83,8 @@ console.log(JSON.stringify({
   untouched_meetings: proposal.transition_summary.untouched_meetings.length,
   before_entry_count: proposal.transition_summary.before_entry_count,
   after_entry_count: proposal.transition_summary.after_entry_count,
+  source_queue_sha256: proposal.source_queue_sha256,
+  proposed_queue_sha256: proposal.proposed_queue_sha256,
   input_queue_write_performed: proposal.boundaries.input_queue_write_performed,
   canonical_write_performed: proposal.boundaries.canonical_write_performed,
   check_only: checkOnly,

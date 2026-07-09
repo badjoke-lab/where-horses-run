@@ -1,6 +1,6 @@
 # Banei Retry Queue Reconciliation
 
-Status: active operator proposal contract  
+Status: completed proposal stage; guarded state apply is defined separately  
 Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`  
 Shared Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
 Last reviewed: 2026-07-09
@@ -351,15 +351,17 @@ The reconciliation operator stage is complete when:
 
 ## Next handoff
 
-After proposal-only reconciliation is stable, a later explicit Queue state-update command may be considered.
+The guarded explicit Queue state-update command is implemented in `docs/calendar/banei-retry-queue-state-apply.md`.
 
-That command must require:
+It requires:
 
 1. a reviewed reconciliation proposal;
-2. an exact source Queue digest or equivalent stale-write guard;
-3. explicit operator action;
-4. atomic replacement semantics;
-5. rollback evidence;
-6. no coupling to automatic acquisition execution.
+2. a reviewed approval artifact bound to exact source Queue, proposal, and target Queue SHA-256 digests;
+3. exact stale-write guards;
+4. explicit operator `--apply` action;
+5. durable same-directory atomic replacement semantics;
+6. backup and rollback evidence written before replacement;
+7. explicit operator `--restore` action with a stale rollback guard;
+8. no coupling to automatic acquisition execution, approval, promotion, publication, or deployment.
 
-Until then, reconciliation remains proposal-only.
+Reconciliation itself remains proposal-only. Banei now moves to freshness and rollback operating evidence, bilingual QA, and remaining public-display review.

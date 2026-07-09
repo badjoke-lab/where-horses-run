@@ -1,0 +1,87 @@
+name: Calendar Banei Retry Queue state apply
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-banei-retry-queue-apply-approval.schema.json'
+      - 'scripts/timetable/banei-retry-reconciliation.mjs'
+      - 'scripts/timetable/reconcile-banei-retry-queue.mjs'
+      - 'scripts/timetable/banei-retry-queue-state-apply.mjs'
+      - 'scripts/timetable/atomic-text-state-replace.mjs'
+      - 'scripts/timetable/apply-banei-retry-queue-state.mjs'
+      - 'scripts/timetable/rollback-banei-retry-queue-state.mjs'
+      - 'scripts/check-calendar-banei-retry-queue-state-apply.mjs'
+      - 'docs/calendar/banei-retry-reconciliation.md'
+      - 'docs/calendar/banei-retry-queue-state-apply.md'
+      - '.github/workflows/calendar-banei-retry-queue-state-apply.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-banei-retry-queue-apply-approval.schema.json'
+      - 'scripts/timetable/banei-retry-reconciliation.mjs'
+      - 'scripts/timetable/reconcile-banei-retry-queue.mjs'
+      - 'scripts/timetable/banei-retry-queue-state-apply.mjs'
+      - 'scripts/timetable/atomic-text-state-replace.mjs'
+      - 'scripts/timetable/apply-banei-retry-queue-state.mjs'
+      - 'scripts/timetable/rollback-banei-retry-queue-state.mjs'
+      - 'scripts/check-calendar-banei-retry-queue-state-apply.mjs'
+      - 'docs/calendar/banei-retry-reconciliation.md'
+      - 'docs/calendar/banei-retry-queue-state-apply.md'
+      - '.github/workflows/calendar-banei-retry-queue-state-apply.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/banei-retry-queue-state-apply.mjs
+          node --check scripts/timetable/atomic-text-state-replace.mjs
+          node --check scripts/timetable/apply-banei-retry-queue-state.mjs
+          node --check scripts/timetable/rollback-banei-retry-queue-state.mjs
+          node --check scripts/check-calendar-banei-retry-queue-state-apply.mjs
+      - name: Validate guarded Queue apply and rollback
+        run: node scripts/check-calendar-banei-retry-queue-state-apply.mjs
+      - name: Validate reconciliation and retry activation dependencies
+        run: |
+          node scripts/check-calendar-banei-retry-reconciliation.mjs
+          node scripts/check-calendar-banei-retry-activation.mjs
+          node scripts/check-calendar-rank-aware-retry-queue.mjs
+      - name: Validate Operations and control-plane dependencies
+        run: |
+          node scripts/check-calendar-operations-v2.mjs
+          node scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate contracts, governance, and runtime boundary
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check explicit operator and workflow boundaries
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-banei-retry-queue-state-apply.yml', 'utf8');
+          const applyCli = fs.readFileSync('scripts/timetable/apply-banei-retry-queue-state.mjs', 'utf8');
+          const rollbackCli = fs.readFileSync('scripts/timetable/rollback-banei-retry-queue-state.mjs', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          if (!applyCli.includes("args.has('--apply')")) throw new Error('explicit --apply guard missing');
+          if (!rollbackCli.includes("args.has('--restore')")) throw new Error('explicit --restore guard missing');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('EXPLICIT_APPLY_REQUIRED: true');
+          console.log('EXPLICIT_RESTORE_REQUIRED: true');
+          console.log('SCHEDULED_EXECUTION: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check

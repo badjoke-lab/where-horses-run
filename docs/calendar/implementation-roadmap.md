@@ -443,15 +443,16 @@ Completed sequence:
 10. Operations v2 retry operational state;
 11. successful reviewed retry Job through the standard planner/dispatcher;
 12. formal manual operator route;
-13. proposal-only Queue reconciliation with no automatic Queue write.
+13. proposal-only Queue reconciliation with no automatic Queue write;
+14. guarded explicit Queue state apply and rollback with reviewed approval artifact, exact source/proposal/target SHA-256 binding, stale-write rejection, durable atomic replacement, pre-apply backup, and rollback evidence.
 
 Current sequence:
 
-1. keep authoritative Queue application separate until stale-write guard, atomic replacement, and rollback evidence exist;
-2. complete Banei freshness and rollback operating evidence;
-3. complete bilingual QA and remaining public-display review;
-4. use July whole-month validation only for explicit Completion Audit claims;
-5. preserve human review before promotion/publication.
+1. complete Banei freshness and rollback operating evidence;
+2. complete bilingual QA and remaining public-display review;
+3. use July whole-month validation only for explicit Completion Audit claims;
+4. preserve human review before promotion/publication;
+5. decide the Banei handoff boundary explicitly before the next source-specific pilot.
 
 ## Stage 8 — multi-system execution
 
