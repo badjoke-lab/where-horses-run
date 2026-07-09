@@ -80,8 +80,8 @@ if (!scheduledWorkflow.includes('workflow_dispatch:') || !scheduledWorkflow.incl
 
 for (const [file, text, markers] of [
   ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'WHR-CAL-ACQUISITION-CONTROL-PLANE', 'docs/calendar/incremental-coverage-contract.md']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Incremental maintenance is normal']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Next source Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Coverage Observation']]
+  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`', 'Incremental maintenance is normal']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Next source Work ID: `WHR-CAL-HONG-KONG-HKJC`', 'Coverage Observation']]
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
 }
@@ -94,7 +94,7 @@ if (errors.length) {
 
 console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
-console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
-console.log('CURRENT_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
+console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
+console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
