@@ -177,9 +177,13 @@ for (const phrase of [
   if (!docs.includes(phrase)) fail(`Review Cohort Planner contract missing ${phrase}.`);
 }
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Stage ACP-12 — review cohort planner', 'Status: complete.', 'Stage ACP-13 — automatic review PR preparation', 'Status: current.']) {
-  if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+for (const heading of ['Stage ACP-12 — review cohort planner', 'Stage ACP-13 — automatic review PR preparation']) {
+  if (!implementationPlan.includes(heading)) fail(`control-plane implementation plan missing ${heading}.`);
 }
+const acp12Section = implementationPlan.split('## Stage ACP-12 — review cohort planner')[1]?.split('## Stage ACP-13 — automatic review PR preparation')[0] ?? '';
+const acp13Section = implementationPlan.split('## Stage ACP-13 — automatic review PR preparation')[1]?.split('## Stage ACP-14 — due-job planner and scheduling')[0] ?? '';
+if (!acp12Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-12 complete.');
+if (!acp13Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-13 complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_REVIEW_COHORT_PLANNER: failed (${errors.length})`);
