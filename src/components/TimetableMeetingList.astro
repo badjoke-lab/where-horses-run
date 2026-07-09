@@ -62,6 +62,7 @@ const displayTime = (value: string | null) => value ?? text.notListed;
 const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';
 const shouldShowLast = (record: TimetableMeetingRow) =>
   record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+';
+const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detailPath}` : detailPath;
 ---
 
 {groups.length > 0 ? (
@@ -113,7 +114,7 @@ const shouldShowLast = (record: TimetableMeetingRow) =>
               </dl>
 
               <div class="meeting-card__links">
-                {record.detail_path && <a href={record.detail_path}>{text.detail}</a>}
+                {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
                 <a href={record.official_source_url}>{text.official}</a>
               </div>
               <p class="meeting-card__note">{text.sourceRequired}</p>
