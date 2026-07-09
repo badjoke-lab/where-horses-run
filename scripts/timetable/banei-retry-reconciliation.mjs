@@ -1,9 +1,18 @@
+import crypto from 'node:crypto';
 import { applyBaneiRetryResultV1 } from './banei-retry-execution-proof.mjs';
 import { validateRankAwareRetryQueueV1, validateRetryEntryAgainstRegistryV1 } from './rank-aware-retry-queue-validation.mjs';
 import { validateCollectionResultManifestV1 } from './collection-result-manifest-validation.mjs';
 import { validateReviewQueueV1, validateReviewQueueEntryAgainstManifestV1 } from './review-queue-validation.mjs';
 
 const PROPOSAL_SCHEMA_VERSION = 'calendar-banei-retry-queue-reconciliation-proposal-v1';
+
+function canonicalJson(value) {
+  return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+function sha256Text(text) {
+  return crypto.createHash('sha256').update(text, 'utf8').digest('hex');
+}
 
 function profileFor(registry, systemId) {
   return registry.records.find((entry) => entry.system_id === systemId) ?? null;
@@ -67,6 +76,7 @@ export function buildBaneiRetryReconciliationProposalV1({
   registry,
   as_of: asOf,
   backoff_policy: backoffPolicy,
+  source_queue_sha256: sourceQueueSha256 = null,
 } = {}) {
   if (typeof asOf !== 'string' || Number.isNaN(Date.parse(asOf))) throw new Error('as_of must be a valid ISO date-time');
   if (!backoffPolicy || !Number.isInteger(backoffPolicy.base_hours) || backoffPolicy.base_hours < 1
@@ -116,11 +126,17 @@ export function buildBaneiRetryReconciliationProposalV1({
     if (!afterIds.has(failure.meeting_id)) throw new Error(`failed retry entry missing after reconciliation: ${failure.meeting_id}`);
   }
 
+  const resolvedSourceQueueSha256 = sourceQueueSha256 ?? sha256Text(canonicalJson(queue));
+  if (!/^[0-9a-f]{64}$/.test(resolvedSourceQueueSha256)) throw new Error('source_queue_sha256 must be a lowercase SHA-256 hex digest');
+  const proposedQueueSha256 = sha256Text(canonicalJson(transition.updated_queue));
+
   return {
     schema_version: PROPOSAL_SCHEMA_VERSION,
     generated_at: asOf,
     mode: 'proposal_only',
     source_queue_generated_at: queue.generated_at,
+    source_queue_sha256: resolvedSourceQueueSha256,
+    proposed_queue_sha256: proposedQueueSha256,
     execution_identity: {
       campaign_id: execution.campaign_id,
       job_id: execution.job_id,
@@ -164,4 +180,5 @@ export function buildBaneiRetryReconciliationProposalV1({
 export const baneiRetryReconciliationV1Contract = Object.freeze({
   schema_version: PROPOSAL_SCHEMA_VERSION,
   mode: 'proposal_only',
+  digest_algorithm: 'sha256',
 });
