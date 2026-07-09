@@ -287,7 +287,7 @@ for (const phrase of [
   'freshness age 1 hour',
   '168-hour threshold breach',
   'source health remains healthy',
-  'source health and freshness are separate signals',
+  'Source health and freshness are separate signals',
   'rollback rehearsal',
   'byte-for-byte restore',
   'stale apply rejection',
