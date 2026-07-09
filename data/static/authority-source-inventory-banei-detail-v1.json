@@ -1,0 +1,21 @@
+{
+  "schema_version": "authority-source-inventory-banei-detail-v1",
+  "records": [
+    {
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "authority_name_en": "Banei Tokachi",
+      "authority_name_local": "ばんえい十勝",
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "nar-banei-race-list-deba-table",
+      "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList",
+      "source_kind": "programme",
+      "source_status": "verified",
+      "last_checked_date": "2026-07-09",
+      "capability_rank": "A+",
+      "adapter_candidate_status": "candidate",
+      "notes": "Banei-specific NAR RaceList and DebaTable route family. Bounded GitHub Actions live evidence on the reviewed 2026-07-04 Obihiro meeting produced one complete A+ candidate with 12 public-safe race rows, source_window_complete coverage, zero unresolved meetings, and zero source errors. This source record is separate from the NAR flat-racing record and does not authorize flat-racing matrix fallback."
+    }
+  ]
+}
