@@ -68,18 +68,20 @@ else {
   if (baneiProfile.supports_cross_month_window !== false) fail('Banei cross-month support must remain false.');
   if (baneiProfile.supports_selected_meetings !== true) fail('Banei selected-meeting support must be true after live proof.');
   if (baneiProfile.supports_source_visible_horizon !== false) fail('Banei source-visible-horizon support must remain false.');
-  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank-upgrade retry must remain false.');
+  if (baneiProfile.supports_rank_upgrade_retry !== true) fail('Banei rank-upgrade retry must be enabled after proof.');
   if (!exact(baneiProfile.pending_fields, [])) fail(`Banei pending_fields differ: ${JSON.stringify(baneiProfile.pending_fields)}`);
 }
 
 const baneiPolicy = duePolicy.system_rules.find((rule) => rule.system_id === 'japan-banei-system');
 if (!baneiPolicy) fail('Banei Due-job policy missing.');
 else {
-  if (baneiPolicy.enabled !== false) fail('Banei Due-job policy must remain disabled.');
+  if (baneiPolicy.enabled !== true) fail('Banei Due-job system policy must be enabled for retry planning.');
   if (baneiPolicy.regular_refresh.enabled !== false) fail('Banei automatic regular refresh must remain disabled.');
   if (baneiPolicy.coverage_gap.enabled !== false) fail('Banei automatic coverage-gap planning must remain disabled.');
   if (baneiPolicy.source_revalidation.enabled !== false) fail('Banei automatic source revalidation must remain disabled.');
-  if (baneiPolicy.rank_retry.enabled !== false) fail('Banei automatic rank retry must remain disabled.');
+  if (baneiPolicy.rank_retry.enabled !== true) fail('Banei rank retry planning must be enabled.');
+  if (baneiPolicy.rank_retry.max_selected_meetings_per_job !== 2) fail('Banei retry batch limit differs.');
+  if (baneiPolicy.rank_retry.max_attempt_count !== 3) fail('Banei retry attempt limit differs.');
 }
 
 const registryChecker = readText('scripts/check-calendar-acquisition-registry.mjs');
@@ -100,8 +102,8 @@ for (const phrase of [
   'profile_status: active',
   'supports_date_window: true',
   'supports_selected_meetings: true',
-  'supports_rank_upgrade_retry: false',
-  'The Banei Due-job Planner system rule also remains disabled.',
+  'supports_rank_upgrade_retry: true',
+  'The Banei Due-job Planner system rule is enabled only for bounded rank-retry planning.',
 ]) {
   if (!docs.includes(phrase)) fail(`Banei Registry activation contract missing ${phrase}.`);
 }
@@ -123,6 +125,6 @@ console.log('DETAIL_ADAPTER: banei-nar-race-list-detail-v1');
 console.log('OBSERVATION_RANKS: B,A+');
 console.log('DATE_WINDOW: enabled');
 console.log('SELECTED_MEETINGS: enabled');
-console.log('RANK_RETRY: disabled');
-console.log('DUE_JOB_POLICY: disabled');
+console.log('RANK_RETRY: enabled');
+console.log('DUE_JOB_POLICY: rank-retry-only');
 console.log('PROFILE_STATUS: active');

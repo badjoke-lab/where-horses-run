@@ -323,19 +323,7 @@ The successful meeting does not hide the unresolved failure.
 
 ## Activation boundary
 
-This PR is evidence only.
-
-It must not change canonical:
-
-```text
-supports_rank_upgrade_retry
-Banei Due-job system enabled state
-Banei rank_retry policy enabled state
-```
-
-A later activation PR may use this evidence to enable only the proven capability.
-
-That later PR must separately validate all shared Retry Queue, Due-job Planner, Actions executor, Registry, Manifest, Review Queue, Operations, and release gates.
+The original proof PR was evidence-only and left canonical retry support disabled. A later activation PR consumed this evidence and enabled only the proven capability. Permanent proof CI now reconstructs the pre-activation Registry and Policy baseline in memory, reruns the proof, and separately verifies that current canonical activation is limited to Registry rank-retry support plus Banei rank-retry planning with proof-bounded limits.
 
 ## Public and safety boundary
 
@@ -401,11 +389,4 @@ The Banei retry execution proof is complete when:
 
 ## Next handoff
 
-After this proof is merged, the next PR may activate Banei retry capability conservatively:
-
-1. set `supports_rank_upgrade_retry` to true;
-2. enable Banei system policy only for `rank_retry`;
-3. set bounded retry batch and attempt limits from reviewed proof values;
-4. keep regular refresh, coverage-gap, source-revalidation, cross-month, and source-visible-horizon automation disabled;
-5. keep the scheduler artifact-only and non-executing;
-6. rerun Retry Queue, Due-job Planner, Banei executor, Actions multi-job, Operations, pipeline, and release gates.
+The proof-based activation step is complete. The next handoff is operational integration: expose due/deferred/attempt/backoff state in the operator view, run an explicit reviewed Banei retry Job through the standard Actions multi-job path, record real operational evidence, and keep unattended execution disabled until separately approved.

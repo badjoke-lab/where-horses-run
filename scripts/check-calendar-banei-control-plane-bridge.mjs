@@ -69,7 +69,7 @@ if (output) {
     if (queue.entries[0].review_state !== 'review_ready' || queue.entries[0].promotion_state !== 'not_ready') fail('Review Queue initial state differs.');
   }
 
-  if (output.retry_activation.state !== 'blocked_pending_retry_execution_evidence') fail('Retry activation state differs.');
+  if (output.retry_activation.state !== 'enabled_evidence_backed') fail('Retry activation state differs.');
   if (output.retry_activation.automatic_retry_queue_write !== false) fail('automatic Retry Queue write must remain disabled.');
   if (output.retry_activation.unresolved_meeting_count !== 3) fail('retry blocker unresolved count differs.');
   if (Object.values(output.boundaries).some((value) => value !== false)) fail('bridge side-effect boundary enabled.');
@@ -85,7 +85,7 @@ else {
   if (baneiProfile.detail_adapter_id !== 'banei-nar-race-list-detail-v1') fail('Banei evidence-backed detail adapter differs.');
   if (baneiProfile.supports_date_window !== true) fail('Banei evidence-backed date-window support differs.');
   if (baneiProfile.supports_selected_meetings !== true) fail('Banei selected-meeting support must be enabled after bounded live proof.');
-  if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank retry must remain disabled until retry execution evidence exists.');
+  if (baneiProfile.supports_rank_upgrade_retry !== true) fail('Banei rank retry must be enabled after retry execution proof.');
 }
 
 if (control.monthly_scope?.expected_meeting_dates?.length !== 12) fail('Banei July control must retain twelve expected meeting dates.');
@@ -131,7 +131,7 @@ for (const phrase of [
   'Coverage Observation',
   'Collection Result Manifest',
   'Review Queue',
-  'Retry Queue activation remains blocked',
+  'Retry Queue capability is enabled',
   'reviewed_import',
   'flat-racing assumptions',
 ]) {

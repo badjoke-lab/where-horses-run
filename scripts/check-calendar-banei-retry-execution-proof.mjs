@@ -23,12 +23,21 @@ const policy = readJson('data/static/calendar-due-job-policy-v1.json');
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
 const executorFixture = readJson('data/fixtures/calendar-banei-actions-executor-fixture-v1.json');
 
+const historicalRegistry = structuredClone(registry);
+historicalRegistry.records.find((entry) => entry.system_id === 'japan-banei-system').supports_rank_upgrade_retry = false;
+const historicalPolicy = structuredClone(policy);
+const historicalRule = historicalPolicy.system_rules.find((entry) => entry.system_id === 'japan-banei-system');
+historicalRule.enabled = false;
+historicalRule.rank_retry.enabled = false;
+historicalRule.rank_retry.max_selected_meetings_per_job = 0;
+historicalRule.rank_retry.max_attempt_count = 0;
+
 let proof = null;
 try {
   proof = buildBaneiRetryExecutionProofV1({
     fixture,
-    canonical_registry: registry,
-    canonical_policy: policy,
+    canonical_registry: historicalRegistry,
+    canonical_policy: historicalPolicy,
     compatibility_contract: compatibility,
     executor_fixture: executorFixture,
   });
@@ -90,8 +99,8 @@ if (proof) {
   }
 }
 
-const proofRegistry = buildBaneiRetryProofRegistryV1(registry);
-const proofPolicy = buildBaneiRetryProofPolicyV1(policy, fixture);
+const proofRegistry = buildBaneiRetryProofRegistryV1(historicalRegistry);
+const proofPolicy = buildBaneiRetryProofPolicyV1(historicalPolicy, fixture);
 for (const entry of fixture.planner_state.retry_queue.entries) {
   const entryErrors = validateRetryEntryAgainstRegistryV1(entry, proofRegistry);
   if (entryErrors.length) fail(`${entry.meeting_id}: proof Registry cross-check failed: ${entryErrors.join('; ')}`);
@@ -134,8 +143,9 @@ if (proof) {
 
 const canonicalProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
 const canonicalRule = policy.system_rules.find((rule) => rule.system_id === 'japan-banei-system');
-if (canonicalProfile.supports_rank_upgrade_retry !== false) fail('canonical Registry was unexpectedly activated by proof work.');
-if (canonicalRule.enabled !== false || canonicalRule.rank_retry.enabled !== false) fail('canonical Banei Due-job policy was unexpectedly activated by proof work.');
+if (canonicalProfile.supports_rank_upgrade_retry !== true) fail('canonical Registry retry activation is missing after proof-based activation.');
+if (canonicalRule.enabled !== true || canonicalRule.rank_retry.enabled !== true) fail('canonical Banei rank-retry planning activation is missing.');
+if (canonicalRule.regular_refresh.enabled !== false || canonicalRule.coverage_gap.enabled !== false || canonicalRule.source_revalidation.enabled !== false) fail('unrelated Banei Due-job automation must remain disabled.');
 
 const docs = readText('docs/calendar/banei-retry-execution-proof.md');
 for (const phrase of [
@@ -169,4 +179,4 @@ console.log('ATTEMPT_INCREMENT: pass');
 console.log('BACKOFF_FIRST_FAILURE: 6h');
 console.log('BACKOFF_SECOND_FAILURE: 12h');
 console.log('MANIFEST_REVIEW_QUEUE: pass');
-console.log('CANONICAL_ACTIVATION: false');
+console.log('CANONICAL_ACTIVATION: retry-only enabled');
