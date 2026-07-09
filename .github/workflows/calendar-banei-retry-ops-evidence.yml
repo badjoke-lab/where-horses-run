@@ -1,0 +1,67 @@
+name: Calendar Banei retry operations evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-banei-retry-ops-evidence-v1.json'
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'scripts/timetable/summarize-banei-retry-ops-evidence.mjs'
+      - 'scripts/check-calendar-banei-retry-ops-evidence.mjs'
+      - '.github/workflows/calendar-banei-retry-ops-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-banei-retry-ops-evidence-v1.json'
+      - 'data/fixtures/calendar-collection-plans-v1.json'
+      - 'scripts/timetable/summarize-banei-retry-ops-evidence.mjs'
+      - 'scripts/check-calendar-banei-retry-ops-evidence.mjs'
+      - '.github/workflows/calendar-banei-retry-ops-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/summarize-banei-retry-ops-evidence.mjs
+          node --check scripts/check-calendar-banei-retry-ops-evidence.mjs
+      - name: Validate reviewed Banei retry operational evidence
+        run: node scripts/check-calendar-banei-retry-ops-evidence.mjs
+      - name: Validate standard Actions planner and dispatcher contracts
+        run: |
+          node scripts/check-calendar-collection-plan.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate Banei retry activation and Operations dependencies
+        run: |
+          node scripts/check-calendar-banei-retry-activation.mjs
+          node scripts/check-calendar-banei-retry-execution-proof.mjs
+          node scripts/check-calendar-operations-v2.mjs
+      - name: Validate Manifest and Review Queue dependencies
+        run: |
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+      - name: Validate contracts, governance, and runtime boundary
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check scheduler remains non-executing
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const policy = JSON.parse(fs.readFileSync('data/static/calendar-due-job-policy-v1.json', 'utf8'));
+          if (policy.scheduler.artifact_only !== true || policy.scheduler.execute_jobs !== false) throw new Error('scheduler automatic execution boundary differs');
+          console.log('SCHEDULER_AUTOMATIC_EXECUTION: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
