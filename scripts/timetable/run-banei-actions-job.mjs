@@ -32,6 +32,12 @@ function runNode(script, scriptArgs) {
   if (result.status !== 0) throw new Error(`${script} exited with status ${result.status}`);
 }
 
+function runGit(gitArgs, { allowFailure = false } = {}) {
+  const result = spawnSync('git', gitArgs, { cwd: root, stdio: 'ignore' });
+  if (result.error && !allowFailure) throw result.error;
+  if (result.status !== 0 && !allowFailure) throw new Error(`git ${gitArgs.join(' ')} exited with status ${result.status}`);
+}
+
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.resolve(root, relativePath), 'utf8'));
 }
@@ -40,6 +46,14 @@ function writeJson(relativePath, value) {
   const absolute = path.resolve(root, relativePath);
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
   fs.writeFileSync(absolute, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+const defaultScheduleCandidate = 'data/candidates/banei-monthly-2026-07-full-month-candidates.json';
+const defaultScheduleReport = 'data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json';
+
+function restoreScheduleCollectorOutputs() {
+  runGit(['restore', '--worktree', '--staged', defaultScheduleCandidate, defaultScheduleReport], { allowFailure: true });
+  runGit(['clean', '-f', '--', defaultScheduleCandidate, defaultScheduleReport], { allowFailure: true });
 }
 
 let scheduleInput;
@@ -62,13 +76,11 @@ try {
     detailReport = scenario.detail_report;
   } else {
     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-banei-actions-'));
+    runNode('scripts/timetable/collect-banei-full-month-calendar.mjs', []);
+    scheduleInput = readJson(defaultScheduleCandidate);
     const scheduleCandidatePath = path.join(tempRoot, 'schedule-candidate.json');
-    const scheduleReportPath = path.join(tempRoot, 'schedule-report.json');
-    runNode('scripts/timetable/collect-banei-full-month-calendar.mjs', [
-      `--candidate-output=${scheduleCandidatePath}`,
-      `--report-output=${scheduleReportPath}`,
-    ]);
-    scheduleInput = JSON.parse(fs.readFileSync(scheduleCandidatePath, 'utf8'));
+    fs.writeFileSync(scheduleCandidatePath, `${JSON.stringify(scheduleInput, null, 2)}\n`);
+    restoreScheduleCollectorOutputs();
 
     const detailRoot = path.join(tempRoot, 'detail');
     const collectorArgs = [
@@ -120,5 +132,6 @@ try {
     check_only: checkOnly,
   }));
 } finally {
+  if (!fixturePath) restoreScheduleCollectorOutputs();
   if (tempRoot) fs.rmSync(tempRoot, { recursive: true, force: true });
 }
