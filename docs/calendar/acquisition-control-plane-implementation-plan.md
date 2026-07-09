@@ -627,14 +627,13 @@ Actual GitHub PR numbers do not need to match these programme labels.
 
 ## Immediate sequence from current repository state
 
-The foundation programme is complete. Guarded explicit Banei Retry Queue state apply and rollback are also implemented with reviewed approval binding, exact SHA-256 stale-write guards, durable atomic replacement, backup-first rollback evidence, and explicit operator-only mutation. The current handoff sequence is:
+The foundation programme is complete. Guarded explicit Banei Retry Queue state apply and rollback are implemented with reviewed approval binding, exact SHA-256 stale-write guards, durable atomic replacement, backup-first rollback evidence, and explicit operator-only mutation. Freshness and rollback operating evidence is also complete: reviewed successful Banei Job evidence now proves Operations v2 freshness current and threshold-breach states while keeping source health separate, and rollback rehearsal proves byte-for-byte restore plus stale apply/rollback rejection. The current handoff sequence is:
 
 ```text
-1. complete Banei freshness and rollback operating evidence
-2. complete Banei bilingual QA and remaining public-display review
-3. keep manual reviewed retry execution while unattended execution remains disabled
-4. decide Banei handoff completion explicitly
-5. then begin the next source-specific pilot
+1. complete Banei bilingual QA and remaining public-display review
+2. keep manual reviewed retry execution while unattended execution remains disabled
+3. decide Banei handoff completion explicitly
+4. then begin the next source-specific pilot
 ```
 
 ## Release gates

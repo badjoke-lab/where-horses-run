@@ -343,7 +343,8 @@ Completed Banei foundations:
 - successful reviewed retry Job through the standard Actions planner and dispatcher;
 - formal manual workflow_dispatch operator route for the reviewed retry Plan;
 - proposal-only post-run Retry Queue reconciliation with input Queue immutability;
-- guarded explicit Retry Queue state apply and rollback with reviewed approval artifact, exact SHA-256 stale-write guards, durable atomic replacement, pre-apply backup, and rollback evidence.
+- guarded explicit Retry Queue state apply and rollback with reviewed approval artifact, exact SHA-256 stale-write guards, durable atomic replacement, pre-apply backup, and rollback evidence;
+- freshness and rollback operating evidence connecting the successful reviewed Banei Job to Operations v2 freshness state, proving 1-hour current state, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection.
 
 Current Banei boundary:
 
@@ -360,7 +361,7 @@ scheduler Job execution: disabled
 automatic approval/promotion/publication: disabled
 ```
 
-Current handoff: proposal-only reconciliation and guarded explicit Retry Queue state apply/rollback are complete. The current work is Banei freshness and rollback operating evidence, followed by bilingual QA and remaining public-display review before any broader public rollout.
+Current handoff: proposal-only reconciliation, guarded explicit Retry Queue state apply/rollback, and freshness/rollback operating evidence are complete. The current work is Banei bilingual QA and remaining public-display review before any broader public rollout.
 
 ## Multi-system operations expansion
 

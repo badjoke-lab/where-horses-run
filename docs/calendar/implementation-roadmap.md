@@ -444,15 +444,15 @@ Completed sequence:
 11. successful reviewed retry Job through the standard planner/dispatcher;
 12. formal manual operator route;
 13. proposal-only Queue reconciliation with no automatic Queue write;
-14. guarded explicit Queue state apply and rollback with reviewed approval artifact, exact source/proposal/target SHA-256 binding, stale-write rejection, durable atomic replacement, pre-apply backup, and rollback evidence.
+14. guarded explicit Queue state apply and rollback with reviewed approval artifact, exact source/proposal/target SHA-256 binding, stale-write rejection, durable atomic replacement, pre-apply backup, and rollback evidence;
+15. freshness and rollback operating evidence connecting reviewed successful Banei Job evidence to Operations v2, proving freshness age 1 hour without freshness attention, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection.
 
 Current sequence:
 
-1. complete Banei freshness and rollback operating evidence;
-2. complete bilingual QA and remaining public-display review;
-3. use July whole-month validation only for explicit Completion Audit claims;
-4. preserve human review before promotion/publication;
-5. decide the Banei handoff boundary explicitly before the next source-specific pilot.
+1. complete Banei bilingual QA and remaining public-display review;
+2. use July whole-month validation only for explicit Completion Audit claims;
+3. preserve human review before promotion/publication;
+4. decide the Banei handoff boundary explicitly before the next source-specific pilot.
 
 ## Stage 8 — multi-system execution
 
