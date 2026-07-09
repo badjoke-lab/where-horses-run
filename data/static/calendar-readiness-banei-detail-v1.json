@@ -1,0 +1,53 @@
+{
+  "schema_version": "calendar-readiness-banei-detail-v1",
+  "records": [
+    {
+      "readiness_id": "japan--japan-banei-system--nar-banei-race-list-deba-table",
+      "country_id": "japan",
+      "country_tracker_delivery_no": "13",
+      "system_id": "japan-banei-system",
+      "system_name_en": "Banei Tokachi detail timetable system",
+      "authority_source_key": "japan/banei-tokachi/nar-banei-race-list-deba-table",
+      "racecourse_ids": [
+        "obihiro-racecourse"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "A+",
+      "public_ceiling": "A+",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "source_format": "mixed",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "manual_operation",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-07-09",
+      "evidence_reviewed_at": "2026-07-09",
+      "revalidation_trigger": "Revalidate when the Banei-specific NAR RaceList/DebaTable route family, source semantics, or Banei normalization labels change.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/banei-detail-registry-activation.md",
+      "limitations": [
+        "This Readiness record applies only to Banei Tokachi / Obihiro detail output and does not extend the flat-racing NAR Readiness record.",
+        "Dirt and Banei Straight Course are reviewed Banei-specific normalized public labels and must not be used to infer flat-racing course-layout semantics.",
+        "Candidate collection, review, promotion, and publication remain separate operator-controlled steps; this Readiness record does not publish review fixtures."
+      ],
+      "notes": "Bounded reviewed Banei detail evidence supports A+ public-safe programme summary fields from the separate Banei-specific RaceList/DebaTable source path."
+    }
+  ]
+}
