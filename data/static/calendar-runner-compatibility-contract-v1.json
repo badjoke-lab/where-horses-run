@@ -41,6 +41,15 @@
       "supported_collection_modes": ["single_date"]
     },
     {
+      "system_id": "japan-banei-system",
+      "runner": "github_actions",
+      "executor_id": "banei-schedule-detail-actions",
+      "invocation_kind": "node_script",
+      "entry_point": "scripts/timetable/run-banei-actions-job.mjs",
+      "output_model": "banei-actions-schedule-detail-batch",
+      "supported_collection_modes": ["date_window", "selected_meetings"]
+    },
+    {
       "system_id": "hong-kong-hkjc-system",
       "runner": "github_actions",
       "executor_id": "hkjc-bounded-generator-actions",
