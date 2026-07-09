@@ -21,8 +21,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Make updater idempotent inside runner workspace
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/update-banei-retry-activation-contracts.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const from = "  if (!text.includes(from)) throw new Error(`${label}: required marker not found`);";
+          const to = "  if (!text.includes(from)) { if (text.includes(to)) return; throw new Error(`${label}: required marker not found`); }";
+          if (!text.includes(from)) throw new Error('updater guard anchor missing');
+          text = text.replace(from, to);
+          fs.writeFileSync(file, text);
+          NODE
       - name: Update Banei retry activation contracts
         run: node scripts/update-banei-retry-activation-contracts.mjs
+      - name: Restore temporary updater and proof workflow before commit
+        run: |
+          git restore --worktree --staged scripts/update-banei-retry-activation-contracts.mjs
+          git restore --worktree --staged .github/workflows/calendar-banei-retry-execution-proof.yml
       - name: Commit activation contract updates
         run: |
           if git diff --quiet; then
@@ -40,7 +56,6 @@ jobs:
             docs/calendar/banei-detail-registry-activation.md \
             docs/calendar/banei-actions-executor.md \
             scripts/check-calendar-banei-retry-execution-proof.mjs \
-            .github/workflows/calendar-banei-retry-execution-proof.yml \
             docs/calendar/banei-retry-execution-proof.md
           git commit -m "[CF-Pages-Skip] Align contracts with Banei retry activation"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
