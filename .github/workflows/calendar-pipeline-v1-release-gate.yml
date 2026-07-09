@@ -42,15 +42,22 @@ permissions:
 jobs:
   release-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
       - name: Run grouped Pipeline v1 validation
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate Banei pure projection and bilingual route contract
+        run: node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
+      - name: Validate rendered Banei bilingual fixture in temporary worktree
+        run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
       - name: Build static site
         run: npm run build
       - name: Validate rendered public release
