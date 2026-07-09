@@ -203,22 +203,22 @@ Retry Queue activation remains blocked during this bridge stage.
 The current blocker is explicit:
 
 ```text
-blocked_pending_selected_meeting_runner_and_retry_execution_evidence
+blocked_pending_retry_execution_evidence
 ```
 
-The detail source and A+ detail adapter are now evidence-backed and registered. Retry activation remains blocked because:
+The detail source, A+ detail adapter, selected-meeting execution, and GitHub Actions runner convergence are now evidence-backed and registered. Retry activation remains blocked because:
 
-1. selected-meeting execution has not been proven by bounded live evidence;
-2. system-level runner policy is not yet converged across schedule and detail paths;
-3. retry backoff and attempt accounting have not been executed for Banei;
-4. failure isolation and retry-specific Manifest semantics have not been proven;
+1. retry backoff and attempt accounting have not been executed for Banei;
+2. failure isolation across retry attempts has not been proven;
+3. retry-specific Result Manifest and Review Queue behavior has not been proven;
+4. Retry Queue update behavior has not been executed;
 5. rank-upgrade retry support remains false in the Registry.
 
 The bridge still records unresolved meeting IDs in Coverage Observation and the Result Manifest.
 
 It does not discard unresolved work merely because automatic Retry Queue projection remains disabled.
 
-Retry Queue activation may occur only after selected-meeting, runner-routing, and retry execution evidence is reviewed and the Registry capability is updated from that evidence.
+Retry Queue activation may occur only after retry execution, backoff, attempt accounting, failure isolation, and queue-update evidence is reviewed and the Registry capability is updated from that evidence.
 
 ## Separation from flat-racing assumptions
 
@@ -313,7 +313,7 @@ This bridge stage is complete when:
 - Collection Result Manifest validates and cross-checks Coverage;
 - Review Queue entry validates and cross-checks Manifest;
 - unresolved meeting IDs remain visible;
-- Retry Queue activation remains blocked until selected-meeting, runner-routing, and retry execution evidence exist;
+- Retry Queue activation remains blocked until retry execution, backoff, attempt-accounting, failure-isolation, and queue-update evidence exist;
 - Banei Registry remains provisional and reviewed_import-based;
 - full-month July control retains 12 expected dates and no-partial-cutoff rule;
 - flat-racing assumptions remain prohibited;

@@ -194,6 +194,14 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
       const scheduleAdapter = readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs');
       const actionsCore = readText('scripts/timetable/nar-incremental-v2-actions-core.mjs');
       if (!scheduleAdapter.includes('--meeting-ids=') || !actionsCore.includes('selected_meetings')) push('NAR selected-meeting adapter evidence is missing');
+    } else if (record.system_id === 'japan-banei-system') {
+      const selectedEvidence = readText('data/fixtures/calendar-banei-runner-selected-evidence-v1.json');
+      const detailCollector = readText('scripts/timetable/collect-banei-detail-window.mjs');
+      if (!selectedEvidence.includes('\"scope_mode\": \"selected_meetings\"')
+        || !selectedEvidence.includes('\"selected_detail_live_success\": true')
+        || !detailCollector.includes('--meeting-ids=')) {
+        push('Banei selected-meeting adapter evidence is missing');
+      }
     } else push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
   }
   return localErrors;
@@ -235,14 +243,15 @@ if (narProfile?.primary_runner !== 'github_actions' || narProfile?.fallback_runn
 const jraProfile = registry.records.find((record) => record.system_id === 'japan-jra-system');
 if (jraProfile?.primary_runner !== 'local') fail('JRA primary runner must remain local.');
 const baneiProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
-if (baneiProfile?.profile_status !== 'provisional'
-  || baneiProfile?.primary_runner !== 'reviewed_import'
+if (baneiProfile?.profile_status !== 'active'
+  || baneiProfile?.primary_runner !== 'github_actions'
+  || baneiProfile?.fallback_runner !== 'reviewed_import'
   || baneiProfile?.detail_source_id !== 'nar-banei-race-list-deba-table'
   || baneiProfile?.detail_adapter_id !== 'banei-nar-race-list-detail-v1'
   || baneiProfile?.supports_date_window !== true
-  || baneiProfile?.supports_selected_meetings !== false
+  || baneiProfile?.supports_selected_meetings !== true
   || baneiProfile?.supports_rank_upgrade_retry !== false) {
-  fail('Banei detail activation must preserve provisional reviewed_import routing, evidence-backed detail source/adapter, date-window support, and disabled selected/retry capability.');
+  fail('Banei active runner profile must preserve GitHub Actions primary routing, reviewed-import fallback, evidence-backed detail source/adapter, date-window and selected support, and disabled rank retry.');
 }
 const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
 if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== 'local') fail('HKJC provisional profile must preserve grounded Actions/local generator routing.');
@@ -271,4 +280,4 @@ console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('HKJC_PROFILE: provisional bounded generator / github_actions primary / local fallback');
-console.log('BANEI_DETAIL_PROFILE: live-evidence-backed detail source/adapter / date-window enabled / selected+retry disabled');
+console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected enabled / rank retry disabled');

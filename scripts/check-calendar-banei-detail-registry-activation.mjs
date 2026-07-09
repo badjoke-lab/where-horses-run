@@ -13,6 +13,7 @@ const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const inventory = loadAuthoritySourceInventoryV1(root);
 const evidence = readJson('data/fixtures/calendar-banei-live-smoke-evidence-v1.json');
+const selectedEvidence = readJson('data/fixtures/calendar-banei-runner-selected-evidence-v1.json');
 const duePolicy = readJson('data/static/calendar-due-job-policy-v1.json');
 const baneiProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
 const sourceRecord = inventory.records.find((record) =>
@@ -44,11 +45,20 @@ if (evidence.runner_evidence.environment !== 'github_actions' || evidence.runner
 if (evidence.runner_evidence.meetings_targeted !== 1 || evidence.runner_evidence.complete_a_plus_candidates !== 1 || evidence.runner_evidence.blocked_meetings !== 0) fail('Banei live execution counts differ.');
 if (!Object.values(evidence.row_semantics).every((value) => value === true)) fail('Banei live row semantics must all be true.');
 
+if (selectedEvidence.schema_version !== 'calendar-banei-runner-selected-evidence-v1') fail('Banei selected runner evidence schema differs.');
+if (selectedEvidence.execution_environment !== 'github_actions') fail('Banei selected runner evidence environment differs.');
+if (selectedEvidence.schedule_evidence.meetings_scheduled !== 12 || selectedEvidence.schedule_evidence.schedule_scope_complete !== true) fail('Banei schedule runner evidence differs.');
+if (selectedEvidence.selected_detail_evidence.scope_mode !== 'selected_meetings') fail('Banei selected runner scope mode differs.');
+if (selectedEvidence.selected_detail_evidence.observed_rank !== 'A+') fail('Banei selected runner observed rank differs.');
+if (selectedEvidence.selected_detail_evidence.coverage_claim !== 'source_window_complete') fail('Banei selected runner coverage differs.');
+if (selectedEvidence.selected_detail_evidence.unresolved_meeting_count !== 0 || selectedEvidence.selected_detail_evidence.source_error_count !== 0 || selectedEvidence.selected_detail_evidence.blocked_meetings !== 0) fail('Banei selected runner unresolved/error/blocker counts differ.');
+if (selectedEvidence.runner_convergence.evidence_supports_github_actions_primary_candidate !== true) fail('Banei runner convergence evidence does not support GitHub Actions primary candidate.');
+
 if (!baneiProfile) fail('Banei Acquisition Registry profile missing.');
 else {
-  if (baneiProfile.profile_status !== 'provisional') fail('Banei profile must remain provisional.');
-  if (baneiProfile.primary_runner !== 'reviewed_import') fail('Banei primary runner must remain reviewed_import.');
-  if (baneiProfile.fallback_runner !== null) fail('Banei fallback runner must remain null.');
+  if (baneiProfile.profile_status !== 'active') fail('Banei profile must be active after runner convergence proof.');
+  if (baneiProfile.primary_runner !== 'github_actions') fail('Banei primary runner must be github_actions.');
+  if (baneiProfile.fallback_runner !== 'reviewed_import') fail('Banei fallback runner must remain reviewed_import.');
   if (baneiProfile.schedule_source_id !== 'banei-official-schedule') fail('Banei schedule source differs.');
   if (baneiProfile.schedule_adapter_id !== 'japan-banei-dry-run-adapter') fail('Banei schedule adapter differs.');
   if (baneiProfile.detail_source_id !== 'nar-banei-race-list-deba-table') fail('Banei detail source activation differs.');
@@ -56,10 +66,10 @@ else {
   if (!exact(baneiProfile.supported_observation_ranks, ['B', 'A+'])) fail(`Banei supported ranks differ: ${JSON.stringify(baneiProfile.supported_observation_ranks)}`);
   if (baneiProfile.supports_date_window !== true) fail('Banei date-window support must be true.');
   if (baneiProfile.supports_cross_month_window !== false) fail('Banei cross-month support must remain false.');
-  if (baneiProfile.supports_selected_meetings !== false) fail('Banei selected-meeting support must remain false.');
+  if (baneiProfile.supports_selected_meetings !== true) fail('Banei selected-meeting support must be true after live proof.');
   if (baneiProfile.supports_source_visible_horizon !== false) fail('Banei source-visible-horizon support must remain false.');
   if (baneiProfile.supports_rank_upgrade_retry !== false) fail('Banei rank-upgrade retry must remain false.');
-  if (!exact(baneiProfile.pending_fields, ['fallback_runner'])) fail(`Banei pending_fields differ: ${JSON.stringify(baneiProfile.pending_fields)}`);
+  if (!exact(baneiProfile.pending_fields, [])) fail(`Banei pending_fields differ: ${JSON.stringify(baneiProfile.pending_fields)}`);
 }
 
 const baneiPolicy = duePolicy.system_rules.find((rule) => rule.system_id === 'japan-banei-system');
@@ -77,7 +87,7 @@ for (const phrase of [
   "['banei-nar-race-list-detail-v1'",
   "detail_source_id !== 'nar-banei-race-list-deba-table'",
   "detail_adapter_id !== 'banei-nar-race-list-detail-v1'",
-  'BANEI_DETAIL_PROFILE: live-evidence-backed detail source/adapter',
+  'BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback',
 ]) {
   if (!registryChecker.includes(phrase)) fail(`Acquisition Registry checker missing Banei activation marker: ${phrase}`);
 }
@@ -87,9 +97,9 @@ for (const phrase of [
   'bounded GitHub Actions date-window live run',
   'race rows: 12',
   'source_window_complete',
-  'profile_status: provisional',
+  'profile_status: active',
   'supports_date_window: true',
-  'supports_selected_meetings: false',
+  'supports_selected_meetings: true',
   'supports_rank_upgrade_retry: false',
   'The Banei Due-job Planner system rule also remains disabled.',
 ]) {
@@ -98,7 +108,7 @@ for (const phrase of [
 
 const serialized = JSON.stringify({ sourceRecord, baneiProfile }).toLowerCase();
 for (const forbidden of ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url']) {
-  if (serialized.includes(`\"${forbidden}\"`)) fail(`forbidden activation key present: ${forbidden}`);
+  if (serialized.includes(`"${forbidden}"`)) fail(`forbidden activation key present: ${forbidden}`);
 }
 
 if (errors.length) {
@@ -112,7 +122,7 @@ console.log('DETAIL_SOURCE: nar-banei-race-list-deba-table');
 console.log('DETAIL_ADAPTER: banei-nar-race-list-detail-v1');
 console.log('OBSERVATION_RANKS: B,A+');
 console.log('DATE_WINDOW: enabled');
-console.log('SELECTED_MEETINGS: disabled');
+console.log('SELECTED_MEETINGS: enabled');
 console.log('RANK_RETRY: disabled');
 console.log('DUE_JOB_POLICY: disabled');
-console.log('PROFILE_STATUS: provisional');
+console.log('PROFILE_STATUS: active');

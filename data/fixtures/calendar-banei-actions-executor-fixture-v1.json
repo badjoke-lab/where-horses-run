@@ -1,0 +1,291 @@
+{
+  "schema_version": "calendar-banei-actions-executor-fixture-v1",
+  "schedule_input": {
+    "schema_version": "banei-control-plane-bridge-fixture-v1",
+    "generated_at": "2026-07-09T05:00:00Z",
+    "target_month": "2026-07",
+    "month_start": "2026-07-01",
+    "month_end_exclusive": "2026-08-01",
+    "source": {
+      "source_id": "banei-official-schedule",
+      "official_schedule_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600"
+    },
+    "meetings": [
+      {
+        "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+        "country_id": "japan",
+        "authority_id": "banei-tokachi",
+        "racing_system_id": "japan-banei-system",
+        "racecourse_id": "obihiro-racecourse",
+        "date": "2026-07-04",
+        "timezone": "Asia/Tokyo",
+        "first_race_time_local": null,
+        "last_race_time_local": null,
+        "schedule_status": "scheduled_pending_details"
+      },
+      {
+        "meeting_id": "banei-obihiro-racecourse-2026-07-05",
+        "country_id": "japan",
+        "authority_id": "banei-tokachi",
+        "racing_system_id": "japan-banei-system",
+        "racecourse_id": "obihiro-racecourse",
+        "date": "2026-07-05",
+        "timezone": "Asia/Tokyo",
+        "first_race_time_local": "14:30",
+        "last_race_time_local": null,
+        "schedule_status": "scheduled_pending_details"
+      },
+      {
+        "meeting_id": "banei-obihiro-racecourse-2026-07-06",
+        "country_id": "japan",
+        "authority_id": "banei-tokachi",
+        "racing_system_id": "japan-banei-system",
+        "racecourse_id": "obihiro-racecourse",
+        "date": "2026-07-06",
+        "timezone": "Asia/Tokyo",
+        "first_race_time_local": "14:30",
+        "last_race_time_local": "20:30",
+        "schedule_status": "time_summary_available"
+      }
+    ]
+  },
+  "executions": [
+    {
+      "schema_version": "calendar-runner-execution-v1",
+      "job_id": "banei-actions-selected-job-001",
+      "campaign_id": "banei-actions-executor-fixture",
+      "batch_id": "banei-actions-selected-batch-001",
+      "system_id": "japan-banei-system",
+      "runner_used": "github_actions",
+      "executor_id": "banei-schedule-detail-actions",
+      "invocation_kind": "node_script",
+      "entry_point": "scripts/timetable/run-banei-actions-job.mjs",
+      "collection_mode": "selected_meetings",
+      "requested_scope": {
+        "meeting_ids": [
+          "banei-obihiro-racecourse-2026-07-04",
+          "banei-obihiro-racecourse-2026-07-05"
+        ]
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "coverage_gap",
+      "source_route": {
+        "schedule_source_id": "banei-official-schedule",
+        "detail_source_id": "nar-banei-race-list-deba-table",
+        "schedule_adapter_id": "japan-banei-dry-run-adapter",
+        "detail_adapter_id": "banei-nar-race-list-detail-v1"
+      },
+      "result_contract": "calendar-collection-result-manifest-v1",
+      "coverage_contract": "calendar-coverage-observation-v1",
+      "review_required": true,
+      "side_effect_boundary": {
+        "approval": false,
+        "promotion": false,
+        "canonical_write": false,
+        "public_write": false,
+        "publication": false,
+        "deployment": false
+      }
+    },
+    {
+      "schema_version": "calendar-runner-execution-v1",
+      "job_id": "banei-actions-window-job-001",
+      "campaign_id": "banei-actions-executor-fixture",
+      "batch_id": "banei-actions-window-batch-001",
+      "system_id": "japan-banei-system",
+      "runner_used": "github_actions",
+      "executor_id": "banei-schedule-detail-actions",
+      "invocation_kind": "node_script",
+      "entry_point": "scripts/timetable/run-banei-actions-job.mjs",
+      "collection_mode": "date_window",
+      "requested_scope": {
+        "start_date": "2026-07-04",
+        "end_date_exclusive": "2026-07-07",
+        "timezone": "Asia/Tokyo"
+      },
+      "rank_strategy": "best_available",
+      "target_rank": null,
+      "reason": "regular_refresh",
+      "source_route": {
+        "schedule_source_id": "banei-official-schedule",
+        "detail_source_id": "nar-banei-race-list-deba-table",
+        "schedule_adapter_id": "japan-banei-dry-run-adapter",
+        "detail_adapter_id": "banei-nar-race-list-detail-v1"
+      },
+      "result_contract": "calendar-collection-result-manifest-v1",
+      "coverage_contract": "calendar-coverage-observation-v1",
+      "review_required": true,
+      "side_effect_boundary": {
+        "approval": false,
+        "promotion": false,
+        "canonical_write": false,
+        "public_write": false,
+        "publication": false,
+        "deployment": false
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "collection_mode": "selected_meetings",
+      "detail_candidate": {
+        "schema_version": "timetable-candidate-v1",
+        "generated_at": "2026-07-09T05:00:00Z",
+        "adapter_id": "banei-nar-race-list-detail-v1",
+        "country_id": "japan",
+        "authority_id": "banei-tokachi",
+        "source_id": "nar-banei-race-list-deba-table",
+        "candidate_window": {
+          "start_date": "2026-07-04",
+          "end_date_exclusive": "2026-07-06",
+          "timezone": "Asia/Tokyo"
+        },
+        "records": [
+          {
+            "candidate_id": "candidate-banei-obihiro-racecourse-2026-07-04",
+            "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+            "country_id": "japan",
+            "authority_id": "banei-tokachi",
+            "racing_system_id": "japan-banei-system",
+            "racecourse_id": "obihiro-racecourse",
+            "date": "2026-07-04",
+            "timezone": "Asia/Tokyo",
+            "capability_rank": "A+",
+            "first_race_time_local": "14:30",
+            "last_race_time_local": "15:00",
+            "timetable_rows": [
+              { "label": "Race 1", "post_time_local": "14:30", "race_name": "Fixture Race One", "distance_m": 200, "surface": "Dirt", "course_label": "Banei Straight Course" },
+              { "label": "Race 2", "post_time_local": "15:00", "race_name": "Fixture Race Two", "distance_m": 200, "surface": "Dirt", "course_label": "Banei Straight Course" }
+            ],
+            "source": { "source_id": "nar-banei-race-list-deba-table", "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F07%2F04", "checked_at": "2026-07-09T05:00:00Z", "extraction_method": "adapter_candidate" },
+            "confidence": "high",
+            "review_status": "needs_review",
+            "notes": "Synthetic public-safe A+ fixture."
+          }
+        ],
+        "review": { "status": "needs_review", "reviewed_at": null, "reviewer": null, "summary": "Fixture selected detail candidate.", "promotion_target": null }
+      },
+      "detail_coverage": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "banei-actions-selected-batch-001",
+        "system_id": "japan-banei-system",
+        "source_id": "nar-banei-race-list-deba-table",
+        "checked_at": "2026-07-09T05:00:00Z",
+        "requested_scope": { "kind": "selected_meetings", "meeting_ids": ["banei-obihiro-racecourse-2026-07-04", "banei-obihiro-racecourse-2026-07-05"], "timezone": "Asia/Tokyo" },
+        "observed_scope": { "kind": "selected_meetings", "meeting_ids": ["banei-obihiro-racecourse-2026-07-04", "banei-obihiro-racecourse-2026-07-05"], "timezone": "Asia/Tokyo" },
+        "collection_mode": "selected_meetings",
+        "records_discovered": 2,
+        "records_updated": 1,
+        "unresolved_dates": ["2026-07-05"],
+        "unresolved_meeting_ids": ["banei-obihiro-racecourse-2026-07-05"],
+        "source_errors": [{ "code": "parser_failure", "scope_ref": "banei-obihiro-racecourse-2026-07-05", "message": "Fixture Banei detail parser blocker." }],
+        "coverage_claim": "partial",
+        "completion_audit_ref": null
+      },
+      "detail_report": {
+        "schema_version": "banei-detail-window-collection-report-v1",
+        "batch_id": "banei-actions-selected-batch-001",
+        "generated_at": "2026-07-09T05:00:00Z",
+        "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+        "system_id": "japan-banei-system",
+        "source_id": "nar-banei-race-list-deba-table",
+        "adapter_id": "banei-nar-race-list-detail-v1",
+        "collection_mode": "selected_meetings",
+        "requested_scope": { "kind": "selected_meetings", "meeting_ids": ["banei-obihiro-racecourse-2026-07-04", "banei-obihiro-racecourse-2026-07-05"], "timezone": "Asia/Tokyo" },
+        "meetings_targeted": 2,
+        "complete_a_plus_candidates": 1,
+        "blocked_meetings": 1,
+        "blockers": [{ "meeting_id": "banei-obihiro-racecourse-2026-07-05", "date": "2026-07-05", "status": "parser_failure", "reason": "Fixture blocker", "list_http_status": 200 }],
+        "coverage_claim": "partial",
+        "candidate_mode": "review_only",
+        "promotion_eligible_candidates": 0,
+        "publication_effect": "none",
+        "canonical_write": "disabled",
+        "public_write": "disabled",
+        "raw_source_storage": "disabled"
+      }
+    },
+    {
+      "collection_mode": "date_window",
+      "detail_candidate": {
+        "schema_version": "timetable-candidate-v1",
+        "generated_at": "2026-07-09T05:00:00Z",
+        "adapter_id": "banei-nar-race-list-detail-v1",
+        "country_id": "japan",
+        "authority_id": "banei-tokachi",
+        "source_id": "nar-banei-race-list-deba-table",
+        "candidate_window": { "start_date": "2026-07-04", "end_date_exclusive": "2026-07-07", "timezone": "Asia/Tokyo" },
+        "records": [
+          {
+            "candidate_id": "candidate-banei-obihiro-racecourse-2026-07-04",
+            "meeting_id": "banei-obihiro-racecourse-2026-07-04",
+            "country_id": "japan",
+            "authority_id": "banei-tokachi",
+            "racing_system_id": "japan-banei-system",
+            "racecourse_id": "obihiro-racecourse",
+            "date": "2026-07-04",
+            "timezone": "Asia/Tokyo",
+            "capability_rank": "A+",
+            "first_race_time_local": "14:30",
+            "last_race_time_local": "15:00",
+            "timetable_rows": [
+              { "label": "Race 1", "post_time_local": "14:30", "race_name": "Fixture Race One", "distance_m": 200, "surface": "Dirt", "course_label": "Banei Straight Course" },
+              { "label": "Race 2", "post_time_local": "15:00", "race_name": "Fixture Race Two", "distance_m": 200, "surface": "Dirt", "course_label": "Banei Straight Course" }
+            ],
+            "source": { "source_id": "nar-banei-race-list-deba-table", "official_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F07%2F04", "checked_at": "2026-07-09T05:00:00Z", "extraction_method": "adapter_candidate" },
+            "confidence": "high",
+            "review_status": "needs_review",
+            "notes": "Synthetic public-safe A+ fixture."
+          }
+        ],
+        "review": { "status": "needs_review", "reviewed_at": null, "reviewer": null, "summary": "Fixture window detail candidate.", "promotion_target": null }
+      },
+      "detail_coverage": {
+        "schema_version": "calendar-coverage-observation-v1",
+        "run_id": "banei-actions-window-batch-001",
+        "system_id": "japan-banei-system",
+        "source_id": "nar-banei-race-list-deba-table",
+        "checked_at": "2026-07-09T05:00:00Z",
+        "requested_scope": { "kind": "date_window", "start_date": "2026-07-04", "end_date_exclusive": "2026-07-07", "timezone": "Asia/Tokyo" },
+        "observed_scope": { "kind": "date_window", "start_date": "2026-07-04", "end_date_exclusive": "2026-07-07", "timezone": "Asia/Tokyo" },
+        "collection_mode": "date_window",
+        "records_discovered": 3,
+        "records_updated": 1,
+        "unresolved_dates": ["2026-07-05", "2026-07-06"],
+        "unresolved_meeting_ids": ["banei-obihiro-racecourse-2026-07-05", "banei-obihiro-racecourse-2026-07-06"],
+        "source_errors": [
+          { "code": "parser_failure", "scope_ref": "banei-obihiro-racecourse-2026-07-05", "message": "Fixture Banei detail blocker one." },
+          { "code": "parser_failure", "scope_ref": "banei-obihiro-racecourse-2026-07-06", "message": "Fixture Banei detail blocker two." }
+        ],
+        "coverage_claim": "partial",
+        "completion_audit_ref": null
+      },
+      "detail_report": {
+        "schema_version": "banei-detail-window-collection-report-v1",
+        "batch_id": "banei-actions-window-batch-001",
+        "generated_at": "2026-07-09T05:00:00Z",
+        "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+        "system_id": "japan-banei-system",
+        "source_id": "nar-banei-race-list-deba-table",
+        "adapter_id": "banei-nar-race-list-detail-v1",
+        "collection_mode": "date_window",
+        "requested_scope": { "kind": "date_window", "start_date": "2026-07-04", "end_date_exclusive": "2026-07-07", "timezone": "Asia/Tokyo" },
+        "meetings_targeted": 3,
+        "complete_a_plus_candidates": 1,
+        "blocked_meetings": 2,
+        "blockers": [
+          { "meeting_id": "banei-obihiro-racecourse-2026-07-05", "date": "2026-07-05", "status": "parser_failure", "reason": "Fixture blocker one", "list_http_status": 200 },
+          { "meeting_id": "banei-obihiro-racecourse-2026-07-06", "date": "2026-07-06", "status": "parser_failure", "reason": "Fixture blocker two", "list_http_status": 200 }
+        ],
+        "coverage_claim": "partial",
+        "candidate_mode": "review_only",
+        "promotion_eligible_candidates": 0,
+        "publication_effect": "none",
+        "canonical_write": "disabled",
+        "public_write": "disabled",
+        "raw_source_storage": "disabled"
+      }
+    }
+  ]
+}

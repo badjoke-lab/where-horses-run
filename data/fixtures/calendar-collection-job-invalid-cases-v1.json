@@ -163,25 +163,25 @@
       }
     },
     {
-      "case_id": "banei-selected-meetings-unsupported",
+      "case_id": "banei-source-visible-horizon-unsupported",
       "job": {
         "schema_version": "calendar-collection-job-v1",
-        "job_id": "invalid-banei-selected-001",
+        "job_id": "invalid-banei-source-horizon-001",
         "campaign_id": "invalid-fixtures",
         "system_id": "japan-banei-system",
         "runner_policy": {
           "mode": "registry_primary",
           "runner": null
         },
-        "collection_mode": "selected_meetings",
+        "collection_mode": "source_visible_horizon",
         "requested_scope": {
-          "meeting_ids": [
-            "banei-obihiro-racecourse-2026-07-04"
-          ]
+          "start_date": "2026-07-01",
+          "end_date_exclusive": "2026-08-01",
+          "timezone": "Asia/Tokyo"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
-        "reason": "coverage_gap",
+        "reason": "regular_refresh",
         "requested_at": "2026-07-08T05:00:00Z"
       }
     },

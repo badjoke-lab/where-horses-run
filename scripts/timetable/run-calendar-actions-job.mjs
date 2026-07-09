@@ -38,7 +38,8 @@ function coveragePathForExecution(value) {
   if (value.executor_id === 'nar-incremental-v2-actions') {
     return path.join(root, `data/generated/timetable/nar-incremental-batches/${value.batch_id}/coverage-observation.json`);
   }
-  if (value.executor_id === 'hkjc-bounded-generator-actions') {
+  if (value.executor_id === 'hkjc-bounded-generator-actions'
+    || value.executor_id === 'banei-schedule-detail-actions') {
     return path.join(root, `data/generated/timetable/actions-multi-job/${value.batch_id}/coverage-observation.json`);
   }
   throw new Error(`unsupported Actions executor ${value.executor_id}`);
@@ -69,6 +70,8 @@ try {
     runNode('scripts/timetable/run-nar-incremental-v2-actions.mjs', [], env);
   } else if (execution.executor_id === 'hkjc-bounded-generator-actions') {
     runNode('scripts/timetable/run-hkjc-bounded-generator-job.mjs', [`--execution=${executionPath}`]);
+  } else if (execution.executor_id === 'banei-schedule-detail-actions') {
+    runNode('scripts/timetable/run-banei-actions-job.mjs', [`--execution=${executionPath}`]);
   } else {
     throw new Error(`unsupported Actions executor ${execution.executor_id}`);
   }

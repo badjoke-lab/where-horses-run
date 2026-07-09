@@ -6,7 +6,7 @@ Last reviewed: 2026-07-09
 
 ## Purpose
 
-This activation records the narrow set of Banei detail capabilities proven by the bounded live-source evidence run.
+This activation records the narrow set of Banei detail capabilities proven by bounded live-source evidence and the later runner-convergence evidence.
 
 The activation is evidence-driven and intentionally incomplete.
 
@@ -23,11 +23,14 @@ reviewed Banei schedule inventory
 -> public-safe evidence summary
 -> Authority Source Inventory supplement
 -> Acquisition Registry detail source/adapter activation
+-> bounded GitHub Actions full-month schedule proof
+-> bounded GitHub Actions selected-meeting detail proof
+-> runner convergence decision
 ```
 
 ## Live evidence
 
-The permanent evidence artifact is:
+The permanent date-window evidence artifact is:
 
 ```text
 data/fixtures/calendar-banei-live-smoke-evidence-v1.json
@@ -66,6 +69,32 @@ course Banei Straight Course
 
 The evidence summary stores artifact digests, not raw source bodies.
 
+The permanent runner and selected-meeting evidence artifact is:
+
+```text
+data/fixtures/calendar-banei-runner-selected-evidence-v1.json
+```
+
+It proves that the same GitHub Actions execution environment completed:
+
+```text
+2026 July full-month Banei schedule collection
+one bounded date-window A+ detail collection
+one bounded selected-meeting A+ detail collection
+```
+
+The selected-meeting proof records:
+
+```text
+scope mode: selected_meetings
+observed rank: A+
+race rows: 12
+coverage: source_window_complete
+unresolved meetings: 0
+source errors: 0
+blocked meetings: 0
+```
+
 ## Authority Source Inventory activation
 
 The Banei detail route is registered as a separate authority/source record:
@@ -92,50 +121,43 @@ The Banei source record preserves Banei-specific parser semantics and no flat-ra
 
 ## Acquisition Registry activation
 
-The Banei Registry profile remains:
+The Banei Registry profile is now:
 
 ```text
-profile_status: provisional
-primary_runner: reviewed_import
-fallback_runner: null
+profile_status: active
+primary_runner: github_actions
+fallback_runner: reviewed_import
 ```
 
-The following fields are activated:
+The evidence-backed capability fields are:
 
 ```text
 detail_source_id: nar-banei-race-list-deba-table
 detail_adapter_id: banei-nar-race-list-detail-v1
 supported_observation_ranks: B, A+
 supports_date_window: true
+supports_selected_meetings: true
 ```
 
-The schedule layer continues to provide the existing reviewed B-level observation path.
+The schedule layer continues to provide the reviewed B-level observation path.
 
-The new detail path proves complete A+ output for a bounded date-window run.
+The detail path proves complete A+ output for bounded date-window and selected-meeting execution.
 
-## Why the profile remains provisional
+## Runner convergence update
 
-One successful GitHub Actions detail run does not by itself prove a unified system-level runner policy.
+The original detail activation proved one bounded GitHub Actions date-window detail run but did not yet prove a unified system-level runner policy. That boundary has now been superseded by permanent runner-convergence evidence.
 
-The current Banei system has two operational histories:
+The same GitHub Actions execution environment has successfully completed:
 
 ```text
-schedule foundation: reviewed_import / dry-run lineage
-detail live evidence: github_actions execution environment
+2026 July full-month Banei schedule collection
+one bounded date-window A+ detail collection
+one bounded selected-meeting A+ detail collection
 ```
 
-The Registry has one system-level primary runner and fallback runner pair.
+The Registry therefore now uses GitHub Actions as the primary runner and reviewed import as the fallback.
 
-Therefore this activation does not silently switch the whole Banei system to GitHub Actions.
-
-The profile remains provisional with:
-
-```text
-primary_runner: reviewed_import
-pending_fields: fallback_runner
-```
-
-A later runner-policy PR must test schedule and detail acquisition under the proposed shared runner policy before changing this boundary.
+This does not activate automatic Due-job planning or rank-upgrade retry.
 
 ## Capability that remains disabled
 
@@ -143,7 +165,6 @@ This activation does not enable:
 
 ```text
 cross-month window
-selected meetings
 source-visible horizon
 rank-upgrade retry
 scheduled due-job execution
@@ -154,38 +175,39 @@ In Registry terms:
 
 ```text
 supports_cross_month_window: false
-supports_selected_meetings: false
+supports_selected_meetings: true
 supports_source_visible_horizon: false
 supports_rank_upgrade_retry: false
 ```
 
 The Banei Due-job Planner system rule also remains disabled.
 
-## Why selected-meeting support remains disabled
+## Selected-meeting support update
 
-The collector code accepts selected meeting IDs, but the bounded live evidence run exercised date-window mode only.
+Selected-meeting support is now enabled because a bounded live GitHub Actions run successfully executed one reviewed meeting ID, produced one complete A+ candidate with 12 public-safe race rows, and recorded source_window_complete coverage with zero unresolved meetings, zero source errors, and zero blockers.
 
-Code-path existence is not sufficient evidence for Registry activation.
+Selected-meeting support means an explicit reviewed Collection Job may target stable meeting IDs.
 
-Selected-meeting activation requires its own bounded execution proof.
+It does not mean rank-upgrade retry is enabled.
 
 ## Why rank-upgrade retry remains disabled
 
-Rank-upgrade retry requires more than an A+ parser.
+Rank-upgrade retry requires more than an A+ parser and selected-meeting execution capability.
 
-It requires evidence for:
+It still requires evidence for:
 
 ```text
-selected-meeting execution
-runner routing
 retry backoff semantics
 attempt accounting
-failure isolation
-Coverage and Manifest normalization
+retry reason mapping
+failure isolation across retry attempts
+Coverage and Result Manifest normalization after retry
+Review Queue behavior after retry
 Retry Queue update behavior
+retry-specific Due-job policy
 ```
 
-Those are not activated by this PR.
+Those capabilities are not activated by this contract.
 
 ## Adapter evidence mapping
 
@@ -202,6 +224,8 @@ The checker also requires the Banei source inventory record to resolve under:
 ```text
 japan / banei-tokachi / nar-banei-race-list-deba-table
 ```
+
+Runner and selected-meeting activation additionally depend on the permanent runner-convergence evidence artifact.
 
 ## Public and safety boundary
 
@@ -233,28 +257,31 @@ This activation is complete when:
 - the Banei detail Authority Source Inventory supplement is loaded;
 - the source identity resolves to Banei Tokachi;
 - live evidence validates as one complete A+ date-window run;
+- runner evidence validates full-month schedule collection in GitHub Actions;
+- selected-meeting evidence validates one complete A+ run in GitHub Actions;
 - detail source ID is present in Acquisition Registry;
 - detail adapter ID is present in Acquisition Registry;
 - supported observation ranks remain evidence-based at B and A+;
 - date-window support is true;
-- profile remains provisional;
-- primary runner remains reviewed_import;
-- fallback runner remains pending;
-- selected-meeting support remains false;
+- profile is active;
+- primary runner is github_actions;
+- fallback runner is reviewed_import;
+- selected-meeting support is true;
 - rank-upgrade retry remains false;
 - Due-job Planner Banei policy remains disabled;
 - public and publication boundaries remain unchanged.
 
 ## Next handoff
 
-The next Banei step is runner-policy convergence and selected-meeting execution proof.
+Runner-policy convergence and selected-meeting execution proof are complete.
 
-That work should separately test:
+The next Banei step is retry execution proof covering:
 
-1. Banei schedule acquisition under a candidate automated runner;
-2. Banei detail date-window acquisition under the same runner;
-3. selected-meeting execution on one known reviewed meeting;
-4. shared Result Manifest and Review Queue normalization for the live detail batch;
-5. failure behavior and fallback policy.
+1. explicit Retry Queue entry handling;
+2. due versus deferred backoff behavior;
+3. attempt-count increment;
+4. selected-meeting Job generation from retry state;
+5. one successful retry and one failure-isolated case;
+6. Result Manifest and Review Queue behavior after retry.
 
-Only after that evidence should the profile become active or rank-upgrade retry be enabled.
+Only after that evidence should rank-upgrade retry or Banei Due-job retry policy be enabled.

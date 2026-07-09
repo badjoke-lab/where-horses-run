@@ -58,9 +58,9 @@
       "system_id": "japan-banei-system",
       "country_id": "japan",
       "authority_id": "banei-tokachi",
-      "profile_status": "provisional",
-      "primary_runner": "reviewed_import",
-      "fallback_runner": null,
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": "reviewed_import",
       "schedule_source_id": "banei-official-schedule",
       "detail_source_id": "nar-banei-race-list-deba-table",
       "schedule_adapter_id": "japan-banei-dry-run-adapter",
@@ -74,13 +74,11 @@
       ],
       "supports_date_window": true,
       "supports_cross_month_window": false,
-      "supports_selected_meetings": false,
+      "supports_selected_meetings": true,
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": [
-        "fallback_runner"
-      ],
-      "operator_notes": "Provisional profile with evidence-backed Banei detail source and adapter. The 2026-07-04 bounded GitHub Actions live smoke produced one complete A+ candidate with 12 public-safe rows, source_window_complete coverage, zero unresolved meetings, and zero source errors. Date-window detail capability is enabled. System routing remains reviewed_import-primary until schedule/detail runner policy is unified; selected-meeting support, rank-upgrade retry, cross-month support, and source-visible-horizon support remain disabled."
+      "pending_fields": [],
+      "operator_notes": "Active evidence-backed Banei profile. GitHub Actions is the primary runner after bounded live proof that the same Actions environment completes the July full-month schedule path, one date-window A+ detail path, and one selected-meeting A+ detail path. Reviewed import remains the fallback. Date-window and selected-meeting collection are enabled; cross-month, source-visible-horizon, rank-upgrade retry, and automatic Due-job execution remain disabled."
     },
     {
       "system_id": "hong-kong-hkjc-system",
