@@ -5,6 +5,24 @@ const APPLY_PLAN_SCHEMA = 'calendar-banei-retry-queue-state-apply-plan-v1';
 const APPROVAL_SCHEMA = 'calendar-banei-retry-queue-apply-approval-v1';
 const ROLLBACK_EVIDENCE_SCHEMA = 'calendar-banei-retry-queue-rollback-evidence-v1';
 const ROLLBACK_PLAN_SCHEMA = 'calendar-banei-retry-queue-rollback-plan-v1';
+const APPROVAL_KEYS = [
+  'schema_version',
+  'decision',
+  'reviewed_by',
+  'reviewed_at',
+  'source_queue_sha256',
+  'proposal_sha256',
+  'proposed_queue_sha256',
+];
+const PROPOSAL_BOUNDARY_KEYS = [
+  'input_queue_write_performed',
+  'canonical_write_performed',
+  'automatic_approval',
+  'promotion_performed',
+  'public_write_performed',
+  'publication_performed',
+  'deployment_performed',
+];
 
 export function canonicalJson(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
@@ -18,6 +36,13 @@ function assertSha256(value, label) {
   if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) {
     throw new Error(`${label} must be a lowercase SHA-256 hex digest`);
   }
+}
+
+function assertExactKeys(value, expectedKeys, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label} must be an object`);
+  const actual = Object.keys(value).sort();
+  const expected = [...expectedKeys].sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`${label} keys differ`);
 }
 
 function parseJsonText(text, label) {
@@ -39,7 +64,8 @@ function validateQueueAgainstRegistry(queue, registry, label) {
 }
 
 function assertApproval(approval) {
-  if (approval?.schema_version !== APPROVAL_SCHEMA) throw new Error('approval schema mismatch');
+  assertExactKeys(approval, APPROVAL_KEYS, 'approval');
+  if (approval.schema_version !== APPROVAL_SCHEMA) throw new Error('approval schema mismatch');
   if (approval.decision !== 'approved') throw new Error('approval decision must be approved');
   if (typeof approval.reviewed_by !== 'string' || approval.reviewed_by.trim().length < 2) throw new Error('approval reviewed_by missing');
   if (typeof approval.reviewed_at !== 'string' || Number.isNaN(Date.parse(approval.reviewed_at))) throw new Error('approval reviewed_at invalid');
@@ -58,8 +84,9 @@ function assertProposal(proposal) {
     || !Number.isInteger(proposal.transition_summary.after_entry_count)) {
     throw new Error('proposal transition summary invalid');
   }
-  for (const [key, value] of Object.entries(proposal.boundaries ?? {})) {
-    if (value !== false) throw new Error(`proposal boundary ${key} must remain false before apply`);
+  assertExactKeys(proposal.boundaries, PROPOSAL_BOUNDARY_KEYS, 'proposal boundaries');
+  for (const key of PROPOSAL_BOUNDARY_KEYS) {
+    if (proposal.boundaries[key] !== false) throw new Error(`proposal boundary ${key} must remain false before apply`);
   }
 }
 
@@ -209,4 +236,6 @@ export const baneiRetryQueueStateApplyV1Contract = Object.freeze({
   rollback_evidence_schema: ROLLBACK_EVIDENCE_SCHEMA,
   rollback_plan_schema: ROLLBACK_PLAN_SCHEMA,
   digest_algorithm: 'sha256',
+  approval_keys: Object.freeze([...APPROVAL_KEYS]),
+  proposal_boundary_keys: Object.freeze([...PROPOSAL_BOUNDARY_KEYS]),
 });
