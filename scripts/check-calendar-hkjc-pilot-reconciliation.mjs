@@ -29,9 +29,10 @@ const profile = registry.records.find((record) => record.system_id === 'hong-kon
 if (!profile) fail('HKJC Registry profile missing.');
 else {
   const expected = audit.registry_state;
-  for (const key of ['system_id', 'profile_status', 'primary_runner', 'fallback_runner', 'schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id', 'public_ceiling']) {
+  for (const key of ['system_id', 'profile_status', 'primary_runner', 'fallback_runner', 'schedule_source_id', 'detail_source_id', 'detail_adapter_id', 'public_ceiling']) {
     if (profile[key] !== expected[key]) fail(`Registry audit mismatch for ${key}: ${profile[key]} != ${expected[key]}`);
   }
+  if (profile.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('current HKJC schedule adapter must point to PILOT-02 artifact bridge.');
   if (!exact(profile.supported_observation_ranks, expected.supported_observation_ranks)) fail('Registry supported observation ranks differ from audit.');
   if (profile.profile_status !== 'provisional') fail('HKJC profile must remain provisional at reconciliation stage.');
   if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail path must remain unactivated at reconciliation stage.');
