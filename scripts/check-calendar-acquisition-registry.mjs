@@ -255,8 +255,10 @@ if (baneiProfile?.profile_status !== 'active'
   fail('Banei active runner profile must preserve GitHub Actions primary routing, reviewed-import fallback, evidence-backed detail source/adapter, date-window, selected-meeting, and rank-retry support.');
 }
 const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
-if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== 'local') fail('HKJC provisional profile must preserve grounded Actions/local generator routing.');
+if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== null) fail('HKJC provisional profile must preserve evidence-backed Actions schedule routing and no unproven fallback runner.');
+if (!hkjcProfile?.pending_fields?.includes('fallback_runner')) fail('HKJC provisional profile must keep fallback_runner pending until runner compatibility evidence exists.');
 if (hkjcProfile?.detail_source_id !== null || hkjcProfile?.detail_adapter_id !== null) fail('HKJC provisional profile must not claim implemented detail acquisition.');
+if (JSON.stringify(hkjcProfile?.supported_observation_ranks) !== JSON.stringify(['C'])) fail('HKJC provisional profile must remain C-only until detail route evidence succeeds.');
 
 const negativeBase = structuredClone(narProfile);
 const negativeCases = [
@@ -280,5 +282,5 @@ console.log(`ACTIVE_PROFILES: ${registry.records.filter((record) => record.profi
 console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.profile_status === 'provisional').length}`);
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
-console.log('HKJC_PROFILE: provisional bounded generator / github_actions primary / local fallback');
+console.log('HKJC_PROFILE: provisional / github_actions schedule primary / fallback pending / detail pending / C-only');
 console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
