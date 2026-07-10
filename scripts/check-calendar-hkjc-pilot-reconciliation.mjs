@@ -129,7 +129,7 @@ for (const phrase of [
   'retain_for_adapter_migration',
   'retain_as_safe_fallback_foundation',
   'HKJC-PILOT-02',
-  'without canonical or public writes',
+  'the legacy orchestrator no longer calls canonical or public writers',
 ]) {
   if (!docs.includes(phrase)) fail(`HKJC reconciliation doc missing ${phrase}.`);
 }
