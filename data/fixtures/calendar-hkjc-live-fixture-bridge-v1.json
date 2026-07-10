@@ -1,0 +1,120 @@
+{
+  "schema_version": "calendar-hkjc-live-fixture-bridge-fixtures-v1",
+  "scenarios": [
+    {
+      "scenario_id": "full-single-month-window",
+      "input": {
+        "schema_version": "calendar-hkjc-live-fixture-bridge-input-v1",
+        "generated_at": "2026-07-10T01:00:00Z",
+        "campaign_id": "hkjc-august-live-fixture-pilot",
+        "job_id": "hkjc-august-live-fixture-job-001",
+        "batch_id": "hkjc-august-live-fixture-batch-001",
+        "runner_used": "github_actions",
+        "requested_scope": {
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-08-29",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "page_results": [
+          {
+            "month": "2026-08",
+            "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=08&CalYear=2026",
+            "status": "success",
+            "content": "<div>1 Image: ST Image: D</div><div>5 Image: HV Image: N</div><div>12 Image: ST Image: T</div><div>30 Image: HV Image: N</div>"
+          }
+        ]
+      },
+      "expected": {
+        "coverage_claim": "source_window_complete",
+        "record_count": 3,
+        "source_error_count": 0,
+        "rank_counts": {
+          "C": 3,
+          "B": 0,
+          "B+": 0,
+          "A": 0,
+          "A+": 0
+        },
+        "meeting_ids": [
+          "hkjc-happy-valley-racecourse-2026-08-05",
+          "hkjc-sha-tin-racecourse-2026-08-01",
+          "hkjc-sha-tin-racecourse-2026-08-12"
+        ]
+      }
+    },
+    {
+      "scenario_id": "partial-two-month-window",
+      "input": {
+        "schema_version": "calendar-hkjc-live-fixture-bridge-input-v1",
+        "generated_at": "2026-07-10T01:05:00Z",
+        "campaign_id": "hkjc-august-september-live-fixture-pilot",
+        "job_id": "hkjc-august-september-live-fixture-job-001",
+        "batch_id": "hkjc-august-september-live-fixture-batch-001",
+        "runner_used": "github_actions",
+        "requested_scope": {
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-10-01",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "page_results": [
+          {
+            "month": "2026-08",
+            "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=08&CalYear=2026",
+            "status": "success",
+            "content": "<div>2 Image: ST Image: D</div><div>9 Image: HV Image: N</div>"
+          },
+          {
+            "month": "2026-09",
+            "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+            "status": "source_unavailable",
+            "content": null
+          }
+        ]
+      },
+      "expected": {
+        "coverage_claim": "partial",
+        "record_count": 2,
+        "source_error_count": 1,
+        "observed_scope": {
+          "kind": "source_visible_horizon",
+          "start_date": "2026-08-01",
+          "end_date_exclusive": "2026-09-01",
+          "timezone": "Asia/Hong_Kong"
+        }
+      }
+    },
+    {
+      "scenario_id": "no-observed-source-window",
+      "input": {
+        "schema_version": "calendar-hkjc-live-fixture-bridge-input-v1",
+        "generated_at": "2026-07-10T01:10:00Z",
+        "campaign_id": "hkjc-september-unavailable-pilot",
+        "job_id": "hkjc-september-unavailable-job-001",
+        "batch_id": "hkjc-september-unavailable-batch-001",
+        "runner_used": "github_actions",
+        "requested_scope": {
+          "start_date": "2026-09-01",
+          "end_date_exclusive": "2026-10-01",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "page_results": [
+          {
+            "month": "2026-09",
+            "source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+            "status": "rate_limited",
+            "content": null
+          }
+        ]
+      },
+      "expected": {
+        "coverage_claim": "none",
+        "record_count": 0,
+        "source_error_count": 1,
+        "observed_scope": {
+          "kind": "not_observed",
+          "timezone": "Asia/Hong_Kong"
+        }
+      }
+    }
+  ]
+}
