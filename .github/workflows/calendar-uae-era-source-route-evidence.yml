@@ -6,7 +6,9 @@ on:
       - 'scripts/timetable/uae-era-season-article-parser-core.mjs'
       - 'scripts/timetable/probe-uae-era-source-routes.mjs'
       - 'scripts/check-calendar-uae-era-season-article-parser.mjs'
+      - 'scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs'
       - 'data/fixtures/calendar-uae-era-season-article-parser-fixtures-v1.json'
+      - 'data/audits/calendar-uae-era-pilot-02-source-route-evidence-v1.json'
       - 'docs/calendar/uae-era-pilot-02-source-route.md'
       - '.github/workflows/calendar-uae-era-source-route-evidence.yml'
 
@@ -24,12 +26,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate UAE PILOT-02 parser fixtures
+      - name: Validate UAE PILOT-02 parser fixtures and reviewed evidence decision
         run: |
           node --check scripts/timetable/uae-era-season-article-parser-core.mjs
           node --check scripts/timetable/probe-uae-era-source-routes.mjs
           node --check scripts/check-calendar-uae-era-season-article-parser.mjs
+          node --check scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
           node scripts/check-calendar-uae-era-season-article-parser.mjs
+          node scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
       - name: Record protected state hashes
         run: |
           sha256sum \
