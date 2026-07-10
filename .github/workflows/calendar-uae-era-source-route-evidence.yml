@@ -26,29 +26,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate UAE PILOT-02 parser fixtures
+      - name: Validate UAE PILOT-02 parser fixtures and evidence decision
         run: |
           node --check scripts/timetable/uae-era-season-article-parser-core.mjs
           node --check scripts/timetable/probe-uae-era-source-routes.mjs
           node --check scripts/check-calendar-uae-era-season-article-parser.mjs
           node --check scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
           node scripts/check-calendar-uae-era-season-article-parser.mjs
-      - name: Validate reviewed evidence decision
-        shell: bash
-        run: |
-          set +e
-          node scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs 2>&1 | tee /tmp/uae-pilot-02-evidence-check.log
-          status=${PIPESTATUS[0]}
-          set -e
-          exit "$status"
-      - name: Upload evidence checker diagnostic log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: uae-pilot-02-evidence-check-${{ github.run_id }}
-          path: /tmp/uae-pilot-02-evidence-check.log
-          if-no-files-found: warn
-          retention-days: 7
+          node scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
       - name: Record protected state hashes
         run: |
           sha256sum \
