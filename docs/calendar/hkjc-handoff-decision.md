@@ -126,7 +126,7 @@ The route-policy CI revalidates Acquisition Registry, Collection Job, Collection
 
 ## Accepted steady-state operating boundary
 
-HKJC maintenance may continue incrementally under the following rules:
+HKJC maintenance may continue as ordinary incremental manual reviewed operation under the following rules:
 
 1. explicit schedule Jobs may use the evidence-backed GitHub Actions schedule route;
 2. schedule Jobs remain review-bound and do not execute automatically;
