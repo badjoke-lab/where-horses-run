@@ -33,7 +33,7 @@ At the time this plan is adopted:
 - the 71 C meetings remain explicit detail-retry work;
 - temporary diagnostic PRs #430 and #435 are closed without merge;
 - formal NAR workflow-dispatch acquisition is active with GitHub Actions primary and local fallback;
-- the shared control-plane foundation is complete and Banei is the active source-specific operational integration work.
+- the shared control-plane foundation and Banei bounded operational integration are complete; Banei handoff is accepted for manual reviewed steady-state operation and HKJC is the active source-specific pilot.
 
 ## Programme order
 
@@ -59,6 +59,7 @@ Completed source-specific work:
 
 ```text
 WHR-CAL-JAPAN-NAR-A-PLUS
+WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
 Completed shared work:
@@ -70,13 +71,13 @@ WHR-CAL-ACQUISITION-CONTROL-PLANE
 Current source-specific work:
 
 ```text
-WHR-CAL-JAPAN-BANEI-A-PLUS
+WHR-CAL-HONG-KONG-HKJC
 ```
 
 Next source-specific work:
 
 ```text
-WHR-CAL-HONG-KONG-HKJC
+WHR-CAL-UAE-ERA
 ```
 
 Later shared automation work may remain under the control-plane Work ID until the foundation release gate is closed, then move to a separately named operations-automation Work ID if scope grows materially.
@@ -627,14 +628,14 @@ Actual GitHub PR numbers do not need to match these programme labels.
 
 ## Immediate sequence from current repository state
 
-The foundation programme is complete. Guarded explicit Banei Retry Queue state apply and rollback are implemented with reviewed approval binding, exact SHA-256 stale-write guards, durable atomic replacement, backup-first rollback evidence, and explicit operator-only mutation. Freshness and rollback operating evidence is complete, and bilingual/public-display QA is also complete: the separate Banei detail source now resolves through A+ Readiness while the legacy schedule source remains C/link-only, list/detail boundaries are fixture-tested, downgrade and item-switch paths are proven, and English/Japanese rendered routes are verified without committed public JSON mutation. The current handoff sequence is:
+The foundation programme is complete. Banei guarded Queue state apply/rollback, freshness and rollback operating evidence, bilingual/public-display QA, and the explicit handoff decision are complete. Banei handoff accepted means bounded operational integration is complete for manual reviewed steady-state operation; it does not claim July full-month completeness, and unattended execution remains disabled. The current handoff sequence is:
 
 ```text
-1. decide whether the Banei handoff requires an explicit July full-month completeness claim
-2. if required, run the separate July whole-month Completion Audit; otherwise do not treat it as a blocker
-3. keep manual reviewed retry execution while unattended execution remains disabled
-4. record Banei handoff completion explicitly
-5. then begin the next source-specific pilot
+1. keep Banei manual reviewed steady-state operation within the accepted handoff boundary
+2. begin WHR-CAL-HONG-KONG-HKJC as the next Stage 10 source-specific pilot
+3. run the Banei July whole-month Completion Audit only before an explicit July full-month completeness claim
+4. keep unattended acquisition execution, automatic approval, promotion, and publication disabled
+5. continue Calendar Public v1 release-readiness work in parallel
 ```
 
 ## Release gates

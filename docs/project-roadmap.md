@@ -4,9 +4,10 @@ Status: active canonical project roadmap
 Country-page programme: complete  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Last reviewed: 2026-07-09
+Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Next source-specific Work ID: `WHR-CAL-UAE-ERA`
+Last reviewed: 2026-07-10
 
 ## Purpose
 
@@ -45,7 +46,7 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-The NAR source pilot and Acquisition Control Plane foundation are complete. Banei A+ is the current source-specific work, now in operational integration after source, adapter, runner, retry, operator-view, manual operator, and proposal-only Queue reconciliation foundations were validated.
+The NAR source pilot, Acquisition Control Plane foundation, and Banei bounded operational integration are complete. Banei handoff is accepted for manual reviewed steady-state operation. The current source-specific work is `WHR-CAL-HONG-KONG-HKJC`; `WHR-CAL-UAE-ERA` follows after the HKJC pilot handoff boundary is explicitly reviewed.
 
 Reviewed NAR schedule coverage through 2026-07-31 has been promoted and published. The July 8–31 batch contains:
 
@@ -325,7 +326,7 @@ Full Actions matrix execution, scheduler, and automatic PR generation are not pr
 
 ## Banei A+
 
-Status: active operational integration.
+Status: handoff accepted; manual reviewed steady-state operation.
 
 Banei follows the completed shared control-plane foundation and uses Banei-specific source routes, terminology, distance interpretation, and course semantics. It does not inherit NAR flat-racing parser assumptions. Ordinary Banei updates may be partial and irregular; July full-month completeness remains a separate Completion Audit claim.
 
@@ -345,7 +346,8 @@ Completed Banei foundations:
 - proposal-only post-run Retry Queue reconciliation with input Queue immutability;
 - guarded explicit Retry Queue state apply and rollback with reviewed approval artifact, exact SHA-256 stale-write guards, durable atomic replacement, pre-apply backup, and rollback evidence;
 - freshness and rollback operating evidence connecting the successful reviewed Banei Job to Operations v2 freshness state, proving 1-hour current state, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection;
-- bilingual and public-display QA with separate Banei detail-source Readiness, legacy schedule-source link-only isolation, one-meeting-per-list-row enforcement, A/A+ downgrade and field-switch tests, Japanese meeting-detail routing, localized Banei list labels, and rendered English/Japanese fixture verification without committed public JSON mutation.
+- bilingual and public-display QA with separate Banei detail-source Readiness, legacy schedule-source link-only isolation, one-meeting-per-list-row enforcement, A/A+ downgrade and field-switch tests, Japanese meeting-detail routing, localized Banei list labels, and rendered English/Japanese fixture verification without committed public JSON mutation;
+- Banei handoff accepted for manual reviewed steady-state operation with bounded operational integration complete, no July full-month completeness claim, no unattended execution/publication, and next Work ID `WHR-CAL-HONG-KONG-HKJC`.
 
 Current Banei boundary:
 
@@ -362,7 +364,7 @@ scheduler Job execution: disabled
 automatic approval/promotion/publication: disabled
 ```
 
-Current handoff: proposal-only reconciliation, guarded explicit Retry Queue state apply/rollback, freshness/rollback operating evidence, and bilingual/public-display QA are complete. The current work is an explicit Banei handoff decision. July whole-month Completion Audit is required only if the handoff makes an explicit full-month completeness claim; otherwise it is not a blocker.
+Current handoff: Banei handoff accepted for manual reviewed steady-state operation. The accepted claim is bounded operational integration complete, not July full-month completeness. The separate July whole-month Completion Audit remains unperformed and is required only before an explicit July full-month completeness claim. The next Work ID is `WHR-CAL-HONG-KONG-HKJC`.
 
 ## Multi-system operations expansion
 

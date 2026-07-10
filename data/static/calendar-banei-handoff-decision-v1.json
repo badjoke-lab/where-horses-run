@@ -1,0 +1,63 @@
+{
+  "schema_version": "calendar-banei-handoff-decision-v1",
+  "decision_id": "banei-operational-handoff-2026-07",
+  "work_id": "WHR-CAL-JAPAN-BANEI-A-PLUS",
+  "decided_at": "2026-07-10T00:15:00Z",
+  "decision": "accepted_for_manual_reviewed_steady_state",
+  "completion_claim": "bounded_operational_integration_complete",
+  "july_full_month_completion_audit": {
+    "required_for_handoff": false,
+    "performed": false,
+    "full_month_completeness_claim_made": false,
+    "trigger": "Run the separate July whole-month Completion Audit before making an explicit July full-month completeness claim."
+  },
+  "operational_state": {
+    "primary_runner": "github_actions",
+    "fallback_runner": "reviewed_import",
+    "date_window_enabled": true,
+    "selected_meeting_enabled": true,
+    "rank_upgrade_retry_planning_enabled": true,
+    "regular_refresh_planning_enabled": false,
+    "coverage_gap_planning_enabled": false,
+    "source_revalidation_planning_enabled": false,
+    "scheduler_job_execution_enabled": false,
+    "automatic_approval_enabled": false,
+    "automatic_promotion_enabled": false,
+    "automatic_publication_enabled": false
+  },
+  "public_display_boundary": {
+    "detail_source_public_ceiling": "A+",
+    "legacy_schedule_source_public_ceiling": "C",
+    "legacy_schedule_source_readiness": "link_only",
+    "list_surface_rule": "one_meeting_per_row",
+    "a_plus_surface_rule": "meeting_detail_only",
+    "forbidden_output_classes": [
+      "participants",
+      "horse_names",
+      "jockey_names",
+      "trainer_names",
+      "betting_data",
+      "odds",
+      "results",
+      "payouts",
+      "predictions",
+      "raw_source_body",
+      "embedded_video",
+      "direct_stream_url"
+    ]
+  },
+  "evidence_refs": [
+    "docs/calendar/banei-a-plus-full-month-plan.md",
+    "docs/calendar/banei-retry-reconciliation.md",
+    "docs/calendar/banei-retry-queue-state-apply.md",
+    "docs/calendar/banei-freshness-rollback-operating-evidence.md",
+    "docs/calendar/banei-bilingual-public-display-qa.md",
+    "data/static/calendar-readiness-banei-detail-v1.json",
+    "data/static/authority-source-inventory-banei-detail-v1.json",
+    "scripts/check-calendar-banei-retry-queue-state-apply.mjs",
+    "scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs",
+    "scripts/check-calendar-banei-bilingual-public-display-qa.mjs"
+  ],
+  "next_work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "next_stage": "stage_10_additional_pilot"
+}

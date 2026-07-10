@@ -42,6 +42,11 @@ Use these files together:
 - [`manual-nar-incremental-collection.md`](manual-nar-incremental-collection.md) — NAR v2 operation, immutable batch paths, current local command support, target Actions-primary/local-fallback transition, coverage, and retry runbook.
 - [`manual-nar-monthly-collection.md`](manual-nar-monthly-collection.md) — legacy compatibility monthly operator runbook.
 - [`banei-a-plus-full-month-plan.md`](banei-a-plus-full-month-plan.md) — queued Banei incremental plan and separate July completion audit.
+- [`banei-retry-reconciliation.md`](banei-retry-reconciliation.md) — proposal-only post-run Retry Queue reconciliation boundary.
+- [`banei-retry-queue-state-apply.md`](banei-retry-queue-state-apply.md) — reviewed approval, SHA-256 stale-write guards, atomic Queue replacement, and explicit rollback contract.
+- [`banei-freshness-rollback-operating-evidence.md`](banei-freshness-rollback-operating-evidence.md) — reviewed successful Job freshness states and rollback rehearsal evidence.
+- [`banei-bilingual-public-display-qa.md`](banei-bilingual-public-display-qa.md) — separate detail-source Readiness, list/detail boundary, A/A+ switch, and rendered English/Japanese QA.
+- [`banei-handoff-decision.md`](banei-handoff-decision.md) — accepted manual reviewed steady-state handoff decision, no-full-month-claim boundary, and next Work ID.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -97,6 +102,10 @@ data/fixtures/calendar-review-pr-preparation-fixtures-v1.json
 data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json
 data/static/calendar-due-job-policy-v1.json
 data/static/calendar-due-job-plan.schema.json
+data/static/calendar-readiness-banei-detail-v1.json
+data/static/calendar-banei-retry-queue-apply-approval.schema.json
+data/static/calendar-banei-handoff-decision.schema.json
+data/static/calendar-banei-handoff-decision-v1.json
 data/fixtures/calendar-due-job-planner-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json
