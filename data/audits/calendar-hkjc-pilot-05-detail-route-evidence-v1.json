@@ -1,0 +1,105 @@
+{
+  "schema_version": "calendar-hkjc-pilot-05-detail-route-evidence-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-05",
+  "reviewed_at": "2026-07-10T16:05:00Z",
+  "foundation_decision": {
+    "artifact_only_detail_core": "accepted",
+    "external_review_artifact_collector": "accepted",
+    "github_actions_detail_runner": "not_evidence_backed",
+    "registry_detail_source_activation": false,
+    "registry_detail_adapter_activation": false,
+    "supported_rank_expansion": false,
+    "reason": "The pure detail core and external review-artifact collector pass permanent C/B/B+/A/A+ and no-write boundary checks. Bounded hosted live evidence and route/session probes did not observe target racecard fields through GitHub Actions HTTP acquisition, so detail source/adapter activation and rank expansion remain blocked."
+  },
+  "bounded_live_evidence": {
+    "workflow_run_id": 29104855428,
+    "artifact_id": 8232344596,
+    "artifact_digest": "sha256:a7eb087aa083bcbea4ddbfa465b8f52c45c175c73f5fd24147497a1c80548da1",
+    "target_meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+    "target_date": "2026-06-10",
+    "observed_rank": "C",
+    "coverage_claim": "none",
+    "records_discovered": 1,
+    "records_updated": 0,
+    "unresolved_meeting_count": 1,
+    "source_error_count": 1,
+    "source_error_codes": [
+      "source_unavailable"
+    ],
+    "candidate_review_state": "needs_review",
+    "publication_effect": "none",
+    "raw_source_storage": "disabled",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "route_probe_evidence": {
+    "workflow_run_id": 29105287177,
+    "artifact_id": 8232528727,
+    "artifact_digest": "sha256:564ceb3ab90f6526a2a78ff6c6e88fa25a237688c8c39f958026ba174411b0e4",
+    "target_meetings": [
+      "2026-06-10:HV:1",
+      "2026-07-04:ST:1",
+      "2026-07-08:HV:1"
+    ],
+    "route_variants_per_target": 3,
+    "total_results": 9,
+    "common_http_status": 200,
+    "common_response_bytes": 120504,
+    "common_visible_text_chars": 5485,
+    "target_post_time_shape_observed": false,
+    "target_race_name_shape_observed": false,
+    "target_distance_shape_observed": false,
+    "target_surface_shape_observed": false,
+    "raw_body_stored": false
+  },
+  "session_strategy_evidence": {
+    "workflow_run_id": 29105478858,
+    "artifact_id": 8232602372,
+    "artifact_digest": "sha256:c3670ad0038a183b7da3b84094d029af02e4015b4d52dc12542f851c4fa5f52d",
+    "target": "2026-07-08:HV:1",
+    "strategies": [
+      "direct-browser-headers",
+      "fixture-warmup-cookie",
+      "racecard-base-warmup-cookie"
+    ],
+    "successful_http_responses": 3,
+    "common_http_status": 200,
+    "common_response_bytes": 120504,
+    "target_meeting_marker_observed": false,
+    "post_time_shape_observed": false,
+    "race_name_shape_observed": false,
+    "distance_shape_observed": false,
+    "surface_shape_observed": false,
+    "cookies_observed_from_warmup": false,
+    "raw_body_stored": false
+  },
+  "decision": {
+    "detail_route_status": "hosted_http_path_not_proven",
+    "do_not_infer_source_absence": true,
+    "keep_registry_profile_provisional": true,
+    "keep_detail_source_id_null": true,
+    "keep_detail_adapter_id_null": true,
+    "keep_supported_observation_ranks": [
+      "C"
+    ],
+    "next_implementation_unit": "HKJC-PILOT-06",
+    "next_title": "HKJC detail runner and source-route reconciliation",
+    "next_goal": "Evaluate a local or reviewed-import execution route and alternate official detail-source routes against the accepted artifact-only core without restoring direct canonical/public writes."
+  },
+  "boundaries": {
+    "scheduled_acquisition_execution": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}

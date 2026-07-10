@@ -1,0 +1,41 @@
+name: Calendar HKJC detail artifact core
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/hkjc-detail-artifact-core.mjs'
+      - 'scripts/timetable/collect-hkjc-detail-artifacts.mjs'
+      - 'data/fixtures/calendar-hkjc-detail-artifact-core-fixtures-v1.json'
+      - 'scripts/check-calendar-hkjc-detail-artifact-core.mjs'
+      - 'scripts/check-calendar-hkjc-detail-collector.mjs'
+      - 'docs/calendar/hkjc-detail-artifact-core.md'
+      - '.github/workflows/calendar-hkjc-detail-artifact-core.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate HKJC PILOT-05 detail artifact core
+        run: |
+          node --check scripts/timetable/hkjc-detail-artifact-core.mjs
+          node --check scripts/timetable/collect-hkjc-detail-artifacts.mjs
+          node scripts/check-calendar-hkjc-detail-artifact-core.mjs
+          node scripts/check-calendar-hkjc-detail-collector.mjs
+      - name: Prove validation boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-detail-artifact-core.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('HKJC_PILOT_05_DETAIL_CORE_CI_BOUNDARY: pass');
+          NODE

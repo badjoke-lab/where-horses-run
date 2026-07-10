@@ -1,0 +1,151 @@
+name: Calendar HKJC detail live evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json'
+      - 'scripts/timetable/hkjc-detail-artifact-core.mjs'
+      - 'scripts/timetable/collect-hkjc-detail-artifacts.mjs'
+      - 'scripts/check-calendar-hkjc-detail-artifact-core.mjs'
+      - 'scripts/check-calendar-hkjc-detail-collector.mjs'
+      - '.github/workflows/calendar-hkjc-detail-live-evidence.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hkjc-pilot-05-detail-live-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate PILOT-05 core and collector boundary
+        run: |
+          node --check scripts/timetable/hkjc-detail-artifact-core.mjs
+          node --check scripts/timetable/collect-hkjc-detail-artifacts.mjs
+          node scripts/check-calendar-hkjc-detail-artifact-core.mjs
+          node scripts/check-calendar-hkjc-detail-collector.mjs
+      - name: Validate bounded live specification against reviewed route config
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const spec = JSON.parse(fs.readFileSync('data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json', 'utf8'));
+          const route = JSON.parse(fs.readFileSync('data/sources/timetable/hkjc-racecard-route.json', 'utf8'));
+          if (spec.schema_version !== 'calendar-hkjc-detail-live-spec-v1') throw new Error('live spec schema differs');
+          if (spec.work_id !== 'WHR-CAL-HONG-KONG-HKJC' || spec.implementation_unit !== 'HKJC-PILOT-05') throw new Error('live spec work identity differs');
+          if (!Array.isArray(spec.meetings) || spec.meetings.length !== 1) throw new Error('live evidence must remain exactly one reviewed meeting');
+          const target = spec.meetings[0];
+          const match = (route.known_meetings ?? []).some((meeting) => meeting.meeting_date === target.date && meeting.racecourse_id === target.racecourse_id && meeting.racecourse_code === target.racecourse_code);
+          if (!match) throw new Error('live target is not present in reviewed HKJC known meeting route config');
+          for (const value of Object.values(spec.review_boundary ?? {})) if (value !== false && value !== true) throw new Error('review boundary must be boolean');
+          if (spec.review_boundary.human_review_required !== true) throw new Error('human review must remain required');
+          for (const key of ['automatic_approval','automatic_promotion','automatic_publication','canonical_write','public_write']) {
+            if (spec.review_boundary[key] !== false) throw new Error(`${key} must remain false`);
+          }
+          console.log(`LIVE_TARGET: ${target.date} ${target.racecourse_id}`);
+          NODE
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/static/calendar-acquisition-registry.json \
+            data/sources/timetable/hkjc-racecard-route.json \
+            > /tmp/hkjc-pilot-05-protected-before.sha256
+      - name: Run bounded live detail collection to external review directory
+        run: |
+          rm -rf /tmp/hkjc-pilot-05-detail-live
+          node scripts/timetable/collect-hkjc-detail-artifacts.mjs \
+            --spec=data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json \
+            --output-dir=/tmp/hkjc-pilot-05-detail-live \
+            --write-artifacts \
+            --delay-ms=140 \
+            > /tmp/hkjc-pilot-05-collector-summary.json
+      - name: Validate and summarize public-safe live evidence
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = '/tmp/hkjc-pilot-05-detail-live';
+          const candidate = JSON.parse(fs.readFileSync(`${path}/candidates.json`, 'utf8'));
+          const coverage = JSON.parse(fs.readFileSync(`${path}/coverage-observation.json`, 'utf8'));
+          const manifest = JSON.parse(fs.readFileSync(`${path}/result-manifest.json`, 'utf8'));
+          const report = JSON.parse(fs.readFileSync(`${path}/collection-report.json`, 'utf8'));
+          if (candidate.review.status !== 'needs_review') throw new Error('candidate review state differs');
+          if (candidate.review.promotion_target !== null) throw new Error('candidate promotion target must remain null');
+          if (report.publication_effect !== 'none') throw new Error('publication effect differs');
+          if (report.raw_source_storage !== 'disabled') throw new Error('raw source storage boundary differs');
+          if (report.canonical_write !== 'disabled' || report.public_write !== 'disabled') throw new Error('write boundary differs');
+          if (report.automatic_approval !== false || report.automatic_promotion !== false || report.automatic_publication !== false) throw new Error('automatic action boundary differs');
+          if (JSON.stringify(coverage.source_errors) !== JSON.stringify(manifest.source_errors)) throw new Error('Coverage and Manifest source errors differ');
+          if (JSON.stringify(coverage.unresolved_meeting_ids) !== JSON.stringify(manifest.unresolved_meeting_ids)) throw new Error('Coverage and Manifest unresolved meeting IDs differ');
+          if (Object.values(manifest.rank_counts).reduce((sum, count) => sum + count, 0) !== manifest.records_discovered) throw new Error('rank counts do not close');
+          const record = candidate.records[0] ?? null;
+          const rows = record?.timetable_rows ?? [];
+          const summary = {
+            schema_version: 'calendar-hkjc-pilot-05-live-evidence-summary-v1',
+            work_id: 'WHR-CAL-HONG-KONG-HKJC',
+            implementation_unit: 'HKJC-PILOT-05',
+            batch_id: manifest.batch_id,
+            target_meeting_id: record?.meeting_id ?? null,
+            target_date: record?.date ?? null,
+            observed_rank: record?.capability_rank ?? null,
+            first_race_time_local: record?.first_race_time_local ?? null,
+            last_race_time_local: record?.last_race_time_local ?? null,
+            timetable_row_count: rows.length,
+            all_rows_have_post_time: rows.every((row) => Boolean(row.post_time_local)),
+            all_a_plus_rows_have_programme_summary: record?.capability_rank === 'A+' ? rows.every((row) => Boolean(row.race_name) && Number.isInteger(row.distance_m) && Boolean(row.surface || row.course_label)) : null,
+            coverage_claim: coverage.coverage_claim,
+            records_discovered: manifest.records_discovered,
+            records_updated: manifest.records_updated,
+            rank_counts: manifest.rank_counts,
+            unresolved_meeting_count: coverage.unresolved_meeting_ids.length,
+            source_error_count: coverage.source_errors.length,
+            source_error_codes: [...new Set(coverage.source_errors.map((error) => error.code))].sort(),
+            candidate_review_state: candidate.review.status,
+            publication_effect: report.publication_effect,
+            raw_source_storage: report.raw_source_storage,
+            canonical_write: report.canonical_write,
+            public_write: report.public_write,
+            automatic_approval: report.automatic_approval,
+            automatic_promotion: report.automatic_promotion,
+            automatic_publication: report.automatic_publication
+          };
+          fs.writeFileSync('/tmp/hkjc-pilot-05-live-evidence-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log('HKJC_PILOT_05_LIVE_EVIDENCE_SUMMARY_START');
+          console.log(JSON.stringify(summary));
+          console.log('HKJC_PILOT_05_LIVE_EVIDENCE_SUMMARY_END');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/hkjc-pilot-05-protected-before.sha256
+      - name: Upload bounded live evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-05-detail-live-evidence-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            /tmp/hkjc-pilot-05-collector-summary.json
+            /tmp/hkjc-pilot-05-live-evidence-summary.json
+            /tmp/hkjc-pilot-05-detail-live/candidates.json
+            /tmp/hkjc-pilot-05-detail-live/coverage-observation.json
+            /tmp/hkjc-pilot-05-detail-live/result-manifest.json
+            /tmp/hkjc-pilot-05-detail-live/collection-report.json
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'HKJC PILOT-05 live evidence left repository changes.' >&2
+            exit 1
+          fi

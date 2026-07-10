@@ -1,0 +1,231 @@
+{
+  "schema_version": "calendar-hkjc-detail-artifact-core-fixtures-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-05",
+  "scenarios": [
+    {
+      "id": "a-plus-complete",
+      "start_date": "2026-07-04",
+      "end_date_exclusive": "2026-07-05",
+      "generated_at": "2026-07-10T15:30:00Z",
+      "batch_id": "hkjc-pilot-05-a-plus-complete",
+      "campaign_id": "hkjc-stage-10-detail-migration",
+      "job_id": "hkjc-pilot-05-a-plus-job",
+      "meeting_inputs": [
+        {
+          "meeting": {
+            "meeting_id": "hkjc-sha-tin-racecourse-2026-07-04",
+            "racecourse_id": "sha-tin-racecourse",
+            "date": "2026-07-04"
+          },
+          "meeting_complete": true,
+          "page_results": [
+            {
+              "race_number": 1,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=1",
+              "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=1",
+              "body": "<h1>Race 1 - Fixture P5 A Plus One</h1><div>Saturday, July 4, 2026, Sha Tin, 14:00</div><div>Turf, \"A\" Course, 1200M</div>"
+            },
+            {
+              "race_number": 2,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=2",
+              "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=2",
+              "body": "<h1>Race 2 - Fixture P5 A Plus Two</h1><div>Saturday, July 4, 2026, Sha Tin, 14:30</div><div>Turf, \"B\" Course, 1400M</div>"
+            },
+            {
+              "race_number": 3,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=3",
+              "final_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-04&Racecourse=ST&RaceNo=3",
+              "body": "<h1>Race 3 - Fixture P5 A Plus Three</h1><div>Saturday, July 4, 2026, Sha Tin, 15:00</div><div>All Weather Track, \"C\" Course, 1650M</div>"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "A+",
+        "first_race_time_local": "14:00",
+        "last_race_time_local": "15:00",
+        "row_count": 3,
+        "coverage_claim": "source_window_complete",
+        "source_error_count": 0,
+        "unresolved_meeting_count": 0
+      }
+    },
+    {
+      "id": "a-complete-times-only",
+      "start_date": "2026-07-08",
+      "end_date_exclusive": "2026-07-09",
+      "generated_at": "2026-07-10T15:30:00Z",
+      "batch_id": "hkjc-pilot-05-a-complete-times-only",
+      "campaign_id": "hkjc-stage-10-detail-migration",
+      "job_id": "hkjc-pilot-05-a-job",
+      "meeting_inputs": [
+        {
+          "meeting": {
+            "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+            "racecourse_id": "happy-valley-racecourse",
+            "date": "2026-07-08"
+          },
+          "meeting_complete": true,
+          "page_results": [
+            {
+              "race_number": 1,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-08&Racecourse=HV&RaceNo=1",
+              "body": "<div>Wednesday, July 8, 2026, Happy Valley, 19:00</div>"
+            },
+            {
+              "race_number": 2,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-08&Racecourse=HV&RaceNo=2",
+              "body": "<div>Wednesday, July 8, 2026, Happy Valley, 19:30</div>"
+            },
+            {
+              "race_number": 3,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-08&Racecourse=HV&RaceNo=3",
+              "body": "<div>Wednesday, July 8, 2026, Happy Valley, 20:00</div>"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "A",
+        "first_race_time_local": "19:00",
+        "last_race_time_local": "20:00",
+        "row_count": 3,
+        "coverage_claim": "source_window_complete",
+        "source_error_count": 0,
+        "unresolved_meeting_count": 0
+      }
+    },
+    {
+      "id": "b-plus-first-last-complete",
+      "start_date": "2026-07-12",
+      "end_date_exclusive": "2026-07-13",
+      "generated_at": "2026-07-10T15:30:00Z",
+      "batch_id": "hkjc-pilot-05-b-plus-complete",
+      "campaign_id": "hkjc-stage-10-detail-migration",
+      "job_id": "hkjc-pilot-05-b-plus-job",
+      "meeting_inputs": [
+        {
+          "meeting": {
+            "meeting_id": "hkjc-sha-tin-racecourse-2026-07-12",
+            "racecourse_id": "sha-tin-racecourse",
+            "date": "2026-07-12"
+          },
+          "meeting_complete": true,
+          "page_results": [
+            {
+              "race_number": 1,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-12&Racecourse=ST&RaceNo=1",
+              "body": "<div>Sunday, July 12, 2026, Sha Tin, 16:00</div>"
+            },
+            {
+              "race_number": 3,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-12&Racecourse=ST&RaceNo=3",
+              "body": "<div>Sunday, July 12, 2026, Sha Tin, 17:00</div>"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "B+",
+        "first_race_time_local": "16:00",
+        "last_race_time_local": "17:00",
+        "row_count": 0,
+        "coverage_claim": "source_window_complete",
+        "source_error_count": 0,
+        "unresolved_meeting_count": 0
+      }
+    },
+    {
+      "id": "b-first-only-not-complete",
+      "start_date": "2026-07-15",
+      "end_date_exclusive": "2026-07-16",
+      "generated_at": "2026-07-10T15:30:00Z",
+      "batch_id": "hkjc-pilot-05-b-first-only",
+      "campaign_id": "hkjc-stage-10-detail-migration",
+      "job_id": "hkjc-pilot-05-b-job",
+      "meeting_inputs": [
+        {
+          "meeting": {
+            "meeting_id": "hkjc-happy-valley-racecourse-2026-07-15",
+            "racecourse_id": "happy-valley-racecourse",
+            "date": "2026-07-15"
+          },
+          "meeting_complete": false,
+          "page_results": [
+            {
+              "race_number": 1,
+              "ok": true,
+              "status": 200,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-15&Racecourse=HV&RaceNo=1",
+              "body": "<div>Wednesday, July 15, 2026, Happy Valley, 19:15</div>"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "B",
+        "first_race_time_local": "19:15",
+        "last_race_time_local": null,
+        "row_count": 0,
+        "coverage_claim": "partial",
+        "source_error_count": 0,
+        "unresolved_meeting_count": 1
+      }
+    },
+    {
+      "id": "c-no-detail-observed",
+      "start_date": "2026-07-18",
+      "end_date_exclusive": "2026-07-19",
+      "generated_at": "2026-07-10T15:30:00Z",
+      "batch_id": "hkjc-pilot-05-c-no-detail",
+      "campaign_id": "hkjc-stage-10-detail-migration",
+      "job_id": "hkjc-pilot-05-c-job",
+      "meeting_inputs": [
+        {
+          "meeting": {
+            "meeting_id": "hkjc-sha-tin-racecourse-2026-07-18",
+            "racecourse_id": "sha-tin-racecourse",
+            "date": "2026-07-18"
+          },
+          "meeting_complete": false,
+          "page_results": [
+            {
+              "race_number": 1,
+              "ok": false,
+              "status": 503,
+              "requested_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026-07-18&Racecourse=ST&RaceNo=1",
+              "error_code": "source_unavailable",
+              "error_message": "Fixture source unavailable for permanent failure scenario."
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "C",
+        "first_race_time_local": null,
+        "last_race_time_local": null,
+        "row_count": 0,
+        "coverage_claim": "none",
+        "source_error_count": 1,
+        "unresolved_meeting_count": 1
+      }
+    }
+  ]
+}

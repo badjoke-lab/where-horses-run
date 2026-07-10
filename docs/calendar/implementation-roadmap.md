@@ -550,7 +550,13 @@ HKJC current transition state:
 - shared execution, artifact upload, protected-state hash verification, cleanup, and clean-worktree proof succeeded;
 - C-level date-window schedule source/adapter path accepted as evidence-backed;
 - overall Registry profile remains provisional because detail source/adapter remain inactive under the complete-path active-profile contract;
-- next unit: `HKJC-PILOT-05` — artifact-only timetable detail adapter migration from reviewed public-safe legacy fetch/normalization logic.
+- `HKJC-PILOT-05`: artifact-only detail core, five-rank fixtures, external review-artifact collector, and bounded hosted evidence path implemented;
+- PILOT-05 hosted live evidence remained C / coverage `none` with one unresolved meeting and one `source_unavailable` error while protected-state and no-write proofs passed;
+- three reviewed meetings × three official route forms produced nine HTTP 200 responses with the same 120504-byte shell and no target timetable field shapes;
+- browser-header and official warmup session strategies also returned the same shell;
+- detail core and collector foundation accepted, GitHub Actions HTTP detail runner not evidence-backed;
+- Registry detail source/adapter remain inactive and supported observation ranks remain C only;
+- next unit: `HKJC-PILOT-06` — detail runner and source-route reconciliation across bounded local execution, reviewed-import fallback, and alternate official detail routes.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -600,10 +606,11 @@ From the current repository state:
 2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
 3. HKJC-PILOT-03 shared Actions integration complete; initial August parser_failure evidence retained as transition history
 4. HKJC-PILOT-04 parser resilience and repeated bounded shared-Actions evidence complete with source_window_complete valid-empty August evidence
-5. execute HKJC-PILOT-05 artifact-only timetable detail adapter migration; keep detail activation and A/A+ decisions explicit and evidence-bound
-6. run Banei July Completion Audit only before an explicit full-month completeness claim
-7. continue Calendar Public v1 release-readiness work in parallel
-8. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
+5. HKJC-PILOT-05 artifact-only detail foundation accepted; hosted HTTP detail runner remains unproven and Registry detail activation remains blocked
+6. execute HKJC-PILOT-06 detail runner and source-route reconciliation using bounded local/reviewed-import/alternate-official-route evidence
+7. run Banei July Completion Audit only before an explicit full-month completeness claim
+8. continue Calendar Public v1 release-readiness work in parallel
+9. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review
