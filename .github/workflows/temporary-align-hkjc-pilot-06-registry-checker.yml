@@ -1,6 +1,9 @@
 name: Temporary HKJC PILOT-06 Registry checker alignment
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - work/calendar-hkjc-detail-runner-reconciliation
