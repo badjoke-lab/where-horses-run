@@ -1,0 +1,73 @@
+{
+  "schema_version": "calendar-hkjc-pilot-04-live-evidence-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-04",
+  "reviewed_at": "2026-07-10T15:06:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29102195265,
+    "artifact_id": 8231284923,
+    "artifact_digest": "sha256:4e38d6e5ec849cf2b54de08d4c9a9a954a82295236b657152f4e83a01be539f1",
+    "batch_id": "nar-hkjc-actions-window-001-hkjc-august-actions-plan-job-001-run-001",
+    "requested_scope": {
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-29",
+      "timezone": "Asia/Hong_Kong"
+    },
+    "checked_at": "2026-07-10T15:04:21.370Z",
+    "coverage_claim": "source_window_complete",
+    "observed_scope": {
+      "kind": "date_window",
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-29",
+      "timezone": "Asia/Hong_Kong"
+    },
+    "records_discovered": 0,
+    "records_updated": 0,
+    "source_error_count": 0,
+    "source_error_codes": [],
+    "valid_empty_months": [
+      "2026-08"
+    ],
+    "rank_counts": {
+      "C": 0,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 0
+    },
+    "job_status": "success",
+    "envelope_review_state": "needs_review",
+    "publication_effect": "none",
+    "canonical_write_enabled": false,
+    "public_write_enabled": false,
+    "automatic_approval_enabled": false,
+    "automatic_promotion_enabled": false,
+    "automatic_publication_enabled": false,
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_cleanup": true
+  },
+  "decision": {
+    "registry_profile_status": "provisional",
+    "schedule_path_decision": "accept_evidence_backed_schedule_path_keep_full_profile_provisional",
+    "schedule_source_activation": true,
+    "schedule_adapter_activation": true,
+    "detail_source_activation": false,
+    "detail_adapter_activation": false,
+    "reason": "PILOT-04 corrected the PILOT-03 false parser_failure outcome for the reviewed August 2026 season gap. The shared Actions schedule path now completes successfully with source_window_complete coverage, zero source errors, zero records, and an explicit valid_empty_window classification. The overall Registry profile remains provisional because the current Registry active-profile contract requires a complete schedule and detail path, while detail_source_id and detail_adapter_id are still intentionally pending."
+  },
+  "next_implementation_unit": {
+    "id": "HKJC-PILOT-05",
+    "title": "HKJC artifact-only timetable detail adapter migration",
+    "goal": "Migrate the reviewed public-safe parts of the quarantined racecard fetch and normalization logic into a bounded artifact-only detail acquisition path that emits candidate, Coverage Observation, Result Manifest, and review artifacts without canonical or public writes."
+  },
+  "boundaries": {
+    "scheduler_execution": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
