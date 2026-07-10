@@ -79,9 +79,9 @@ if (!scheduledWorkflow.includes('workflow_dispatch:') || !scheduledWorkflow.incl
 }
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'WHR-CAL-ACQUISITION-CONTROL-PLANE', 'Current Work ID: `WHR-CAL-HONG-KONG-HKJC`', 'Next source-specific Work ID: `WHR-CAL-UAE-ERA`', 'docs/calendar/incremental-coverage-contract.md']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-HONG-KONG-HKJC`', 'Next source-specific Work ID: `WHR-CAL-UAE-ERA`', 'Incremental maintenance is normal']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-HONG-KONG-HKJC`', 'Next source-specific Work ID: `WHR-CAL-UAE-ERA`', 'Coverage Observation']]
+  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'WHR-CAL-ACQUISITION-CONTROL-PLANE', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'docs/calendar/incremental-coverage-contract.md']],
+  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'Incremental maintenance is normal']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'Coverage Observation']]
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
 }
@@ -95,6 +95,6 @@ if (errors.length) {
 console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
 console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('CURRENT_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
-console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-UAE-ERA');
+console.log('CURRENT_WORK_ID: WHR-CAL-UAE-ERA');
+console.log('NEXT_PROGRAMME_WORK_ID: WHR-CAL-PUBLIC-V1');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');

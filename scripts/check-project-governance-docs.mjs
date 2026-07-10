@@ -91,8 +91,9 @@ requirePhrases(roadmap, 'project roadmap', [
   'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
   'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
   'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Current Work ID: `WHR-CAL-HONG-KONG-HKJC`',
-  'Next source-specific Work ID: `WHR-CAL-UAE-ERA`',
+  'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
+  'Current Work ID: `WHR-CAL-UAE-ERA`',
+  'Next programme Work ID: `WHR-CAL-PUBLIC-V1`',
   'schedule-confirmed meetings: 82',
   'A+ detail records:            11',
   'C schedule records:           71',
@@ -117,8 +118,9 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
   'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
   'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Current Work ID: `WHR-CAL-HONG-KONG-HKJC`',
-  'Next source-specific Work ID: `WHR-CAL-UAE-ERA`',
+  'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
+  'Current Work ID: `WHR-CAL-UAE-ERA`',
+  'Next programme Work ID: `WHR-CAL-PUBLIC-V1`',
   'ACP-1 — NAR formal workflow dispatch — complete',
   'Stage 7 — Acquisition Control Plane foundation',
   'Status: complete.',
@@ -276,5 +278,6 @@ console.log('NAR_ACTIONS_OPERATOR: active');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
 console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
-console.log('CURRENT_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
-console.log('NEXT_SOURCE_WORK_ID: WHR-CAL-UAE-ERA');
+console.log('COMPLETED_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
+console.log('CURRENT_WORK_ID: WHR-CAL-UAE-ERA');
+console.log('NEXT_PROGRAMME_WORK_ID: WHR-CAL-PUBLIC-V1');
