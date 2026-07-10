@@ -24,14 +24,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate UAE PILOT-01 artifact core
+      - name: Validate UAE PILOT-01 artifact core and reviewed Readiness boundary
         run: |
           node --check scripts/timetable/uae-era-season-calendar-core.mjs
           node --check scripts/check-calendar-uae-era-season-calendar-core.mjs
           node scripts/check-calendar-uae-era-season-calendar-core.mjs
-      - name: Revalidate source-of-truth readiness boundary
+      - name: Revalidate Calendar contracts and governance
         run: |
-          node scripts/check-calendar-readiness-registry.mjs
           node scripts/check-calendar-contracts.mjs
           node scripts/check-project-governance-docs.mjs
       - name: Prove workflow boundary
