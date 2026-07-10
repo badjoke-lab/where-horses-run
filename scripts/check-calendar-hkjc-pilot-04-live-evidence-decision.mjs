@@ -68,7 +68,8 @@ const profile = registry.records.find((record) => record.system_id === 'hong-kon
 if (!profile) fail('HKJC Registry profile missing.');
 else {
   if (profile.profile_status !== 'provisional') fail('HKJC overall Registry profile must remain provisional until detail path exists.');
-  if (profile.primary_runner !== 'github_actions' || profile.fallback_runner !== 'local') fail('HKJC runner profile differs.');
+  if (profile.primary_runner !== 'github_actions') fail('HKJC schedule primary runner must remain GitHub Actions.');
+  if (profile.fallback_runner !== null || !profile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback runner must remain pending under PILOT-06 reconciliation.');
   if (profile.schedule_source_id !== 'hkjc-fixture-list') fail('HKJC schedule source differs.');
   if (profile.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC schedule adapter differs.');
   if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail path must remain inactive.');
@@ -79,7 +80,7 @@ else {
     || profile.supports_source_visible_horizon !== false
     || profile.supports_rank_upgrade_retry !== false) fail('unproven HKJC scope/retry capability was enabled.');
   if (!profile.operator_notes.includes('PILOT-04')) fail('HKJC Registry notes must record PILOT-04 evidence decision.');
-  if (!profile.operator_notes.includes('HKJC-PILOT-05')) fail('HKJC Registry notes must record PILOT-05 handoff.');
+  if (!profile.operator_notes.includes('PILOT-05')) fail('HKJC Registry notes must preserve PILOT-05 evidence state.');
 }
 
 for (const phrase of [
@@ -124,6 +125,7 @@ console.log('VALID_EMPTY_MONTHS: 2026-08');
 console.log('JOB_STATUS: success');
 console.log('REGISTRY_PROFILE_STATUS: provisional');
 console.log('SCHEDULE_PATH_ACCEPTED: true');
+console.log('CURRENT_FALLBACK_RUNNER: pending');
 console.log('DETAIL_ACTIVATION: false');
 console.log('PROTECTED_STATE_HASH_CHECK: pass');
-console.log('NEXT_UNIT: HKJC-PILOT-05');
+console.log('NEXT_UNIT_HISTORY: HKJC-PILOT-05');
