@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; legacy direct-write path quarantined.
+Status: active artifact-only acquisition integration.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -385,16 +385,18 @@ Completed HKJC reconciliation state:
 - explicit `--legacy-research-only` mode limited to fetch + normalize;
 - direct canonical/public writer calls removed from the legacy orchestrator;
 - current Registry detail source/adapter remain unactivated;
-- public ceiling remains A.
+- public ceiling remains A;
+- `HKJC-PILOT-02` artifact-only live fixture bridge complete with pure ST/HV fixture parsing, C-level candidate output, full/partial/none Coverage semantics, Manifest and Review Queue generation, exact batch-root artifact writing, official-host live collector, raw-body non-persistence, and canonical/public hash protection;
+- Registry activation remains separate and the current Registry still points to the dry-run schedule adapter.
 
 Next implementation unit:
 
 ```text
-HKJC-PILOT-02
-HKJC artifact-only live fixture acquisition bridge
+HKJC-PILOT-03
+Registry activation and runner integration
 ```
 
-The next unit moves official fixture-window acquisition into bounded review artifacts with explicit Coverage Observation and Result Manifest semantics. It must not begin by reactivating legacy direct canonical/public writes.
+The next unit may activate the reviewed live fixture adapter in the Acquisition Registry and runner compatibility contract. It must preserve C-level schedule identity, honest partial/none coverage, review artifacts before promotion, and no direct canonical/public writes.
 
 ## Multi-system operations expansion
 

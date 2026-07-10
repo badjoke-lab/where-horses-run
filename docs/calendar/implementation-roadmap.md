@@ -539,7 +539,11 @@ HKJC current transition state:
 - legacy direct-write refresh: quarantined and fail closed by default;
 - Registry profile: provisional;
 - detail source/adapter: not activated;
-- next unit: `HKJC-PILOT-02` — artifact-only live fixture acquisition bridge.
+- `HKJC-PILOT-02`: complete — artifact-only official fixture-window bridge with C-level candidate, Coverage Observation, Result Manifest, Review Queue, and collection report;
+- full/partial/none coverage semantics fixture-tested;
+- official-host live collector writes only explicit batch review artifacts and does not persist raw page body;
+- Registry activation remains separate;
+- next unit: `HKJC-PILOT-03` — Registry activation and runner integration.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -586,7 +590,7 @@ From the current repository state:
 
 ```text
 1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
-2. execute HKJC-PILOT-02 artifact-only live fixture acquisition bridge under WHR-CAL-HONG-KONG-HKJC
+2. execute HKJC-PILOT-03 Registry activation and runner integration under WHR-CAL-HONG-KONG-HKJC
 3. run Banei July Completion Audit only before an explicit full-month completeness claim
 4. continue Calendar Public v1 release-readiness work in parallel
 5. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
