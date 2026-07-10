@@ -1,0 +1,38 @@
+name: Temporary HKJC P4 roadmap base alignment
+
+on:
+  push:
+    branches:
+      - work/calendar-hkjc-fixture-parser-resilience
+
+permissions:
+  contents: write
+
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-hkjc-fixture-parser-resilience
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Align Stage 6 state with current main base
+        run: node scripts/temporary-align-hkjc-p4-roadmap-base.mjs
+      - name: Validate roadmap and governance state
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-hkjc-pilot-04-live-evidence-decision.mjs
+      - name: Commit alignment when needed
+        run: |
+          if git diff --quiet; then
+            echo "No alignment changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/calendar/implementation-roadmap.md
+          git commit -m "[CF-Pages-Skip] Align HKJC P4 roadmap with current main state"
+          git push origin HEAD:work/calendar-hkjc-fixture-parser-resilience
