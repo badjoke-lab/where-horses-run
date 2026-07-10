@@ -1,0 +1,49 @@
+name: Calendar HKJC detail route candidate probe
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/probe-hkjc-detail-route-candidates.mjs'
+      - '.github/workflows/calendar-hkjc-detail-route-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check probe syntax
+        run: node --check scripts/timetable/probe-hkjc-detail-route-candidates.mjs
+      - name: Probe public-safe detail route candidates
+        run: node scripts/timetable/probe-hkjc-detail-route-candidates.mjs > /tmp/hkjc-detail-route-probe.json
+      - name: Validate public-safe probe output
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const probe = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-route-probe.json', 'utf8'));
+          if (probe.schema_version !== 'calendar-hkjc-detail-route-candidate-probe-v1') throw new Error('probe schema differs');
+          if (!Array.isArray(probe.results) || probe.results.length !== 3) throw new Error('expected three route candidates');
+          if (probe.raw_body_stored !== false) throw new Error('probe raw-body boundary differs');
+          for (const result of probe.results) if (result.raw_body_stored !== false) throw new Error(`${result.id}: raw-body boundary differs`);
+          console.log(JSON.stringify(probe));
+          NODE
+      - name: Upload route probe summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-05-detail-route-probe-${{ github.run_id }}
+          path: /tmp/hkjc-detail-route-probe.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
