@@ -1,0 +1,102 @@
+{
+  "schema_version": "calendar-uae-era-pilot-02-source-route-evidence-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-02",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29113262632,
+    "artifact_id": 8235587195,
+    "artifact_digest": "sha256:1bb8f25dd2fbec9904e513feeaa218e489e1b32886b75b2546d4a3ee179b4327",
+    "checked_at": "2026-07-10T18:05:03.437Z",
+    "article_route": {
+      "http_status": 200,
+      "response_ok": true,
+      "final_host": "emiratesracing.com",
+      "response_bytes": 48506,
+      "season_start_year": 2026,
+      "season_end_year": 2027,
+      "opening_date": "2026-10-22",
+      "opening_venue_label": "Abu Dhabi Turf Club",
+      "closing_date": "2027-03-27",
+      "total_race_meetings": 64,
+      "total_racecourses": 5,
+      "venue_meeting_counts": {
+        "meydan": 17,
+        "abu_dhabi": 16,
+        "al_ain": 14,
+        "jebel_ali": 11,
+        "sharjah": 6
+      },
+      "venue_count_sum": 64,
+      "mapped_meeting_ids": [
+        "uae-meydan-racecourse-2027-03-27"
+      ],
+      "unresolved_venue_observations": [
+        {
+          "date": "2026-10-22",
+          "venue_label": "Abu Dhabi Turf Club",
+          "reason": "canonical_racecourse_id_not_reviewed"
+        }
+      ],
+      "raw_html_stored": false
+    },
+    "candidate_artifacts": {
+      "records_discovered": 1,
+      "records_updated": 0,
+      "rank_counts": {
+        "C": 1,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 0
+      },
+      "coverage_claim": "partial",
+      "unresolved_dates": [
+        "2026-10-22"
+      ],
+      "source_error_count": 0,
+      "candidate_review_state": "needs_review",
+      "promotion_target": null,
+      "registry_activation": false,
+      "canonical_write": "disabled",
+      "public_write": "disabled",
+      "publication_effect": "none"
+    },
+    "pdf_route": {
+      "http_status": 200,
+      "response_ok": true,
+      "final_host": "d2xuc5ucjmnf40.cloudfront.net",
+      "content_type": "application/pdf",
+      "response_bytes": 161107,
+      "pdf_magic": true,
+      "raw_pdf_stored": false
+    },
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "decision": {
+    "article_html_route": "evidence_backed_c_level_partial_schedule_route",
+    "pdf_route": "reachable_secondary_source_route_parsing_not_yet_proven",
+    "registry_activation": false,
+    "trusted_candidate_scope": "meydan_only",
+    "broader_venue_mapping_status": "pending_canonical_id_mapping_review",
+    "coverage_status": "partial",
+    "reason": "The official ERA article route is reachable and structurally closes its 64-meeting, five-racecourse season summary. The accepted PILOT-01 core emits one trusted Meydan C candidate while preserving the Abu Dhabi opening observation as unresolved. The linked PDF endpoint is reachable and returns a valid PDF response, but full PDF text extraction and canonical mapping for the wider venue network are not yet evidence-backed."
+  },
+  "next_unit": {
+    "id": "UAE-PILOT-03",
+    "title": "UAE ERA venue mapping and PDF calendar extraction evidence",
+    "goal": "Review canonical IDs for the five official ERA venue labels and prove a public-safe in-memory PDF text extraction path before broader season-calendar candidate generation is considered."
+  },
+  "boundaries": {
+    "raw_html_storage": false,
+    "raw_pdf_storage": false,
+    "registry_activation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
