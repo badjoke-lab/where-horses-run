@@ -29,14 +29,14 @@ Active development.
 Current formally published country-page scope:
 
 ```text
-68 English routes
-68 Japanese routes
-136 published bilingual routes
+98 English routes
+98 Japanese routes
+196 published bilingual routes
 ```
 
-The current programme is completing 98 English and 98 Japanese country/region routes while also recording Calendar Readiness for each reviewed racing system and official source.
+The 98-country/region country-page programme and Calendar Readiness backfill are complete. JRA and NAR source pilots, the Acquisition Control Plane foundation, and Banei bounded operational integration are complete. The current source-specific Work ID is `WHR-CAL-HONG-KONG-HKJC`; `WHR-CAL-UAE-ERA` follows after the HKJC pilot handoff boundary is explicitly reviewed.
 
-The repository already contains Calendar, Today, Tomorrow, timetable view models, generated data, candidate/promotion foundations, and source-specific work. These are being reconciled into a maintained calendar pipeline rather than replaced by a parallel implementation.
+The repository contains Calendar, Today, Tomorrow, timetable view models, generated data, candidate/promotion foundations, shared acquisition/review control-plane contracts, and source-specific pilot implementations. Scheduled acquisition execution and unattended publication remain disabled unless separately approved.
 
 ## Documentation
 
