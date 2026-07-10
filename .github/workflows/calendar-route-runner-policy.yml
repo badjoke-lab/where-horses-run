@@ -24,10 +24,23 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Validate route-specific runner policy
+        shell: bash
         run: |
           node --check scripts/timetable/route-runner-policy.mjs
           node --check scripts/check-calendar-route-runner-policy.mjs
-          node scripts/check-calendar-route-runner-policy.mjs
+          set +e
+          node scripts/check-calendar-route-runner-policy.mjs 2>&1 | tee /tmp/route-runner-policy-check.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload route policy diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-runner-policy-check-${{ github.run_id }}
+          path: /tmp/route-runner-policy-check.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Revalidate backward-compatible dependencies
         run: |
           node scripts/check-calendar-acquisition-registry.mjs
