@@ -1,0 +1,76 @@
+{
+  "schema_version": "calendar-hkjc-handoff-decision-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "decision_id": "HKJC-HANDOFF-01",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "decision": "accept_manual_reviewed_steady_state_handoff",
+  "completed_work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "next_work_id": "WHR-CAL-UAE-ERA",
+  "accepted_state": {
+    "registry_profile_status": "provisional",
+    "system_primary_runner": "github_actions",
+    "system_fallback_runner": null,
+    "system_fallback_runner_status": "pending",
+    "registry_detail_source_id": null,
+    "registry_detail_adapter_id": null,
+    "registry_supported_observation_ranks": [
+      "C"
+    ],
+    "schedule_route": {
+      "status": "active",
+      "selection_mode": "collection_job",
+      "primary_runner": "github_actions",
+      "source_id": "hkjc-fixture-list",
+      "adapter_id": "hkjc-fixture-artifact-bridge-v1",
+      "evidence_backed_observation_ranks": [
+        "C"
+      ],
+      "automatic_planning_allowed": true,
+      "automatic_execution_allowed": false,
+      "human_review_required": true
+    },
+    "detail_route": {
+      "status": "operator_path_evidence_backed",
+      "selection_mode": "operator_only",
+      "primary_runner": "reviewed_import",
+      "source_id": "hkjc-detail-reviewed-import",
+      "adapter_id": "hkjc-detail-reviewed-import-v1",
+      "evidence_backed_observation_ranks": [
+        "B"
+      ],
+      "automatic_planning_allowed": false,
+      "automatic_execution_allowed": false,
+      "human_review_required": true
+    }
+  },
+  "evidence_refs": [
+    "data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json",
+    "data/audits/calendar-hkjc-pilot-05-detail-route-evidence-v1.json",
+    "data/audits/calendar-hkjc-pilot-06-reviewed-import-evidence-v1.json",
+    "data/static/calendar-route-runner-policy-v1.json"
+  ],
+  "handoff_claims": {
+    "schedule_path_evidence_backed": true,
+    "detail_operator_path_evidence_backed": true,
+    "system_level_fallback_activated": false,
+    "registry_detail_path_activated": false,
+    "full_detail_completeness_claimed": false,
+    "full_season_completeness_claimed": false,
+    "automatic_detail_acquisition_claimed": false,
+    "automatic_publication_claimed": false,
+    "ordinary_incremental_manual_reviewed_operation_allowed": true,
+    "future_hkjc_maintenance_may_continue_without_blocking_uae_start": true
+  },
+  "operating_rule": "HKJC continues as bounded manual reviewed steady-state operation. Explicit schedule Jobs may use the evidence-backed GitHub Actions schedule route. Detail intake may use only the evidence-backed operator-reviewed-import route. Neither path authorizes automatic execution, approval, promotion, publication, canonical write, or public write. HKJC maintenance remains incremental and does not block starting WHR-CAL-UAE-ERA.",
+  "boundaries": {
+    "scheduled_acquisition_execution": false,
+    "automatic_detail_import": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
