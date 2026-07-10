@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; PILOT-02 artifact-only live fixture bridge implemented, live evidence/Registry integration pending.
+Status: active transition; PILOT-03 shared Actions integration and live evidence review complete, profile remains provisional, PILOT-04 parser resilience current.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -391,16 +391,21 @@ Completed HKJC reconciliation state:
 - repository-local output is rejected before network access;
 - manual live execution uses workflow_dispatch and Actions artifact upload only;
 - successful, partial, none, and parser-failure coverage semantics are fixture-tested;
-- implementation alone does not activate the provisional Registry profile.
+- implementation alone does not activate the provisional Registry profile;
+- HKJC-PILOT-03 connected the live fixture bridge to the shared Actions Job path;
+- actual live evidence run 29094860976 completed the shared execution, artifact upload, protected-state hash check, cleanup, and clean-worktree proof;
+- reviewed live result: coverage `none`, 0 discovered records, one `parser_failure` for `month:2026-08`, Job status `source_error`;
+- Registry remains provisional and detail source/adapter remain unactivated;
+- HKJC-PILOT-04 official fixture route and parser resilience reconciliation is current.
 
 Next implementation unit:
 
 ```text
-HKJC-PILOT-03
-Shared Actions Job integration and reviewed live fixture evidence
+HKJC-PILOT-04
+HKJC official fixture route and parser resilience reconciliation
 ```
 
-The next unit connects the live fixture bridge to shared Actions Job execution and reviews actual live artifacts before any Registry profile activation decision. Detail-source activation and A+ programme-summary acquisition remain separate later decisions.
+The next unit reviews the official HKJC fixture page structure or alternate official fixture route, improves parser resilience using public-safe evidence, and repeats bounded shared-Actions evidence before Registry activation is reconsidered. Detail-source activation and A+ programme-summary acquisition remain deferred.
 
 ## Multi-system operations expansion
 

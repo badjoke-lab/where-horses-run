@@ -543,7 +543,11 @@ HKJC current transition state:
 - PILOT-02 output: Rank C timetable-candidate-v1 + Coverage Observation + Result Manifest + collection report;
 - live trigger: manual workflow_dispatch only, artifact upload only, repository worktree clean;
 - source-error semantics: success / partial / none / parser failure validated;
-- next unit: `HKJC-PILOT-03` — shared Actions Job integration and reviewed live fixture evidence before Registry re-evaluation.
+- `HKJC-PILOT-03`: shared Actions Job integration implemented and actual live evidence reviewed;
+- reviewed live result: coverage `none`, 0 discovered records, one `parser_failure` for August 2026, Job status `source_error`;
+- shared execution, artifact upload, protected-state hash verification, cleanup, and clean-worktree proof succeeded;
+- Registry profile remains provisional and detail source/adapter remain inactive;
+- next unit: `HKJC-PILOT-04` — official fixture route and parser resilience reconciliation, followed by repeated bounded shared-Actions evidence before Registry activation reconsideration.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -591,10 +595,11 @@ From the current repository state:
 ```text
 1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
 2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
-3. execute HKJC-PILOT-03 shared Actions Job integration and reviewed live fixture evidence
-4. run Banei July Completion Audit only before an explicit full-month completeness claim
-5. continue Calendar Public v1 release-readiness work in parallel
-6. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
+3. HKJC-PILOT-03 shared Actions integration and live evidence review complete; profile remains provisional after parser_failure evidence
+4. execute HKJC-PILOT-04 official fixture route and parser resilience reconciliation, then repeat bounded shared-Actions evidence
+5. run Banei July Completion Audit only before an explicit full-month completeness claim
+6. continue Calendar Public v1 release-readiness work in parallel
+7. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review

@@ -1,6 +1,6 @@
 # HKJC shared Actions live evidence
 
-Status: active evidence stage  
+Status: completed evidence review; profile remains provisional  
 Work ID: `WHR-CAL-HONG-KONG-HKJC`  
 Implementation unit: `HKJC-PILOT-03`  
 Last reviewed: 2026-07-10
@@ -145,7 +145,34 @@ The evidence review records:
 - whether candidate review state remains `needs_review`;
 - whether canonical/public/config state remained unchanged.
 
-Actual evidence values are added only after the live run completes and is inspected.
+The reviewed actual live evidence is:
+
+```text
+workflow_run_id: 29094860976
+batch_id: nar-hkjc-actions-window-001-hkjc-august-actions-plan-job-001-run-001
+requested_scope: 2026-08-01 through 2026-08-29 exclusive
+coverage_claim: none
+observed_scope: not_observed
+records_discovered: 0
+records_updated: 0
+source_error_count: 1
+source_error_code: parser_failure
+source_error_scope: month:2026-08
+job_status: source_error
+envelope_review_state: needs_review
+protected state hash check: pass
+repository clean after cleanup: true
+publication_effect: none
+canonical_write_enabled: false
+public_write_enabled: false
+automatic_approval_enabled: false
+automatic_promotion_enabled: false
+automatic_publication_enabled: false
+```
+
+The shared Actions execution path, artifact transport, summary generation, protected-state verification, upload, cleanup, and clean-worktree proof all succeeded. The official fixture request returned a response, but the August 2026 page produced no recognized fixture markers. The bridge therefore classified the run as fail-closed `parser_failure` with `coverage_claim: none`.
+
+This evidence does not justify Registry activation. The HKJC profile remains provisional and the next unit is route/parser resilience reconciliation.
 
 ## Live evidence interpretation
 
@@ -251,18 +278,12 @@ The next implementation unit is reserved as:
 HKJC-PILOT-04
 ```
 
-Its exact scope depends on the PILOT-03 live evidence decision.
-
-Possible scope after a successful schedule-path review:
+The reviewed PILOT-03 evidence selects:
 
 ```text
-detail-source inventory and bounded detail-adapter transition planning
+HKJC official fixture route and parser resilience reconciliation
 ```
 
-Possible scope after source instability:
+PILOT-04 must review the current official fixture page structure and any alternate official fixture route, improve parser resilience using public-safe fixture evidence, and repeat bounded shared-Actions evidence before Registry activation is reconsidered.
 
-```text
-schedule-source resilience, alternate official route review, or fallback strategy
-```
-
-PILOT-04 must not be selected until PILOT-03 evidence is reviewed.
+Detail-source inventory and bounded detail-adapter transition planning are deferred until the schedule path produces reviewed successful evidence.
