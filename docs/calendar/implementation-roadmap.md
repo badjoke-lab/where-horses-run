@@ -539,7 +539,11 @@ HKJC current transition state:
 - legacy direct-write refresh: quarantined and fail closed by default;
 - Registry profile: provisional;
 - detail source/adapter: not activated;
-- next unit: `HKJC-PILOT-02` — artifact-only live fixture acquisition bridge.
+- `HKJC-PILOT-02`: artifact-only live fixture acquisition bridge implemented;
+- PILOT-02 output: Rank C timetable-candidate-v1 + Coverage Observation + Result Manifest + collection report;
+- live trigger: manual workflow_dispatch only, artifact upload only, repository worktree clean;
+- source-error semantics: success / partial / none / parser failure validated;
+- next unit: `HKJC-PILOT-03` — shared Actions Job integration and reviewed live fixture evidence before Registry re-evaluation.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -586,10 +590,11 @@ From the current repository state:
 
 ```text
 1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
-2. execute HKJC-PILOT-02 artifact-only live fixture acquisition bridge under WHR-CAL-HONG-KONG-HKJC
-3. run Banei July Completion Audit only before an explicit full-month completeness claim
-4. continue Calendar Public v1 release-readiness work in parallel
-5. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
+2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
+3. execute HKJC-PILOT-03 shared Actions Job integration and reviewed live fixture evidence
+4. run Banei July Completion Audit only before an explicit full-month completeness claim
+5. continue Calendar Public v1 release-readiness work in parallel
+6. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review

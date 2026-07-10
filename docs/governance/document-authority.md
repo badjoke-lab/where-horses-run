@@ -65,6 +65,8 @@ Calendar human-readable contracts:
 - `docs/calendar/banei-bilingual-public-display-qa.md`
 - `docs/calendar/banei-handoff-decision.md`
 - `docs/calendar/hkjc-pilot-reconciliation.md`
+- `docs/calendar/hkjc-live-fixture-artifact-bridge.md`
+- `docs/calendar/hkjc-pilot-reconciliation.md`
 - `docs/calendar/baseline-reconciliation-map.md`
 - `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/calendar/dynamic-dates-release-gate.md`
@@ -126,6 +128,8 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs`
 - `scripts/check-calendar-banei-bilingual-public-display-qa.mjs`
 - `scripts/check-calendar-banei-handoff-decision.mjs`
+- `scripts/check-calendar-hkjc-pilot-reconciliation.mjs`
+- `scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs`
 - `scripts/check-calendar-hkjc-pilot-reconciliation.mjs`
 - `scripts/check-jra-pilot-foundation.mjs`
 - `scripts/check-jra-planned-intake.mjs`

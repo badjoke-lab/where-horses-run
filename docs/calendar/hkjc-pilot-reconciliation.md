@@ -229,17 +229,23 @@ This stage is complete when:
 - the legacy orchestrator no longer calls canonical or public writers;
 - canonical and public file hashes remain unchanged when the default legacy command is rejected;
 - normal Calendar build and release gates still pass;
-- next unit is fixed as `HKJC-PILOT-02`.
+- next unit was fixed as `HKJC-PILOT-02`, which is now implemented as the artifact-only live fixture acquisition bridge.
 
-## Next implementation unit
+## Reconciliation handoff status
+
+`HKJC-PILOT-02` is implemented in [`hkjc-live-fixture-artifact-bridge.md`](hkjc-live-fixture-artifact-bridge.md).
+
+The bridge now provides a manual artifact-only official fixture-window path with Rank C `timetable-candidate-v1`, Coverage Observation, Result Manifest, and collection report outputs. It rejects repository-local artifact output before network access and keeps live execution outside scheduled operation.
+
+The next implementation unit is:
 
 ```text
-HKJC-PILOT-02
-HKJC artifact-only live fixture acquisition bridge
+HKJC-PILOT-03
+Shared Actions Job integration and reviewed live fixture evidence
 ```
 
 Goal:
 
-Move official fixture-window acquisition into a bounded review-artifact path that feeds shared control-plane contracts without canonical or public writes.
+Connect the live fixture bridge to shared Actions Job execution, review actual live artifact evidence, and then re-evaluate whether the provisional Acquisition Registry profile can advance.
 
-The next unit should not begin with A+ detail activation. First it must establish a safe live schedule acquisition bridge and preserve explicit source-error/partial coverage semantics.
+A+ detail activation remains separate and must not be inferred from schedule-level C evidence.
