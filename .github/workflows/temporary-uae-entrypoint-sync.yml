@@ -1,0 +1,50 @@
+name: Temporary UAE entrypoint sync
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - work/calendar-uae-entrypoint-sync
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-uae-entrypoint-sync
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply UAE entrypoint sync
+        run: node scripts/temporary-sync-uae-entrypoint.mjs
+      - name: Validate intended entrypoint markers
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const files = ['START-HERE.md', 'docs/project-roadmap.md', 'docs/calendar/implementation-roadmap.md'];
+          for (const file of files) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.includes('Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`')) throw new Error(`${file}: missing completed HKJC marker`);
+            if (!text.includes('Current Work ID: `WHR-CAL-UAE-ERA`')) throw new Error(`${file}: missing current UAE marker`);
+            if (!text.includes('WHR-CAL-PUBLIC-V1')) throw new Error(`${file}: missing next programme marker`);
+          }
+          console.log('UAE_ENTRYPOINT_MARKERS: pass');
+          NODE
+      - name: Commit synchronized entrypoint state when needed
+        run: |
+          if git diff --quiet; then
+            echo "No synchronization changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add START-HERE.md docs/project-roadmap.md docs/calendar/implementation-roadmap.md
+          git commit -m "[CF-Pages-Skip] Switch source-specific entrypoint to UAE"
+          git push origin HEAD:work/calendar-uae-entrypoint-sync
