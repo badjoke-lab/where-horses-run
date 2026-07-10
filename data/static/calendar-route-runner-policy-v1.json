@@ -1,0 +1,64 @@
+{
+  "schema_version": "calendar-route-runner-policy-v1",
+  "policy_version": "calendar-route-runner-policy-2026-07-11",
+  "registry_compatibility": {
+    "system_level_fields_remain_authoritative_for_legacy_jobs": true,
+    "route_policy_is_additive": true,
+    "route_policy_may_not_activate_registry_fields": true
+  },
+  "routes": [
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "route_kind": "schedule",
+      "status": "active",
+      "selection_mode": "collection_job",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "source_id": "hkjc-fixture-list",
+      "adapter_id": "hkjc-fixture-artifact-bridge-v1",
+      "entry_point": "scripts/timetable/run-hkjc-live-fixture-job.mjs",
+      "supported_collection_modes": [
+        "date_window"
+      ],
+      "evidence_backed_observation_ranks": [
+        "C"
+      ],
+      "automatic_planning_allowed": true,
+      "automatic_execution_allowed": false,
+      "human_review_required": true,
+      "registry_activation": false,
+      "evidence_ref": "data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json"
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "route_kind": "detail",
+      "status": "operator_path_evidence_backed",
+      "selection_mode": "operator_only",
+      "primary_runner": "reviewed_import",
+      "fallback_runner": null,
+      "source_id": "hkjc-detail-reviewed-import",
+      "adapter_id": "hkjc-detail-reviewed-import-v1",
+      "entry_point": "scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs",
+      "supported_collection_modes": [
+        "date_window"
+      ],
+      "evidence_backed_observation_ranks": [
+        "B"
+      ],
+      "automatic_planning_allowed": false,
+      "automatic_execution_allowed": false,
+      "human_review_required": true,
+      "registry_activation": false,
+      "evidence_ref": "data/audits/calendar-hkjc-pilot-06-reviewed-import-evidence-v1.json"
+    }
+  ],
+  "side_effect_boundary": {
+    "automatic_import": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
