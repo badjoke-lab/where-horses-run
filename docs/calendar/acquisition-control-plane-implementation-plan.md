@@ -33,7 +33,7 @@ At the time this plan is adopted:
 - the 71 C meetings remain explicit detail-retry work;
 - temporary diagnostic PRs #430 and #435 are closed without merge;
 - formal NAR workflow-dispatch acquisition is active with GitHub Actions primary and local fallback;
-- the shared control-plane foundation and Banei bounded operational integration are complete; Banei handoff is accepted for manual reviewed steady-state operation and HKJC is the active source-specific pilot.
+- the shared control-plane foundation and Banei bounded operational integration are complete; Banei handoff is accepted for manual reviewed steady-state operation and HKJC is the active source-specific pilot; HKJC-PILOT-04 repeated bounded shared-Actions evidence completed with `source_window_complete`, zero records, zero source errors, and a reviewed valid empty August 2026 window, so the C-level schedule path is accepted while the full profile remains provisional and HKJC-PILOT-05 detail adapter migration is current.
 
 ## Programme order
 

@@ -1,0 +1,161 @@
+name: Calendar HKJC PILOT-04 live evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json'
+      - 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs'
+      - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
+      - 'scripts/timetable/run-hkjc-live-fixture-job.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs'
+      - 'docs/calendar/hkjc-live-fixture-artifact-bridge.md'
+      - '.github/workflows/calendar-hkjc-pilot-04-live-evidence.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hkjc-pilot-04-live-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate PILOT-04 parser resilience boundary
+        run: |
+          node --check scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs
+          node scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Check workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-pilot-04-live-evidence.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          NODE
+
+  capture-live-evidence:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/sources/timetable/hkjc-racecard-route.json \
+            > /tmp/hkjc-pilot-04-protected-before.sha256
+      - name: Compile shared NAR and HKJC Actions Plan
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-id=nar-hkjc-actions-window-001 \
+            --output=/tmp/hkjc-pilot-04-actions-plan.json \
+            --matrix-output=/tmp/hkjc-pilot-04-actions-matrix.json
+      - name: Extract immutable HKJC execution specification
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const plan = JSON.parse(fs.readFileSync('/tmp/hkjc-pilot-04-actions-plan.json', 'utf8'));
+          const job = plan.jobs.find((item) => item.job_id === 'hkjc-august-actions-plan-job-001');
+          if (!job) throw new Error('compiled HKJC August Actions Job missing');
+          if (job.execution.executor_id !== 'hkjc-live-fixture-actions') throw new Error('compiled HKJC executor differs');
+          fs.writeFileSync('/tmp/hkjc-pilot-04-live-execution.json', `${JSON.stringify(job.execution, null, 2)}\n`);
+          console.log(`HKJC_BATCH_ID=${job.batch_id}`);
+          NODE
+      - name: Run actual HKJC shared Actions Job through PILOT-04 parser
+        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=/tmp/hkjc-pilot-04-live-execution.json
+      - name: Assert and summarize bounded live evidence
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const execution = JSON.parse(fs.readFileSync('/tmp/hkjc-pilot-04-live-execution.json', 'utf8'));
+          const base = path.join('data/generated/timetable/actions-multi-job', execution.batch_id);
+          const coverage = JSON.parse(fs.readFileSync(path.join(base, 'coverage-observation.json'), 'utf8'));
+          const manifest = JSON.parse(fs.readFileSync(path.join(base, 'result-manifest.json'), 'utf8'));
+          const candidate = JSON.parse(fs.readFileSync(path.join(base, 'candidates.json'), 'utf8'));
+          const report = JSON.parse(fs.readFileSync(path.join(base, 'collection-report.json'), 'utf8'));
+          const status = JSON.parse(fs.readFileSync(path.join('data/generated/timetable/actions-multi-job-status', `${execution.batch_id}.json`), 'utf8'));
+
+          if (coverage.coverage_claim !== 'source_window_complete') throw new Error(`expected source_window_complete, got ${coverage.coverage_claim}`);
+          if (coverage.records_discovered !== 0 || coverage.records_updated !== 0) throw new Error('expected zero records for bounded August empty window');
+          if (coverage.source_errors.length !== 0) throw new Error(`expected zero source errors, got ${coverage.source_errors.length}`);
+          if (JSON.stringify(report.valid_empty_months) !== JSON.stringify(['2026-08'])) throw new Error(`valid empty months differ: ${JSON.stringify(report.valid_empty_months)}`);
+          if (status.status !== 'success') throw new Error(`expected success Job status, got ${status.status}`);
+          if (candidate.review.status !== 'needs_review') throw new Error('candidate envelope review state differs');
+          if (report.publication_effect !== 'none') throw new Error('publication effect differs');
+
+          const summary = {
+            schema_version: 'calendar-hkjc-pilot-04-live-evidence-summary-v1',
+            work_id: 'WHR-CAL-HONG-KONG-HKJC',
+            implementation_unit: 'HKJC-PILOT-04',
+            batch_id: execution.batch_id,
+            requested_scope: execution.requested_scope,
+            coverage_claim: coverage.coverage_claim,
+            records_discovered: coverage.records_discovered,
+            records_updated: coverage.records_updated,
+            source_error_count: coverage.source_errors.length,
+            rank_counts: manifest.rank_counts,
+            valid_empty_months: report.valid_empty_months,
+            job_status: status.status,
+            candidate_review_state: candidate.review.status,
+            publication_effect: report.publication_effect,
+            canonical_write_enabled: report.canonical_write_enabled,
+            public_write_enabled: report.public_write_enabled,
+            automatic_approval_enabled: report.automatic_approval_enabled,
+            automatic_promotion_enabled: report.automatic_promotion_enabled,
+            automatic_publication_enabled: report.automatic_publication_enabled,
+          };
+          fs.writeFileSync('/tmp/hkjc-pilot-04-live-evidence-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log('HKJC_PILOT_04_LIVE_EVIDENCE_SUMMARY_START');
+          console.log(JSON.stringify(summary));
+          console.log('HKJC_PILOT_04_LIVE_EVIDENCE_SUMMARY_END');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/hkjc-pilot-04-protected-before.sha256
+      - name: Upload bounded PILOT-04 live evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-04-live-evidence-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            /tmp/hkjc-pilot-04-live-evidence-summary.json
+            /tmp/hkjc-pilot-04-live-execution.json
+            data/generated/timetable/actions-multi-job-status/
+            data/generated/timetable/actions-multi-job/
+      - name: Remove ephemeral review artifacts
+        run: |
+          execution_batch_id="$(node -e "const fs=require('fs'); const e=JSON.parse(fs.readFileSync('/tmp/hkjc-pilot-04-live-execution.json','utf8')); process.stdout.write(e.batch_id)")"
+          rm -rf "data/generated/timetable/actions-multi-job/${execution_batch_id}"
+          rm -f "data/generated/timetable/actions-multi-job-status/${execution_batch_id}.json"
+      - name: Prove repository clean after evidence upload
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'HKJC PILOT-04 evidence run left repository changes.' >&2
+            exit 1
+          fi

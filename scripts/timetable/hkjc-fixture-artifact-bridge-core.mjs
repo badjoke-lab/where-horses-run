@@ -125,6 +125,53 @@ export function parseHkjcFixtureHtml(html, { year, month, sourceUrl }) {
   return [...unique.values()].sort((a, b) => `${a.date}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.racecourse_id}`));
 }
 
+function monthOrdinal(year, month) {
+  return year * 12 + (month - 1);
+}
+
+function extractFixtureNavigationMonths(html) {
+  const months = new Map();
+  for (const match of String(html ?? '').matchAll(/fixture\?[^"'<>\s]+/gi)) {
+    const raw = decodeEntities(match[0]);
+    const queryIndex = raw.indexOf('?');
+    if (queryIndex < 0) continue;
+    const params = new URLSearchParams(raw.slice(queryIndex + 1));
+    const year = Number(params.get('CalYear') ?? params.get('calyear'));
+    const month = Number(params.get('CalMonth') ?? params.get('calmonth'));
+    if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) continue;
+    months.set(monthKey(year, month), { year, month, key: monthKey(year, month) });
+  }
+  return [...months.values()].sort((a, b) => monthOrdinal(a.year, a.month) - monthOrdinal(b.year, b.month));
+}
+
+export function classifyHkjcEmptyFixtureWindow(html, { year, month }) {
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    throw new Error('classifyHkjcEmptyFixtureWindow requires valid year/month');
+  }
+
+  const visibleText = stripHtml(html).toLowerCase();
+  const navigationMonths = extractFixtureNavigationMonths(html);
+  const ordinals = navigationMonths.map((entry) => monthOrdinal(entry.year, entry.month));
+  const contiguousNavigation = ordinals.every((value, index) => index === 0 || value === ordinals[index - 1] + 1);
+  const hasFixtureShell = visibleText.includes('fixture')
+    && (visibleText.includes('racing fixture') || visibleText.includes('race meeting') || visibleText.includes('calendar'));
+  const requestedOrdinal = monthOrdinal(year, month);
+  const gapBeforeNavigation = ordinals.length > 0 ? ordinals[0] - requestedOrdinal : null;
+  const validEmptyWindow = hasFixtureShell
+    && navigationMonths.length >= 8
+    && contiguousNavigation
+    && gapBeforeNavigation >= 1
+    && gapBeforeNavigation <= 2;
+
+  return {
+    classification: validEmptyWindow ? 'valid_empty_window' : 'parser_failure',
+    navigation_months: navigationMonths.map((entry) => entry.key),
+    contiguous_navigation: contiguousNavigation,
+    gap_before_navigation_months: gapBeforeNavigation,
+    fixture_shell_confirmed: hasFixtureShell,
+  };
+}
+
 function sourceErrorFromMonthResult(result) {
   if (result.ok && typeof result.body === 'string') return null;
   const code = result.error_code ?? (result.status === 429 ? 'rate_limited' : result.status ? 'unexpected_response' : 'source_unavailable');
@@ -200,6 +247,7 @@ export function buildHkjcFixtureArtifacts({
   const resultByKey = new Map((monthResults ?? []).map((result) => [monthKey(result.year, result.month), result]));
   const sourceErrors = [];
   const parsedMeetings = [];
+  const validEmptyMonths = [];
   let successfulMonths = 0;
 
   for (const month of requestedMonths) {
@@ -221,10 +269,16 @@ export function buildHkjcFixtureArtifacts({
 
     const parsed = parseHkjcFixtureHtml(result.body, { year: month.year, month: month.month, sourceUrl: result.final_url ?? month.url });
     if (parsed.length === 0) {
+      const emptyWindow = classifyHkjcEmptyFixtureWindow(result.body, { year: month.year, month: month.month });
+      if (emptyWindow.classification === 'valid_empty_window') {
+        successfulMonths += 1;
+        validEmptyMonths.push(month.key);
+        continue;
+      }
       sourceErrors.push({
         code: 'parser_failure',
         scope_ref: `month:${month.key}`,
-        message: `HKJC fixture page returned successfully but no fixture meeting markers were parsed for ${month.key}.`,
+        message: `HKJC fixture page returned successfully but neither meeting markers nor a fail-closed valid empty-window shape were confirmed for ${month.key}.`,
       });
       continue;
     }
@@ -315,6 +369,7 @@ export function buildHkjcFixtureArtifacts({
     requested_scope: requested,
     requested_months: requestedMonths.map((month) => month.key),
     successful_month_count: successfulMonths,
+    valid_empty_months: validEmptyMonths,
     source_error_count: sourceErrors.length,
     records_discovered: records.length,
     rank_counts: rankCounts,

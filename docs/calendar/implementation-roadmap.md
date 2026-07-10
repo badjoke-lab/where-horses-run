@@ -544,11 +544,13 @@ HKJC current transition state:
 - PILOT-02 output: Rank C timetable-candidate-v1 + Coverage Observation + Result Manifest + collection report;
 - live trigger: manual workflow_dispatch only, artifact upload only, repository worktree clean;
 - source-error semantics: success / partial / none / parser failure validated;
-- `HKJC-PILOT-03`: shared Actions Job integration implemented and actual live evidence reviewed;
-- reviewed live result: coverage `none`, 0 discovered records, one `parser_failure` for August 2026, Job status `source_error`;
+- `HKJC-PILOT-03`: shared Actions Job integration implemented; first August live evidence returned coverage `none` with `parser_failure`;
+- `HKJC-PILOT-04`: public-safe source structure reviewed and fail-closed valid empty-window semantics implemented;
+- repeated live run 29102195265: coverage `source_window_complete`, 0 records, 0 source errors, valid empty month 2026-08, Job status `success`;
 - shared execution, artifact upload, protected-state hash verification, cleanup, and clean-worktree proof succeeded;
-- Registry profile remains provisional and detail source/adapter remain inactive;
-- next unit: `HKJC-PILOT-04` — official fixture route and parser resilience reconciliation, followed by repeated bounded shared-Actions evidence before Registry activation reconsideration.
+- C-level date-window schedule source/adapter path accepted as evidence-backed;
+- overall Registry profile remains provisional because detail source/adapter remain inactive under the complete-path active-profile contract;
+- next unit: `HKJC-PILOT-05` — artifact-only timetable detail adapter migration from reviewed public-safe legacy fetch/normalization logic.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -596,11 +598,12 @@ From the current repository state:
 ```text
 1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
 2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
-3. HKJC-PILOT-03 shared Actions integration and live evidence review complete; profile remains provisional after parser_failure evidence
-4. execute HKJC-PILOT-04 official fixture route and parser resilience reconciliation, then repeat bounded shared-Actions evidence
-5. run Banei July Completion Audit only before an explicit full-month completeness claim
-6. continue Calendar Public v1 release-readiness work in parallel
-7. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
+3. HKJC-PILOT-03 shared Actions integration complete; initial August parser_failure evidence retained as transition history
+4. HKJC-PILOT-04 parser resilience and repeated bounded shared-Actions evidence complete with source_window_complete valid-empty August evidence
+5. execute HKJC-PILOT-05 artifact-only timetable detail adapter migration; keep detail activation and A/A+ decisions explicit and evidence-bound
+6. run Banei July Completion Audit only before an explicit full-month completeness claim
+7. continue Calendar Public v1 release-readiness work in parallel
+8. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review

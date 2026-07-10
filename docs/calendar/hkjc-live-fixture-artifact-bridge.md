@@ -318,3 +318,18 @@ The next unit must still preserve:
 - no automatic publication;
 - no scheduler execution;
 - no participant, betting, result, payout, prediction, raw-source, embedded-video, or direct-stream output.
+
+## PILOT-04 empty-window semantics
+
+A successful HTTP response with zero parsed meeting markers is no longer automatically treated as a parser failure. The bridge now applies a fail-closed source-specific empty-window classifier.
+
+A zero-meeting month is accepted as a valid empty season-gap window only when all of the following are observed together:
+
+- the page still exposes HKJC fixture/calendar shell vocabulary;
+- at least eight official fixture navigation months are present;
+- the navigation month sequence is contiguous;
+- the requested month is one or two months immediately before the first visible navigation month.
+
+This bounded rule matches the reviewed 2026-08 and 2026-09 structure evidence, where the official source shell exposed the next fixture navigation season beginning in 2026-10. Any zero-meeting response outside this exact shape remains `parser_failure`.
+
+The classifier does not activate detail acquisition, does not raise the supported observation rank above C, and does not change the review-first or no-publication boundary.

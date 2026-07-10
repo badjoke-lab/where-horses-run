@@ -50,6 +50,7 @@ Use these files together:
 - [`hkjc-pilot-reconciliation.md`](hkjc-pilot-reconciliation.md) — HKJC shared-control-plane versus legacy rolling-refresh reconciliation and direct-write quarantine.
 - [`hkjc-live-fixture-artifact-bridge.md`](hkjc-live-fixture-artifact-bridge.md) — HKJC-PILOT-02 official fixture-window Rank C artifact bridge, partial/error semantics, manual live Actions route, and no-write boundary.
 - [`hkjc-shared-actions-live-evidence.md`](hkjc-shared-actions-live-evidence.md) — HKJC-PILOT-03 shared Actions integration, reviewed parser-failure live evidence, provisional Registry decision, and PILOT-04 handoff.
+- [`hkjc-pilot-04-live-evidence.md`](hkjc-pilot-04-live-evidence.md) — HKJC-PILOT-04 fail-closed empty-window semantics, successful repeated shared-Actions evidence, evidence-backed schedule-path decision, provisional full-profile boundary, and PILOT-05 handoff.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -110,6 +111,8 @@ data/static/calendar-banei-retry-queue-apply-approval.schema.json
 data/static/calendar-banei-handoff-decision.schema.json
 data/static/calendar-banei-handoff-decision-v1.json
 data/audits/calendar-hkjc-pilot-reconciliation-v1.json
+data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json
+data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json
 data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
