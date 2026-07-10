@@ -62,8 +62,9 @@ Completed Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Next source-specific Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Next source-specific Work ID: `WHR-CAL-UAE-ERA`
 
 Completed transition marker:
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  

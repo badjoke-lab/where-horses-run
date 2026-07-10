@@ -33,7 +33,7 @@ At the time this plan is adopted:
 - the 71 C meetings remain explicit detail-retry work;
 - temporary diagnostic PRs #430 and #435 are closed without merge;
 - formal NAR workflow-dispatch acquisition is active with GitHub Actions primary and local fallback;
-- the shared control-plane foundation is complete and Banei is the active source-specific operational integration work.
+- the shared control-plane foundation and Banei bounded operational integration are complete; Banei handoff is accepted for manual reviewed steady-state operation and HKJC is the active source-specific pilot.
 
 ## Programme order
 
@@ -59,6 +59,7 @@ Completed source-specific work:
 
 ```text
 WHR-CAL-JAPAN-NAR-A-PLUS
+WHR-CAL-JAPAN-BANEI-A-PLUS
 ```
 
 Completed shared work:
@@ -70,13 +71,13 @@ WHR-CAL-ACQUISITION-CONTROL-PLANE
 Current source-specific work:
 
 ```text
-WHR-CAL-JAPAN-BANEI-A-PLUS
+WHR-CAL-HONG-KONG-HKJC
 ```
 
 Next source-specific work:
 
 ```text
-WHR-CAL-HONG-KONG-HKJC
+WHR-CAL-UAE-ERA
 ```
 
 Later shared automation work may remain under the control-plane Work ID until the foundation release gate is closed, then move to a separately named operations-automation Work ID if scope grows materially.
