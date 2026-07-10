@@ -1,0 +1,206 @@
+name: Calendar HKJC shared Actions live evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-actions-live-job-fixture-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json'
+      - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/run-hkjc-live-fixture-job.mjs'
+      - 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs'
+      - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
+      - 'scripts/check-calendar-actions-multi-job.mjs'
+      - 'scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs'
+      - 'scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs'
+      - 'docs/calendar/hkjc-shared-actions-live-evidence.md'
+      - '.github/workflows/calendar-actions-multi-job.yml'
+      - '.github/workflows/calendar-hkjc-shared-actions-live-evidence.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hkjc-pilot-03-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/run-hkjc-live-fixture-job.mjs
+          node --check scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs
+          node --check scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
+      - name: Validate HKJC-PILOT-03 shared Actions integration
+        run: node scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs
+      - name: Validate reviewed HKJC-PILOT-03 live evidence decision
+        run: node scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
+      - name: Validate shared Actions and runner compatibility
+        run: |
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate PILOT-02 dependency and runtime boundary
+        run: |
+          node scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          for (const file of [
+            '.github/workflows/calendar-actions-multi-job.yml',
+            '.github/workflows/calendar-hkjc-shared-actions-live-evidence.yml',
+          ]) {
+            const workflow = fs.readFileSync(file, 'utf8');
+            if (!workflow.includes('permissions:\n  contents: read')) throw new Error(`${file}: read-only permission missing`);
+            if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error(`${file}: write permission enabled`);
+            if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error(`${file}: scheduled trigger enabled`);
+          }
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('AUTOMATIC_PUBLICATION: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
+
+  capture-live-evidence:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: evidence_gate
+        name: Decide whether actual live evidence capture is still required
+        shell: bash
+        run: |
+          if [ -f data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json ]; then
+            echo 'capture=false' >> "$GITHUB_OUTPUT"
+            echo 'REVIEWED_PILOT_03_EVIDENCE_ALREADY_RECORDED: true'
+          else
+            echo 'capture=true' >> "$GITHUB_OUTPUT"
+            echo 'REVIEWED_PILOT_03_EVIDENCE_ALREADY_RECORDED: false'
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.evidence_gate.outputs.capture == 'true'
+        with:
+          node-version: 22.12.0
+      - name: Record protected state hashes
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/sources/timetable/hkjc-racecard-route.json \
+            > /tmp/hkjc-protected-before.sha256
+      - name: Compile shared NAR and HKJC Actions Plan
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-id=nar-hkjc-actions-window-001 \
+            --output=/tmp/hkjc-actions-plan.json \
+            --matrix-output=/tmp/hkjc-actions-matrix.json
+      - name: Extract immutable HKJC execution specification
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const plan = JSON.parse(fs.readFileSync('/tmp/hkjc-actions-plan.json', 'utf8'));
+          const job = plan.jobs.find((item) => item.job_id === 'hkjc-august-actions-plan-job-001');
+          if (!job) throw new Error('compiled HKJC Actions Job missing');
+          if (job.execution.executor_id !== 'hkjc-live-fixture-actions') throw new Error('compiled HKJC executor differs');
+          fs.writeFileSync('/tmp/hkjc-live-execution.json', `${JSON.stringify(job.execution, null, 2)}\n`);
+          console.log(`HKJC_BATCH_ID=${job.batch_id}`);
+          NODE
+      - name: Run actual HKJC shared Actions Job
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=/tmp/hkjc-live-execution.json
+      - name: Review bounded live evidence summary
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const execution = JSON.parse(fs.readFileSync('/tmp/hkjc-live-execution.json', 'utf8'));
+          const base = path.join('data/generated/timetable/actions-multi-job', execution.batch_id);
+          const coverage = JSON.parse(fs.readFileSync(path.join(base, 'coverage-observation.json'), 'utf8'));
+          const manifest = JSON.parse(fs.readFileSync(path.join(base, 'result-manifest.json'), 'utf8'));
+          const candidate = JSON.parse(fs.readFileSync(path.join(base, 'candidates.json'), 'utf8'));
+          const report = JSON.parse(fs.readFileSync(path.join(base, 'collection-report.json'), 'utf8'));
+          const status = JSON.parse(fs.readFileSync(path.join('data/generated/timetable/actions-multi-job-status', `${execution.batch_id}.json`), 'utf8'));
+          const reviewStates = [...new Set(candidate.records.map((record) => record.review_status))];
+          const summary = {
+            schema_version: 'calendar-hkjc-pilot-03-live-evidence-summary-v1',
+            work_id: 'WHR-CAL-HONG-KONG-HKJC',
+            implementation_unit: 'HKJC-PILOT-03',
+            batch_id: execution.batch_id,
+            requested_scope: execution.requested_scope,
+            coverage_claim: coverage.coverage_claim,
+            records_discovered: coverage.records_discovered,
+            records_updated: coverage.records_updated,
+            source_error_count: coverage.source_errors.length,
+            source_error_codes: [...new Set(coverage.source_errors.map((entry) => entry.code))],
+            rank_counts: manifest.rank_counts,
+            job_status: status.status,
+            candidate_review_states: reviewStates,
+            envelope_review_state: candidate.review.status,
+            publication_effect: report.publication_effect,
+            canonical_write_enabled: report.canonical_write_enabled,
+            public_write_enabled: report.public_write_enabled,
+            automatic_approval_enabled: report.automatic_approval_enabled,
+            automatic_promotion_enabled: report.automatic_promotion_enabled,
+            automatic_publication_enabled: report.automatic_publication_enabled,
+          };
+          fs.writeFileSync('/tmp/hkjc-pilot-03-live-evidence-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log('HKJC_PILOT_03_LIVE_EVIDENCE_SUMMARY_START');
+          console.log(JSON.stringify(summary));
+          console.log('HKJC_PILOT_03_LIVE_EVIDENCE_SUMMARY_END');
+          NODE
+      - name: Prove protected state unchanged
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: sha256sum --check /tmp/hkjc-protected-before.sha256
+      - name: Upload actual HKJC shared Job evidence
+        if: steps.evidence_gate.outputs.capture == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-03-live-evidence-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            /tmp/hkjc-pilot-03-live-evidence-summary.json
+            /tmp/hkjc-live-execution.json
+            data/generated/timetable/actions-multi-job-status/
+            data/generated/timetable/actions-multi-job/
+      - name: Remove ephemeral review artifacts
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          execution_batch_id="$(node -e "const fs=require('fs'); const e=JSON.parse(fs.readFileSync('/tmp/hkjc-live-execution.json','utf8')); process.stdout.write(e.batch_id)")"
+          rm -rf "data/generated/timetable/actions-multi-job/${execution_batch_id}"
+          rm -f "data/generated/timetable/actions-multi-job-status/${execution_batch_id}.json"
+      - name: Prove repository clean after evidence upload
+        if: steps.evidence_gate.outputs.capture == 'true'
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'HKJC PILOT-03 evidence run left repository changes.' >&2
+            exit 1
+          fi
+      - name: Confirm reviewed evidence is reused without network fetch
+        if: steps.evidence_gate.outputs.capture == 'false'
+        run: |
+          node scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
+          echo 'ACTUAL_LIVE_FETCH_REPEATED: false'

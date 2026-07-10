@@ -49,6 +49,7 @@ Use these files together:
 - [`banei-handoff-decision.md`](banei-handoff-decision.md) — accepted manual reviewed steady-state handoff decision, no-full-month-claim boundary, and next Work ID.
 - [`hkjc-pilot-reconciliation.md`](hkjc-pilot-reconciliation.md) — HKJC shared-control-plane versus legacy rolling-refresh reconciliation and direct-write quarantine.
 - [`hkjc-live-fixture-artifact-bridge.md`](hkjc-live-fixture-artifact-bridge.md) — HKJC-PILOT-02 official fixture-window Rank C artifact bridge, partial/error semantics, manual live Actions route, and no-write boundary.
+- [`hkjc-shared-actions-live-evidence.md`](hkjc-shared-actions-live-evidence.md) — HKJC-PILOT-03 shared Actions integration, reviewed parser-failure live evidence, provisional Registry decision, and PILOT-04 handoff.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.

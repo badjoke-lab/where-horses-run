@@ -1,0 +1,70 @@
+{
+  "schema_version": "calendar-hkjc-pilot-03-live-evidence-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-03",
+  "reviewed_at": "2026-07-10T13:10:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29094860976,
+    "batch_id": "nar-hkjc-actions-window-001-hkjc-august-actions-plan-job-001-run-001",
+    "requested_scope": {
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-29",
+      "timezone": "Asia/Hong_Kong"
+    },
+    "checked_at": "2026-07-10T13:07:33.139Z",
+    "coverage_claim": "none",
+    "observed_scope": {
+      "kind": "not_observed",
+      "timezone": "Asia/Hong_Kong"
+    },
+    "records_discovered": 0,
+    "records_updated": 0,
+    "source_error_count": 1,
+    "source_error_codes": [
+      "parser_failure"
+    ],
+    "source_error_scope_refs": [
+      "month:2026-08"
+    ],
+    "rank_counts": {
+      "C": 0,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 0
+    },
+    "job_status": "source_error",
+    "candidate_review_states": [],
+    "envelope_review_state": "needs_review",
+    "publication_effect": "none",
+    "canonical_write_enabled": false,
+    "public_write_enabled": false,
+    "automatic_approval_enabled": false,
+    "automatic_promotion_enabled": false,
+    "automatic_publication_enabled": false,
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_cleanup": true
+  },
+  "decision": {
+    "registry_profile_status": "provisional",
+    "schedule_path_decision": "remain_provisional_schedule_parser_reconciliation_required",
+    "detail_source_activation": false,
+    "detail_adapter_activation": false,
+    "reason": "The shared Actions execution path completed and the official fixture request returned a response, but no recognized fixture markers were parsed for the requested August 2026 source window. Fail-closed parser_failure evidence does not justify Registry activation."
+  },
+  "next_implementation_unit": {
+    "id": "HKJC-PILOT-04",
+    "title": "HKJC official fixture route and parser resilience reconciliation",
+    "goal": "Review the official fixture page structure or alternate official fixture route, improve parser resilience using public-safe fixture evidence, then repeat bounded shared-Actions evidence before Registry activation is reconsidered."
+  },
+  "boundaries": {
+    "scheduler_execution": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}

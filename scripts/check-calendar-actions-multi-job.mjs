@@ -50,7 +50,9 @@ const eastJobs = new Map((eastAsia?.jobs ?? []).map((entry) => [entry.job_id, en
 const narEast = eastJobs.get('nar-september-actions-plan-job-001');
 const hkjcEast = eastJobs.get('hkjc-august-actions-plan-job-001');
 if (narEast?.execution.executor_id !== 'nar-incremental-v2-actions') fail('NAR hosted executor differs.');
-if (hkjcEast?.execution.executor_id !== 'hkjc-bounded-generator-actions') fail('HKJC hosted executor differs.');
+if (hkjcEast?.execution.executor_id !== 'hkjc-live-fixture-actions') fail('HKJC hosted executor differs.');
+if (hkjcEast?.execution.source_route?.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC hosted schedule adapter differs.');
+if (hkjcEast?.execution.source_route?.detail_source_id !== null || hkjcEast?.execution.source_route?.detail_adapter_id !== null) fail('HKJC hosted execution must not activate detail acquisition.');
 if (narEast?.execution.requested_scope.start_date !== '2026-09-01' || hkjcEast?.execution.requested_scope.start_date !== '2026-08-01') fail('NAR/HKJC independent windows were flattened.');
 if (narEast?.batch_id === hkjcEast?.batch_id) fail('NAR/HKJC hosted Jobs must have independent batch IDs.');
 
@@ -76,7 +78,7 @@ if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'jra-best-availabl
 
 if (eastAsia && narEast && hkjcEast) {
   const narSuccess = makeActionsJobStatusV1(narEast.execution, 'success', null);
-  const hkjcSourceError = makeActionsJobStatusV1(hkjcEast.execution, 'source_error', 'bounded source window unavailable');
+  const hkjcSourceError = makeActionsJobStatusV1(hkjcEast.execution, 'source_error', 'bounded live fixture source unavailable');
   const summary = summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [narSuccess, hkjcSourceError]);
   if (summary.counts.success !== 1 || summary.counts.source_error !== 1) fail('mixed campaign summary must preserve one success and one source_error.');
   const narResult = summary.results.find((entry) => entry.job_id === narSuccess.job_id);
@@ -108,17 +110,17 @@ if (eastAsia && narEast && hkjcEast) {
   const executionPath = path.join(tempDir, 'hkjc-execution.json');
   fs.writeFileSync(executionPath, `${JSON.stringify(hkjcEast.execution, null, 2)}\n`);
   const result = spawnSync(process.execPath, [
-    'scripts/timetable/run-hkjc-bounded-generator-job.mjs',
+    'scripts/timetable/run-hkjc-live-fixture-job.mjs',
     `--execution=${executionPath}`,
-    '--check-only',
+    '--check-only-fixture=august-actions-success',
   ], { cwd: root, encoding: 'utf8' });
   fs.rmSync(tempDir, { recursive: true, force: true });
-  if (result.status !== 0) fail(`HKJC check-only executor failed: ${result.stderr || result.stdout}`);
+  if (result.status !== 0) fail(`HKJC live fixture check-only executor failed: ${result.stderr || result.stdout}`);
   else {
     const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean);
     const output = JSON.parse(lines.at(-1));
-    if (output.coverage_claim !== 'none' || output.records_discovered !== 0 || output.source_error_count !== 1 || output.check_only !== true) {
-      fail(`HKJC out-of-window check-only result differs: ${JSON.stringify(output)}`);
+    if (output.coverage_claim !== 'source_window_complete' || output.records_discovered !== 3 || output.source_error_count !== 0 || output.execution_mode !== 'fixture_check_only' || output.repository_write !== false) {
+      fail(`HKJC live fixture check-only result differs: ${JSON.stringify(output)}`);
     }
   }
 }
@@ -172,5 +174,5 @@ console.log(`BANEI_HOSTED_JOBS: ${baneiActions.jobs.length}`);
 console.log('INDEPENDENT_WINDOWS: pass');
 console.log('INDEPENDENT_OUTCOMES: pass');
 console.log('MISSING_STATUS_TO_NOT_RUN: pass');
-console.log('HKJC_OUT_OF_WINDOW_SOURCE_ERROR: pass');
+console.log('HKJC_LIVE_FIXTURE_CHECK_ONLY: pass');
 console.log('ACTIONS_WORKFLOW_BOUNDARY: pass');

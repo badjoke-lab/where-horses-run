@@ -52,10 +52,10 @@
     {
       "system_id": "hong-kong-hkjc-system",
       "runner": "github_actions",
-      "executor_id": "hkjc-bounded-generator-actions",
+      "executor_id": "hkjc-live-fixture-actions",
       "invocation_kind": "node",
-      "entry_point": "scripts/timetable/run-hkjc-bounded-generator-job.mjs",
-      "output_model": "hkjc-bounded-dry-run-batch",
+      "entry_point": "scripts/timetable/run-hkjc-live-fixture-job.mjs",
+      "output_model": "hkjc-live-fixture-artifact-batch",
       "supported_collection_modes": ["date_window"]
     }
   ],

@@ -113,6 +113,7 @@ const adapterEvidence = new Map([
   ['japan-banei-dry-run-adapter', { path: 'data/candidates/japan-banei-candidates.json', marker: '"source_adapter_id": "japan-banei-dry-run-adapter"' }],
   ['banei-nar-race-list-detail-v1', { path: 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json', marker: '"adapter_id": "banei-nar-race-list-detail-v1"' }],
   ['hong-kong-hkjc-dry-run-adapter', { path: 'data/candidates/hong-kong-hkjc-candidates.json', marker: '"source_adapter_id": "hong-kong-hkjc-dry-run-adapter"' }],
+  ['hkjc-fixture-artifact-bridge-v1', { path: 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs', marker: "const ADAPTER_ID = 'hkjc-fixture-artifact-bridge-v1'" }],
 ]);
 
 function approvedCeilingFor(record) {

@@ -1,0 +1,60 @@
+{
+  "schema_version": "calendar-hkjc-actions-live-job-fixture-v1",
+  "scenarios": [
+    {
+      "id": "august-actions-success",
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-29",
+      "generated_at": "2026-07-10T13:00:00Z",
+      "month_results": [
+        {
+          "year": 2026,
+          "month": 8,
+          "ok": true,
+          "status": 200,
+          "final_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=08&CalYear=2026",
+          "body": "<html><body><div>8 <img alt=\"ST\"><img alt=\"D\"></div><div>12 <img alt=\"HV\"><img alt=\"N\"></div><div>23 <img alt=\"ST\"><img alt=\"T\"></div></body></html>"
+        }
+      ],
+      "expected": {
+        "coverage_claim": "source_window_complete",
+        "records_discovered": 3,
+        "rank_counts": {
+          "C": 3,
+          "B": 0,
+          "B+": 0,
+          "A": 0,
+          "A+": 0
+        }
+      }
+    },
+    {
+      "id": "august-actions-source-error",
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-29",
+      "generated_at": "2026-07-10T13:05:00Z",
+      "month_results": [
+        {
+          "year": 2026,
+          "month": 8,
+          "ok": false,
+          "status": 403,
+          "final_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=08&CalYear=2026",
+          "error_code": "source_unavailable",
+          "error_message": "HKJC official fixture source returned HTTP 403."
+        }
+      ],
+      "expected": {
+        "coverage_claim": "none",
+        "records_discovered": 0,
+        "rank_counts": {
+          "C": 0,
+          "B": 0,
+          "B+": 0,
+          "A": 0,
+          "A+": 0
+        }
+      }
+    }
+  ]
+}

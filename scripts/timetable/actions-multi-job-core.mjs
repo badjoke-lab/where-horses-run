@@ -15,7 +15,7 @@ function artifactPathsForExecution(execution) {
       `data/candidates/nar-incremental-batches/${execution.batch_id}`,
     ];
   }
-  if (execution.executor_id === 'hkjc-bounded-generator-actions'
+  if (execution.executor_id === 'hkjc-live-fixture-actions'
     || execution.executor_id === 'banei-schedule-detail-actions') {
     return [
       status,

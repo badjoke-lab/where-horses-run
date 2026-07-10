@@ -66,7 +66,7 @@ Calendar human-readable contracts:
 - `docs/calendar/banei-handoff-decision.md`
 - `docs/calendar/hkjc-pilot-reconciliation.md`
 - `docs/calendar/hkjc-live-fixture-artifact-bridge.md`
-- `docs/calendar/hkjc-pilot-reconciliation.md`
+- `docs/calendar/hkjc-shared-actions-live-evidence.md`
 - `docs/calendar/baseline-reconciliation-map.md`
 - `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/calendar/dynamic-dates-release-gate.md`
@@ -105,6 +105,7 @@ Calendar machine-readable contracts:
 - `data/static/calendar-banei-handoff-decision.schema.json`
 - `data/static/calendar-banei-handoff-decision-v1.json`
 - `data/audits/calendar-hkjc-pilot-reconciliation-v1.json`
+- `data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json`
 - `data/static/jra-pilot-control.json`
 - `data/static/jra-final-program-intake.schema.json`
 - `data/static/local-racing-pilot-control.json`
@@ -130,7 +131,8 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-banei-handoff-decision.mjs`
 - `scripts/check-calendar-hkjc-pilot-reconciliation.mjs`
 - `scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs`
-- `scripts/check-calendar-hkjc-pilot-reconciliation.mjs`
+- `scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs`
+- `scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs`
 - `scripts/check-jra-pilot-foundation.mjs`
 - `scripts/check-jra-planned-intake.mjs`
 - `scripts/check-jra-final-confirmation-contract.mjs`
