@@ -1,0 +1,20 @@
+=== scripts/check-calendar-contracts.mjs ===
+[calendar-contracts] PASS
+TRACKER_COUNTRIES: 98
+AUTHORITY_SOURCE_KEYS: 116
+RACECOURSE_IDS: 11
+READINESS_RECORDS: 116
+CLOSED_COUNTRIES: 98
+SOURCE_TEST_V2_FILES: 46
+CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR
+NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI
+EXIT_STATUS=0
+=== scripts/check-project-governance-docs.mjs ===
+ERROR: project roadmap missing Status: active operational integration.
+EXIT_STATUS=1
+=== scripts/check-calendar-baseline-reconciliation.mjs ===
+CALENDAR_BASELINE_RECONCILIATION: pass components=37 retain=12 repair=9 migrate=7 replace=4 archive=5
+COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE
+CURRENT_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS
+NEXT_SOURCE_WORK_ID: WHR-CAL-HONG-KONG-HKJC
+EXIT_STATUS=0
