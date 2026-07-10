@@ -91,20 +91,6 @@ async function fetchFixturePage(month) {
   }
 }
 
-function assertArtifactOutputRoot(relativePath) {
-  if (typeof relativePath !== 'string' || !relativePath.trim()) throw new Error('output root missing');
-  const normalized = relativePath.replaceAll('\\', '/');
-  if (normalized.includes('..')) throw new Error('output root must not traverse parent directories');
-  if (normalized.startsWith('/') || /^[A-Za-z]:\//.test(normalized)) throw new Error('output root must be repository-relative');
-  const forbidden = [
-    'data/generated/timetable/canonical',
-    'data/generated/timetable/public',
-  ];
-  if (forbidden.some((prefix) => normalized === prefix || normalized.startsWith(`${prefix}/`))) {
-    throw new Error('HKJC artifact-only collector cannot write canonical or public timetable paths');
-  }
-}
-
 function writeJson(relativePath, value) {
   const absolute = path.resolve(root, relativePath);
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
@@ -130,9 +116,10 @@ const bridge = buildHkjcLiveFixtureBridgeV1({
   },
   page_results: pageResults,
 });
+const expectedOutputRoot = `data/generated/timetable/hkjc-live-fixture-bridge/${batchId}`;
 
 if (writeArtifacts) {
-  assertArtifactOutputRoot(outputRoot);
+  if (outputRoot !== expectedOutputRoot) throw new Error(`--output-root must equal ${expectedOutputRoot}`);
   for (const [filename, value] of [
     ['candidate.json', bridge.candidate],
     ['coverage-observation.json', bridge.coverage_observation],
@@ -152,6 +139,7 @@ console.log(JSON.stringify({
   source_error_count: bridge.coverage_observation.source_errors.length,
   review_state: bridge.review_queue.entries[0].review_state,
   promotion_state: bridge.review_queue.entries[0].promotion_state,
+  output_root: expectedOutputRoot,
   artifact_write_performed: writeArtifacts,
   raw_source_body_persisted: false,
   canonical_write_performed: false,
