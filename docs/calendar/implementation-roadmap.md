@@ -445,14 +445,15 @@ Completed sequence:
 12. formal manual operator route;
 13. proposal-only Queue reconciliation with no automatic Queue write;
 14. guarded explicit Queue state apply and rollback with reviewed approval artifact, exact source/proposal/target SHA-256 binding, stale-write rejection, durable atomic replacement, pre-apply backup, and rollback evidence;
-15. freshness and rollback operating evidence connecting reviewed successful Banei Job evidence to Operations v2, proving freshness age 1 hour without freshness attention, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection.
+15. freshness and rollback operating evidence connecting reviewed successful Banei Job evidence to Operations v2, proving freshness age 1 hour without freshness attention, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection;
+16. bilingual and public-display QA with separate detail-source Readiness, legacy schedule-source C/link-only preservation, one-meeting-per-list-row enforcement, A/A+ downgrade and item-switch validation, Japanese meeting-detail routing, localized Banei list labels, and rendered English/Japanese fixture verification.
 
 Current sequence:
 
-1. complete Banei bilingual QA and remaining public-display review;
-2. use July whole-month validation only for explicit Completion Audit claims;
-3. preserve human review before promotion/publication;
-4. decide the Banei handoff boundary explicitly before the next source-specific pilot.
+1. decide whether the Banei handoff requires an explicit July full-month completeness claim;
+2. if that claim is required, run the separate July whole-month Completion Audit; otherwise do not treat full-month validation as a handoff blocker;
+3. preserve human review before promotion/publication and keep unattended execution disabled;
+4. record the explicit Banei handoff decision before the next source-specific pilot.
 
 ## Stage 8 — multi-system execution
 
