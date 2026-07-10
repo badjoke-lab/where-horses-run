@@ -1,6 +1,9 @@
 name: Temporary current development entrypoint sync
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - work/current-development-entrypoint-sync
