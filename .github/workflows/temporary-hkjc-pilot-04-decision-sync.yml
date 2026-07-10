@@ -1,6 +1,9 @@
 name: Temporary HKJC PILOT-04 decision sync
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - work/calendar-hkjc-fixture-parser-resilience
@@ -43,5 +46,3 @@ jobs:
             docs/calendar/README.md
           git commit -m "[CF-Pages-Skip] Sync HKJC PILOT-04 evidence decision"
           git push origin HEAD:work/calendar-hkjc-fixture-parser-resilience
-
-# Temporary workflow removed after synchronization.
