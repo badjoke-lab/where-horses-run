@@ -632,10 +632,11 @@ The foundation programme is complete. Banei guarded Queue state apply/rollback, 
 
 ```text
 1. keep Banei manual reviewed steady-state operation within the accepted handoff boundary
-2. begin WHR-CAL-HONG-KONG-HKJC as the next Stage 10 source-specific pilot
-3. run the Banei July whole-month Completion Audit only before an explicit July full-month completeness claim
-4. keep unattended acquisition execution, automatic approval, promotion, and publication disabled
-5. continue Calendar Public v1 release-readiness work in parallel
+2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
+3. execute HKJC-PILOT-03 shared Actions Job integration and reviewed live fixture evidence before Registry re-evaluation
+4. run the Banei July whole-month Completion Audit only before an explicit July full-month completeness claim
+5. keep unattended acquisition execution, automatic approval, promotion, and publication disabled
+6. continue Calendar Public v1 release-readiness work in parallel
 ```
 
 ## Release gates

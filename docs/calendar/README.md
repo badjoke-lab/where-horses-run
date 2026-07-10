@@ -47,7 +47,8 @@ Use these files together:
 - [`banei-freshness-rollback-operating-evidence.md`](banei-freshness-rollback-operating-evidence.md) — reviewed successful Job freshness states and rollback rehearsal evidence.
 - [`banei-bilingual-public-display-qa.md`](banei-bilingual-public-display-qa.md) — separate detail-source Readiness, list/detail boundary, A/A+ switch, and rendered English/Japanese QA.
 - [`banei-handoff-decision.md`](banei-handoff-decision.md) — accepted manual reviewed steady-state handoff decision, no-full-month-claim boundary, and next Work ID.
-- [`hkjc-pilot-reconciliation.md`](hkjc-pilot-reconciliation.md) — HKJC shared-control-plane versus legacy rolling-refresh reconciliation, direct-write quarantine, and HKJC-PILOT-02 handoff.
+- [`hkjc-pilot-reconciliation.md`](hkjc-pilot-reconciliation.md) — HKJC shared-control-plane versus legacy rolling-refresh reconciliation and direct-write quarantine.
+- [`hkjc-live-fixture-artifact-bridge.md`](hkjc-live-fixture-artifact-bridge.md) — HKJC-PILOT-02 official fixture-window Rank C artifact bridge, partial/error semantics, manual live Actions route, and no-write boundary.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -108,6 +109,7 @@ data/static/calendar-banei-retry-queue-apply-approval.schema.json
 data/static/calendar-banei-handoff-decision.schema.json
 data/static/calendar-banei-handoff-decision-v1.json
 data/audits/calendar-hkjc-pilot-reconciliation-v1.json
+data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json
@@ -156,6 +158,9 @@ scripts/timetable/rank-aware-retry-queue-validation.mjs
 scripts/check-calendar-rank-aware-retry-queue.mjs
 scripts/timetable/runner-compatibility.mjs
 scripts/check-calendar-runner-compatibility.mjs
+scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs
+scripts/timetable/collect-hkjc-fixture-artifacts.mjs
+scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
 scripts/timetable/actions-multi-job-core.mjs
 scripts/timetable/plan-actions-multi-job.mjs
 scripts/timetable/run-calendar-actions-job.mjs

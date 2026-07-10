@@ -1,0 +1,122 @@
+name: Calendar HKJC live fixture artifacts
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json'
+      - 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs'
+      - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
+      - 'scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs'
+      - 'docs/calendar/hkjc-live-fixture-artifact-bridge.md'
+      - 'docs/calendar/hkjc-pilot-reconciliation.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - '.github/workflows/calendar-hkjc-live-fixture-artifacts.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json'
+      - 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs'
+      - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
+      - 'scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs'
+      - 'docs/calendar/hkjc-live-fixture-artifact-bridge.md'
+      - 'docs/calendar/hkjc-pilot-reconciliation.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - '.github/workflows/calendar-hkjc-live-fixture-artifacts.yml'
+  workflow_dispatch:
+    inputs:
+      from_date:
+        description: Inclusive HKJC fixture-window start date (YYYY-MM-DD)
+        required: true
+        type: string
+      to_date_exclusive:
+        description: Exclusive HKJC fixture-window end date (YYYY-MM-DD)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs
+          node --check scripts/timetable/collect-hkjc-fixture-artifacts.mjs
+          node --check scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
+      - name: Validate artifact-only bridge
+        run: node scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
+      - name: Validate shared control-plane dependencies
+        run: |
+          node scripts/check-calendar-coverage-observation-schema.mjs
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-pipeline-v1-candidate-contract.mjs
+      - name: Validate governance and runtime boundaries
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check workflow safety boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-live-fixture-artifacts.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          if (!workflow.includes('/tmp/hkjc-fixture-artifacts/')) throw new Error('external artifact directory missing');
+          if (!workflow.includes('actions/upload-artifact@v4')) throw new Error('artifact upload step missing');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('LIVE_EXECUTION_TRIGGER: workflow_dispatch only');
+          console.log('ARTIFACT_TRANSPORT: actions/upload-artifact');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
+
+  collect-live:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Collect official HKJC fixture-window review artifacts
+        env:
+          FROM_DATE: ${{ inputs.from_date }}
+          TO_DATE_EXCLUSIVE: ${{ inputs.to_date_exclusive }}
+        run: |
+          output_dir="/tmp/hkjc-fixture-artifacts/${GITHUB_RUN_ID}"
+          node scripts/timetable/collect-hkjc-fixture-artifacts.mjs \
+            --from="${FROM_DATE}" \
+            --to-exclusive="${TO_DATE_EXCLUSIVE}" \
+            --output-dir="${output_dir}" \
+            --batch-id="hkjc-live-${GITHUB_RUN_ID}" \
+            --campaign-id="hkjc-stage10-pilot" \
+            --job-id="hkjc-live-fixture-${GITHUB_RUN_ID}"
+      - name: Upload bounded HKJC review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-live-fixture-artifacts-${{ github.run_id }}
+          path: /tmp/hkjc-fixture-artifacts/${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Prove repository remains clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'HKJC live fixture collection modified repository files.' >&2
+            exit 1
+          fi
