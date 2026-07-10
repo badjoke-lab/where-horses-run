@@ -1,0 +1,33 @@
+name: Temporary HKJC PILOT-03 checker diagnostic
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/temp-hkjc-pilot-03-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Capture checker output
+        run: |
+          set +e
+          node scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs > /tmp/hkjc-pilot-03-check.log 2>&1
+          status=$?
+          echo "EXIT_STATUS=${status}" >> /tmp/hkjc-pilot-03-check.log
+          exit 0
+      - name: Upload checker diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-03-check-diagnostic
+          path: /tmp/hkjc-pilot-03-check.log
+          if-no-files-found: error
+          retention-days: 1
