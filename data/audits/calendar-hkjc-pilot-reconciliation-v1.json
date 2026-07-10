@@ -1,0 +1,101 @@
+{
+  "schema_version": "calendar-hkjc-pilot-reconciliation-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "reviewed_at": "2026-07-10T00:45:00Z",
+  "decision": "transition_legacy_refresh_to_shared_control_plane",
+  "registry_state": {
+    "system_id": "hong-kong-hkjc-system",
+    "profile_status": "provisional",
+    "primary_runner": "github_actions",
+    "fallback_runner": "local",
+    "schedule_source_id": "hkjc-fixture-list",
+    "detail_source_id": null,
+    "schedule_adapter_id": "hong-kong-hkjc-dry-run-adapter",
+    "detail_adapter_id": null,
+    "public_ceiling": "A",
+    "supported_observation_ranks": [
+      "C"
+    ]
+  },
+  "shared_control_plane_state": {
+    "executor_id": "hkjc-bounded-generator-actions",
+    "collection_modes": [
+      "date_window"
+    ],
+    "candidate_source": "data/candidates/hong-kong-hkjc-candidates.json",
+    "candidate_window_start": "2026-05-29",
+    "candidate_window_end_exclusive": "2026-06-28",
+    "candidate_record_count": 7,
+    "emitted_rank": "C",
+    "publication_effect": "none"
+  },
+  "legacy_rolling_evidence": {
+    "route_config": "data/sources/timetable/hkjc-racecard-route.json",
+    "refresh_report": "data/generated/timetable/hkjc-refresh-report.json",
+    "normalized_meetings": "data/generated/timetable/hkjc-normalized-timetable.sample.json",
+    "generated_at": "2026-06-08T17:57:19.440Z",
+    "route_meeting_count": 10,
+    "normalized_record_count": 10,
+    "rank_counts": {
+      "C": 9,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 1
+    },
+    "historical_a_plus_meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+    "evidence_role": "reviewed_historical_migration_evidence_only"
+  },
+  "legacy_orchestrator_decision": {
+    "path": "scripts/timetable/refresh-hkjc.mjs",
+    "default_execution": "fail_closed",
+    "research_flag": "--legacy-research-only",
+    "research_steps": [
+      "scripts/timetable/fetch-hkjc-racecards.mjs",
+      "scripts/timetable/normalize-hkjc-racecards.mjs"
+    ],
+    "forbidden_steps": [
+      "scripts/timetable/build-canonical-timetable.mjs",
+      "scripts/timetable/merge-hkjc-normalized-into-canonical.mjs",
+      "scripts/timetable/build-public-timetable-view.mjs"
+    ],
+    "canonical_write_enabled": false,
+    "public_write_enabled": false
+  },
+  "migration_decisions": [
+    {
+      "component": "official fixture/racecard fetch logic",
+      "decision": "retain_for_reviewed_migration",
+      "reason": "Existing source logic and status taxonomy are useful, but operational acquisition must emit review artifacts instead of writing canonical/public state."
+    },
+    {
+      "component": "normalization logic",
+      "decision": "retain_for_adapter_migration",
+      "reason": "Historical A+/C classification evidence is useful, but output must be bridged to timetable-candidate-v1 and shared Result Manifest/Coverage/Review Queue contracts."
+    },
+    {
+      "component": "legacy direct canonical/public orchestration",
+      "decision": "quarantine",
+      "reason": "Direct canonical/public writes bypass the current candidate review, promotion, and public projection boundaries."
+    },
+    {
+      "component": "bounded Actions C-level executor",
+      "decision": "retain_as_safe_fallback_foundation",
+      "reason": "It already emits isolated candidate, Coverage Observation, Result Manifest, and report artifacts with publication_effect none."
+    }
+  ],
+  "next_implementation_unit": {
+    "id": "HKJC-PILOT-02",
+    "title": "HKJC artifact-only live fixture acquisition bridge",
+    "goal": "Move official fixture-window acquisition into a bounded review-artifact path that feeds shared control-plane contracts without canonical or public writes."
+  },
+  "boundaries": {
+    "live_fetch_performed_by_reconciliation": false,
+    "canonical_write_performed": false,
+    "public_write_performed": false,
+    "automatic_approval_enabled": false,
+    "automatic_promotion_enabled": false,
+    "automatic_publication_enabled": false,
+    "scheduler_execution_enabled": false
+  }
+}
