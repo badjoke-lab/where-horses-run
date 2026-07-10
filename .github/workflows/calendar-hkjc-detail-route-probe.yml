@@ -34,9 +34,10 @@ jobs:
           const routes = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-route-probe.json', 'utf8'));
           const shell = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-shell-structure-probe.json', 'utf8'));
           if (routes.schema_version !== 'calendar-hkjc-detail-route-candidate-probe-v1') throw new Error('route probe schema differs');
-          if (!Array.isArray(routes.results) || routes.results.length !== 3) throw new Error('expected three route candidates');
+          if (!Array.isArray(routes.targets) || routes.targets.length !== 3) throw new Error('expected three reviewed target meetings');
+          if (!Array.isArray(routes.results) || routes.results.length !== 9) throw new Error('expected nine route probe results');
           if (routes.raw_body_stored !== false) throw new Error('route probe raw-body boundary differs');
-          for (const result of routes.results) if (result.raw_body_stored !== false) throw new Error(`${result.id}: raw-body boundary differs`);
+          for (const result of routes.results) if (result.raw_body_stored !== false) throw new Error(`${result.target_date}:${result.id}: raw-body boundary differs`);
           if (shell.schema_version !== 'calendar-hkjc-detail-shell-structure-probe-v1') throw new Error('shell probe schema differs');
           if (shell.raw_body_stored !== false || shell.public_safe_probe_only !== true) throw new Error('shell probe public-safe boundary differs');
           console.log(JSON.stringify({ routes, shell }));
