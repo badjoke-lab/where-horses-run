@@ -1,0 +1,38 @@
+name: Temporary Banei bilingual QA roadmap state updater
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/update-banei-bilingual-qa-roadmap-state.mjs'
+      - '.github/workflows/temp-banei-bilingual-qa-roadmap-state.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Update Banei bilingual QA roadmap state
+        run: node scripts/update-banei-bilingual-qa-roadmap-state.mjs
+      - name: Commit canonical roadmap synchronization
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/project-roadmap.md \
+            docs/calendar/implementation-roadmap.md \
+            docs/calendar/acquisition-control-plane-implementation-plan.md
+          git commit -m "[CF-Pages-Skip] Sync Banei bilingual QA roadmap state"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
