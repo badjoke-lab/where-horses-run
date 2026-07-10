@@ -74,7 +74,7 @@ for (const phrase of [
 ]) {
   if (!doc.includes(phrase)) fail(`evidence document missing ${phrase}.`);
 }
-for (const phrase of ['reviewed-import boundary', 'fallback_runner: null', 'PILOT-06']) {
+for (const phrase of ['Reviewed-import boundary', 'fallback_runner: null', 'PILOT-06']) {
   if (!reconciliationDoc.includes(phrase)) fail(`reconciliation document missing ${phrase}.`);
 }
 
