@@ -1,0 +1,164 @@
+{
+  "schema_version": "calendar-hkjc-detail-reviewed-import-fixtures-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-06",
+  "valid_inputs": [
+    {
+      "id": "pending-public-safe-review",
+      "input": {
+        "schema_version": "calendar-hkjc-detail-reviewed-import-v1",
+        "work_id": "WHR-CAL-HONG-KONG-HKJC",
+        "implementation_unit": "HKJC-PILOT-06",
+        "generated_at": "2026-07-10T16:20:00Z",
+        "source_evidence": {
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+          "checked_at": "2026-07-10T16:15:00Z",
+          "evidence_type": "official_page_manual_review"
+        },
+        "window": {
+          "start_date": "2026-07-08",
+          "end_date_exclusive": "2026-07-09",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "meetings": [
+          {
+            "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+            "racecourse_id": "happy-valley-racecourse",
+            "date": "2026-07-08",
+            "meeting_complete": true,
+            "rows": [
+              {
+                "race_number": 1,
+                "post_time_local": "18:30",
+                "race_name": "Fixture Reviewed Race One",
+                "distance_m": 1000,
+                "surface": "Turf",
+                "course_label": "B Course",
+                "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1"
+              },
+              {
+                "race_number": 2,
+                "post_time_local": "19:00",
+                "race_name": "Fixture Reviewed Race Two",
+                "distance_m": 1200,
+                "surface": "Turf",
+                "course_label": "B Course",
+                "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=2"
+              }
+            ]
+          }
+        ],
+        "review": {
+          "state": "pending_human_review",
+          "reviewed_at": null,
+          "reviewer": null
+        }
+      },
+      "expected_package": {
+        "review_state": "pending_human_review",
+        "normalized_artifacts_present": false
+      }
+    },
+    {
+      "id": "reviewed-public-safe-a-plus",
+      "input": {
+        "schema_version": "calendar-hkjc-detail-reviewed-import-v1",
+        "work_id": "WHR-CAL-HONG-KONG-HKJC",
+        "implementation_unit": "HKJC-PILOT-06",
+        "generated_at": "2026-07-10T16:20:00Z",
+        "source_evidence": {
+          "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+          "checked_at": "2026-07-10T16:15:00Z",
+          "evidence_type": "official_page_manual_review"
+        },
+        "window": {
+          "start_date": "2026-07-08",
+          "end_date_exclusive": "2026-07-09",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "meetings": [
+          {
+            "meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+            "racecourse_id": "happy-valley-racecourse",
+            "date": "2026-07-08",
+            "meeting_complete": true,
+            "rows": [
+              {
+                "race_number": 1,
+                "post_time_local": "18:30",
+                "race_name": "Fixture Reviewed Race One",
+                "distance_m": 1000,
+                "surface": "Turf",
+                "course_label": "B Course",
+                "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1"
+              },
+              {
+                "race_number": 2,
+                "post_time_local": "19:00",
+                "race_name": "Fixture Reviewed Race Two",
+                "distance_m": 1200,
+                "surface": "Turf",
+                "course_label": "B Course",
+                "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=2"
+              }
+            ]
+          }
+        ],
+        "review": {
+          "state": "reviewed_public_safe",
+          "reviewed_at": "2026-07-10T16:18:00Z",
+          "reviewer": "fixture-reviewer"
+        }
+      },
+      "expected_package": {
+        "review_state": "reviewed_public_safe",
+        "normalized_artifacts_present": true,
+        "rank": "A+",
+        "coverage_claim": "source_window_complete",
+        "runner_used": "reviewed_import"
+      }
+    }
+  ],
+  "invalid_cases": [
+    {
+      "id": "unofficial-source-url",
+      "base_valid_input_id": "reviewed-public-safe-a-plus",
+      "patch": {
+        "path": ["source_evidence", "official_source_url"],
+        "value": "https://example.com/racecard"
+      }
+    },
+    {
+      "id": "raw-html-field",
+      "base_valid_input_id": "reviewed-public-safe-a-plus",
+      "patch": {
+        "path": ["meetings", 0, "rows", 0, "raw_html"],
+        "value": "<html>forbidden</html>"
+      }
+    },
+    {
+      "id": "horse-name-field",
+      "base_valid_input_id": "reviewed-public-safe-a-plus",
+      "patch": {
+        "path": ["meetings", 0, "rows", 0, "horse_name"],
+        "value": "Forbidden Fixture Horse"
+      }
+    },
+    {
+      "id": "pending-with-reviewer",
+      "base_valid_input_id": "pending-public-safe-review",
+      "patch": {
+        "path": ["review", "reviewer"],
+        "value": "not-allowed-yet"
+      }
+    },
+    {
+      "id": "meeting-outside-window",
+      "base_valid_input_id": "reviewed-public-safe-a-plus",
+      "patch": {
+        "path": ["meetings", 0, "date"],
+        "value": "2026-07-09"
+      }
+    }
+  ]
+}
