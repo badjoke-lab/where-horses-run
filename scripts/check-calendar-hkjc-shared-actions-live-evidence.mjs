@@ -25,7 +25,8 @@ const plan = plans.plans.find((entry) => entry.plan_id === 'nar-hkjc-actions-win
 if (!profile) fail('HKJC Registry profile missing.');
 else {
   if (profile.profile_status !== 'provisional') fail('HKJC Registry profile must remain provisional before live-evidence review decision.');
-  if (profile.primary_runner !== 'github_actions' || profile.fallback_runner !== 'local') fail('HKJC runner policy differs.');
+  if (profile.primary_runner !== 'github_actions') fail('HKJC schedule primary runner must remain GitHub Actions.');
+  if (profile.fallback_runner !== null || !profile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback runner must remain pending under PILOT-06 reconciliation.');
   if (profile.schedule_source_id !== 'hkjc-fixture-list') fail('HKJC schedule source differs.');
   if (profile.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC schedule adapter must point to PILOT-02 bridge.');
   if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail source/adapter must remain inactive.');
@@ -166,6 +167,7 @@ console.log('SHARED_PLAN: nar-hkjc-actions-window-001');
 console.log('HKJC_EXECUTOR: hkjc-live-fixture-actions');
 console.log('SCHEDULE_ADAPTER: hkjc-fixture-artifact-bridge-v1');
 console.log('REGISTRY_PROFILE_STATUS: provisional');
+console.log('CURRENT_FALLBACK_RUNNER: pending');
 console.log('DETAIL_SOURCE_ACTIVATED: false');
 console.log('FIXTURE_SUCCESS_PATH: pass');
 console.log('FIXTURE_SOURCE_ERROR_PATH: pass');
