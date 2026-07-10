@@ -1,0 +1,37 @@
+name: Calendar HKJC PILOT-05 detail route evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-hkjc-pilot-05-detail-route-evidence-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'docs/calendar/hkjc-pilot-05-detail-route-evidence.md'
+      - 'scripts/check-calendar-hkjc-pilot-05-detail-route-evidence.mjs'
+      - '.github/workflows/calendar-hkjc-pilot-05-detail-route-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate PILOT-05 detail route evidence decision
+        run: |
+          node scripts/check-calendar-hkjc-pilot-05-detail-route-evidence.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Prove CI boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-pilot-05-detail-route-evidence.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('PILOT_05_DETAIL_ROUTE_EVIDENCE_CI_BOUNDARY: pass');
+          NODE
