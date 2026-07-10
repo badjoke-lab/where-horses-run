@@ -6,6 +6,7 @@ on:
       - 'data/fixtures/calendar-hkjc-actions-live-job-fixture-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/run-hkjc-live-fixture-job.mjs'
@@ -13,6 +14,7 @@ on:
       - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs'
+      - 'scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs'
       - 'docs/calendar/hkjc-shared-actions-live-evidence.md'
       - '.github/workflows/calendar-actions-multi-job.yml'
       - '.github/workflows/calendar-hkjc-shared-actions-live-evidence.yml'
@@ -37,8 +39,11 @@ jobs:
         run: |
           node --check scripts/timetable/run-hkjc-live-fixture-job.mjs
           node --check scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs
+          node --check scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
       - name: Validate HKJC-PILOT-03 shared Actions integration
         run: node scripts/check-calendar-hkjc-shared-actions-live-evidence.mjs
+      - name: Validate reviewed HKJC-PILOT-03 live evidence decision
+        run: node scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
       - name: Validate shared Actions and runner compatibility
         run: |
           node scripts/check-calendar-actions-multi-job.mjs
@@ -76,10 +81,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - id: evidence_gate
+        name: Decide whether actual live evidence capture is still required
+        shell: bash
+        run: |
+          if [ -f data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json ]; then
+            echo 'capture=false' >> "$GITHUB_OUTPUT"
+            echo 'REVIEWED_PILOT_03_EVIDENCE_ALREADY_RECORDED: true'
+          else
+            echo 'capture=true' >> "$GITHUB_OUTPUT"
+            echo 'REVIEWED_PILOT_03_EVIDENCE_ALREADY_RECORDED: false'
+          fi
       - uses: actions/setup-node@v4
+        if: steps.evidence_gate.outputs.capture == 'true'
         with:
           node-version: 22.12.0
       - name: Record protected state hashes
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           sha256sum \
             data/generated/timetable/canonical/meetings.json \
@@ -89,12 +107,14 @@ jobs:
             data/sources/timetable/hkjc-racecard-route.json \
             > /tmp/hkjc-protected-before.sha256
       - name: Compile shared NAR and HKJC Actions Plan
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           node scripts/timetable/plan-actions-multi-job.mjs \
             --plan-id=nar-hkjc-actions-window-001 \
             --output=/tmp/hkjc-actions-plan.json \
             --matrix-output=/tmp/hkjc-actions-matrix.json
       - name: Extract immutable HKJC execution specification
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
@@ -106,8 +126,10 @@ jobs:
           console.log(`HKJC_BATCH_ID=${job.batch_id}`);
           NODE
       - name: Run actual HKJC shared Actions Job
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: node scripts/timetable/run-calendar-actions-job.mjs --execution=/tmp/hkjc-live-execution.json
       - name: Review bounded live evidence summary
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
@@ -148,8 +170,10 @@ jobs:
           console.log('HKJC_PILOT_03_LIVE_EVIDENCE_SUMMARY_END');
           NODE
       - name: Prove protected state unchanged
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: sha256sum --check /tmp/hkjc-protected-before.sha256
       - name: Upload actual HKJC shared Job evidence
+        if: steps.evidence_gate.outputs.capture == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: hkjc-pilot-03-live-evidence-${{ github.run_id }}
@@ -161,11 +185,13 @@ jobs:
             data/generated/timetable/actions-multi-job-status/
             data/generated/timetable/actions-multi-job/
       - name: Remove ephemeral review artifacts
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           execution_batch_id="$(node -e "const fs=require('fs'); const e=JSON.parse(fs.readFileSync('/tmp/hkjc-live-execution.json','utf8')); process.stdout.write(e.batch_id)")"
           rm -rf "data/generated/timetable/actions-multi-job/${execution_batch_id}"
           rm -f "data/generated/timetable/actions-multi-job-status/${execution_batch_id}.json"
       - name: Prove repository clean after evidence upload
+        if: steps.evidence_gate.outputs.capture == 'true'
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
           if [ -n "$changes" ]; then
@@ -173,3 +199,8 @@ jobs:
             echo 'HKJC PILOT-03 evidence run left repository changes.' >&2
             exit 1
           fi
+      - name: Confirm reviewed evidence is reused without network fetch
+        if: steps.evidence_gate.outputs.capture == 'false'
+        run: |
+          node scripts/check-calendar-hkjc-pilot-03-live-evidence-decision.mjs
+          echo 'ACTUAL_LIVE_FETCH_REPEATED: false'
