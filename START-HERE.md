@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-10
 
 ## Required reading
 
@@ -340,8 +340,10 @@ WHR-CAL-JAPAN-JRA-A-PLUS
 ```
 
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Current Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Next source-specific Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Next source-specific Work ID: `WHR-CAL-UAE-ERA`
 
 Current NAR status:
 
@@ -363,18 +365,14 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. add Collection Result Manifest
-2. add Review Queue
-3. add Rank-aware Retry Queue
-4. connect Actions and local runners to shared job semantics
-5. begin Banei on the shared foundation
-6. add Actions multi-job execution
-7. add local multi-job execution
-8. add review cohort planner
-9. add automatic review PR preparation
-10. add due-job planning and scheduled bounded retries
-11. add Operations v2 operator view
+1. complete HKJC-PILOT-04 fixture route and parser resilience reconciliation
+2. repeat bounded HKJC shared-Actions live evidence
+3. explicitly review HKJC Registry activation boundary
+4. keep HKJC detail-source/A+ programme-summary activation separate until evidence exists
+5. hand off the source-specific sequence to WHR-CAL-UAE-ERA after HKJC review closure
 ```
+
+The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
 
 ## Historical compatibility markers
 
