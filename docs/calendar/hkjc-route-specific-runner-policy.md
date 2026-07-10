@@ -89,7 +89,7 @@ human review required: true
 
 The B rank records only the bounded PILOT-06 evidence actually proved. It does not reduce the five-rank classifier capability and does not expand Registry supported ranks.
 
-Operator-only means:
+The detail route is operator-only. Operator-only means:
 
 - a generic Collection Job cannot select this route;
 - a Collection Plan cannot acquire it indirectly through system fallback;
