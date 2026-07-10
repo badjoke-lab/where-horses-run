@@ -531,6 +531,16 @@ WHR-CAL-UAE-ERA
 
 HKJC and UAE inherit Pipeline v1, incremental coverage, Coverage Observation, validation responsibility, Acquisition Control Plane Job/Plan semantics, five-rank classification, human review, public boundary, freshness, fallback, rollback, and bilingual QA requirements.
 
+HKJC current transition state:
+
+- reconciliation decision: `transition_legacy_refresh_to_shared_control_plane`;
+- bounded shared executor: retained at C-level with publication effect none;
+- historical rolling evidence: 10 meetings, A+ 1 / C 9, migration evidence only;
+- legacy direct-write refresh: quarantined and fail closed by default;
+- Registry profile: provisional;
+- detail source/adapter: not activated;
+- next unit: `HKJC-PILOT-02` — artifact-only live fixture acquisition bridge.
+
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
 ## Stage 11 — Calendar public v1
@@ -576,7 +586,7 @@ From the current repository state:
 
 ```text
 1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
-2. begin WHR-CAL-HONG-KONG-HKJC as the next Stage 10 source-specific pilot
+2. execute HKJC-PILOT-02 artifact-only live fixture acquisition bridge under WHR-CAL-HONG-KONG-HKJC
 3. run Banei July Completion Audit only before an explicit full-month completeness claim
 4. continue Calendar Public v1 release-readiness work in parallel
 5. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed

@@ -366,6 +366,36 @@ automatic approval/promotion/publication: disabled
 
 Current handoff: Banei handoff accepted for manual reviewed steady-state operation. The accepted claim is bounded operational integration complete, not July full-month completeness. The separate July whole-month Completion Audit remains unperformed and is required only before an explicit July full-month completeness claim. The next Work ID is `WHR-CAL-HONG-KONG-HKJC`.
 
+## HKJC pilot
+
+Status: active transition; legacy direct-write path quarantined.
+
+Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
+
+The first HKJC reconciliation stage found two pre-existing paths: a shared-control-plane bounded C-level executor and a historical rolling live-fetch pipeline that directly chained normalization into canonical/public writes. The adopted decision is `transition_legacy_refresh_to_shared_control_plane`.
+
+Completed HKJC reconciliation state:
+
+- provisional Registry profile retained;
+- GitHub Actions primary / local fallback retained;
+- bounded date-window executor retained as safe C-level fallback foundation;
+- historical rolling evidence verified at 10 route meetings, 10 normalized records, A+ 1 / C 9;
+- historical A+ evidence retained as migration evidence only;
+- legacy `refresh-hkjc.mjs` default execution changed to fail closed;
+- explicit `--legacy-research-only` mode limited to fetch + normalize;
+- direct canonical/public writer calls removed from the legacy orchestrator;
+- current Registry detail source/adapter remain unactivated;
+- public ceiling remains A.
+
+Next implementation unit:
+
+```text
+HKJC-PILOT-02
+HKJC artifact-only live fixture acquisition bridge
+```
+
+The next unit moves official fixture-window acquisition into bounded review artifacts with explicit Coverage Observation and Result Manifest semantics. It must not begin by reactivating legacy direct canonical/public writes.
+
 ## Multi-system operations expansion
 
 After the minimum foundation and Banei start, the control-plane programme continues with:
