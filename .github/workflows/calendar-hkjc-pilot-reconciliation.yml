@@ -1,0 +1,77 @@
+name: Calendar HKJC pilot reconciliation
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-hkjc-pilot-reconciliation-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/candidates/hong-kong-hkjc-candidates.json'
+      - 'data/sources/timetable/hkjc-racecard-route.json'
+      - 'data/generated/timetable/hkjc-refresh-report.json'
+      - 'data/generated/timetable/hkjc-normalized-timetable.sample.json'
+      - 'scripts/timetable/refresh-hkjc.mjs'
+      - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/check-calendar-hkjc-pilot-reconciliation.mjs'
+      - 'docs/calendar/hkjc-pilot-reconciliation.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - '.github/workflows/calendar-hkjc-pilot-reconciliation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/calendar-hkjc-pilot-reconciliation-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/candidates/hong-kong-hkjc-candidates.json'
+      - 'data/sources/timetable/hkjc-racecard-route.json'
+      - 'data/generated/timetable/hkjc-refresh-report.json'
+      - 'data/generated/timetable/hkjc-normalized-timetable.sample.json'
+      - 'scripts/timetable/refresh-hkjc.mjs'
+      - 'scripts/timetable/run-hkjc-bounded-generator-job.mjs'
+      - 'scripts/check-calendar-hkjc-pilot-reconciliation.mjs'
+      - 'docs/calendar/hkjc-pilot-reconciliation.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - '.github/workflows/calendar-hkjc-pilot-reconciliation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/refresh-hkjc.mjs
+          node --check scripts/check-calendar-hkjc-pilot-reconciliation.mjs
+      - name: Validate HKJC pilot reconciliation
+        run: node scripts/check-calendar-hkjc-pilot-reconciliation.mjs
+      - name: Validate shared control-plane dependencies
+        run: |
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-collection-result-manifest.mjs
+      - name: Validate governance and runtime boundaries
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check workflow safety boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-pilot-reconciliation.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('LEGACY_DIRECT_WRITE_PATH: quarantined');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
