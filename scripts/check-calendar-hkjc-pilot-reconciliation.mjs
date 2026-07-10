@@ -26,14 +26,18 @@ if (Number.isNaN(Date.parse(audit.reviewed_at))) fail('audit reviewed_at invalid
 if (audit.decision !== 'transition_legacy_refresh_to_shared_control_plane') fail('audit transition decision differs.');
 
 const profile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
+const historicalState = audit.registry_state;
+if (historicalState?.primary_runner !== 'github_actions' || historicalState?.fallback_runner !== 'local') fail('historical reconciliation runner state differs.');
+if (historicalState?.schedule_adapter_id !== 'hong-kong-hkjc-dry-run-adapter') fail('historical reconciliation schedule adapter differs.');
 if (!profile) fail('HKJC Registry profile missing.');
 else {
-  const expected = audit.registry_state;
-  for (const key of ['system_id', 'profile_status', 'primary_runner', 'fallback_runner', 'schedule_source_id', 'detail_source_id', 'detail_adapter_id', 'public_ceiling']) {
-    if (profile[key] !== expected[key]) fail(`Registry audit mismatch for ${key}: ${profile[key]} != ${expected[key]}`);
+  for (const key of ['system_id', 'profile_status', 'schedule_source_id', 'detail_source_id', 'detail_adapter_id', 'public_ceiling']) {
+    if (profile[key] !== historicalState[key]) fail(`Registry historical invariant mismatch for ${key}: ${profile[key]} != ${historicalState[key]}`);
   }
+  if (profile.primary_runner !== 'github_actions') fail('current HKJC schedule primary runner must remain GitHub Actions.');
+  if (profile.fallback_runner !== null || !profile.pending_fields?.includes('fallback_runner')) fail('current HKJC fallback runner must remain pending under PILOT-06.');
   if (profile.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('current HKJC schedule adapter must point to PILOT-02 artifact bridge.');
-  if (!exact(profile.supported_observation_ranks, expected.supported_observation_ranks)) fail('Registry supported observation ranks differ from audit.');
+  if (!exact(profile.supported_observation_ranks, historicalState.supported_observation_ranks)) fail('Registry supported observation ranks differ from reconciliation baseline.');
   if (profile.profile_status !== 'provisional') fail('HKJC profile must remain provisional at reconciliation stage.');
   if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail path must remain unactivated at reconciliation stage.');
   if (profile.public_ceiling !== 'A') fail('HKJC public ceiling must remain A at reconciliation stage.');
@@ -138,7 +142,7 @@ const projectRoadmap = readText('docs/project-roadmap.md');
 const implementationRoadmap = readText('docs/calendar/implementation-roadmap.md');
 for (const [label, text] of [['project roadmap', projectRoadmap], ['implementation roadmap', implementationRoadmap]]) {
   if (!text.includes('Current Work ID: `WHR-CAL-HONG-KONG-HKJC`')) fail(`${label} missing HKJC current Work ID.`);
-  if (!text.includes('HKJC-PILOT-02')) fail(`${label} missing HKJC-PILOT-02 next unit.`);
+  if (!text.includes('HKJC-PILOT-02')) fail(`${label} missing HKJC-PILOT-02 history marker.`);
 }
 
 if (errors.length) {
@@ -156,4 +160,5 @@ console.log('LEGACY_RANK_COUNTS: A+=1 C=9');
 console.log('LEGACY_DIRECT_WRITE_PATH: quarantined');
 console.log('DEFAULT_LEGACY_REFRESH: fail_closed');
 console.log('CANONICAL_PUBLIC_HASHES_UNCHANGED_AFTER_REJECTION: pass');
-console.log('NEXT_UNIT: HKJC-PILOT-02');
+console.log('CURRENT_FALLBACK_RUNNER: pending');
+console.log('NEXT_UNIT_HISTORY: HKJC-PILOT-02');
