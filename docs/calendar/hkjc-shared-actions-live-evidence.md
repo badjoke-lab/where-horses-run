@@ -165,6 +165,8 @@ A source-error result is also valid evidence. It must keep the Registry profile 
 
 ## Human review boundary
 
+This human review boundary remains mandatory for every artifact produced by the shared live path.
+
 Every candidate remains:
 
 ```text
