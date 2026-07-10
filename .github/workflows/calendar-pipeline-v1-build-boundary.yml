@@ -6,9 +6,15 @@ on:
       - 'astro.config.mjs'
       - 'package.json'
       - 'data/generated/timetable/public/**'
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
       - 'docs/calendar/pipeline-v1-build-boundary.md'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - 'scripts/check-calendar-build-boundary.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/timetable/**'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
       - 'src/lib/timetable/publicTimetableViewModel.ts'
       - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
   push:
@@ -18,9 +24,15 @@ on:
       - 'astro.config.mjs'
       - 'package.json'
       - 'data/generated/timetable/public/**'
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
       - 'docs/calendar/pipeline-v1-build-boundary.md'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - 'scripts/check-calendar-build-boundary.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/timetable/**'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
       - 'src/lib/timetable/publicTimetableViewModel.ts'
       - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
 
@@ -34,15 +46,22 @@ permissions:
 jobs:
   validate-read-only-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
       - name: Validate build boundary
         run: node scripts/check-calendar-build-boundary.mjs
+      - name: Validate Banei pure projection and bilingual route contract
+        run: node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
       - name: Install dependencies without repository mutation
         run: npm install --package-lock=false
+      - name: Validate rendered Banei bilingual fixture in temporary worktree
+        run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
       - name: Build static site
         run: npm run build
       - name: Prove build is repository-read-only

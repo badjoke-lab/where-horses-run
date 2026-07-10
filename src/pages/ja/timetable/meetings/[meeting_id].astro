@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import {
+  getPublicTimetableMeetingDetail,
+  getPublicTimetableMeetingRows,
+  type PublicTimetableMeetingDetail,
+  type PublicTimetableMeetingRow,
+} from '../../../../lib/timetable/publicTimetableViewModel';
+import { getCountries, getRacecourses } from '../../../../lib/data';
+
+export function getStaticPaths() {
+  const meetings = getPublicTimetableMeetingRows().filter((meeting) => meeting.detail_path !== null);
+
+  return meetings.map((meeting) => ({
+    params: { meeting_id: meeting.meeting_id },
+    props: {
+      meeting,
+      detail: getPublicTimetableMeetingDetail(meeting.meeting_id),
+    },
+  }));
+}
+
+interface Props {
+  meeting: PublicTimetableMeetingRow;
+  detail: PublicTimetableMeetingDetail | undefined;
+}
+
+const { meeting, detail } = Astro.props;
+
+if (!detail) {
+  throw new Error(`Missing public meeting detail for ${meeting.meeting_id}`);
+}
+
+const displayValue = (value: string | number | null | undefined) => value ?? '非表示';
+const titleCaseId = (value: string) =>
+  value
+    .replace(/-racecourse$/, '')
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
+const countries = getCountries();
+const racecourses = getRacecourses();
+const country = countries.find((entry) => entry.id === meeting.country_id);
+const track = racecourses.find((entry) => entry.id === meeting.racecourse_id);
+
+const racecourseName = track?.name_ja ?? track?.name_en ?? `${titleCaseId(meeting.racecourse_id)}競馬場`;
+const authorityNameById: Record<string, string> = {
+  jra: '日本中央競馬会',
+  hkjc: '香港ジョッキークラブ',
+  'nar-local-government-racing': '地方競馬全国協会',
+  'banei-tokachi': 'ばんえい十勝',
+  'emirates-racing-authority': 'エミレーツ競馬協会',
+};
+const countryName = country?.name_ja ?? country?.name_en ?? titleCaseId(meeting.country_id);
+const countryPath = country ? `/ja/countries/${country.slug}/` : '/ja/countries/';
+const trackPath = track ? `/ja/tracks/${track.slug}/` : `/ja/tracks/${meeting.racecourse_id}/`;
+const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
+
+const pageKind = detail.effective_public_rank === 'A+' ? '番組概要' : 'レース時刻表';
+const hasRaceRows = detail.timetable_rows.length > 0;
+const hasRaceName = detail.show_race_name && detail.timetable_rows.some((row) => row.race_name);
+const hasDistance = detail.show_distance && detail.timetable_rows.some((row) => row.distance_m !== undefined);
+const hasSurface = detail.show_surface && detail.timetable_rows.some((row) => row.surface);
+const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.course_label);
+
+const timeCoverageNoteByRank: Record<string, string> = {
+  A: 'この公開詳細ページでは、レースラベルと発走時刻のみを表示します。',
+  'A+': 'この公開詳細ページでは、レースラベル、発走時刻、公開ポリシーで許可された番組概要項目のみを表示します。',
+};
+---
+
+<BaseLayout
+  title={`${racecourseName} ${pageKind} | 競馬どこ？`}
+  description="公式ソースへのリンクと公開ポリシーで制御されたタイムテーブル情報を表示する開催詳細ページです。"
+  lang="ja"
+  canonicalPath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
+  alternatePath={`/timetable/meetings/${meeting.meeting_id}/`}
+>
+  <nav class="detail-nav" aria-label="開催詳細ナビゲーション">
+    <a href="/ja/calendar/">← カレンダー</a>
+    <a href="/ja/today/">← 今日の開催</a>
+    <a href="/ja/major-countries/current-timetable/">← 現在のタイムテーブル</a>
+  </nav>
+
+  <section aria-labelledby="page-title">
+    <p class="eyebrow">{pageKind}</p>
+    <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
+    <p>{meeting.date}</p>
+    <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
+    <p>タイムゾーン: {detail.timezone}</p>
+    <p>取得ランク: {detail.capability_rank}</p>
+    <p>公開ランク: {detail.effective_public_rank}</p>
+    <p>公開ポリシー: {detail.policy_id}</p>
+    <p>ソース状態: {detail.source_status}</p>
+  </section>
+
+  <section aria-labelledby="coverage-title">
+    <h2 id="coverage-title">時刻情報の範囲</h2>
+    <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
+    <p>競馬どこ？では、出走馬一覧、馬名、騎手名、調教師名、オッズ、結果、払戻、予想、買い目、raw source text、完全なレースカードを再掲載しません。</p>
+  </section>
+
+  {hasRaceRows && (
+    <section aria-labelledby="race-timetable-title">
+      <h2 id="race-timetable-title">{pageKind}</h2>
+      <p>公開可能なタイムテーブル行: {detail.timetable_rows.length}件</p>
+      <div class="table-scroll" role="region" aria-label="公開可能なレース時刻表" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>レース</th>
+              <th>発走時刻</th>
+              {hasRaceName && <th>レース名</th>}
+              {hasDistance && <th>距離</th>}
+              {hasSurface && <th>馬場</th>}
+              {hasCourse && <th>コース</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {detail.timetable_rows.map((row) => (
+              <tr>
+                <td>{row.label}</td>
+                <td>{row.post_time_local}</td>
+                {hasRaceName && <td>{displayValue(row.race_name)}</td>}
+                {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : '非表示'}</td>}
+                {hasSurface && <td>{displayValue(row.surface)}</td>}
+                {hasCourse && <td>{displayValue(row.course_label)}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
+
+  <section aria-labelledby="official-source-title">
+    <h2 id="official-source-title">公式ソース</h2>
+    <p><a href={detail.official_source_url}>公式ソースを開く</a></p>
+    <p>最終確認: {displayValue(detail.last_checked_date)}</p>
+  </section>
+
+  <section aria-labelledby="boundary-title">
+    <h2 id="boundary-title">公開表示の境界</h2>
+    <p>このページは公開用meeting detail datasetだけを使用します。Aはレースラベルと発走時刻のみ、A+は公開ポリシーで許可された番組概要項目のみを表示します。</p>
+    <p>完全な公式情報は、公式ソースで確認してください。</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .detail-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-block-end: 2rem;
+  }
+
+  .eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+
+  section {
+    margin-block-start: 2rem;
+  }
+
+  h1,
+  h2,
+  p {
+    margin-block: 0 0.75rem;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--whr-color-border);
+    padding: 0.55rem 0.4rem;
+    text-align: left;
+    vertical-align: top;
+  }
+</style>

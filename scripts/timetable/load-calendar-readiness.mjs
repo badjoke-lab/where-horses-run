@@ -13,6 +13,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/calendar-readiness-nar-schedule-grid-v1.json',
     schemaVersion: 'calendar-readiness-nar-schedule-grid-v1',
   },
+  {
+    key: 'banei_detail',
+    path: 'data/static/calendar-readiness-banei-detail-v1.json',
+    schemaVersion: 'calendar-readiness-banei-detail-v1',
+  },
 ]);
 const AMENDMENTS_PATH = 'data/static/calendar-readiness-amendments-v1.json';
 const AMENDMENT_FIELDS = new Set(['public_ceiling', 'confirmed_fields', 'reason']);

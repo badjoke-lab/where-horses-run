@@ -7,13 +7,19 @@ on:
       - 'data/generated/timetable/public/**'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/calendar-readiness-amendments-v1.json'
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
       - 'data/static/timetable-source-aliases-v1.json'
       - 'docs/calendar/pipeline-v1-public-projection.md'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/check-jra-readiness-amendment.mjs'
       - 'scripts/timetable/build-public-timetable-view.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
       - 'src/data/publicationDisplayPolicies.json'
       - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
   push:
@@ -24,13 +30,19 @@ on:
       - 'data/generated/timetable/public/**'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/calendar-readiness-amendments-v1.json'
+      - 'data/static/calendar-readiness-banei-detail-v1.json'
       - 'data/static/timetable-source-aliases-v1.json'
       - 'docs/calendar/pipeline-v1-public-projection.md'
+      - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
+      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/check-jra-readiness-amendment.mjs'
       - 'scripts/timetable/build-public-timetable-view.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
       - 'src/data/publicationDisplayPolicies.json'
       - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
 
@@ -44,8 +56,11 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -58,13 +73,15 @@ jobs:
           exit $status
       - name: Validate JRA A+ readiness amendment
         run: node scripts/check-jra-readiness-amendment.mjs
+      - name: Validate Banei pure projection and bilingual route contract
+        run: node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
       - name: Upload projection diagnostic
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: public-projection-validation-diagnostic
           path: /tmp/public-projection-validation.log
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
       - name: Confirm dry-run performs no public write
         run: |
@@ -73,7 +90,9 @@ jobs:
           node scripts/timetable/build-public-timetable-view.mjs --dry-run >/tmp/public-projection-audit.json
           test "$before_list" = "$(sha256sum data/generated/timetable/public/meeting-list.json)"
           test "$before_details" = "$(sha256sum data/generated/timetable/public/meeting-details.json)"
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Validate rendered Banei bilingual fixture in temporary worktree
+        run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
       - name: Confirm current site still builds
-        run: |
-          npm install --package-lock=false
-          npm run build
+        run: npm run build
