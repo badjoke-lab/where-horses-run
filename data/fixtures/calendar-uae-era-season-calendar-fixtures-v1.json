@@ -1,0 +1,138 @@
+{
+  "schema_version": "calendar-uae-era-season-calendar-fixtures-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-01",
+  "official_source_url": "https://emiratesracing.com/news/the-emirates-racing-authority-era-has-announced-the-official-schedule-for-the-2026-2027-uae-horse-racing-season",
+  "scenarios": [
+    {
+      "id": "meydan-complete-single-day",
+      "input": {
+        "startDate": "2027-03-27",
+        "endDateExclusive": "2027-03-28",
+        "generatedAt": "2026-07-11T00:10:00Z",
+        "checkedAt": "2026-07-11T00:05:00Z",
+        "batchId": "uae-era-pilot-01-meydan-complete",
+        "campaignId": "uae-era-stage-10-pilot",
+        "jobId": "uae-era-pilot-01-meydan-complete-job",
+        "reviewedMeetings": [
+          {
+            "meeting_id": "uae-meydan-racecourse-2027-03-27",
+            "racecourse_id": "meydan-racecourse",
+            "date": "2027-03-27"
+          }
+        ],
+        "windowComplete": true,
+        "unresolvedDates": [],
+        "sourceErrors": [],
+        "runnerUsed": "reviewed_import"
+      },
+      "expected": {
+        "records": 1,
+        "coverage_claim": "source_window_complete",
+        "unresolved_dates": 0,
+        "source_errors": 0
+      }
+    },
+    {
+      "id": "meydan-partial-window",
+      "input": {
+        "startDate": "2027-03-20",
+        "endDateExclusive": "2027-03-28",
+        "generatedAt": "2026-07-11T00:10:00Z",
+        "checkedAt": "2026-07-11T00:05:00Z",
+        "batchId": "uae-era-pilot-01-meydan-partial",
+        "campaignId": "uae-era-stage-10-pilot",
+        "jobId": "uae-era-pilot-01-meydan-partial-job",
+        "reviewedMeetings": [
+          {
+            "meeting_id": "uae-meydan-racecourse-2027-03-27",
+            "racecourse_id": "meydan-racecourse",
+            "date": "2027-03-27"
+          }
+        ],
+        "windowComplete": false,
+        "unresolvedDates": [
+          "2027-03-21"
+        ],
+        "sourceErrors": [],
+        "runnerUsed": "reviewed_import"
+      },
+      "expected": {
+        "records": 1,
+        "coverage_claim": "partial",
+        "unresolved_dates": 1,
+        "source_errors": 0
+      }
+    },
+    {
+      "id": "source-error-no-observation",
+      "input": {
+        "startDate": "2027-03-27",
+        "endDateExclusive": "2027-03-28",
+        "generatedAt": "2026-07-11T00:10:00Z",
+        "checkedAt": "2026-07-11T00:05:00Z",
+        "batchId": "uae-era-pilot-01-source-error",
+        "campaignId": "uae-era-stage-10-pilot",
+        "jobId": "uae-era-pilot-01-source-error-job",
+        "reviewedMeetings": [],
+        "windowComplete": false,
+        "unresolvedDates": [
+          "2027-03-27"
+        ],
+        "sourceErrors": [
+          {
+            "code": "source_unavailable",
+            "scope_ref": "window:2027-03-27",
+            "message": "Fixture source unavailable in permanent source-error scenario."
+          }
+        ],
+        "runnerUsed": "reviewed_import"
+      },
+      "expected": {
+        "records": 0,
+        "coverage_claim": "none",
+        "unresolved_dates": 1,
+        "source_errors": 1
+      }
+    }
+  ],
+  "invalid_cases": [
+    {
+      "id": "untrusted-racecourse",
+      "base_scenario_id": "meydan-complete-single-day",
+      "patch": {
+        "path": ["reviewedMeetings", 0, "racecourse_id"],
+        "value": "abu-dhabi-turf-club"
+      }
+    },
+    {
+      "id": "time-field-forbidden",
+      "base_scenario_id": "meydan-complete-single-day",
+      "patch": {
+        "path": ["reviewedMeetings", 0, "first_race_time_local"],
+        "value": "18:30"
+      }
+    },
+    {
+      "id": "duplicate-meeting-id",
+      "base_scenario_id": "meydan-complete-single-day",
+      "mutation": "duplicate_first_meeting"
+    },
+    {
+      "id": "meeting-outside-window",
+      "base_scenario_id": "meydan-complete-single-day",
+      "patch": {
+        "path": ["reviewedMeetings", 0, "date"],
+        "value": "2027-03-28"
+      }
+    },
+    {
+      "id": "unofficial-source-url",
+      "base_scenario_id": "meydan-complete-single-day",
+      "patch": {
+        "path": ["officialSourceUrl"],
+        "value": "https://example.com/uae-calendar"
+      }
+    }
+  ]
+}
