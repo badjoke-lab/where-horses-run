@@ -3,6 +3,7 @@ name: Temporary Banei handoff gate diagnostics
 on:
   pull_request:
     paths:
+      - 'scripts/update-banei-handoff-work-id-transition.mjs'
       - '.github/workflows/temp-banei-handoff-gate-diagnostics.yml'
 
 permissions:
@@ -20,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Apply Banei handoff Work ID transition
+        run: node scripts/update-banei-handoff-work-id-transition.mjs
       - name: Capture separated gate diagnostics
         run: |
           mkdir -p .diagnostics
@@ -27,7 +30,8 @@ jobs:
           for checker in \
             scripts/check-calendar-contracts.mjs \
             scripts/check-project-governance-docs.mjs \
-            scripts/check-calendar-baseline-reconciliation.mjs
+            scripts/check-calendar-baseline-reconciliation.mjs \
+            scripts/check-calendar-banei-handoff-decision.mjs
           do
             echo "=== $checker ===" >> .diagnostics/banei-handoff-gate.log
             set +e
@@ -36,10 +40,15 @@ jobs:
             set -e
             echo "EXIT_STATUS=$status" >> .diagnostics/banei-handoff-gate.log
           done
-      - name: Commit diagnostics
+      - name: Commit transition and diagnostics
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .diagnostics/banei-handoff-gate.log
-          git commit -m "[CF-Pages-Skip] Capture Banei handoff gate diagnostics"
+          git add \
+            docs/project-roadmap.md \
+            docs/calendar/implementation-roadmap.md \
+            docs/calendar/acquisition-control-plane-implementation-plan.md \
+            scripts/check-project-governance-docs.mjs \
+            .diagnostics/banei-handoff-gate.log
+          git commit -m "[CF-Pages-Skip] Advance Calendar current Work ID to HKJC"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
