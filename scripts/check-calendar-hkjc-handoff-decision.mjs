@@ -114,17 +114,17 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
-  'Current Work ID: `WHR-CAL-UAE-ERA`',
   'HKJC handoff accepted',
   'bounded manual reviewed steady-state operation',
+  'WHR-CAL-UAE-ERA',
+  'global Current Work ID switch remains a separate entrypoint synchronization step',
 ]) {
   if (!projectRoadmap.includes(phrase)) fail(`project roadmap missing ${phrase}.`);
 }
 for (const phrase of [
   'HKJC handoff accepted',
-  'Current source-specific Work ID: `WHR-CAL-UAE-ERA`',
   'WHR-CAL-UAE-ERA',
+  'entrypoint synchronization',
 ]) {
   if (!implementationRoadmap.includes(phrase)) fail(`implementation roadmap missing ${phrase}.`);
 }
@@ -151,4 +151,5 @@ console.log('SCHEDULE_ROUTE: github_actions / C / active');
 console.log('DETAIL_ROUTE: reviewed_import / B / operator_only');
 console.log('SYSTEM_FALLBACK_RUNNER: pending');
 console.log('REGISTRY_DETAIL_ACTIVATION: false');
+console.log('ENTRYPOINT_SWITCH: separate');
 console.log('AUTOMATIC_EXECUTION_PUBLICATION: false');
