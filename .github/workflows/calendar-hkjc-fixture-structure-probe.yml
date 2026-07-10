@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/timetable/probe-hkjc-fixture-structure.mjs'
+      - 'scripts/timetable/probe-hkjc-fixture-route-links.mjs'
       - '.github/workflows/calendar-hkjc-fixture-structure-probe.yml'
 
 permissions:
@@ -19,29 +20,40 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Check probe syntax
-        run: node --check scripts/timetable/probe-hkjc-fixture-structure.mjs
+        run: |
+          node --check scripts/timetable/probe-hkjc-fixture-structure.mjs
+          node --check scripts/timetable/probe-hkjc-fixture-route-links.mjs
       - name: Probe public-safe official fixture structure
         run: |
           node scripts/timetable/probe-hkjc-fixture-structure.mjs \
             2026-07 2026-08 2026-09 \
             > /tmp/hkjc-fixture-structure-probe.json
-      - name: Prove probe output contains no raw source body
+      - name: Probe public-safe official fixture route links
+        run: node scripts/timetable/probe-hkjc-fixture-route-links.mjs > /tmp/hkjc-fixture-route-link-probe.json
+      - name: Prove probe outputs contain no raw source body
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
-          const probe = JSON.parse(fs.readFileSync('/tmp/hkjc-fixture-structure-probe.json', 'utf8'));
-          if (probe.raw_body_stored !== false) throw new Error('probe raw_body_stored boundary differs');
-          if (!Array.isArray(probe.months) || probe.months.length !== 3) throw new Error('expected July/August/September summaries');
-          for (const month of probe.months) {
+          const structure = JSON.parse(fs.readFileSync('/tmp/hkjc-fixture-structure-probe.json', 'utf8'));
+          const links = JSON.parse(fs.readFileSync('/tmp/hkjc-fixture-route-link-probe.json', 'utf8'));
+          if (structure.raw_body_stored !== false || links.raw_body_stored !== false) throw new Error('probe raw_body_stored boundary differs');
+          if (!Array.isArray(structure.months) || structure.months.length !== 3) throw new Error('expected July/August/September structure summaries');
+          if (!Array.isArray(links.results) || links.results.length !== 3) throw new Error('expected July/August/September route-link summaries');
+          for (const month of structure.months) {
             if (month.raw_body_stored !== false || month.public_safe_probe_only !== true) throw new Error(`${month.requested_month}: public-safe boundary differs`);
           }
-          console.log(JSON.stringify(probe));
+          for (const result of links.results) {
+            if (result.raw_body_stored !== false) throw new Error(`${result.requested_month}: route-link raw-body boundary differs`);
+          }
+          console.log(JSON.stringify({ structure, links }));
           NODE
-      - name: Upload public-safe structure summary
+      - name: Upload public-safe structure summaries
         uses: actions/upload-artifact@v4
         with:
           name: hkjc-pilot-04-fixture-structure-probe
-          path: /tmp/hkjc-fixture-structure-probe.json
+          path: |
+            /tmp/hkjc-fixture-structure-probe.json
+            /tmp/hkjc-fixture-route-link-probe.json
           if-no-files-found: error
           retention-days: 7
       - name: Prove repository remains clean
