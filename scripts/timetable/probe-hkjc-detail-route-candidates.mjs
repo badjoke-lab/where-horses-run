@@ -1,26 +1,28 @@
-const meeting = {
-  date: '2026-06-10',
-  racecourse_code: 'HV',
-  race_number: 1,
-};
-
-const slashDate = meeting.date.replaceAll('-', '/');
-const candidates = [
-  {
-    id: 'local-slash-date',
-    url: `https://racing.hkjc.com/en-us/local/information/racecard?racedate=${slashDate}&Racecourse=${meeting.racecourse_code}&RaceNo=${meeting.race_number}`,
-  },
-  {
-    id: 'local-hyphen-date',
-    url: `https://racing.hkjc.com/en-us/local/information/racecard?racedate=${meeting.date}&Racecourse=${meeting.racecourse_code}&RaceNo=${meeting.race_number}`,
-  },
-  {
-    id: 'legacy-aspx',
-    url: `https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?RaceDate=${encodeURIComponent(slashDate)}&Racecourse=${meeting.racecourse_code}&RaceNo=${meeting.race_number}`,
-  },
+const targets = [
+  { date: '2026-06-10', racecourse_code: 'HV', race_number: 1 },
+  { date: '2026-07-04', racecourse_code: 'ST', race_number: 1 },
+  { date: '2026-07-08', racecourse_code: 'HV', race_number: 1 },
 ];
 
 const timeoutMs = 15000;
+
+function routeCandidates(target) {
+  const slashDate = target.date.replaceAll('-', '/');
+  return [
+    {
+      id: 'local-slash-date',
+      url: `https://racing.hkjc.com/en-us/local/information/racecard?racedate=${slashDate}&Racecourse=${target.racecourse_code}&RaceNo=${target.race_number}`,
+    },
+    {
+      id: 'local-hyphen-date',
+      url: `https://racing.hkjc.com/en-us/local/information/racecard?racedate=${target.date}&Racecourse=${target.racecourse_code}&RaceNo=${target.race_number}`,
+    },
+    {
+      id: 'legacy-aspx',
+      url: `https://racing.hkjc.com/racing/information/English/Racing/RaceCard.aspx?RaceDate=${encodeURIComponent(slashDate)}&Racecourse=${target.racecourse_code}&RaceNo=${target.race_number}`,
+    },
+  ];
+}
 
 function stripHtml(value) {
   return String(value ?? '')
@@ -33,9 +35,12 @@ function stripHtml(value) {
     .trim();
 }
 
-function safeSummary(body, response, id, requestedUrl) {
+function safeSummary(body, response, target, id, requestedUrl) {
   const text = stripHtml(body);
   return {
+    target_date: target.date,
+    target_racecourse_code: target.racecourse_code,
+    target_race_number: target.race_number,
     id,
     requested_url: requestedUrl,
     http_status: response.status,
@@ -55,7 +60,7 @@ function safeSummary(body, response, id, requestedUrl) {
   };
 }
 
-async function probe(candidate) {
+async function probe(target, candidate) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -69,9 +74,12 @@ async function probe(candidate) {
       },
     });
     const body = await response.text();
-    return safeSummary(body, response, candidate.id, candidate.url);
+    return safeSummary(body, response, target, candidate.id, candidate.url);
   } catch (error) {
     return {
+      target_date: target.date,
+      target_racecourse_code: target.racecourse_code,
+      target_race_number: target.race_number,
       id: candidate.id,
       requested_url: candidate.url,
       network_error: String(error?.cause?.code ?? error?.message ?? error),
@@ -83,17 +91,15 @@ async function probe(candidate) {
 }
 
 const results = [];
-for (const candidate of candidates) results.push(await probe(candidate));
+for (const target of targets) {
+  for (const candidate of routeCandidates(target)) results.push(await probe(target, candidate));
+}
 
 console.log(JSON.stringify({
   schema_version: 'calendar-hkjc-detail-route-candidate-probe-v1',
   work_id: 'WHR-CAL-HONG-KONG-HKJC',
   implementation_unit: 'HKJC-PILOT-05',
-  target: {
-    date: meeting.date,
-    racecourse_code: meeting.racecourse_code,
-    race_number: meeting.race_number,
-  },
+  targets,
   results,
   raw_body_stored: false,
 }, null, 2));
