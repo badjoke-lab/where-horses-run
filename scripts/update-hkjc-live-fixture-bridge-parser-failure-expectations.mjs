@@ -10,13 +10,13 @@ const helper = `function expectParserFailure(label, mutate) {
   mutate(base);
   let bridge;
   try { bridge = buildHkjcLiveFixtureBridgeV1(base); } catch (error) {
-    fail(\`${label} threw instead of becoming parser_failure evidence: \${error.message}\`);
+    fail(\`\${label} threw instead of becoming parser_failure evidence: \${error.message}\`);
     return;
   }
-  if (bridge.coverage_observation.coverage_claim !== 'none') fail(\`${label} coverage must be none.\`);
-  if (bridge.coverage_observation.records_discovered !== 0) fail(\`${label} must not emit records.\`);
+  if (bridge.coverage_observation.coverage_claim !== 'none') fail(\`\${label} coverage must be none.\`);
+  if (bridge.coverage_observation.records_discovered !== 0) fail(\`\${label} must not emit records.\`);
   if (bridge.coverage_observation.source_errors.length !== 1 || bridge.coverage_observation.source_errors[0].code !== 'parser_failure') {
-    fail(\`${label} must emit one parser_failure source error.\`);
+    fail(\`\${label} must emit one parser_failure source error.\`);
   }
 }
 `;
