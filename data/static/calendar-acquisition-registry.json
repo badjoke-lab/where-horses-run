@@ -89,7 +89,7 @@
       "fallback_runner": "local",
       "schedule_source_id": "hkjc-fixture-list",
       "detail_source_id": null,
-      "schedule_adapter_id": "hong-kong-hkjc-dry-run-adapter",
+      "schedule_adapter_id": "hkjc-fixture-artifact-bridge-v1",
       "detail_adapter_id": null,
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
@@ -106,7 +106,7 @@
         "detail_source_id",
         "detail_adapter_id"
       ],
-      "operator_notes": "Provisional bounded-generator profile. Merge history provides a dry-run HKJC candidate adapter, an approved active-window review bundle, local validation commands, and top-level check integration suitable for GitHub Actions execution. This profile does not claim live fetch, arbitrary source parsing, or implemented detail acquisition."
+      "operator_notes": "Provisional HKJC Stage 10 profile. The schedule path now points to the artifact-only official fixture bridge and is wired for GitHub Actions date-window execution. The profile remains provisional until actual live artifact evidence is reviewed and the schedule-path reliability decision is recorded. Detail source and adapter remain unactivated; A+ historical evidence is migration evidence only."
     }
   ]
 }
