@@ -1,0 +1,62 @@
+{
+  "schema_version": "calendar-uae-era-pilot-01-baseline-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-01",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "readiness_ref": "data/static/calendar-readiness-registry.json",
+  "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
+  "readiness_id": "united-arab-emirates--uae-national-racing-system--era-season-calendar",
+  "country_id": "united-arab-emirates",
+  "system_id": "uae-national-racing-system",
+  "authority_id": "emirates-racing-authority",
+  "source_id": "era-season-calendar",
+  "adapter_id": "uae-era-season-calendar-artifact-v1",
+  "timezone": "Asia/Dubai",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "last_race_time": false,
+    "per_race_post_times": false,
+    "race_name": false,
+    "distance": false,
+    "surface": false,
+    "course": false
+  },
+  "readiness": "manual_ready",
+  "implementation_status_at_entry": "not_started",
+  "automation_mode": "manual_confirmation",
+  "trusted_racecourse_ids_for_pilot_01": [
+    "meydan-racecourse"
+  ],
+  "venue_network_expansion": {
+    "status": "pending_canonical_id_mapping_review",
+    "automatic_expansion_allowed": false,
+    "reason": "The reviewed readiness record currently binds only meydan-racecourse. PILOT-01 must not create additional canonical racecourse identities from venue names without an explicit mapping review."
+  },
+  "candidate_boundary": {
+    "capability_rank": "C",
+    "first_race_time_local": null,
+    "last_race_time_local": null,
+    "timetable_rows": [],
+    "review_status": "needs_review",
+    "promotion_target": null
+  },
+  "next_unit": {
+    "id": "UAE-PILOT-02",
+    "title": "UAE ERA bounded source-route and fixture parser evidence",
+    "entry_condition": "PILOT-01 artifact-only core and permanent fixture validation pass without Registry activation or repository write side effects."
+  },
+  "boundaries": {
+    "network_fetch_in_core": false,
+    "registry_activation": false,
+    "automatic_candidate_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}

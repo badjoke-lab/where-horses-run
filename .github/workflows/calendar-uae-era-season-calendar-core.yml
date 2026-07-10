@@ -1,0 +1,47 @@
+name: Calendar UAE ERA season-calendar core
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-uae-era-pilot-01-baseline-v1.json'
+      - 'data/fixtures/calendar-uae-era-season-calendar-fixtures-v1.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json'
+      - 'scripts/timetable/uae-era-season-calendar-core.mjs'
+      - 'scripts/check-calendar-uae-era-season-calendar-core.mjs'
+      - 'docs/calendar/uae-era-pilot-plan.md'
+      - '.github/workflows/calendar-uae-era-season-calendar-core.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE PILOT-01 artifact core and reviewed Readiness boundary
+        run: |
+          node --check scripts/timetable/uae-era-season-calendar-core.mjs
+          node --check scripts/check-calendar-uae-era-season-calendar-core.mjs
+          node scripts/check-calendar-uae-era-season-calendar-core.mjs
+      - name: Revalidate Calendar contracts and governance
+        run: |
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Prove workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-uae-era-season-calendar-core.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('UAE_PILOT_01_CI_BOUNDARY: pass');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
