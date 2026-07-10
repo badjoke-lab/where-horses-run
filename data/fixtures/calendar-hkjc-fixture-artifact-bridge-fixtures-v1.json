@@ -22,7 +22,11 @@
       "expected": {
         "coverage_claim": "source_window_complete",
         "record_count": 3,
-        "dates": ["2026-07-12", "2026-07-15", "2026-07-19"],
+        "dates": [
+          "2026-07-12",
+          "2026-07-15",
+          "2026-07-19"
+        ],
         "source_error_count": 0
       }
     },
@@ -56,7 +60,9 @@
       "expected": {
         "coverage_claim": "partial",
         "record_count": 1,
-        "dates": ["2026-06-27"],
+        "dates": [
+          "2026-06-27"
+        ],
         "source_error_count": 1,
         "source_error_code": "rate_limited"
       }
@@ -86,6 +92,43 @@
         "dates": [],
         "source_error_count": 1,
         "source_error_code": "source_unavailable"
+      }
+    },
+    {
+      "id": "valid-empty-season-gap",
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-10-01",
+      "generated_at": "2026-07-10T13:50:00Z",
+      "batch_id": "hkjc-live-valid-empty-season-gap",
+      "campaign_id": "hkjc-stage10-pilot",
+      "job_id": "hkjc-live-fixture-valid-empty-season-gap",
+      "month_results": [
+        {
+          "year": 2026,
+          "month": 8,
+          "ok": true,
+          "status": 200,
+          "final_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=08&CalYear=2026",
+          "body": "<html><body><h1>Racing Fixture</h1><p>Race meeting calendar</p><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=10\">2026-10</a><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=11\">2026-11</a><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=12\">2026-12</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=01\">2027-01</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=02\">2027-02</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=03\">2027-03</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=04\">2027-04</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=05\">2027-05</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=06\">2027-06</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=07\">2027-07</a></body></html>"
+        },
+        {
+          "year": 2026,
+          "month": 9,
+          "ok": true,
+          "status": 200,
+          "final_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+          "body": "<html><body><h1>Racing Fixture</h1><p>Race meeting calendar</p><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=10\">2026-10</a><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=11\">2026-11</a><a href=\"/en-us/local/information/fixture?calyear=2026&calmonth=12\">2026-12</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=01\">2027-01</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=02\">2027-02</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=03\">2027-03</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=04\">2027-04</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=05\">2027-05</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=06\">2027-06</a><a href=\"/en-us/local/information/fixture?calyear=2027&calmonth=07\">2027-07</a></body></html>"
+        }
+      ],
+      "expected": {
+        "coverage_claim": "source_window_complete",
+        "record_count": 0,
+        "dates": [],
+        "source_error_count": 0,
+        "valid_empty_months": [
+          "2026-08",
+          "2026-09"
+        ]
       }
     },
     {
