@@ -1,0 +1,84 @@
+{
+  "schema_version": "calendar-hkjc-detail-reviewed-import-schema-v1",
+  "purpose": "Defines an external public-safe reviewed-import input for HKJC timetable detail when automated runner acquisition is not evidence-backed.",
+  "required_fields": [
+    "schema_version",
+    "work_id",
+    "implementation_unit",
+    "generated_at",
+    "source_evidence",
+    "window",
+    "meetings",
+    "review"
+  ],
+  "source_evidence_required_fields": [
+    "official_source_url",
+    "checked_at",
+    "evidence_type"
+  ],
+  "window_required_fields": [
+    "start_date",
+    "end_date_exclusive",
+    "timezone"
+  ],
+  "meeting_required_fields": [
+    "meeting_id",
+    "racecourse_id",
+    "date",
+    "meeting_complete",
+    "rows"
+  ],
+  "row_required_fields": [
+    "race_number",
+    "post_time_local",
+    "race_name",
+    "distance_m",
+    "surface",
+    "course_label",
+    "official_source_url"
+  ],
+  "review_required_fields": [
+    "state",
+    "reviewed_at",
+    "reviewer"
+  ],
+  "review_state_enum": [
+    "pending_human_review",
+    "reviewed_public_safe"
+  ],
+  "evidence_type_enum": [
+    "official_page_manual_review",
+    "official_export_review",
+    "other_official_public_source_review"
+  ],
+  "allowed_public_safe_row_fields": [
+    "race_number",
+    "post_time_local",
+    "race_name",
+    "distance_m",
+    "surface",
+    "course_label",
+    "official_source_url"
+  ],
+  "explicit_exclusions": [
+    "no raw HTML or source body",
+    "no horse names",
+    "no jockey names",
+    "no trainer names",
+    "no draws gates posts saddlecloth numbers or weights",
+    "no odds betting popularity or betting recommendations",
+    "no results or payouts",
+    "no predictions tips or selections",
+    "no embedded video or direct stream URLs",
+    "no credentials cookies tokens or restricted-access material"
+  ],
+  "side_effect_boundary": {
+    "network_fetch": false,
+    "approval": false,
+    "promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "publication": false,
+    "deployment": false
+  }
+}
