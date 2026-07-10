@@ -1,0 +1,125 @@
+name: Calendar HKJC detail reviewed-import evidence
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-detail-reviewed-import-evidence-v1.json'
+      - 'data/static/calendar-hkjc-detail-reviewed-import.schema.json'
+      - 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs'
+      - 'scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs'
+      - 'scripts/check-calendar-hkjc-detail-reviewed-import.mjs'
+      - '.github/workflows/calendar-hkjc-detail-reviewed-import-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate reviewed-import foundation
+        run: |
+          node --check scripts/timetable/hkjc-detail-reviewed-import-core.mjs
+          node --check scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs
+          node scripts/check-calendar-hkjc-detail-reviewed-import.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/static/calendar-acquisition-registry.json \
+            > /tmp/hkjc-pilot-06-protected-before.sha256
+      - name: Materialize reviewed public-safe input outside repository
+        run: cp data/fixtures/calendar-hkjc-detail-reviewed-import-evidence-v1.json /tmp/hkjc-pilot-06-reviewed-input.json
+      - name: Build reviewed-import package from external input
+        run: |
+          node scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs \
+            --input=/tmp/hkjc-pilot-06-reviewed-input.json \
+            --output=/tmp/hkjc-pilot-06-reviewed-import-package.json \
+            --batch-id=hkjc-pilot-06-reviewed-import-evidence \
+            --campaign-id=hkjc-stage-10-runner-reconciliation \
+            --job-id=hkjc-pilot-06-reviewed-import-evidence-job \
+            > /tmp/hkjc-pilot-06-reviewed-import-cli-summary.json
+      - name: Validate evidence package and summarize
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const inputBytes = fs.readFileSync('/tmp/hkjc-pilot-06-reviewed-input.json');
+          const inputSha256 = crypto.createHash('sha256').update(inputBytes).digest('hex');
+          const pkg = JSON.parse(fs.readFileSync('/tmp/hkjc-pilot-06-reviewed-import-package.json', 'utf8'));
+          const artifacts = pkg.normalized_artifacts;
+          if (!artifacts) throw new Error('reviewed input must produce normalized artifacts');
+          const record = artifacts.candidate.records[0];
+          if (pkg.input_evidence.sha256 !== inputSha256) throw new Error('input digest mismatch');
+          if (pkg.review_state !== 'reviewed_public_safe') throw new Error('review state differs');
+          if (pkg.human_review_required !== true) throw new Error('human review must remain required');
+          if (record.capability_rank !== 'B') throw new Error(`expected B rank for incomplete meeting evidence, got ${record.capability_rank}`);
+          if (record.first_race_time_local !== '18:30') throw new Error('first race time differs');
+          if (record.last_race_time_local !== null) throw new Error('last race time must remain null');
+          if (record.timetable_rows.length !== 0) throw new Error('B rank must not expose timetable rows');
+          if (artifacts.candidate.review.status !== 'needs_review') throw new Error('candidate must remain needs_review');
+          if (artifacts.candidate.review.promotion_target !== null) throw new Error('promotion target must remain null');
+          if (artifacts.manifest.runner_used !== 'reviewed_import') throw new Error('runner identity differs');
+          if (artifacts.coverage.coverage_claim !== 'partial') throw new Error('coverage claim differs');
+          if (artifacts.coverage.unresolved_meeting_ids.length !== 1) throw new Error('expected one unresolved meeting');
+          if (artifacts.report.network_fetch !== false) throw new Error('package builder performed network fetch');
+          if (artifacts.report.raw_source_storage !== 'disabled') throw new Error('raw source storage boundary differs');
+          if (artifacts.report.canonical_write !== 'disabled' || artifacts.report.public_write !== 'disabled') throw new Error('write boundary differs');
+          if (artifacts.report.publication_effect !== 'none') throw new Error('publication effect differs');
+          const summary = {
+            schema_version: 'calendar-hkjc-pilot-06-reviewed-import-evidence-summary-v1',
+            work_id: 'WHR-CAL-HONG-KONG-HKJC',
+            implementation_unit: 'HKJC-PILOT-06',
+            input_sha256: inputSha256,
+            official_source_url: pkg.input_evidence.official_source_url,
+            review_state: pkg.review_state,
+            target_meeting_id: record.meeting_id,
+            observed_rank: record.capability_rank,
+            first_race_time_local: record.first_race_time_local,
+            last_race_time_local: record.last_race_time_local,
+            timetable_row_count: record.timetable_rows.length,
+            coverage_claim: artifacts.coverage.coverage_claim,
+            unresolved_meeting_count: artifacts.coverage.unresolved_meeting_ids.length,
+            runner_used: artifacts.manifest.runner_used,
+            candidate_review_state: artifacts.candidate.review.status,
+            promotion_target: artifacts.candidate.review.promotion_target,
+            network_fetch: artifacts.report.network_fetch,
+            raw_source_storage: artifacts.report.raw_source_storage,
+            canonical_write: artifacts.report.canonical_write,
+            public_write: artifacts.report.public_write,
+            publication_effect: artifacts.report.publication_effect
+          };
+          fs.writeFileSync('/tmp/hkjc-pilot-06-reviewed-import-evidence-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log('HKJC_PILOT_06_REVIEWED_IMPORT_EVIDENCE_SUMMARY_START');
+          console.log(JSON.stringify(summary));
+          console.log('HKJC_PILOT_06_REVIEWED_IMPORT_EVIDENCE_SUMMARY_END');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/hkjc-pilot-06-protected-before.sha256
+      - name: Upload reviewed-import evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-06-reviewed-import-evidence-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/hkjc-pilot-06-reviewed-import-cli-summary.json
+            /tmp/hkjc-pilot-06-reviewed-import-package.json
+            /tmp/hkjc-pilot-06-reviewed-import-evidence-summary.json
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

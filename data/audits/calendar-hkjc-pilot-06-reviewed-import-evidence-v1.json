@@ -1,0 +1,55 @@
+{
+  "schema_version": "calendar-hkjc-pilot-06-reviewed-import-evidence-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-06",
+  "reviewed_at": "2026-07-10T16:40:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29106908246,
+    "artifact_id": 8233171311,
+    "artifact_digest": "sha256:201cca150dd2d5008ee779e3211dd31b7966a271b84b99b1db27a269b6d0d55f",
+    "input_sha256": "4bf489f4c6c31f9fc9c7a21606ac2625f297e6d192a6a4636933d80de29a138b",
+    "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/07/08&Racecourse=HV&RaceNo=1",
+    "review_state": "reviewed_public_safe",
+    "target_meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+    "observed_rank": "B",
+    "first_race_time_local": "18:30",
+    "last_race_time_local": null,
+    "timetable_row_count": 0,
+    "coverage_claim": "partial",
+    "unresolved_meeting_count": 1,
+    "runner_used": "reviewed_import",
+    "candidate_review_state": "needs_review",
+    "promotion_target": null,
+    "network_fetch": false,
+    "raw_source_storage": "disabled",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "publication_effect": "none",
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "decision": {
+    "reviewed_import_operator_path": "evidence_backed",
+    "system_level_fallback_activation": false,
+    "fallback_runner_status": "pending",
+    "registry_detail_source_activation": false,
+    "registry_detail_adapter_activation": false,
+    "registry_supported_rank_expansion": false,
+    "reason": "The reviewed-import package builder successfully consumed exact external public-safe input with SHA-256 binding, produced a B-ranked needs-review candidate through the accepted five-rank classifier, preserved reviewed_import runner identity, and performed no network, canonical, public, or publication side effects. The system-level Acquisition Registry fallback field remains pending because current Registry granularity cannot express a detail-only reviewed-import operator path without also implying fallback semantics for the evidence-backed schedule route."
+  },
+  "next_subunit": {
+    "id": "HKJC-PILOT-06B",
+    "title": "HKJC route-specific runner policy representation",
+    "goal": "Represent schedule and detail runner routes separately enough to preserve the evidence-backed GitHub Actions schedule path while registering the evidence-backed reviewed-import detail operator path without overstating system-level fallback capability."
+  },
+  "boundaries": {
+    "scheduled_acquisition_execution": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}

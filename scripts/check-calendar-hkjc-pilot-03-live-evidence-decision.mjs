@@ -64,11 +64,12 @@ for (const [key, value] of Object.entries(audit.boundaries ?? {})) {
 const profile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
 if (!profile) fail('HKJC Registry profile missing.');
 else {
-  if (profile.profile_status !== 'provisional') fail('HKJC Registry must remain provisional after parser_failure evidence.');
+  if (profile.profile_status !== 'provisional') fail('HKJC Registry must remain provisional after the later transition stages.');
+  if (profile.primary_runner !== 'github_actions') fail('HKJC schedule primary runner must remain GitHub Actions.');
+  if (profile.fallback_runner !== null || !profile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback runner must remain pending under PILOT-06 reconciliation.');
   if (profile.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC schedule adapter differs.');
-  if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail path must remain inactive.');
-  if (!profile.operator_notes.includes('parser_failure')) fail('HKJC Registry notes must record parser_failure decision.');
-  if (!profile.operator_notes.includes('HKJC-PILOT-04')) fail('HKJC Registry notes must record PILOT-04 handoff.');
+  if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('HKJC detail Registry path must remain inactive.');
+  if (JSON.stringify(profile.supported_observation_ranks) !== JSON.stringify(['C'])) fail('HKJC Registry observation ranks must remain C-only.');
 }
 
 for (const phrase of [
@@ -112,6 +113,7 @@ console.log('RECORDS_DISCOVERED: 0');
 console.log('SOURCE_ERROR: parser_failure');
 console.log('JOB_STATUS: source_error');
 console.log('REGISTRY_PROFILE_STATUS: provisional');
+console.log('CURRENT_FALLBACK_RUNNER: pending');
 console.log('DETAIL_ACTIVATION: false');
 console.log('PROTECTED_STATE_HASH_CHECK: pass');
-console.log('NEXT_UNIT: HKJC-PILOT-04');
+console.log('NEXT_UNIT_HISTORY: HKJC-PILOT-04');

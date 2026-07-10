@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; PILOT-05 artifact-only detail foundation accepted, hosted HTTP detail path not evidence-backed, overall profile remains provisional, PILOT-06 runner/source-route reconciliation current.
+Status: active transition; PILOT-06 reviewed-import detail operator path evidence-backed, system-level fallback remains pending, overall profile remains provisional, PILOT-06B route-specific runner policy representation current.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -406,16 +406,22 @@ Completed HKJC reconciliation state:
 - browser-like headers, fixture warmup, and racecard-base warmup strategies also returned the same shell without target detail markers;
 - the artifact-only core and collector foundation are accepted, but the GitHub Actions HTTP detail runner is not evidence-backed;
 - the Registry profile remains provisional, detail source/adapter remain null, and supported observation ranks remain C only;
-- HKJC-PILOT-06 detail runner and source-route reconciliation is current.
+- HKJC-PILOT-06 removed the unimplemented system-level local fallback claim and returned fallback_runner to pending;
+- PILOT-06 added strict external public-safe reviewed-import input, exact input SHA-256 binding, two-stage review semantics, and network-free package generation through the accepted PILOT-05 classifier;
+- reviewed-import evidence run 29106908246 succeeded with external input SHA-256 4bf489f4c6c31f9fc9c7a21606ac2625f297e6d192a6a4636933d80de29a138b;
+- reviewed evidence classified the explicitly incomplete one-race meeting observation as B with first time 18:30, no last-race claim, no timetable rows, coverage partial, one unresolved meeting, runner reviewed_import, candidate needs_review, and no network/canonical/public/publication side effects;
+- the reviewed-import detail operator path is evidence-backed, but system-level fallback activation remains false because the current Registry cannot represent a detail-only reviewed-import route without overstating fallback semantics for the evidence-backed Actions schedule path;
+- Registry detail source/adapter remain null and supported observation ranks remain C only;
+- HKJC-PILOT-06B route-specific runner policy representation is current.
 
 Next implementation unit:
 
 ```text
-HKJC-PILOT-06
-HKJC detail runner and source-route reconciliation
+HKJC-PILOT-06B
+HKJC route-specific runner policy representation
 ```
 
-The next unit evaluates bounded local execution, reviewed-import fallback, and alternate official detail-source routes against the accepted artifact-only core. It must preserve candidate, Coverage Observation, Result Manifest, review-artifact, protected-state, and no-write boundaries. Registry detail activation remains blocked until bounded evidence succeeds.
+The next unit represents schedule and detail runner routes separately enough to preserve the evidence-backed GitHub Actions schedule path while registering the evidence-backed reviewed-import detail operator path without overstating system-level fallback capability. It must remain backward compatible with system-level runner fields and must not enable automatic import, approval, promotion, publication, canonical write, or public write.
 
 ## Multi-system operations expansion
 
