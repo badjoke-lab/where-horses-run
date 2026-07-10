@@ -51,6 +51,8 @@ Use these files together:
 - [`hkjc-live-fixture-artifact-bridge.md`](hkjc-live-fixture-artifact-bridge.md) — HKJC-PILOT-02 official fixture-window Rank C artifact bridge, partial/error semantics, manual live Actions route, and no-write boundary.
 - [`hkjc-shared-actions-live-evidence.md`](hkjc-shared-actions-live-evidence.md) — HKJC-PILOT-03 shared Actions integration, reviewed parser-failure live evidence, provisional Registry decision, and PILOT-04 handoff.
 - [`hkjc-pilot-04-live-evidence.md`](hkjc-pilot-04-live-evidence.md) — HKJC-PILOT-04 fail-closed empty-window semantics, successful repeated shared-Actions evidence, evidence-backed schedule-path decision, provisional full-profile boundary, and PILOT-05 handoff.
+- [`hkjc-detail-artifact-core.md`](hkjc-detail-artifact-core.md) — HKJC-PILOT-05 public-safe five-rank detail core, external review-artifact collector, output guard, and Registry non-activation boundary.
+- [`hkjc-pilot-05-detail-route-evidence.md`](hkjc-pilot-05-detail-route-evidence.md) — hosted detail live evidence, route/session shell probes, accepted core/collector decision, blocked Registry detail activation, and PILOT-06 runner/source-route handoff.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -113,7 +115,10 @@ data/static/calendar-banei-handoff-decision-v1.json
 data/audits/calendar-hkjc-pilot-reconciliation-v1.json
 data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json
 data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json
+data/audits/calendar-hkjc-pilot-05-detail-route-evidence-v1.json
 data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json
+data/fixtures/calendar-hkjc-detail-artifact-core-fixtures-v1.json
+data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json
 data/fixtures/calendar-due-job-planner-fixtures-v1.json
 data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
 data/static/timetable-candidate-v1.schema.json

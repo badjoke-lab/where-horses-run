@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; PILOT-04 parser resilience and repeated shared-Actions live evidence complete, schedule path accepted, overall profile remains provisional, PILOT-05 detail adapter migration current.
+Status: active transition; PILOT-05 artifact-only detail foundation accepted, hosted HTTP detail path not evidence-backed, overall profile remains provisional, PILOT-06 runner/source-route reconciliation current.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -400,16 +400,22 @@ Completed HKJC reconciliation state:
 - the repeated shared Actions live run 29102195265 completed successfully with coverage `source_window_complete`, 0 discovered records, 0 source errors, `valid_empty_months: ["2026-08"]`, protected-state hash pass, artifact upload, cleanup, and clean-worktree proof;
 - the C-level date-window schedule source/adapter path is accepted as evidence-backed;
 - the overall Registry profile remains provisional because `detail_source_id` and `detail_adapter_id` remain intentionally pending under the complete-path active-profile contract;
-- HKJC-PILOT-05 artifact-only timetable detail adapter migration is current.
+- HKJC-PILOT-05 added and permanently validated the artifact-only detail core, five-rank classifier fixtures, external review-artifact collector, and read-only bounded live evidence path;
+- the first bounded hosted detail run remained C / coverage none with one unresolved meeting and one source_unavailable error while all protected-state and no-write boundaries passed;
+- three reviewed meetings × three official route forms produced nine HTTP 200 responses with the same 120504-byte shell and no target post-time, race-name, distance, or surface shapes;
+- browser-like headers, fixture warmup, and racecard-base warmup strategies also returned the same shell without target detail markers;
+- the artifact-only core and collector foundation are accepted, but the GitHub Actions HTTP detail runner is not evidence-backed;
+- the Registry profile remains provisional, detail source/adapter remain null, and supported observation ranks remain C only;
+- HKJC-PILOT-06 detail runner and source-route reconciliation is current.
 
 Next implementation unit:
 
 ```text
-HKJC-PILOT-05
-HKJC artifact-only timetable detail adapter migration
+HKJC-PILOT-06
+HKJC detail runner and source-route reconciliation
 ```
 
-The next unit migrates only reviewed public-safe race timetable fields from the quarantined racecard fetch/normalization logic into a bounded artifact-only detail acquisition path. It must emit candidate, Coverage Observation, Result Manifest, and review artifacts without canonical/public writes. Any detail-source, detail-adapter, A, or A+ activation remains a later explicit evidence decision.
+The next unit evaluates bounded local execution, reviewed-import fallback, and alternate official detail-source routes against the accepted artifact-only core. It must preserve candidate, Coverage Observation, Result Manifest, review-artifact, protected-state, and no-write boundaries. Registry detail activation remains blocked until bounded evidence succeeds.
 
 ## Multi-system operations expansion
 
