@@ -86,7 +86,7 @@
       "authority_id": "hkjc",
       "profile_status": "provisional",
       "primary_runner": "github_actions",
-      "fallback_runner": "local",
+      "fallback_runner": null,
       "schedule_source_id": "hkjc-fixture-list",
       "detail_source_id": null,
       "schedule_adapter_id": "hkjc-fixture-artifact-bridge-v1",
@@ -103,10 +103,11 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [
+        "fallback_runner",
         "detail_source_id",
         "detail_adapter_id"
       ],
-      "operator_notes": "Provisional overall HKJC Stage 10 profile with evidence-backed schedule path. PILOT-03 shared Actions execution first observed parser_failure for August 2026. PILOT-04 structure review added fail-closed valid empty-window semantics and repeated the same bounded shared Actions Job successfully: source_window_complete, zero records, zero source errors, valid empty month 2026-08, protected-state hashes unchanged, and clean cleanup. The current schedule source hkjc-fixture-list and schedule adapter hkjc-fixture-artifact-bridge-v1 are accepted for the proven C-level date-window path. The overall profile remains provisional because the Registry active-profile contract requires a complete detail path; detail source and adapter remain pending. Next unit: HKJC-PILOT-05 artifact-only timetable detail adapter migration. Historical A+ evidence remains migration evidence only."
+      "operator_notes": "Provisional overall HKJC Stage 10 profile with evidence-backed C-level schedule path. PILOT-04 proved source_window_complete valid-empty schedule behavior through the GitHub Actions schedule executor. PILOT-05 accepted the artifact-only detail core and external review-artifact collector, but bounded hosted live evidence and route/session probes did not prove the GitHub Actions HTTP detail path. The previously declared local fallback had no HKJC local executor mapping in the runner compatibility contract, so PILOT-06 removes that unimplemented fallback claim and returns fallback_runner to pending. Detail source, detail adapter, and observation ranks above C remain pending. PILOT-06 now evaluates bounded local execution, reviewed-import operation, and alternate official detail-source routes without restoring direct canonical/public writes."
     }
   ]
 }
