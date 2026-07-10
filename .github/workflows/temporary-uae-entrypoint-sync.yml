@@ -14,7 +14,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,6 +24,8 @@ jobs:
           node-version: 22.12.0
       - name: Apply UAE entrypoint sync
         run: node scripts/temporary-sync-uae-entrypoint.mjs
+      - name: Align entrypoint-aware checkers
+        run: node scripts/temporary-align-uae-entrypoint-checkers.mjs
       - name: Validate intended entrypoint markers
         run: |
           node - <<'NODE'
@@ -37,6 +39,12 @@ jobs:
           }
           console.log('UAE_ENTRYPOINT_MARKERS: pass');
           NODE
+      - name: Validate aligned entrypoint checkers
+        run: |
+          node scripts/check-calendar-dynamic-dates-release-gate.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-project-governance-docs.mjs
       - name: Commit synchronized entrypoint state when needed
         run: |
           if git diff --quiet; then
@@ -45,6 +53,13 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add START-HERE.md docs/project-roadmap.md docs/calendar/implementation-roadmap.md
-          git commit -m "[CF-Pages-Skip] Switch source-specific entrypoint to UAE"
+          git add \
+            START-HERE.md \
+            docs/project-roadmap.md \
+            docs/calendar/implementation-roadmap.md \
+            scripts/check-calendar-dynamic-dates-release-gate.mjs \
+            scripts/check-calendar-operations-v1-release-gate.mjs \
+            scripts/check-calendar-pipeline-v1-release-gate.mjs \
+            scripts/check-project-governance-docs.mjs
+          git commit -m "[CF-Pages-Skip] Align release gates with UAE entrypoint"
           git push origin HEAD:work/calendar-uae-entrypoint-sync
