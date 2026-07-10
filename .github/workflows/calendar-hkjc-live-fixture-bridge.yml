@@ -1,0 +1,77 @@
+name: Calendar HKJC live fixture bridge
+
+on:
+  pull_request:
+    paths:
+      - 'data/fixtures/calendar-hkjc-live-fixture-bridge-v1.json'
+      - 'scripts/timetable/hkjc-live-fixture-bridge.mjs'
+      - 'scripts/timetable/build-hkjc-live-fixture-bridge.mjs'
+      - 'scripts/timetable/collect-hkjc-live-fixture-window.mjs'
+      - 'scripts/check-calendar-hkjc-live-fixture-bridge.mjs'
+      - 'docs/calendar/hkjc-live-fixture-artifact-bridge.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - '.github/workflows/calendar-hkjc-live-fixture-bridge.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/fixtures/calendar-hkjc-live-fixture-bridge-v1.json'
+      - 'scripts/timetable/hkjc-live-fixture-bridge.mjs'
+      - 'scripts/timetable/build-hkjc-live-fixture-bridge.mjs'
+      - 'scripts/timetable/collect-hkjc-live-fixture-window.mjs'
+      - 'scripts/check-calendar-hkjc-live-fixture-bridge.mjs'
+      - 'docs/calendar/hkjc-live-fixture-artifact-bridge.md'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/governance/document-authority.md'
+      - '.github/workflows/calendar-hkjc-live-fixture-bridge.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/hkjc-live-fixture-bridge.mjs
+          node --check scripts/timetable/build-hkjc-live-fixture-bridge.mjs
+          node --check scripts/timetable/collect-hkjc-live-fixture-window.mjs
+          node --check scripts/check-calendar-hkjc-live-fixture-bridge.mjs
+      - name: Validate HKJC artifact-only fixture bridge
+        run: node scripts/check-calendar-hkjc-live-fixture-bridge.mjs
+      - name: Validate HKJC reconciliation dependency
+        run: node scripts/check-calendar-hkjc-pilot-reconciliation.mjs
+      - name: Validate shared review-artifact contracts
+        run: |
+          node scripts/check-calendar-collection-result-manifest.mjs
+          node scripts/check-calendar-review-queue.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate governance and runtime boundaries
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Check workflow safety boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-hkjc-live-fixture-bridge.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('read-only workflow permission missing');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled trigger enabled');
+          console.log('WORKFLOW_CONTENTS_PERMISSION: read');
+          console.log('SCHEDULED_EXECUTION: false');
+          console.log('LIVE_NETWORK_FETCH_IN_CI: false');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check
