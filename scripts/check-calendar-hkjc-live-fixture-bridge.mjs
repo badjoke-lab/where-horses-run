@@ -111,8 +111,22 @@ function expectRejected(label, mutate) {
 }
 expectRejected('duplicate page month', (input) => input.page_results.push(structuredClone(input.page_results[0])));
 expectRejected('page outside requested scope', (input) => { input.page_results[0].month = '2026-09'; });
-expectRejected('duplicate meeting identity', (input) => { input.page_results[0].content += '<div>1 Image: ST Image: D</div>'; });
-expectRejected('invalid real fixture date', (input) => { input.page_results[0].content = '<div>31 Image: ST Image: D</div>'; input.page_results[0].month = '2026-09'; input.requested_scope.start_date = '2026-09-01'; input.requested_scope.end_date_exclusive = '2026-10-01'; });
+function expectParserFailure(label, mutate) {
+  const base = structuredClone(fixtures.scenarios[0].input);
+  mutate(base);
+  let bridge;
+  try { bridge = buildHkjcLiveFixtureBridgeV1(base); } catch (error) {
+    fail(`${label} threw instead of becoming parser_failure evidence: ${error.message}`);
+    return;
+  }
+  if (bridge.coverage_observation.coverage_claim !== 'none') fail(`${label} coverage must be none.`);
+  if (bridge.coverage_observation.records_discovered !== 0) fail(`${label} must not emit records.`);
+  if (bridge.coverage_observation.source_errors.length !== 1 || bridge.coverage_observation.source_errors[0].code !== 'parser_failure') {
+    fail(`${label} must emit one parser_failure source error.`);
+  }
+}
+expectParserFailure('duplicate meeting identity', (input) => { input.page_results[0].content += '<div>1 Image: ST Image: D</div>'; });
+expectParserFailure('invalid real fixture date', (input) => { input.page_results[0].content = '<div>31 Image: ST Image: D</div>'; input.page_results[0].month = '2026-09'; input.requested_scope.start_date = '2026-09-01'; input.requested_scope.end_date_exclusive = '2026-10-01'; });
 
 try {
   const parsed = parseHkjcFixturePageV1({
