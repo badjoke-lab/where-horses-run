@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/timetable/probe-hkjc-detail-route-candidates.mjs'
       - 'scripts/timetable/probe-hkjc-detail-shell-structure.mjs'
+      - 'scripts/timetable/probe-hkjc-detail-session-strategies.mjs'
       - '.github/workflows/calendar-hkjc-detail-route-probe.yml'
 
 permissions:
@@ -23,16 +24,20 @@ jobs:
         run: |
           node --check scripts/timetable/probe-hkjc-detail-route-candidates.mjs
           node --check scripts/timetable/probe-hkjc-detail-shell-structure.mjs
+          node --check scripts/timetable/probe-hkjc-detail-session-strategies.mjs
       - name: Probe public-safe detail route candidates
         run: node scripts/timetable/probe-hkjc-detail-route-candidates.mjs > /tmp/hkjc-detail-route-probe.json
       - name: Probe public-safe detail shell structure
         run: node scripts/timetable/probe-hkjc-detail-shell-structure.mjs > /tmp/hkjc-detail-shell-structure-probe.json
+      - name: Probe browser-header and official warmup strategies
+        run: node scripts/timetable/probe-hkjc-detail-session-strategies.mjs > /tmp/hkjc-detail-session-strategy-probe.json
       - name: Validate public-safe probe output
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
           const routes = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-route-probe.json', 'utf8'));
           const shell = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-shell-structure-probe.json', 'utf8'));
+          const sessions = JSON.parse(fs.readFileSync('/tmp/hkjc-detail-session-strategy-probe.json', 'utf8'));
           if (routes.schema_version !== 'calendar-hkjc-detail-route-candidate-probe-v1') throw new Error('route probe schema differs');
           if (!Array.isArray(routes.targets) || routes.targets.length !== 3) throw new Error('expected three reviewed target meetings');
           if (!Array.isArray(routes.results) || routes.results.length !== 9) throw new Error('expected nine route probe results');
@@ -40,15 +45,20 @@ jobs:
           for (const result of routes.results) if (result.raw_body_stored !== false) throw new Error(`${result.target_date}:${result.id}: raw-body boundary differs`);
           if (shell.schema_version !== 'calendar-hkjc-detail-shell-structure-probe-v1') throw new Error('shell probe schema differs');
           if (shell.raw_body_stored !== false || shell.public_safe_probe_only !== true) throw new Error('shell probe public-safe boundary differs');
-          console.log(JSON.stringify({ routes, shell }));
+          if (sessions.schema_version !== 'calendar-hkjc-detail-session-strategy-probe-v1') throw new Error('session probe schema differs');
+          if (!Array.isArray(sessions.results) || sessions.results.length !== 3) throw new Error('expected three session strategy results');
+          if (sessions.raw_body_stored !== false || sessions.public_safe_probe_only !== true) throw new Error('session probe public-safe boundary differs');
+          for (const result of sessions.results) if (result.raw_body_stored !== false) throw new Error(`${result.strategy}: raw-body boundary differs`);
+          console.log(JSON.stringify({ routes, shell, sessions }));
           NODE
-      - name: Upload route and shell probe summaries
+      - name: Upload route, shell, and session probe summaries
         uses: actions/upload-artifact@v4
         with:
           name: hkjc-pilot-05-detail-route-probe-${{ github.run_id }}
           path: |
             /tmp/hkjc-detail-route-probe.json
             /tmp/hkjc-detail-shell-structure-probe.json
+            /tmp/hkjc-detail-session-strategy-probe.json
           if-no-files-found: error
           retention-days: 7
       - name: Prove repository clean
