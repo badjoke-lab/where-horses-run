@@ -1,0 +1,53 @@
+name: Calendar HKJC fixture structure probe
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/probe-hkjc-fixture-structure.mjs'
+      - '.github/workflows/calendar-hkjc-fixture-structure-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check probe syntax
+        run: node --check scripts/timetable/probe-hkjc-fixture-structure.mjs
+      - name: Probe public-safe official fixture structure
+        run: |
+          node scripts/timetable/probe-hkjc-fixture-structure.mjs \
+            2026-07 2026-08 2026-09 \
+            > /tmp/hkjc-fixture-structure-probe.json
+      - name: Prove probe output contains no raw source body
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const probe = JSON.parse(fs.readFileSync('/tmp/hkjc-fixture-structure-probe.json', 'utf8'));
+          if (probe.raw_body_stored !== false) throw new Error('probe raw_body_stored boundary differs');
+          if (!Array.isArray(probe.months) || probe.months.length !== 3) throw new Error('expected July/August/September summaries');
+          for (const month of probe.months) {
+            if (month.raw_body_stored !== false || month.public_safe_probe_only !== true) throw new Error(`${month.requested_month}: public-safe boundary differs`);
+          }
+          console.log(JSON.stringify(probe));
+          NODE
+      - name: Upload public-safe structure summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-pilot-04-fixture-structure-probe
+          path: /tmp/hkjc-fixture-structure-probe.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prove repository remains clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
