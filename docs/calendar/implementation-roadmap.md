@@ -556,7 +556,12 @@ HKJC current transition state:
 - browser-header and official warmup session strategies also returned the same shell;
 - detail core and collector foundation accepted, GitHub Actions HTTP detail runner not evidence-backed;
 - Registry detail source/adapter remain inactive and supported observation ranks remain C only;
-- next unit: `HKJC-PILOT-06` — detail runner and source-route reconciliation across bounded local execution, reviewed-import fallback, and alternate official detail routes.
+- `HKJC-PILOT-06`: unimplemented system-level local fallback claim removed and returned to pending;
+- strict external public-safe reviewed-import contract, exact SHA-256 input binding, two-stage review semantics, and network-free package generation implemented;
+- reviewed-import evidence run 29106908246 succeeded with rank B, first time 18:30, coverage partial, one unresolved meeting, runner `reviewed_import`, candidate `needs_review`, and no network/canonical/public/publication side effects;
+- reviewed-import detail operator path evidence-backed, but system-level fallback activation remains false because current Registry granularity cannot express a detail-only runner route without overstating schedule fallback semantics;
+- Registry detail source/adapter remain inactive and supported observation ranks remain C only;
+- next unit: `HKJC-PILOT-06B` — route-specific runner policy representation with backward-compatible system-level fields.
 
 No pilot may require fixed-month completeness before ordinary valid partial promotion.
 
@@ -607,10 +612,11 @@ From the current repository state:
 3. HKJC-PILOT-03 shared Actions integration complete; initial August parser_failure evidence retained as transition history
 4. HKJC-PILOT-04 parser resilience and repeated bounded shared-Actions evidence complete with source_window_complete valid-empty August evidence
 5. HKJC-PILOT-05 artifact-only detail foundation accepted; hosted HTTP detail runner remains unproven and Registry detail activation remains blocked
-6. execute HKJC-PILOT-06 detail runner and source-route reconciliation using bounded local/reviewed-import/alternate-official-route evidence
-7. run Banei July Completion Audit only before an explicit full-month completeness claim
-8. continue Calendar Public v1 release-readiness work in parallel
-9. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
+6. HKJC-PILOT-06 reviewed-import detail operator path evidence-backed; keep system-level fallback and Registry detail activation pending
+7. execute HKJC-PILOT-06B route-specific runner policy representation with backward-compatible system-level runner fields
+8. run Banei July Completion Audit only before an explicit full-month completeness claim
+9. continue Calendar Public v1 release-readiness work in parallel
+10. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review
