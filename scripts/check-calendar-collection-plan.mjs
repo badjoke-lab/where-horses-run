@@ -112,7 +112,9 @@ const hkjcProfile = registry.records.find((profile) => profile.system_id === 'ho
 if (!hkjcProfile) fail('HKJC Registry profile missing for required Plan fixture.');
 else {
   if (hkjcProfile.profile_status !== 'provisional') fail('HKJC Plan profile must remain provisional.');
-  if (hkjcProfile.primary_runner !== 'github_actions' || hkjcProfile.fallback_runner !== 'local') fail('HKJC bounded-generator runner profile differs.');
+  if (hkjcProfile.primary_runner !== 'github_actions') fail('HKJC schedule primary runner must remain github_actions.');
+  if (hkjcProfile.fallback_runner !== null) fail('HKJC fallback runner must remain null during PILOT-06 reconciliation.');
+  if (!hkjcProfile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback_runner must remain pending during PILOT-06 reconciliation.');
   if (hkjcProfile.supports_date_window !== true) fail('HKJC bounded date-window support required by Plan fixture is missing.');
   if (hkjcProfile.detail_source_id !== null || hkjcProfile.detail_adapter_id !== null) fail('HKJC Plan fixture must not imply implemented detail acquisition.');
 }
@@ -142,3 +144,4 @@ console.log('MULTI_COUNTRY_ACTIONS_PLAN: NAR + HKJC different windows');
 console.log('MIXED_PURPOSE_PLAN: regular refresh + selected retry');
 console.log('RANK_ISOLATION: pass');
 console.log('SOURCE_ERROR_ISOLATION: pass');
+console.log('HKJC_SYSTEM_FALLBACK: pending');
