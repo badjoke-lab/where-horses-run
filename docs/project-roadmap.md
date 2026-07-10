@@ -5,9 +5,10 @@ Country-page programme: complete
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Next source-specific Work ID: `WHR-CAL-UAE-ERA`
-Last reviewed: 2026-07-10
+Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Current Work ID: `WHR-CAL-UAE-ERA`
+Next programme Work ID: `WHR-CAL-PUBLIC-V1`
+Last reviewed: 2026-07-11
 
 ## Purpose
 
@@ -46,7 +47,7 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-The NAR source pilot, Acquisition Control Plane foundation, and Banei bounded operational integration are complete. Banei handoff is accepted for manual reviewed steady-state operation. The current source-specific work is `WHR-CAL-HONG-KONG-HKJC`; `WHR-CAL-UAE-ERA` follows after the HKJC pilot handoff boundary is explicitly reviewed.
+The NAR source pilot, Acquisition Control Plane foundation, Banei bounded operational integration, and HKJC source-specific pilot handoff are complete. Banei and HKJC continue under their accepted reviewed operating boundaries. The current source-specific work is `WHR-CAL-UAE-ERA`; the next programme stage is `WHR-CAL-PUBLIC-V1` after the UAE source-specific handoff boundary is explicitly reviewed.
 
 Reviewed NAR schedule coverage through 2026-07-31 has been promoted and published. The July 8–31 batch contains:
 

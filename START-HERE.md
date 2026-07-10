@@ -342,8 +342,9 @@ WHR-CAL-JAPAN-JRA-A-PLUS
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Next source-specific Work ID: `WHR-CAL-UAE-ERA`
+Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Current Work ID: `WHR-CAL-UAE-ERA`
+Next programme Work ID: `WHR-CAL-PUBLIC-V1`
 
 Current NAR status:
 
@@ -365,11 +366,11 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. complete HKJC-PILOT-04 fixture route and parser resilience reconciliation
-2. repeat bounded HKJC shared-Actions live evidence
-3. explicitly review HKJC Registry activation boundary
-4. keep HKJC detail-source/A+ programme-summary activation separate until evidence exists
-5. hand off the source-specific sequence to WHR-CAL-UAE-ERA after HKJC review closure
+1. confirm the reviewed UAE Calendar Readiness and official ERA season-calendar baseline
+2. implement a bounded C-level UAE candidate generator with no-write artifact output
+3. run source-specific fixture/parser evidence before any Acquisition Registry activation decision
+4. explicitly review the UAE handoff boundary after bounded evidence
+5. continue to WHR-CAL-PUBLIC-V1 only after the UAE source-specific boundary is reviewed
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
