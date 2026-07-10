@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; PILOT-03 shared Actions integration and live evidence review complete, profile remains provisional, PILOT-04 parser resilience current.
+Status: active transition; PILOT-04 parser resilience and repeated shared-Actions live evidence complete, schedule path accepted, overall profile remains provisional, PILOT-05 detail adapter migration current.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -396,16 +396,20 @@ Completed HKJC reconciliation state:
 - actual live evidence run 29094860976 completed the shared execution, artifact upload, protected-state hash check, cleanup, and clean-worktree proof;
 - reviewed live result: coverage `none`, 0 discovered records, one `parser_failure` for `month:2026-08`, Job status `source_error`;
 - Registry remains provisional and detail source/adapter remain unactivated;
-- HKJC-PILOT-04 official fixture route and parser resilience reconciliation is current.
+- HKJC-PILOT-04 reviewed July, August, and September 2026 public-safe source structure and added fail-closed empty-window semantics;
+- the repeated shared Actions live run 29102195265 completed successfully with coverage `source_window_complete`, 0 discovered records, 0 source errors, `valid_empty_months: ["2026-08"]`, protected-state hash pass, artifact upload, cleanup, and clean-worktree proof;
+- the C-level date-window schedule source/adapter path is accepted as evidence-backed;
+- the overall Registry profile remains provisional because `detail_source_id` and `detail_adapter_id` remain intentionally pending under the complete-path active-profile contract;
+- HKJC-PILOT-05 artifact-only timetable detail adapter migration is current.
 
 Next implementation unit:
 
 ```text
-HKJC-PILOT-04
-HKJC official fixture route and parser resilience reconciliation
+HKJC-PILOT-05
+HKJC artifact-only timetable detail adapter migration
 ```
 
-The next unit reviews the official HKJC fixture page structure or alternate official fixture route, improves parser resilience using public-safe evidence, and repeats bounded shared-Actions evidence before Registry activation is reconsidered. Detail-source activation and A+ programme-summary acquisition remain deferred.
+The next unit migrates only reviewed public-safe race timetable fields from the quarantined racecard fetch/normalization logic into a bounded artifact-only detail acquisition path. It must emit candidate, Coverage Observation, Result Manifest, and review artifacts without canonical/public writes. Any detail-source, detail-adapter, A, or A+ activation remains a later explicit evidence decision.
 
 ## Multi-system operations expansion
 

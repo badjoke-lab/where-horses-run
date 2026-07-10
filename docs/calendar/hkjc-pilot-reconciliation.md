@@ -237,15 +237,17 @@ This stage is complete when:
 
 The bridge now provides a manual artifact-only official fixture-window path with Rank C `timetable-candidate-v1`, Coverage Observation, Result Manifest, and collection report outputs. It rejects repository-local artifact output before network access and keeps live execution outside scheduled operation.
 
-The next implementation unit is:
+PILOT-03 and PILOT-04 are now complete transition stages. PILOT-03 connected the live fixture bridge to shared Actions execution and exposed an August 2026 parser-failure ambiguity. PILOT-04 reviewed public-safe fixture structure, added fail-closed valid empty-window semantics, and repeated the same bounded shared Actions Job successfully with `source_window_complete`, zero records, zero source errors, and valid empty month 2026-08.
+
+The current implementation unit is:
 
 ```text
-HKJC-PILOT-03
-Shared Actions Job integration and reviewed live fixture evidence
+HKJC-PILOT-05
+HKJC artifact-only timetable detail adapter migration
 ```
 
 Goal:
 
-Connect the live fixture bridge to shared Actions Job execution, review actual live artifact evidence, and then re-evaluate whether the provisional Acquisition Registry profile can advance.
+Migrate only reviewed public-safe timetable fields from the quarantined racecard fetch and normalization logic into the current candidate, Coverage Observation, Result Manifest, and review-artifact boundary without restoring direct canonical/public writes.
 
-A+ detail activation remains separate and must not be inferred from schedule-level C evidence.
+Detail-source activation, detail-adapter activation, A/A+ capability decisions, and any public programme-summary change remain separate explicit evidence decisions.
