@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-route-runner-policy.schema.json",
+  "title": "Calendar Route Runner Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_version",
+    "registry_compatibility",
+    "routes",
+    "side_effect_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "calendar-route-runner-policy-v1"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "registry_compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_level_fields_remain_authoritative_for_legacy_jobs",
+        "route_policy_is_additive",
+        "route_policy_may_not_activate_registry_fields"
+      ],
+      "properties": {
+        "system_level_fields_remain_authoritative_for_legacy_jobs": { "const": true },
+        "route_policy_is_additive": { "const": true },
+        "route_policy_may_not_activate_registry_fields": { "const": true }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/route" }
+    },
+    "side_effect_boundary": { "$ref": "#/$defs/boundary" }
+  },
+  "$defs": {
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatic_import",
+        "automatic_approval",
+        "automatic_promotion",
+        "canonical_write",
+        "public_write",
+        "automatic_publication",
+        "deployment"
+      ],
+      "properties": {
+        "automatic_import": { "const": false },
+        "automatic_approval": { "const": false },
+        "automatic_promotion": { "const": false },
+        "canonical_write": { "const": false },
+        "public_write": { "const": false },
+        "automatic_publication": { "const": false },
+        "deployment": { "const": false }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_id",
+        "route_kind",
+        "status",
+        "selection_mode",
+        "primary_runner",
+        "fallback_runner",
+        "source_id",
+        "adapter_id",
+        "entry_point",
+        "supported_collection_modes",
+        "evidence_backed_observation_ranks",
+        "automatic_planning_allowed",
+        "automatic_execution_allowed",
+        "human_review_required",
+        "registry_activation",
+        "evidence_ref"
+      ],
+      "properties": {
+        "system_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "route_kind": { "enum": ["schedule", "detail"] },
+        "status": { "enum": ["active", "operator_path_evidence_backed", "pending", "blocked"] },
+        "selection_mode": { "enum": ["collection_job", "operator_only"] },
+        "primary_runner": { "enum": ["github_actions", "local", "reviewed_import"] },
+        "fallback_runner": {
+          "oneOf": [
+            { "type": "null" },
+            { "enum": ["github_actions", "local", "reviewed_import"] }
+          ]
+        },
+        "source_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "adapter_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "entry_point": { "type": "string", "pattern": "^scripts/" },
+        "supported_collection_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["date_window", "single_date", "selected_meetings", "source_visible_horizon"] }
+        },
+        "evidence_backed_observation_ranks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["C", "B", "B+", "A", "A+"] }
+        },
+        "automatic_planning_allowed": { "type": "boolean" },
+        "automatic_execution_allowed": { "const": false },
+        "human_review_required": { "const": true },
+        "registry_activation": { "const": false },
+        "evidence_ref": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

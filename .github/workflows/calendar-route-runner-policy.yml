@@ -1,0 +1,63 @@
+name: Calendar route-specific runner policy
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-route-runner-policy.schema.json'
+      - 'data/static/calendar-route-runner-policy-v1.json'
+      - 'data/fixtures/calendar-route-runner-policy-fixtures-v1.json'
+      - 'scripts/timetable/route-runner-policy.mjs'
+      - 'scripts/check-calendar-route-runner-policy.mjs'
+      - 'docs/calendar/hkjc-route-specific-runner-policy.md'
+      - '.github/workflows/calendar-route-runner-policy.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate route-specific runner policy
+        shell: bash
+        run: |
+          node --check scripts/timetable/route-runner-policy.mjs
+          node --check scripts/check-calendar-route-runner-policy.mjs
+          set +e
+          node scripts/check-calendar-route-runner-policy.mjs 2>&1 | tee /tmp/route-runner-policy-check.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload route policy diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-runner-policy-check-${{ github.run_id }}
+          path: /tmp/route-runner-policy-check.log
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Revalidate backward-compatible dependencies
+        run: |
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-collection-job.mjs
+          node scripts/check-calendar-collection-plan.mjs
+          node scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-operations-v2.mjs
+      - name: Prove workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-route-runner-policy.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('ROUTE_RUNNER_POLICY_CI_BOUNDARY: pass');
+          NODE
+      - name: Check diff formatting
+        run: git diff --check

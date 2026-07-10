@@ -1,0 +1,123 @@
+{
+  "schema_version": "calendar-route-runner-policy-fixtures-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-06B",
+  "resolution_cases": [
+    {
+      "id": "schedule-collection-job",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "schedule",
+        "selection_context": "collection_job",
+        "collection_mode": "date_window",
+        "requested_runner": null
+      },
+      "expected": {
+        "runner": "github_actions",
+        "selection_mode": "collection_job",
+        "source_id": "hkjc-fixture-list",
+        "adapter_id": "hkjc-fixture-artifact-bridge-v1"
+      }
+    },
+    {
+      "id": "schedule-due-job-planner",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "schedule",
+        "selection_context": "due_job_planner",
+        "collection_mode": "date_window",
+        "requested_runner": "github_actions"
+      },
+      "expected": {
+        "runner": "github_actions",
+        "selection_mode": "collection_job",
+        "source_id": "hkjc-fixture-list",
+        "adapter_id": "hkjc-fixture-artifact-bridge-v1"
+      }
+    },
+    {
+      "id": "detail-reviewed-import-operator",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "operator_reviewed_import",
+        "collection_mode": "date_window",
+        "requested_runner": "reviewed_import"
+      },
+      "expected": {
+        "runner": "reviewed_import",
+        "selection_mode": "operator_only",
+        "source_id": "hkjc-detail-reviewed-import",
+        "adapter_id": "hkjc-detail-reviewed-import-v1"
+      }
+    },
+    {
+      "id": "detail-operations-view",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "operations_view",
+        "collection_mode": "date_window",
+        "requested_runner": null
+      },
+      "expected": {
+        "runner": "reviewed_import",
+        "selection_mode": "operator_only",
+        "source_id": "hkjc-detail-reviewed-import",
+        "adapter_id": "hkjc-detail-reviewed-import-v1"
+      }
+    }
+  ],
+  "rejection_cases": [
+    {
+      "id": "detail-from-collection-job",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "collection_job",
+        "collection_mode": "date_window",
+        "requested_runner": null
+      }
+    },
+    {
+      "id": "detail-from-due-job-planner",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "due_job_planner",
+        "collection_mode": "date_window",
+        "requested_runner": null
+      }
+    },
+    {
+      "id": "schedule-as-operator-import",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "schedule",
+        "selection_context": "operator_reviewed_import",
+        "collection_mode": "date_window",
+        "requested_runner": null
+      }
+    },
+    {
+      "id": "detail-wrong-runner",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "operator_reviewed_import",
+        "collection_mode": "date_window",
+        "requested_runner": "github_actions"
+      }
+    },
+    {
+      "id": "unsupported-detail-mode",
+      "request": {
+        "system_id": "hong-kong-hkjc-system",
+        "route_kind": "detail",
+        "selection_context": "operator_reviewed_import",
+        "collection_mode": "selected_meetings",
+        "requested_runner": null
+      }
+    }
+  ]
+}
