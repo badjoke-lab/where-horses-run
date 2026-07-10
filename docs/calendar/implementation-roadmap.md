@@ -190,12 +190,13 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei operational integration current
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei operational handoff accepted; HKJC pilot current
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Current Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Next source Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
+Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Next source Work ID: `WHR-CAL-UAE-ERA`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
