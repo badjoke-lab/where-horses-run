@@ -55,6 +55,8 @@ Use these files together:
 - [`hkjc-pilot-05-detail-route-evidence.md`](hkjc-pilot-05-detail-route-evidence.md) — hosted detail live evidence, route/session shell probes, accepted core/collector decision, blocked Registry detail activation, and PILOT-06 runner/source-route handoff.
 - [`hkjc-detail-runner-source-route-reconciliation.md`](hkjc-detail-runner-source-route-reconciliation.md) — PILOT-06 runner correction, external reviewed-import contract, two-stage review semantics, and Registry non-activation boundary.
 - [`hkjc-pilot-06-reviewed-import-evidence.md`](hkjc-pilot-06-reviewed-import-evidence.md) — evidence-backed reviewed-import detail operator path, rank-B bounded evidence, pending system-level fallback decision, and PILOT-06B handoff.
+- [`hkjc-route-specific-runner-policy.md`](hkjc-route-specific-runner-policy.md) — PILOT-06B schedule/detail route split, operator-only detail isolation, backward-compatible Registry semantics, and Operations supplement.
+- [`hkjc-handoff-decision.md`](hkjc-handoff-decision.md) — accepted bounded manual reviewed steady-state HKJC handoff, explicit non-claims, and next Work ID `WHR-CAL-UAE-ERA`.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -119,6 +121,7 @@ data/audits/calendar-hkjc-pilot-03-live-evidence-v1.json
 data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json
 data/audits/calendar-hkjc-pilot-05-detail-route-evidence-v1.json
 data/audits/calendar-hkjc-pilot-06-reviewed-import-evidence-v1.json
+data/audits/calendar-hkjc-handoff-decision-v1.json
 data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json
 data/fixtures/calendar-hkjc-detail-artifact-core-fixtures-v1.json
 data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json

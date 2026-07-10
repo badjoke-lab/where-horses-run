@@ -368,7 +368,7 @@ Current handoff: Banei handoff accepted for manual reviewed steady-state operati
 
 ## HKJC pilot
 
-Status: active transition; PILOT-06 reviewed-import detail operator path evidence-backed, system-level fallback remains pending, overall profile remains provisional, PILOT-06B route-specific runner policy representation current.
+Status: HKJC handoff accepted; bounded manual reviewed steady-state operation, overall Registry profile remains provisional, next source-specific Work ID is WHR-CAL-UAE-ERA while the global Current Work ID switch remains a separate entrypoint synchronization step.
 
 Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
 
@@ -412,16 +412,25 @@ Completed HKJC reconciliation state:
 - reviewed evidence classified the explicitly incomplete one-race meeting observation as B with first time 18:30, no last-race claim, no timetable rows, coverage partial, one unresolved meeting, runner reviewed_import, candidate needs_review, and no network/canonical/public/publication side effects;
 - the reviewed-import detail operator path is evidence-backed, but system-level fallback activation remains false because the current Registry cannot represent a detail-only reviewed-import route without overstating fallback semantics for the evidence-backed Actions schedule path;
 - Registry detail source/adapter remain null and supported observation ranks remain C only;
-- HKJC-PILOT-06B route-specific runner policy representation is current.
+- HKJC-PILOT-06B route-specific runner policy representation is complete and validated against Acquisition Registry, Collection Job, Collection Plan, Due-job Planner, runner compatibility, and Operations v2;
+- the schedule route remains GitHub Actions / collection_job / C evidence with automatic execution disabled;
+- the detail route remains reviewed_import / operator_only / B evidence and is rejected from generic Collection Job and Due-job Planner selection;
+- system-level Registry fallback remains null and pending, Registry detail source/adapter remain null, and Registry supported observation ranks remain C only;
+- HKJC handoff accepted for bounded manual reviewed steady-state operation;
+- no full detail completeness, full-season completeness, automatic detail acquisition, system-wide fallback, or unattended publication claim is made;
+- the next source-specific Work ID is `WHR-CAL-UAE-ERA`;
+- the global Current Work ID switch remains a separate entrypoint synchronization step so historical release-gate current-state markers are updated deliberately rather than implicitly.
 
-Next implementation unit:
+Handoff decision:
 
 ```text
-HKJC-PILOT-06B
-HKJC route-specific runner policy representation
+HKJC-HANDOFF-01
+accept_manual_reviewed_steady_state_handoff
+completed Work ID: WHR-CAL-HONG-KONG-HKJC
+next Work ID: WHR-CAL-UAE-ERA
 ```
 
-The next unit represents schedule and detail runner routes separately enough to preserve the evidence-backed GitHub Actions schedule path while registering the evidence-backed reviewed-import detail operator path without overstating system-level fallback capability. It must remain backward compatible with system-level runner fields and must not enable automatic import, approval, promotion, publication, canonical write, or public write.
+HKJC maintenance may continue incrementally under explicit schedule Jobs and operator-reviewed detail imports without blocking UAE source-specific implementation.
 
 ## Multi-system operations expansion
 
