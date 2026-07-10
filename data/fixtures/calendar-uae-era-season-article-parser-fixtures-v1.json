@@ -1,0 +1,44 @@
+{
+  "schema_version": "calendar-uae-era-season-article-parser-fixtures-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-02",
+  "valid": {
+    "html": "<article><h1>Official schedule for the 2026–2027 UAE horse racing season</h1><p>The season will commence on 22 October 2026 at Abu Dhabi Turf Club.</p><p>The new calendar for 2026-2027 racing season features 64 race meetings across five racecourses throughout the UAE. Racing will take place at Meydan Racecourse (17 race meetings), Abu Dhabi Turf Club (16 race meetings), Al Ain Racecourse (14 race meetings), Jebel Ali Racecourse (11 race meetings), and Sharjah Racecourse (6 race meetings).</p><p>Meydan Racecourse remains the flagship venue and will conclude the season with the Dubai World Cup on 27 March 2027.</p><p>https://d2xuc5ucjmnf40.cloudfront.net/downloads/UAE-ERA-Race-Fixture-2026-27.pdf</p></article>",
+    "expected": {
+      "season_start_year": 2026,
+      "season_end_year": 2027,
+      "opening_date": "2026-10-22",
+      "opening_venue_label": "Abu Dhabi Turf Club",
+      "closing_date": "2027-03-27",
+      "total_race_meetings": 64,
+      "total_racecourses": 5,
+      "venue_count_sum": 64,
+      "mapped_meeting_count": 1,
+      "unresolved_venue_count": 1,
+      "mapped_meeting_id": "uae-meydan-racecourse-2027-03-27"
+    }
+  },
+  "invalid_cases": [
+    {
+      "id": "missing-closing-date",
+      "replace": {
+        "from": "will conclude the season with the Dubai World Cup on 27 March 2027",
+        "to": "will host the Dubai World Cup"
+      }
+    },
+    {
+      "id": "wrong-total-meeting-count",
+      "replace": {
+        "from": "64 race meetings across five racecourses",
+        "to": "63 race meetings across five racecourses"
+      }
+    },
+    {
+      "id": "venue-counts-do-not-close",
+      "replace": {
+        "from": "Sharjah Racecourse (6 race meetings)",
+        "to": "Sharjah Racecourse (5 race meetings)"
+      }
+    }
+  ]
+}

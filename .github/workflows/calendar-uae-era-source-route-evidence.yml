@@ -1,0 +1,103 @@
+name: Calendar UAE ERA source-route evidence
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/uae-era-season-article-parser-core.mjs'
+      - 'scripts/timetable/probe-uae-era-source-routes.mjs'
+      - 'scripts/check-calendar-uae-era-season-article-parser.mjs'
+      - 'scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs'
+      - 'data/fixtures/calendar-uae-era-season-article-parser-fixtures-v1.json'
+      - 'data/audits/calendar-uae-era-pilot-02-source-route-evidence-v1.json'
+      - 'docs/calendar/uae-era-pilot-02-source-route.md'
+      - '.github/workflows/calendar-uae-era-source-route-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE PILOT-02 parser fixtures and evidence decision
+        run: |
+          node --check scripts/timetable/uae-era-season-article-parser-core.mjs
+          node --check scripts/timetable/probe-uae-era-source-routes.mjs
+          node --check scripts/check-calendar-uae-era-season-article-parser.mjs
+          node --check scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
+          node scripts/check-calendar-uae-era-season-article-parser.mjs
+          node scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/static/calendar-acquisition-registry.json \
+            data/static/calendar-readiness-registry.json \
+            > /tmp/uae-pilot-02-protected-before.sha256
+      - name: Run bounded ERA article and PDF route probe
+        run: node scripts/timetable/probe-uae-era-source-routes.mjs > /tmp/uae-pilot-02-source-route-summary.json
+      - name: Validate public-safe live evidence summary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const summary = JSON.parse(fs.readFileSync('/tmp/uae-pilot-02-source-route-summary.json', 'utf8'));
+          if (summary.schema_version !== 'calendar-uae-era-pilot-02-source-route-evidence-summary-v1') throw new Error('summary schema differs');
+          if (summary.work_id !== 'WHR-CAL-UAE-ERA' || summary.implementation_unit !== 'UAE-PILOT-02') throw new Error('summary Work identity differs');
+          const article = summary.article_route;
+          if (article.http_status !== 200 || article.response_ok !== true) throw new Error('official article route failed');
+          if (article.final_host !== 'emiratesracing.com') throw new Error('official article final host differs');
+          if (article.season_start_year !== 2026 || article.season_end_year !== 2027) throw new Error('season years differ');
+          if (article.opening_date !== '2026-10-22' || article.opening_venue_label !== 'Abu Dhabi Turf Club') throw new Error('opening observation differs');
+          if (article.closing_date !== '2027-03-27') throw new Error('closing date differs');
+          if (article.total_race_meetings !== 64 || article.total_racecourses !== 5 || article.venue_count_sum !== 64) throw new Error('season summary does not close');
+          if (JSON.stringify(article.mapped_meeting_ids) !== JSON.stringify(['uae-meydan-racecourse-2027-03-27'])) throw new Error('mapped meeting IDs differ');
+          if (article.unresolved_venue_observations.length !== 1) throw new Error('expected one unresolved venue observation');
+          if (article.unresolved_venue_observations[0].date !== '2026-10-22' || article.unresolved_venue_observations[0].venue_label !== 'Abu Dhabi Turf Club') throw new Error('unresolved venue observation differs');
+          if (article.raw_html_stored !== false) throw new Error('raw HTML storage boundary differs');
+          const candidate = summary.candidate_artifacts;
+          if (candidate.records_discovered !== 1 || candidate.records_updated !== 0) throw new Error('candidate record counts differ');
+          if (candidate.rank_counts.C !== 1 || ['B','B+','A','A+'].some((rank) => candidate.rank_counts[rank] !== 0)) throw new Error('candidate rank counts differ');
+          if (candidate.coverage_claim !== 'partial') throw new Error('candidate coverage must remain partial');
+          if (JSON.stringify(candidate.unresolved_dates) !== JSON.stringify(['2026-10-22'])) throw new Error('candidate unresolved dates differ');
+          if (candidate.candidate_review_state !== 'needs_review' || candidate.promotion_target !== null) throw new Error('candidate review boundary differs');
+          if (candidate.registry_activation !== false || candidate.canonical_write !== 'disabled' || candidate.public_write !== 'disabled' || candidate.publication_effect !== 'none') throw new Error('candidate side-effect boundary differs');
+          const pdf = summary.pdf_route;
+          if (pdf.raw_pdf_stored !== false) throw new Error('raw PDF storage boundary differs');
+          if (pdf.response_ok === true && (pdf.content_type ?? '').includes('application/pdf') && pdf.pdf_magic !== true) throw new Error('PDF response lacks PDF magic');
+          for (const value of Object.values(summary.boundaries)) if (value !== false) throw new Error('summary boundary must remain all false');
+          console.log('UAE_PILOT_02_LIVE_EVIDENCE: pass');
+          console.log(JSON.stringify({
+            article_status: article.http_status,
+            article_bytes: article.response_bytes,
+            coverage_claim: candidate.coverage_claim,
+            mapped_meeting_ids: article.mapped_meeting_ids,
+            unresolved_venue_observations: article.unresolved_venue_observations,
+            pdf_route: pdf,
+          }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/uae-pilot-02-protected-before.sha256
+      - name: Upload public-safe evidence summary only
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-pilot-02-source-route-evidence-${{ github.run_id }}
+          path: /tmp/uae-pilot-02-source-route-summary.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
