@@ -9,6 +9,7 @@ const MONTHS = Object.freeze({
   january: '01', february: '02', march: '03', april: '04', may: '05', june: '06',
   july: '07', august: '08', september: '09', october: '10', november: '11', december: '12',
 });
+const SMALL_NUMBERS = Object.freeze({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 });
 
 function decodeEntities(value) {
   return String(value ?? '')
@@ -39,6 +40,12 @@ function isoDate(day, monthName, year) {
   return Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value ? null : value;
 }
 
+function parseNumberToken(value) {
+  const token = String(value ?? '').toLowerCase();
+  if (/^\d+$/.test(token)) return Number(token);
+  return SMALL_NUMBERS[token] ?? null;
+}
+
 function normalizeVenueLabel(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
@@ -58,8 +65,8 @@ export function parseUaeEraSeasonArticleHtml(html, { sourceUrl = ARTICLE_URL } =
   const text = uaeEraArticleVisibleText(html);
   const seasonMatch = text.match(/official schedule for the (\d{4})[–-](\d{4}) UAE horse racing season/i);
   const startMatch = text.match(/commence on (\d{1,2}) ([A-Za-z]+) (\d{4}) at ([A-Za-z ]+?)(?=\.|,| The upcoming season|$)/i);
-  const totalMatch = text.match(/features? (\d+) race meetings across (\d+) racecourses/i);
-  const closeMatch = text.match(/Meydan Racecourse[^.]{0,220}?conclude the season[^.]{0,220}?on (\d{1,2}) ([A-Za-z]+) (\d{4})/i);
+  const totalMatch = text.match(/features? (\d+) race meetings across (\d+|one|two|three|four|five|six|seven|eight|nine|ten) racecourses/i);
+  const closeMatch = text.match(/Meydan Racecourse[^.]{0,260}?conclude the season[^.]{0,260}?on (\d{1,2}) ([A-Za-z]+) (\d{4})/i);
 
   const openingDate = startMatch ? isoDate(startMatch[1], startMatch[2], startMatch[3]) : null;
   const openingVenue = startMatch ? normalizeVenueLabel(startMatch[4]) : null;
@@ -107,7 +114,7 @@ export function parseUaeEraSeasonArticleHtml(html, { sourceUrl = ARTICLE_URL } =
     opening_venue_label: openingVenue,
     closing_date: closingDate,
     total_race_meetings: totalMatch ? Number(totalMatch[1]) : null,
-    total_racecourses: totalMatch ? Number(totalMatch[2]) : null,
+    total_racecourses: totalMatch ? parseNumberToken(totalMatch[2]) : null,
     venue_meeting_counts: venueCounts,
     venue_counts_complete: venueCountsComplete,
     venue_count_sum: venueCountsComplete ? venueCountValues.reduce((sum, count) => sum + count, 0) : null,
