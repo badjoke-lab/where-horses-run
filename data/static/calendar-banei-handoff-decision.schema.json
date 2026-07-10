@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-banei-handoff-decision.schema.json",
+  "title": "Where Horses Run Banei Handoff Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "work_id",
+    "decided_at",
+    "decision",
+    "completion_claim",
+    "july_full_month_completion_audit",
+    "operational_state",
+    "public_display_boundary",
+    "evidence_refs",
+    "next_work_id",
+    "next_stage"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "calendar-banei-handoff-decision-v1"
+    },
+    "decision_id": {
+      "const": "banei-operational-handoff-2026-07"
+    },
+    "work_id": {
+      "const": "WHR-CAL-JAPAN-BANEI-A-PLUS"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decision": {
+      "const": "accepted_for_manual_reviewed_steady_state"
+    },
+    "completion_claim": {
+      "const": "bounded_operational_integration_complete"
+    },
+    "july_full_month_completion_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_for_handoff",
+        "performed",
+        "full_month_completeness_claim_made",
+        "trigger"
+      ],
+      "properties": {
+        "required_for_handoff": { "const": false },
+        "performed": { "const": false },
+        "full_month_completeness_claim_made": { "const": false },
+        "trigger": {
+          "const": "Run the separate July whole-month Completion Audit before making an explicit July full-month completeness claim."
+        }
+      }
+    },
+    "operational_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_runner",
+        "fallback_runner",
+        "date_window_enabled",
+        "selected_meeting_enabled",
+        "rank_upgrade_retry_planning_enabled",
+        "regular_refresh_planning_enabled",
+        "coverage_gap_planning_enabled",
+        "source_revalidation_planning_enabled",
+        "scheduler_job_execution_enabled",
+        "automatic_approval_enabled",
+        "automatic_promotion_enabled",
+        "automatic_publication_enabled"
+      ],
+      "properties": {
+        "primary_runner": { "const": "github_actions" },
+        "fallback_runner": { "const": "reviewed_import" },
+        "date_window_enabled": { "const": true },
+        "selected_meeting_enabled": { "const": true },
+        "rank_upgrade_retry_planning_enabled": { "const": true },
+        "regular_refresh_planning_enabled": { "const": false },
+        "coverage_gap_planning_enabled": { "const": false },
+        "source_revalidation_planning_enabled": { "const": false },
+        "scheduler_job_execution_enabled": { "const": false },
+        "automatic_approval_enabled": { "const": false },
+        "automatic_promotion_enabled": { "const": false },
+        "automatic_publication_enabled": { "const": false }
+      }
+    },
+    "public_display_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "detail_source_public_ceiling",
+        "legacy_schedule_source_public_ceiling",
+        "legacy_schedule_source_readiness",
+        "list_surface_rule",
+        "a_plus_surface_rule",
+        "forbidden_output_classes"
+      ],
+      "properties": {
+        "detail_source_public_ceiling": { "const": "A+" },
+        "legacy_schedule_source_public_ceiling": { "const": "C" },
+        "legacy_schedule_source_readiness": { "const": "link_only" },
+        "list_surface_rule": { "const": "one_meeting_per_row" },
+        "a_plus_surface_rule": { "const": "meeting_detail_only" },
+        "forbidden_output_classes": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(docs|data|scripts)/"
+      }
+    },
+    "next_work_id": {
+      "const": "WHR-CAL-HONG-KONG-HKJC"
+    },
+    "next_stage": {
+      "const": "stage_10_additional_pilot"
+    }
+  }
+}
