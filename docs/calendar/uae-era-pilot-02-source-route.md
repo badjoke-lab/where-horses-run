@@ -126,6 +126,8 @@ The live workflow:
 
 ## Non-activation rule
 
+Registry activation remains false throughout PILOT-02.
+
 PILOT-02 does not:
 
 - add a UAE Acquisition Registry profile;
