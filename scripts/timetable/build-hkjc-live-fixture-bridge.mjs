@@ -17,6 +17,11 @@ if (!checkOnly && !outputRoot) throw new Error('--output-root=<directory> is req
 
 const input = JSON.parse(fs.readFileSync(path.resolve(root, inputPath), 'utf8'));
 const bridge = buildHkjcLiveFixtureBridgeV1(input);
+const expectedOutputRoot = `data/generated/timetable/hkjc-live-fixture-bridge/${bridge.result_manifest.batch_id}`;
+
+if (!checkOnly && outputRoot !== expectedOutputRoot) {
+  throw new Error(`--output-root must equal ${expectedOutputRoot}`);
+}
 
 function writeJson(relativePath, value) {
   const absolute = path.resolve(root, relativePath);
@@ -37,6 +42,7 @@ console.log(JSON.stringify({
   system_id: bridge.system_id,
   adapter_id: bridge.adapter_id,
   batch_id: bridge.result_manifest.batch_id,
+  output_root: expectedOutputRoot,
   coverage_claim: bridge.coverage_observation.coverage_claim,
   records_discovered: bridge.coverage_observation.records_discovered,
   source_error_count: bridge.coverage_observation.source_errors.length,
