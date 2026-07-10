@@ -446,14 +446,15 @@ Completed sequence:
 13. proposal-only Queue reconciliation with no automatic Queue write;
 14. guarded explicit Queue state apply and rollback with reviewed approval artifact, exact source/proposal/target SHA-256 binding, stale-write rejection, durable atomic replacement, pre-apply backup, and rollback evidence;
 15. freshness and rollback operating evidence connecting reviewed successful Banei Job evidence to Operations v2, proving freshness age 1 hour without freshness attention, 168-hour freshness attention with source health still healthy, byte-for-byte rollback restore, and stale apply/rollback rejection;
-16. bilingual and public-display QA with separate detail-source Readiness, legacy schedule-source C/link-only preservation, one-meeting-per-list-row enforcement, A/A+ downgrade and item-switch validation, Japanese meeting-detail routing, localized Banei list labels, and rendered English/Japanese fixture verification.
+16. bilingual and public-display QA with separate detail-source Readiness, legacy schedule-source C/link-only preservation, one-meeting-per-list-row enforcement, A/A+ downgrade and item-switch validation, Japanese meeting-detail routing, localized Banei list labels, and rendered English/Japanese fixture verification;
+17. Banei handoff decision accepted for manual reviewed steady-state operation with bounded operational integration complete, no July full-month completeness claim, unattended execution/publication disabled, and next Work ID `WHR-CAL-HONG-KONG-HKJC`.
 
 Current sequence:
 
-1. decide whether the Banei handoff requires an explicit July full-month completeness claim;
-2. if that claim is required, run the separate July whole-month Completion Audit; otherwise do not treat full-month validation as a handoff blocker;
-3. preserve human review before promotion/publication and keep unattended execution disabled;
-4. record the explicit Banei handoff decision before the next source-specific pilot.
+1. keep Banei in manual reviewed steady-state operation with unattended execution, approval, promotion, and publication disabled;
+2. begin Stage 10 work under `WHR-CAL-HONG-KONG-HKJC`;
+3. run the separate Banei July whole-month Completion Audit only before making an explicit July full-month completeness claim;
+4. continue Calendar Public v1 release-readiness work in parallel.
 
 ## Stage 8 — multi-system execution
 
@@ -573,12 +574,11 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. Banei authoritative Queue apply remains separate until stale-write, atomic replacement, and rollback safeguards exist
-2. complete Banei freshness and rollback operating evidence
-3. complete Banei bilingual QA and remaining public-display review
-4. keep reviewed manual retry execution while unattended execution remains disabled
-5. begin the next source pilot only after the Banei handoff boundary is explicitly accepted
-6. continue Calendar Public v1 release-readiness work
+1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
+2. begin WHR-CAL-HONG-KONG-HKJC as the next Stage 10 source-specific pilot
+3. run Banei July Completion Audit only before an explicit full-month completeness claim
+4. continue Calendar Public v1 release-readiness work in parallel
+5. move to WHR-CAL-UAE-ERA after the HKJC pilot handoff boundary is explicitly reviewed
 ```
 
 ## Per-PR document review
