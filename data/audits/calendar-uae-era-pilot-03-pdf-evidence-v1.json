@@ -1,0 +1,117 @@
+{
+  "schema_version": "calendar-uae-era-pilot-03-pdf-evidence-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-03",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29141771555,
+    "artifact_id": 8245387666,
+    "artifact_digest": "sha256:cf32b5bf6015dd6d30543239a13a402b43db37f3c18f8e2157180525fae00ed3",
+    "venue_pages": {
+      "checked_at": "2026-07-11T05:49:55.227Z",
+      "page_count": 5,
+      "all_pages_reachable": true,
+      "all_final_hosts_official": true,
+      "all_page_labels_observed": true,
+      "pages": [
+        {
+          "slug": "meydan",
+          "http_status": 200,
+          "response_bytes": 100135
+        },
+        {
+          "slug": "abu-dhabi-turf-club",
+          "http_status": 200,
+          "response_bytes": 116713
+        },
+        {
+          "slug": "al-ain",
+          "http_status": 200,
+          "response_bytes": 111565
+        },
+        {
+          "slug": "jebel-ali",
+          "http_status": 200,
+          "response_bytes": 96207
+        },
+        {
+          "slug": "sharjah",
+          "http_status": 200,
+          "response_bytes": 98849
+        }
+      ],
+      "raw_html_stored": false
+    },
+    "pdf_structure": {
+      "http_status": 200,
+      "final_host": "d2xuc5ucjmnf40.cloudfront.net",
+      "content_type": "application/pdf",
+      "response_bytes": 161107,
+      "pdf_magic": true,
+      "page_count": 1,
+      "plain_text_chars": 2118,
+      "layout_extraction_available": true,
+      "layout_text_chars": 5427,
+      "plain_non_empty_line_count": 33,
+      "layout_non_empty_line_count": 33,
+      "plain_text_sha256": "f83e9bd8ad66605589eddb15e737503ac1e27863c73f472ec311a3a6b6ff898b",
+      "layout_text_sha256": "dd44cea69767bf9816e73bd832f1bb31896e034b0b1db2669edb081113a6d6a1",
+      "full_venue_labels_observed": false,
+      "all_five_venue_aliases_observed": true,
+      "venue_alias_occurrences_combined_plain_and_layout": {
+        "Meydan Racecourse": 38,
+        "Abu Dhabi Turf Club": 34,
+        "Al Ain Racecourse": 30,
+        "Jebel Ali Racecourse": 24,
+        "Sharjah Racecourse": 14
+      },
+      "month_tokens_observed": {
+        "October": 2,
+        "November": 2,
+        "December": 2,
+        "January": 2,
+        "February": 2,
+        "March": 2
+      },
+      "weekday_tokens_observed": true,
+      "numeric_day_tokens_1_through_31_observed": true,
+      "date_candidate_count": 0,
+      "season_opening_date_observed_as_normalized_candidate": false,
+      "season_closing_date_observed_as_normalized_candidate": false,
+      "raw_pdf_stored": false,
+      "raw_text_stored": false,
+      "extracted_text_emitted": false
+    },
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "decision": {
+    "official_venue_page_routes": "evidence_backed",
+    "pdf_route": "evidence_backed_in_memory_text_and_layout_structure_extraction",
+    "pdf_venue_alias_structure": "evidence_backed_all_five_aliases_observed",
+    "pdf_date_venue_pairing": "not_evidence_backed_coordinate_aware_grid_parser_required",
+    "mapping_state": "one_accepted_existing_four_proposed_unapproved",
+    "candidate_scope": "meydan_only",
+    "broader_candidate_generation": "blocked_pending_explicit_mapping_approval_and_date_venue_pairing_evidence",
+    "registry_activation": false,
+    "reason": "The official venue pages are reachable and label-confirmed. The official fixture PDF is reachable and both plain-text and layout-text extraction succeed without raw-source persistence. All five venue aliases are observable, and the extracted structure contains season month names, weekday tokens, and numeric day tokens, but no normalized date candidates are produced. The PDF therefore requires coordinate-aware calendar-grid parsing before date-to-venue meeting rows can be claimed."
+  },
+  "next_unit": {
+    "id": "UAE-PILOT-04",
+    "title": "UAE ERA coordinate-aware PDF calendar grid parser evidence",
+    "goal": "Use in-memory PDF text coordinates or layout blocks to pair season month/day cells with official venue aliases, produce label-based reviewed observations, and prove count/coverage closure before any broader canonical mapping approval or candidate generation."
+  },
+  "boundaries": {
+    "automatic_canonical_id_creation": false,
+    "automatic_candidate_expansion": false,
+    "racecourse_registry_write": false,
+    "readiness_registry_write": false,
+    "acquisition_registry_write": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
