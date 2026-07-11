@@ -1,0 +1,48 @@
+{
+  "schema_version": "calendar-uae-era-pilot-06-job-fixture-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-06",
+  "job": {
+    "schema_version": "calendar-collection-job-v1",
+    "job_id": "uae-era-pilot-06-reviewed-fixture-window-job",
+    "campaign_id": "uae-era-stage-10-pilot",
+    "system_id": "uae-national-racing-system",
+    "runner_policy": {
+      "mode": "exact",
+      "runner": "github_actions"
+    },
+    "collection_mode": "source_visible_horizon",
+    "requested_scope": {
+      "start_date": "2026-10-22",
+      "end_date_exclusive": "2027-04-16",
+      "timezone": "Asia/Dubai"
+    },
+    "rank_strategy": "best_available",
+    "target_rank": null,
+    "reason": "source_revalidation",
+    "requested_at": "2026-07-11T00:00:00Z"
+  },
+  "expected": {
+    "executor_id": "uae-era-pdf-grid-actions",
+    "runner_used": "github_actions",
+    "output_model": "uae-era-pdf-grid-artifact-batch",
+    "records_discovered": 64,
+    "coverage_claim": "source_window_complete",
+    "rank_counts": {
+      "C": 64,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 0
+    },
+    "candidate_review_state": "needs_review",
+    "promotion_target": null,
+    "racecourse_record_counts": {
+      "meydan-racecourse": 17,
+      "abu-dhabi-turf-club": 16,
+      "al-ain-racecourse": 14,
+      "jebel-ali-racecourse": 11,
+      "sharjah-racecourse": 6
+    }
+  }
+}
