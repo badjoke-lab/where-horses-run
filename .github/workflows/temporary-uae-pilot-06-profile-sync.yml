@@ -24,6 +24,8 @@ jobs:
           node-version: 22.12.0
       - name: Apply UAE PILOT-06 profile synchronization
         run: node scripts/temporary-sync-uae-pilot-06-profile.mjs
+      - name: Apply UAE PILOT-06 checker patch
+        run: node scripts/temporary-patch-uae-pilot-06-checker.mjs
       - name: Validate UAE PILOT-06 synchronized foundation
         shell: bash
         run: |
@@ -58,6 +60,7 @@ jobs:
             data/static/racecourses-extensions.json \
             data/static/calendar-readiness-registry.json \
             data/static/calendar-acquisition-registry.json \
-            data/static/calendar-runner-compatibility-contract-v1.json
+            data/static/calendar-runner-compatibility-contract-v1.json \
+            scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
           git commit -m "[CF-Pages-Skip] Activate UAE PILOT-06 profile foundation"
           git push origin HEAD:work/calendar-uae-era-profile-foundation
