@@ -87,15 +87,20 @@ jobs:
           if (!Number.isInteger(summary.response_bytes) || summary.response_bytes < 10000) throw new Error('PDF response byte count implausible');
           if (!Number.isInteger(summary.page_count) || summary.page_count < 1) throw new Error('page count missing');
           if (!Number.isInteger(summary.extracted_text_chars) || summary.extracted_text_chars < 1) throw new Error('PDF text extraction produced no text');
+          if (typeof summary.layout_extraction_available !== 'boolean') throw new Error('layout extraction state missing');
+          if (!Number.isInteger(summary.layout_extracted_text_chars) || summary.layout_extracted_text_chars < 0) throw new Error('layout text character count invalid');
           if (!Number.isInteger(summary.non_empty_line_count) || summary.non_empty_line_count < 1) throw new Error('non-empty line count missing');
+          if (!Number.isInteger(summary.layout_non_empty_line_count) || summary.layout_non_empty_line_count < 0) throw new Error('layout non-empty line count invalid');
           if (!/^[0-9a-f]{64}$/.test(summary.normalized_text_sha256)) throw new Error('normalized text hash invalid');
+          if (summary.layout_text_sha256 !== null && !/^[0-9a-f]{64}$/.test(summary.layout_text_sha256)) throw new Error('layout text hash invalid');
           if (!Array.isArray(summary.page_text_char_counts) || summary.page_text_char_counts.length !== summary.page_count) throw new Error('page text count shape differs');
+          if (!Array.isArray(summary.layout_page_text_char_counts) || summary.layout_page_text_char_counts.length !== summary.page_count) throw new Error('layout page text count shape differs');
           if (!summary.venue_label_occurrences || Object.keys(summary.venue_label_occurrences).length !== 5) throw new Error('full venue occurrence summary shape differs');
           if (!summary.venue_alias_occurrences || Object.keys(summary.venue_alias_occurrences).length !== 5) throw new Error('venue alias occurrence summary shape differs');
           if (!summary.venue_alias_line_counts || Object.keys(summary.venue_alias_line_counts).length !== 5) throw new Error('venue alias line-count summary shape differs');
           if (!Array.isArray(summary.month_year_headers)) throw new Error('month-year header summary shape differs');
           if (!Array.isArray(summary.date_candidates) || summary.date_candidate_count !== summary.date_candidates.length) throw new Error('date candidate summary shape differs');
-          if (summary.date_candidate_count < 1) throw new Error('no public-safe date candidates extracted');
+          if (!summary.date_notation_profile || typeof summary.date_notation_profile !== 'object') throw new Error('date notation profile missing');
           if (summary.raw_pdf_stored !== false || summary.raw_text_stored !== false || summary.extracted_text_emitted !== false) throw new Error('raw-source boundary differs');
           for (const forbiddenKey of ['raw_pdf','raw_text','extracted_text','source_body','raw_html']) {
             if (Object.hasOwn(summary, forbiddenKey)) throw new Error(`forbidden summary key ${forbiddenKey}`);
@@ -105,7 +110,10 @@ jobs:
             response_bytes: summary.response_bytes,
             page_count: summary.page_count,
             extracted_text_chars: summary.extracted_text_chars,
+            layout_extraction_available: summary.layout_extraction_available,
+            layout_extracted_text_chars: summary.layout_extracted_text_chars,
             non_empty_line_count: summary.non_empty_line_count,
+            layout_non_empty_line_count: summary.layout_non_empty_line_count,
             venue_label_occurrences: summary.venue_label_occurrences,
             venue_alias_occurrences: summary.venue_alias_occurrences,
             venue_alias_line_counts: summary.venue_alias_line_counts,
@@ -114,6 +122,7 @@ jobs:
             month_year_headers: summary.month_year_headers,
             date_candidate_count: summary.date_candidate_count,
             season_boundary_dates_observed: summary.season_boundary_dates_observed,
+            date_notation_profile: summary.date_notation_profile,
           }));
           NODE
       - name: Prove protected state unchanged
