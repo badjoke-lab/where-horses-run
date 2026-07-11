@@ -44,7 +44,7 @@ jobs:
           NODE
       - name: Validate Pipeline v1 entrypoint
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Preserve UAE handoff evidence
+      - name: Preserve UAE handoff evidence with completed entrypoint switch
         run: node scripts/check-calendar-uae-era-handoff-decision.mjs
       - name: Validate diff hygiene
         run: git diff --check
@@ -64,6 +64,7 @@ jobs:
             scripts/check-calendar-dynamic-dates-release-gate.mjs \
             scripts/check-calendar-operations-v1-release-gate.mjs \
             scripts/check-calendar-pipeline-v1-release-gate.mjs \
+            scripts/check-calendar-uae-era-handoff-decision.mjs \
             scripts/check-project-governance-docs.mjs
           git commit -m "[CF-Pages-Skip] Switch Calendar entrypoint to Public v1"
           git pull --rebase origin work/calendar-public-v1-entrypoint
