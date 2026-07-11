@@ -50,6 +50,7 @@ for (const id of newIds) {
     if (record.course_profile?.course_notes_en?.includes('PILOT-05 approved canonical venue identity') !== true) fail(`${id}: conservative identity-only course note missing.`);
     if (record.data_status?.course_profile !== 'partial' || record.data_status?.schedule !== 'official-link-only') fail(`${id}: conservative data status differs.`);
     if (!record.official_links?.some((link) => link.source_id === 'uae-era-home' && link.link_type === 'official' && link.url.startsWith('https://emiratesracing.com/racecourses/'))) fail(`${id}: official ERA venue-page link missing.`);
+    if (!record.official_links?.some((link) => link.source_id === 'uae-era-home' && link.link_type === 'official' && link.url.startsWith('https://emiratesracing.com/racecourses/'))) fail(`${id}: official ERA venue-page link missing.`);
   }
 }
 
