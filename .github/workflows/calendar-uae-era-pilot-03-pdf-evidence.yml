@@ -4,9 +4,11 @@ on:
   pull_request:
     paths:
       - 'data/audits/calendar-uae-era-pilot-03-venue-mapping-v1.json'
+      - 'data/audits/calendar-uae-era-pilot-03-pdf-evidence-v1.json'
       - 'scripts/timetable/probe_uae_era_pdf_text.py'
       - 'scripts/timetable/probe-uae-era-venue-pages.mjs'
       - 'scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs'
+      - 'scripts/check-calendar-uae-era-pilot-03-pdf-evidence.mjs'
       - 'docs/calendar/uae-era-pilot-03-venue-mapping-pdf-evidence.md'
       - '.github/workflows/calendar-uae-era-pilot-03-pdf-evidence.yml'
 
@@ -29,11 +31,13 @@ jobs:
           python-version: '3.12'
       - name: Install PDF text extraction dependency
         run: python -m pip install --disable-pip-version-check pypdf
-      - name: Validate PILOT-03 mapping and probe boundaries
+      - name: Validate PILOT-03 mapping, evidence decision, and probe boundaries
         run: |
           node --check scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs
+          node --check scripts/check-calendar-uae-era-pilot-03-pdf-evidence.mjs
           node --check scripts/timetable/probe-uae-era-venue-pages.mjs
           node scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs
+          node scripts/check-calendar-uae-era-pilot-03-pdf-evidence.mjs
           python - <<'PY'
           import ast
           from pathlib import Path
