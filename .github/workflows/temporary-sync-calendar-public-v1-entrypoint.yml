@@ -32,7 +32,21 @@ jobs:
       - name: Validate Dynamic Dates entrypoint
         run: node scripts/check-calendar-dynamic-dates-release-gate.mjs
       - name: Validate Operations v1 entrypoint
-        run: node scripts/check-calendar-operations-v1-release-gate.mjs
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-operations-v1-release-gate.mjs 2>&1 | tee /tmp/calendar-public-v1-operations-validation.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload Operations checker diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-operations-validation-${{ github.run_id }}
+          path: /tmp/calendar-public-v1-operations-validation.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Validate Pipeline v1 entrypoint
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
       - name: Preserve UAE handoff evidence
