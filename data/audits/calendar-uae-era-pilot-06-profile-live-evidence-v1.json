@@ -1,0 +1,105 @@
+{
+  "schema_version": "calendar-uae-era-pilot-06-profile-live-evidence-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-06",
+  "reviewed_at": "2026-07-11T07:00:10.268Z",
+  "evidence_run": {
+    "workflow_run_id": 29143729235,
+    "artifact_id": 8246040300,
+    "artifact_digest": "sha256:5b1832ca37e64fa3fb61630b1072ca45a86787510b4340014906347320bc4415",
+    "batch_id": "uae-era-pilot-06-live-review-batch",
+    "generated_at": "2026-07-11T07:00:10.268Z",
+    "runner_used": "github_actions",
+    "collection_mode": "source_visible_horizon",
+    "fixture_window": {
+      "start_date": "2026-10-22",
+      "end_date_exclusive": "2027-04-16",
+      "timezone": "Asia/Dubai"
+    },
+    "records_discovered": 64,
+    "records_updated": 0,
+    "racecourse_record_counts": {
+      "meydan-racecourse": 17,
+      "abu-dhabi-turf-club": 16,
+      "al-ain-racecourse": 14,
+      "jebel-ali-racecourse": 11,
+      "sharjah-racecourse": 6
+    },
+    "rank_counts": {
+      "C": 64,
+      "B": 0,
+      "B+": 0,
+      "A": 0,
+      "A+": 0
+    },
+    "coverage_claim": "source_window_complete",
+    "unresolved_dates": [],
+    "unresolved_meeting_ids": [],
+    "source_error_count": 0,
+    "candidate_mode": "review_only",
+    "candidate_review_state": "needs_review",
+    "promotion_target": null,
+    "raw_pdf_storage": "disabled",
+    "raw_text_storage": "disabled",
+    "registry_write": "disabled",
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "publication_effect": "none",
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "accepted_profile_state": {
+    "racecourse_identity_count": 5,
+    "readiness_state": "prototype_ready",
+    "implementation_status": "fixture_validated",
+    "automation_mode": "semi_automatic",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "acquisition_profile_status": "provisional",
+    "primary_runner": "github_actions",
+    "fallback_runner": null,
+    "schedule_source_id": "era-season-calendar",
+    "schedule_adapter_id": "uae-era-pdf-grid-actions-v1",
+    "supported_observation_ranks": [
+      "C"
+    ],
+    "supports_source_visible_horizon": true,
+    "supports_date_window": false,
+    "supports_cross_month_window": false,
+    "supports_selected_meetings": false,
+    "supports_rank_upgrade_retry": false,
+    "detail_source_id": null,
+    "detail_adapter_id": null
+  },
+  "decision": {
+    "profile_foundation": "evidence_backed_review_only_c_level",
+    "schedule_execution_path": "evidence_backed_github_actions_source_visible_horizon",
+    "review_artifact_generation": "evidence_backed_64_candidate_batch",
+    "canonical_publication_path": "not_activated",
+    "automatic_execution": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "detail_route_activation": false,
+    "reason": "The provisional UAE profile, source-visible-horizon Actions executor, approved five-venue identity scope, and count-closed PDF fixture-window parser produced a 64-record C-only review batch with exact venue-count closure, shared Coverage and Result Manifest agreement, no unresolved dates or source errors, unchanged protected state, and no canonical/public publication effect."
+  },
+  "next_unit": {
+    "id": "UAE-HANDOFF-01",
+    "title": "UAE bounded reviewed steady-state handoff decision",
+    "goal": "Review whether the evidence-backed C-level source-visible-horizon schedule path is sufficient for bounded reviewed steady-state operation, preserve provisional profile and no-detail/no-automatic-publication boundaries, and hand off the source-specific sequence to WHR-CAL-PUBLIC-V1."
+  },
+  "boundaries": {
+    "scheduled_automatic_execution": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "detail_route_activation": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
