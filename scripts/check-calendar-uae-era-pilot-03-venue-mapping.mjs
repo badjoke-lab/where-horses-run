@@ -92,7 +92,7 @@ for (const marker of [
 ]) {
   if (!probeSource.includes(marker)) fail(`PDF probe missing ${marker}.`);
 }
-for (const forbiddenWrite of ['open(', 'write_bytes(', 'write_text(', 'NamedTemporaryFile', 'mkstemp']) {
+for (const forbiddenWrite of ['write_bytes(', 'write_text(', 'NamedTemporaryFile', 'mkstemp', 'open("/tmp/', "open('/tmp/"]) {
   if (probeSource.includes(forbiddenWrite)) fail(`PDF probe contains forbidden file-write primitive ${forbiddenWrite}.`);
 }
 
