@@ -1,0 +1,41 @@
+name: Temporary UAE handoff documentation sync
+
+on:
+  push:
+    branches:
+      - work/calendar-uae-era-handoff
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-uae-era-handoff
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply documentation synchronization
+        run: node scripts/temporary-sync-uae-handoff-docs.mjs
+      - name: Validate handoff decision
+        run: |
+          node --check scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Commit synchronized documentation
+        run: |
+          if git diff --quiet; then
+            echo "No documentation synchronization changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/project-roadmap.md docs/calendar/implementation-roadmap.md docs/calendar/README.md
+          git commit -m "[CF-Pages-Skip] Synchronize UAE handoff documentation"
+          git pull --rebase origin work/calendar-uae-era-handoff
+          git push origin HEAD:work/calendar-uae-era-handoff
