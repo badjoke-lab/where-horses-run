@@ -2,7 +2,7 @@
 """Emit public-safe coordinates for ERA calendar-grid tokens only.
 
 The probe downloads the official fixture PDF into memory, extracts word coordinates,
-and emits only approved structural tokens: season month names, weekday labels,
+and emits only approved structural tokens: month names, weekday labels,
 calendar day numbers, and the five reviewed venue aliases. Raw PDF bytes and raw
 page text are never persisted or emitted.
 """
@@ -20,7 +20,20 @@ import pymupdf
 
 PDF_URL = "https://d2xuc5ucjmnf40.cloudfront.net/downloads/UAE-ERA-Race-Fixture-2026-27.pdf"
 ALLOWED_FINAL_HOSTS = {"d2xuc5ucjmnf40.cloudfront.net"}
-MONTHS = {"october", "november", "december", "january", "february", "march"}
+MONTHS = {
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+}
 WEEKDAYS = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
 VENUE_ALIASES = {
     "Meydan Racecourse": "Meydan",
