@@ -61,10 +61,14 @@ replaceRequired(
   'The NAR source pilot, Acquisition Control Plane foundation, Banei bounded operational integration, HKJC source-specific pilot handoff, and UAE ERA source-specific sequence are complete. Banei, HKJC, and UAE continue under their accepted reviewed operating boundaries. UAE ERA handoff is accepted for bounded manual reviewed steady-state operation. The current programme work is `WHR-CAL-PUBLIC-V1`, focused on public release criteria and an explicit reviewed release decision; unattended publication remains disabled.',
 );
 
+const implementationMarkerBefore = 'Completed Work ID: `WHR-CAL-UAE-ERA`\nCurrent Work ID: `WHR-CAL-UAE-ERA`\nNext programme Work ID: `WHR-CAL-PUBLIC-V1`';
+const implementationMarkerAfter = 'Completed Work ID: `WHR-CAL-UAE-ERA`\nCurrent Work ID: `WHR-CAL-PUBLIC-V1`';
+replaceRequired('docs/calendar/implementation-roadmap.md', implementationMarkerBefore, implementationMarkerAfter);
+replaceRequired('docs/calendar/implementation-roadmap.md', implementationMarkerBefore, implementationMarkerAfter);
 replaceRequired(
   'docs/calendar/implementation-roadmap.md',
-  'Completed Work ID: `WHR-CAL-UAE-ERA`\nCurrent Work ID: `WHR-CAL-UAE-ERA`\nNext programme Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Completed Work ID: `WHR-CAL-UAE-ERA`\nCurrent Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 entrypoint synchronization next',
+  'Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 active',
 );
 replaceRequired(
   'docs/calendar/implementation-roadmap.md',
@@ -105,5 +109,20 @@ for (const file of [
   'scripts/check-calendar-pipeline-v1-release-gate.mjs',
   'scripts/check-project-governance-docs.mjs',
 ]) updateChecker(file);
+
+let handoffChecker = fs.readFileSync('scripts/check-calendar-uae-era-handoff-decision.mjs', 'utf8');
+handoffChecker = handoffChecker.replace(
+  "  'global Current Work ID switch remains a separate entrypoint synchronization step',",
+  "  'Current Work ID: `WHR-CAL-PUBLIC-V1`',",
+);
+handoffChecker = handoffChecker.replace(
+  "  'entrypoint synchronization',",
+  "  'Current Work ID: `WHR-CAL-PUBLIC-V1`',",
+);
+handoffChecker = handoffChecker.replace(
+  "console.log('ENTRYPOINT_SWITCH: separate');",
+  "console.log('ENTRYPOINT_SWITCH: complete');",
+);
+fs.writeFileSync('scripts/check-calendar-uae-era-handoff-decision.mjs', handoffChecker);
 
 console.log('CALENDAR_PUBLIC_V1_ENTRYPOINT_SYNC: applied');
