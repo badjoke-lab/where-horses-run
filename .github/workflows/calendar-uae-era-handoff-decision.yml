@@ -1,0 +1,50 @@
+name: Calendar UAE ERA handoff decision
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-uae-era-handoff-decision-v1.json'
+      - 'data/audits/calendar-uae-era-pilot-05-boundary-mapping-decision-v1.json'
+      - 'data/audits/calendar-uae-era-pilot-06-profile-live-evidence-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'docs/calendar/uae-era-handoff-decision.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/README.md'
+      - 'docs/project-roadmap.md'
+      - 'scripts/check-calendar-uae-era-handoff-decision.mjs'
+      - '.github/workflows/calendar-uae-era-handoff-decision.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE handoff decision and evidence chain
+        run: |
+          node --check scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-calendar-uae-era-pilot-06-profile-live-evidence.mjs
+          node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate governance and read-only boundary
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          git diff --check
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-uae-era-handoff-decision.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('UAE_HANDOFF_CI_BOUNDARY: pass');
+          NODE
