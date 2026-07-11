@@ -1,6 +1,6 @@
 # UAE ERA PILOT-03 venue mapping and PDF extraction evidence
 
-Status: implementation and bounded live evidence  
+Status: completed bounded live evidence review; mapping expansion and date-to-venue pairing remain blocked  
 Work ID: `WHR-CAL-UAE-ERA`  
 Implementation unit: `UAE-PILOT-03`  
 Last reviewed: 2026-07-11
@@ -91,7 +91,33 @@ The accepted candidate scope remains:
 meydan_only
 ```
 
-and broader candidate generation remains blocked pending explicit mapping approval.
+and broader candidate generation remains blocked pending explicit mapping approval and date-to-venue pairing evidence.
+
+## Official venue-page evidence
+
+Reviewed workflow run:
+
+```text
+workflow run: 29141771555
+artifact: 8245387666
+artifact digest: sha256:cf32b5bf6015dd6d30543239a13a402b43db37f3c18f8e2157180525fae00ed3
+```
+
+All five official ERA venue-page routes returned HTTP 200, stayed on `emiratesracing.com`, and exposed their expected page labels.
+
+Observed response sizes:
+
+```text
+meydan: 100135 bytes
+abu-dhabi-turf-club: 116713 bytes
+al-ain: 111565 bytes
+jebel-ali: 96207 bytes
+sharjah: 98849 bytes
+```
+
+No raw HTML was stored.
+
+This proves route reachability and label identity. It does not approve four new canonical IDs.
 
 ## PDF extraction boundary
 
@@ -102,7 +128,7 @@ The probe:
 1. downloads the official fixture PDF into memory;
 2. verifies HTTP success, final host, content type context, byte count, and PDF magic;
 3. passes the byte buffer directly to `PdfReader(BytesIO(payload))`;
-4. extracts page text only in memory;
+4. performs plain text extraction and layout text extraction in memory;
 5. normalizes text only in memory;
 6. emits aggregate structure summary only.
 
@@ -110,55 +136,98 @@ The raw PDF is not stored.
 
 The raw extracted text is not stored.
 
-The summary may contain only:
-
-- page count;
-- response byte count;
-- extracted text character count;
-- normalized-text SHA-256;
-- per-page text character counts;
-- occurrence counts for the five reviewed venue labels;
-- normalized public-safe date candidates;
-- date candidate count;
-- whether the reviewed season opening and closing boundary dates are observed;
-- explicit raw-storage false markers.
-
 The extracted source text itself is never emitted.
 
-## Live evidence interpretation
+## Reviewed PDF structure evidence
 
-A successful PDF probe proves only that:
-
-- the official PDF route is reachable;
-- a valid PDF byte stream is observed;
-- text extraction produces structure usable for further review;
-- public-safe dates and venue-label occurrence evidence can be summarized without raw-source persistence.
-
-It does not automatically prove:
-
-- complete 64-meeting extraction;
-- correct date-to-venue pairing for every meeting;
-- approved canonical mapping for all five venues;
-- Registry activation;
-- automated recurring acquisition;
-- candidate approval or promotion;
-- canonical or public write safety.
-
-## Decision boundary
-
-PILOT-03 may accept one or both of the following evidence claims:
+The official fixture PDF route produced:
 
 ```text
-venue mapping audit:
-  one accepted existing mapping
-  four proposed unapproved mappings
-
-PDF text extraction:
-  evidence-backed structure extraction
-  raw storage disabled
+HTTP status: 200
+content type: application/pdf
+response bytes: 161107
+PDF magic: true
+page count: 1
+plain extracted text chars: 2118
+layout extraction available: true
+layout extracted text chars: 5427
+plain non-empty lines: 33
+layout non-empty lines: 33
 ```
 
-Even when PDF extraction succeeds, broader candidate generation remains blocked until explicit mapping approval and row-level date-to-venue extraction evidence exist.
+Plain and layout extraction hashes were recorded without emitting source text:
+
+```text
+plain SHA-256: f83e9bd8ad66605589eddb15e737503ac1e27863c73f472ec311a3a6b6ff898b
+layout SHA-256: dd44cea69767bf9816e73bd832f1bb31896e034b0b1db2669edb081113a6d6a1
+```
+
+All five venue aliases were observed.
+
+Combined plain + layout alias occurrence counts:
+
+```text
+Meydan: 38
+Abu Dhabi: 34
+Al Ain: 30
+Jebel Ali: 24
+Sharjah: 14
+```
+
+The full article labels were not present as exact extracted strings, so the evidence claim is based on the official venue aliases, not fabricated full-label reconstruction.
+
+## Calendar-grid evidence
+
+The extracted structure contains:
+
+- October through March month tokens;
+- weekday tokens;
+- numeric day tokens across 1 through 31;
+- all five official venue aliases.
+
+However:
+
+```text
+normalized date candidates: 0
+opening 2026-10-22 observed as normalized candidate: false
+closing 2027-03-27 observed as normalized candidate: false
+```
+
+This means text extraction itself is evidence-backed, but linear text parsing does not establish date-to-venue meeting rows.
+
+The current evidence is consistent with a one-page calendar grid whose meaning depends on spatial relationships between month/day cells and venue labels. Therefore a coordinate-aware parser is required before row-level meeting claims can be made.
+
+## Decision
+
+PILOT-03 accepts:
+
+```text
+official venue page routes:
+  evidence-backed
+
+PDF route:
+  evidence-backed in-memory plain/layout structure extraction
+
+PDF venue aliases:
+  all five observed
+
+mapping state:
+  one accepted existing mapping
+  four proposed unapproved mappings
+```
+
+PILOT-03 does not accept:
+
+```text
+date-to-venue pairing
+complete 64-meeting row extraction
+four proposed canonical mappings
+broader candidate generation
+Registry activation
+automatic recurring acquisition
+```
+
+The candidate scope remains `meydan_only`.
 
 ## Safety boundary
 
@@ -178,14 +247,25 @@ public write
 deployment
 ```
 
-The source probe must not retain raw PDF bytes or raw extracted text in repository files or workflow artifacts.
+The source probes did not retain raw PDF bytes, raw extracted text, or raw HTML in repository files or workflow artifacts.
 
-## Expected handoff
+Protected-state hash verification passed and the repository worktree remained clean after the reviewed run.
 
-After reviewed live evidence, the next decision must determine whether:
+## Next unit
 
-1. PDF text extraction is structurally sufficient for a dedicated row parser;
-2. date candidate coverage is consistent with the 64-meeting season summary;
-3. all five official venue labels are observable in extracted PDF text;
-4. the four proposed IDs should remain unapproved or proceed to a separate explicit canonical mapping approval unit;
-5. a broader season-calendar parser can be attempted without changing the current C-level public boundary.
+```text
+UAE-PILOT-04
+UAE ERA coordinate-aware PDF calendar grid parser evidence
+```
+
+The next unit must use in-memory text coordinates or layout blocks to pair:
+
+```text
+season month context
++ calendar day cell
++ venue alias
+```
+
+without persisting raw PDF or raw extracted text.
+
+The expected output is label-based reviewed observations only. A successful parser must prove count and coverage closure before any broader canonical mapping approval or candidate generation is considered.
