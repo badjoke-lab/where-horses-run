@@ -226,6 +226,7 @@ def parse_coordinate_summary(summary: dict) -> dict:
     post_article_closing = sorted(
         item["date"] for item in observations if item["date"] > ARTICLE_CLOSING_DATE
     )
+    stable_venue_counts = {name: venue_counts[name] for name in EXPECTED_VENUE_COUNTS}
 
     return {
         "schema_version": "calendar-uae-era-pilot-04-grid-observations-v1",
@@ -236,7 +237,7 @@ def parse_coordinate_summary(summary: dict) -> dict:
         "observation_count": len(observations),
         "month_summaries": month_summaries,
         "month_meeting_counts": dict(sorted(month_counts.items())),
-        "venue_meeting_counts": dict(venue_counts),
+        "venue_meeting_counts": stable_venue_counts,
         "pairing_evidence": {
             "max_day_venue_y_delta": round(max(pairing_deltas), 3) if pairing_deltas else None,
             "weekday_calendar_validation": "pass",
