@@ -108,6 +108,35 @@
         "detail_adapter_id"
       ],
       "operator_notes": "Provisional overall HKJC Stage 10 profile with evidence-backed C-level schedule path. PILOT-04 proved source_window_complete valid-empty schedule behavior through the GitHub Actions schedule executor. PILOT-05 accepted the artifact-only detail core and external review-artifact collector, but bounded hosted live evidence and route/session probes did not prove the GitHub Actions HTTP detail path. The previously declared local fallback had no HKJC local executor mapping in the runner compatibility contract, so PILOT-06 removes that unimplemented fallback claim and returns fallback_runner to pending. Detail source, detail adapter, and observation ranks above C remain pending. PILOT-06 now evaluates bounded local execution, reviewed-import operation, and alternate official detail-source routes without restoring direct canonical/public writes."
+    },
+    {
+      "system_id": "uae-national-racing-system",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "profile_status": "provisional",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "era-season-calendar",
+      "detail_source_id": null,
+      "schedule_adapter_id": "uae-era-pdf-grid-actions-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": false,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "fallback_runner",
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "Provisional UAE Stage 10 profile. PILOT-02 through PILOT-05 prove the official article and PDF routes, all five venue identities, a coordinate-aware 64-observation C-level fixture grid, count closure, and the reviewed PDF fixture window. GitHub Actions is the only registered runner. Only source_visible_horizon is enabled; arbitrary date windows, selected meetings, rank-upgrade retry, fallback execution, detail acquisition, automatic approval, promotion, publication, canonical write, and public write remain disabled."
     }
   ]
 }

@@ -18,7 +18,11 @@
       "system_name_en": "UAE national racing system",
       "authority_source_key": "united-arab-emirates/emirates-racing-authority/era-season-calendar",
       "racecourse_ids": [
-        "meydan-racecourse"
+        "meydan-racecourse",
+        "abu-dhabi-turf-club",
+        "al-ain-racecourse",
+        "jebel-ali-racecourse",
+        "sharjah-racecourse"
       ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
@@ -34,27 +38,24 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "mixed",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "semi_automatic",
       "refresh_classes": [
         "seasonal",
         "manual"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "prototype_ready",
+      "implementation_status": "fixture_validated",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when ERA publishes a new season schedule or changes the venue network.",
+      "checked_date": "2026-07-11",
+      "evidence_reviewed_at": "2026-07-11T00:00:00Z",
+      "revalidation_trigger": "Revalidate when ERA publishes a replacement fixture PDF, changes venue identities, or the reviewed fixture-window structure no longer closes to 64 C-level observations.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
-      "limitations": [
-        "The reviewed evidence confirms meeting dates and venue scope, not reusable race times.",
-        "Detailed programme data remains on official sources."
-      ],
-      "notes": "Conservative C-level Calendar decision derived from the reviewed country profile and official ERA season schedule."
+      "limitations": "C-level meeting date and approved racecourse identity only. No race-time or programme-detail claim. PDF fixture-window extraction is review-only and automatic execution/publication remain disabled.",
+      "notes": "UAE-PILOT-02 through PILOT-05 provide reviewed article, venue-page, PDF structure, coordinate-grid, boundary-reconciliation, and venue-mapping evidence. The accepted reviewed PDF fixture window is 2026-10-22 through 2027-04-15 inclusive, with 64 C-level label-based observations across five approved venue identities."
     },
     {
       "readiness_id": "south-korea--kra-national-racing-system--kra-today-race",

@@ -9,9 +9,14 @@
     "city": "Niigata",
     "region": "Niigata",
     "timezone": "Asia/Tokyo",
-    "racing_types": ["thoroughbred-flat"],
+    "racing_types": [
+      "thoroughbred-flat"
+    ],
     "status": "active",
-    "surfaces": ["turf", "dirt"],
+    "surfaces": [
+      "turf",
+      "dirt"
+    ],
     "direction": "left-handed",
     "course_profile": {
       "turf_circumference_m": 2223,
@@ -25,36 +30,137 @@
       "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、新潟競馬場は新潟市の左回りJRA競馬場として確認できる。JRAのコース詳細では芝外回り・内回りA/Bコースとダートコースが示されているが、現在のスキーマでは芝外回りAコースを代表値として記録する。"
     },
     "distance_profile": {
-      "turf": { "min_m": 1623, "max_m": 2248, "known_distances_m": [2223, 2248, 1623, 1648] },
-      "dirt": { "min_m": 1472, "max_m": 1472, "known_distances_m": [1472] },
-      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": {
+        "min_m": 1623,
+        "max_m": 2248,
+        "known_distances_m": [
+          2223,
+          2248,
+          1623,
+          1648
+        ]
+      },
+      "dirt": {
+        "min_m": 1472,
+        "max_m": 1472,
+        "known_distances_m": [
+          1472
+        ]
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
       "upcoming_conditions": []
     },
-    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
     "notable_races": [
-      { "name_en": "Niigata Daishoten", "name_ja": "新潟大賞典", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
-      { "name_en": "Ibis Summer Dash", "name_ja": "アイビスサマーダッシュ", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
-      { "name_en": "Sekiya Kinen", "name_ja": "関屋記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
-      { "name_en": "Niigata Nisai Stakes", "name_ja": "新潟2歳ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" },
-      { "name_en": "Niigata Kinen", "name_ja": "新潟記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html" }
+      {
+        "name_en": "Niigata Daishoten",
+        "name_ja": "新潟大賞典",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html"
+      },
+      {
+        "name_en": "Ibis Summer Dash",
+        "name_ja": "アイビスサマーダッシュ",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html"
+      },
+      {
+        "name_en": "Sekiya Kinen",
+        "name_ja": "関屋記念",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html"
+      },
+      {
+        "name_en": "Niigata Nisai Stakes",
+        "name_ja": "新潟2歳ステークス",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html"
+      },
+      {
+        "name_en": "Niigata Kinen",
+        "name_ja": "新潟記念",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html"
+      }
     ],
-    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "seasonality": {
+      "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.",
+      "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。",
+      "status": "partial"
+    },
     "official_links": [
-      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Niigata Racecourse guide", "label_ja": "JAIRS/JRA 新潟競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Niigata course details", "label_ja": "JAIRS/JRA 新潟コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/niigata.html", "link_type": "official" }
+      {
+        "label_en": "JRA official site",
+        "label_ja": "JRA公式サイト",
+        "source_id": "japan-jra-home",
+        "url": "https://jra.jp/",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Niigata Racecourse guide",
+        "label_ja": "JAIRS/JRA 新潟競馬場ガイド",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Niigata course details",
+        "label_ja": "JAIRS/JRA 新潟コース詳細",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/niigata.html",
+        "link_type": "official"
+      }
     ],
-    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
-    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
-    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-05" },
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "japan-jra-home",
+      "japan-jairs-racecourses"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-06-05"
+    },
     "image_status": "planned",
     "image_path": null,
     "image_alt_en": "Planned illustrative image for Niigata Racecourse.",
     "image_alt_ja": "新潟競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
-    "image": { "src": "", "alt_en": "Planned illustrative image for Niigata Racecourse.", "alt_ja": "新潟競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Niigata Racecourse.",
+      "alt_ja": "新潟競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
   },
   {
     "id": "fukushima-racecourse",
@@ -66,9 +172,14 @@
     "city": "Fukushima",
     "region": "Fukushima",
     "timezone": "Asia/Tokyo",
-    "racing_types": ["thoroughbred-flat"],
+    "racing_types": [
+      "thoroughbred-flat"
+    ],
     "status": "active",
-    "surfaces": ["turf", "dirt"],
+    "surfaces": [
+      "turf",
+      "dirt"
+    ],
     "direction": "right-handed",
     "course_profile": {
       "turf_circumference_m": 1600,
@@ -82,35 +193,131 @@
       "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、福島競馬場は福島市のJRA競馬場として確認できる。JRAのコース詳細では芝A/B/Cコースとダートコースが示されているが、現在のスキーマでは芝Aコースを代表値として記録する。"
     },
     "distance_profile": {
-      "turf": { "min_m": 1600, "max_m": 1628, "known_distances_m": [1600, 1614, 1628] },
-      "dirt": { "min_m": 1445, "max_m": 1445, "known_distances_m": [1445] },
-      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": {
+        "min_m": 1600,
+        "max_m": 1628,
+        "known_distances_m": [
+          1600,
+          1614,
+          1628
+        ]
+      },
+      "dirt": {
+        "min_m": 1445,
+        "max_m": 1445,
+        "known_distances_m": [
+          1445
+        ]
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
       "upcoming_conditions": []
     },
-    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
     "notable_races": [
-      { "name_en": "Fukushima Himba Stakes", "name_ja": "福島牝馬ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html" },
-      { "name_en": "Radio NIKKEI Sho", "name_ja": "ラジオNIKKEI賞", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html" },
-      { "name_en": "Tanabata Sho", "name_ja": "七夕賞", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html" },
-      { "name_en": "Fukushima Kinen", "name_ja": "福島記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html" }
+      {
+        "name_en": "Fukushima Himba Stakes",
+        "name_ja": "福島牝馬ステークス",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html"
+      },
+      {
+        "name_en": "Radio NIKKEI Sho",
+        "name_ja": "ラジオNIKKEI賞",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html"
+      },
+      {
+        "name_en": "Tanabata Sho",
+        "name_ja": "七夕賞",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html"
+      },
+      {
+        "name_en": "Fukushima Kinen",
+        "name_ja": "福島記念",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html"
+      }
     ],
-    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "seasonality": {
+      "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.",
+      "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。",
+      "status": "partial"
+    },
     "official_links": [
-      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Fukushima Racecourse guide", "label_ja": "JAIRS/JRA 福島競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Fukushima course details", "label_ja": "JAIRS/JRA 福島コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/fukushima.html", "link_type": "official" }
+      {
+        "label_en": "JRA official site",
+        "label_ja": "JRA公式サイト",
+        "source_id": "japan-jra-home",
+        "url": "https://jra.jp/",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Fukushima Racecourse guide",
+        "label_ja": "JAIRS/JRA 福島競馬場ガイド",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j07.html",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Fukushima course details",
+        "label_ja": "JAIRS/JRA 福島コース詳細",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/fukushima.html",
+        "link_type": "official"
+      }
     ],
-    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
-    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
-    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-06" },
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "japan-jra-home",
+      "japan-jairs-racecourses"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-06-06"
+    },
     "image_status": "planned",
     "image_path": null,
     "image_alt_en": "Planned illustrative image for Fukushima Racecourse.",
     "image_alt_ja": "福島競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
-    "image": { "src": "", "alt_en": "Planned illustrative image for Fukushima Racecourse.", "alt_ja": "福島競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Fukushima Racecourse.",
+      "alt_ja": "福島競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
   },
   {
     "id": "sha-tin-racecourse",
@@ -122,9 +329,14 @@
     "city": "Sha Tin",
     "region": "New Territories",
     "timezone": "Asia/Hong_Kong",
-    "racing_types": ["thoroughbred-flat"],
+    "racing_types": [
+      "thoroughbred-flat"
+    ],
     "status": "active",
-    "surfaces": ["turf", "dirt"],
+    "surfaces": [
+      "turf",
+      "dirt"
+    ],
     "direction": null,
     "course_profile": {
       "turf_circumference_m": null,
@@ -138,28 +350,87 @@
       "course_notes_ja": "HKJCのレースカードと開催日程ページを時刻表ルートに使用する。コース指標は未収録のため、競馬場詳細は公式ソースで確認する。"
     },
     "distance_profile": {
-      "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
       "upcoming_conditions": []
     },
-    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": "2026-06-06" },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": "2026-06-06"
+    },
     "notable_races": [],
-    "seasonality": { "summary_en": "Meeting dates and race times should be confirmed through HKJC official fixture and racecard pages.", "summary_ja": "開催日と発走時刻はHKJC公式の開催日程・レースカードで確認する。", "status": "partial" },
+    "seasonality": {
+      "summary_en": "Meeting dates and race times should be confirmed through HKJC official fixture and racecard pages.",
+      "summary_ja": "開催日と発走時刻はHKJC公式の開催日程・レースカードで確認する。",
+      "status": "partial"
+    },
     "official_links": [
-      { "label_en": "HKJC official racing", "label_ja": "HKJC公式競馬", "source_id": "hong-kong-hkjc-home", "url": "https://racing.hkjc.com/", "link_type": "official" }
+      {
+        "label_en": "HKJC official racing",
+        "label_ja": "HKJC公式競馬",
+        "source_id": "hong-kong-hkjc-home",
+        "url": "https://racing.hkjc.com/",
+        "link_type": "official"
+      }
     ],
-    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture"],
-    "related_sources": ["hong-kong-hkjc-home"],
-    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-06" },
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture"
+    ],
+    "related_sources": [
+      "hong-kong-hkjc-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-06-06"
+    },
     "image_status": "planned",
     "image_path": null,
     "image_alt_en": "Planned illustrative image for Sha Tin Racecourse.",
     "image_alt_ja": "沙田競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
-    "image": { "src": "", "alt_en": "Planned illustrative image for Sha Tin Racecourse.", "alt_ja": "沙田競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Sha Tin Racecourse.",
+      "alt_ja": "沙田競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
   },
   {
     "id": "happy-valley-racecourse",
@@ -171,9 +442,13 @@
     "city": "Happy Valley",
     "region": "Hong Kong Island",
     "timezone": "Asia/Hong_Kong",
-    "racing_types": ["thoroughbred-flat"],
+    "racing_types": [
+      "thoroughbred-flat"
+    ],
     "status": "active",
-    "surfaces": ["turf"],
+    "surfaces": [
+      "turf"
+    ],
     "direction": null,
     "course_profile": {
       "turf_circumference_m": null,
@@ -187,28 +462,87 @@
       "course_notes_ja": "HKJCのレースカードと開催日程ページを時刻表ルートに使用する。コース指標は未収録のため、競馬場詳細は公式ソースで確認する。"
     },
     "distance_profile": {
-      "turf": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "dirt": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
       "upcoming_conditions": []
     },
-    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": "2026-06-06" },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": "2026-06-06"
+    },
     "notable_races": [],
-    "seasonality": { "summary_en": "Meeting dates and race times should be confirmed through HKJC official fixture and racecard pages.", "summary_ja": "開催日と発走時刻はHKJC公式の開催日程・レースカードで確認する。", "status": "partial" },
+    "seasonality": {
+      "summary_en": "Meeting dates and race times should be confirmed through HKJC official fixture and racecard pages.",
+      "summary_ja": "開催日と発走時刻はHKJC公式の開催日程・レースカードで確認する。",
+      "status": "partial"
+    },
     "official_links": [
-      { "label_en": "HKJC official racing", "label_ja": "HKJC公式競馬", "source_id": "hong-kong-hkjc-home", "url": "https://racing.hkjc.com/", "link_type": "official" }
+      {
+        "label_en": "HKJC official racing",
+        "label_ja": "HKJC公式競馬",
+        "source_id": "hong-kong-hkjc-home",
+        "url": "https://racing.hkjc.com/",
+        "link_type": "official"
+      }
     ],
-    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture"],
-    "related_sources": ["hong-kong-hkjc-home"],
-    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-06" },
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture"
+    ],
+    "related_sources": [
+      "hong-kong-hkjc-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-06-06"
+    },
     "image_status": "planned",
     "image_path": null,
     "image_alt_en": "Planned illustrative image for Happy Valley Racecourse.",
     "image_alt_ja": "ハッピーバレー競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
-    "image": { "src": "", "alt_en": "Planned illustrative image for Happy Valley Racecourse.", "alt_ja": "ハッピーバレー競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Happy Valley Racecourse.",
+      "alt_ja": "ハッピーバレー競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
   },
   {
     "id": "chukyo-racecourse",
@@ -220,9 +554,14 @@
     "city": "Toyoake",
     "region": "Aichi",
     "timezone": "Asia/Tokyo",
-    "racing_types": ["thoroughbred-flat"],
+    "racing_types": [
+      "thoroughbred-flat"
+    ],
     "status": "active",
-    "surfaces": ["turf", "dirt"],
+    "surfaces": [
+      "turf",
+      "dirt"
+    ],
     "direction": "left-handed",
     "course_profile": {
       "turf_circumference_m": 1706,
@@ -236,36 +575,595 @@
       "course_notes_ja": "JAIRS/JRAの公式競馬場ガイドで、中京競馬場は愛知県豊明市のJRA競馬場として確認できる。JRAのコース詳細では芝A/Bコースとダートコースが示されているが、現在のスキーマでは芝Aコースをメートル単位に丸めた代表値として記録する。"
     },
     "distance_profile": {
-      "turf": { "min_m": 1706, "max_m": 1725, "known_distances_m": [1706, 1725] },
-      "dirt": { "min_m": 1530, "max_m": 1530, "known_distances_m": [1530] },
-      "all_weather": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "jump": { "min_m": null, "max_m": null, "known_distances_m": [] },
-      "harness": { "min_m": null, "max_m": null, "known_distances_m": [] },
+      "turf": {
+        "min_m": 1706,
+        "max_m": 1725,
+        "known_distances_m": [
+          1706,
+          1725
+        ]
+      },
+      "dirt": {
+        "min_m": 1530,
+        "max_m": 1530,
+        "known_distances_m": [
+          1530
+        ]
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
       "upcoming_conditions": []
     },
-    "schedule_summary": { "today_status": "unknown", "next_meeting_date": null, "upcoming_meetings": [], "status": "official-link-only", "last_checked": null },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
     "notable_races": [
-      { "name_en": "Takamatsunomiya Kinen", "name_ja": "高松宮記念", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" },
-      { "name_en": "Champions Cup", "name_ja": "チャンピオンズカップ", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" },
-      { "name_en": "Kinko Sho", "name_ja": "金鯱賞", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" },
-      { "name_en": "Tokai Stakes", "name_ja": "東海ステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" },
-      { "name_en": "Falcon Stakes", "name_ja": "ファルコンステークス", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" },
-      { "name_en": "CBC Sho", "name_ja": "CBC賞", "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html" }
+      {
+        "name_en": "Takamatsunomiya Kinen",
+        "name_ja": "高松宮記念",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      },
+      {
+        "name_en": "Champions Cup",
+        "name_ja": "チャンピオンズカップ",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      },
+      {
+        "name_en": "Kinko Sho",
+        "name_ja": "金鯱賞",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      },
+      {
+        "name_en": "Tokai Stakes",
+        "name_ja": "東海ステークス",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      },
+      {
+        "name_en": "Falcon Stakes",
+        "name_ja": "ファルコンステークス",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      },
+      {
+        "name_en": "CBC Sho",
+        "name_ja": "CBC賞",
+        "source_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html"
+      }
     ],
-    "seasonality": { "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.", "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。", "status": "partial" },
+    "seasonality": {
+      "summary_en": "Seasonality and meeting windows should be confirmed through the official JRA calendar or source registry before use.",
+      "summary_ja": "開催時期や開催日程は、JRA公式カレンダーまたはソース一覧で確認する必要がある。",
+      "status": "partial"
+    },
     "official_links": [
-      { "label_en": "JRA official site", "label_ja": "JRA公式サイト", "source_id": "japan-jra-home", "url": "https://jra.jp/", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Chukyo Racecourse guide", "label_ja": "JAIRS/JRA 中京競馬場ガイド", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html", "link_type": "official" },
-      { "label_en": "JAIRS/JRA Chukyo course details", "label_ja": "JAIRS/JRA 中京コース詳細", "source_id": "japan-jairs-racecourses", "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/chukyo.html", "link_type": "official" }
+      {
+        "label_en": "JRA official site",
+        "label_ja": "JRA公式サイト",
+        "source_id": "japan-jra-home",
+        "url": "https://jra.jp/",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Chukyo Racecourse guide",
+        "label_ja": "JAIRS/JRA 中京競馬場ガイド",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j05.html",
+        "link_type": "official"
+      },
+      {
+        "label_en": "JAIRS/JRA Chukyo course details",
+        "label_ja": "JAIRS/JRA 中京コース詳細",
+        "source_id": "japan-jairs-racecourses",
+        "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/chukyo.html",
+        "link_type": "official"
+      }
     ],
-    "related_terms": ["racecourse", "thoroughbred-racing", "meeting", "racecard", "post-time", "fixture", "jockey", "trainer"],
-    "related_sources": ["japan-jra-home", "japan-jairs-racecourses"],
-    "data_status": { "course_profile": "partial", "schedule": "official-link-only", "source_status": "link_first", "last_checked": "2026-06-07" },
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "japan-jra-home",
+      "japan-jairs-racecourses"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-06-07"
+    },
     "image_status": "planned",
     "image_path": null,
     "image_alt_en": "Planned illustrative image for Chukyo Racecourse.",
     "image_alt_ja": "中京競馬場の説明用イメージ画像予定地。",
     "course_diagram_status": "pending",
-    "image": { "src": "", "alt_en": "Planned illustrative image for Chukyo Racecourse.", "alt_ja": "中京競馬場の説明用イメージ画像予定地。", "image_type": "placeholder", "is_official_photo": false, "note_en": "Illustrative image. Not an official venue photo.", "note_ja": "説明用のイメージ画像です。公式写真ではありません。", "status": "planned" }
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Chukyo Racecourse.",
+      "alt_ja": "中京競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
+  },
+  {
+    "id": "abu-dhabi-turf-club",
+    "slug": "abu-dhabi-turf-club",
+    "country_id": "united-arab-emirates",
+    "name_en": "Abu Dhabi Turf Club",
+    "name_ja": "アブダビ・ターフクラブ",
+    "name_local": "Abu Dhabi Turf Club",
+    "city": "Abu Dhabi",
+    "region": "Abu Dhabi",
+    "timezone": "Asia/Dubai",
+    "racing_types": [
+      "thoroughbred-flat",
+      "arabian-racing"
+    ],
+    "status": "active",
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": null,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Course profile details are pending separate official-source verification. This record establishes the PILOT-05 approved canonical venue identity only.",
+      "course_notes_ja": "コース詳細は別途公式ソース確認後に反映する。このレコードではPILOT-05で承認された競馬場IDのみを確定する。"
+    },
+    "distance_profile": {
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
+    "notable_races": [],
+    "seasonality": {
+      "summary_en": "The reviewed ERA fixture calendar is handled by the Calendar timetable pipeline; broader venue seasonality claims remain separate.",
+      "summary_ja": "確認済みERA開催カレンダーはCalendarタイムテーブル系で扱い、競馬場単位の開催時期の詳細は別途確認する。",
+      "status": "partial"
+    },
+    "official_links": [
+      {
+        "label_en": "Abu Dhabi Turf Club official ERA page",
+        "label_ja": "アブダビ・ターフクラブ ERA公式ページ",
+        "source_id": "uae-era-home",
+        "url": "https://emiratesracing.com/racecourses/abu-dhabi-turf-club",
+        "link_type": "official"
+      }
+    ],
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "arabian-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "uae-era-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-07-11"
+    },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Abu Dhabi Turf Club.",
+    "image_alt_ja": "アブダビ・ターフクラブの説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Abu Dhabi Turf Club.",
+      "alt_ja": "アブダビ・ターフクラブの説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
+  },
+  {
+    "id": "al-ain-racecourse",
+    "slug": "al-ain-racecourse",
+    "country_id": "united-arab-emirates",
+    "name_en": "Al Ain Racecourse",
+    "name_ja": "アルアイン競馬場",
+    "name_local": "Al Ain Racecourse",
+    "city": "Al Ain",
+    "region": "Abu Dhabi",
+    "timezone": "Asia/Dubai",
+    "racing_types": [
+      "thoroughbred-flat",
+      "arabian-racing"
+    ],
+    "status": "active",
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": null,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Course profile details are pending separate official-source verification. This record establishes the PILOT-05 approved canonical venue identity only.",
+      "course_notes_ja": "コース詳細は別途公式ソース確認後に反映する。このレコードではPILOT-05で承認された競馬場IDのみを確定する。"
+    },
+    "distance_profile": {
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
+    "notable_races": [],
+    "seasonality": {
+      "summary_en": "The reviewed ERA fixture calendar is handled by the Calendar timetable pipeline; broader venue seasonality claims remain separate.",
+      "summary_ja": "確認済みERA開催カレンダーはCalendarタイムテーブル系で扱い、競馬場単位の開催時期の詳細は別途確認する。",
+      "status": "partial"
+    },
+    "official_links": [
+      {
+        "label_en": "Al Ain Racecourse official ERA page",
+        "label_ja": "アルアイン競馬場 ERA公式ページ",
+        "source_id": "uae-era-home",
+        "url": "https://emiratesracing.com/racecourses/al-ain",
+        "link_type": "official"
+      }
+    ],
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "arabian-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "uae-era-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-07-11"
+    },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Al Ain Racecourse.",
+    "image_alt_ja": "アルアイン競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Al Ain Racecourse.",
+      "alt_ja": "アルアイン競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
+  },
+  {
+    "id": "jebel-ali-racecourse",
+    "slug": "jebel-ali-racecourse",
+    "country_id": "united-arab-emirates",
+    "name_en": "Jebel Ali Racecourse",
+    "name_ja": "ジェベルアリ競馬場",
+    "name_local": "Jebel Ali Racecourse",
+    "city": "Dubai",
+    "region": "Dubai",
+    "timezone": "Asia/Dubai",
+    "racing_types": [
+      "thoroughbred-flat",
+      "arabian-racing"
+    ],
+    "status": "active",
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": null,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Course profile details are pending separate official-source verification. This record establishes the PILOT-05 approved canonical venue identity only.",
+      "course_notes_ja": "コース詳細は別途公式ソース確認後に反映する。このレコードではPILOT-05で承認された競馬場IDのみを確定する。"
+    },
+    "distance_profile": {
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
+    "notable_races": [],
+    "seasonality": {
+      "summary_en": "The reviewed ERA fixture calendar is handled by the Calendar timetable pipeline; broader venue seasonality claims remain separate.",
+      "summary_ja": "確認済みERA開催カレンダーはCalendarタイムテーブル系で扱い、競馬場単位の開催時期の詳細は別途確認する。",
+      "status": "partial"
+    },
+    "official_links": [
+      {
+        "label_en": "Jebel Ali Racecourse official ERA page",
+        "label_ja": "ジェベルアリ競馬場 ERA公式ページ",
+        "source_id": "uae-era-home",
+        "url": "https://emiratesracing.com/racecourses/jebel-ali",
+        "link_type": "official"
+      }
+    ],
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "arabian-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "uae-era-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-07-11"
+    },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Jebel Ali Racecourse.",
+    "image_alt_ja": "ジェベルアリ競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Jebel Ali Racecourse.",
+      "alt_ja": "ジェベルアリ競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
+  },
+  {
+    "id": "sharjah-racecourse",
+    "slug": "sharjah-racecourse",
+    "country_id": "united-arab-emirates",
+    "name_en": "Sharjah Racecourse",
+    "name_ja": "シャルジャ競馬場",
+    "name_local": "Sharjah Racecourse",
+    "city": "Sharjah",
+    "region": "Sharjah",
+    "timezone": "Asia/Dubai",
+    "racing_types": [
+      "thoroughbred-flat",
+      "arabian-racing"
+    ],
+    "status": "active",
+    "surfaces": [],
+    "direction": "unknown",
+    "course_profile": {
+      "turf_circumference_m": null,
+      "dirt_circumference_m": null,
+      "home_straight_m": null,
+      "has_inner_outer_courses": null,
+      "has_lighting": null,
+      "elevation_notes_en": null,
+      "elevation_notes_ja": null,
+      "course_notes_en": "Course profile details are pending separate official-source verification. This record establishes the PILOT-05 approved canonical venue identity only.",
+      "course_notes_ja": "コース詳細は別途公式ソース確認後に反映する。このレコードではPILOT-05で承認された競馬場IDのみを確定する。"
+    },
+    "distance_profile": {
+      "turf": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "dirt": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "all_weather": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "jump": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "harness": {
+        "min_m": null,
+        "max_m": null,
+        "known_distances_m": []
+      },
+      "upcoming_conditions": []
+    },
+    "schedule_summary": {
+      "today_status": "unknown",
+      "next_meeting_date": null,
+      "upcoming_meetings": [],
+      "status": "official-link-only",
+      "last_checked": null
+    },
+    "notable_races": [],
+    "seasonality": {
+      "summary_en": "The reviewed ERA fixture calendar is handled by the Calendar timetable pipeline; broader venue seasonality claims remain separate.",
+      "summary_ja": "確認済みERA開催カレンダーはCalendarタイムテーブル系で扱い、競馬場単位の開催時期の詳細は別途確認する。",
+      "status": "partial"
+    },
+    "official_links": [
+      {
+        "label_en": "Sharjah Racecourse official ERA page",
+        "label_ja": "シャルジャ競馬場 ERA公式ページ",
+        "source_id": "uae-era-home",
+        "url": "https://emiratesracing.com/racecourses/sharjah",
+        "link_type": "official"
+      }
+    ],
+    "related_terms": [
+      "racecourse",
+      "thoroughbred-racing",
+      "arabian-racing",
+      "meeting",
+      "racecard",
+      "post-time",
+      "fixture",
+      "jockey",
+      "trainer"
+    ],
+    "related_sources": [
+      "uae-era-home"
+    ],
+    "data_status": {
+      "course_profile": "partial",
+      "schedule": "official-link-only",
+      "source_status": "link_first",
+      "last_checked": "2026-07-11"
+    },
+    "image_status": "planned",
+    "image_path": null,
+    "image_alt_en": "Planned illustrative image for Sharjah Racecourse.",
+    "image_alt_ja": "シャルジャ競馬場の説明用イメージ画像予定地。",
+    "course_diagram_status": "pending",
+    "image": {
+      "src": "",
+      "alt_en": "Planned illustrative image for Sharjah Racecourse.",
+      "alt_ja": "シャルジャ競馬場の説明用イメージ画像予定地。",
+      "image_type": "placeholder",
+      "is_official_photo": false,
+      "note_en": "Illustrative image. Not an official venue photo.",
+      "note_ja": "説明用のイメージ画像です。公式写真ではありません。",
+      "status": "planned"
+    }
   }
 ]
