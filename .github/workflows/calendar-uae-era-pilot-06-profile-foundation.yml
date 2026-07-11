@@ -102,7 +102,7 @@ jobs:
             'coverage-observation.json',
             'collection-report.json',
             'collection-result-manifest.json',
-          ];
+          ].sort();
           const actualFiles = fs.readdirSync(dir).sort();
           if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles)) throw new Error(`output files differ: ${JSON.stringify(actualFiles)}`);
           const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
