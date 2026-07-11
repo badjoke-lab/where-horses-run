@@ -103,17 +103,20 @@ jobs:
           }));
           NODE
       - name: Prove protected state unchanged
+        if: always()
         run: sha256sum --check /tmp/uae-pilot-03-protected-before.sha256
       - name: Upload public-safe structure summaries only
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: uae-pilot-03-structure-evidence-${{ github.run_id }}
           path: |
             /tmp/uae-pilot-03-venue-page-summary.json
             /tmp/uae-pilot-03-pdf-structure-summary.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
       - name: Prove repository clean
+        if: always()
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
           if [ -n "$changes" ]; then
