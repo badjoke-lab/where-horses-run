@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - work/calendar-uae-era-handoff
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
