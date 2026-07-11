@@ -2,7 +2,7 @@
 """Fetch the official ERA fixture PDF into memory and emit a public-safe structure summary.
 
 The probe never writes the PDF bytes or extracted text to disk. Only aggregate structure,
-venue-label occurrence counts, normalized date candidates, and hashes are emitted.
+venue occurrence counts, normalized date candidates, and hashes are emitted.
 """
 
 from __future__ import annotations
@@ -27,6 +27,13 @@ VENUE_LABELS = [
     "Jebel Ali Racecourse",
     "Sharjah Racecourse",
 ]
+VENUE_ALIASES = {
+    "Meydan Racecourse": ["Meydan"],
+    "Abu Dhabi Turf Club": ["Abu Dhabi"],
+    "Al Ain Racecourse": ["Al Ain"],
+    "Jebel Ali Racecourse": ["Jebel Ali"],
+    "Sharjah Racecourse": ["Sharjah"],
+}
 MONTHS = {
     "jan": 1,
     "january": 1,
@@ -53,6 +60,14 @@ MONTHS = {
     "dec": 12,
     "december": 12,
 }
+SEASON_YEAR_BY_MONTH = {
+    10: 2026,
+    11: 2026,
+    12: 2026,
+    1: 2027,
+    2: 2027,
+    3: 2027,
+}
 
 
 def normalize_text(value: str) -> str:
@@ -73,11 +88,11 @@ def expand_two_digit_year(value: int) -> int:
 def extract_date_candidates(text: str) -> list[str]:
     candidates: set[str] = set()
 
-    patterns = [
+    dated_patterns = [
         re.compile(r"\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(20\d{2})\b", re.IGNORECASE),
         re.compile(r"\b(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{2})\b", re.IGNORECASE),
     ]
-    for index, pattern in enumerate(patterns):
+    for index, pattern in enumerate(dated_patterns):
         for match in pattern.finditer(text):
             day = int(match.group(1))
             month = MONTHS.get(match.group(2).lower())
@@ -99,7 +114,40 @@ def extract_date_candidates(text: str) -> list[str]:
         if value:
             candidates.add(value)
 
+    season_day_month = re.compile(r"\b(\d{1,2})[-\s]([A-Za-z]{3,9})\b", re.IGNORECASE)
+    for match in season_day_month.finditer(text):
+        day = int(match.group(1))
+        month = MONTHS.get(match.group(2).lower())
+        year = SEASON_YEAR_BY_MONTH.get(month)
+        if month is None or year is None:
+            continue
+        value = safe_iso_date(year, month, day)
+        if value:
+            candidates.add(value)
+
+    season_month_day = re.compile(r"\b([A-Za-z]{3,9})[-\s](\d{1,2})\b", re.IGNORECASE)
+    for match in season_month_day.finditer(text):
+        month = MONTHS.get(match.group(1).lower())
+        year = SEASON_YEAR_BY_MONTH.get(month)
+        if month is None or year is None:
+            continue
+        day = int(match.group(2))
+        value = safe_iso_date(year, month, day)
+        if value:
+            candidates.add(value)
+
     return sorted(candidates)
+
+
+def extract_month_year_headers(text: str) -> list[str]:
+    headers: set[str] = set()
+    pattern = re.compile(r"\b([A-Za-z]{3,9})\s+(20\d{2})\b", re.IGNORECASE)
+    for match in pattern.finditer(text):
+        month = MONTHS.get(match.group(1).lower())
+        if month is None:
+            continue
+        headers.add(f"{match.group(2)}-{month:02d}")
+    return sorted(headers)
 
 
 def main() -> int:
@@ -135,10 +183,24 @@ def main() -> int:
     extracted_text = "\n".join(page_texts)
     normalized = normalize_text(extracted_text)
     lowered = normalized.casefold()
+    non_empty_lines = [line.strip() for line in extracted_text.splitlines() if line.strip()]
     venue_occurrences = {
         label: lowered.count(label.casefold()) for label in VENUE_LABELS
     }
+    venue_alias_occurrences = {
+        label: sum(lowered.count(alias.casefold()) for alias in aliases)
+        for label, aliases in VENUE_ALIASES.items()
+    }
+    venue_alias_line_counts = {
+        label: sum(
+            1
+            for line in non_empty_lines
+            if any(alias.casefold() in line.casefold() for alias in aliases)
+        )
+        for label, aliases in VENUE_ALIASES.items()
+    }
     date_candidates = extract_date_candidates(normalized)
+    month_year_headers = extract_month_year_headers(normalized)
 
     summary = {
         "schema_version": "calendar-uae-era-pilot-03-pdf-text-structure-summary-v1",
@@ -153,10 +215,15 @@ def main() -> int:
         "pdf_magic": True,
         "page_count": len(reader.pages),
         "extracted_text_chars": len(extracted_text),
+        "non_empty_line_count": len(non_empty_lines),
         "normalized_text_sha256": hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
         "page_text_char_counts": page_text_char_counts,
         "venue_label_occurrences": venue_occurrences,
-        "all_five_venue_labels_observed": all(count > 0 for count in venue_occurrences.values()),
+        "venue_alias_occurrences": venue_alias_occurrences,
+        "venue_alias_line_counts": venue_alias_line_counts,
+        "all_five_full_venue_labels_observed": all(count > 0 for count in venue_occurrences.values()),
+        "all_five_venue_aliases_observed": all(count > 0 for count in venue_alias_occurrences.values()),
+        "month_year_headers": month_year_headers,
         "date_candidates": date_candidates,
         "date_candidate_count": len(date_candidates),
         "season_boundary_dates_observed": {
