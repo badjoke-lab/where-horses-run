@@ -13,9 +13,6 @@ const p2 = readJson('data/audits/calendar-uae-era-pilot-02-source-route-evidence
 const mapping = readJson('data/audits/calendar-uae-era-pilot-03-venue-mapping-v1.json');
 const p3 = readJson('data/audits/calendar-uae-era-pilot-03-pdf-evidence-v1.json');
 const p4 = readJson('data/audits/calendar-uae-era-pilot-04-grid-parser-evidence-v1.json');
-const readiness = readJson('data/static/calendar-readiness-registry.json');
-const acquisition = readJson('data/static/calendar-acquisition-registry.json');
-const racecourses = readJson('data/static/racecourses.json');
 const doc = readText('docs/calendar/uae-era-pilot-05-boundary-mapping-decision.md');
 
 if (audit.schema_version !== 'calendar-uae-era-pilot-05-boundary-mapping-decision-v1') fail('PILOT-05 audit schema differs.');
@@ -99,15 +96,6 @@ if (mapping.decision?.accepted_existing_mapping_count !== 1 || mapping.decision?
 if (p4.decision?.coordinate_parser !== 'evidence_backed_64_label_based_meeting_observations') fail('PILOT-04 coordinate parser decision differs.');
 if (p4.decision?.source_boundary_status !== 'difference_requires_explicit_reconciliation') fail('PILOT-04 source-boundary handoff differs.');
 
-const readinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
-if (!readinessRecord) fail('UAE Readiness record missing.');
-else if (!exact(readinessRecord.racecourse_ids, ['meydan-racecourse'])) fail('Readiness scope changed in decision-only unit.');
-if (acquisition.records.some((record) => record.system_id === 'uae-national-racing-system')) fail('UAE Acquisition Registry profile must not be created in PILOT-05.');
-const racecourseIds = new Set(racecourses.map((record) => record.id));
-for (const id of ['abu-dhabi-turf-club','al-ain-racecourse','jebel-ali-racecourse','sharjah-racecourse']) {
-  if (racecourseIds.has(id)) fail(`${id} was registered during decision-only PILOT-05.`);
-}
-
 if (audit.next_unit?.id !== 'UAE-PILOT-06') fail('next unit ID differs.');
 if (audit.next_unit?.title !== 'UAE ERA canonical venue and acquisition profile activation foundation') fail('next unit title differs.');
 for (const [key, value] of Object.entries(audit.boundaries ?? {})) if (value !== false) fail(`PILOT-05 boundary ${key} must remain false.`);
@@ -142,6 +130,6 @@ console.log('ACCEPTED_FIXTURE_WINDOW: 2026-10-22 through 2027-04-15 inclusive');
 console.log('COVERAGE_STATE: count_closed_reviewed_pdf_fixture_window');
 console.log('APPROVED_MAPPING_COUNT: 5');
 console.log('NEWLY_APPROVED_MAPPING_COUNT: 4');
-console.log('REGISTRY_WRITES: false');
-console.log('CANDIDATE_EXPANSION: false');
+console.log('REGISTRY_WRITES_IN_DECISION_UNIT: false');
+console.log('CANDIDATE_EXPANSION_IN_DECISION_UNIT: false');
 console.log('NEXT_UNIT: UAE-PILOT-06');

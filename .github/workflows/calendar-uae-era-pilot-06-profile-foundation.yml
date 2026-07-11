@@ -1,0 +1,189 @@
+name: Calendar UAE ERA PILOT-06 profile foundation
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/racecourses-extensions.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/fixtures/calendar-uae-era-pilot-06-job-v1.json'
+      - 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs'
+      - 'scripts/timetable/run-uae-era-pdf-grid-actions.mjs'
+      - 'scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'docs/calendar/uae-era-pilot-06-profile-foundation.md'
+      - '.github/workflows/calendar-uae-era-pilot-06-profile-foundation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install coordinate extraction dependency
+        run: python -m pip install --disable-pip-version-check pymupdf
+      - name: Validate PILOT-06 profile foundation and shared contracts
+        run: |
+          node --check scripts/timetable/uae-era-pdf-grid-candidate-core.mjs
+          node --check scripts/timetable/run-uae-era-pdf-grid-actions.mjs
+          node --check scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
+          node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs
+      - name: Compile reviewed UAE Collection Job and Runner Execution
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import { loadCalendarAcquisitionRegistryV1 } from './scripts/timetable/load-calendar-acquisition-registry.mjs';
+          import { compileRunnerExecutionV1 } from './scripts/timetable/runner-compatibility.mjs';
+
+          const fixture = JSON.parse(fs.readFileSync('data/fixtures/calendar-uae-era-pilot-06-job-v1.json', 'utf8'));
+          const job = fixture.job;
+          const registry = loadCalendarAcquisitionRegistryV1(process.cwd());
+          const compatibility = JSON.parse(fs.readFileSync('data/static/calendar-runner-compatibility-contract-v1.json', 'utf8'));
+          const execution = compileRunnerExecutionV1(
+            job,
+            { batch_id: 'uae-era-pilot-06-live-review-batch' },
+            registry,
+            compatibility,
+          );
+          if (execution.executor_id !== fixture.expected.executor_id) throw new Error('compiled executor differs');
+          if (execution.runner_used !== fixture.expected.runner_used) throw new Error('compiled runner differs');
+          if (execution.collection_mode !== 'source_visible_horizon') throw new Error('compiled collection mode differs');
+          if (execution.review_required !== true) throw new Error('compiled execution must require review');
+          if (Object.values(execution.side_effect_boundary).some((value) => value !== false)) throw new Error('compiled side-effect boundary must remain all false');
+          fs.writeFileSync('/tmp/uae-pilot-06-job.json', `${JSON.stringify(job, null, 2)}\n`);
+          fs.writeFileSync('/tmp/uae-pilot-06-execution.json', `${JSON.stringify(execution, null, 2)}\n`);
+          console.log('UAE_PILOT_06_EXECUTION_COMPILE: pass');
+          NODE
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/static/racecourses.json \
+            data/static/racecourses-extensions.json \
+            data/static/calendar-readiness-registry.json \
+            data/static/calendar-acquisition-registry.json \
+            data/static/calendar-runner-compatibility-contract-v1.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-pilot-06-protected-before.sha256
+      - name: Run bounded review-only UAE PDF grid executor
+        run: |
+          rm -rf /tmp/uae-pilot-06-output
+          mkdir -p /tmp/uae-pilot-06-output
+          node scripts/timetable/run-uae-era-pdf-grid-actions.mjs \
+            --execution=/tmp/uae-pilot-06-execution.json \
+            --job=/tmp/uae-pilot-06-job.json \
+            --output-dir=/tmp/uae-pilot-06-output \
+            > /tmp/uae-pilot-06-runner-summary.json
+      - name: Validate review-only output artifact closure
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const dir = '/tmp/uae-pilot-06-output';
+          const expectedFiles = [
+            'candidates.json',
+            'coverage-observation.json',
+            'collection-report.json',
+            'collection-result-manifest.json',
+          ].sort();
+          const actualFiles = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles)) throw new Error(`output files differ: ${JSON.stringify(actualFiles)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('candidates.json');
+          const coverage = read('coverage-observation.json');
+          const report = read('collection-report.json');
+          const manifest = read('collection-result-manifest.json');
+          const summary = JSON.parse(fs.readFileSync('/tmp/uae-pilot-06-runner-summary.json', 'utf8'));
+          const fixture = JSON.parse(fs.readFileSync('data/fixtures/calendar-uae-era-pilot-06-job-v1.json', 'utf8'));
+          const expected = fixture.expected;
+
+          if (candidate.schema_version !== 'timetable-candidate-v1') throw new Error('candidate schema differs');
+          if (candidate.records.length !== expected.records_discovered) throw new Error('candidate record count differs');
+          if (candidate.review.status !== expected.candidate_review_state || candidate.review.promotion_target !== expected.promotion_target) throw new Error('candidate batch review boundary differs');
+          const counts = {};
+          for (const record of candidate.records) {
+            counts[record.racecourse_id] = (counts[record.racecourse_id] ?? 0) + 1;
+            if (record.capability_rank !== 'C') throw new Error(`non-C candidate emitted: ${record.meeting_id}`);
+            if (record.first_race_time_local !== null || record.last_race_time_local !== null) throw new Error(`time claim emitted: ${record.meeting_id}`);
+            if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length !== 0) throw new Error(`timetable rows emitted: ${record.meeting_id}`);
+            if (record.review_status !== 'needs_review') throw new Error(`candidate review state differs: ${record.meeting_id}`);
+          }
+          for (const [id, count] of Object.entries(expected.racecourse_record_counts)) {
+            if (counts[id] !== count) throw new Error(`${id} count differs: ${counts[id]} != ${count}`);
+          }
+          if (Object.keys(counts).length !== 5) throw new Error('candidate racecourse scope must contain exactly five IDs');
+
+          if (coverage.schema_version !== 'calendar-coverage-observation-v1') throw new Error('coverage schema differs');
+          if (coverage.collection_mode !== 'source_visible_horizon') throw new Error('coverage collection mode differs');
+          if (coverage.coverage_claim !== expected.coverage_claim || coverage.records_discovered !== expected.records_discovered || coverage.records_updated !== 0) throw new Error('coverage counts/claim differ');
+          if (coverage.unresolved_dates.length !== 0 || coverage.unresolved_meeting_ids.length !== 0 || coverage.source_errors.length !== 0) throw new Error('coverage unresolved/source errors must remain empty');
+
+          if (manifest.schema_version !== 'calendar-collection-result-manifest-v1') throw new Error('manifest schema differs');
+          if (manifest.runner_used !== expected.runner_used) throw new Error('manifest runner differs');
+          if (manifest.records_discovered !== expected.records_discovered || manifest.records_updated !== 0) throw new Error('manifest record counts differ');
+          if (manifest.coverage_claim !== expected.coverage_claim) throw new Error('manifest coverage claim differs');
+          if (JSON.stringify(manifest.rank_counts) !== JSON.stringify(expected.rank_counts)) throw new Error(`manifest rank counts differ: ${JSON.stringify(manifest.rank_counts)}`);
+          if (JSON.stringify(manifest.unresolved_dates) !== JSON.stringify(coverage.unresolved_dates) || JSON.stringify(manifest.source_errors) !== JSON.stringify(coverage.source_errors)) throw new Error('manifest/coverage reconciliation differs');
+
+          if (report.schema_version !== 'calendar-uae-era-pdf-grid-report-v1') throw new Error('report schema differs');
+          if (report.records_discovered !== 64 || report.coverage_claim !== 'source_window_complete') throw new Error('report closure differs');
+          if (report.candidate_mode !== 'review_only' || report.candidate_review_state !== 'needs_review' || report.promotion_target !== null) throw new Error('report review boundary differs');
+          if (report.raw_pdf_storage !== 'disabled' || report.raw_text_storage !== 'disabled') throw new Error('report raw-source boundary differs');
+          if (report.registry_write !== 'disabled' || report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') throw new Error('report write/publication boundary differs');
+          if (report.automatic_approval !== false || report.automatic_promotion !== false || report.automatic_publication !== false) throw new Error('report automatic-action boundary differs');
+
+          if (summary.records_discovered !== 64 || summary.coverage_claim !== 'source_window_complete') throw new Error('runner summary closure differs');
+          if (summary.candidate_review_state !== 'needs_review' || summary.promotion_target !== null) throw new Error('runner summary review boundary differs');
+          if (summary.raw_pdf_stored !== false || summary.raw_text_stored !== false || summary.repository_write !== false || summary.canonical_write !== false || summary.public_write !== false || summary.publication_effect !== 'none') throw new Error('runner summary side-effect boundary differs');
+
+          console.log('UAE_PILOT_06_LIVE_EXECUTION: pass');
+          console.log(JSON.stringify({
+            records_discovered: candidate.records.length,
+            racecourse_record_counts: counts,
+            rank_counts: manifest.rank_counts,
+            coverage_claim: coverage.coverage_claim,
+            candidate_review_state: candidate.review.status,
+            publication_effect: report.publication_effect,
+          }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/uae-pilot-06-protected-before.sha256
+      - name: Upload review-only output artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-pilot-06-review-artifacts-${{ github.run_id }}
+          path: |
+            /tmp/uae-pilot-06-output/candidates.json
+            /tmp/uae-pilot-06-output/coverage-observation.json
+            /tmp/uae-pilot-06-output/collection-result-manifest.json
+            /tmp/uae-pilot-06-output/collection-report.json
+            /tmp/uae-pilot-06-runner-summary.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Cleanup external output and prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/uae-pilot-06-output
+          rm -f /tmp/uae-pilot-06-job.json /tmp/uae-pilot-06-execution.json /tmp/uae-pilot-06-runner-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
