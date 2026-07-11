@@ -3,8 +3,10 @@ name: Calendar UAE ERA PILOT-04 coordinate evidence
 on:
   pull_request:
     paths:
+      - 'data/audits/calendar-uae-era-pilot-04-grid-parser-evidence-v1.json'
       - 'scripts/timetable/probe_uae_era_pdf_coordinates.py'
       - 'scripts/timetable/parse_uae_era_pdf_grid_coordinates.py'
+      - 'scripts/check-calendar-uae-era-pilot-04-grid-parser-evidence.mjs'
       - 'docs/calendar/uae-era-pilot-04-coordinate-grid-parser.md'
       - '.github/workflows/calendar-uae-era-pilot-04-coordinate-evidence.yml'
 
@@ -27,8 +29,10 @@ jobs:
           python-version: '3.12'
       - name: Install coordinate extraction dependency
         run: python -m pip install --disable-pip-version-check pymupdf
-      - name: Validate coordinate probe and parser syntax and safety markers
+      - name: Validate coordinate probe, parser, and reviewed evidence decision
         run: |
+          node --check scripts/check-calendar-uae-era-pilot-04-grid-parser-evidence.mjs
+          node scripts/check-calendar-uae-era-pilot-04-grid-parser-evidence.mjs
           python - <<'PY'
           import ast
           from pathlib import Path
