@@ -24,22 +24,8 @@ jobs:
           node-version: 22.12.0
       - name: Apply UAE PILOT-06 profile synchronization
         run: node scripts/temporary-sync-uae-pilot-06-profile.mjs
-      - name: Validate Racecourse and Readiness data
-        shell: bash
-        run: |
-          set +e
-          node scripts/validate-data.mjs 2>&1 | tee /tmp/uae-pilot-06-data-validation.log
-          status=${PIPESTATUS[0]}
-          set -e
-          exit "$status"
-      - name: Upload data validation diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: uae-pilot-06-data-validation-${{ github.run_id }}
-          path: /tmp/uae-pilot-06-data-validation.log
-          if-no-files-found: warn
-          retention-days: 7
+      - name: Validate UAE PILOT-06 synchronized foundation
+        run: node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
       - name: Validate Acquisition Registry
         run: node scripts/check-calendar-acquisition-registry.mjs
       - name: Validate runner compatibility
