@@ -68,6 +68,7 @@ SEASON_YEAR_BY_MONTH = {
     2: 2027,
     3: 2027,
 }
+WEEKDAYS = ["mon", "monday", "tue", "tues", "tuesday", "wed", "wednesday", "thu", "thur", "thurs", "thursday", "fri", "friday", "sat", "saturday", "sun", "sunday"]
 
 
 def normalize_text(value: str) -> str:
@@ -85,27 +86,36 @@ def expand_two_digit_year(value: int) -> int:
     return 2000 + value if value < 70 else 1900 + value
 
 
+def season_year(month: int) -> int | None:
+    return SEASON_YEAR_BY_MONTH.get(month)
+
+
 def extract_date_candidates(text: str) -> list[str]:
     candidates: set[str] = set()
 
-    dated_patterns = [
-        re.compile(r"\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(20\d{2})\b", re.IGNORECASE),
-        re.compile(r"\b(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{2})\b", re.IGNORECASE),
+    textual_with_year = [
+        re.compile(r"\b(\d{1,2})(?:st|nd|rd|th)?\s*[-./\s]+\s*([A-Za-z]{3,9})\s*[-./\s]+\s*(20\d{2}|\d{2})\b", re.IGNORECASE),
+        re.compile(r"\b([A-Za-z]{3,9})\s*[-./\s]+\s*(\d{1,2})(?:st|nd|rd|th)?(?:,)?\s*[-./\s]+\s*(20\d{2}|\d{2})\b", re.IGNORECASE),
     ]
-    for index, pattern in enumerate(dated_patterns):
+    for index, pattern in enumerate(textual_with_year):
         for match in pattern.finditer(text):
-            day = int(match.group(1))
-            month = MONTHS.get(match.group(2).lower())
+            if index == 0:
+                day = int(match.group(1))
+                month = MONTHS.get(match.group(2).lower())
+                raw_year = int(match.group(3))
+            else:
+                month = MONTHS.get(match.group(1).lower())
+                day = int(match.group(2))
+                raw_year = int(match.group(3))
             if month is None:
                 continue
-            raw_year = int(match.group(3))
-            year = raw_year if index == 0 else expand_two_digit_year(raw_year)
+            year = raw_year if raw_year >= 1000 else expand_two_digit_year(raw_year)
             value = safe_iso_date(year, month, day)
             if value:
                 candidates.add(value)
 
-    numeric = re.compile(r"\b(\d{1,2})[/-](\d{1,2})[/-](20\d{2}|\d{2})\b")
-    for match in numeric.finditer(text):
+    numeric_with_year = re.compile(r"\b(\d{1,2})[./-](\d{1,2})[./-](20\d{2}|\d{2})\b")
+    for match in numeric_with_year.finditer(text):
         day = int(match.group(1))
         month = int(match.group(2))
         raw_year = int(match.group(3))
@@ -114,24 +124,34 @@ def extract_date_candidates(text: str) -> list[str]:
         if value:
             candidates.add(value)
 
-    season_day_month = re.compile(r"\b(\d{1,2})[-\s]([A-Za-z]{3,9})\b", re.IGNORECASE)
-    for match in season_day_month.finditer(text):
-        day = int(match.group(1))
-        month = MONTHS.get(match.group(2).lower())
-        year = SEASON_YEAR_BY_MONTH.get(month)
-        if month is None or year is None:
-            continue
-        value = safe_iso_date(year, month, day)
-        if value:
-            candidates.add(value)
+    textual_without_year = [
+        re.compile(r"\b(\d{1,2})(?:st|nd|rd|th)?\s*[-./\s]+\s*([A-Za-z]{3,9})\b", re.IGNORECASE),
+        re.compile(r"\b([A-Za-z]{3,9})\s*[-./\s]+\s*(\d{1,2})(?:st|nd|rd|th)?\b", re.IGNORECASE),
+    ]
+    for index, pattern in enumerate(textual_without_year):
+        for match in pattern.finditer(text):
+            if index == 0:
+                day = int(match.group(1))
+                month = MONTHS.get(match.group(2).lower())
+            else:
+                month = MONTHS.get(match.group(1).lower())
+                day = int(match.group(2))
+            if month is None:
+                continue
+            year = season_year(month)
+            if year is None:
+                continue
+            value = safe_iso_date(year, month, day)
+            if value:
+                candidates.add(value)
 
-    season_month_day = re.compile(r"\b([A-Za-z]{3,9})[-\s](\d{1,2})\b", re.IGNORECASE)
-    for match in season_month_day.finditer(text):
-        month = MONTHS.get(match.group(1).lower())
-        year = SEASON_YEAR_BY_MONTH.get(month)
-        if month is None or year is None:
+    numeric_without_year = re.compile(r"\b(\d{1,2})[./-](\d{1,2})\b")
+    for match in numeric_without_year.finditer(text):
+        day = int(match.group(1))
+        month = int(match.group(2))
+        year = season_year(month)
+        if year is None:
             continue
-        day = int(match.group(2))
         value = safe_iso_date(year, month, day)
         if value:
             candidates.add(value)
@@ -141,13 +161,37 @@ def extract_date_candidates(text: str) -> list[str]:
 
 def extract_month_year_headers(text: str) -> list[str]:
     headers: set[str] = set()
-    pattern = re.compile(r"\b([A-Za-z]{3,9})\s+(20\d{2})\b", re.IGNORECASE)
+    pattern = re.compile(r"\b([A-Za-z]{3,9})\s*[-./\s]+\s*(20\d{2})\b", re.IGNORECASE)
     for match in pattern.finditer(text):
         month = MONTHS.get(match.group(1).lower())
         if month is None:
             continue
         headers.add(f"{match.group(2)}-{month:02d}")
     return sorted(headers)
+
+
+def token_profile(text: str) -> dict[str, object]:
+    lowered = text.casefold()
+    month_counts = {
+        month: len(re.findall(rf"\b{re.escape(month)}\b", lowered, re.IGNORECASE))
+        for month in ["oct", "october", "nov", "november", "dec", "december", "jan", "january", "feb", "february", "mar", "march"]
+    }
+    weekday_counts = {
+        token: len(re.findall(rf"\b{re.escape(token)}\b", lowered, re.IGNORECASE))
+        for token in WEEKDAYS
+    }
+    numeric_day_counts = {
+        str(day): len(re.findall(rf"(?<!\d){day}(?!\d)", text))
+        for day in range(1, 32)
+    }
+    return {
+        "month_token_occurrences": month_counts,
+        "weekday_token_occurrences": weekday_counts,
+        "numeric_day_token_occurrences": numeric_day_counts,
+        "slash_numeric_pair_count": len(re.findall(r"\b\d{1,2}/\d{1,2}\b", text)),
+        "hyphen_numeric_pair_count": len(re.findall(r"\b\d{1,2}-\d{1,2}\b", text)),
+        "dot_numeric_pair_count": len(re.findall(r"\b\d{1,2}\.\d{1,2}\b", text)),
+    }
 
 
 def main() -> int:
@@ -173,17 +217,33 @@ def main() -> int:
         raise RuntimeError("official PDF response lacks PDF magic")
 
     reader = PdfReader(BytesIO(payload))
-    page_texts: list[str] = []
-    page_text_char_counts: list[int] = []
-    for page in reader.pages:
-        text = page.extract_text() or ""
-        page_texts.append(text)
-        page_text_char_counts.append(len(text))
+    plain_page_texts: list[str] = []
+    layout_page_texts: list[str] = []
+    plain_page_text_char_counts: list[int] = []
+    layout_page_text_char_counts: list[int] = []
+    layout_extraction_available = True
 
-    extracted_text = "\n".join(page_texts)
-    normalized = normalize_text(extracted_text)
-    lowered = normalized.casefold()
-    non_empty_lines = [line.strip() for line in extracted_text.splitlines() if line.strip()]
+    for page in reader.pages:
+        plain_text = page.extract_text() or ""
+        plain_page_texts.append(plain_text)
+        plain_page_text_char_counts.append(len(plain_text))
+        try:
+            layout_text = page.extract_text(extraction_mode="layout") or ""
+        except Exception:
+            layout_extraction_available = False
+            layout_text = ""
+        layout_page_texts.append(layout_text)
+        layout_page_text_char_counts.append(len(layout_text))
+
+    plain_text = "\n".join(plain_page_texts)
+    layout_text = "\n".join(layout_page_texts)
+    normalized_plain = normalize_text(plain_text)
+    normalized_layout = normalize_text(layout_text)
+    combined_for_structure = f"{normalized_plain}\n{normalized_layout}" if normalized_layout else normalized_plain
+    lowered = combined_for_structure.casefold()
+    non_empty_lines = [line.strip() for line in plain_text.splitlines() if line.strip()]
+    layout_non_empty_lines = [line.strip() for line in layout_text.splitlines() if line.strip()]
+
     venue_occurrences = {
         label: lowered.count(label.casefold()) for label in VENUE_LABELS
     }
@@ -194,13 +254,14 @@ def main() -> int:
     venue_alias_line_counts = {
         label: sum(
             1
-            for line in non_empty_lines
+            for line in [*non_empty_lines, *layout_non_empty_lines]
             if any(alias.casefold() in line.casefold() for alias in aliases)
         )
         for label, aliases in VENUE_ALIASES.items()
     }
-    date_candidates = extract_date_candidates(normalized)
-    month_year_headers = extract_month_year_headers(normalized)
+
+    date_candidates = sorted(set(extract_date_candidates(normalized_plain)) | set(extract_date_candidates(normalized_layout)))
+    month_year_headers = sorted(set(extract_month_year_headers(normalized_plain)) | set(extract_month_year_headers(normalized_layout)))
 
     summary = {
         "schema_version": "calendar-uae-era-pilot-03-pdf-text-structure-summary-v1",
@@ -214,10 +275,15 @@ def main() -> int:
         "response_bytes": len(payload),
         "pdf_magic": True,
         "page_count": len(reader.pages),
-        "extracted_text_chars": len(extracted_text),
+        "extracted_text_chars": len(plain_text),
+        "layout_extraction_available": layout_extraction_available,
+        "layout_extracted_text_chars": len(layout_text),
         "non_empty_line_count": len(non_empty_lines),
-        "normalized_text_sha256": hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
-        "page_text_char_counts": page_text_char_counts,
+        "layout_non_empty_line_count": len(layout_non_empty_lines),
+        "normalized_text_sha256": hashlib.sha256(normalized_plain.encode("utf-8")).hexdigest(),
+        "layout_text_sha256": hashlib.sha256(normalized_layout.encode("utf-8")).hexdigest() if normalized_layout else None,
+        "page_text_char_counts": plain_page_text_char_counts,
+        "layout_page_text_char_counts": layout_page_text_char_counts,
         "venue_label_occurrences": venue_occurrences,
         "venue_alias_occurrences": venue_alias_occurrences,
         "venue_alias_line_counts": venue_alias_line_counts,
@@ -230,6 +296,7 @@ def main() -> int:
             "opening_2026_10_22": "2026-10-22" in date_candidates,
             "closing_2027_03_27": "2027-03-27" in date_candidates,
         },
+        "date_notation_profile": token_profile(combined_for_structure),
         "raw_pdf_stored": False,
         "raw_text_stored": False,
         "extracted_text_emitted": False,
