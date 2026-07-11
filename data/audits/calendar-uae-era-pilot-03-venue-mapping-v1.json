@@ -1,0 +1,91 @@
+{
+  "schema_version": "calendar-uae-era-pilot-03-venue-mapping-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-03",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "source_authority": "emirates-racing-authority",
+  "mapping_policy": {
+    "existing_trusted_mapping_may_be_reused": true,
+    "official_page_slug_may_seed_proposed_id": true,
+    "proposed_id_is_not_approved_mapping": true,
+    "automatic_canonical_creation": false,
+    "automatic_candidate_expansion": false
+  },
+  "venues": [
+    {
+      "official_article_label": "Meydan Racecourse",
+      "official_page_label": "Meydan",
+      "official_page_slug": "meydan",
+      "official_page_url": "https://emiratesracing.com/racecourses/meydan",
+      "existing_trusted_canonical_id": "meydan-racecourse",
+      "proposed_canonical_id": "meydan-racecourse",
+      "mapping_status": "accepted_existing",
+      "candidate_generation_allowed": true,
+      "activation_effect": "none"
+    },
+    {
+      "official_article_label": "Abu Dhabi Turf Club",
+      "official_page_label": "Abu Dhabi Turf Club",
+      "official_page_slug": "abu-dhabi-turf-club",
+      "official_page_url": "https://emiratesracing.com/racecourses/abu-dhabi-turf-club",
+      "existing_trusted_canonical_id": null,
+      "proposed_canonical_id": "abu-dhabi-turf-club",
+      "mapping_status": "proposed_unapproved",
+      "candidate_generation_allowed": false,
+      "activation_effect": "none"
+    },
+    {
+      "official_article_label": "Al Ain Racecourse",
+      "official_page_label": "Al Ain",
+      "official_page_slug": "al-ain",
+      "official_page_url": "https://emiratesracing.com/racecourses/al-ain",
+      "existing_trusted_canonical_id": null,
+      "proposed_canonical_id": "al-ain-racecourse",
+      "mapping_status": "proposed_unapproved",
+      "candidate_generation_allowed": false,
+      "activation_effect": "none"
+    },
+    {
+      "official_article_label": "Jebel Ali Racecourse",
+      "official_page_label": "Jebel Ali",
+      "official_page_slug": "jebel-ali",
+      "official_page_url": "https://emiratesracing.com/racecourses/jebel-ali",
+      "existing_trusted_canonical_id": null,
+      "proposed_canonical_id": "jebel-ali-racecourse",
+      "mapping_status": "proposed_unapproved",
+      "candidate_generation_allowed": false,
+      "activation_effect": "none"
+    },
+    {
+      "official_article_label": "Sharjah Racecourse",
+      "official_page_label": "Sharjah",
+      "official_page_slug": "sharjah",
+      "official_page_url": "https://emiratesracing.com/racecourses/sharjah",
+      "existing_trusted_canonical_id": null,
+      "proposed_canonical_id": "sharjah-racecourse",
+      "mapping_status": "proposed_unapproved",
+      "candidate_generation_allowed": false,
+      "activation_effect": "none"
+    }
+  ],
+  "decision": {
+    "accepted_existing_mapping_count": 1,
+    "proposed_unapproved_mapping_count": 4,
+    "candidate_scope": "meydan_only",
+    "broader_candidate_generation": "blocked_pending_explicit_mapping_approval",
+    "racecourse_registry_write": false,
+    "readiness_registry_write": false,
+    "acquisition_registry_write": false
+  },
+  "next_evidence_requirement": "Prove public-safe in-memory PDF text extraction and compare extracted venue/date structure against the five-label mapping audit without promoting proposed IDs.",
+  "boundaries": {
+    "automatic_canonical_id_creation": false,
+    "automatic_candidate_expansion": false,
+    "racecourse_registry_write": false,
+    "readiness_registry_write": false,
+    "acquisition_registry_write": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
