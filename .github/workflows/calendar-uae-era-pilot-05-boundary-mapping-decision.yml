@@ -1,0 +1,50 @@
+name: Calendar UAE ERA PILOT-05 boundary and mapping decision
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-uae-era-pilot-05-boundary-mapping-decision-v1.json'
+      - 'scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs'
+      - 'docs/calendar/uae-era-pilot-05-boundary-mapping-decision.md'
+      - '.github/workflows/calendar-uae-era-pilot-05-boundary-mapping-decision.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate PILOT-05 decision and evidence chain
+        run: |
+          node --check scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs
+          node scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs
+      - name: Revalidate upstream UAE evidence decisions
+        run: |
+          node scripts/check-calendar-uae-era-pilot-02-source-route-evidence.mjs
+          node scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs
+          node scripts/check-calendar-uae-era-pilot-03-pdf-evidence.mjs
+          node scripts/check-calendar-uae-era-pilot-04-grid-parser-evidence.mjs
+      - name: Revalidate governance and no-write boundary
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          git diff --check
+          if git diff --name-only origin/main...HEAD | grep -Eq '^data/(static/(racecourses|calendar-readiness-registry|calendar-acquisition-registry)\.json|generated/timetable/(canonical|public)/)'; then
+            echo 'PILOT-05 decision-only PR changed protected registry/canonical/public state.' >&2
+            exit 1
+          fi
+      - name: Prove workflow boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-uae-era-pilot-05-boundary-mapping-decision.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('UAE_PILOT_05_CI_BOUNDARY: pass');
+          NODE
