@@ -57,6 +57,7 @@ Use these files together:
 - [`hkjc-pilot-06-reviewed-import-evidence.md`](hkjc-pilot-06-reviewed-import-evidence.md) — evidence-backed reviewed-import detail operator path, rank-B bounded evidence, pending system-level fallback decision, and PILOT-06B handoff.
 - [`hkjc-route-specific-runner-policy.md`](hkjc-route-specific-runner-policy.md) — PILOT-06B schedule/detail route split, operator-only detail isolation, backward-compatible Registry semantics, and Operations supplement.
 - [`hkjc-handoff-decision.md`](hkjc-handoff-decision.md) — accepted bounded manual reviewed steady-state HKJC handoff, explicit non-claims, and next Work ID `WHR-CAL-UAE-ERA`.
+- [`uae-era-handoff-decision.md`](uae-era-handoff-decision.md) — accepted bounded manual reviewed steady-state UAE ERA handoff, provisional C-only boundaries, and next Work ID `WHR-CAL-PUBLIC-V1`.
 - [`jra-pilot-foundation.md`](jra-pilot-foundation.md) — JRA fixture review, blocker, and no-write pilot boundary.
 - [`jra-planned-program-intake.md`](jra-planned-program-intake.md) — advance-program intake and final-confirmation boundary.
 - [`jra-final-confirmation-contract.md`](jra-final-confirmation-contract.md) — final-program timing, comparison, review, and candidate-generation gate.
@@ -122,6 +123,7 @@ data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json
 data/audits/calendar-hkjc-pilot-05-detail-route-evidence-v1.json
 data/audits/calendar-hkjc-pilot-06-reviewed-import-evidence-v1.json
 data/audits/calendar-hkjc-handoff-decision-v1.json
+data/audits/calendar-uae-era-handoff-decision-v1.json
 data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json
 data/fixtures/calendar-hkjc-detail-artifact-core-fixtures-v1.json
 data/fixtures/calendar-hkjc-detail-live-smoke-spec-v1.json

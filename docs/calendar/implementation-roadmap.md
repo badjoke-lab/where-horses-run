@@ -64,6 +64,7 @@ Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Completed Work ID: `WHR-CAL-UAE-ERA`
 Current Work ID: `WHR-CAL-UAE-ERA`
 Next programme Work ID: `WHR-CAL-PUBLIC-V1`
 
@@ -191,13 +192,15 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei operational handoff accepted; HKJC pilot current
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 entrypoint synchronization next
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Current Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Next source Work ID: `WHR-CAL-UAE-ERA`
+Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
+Completed Work ID: `WHR-CAL-UAE-ERA`
+Current Work ID: `WHR-CAL-UAE-ERA`
+Next programme Work ID: `WHR-CAL-PUBLIC-V1`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -646,3 +649,18 @@ Calendar PRs review:
 ## Deployment rule
 
 Research, contracts, fixtures, candidates, and non-public runtime work use GitHub validation without Cloudflare preview. Rendered releases use preview/production deployment only when materially required by deployment policy.
+
+
+## UAE ERA handoff gate
+
+UAE ERA handoff accepted for bounded manual reviewed steady-state operation.
+
+Accepted state:
+
+- provisional Acquisition Registry profile;
+- five approved venue identities;
+- C-only source-visible-horizon schedule path through GitHub Actions;
+- 64-record review-only evidence with source-window closure;
+- detail route, fallback runner, arbitrary date-window mode, selected-meeting mode, retry automation, automatic execution, approval, promotion, publication, canonical write, and public write remain disabled.
+
+Next programme Work ID: `WHR-CAL-PUBLIC-V1`. The global Current Work ID switch remains a separate entrypoint synchronization step.
