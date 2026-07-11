@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/audits/calendar-uae-era-pilot-03-venue-mapping-v1.json'
       - 'scripts/timetable/probe_uae_era_pdf_text.py'
+      - 'scripts/timetable/probe-uae-era-venue-pages.mjs'
       - 'scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs'
       - 'docs/calendar/uae-era-pilot-03-venue-mapping-pdf-evidence.md'
       - '.github/workflows/calendar-uae-era-pilot-03-pdf-evidence.yml'
@@ -31,6 +32,7 @@ jobs:
       - name: Validate PILOT-03 mapping and probe boundaries
         run: |
           node --check scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs
+          node --check scripts/timetable/probe-uae-era-venue-pages.mjs
           node scripts/check-calendar-uae-era-pilot-03-venue-mapping.mjs
           python -m py_compile scripts/timetable/probe_uae_era_pdf_text.py
       - name: Record protected state hashes
@@ -44,6 +46,27 @@ jobs:
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
             > /tmp/uae-pilot-03-protected-before.sha256
+      - name: Probe official ERA venue pages
+        run: node scripts/timetable/probe-uae-era-venue-pages.mjs > /tmp/uae-pilot-03-venue-page-summary.json
+      - name: Validate public-safe venue-page summary
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const summary = JSON.parse(fs.readFileSync('/tmp/uae-pilot-03-venue-page-summary.json', 'utf8'));
+          if (summary.schema_version !== 'calendar-uae-era-pilot-03-venue-page-evidence-summary-v1') throw new Error('venue summary schema differs');
+          if (summary.work_id !== 'WHR-CAL-UAE-ERA' || summary.implementation_unit !== 'UAE-PILOT-03') throw new Error('venue summary Work identity differs');
+          if (summary.page_count !== 5 || summary.pages.length !== 5) throw new Error('expected five venue pages');
+          if (summary.all_pages_reachable !== true || summary.all_final_hosts_official !== true || summary.all_page_labels_observed !== true) throw new Error('official venue-page evidence incomplete');
+          for (const page of summary.pages) {
+            if (page.http_status !== 200 || page.response_ok !== true) throw new Error(`${page.slug}: official page not reachable`);
+            if (page.final_host !== 'emiratesracing.com') throw new Error(`${page.slug}: final host differs`);
+            if (page.page_label_observed !== true || page.raw_html_stored !== false) throw new Error(`${page.slug}: label/storage boundary differs`);
+            if (!Number.isInteger(page.response_bytes) || page.response_bytes < 1000) throw new Error(`${page.slug}: response byte count implausible`);
+          }
+          if (summary.raw_html_stored !== false) throw new Error('venue summary raw HTML boundary differs');
+          console.log('UAE_PILOT_03_VENUE_PAGE_EVIDENCE: pass');
+          console.log(JSON.stringify(summary.pages.map((page) => ({ slug: page.slug, status: page.http_status, bytes: page.response_bytes }))));
+          NODE
       - name: Run in-memory official PDF text extraction probe
         run: python scripts/timetable/probe_uae_era_pdf_text.py > /tmp/uae-pilot-03-pdf-structure-summary.json
       - name: Validate public-safe PDF structure summary
@@ -81,11 +104,13 @@ jobs:
           NODE
       - name: Prove protected state unchanged
         run: sha256sum --check /tmp/uae-pilot-03-protected-before.sha256
-      - name: Upload public-safe structure summary only
+      - name: Upload public-safe structure summaries only
         uses: actions/upload-artifact@v4
         with:
-          name: uae-pilot-03-pdf-structure-evidence-${{ github.run_id }}
-          path: /tmp/uae-pilot-03-pdf-structure-summary.json
+          name: uae-pilot-03-structure-evidence-${{ github.run_id }}
+          path: |
+            /tmp/uae-pilot-03-venue-page-summary.json
+            /tmp/uae-pilot-03-pdf-structure-summary.json
           if-no-files-found: error
           retention-days: 30
       - name: Prove repository clean
