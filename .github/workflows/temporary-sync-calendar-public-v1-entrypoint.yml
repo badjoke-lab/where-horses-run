@@ -45,7 +45,21 @@ jobs:
       - name: Validate Pipeline v1 entrypoint
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
       - name: Preserve UAE handoff evidence with completed entrypoint switch
-        run: node scripts/check-calendar-uae-era-handoff-decision.mjs
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-uae-era-handoff-decision.mjs 2>&1 | tee /tmp/calendar-public-v1-uae-handoff-validation.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload UAE handoff compatibility diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-uae-handoff-validation-${{ github.run_id }}
+          path: /tmp/calendar-public-v1-uae-handoff-validation.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Validate diff hygiene
         run: git diff --check
       - name: Commit synchronized entrypoint state
