@@ -1,0 +1,106 @@
+{
+  "schema_version": "calendar-uae-era-pilot-04-grid-parser-evidence-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-04",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "evidence_run": {
+    "workflow_run_id": 29142374154,
+    "artifact_id": 8245577585,
+    "artifact_digest": "sha256:139343efe9771fd6a3a41cb15741961632bcddf739ab9ba447b3f8081eeee847",
+    "coordinate_summary": {
+      "page_count": 1,
+      "month_sequence": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March",
+        "April"
+      ],
+      "month_tokens": 7,
+      "weekday_tokens": 212,
+      "day_tokens": 218,
+      "venue_anchors": 70,
+      "raw_pdf_stored": false,
+      "raw_text_stored": false,
+      "unapproved_text_emitted": false
+    },
+    "grid_parser": {
+      "parser_mode": "coordinate_aware_public_safe_grid",
+      "observation_count": 64,
+      "month_meeting_counts": {
+        "2026-10": 4,
+        "2026-11": 11,
+        "2026-12": 10,
+        "2027-01": 13,
+        "2027-02": 11,
+        "2027-03": 10,
+        "2027-04": 5
+      },
+      "venue_meeting_counts": {
+        "Meydan": 17,
+        "Abu Dhabi": 16,
+        "Al Ain": 14,
+        "Jebel Ali": 11,
+        "Sharjah": 6
+      },
+      "max_day_venue_y_delta": 0.525,
+      "weekday_calendar_validation": "pass",
+      "duplicate_date_venue_observations": 0,
+      "accepted_existing_observation_count": 17,
+      "proposed_unapproved_observation_count": 47,
+      "candidate_generation_scope": "meydan_only"
+    },
+    "source_boundary_comparison": {
+      "article_opening_date": "2026-10-22",
+      "pdf_first_observation_date": "2026-10-22",
+      "opening_dates_match": true,
+      "article_narrative_closing_date": "2027-03-27",
+      "pdf_last_observation_date": "2027-04-15",
+      "pdf_observation_count_after_article_closing_date": 5,
+      "pdf_observation_dates_after_article_closing_date": [
+        "2027-04-01",
+        "2027-04-02",
+        "2027-04-08",
+        "2027-04-09",
+        "2027-04-15"
+      ],
+      "boundary_status": "source_boundary_difference_requires_review"
+    },
+    "protected_state_hash_check": "pass",
+    "repository_clean_after_run": true
+  },
+  "decision": {
+    "coordinate_parser": "evidence_backed_64_label_based_meeting_observations",
+    "month_count_closure": "pass",
+    "venue_count_closure": "pass_matches_official_article_counts",
+    "weekday_coordinate_validation": "pass",
+    "date_venue_pairing": "evidence_backed",
+    "source_boundary_status": "difference_requires_explicit_reconciliation",
+    "mapping_approval": false,
+    "broader_candidate_generation": false,
+    "registry_activation": false,
+    "reason": "Coordinate-aware parsing reconstructs 64 label-based meeting observations and closes exactly against the official article venue counts. Opening date agrees with the article. The fixture PDF additionally contains five April observations after the article narrative closing date of 2027-03-27, so source-boundary reconciliation is required before season-completeness or broader candidate claims."
+  },
+  "next_unit": {
+    "id": "UAE-PILOT-05",
+    "title": "UAE ERA source-boundary reconciliation and venue mapping approval decision",
+    "goal": "Reconcile the article narrative closing date with the fixture PDF April observations, review whether the four proposed venue mappings have sufficient official-source identity evidence for explicit approval, and keep any resulting registry or candidate expansion as a separate implementation decision."
+  },
+  "boundaries": {
+    "candidate_batch_created": false,
+    "automatic_canonical_id_creation": false,
+    "automatic_candidate_expansion": false,
+    "mapping_approval": false,
+    "racecourse_registry_write": false,
+    "readiness_registry_write": false,
+    "acquisition_registry_write": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
