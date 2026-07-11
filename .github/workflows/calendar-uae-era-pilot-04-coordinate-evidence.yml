@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/timetable/probe_uae_era_pdf_coordinates.py'
+      - 'scripts/timetable/parse_uae_era_pdf_grid_coordinates.py'
       - 'docs/calendar/uae-era-pilot-04-coordinate-grid-parser.md'
       - '.github/workflows/calendar-uae-era-pilot-04-coordinate-evidence.yml'
 
@@ -26,28 +27,47 @@ jobs:
           python-version: '3.12'
       - name: Install coordinate extraction dependency
         run: python -m pip install --disable-pip-version-check pymupdf
-      - name: Validate coordinate probe syntax and safety markers
+      - name: Validate coordinate probe and parser syntax and safety markers
         run: |
           python - <<'PY'
           import ast
           from pathlib import Path
-          source = Path('scripts/timetable/probe_uae_era_pdf_coordinates.py').read_text()
-          ast.parse(source)
-          required = [
+          files = [
+              Path('scripts/timetable/probe_uae_era_pdf_coordinates.py'),
+              Path('scripts/timetable/parse_uae_era_pdf_grid_coordinates.py'),
+          ]
+          for path in files:
+              source = path.read_text()
+              ast.parse(source)
+          probe = files[0].read_text()
+          required_probe = [
               'get_text("words"',
               'search_for(alias)',
               'raw_pdf_stored',
               'raw_text_stored',
               'unapproved_text_emitted',
           ]
-          for marker in required:
-              if marker not in source:
+          for marker in required_probe:
+              if marker not in probe:
                   raise SystemExit(f'missing safety/coordinate marker: {marker}')
+          parser = files[1].read_text()
+          required_parser = [
+              'coordinate_aware_public_safe_grid',
+              'weekday_calendar_validation',
+              'source_boundary_difference_requires_review',
+              'proposed_unapproved',
+              'candidate_batch_created',
+          ]
+          for marker in required_parser:
+              if marker not in parser:
+                  raise SystemExit(f'missing parser boundary marker: {marker}')
           forbidden = ['write_bytes(', 'write_text(', 'NamedTemporaryFile', 'mkstemp']
-          for marker in forbidden:
-              if marker in source:
-                  raise SystemExit(f'forbidden file-write primitive: {marker}')
-          print('UAE_PILOT_04_COORDINATE_PROBE_STATIC: pass')
+          for path in files:
+              source = path.read_text()
+              for marker in forbidden:
+                  if marker in source:
+                      raise SystemExit(f'{path}: forbidden file-write primitive: {marker}')
+          print('UAE_PILOT_04_COORDINATE_PARSER_STATIC: pass')
           PY
       - name: Record protected state hashes
         run: |
@@ -71,14 +91,16 @@ jobs:
           if (summary.work_id !== 'WHR-CAL-UAE-ERA' || summary.implementation_unit !== 'UAE-PILOT-04') throw new Error('coordinate summary Work identity differs');
           if (summary.http_status !== 200 || summary.pdf_magic !== true) throw new Error('official PDF route evidence differs');
           if (summary.final_host !== 'd2xuc5ucjmnf40.cloudfront.net') throw new Error('coordinate probe final host differs');
-          if (!Number.isInteger(summary.page_count) || summary.page_count < 1 || summary.pages.length !== summary.page_count) throw new Error('page shape differs');
+          if (!Number.isInteger(summary.page_count) || summary.page_count !== 1 || summary.pages.length !== summary.page_count) throw new Error('reviewed page shape differs');
           const page = summary.pages[0];
           if (!(page.page_width > 0) || !(page.page_height > 0)) throw new Error('page dimensions missing');
           if (!Array.isArray(page.month_tokens) || !Array.isArray(page.weekday_tokens) || !Array.isArray(page.day_tokens) || !Array.isArray(page.venue_anchors)) throw new Error('coordinate token arrays missing');
-          if (summary.totals.month_tokens < 6) throw new Error('expected at least six season month tokens');
-          if (summary.totals.weekday_tokens < 7) throw new Error('expected weekday tokens');
-          if (summary.totals.day_tokens < 31) throw new Error('expected calendar day-number tokens');
-          if (summary.totals.venue_anchors < 5) throw new Error('expected five venue alias anchors');
+          if (summary.totals.month_tokens !== 7) throw new Error('expected seven calendar month columns');
+          if (summary.totals.weekday_tokens !== 212) throw new Error('weekday token count differs');
+          if (summary.totals.day_tokens !== 218) throw new Error('day token count differs');
+          if (summary.totals.venue_anchors !== 70) throw new Error('venue anchor count differs');
+          const months = page.month_tokens.map((item) => item.value);
+          if (JSON.stringify(months) !== JSON.stringify(['October','November','December','January','February','March','April'])) throw new Error(`month sequence differs: ${JSON.stringify(months)}`);
           for (const collection of [page.month_tokens, page.weekday_tokens, page.day_tokens, page.venue_anchors]) {
             for (const item of collection) {
               for (const key of ['x0','y0','x1','y1']) if (typeof item[key] !== 'number') throw new Error(`coordinate ${key} missing`);
@@ -89,22 +111,69 @@ jobs:
             if (Object.hasOwn(summary, forbiddenKey)) throw new Error(`forbidden summary key ${forbiddenKey}`);
           }
           console.log('UAE_PILOT_04_COORDINATE_EVIDENCE: pass');
-          console.log(JSON.stringify({
-            page_width: page.page_width,
-            page_height: page.page_height,
-            totals: summary.totals,
-            drawing_cluster_count: page.drawing_cluster_count,
-          }));
+          console.log(JSON.stringify({ page_width: page.page_width, page_height: page.page_height, months, totals: summary.totals, drawing_cluster_count: page.drawing_cluster_count }));
+          NODE
+      - name: Run coordinate-aware grid parser
+        run: |
+          python scripts/timetable/parse_uae_era_pdf_grid_coordinates.py \
+            --input /tmp/uae-pilot-04-coordinate-summary.json \
+            > /tmp/uae-pilot-04-grid-observations.json
+      - name: Validate label-based grid observations and source boundary difference
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const output = JSON.parse(fs.readFileSync('/tmp/uae-pilot-04-grid-observations.json', 'utf8'));
+          if (output.schema_version !== 'calendar-uae-era-pilot-04-grid-observations-v1') throw new Error('grid observation schema differs');
+          if (output.work_id !== 'WHR-CAL-UAE-ERA' || output.implementation_unit !== 'UAE-PILOT-04') throw new Error('grid observation Work identity differs');
+          if (output.parser_mode !== 'coordinate_aware_public_safe_grid') throw new Error('grid parser mode differs');
+          if (output.observation_count !== 64 || output.observations.length !== 64) throw new Error('meeting observation count must close to 64');
+          const expectedMonths = { '2026-10':4, '2026-11':11, '2026-12':10, '2027-01':13, '2027-02':11, '2027-03':10, '2027-04':5 };
+          const expectedVenues = { 'Meydan':17, 'Abu Dhabi':16, 'Al Ain':14, 'Jebel Ali':11, 'Sharjah':6 };
+          if (JSON.stringify(output.month_meeting_counts) !== JSON.stringify(expectedMonths)) throw new Error(`month counts differ: ${JSON.stringify(output.month_meeting_counts)}`);
+          if (JSON.stringify(output.venue_meeting_counts) !== JSON.stringify(expectedVenues)) throw new Error(`venue counts differ: ${JSON.stringify(output.venue_meeting_counts)}`);
+          if (output.pairing_evidence.weekday_calendar_validation !== 'pass') throw new Error('weekday validation differs');
+          if (!(output.pairing_evidence.max_day_venue_y_delta <= 1.0)) throw new Error('day/venue coordinate pairing delta too large');
+          if (output.pairing_evidence.duplicate_date_venue_observations !== 0) throw new Error('duplicate observations detected');
+          if (output.mapping_boundary.accepted_existing_observation_count !== 17) throw new Error('accepted-existing observation count differs');
+          if (output.mapping_boundary.proposed_unapproved_observation_count !== 47) throw new Error('proposed-unapproved observation count differs');
+          if (output.mapping_boundary.candidate_generation_scope !== 'meydan_only' || output.mapping_boundary.automatic_mapping_approval !== false) throw new Error('mapping boundary differs');
+          for (const item of output.observations) {
+            if (!/^20\d{2}-\d{2}-\d{2}$/.test(item.date)) throw new Error('invalid observation date');
+            if (item.mapping_status === 'accepted_existing') {
+              if (item.venue_alias !== 'Meydan' || item.canonical_id !== 'meydan-racecourse' || item.candidate_generation_allowed !== true) throw new Error('accepted-existing observation boundary differs');
+            } else if (item.mapping_status === 'proposed_unapproved') {
+              if (item.canonical_id !== null || item.candidate_generation_allowed !== false) throw new Error('proposed-unapproved observation boundary differs');
+            } else {
+              throw new Error(`unexpected mapping status ${item.mapping_status}`);
+            }
+          }
+          const boundary = output.source_boundary_comparison;
+          if (boundary.article_opening_date !== '2026-10-22' || boundary.pdf_first_observation_date !== '2026-10-22' || boundary.opening_dates_match !== true) throw new Error('source opening boundary differs');
+          if (boundary.article_narrative_closing_date !== '2027-03-27') throw new Error('article closing boundary differs');
+          if (boundary.pdf_last_observation_date !== '2027-04-15') throw new Error('PDF last observation date differs');
+          if (boundary.pdf_observation_count_after_article_closing_date !== 5) throw new Error('post-article-closing observation count differs');
+          const expectedPostClose = ['2027-04-01','2027-04-02','2027-04-08','2027-04-09','2027-04-15'];
+          if (JSON.stringify(boundary.pdf_observation_dates_after_article_closing_date) !== JSON.stringify(expectedPostClose)) throw new Error('post-closing observation dates differ');
+          if (boundary.boundary_status !== 'source_boundary_difference_requires_review') throw new Error('source boundary difference must remain explicit');
+          const boundaries = output.boundaries;
+          for (const key of ['candidate_batch_created','automatic_canonical_id_creation','automatic_candidate_expansion','racecourse_registry_write','readiness_registry_write','acquisition_registry_write','canonical_write','public_write']) {
+            if (boundaries[key] !== false) throw new Error(`${key} must remain false`);
+          }
+          if (boundaries.publication_effect !== 'none') throw new Error('publication effect differs');
+          console.log('UAE_PILOT_04_GRID_PARSER_EVIDENCE: pass');
+          console.log(JSON.stringify({ observation_count: output.observation_count, month_meeting_counts: output.month_meeting_counts, venue_meeting_counts: output.venue_meeting_counts, pairing_evidence: output.pairing_evidence, source_boundary_comparison: output.source_boundary_comparison }));
           NODE
       - name: Prove protected state unchanged
         if: always()
         run: sha256sum --check /tmp/uae-pilot-04-protected-before.sha256
-      - name: Upload public-safe coordinate summary only
+      - name: Upload public-safe coordinate and grid summaries only
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: uae-pilot-04-coordinate-evidence-${{ github.run_id }}
-          path: /tmp/uae-pilot-04-coordinate-summary.json
+          name: uae-pilot-04-grid-evidence-${{ github.run_id }}
+          path: |
+            /tmp/uae-pilot-04-coordinate-summary.json
+            /tmp/uae-pilot-04-grid-observations.json
           if-no-files-found: warn
           retention-days: 30
       - name: Prove repository clean
