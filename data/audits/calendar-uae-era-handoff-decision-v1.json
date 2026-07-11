@@ -1,0 +1,89 @@
+{
+  "schema_version": "calendar-uae-era-handoff-decision-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "decision_id": "UAE-HANDOFF-01",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "decision": "accept_bounded_reviewed_steady_state_handoff",
+  "completed_work_id": "WHR-CAL-UAE-ERA",
+  "next_work_id": "WHR-CAL-PUBLIC-V1",
+  "accepted_state": {
+    "registry_profile_status": "provisional",
+    "readiness_state": "prototype_ready",
+    "implementation_status": "fixture_validated",
+    "automation_mode": "semi_automatic",
+    "system_primary_runner": "github_actions",
+    "system_fallback_runner": null,
+    "system_fallback_runner_status": "pending",
+    "registry_detail_source_id": null,
+    "registry_detail_adapter_id": null,
+    "registry_supported_observation_ranks": [
+      "C"
+    ],
+    "schedule_route": {
+      "status": "active_review_only",
+      "selection_mode": "explicit_collection_job",
+      "primary_runner": "github_actions",
+      "source_id": "era-season-calendar",
+      "adapter_id": "uae-era-pdf-grid-actions-v1",
+      "executor_id": "uae-era-pdf-grid-actions",
+      "supported_collection_modes": [
+        "source_visible_horizon"
+      ],
+      "evidence_backed_observation_ranks": [
+        "C"
+      ],
+      "reviewed_fixture_window_start": "2026-10-22",
+      "reviewed_fixture_window_end_exclusive": "2027-04-16",
+      "reviewed_record_count": 64,
+      "coverage_claim": "source_window_complete",
+      "automatic_planning_allowed": false,
+      "automatic_execution_allowed": false,
+      "human_review_required": true
+    },
+    "detail_route": {
+      "status": "inactive",
+      "source_id": null,
+      "adapter_id": null,
+      "automatic_planning_allowed": false,
+      "automatic_execution_allowed": false
+    }
+  },
+  "evidence_refs": [
+    "data/audits/calendar-uae-era-pilot-05-boundary-mapping-decision-v1.json",
+    "data/audits/calendar-uae-era-pilot-06-profile-live-evidence-v1.json",
+    "data/static/calendar-acquisition-registry.json",
+    "data/static/calendar-readiness-registry.json",
+    "data/static/calendar-runner-compatibility-contract-v1.json"
+  ],
+  "handoff_claims": {
+    "five_venue_identity_scope_approved": true,
+    "schedule_path_evidence_backed": true,
+    "date_venue_pairing_evidence_backed": true,
+    "review_artifact_generation_evidence_backed": true,
+    "count_closed_reviewed_fixture_window_accepted": true,
+    "ordinary_bounded_manual_reviewed_operation_allowed": true,
+    "future_uae_maintenance_may_continue_without_blocking_public_v1": true,
+    "system_level_fallback_activated": false,
+    "detail_route_activated": false,
+    "arbitrary_date_window_activated": false,
+    "selected_meeting_mode_activated": false,
+    "rank_upgrade_retry_activated": false,
+    "full_detail_completeness_claimed": false,
+    "full_season_semantic_claimed": false,
+    "automatic_acquisition_claimed": false,
+    "automatic_publication_claimed": false
+  },
+  "operating_rule": "UAE ERA continues as bounded manual reviewed steady-state operation. Explicit source-visible-horizon Collection Jobs may use the evidence-backed GitHub Actions PDF-grid schedule route to produce C-level review artifacts for the accepted reviewed fixture window. The provisional profile does not authorize arbitrary date windows, selected-meeting acquisition, detail acquisition, fallback execution, automatic planning, automatic execution, approval, promotion, publication, canonical write, or public write. UAE maintenance remains incremental and does not block starting WHR-CAL-PUBLIC-V1.",
+  "boundaries": {
+    "scheduled_acquisition_execution": false,
+    "automatic_collection_planning": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "detail_route_activation": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
