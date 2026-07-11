@@ -24,12 +24,14 @@ jobs:
           node-version: 22.12.0
       - name: Apply UAE PILOT-06 profile synchronization
         run: node scripts/temporary-sync-uae-pilot-06-profile.mjs
-      - name: Validate synchronized registries and contracts
-        run: |
-          node scripts/validate-data.mjs
-          node scripts/check-calendar-acquisition-registry.mjs
-          node scripts/check-calendar-runner-compatibility.mjs
-          node scripts/check-project-governance-docs.mjs
+      - name: Validate Racecourse and Readiness data
+        run: node scripts/validate-data.mjs
+      - name: Validate Acquisition Registry
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate runner compatibility
+        run: node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate governance docs
+        run: node scripts/check-project-governance-docs.mjs
       - name: Commit synchronized state when needed
         run: |
           if git diff --quiet; then
