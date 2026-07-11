@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: work/calendar-uae-era-profile-foundation
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -66,4 +67,5 @@ jobs:
             scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs \
             scripts/check-calendar-acquisition-registry.mjs
           git commit -m "[CF-Pages-Skip] Activate UAE PILOT-06 profile foundation"
+          git pull --rebase origin work/calendar-uae-era-profile-foundation
           git push origin HEAD:work/calendar-uae-era-profile-foundation
