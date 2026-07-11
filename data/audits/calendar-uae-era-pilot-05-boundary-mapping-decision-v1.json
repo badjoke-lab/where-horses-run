@@ -1,0 +1,152 @@
+{
+  "schema_version": "calendar-uae-era-pilot-05-boundary-mapping-decision-v1",
+  "work_id": "WHR-CAL-UAE-ERA",
+  "implementation_unit": "UAE-PILOT-05",
+  "reviewed_at": "2026-07-11T00:00:00Z",
+  "source_boundary_reconciliation": {
+    "article_summary": {
+      "total_race_meetings": 64,
+      "total_racecourses": 5,
+      "opening_date": "2026-10-22",
+      "narrative_closing_date": "2027-03-27",
+      "venue_meeting_counts": {
+        "Meydan": 17,
+        "Abu Dhabi": 16,
+        "Al Ain": 14,
+        "Jebel Ali": 11,
+        "Sharjah": 6
+      }
+    },
+    "pdf_grid": {
+      "observation_count": 64,
+      "first_observation_date": "2026-10-22",
+      "last_observation_date": "2027-04-15",
+      "venue_meeting_counts": {
+        "Meydan": 17,
+        "Abu Dhabi": 16,
+        "Al Ain": 14,
+        "Jebel Ali": 11,
+        "Sharjah": 6
+      },
+      "observations_after_article_narrative_closing_date": [
+        {
+          "date": "2027-04-01",
+          "venue_label": "Abu Dhabi Turf Club"
+        },
+        {
+          "date": "2027-04-02",
+          "venue_label": "Al Ain Racecourse"
+        },
+        {
+          "date": "2027-04-08",
+          "venue_label": "Abu Dhabi Turf Club"
+        },
+        {
+          "date": "2027-04-09",
+          "venue_label": "Al Ain Racecourse"
+        },
+        {
+          "date": "2027-04-15",
+          "venue_label": "Abu Dhabi Turf Club"
+        }
+      ]
+    },
+    "closure": {
+      "article_total_equals_pdf_observation_count": true,
+      "article_venue_counts_equal_pdf_venue_counts": true,
+      "opening_dates_match": true,
+      "article_narrative_closing_date_equals_pdf_last_observation_date": false,
+      "april_observations_required_for_64_count_closure": true
+    },
+    "decision": {
+      "article_narrative_closing_date_use": "not_authoritative_for_exhaustive_fixture_window_boundary",
+      "accepted_fixture_window_source": "official_fixture_pdf_coordinate_grid",
+      "accepted_fixture_window_start": "2026-10-22",
+      "accepted_fixture_window_end_inclusive": "2027-04-15",
+      "accepted_fixture_window_end_exclusive": "2027-04-16",
+      "coverage_state": "count_closed_reviewed_pdf_fixture_window",
+      "full_season_semantic_claim": false,
+      "reason": "The official article reports 64 meetings and the five venue totals. The coordinate-aware PDF parser reconstructs exactly 64 observations with exactly the same venue totals. Five April PDF observations are required for that closure. Therefore the article narrative closing date cannot be used as the exhaustive fixture-window boundary, while the reviewed PDF grid can be accepted as the count-closed fixture publication window without making a broader semantic claim about the meaning of season closure language."
+    }
+  },
+  "venue_mapping_approval": {
+    "evidence_basis": [
+      "official_article_label",
+      "official_venue_page_route_and_label",
+      "official_pdf_venue_alias_structure",
+      "coordinate_grid_count_closure"
+    ],
+    "mappings": [
+      {
+        "official_article_label": "Meydan Racecourse",
+        "canonical_id": "meydan-racecourse",
+        "previous_status": "accepted_existing",
+        "decision": "retain_approved_existing",
+        "approved_for_canonical_identity_registration": true
+      },
+      {
+        "official_article_label": "Abu Dhabi Turf Club",
+        "canonical_id": "abu-dhabi-turf-club",
+        "previous_status": "proposed_unapproved",
+        "decision": "approve_mapping",
+        "approved_for_canonical_identity_registration": true
+      },
+      {
+        "official_article_label": "Al Ain Racecourse",
+        "canonical_id": "al-ain-racecourse",
+        "previous_status": "proposed_unapproved",
+        "decision": "approve_mapping",
+        "approved_for_canonical_identity_registration": true
+      },
+      {
+        "official_article_label": "Jebel Ali Racecourse",
+        "canonical_id": "jebel-ali-racecourse",
+        "previous_status": "proposed_unapproved",
+        "decision": "approve_mapping",
+        "approved_for_canonical_identity_registration": true
+      },
+      {
+        "official_article_label": "Sharjah Racecourse",
+        "canonical_id": "sharjah-racecourse",
+        "previous_status": "proposed_unapproved",
+        "decision": "approve_mapping",
+        "approved_for_canonical_identity_registration": true
+      }
+    ],
+    "decision": {
+      "approved_mapping_count": 5,
+      "newly_approved_mapping_count": 4,
+      "mapping_decision_complete": true,
+      "racecourse_registry_write_in_this_unit": false,
+      "readiness_registry_write_in_this_unit": false,
+      "acquisition_registry_write_in_this_unit": false,
+      "candidate_expansion_in_this_unit": false,
+      "reason": "Each official article label is linked to a reachable, label-confirmed official ERA venue page route and is observed as a venue alias in the official PDF structure. The coordinate grid closes to the same official article venue counts. This is sufficient for explicit identity mapping approval, but registration and candidate expansion remain separate implementation work."
+    }
+  },
+  "evidence_refs": [
+    "data/audits/calendar-uae-era-pilot-02-source-route-evidence-v1.json",
+    "data/audits/calendar-uae-era-pilot-03-venue-mapping-v1.json",
+    "data/audits/calendar-uae-era-pilot-03-pdf-evidence-v1.json",
+    "data/audits/calendar-uae-era-pilot-04-grid-parser-evidence-v1.json"
+  ],
+  "next_unit": {
+    "id": "UAE-PILOT-06",
+    "title": "UAE ERA canonical venue and acquisition profile activation foundation",
+    "goal": "Implement the approved venue identities, align Readiness scope, represent the evidence-backed PDF schedule route in Acquisition Registry and runner compatibility contracts, and build review-only C-level candidate generation without automatic execution or publication."
+  },
+  "boundaries": {
+    "racecourse_registry_write": false,
+    "readiness_registry_write": false,
+    "acquisition_registry_write": false,
+    "runner_activation": false,
+    "candidate_batch_created": false,
+    "automatic_candidate_expansion": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "canonical_write": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
