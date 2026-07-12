@@ -67,12 +67,18 @@ else {
   }
 }
 
-const readinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
-if (!readinessRecord) fail('UAE Readiness record missing.');
+const scheduleReadinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
+if (!scheduleReadinessRecord) fail('UAE historical schedule Readiness record missing.');
 else {
-  if (!exact(readinessRecord.racecourse_ids, ['meydan-racecourse','abu-dhabi-turf-club','al-ain-racecourse','jebel-ali-racecourse','sharjah-racecourse'])) fail('UAE Readiness racecourse scope differs.');
-  if (readinessRecord.readiness !== 'prototype_ready' || readinessRecord.implementation_status !== 'fixture_validated' || readinessRecord.automation_mode !== 'semi_automatic') fail('UAE Readiness accepted state differs.');
-  if (readinessRecord.technical_rank !== 'A' || readinessRecord.public_ceiling !== 'A') fail('UAE Readiness current recovered rank boundary differs.');
+  if (!exact(scheduleReadinessRecord.racecourse_ids, ['meydan-racecourse','abu-dhabi-turf-club','al-ain-racecourse','jebel-ali-racecourse','sharjah-racecourse'])) fail('UAE schedule Readiness racecourse scope differs.');
+  if (scheduleReadinessRecord.readiness !== 'prototype_ready' || scheduleReadinessRecord.implementation_status !== 'fixture_validated') fail('UAE schedule Readiness accepted state differs.');
+  if (scheduleReadinessRecord.technical_rank !== 'C' || scheduleReadinessRecord.public_ceiling !== 'C') fail('UAE historical schedule Readiness boundary differs.');
+}
+const detailReadinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable');
+if (!detailReadinessRecord) fail('UAE current detail Readiness record missing.');
+else {
+  if (detailReadinessRecord.technical_rank !== 'A' || detailReadinessRecord.public_ceiling !== 'A') fail('UAE current detail Readiness boundary differs.');
+  if (detailReadinessRecord.authority_source_key !== 'united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable') fail('UAE current detail source key differs.');
 }
 
 const executor = compatibility.executors.find((entry) => entry.system_id === 'uae-national-racing-system' && entry.runner === 'github_actions');

@@ -6,12 +6,63 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 116,
+    "readiness_records": 117,
     "next_backfill_work_ids": []
   },
   "records": [
     {
       "readiness_id": "united-arab-emirates--uae-national-racing-system--era-season-calendar",
+      "country_id": "united-arab-emirates",
+      "country_tracker_delivery_no": "01",
+      "system_id": "uae-national-racing-system",
+      "system_name_en": "UAE national racing system",
+      "authority_source_key": "united-arab-emirates/emirates-racing-authority/era-season-calendar",
+      "racecourse_ids": [
+        "meydan-racecourse",
+        "abu-dhabi-turf-club",
+        "al-ain-racecourse",
+        "jebel-ali-racecourse",
+        "sharjah-racecourse"
+      ],
+      "coverage_scope": "countrywide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "fixture_validated",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-07-11",
+      "evidence_reviewed_at": "2026-07-11",
+      "revalidation_trigger": "Revalidate when ERA replaces the reviewed season-calendar PDF, changes the five-venue grid, or the fixed source-visible horizon no longer closes to the reviewed 64 meetings.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
+      "limitations": [
+        "C-level meeting date and approved racecourse identity only.",
+        "The reviewed season-calendar route does not claim race times or per-race detail.",
+        "Automatic approval, canonical promotion, public writing, and unattended publication remain disabled."
+      ],
+      "notes": "Historical reviewed UAE schedule route: 64 meetings across Meydan, Abu Dhabi, Al Ain, Jebel Ali, and Sharjah for the fixed 2026-10-22 through 2027-04-15 source-visible season window."
+    },
+    {
+      "readiness_id": "united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable",
       "country_id": "united-arab-emirates",
       "country_tracker_delivery_no": "01",
       "system_id": "uae-national-racing-system",
@@ -42,7 +93,6 @@
       "access_mode": "date_route",
       "automation_mode": "semi_automatic",
       "refresh_classes": [
-        "seasonal",
         "weekly",
         "near_meeting",
         "manual"
@@ -53,15 +103,15 @@
       "source_status": "verified",
       "checked_date": "2026-07-13",
       "evidence_reviewed_at": "2026-07-13",
-      "revalidation_trigger": "Revalidate when ERA changes its racecard date/race route, when Race 1-N navigation stops closing continuously, or when a future source-visible meeting cannot reproduce reviewed A-level post-time fields.",
+      "revalidation_trigger": "Revalidate when ERA changes its racecard date/race route, Race 1-N navigation stops closing continuously, or a source-visible meeting cannot reproduce reviewed A-level post-time fields.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
       "limitations": [
-        "The season-calendar path remains C-level until the corresponding ERA racecard becomes source-visible.",
-        "The reviewed detail route supports A-level race labels and post times; race names are not consistently present, so A+ is not claimed.",
-        "Automatic approval, canonical promotion, public writing, unattended publication, and scheduled retry execution remain disabled."
+        "A-level detail exists only after the official ERA racecard becomes source-visible.",
+        "Race names are not consistently present, so A+ is not claimed.",
+        "Shared automatic near-meeting retry execution, automatic approval, canonical promotion, public writing, and unattended publication remain disabled."
       ],
-      "notes": "UAE schedule coverage remains the reviewed 64-meeting five-venue PDF window. Detail recovery live run 29199123357 proved a complete 10-race Al Ain timetable from 17:00 through 21:30 at Rank A using the official ERA racecard route; artifact 8261852673, sha256:7c6cc386a8092d86b2d603fdea3aa9b890558c89b5f8bfb798af69ae1f9dc379."
+      "notes": "Official ERA live evidence run 29199123357 proved 10 Al Ain races on 2026-04-10 from 17:00 through 21:30 at Rank A with zero source errors; artifact 8261852673, sha256:7c6cc386a8092d86b2d603fdea3aa9b890558c89b5f8bfb798af69ae1f9dc379."
     },
     {
       "readiness_id": "south-korea--kra-national-racing-system--kra-today-race",

@@ -10,14 +10,14 @@
     "scheduled_refresh_active": false
   },
   "source_summary": {
-    "readiness_record_count": 116,
+    "readiness_record_count": 117,
     "revalidation_due_count": 50,
     "blocked_count": 18,
     "unavailable_count": 2,
     "action_counts": {
       "blocked_review": 18,
       "manual_revalidation_due": 19,
-      "none": 47,
+      "none": 48,
       "source_revalidation_due": 31,
       "source_unavailable_review": 1
     }
@@ -1616,6 +1616,26 @@
       "revalidation_due": false,
       "action": "none",
       "fallback": "official_link_only"
+    },
+    {
+      "readiness_id": "united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable",
+      "country_id": "united-arab-emirates",
+      "authority_source_key": "united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable",
+      "readiness": "prototype_ready",
+      "implementation_status": "fixture_validated",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "checked_date": "2026-07-13",
+      "age_days": -11,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
     },
     {
       "readiness_id": "united-arab-emirates--uae-national-racing-system--era-season-calendar",

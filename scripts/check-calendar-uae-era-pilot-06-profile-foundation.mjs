@@ -55,19 +55,25 @@ for (const id of newIds) {
   }
 }
 
-const uaeReadiness = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
-if (!uaeReadiness) fail('UAE Readiness record missing.');
+const uaeScheduleReadiness = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
+if (!uaeScheduleReadiness) fail('UAE schedule Readiness record missing.');
 else {
-  if (!exact(uaeReadiness.racecourse_ids, expectedIds)) fail('UAE Readiness racecourse scope differs.');
-  if (uaeReadiness.technical_rank !== 'A' || uaeReadiness.public_ceiling !== 'A') fail('UAE Readiness recovered rank boundary differs.');
-  if (uaeReadiness.source_format !== 'mixed') fail('UAE Readiness source format differs.');
-  if (uaeReadiness.access_mode !== 'date_route') fail('UAE Readiness access mode differs.');
-  if (uaeReadiness.automation_mode !== 'semi_automatic') fail('UAE Readiness automation mode differs.');
-  if (!exact(uaeReadiness.refresh_classes, ['seasonal', 'weekly', 'near_meeting', 'manual'])) fail('UAE Readiness refresh classes differ.');
-  if (uaeReadiness.readiness !== 'prototype_ready' || uaeReadiness.implementation_status !== 'fixture_validated') fail('UAE Readiness implementation state differs.');
-  if (uaeReadiness.fallback !== 'downgrade_to_C') fail('UAE Readiness fallback differs.');
-  if (uaeReadiness.checked_date !== '2026-07-13' || !String(uaeReadiness.evidence_reviewed_at).startsWith('2026-07-13')) fail('UAE Readiness recovery review date differs.');
-  if (!String(uaeReadiness.limitations).includes('racecard becomes source-visible')) fail('UAE Readiness source-visible detail limitation missing.');
+  if (!exact(uaeScheduleReadiness.racecourse_ids, expectedIds)) fail('UAE schedule Readiness racecourse scope differs.');
+  if (uaeScheduleReadiness.authority_source_key !== 'united-arab-emirates/emirates-racing-authority/era-season-calendar') fail('UAE schedule Readiness source key differs.');
+  if (uaeScheduleReadiness.technical_rank !== 'C' || uaeScheduleReadiness.public_ceiling !== 'C') fail('UAE schedule Readiness rank boundary differs.');
+  if (uaeScheduleReadiness.access_mode !== 'direct' || !exact(uaeScheduleReadiness.refresh_classes, ['seasonal', 'manual'])) fail('UAE schedule Readiness route differs.');
+  if (uaeScheduleReadiness.fallback !== 'keep_last_verified_and_mark_stale') fail('UAE schedule Readiness fallback differs.');
+  if (uaeScheduleReadiness.checked_date !== '2026-07-11') fail('UAE schedule Readiness review date differs.');
+}
+const uaeDetailReadiness = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable');
+if (!uaeDetailReadiness) fail('UAE detail Readiness record missing.');
+else {
+  if (!exact(uaeDetailReadiness.racecourse_ids, expectedIds)) fail('UAE detail Readiness racecourse scope differs.');
+  if (uaeDetailReadiness.authority_source_key !== 'united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable') fail('UAE detail Readiness source key differs.');
+  if (uaeDetailReadiness.technical_rank !== 'A' || uaeDetailReadiness.public_ceiling !== 'A') fail('UAE detail Readiness recovered rank boundary differs.');
+  if (uaeDetailReadiness.access_mode !== 'date_route' || !uaeDetailReadiness.refresh_classes.includes('near_meeting')) fail('UAE detail Readiness route differs.');
+  if (uaeDetailReadiness.fallback !== 'downgrade_to_C') fail('UAE detail Readiness fallback differs.');
+  if (uaeDetailReadiness.checked_date !== '2026-07-13') fail('UAE detail Readiness review date differs.');
 }
 
 const uaeSource = authorityInventory.records.find((record) => record.country_id === 'united-arab-emirates' && record.authority_id === 'emirates-racing-authority' && record.official_source_id === 'era-season-calendar');
