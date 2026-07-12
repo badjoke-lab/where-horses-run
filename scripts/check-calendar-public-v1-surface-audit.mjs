@@ -28,6 +28,7 @@ const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const auditPath = 'data/audits/calendar-public-v1-surface-audit-v1.json';
 const audit = parse(auditPath);
+const dynamicDatesAudit = parse('data/audits/calendar-dynamic-dates-release-gate.json');
 const auditDoc = read('docs/calendar/public-v1-surface-audit.md');
 const startHere = read('START-HERE.md');
 const roadmap = read('docs/calendar/implementation-roadmap.md');
@@ -50,6 +51,13 @@ const expectedSurfaceRoutes = [
   '/ja/today/',
   '/tomorrow/',
   '/ja/tomorrow/',
+];
+const expectedDataStates = [
+  'current_window_available',
+  'no_public_records',
+  'records_before_window',
+  'records_after_window',
+  'stale_generation_with_window_records',
 ];
 
 if (audit) {
@@ -90,6 +98,10 @@ if (audit) {
     if (value !== false) fail(`boundaries.${key} must remain false.`);
   }
   if (!Array.isArray(audit.next_units) || audit.next_units.length !== 4) fail('four Public v1 next units are required.');
+}
+
+if (!exact(dynamicDatesAudit?.data_states, expectedDataStates)) {
+  fail('Dynamic Dates public data-state contract differs.');
 }
 
 for (const [name, source] of Object.entries(surfaces)) {
@@ -148,7 +160,6 @@ if (meetingList.includes('<table')) fail('TimetableMeetingList must not render a
 if (/record\.(?:races|race_rows|programme)\.map/.test(meetingList)) fail('list pages must not expand race-by-race rows.');
 
 for (const status of [
-  'current_window_available',
   'no_public_records',
   'records_before_window',
   'records_after_window',
@@ -157,6 +168,7 @@ for (const status of [
 requireIncludes(dateStatus, 'data-calendar-data-status={dataState.status}', 'CalendarDateStatus');
 requireIncludes(dateStatus, 'context.today', 'CalendarDateStatus');
 requireIncludes(dateStatus, 'context.timeZone', 'CalendarDateStatus');
+requireIncludes(dateStatus, 'dataState.windowRecordCount', 'CalendarDateStatus');
 
 const publicSourceText = `${Object.values(surfaces).join('\n')}\n${meetingList}\n${dateStatus}`;
 for (const forbidden of [
