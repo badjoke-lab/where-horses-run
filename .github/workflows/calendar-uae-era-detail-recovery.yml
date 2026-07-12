@@ -1,0 +1,97 @@
+name: Calendar UAE ERA detail recovery
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/uae-era-detail-artifact-core.mjs'
+      - 'scripts/timetable/collect-uae-era-detail-artifacts.mjs'
+      - 'scripts/check-calendar-uae-era-detail-recovery.mjs'
+      - 'data/fixtures/calendar-uae-era-detail-core-fixtures-v1.json'
+      - 'docs/calendar/uae-era-detail-recovery.md'
+      - '.github/workflows/calendar-uae-era-detail-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate detail parser and rank classifier
+        run: |
+          node --check scripts/timetable/uae-era-detail-artifact-core.mjs
+          node --check scripts/timetable/collect-uae-era-detail-artifacts.mjs
+          node --check scripts/check-calendar-uae-era-detail-recovery.mjs
+          node scripts/check-calendar-uae-era-detail-recovery.mjs
+      - name: Record protected public state
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-detail-protected-before.sha256
+      - name: Prove official ERA racecard detail acquisition
+        run: |
+          node scripts/timetable/collect-uae-era-detail-artifacts.mjs \
+            --date=2026-04-10 \
+            --racecourse-id=al-ain-racecourse \
+            --expected-races=10 \
+            > /tmp/uae-era-detail-live-evidence.json
+      - name: Validate bounded live evidence
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const evidence = JSON.parse(fs.readFileSync('/tmp/uae-era-detail-live-evidence.json', 'utf8'));
+          if (evidence.schema_version !== 'calendar-uae-era-detail-live-evidence-v1') throw new Error('live evidence schema differs');
+          if (evidence.meeting.date !== '2026-04-10') throw new Error('live evidence date differs');
+          if (evidence.meeting.racecourse_id !== 'al-ain-racecourse') throw new Error('live evidence racecourse differs');
+          if (evidence.meeting.race_count !== 10 || evidence.observations.length !== 10) throw new Error('live evidence race count differs');
+          if (!['A', 'A+'].includes(evidence.classification.rank)) throw new Error(`live evidence did not prove A-level detail: ${evidence.classification.rank}`);
+          if (evidence.classification.first_race_time_local !== '17:00') throw new Error('first race time differs');
+          if (evidence.classification.last_race_time_local !== '21:30') throw new Error('last race time differs');
+          if (evidence.classification.timetable_rows.length !== 10) throw new Error('timetable row closure differs');
+          if (evidence.source_errors.length !== 0) throw new Error(`source/parser errors remain: ${JSON.stringify(evidence.source_errors)}`);
+          if (evidence.source.official_hostname !== 'emiratesracing.com') throw new Error('official hostname differs');
+          if (evidence.source.response_body_retained !== false) throw new Error('response body retention must remain false');
+          if (Object.entries(evidence.safety).some(([key, value]) => key !== 'human_review_required' && key !== 'publication_effect' && value !== false && value !== 'none')) {
+            throw new Error('live evidence safety boundary differs');
+          }
+          if (evidence.safety.human_review_required !== true || evidence.safety.publication_effect !== 'none') throw new Error('review/publication boundary differs');
+          const serialized = JSON.stringify(evidence).toLowerCase();
+          for (const forbidden of ['horse_name', 'jockey', 'trainer', 'odds', 'payout', 'raw_html', 'source_body']) {
+            if (serialized.includes(`\"${forbidden}\"`)) throw new Error(`forbidden field retained: ${forbidden}`);
+          }
+          console.log('UAE_ERA_DETAIL_LIVE_EVIDENCE: pass');
+          console.log(JSON.stringify({
+            rank: evidence.classification.rank,
+            race_count: evidence.meeting.race_count,
+            first_race_time_local: evidence.classification.first_race_time_local,
+            last_race_time_local: evidence.classification.last_race_time_local,
+          }));
+          NODE
+      - name: Prove canonical and public state unchanged
+        run: sha256sum --check /tmp/uae-detail-protected-before.sha256
+      - name: Upload public-safe live evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-era-detail-live-evidence-${{ github.run_id }}
+          path: /tmp/uae-era-detail-live-evidence.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Prove repository clean
+        if: always()
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
