@@ -13,7 +13,7 @@ jobs:
   refresh:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,38 +22,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Regenerate deterministic operations status
-        run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-02
-      - name: Validate Operations v1 and UAE recovery
+      - name: Split UAE schedule and detail readiness
         run: |
-          set +e
-          : > /tmp/operations-v1-refresh-validation.log
-          status=0
-          for command in \
-            "node scripts/check-calendar-operations-status.mjs" \
-            "node scripts/check-calendar-operations-v1-release-gate.mjs" \
-            "node scripts/check-calendar-uae-era-detail-recovery.mjs" \
-            "node scripts/check-calendar-acquisition-registry.mjs"
-          do
-            printf '\n$ %s\n' "$command" | tee -a /tmp/operations-v1-refresh-validation.log
-            bash -lc "$command" 2>&1 | tee -a /tmp/operations-v1-refresh-validation.log
-            current=${PIPESTATUS[0]}
-            if [ "$current" -ne 0 ]; then status="$current"; fi
-          done
-          exit "$status"
-      - name: Upload refresh diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: operations-v1-refresh-diagnostics-${{ github.run_id }}
-          path: /tmp/operations-v1-refresh-validation.log
-          if-no-files-found: warn
-          retention-days: 7
-      - name: Remove temporary workflow and commit status
+          node --check scripts/temporary-split-uae-readiness.mjs
+          node scripts/temporary-split-uae-readiness.mjs
+      - name: Regenerate deterministic operations artifacts
         run: |
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-02
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Validate UAE recovery and shared release gates
+        run: |
+          node scripts/check-calendar-uae-era-detail-recovery.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
+          node scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-calendar-readiness-backfill-37-52.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/check-calendar-pipeline-v1-public-projection.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-calendar-dynamic-dates-release-gate.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+      - name: Remove temporary synchronization files
+        run: |
+          rm -f scripts/temporary-split-uae-readiness.mjs
           rm -f .github/workflows/temporary-refresh-uae-operations-status.yml
+      - name: Commit synchronized UAE readiness and operations artifacts
+        run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add data/generated/timetable/operations-status.json .github/workflows/temporary-refresh-uae-operations-status.yml
-          git commit -m "Refresh operations status for UAE A-level capability"
+          git add \
+            data/static/calendar-readiness-registry.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json \
+            scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs \
+            scripts/check-calendar-uae-era-handoff-decision.mjs \
+            scripts/check-calendar-readiness-backfill-37-52.mjs \
+            scripts/temporary-split-uae-readiness.mjs \
+            .github/workflows/temporary-refresh-uae-operations-status.yml
+          git commit -m "Separate UAE schedule and A-level detail readiness"
           git push origin HEAD:agent/uae-era-detail-recovery
