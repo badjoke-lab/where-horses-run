@@ -15,6 +15,9 @@ const rows = lines.map((line) => line.split('\t'));
 const countries = new Map(rows.filter((row) => Number(row[deliveryIndex]) >= 37 && Number(row[deliveryIndex]) <= 52).map((row) => [row[slugIndex], row[deliveryIndex]]));
 const first52Countries = new Set(rows.filter((row) => Number(row[deliveryIndex]) >= 1 && Number(row[deliveryIndex]) <= 52).map((row) => row[slugIndex]));
 const expected = { malaysia:1, thailand:1, philippines:1, mauritius:1, argentina:1, germany:1, italy:2, spain:1, norway:2, finland:1, netherlands:1, switzerland:2, poland:1, romania:1, serbia:1, slovakia:1 };
+const postBackfillTransitionIds = new Set([
+  'united-arab-emirates--uae-national-racing-system--era-season-calendar',
+]);
 
 if (!['complete', 'source_test_v2_active', 'revalidation_required'].includes(registry.bootstrap_status)) fail(`unexpected bootstrap_status: ${registry.bootstrap_status}`);
 if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 52) fail('closed country count must be at least 52');
@@ -42,9 +45,21 @@ const countBy = (records) => records.reduce((counts, record) => ({ ...counts, [r
 const targetCounts = countBy(targets);
 if (targetCounts.prototype_ready !== 6 || targetCounts.manual_ready !== 13 || (targetCounts.link_only ?? 0) || (targetCounts.blocked ?? 0)) fail('target readiness mix must be prototype=6 manual=13 link=0 blocked=0');
 const baselineRecords = (registry.records ?? []).filter((record) => first52Countries.has(record.country_id));
-if (baselineRecords.length !== 70) fail(`entries 01-52 must retain 70 readiness records; found ${baselineRecords.length}`);
-const baselineCounts = countBy(baselineRecords);
-if (baselineCounts.prototype_ready !== 35 || baselineCounts.manual_ready !== 27 || baselineCounts.blocked !== 4 || baselineCounts.link_only !== 4) fail('entries 01-52 readiness mix is invalid');
+if (baselineRecords.length !== 70) fail(`entries 01-52 must retain 70 readiness records including reviewed transitions; found ${baselineRecords.length}`);
+const historicalBaselineRecords = baselineRecords.map((record) => postBackfillTransitionIds.has(record.readiness_id)
+  ? { ...record, readiness: 'manual_ready' }
+  : record);
+const baselineCounts = countBy(historicalBaselineRecords);
+if (baselineCounts.prototype_ready !== 35 || baselineCounts.manual_ready !== 27 || baselineCounts.blocked !== 4 || baselineCounts.link_only !== 4) fail('historical entries 01-52 readiness mix is invalid');
+
+const uaeTransition = (registry.records ?? []).find((record) => postBackfillTransitionIds.has(record.readiness_id));
+if (!uaeTransition) fail('UAE source-pilot transition readiness record is missing');
+else {
+  if (uaeTransition.country_tracker_delivery_no !== '01') fail('UAE transition delivery number differs');
+  if (uaeTransition.readiness !== 'prototype_ready') fail('UAE transition readiness differs');
+  if (uaeTransition.implementation_status !== 'fixture_validated') fail('UAE transition implementation status differs');
+  if ((uaeTransition.racecourse_ids ?? []).length !== 5) fail('UAE transition must retain five approved racecourse IDs');
+}
 
 for (let delivery = 37; delivery <= 52; delivery += 1) {
   const value = String(delivery);
