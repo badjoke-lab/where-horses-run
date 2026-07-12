@@ -36,12 +36,31 @@ jobs:
         run: node scripts/temporary-activate-uae-era-detail-recovery.mjs
       - name: Validate synchronized contracts
         run: |
-          node scripts/check-calendar-uae-era-detail-recovery.mjs
-          node scripts/check-calendar-acquisition-registry.mjs
-          node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
-          node scripts/check-calendar-uae-era-handoff-decision.mjs
-          node scripts/check-calendar-readiness-registry.mjs
-          node scripts/check-authority-source-inventory.mjs
+          set +e
+          : > /tmp/uae-activation-validation.log
+          status=0
+          for command in \
+            "node scripts/check-calendar-uae-era-detail-recovery.mjs" \
+            "node scripts/check-calendar-acquisition-registry.mjs" \
+            "node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs" \
+            "node scripts/check-calendar-uae-era-handoff-decision.mjs" \
+            "node scripts/check-calendar-readiness-registry.mjs" \
+            "node scripts/check-authority-source-inventory.mjs"
+          do
+            printf '\n$ %s\n' "$command" | tee -a /tmp/uae-activation-validation.log
+            bash -lc "$command" 2>&1 | tee -a /tmp/uae-activation-validation.log
+            current=${PIPESTATUS[0]}
+            if [ "$current" -ne 0 ]; then status="$current"; fi
+          done
+          exit "$status"
+      - name: Upload synchronization diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-detail-activation-diagnostics-${{ github.run_id }}
+          path: /tmp/uae-activation-validation.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Commit synchronized activation
         run: |
           git config user.name github-actions[bot]
