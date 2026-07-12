@@ -122,14 +122,14 @@ for (const phrase of [
   'UAE ERA handoff accepted',
   'bounded manual reviewed steady-state operation',
   'WHR-CAL-PUBLIC-V1',
-  'global Current Work ID switch remains a separate entrypoint synchronization step',
+  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
 ]) {
   if (!projectRoadmap.includes(phrase)) fail(`project roadmap missing ${phrase}.`);
 }
 for (const phrase of [
   'UAE ERA handoff accepted',
   'WHR-CAL-PUBLIC-V1',
-  'entrypoint synchronization',
+  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
 ]) {
   if (!implementationRoadmap.includes(phrase)) fail(`implementation roadmap missing ${phrase}.`);
 }
@@ -155,5 +155,5 @@ console.log('REGISTRY_PROFILE_STATUS: provisional');
 console.log('SCHEDULE_ROUTE: github_actions / source_visible_horizon / C / active_review_only');
 console.log('DETAIL_ROUTE: inactive');
 console.log('SYSTEM_FALLBACK_RUNNER: pending');
-console.log('ENTRYPOINT_SWITCH: separate');
+console.log('ENTRYPOINT_SWITCH: complete');
 console.log('AUTOMATIC_EXECUTION_PUBLICATION: false');

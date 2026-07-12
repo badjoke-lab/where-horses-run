@@ -343,8 +343,8 @@ Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Current Work ID: `WHR-CAL-UAE-ERA`
-Next programme Work ID: `WHR-CAL-PUBLIC-V1`
+Completed Work ID: `WHR-CAL-UAE-ERA`
+Current Work ID: `WHR-CAL-PUBLIC-V1`
 
 Current NAR status:
 
@@ -366,11 +366,11 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. confirm the reviewed UAE Calendar Readiness and official ERA season-calendar baseline
-2. implement a bounded C-level UAE candidate generator with no-write artifact output
-3. run source-specific fixture/parser evidence before any Acquisition Registry activation decision
-4. explicitly review the UAE handoff boundary after bounded evidence
-5. continue to WHR-CAL-PUBLIC-V1 only after the UAE source-specific boundary is reviewed
+1. audit Calendar, Today, and Tomorrow against the Stage 11 dynamic-date and one-meeting-per-row release criteria
+2. reconcile maintained approved-pilot records with visible source, coverage, freshness, rank, and honest partial-coverage states
+3. validate safe current, stale, empty, source-failure, and retry-ownership presentation without inventing missing detail
+4. complete bilingual responsive QA for Calendar, country, racecourse, and meeting navigation boundaries
+5. prepare the explicit WHR-CAL-PUBLIC-V1 release decision while unattended publication remains disabled
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
