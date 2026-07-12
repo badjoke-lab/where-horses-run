@@ -9,7 +9,7 @@ function replaceRequired(file, before, after) {
 replaceRequired(
   'scripts/check-calendar-contracts.mjs',
   "  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE']],\n  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],",
-  "  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Completed Work ID: `WHR-CAL-UAE-ERA`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE']],\n  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'Current Work ID: `WHR-CAL-PUBLIC-V1`']],",
+  "  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Completed Work ID: `WHR-CAL-UAE-ERA`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'WHR-CAL-OPS-V1', 'WHR-CAL-BASELINE-RECONCILE']],\n  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'Current Work ID: `WHR-CAL-PUBLIC-V1`']],",
 );
 replaceRequired(
   'scripts/check-calendar-contracts.mjs',
