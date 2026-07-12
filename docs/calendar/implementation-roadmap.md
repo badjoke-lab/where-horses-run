@@ -577,7 +577,8 @@ No pilot may require fixed-month completeness before ordinary valid partial prom
 
 Status: active current programme work
 Work ID: `WHR-CAL-PUBLIC-V1`
-Current implementation unit: `PUBLIC-V1-SURFACE-AUDIT-01` — in review
+Completed implementation unit: `PUBLIC-V1-SURFACE-AUDIT-01`
+Current implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01` — in review
 
 Release criteria include:
 
@@ -592,13 +593,21 @@ Release criteria include:
 - review and retry operations ownership;
 - no participant, betting, result, payout, prediction, full-racecard, raw-source, embedded-video, or direct-stream output.
 
-Current Public v1 evidence unit:
+Completed Public v1 surface evidence:
 
 - Calendar, Today, and Tomorrow share explicit reference-date/timezone resolution;
 - English and Japanese routes use the shared `CalendarDateStatus` and `TimetableMeetingList`;
 - one meeting remains one list row;
 - C/B/B+/A/A+ list visibility and separate meeting-detail boundaries are checked;
-- reproducible current-window and stale-window rendered fixtures are validated;
+- reproducible current-window and stale-window rendered fixtures are validated.
+
+Current Public v1 pilot-record evidence:
+
+- every public meeting row derives a reviewed-coverage label from its effective public rank;
+- every row distinguishes unreviewed detail, an applied public ceiling, or the current reviewed ceiling;
+- JRA, NAR, Banei, HKJC, and UAE are reconciled against Acquisition Registry and canonical/public evidence;
+- source status, HTTPS official source, and last-checked date remain visible;
+- no internal review, queue, operator, or raw-source data is exposed;
 - automatic acquisition, approval, promotion, and unattended publication remain disabled.
 
 ## Later product stages
