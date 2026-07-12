@@ -65,8 +65,7 @@ Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-UAE-ERA`
-Next programme Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-CAL-PUBLIC-V1`
 
 Completed transition marker:
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
@@ -192,15 +191,14 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 entrypoint synchronization next
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 active
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-UAE-ERA`
-Next programme Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-CAL-PUBLIC-V1`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -577,6 +575,7 @@ No pilot may require fixed-month completeness before ordinary valid partial prom
 
 ## Stage 11 — Calendar public v1
 
+Status: active current programme work
 Work ID: `WHR-CAL-PUBLIC-V1`
 
 Release criteria include:
@@ -617,17 +616,13 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. Banei handoff accepted; keep manual reviewed steady-state operation while unattended execution/publication remain disabled
-2. HKJC-PILOT-02 artifact-only live fixture bridge implemented under WHR-CAL-HONG-KONG-HKJC
-3. HKJC-PILOT-03 shared Actions integration complete; initial August parser_failure evidence retained as transition history
-4. HKJC-PILOT-04 parser resilience and repeated bounded shared-Actions evidence complete with source_window_complete valid-empty August evidence
-5. HKJC-PILOT-05 artifact-only detail foundation accepted; hosted HTTP detail runner remains unproven and Registry detail activation remains blocked
-6. HKJC-PILOT-06 reviewed-import detail operator path evidence-backed; keep system-level fallback and Registry detail activation pending
-7. HKJC-PILOT-06B route-specific runner policy complete; HKJC handoff accepted for bounded manual reviewed steady-state operation
-8. synchronize global entrypoint markers from WHR-CAL-HONG-KONG-HKJC to WHR-CAL-UAE-ERA in a dedicated compatibility update
-9. begin WHR-CAL-UAE-ERA source-specific implementation after entrypoint synchronization
-10. run Banei July Completion Audit only before an explicit full-month completeness claim
-11. continue Calendar Public v1 release-readiness work in parallel
+1. keep Banei, HKJC, and UAE in their accepted bounded reviewed steady-state operating modes
+2. audit dynamic Calendar, Today, and Tomorrow behavior against explicit timezone and safe empty/stale/failure rules
+3. reconcile maintained approved-pilot records with visible source, rank, coverage, freshness, review, and retry ownership
+4. verify one meeting per list row and C/B/B+/A/A+ public field boundaries across supported views
+5. complete bilingual responsive Calendar, country, racecourse, and meeting navigation QA
+6. prepare the explicit WHR-CAL-PUBLIC-V1 release decision without enabling unattended publication
+7. run source-specific Completion Audits only before making their corresponding completeness claims
 ```
 
 ## Per-PR document review
@@ -663,4 +658,4 @@ Accepted state:
 - 64-record review-only evidence with source-window closure;
 - detail route, fallback runner, arbitrary date-window mode, selected-meeting mode, retry automation, automatic execution, approval, promotion, publication, canonical write, and public write remain disabled.
 
-Next programme Work ID: `WHR-CAL-PUBLIC-V1`. The global Current Work ID switch remains a separate entrypoint synchronization step.
+Current programme Work ID: `WHR-CAL-PUBLIC-V1`. UAE maintenance may continue incrementally under the accepted handoff boundary without blocking Public v1 release-readiness work.

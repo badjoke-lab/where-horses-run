@@ -90,9 +90,9 @@ for (const [file, markers] of Object.entries({
   'docs/calendar/baseline-reconciliation-map.md':['Normal build is read-only','Incomplete daily refresh is paused'],
   'docs/calendar/current-baseline-audit.md':['Status: reconciled'],
   'docs/runbooks/current-timetable-data-inventory.md':['Status: superseded'],
-  'docs/calendar/implementation-roadmap.md':['Pipeline v1 status: complete','Dynamic Dates status: complete','Operations v1 status: complete','Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`','Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`','Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-UAE-ERA`','Next programme Work ID: `WHR-CAL-PUBLIC-V1`','docs/calendar/incremental-coverage-contract.md','docs/calendar/acquisition-control-plane-contract.md'],
-  'docs/project-roadmap.md':['Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`','Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`','Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-UAE-ERA`','Next programme Work ID: `WHR-CAL-PUBLIC-V1`','Completed Work ID: `WHR-CAL-OPS-V1`','Meeting / Schedule Layer','Acquisition Control Plane'],
-  'START-HERE.md':['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`','WHR-CAL-JAPAN-NAR','WHR-CAL-JAPAN-BANEI','WHR-CAL-ACQUISITION-CONTROL-PLANE','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-UAE-ERA`','Next programme Work ID: `WHR-CAL-PUBLIC-V1`','docs/calendar/incremental-coverage-contract.md'],
+  'docs/calendar/implementation-roadmap.md':['Pipeline v1 status: complete','Dynamic Dates status: complete','Operations v1 status: complete','Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`','Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`','Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-PUBLIC-V1`','docs/calendar/incremental-coverage-contract.md','docs/calendar/acquisition-control-plane-contract.md'],
+  'docs/project-roadmap.md':['Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`','Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`','Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-PUBLIC-V1`','Completed Work ID: `WHR-CAL-OPS-V1`','Meeting / Schedule Layer','Acquisition Control Plane'],
+  'START-HERE.md':['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`','WHR-CAL-JAPAN-NAR','WHR-CAL-JAPAN-BANEI','WHR-CAL-ACQUISITION-CONTROL-PLANE','Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`','Current Work ID: `WHR-CAL-PUBLIC-V1`','docs/calendar/incremental-coverage-contract.md'],
 })) {
   const text = read(file);
   markers.forEach((marker) => { if (!text.includes(marker)) fail(`${file} must include ${marker}.`); });
@@ -108,5 +108,5 @@ console.log(`CALENDAR_BASELINE_RECONCILIATION: pass components=${map.components.
 console.log('COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
 console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
 console.log('COMPLETED_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
-console.log('CURRENT_WORK_ID: WHR-CAL-UAE-ERA');
-console.log('NEXT_PROGRAMME_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('COMPLETED_WORK_ID: WHR-CAL-UAE-ERA');
+console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');

@@ -70,9 +70,9 @@ for (const forbidden of ['contents: write', 'pull-requests: write', 'create-pull
 }
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'WHR-CAL-JAPAN-NAR-A-PLUS', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/incremental-coverage-contract.md']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'Incremental maintenance is normal']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-UAE-ERA`', 'Next programme Work ID: `WHR-CAL-PUBLIC-V1`', 'Coverage Observation']]
+  ['START-HERE.md', startHere, ['WHR-CAL-JAPAN-A-PLUS-RECONCILE', 'WHR-CAL-JAPAN-JRA-A-PLUS', 'WHR-CAL-JAPAN-NAR-A-PLUS', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'docs/calendar/japan-a-plus-reconciliation-plan.md', 'docs/calendar/incremental-coverage-contract.md']],
+  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'Incremental maintenance is normal']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'Coverage Observation']]
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
 }
@@ -86,7 +86,6 @@ if (errors.length) {
 console.log('CALENDAR_OPERATIONS_V1_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-OPS-V1');
 console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('CURRENT_WORK_ID: WHR-CAL-UAE-ERA');
-console.log('NEXT_PROGRAMME_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
 console.log('UNATTENDED_PUBLICATION_ALLOWED: false');
