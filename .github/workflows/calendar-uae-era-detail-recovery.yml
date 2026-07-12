@@ -41,11 +41,19 @@ jobs:
             > /tmp/uae-detail-protected-before.sha256
       - name: Prove official ERA racecard detail acquisition
         run: |
+          set +e
           node scripts/timetable/collect-uae-era-detail-artifacts.mjs \
             --date=2026-04-10 \
             --racecourse-id=al-ain-racecourse \
             --expected-races=10 \
-            > /tmp/uae-era-detail-live-evidence.json
+            > /tmp/uae-era-detail-live-evidence.json \
+            2> /tmp/uae-era-detail-live-error.txt
+          status=$?
+          printf '%s\n' "$status" > /tmp/uae-era-detail-live-status.txt
+          if [ "$status" -ne 0 ]; then
+            cat /tmp/uae-era-detail-live-error.txt
+          fi
+          exit "$status"
       - name: Validate bounded live evidence
         run: |
           node --input-type=module - <<'NODE'
@@ -80,11 +88,15 @@ jobs:
           NODE
       - name: Prove canonical and public state unchanged
         run: sha256sum --check /tmp/uae-detail-protected-before.sha256
-      - name: Upload public-safe live evidence
+      - name: Upload public-safe live evidence or diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: uae-era-detail-live-evidence-${{ github.run_id }}
-          path: /tmp/uae-era-detail-live-evidence.json
+          path: |
+            /tmp/uae-era-detail-live-evidence.json
+            /tmp/uae-era-detail-live-error.txt
+            /tmp/uae-era-detail-live-status.txt
           if-no-files-found: error
           retention-days: 30
       - name: Prove repository clean
