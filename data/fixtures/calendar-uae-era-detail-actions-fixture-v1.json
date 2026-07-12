@@ -1,0 +1,86 @@
+{
+  "schema_version": "calendar-uae-era-detail-actions-fixture-v1",
+  "work_id": "WHR-CAL-UAE-ERA-DETAIL-RECOVERY",
+  "implementation_unit": "UAE-DETAIL-RECOVERY-02",
+  "checked_at": "2026-07-13T12:00:00Z",
+  "scenarios": [
+    {
+      "id": "complete-a",
+      "meeting_results": [
+        {
+          "meeting_id": "uae-al-ain-racecourse-2026-04-10",
+          "classification": {
+            "rank": "A",
+            "first_race_time_local": "17:00",
+            "last_race_time_local": "18:00",
+            "timetable_rows": [
+              { "label": "Race 1", "post_time_local": "17:00" },
+              { "label": "Race 2", "post_time_local": "17:30" },
+              { "label": "Race 3", "post_time_local": "18:00" }
+            ]
+          },
+          "source_errors": []
+        }
+      ],
+      "expected": {
+        "rank": "A",
+        "records_updated": 1,
+        "coverage_claim": "source_window_complete",
+        "unresolved_meeting_count": 0,
+        "source_error_count": 0,
+        "review_state": "review_ready"
+      }
+    },
+    {
+      "id": "source-not-visible-c",
+      "meeting_results": [
+        {
+          "meeting_id": "uae-al-ain-racecourse-2026-04-10",
+          "classification": {
+            "rank": "C",
+            "first_race_time_local": null,
+            "last_race_time_local": null,
+            "timetable_rows": []
+          },
+          "source_errors": [
+            {
+              "code": "source_unavailable",
+              "message": "Official ERA racecard is not source-visible yet."
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "rank": "C",
+        "records_updated": 0,
+        "coverage_claim": "none",
+        "unresolved_meeting_count": 1,
+        "source_error_count": 1,
+        "review_state": "not_ready"
+      }
+    },
+    {
+      "id": "partial-b",
+      "meeting_results": [
+        {
+          "meeting_id": "uae-al-ain-racecourse-2026-04-10",
+          "classification": {
+            "rank": "B",
+            "first_race_time_local": "17:00",
+            "last_race_time_local": null,
+            "timetable_rows": []
+          },
+          "source_errors": []
+        }
+      ],
+      "expected": {
+        "rank": "B",
+        "records_updated": 1,
+        "coverage_claim": "source_window_complete",
+        "unresolved_meeting_count": 0,
+        "source_error_count": 0,
+        "review_state": "review_ready"
+      }
+    }
+  ]
+}
