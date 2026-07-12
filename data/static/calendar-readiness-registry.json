@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 116,
+    "readiness_records": 117,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -51,13 +51,67 @@
       "source_status": "verified",
       "checked_date": "2026-07-11",
       "evidence_reviewed_at": "2026-07-11",
-      "revalidation_trigger": "Revalidate when ERA publishes a replacement fixture PDF, changes venue identities, or the reviewed fixture-window structure no longer closes to 64 C-level observations.",
+      "revalidation_trigger": "Revalidate when ERA replaces the reviewed season-calendar PDF, changes the five-venue grid, or the fixed source-visible horizon no longer closes to the reviewed 64 meetings.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
       "limitations": [
-        "C-level meeting date and approved racecourse identity only. No race-time or programme-detail claim. PDF fixture-window extraction is review-only and automatic execution/publication remain disabled."
+        "C-level meeting date and approved racecourse identity only.",
+        "The reviewed season-calendar route does not claim race times or per-race detail.",
+        "Automatic approval, canonical promotion, public writing, and unattended publication remain disabled."
       ],
-      "notes": "UAE-PILOT-02 through PILOT-05 provide reviewed article, venue-page, PDF structure, coordinate-grid, boundary-reconciliation, and venue-mapping evidence. The accepted reviewed PDF fixture window is 2026-10-22 through 2027-04-15 inclusive, with 64 C-level label-based observations across five approved venue identities."
+      "notes": "Historical reviewed UAE schedule route: 64 meetings across Meydan, Abu Dhabi, Al Ain, Jebel Ali, and Sharjah for the fixed 2026-10-22 through 2027-04-15 source-visible season window."
+    },
+    {
+      "readiness_id": "united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable",
+      "country_id": "united-arab-emirates",
+      "country_tracker_delivery_no": "01",
+      "system_id": "uae-national-racing-system",
+      "system_name_en": "UAE national racing system",
+      "authority_source_key": "united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable",
+      "racecourse_ids": [
+        "meydan-racecourse",
+        "abu-dhabi-turf-club",
+        "al-ain-racecourse",
+        "jebel-ali-racecourse",
+        "sharjah-racecourse"
+      ],
+      "coverage_scope": "countrywide",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": true,
+        "surface": true,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "date_route",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "fixture_validated",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-07-13",
+      "evidence_reviewed_at": "2026-07-13",
+      "revalidation_trigger": "Revalidate when ERA changes its racecard date/race route, Race 1-N navigation stops closing continuously, or a source-visible meeting cannot reproduce reviewed A-level post-time fields.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/01-united-arab-emirates/backfill-summary.json",
+      "limitations": [
+        "A-level detail exists only after the official ERA racecard becomes source-visible.",
+        "Race names are not consistently present, so A+ is not claimed.",
+        "Shared automatic near-meeting retry execution, automatic approval, canonical promotion, public writing, and unattended publication remain disabled."
+      ],
+      "notes": "Official ERA live evidence run 29199123357 proved 10 Al Ain races on 2026-04-10 from 17:00 through 21:30 at Rank A with zero source errors; artifact 8261852673, sha256:7c6cc386a8092d86b2d603fdea3aa9b890558c89b5f8bfb798af69ae1f9dc379."
     },
     {
       "readiness_id": "south-korea--kra-national-racing-system--kra-today-race",

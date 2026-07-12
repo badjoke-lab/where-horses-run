@@ -5,6 +5,7 @@ const root = process.cwd();
 const errors = [];
 const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
+const uaeDetailRecoveryId = 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable';
 
 const registry = readJson('data/static/calendar-readiness-registry.json');
 const authorityInventory = readJson('data/static/authority-source-inventory.json');
@@ -58,8 +59,18 @@ const authorityKeys = new Set((authorityInventory.records ?? []).map((record) =>
 if (authorityKeys.size !== (authorityInventory.records ?? []).length) fail('authority inventory contains duplicate compound keys');
 if ((authorityInventory.records ?? []).length < 31) fail('authority inventory must retain at least the 31 records established by entries 01-20');
 
-const targetRecords = (registry.records ?? []).filter((record) => targetCountries.has(record.country_id));
-if (targetRecords.length !== 30) fail(`entries 01-20 must retain 30 readiness records; found ${targetRecords.length}`);
+const uaeDetailRecovery = (registry.records ?? []).find((record) => record.readiness_id === uaeDetailRecoveryId);
+if (!uaeDetailRecovery) fail('UAE detail recovery readiness record is missing');
+else {
+  if (uaeDetailRecovery.country_tracker_delivery_no !== '01') fail('UAE detail recovery delivery number differs');
+  if (uaeDetailRecovery.authority_source_key !== 'united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable') fail('UAE detail recovery source key differs');
+  if (uaeDetailRecovery.technical_rank !== 'A' || uaeDetailRecovery.public_ceiling !== 'A') fail('UAE detail recovery rank boundary differs');
+  if (uaeDetailRecovery.readiness !== 'prototype_ready' || uaeDetailRecovery.implementation_status !== 'fixture_validated') fail('UAE detail recovery state differs');
+  if ((uaeDetailRecovery.racecourse_ids ?? []).length !== 5) fail('UAE detail recovery must retain five approved racecourse IDs');
+}
+
+const targetRecords = (registry.records ?? []).filter((record) => targetCountries.has(record.country_id) && record.readiness_id !== uaeDetailRecoveryId);
+if (targetRecords.length !== 30) fail(`entries 01-20 must retain 30 historical readiness records; found ${targetRecords.length}`);
 
 const recordsByCountry = new Map();
 let targetNotStarted = 0;
@@ -74,7 +85,7 @@ for (const record of targetRecords) {
 for (const [country, deliveryNo] of targetCountries) {
   const records = recordsByCountry.get(country) ?? [];
   const expectedCount = expectedSystemCounts.get(country);
-  if (records.length !== expectedCount) fail(`${country}: expected ${expectedCount} records; found ${records.length}`);
+  if (records.length !== expectedCount) fail(`${country}: expected ${expectedCount} historical records; found ${records.length}`);
   for (const record of records) {
     if (record.country_tracker_delivery_no !== deliveryNo) fail(`${record.readiness_id}: delivery number mismatch`);
   }
@@ -114,7 +125,8 @@ if (errors.length) {
 
 console.log('CALENDAR_READINESS_BACKFILL_01_20_VALID');
 console.log('TARGET_COUNTRIES: 20');
-console.log('TARGET_READINESS_RECORDS: 30');
+console.log('TARGET_HISTORICAL_READINESS_RECORDS: 30');
+console.log('UAE_DETAIL_RECOVERY_RECORDS: 1');
 console.log('MINIMUM_AUTHORITY_SOURCE_RECORDS: 31');
 console.log('TARGET_BLOCKED_RECORDS: 4');
 console.log('TARGET_LINK_ONLY_RECORDS: 2');

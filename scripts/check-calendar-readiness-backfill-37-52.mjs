@@ -18,6 +18,9 @@ const expected = { malaysia:1, thailand:1, philippines:1, mauritius:1, argentina
 const postBackfillTransitionIds = new Set([
   'united-arab-emirates--uae-national-racing-system--era-season-calendar',
 ]);
+const postBackfillRecoveryIds = new Set([
+  'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable',
+]);
 
 if (!['complete', 'source_test_v2_active', 'revalidation_required'].includes(registry.bootstrap_status)) fail(`unexpected bootstrap_status: ${registry.bootstrap_status}`);
 if ((registry.programme_state?.countries_with_closed_decision ?? 0) < 52) fail('closed country count must be at least 52');
@@ -44,13 +47,22 @@ for (const [country, delivery] of countries) {
 const countBy = (records) => records.reduce((counts, record) => ({ ...counts, [record.readiness]: (counts[record.readiness] ?? 0) + 1 }), {});
 const targetCounts = countBy(targets);
 if (targetCounts.prototype_ready !== 6 || targetCounts.manual_ready !== 13 || (targetCounts.link_only ?? 0) || (targetCounts.blocked ?? 0)) fail('target readiness mix must be prototype=6 manual=13 link=0 blocked=0');
-const baselineRecords = (registry.records ?? []).filter((record) => first52Countries.has(record.country_id));
+const baselineRecords = (registry.records ?? []).filter((record) => first52Countries.has(record.country_id) && !postBackfillRecoveryIds.has(record.readiness_id));
 if (baselineRecords.length !== 70) fail(`entries 01-52 must retain 70 readiness records including reviewed transitions; found ${baselineRecords.length}`);
 const historicalBaselineRecords = baselineRecords.map((record) => postBackfillTransitionIds.has(record.readiness_id)
   ? { ...record, readiness: 'manual_ready' }
   : record);
 const baselineCounts = countBy(historicalBaselineRecords);
 if (baselineCounts.prototype_ready !== 35 || baselineCounts.manual_ready !== 27 || baselineCounts.blocked !== 4 || baselineCounts.link_only !== 4) fail('historical entries 01-52 readiness mix is invalid');
+
+const uaeRecovery = (registry.records ?? []).find((record) => postBackfillRecoveryIds.has(record.readiness_id));
+if (!uaeRecovery) fail('UAE detail recovery readiness record is missing');
+else {
+  if (uaeRecovery.country_tracker_delivery_no !== '01') fail('UAE detail recovery delivery number differs');
+  if (uaeRecovery.readiness !== 'prototype_ready' || uaeRecovery.implementation_status !== 'fixture_validated') fail('UAE detail recovery implementation state differs');
+  if (uaeRecovery.technical_rank !== 'A' || uaeRecovery.public_ceiling !== 'A') fail('UAE detail recovery rank boundary differs');
+  if ((uaeRecovery.racecourse_ids ?? []).length !== 5) fail('UAE detail recovery must retain five approved racecourse IDs');
+}
 
 const uaeTransition = (registry.records ?? []).find((record) => postBackfillTransitionIds.has(record.readiness_id));
 if (!uaeTransition) fail('UAE source-pilot transition readiness record is missing');
