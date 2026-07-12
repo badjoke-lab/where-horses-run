@@ -5,6 +5,7 @@ const AUTHORITY_ID = 'emirates-racing-authority';
 const SOURCE_ID = 'era-racecard-public-timetable';
 const ADAPTER_ID = 'uae-era-racecard-detail-artifact-v1';
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const MONTHS = Object.freeze(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
 
 const RACECOURSE_BY_NAME = new Map([
   ['meydan', 'meydan-racecourse'],
@@ -68,21 +69,47 @@ function officialRacecardRoute(value) {
   }
 }
 
-function racecourseFromText(text) {
-  const lower = text.toLowerCase();
-  for (const [name, racecourseId] of RACECOURSE_BY_NAME) {
-    if (new RegExp(`(?:^|\\n)${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\n|$)`, 'i').test(lower)) {
-      return { racecourse_id: racecourseId, racecourse_name: name };
-    }
+function humanDateLabel(date) {
+  const [year, month, day] = date.split('-').map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+}
+
+function exactRacecourseLine(value) {
+  const normalized = String(value ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const racecourseId = RACECOURSE_BY_NAME.get(normalized) ?? null;
+  return racecourseId ? { racecourse_id: racecourseId, racecourse_name: normalized } : null;
+}
+
+function meetingHeaderSlice(text, date, raceNumber) {
+  const dateLabel = humanDateLabel(date);
+  const dateIndex = text.toLowerCase().indexOf(dateLabel.toLowerCase());
+  if (dateIndex < 0) return '';
+  const afterDate = text.slice(dateIndex + dateLabel.length);
+  const raceMarker = new RegExp(`(?:^|\\n)Race\\s+${raceNumber}(?:\\s*[-–—:]\\s*[^\\n]+)?(?:\\n|$)`, 'i');
+  const raceMatch = raceMarker.exec(afterDate);
+  if (!raceMatch) return afterDate.slice(0, 500);
+  return afterDate.slice(0, raceMatch.index);
+}
+
+function racecourseFromMeetingHeader(text, date, raceNumber) {
+  const header = meetingHeaderSlice(text, date, raceNumber);
+  const lines = header.split('\n').map((line) => line.trim()).filter(Boolean);
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    const matched = exactRacecourseLine(lines[index]);
+    if (matched) return matched;
   }
   return { racecourse_id: null, racecourse_name: null };
 }
 
-function raceSection(text, raceNumber) {
+function raceSection(text, date, raceNumber) {
+  const dateLabel = humanDateLabel(date);
+  const dateIndex = text.toLowerCase().indexOf(dateLabel.toLowerCase());
+  const searchText = dateIndex >= 0 ? text.slice(dateIndex + dateLabel.length) : text;
   const marker = new RegExp(`(?:^|\\n)Race\\s+${raceNumber}(?:\\s*[-–—:]\\s*[^\\n]+)?(?:\\n|$)`, 'i');
-  const match = marker.exec(text);
-  if (!match) return text;
-  return text.slice(match.index, Math.min(text.length, match.index + 2400));
+  const matches = [...searchText.matchAll(new RegExp(marker.source, 'gi'))];
+  const match = matches.at(-1);
+  if (!match) return searchText;
+  return searchText.slice(match.index, Math.min(searchText.length, match.index + 2400));
 }
 
 function raceNameFromSection(section, raceNumber) {
@@ -101,6 +128,7 @@ function classLabelFromSection(section) {
     /^AED\b/i,
     /^(?:Rail Position|Track Condition|Safety Limit|Track Record|Prize Breakdown)/i,
     /^\d{3,4}m$/i,
+    /^(?:All|Entries|Declarations|Results|Downloads|Loading\.\.\.)$/i,
   ];
   return lines.find((line) => !ignored.some((pattern) => pattern.test(line)) && /[A-Za-z]/.test(line))?.slice(0, 120) ?? null;
 }
@@ -123,8 +151,8 @@ export function parseUaeEraPublicSafeRacecardHtml(html, { sourceUrl }) {
   if (route.race_number < 1 || route.race_number > 30) throw new Error('race number must be from 1 through 30');
 
   const text = uaeEraDetailText(html);
-  const section = raceSection(text, route.race_number);
-  const racecourse = racecourseFromText(text);
+  const section = raceSection(text, route.date, route.race_number);
+  const racecourse = racecourseFromMeetingHeader(text, route.date, route.race_number);
   const postTime = normalizeTime(section.match(/(?:^|\n)(\d{1,2}:\d{2})(?:\n|$)/)?.[1]);
   const distanceMatch = section.match(/(?:^|\n)(\d{3,4})m(?:\n|$)/i);
   const surfaceMatch = section.match(/(?:^|\n)(DIRT|TURF)(?:\n|$)/i);
