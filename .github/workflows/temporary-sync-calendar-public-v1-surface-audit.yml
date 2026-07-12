@@ -1,0 +1,46 @@
+name: Temporary Calendar Public v1 surface audit sync
+
+on:
+  push:
+    branches:
+      - work/calendar-public-v1-surface-audit
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-public-v1-surface-audit
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply Public v1 surface audit synchronization
+        run: node scripts/temporary-sync-calendar-public-v1-surface-audit.mjs
+      - name: Validate Calendar contracts at Public v1 entrypoint
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Validate Public v1 source audit
+        run: node scripts/check-calendar-public-v1-surface-audit.mjs
+      - name: Validate diff hygiene
+        run: git diff --check
+      - name: Commit synchronized state
+        run: |
+          if git diff --quiet; then
+            echo "No synchronization changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/calendar/README.md \
+            docs/calendar/implementation-roadmap.md \
+            scripts/check-calendar-contracts.mjs
+          git commit -m "[CF-Pages-Skip] Synchronize Public v1 surface audit state"
+          git pull --rebase origin work/calendar-public-v1-surface-audit
+          git push origin HEAD:work/calendar-public-v1-surface-audit
