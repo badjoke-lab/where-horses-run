@@ -1,0 +1,51 @@
+name: Temporary activate UAE ERA detail recovery
+
+on:
+  push:
+    branches:
+      - agent/uae-era-detail-recovery
+
+permissions:
+  contents: write
+
+jobs:
+  synchronize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/uae-era-detail-recovery
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply reviewed UAE detail activation
+        run: node scripts/temporary-activate-uae-era-detail-recovery.mjs
+      - name: Validate synchronized contracts
+        run: |
+          node scripts/check-calendar-uae-era-detail-recovery.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
+          node scripts/check-calendar-uae-era-handoff-decision.mjs
+          node scripts/check-calendar-readiness-registry.mjs
+          node scripts/check-authority-source-inventory.mjs
+      - name: Commit synchronized activation
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            data/static/authority-source-inventory.json \
+            data/static/calendar-readiness-registry.json \
+            data/static/calendar-acquisition-registry.json \
+            src/data/publicationDisplayPolicies.json \
+            scripts/check-calendar-acquisition-registry.mjs \
+            scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs \
+            scripts/check-calendar-uae-era-handoff-decision.mjs \
+            docs/calendar/uae-era-handoff-decision.md \
+            docs/calendar/uae-era-detail-recovery.md \
+            scripts/temporary-activate-uae-era-detail-recovery.mjs \
+            .github/workflows/temporary-activate-uae-era-detail-recovery.yml
+          git commit -m "Activate UAE ERA A-level detail capability"
+          git push origin HEAD:agent/uae-era-detail-recovery
