@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
+import CalendarOperationsNotice from '../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getCurrentCalendarWindowGroups,
@@ -11,6 +12,7 @@ import {
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const groups = getCurrentCalendarWindowGroups(context);
+const windowRecords = groups.flatMap((group) => group.records);
 ---
 
 <BaseLayout
@@ -28,6 +30,7 @@ const groups = getCurrentCalendarWindowGroups(context);
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} />
+  <CalendarOperationsNotice records={windowRecords} dataState={dataState} />
 
   <section aria-label="Rolling 30-day meeting list">
     <TimetableMeetingList

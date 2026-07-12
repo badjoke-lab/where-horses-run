@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../components/CalendarDateStatus.astro';
+import CalendarOperationsNotice from '../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
@@ -28,6 +29,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} />
+  <CalendarOperationsNotice records={tomorrowRecords} dataState={dataState} />
 
   <section aria-label="Tomorrow meeting list">
     <TimetableMeetingList

@@ -86,7 +86,7 @@ JRA remains active with an A+ public ceiling. Individual public rows may remain 
 
 ### NAR
 
-Mixed C and A+ output is valid. C rows are schedule identities and must state that additional detail is not reviewed. A+ rows may show the reviewed programme summary.
+Mixed C and A+ output is valid. C rows show meeting-only reviewed coverage and their current source-specific public ceiling. A+ rows may show the reviewed programme summary. Retry ownership is handled by the following Public v1 operations-presentation unit rather than inferred from the public projection.
 
 ### Banei
 

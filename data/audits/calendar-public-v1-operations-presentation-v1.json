@@ -1,0 +1,125 @@
+{
+  "schema_version": "calendar-public-v1-operations-presentation-v1",
+  "work_id": "WHR-CAL-PUBLIC-V1",
+  "implementation_unit": "PUBLIC-V1-OPERATIONS-PRESENTATION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-12T00:00:00Z",
+  "purpose": "Present public Calendar data state, visible source attention, source-failure fallback, and reviewed retry ownership without exposing internal operations records.",
+  "public_routes": [
+    "/calendar/",
+    "/ja/calendar/",
+    "/today/",
+    "/ja/today/",
+    "/tomorrow/",
+    "/ja/tomorrow/"
+  ],
+  "calendar_data_states": [
+    "current_window_available",
+    "no_public_records",
+    "records_before_window",
+    "records_after_window",
+    "stale_generation_with_window_records"
+  ],
+  "source_presentation_states": [
+    "visible_sources_reviewed",
+    "visible_source_attention",
+    "source_failure_under_review"
+  ],
+  "retry_ownership_states": [
+    "reviewed_operations",
+    "no_visible_gap"
+  ],
+  "production_derivation": {
+    "calendar_data_state": "public projection dates and explicit reference window",
+    "visible_source_attention": "public row source_status values partial or stale",
+    "source_failure_count": "zero unless a separately reviewed public-safe failure summary is supplied",
+    "retry_ownership": "reviewed_operations",
+    "automatic_publication": false
+  },
+  "presentation_fixtures": [
+    {
+      "fixture_id": "current-reviewed",
+      "data_status": "current_window_available",
+      "records": [
+        {
+          "source_status": "verified"
+        }
+      ],
+      "source_failure_count": 0,
+      "expected_source_presentation": "visible_sources_reviewed",
+      "expected_retry_ownership": "reviewed_operations"
+    },
+    {
+      "fixture_id": "stale-visible-source",
+      "data_status": "stale_generation_with_window_records",
+      "records": [
+        {
+          "source_status": "stale"
+        }
+      ],
+      "source_failure_count": 0,
+      "expected_source_presentation": "visible_source_attention",
+      "expected_retry_ownership": "reviewed_operations"
+    },
+    {
+      "fixture_id": "empty-reviewed",
+      "data_status": "no_public_records",
+      "records": [],
+      "source_failure_count": 0,
+      "expected_source_presentation": "visible_sources_reviewed",
+      "expected_retry_ownership": "reviewed_operations"
+    },
+    {
+      "fixture_id": "source-failure-withheld",
+      "data_status": "current_window_available",
+      "records": [],
+      "source_failure_count": 1,
+      "expected_source_presentation": "source_failure_under_review",
+      "expected_retry_ownership": "reviewed_operations"
+    },
+    {
+      "fixture_id": "no-visible-gap",
+      "data_status": "records_after_window",
+      "records": [],
+      "source_failure_count": 0,
+      "retry_ownership_status": "no_visible_gap",
+      "expected_source_presentation": "visible_sources_reviewed",
+      "expected_retry_ownership": "no_visible_gap"
+    }
+  ],
+  "public_copy_requirements": {
+    "source_failure_does_not_invent_meeting": true,
+    "official_source_remains_fallback": true,
+    "partial_or_stale_source_status_remains_visible": true,
+    "retry_ownership_is_reviewed_operations": true,
+    "updates_are_not_automatic": true,
+    "automatic_publication_disabled": true
+  },
+  "forbidden_public_fields": [
+    "reviewer",
+    "reviewed_at",
+    "review_queue",
+    "retry_queue",
+    "retry_attempts",
+    "attempt_history",
+    "next_eligible_at",
+    "operator_notes",
+    "source_snapshot_path",
+    "normalized_from_path",
+    "required_decision"
+  ],
+  "boundaries": {
+    "canonical_write": false,
+    "public_projection_write": false,
+    "automatic_acquisition": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "unattended_publication": false,
+    "internal_operations_publication": false,
+    "participant_data_publication": false,
+    "betting_data_publication": false,
+    "result_or_payout_publication": false
+  },
+  "next_unit": "Complete bilingual responsive Calendar, country, racecourse, and meeting navigation QA."
+}

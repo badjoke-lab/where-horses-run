@@ -132,8 +132,12 @@ if (!jraRows.some((row) => row.public_gap_status === 'more_detail_not_reviewed')
 const narRows = publicRowsByAuthority.get('nar-local-government-racing') ?? [];
 if (!narRows.some((row) => row.effective_public_rank === 'C')) fail('NAR must retain C schedule rows.');
 if (!narRows.some((row) => row.effective_public_rank === 'A+')) fail('NAR must retain A+ detail rows.');
-if (narRows.filter((row) => row.effective_public_rank === 'C').some((row) => row.public_gap_status !== 'more_detail_not_reviewed')) {
-  fail('NAR C rows must expose an honest additional-detail gap.');
+const narCRows = narRows.filter((row) => row.effective_public_rank === 'C');
+if (narCRows.some((row) => row.coverage_status !== 'meeting_only')) {
+  fail('NAR C rows must expose meeting-only reviewed coverage.');
+}
+if (!narCRows.some((row) => row.public_gap_status === 'at_current_public_ceiling')) {
+  fail('NAR must retain source-specific C-ceiling rows.');
 }
 
 const hkjcRows = publicRowsByAuthority.get('hkjc') ?? [];
@@ -206,7 +210,7 @@ for (const marker of [
 ]) requireIncludes(doc, marker, 'public-v1-pilot-record-reconciliation.md');
 for (const marker of [
   'Current Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Current implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`',
+  'Completed implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`',
 ]) requireIncludes(roadmap, marker, 'implementation-roadmap.md');
 
 for (const validator of [

@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
+import CalendarOperationsNotice from '../../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
+const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
 ---
 
 <BaseLayout
@@ -25,6 +27,7 @@ const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
+  <CalendarOperationsNotice records={windowRecords} dataState={dataState} lang="ja" />
 
   <section aria-label="30日間の開催一覧">
     <TimetableMeetingList

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
+import CalendarOperationsNotice from '../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
@@ -29,6 +30,7 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
+  <CalendarOperationsNotice records={todayRecords} dataState={dataState} lang="ja" />
 
   <section aria-label="今日の開催一覧">
     <TimetableMeetingList
