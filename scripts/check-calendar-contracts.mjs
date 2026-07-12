@@ -13,6 +13,7 @@ const paths = {
   authorityInventory: 'data/static/authority-source-inventory.json',
   tracker: 'docs/country-pages/98-country-tracker.tsv',
   racecourses: 'data/static/racecourses.json',
+  racecourseExtensions: 'data/static/racecourses-extensions.json',
   sourceContract: 'docs/calendar/source-test-v2-contract.md',
   readinessContract: 'docs/calendar/calendar-readiness-contract.md',
   machineContract: 'docs/calendar/machine-readable-contracts.md',
@@ -233,6 +234,7 @@ const registry = readJson(paths.registry);
 const authoritySchema = readJson(paths.authoritySchema);
 const authorityInventory = readJson(paths.authorityInventory);
 const racecourses = readJson(paths.racecourses);
+const racecourseExtensions = readJson(paths.racecourseExtensions);
 const trackerText = readText(paths.tracker);
 const sourceContractText = readText(paths.sourceContract);
 const readinessContractText = readText(paths.readinessContract);
@@ -287,9 +289,19 @@ for (const record of authorityInventory?.records ?? []) {
 }
 
 const racecourseCountry = new Map();
-if (!Array.isArray(racecourses)) fail(`${paths.racecourses} must be an array.`);
-for (const record of racecourses ?? []) {
-  if (isNonEmptyString(record?.id)) racecourseCountry.set(record.id, record.country_id);
+for (const [file, records] of [
+  [paths.racecourses, racecourses],
+  [paths.racecourseExtensions, racecourseExtensions],
+]) {
+  if (!Array.isArray(records)) {
+    fail(`${file} must be an array.`);
+    continue;
+  }
+  for (const record of records) {
+    if (!isNonEmptyString(record?.id)) continue;
+    if (racecourseCountry.has(record.id)) fail(`racecourse registries duplicate ${record.id}.`);
+    else racecourseCountry.set(record.id, record.country_id);
+  }
 }
 
 if (registry?.schema_version !== 'calendar-readiness-registry-v1') fail(`${paths.registry}.schema_version is invalid.`);
@@ -450,8 +462,8 @@ for (const [file, text, phrases] of [
   [paths.sourceContract, sourceContractText, [paths.sourceSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.readinessContract, readinessContractText, [paths.readinessSchema, paths.registry, 'WHR-CAL-CONTRACT-02']],
   [paths.machineContract, machineContractText, [paths.sourceSchema, paths.readinessSchema, paths.registry, 'node scripts/check-calendar-contracts.mjs']],
-  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Current Work ID: `WHR-CAL-JAPAN-NAR`', 'Next Work ID: `WHR-CAL-JAPAN-BANEI`', 'Completed Work ID: `WHR-CAL-OPS-V1`', 'WHR-CAL-BASELINE-RECONCILE']],
-  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI']],
+  [paths.roadmap, roadmapText, ['Country-page programme: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Completed Work ID: `WHR-CAL-UAE-ERA`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'WHR-CAL-OPS-V1', 'WHR-CAL-BASELINE-RECONCILE']],
+  [paths.startHere, startHereText, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'Current Work ID: `WHR-CAL-PUBLIC-V1`']],
 ]) {
   for (const phrase of phrases) {
     if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
@@ -471,5 +483,5 @@ console.log(`RACECOURSE_IDS: ${racecourseCountry.size}`);
 console.log(`READINESS_RECORDS: ${registry.records.length}`);
 console.log(`CLOSED_COUNTRIES: ${closedCountries.size}`);
 console.log(`SOURCE_TEST_V2_FILES: ${sourceTestV2Files.length}`);
-console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-NAR');
-console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-BANEI');
+console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-UAE-ERA');

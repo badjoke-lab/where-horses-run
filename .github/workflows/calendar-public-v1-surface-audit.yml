@@ -1,0 +1,74 @@
+name: Calendar Public v1 surface audit
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-public-v1-surface-audit-v1.json'
+      - 'docs/calendar/public-v1-surface-audit.md'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'src/pages/calendar/**'
+      - 'src/pages/ja/calendar/**'
+      - 'src/pages/today.astro'
+      - 'src/pages/ja/today.astro'
+      - 'src/pages/tomorrow.astro'
+      - 'src/pages/ja/tomorrow.astro'
+      - 'src/components/CalendarDateStatus.astro'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'scripts/check-calendar-public-v1-surface-audit.mjs'
+      - 'scripts/check-calendar-30d-timetable-ui.mjs'
+      - 'scripts/check-today-timetable-ui.mjs'
+      - 'scripts/check-tomorrow-timetable-ui.mjs'
+      - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
+      - '.github/workflows/calendar-public-v1-surface-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install
+      - name: Validate Public v1 source surface audit
+        run: node scripts/check-calendar-public-v1-surface-audit.mjs
+      - name: Build current-window rendered fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-06-06'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: npm run build
+      - name: Validate current-window rendered fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-06-06'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: node scripts/check-calendar-dynamic-dates-rendered.mjs
+      - name: Reset rendered output
+        run: rm -rf dist
+      - name: Build stale-window rendered fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-01'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: npm run build
+      - name: Validate stale-window rendered fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-01'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: node scripts/check-calendar-dynamic-dates-rendered.mjs
+      - name: Validate read-only and diff hygiene boundary
+        run: |
+          git diff --check
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const workflow = fs.readFileSync('.github/workflows/calendar-public-v1-surface-audit.yml', 'utf8');
+          if (!workflow.includes('permissions:\n  contents: read')) throw new Error('contents permission must remain read-only');
+          if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) throw new Error('write permission enabled');
+          if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) throw new Error('scheduled execution enabled');
+          console.log('CALENDAR_PUBLIC_V1_SURFACE_AUDIT_BOUNDARY: pass');
+          NODE

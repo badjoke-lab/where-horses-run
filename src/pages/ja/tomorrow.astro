@@ -10,8 +10,8 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 ---
 
 <BaseLayout
-  title="明日の開催時刻表 | 競馬どこ？"
-  description="明日の開催一覧を1開催1行で表示し、利用可能な時刻情報、詳細ページ、公式ソースを案内します。"
+  title={`明日の開催時刻表 — ${context.tomorrow} | 競馬どこ？`}
+  description={`${context.timeZone}の基準日${context.today}から算出した${context.tomorrow}の確認済み公開開催情報です。最終確認は公式ソースで行ってください。`}
   lang="ja"
   canonicalPath="/ja/tomorrow/"
   alternatePath="/tomorrow/"
@@ -20,7 +20,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
     <p class="hero__eyebrow">Tomorrow</p>
     <h1 id="page-title">明日の開催時刻表</h1>
     <p class="hero__summary">
-      {context.tomorrow} の開催情報です。表示ランクに応じて時刻情報を出し分けます。
+      {context.timeZone}の基準日{context.today}の翌日、{context.tomorrow}の開催情報です。表示ランクに応じて時刻情報を出し分けます。
     </p>
   </section>
 
