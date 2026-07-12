@@ -26,10 +26,29 @@ jobs:
         run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-02
       - name: Validate Operations v1 and UAE recovery
         run: |
-          node scripts/check-calendar-operations-status.mjs
-          node scripts/check-calendar-operations-v1-release-gate.mjs
-          node scripts/check-calendar-uae-era-detail-recovery.mjs
-          node scripts/check-calendar-acquisition-registry.mjs
+          set +e
+          : > /tmp/operations-v1-refresh-validation.log
+          status=0
+          for command in \
+            "node scripts/check-calendar-operations-status.mjs" \
+            "node scripts/check-calendar-operations-v1-release-gate.mjs" \
+            "node scripts/check-calendar-uae-era-detail-recovery.mjs" \
+            "node scripts/check-calendar-acquisition-registry.mjs"
+          do
+            printf '\n$ %s\n' "$command" | tee -a /tmp/operations-v1-refresh-validation.log
+            bash -lc "$command" 2>&1 | tee -a /tmp/operations-v1-refresh-validation.log
+            current=${PIPESTATUS[0]}
+            if [ "$current" -ne 0 ]; then status="$current"; fi
+          done
+          exit "$status"
+      - name: Upload refresh diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: operations-v1-refresh-diagnostics-${{ github.run_id }}
+          path: /tmp/operations-v1-refresh-validation.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Remove temporary workflow and commit status
         run: |
           rm -f .github/workflows/temporary-refresh-uae-operations-status.yml
