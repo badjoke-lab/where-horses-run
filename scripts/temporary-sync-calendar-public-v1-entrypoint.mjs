@@ -73,7 +73,7 @@ replaceRequired(
 replaceRequired(
   'docs/calendar/implementation-roadmap.md',
   '## Stage 11 — Calendar public v1\n\nWork ID: `WHR-CAL-PUBLIC-V1`',
-  '## Stage 11 — Calendar public v1\n\nStatus: active current programme work  \nWork ID: `WHR-CAL-PUBLIC-V1`',
+  '## Stage 11 — Calendar public v1\n\nStatus: active current programme work\nWork ID: `WHR-CAL-PUBLIC-V1`',
 );
 replaceRequired(
   'docs/calendar/implementation-roadmap.md',
