@@ -33,6 +33,11 @@ if (!narCRows.some((row) => row.public_gap_status === 'at_current_public_ceiling
   fail('NAR must retain source-specific C-ceiling rows.');
 }`,
 );
+replaceRequired(
+  'scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs',
+  "  'Current implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`',",
+  "  'Completed implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`',",
+);
 
 replaceRequired(
   'docs/calendar/README.md',
