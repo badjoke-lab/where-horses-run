@@ -1,6 +1,7 @@
 name: Temporary activate UAE ERA detail recovery
 
 on:
+  pull_request:
   push:
     branches:
       - agent/uae-era-detail-recovery
