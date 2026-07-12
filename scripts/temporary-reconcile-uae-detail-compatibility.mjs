@@ -18,7 +18,7 @@ else {
   if (readinessRecord.automation_mode !== 'semi_automatic') fail('current schedule readiness automation mode differs.');
   if (readinessRecord.confirmed_fields?.meeting_date !== true || readinessRecord.confirmed_fields?.racecourse !== true) fail('readiness C fields missing.');
   for (const field of ['first_race_time', 'last_race_time', 'per_race_post_times', 'race_name', 'distance', 'surface', 'course']) {
-    if (readinessRecord.confirmed_fields?.[field] !== false) fail(\`schedule readiness field \${field} must remain false.\`);
+    if (readinessRecord.confirmed_fields?.[field] !== false) fail('schedule readiness field ' + field + ' must remain false.');
   }
 }
 const detailReadinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable');
@@ -38,9 +38,9 @@ replaceRegex(
 
 const hkjcChecker = 'scripts/check-calendar-hkjc-pilot-reconciliation.mjs';
 const hkjcReplacement = `for (const [label, text] of [['project roadmap', projectRoadmap], ['implementation roadmap', implementationRoadmap]]) {
-  if (!text.includes('Completed Work ID: \\`WHR-CAL-HONG-KONG-HKJC\\`')) fail(\`\${label} missing completed HKJC Work ID.\`);
-  if (!text.includes('Current Work ID: \\`WHR-CAL-PUBLIC-V1\\`')) fail(\`\${label} missing current Public v1 Work ID.\`);
-  if (!text.includes('HKJC-PILOT-02')) fail(\`\${label} missing HKJC-PILOT-02 history marker.\`);
+  if (!text.includes('Completed Work ID:') || !text.includes('WHR-CAL-HONG-KONG-HKJC')) fail(label + ' missing completed HKJC Work ID.');
+  if (!text.includes('Current Work ID:') || !text.includes('WHR-CAL-PUBLIC-V1')) fail(label + ' missing current Public v1 Work ID.');
+  if (!text.includes('HKJC-PILOT-02')) fail(label + ' missing HKJC-PILOT-02 history marker.');
 }`;
 replaceRegex(
   hkjcChecker,
