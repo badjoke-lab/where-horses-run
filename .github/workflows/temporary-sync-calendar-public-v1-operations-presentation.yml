@@ -1,0 +1,80 @@
+name: Temporary Calendar Public v1 operations sync
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: temporary-calendar-public-v1-operations-sync
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/calendar-public-v1-operations-presentation
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install
+      - name: Synchronize documentation state
+        run: node scripts/temporary-sync-calendar-public-v1-operations-presentation.mjs
+      - name: Validate operations presentation contract
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-public-v1-operations-presentation.mjs 2>&1 | tee /tmp/calendar-public-v1-operations-presentation.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload operations presentation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-operations-presentation-${{ github.run_id }}
+          path: /tmp/calendar-public-v1-operations-presentation.log
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Build current-window fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-01'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: npm run build
+      - name: Validate current-window operations presentation
+        env:
+          WHR_EXPECTED_CALENDAR_DATA_STATUS: current_window_available
+        run: node scripts/check-calendar-public-v1-operations-rendered.mjs
+      - name: Reset rendered output
+        run: rm -rf dist
+      - name: Build stale-window fixture
+        env:
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-12'
+          WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+        run: npm run build
+      - name: Validate stale-window operations presentation
+        env:
+          WHR_EXPECTED_CALENDAR_DATA_STATUS: stale_generation_with_window_records
+        run: node scripts/check-calendar-public-v1-operations-rendered.mjs
+      - name: Validate diff hygiene
+        run: git diff --check
+      - name: Commit synchronized documentation
+        run: |
+          if git diff --quiet; then
+            echo "No synchronization changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/calendar/README.md docs/calendar/implementation-roadmap.md
+          git commit -m "[CF-Pages-Skip] Synchronize Public v1 operations state"
+          git push origin HEAD:work/calendar-public-v1-operations-presentation
