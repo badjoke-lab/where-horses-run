@@ -577,6 +577,7 @@ No pilot may require fixed-month completeness before ordinary valid partial prom
 
 Status: active current programme work
 Work ID: `WHR-CAL-PUBLIC-V1`
+Current implementation unit: `PUBLIC-V1-SURFACE-AUDIT-01` — in review
 
 Release criteria include:
 
@@ -590,6 +591,15 @@ Release criteria include:
 - bilingual responsive QA;
 - review and retry operations ownership;
 - no participant, betting, result, payout, prediction, full-racecard, raw-source, embedded-video, or direct-stream output.
+
+Current Public v1 evidence unit:
+
+- Calendar, Today, and Tomorrow share explicit reference-date/timezone resolution;
+- English and Japanese routes use the shared `CalendarDateStatus` and `TimetableMeetingList`;
+- one meeting remains one list row;
+- C/B/B+/A/A+ list visibility and separate meeting-detail boundaries are checked;
+- reproducible current-window and stale-window rendered fixtures are validated;
+- automatic acquisition, approval, promotion, and unattended publication remain disabled.
 
 ## Later product stages
 
