@@ -1,0 +1,40 @@
+name: Temporary refresh UAE operations status
+
+on:
+  pull_request:
+  push:
+    branches:
+      - agent/uae-era-detail-recovery
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/uae-era-detail-recovery
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Regenerate deterministic operations status
+        run: node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-02
+      - name: Validate Operations v1 and UAE recovery
+        run: |
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-calendar-uae-era-detail-recovery.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+      - name: Remove temporary workflow and commit status
+        run: |
+          rm -f .github/workflows/temporary-refresh-uae-operations-status.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/generated/timetable/operations-status.json .github/workflows/temporary-refresh-uae-operations-status.yml
+          git commit -m "Refresh operations status for UAE A-level capability"
+          git push origin HEAD:agent/uae-era-detail-recovery
