@@ -1,0 +1,66 @@
+{
+  "schema_version": "calendar-uae-era-detail-core-fixtures-v1",
+  "work_id": "WHR-CAL-UAE-ERA-DETAIL-RECOVERY",
+  "implementation_unit": "UAE-DETAIL-RECOVERY-01",
+  "fixtures": [
+    {
+      "id": "complete-a-meeting",
+      "meeting_complete": true,
+      "expected_rank": "A",
+      "expected_first_time": "17:00",
+      "expected_last_time": "18:00",
+      "pages": [
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-10/1/declarations",
+          "public_safe_markup": "<main><div>10 Apr 2026</div><div>Al Ain</div><h2>Race 1</h2><div>17:00</div><div>MAIDEN</div><div>For 4YO+</div><div>Purebred Arabian</div><div>DIRT</div><div>1800m</div></main>"
+        },
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-10/2/declarations",
+          "public_safe_markup": "<main><div>10 Apr 2026</div><div>Al Ain</div><h2>Race 2</h2><div>17:30</div><div>HANDICAP (0-85)</div><div>For 4YO+</div><div>Purebred Arabian</div><div>DIRT</div><div>1800m</div></main>"
+        },
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-10/3/declarations",
+          "public_safe_markup": "<main><div>10 Apr 2026</div><div>Al Ain</div><h2>Race 3</h2><div>18:00</div><div>Listed</div><div>For 4YO+</div><div>Purebred Arabian</div><div>DIRT</div><div>2000m</div></main>"
+        }
+      ]
+    },
+    {
+      "id": "named-complete-a-plus-meeting",
+      "meeting_complete": true,
+      "expected_rank": "A+",
+      "expected_first_time": "16:00",
+      "expected_last_time": "16:30",
+      "pages": [
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-11/1/declarations",
+          "public_safe_markup": "<main><div>11 Apr 2026</div><div>Abu Dhabi Turf Club</div><h2>Race 1 - Native Bloodline Sprint</h2><div>16:00</div><div>HANDICAP (0-75)</div><div>TURF</div><div>1600m</div></main>"
+        },
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-11/2/declarations",
+          "public_safe_markup": "<main><div>11 Apr 2026</div><div>Abu Dhabi Turf Club</div><h2>Race 2 - Homeland Glory Handicap</h2><div>16:30</div><div>HANDICAP (0-85)</div><div>TURF</div><div>1600m</div></main>"
+        }
+      ]
+    },
+    {
+      "id": "race-one-only-b",
+      "meeting_complete": false,
+      "expected_rank": "B",
+      "expected_first_time": "17:00",
+      "expected_last_time": null,
+      "pages": [
+        {
+          "source_url": "https://emiratesracing.com/racecard/2026-04-10/1/declarations",
+          "public_safe_markup": "<main><div>10 Apr 2026</div><div>Al Ain</div><h2>Race 1</h2><div>17:00</div><div>MAIDEN</div><div>DIRT</div><div>1800m</div></main>"
+        }
+      ]
+    },
+    {
+      "id": "schedule-only-c",
+      "meeting_complete": false,
+      "expected_rank": "C",
+      "expected_first_time": null,
+      "expected_last_time": null,
+      "pages": []
+    }
+  ]
+}
