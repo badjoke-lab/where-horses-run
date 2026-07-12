@@ -1,0 +1,56 @@
+name: Temporary reconcile UAE detail compatibility
+
+on:
+  pull_request:
+  push:
+    branches:
+      - agent/uae-era-detail-recovery
+
+permissions:
+  contents: write
+
+jobs:
+  synchronize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/uae-era-detail-recovery
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply historical/current compatibility updates
+        run: |
+          node --check scripts/temporary-reconcile-uae-detail-compatibility.mjs
+          node scripts/temporary-reconcile-uae-detail-compatibility.mjs
+      - name: Regenerate JRA pilot review digests
+        run: node scripts/timetable/build-jra-pilot-review.mjs
+      - name: Validate affected historical and current contracts
+        run: |
+          node scripts/check-calendar-uae-era-season-calendar-core.mjs
+          node scripts/check-calendar-hkjc-pilot-reconciliation.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+          node scripts/check-jra-final-confirmation-contract.mjs
+          node scripts/check-jra-planned-intake.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-operations-v1-release-gate.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary synchronization files
+        run: |
+          rm -f scripts/temporary-reconcile-uae-detail-compatibility.mjs
+          rm -f .github/workflows/temporary-reconcile-uae-detail-compatibility.yml
+      - name: Commit synchronized compatibility state
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            data/generated/timetable/jra-pilot-review.json \
+            scripts/check-calendar-uae-era-season-calendar-core.mjs \
+            scripts/check-calendar-hkjc-pilot-reconciliation.mjs \
+            scripts/temporary-reconcile-uae-detail-compatibility.mjs \
+            .github/workflows/temporary-reconcile-uae-detail-compatibility.yml
+          git commit -m "Reconcile historical pilots with UAE A-level detail"
+          git push origin HEAD:agent/uae-era-detail-recovery
