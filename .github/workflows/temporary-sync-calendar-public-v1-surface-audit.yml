@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Apply Public v1 surface audit synchronization
-        run: node scripts/temporary-sync-calendar-public-v1-surface-audit.mjs
+        run: node scripts/temporary-apply-calendar-public-v1-surface-audit.mjs
       - name: Validate Calendar contracts at Public v1 entrypoint
         id: contracts
         shell: bash
@@ -90,7 +90,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
             data/static/calendar-readiness-registry.json \
-            data/static/racecourses.json \
+            data/static/racecourses-extensions.json \
             docs/calendar/README.md \
             docs/calendar/implementation-roadmap.md \
             scripts/check-calendar-contracts.mjs
