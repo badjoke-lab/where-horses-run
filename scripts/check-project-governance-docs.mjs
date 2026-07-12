@@ -252,7 +252,7 @@ requirePhrases(validationMap, 'validation responsibility map', [
 requirePhrases(registry, 'readiness registry', [
   '"bootstrap_status": "complete"',
   '"countries_with_closed_decision": 98',
-  '"readiness_records": 116',
+  '"readiness_records": 117',
   '"next_backfill_work_ids": []'
 ]);
 
