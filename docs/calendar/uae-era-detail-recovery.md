@@ -58,3 +58,17 @@ UAE-DETAIL-RECOVERY-02
 ```
 
 That unit must register the detail source and adapter in Calendar Acquisition, add near-meeting retry ownership, and promote reviewed UAE records from C to the best available rank without enabling unattended publication.
+
+## Accepted live evidence
+
+- workflow run: '29199123357';
+- artifact: '8261852673';
+- artifact digest: 'sha256:7c6cc386a8092d86b2d603fdea3aa9b890558c89b5f8bfb798af69ae1f9dc379';
+- meeting: Al Ain, 2026-04-10;
+- Race 1-N closure: 10 races;
+- first/last post time: 17:00 / 21:30;
+- observed rank: A;
+- source errors: 0;
+- canonical/public writes: none.
+
+The UAE Acquisition Registry and Calendar Readiness boundary are therefore corrected from C-only to C schedule plus A detail capability. Shared automatic near-meeting retry execution remains a separate follow-up.

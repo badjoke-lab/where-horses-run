@@ -58,8 +58,9 @@ else {
   if (profile.profile_status !== 'provisional') fail('UAE profile status differs.');
   if (profile.primary_runner !== 'github_actions' || profile.fallback_runner !== null) fail('UAE Registry runner state differs.');
   if (profile.schedule_source_id !== 'era-season-calendar' || profile.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE Registry schedule route differs.');
-  if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('UAE Registry detail route must remain inactive.');
-  if (!exact(profile.supported_observation_ranks, ['C'])) fail('UAE Registry ranks must remain C-only.');
+  if (profile.detail_source_id !== 'era-racecard-public-timetable' || profile.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE Registry current detail recovery route differs.');
+  if (profile.technical_capability_rank !== 'A' || profile.public_ceiling !== 'A') fail('UAE Registry current A-level boundary differs.');
+  if (!exact(profile.supported_observation_ranks, ['C', 'A'])) fail('UAE Registry current ranks must preserve C schedule and A detail.');
   if (profile.supports_source_visible_horizon !== true) fail('UAE Registry source-visible-horizon support missing.');
   for (const key of ['supports_date_window','supports_cross_month_window','supports_selected_meetings','supports_rank_upgrade_retry']) {
     if (profile[key] !== false) fail(`UAE Registry ${key} must remain false.`);
@@ -71,7 +72,7 @@ if (!readinessRecord) fail('UAE Readiness record missing.');
 else {
   if (!exact(readinessRecord.racecourse_ids, ['meydan-racecourse','abu-dhabi-turf-club','al-ain-racecourse','jebel-ali-racecourse','sharjah-racecourse'])) fail('UAE Readiness racecourse scope differs.');
   if (readinessRecord.readiness !== 'prototype_ready' || readinessRecord.implementation_status !== 'fixture_validated' || readinessRecord.automation_mode !== 'semi_automatic') fail('UAE Readiness accepted state differs.');
-  if (readinessRecord.technical_rank !== 'C' || readinessRecord.public_ceiling !== 'C') fail('UAE Readiness rank boundary differs.');
+  if (readinessRecord.technical_rank !== 'A' || readinessRecord.public_ceiling !== 'A') fail('UAE Readiness current recovered rank boundary differs.');
 }
 
 const executor = compatibility.executors.find((entry) => entry.system_id === 'uae-national-racing-system' && entry.runner === 'github_actions');
@@ -153,7 +154,8 @@ console.log('COMPLETED_WORK_ID: WHR-CAL-UAE-ERA');
 console.log('NEXT_WORK_ID: WHR-CAL-PUBLIC-V1');
 console.log('REGISTRY_PROFILE_STATUS: provisional');
 console.log('SCHEDULE_ROUTE: github_actions / source_visible_horizon / C / active_review_only');
-console.log('DETAIL_ROUTE: inactive');
+console.log('HISTORICAL_DETAIL_ROUTE: inactive at UAE-HANDOFF-01');
+console.log('CURRENT_DETAIL_ROUTE: era-racecard-public-timetable / A evidence-backed');
 console.log('SYSTEM_FALLBACK_RUNNER: pending');
 console.log('ENTRYPOINT_SWITCH: complete');
 console.log('AUTOMATIC_EXECUTION_PUBLICATION: false');

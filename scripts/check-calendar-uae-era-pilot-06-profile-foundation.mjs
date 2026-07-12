@@ -59,24 +59,26 @@ const uaeReadiness = readiness.records.find((record) => record.readiness_id === 
 if (!uaeReadiness) fail('UAE Readiness record missing.');
 else {
   if (!exact(uaeReadiness.racecourse_ids, expectedIds)) fail('UAE Readiness racecourse scope differs.');
-  if (uaeReadiness.technical_rank !== 'C' || uaeReadiness.public_ceiling !== 'C') fail('UAE Readiness rank boundary differs.');
+  if (uaeReadiness.technical_rank !== 'A' || uaeReadiness.public_ceiling !== 'A') fail('UAE Readiness recovered rank boundary differs.');
   if (uaeReadiness.source_format !== 'mixed') fail('UAE Readiness source format differs.');
-  if (uaeReadiness.access_mode !== 'direct') fail('UAE Readiness access mode differs.');
+  if (uaeReadiness.access_mode !== 'date_route') fail('UAE Readiness access mode differs.');
   if (uaeReadiness.automation_mode !== 'semi_automatic') fail('UAE Readiness automation mode differs.');
-  if (!exact(uaeReadiness.refresh_classes, ['seasonal', 'manual'])) fail('UAE Readiness refresh classes differ.');
+  if (!exact(uaeReadiness.refresh_classes, ['seasonal', 'weekly', 'near_meeting', 'manual'])) fail('UAE Readiness refresh classes differ.');
   if (uaeReadiness.readiness !== 'prototype_ready' || uaeReadiness.implementation_status !== 'fixture_validated') fail('UAE Readiness implementation state differs.');
-  if (uaeReadiness.fallback !== 'keep_last_verified_and_mark_stale') fail('UAE Readiness fallback differs.');
-  if (uaeReadiness.checked_date !== '2026-07-11' || !String(uaeReadiness.evidence_reviewed_at).startsWith('2026-07-11')) fail('UAE Readiness review date differs.');
-  if (!String(uaeReadiness.limitations).includes('C-level meeting date and approved racecourse identity only')) fail('UAE Readiness C-only limitation missing.');
+  if (uaeReadiness.fallback !== 'downgrade_to_C') fail('UAE Readiness fallback differs.');
+  if (uaeReadiness.checked_date !== '2026-07-13' || !String(uaeReadiness.evidence_reviewed_at).startsWith('2026-07-13')) fail('UAE Readiness recovery review date differs.');
+  if (!String(uaeReadiness.limitations).includes('racecard becomes source-visible')) fail('UAE Readiness source-visible detail limitation missing.');
 }
 
 const uaeSource = authorityInventory.records.find((record) => record.country_id === 'united-arab-emirates' && record.authority_id === 'emirates-racing-authority' && record.official_source_id === 'era-season-calendar');
 if (!uaeSource) fail('UAE ERA authority source inventory record missing.');
 else {
   if (uaeSource.official_source_id !== 'era-season-calendar') fail('UAE ERA source ID differs.');
-  if (uaeSource.capability_rank !== 'C') fail('UAE ERA source inventory capability rank differs.');
+  if (uaeSource.capability_rank !== 'C') fail('UAE ERA schedule source inventory capability rank differs.');
   if (uaeSource.source_status !== 'verified') fail('UAE ERA source inventory status differs.');
 }
+const uaeDetailSource = authorityInventory.records.find((record) => record.country_id === 'united-arab-emirates' && record.authority_id === 'emirates-racing-authority' && record.official_source_id === 'era-racecard-public-timetable');
+if (!uaeDetailSource || uaeDetailSource.capability_rank !== 'A' || uaeDetailSource.source_status !== 'verified') fail('UAE ERA detail source inventory evidence differs.');
 
 const profile = acquisition.records.find((record) => record.system_id === 'uae-national-racing-system');
 if (!profile) fail('UAE Acquisition Registry profile missing.');
@@ -86,16 +88,14 @@ else {
   if (profile.primary_runner !== 'github_actions' || profile.fallback_runner !== null) fail('UAE runner state differs.');
   if (profile.schedule_source_id !== 'era-season-calendar') fail('UAE schedule source differs.');
   if (profile.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE schedule adapter differs.');
-  if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) fail('UAE detail route must remain inactive.');
-  if (profile.technical_capability_rank !== 'C' || profile.public_ceiling !== 'C') fail('UAE profile rank boundary differs.');
-  if (!exact(profile.supported_observation_ranks, ['C'])) fail('UAE supported observation ranks differ.');
+  if (profile.detail_source_id !== 'era-racecard-public-timetable' || profile.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE detail route recovery differs.');
+  if (profile.technical_capability_rank !== 'A' || profile.public_ceiling !== 'A') fail('UAE recovered profile rank boundary differs.');
+  if (!exact(profile.supported_observation_ranks, ['C', 'A'])) fail('UAE supported observation ranks differ.');
   if (profile.supports_source_visible_horizon !== true) fail('UAE source-visible-horizon support missing.');
   for (const key of ['supports_date_window','supports_cross_month_window','supports_selected_meetings','supports_rank_upgrade_retry']) {
-    if (profile[key] !== false) fail(`UAE profile ${key} must remain false.`);
+    if (profile[key] !== false) fail(`UAE profile ${key} must remain false until shared route integration.`);
   }
-  for (const field of ['fallback_runner','detail_source_id','detail_adapter_id']) {
-    if (!profile.pending_fields?.includes(field)) fail(`UAE profile pending field missing ${field}.`);
-  }
+  if (!exact(profile.pending_fields, ['fallback_runner'])) fail('UAE profile must keep only fallback_runner pending.');
 }
 
 const executor = compatibility.executors.find((entry) => entry.system_id === 'uae-national-racing-system' && entry.runner === 'github_actions');
@@ -158,6 +158,6 @@ console.log('READINESS_STATE: prototype_ready / fixture_validated');
 console.log('ACQUISITION_PROFILE: provisional');
 console.log('PRIMARY_RUNNER: github_actions');
 console.log('COLLECTION_MODE: source_visible_horizon');
-console.log('SUPPORTED_RANKS: C');
-console.log('DETAIL_ROUTE: inactive');
+console.log('SUPPORTED_RANKS: C,A');
+console.log('DETAIL_ROUTE: era-racecard-public-timetable / evidence-backed A');
 console.log('AUTOMATIC_EXECUTION_PUBLICATION: false');

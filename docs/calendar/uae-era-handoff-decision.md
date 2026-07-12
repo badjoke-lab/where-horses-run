@@ -1,5 +1,7 @@
 # UAE ERA bounded reviewed steady-state handoff decision
 
+> Supersession notice (2026-07-13): this document remains the historical decision for the C-level season-calendar route. It no longer represents current UAE capability. 'WHR-CAL-UAE-ERA-DETAIL-RECOVERY' has since proved and registered an official ERA A-level racecard detail route.
+
 Status: handoff accepted for bounded manual reviewed steady-state operation  
 Work ID: `WHR-CAL-UAE-ERA`  
 Decision ID: `UAE-HANDOFF-01`  

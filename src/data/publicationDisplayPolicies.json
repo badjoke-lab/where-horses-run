@@ -20,7 +20,11 @@
     {
       "id": "hkjc-reviewed-a-plus",
       "priority": 500,
-      "match": { "authority_ids": ["hkjc"] },
+      "match": {
+        "authority_ids": [
+          "hkjc"
+        ]
+      },
       "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
@@ -36,7 +40,11 @@
     {
       "id": "jra-reviewed-a-plus",
       "priority": 500,
-      "match": { "authority_ids": ["jra"] },
+      "match": {
+        "authority_ids": [
+          "jra"
+        ]
+      },
       "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
@@ -52,7 +60,11 @@
     {
       "id": "nar-reviewed-a-plus",
       "priority": 400,
-      "match": { "authority_ids": ["nar-local-government-racing"] },
+      "match": {
+        "authority_ids": [
+          "nar-local-government-racing"
+        ]
+      },
       "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
@@ -68,7 +80,11 @@
     {
       "id": "banei-reviewed-a-plus",
       "priority": 400,
-      "match": { "authority_ids": ["banei-tokachi"] },
+      "match": {
+        "authority_ids": [
+          "banei-tokachi"
+        ]
+      },
       "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
@@ -82,20 +98,24 @@
       "notes": "Banei may publish up to A+ for display and switching tests."
     },
     {
-      "id": "uae-reviewed-a-plus",
+      "id": "uae-reviewed-a",
       "priority": 400,
-      "match": { "authority_ids": ["emirates-racing-authority"] },
-      "max_public_rank": "A+",
+      "match": {
+        "authority_ids": [
+          "emirates-racing-authority"
+        ]
+      },
+      "max_public_rank": "A",
       "include_in_public_list": true,
       "a_plus_fields": {
-        "show_race_name": true,
-        "show_distance": true,
-        "show_surface": true,
-        "show_course": true
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "UAE may publish up to A+ when A+ canonical data becomes available."
+      "notes": "UAE may publish up to A when reviewed ERA racecard data supplies complete Race 1-N post times. Schedule-only records remain C until detail becomes source-visible."
     }
   ]
 }

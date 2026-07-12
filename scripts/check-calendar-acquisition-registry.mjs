@@ -115,6 +115,7 @@ const adapterEvidence = new Map([
   ['hong-kong-hkjc-dry-run-adapter', { path: 'data/candidates/hong-kong-hkjc-candidates.json', marker: '"source_adapter_id": "hong-kong-hkjc-dry-run-adapter"' }],
   ['hkjc-fixture-artifact-bridge-v1', { path: 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs', marker: "const ADAPTER_ID = 'hkjc-fixture-artifact-bridge-v1'" }],
   ['uae-era-pdf-grid-actions-v1', { path: 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs', marker: "const ADAPTER_ID = 'uae-era-pdf-grid-actions-v1'" }],
+  ['uae-era-racecard-detail-artifact-v1', { path: 'scripts/timetable/uae-era-detail-artifact-core.mjs', marker: "const ADAPTER_ID = 'uae-era-racecard-detail-artifact-v1'" }],
 ]);
 
 function approvedCeilingFor(record) {
@@ -264,9 +265,11 @@ if (JSON.stringify(hkjcProfile?.supported_observation_ranks) !== JSON.stringify(
 const uaeProfile = registry.records.find((record) => record.system_id === 'uae-national-racing-system');
 if (uaeProfile?.profile_status !== 'provisional' || uaeProfile?.primary_runner !== 'github_actions' || uaeProfile?.fallback_runner !== null) fail('UAE provisional profile must preserve evidence-backed Actions schedule routing and no fallback runner.');
 if (uaeProfile?.schedule_source_id !== 'era-season-calendar' || uaeProfile?.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE provisional profile must preserve the evidence-backed ERA PDF grid schedule route.');
-if (uaeProfile?.detail_source_id !== null || uaeProfile?.detail_adapter_id !== null) fail('UAE provisional profile must not claim detail acquisition.');
-if (JSON.stringify(uaeProfile?.supported_observation_ranks) !== JSON.stringify(['C'])) fail('UAE provisional profile must remain C-only.');
-if (uaeProfile?.supports_source_visible_horizon !== true || uaeProfile?.supports_date_window !== false || uaeProfile?.supports_selected_meetings !== false || uaeProfile?.supports_rank_upgrade_retry !== false) fail('UAE profile scope support must remain source-visible-horizon only.');
+if (uaeProfile?.detail_source_id !== 'era-racecard-public-timetable' || uaeProfile?.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE provisional profile must preserve the evidence-backed ERA racecard detail route.');
+if (uaeProfile?.technical_capability_rank !== 'A' || uaeProfile?.public_ceiling !== 'A') fail('UAE provisional profile must preserve reviewed A-level capability and ceiling.');
+if (JSON.stringify(uaeProfile?.supported_observation_ranks) !== JSON.stringify(['C', 'A'])) fail('UAE provisional profile must preserve C schedule and A detail observation ranks.');
+if (JSON.stringify(uaeProfile?.pending_fields) !== JSON.stringify(['fallback_runner'])) fail('UAE provisional profile must keep only fallback_runner pending.');
+if (uaeProfile?.supports_source_visible_horizon !== true || uaeProfile?.supports_date_window !== false || uaeProfile?.supports_selected_meetings !== false || uaeProfile?.supports_rank_upgrade_retry !== false) fail('UAE profile must preserve source-visible-horizon schedule support while shared date-window, selected-meeting, and rank-retry routing remain disabled.');
 
 const negativeBase = structuredClone(narProfile);
 const negativeCases = [
@@ -291,5 +294,5 @@ console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('HKJC_PROFILE: provisional / github_actions schedule primary / fallback pending / detail pending / C-only');
-console.log('UAE_PROFILE: provisional / github_actions schedule primary / source-visible-horizon only / C-only');
+console.log('UAE_PROFILE: provisional / C schedule + A detail / fallback and shared rank-retry routing pending');
 console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
