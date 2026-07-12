@@ -22,6 +22,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Repair temporary synchronization quoting
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/temporary-activate-uae-era-detail-recovery.mjs')
+          text = path.read_text()
+          text = text.replace("\\\\`", "'")
+          path.write_text(text)
+          PY
+          node --check scripts/temporary-activate-uae-era-detail-recovery.mjs
       - name: Apply reviewed UAE detail activation
         run: node scripts/temporary-activate-uae-era-detail-recovery.mjs
       - name: Validate synchronized contracts
