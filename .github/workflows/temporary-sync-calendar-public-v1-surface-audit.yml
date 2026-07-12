@@ -27,7 +27,22 @@ jobs:
       - name: Apply Public v1 surface audit synchronization
         run: node scripts/temporary-sync-calendar-public-v1-surface-audit.mjs
       - name: Validate Calendar contracts at Public v1 entrypoint
-        run: node scripts/check-calendar-contracts.mjs
+        id: contracts
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-contracts.mjs 2>&1 | tee /tmp/calendar-public-v1-contracts.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload Calendar contract diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-contracts-${{ github.run_id }}
+          path: /tmp/calendar-public-v1-contracts.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Validate Public v1 source audit
         run: node scripts/check-calendar-public-v1-surface-audit.mjs
       - name: Validate diff hygiene
