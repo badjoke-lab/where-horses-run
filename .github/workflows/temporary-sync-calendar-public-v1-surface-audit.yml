@@ -44,10 +44,38 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
       - name: Validate canonical data and UAE handoff compatibility
+        id: uae_reconciliation
+        shell: bash
         run: |
-          node scripts/validate-data.mjs
-          node scripts/check-uae-official-racecourse-inventory.mjs
-          node scripts/check-calendar-uae-era-handoff-decision.mjs
+          set +e
+          {
+            echo '=== validate-data ==='
+            node scripts/validate-data.mjs
+            validate_data_status=$?
+            echo "VALIDATE_DATA_STATUS=$validate_data_status"
+            echo '=== uae-official-racecourse-inventory ==='
+            node scripts/check-uae-official-racecourse-inventory.mjs
+            inventory_status=$?
+            echo "UAE_INVENTORY_STATUS=$inventory_status"
+            echo '=== uae-handoff-decision ==='
+            node scripts/check-calendar-uae-era-handoff-decision.mjs
+            handoff_status=$?
+            echo "UAE_HANDOFF_STATUS=$handoff_status"
+            if [ "$validate_data_status" -ne 0 ] || [ "$inventory_status" -ne 0 ] || [ "$handoff_status" -ne 0 ]; then
+              exit 1
+            fi
+          } 2>&1 | tee /tmp/calendar-public-v1-uae-reconciliation.log
+          status=${PIPESTATUS[0]}
+          set -e
+          exit "$status"
+      - name: Upload UAE reconciliation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-uae-reconciliation-${{ github.run_id }}
+          path: /tmp/calendar-public-v1-uae-reconciliation.log
+          if-no-files-found: warn
+          retention-days: 7
       - name: Validate Public v1 source audit
         run: node scripts/check-calendar-public-v1-surface-audit.mjs
       - name: Validate diff hygiene
