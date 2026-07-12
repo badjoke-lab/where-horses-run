@@ -32,7 +32,9 @@ const text = lang === 'ja'
   ? {
       authority: '主催・体系',
       country: '国・地域',
+      coverage: '確認済み範囲',
       detail: '開催詳細',
+      detailState: '追加詳細',
       first: '第1レース',
       last: '最終レース',
       official: '公式ソース',
@@ -46,7 +48,9 @@ const text = lang === 'ja'
   : {
       authority: 'Authority / system',
       country: 'Country',
+      coverage: 'Reviewed coverage',
       detail: 'Meeting detail',
+      detailState: 'Additional detail',
       first: 'First race',
       last: 'Last race',
       official: 'Official source',
@@ -56,6 +60,34 @@ const text = lang === 'ja'
       lastChecked: 'Last checked',
       notListed: 'Not listed',
       sourceRequired: 'Use the official source for final confirmation.',
+    };
+
+const coverageLabel = lang === 'ja'
+  ? {
+      meeting_only: '開催日・競馬場のみ',
+      first_time_only: '第1レース時刻まで',
+      first_last_times: '第1・最終レース時刻まで',
+      race_times: 'レースごとの発走時刻',
+      programme_summary: '確認済み番組概要',
+    }
+  : {
+      meeting_only: 'Meeting date and racecourse only',
+      first_time_only: 'First race time only',
+      first_last_times: 'First and last race times',
+      race_times: 'Race-by-race post times',
+      programme_summary: 'Reviewed programme summary',
+    };
+
+const gapLabel = lang === 'ja'
+  ? {
+      more_detail_not_reviewed: '追加詳細は未確認',
+      publication_ceiling_applied: '公開上限を適用',
+      at_current_public_ceiling: '現在の公開上限',
+    }
+  : {
+      more_detail_not_reviewed: 'More detail not reviewed',
+      publication_ceiling_applied: 'Public ceiling applied',
+      at_current_public_ceiling: 'At current public ceiling',
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
@@ -112,6 +144,14 @@ const displayCountry = (record: TimetableMeetingRow) =>
                 <div>
                   <dt>{text.country}</dt>
                   <dd>{displayCountry(record)}</dd>
+                </div>
+                <div>
+                  <dt>{text.coverage}</dt>
+                  <dd>{coverageLabel[record.coverage_status]}</dd>
+                </div>
+                <div>
+                  <dt>{text.detailState}</dt>
+                  <dd>{gapLabel[record.public_gap_status]}</dd>
                 </div>
                 {shouldShowFirst(record) && (
                   <div>

@@ -3,6 +3,7 @@ import {
   getPublicTimetableMeetingRows,
   type PublicTimetableMeetingRow,
 } from '../lib/timetable/publicTimetableViewModel';
+import { derivePublicCoverageState } from '../lib/timetable/publicCoverageState.mjs';
 import {
   createCalendarDateContext,
   evaluateCalendarDataState,
@@ -11,6 +12,16 @@ import {
 } from '../lib/timetable/calendarDateContext.mjs';
 
 export type CalendarRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
+export type PublicCoverageStatus =
+  | 'meeting_only'
+  | 'first_time_only'
+  | 'first_last_times'
+  | 'race_times'
+  | 'programme_summary';
+export type PublicGapStatus =
+  | 'more_detail_not_reviewed'
+  | 'publication_ceiling_applied'
+  | 'at_current_public_ceiling';
 
 export type TimetableMeetingRow = {
   meeting_id: string;
@@ -28,6 +39,8 @@ export type TimetableMeetingRow = {
   detail_path: string | null;
   can_view_race_timetable: boolean;
   rank_weight: number;
+  coverage_status: PublicCoverageStatus;
+  public_gap_status: PublicGapStatus;
   source_status?: string;
   last_checked_date?: string | null;
 };
@@ -86,6 +99,14 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
   const canViewRaceTimetable =
     (effectiveRank === 'A' || effectiveRank === 'A+') &&
     record.detail_path !== null;
+  const coverageState = derivePublicCoverageState({
+    capability_rank: record.capability_rank,
+    max_public_rank: record.max_public_rank,
+    effective_public_rank: record.effective_public_rank,
+  }) as {
+    coverage_status: PublicCoverageStatus;
+    public_gap_status: PublicGapStatus;
+  };
 
   return {
     meeting_id: record.meeting_id,
@@ -103,6 +124,8 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     detail_path: record.detail_path,
     can_view_race_timetable: canViewRaceTimetable,
     rank_weight: rankWeight[effectiveRank],
+    coverage_status: coverageState.coverage_status,
+    public_gap_status: coverageState.public_gap_status,
     source_status: record.source_status,
     last_checked_date: record.last_checked_date,
   };

@@ -1,0 +1,95 @@
+{
+  "schema_version": "calendar-public-v1-pilot-record-reconciliation-v1",
+  "work_id": "WHR-CAL-PUBLIC-V1",
+  "implementation_unit": "PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-12T00:00:00Z",
+  "purpose": "Expose a deterministic public summary of reviewed meeting coverage and remaining public-rank gaps without publishing internal review, queue, or operator data.",
+  "public_fields": [
+    "public rank",
+    "reviewed coverage",
+    "additional-detail state",
+    "source status",
+    "last checked date",
+    "official source"
+  ],
+  "coverage_by_public_rank": {
+    "C": "meeting_only",
+    "B": "first_time_only",
+    "B+": "first_last_times",
+    "A": "race_times",
+    "A+": "programme_summary"
+  },
+  "public_gap_states": [
+    "more_detail_not_reviewed",
+    "publication_ceiling_applied",
+    "at_current_public_ceiling"
+  ],
+  "pilot_systems": [
+    {
+      "system_id": "japan-jra-system",
+      "authority_id": "jra",
+      "public_presence": "required",
+      "expected_public_behavior": "Rows may remain below the reviewed A+ ceiling until meeting-level evidence is reviewed."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "authority_id": "nar-local-government-racing",
+      "public_presence": "required",
+      "expected_public_behavior": "Mixed C and A+ publication is valid; C rows must state that additional detail is not reviewed."
+    },
+    {
+      "system_id": "japan-banei-system",
+      "authority_id": "banei-tokachi",
+      "public_presence": "public_or_reviewed_exclusion",
+      "expected_public_behavior": "Accepted handoff does not itself authorize automatic publication; only canonical policy-eligible rows may appear."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "authority_id": "hkjc",
+      "public_presence": "required",
+      "expected_public_behavior": "Canonical A+ evidence may be shown at A when the reviewed public ceiling applies; other rows may remain C."
+    },
+    {
+      "system_id": "uae-national-racing-system",
+      "authority_id": "emirates-racing-authority",
+      "public_presence": "required_for_existing_canonical_seed",
+      "expected_public_behavior": "Existing canonical rows remain C at the current public ceiling; the later 64-record handoff evidence remains review-only and is not automatically published."
+    }
+  ],
+  "freshness_and_source_rules": {
+    "official_source_https_required": true,
+    "source_status_required": true,
+    "last_checked_yyyy_mm_dd_required": true,
+    "source_status_values": [
+      "verified",
+      "partial",
+      "stale"
+    ]
+  },
+  "forbidden_public_fields": [
+    "reviewer",
+    "reviewed_at",
+    "retry_queue",
+    "retry_attempts",
+    "operator_notes",
+    "source_snapshot_path",
+    "normalized_from_path",
+    "raw_html",
+    "raw_pdf",
+    "raw_text"
+  ],
+  "boundaries": {
+    "canonical_write": false,
+    "public_projection_write": false,
+    "automatic_acquisition": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "unattended_publication": false,
+    "internal_queue_publication": false,
+    "participant_data_publication": false,
+    "betting_data_publication": false,
+    "result_or_payout_publication": false
+  },
+  "next_unit": "Validate current, stale, empty, source-failure, and retry-ownership presentation across bilingual public routes."
+}
