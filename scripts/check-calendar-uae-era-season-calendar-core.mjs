@@ -32,18 +32,24 @@ if (baseline.candidate_boundary?.capability_rank !== 'C'
 for (const [key, value] of Object.entries(baseline.boundaries ?? {})) if (value !== false) fail(`baseline boundary ${key} must remain false.`);
 
 const readinessRecord = readiness.records.find((record) => record.readiness_id === baseline.readiness_id);
-if (!readinessRecord) fail('UAE readiness record missing.');
+if (!readinessRecord) fail('UAE schedule readiness record missing.');
 else {
   if (readinessRecord.country_id !== UAE_ERA_SEASON_CALENDAR_V1.country_id) fail('readiness country differs.');
   if (readinessRecord.system_id !== UAE_ERA_SEASON_CALENDAR_V1.system_id) fail('readiness system differs.');
-  if (readinessRecord.technical_rank !== 'C' || readinessRecord.public_ceiling !== 'C') fail('readiness rank differs.');
-  if (!exact(readinessRecord.racecourse_ids, ['meydan-racecourse'])) fail('readiness racecourse IDs differ.');
-  if (readinessRecord.readiness !== 'manual_ready' || readinessRecord.implementation_status !== 'not_started') fail('readiness implementation state differs.');
-  if (readinessRecord.automation_mode !== 'manual_confirmation') fail('readiness automation mode differs.');
+  if (readinessRecord.technical_rank !== 'C' || readinessRecord.public_ceiling !== 'C') fail('current schedule readiness rank differs.');
+  if (!exact(readinessRecord.racecourse_ids, ['meydan-racecourse', 'abu-dhabi-turf-club', 'al-ain-racecourse', 'jebel-ali-racecourse', 'sharjah-racecourse'])) fail('current schedule readiness racecourse IDs differ.');
+  if (readinessRecord.readiness !== 'prototype_ready' || readinessRecord.implementation_status !== 'fixture_validated') fail('current schedule readiness implementation state differs.');
+  if (readinessRecord.automation_mode !== 'semi_automatic') fail('current schedule readiness automation mode differs.');
   if (readinessRecord.confirmed_fields?.meeting_date !== true || readinessRecord.confirmed_fields?.racecourse !== true) fail('readiness C fields missing.');
   for (const field of ['first_race_time', 'last_race_time', 'per_race_post_times', 'race_name', 'distance', 'surface', 'course']) {
-    if (readinessRecord.confirmed_fields?.[field] !== false) fail(`readiness field ${field} must remain false.`);
+    if (readinessRecord.confirmed_fields?.[field] !== false) fail('schedule readiness field ' + field + ' must remain false.');
   }
+}
+const detailReadinessRecord = readiness.records.find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable');
+if (!detailReadinessRecord) fail('UAE detail recovery readiness record missing.');
+else {
+  if (detailReadinessRecord.technical_rank !== 'A' || detailReadinessRecord.public_ceiling !== 'A') fail('UAE detail recovery rank differs.');
+  if (detailReadinessRecord.authority_source_key !== 'united-arab-emirates/emirates-racing-authority/era-racecard-public-timetable') fail('UAE detail recovery source differs.');
 }
 
 if (sourceTest.technical_rank !== 'C' || sourceTest.public_ceiling !== 'C') fail('source-test rank differs.');

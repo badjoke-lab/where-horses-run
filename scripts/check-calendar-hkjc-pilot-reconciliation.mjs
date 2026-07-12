@@ -141,8 +141,9 @@ for (const phrase of [
 const projectRoadmap = readText('docs/project-roadmap.md');
 const implementationRoadmap = readText('docs/calendar/implementation-roadmap.md');
 for (const [label, text] of [['project roadmap', projectRoadmap], ['implementation roadmap', implementationRoadmap]]) {
-  if (!text.includes('Current Work ID: `WHR-CAL-HONG-KONG-HKJC`')) fail(`${label} missing HKJC current Work ID.`);
-  if (!text.includes('HKJC-PILOT-02')) fail(`${label} missing HKJC-PILOT-02 history marker.`);
+  if (!text.includes('Completed Work ID:') || !text.includes('WHR-CAL-HONG-KONG-HKJC')) fail(label + ' missing completed HKJC Work ID.');
+  if (!text.includes('Current Work ID:') || !text.includes('WHR-CAL-PUBLIC-V1')) fail(label + ' missing current Public v1 Work ID.');
+  if (!text.includes('HKJC-PILOT-02')) fail(label + ' missing HKJC-PILOT-02 history marker.');
 }
 
 if (errors.length) {
