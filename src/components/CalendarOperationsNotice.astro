@@ -1,0 +1,74 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+import {
+  derivePublicOperationsPresentation,
+  getPublicOperationsCopy,
+} from '../lib/timetable/publicOperationsPresentation.mjs';
+
+type CalendarDataState = {
+  status: string;
+  generatedDate: string;
+  earliestRecordDate: string | null;
+  latestRecordDate: string | null;
+  totalRecordCount: number;
+  windowRecordCount: number;
+};
+
+type Props = {
+  records: TimetableMeetingRow[];
+  dataState: CalendarDataState;
+  lang?: 'en' | 'ja';
+  sourceFailureCount?: number;
+  retryOwnershipStatus?: 'reviewed_operations' | 'no_visible_gap';
+};
+
+const {
+  records,
+  dataState,
+  lang = 'en',
+  sourceFailureCount = 0,
+  retryOwnershipStatus = 'reviewed_operations',
+} = Astro.props as Props;
+const presentation = derivePublicOperationsPresentation({
+  records,
+  dataState,
+  sourceFailureCount,
+  retryOwnershipStatus,
+});
+const copy = getPublicOperationsCopy(presentation, lang);
+const heading = lang === 'ja' ? '運用状態' : 'Operations status';
+---
+
+<aside
+  class="calendar-operations-notice"
+  aria-label={heading}
+  data-calendar-data-status={presentation.data_status}
+  data-calendar-source-presentation={presentation.source_presentation_status}
+  data-calendar-retry-ownership={presentation.retry_ownership_status}
+  data-calendar-automatic-publication={String(presentation.automatic_publication)}
+>
+  <h2>{heading}</h2>
+  <p>{copy.source}</p>
+  <p>{copy.retry}</p>
+  <p>{copy.automatic}</p>
+</aside>
+
+<style>
+  .calendar-operations-notice {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.45rem;
+    margin-block: 1.25rem;
+    padding: 0.85rem;
+  }
+
+  .calendar-operations-notice h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .calendar-operations-notice p {
+    margin: 0;
+  }
+</style>
