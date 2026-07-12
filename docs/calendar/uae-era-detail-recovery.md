@@ -76,6 +76,17 @@ Detail route:
 
 The historical 64-meeting, five-venue season schedule remains intact. The A-level detail capability is represented by a separate Readiness record, so existing schedule records and source aliases continue to resolve correctly.
 
+## Compatibility closure
+
+The recovery keeps historical pilot evidence separate from current capability:
+
+- the original UAE PILOT-01 fixture remains evidence for its one-venue C-level starting point;
+- the current UAE season route is validated as a five-venue C-level schedule path;
+- the new racecard route is validated independently as A-level detail capability;
+- the HKJC reconciliation checker now treats HKJC as completed history and Calendar Public v1 as the current programme;
+- the JRA review package was regenerated after the Readiness registry gained the UAE detail record;
+- Operations, public projection, readiness-backfill, and governance digests were reconciled without changing canonical or public meeting records.
+
 ## Correct future behavior
 
 A future UAE meeting remains C while only the season-calendar date and venue are public. Once its ERA racecard pages become visible, the detail route can produce reviewed A-level timetable evidence from the fields actually available.
