@@ -9,12 +9,12 @@ function replaceRequired(file, before, after) {
 replaceRequired(
   'data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json',
   '"expected_public_behavior": "Mixed C and A+ publication is valid; C rows must state that additional detail is not reviewed."',
-  '"expected_public_behavior": "Mixed C and A+ publication is valid; C rows below a higher reviewed ceiling must state that additional detail is not reviewed, while C-ceiling legacy rows remain at the current public ceiling."',
+  '"expected_public_behavior": "Mixed C and A+ publication is valid; C rows must show meeting-only reviewed coverage and their current source-specific public ceiling. Retry ownership is handled by the following Public v1 operations-presentation unit."',
 );
 replaceRequired(
   'docs/calendar/public-v1-pilot-record-reconciliation.md',
   'Mixed C and A+ output is valid. C rows are schedule identities and must state that additional detail is not reviewed. A+ rows may show the reviewed programme summary.',
-  'Mixed C and A+ output is valid. C rows below a higher reviewed ceiling state that additional detail is not reviewed. Legacy C-ceiling rows remain at the current public ceiling. A+ rows may show the reviewed programme summary.',
+  'Mixed C and A+ output is valid. C rows show meeting-only reviewed coverage and their current source-specific public ceiling. A+ rows may show the reviewed programme summary. Retry ownership is handled by the following Public v1 operations-presentation unit rather than inferred from the public projection.',
 );
 replaceRequired(
   'scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs',
@@ -25,14 +25,12 @@ if (narRows.filter((row) => row.effective_public_rank === 'C').some((row) => row
 }`,
   `if (!narRows.some((row) => row.effective_public_rank === 'C')) fail('NAR must retain C schedule rows.');
 if (!narRows.some((row) => row.effective_public_rank === 'A+')) fail('NAR must retain A+ detail rows.');
-const narUpgradeableCRows = narRows.filter((row) => row.effective_public_rank === 'C' && rankIndex(row.max_public_rank) > rankIndex('C'));
-const narCeilingCRows = narRows.filter((row) => row.effective_public_rank === 'C' && row.max_public_rank === 'C');
-if (narUpgradeableCRows.length === 0) fail('NAR must retain C rows below a higher reviewed ceiling.');
-if (narUpgradeableCRows.some((row) => row.public_gap_status !== 'more_detail_not_reviewed')) {
-  fail('NAR upgradeable C rows must expose an honest additional-detail gap.');
+const narCRows = narRows.filter((row) => row.effective_public_rank === 'C');
+if (narCRows.some((row) => row.coverage_status !== 'meeting_only')) {
+  fail('NAR C rows must expose meeting-only reviewed coverage.');
 }
-if (narCeilingCRows.some((row) => row.public_gap_status !== 'at_current_public_ceiling')) {
-  fail('NAR C-ceiling rows must expose the current reviewed public ceiling.');
+if (!narCRows.some((row) => row.public_gap_status === 'at_current_public_ceiling')) {
+  fail('NAR must retain source-specific C-ceiling rows.');
 }`,
 );
 
