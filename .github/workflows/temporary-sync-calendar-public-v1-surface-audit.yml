@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - work/calendar-public-v1-surface-audit
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
