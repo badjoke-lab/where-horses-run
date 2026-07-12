@@ -1,0 +1,103 @@
+{
+  "schema_version": "calendar-public-v1-surface-audit-v1",
+  "work_id": "WHR-CAL-PUBLIC-V1",
+  "audit_id": "PUBLIC-V1-SURFACE-AUDIT-01",
+  "status": "source_and_rendered_fixture_audit_ready",
+  "reviewed_at": "2026-07-12T00:00:00Z",
+  "surfaces": [
+    "/calendar/",
+    "/ja/calendar/",
+    "/today/",
+    "/ja/today/",
+    "/tomorrow/",
+    "/ja/tomorrow/"
+  ],
+  "shared_components": [
+    "src/components/CalendarDateStatus.astro",
+    "src/components/TimetableMeetingList.astro"
+  ],
+  "release_checks": {
+    "explicit_reference_date_and_timezone": true,
+    "rolling_thirty_day_window": true,
+    "bilingual_route_parity": true,
+    "one_meeting_per_list_row": true,
+    "visible_source_status_and_freshness": true,
+    "honest_empty_and_stale_states": true,
+    "meeting_detail_routes_remain_separate": true,
+    "official_source_final_confirmation": true
+  },
+  "public_rank_boundaries": {
+    "C": [
+      "meeting identity",
+      "racecourse",
+      "authority or system",
+      "country or region",
+      "public rank",
+      "source status",
+      "last checked",
+      "meeting detail link",
+      "official source link"
+    ],
+    "B": [
+      "C fields",
+      "first race time"
+    ],
+    "B+": [
+      "B fields",
+      "last race time"
+    ],
+    "A": [
+      "B+ list fields",
+      "race-by-race times only on the separate meeting detail route"
+    ],
+    "A+": [
+      "A list fields",
+      "approved programme summary fields only on the separate meeting detail route"
+    ]
+  },
+  "rendered_fixture_matrix": [
+    {
+      "reference_date": "2026-06-06",
+      "timezone": "Asia/Tokyo",
+      "expected_state": "current_window_available"
+    },
+    {
+      "reference_date": "2026-07-01",
+      "timezone": "Asia/Tokyo",
+      "expected_state": "stale_generation_with_window_records"
+    }
+  ],
+  "legacy_validator_reconciliation": {
+    "decision": "replace_fixed_month_and_pre_shared_component_assumptions",
+    "validators": [
+      "scripts/check-calendar-30d-timetable-ui.mjs",
+      "scripts/check-today-timetable-ui.mjs",
+      "scripts/check-tomorrow-timetable-ui.mjs"
+    ]
+  },
+  "required_validators": [
+    "scripts/check-calendar-dynamic-dates-release-gate.mjs",
+    "scripts/check-calendar-30d-timetable-ui.mjs",
+    "scripts/check-today-timetable-ui.mjs",
+    "scripts/check-tomorrow-timetable-ui.mjs"
+  ],
+  "boundaries": {
+    "canonical_data_write": false,
+    "public_data_write": false,
+    "automatic_acquisition": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "unattended_publication": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "raw_source_display": false,
+    "embedded_or_direct_stream_display": false
+  },
+  "next_units": [
+    "reconcile maintained approved-pilot records with visible source, coverage, freshness, rank, and partial-coverage state",
+    "validate rendered current, stale, empty, source-failure, and retry-ownership presentation",
+    "complete bilingual responsive Calendar, country, racecourse, and meeting navigation QA",
+    "prepare the explicit Calendar Public v1 release decision"
+  ]
+}
