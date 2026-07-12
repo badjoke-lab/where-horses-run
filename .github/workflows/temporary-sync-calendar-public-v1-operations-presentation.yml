@@ -27,7 +27,7 @@ jobs:
           node-version: 22.12.0
       - name: Install dependencies
         run: npm install
-      - name: Synchronize documentation state
+      - name: Synchronize documentation and prior reconciliation state
         run: node scripts/temporary-sync-calendar-public-v1-operations-presentation.mjs
       - name: Validate operations presentation contract
         shell: bash
@@ -67,7 +67,7 @@ jobs:
         run: node scripts/check-calendar-public-v1-operations-rendered.mjs
       - name: Validate diff hygiene
         run: git diff --check
-      - name: Commit synchronized documentation
+      - name: Commit synchronized state
         run: |
           if git diff --quiet; then
             echo "No synchronization changes required."
@@ -75,6 +75,11 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/calendar/README.md docs/calendar/implementation-roadmap.md
+          git add \
+            data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json \
+            docs/calendar/public-v1-pilot-record-reconciliation.md \
+            scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs \
+            docs/calendar/README.md \
+            docs/calendar/implementation-roadmap.md
           git commit -m "[CF-Pages-Skip] Synchronize Public v1 operations state"
           git push origin HEAD:work/calendar-public-v1-operations-presentation
