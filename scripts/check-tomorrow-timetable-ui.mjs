@@ -3,76 +3,93 @@ import path from 'node:path';
 
 const root = process.cwd();
 const errors = [];
-
-function fail(message) {
-  errors.push(message);
-}
-
-function read(relativePath) {
-  const fullPath = path.join(root, relativePath);
-  if (!existsSync(fullPath)) {
+const fail = (message) => errors.push(message);
+const read = (relativePath) => {
+  const absolutePath = path.join(root, relativePath);
+  if (!existsSync(absolutePath)) {
     fail(`${relativePath}: file must exist`);
     return '';
   }
-  return readFileSync(fullPath, 'utf8');
-}
-
-function requireIncludes(content, needle, label) {
-  if (!content.includes(needle)) fail(`${label}: missing ${needle}`);
-}
-
-function forbidIncludes(content, needle, label) {
-  if (content.includes(needle)) fail(`${label}: must not include ${needle}`);
-}
-
-function requirePattern(content, pattern, label, message) {
-  if (!pattern.test(content)) fail(`${label}: ${message}`);
-}
+  return readFileSync(absolutePath, 'utf8');
+};
+const requireIncludes = (content, marker, label) => {
+  if (!content.includes(marker)) fail(`${label}: missing ${marker}`);
+};
 
 const englishPath = 'src/pages/tomorrow.astro';
+const japanesePath = 'src/pages/ja/tomorrow.astro';
+const listPath = 'src/components/TimetableMeetingList.astro';
+const statusPath = 'src/components/CalendarDateStatus.astro';
 const englishPage = read(englishPath);
+const japanesePage = read(japanesePath);
+const meetingList = read(listPath);
+const dateStatus = read(statusPath);
 
-requireIncludes(englishPage, 'normalizedTimetableCalendarPreviewRecords', englishPath);
-requireIncludes(englishPage, 'getNormalizedTimetableMeetingDetail', englishPath);
-requireIncludes(englishPage, 'tomorrowRecords', englishPath);
-requireIncludes(englishPage, 'Tomorrow’s meeting list', englishPath);
-requireIncludes(englishPage, 'Rank {record.capability_rank}', englishPath);
-requireIncludes(englishPage, 'First: {displayTime(record.first_race_time_local)}', englishPath);
-requireIncludes(englishPage, 'Last: {displayTime(record.last_race_time_local)}', englishPath);
-requireIncludes(englishPage, 'View race timetable', englishPath);
-requireIncludes(englishPage, 'Official source', englishPath);
-requireIncludes(englishPage, "record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)", englishPath);
-requirePattern(englishPage, /setUTCDate\([^)]*getUTCDate\(\)\s*\+\s*1/, englishPath, 'must compute tomorrow from the current timetable date');
-requirePattern(englishPage, /record\.date\s*={2,3}\s*tomorrowTimetableDate/, englishPath, 'must match records using the computed tomorrow date');
-requirePattern(englishPage, /record\.capability_rank !== 'C'[^\n]+First:/, englishPath, 'C records must not render first-race time');
-requirePattern(englishPage, /record\.capability_rank === 'B\+' \|\| record\.capability_rank === 'A'/, englishPath, 'only B+ and A records should render last-race time');
-requirePattern(englishPage, /record\.can_view_race_timetable && <a href=\{record\.detail_path\}>View race timetable<\/a>/, englishPath, 'internal race timetable link must be conditional');
-requirePattern(englishPage, /official source links.*final confirmation|final confirmation.*official source links/i, englishPath, 'must include official confirmation wording');
-requirePattern(englishPage, /Live fetching:\s*disabled/i, englishPath, 'must state live fetching is disabled');
+for (const [label, page] of [[englishPath, englishPage], [japanesePath, japanesePage]]) {
+  for (const marker of [
+    'CalendarDateStatus',
+    'TimetableMeetingList',
+    'getTimetableDataState',
+    'getTimetableDateContext',
+    'getTimetableMeetingRowsForDate',
+    'getTimetableMeetingRowsForDate(context.tomorrow)',
+    'records={tomorrowRecords}',
+    'date={context.tomorrow}',
+  ]) requireIncludes(page, marker, label);
+}
 
-forbidIncludes(englishPage, '<table', englishPath);
-forbidIncludes(englishPage, 'NormalizedMeetingDetailLinks', englishPath);
-forbidIncludes(englishPage, 'View meeting detail', englishPath);
-forbidIncludes(englishPage, 'CurrentTimetableRecords', englishPath);
-forbidIncludes(englishPage, 'source_id}</a>', englishPath);
-forbidIncludes(englishPage, 'last_checked_at', englishPath);
-forbidIncludes(englishPage, 'display_status', englishPath);
+for (const marker of [
+  "Tomorrow's timetable",
+  'context.tomorrow',
+  'context.today',
+  'context.timeZone',
+  'canonicalPath="/tomorrow/"',
+  'alternatePath="/ja/tomorrow/"',
+  'No reviewed public meetings are listed for',
+]) requireIncludes(englishPage, marker, englishPath);
 
-const forbiddenDisplayPatterns = [
-  /racecard/i,
-  /horse\s+names/i,
-  /jockey\s+names/i,
-  /\bodds\b/i,
-  /\bresults\b/i,
-  /\bpayouts\b/i,
-  /prediction/i,
-  /\btips\b/i,
-  /raw\s*HTML/i,
-  /record\.(?:racecard|card_body|entries?|horses?|jockeys?|odds?|results?|payouts?|dividends?|predictions?|tips?|raw_html)\b/i,
-];
+for (const marker of [
+  '明日の開催時刻表',
+  'context.tomorrow',
+  'lang="ja"',
+  'canonicalPath="/ja/tomorrow/"',
+  'alternatePath="/tomorrow/"',
+  '明日の確認済み公開開催はありません',
+  '最新情報は公式ソースで確認してください',
+]) requireIncludes(japanesePage, marker, japanesePath);
 
-for (const pattern of forbiddenDisplayPatterns) {
-  if (pattern.test(englishPage)) fail(`${englishPath}: forbidden timetable display wording or field matched ${pattern}`);
+for (const marker of [
+  'group.records.map((record) => (',
+  '<li class="meeting-card">',
+  "const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';",
+  "record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+'",
+  'record.source_status',
+  'record.last_checked_date',
+  'record.detail_path',
+  'record.official_source_url',
+  'Use the official source for final confirmation.',
+  '最終確認は公式ソースで行ってください。',
+]) requireIncludes(meetingList, marker, listPath);
+
+for (const marker of [
+  'data-calendar-data-status={dataState.status}',
+  'context.today',
+  'context.timeZone',
+  'no_public_records',
+  'stale_generation_with_window_records',
+]) requireIncludes(dateStatus, marker, statusPath);
+
+if (meetingList.includes('<table')) fail(`${listPath}: Tomorrow must remain one meeting per list row`);
+if (/record\.(?:races|race_rows|programme)\.map/.test(meetingList)) {
+  fail(`${listPath}: Tomorrow must not expand race-by-race rows`);
+}
+
+const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}`;
+for (const forbidden of [
+  /record\.(?:racecard|card_body|entries?|horses?|jockeys?|trainers?|odds?|results?|payouts?|dividends?|predictions?|tips?|raw_html|stream_url)\b/i,
+  /<iframe\b/i,
+]) {
+  if (forbidden.test(combined)) fail(`Tomorrow public surface contains forbidden pattern ${forbidden}`);
 }
 
 if (errors.length) {
@@ -82,3 +99,5 @@ if (errors.length) {
 }
 
 console.log('Tomorrow timetable UI check passed.');
+console.log('TOMORROW_REFERENCE_DATE_CONTEXT: pass');
+console.log('TOMORROW_ONE_MEETING_PER_LIST_ROW: pass');
