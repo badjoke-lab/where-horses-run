@@ -12,6 +12,9 @@ import { promoteApprovedCandidateV1 } from './timetable/pipeline-v1/promotion-co
 const fixtures = JSON.parse(fs.readFileSync('data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json', 'utf8'));
 const input = structuredClone(fixtures.valid_inputs.find((entry) => entry.id === 'reviewed-public-safe-a-plus')?.input);
 if (!input) throw new Error('reviewed A+ fixture missing');
+input.generated_at = '2026-07-13T03:30:00Z';
+input.source_evidence.checked_at = '2026-07-13T03:30:00Z';
+input.review.reviewed_at = '2026-07-13T03:45:00Z';
 const meeting = input.meetings[0];
 const inputText = `${JSON.stringify(input, null, 2)}\n`;
 const batchId = 'hkjc-rank-upgrade-promotion-proof';
