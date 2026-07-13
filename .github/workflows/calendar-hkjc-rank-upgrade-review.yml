@@ -1,0 +1,147 @@
+name: Calendar HKJC rank-upgrade review
+
+on:
+  workflow_dispatch:
+    inputs:
+      meeting_ids:
+        description: Comma-separated canonical HKJC meeting IDs selected for rank upgrade
+        required: true
+        type: string
+      reviewed_input_base64:
+        description: Base64-encoded reviewed-public-safe HKJC detail JSON
+        required: true
+        type: string
+      batch_id:
+        description: Stable kebab-case batch ID
+        required: true
+        type: string
+      campaign_id:
+        description: Stable kebab-case campaign ID
+        required: true
+        default: hkjc-rank-upgrade-operations
+        type: string
+      job_id:
+        description: Stable kebab-case job ID
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-hkjc-rank-upgrade-${{ inputs.batch_id }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MEETING_IDS: ${{ inputs.meeting_ids }}
+      REVIEWED_INPUT_BASE64: ${{ inputs.reviewed_input_base64 }}
+      BATCH_ID: ${{ inputs.batch_id }}
+      CAMPAIGN_ID: ${{ inputs.campaign_id }}
+      JOB_ID: ${{ inputs.job_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate implementation
+        run: |
+          node --check scripts/timetable/hkjc-rank-upgrade-operations-core.mjs
+          node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
+          node scripts/check-calendar-hkjc-detail-reviewed-import.mjs
+          node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/hkjc-rank-upgrade-protected-before.sha256
+      - name: Decode reviewed public-safe input
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const encoded = String(process.env.REVIEWED_INPUT_BASE64 ?? '').trim();
+          if (!encoded) throw new Error('reviewed_input_base64 is empty');
+          const bytes = Buffer.from(encoded, 'base64');
+          if (bytes.length === 0 || bytes.length > 300000) throw new Error('decoded reviewed input size is invalid');
+          const text = bytes.toString('utf8');
+          JSON.parse(text);
+          fs.writeFileSync('/tmp/hkjc-rank-upgrade-input.json', text.endsWith('\n') ? text : `${text}\n`);
+          NODE
+      - name: Build reviewed-import package
+        run: |
+          node scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs \
+            --input=/tmp/hkjc-rank-upgrade-input.json \
+            --output=/tmp/hkjc-rank-upgrade-package.json \
+            --batch-id="$BATCH_ID" \
+            --campaign-id="$CAMPAIGN_ID" \
+            --job-id="$JOB_ID" \
+            > /tmp/hkjc-rank-upgrade-package-summary.json
+          node scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs \
+            --package=/tmp/hkjc-rank-upgrade-package.json \
+            --output-dir=/tmp/hkjc-rank-upgrade-extracted \
+            > /tmp/hkjc-rank-upgrade-extract-summary.json
+      - name: Build Retry Queue and Review Queue
+        run: |
+          node scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs \
+            --meeting-ids="$MEETING_IDS" \
+            --generated-at="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --candidate=/tmp/hkjc-rank-upgrade-extracted/candidates.json \
+            --manifest=/tmp/hkjc-rank-upgrade-extracted/collection-result-manifest.json \
+            --output-dir=/tmp/hkjc-rank-upgrade-review \
+            > /tmp/hkjc-rank-upgrade-review-summary.json
+      - name: Validate review state and boundaries
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/hkjc-rank-upgrade-review';
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const retry = read('rank-aware-retry-queue.json');
+          const review = read('review-queue.json');
+          const candidate = read('candidates.json');
+          const manifest = read('collection-result-manifest.json');
+          const selected = String(process.env.MEETING_IDS).split(',').map((value) => value.trim()).filter(Boolean).sort();
+          const retryIds = retry.entries.map((entry) => entry.meeting_id).sort();
+          const candidateIds = candidate.records.map((record) => record.meeting_id).sort();
+          if (JSON.stringify(selected) !== JSON.stringify(retryIds) || JSON.stringify(selected) !== JSON.stringify(candidateIds)) throw new Error('selected, retry, and candidate meetings differ');
+          if (retry.entries.some((entry) => entry.primary_runner !== 'reviewed_import' || entry.fallback_runner !== null || entry.retry_scope.mode !== 'selected_meetings')) throw new Error('retry route differs');
+          if (review.entries.length !== 1 || review.entries[0].review_state !== 'review_ready' || review.entries[0].promotion_state !== 'not_ready') throw new Error('Review Queue state differs');
+          if (candidate.review.status !== 'needs_review' || candidate.review.promotion_target !== null) throw new Error('candidate review boundary differs');
+          if (manifest.runner_used !== 'reviewed_import') throw new Error('manifest runner differs');
+          console.log('HKJC_RANK_UPGRADE_REVIEW: pass');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/hkjc-rank-upgrade-protected-before.sha256
+      - name: Upload rank-upgrade review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-rank-upgrade-review-${{ inputs.batch_id }}-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/hkjc-rank-upgrade-package.json
+            /tmp/hkjc-rank-upgrade-package-summary.json
+            /tmp/hkjc-rank-upgrade-extract-summary.json
+            /tmp/hkjc-rank-upgrade-review-summary.json
+            /tmp/hkjc-rank-upgrade-review/rank-aware-retry-queue.json
+            /tmp/hkjc-rank-upgrade-review/review-queue.json
+            /tmp/hkjc-rank-upgrade-review/candidates.json
+            /tmp/hkjc-rank-upgrade-review/collection-result-manifest.json
+      - name: Cleanup and prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/hkjc-rank-upgrade-extracted /tmp/hkjc-rank-upgrade-review
+          rm -f /tmp/hkjc-rank-upgrade-input.json /tmp/hkjc-rank-upgrade-package.json /tmp/hkjc-rank-upgrade-package-summary.json /tmp/hkjc-rank-upgrade-extract-summary.json /tmp/hkjc-rank-upgrade-review-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
