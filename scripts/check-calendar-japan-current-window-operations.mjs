@@ -10,6 +10,7 @@ const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath)
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const policy = readJson('data/static/calendar-japan-current-window-policy-v1.json');
+const decision = readJson('data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json');
 const canonical = readJson('data/generated/timetable/canonical/meetings.json');
 const registry = readJson('data/static/calendar-acquisition-registry.json');
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
@@ -59,12 +60,43 @@ if (audit) {
   if (audit.summary.target_ready_count + audit.summary.retry_required_count !== audit.summary.canonical_meeting_count) fail('audit summary target/retry counts do not close');
   if (!exact(audit.summary.systems_without_canonical_meetings, audit.systems.filter((system) => system.canonical_meeting_count === 0).map((system) => system.system_id))) fail('empty-system summary differs');
   if (Object.values(audit.side_effect_boundary).some((value) => value !== false)) fail('audit side-effect boundary differs');
+
+  if (decision.schema_version !== 'calendar-japan-current-window-decision-v1') fail('decision schema differs');
+  if (decision.work_id !== audit.work_id || decision.implementation_unit !== audit.implementation_unit) fail('decision work identity differs');
+  if (decision.decision_id !== 'JAPAN-CURRENT-WINDOW-2026-07-13') fail('decision ID differs');
+  if (!exact(decision.window, audit.window)) fail('decision window differs');
+  if (decision.canonical_generated_at !== audit.canonical_generated_at) fail('decision Canonical timestamp differs');
+  if (decision.evidence?.workflow_run_id !== 29233108790 || decision.evidence?.artifact_id !== 8272301477) fail('decision evidence identity differs');
+  if (decision.evidence?.artifact_digest !== 'sha256:c0eff9582b8f606b6214ad2058a39890563f4c3e2fefe125ddc080ac00bb2e61') fail('decision artifact digest differs');
+  if (decision.summary?.system_count !== audit.summary.system_count
+    || decision.summary?.canonical_meeting_count !== audit.summary.canonical_meeting_count
+    || decision.summary?.target_ready_a_plus_count !== audit.summary.target_ready_count
+    || decision.summary?.action_required_count !== audit.summary.retry_required_count) fail('decision summary differs from generated audit');
+  const decisionBySystem = new Map(decision.systems.map((record) => [record.system_id, record]));
+  for (const system of audit.systems) {
+    const recorded = decisionBySystem.get(system.system_id);
+    if (!recorded) {
+      fail(`decision system missing ${system.system_id}`);
+      continue;
+    }
+    if (recorded.canonical_meeting_count !== system.canonical_meeting_count
+      || !exact(recorded.rank_counts, system.rank_counts)
+      || recorded.first_meeting_date !== system.first_meeting_date
+      || recorded.last_meeting_date !== system.last_meeting_date
+      || recorded.latest_source_check_date !== system.latest_source_check_date
+      || recorded.operational_state !== system.operational_state) fail(`decision state differs for ${system.system_id}`);
+  }
+  const nextWork = new Map(decision.next_work.map((record) => [record.work_id, record]));
+  if (nextWork.get('WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY')?.priority !== 1) fail('NAR next work priority differs');
+  if (nextWork.get('WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION')?.priority !== 2) fail('Banei next work priority differs');
+  if (Object.values(decision.side_effect_boundary ?? {}).some((value) => value !== false)) fail('decision side-effect boundary differs');
 }
 
 for (const file of policy.systems.map((record) => record.entry_point)) {
   if (!fs.existsSync(path.join(root, file))) fail(`operator entry point missing: ${file}`);
 }
 for (const file of [
+  'data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json',
   'scripts/timetable/japan-current-window-audit-core.mjs',
   'scripts/timetable/build-japan-current-window-audit.mjs',
   'docs/calendar/japan-current-window-operations.md',
@@ -105,5 +137,7 @@ console.log(`ACTION_REQUIRED: ${audit.summary.retry_required_count}`);
 for (const system of audit.systems) {
   console.log(`${system.system_id}: meetings=${system.canonical_meeting_count} ranks=${JSON.stringify(system.rank_counts)} state=${system.operational_state}`);
 }
+console.log('NEXT_WORK_1: WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY');
+console.log('NEXT_WORK_2: WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION');
 console.log('NETWORK_FETCH: false');
 console.log('CANONICAL_PUBLIC_WRITE: false');
