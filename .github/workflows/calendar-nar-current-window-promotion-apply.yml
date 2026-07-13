@@ -87,8 +87,10 @@ jobs:
           cp "$PROPOSAL_DIR/promotion-proposal.json" data/audits/calendar-nar-current-window-promotion-proposal-v1.json
       - name: Regenerate deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Regenerate dependent operations status
-        run: node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
+      - name: Regenerate dependent operations artifacts
+        run: |
+          node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
+          node scripts/timetable/build-operations-review-package.mjs
       - name: Validate promoted and retained meeting sets
         run: |
           node --input-type=module - <<'NODE'
@@ -121,6 +123,9 @@ jobs:
           }
           const operations = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
           if (operations.public_projection?.meeting_count !== publicMeetings.size || operations.public_projection?.detail_count !== publicDetails.size) throw new Error('operations status public counts differ');
+          const reviewPackage = JSON.parse(fs.readFileSync('data/generated/timetable/operations-review-package.json', 'utf8'));
+          if (reviewPackage.as_of_date !== operations.as_of_date || reviewPackage.generated_at !== operations.generated_at) throw new Error('operations review package timestamp differs');
+          if (reviewPackage.summary?.current_window_meeting_count !== operations.public_projection.current_window_meeting_count) throw new Error('operations review package current-window count differs');
           console.log('NAR_CURRENT_WINDOW_PROMOTION_APPLY: pass');
           console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length, operations_meetings: publicMeetings.size, operations_details: publicDetails.size }));
           NODE
@@ -139,9 +144,10 @@ jobs:
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/operations-status.json
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
           if git diff --cached --quiet; then
-            echo 'Reviewed application and dependent status are already committed.'
+            echo 'Reviewed application and dependent operations artifacts are already committed.'
           else
             git commit -m 'Apply reviewed NAR current-window A+ promotion state'
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
