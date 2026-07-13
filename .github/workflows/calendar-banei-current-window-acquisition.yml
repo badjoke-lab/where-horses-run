@@ -1,0 +1,229 @@
+name: Calendar Banei current-window acquisition
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-banei-current-window-policy-v1.json'
+      - 'data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'scripts/timetable/collect-banei-full-month-calendar.mjs'
+      - 'scripts/timetable/run-banei-actions-job.mjs'
+      - 'scripts/timetable/build-banei-current-window-spec.mjs'
+      - 'scripts/check-calendar-banei-current-window-acquisition.mjs'
+      - 'docs/calendar/banei-current-window-acquisition.md'
+      - '.github/workflows/calendar-banei-current-window-acquisition.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-banei-current-window-acquisition-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+env:
+  JULY_BATCH_ID: banei-current-window-july-2026-batch-001
+  AUGUST_BATCH_ID: banei-current-window-august-2026-batch-001
+
+jobs:
+  collect-review-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate policy and monthly routing
+        run: |
+          node --check scripts/timetable/collect-banei-full-month-calendar.mjs
+          node --check scripts/timetable/run-banei-actions-job.mjs
+          node --check scripts/timetable/build-banei-current-window-spec.mjs
+          node --check scripts/check-calendar-banei-current-window-acquisition.mjs
+          node scripts/check-calendar-banei-current-window-acquisition.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Build immutable two-month specification
+        run: |
+          rm -rf /tmp/banei-current-window-spec
+          node scripts/timetable/build-banei-current-window-spec.mjs \
+            --output-dir=/tmp/banei-current-window-spec \
+            --requested-at="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > /tmp/banei-current-window-spec-summary.json
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/banei-current-window-protected-before.sha256
+      - name: Run official July window acquisition
+        shell: bash
+        run: |
+          set +e
+          node scripts/timetable/run-banei-actions-job.mjs \
+            --execution=/tmp/banei-current-window-spec/2026-07-execution.json \
+            > /tmp/banei-current-window-july.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/banei-current-window-july.exit
+          cat /tmp/banei-current-window-july.log
+          exit 0
+      - name: Run official August window acquisition
+        shell: bash
+        run: |
+          set +e
+          node scripts/timetable/run-banei-actions-job.mjs \
+            --execution=/tmp/banei-current-window-spec/2026-08-execution.json \
+            > /tmp/banei-current-window-august.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/banei-current-window-august.exit
+          cat /tmp/banei-current-window-august.log
+          exit 0
+      - name: Reconcile two-month review campaign
+        shell: bash
+        run: |
+          set +e
+          node --input-type=module - <<'NODE' > /tmp/banei-current-window-result.log 2>&1
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const root = 'data/generated/timetable/actions-multi-job';
+          const batches = [
+            { month: '2026-07', batchId: process.env.JULY_BATCH_ID },
+            { month: '2026-08', batchId: process.env.AUGUST_BATCH_ID },
+          ];
+          const combinedRecords = [];
+          const combinedUnresolved = [];
+          const combinedErrors = [];
+          const monthResults = [];
+          const rankCounts = { C: 0, B: 0, 'B+': 0, A: 0, 'A+': 0 };
+          for (const batch of batches) {
+            const dir = path.join(root, batch.batchId);
+            const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+            const candidate = read('candidates.json');
+            const coverage = read('coverage-observation.json');
+            const manifest = read('result-manifest.json');
+            const reviewQueue = read('review-queue.json');
+            const report = read('collection-report.json');
+            if (candidate.schema_version !== 'timetable-candidate-v1' || candidate.review?.status !== 'needs_review' || candidate.review?.promotion_target !== null) throw new Error(`${batch.month} Candidate boundary differs`);
+            if (coverage.schema_version !== 'calendar-coverage-observation-v1' || manifest.schema_version !== 'calendar-collection-result-manifest-v1') throw new Error(`${batch.month} coverage/manifest schema differs`);
+            if (manifest.batch_id !== batch.batchId || report.batch_id !== batch.batchId) throw new Error(`${batch.month} batch identity differs`);
+            if (reviewQueue.entries?.[0]?.review_state !== 'review_ready' || reviewQueue.entries?.[0]?.promotion_state !== 'not_ready') throw new Error(`${batch.month} Review Queue state differs`);
+            if (report.publication_effect !== 'none') throw new Error(`${batch.month} publication effect differs`);
+            if (candidate.records.length !== manifest.records_discovered || candidate.records.length !== coverage.records_discovered) throw new Error(`${batch.month} discovered counts differ`);
+            if (JSON.stringify(manifest.rank_counts) !== JSON.stringify(report.rank_counts)) throw new Error(`${batch.month} rank counts differ`);
+            for (const record of candidate.records) {
+              if (!['B', 'A+'].includes(record.capability_rank)) throw new Error(`${record.meeting_id} unsupported Banei rank ${record.capability_rank}`);
+              if (record.date < '2026-07-13' || record.date >= '2026-08-12') throw new Error(`${record.meeting_id} outside current window`);
+              combinedRecords.push(record);
+              rankCounts[record.capability_rank] += 1;
+            }
+            combinedUnresolved.push(...manifest.unresolved_meeting_ids);
+            combinedErrors.push(...manifest.source_errors.map((entry) => ({ month: batch.month, ...entry })));
+            monthResults.push({
+              target_month: batch.month,
+              batch_id: batch.batchId,
+              requested_scope: manifest.requested_scope,
+              records_discovered: manifest.records_discovered,
+              records_updated: manifest.records_updated,
+              rank_counts: manifest.rank_counts,
+              coverage_claim: manifest.coverage_claim,
+              unresolved_meeting_count: manifest.unresolved_meeting_ids.length,
+              source_error_count: manifest.source_errors.length,
+            });
+          }
+          const ids = combinedRecords.map((record) => record.meeting_id);
+          if (new Set(ids).size !== ids.length) throw new Error('Banei two-month result contains duplicate meeting IDs');
+          if (rankCounts.C !== 0 || rankCounts['B+'] !== 0 || rankCounts.A !== 0) throw new Error('Banei two-month result emitted an unsupported intermediate rank');
+          if (rankCounts.B + rankCounts['A+'] !== combinedRecords.length) throw new Error('Banei two-month rank counts do not close');
+          if (new Set(combinedUnresolved).size !== combinedUnresolved.length) throw new Error('Banei unresolved meeting IDs contain duplicates');
+          if (combinedUnresolved.some((id) => !ids.includes(id))) throw new Error('Banei unresolved meeting is outside discovered set');
+          const result = {
+            schema_version: 'calendar-banei-current-window-acquisition-result-v1',
+            work_id: 'WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION',
+            implementation_unit: 'BANEI-CURRENT-WINDOW-01',
+            generated_at: new Date().toISOString(),
+            requested_window: { start_date: '2026-07-13', end_date_exclusive: '2026-08-12', timezone: 'Asia/Tokyo' },
+            month_job_count: monthResults.length,
+            records_discovered: combinedRecords.length,
+            rank_counts: rankCounts,
+            a_plus_candidate_count: rankCounts['A+'],
+            b_fallback_count: rankCounts.B,
+            unresolved_meeting_count: combinedUnresolved.length,
+            source_error_count: combinedErrors.length,
+            meeting_ids: ids.sort(),
+            unresolved_meeting_ids: [...combinedUnresolved].sort(),
+            source_errors: combinedErrors,
+            month_results: monthResults,
+            review_state: 'needs_review',
+            promotion_eligible: false,
+            canonical_write: false,
+            public_write: false,
+            publication_effect: 'none',
+          };
+          fs.writeFileSync('/tmp/banei-current-window-result.json', `${JSON.stringify(result, null, 2)}\n`);
+          console.log(JSON.stringify(result, null, 2));
+          NODE
+          status=$?
+          printf '%s\n' "$status" > /tmp/banei-current-window-result.exit
+          cat /tmp/banei-current-window-result.log
+          exit 0
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/banei-current-window-protected-before.sha256
+      - name: Upload Banei current-window evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: banei-current-window-acquisition-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            /tmp/banei-current-window-spec/
+            /tmp/banei-current-window-spec-summary.json
+            /tmp/banei-current-window-july.log
+            /tmp/banei-current-window-july.exit
+            /tmp/banei-current-window-august.log
+            /tmp/banei-current-window-august.exit
+            /tmp/banei-current-window-result.log
+            /tmp/banei-current-window-result.exit
+            /tmp/banei-current-window-result.json
+            data/generated/timetable/actions-multi-job/${{ env.JULY_BATCH_ID }}/
+            data/generated/timetable/actions-multi-job/${{ env.AUGUST_BATCH_ID }}/
+      - name: Enforce live acquisition closure
+        run: |
+          july_status="$(cat /tmp/banei-current-window-july.exit)"
+          august_status="$(cat /tmp/banei-current-window-august.exit)"
+          result_status="$(cat /tmp/banei-current-window-result.exit)"
+          if [ "$july_status" != "0" ] || [ "$august_status" != "0" ] || [ "$result_status" != "0" ]; then
+            printf 'july=%s august=%s result=%s\n' "$july_status" "$august_status" "$result_status"
+            tail -100 /tmp/banei-current-window-july.log || true
+            tail -100 /tmp/banei-current-window-august.log || true
+            tail -100 /tmp/banei-current-window-result.log || true
+            exit 1
+          fi
+      - name: Cleanup review artifacts and prove repository clean
+        if: always()
+        run: |
+          rm -rf \
+            /tmp/banei-current-window-spec \
+            "data/generated/timetable/actions-multi-job/$JULY_BATCH_ID" \
+            "data/generated/timetable/actions-multi-job/$AUGUST_BATCH_ID"
+          rm -f \
+            /tmp/banei-current-window-spec-summary.json \
+            /tmp/banei-current-window-july.log \
+            /tmp/banei-current-window-july.exit \
+            /tmp/banei-current-window-august.log \
+            /tmp/banei-current-window-august.exit \
+            /tmp/banei-current-window-result.log \
+            /tmp/banei-current-window-result.exit \
+            /tmp/banei-current-window-result.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
