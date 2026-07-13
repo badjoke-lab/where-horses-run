@@ -72,6 +72,7 @@ function cloneApprovedRecord(record, notes) {
 const paths = Object.fromEntries(Object.entries(values).map(([name, value]) => [name, externalPath(value, name)]));
 const outputDir = paths['output-dir'];
 const review = JSON.parse(fs.readFileSync(path.join(root, 'data/reviews/banei-current-window-promotion-review-v1.json'), 'utf8'));
+const activation = JSON.parse(fs.readFileSync(path.join(root, 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json'), 'utf8'));
 const resultAudit = JSON.parse(fs.readFileSync(path.join(root, review.source_result_ref), 'utf8'));
 const campaignResult = readJson(paths['campaign-result']);
 const monthInputs = {
@@ -97,6 +98,12 @@ assert(review.implementation_unit === 'BANEI-CURRENT-WINDOW-PROMOTION-01', 'Bane
 assert(review.review?.status === 'approved' && review.review?.promotion_target === 'canonical-timetable-v0', 'Banei review approval differs');
 assert(review.review?.approval_scope === 'exact_split_source_candidate_sets', 'Banei review approval scope differs');
 assert(Object.values(review.side_effect_boundary ?? {}).every((value) => value === false), 'Banei review side-effect boundary differs');
+assert(activation.schema_version === 'calendar-banei-current-window-schedule-readiness-activation-v1', 'Banei readiness activation schema differs');
+assert(activation.work_id === review.work_id && activation.implementation_unit === review.implementation_unit, 'Banei readiness activation identity differs');
+assert(activation.authority_source_key === 'japan/banei-tokachi/banei-official-schedule', 'Banei readiness activation source key differs');
+assert(activation.reviewed_transition?.from_automation_mode === 'link_only' && activation.reviewed_transition?.to_automation_mode === 'semi_automatic', 'Banei readiness transition differs');
+assert(activation.evidence?.artifact_id === review.source_artifact.artifact_id, 'Banei readiness activation evidence differs');
+assert(Object.values(activation.side_effect_boundary ?? {}).every((value) => value === false), 'Banei readiness activation side-effect boundary differs');
 assert(resultAudit.schema_version === 'calendar-banei-current-window-acquisition-result-v1', 'Banei acquisition result schema differs');
 assert(resultAudit.evidence?.artifact_id === review.source_artifact.artifact_id, 'Banei source artifact identity differs');
 
@@ -219,12 +226,41 @@ const existingWindowBanei = canonicalMeetings.meetings.filter((meeting) => meeti
 assert(existingWindowBanei.length === 0, `Banei promotion baseline differs: expected 0 current-window meetings, got ${existingWindowBanei.length}`);
 const inventory = loadAuthoritySourceInventoryV1(root);
 const readiness = loadCalendarReadinessV1(root);
+const proposalReadiness = structuredClone(readiness);
+const scheduleReadiness = proposalReadiness.records.find((record) => record.authority_source_key === activation.authority_source_key);
+assert(scheduleReadiness, 'Banei schedule Calendar Readiness record is missing');
+assert(scheduleReadiness.system_id === activation.system_id, 'Banei schedule readiness system differs');
+assert(scheduleReadiness.automation_mode === activation.reviewed_transition.from_automation_mode, 'Banei schedule readiness pre-transition mode differs');
+assert(activation.reviewed_transition.required_readiness.includes(scheduleReadiness.readiness), 'Banei schedule readiness state is not eligible for activation');
+assert(activation.reviewed_transition.required_source_status.includes(scheduleReadiness.source_status), 'Banei schedule source status is not eligible for activation');
+assert(scheduleReadiness.confirmed_fields?.meeting_date === true && scheduleReadiness.confirmed_fields?.racecourse === true, 'Banei schedule source does not confirm C identity fields');
+const readinessBefore = structuredClone(scheduleReadiness);
+scheduleReadiness.automation_mode = activation.reviewed_transition.to_automation_mode;
+scheduleReadiness.refresh_classes = [...new Set([...(scheduleReadiness.refresh_classes ?? []), ...activation.reviewed_transition.refresh_classes_add])];
+scheduleReadiness.implementation_status = activation.reviewed_transition.implementation_status;
+scheduleReadiness.checked_date = activation.reviewed_transition.checked_date;
+scheduleReadiness.evidence_reviewed_at = activation.reviewed_transition.evidence_reviewed_at;
+scheduleReadiness.blocked_reason = null;
+scheduleReadiness.notes = `${scheduleReadiness.notes ?? ''} Reviewed current-window activation: official July/August 2026 monthly schedule collection produced 13 public-safe meeting identities in workflow 29275669482; Canonical promotion remains review-gated.`.trim();
+const readinessActivationProposal = {
+  schema_version: 'calendar-banei-current-window-readiness-activation-proposal-v1',
+  work_id: review.work_id,
+  implementation_unit: review.implementation_unit,
+  source_review_ref: 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json',
+  authority_source_key: activation.authority_source_key,
+  before: readinessBefore,
+  after: structuredClone(scheduleReadiness),
+  evidence: structuredClone(activation.evidence),
+  registry_write: false,
+  human_merge_required: true,
+};
+
 const cPromotion = promoteApprovedCandidateV1({
   candidate: approvedC,
   meetingsDataset: canonicalMeetings,
   detailsDataset: canonicalDetails,
   authorityInventory: inventory,
-  readinessRegistry: readiness,
+  readinessRegistry: proposalReadiness,
   inputPath: 'data/candidates/banei-current-window-c-schedule-approved.json',
 });
 const aPlusPromotion = promoteApprovedCandidateV1({
@@ -232,7 +268,7 @@ const aPlusPromotion = promoteApprovedCandidateV1({
   meetingsDataset: cPromotion.meetingsDataset,
   detailsDataset: cPromotion.detailsDataset,
   authorityInventory: inventory,
-  readinessRegistry: readiness,
+  readinessRegistry: proposalReadiness,
   inputPath: 'data/candidates/banei-current-window-a-plus-approved.json',
 });
 assert(cPromotion.summary.promoted_meeting_ids.length === 12 && cPromotion.summary.promoted_detail_ids.length === 0, 'Banei C promotion summary differs');
@@ -251,12 +287,15 @@ const combinedSummary = {
   c_source_id: approvedC.source_id,
   a_plus_source_id: approvedAPlus.source_id,
   sequential_promotion_order: ['C_schedule_set', 'A_plus_detail_set'],
+  readiness_activation_source_key: activation.authority_source_key,
 };
 const proposal = {
   schema_version: 'calendar-banei-current-window-promotion-proposal-v1',
   work_id: review.work_id,
   implementation_unit: review.implementation_unit,
   source_artifact: structuredClone(review.source_artifact),
+  readiness_activation_ref: 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json',
+  readiness_activation_sha256: sha256Json(readinessActivationProposal),
   approved_c_candidate_sha256: sha256Json(approvedC),
   approved_a_plus_candidate_sha256: sha256Json(approvedAPlus),
   proposed_meetings_sha256: sha256Json(aPlusPromotion.meetingsDataset),
@@ -271,6 +310,7 @@ const proposal = {
   reviewed_at: review.review.reviewed_at,
   mutation_boundary: {
     repository_write: false,
+    readiness_registry_write: false,
     canonical_write: false,
     public_write: false,
     publication_effect: 'none',
@@ -282,6 +322,7 @@ fs.mkdirSync(outputDir, { recursive: true });
 for (const [name, value] of Object.entries({
   'approved-c-schedule-candidate.json': approvedC,
   'approved-a-plus-detail-candidate.json': approvedAPlus,
+  'reviewed-readiness-activation.json': readinessActivationProposal,
   'proposed-canonical-meetings.json': aPlusPromotion.meetingsDataset,
   'proposed-canonical-meeting-details.json': aPlusPromotion.detailsDataset,
   'promotion-summary.json': combinedSummary,
@@ -295,10 +336,12 @@ console.log(JSON.stringify({
   promoted_detail_count: proposal.promoted_detail_count,
   promoted_race_row_count: proposal.promoted_race_row_count,
   retained_c_retry_target_count: proposal.retained_c_retry_target_count,
+  readiness_activation_sha256: proposal.readiness_activation_sha256,
   approved_c_candidate_sha256: proposal.approved_c_candidate_sha256,
   approved_a_plus_candidate_sha256: proposal.approved_a_plus_candidate_sha256,
   proposed_meetings_sha256: proposal.proposed_meetings_sha256,
   proposed_details_sha256: proposal.proposed_details_sha256,
+  readiness_registry_write: false,
   canonical_write: false,
   public_write: false,
   human_merge_required: true,
