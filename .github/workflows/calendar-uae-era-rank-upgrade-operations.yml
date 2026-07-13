@@ -33,13 +33,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate syntax and pure operations proof
+      - name: Validate syntax
         run: |
           node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
           node --check scripts/timetable/run-uae-era-actions-job.mjs
           node --check scripts/timetable/prepare-uae-era-promotion-proposal.mjs
           node --check scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
-          node scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
+      - name: Capture pure operations proof
+        id: pure-proof
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-uae-era-rank-upgrade-operations.mjs > /tmp/uae-era-pure-proof.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/uae-era-pure-proof.exit
+          cat /tmp/uae-era-pure-proof.log
+          exit 0
+      - name: Upload pure-proof diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-era-pure-proof-diagnostics-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/uae-era-pure-proof.log
+            /tmp/uae-era-pure-proof.exit
+      - name: Enforce pure operations proof
+        run: |
+          status="$(cat /tmp/uae-era-pure-proof.exit)"
+          if [ "$status" != "0" ]; then
+            tail -100 /tmp/uae-era-pure-proof.log
+            exit "$status"
+          fi
       - name: Compile UAE selected-meeting Runner Execution
         run: |
           node --input-type=module - <<'NODE'
@@ -131,7 +156,7 @@ jobs:
         if: always()
         run: |
           rm -rf /tmp/uae-rank-upgrade-output
-          rm -f /tmp/uae-rank-upgrade-execution.json /tmp/uae-rank-upgrade-summary.json
+          rm -f /tmp/uae-rank-upgrade-execution.json /tmp/uae-rank-upgrade-summary.json /tmp/uae-era-pure-proof.log /tmp/uae-era-pure-proof.exit
           changes="$(git status --porcelain --untracked-files=all)"
           if [ -n "$changes" ]; then
             printf '%s\n' "$changes"
