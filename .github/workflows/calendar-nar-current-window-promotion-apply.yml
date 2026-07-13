@@ -1,0 +1,150 @@
+name: Calendar NAR current-window promotion apply
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-nar-current-window-promotion-apply-v1.json'
+      - '.github/workflows/calendar-nar-current-window-promotion-apply.yml'
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
+
+jobs:
+  apply-reviewed-proposal:
+    if: github.head_ref == 'work/calendar-nar-current-window-promotion-apply'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          token: ${{ github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate one-time apply authorization
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-promotion-apply-v1.json', 'utf8'));
+          if (audit.schema_version !== 'calendar-nar-current-window-promotion-apply-v1') throw new Error('apply audit schema differs');
+          if (audit.decision !== 'apply_exact_reviewed_proposal_and_regenerate_public_projection') throw new Error('apply decision differs');
+          if (audit.apply_scope?.branch !== 'work/calendar-nar-current-window-promotion-apply') throw new Error('authorized branch differs');
+          if (audit.proposal_artifact?.workflow_run_id !== 29234810155 || audit.proposal_artifact?.artifact_id !== 8272957804) throw new Error('proposal artifact identity differs');
+          if (audit.publication_boundary?.branch_write_allowed !== true || audit.publication_boundary?.main_write_allowed !== false || audit.publication_boundary?.merge_required !== true || audit.publication_boundary?.deployment !== false) throw new Error('apply publication boundary differs');
+          NODE
+      - name: Stop when proposal was already applied
+        id: already
+        run: |
+          if [ -f data/candidates/nar-current-window-a-plus-approved.json ]; then
+            echo 'value=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'value=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download exact reviewed promotion proposal
+        if: steps.already.outputs.value == 'false'
+        uses: actions/download-artifact@v4
+        with:
+          name: nar-current-window-promotion-proposal-29234810155
+          path: /tmp/nar-reviewed-proposal
+          github-token: ${{ github.token }}
+          repository: badjoke-lab/where-horses-run
+          run-id: 29234810155
+      - name: Resolve and verify proposal files
+        if: steps.already.outputs.value == 'false'
+        run: |
+          proposal_dir="$(find /tmp/nar-reviewed-proposal -type f -name promotion-proposal.json -printf '%h\n' | head -1)"
+          if [ -z "$proposal_dir" ]; then
+            echo 'promotion proposal directory missing'
+            exit 1
+          fi
+          echo "PROPOSAL_DIR=$proposal_dir" >> "$GITHUB_ENV"
+          node --input-type=module - <<'NODE'
+          import crypto from 'node:crypto';
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-promotion-apply-v1.json', 'utf8'));
+          const proposal = JSON.parse(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, 'promotion-proposal.json'), 'utf8'));
+          const hash = (name) => crypto.createHash('sha256').update(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, name))).digest('hex');
+          if (proposal.approved_candidate_sha256 !== audit.proposal_artifact.approved_candidate_sha256) throw new Error('proposal approved Candidate digest differs');
+          if (proposal.proposed_meetings_sha256 !== audit.proposal_artifact.proposed_meetings_sha256) throw new Error('proposal meetings digest differs');
+          if (proposal.proposed_details_sha256 !== audit.proposal_artifact.proposed_details_sha256) throw new Error('proposal details digest differs');
+          if (hash('approved-candidate.json') !== audit.proposal_artifact.approved_candidate_sha256) throw new Error('approved Candidate file digest differs');
+          if (hash('proposed-canonical-meetings.json') !== audit.proposal_artifact.proposed_meetings_sha256) throw new Error('proposed meetings file digest differs');
+          if (hash('proposed-canonical-meeting-details.json') !== audit.proposal_artifact.proposed_details_sha256) throw new Error('proposed details file digest differs');
+          if (proposal.approved_meeting_count !== 15 || proposal.approved_race_row_count !== 180 || proposal.excluded_c_retry_target_count !== 51) throw new Error('proposal counts differ');
+          NODE
+      - name: Apply approved Candidate and Canonical proposal
+        if: steps.already.outputs.value == 'false'
+        run: |
+          cp "$PROPOSAL_DIR/approved-candidate.json" data/candidates/nar-current-window-a-plus-approved.json
+          cp "$PROPOSAL_DIR/proposed-canonical-meetings.json" data/generated/timetable/canonical/meetings.json
+          cp "$PROPOSAL_DIR/proposed-canonical-meeting-details.json" data/generated/timetable/canonical/meeting-details.json
+          cp "$PROPOSAL_DIR/promotion-proposal.json" data/audits/calendar-nar-current-window-promotion-proposal-v1.json
+      - name: Regenerate deterministic public projection
+        if: steps.already.outputs.value == 'false'
+        run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Validate promoted and retained meeting sets
+        if: steps.already.outputs.value == 'false'
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-current-window-a-plus-approved.json', 'utf8'));
+          const result = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-retry-result-v1.json', 'utf8'));
+          const canonicalMeetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const canonicalDetails = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
+          const publicMeetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const publicDetails = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
+          if (candidate.records.length !== 15) throw new Error('approved Candidate count differs');
+          let raceRows = 0;
+          for (const record of candidate.records) {
+            raceRows += record.timetable_rows.length;
+            const canonical = canonicalMeetings.get(record.meeting_id);
+            const detail = canonicalDetails.get(record.meeting_id);
+            const publicMeeting = publicMeetings.get(record.meeting_id);
+            const publicDetail = publicDetails.get(record.meeting_id);
+            if (canonical?.capability_rank !== 'A+' || detail?.capability_rank !== 'A+') throw new Error(`${record.meeting_id} Canonical rank differs`);
+            if (canonical?.source_trace?.source_id !== 'nar-race-list-deba-table' || detail?.source_trace?.source_id !== 'nar-race-list-deba-table') throw new Error(`${record.meeting_id} Canonical source differs`);
+            if (publicMeeting?.effective_public_rank !== 'A+' || publicDetail?.effective_public_rank !== 'A+') throw new Error(`${record.meeting_id} public rank differs`);
+            if (detail.timetable_rows.length !== record.timetable_rows.length || publicDetail.timetable_rows.length !== record.timetable_rows.length) throw new Error(`${record.meeting_id} timetable row count differs`);
+          }
+          if (raceRows !== 180) throw new Error(`approved race-row count differs: ${raceRows}`);
+          for (const id of result.unresolved_meeting_ids) {
+            const canonical = canonicalMeetings.get(id);
+            const publicMeeting = publicMeetings.get(id);
+            if (canonical?.capability_rank !== 'C' || publicMeeting?.effective_public_rank !== 'C') throw new Error(`${id} retained C rank differs`);
+            if (canonicalDetails.has(id) || publicDetails.has(id)) throw new Error(`${id} retained C record unexpectedly has detail`);
+          }
+          console.log('NAR_CURRENT_WINDOW_PROMOTION_APPLY: pass');
+          console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length }));
+          NODE
+      - name: Run release and rendered-data checks
+        if: steps.already.outputs.value == 'false'
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          npm run check
+      - name: Commit exact reviewed application to PR branch
+        if: steps.already.outputs.value == 'false'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            data/candidates/nar-current-window-a-plus-approved.json \
+            data/audits/calendar-nar-current-window-promotion-proposal-v1.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          git commit -m 'Apply reviewed NAR current-window A+ promotion'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+      - name: Confirm no deployment path
+        run: |
+          if grep -R -E 'wrangler pages deploy|npm run deploy|automatic_publication' data/audits/calendar-nar-current-window-promotion-apply-v1.json; then
+            echo 'deployment or automatic publication marker detected'
+            exit 1
+          fi
+          echo 'NAR_PROMOTION_DEPLOYMENT: disabled'
