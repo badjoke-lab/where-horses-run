@@ -61,6 +61,7 @@ jobs:
             echo 'promotion proposal directory missing'
             exit 1
           fi
+          export PROPOSAL_DIR="$proposal_dir"
           echo "PROPOSAL_DIR=$proposal_dir" >> "$GITHUB_ENV"
           node --input-type=module - <<'NODE'
           import crypto from 'node:crypto';
