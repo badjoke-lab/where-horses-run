@@ -24,7 +24,7 @@ if (policy.job_contract?.system_id !== 'japan-banei-system'
   || policy.job_contract?.rank_strategy !== 'best_available'
   || policy.job_contract?.target_rank !== null
   || policy.job_contract?.reason !== 'regular_refresh') fail('Banei current-window Job contract differs');
-if (!exact(policy.campaign_result_contract?.accepted_ranks, ['B', 'A+'])) fail('Banei accepted rank boundary differs');
+if (!exact(policy.campaign_result_contract?.accepted_ranks, ['C', 'B', 'B+', 'A+'])) fail('Banei accepted rank boundary differs');
 if (Object.values(policy.side_effect_boundary ?? {}).some((value) => value !== false)) fail('Banei current-window side-effect boundary differs');
 const historicalBanei = sourceDecision.systems?.find((record) => record.system_id === 'japan-banei-system');
 if (!historicalBanei || historicalBanei.canonical_meeting_count !== 0 || historicalBanei.decision !== 'acquire_schedule_before_detail_retry') fail('Banei source decision differs');
@@ -56,6 +56,7 @@ try {
     const scope = JSON.parse(fs.readFileSync(path.join(tempDir, 'campaign-scope.json'), 'utf8'));
     if (plan.schema_version !== 'calendar-collection-plan-v1' || plan.jobs.length !== 2) fail('Banei current-window Collection Plan differs');
     if (scope.schema_version !== 'calendar-banei-current-window-scope-v1' || scope.month_job_count !== 2 || scope.baseline_canonical_meeting_count !== 0) fail('Banei current-window scope differs');
+    if (!exact(scope.accepted_observation_ranks, ['C', 'B', 'B+', 'A+'])) fail('Banei current-window scope rank boundary differs');
     for (const [index, targetMonth] of ['2026-07', '2026-08'].entries()) {
       const job = JSON.parse(fs.readFileSync(path.join(tempDir, `${targetMonth}-job.json`), 'utf8'));
       const execution = JSON.parse(fs.readFileSync(path.join(tempDir, `${targetMonth}-execution.json`), 'utf8'));
@@ -117,5 +118,5 @@ console.log('CALENDAR_BANEI_CURRENT_WINDOW_ACQUISITION: pass');
 console.log('BASELINE_CANONICAL_MEETINGS: 0');
 console.log('MONTH_JOBS: 2026-07,2026-08');
 console.log('COLLECTION_MODE: date_window');
-console.log('ACCEPTED_RANKS: B,A+');
+console.log('ACCEPTED_RANKS: C,B,B+,A+');
 console.log('CANONICAL_PUBLIC_WRITE: false');
