@@ -31,62 +31,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Remove internal Fetch and Probe diagnostics
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'node:fs';
-          const file = 'src/components/CountryDetailPage.astro';
-          let text = fs.readFileSync(file, 'utf8');
-          for (const line of [
-            "const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];\n",
-            "const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);\n",
-            "const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];\n",
-            "const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);\n",
-          ]) text = text.replace(line, '');
-
-          const startMarker = '    <details class="country-technical">';
-          const endMarker = '    </details>';
-          const start = text.indexOf(startMarker);
-          if (start < 0) throw new Error('country technical section is missing');
-          const close = text.indexOf(endMarker, start);
-          if (close < 0) throw new Error('country technical section closing tag is missing');
-          const end = close + endMarker.length;
-          const replacement = `    <details class="country-technical">
-            <summary>{pick('Dataset coverage details', 'データセット掲載状況')}</summary>
-            <div class="country-grid country-grid--1">
-              <article class="card country-card">
-                <h3>{pick('Dataset status', 'データセット状態')}</h3>
-                <p><strong>{pick('Country status:', '国status:')}</strong> {country.status}</p>
-                <p><strong>Coverage level:</strong> {country.coverage_level}</p>
-                <p><strong>Automation level:</strong> {country.auto_level}</p>
-                <p><strong>{pick('Active 30-day records:', '30日範囲内records:')}</strong> {activeWindowRecords.length}</p>
-                <p><strong>{pick('Out-of-window records:', '30日範囲外records:')}</strong> {outOfWindowRecords}</p>
-                {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
-              </article>
-            </div>
-          </details>`;
-          text = `${text.slice(0, start)}${replacement}${text.slice(end)}`;
-
-          for (const forbidden of [
-            'countryFetchStatuses',
-            'countryLiveFetchProbes',
-            '<h3>Fetch status</h3>',
-            '<h3>Probe status</h3>',
-            'liveFetchProbeStatus',
-          ]) {
-            if (text.includes(forbidden)) throw new Error(`internal country diagnostic remains: ${forbidden}`);
-          }
-          fs.writeFileSync(file, text);
-          NODE
-      - name: Synchronize Japan A+ and JRA derived artifacts
-        run: |
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
-          node scripts/timetable/sync-jra-derived-artifacts.mjs
-      - name: Validate synchronized boundaries
+      - name: Validate Public v1 country boundary
         run: |
           node scripts/check-live-fetch-probe-status-ui.mjs
           node scripts/check-m3-hong-kong-alpha-ui.mjs
           node scripts/check-m3-uae-generated-fallback.mjs
+      - name: Synchronize Japan A+ and JRA derived artifacts
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/sync-jra-derived-artifacts.mjs
+      - name: Validate synchronized derived artifacts
+        run: |
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
           node scripts/check-japan-a-plus-public-overrides.mjs
           node scripts/check-jra-pilot-foundation.mjs
@@ -97,7 +52,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
-            src/components/CountryDetailPage.astro \
             data/candidates/japan-jra-candidates.json \
             data/generated/timetable/public/japan-a-plus-overrides.json \
             data/generated/timetable/jra-pilot-review.json \
