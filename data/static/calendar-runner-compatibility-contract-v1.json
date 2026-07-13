@@ -11,10 +11,7 @@
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
       "output_model": "nar-incremental-v2-batch",
-      "supported_collection_modes": [
-        "date_window",
-        "selected_meetings"
-      ]
+      "supported_collection_modes": ["date_window", "selected_meetings"]
     },
     {
       "system_id": "japan-nar-system",
@@ -23,10 +20,7 @@
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/run-nar-incremental-v2-local.mjs",
       "output_model": "nar-incremental-v2-batch",
-      "supported_collection_modes": [
-        "date_window",
-        "selected_meetings"
-      ]
+      "supported_collection_modes": ["date_window", "selected_meetings"]
     },
     {
       "system_id": "japan-jra-system",
@@ -35,9 +29,7 @@
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/refresh-jra.mjs",
       "output_model": "jra-refresh-report-v0",
-      "supported_collection_modes": [
-        "date_window"
-      ]
+      "supported_collection_modes": ["date_window"]
     },
     {
       "system_id": "japan-jra-system",
@@ -46,9 +38,7 @@
       "invocation_kind": "reviewed_import",
       "entry_point": null,
       "output_model": "jra-reviewed-import",
-      "supported_collection_modes": [
-        "single_date"
-      ]
+      "supported_collection_modes": ["single_date"]
     },
     {
       "system_id": "japan-banei-system",
@@ -57,10 +47,7 @@
       "invocation_kind": "node_script",
       "entry_point": "scripts/timetable/run-banei-actions-job.mjs",
       "output_model": "banei-actions-schedule-detail-batch",
-      "supported_collection_modes": [
-        "date_window",
-        "selected_meetings"
-      ]
+      "supported_collection_modes": ["date_window", "selected_meetings"]
     },
     {
       "system_id": "hong-kong-hkjc-system",
@@ -69,20 +56,16 @@
       "invocation_kind": "node",
       "entry_point": "scripts/timetable/run-hkjc-live-fixture-job.mjs",
       "output_model": "hkjc-live-fixture-artifact-batch",
-      "supported_collection_modes": [
-        "date_window"
-      ]
+      "supported_collection_modes": ["date_window"]
     },
     {
       "system_id": "uae-national-racing-system",
       "runner": "github_actions",
-      "executor_id": "uae-era-pdf-grid-actions",
+      "executor_id": "uae-era-actions",
       "invocation_kind": "node",
-      "entry_point": "scripts/timetable/run-uae-era-pdf-grid-actions.mjs",
-      "output_model": "uae-era-pdf-grid-artifact-batch",
-      "supported_collection_modes": [
-        "source_visible_horizon"
-      ]
+      "entry_point": "scripts/timetable/run-uae-era-actions-job.mjs",
+      "output_model": "uae-era-schedule-detail-artifact-batch",
+      "supported_collection_modes": ["source_visible_horizon", "selected_meetings"]
     }
   ],
   "side_effect_boundary": {
