@@ -143,14 +143,22 @@ for (const marker of [
   "primary_runner: 'github_actions'",
   "review_state: manifest.coverage_claim === 'source_window_complete' ? 'review_ready' : 'not_ready'",
 ]) if (!rankUpgradeCore.includes(marker)) fail(`Current UAE rank-upgrade core missing ${marker}.`);
-for (const forbidden of [
-  'build-canonical-timetable.mjs',
-  'build-public-timetable-view.mjs',
-  'data/generated/timetable/canonical/meetings.json',
-  'data/generated/timetable/public/meeting-list.json',
-]) {
-  if (scheduleRunnerSource.includes(forbidden) || sharedRunnerSource.includes(forbidden)) fail(`UAE runner references forbidden writer/target ${forbidden}.`);
+
+for (const source of [scheduleRunnerSource, sharedRunnerSource]) {
+  for (const forbiddenWriter of ['build-canonical-timetable.mjs', 'build-public-timetable-view.mjs']) {
+    if (source.includes(forbiddenWriter)) fail(`UAE runner references forbidden writer ${forbiddenWriter}.`);
+  }
 }
+for (const forbiddenTarget of ['data/generated/timetable/canonical/meetings.json', 'data/generated/timetable/public/meeting-list.json']) {
+  if (scheduleRunnerSource.includes(forbiddenTarget)) fail(`Historical UAE schedule runner references forbidden target ${forbiddenTarget}.`);
+}
+if (!sharedRunnerSource.includes("fs.readFileSync(path.join(root, 'data/generated/timetable/canonical/meetings.json'), 'utf8')")) {
+  fail('Current UAE selected-meeting runner must perform a read-only Canonical meeting lookup.');
+}
+for (const forbiddenWriteMarker of [
+  "fs.writeFileSync(path.join(root, 'data/generated/timetable/canonical",
+  "fs.writeFileSync(path.join(root, 'data/generated/timetable/public",
+]) if (sharedRunnerSource.includes(forbiddenWriteMarker)) fail(`Current UAE selected-meeting runner contains forbidden write marker ${forbiddenWriteMarker}.`);
 
 if (operationsAudit.schema_version !== 'calendar-uae-era-rank-upgrade-operations-v1'
   || operationsAudit.decision !== 'activate_selected_meeting_c_to_a_operations') fail('Current UAE operations audit differs.');
