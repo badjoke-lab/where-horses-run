@@ -1,0 +1,89 @@
+{
+  "schema_version": "calendar-hkjc-rank-upgrade-operations-v1",
+  "work_id": "WHR-CAL-HKJC-DETAIL-RECOVERY",
+  "implementation_unit": "HKJC-DETAIL-RECOVERY-02",
+  "decision": "activate_manual_selected_meeting_rank_upgrade_operations",
+  "decided_at": "2026-07-13T05:00:00Z",
+  "system_id": "hong-kong-hkjc-system",
+  "current_routes": {
+    "schedule": {
+      "runner": "github_actions",
+      "selection_mode": "collection_job",
+      "rank": "C"
+    },
+    "detail": {
+      "runner": "reviewed_import",
+      "selection_mode": "operator_only",
+      "technical_ceiling": "A+",
+      "public_ceiling": "A"
+    }
+  },
+  "operating_sequence": [
+    "select_existing_canonical_meetings",
+    "build_selected_meeting_retry_queue",
+    "build_reviewed_import_candidate_and_manifest",
+    "reconcile_selected_and_candidate_meeting_ids",
+    "build_review_queue",
+    "human_review",
+    "bind_candidate_and_manifest_sha256",
+    "prepare_read_only_canonical_promotion_proposal",
+    "merge_separate_reviewed_publication_pr"
+  ],
+  "machine_readable_components": {
+    "readiness": "data/static/calendar-readiness-hkjc-detail-v1.json",
+    "core": "scripts/timetable/hkjc-rank-upgrade-operations-core.mjs",
+    "review_preparer": "scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs",
+    "promotion_preparer": "scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs",
+    "checker": "scripts/check-calendar-hkjc-rank-upgrade-operations.mjs",
+    "review_workflow": ".github/workflows/calendar-hkjc-rank-upgrade-review.yml",
+    "promotion_workflow": ".github/workflows/calendar-hkjc-promotion-proposal.yml"
+  },
+  "accepted_contracts": {
+    "retry_queue_schema": "calendar-rank-aware-retry-queue-v1",
+    "retry_scope": "selected_meetings",
+    "review_queue_schema": "calendar-review-queue-v1",
+    "review_state": "review_ready",
+    "initial_promotion_state": "not_ready",
+    "approval_schema": "calendar-hkjc-detail-promotion-approval-v1",
+    "approval_bindings": [
+      "candidate_sha256",
+      "manifest_sha256"
+    ],
+    "promotion_target": "canonical-timetable-v0",
+    "normal_promotion_monotonic": true
+  },
+  "completion_proof": {
+    "starting_rank": "C",
+    "observed_technical_rank": "A+",
+    "effective_public_ceiling": "A",
+    "reviewed_fixture_meeting_id": "hkjc-happy-valley-racecourse-2026-07-08",
+    "reviewed_fixture_first_time": "18:30",
+    "reviewed_fixture_last_time": "19:00",
+    "reviewed_fixture_race_count": 2,
+    "retry_queue_entry_count": 1,
+    "review_queue_entry_count": 1,
+    "promotion_proposal_meeting_count": 1,
+    "promotion_proposal_detail_count": 1,
+    "stale_candidate_approval_rejected": true,
+    "stale_manifest_approval_rejected": true,
+    "already_complete_retry_rejected": true,
+    "selected_candidate_identity_mismatch_rejected": true
+  },
+  "remaining_after_this_unit": [
+    "run_the_manual_workflows_against_a_current_or_archived_official_hkjc_meeting",
+    "commit_one_reviewed_promotion_proposal_through_public_projection",
+    "decide_system_level_fallback_runner",
+    "keep_unattended_detail_fetch_and_publication_disabled"
+  ],
+  "side_effect_boundary": {
+    "automatic_selection": false,
+    "automatic_detail_fetch": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "repository_write": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}

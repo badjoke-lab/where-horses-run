@@ -1,0 +1,94 @@
+name: Calendar HKJC rank-upgrade operations
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-hkjc-rank-upgrade-operations-v1.json'
+      - 'data/static/calendar-readiness-hkjc-detail-v1.json'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/hkjc-rank-upgrade-operations-core.mjs'
+      - 'scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs'
+      - 'scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-operations.mjs'
+      - 'docs/calendar/hkjc-rank-upgrade-operations.md'
+      - '.github/workflows/calendar-hkjc-rank-upgrade-review.yml'
+      - '.github/workflows/calendar-hkjc-promotion-proposal.yml'
+      - '.github/workflows/calendar-hkjc-rank-upgrade-operations.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-operations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate syntax
+        run: |
+          node --check scripts/timetable/hkjc-rank-upgrade-operations-core.mjs
+          node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
+          node --check scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+      - name: Validate HKJC Retry and Review Queue stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+      - name: Validate HKJC approval stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs
+      - name: Validate HKJC Readiness and Authority Source stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs
+      - name: Validate HKJC promotion stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
+      - name: Validate aggregate HKJC rank-upgrade proof
+        run: node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+      - name: Validate Acquisition Registry compatibility
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate route-policy compatibility
+        run: node scripts/check-calendar-route-runner-policy.mjs
+      - name: Validate Pipeline v1 compatibility
+        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate activation audit and manual workflow safety boundaries
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-hkjc-rank-upgrade-operations-v1.json', 'utf8'));
+          if (audit.schema_version !== 'calendar-hkjc-rank-upgrade-operations-v1') throw new Error('HKJC rank-upgrade audit schema differs');
+          if (audit.work_id !== 'WHR-CAL-HKJC-DETAIL-RECOVERY' || audit.implementation_unit !== 'HKJC-DETAIL-RECOVERY-02') throw new Error('HKJC rank-upgrade audit identity differs');
+          if (audit.decision !== 'activate_manual_selected_meeting_rank_upgrade_operations') throw new Error('HKJC rank-upgrade decision differs');
+          if (audit.accepted_contracts?.retry_scope !== 'selected_meetings' || audit.accepted_contracts?.review_state !== 'review_ready' || audit.accepted_contracts?.initial_promotion_state !== 'not_ready') throw new Error('HKJC rank-upgrade accepted Queue contracts differ');
+          if (audit.completion_proof?.starting_rank !== 'C' || audit.completion_proof?.observed_technical_rank !== 'A+' || audit.completion_proof?.effective_public_ceiling !== 'A') throw new Error('HKJC rank-upgrade completion proof differs');
+          if (Object.values(audit.side_effect_boundary ?? {}).some((value) => value !== false)) throw new Error('HKJC rank-upgrade audit side-effect boundary differs');
+          for (const file of [
+            '.github/workflows/calendar-hkjc-rank-upgrade-review.yml',
+            '.github/workflows/calendar-hkjc-promotion-proposal.yml',
+          ]) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.includes('workflow_dispatch:')) throw new Error(`${file} must remain manual`);
+            if (!text.includes('contents: read')) throw new Error(`${file} must remain contents-read`);
+            if (/\bschedule\s*:|\bcron\s*:|contents:\s*write/.test(text)) throw new Error(`${file} enables unattended or write operation`);
+            for (const forbidden of ['promote:timetable', 'build-public-timetable-view.mjs', 'wrangler pages deploy']) {
+              if (text.includes(forbidden)) throw new Error(`${file} contains forbidden direct action ${forbidden}`);
+            }
+          }
+          console.log('HKJC_RANK_UPGRADE_WORKFLOW_BOUNDARY: pass');
+          NODE
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
