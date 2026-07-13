@@ -128,9 +128,6 @@ jobs:
       - name: Validate Pipeline v1 release gate
         if: steps.already.outputs.value == 'false'
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Validate full repository
-        if: steps.already.outputs.value == 'false'
-        run: npm run check
       - name: Commit exact reviewed application to PR branch
         if: steps.already.outputs.value == 'false'
         run: |
@@ -145,6 +142,33 @@ jobs:
             data/generated/timetable/public/meeting-details.json
           git commit -m 'Apply reviewed NAR current-window A+ promotion'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+      - name: Capture full repository check diagnostics
+        if: steps.already.outputs.value == 'false'
+        shell: bash
+        run: |
+          set +e
+          npm run check > /tmp/nar-promotion-full-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-promotion-full-check.exit
+          tail -100 /tmp/nar-promotion-full-check.log
+          exit 0
+      - name: Upload full-check diagnostics
+        if: steps.already.outputs.value == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-promotion-full-check-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/nar-promotion-full-check.log
+            /tmp/nar-promotion-full-check.exit
+      - name: Enforce full repository check
+        if: steps.already.outputs.value == 'false'
+        run: |
+          status="$(cat /tmp/nar-promotion-full-check.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
       - name: Confirm no deployment path
         run: |
           if grep -R -E 'wrangler pages deploy|npm run deploy' data/audits/calendar-nar-current-window-promotion-apply-v1.json; then
