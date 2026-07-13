@@ -1,0 +1,208 @@
+name: Calendar NAR current-window retry
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-nar-current-window-retry-policy-v1.json'
+      - 'data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'scripts/timetable/build-nar-current-window-retry-spec.mjs'
+      - 'scripts/timetable/run-nar-incremental-v2-actions.mjs'
+      - 'scripts/timetable/nar-incremental-v2-actions-core.mjs'
+      - 'scripts/check-calendar-nar-current-window-retry.mjs'
+      - 'docs/calendar/nar-current-window-retry.md'
+      - '.github/workflows/calendar-nar-current-window-retry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-nar-current-window-retry-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect-review-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      WHR_BATCH_ID: nar-current-window-selected-retry-2026-07-batch-001
+      WHR_MODE: selected_meetings
+      WHR_START_DATE: ''
+      WHR_END_DATE_EXCLUSIVE: ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate campaign specification
+        run: |
+          node --check scripts/timetable/build-nar-current-window-retry-spec.mjs
+          node --check scripts/check-calendar-nar-current-window-retry.mjs
+          node scripts/check-calendar-nar-current-window-retry.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Build immutable retry specification outside repository
+        run: |
+          rm -rf /tmp/nar-current-window-retry-spec
+          node scripts/timetable/build-nar-current-window-retry-spec.mjs \
+            --output-dir=/tmp/nar-current-window-retry-spec \
+            --requested-at="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > /tmp/nar-current-window-retry-spec-summary.json
+          {
+            echo 'WHR_MEETING_IDS<<EOF'
+            paste -sd, /tmp/nar-current-window-retry-spec/meeting-ids.txt
+            echo 'EOF'
+            echo "WHR_CHECKED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } >> "$GITHUB_ENV"
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/nar-current-window-protected-before.sha256
+      - name: Run official NAR selected-meeting retry
+        id: live
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          node scripts/timetable/run-nar-incremental-v2-actions.mjs > /tmp/nar-current-window-live.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-current-window-live.exit
+          cat /tmp/nar-current-window-live.log
+          exit 0
+      - name: Validate immutable NAR batch outputs
+        id: validate-batch
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-nar-incremental-v2.mjs --batch-id="$WHR_BATCH_ID" > /tmp/nar-current-window-batch-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-current-window-batch-check.exit
+          cat /tmp/nar-current-window-batch-check.log
+          exit 0
+      - name: Build reviewed operational result summary
+        id: summarize
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          node --input-type=module - <<'NODE' > /tmp/nar-current-window-result.log 2>&1
+          import fs from 'node:fs';
+          const batchId = process.env.WHR_BATCH_ID;
+          const candidatePath = `data/candidates/nar-incremental-batches/${batchId}/batch.json`;
+          const generatedRoot = `data/generated/timetable/nar-incremental-batches/${batchId}`;
+          const candidates = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
+          const report = JSON.parse(fs.readFileSync(`${generatedRoot}/collection-report.json`, 'utf8'));
+          const coverage = JSON.parse(fs.readFileSync(`${generatedRoot}/coverage-observation.json`, 'utf8'));
+          const retries = JSON.parse(fs.readFileSync(`${generatedRoot}/retry-targets.json`, 'utf8'));
+          const scope = JSON.parse(fs.readFileSync('/tmp/nar-current-window-retry-spec/retry-scope.json', 'utf8'));
+          const requestedIds = [...scope.meeting_ids].sort();
+          const coverageRequestedIds = [...coverage.requested_scope.meeting_ids].sort();
+          if (requestedIds.length !== 66 || JSON.stringify(requestedIds) !== JSON.stringify(coverageRequestedIds)) throw new Error('requested meeting scope differs');
+          const detailCandidates = candidates.detail_candidates ?? [];
+          const scheduleCandidates = candidates.schedule_candidates ?? [];
+          const detailBlockers = candidates.detail_blockers ?? [];
+          const unresolved = coverage.unresolved_meeting_ids ?? [];
+          const resolvedIds = [...new Set(detailCandidates.map((record) => record.meeting_id ?? record.candidate_id.replace(/^candidate-/, '')))];
+          const summary = {
+            schema_version: 'calendar-nar-current-window-retry-result-v1',
+            work_id: 'WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY',
+            implementation_unit: 'NAR-CURRENT-WINDOW-RETRY-01',
+            generated_at: coverage.checked_at,
+            batch_id: batchId,
+            selected_meeting_count: requestedIds.length,
+            collection_mode: coverage.collection_mode,
+            coverage_claim: coverage.coverage_claim,
+            a_plus_candidate_count: detailCandidates.length,
+            schedule_c_candidate_count: scheduleCandidates.length,
+            detail_blocker_count: detailBlockers.length,
+            unresolved_meeting_count: unresolved.length,
+            retry_target_count: (retries.meeting_targets ?? []).length,
+            source_error_count: (coverage.source_errors ?? []).length,
+            resolved_meeting_ids: resolvedIds.sort(),
+            unresolved_meeting_ids: [...unresolved].sort(),
+            review_state: candidates.review.status,
+            promotion_eligible: candidates.review.promotion_eligible,
+            canonical_write: candidates.review.canonical_write,
+            public_write: candidates.review.public_write,
+            publication_effect: report.publication_effect,
+            automatic_promotion: false
+          };
+          if (summary.review_state !== 'needs_review' || summary.promotion_eligible !== false) throw new Error('candidate review boundary differs');
+          if (summary.canonical_write !== 'disabled' || summary.public_write !== 'disabled' || summary.publication_effect !== 'none') throw new Error('write/publication boundary differs');
+          if (summary.a_plus_candidate_count + summary.schedule_c_candidate_count !== 66) throw new Error('A+/C candidate counts do not close to selected scope');
+          if (summary.retry_target_count !== summary.unresolved_meeting_count) throw new Error('retry targets and unresolved meetings differ');
+          fs.writeFileSync('/tmp/nar-current-window-result.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-current-window-result.exit
+          cat /tmp/nar-current-window-result.log
+          exit 0
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/nar-current-window-protected-before.sha256
+      - name: Upload NAR retry evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-current-window-retry-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            /tmp/nar-current-window-retry-spec/collection-job.json
+            /tmp/nar-current-window-retry-spec/runner-execution.json
+            /tmp/nar-current-window-retry-spec/retry-scope.json
+            /tmp/nar-current-window-retry-spec/meeting-ids.txt
+            /tmp/nar-current-window-retry-spec-summary.json
+            /tmp/nar-current-window-live.log
+            /tmp/nar-current-window-live.exit
+            /tmp/nar-current-window-batch-check.log
+            /tmp/nar-current-window-batch-check.exit
+            /tmp/nar-current-window-result.log
+            /tmp/nar-current-window-result.exit
+            /tmp/nar-current-window-result.json
+            data/candidates/nar-incremental-batches/${{ env.WHR_BATCH_ID }}/
+            data/generated/timetable/nar-incremental-batches/${{ env.WHR_BATCH_ID }}/
+      - name: Enforce live collection and review-package closure
+        run: |
+          live_status="$(cat /tmp/nar-current-window-live.exit)"
+          batch_status="$(cat /tmp/nar-current-window-batch-check.exit)"
+          result_status="$(cat /tmp/nar-current-window-result.exit)"
+          if [ "$live_status" != "0" ] || [ "$batch_status" != "0" ] || [ "$result_status" != "0" ]; then
+            printf 'live=%s batch=%s result=%s\n' "$live_status" "$batch_status" "$result_status"
+            tail -100 /tmp/nar-current-window-live.log || true
+            tail -100 /tmp/nar-current-window-batch-check.log || true
+            tail -100 /tmp/nar-current-window-result.log || true
+            exit 1
+          fi
+      - name: Cleanup generated review artifacts and prove repository clean
+        if: always()
+        run: |
+          rm -rf \
+            "/tmp/nar-current-window-retry-spec" \
+            "data/candidates/nar-incremental-batches/$WHR_BATCH_ID" \
+            "data/generated/timetable/nar-incremental-batches/$WHR_BATCH_ID"
+          rm -f \
+            /tmp/nar-current-window-retry-spec-summary.json \
+            /tmp/nar-current-window-live.log \
+            /tmp/nar-current-window-live.exit \
+            /tmp/nar-current-window-batch-check.log \
+            /tmp/nar-current-window-batch-check.exit \
+            /tmp/nar-current-window-result.log \
+            /tmp/nar-current-window-result.exit \
+            /tmp/nar-current-window-result.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
