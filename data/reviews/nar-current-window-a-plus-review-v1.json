@@ -1,0 +1,76 @@
+{
+  "schema_version": "calendar-nar-current-window-a-plus-review-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-PROMOTION-REVIEW",
+  "implementation_unit": "NAR-CURRENT-WINDOW-PROMOTION-01",
+  "source_result_ref": "data/audits/calendar-nar-current-window-retry-result-v1.json",
+  "source_artifact": {
+    "workflow_run_id": 29233820152,
+    "artifact_id": 8272633802,
+    "artifact_name": "nar-current-window-retry-29233820152",
+    "artifact_digest": "sha256:304e980b2d011383fae62fc69d3b3708784aa4b49ef02e94c267862300e94421",
+    "batch_id": "nar-current-window-selected-retry-2026-07-batch-001",
+    "generated_at": "2026-07-13T07:58:52Z",
+    "file_sha256": {
+      "batch_json": "1010c1dbefec4f8971036db90d7160fcd770e43db81866adb5f331c2792e000a",
+      "collection_report_json": "c41392c0b121c6cb26d74b802140789b9eb4c788f5583a271ce2c3f6f1f7fa3c",
+      "coverage_observation_json": "bcb97525f0a062f9a462474ad9c36988648040fc43392d52a4067ff7befdc3d3",
+      "retry_targets_json": "e91675db70af017722037faf96ff6b4e24082aebdeecd8714f9604d6e2bc140f"
+    }
+  },
+  "review": {
+    "status": "approved",
+    "reviewer": "badjoke-lab",
+    "reviewed_at": "2026-07-13T08:10:00Z",
+    "promotion_target": "canonical-timetable-v0",
+    "approval_scope": "exact_a_plus_subset_only"
+  },
+  "approved_rank_counts": {
+    "A+": 15,
+    "C": 0
+  },
+  "excluded_rank_counts": {
+    "C": 51
+  },
+  "approved_meeting_ids": [
+    "nar-kanazawa-racecourse-2026-07-14",
+    "nar-monbetsu-racecourse-2026-07-14",
+    "nar-monbetsu-racecourse-2026-07-15",
+    "nar-morioka-racecourse-2026-07-13",
+    "nar-morioka-racecourse-2026-07-14",
+    "nar-nagoya-racecourse-2026-07-13",
+    "nar-nagoya-racecourse-2026-07-14",
+    "nar-nagoya-racecourse-2026-07-15",
+    "nar-sonoda-racecourse-2026-07-15",
+    "nar-sonoda-racecourse-2026-07-16",
+    "nar-sonoda-racecourse-2026-07-17",
+    "nar-urawa-racecourse-2026-07-13",
+    "nar-urawa-racecourse-2026-07-14",
+    "nar-urawa-racecourse-2026-07-15",
+    "nar-urawa-racecourse-2026-07-16"
+  ],
+  "review_checks": {
+    "meeting_count": 15,
+    "race_row_count": 180,
+    "continuous_race_numbers": true,
+    "all_post_times_complete": true,
+    "all_race_names_complete": true,
+    "all_distances_complete": true,
+    "all_surfaces_complete": true,
+    "all_course_labels_complete": true,
+    "official_hostname_only": true,
+    "participant_fields_approved": false,
+    "betting_fields_approved": false,
+    "result_fields_approved": false,
+    "payout_fields_approved": false,
+    "raw_source_approved": false,
+    "stream_fields_approved": false
+  },
+  "decision": "Approve exactly the 15 complete public-safe A+ detail candidates from the pinned NAR current-window artifact. The 51 unresolved C schedule candidates remain excluded from this promotion and stay explicit retry targets.",
+  "side_effect_boundary": {
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
