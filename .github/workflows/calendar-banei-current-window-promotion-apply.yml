@@ -151,13 +151,16 @@ jobs:
           console.log('BANEI_CURRENT_WINDOW_PROMOTION_APPLY: pass');
           console.log(JSON.stringify({ readiness: 'prototype_ready/semi_automatic', meetings: 13, a_plus: 1, c: 12, race_rows: 12 }));
           NODE
-      - name: Validate deterministic projection and release gates
-        run: |
-          node scripts/timetable/build-public-timetable-view.mjs --check
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
-          node scripts/check-calendar-pipeline-v1-release-gate.mjs
-          node scripts/check-calendar-operations-status.mjs
-          node scripts/check-calendar-operations-review-package.mjs
+      - name: Validate deterministic public projection
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Validate Japan A+ overrides
+        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+      - name: Validate Pipeline v1 release gate
+        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate Operations Status
+        run: node scripts/check-calendar-operations-status.mjs
+      - name: Validate Operations Review Package
+        run: node scripts/check-calendar-operations-review-package.mjs
       - name: Install dependencies and run full repository check
         run: |
           npm install --package-lock=false --no-audit --no-fund
