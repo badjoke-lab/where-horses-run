@@ -42,10 +42,9 @@ const readJson = (relativePath) => {
 };
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const nonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
+const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 function exactArray(actual, expected, label) {
-  if (!Array.isArray(actual) || actual.length !== expected.length || expected.some((value, index) => actual[index] !== value)) {
-    fail(`${label} must equal ${JSON.stringify(expected)}.`);
-  }
+  if (!exact(actual, expected)) fail(`${label} must equal ${JSON.stringify(expected)}.`);
 }
 function walkKeys(value, trail = []) {
   if (Array.isArray(value)) {
@@ -105,14 +104,12 @@ const authoritySourceKeys = new Set((authorityInventory.records ?? []).map((reco
 const globalReadinessBySystem = new Map((readinessRegistry?.records ?? []).map((record) => [record.system_id, record]));
 const japanReadinessBySystem = new Map((japanReadiness?.records ?? []).map((record) => [record.system_id, record]));
 const japanPolicyBySystem = new Map((japanPolicy?.records ?? []).map((record) => [record.system_id, record]));
-
 const adapterEvidence = new Map([
   ['jra-normalized-programme-candidate-v1', { path: 'data/candidates/japan-jra-candidates.json', marker: '"adapter_id":"jra-normalized-programme-candidate-v1"' }],
   ['nar-schedule-aware-month-v1', { path: 'scripts/timetable/normalize-nar-schedule-aware-month.mjs', marker: 'parseNarMonthlyScheduleGrid' }],
   ['nar-monthly-detail-candidate-v1', { path: 'scripts/timetable/collect-nar-monthly-candidates.mjs', marker: '--allow-blockers' }],
   ['japan-banei-dry-run-adapter', { path: 'data/candidates/japan-banei-candidates.json', marker: '"source_adapter_id": "japan-banei-dry-run-adapter"' }],
   ['banei-nar-race-list-detail-v1', { path: 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json', marker: '"adapter_id": "banei-nar-race-list-detail-v1"' }],
-  ['hong-kong-hkjc-dry-run-adapter', { path: 'data/candidates/hong-kong-hkjc-candidates.json', marker: '"source_adapter_id": "hong-kong-hkjc-dry-run-adapter"' }],
   ['hkjc-fixture-artifact-bridge-v1', { path: 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs', marker: "const ADAPTER_ID = 'hkjc-fixture-artifact-bridge-v1'" }],
   ['hkjc-detail-reviewed-import-v1', { path: 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs', marker: "adapter_id: 'hkjc-detail-reviewed-import-v1'" }],
   ['uae-era-pdf-grid-actions-v1', { path: 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs', marker: "const ADAPTER_ID = 'uae-era-pdf-grid-actions-v1'" }],
@@ -127,12 +124,10 @@ function reviewedTechnicalRankFor(record) {
   if (record.country_id === 'japan') return japanReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
   return globalReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
 }
-
 function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
   const localErrors = [];
   const push = (message) => localErrors.push(`${label}: ${message}`);
   if (!isObject(record)) return [`${label}: must be an object.`];
-
   for (const field of expectedRecordFields) if (!Object.hasOwn(record, field)) push(`missing ${field}`);
   for (const key of Object.keys(record)) if (!expectedRecordFields.includes(key)) push(`unexpected field ${key}`);
   for (const field of ['system_id', 'country_id', 'authority_id', 'operator_notes']) if (!nonEmptyString(record[field])) push(`${field} must be a non-empty string`);
@@ -140,49 +135,37 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
   if (!expectedRunners.includes(record.primary_runner)) push(`unknown or missing primary_runner ${record.primary_runner}`);
   if (record.fallback_runner !== null && !expectedRunners.includes(record.fallback_runner)) push(`unknown fallback_runner ${record.fallback_runner}`);
   if (record.fallback_runner !== null && record.fallback_runner === record.primary_runner) push('fallback_runner must differ from primary_runner');
-
   for (const field of ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']) {
     if (record[field] !== null && !nonEmptyString(record[field])) push(`${field} must be a non-empty string or null`);
   }
   if (!expectedRanks.includes(record.technical_capability_rank)) push(`invalid technical_capability_rank ${record.technical_capability_rank}`);
   if (!expectedTargetRanks.includes(record.collection_target_rank)) push(`invalid collection_target_rank ${record.collection_target_rank}`);
   if (!expectedRanks.includes(record.public_ceiling)) push(`invalid public_ceiling ${record.public_ceiling}`);
-  if (rankOrder.has(record.collection_target_rank) && rankOrder.has(record.technical_capability_rank)
-    && rankOrder.get(record.collection_target_rank) > rankOrder.get(record.technical_capability_rank)) push('collection_target_rank exceeds technical_capability_rank');
-  if (rankOrder.has(record.public_ceiling) && rankOrder.has(record.technical_capability_rank)
-    && rankOrder.get(record.public_ceiling) > rankOrder.get(record.technical_capability_rank)) push('public_ceiling exceeds technical_capability_rank');
-
+  if (rankOrder.has(record.collection_target_rank) && rankOrder.get(record.collection_target_rank) > rankOrder.get(record.technical_capability_rank)) push('collection_target_rank exceeds technical_capability_rank');
+  if (rankOrder.has(record.public_ceiling) && rankOrder.get(record.public_ceiling) > rankOrder.get(record.technical_capability_rank)) push('public_ceiling exceeds technical_capability_rank');
   const policyCeiling = policyCeilingOverride ?? approvedCeilingFor(record);
-  if (policyCeiling && rankOrder.has(record.public_ceiling) && rankOrder.has(policyCeiling)
-    && rankOrder.get(record.public_ceiling) > rankOrder.get(policyCeiling)) push(`public_ceiling exceeds approved policy ceiling ${policyCeiling}`);
-
+  if (policyCeiling && rankOrder.get(record.public_ceiling) > rankOrder.get(policyCeiling)) push(`public_ceiling exceeds approved policy ceiling ${policyCeiling}`);
   if (!Array.isArray(record.supported_observation_ranks) || record.supported_observation_ranks.length === 0) push('supported_observation_ranks must be a non-empty array');
   else {
     if (new Set(record.supported_observation_ranks).size !== record.supported_observation_ranks.length) push('supported_observation_ranks contains duplicates');
     for (const rank of record.supported_observation_ranks) {
       if (!expectedRanks.includes(rank)) push(`unsupported observation rank ${rank}`);
-      else if (rankOrder.has(record.technical_capability_rank) && rankOrder.get(rank) > rankOrder.get(record.technical_capability_rank)) push(`observation rank ${rank} exceeds technical capability`);
+      else if (rankOrder.get(rank) > rankOrder.get(record.technical_capability_rank)) push(`observation rank ${rank} exceeds technical capability`);
     }
   }
   for (const field of supportFields) if (typeof record[field] !== 'boolean') push(`${field} must be boolean`);
   if (!Array.isArray(record.pending_fields) || new Set(record.pending_fields).size !== record.pending_fields.length) push('pending_fields must be a unique array');
   else for (const field of record.pending_fields) if (!pendingCapableFields.has(field)) push(`unsupported pending field ${field}`);
-
   const operationalFields = ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id'];
   if (record.profile_status === 'active') {
     for (const field of operationalFields) if (record[field] === null) push(`active profile requires ${field}`);
     if (record.pending_fields?.length) push('active profile must not retain pending_fields');
-  }
-  if (record.profile_status === 'provisional') {
+  } else if (record.profile_status === 'provisional') {
     for (const field of pendingCapableFields) if (record[field] === null && !record.pending_fields?.includes(field)) push(`null ${field} must be listed in pending_fields`);
   }
-
   for (const field of ['schedule_source_id', 'detail_source_id']) {
     const sourceId = record[field];
-    if (sourceId !== null) {
-      const key = `${record.country_id}/${record.authority_id}/${sourceId}`;
-      if (!authoritySourceKeys.has(key)) push(`${field} does not resolve authority/source key ${key}`);
-    }
+    if (sourceId !== null && !authoritySourceKeys.has(`${record.country_id}/${record.authority_id}/${sourceId}`)) push(`${field} does not resolve authority/source key ${record.country_id}/${record.authority_id}/${sourceId}`);
   }
   for (const field of ['schedule_adapter_id', 'detail_adapter_id']) {
     const adapterId = record[field];
@@ -191,21 +174,23 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
     if (!evidence) push(`${field} has no reviewed adapter evidence mapping for ${adapterId}`);
     else if (!readText(evidence.path).includes(evidence.marker)) push(`${field} adapter evidence marker missing for ${adapterId}`);
   }
-
   if (record.supports_selected_meetings) {
-    if (record.profile_status !== 'active' || record.schedule_adapter_id === null || record.detail_adapter_id === null) push('selected-meeting support requires an active complete adapter path');
+    if (record.profile_status !== 'active' || record.detail_adapter_id === null) push('selected-meeting support requires an active detail adapter path');
     if (record.system_id === 'japan-nar-system') {
-      const scheduleAdapter = readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs');
-      const actionsCore = readText('scripts/timetable/nar-incremental-v2-actions-core.mjs');
-      if (!scheduleAdapter.includes('--meeting-ids=') || !actionsCore.includes('selected_meetings')) push('NAR selected-meeting adapter evidence is missing');
+      if (!readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs').includes('--meeting-ids=')
+        || !readText('scripts/timetable/nar-incremental-v2-actions-core.mjs').includes('selected_meetings')) push('NAR selected-meeting adapter evidence is missing');
     } else if (record.system_id === 'japan-banei-system') {
       const selectedEvidence = readText('data/fixtures/calendar-banei-runner-selected-evidence-v1.json');
-      const detailCollector = readText('scripts/timetable/collect-banei-detail-window.mjs');
       if (!selectedEvidence.includes('"scope_mode": "selected_meetings"')
         || !selectedEvidence.includes('"selected_detail_live_success": true')
-        || !detailCollector.includes('--meeting-ids=')) {
-        push('Banei selected-meeting adapter evidence is missing');
-      }
+        || !readText('scripts/timetable/collect-banei-detail-window.mjs').includes('--meeting-ids=')) push('Banei selected-meeting adapter evidence is missing');
+    } else if (record.system_id === 'uae-national-racing-system') {
+      const executor = readText('scripts/timetable/run-uae-era-actions-job.mjs');
+      const core = readText('scripts/timetable/uae-era-rank-upgrade-core.mjs');
+      const proof = readText('data/fixtures/calendar-uae-era-rank-upgrade-fixtures-v1.json');
+      if (!executor.includes("execution.collection_mode !== 'selected_meetings'")
+        || !core.includes("collection_mode === 'selected_meetings'")
+        || !proof.includes('"observed_rank": "A"') && !proof.includes('"rank": "A"')) push('UAE selected-meeting C-to-A evidence is missing');
     } else push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
   }
   return localErrors;
@@ -217,7 +202,6 @@ for (const [index, record] of (registry?.records ?? []).entries()) {
   for (const error of validateProfile(record, label)) fail(error);
   if (seenSystems.has(record.system_id)) fail(`${label}: duplicate system_id ${record.system_id}`);
   seenSystems.add(record.system_id);
-
   const technicalRank = reviewedTechnicalRankFor(record);
   const approvedCeiling = approvedCeilingFor(record);
   if (!technicalRank) fail(`${label}: reviewed technical rank missing for ${record.system_id}`);
@@ -226,7 +210,6 @@ for (const [index, record] of (registry?.records ?? []).entries()) {
   if (approvedCeiling && record.public_ceiling !== approvedCeiling) fail(`${label}: public ceiling differs from reviewed policy/readiness`);
 }
 for (const systemId of requiredProfiles) if (!seenSystems.has(systemId)) fail(`required Acquisition Registry profile missing ${systemId}`);
-
 try {
   const map = acquisitionProfileMapV1(registry);
   if (map.size !== registry.records.length) fail('Acquisition Registry loader map size differs.');
@@ -234,7 +217,6 @@ try {
 } catch (error) {
   fail(`Acquisition Registry loader failed: ${error.message}`);
 }
-
 walkKeys(registry);
 for (const [file, text, phrases] of [
   [controlContractPath, controlContract, ['Acquisition Registry', 'primary_runner', 'supported_observation_ranks', 'supports_selected_meetings']],
@@ -242,11 +224,12 @@ for (const [file, text, phrases] of [
   [machineContractPath, machineContract, ['data/static/calendar-acquisition-registry.schema.json', 'data/static/calendar-acquisition-registry.json', 'japan-jra-system', 'japan-nar-system', 'japan-banei-system']],
 ]) for (const phrase of phrases) if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
 
-const narProfile = registry.records.find((record) => record.system_id === 'japan-nar-system');
+const profiles = new Map(registry.records.map((record) => [record.system_id, record]));
+const narProfile = profiles.get('japan-nar-system');
 if (narProfile?.primary_runner !== 'github_actions' || narProfile?.fallback_runner !== 'local') fail('NAR runner profile must be github_actions primary with local fallback.');
-const jraProfile = registry.records.find((record) => record.system_id === 'japan-jra-system');
+const jraProfile = profiles.get('japan-jra-system');
 if (jraProfile?.primary_runner !== 'local') fail('JRA primary runner must remain local.');
-const baneiProfile = registry.records.find((record) => record.system_id === 'japan-banei-system');
+const baneiProfile = profiles.get('japan-banei-system');
 if (baneiProfile?.profile_status !== 'active'
   || baneiProfile?.primary_runner !== 'github_actions'
   || baneiProfile?.fallback_runner !== 'reviewed_import'
@@ -254,35 +237,35 @@ if (baneiProfile?.profile_status !== 'active'
   || baneiProfile?.detail_adapter_id !== 'banei-nar-race-list-detail-v1'
   || baneiProfile?.supports_date_window !== true
   || baneiProfile?.supports_selected_meetings !== true
-  || baneiProfile?.supports_rank_upgrade_retry !== true) {
-  fail('Banei active runner profile must preserve GitHub Actions primary routing, reviewed-import fallback, evidence-backed detail source/adapter, date-window, selected-meeting, and rank-retry support.');
-}
-const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
-if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== null) fail('HKJC provisional profile must preserve evidence-backed Actions schedule routing and no unproven fallback runner.');
-if (JSON.stringify(hkjcProfile?.pending_fields) !== JSON.stringify(['fallback_runner'])) fail('HKJC provisional profile must keep only fallback_runner pending.');
-if (hkjcProfile?.detail_source_id !== 'hkjc-detail-reviewed-import' || hkjcProfile?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC provisional profile must register the evidence-backed operator-reviewed detail source and adapter.');
-if (JSON.stringify(hkjcProfile?.supported_observation_ranks) !== JSON.stringify(['C', 'B', 'B+', 'A', 'A+'])) fail('HKJC provisional profile must preserve the full evidence-backed five-rank classifier path.');
-if (hkjcProfile?.supports_date_window !== true || hkjcProfile?.supports_selected_meetings !== false || hkjcProfile?.supports_rank_upgrade_retry !== false) fail('HKJC detail activation must preserve date-window operation while selected-meeting retry ownership remains pending.');
-
-const uaeProfile = registry.records.find((record) => record.system_id === 'uae-national-racing-system');
-if (uaeProfile?.profile_status !== 'provisional' || uaeProfile?.primary_runner !== 'github_actions' || uaeProfile?.fallback_runner !== null) fail('UAE provisional profile must preserve evidence-backed Actions schedule routing and no fallback runner.');
-if (uaeProfile?.schedule_source_id !== 'era-season-calendar' || uaeProfile?.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE provisional profile must preserve the evidence-backed ERA PDF grid schedule route.');
-if (uaeProfile?.detail_source_id !== 'era-racecard-public-timetable' || uaeProfile?.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE provisional profile must preserve the evidence-backed ERA racecard detail route.');
-if (uaeProfile?.technical_capability_rank !== 'A' || uaeProfile?.public_ceiling !== 'A') fail('UAE provisional profile must preserve reviewed A-level capability and ceiling.');
-if (JSON.stringify(uaeProfile?.supported_observation_ranks) !== JSON.stringify(['C', 'A'])) fail('UAE provisional profile must preserve C schedule and A detail observation ranks.');
-if (JSON.stringify(uaeProfile?.pending_fields) !== JSON.stringify(['fallback_runner'])) fail('UAE provisional profile must keep only fallback_runner pending.');
-if (uaeProfile?.supports_source_visible_horizon !== true || uaeProfile?.supports_date_window !== false || uaeProfile?.supports_selected_meetings !== false || uaeProfile?.supports_rank_upgrade_retry !== false) fail('UAE profile must preserve source-visible-horizon schedule support while shared date-window, selected-meeting, and rank-retry routing remain disabled.');
+  || baneiProfile?.supports_rank_upgrade_retry !== true) fail('Banei active runner profile differs.');
+const hkjcProfile = profiles.get('hong-kong-hkjc-system');
+if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== null) fail('HKJC provisional runner profile differs.');
+if (!exact(hkjcProfile?.pending_fields, ['fallback_runner'])) fail('HKJC pending fields differ.');
+if (hkjcProfile?.detail_source_id !== 'hkjc-detail-reviewed-import' || hkjcProfile?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC detail route differs.');
+if (!exact(hkjcProfile?.supported_observation_ranks, ['C', 'B', 'B+', 'A', 'A+'])) fail('HKJC supported ranks differ.');
+if (hkjcProfile?.supports_date_window !== true || hkjcProfile?.supports_selected_meetings !== false || hkjcProfile?.supports_rank_upgrade_retry !== false) fail('HKJC scope/retry boundary differs.');
+const uaeProfile = profiles.get('uae-national-racing-system');
+if (uaeProfile?.profile_status !== 'active' || uaeProfile?.primary_runner !== 'github_actions' || uaeProfile?.fallback_runner !== null) fail('UAE active runner profile differs.');
+if (uaeProfile?.schedule_source_id !== 'era-season-calendar' || uaeProfile?.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE schedule route differs.');
+if (uaeProfile?.detail_source_id !== 'era-racecard-public-timetable' || uaeProfile?.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE detail route differs.');
+if (uaeProfile?.technical_capability_rank !== 'A' || uaeProfile?.public_ceiling !== 'A') fail('UAE reviewed rank/ceiling differs.');
+if (!exact(uaeProfile?.supported_observation_ranks, ['C', 'A'])) fail('UAE supported ranks differ.');
+if (!exact(uaeProfile?.pending_fields, [])) fail('UAE active profile must not retain pending fields.');
+if (uaeProfile?.supports_source_visible_horizon !== true
+  || uaeProfile?.supports_date_window !== false
+  || uaeProfile?.supports_cross_month_window !== false
+  || uaeProfile?.supports_selected_meetings !== true
+  || uaeProfile?.supports_rank_upgrade_retry !== true) fail('UAE source-visible schedule plus selected-meeting rank-retry boundary differs.');
 
 const negativeBase = structuredClone(narProfile);
-const negativeCases = [
+for (const [name, profile, options] of [
   ['unknown runner', { ...negativeBase, primary_runner: 'remote_magic' }, {}],
   ['impossible rank', { ...negativeBase, technical_capability_rank: 'S' }, {}],
   ['target above capability', { ...negativeBase, technical_capability_rank: 'B', collection_target_rank: 'A' }, {}],
   ['public ceiling above policy', { ...negativeBase, public_ceiling: 'A+' }, { policyCeilingOverride: 'A' }],
   ['selected meeting without adapter', { ...negativeBase, detail_adapter_id: null, supports_selected_meetings: true }, {}],
   ['missing primary runner', { ...negativeBase, primary_runner: null }, {}],
-];
-for (const [name, profile, options] of negativeCases) if (validateProfile(profile, `negative:${name}`, options).length === 0) fail(`negative contract case unexpectedly passed: ${name}`);
+]) if (validateProfile(profile, `negative:${name}`, options).length === 0) fail(`negative contract case unexpectedly passed: ${name}`);
 
 if (errors.length) {
   console.error(`CALENDAR_ACQUISITION_REGISTRY: failed (${errors.length})`);
@@ -296,5 +279,5 @@ console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('HKJC_PROFILE: provisional / github_actions schedule primary / operator-reviewed detail active / fallback and rank-retry pending');
-console.log('UAE_PROFILE: provisional / C schedule + A detail / fallback and shared rank-retry routing pending');
+console.log('UAE_PROFILE: active / source-visible C schedule + selected-meeting A detail / github_actions / rank-retry enabled');
 console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');

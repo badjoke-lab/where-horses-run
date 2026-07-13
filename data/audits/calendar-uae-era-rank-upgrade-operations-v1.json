@@ -1,0 +1,72 @@
+{
+  "schema_version": "calendar-uae-era-rank-upgrade-operations-v1",
+  "work_id": "WHR-CAL-UAE-ERA-DETAIL-RECOVERY",
+  "implementation_unit": "UAE-DETAIL-RECOVERY-02",
+  "decision": "activate_selected_meeting_c_to_a_operations",
+  "decided_at": "2026-07-13T06:30:00Z",
+  "system_id": "uae-national-racing-system",
+  "operating_profile": {
+    "profile_status": "active",
+    "primary_runner": "github_actions",
+    "fallback_runner": null,
+    "schedule_mode": "source_visible_horizon",
+    "detail_mode": "selected_meetings",
+    "technical_rank": "A",
+    "public_ceiling": "A",
+    "rank_upgrade_retry": true
+  },
+  "reference_proof": {
+    "meeting_id": "era-al-ain-racecourse-2026-04-10",
+    "starting_rank": "C",
+    "observed_rank": "A",
+    "race_count": 10,
+    "first_race_time_local": "17:00",
+    "last_race_time_local": "21:30",
+    "source_error_count": 0
+  },
+  "machine_readable_components": {
+    "fixture": "data/fixtures/calendar-uae-era-rank-upgrade-fixtures-v1.json",
+    "core": "scripts/timetable/uae-era-rank-upgrade-core.mjs",
+    "executor": "scripts/timetable/run-uae-era-actions-job.mjs",
+    "promotion_preparer": "scripts/timetable/prepare-uae-era-promotion-proposal.mjs",
+    "checker": "scripts/check-calendar-uae-era-rank-upgrade-operations.mjs",
+    "operator_workflow": ".github/workflows/calendar-uae-era-rank-upgrade.yml",
+    "promotion_workflow": ".github/workflows/calendar-uae-era-promotion-proposal.yml"
+  },
+  "accepted_outputs": [
+    "timetable-candidate-v1",
+    "calendar-coverage-observation-v1",
+    "calendar-collection-result-manifest-v1",
+    "calendar-rank-aware-retry-queue-v1",
+    "calendar-review-queue-v1",
+    "calendar-uae-era-promotion-proposal-v1"
+  ],
+  "review_contract": {
+    "candidate_state": "needs_review",
+    "review_queue_state": "review_ready",
+    "initial_promotion_state": "not_ready",
+    "approval_schema": "calendar-uae-era-promotion-approval-v1",
+    "approval_bindings": [
+      "candidate_sha256",
+      "manifest_sha256"
+    ],
+    "promotion_target": "canonical-timetable-v0",
+    "human_merge_required": true
+  },
+  "remaining_after_this_unit": [
+    "run_current_or_archived_official_era_selected_meeting_operation",
+    "merge_one_reviewed_uae_promotion_through_public_projection",
+    "include_uae_in_the_three_country_manual_campaign",
+    "keep_scheduled_and_unattended_publication_disabled"
+  ],
+  "side_effect_boundary": {
+    "scheduled_execution": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "repository_write": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}

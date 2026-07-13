@@ -43,8 +43,8 @@ const executionErrors = validateRunnerExecutionV1(execution, job, registry, comp
 if (executionErrors.length) throw new Error(`Runner Execution validation failed: ${executionErrors.join('; ')}`);
 if (execution.system_id !== 'uae-national-racing-system') throw new Error('UAE runner requires uae-national-racing-system');
 if (execution.runner_used !== 'github_actions') throw new Error('UAE runner requires github_actions');
-if (execution.executor_id !== 'uae-era-pdf-grid-actions') throw new Error('UAE executor identity differs');
-if (execution.collection_mode !== 'source_visible_horizon') throw new Error('UAE executor requires source_visible_horizon');
+if (execution.executor_id !== 'uae-era-actions') throw new Error('UAE shared executor identity differs');
+if (execution.collection_mode !== 'source_visible_horizon') throw new Error('UAE schedule executor requires source_visible_horizon');
 if (Object.values(execution.side_effect_boundary).some((value) => value !== false)) throw new Error('execution side-effect boundary must remain all false');
 
 function runJson(command, args) {

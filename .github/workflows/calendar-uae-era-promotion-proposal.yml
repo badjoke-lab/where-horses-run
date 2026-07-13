@@ -1,0 +1,124 @@
+name: Calendar UAE ERA promotion proposal
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_base64:
+        description: Base64-encoded UAE candidate JSON from the rank-upgrade artifact
+        required: true
+        type: string
+      manifest_base64:
+        description: Base64-encoded UAE Collection Result Manifest JSON
+        required: true
+        type: string
+      approval_base64:
+        description: Base64-encoded reviewed approval JSON with exact candidate and manifest SHA-256 values
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-proposal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE promotion implementation
+        run: |
+          node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
+          node --check scripts/timetable/prepare-uae-era-promotion-proposal.mjs
+          node scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-promotion-protected-before.sha256
+      - name: Decode reviewed inputs outside repository
+        env:
+          CANDIDATE_BASE64: ${{ inputs.candidate_base64 }}
+          MANIFEST_BASE64: ${{ inputs.manifest_base64 }}
+          APPROVAL_BASE64: ${{ inputs.approval_base64 }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          for (const [envName, target] of [
+            ['CANDIDATE_BASE64', '/tmp/uae-promotion-candidate.json'],
+            ['MANIFEST_BASE64', '/tmp/uae-promotion-manifest.json'],
+            ['APPROVAL_BASE64', '/tmp/uae-promotion-approval.json'],
+          ]) {
+            const encoded = String(process.env[envName] ?? '').trim();
+            if (!encoded) throw new Error(`${envName} is empty`);
+            const bytes = Buffer.from(encoded, 'base64');
+            if (bytes.length === 0 || bytes.length > 500000) throw new Error(`${envName} decoded size is invalid`);
+            const text = bytes.toString('utf8');
+            JSON.parse(text);
+            fs.writeFileSync(target, text.endsWith('\n') ? text : `${text}\n`);
+          }
+          NODE
+      - name: Build immutable UAE Canonical promotion proposal
+        run: |
+          node scripts/timetable/prepare-uae-era-promotion-proposal.mjs \
+            --candidate=/tmp/uae-promotion-candidate.json \
+            --manifest=/tmp/uae-promotion-manifest.json \
+            --approval=/tmp/uae-promotion-approval.json \
+            --output-dir=/tmp/uae-promotion-proposal \
+            > /tmp/uae-promotion-proposal-summary.json
+      - name: Validate proposal boundaries
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/uae-promotion-proposal';
+          const expected = [
+            'approved-candidate.json',
+            'promotion-proposal.json',
+            'promotion-summary.json',
+            'proposed-canonical-meeting-details.json',
+            'proposed-canonical-meetings.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`proposal files differ: ${JSON.stringify(actual)}`);
+          const proposal = JSON.parse(fs.readFileSync(path.join(dir, 'promotion-proposal.json'), 'utf8'));
+          if (proposal.mutation_boundary.repository_write !== false || proposal.mutation_boundary.canonical_write !== false || proposal.mutation_boundary.public_write !== false || proposal.mutation_boundary.publication_effect !== 'none') throw new Error('proposal mutation boundary differs');
+          if (proposal.mutation_boundary.human_merge_required !== true) throw new Error('human merge requirement missing');
+          for (const digest of [proposal.candidate_sha256, proposal.manifest_sha256, proposal.proposed_meetings_sha256, proposal.proposed_details_sha256]) {
+            if (!/^[a-f0-9]{64}$/.test(digest)) throw new Error('proposal digest is invalid');
+          }
+          console.log('UAE_ERA_PROMOTION_PROPOSAL: pass');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/uae-promotion-protected-before.sha256
+      - name: Upload UAE promotion proposal
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-era-promotion-proposal-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/uae-promotion-proposal-summary.json
+            /tmp/uae-promotion-proposal/approved-candidate.json
+            /tmp/uae-promotion-proposal/promotion-proposal.json
+            /tmp/uae-promotion-proposal/promotion-summary.json
+            /tmp/uae-promotion-proposal/proposed-canonical-meetings.json
+            /tmp/uae-promotion-proposal/proposed-canonical-meeting-details.json
+      - name: Cleanup and prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/uae-promotion-proposal
+          rm -f /tmp/uae-promotion-candidate.json /tmp/uae-promotion-manifest.json /tmp/uae-promotion-approval.json /tmp/uae-promotion-proposal-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

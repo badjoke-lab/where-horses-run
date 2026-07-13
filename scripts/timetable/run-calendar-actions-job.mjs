@@ -39,7 +39,8 @@ function coveragePathForExecution(value) {
     return path.join(root, `data/generated/timetable/nar-incremental-batches/${value.batch_id}/coverage-observation.json`);
   }
   if (value.executor_id === 'hkjc-live-fixture-actions'
-    || value.executor_id === 'banei-schedule-detail-actions') {
+    || value.executor_id === 'banei-schedule-detail-actions'
+    || value.executor_id === 'uae-era-actions') {
     return path.join(root, `data/generated/timetable/actions-multi-job/${value.batch_id}/coverage-observation.json`);
   }
   throw new Error(`unsupported Actions executor ${value.executor_id}`);
@@ -72,6 +73,8 @@ try {
     runNode('scripts/timetable/run-hkjc-live-fixture-job.mjs', [`--execution=${executionPath}`]);
   } else if (execution.executor_id === 'banei-schedule-detail-actions') {
     runNode('scripts/timetable/run-banei-actions-job.mjs', [`--execution=${executionPath}`]);
+  } else if (execution.executor_id === 'uae-era-actions') {
+    runNode('scripts/timetable/run-uae-era-actions-job.mjs', [`--execution=${executionPath}`]);
   } else {
     throw new Error(`unsupported Actions executor ${execution.executor_id}`);
   }

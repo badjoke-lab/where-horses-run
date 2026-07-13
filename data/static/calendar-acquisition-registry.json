@@ -17,9 +17,7 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": [
-        "A+"
-      ],
+      "supported_observation_ranks": ["A+"],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": false,
@@ -42,10 +40,7 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": [
-        "C",
-        "A+"
-      ],
+      "supported_observation_ranks": ["C", "A+"],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": true,
@@ -68,10 +63,7 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": [
-        "B",
-        "A+"
-      ],
+      "supported_observation_ranks": ["B", "A+"],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": true,
@@ -94,28 +86,20 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": [
-        "C",
-        "B",
-        "B+",
-        "A",
-        "A+"
-      ],
+      "supported_observation_ranks": ["C", "B", "B+", "A", "A+"],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": [
-        "fallback_runner"
-      ],
+      "pending_fields": ["fallback_runner"],
       "operator_notes": "Provisional HKJC operating profile with two evidence-backed routes. GitHub Actions remains primary for the C-level schedule date-window path. Explicit operator-reviewed import is the registered detail source/adapter path and can classify reviewed public-safe B, B+, A, or A+ observations; public output remains capped at A. The detail route is not selectable by generic Collection Jobs or the Due-job Planner. Fallback execution, selected-meeting retry ownership, automatic import, approval, promotion, canonical/public writes, and unattended publication remain pending or disabled."
     },
     {
       "system_id": "uae-national-racing-system",
       "country_id": "united-arab-emirates",
       "authority_id": "emirates-racing-authority",
-      "profile_status": "provisional",
+      "profile_status": "active",
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "era-season-calendar",
@@ -125,19 +109,14 @@
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": [
-        "C",
-        "A"
-      ],
+      "supported_observation_ranks": ["C", "A"],
       "supports_date_window": false,
       "supports_cross_month_window": false,
-      "supports_selected_meetings": false,
+      "supports_selected_meetings": true,
       "supports_source_visible_horizon": true,
-      "supports_rank_upgrade_retry": false,
-      "pending_fields": [
-        "fallback_runner"
-      ],
-      "operator_notes": "Provisional UAE profile with two evidence-backed routes: the ERA season-calendar PDF grid supplies C-level date/venue observations across the reviewed source-visible horizon, while the official ERA racecard date/race route supplies complete A-level Race 1-N post-time evidence when detail is source-visible. Live detail run 29199123357 proved 10 Al Ain races from 17:00 through 21:30. Shared near-meeting retry routing, fallback execution, automatic approval, canonical/public writes, and unattended publication remain pending or disabled."
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "Active evidence-backed UAE profile. GitHub Actions supports the ERA source-visible season-calendar C path and explicit selected-meeting C-to-A detail retry through the official racecard route. Live detail run 29199123357 proved 10 Al Ain races from 17:00 through 21:30. Selected-meeting Retry Queue and Review Queue artifacts are review-only; fallback execution, automatic approval, Canonical/public writes, and unattended publication remain disabled."
     }
   ]
 }

@@ -1,0 +1,151 @@
+name: Calendar UAE ERA rank-upgrade operator
+
+on:
+  workflow_dispatch:
+    inputs:
+      meeting_ids:
+        description: Comma-separated canonical UAE meeting IDs selected for C-to-A retry
+        required: true
+        type: string
+      batch_id:
+        description: Stable kebab-case batch ID
+        required: true
+        type: string
+      campaign_id:
+        description: Stable kebab-case campaign ID
+        required: true
+        default: uae-era-rank-upgrade-operations
+        type: string
+      job_id:
+        description: Stable kebab-case job ID
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-uae-era-rank-upgrade-${{ inputs.batch_id }}
+  cancel-in-progress: false
+
+jobs:
+  collect-review-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MEETING_IDS: ${{ inputs.meeting_ids }}
+      BATCH_ID: ${{ inputs.batch_id }}
+      CAMPAIGN_ID: ${{ inputs.campaign_id }}
+      JOB_ID: ${{ inputs.job_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE operational implementation
+        run: |
+          node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
+          node --check scripts/timetable/run-uae-era-actions-job.mjs
+          node scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
+      - name: Build Collection Job and Runner Execution
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import { loadCalendarAcquisitionRegistryV1 } from './scripts/timetable/load-calendar-acquisition-registry.mjs';
+          import { compileRunnerExecutionV1 } from './scripts/timetable/runner-compatibility.mjs';
+          const meetingIds = String(process.env.MEETING_IDS).split(',').map((value) => value.trim()).filter(Boolean);
+          if (meetingIds.length === 0 || new Set(meetingIds).size !== meetingIds.length) throw new Error('meeting_ids must contain unique IDs');
+          const job = {
+            schema_version: 'calendar-collection-job-v1',
+            job_id: process.env.JOB_ID,
+            campaign_id: process.env.CAMPAIGN_ID,
+            system_id: 'uae-national-racing-system',
+            runner_policy: { mode: 'exact', runner: 'github_actions' },
+            collection_mode: 'selected_meetings',
+            requested_scope: { meeting_ids: meetingIds },
+            rank_strategy: 'target_rank',
+            target_rank: 'A',
+            reason: 'rank_upgrade_retry',
+            requested_at: new Date().toISOString(),
+          };
+          const registry = loadCalendarAcquisitionRegistryV1(process.cwd());
+          const compatibility = JSON.parse(fs.readFileSync('data/static/calendar-runner-compatibility-contract-v1.json', 'utf8'));
+          const execution = compileRunnerExecutionV1(job, { batch_id: process.env.BATCH_ID }, registry, compatibility);
+          if (execution.executor_id !== 'uae-era-actions' || execution.collection_mode !== 'selected_meetings') throw new Error('compiled UAE execution differs');
+          fs.writeFileSync('/tmp/uae-rank-upgrade-job.json', `${JSON.stringify(job, null, 2)}\n`);
+          fs.writeFileSync('/tmp/uae-rank-upgrade-execution.json', `${JSON.stringify(execution, null, 2)}\n`);
+          NODE
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-rank-upgrade-protected-before.sha256
+      - name: Fetch official ERA detail and build review package
+        run: |
+          rm -rf /tmp/uae-rank-upgrade-output
+          node scripts/timetable/run-uae-era-actions-job.mjs \
+            --execution=/tmp/uae-rank-upgrade-execution.json \
+            --output-dir=/tmp/uae-rank-upgrade-output \
+            > /tmp/uae-rank-upgrade-summary.json
+      - name: Validate operational review package
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/uae-rank-upgrade-output';
+          const expected = [
+            'candidates.json',
+            'collection-report.json',
+            'collection-result-manifest.json',
+            'coverage-observation.json',
+            'rank-aware-retry-queue.json',
+            'review-queue.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`UAE output files differ: ${JSON.stringify(actual)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('candidates.json');
+          const manifest = read('collection-result-manifest.json');
+          const retry = read('rank-aware-retry-queue.json');
+          const review = read('review-queue.json');
+          const selected = String(process.env.MEETING_IDS).split(',').map((value) => value.trim()).filter(Boolean).sort();
+          if (JSON.stringify(candidate.records.map((row) => row.meeting_id).sort()) !== JSON.stringify(selected)) throw new Error('selected/candidate meeting IDs differ');
+          if (candidate.records.some((row) => row.capability_rank !== 'A' || row.timetable_rows.length < 2)) throw new Error('UAE candidate rank/detail differs');
+          if (manifest.rank_counts.A !== selected.length || manifest.coverage_claim !== 'source_window_complete') throw new Error('UAE Manifest differs');
+          if (retry.entries.some((row) => row.primary_runner !== 'github_actions' || row.retry_scope.mode !== 'selected_meetings')) throw new Error('UAE Retry Queue differs');
+          if (review.entries[0].review_state !== 'review_ready' || review.entries[0].promotion_state !== 'not_ready') throw new Error('UAE Review Queue differs');
+          console.log('UAE_ERA_RANK_UPGRADE_REVIEW_PACKAGE: pass');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/uae-rank-upgrade-protected-before.sha256
+      - name: Upload UAE review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: uae-era-rank-upgrade-${{ inputs.batch_id }}-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/uae-rank-upgrade-job.json
+            /tmp/uae-rank-upgrade-execution.json
+            /tmp/uae-rank-upgrade-summary.json
+            /tmp/uae-rank-upgrade-output/candidates.json
+            /tmp/uae-rank-upgrade-output/coverage-observation.json
+            /tmp/uae-rank-upgrade-output/collection-result-manifest.json
+            /tmp/uae-rank-upgrade-output/collection-report.json
+            /tmp/uae-rank-upgrade-output/rank-aware-retry-queue.json
+            /tmp/uae-rank-upgrade-output/review-queue.json
+      - name: Cleanup and prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/uae-rank-upgrade-output
+          rm -f /tmp/uae-rank-upgrade-job.json /tmp/uae-rank-upgrade-execution.json /tmp/uae-rank-upgrade-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
