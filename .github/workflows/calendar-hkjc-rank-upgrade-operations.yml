@@ -1,0 +1,65 @@
+name: Calendar HKJC rank-upgrade operations
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-readiness-hkjc-detail-v1.json'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/hkjc-rank-upgrade-operations-core.mjs'
+      - 'scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs'
+      - 'scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-operations.mjs'
+      - 'docs/calendar/hkjc-rank-upgrade-operations.md'
+      - '.github/workflows/calendar-hkjc-rank-upgrade-review.yml'
+      - '.github/workflows/calendar-hkjc-promotion-proposal.yml'
+      - '.github/workflows/calendar-hkjc-rank-upgrade-operations.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-operations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate HKJC rank-upgrade implementation
+        run: |
+          node --check scripts/timetable/hkjc-rank-upgrade-operations-core.mjs
+          node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
+          node --check scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+          node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-route-runner-policy.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate manual workflow safety boundaries
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          for (const file of [
+            '.github/workflows/calendar-hkjc-rank-upgrade-review.yml',
+            '.github/workflows/calendar-hkjc-promotion-proposal.yml',
+          ]) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.includes('workflow_dispatch:')) throw new Error(`${file} must remain manual`);
+            if (!text.includes('contents: read')) throw new Error(`${file} must remain contents-read`);
+            if (/\bschedule\s*:|\bcron\s*:|contents:\s*write/.test(text)) throw new Error(`${file} enables unattended or write operation`);
+            for (const forbidden of ['promote:timetable', 'build-public-timetable-view.mjs', 'wrangler pages deploy']) {
+              if (text.includes(forbidden)) throw new Error(`${file} contains forbidden direct action ${forbidden}`);
+            }
+          }
+          console.log('HKJC_RANK_UPGRADE_WORKFLOW_BOUNDARY: pass');
+          NODE
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
