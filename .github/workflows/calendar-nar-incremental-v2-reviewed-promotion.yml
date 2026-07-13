@@ -8,6 +8,11 @@ on:
       - 'data/reviews/nar-incremental-v2-july-remainder-review.json'
       - 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json'
       - 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json'
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
       - 'data/static/authority-source-inventory-nar-schedule-grid-v1.json'
       - 'data/static/calendar-readiness-nar-schedule-grid-v1.json'
       - 'scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs'
@@ -22,6 +27,11 @@ on:
       - 'data/reviews/nar-incremental-v2-july-remainder-review.json'
       - 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json'
       - 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json'
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
       - 'data/static/authority-source-inventory-nar-schedule-grid-v1.json'
       - 'data/static/calendar-readiness-nar-schedule-grid-v1.json'
       - 'scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs'
@@ -54,23 +64,20 @@ jobs:
           node --check scripts/timetable/load-calendar-readiness.mjs
           node --check scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
 
-      - name: Validate deterministic approved envelopes
+      - name: Validate deterministic historical approved envelopes
         run: node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
 
-      - name: Validate pinned review, source separation, ranks, and retry alignment
+      - name: Validate pinned historical review and source separation
         run: node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
 
-      - name: Dry-run A+ normal promotion
+      - name: Dry-run historical A+ normal promotion
         run: >-
           node scripts/timetable/promote-approved-candidate-v1.mjs
           --input data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json
           --dry-run
 
-      - name: Dry-run C normal promotion
-        run: >-
-          node scripts/timetable/promote-approved-candidate-v1.mjs
-          --input data/candidates/nar-incremental-v2-july-remainder-c-approved.json
-          --dry-run
+      - name: Validate historical C approval against current monotonic state
+        run: node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs --require-promoted
 
       - name: Validate shared Coverage Observation contract
         run: node scripts/check-calendar-coverage-observation-schema.mjs
