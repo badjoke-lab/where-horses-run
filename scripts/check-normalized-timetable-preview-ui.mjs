@@ -1,80 +1,18 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import ts from 'typescript';
 
 const root = process.cwd();
 const errors = [];
-const paths = {
-  page: 'src/pages/major-countries/preview-timetable.astro',
-  detailPage: 'src/pages/timetable/meetings/[meeting_id].astro',
-  component: 'src/components/NormalizedTimetableCalendarPreview.astro',
-  linkComponent: 'src/components/NormalizedMeetingDetailLinks.astro',
-  monthlyPage: 'src/pages/calendar/index.astro',
-  dayPage: 'src/pages/tomorrow.astro',
-  currentTimetablePage: 'src/pages/major-countries/current-timetable.astro',
-  dataModule: 'src/data/normalizedTimetableCalendarPreview.ts',
-  helper: 'src/lib/timetable/calendar-view-model.ts',
-  normalizedTimetable: 'data/generated/normalized-timetable.json',
-  currentStatus: 'docs/runbooks/current-status.md',
-  meetingDetailsData: 'src/data/normalizedTimetableMeetingDetails.ts',
-  packageJson: 'package.json',
-};
-const expectedMeetingIds = [
-  'jra-tokyo-racecourse-2026-06-06',
-  'jra-tokyo-racecourse-2026-06-07',
-  'nar-obihiro-racecourse-2026-06-06',
-  'hkjc-sha-tin-racecourse-2026-06-07',
-];
-const safeDisplayFields = [
-  'date',
-  'country_id',
-  'authority_id',
-  'racecourse_id',
-  'source_status',
-  'capability_rank',
-  'first_race_time_local',
-  'last_race_time_local',
-  'display_status',
-  'official_source_url',
-];
-const prohibitedDisplayFields = [
-  'meeting_id',
-  'timezone',
-  'source_id',
-  'route_id',
-  'last_checked_date',
-  'notes',
-  'race_number',
-  'display_races',
-  'odds',
-  'results',
-  'payouts',
-  'predictions',
-  'tips',
-  'entries',
-  'raw_html',
-  'source_body',
-  'private',
-  'internal',
-];
-const runtimeFetchPatterns = [/\bfetch\s*\(/, /XMLHttpRequest/, /EventSource/, /WebSocket/];
-const parserPatterns = [/DOMParser/, /querySelector/, /cheerio/, /playwright/, /puppeteer/];
-
-function fail(message) {
-  errors.push(message);
-}
-
-function readText(relativePath) {
+const fail = (message) => errors.push(message);
+const readText = (relativePath) => {
   const absolutePath = path.join(root, relativePath);
   if (!existsSync(absolutePath)) {
     fail(`${relativePath} must exist.`);
     return '';
   }
   return readFileSync(absolutePath, 'utf8');
-}
-
-function readJson(relativePath) {
+};
+const readJson = (relativePath) => {
   const text = readText(relativePath);
   if (!text) return null;
   try {
@@ -83,182 +21,169 @@ function readJson(relativePath) {
     fail(`${relativePath} must parse as JSON: ${error.message}`);
     return null;
   }
-}
-
-function requireIncludes(text, token, label) {
+};
+const requireIncludes = (text, token, label) => {
   if (!text.includes(token)) fail(`${label} must include ${token}.`);
-}
+};
+const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
-async function importHelper(helperText) {
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'normalized-preview-ui-'));
-  const outputPath = path.join(tempDir, 'calendar-view-model.mjs');
-  try {
-    const transpiled = ts.transpileModule(helperText, {
-      compilerOptions: {
-        module: ts.ModuleKind.ES2022,
-        target: ts.ScriptTarget.ES2022,
-        strict: true,
-      },
-    });
-    writeFileSync(outputPath, transpiled.outputText);
-    return await import(`file://${outputPath}`);
-  } finally {
-    setTimeout(() => rmSync(tempDir, { recursive: true, force: true }), 0);
-  }
-}
+const files = {
+  calendar: 'src/pages/calendar/index.astro',
+  tomorrow: 'src/pages/tomorrow.astro',
+  current: 'src/pages/major-countries/current-timetable.astro',
+  detail: 'src/pages/timetable/meetings/[meeting_id].astro',
+  list: 'src/components/TimetableMeetingList.astro',
+  rows: 'src/data/timetableMeetingRows.ts',
+  viewModel: 'src/lib/timetable/publicTimetableViewModel.ts',
+  publicMeetings: 'data/generated/timetable/public/meeting-list.json',
+  publicDetails: 'data/generated/timetable/public/meeting-details.json',
+  normalized: 'data/generated/normalized-timetable.json',
+  packageJson: 'package.json',
+};
 
-const pageText = readText(paths.page);
-const componentText = readText(paths.component);
-const linkComponentText = readText(paths.linkComponent);
-const monthlyPageText = readText(paths.monthlyPage);
-const dayPageText = readText(paths.dayPage);
-const currentTimetablePageText = readText(paths.currentTimetablePage);
-const detailPageText = readText(paths.detailPage);
-const dataModuleText = readText(paths.dataModule);
-const helperText = readText(paths.helper);
-const currentStatusText = readText(paths.currentStatus);
-const meetingDetailsDataText = readText(paths.meetingDetailsData);
-const normalizedTimetable = readJson(paths.normalizedTimetable);
-const packageJson = readJson(paths.packageJson);
+const text = Object.fromEntries(
+  Object.entries(files)
+    .filter(([, file]) => file.endsWith('.astro') || file.endsWith('.ts'))
+    .map(([key, file]) => [key, readText(file)]),
+);
+const meetings = readJson(files.publicMeetings);
+const details = readJson(files.publicDetails);
+const normalized = readJson(files.normalized);
+const packageJson = readJson(files.packageJson);
 
-requireIncludes(pageText, 'NormalizedTimetableCalendarPreview', paths.page);
-requireIncludes(pageText, 'normalizedTimetableCalendarPreviewDays', paths.page);
-requireIncludes(pageText, 'calendar view model reader', paths.page);
-requireIncludes(dataModuleText, 'data/generated/normalized-timetable.json', paths.dataModule);
-requireIncludes(dataModuleText, 'readCalendarMeetingSummariesFromNormalizedTimetable', paths.dataModule);
-requireIncludes(dataModuleText, 'NormalizedTimetableCalendarPreviewRecord', paths.dataModule);
-requireIncludes(componentText, 'Preview monthly/day calendar', paths.component);
-requireIncludes(componentText, 'Loaded from generated JSON without live fetching', paths.component);
-requireIncludes(componentText, 'record.detail_path', paths.component);
-requireIncludes(componentText, 'View meeting detail', paths.component);
-requireIncludes(linkComponentText, 'summary-only normalized meeting detail pages', paths.linkComponent);
-requireIncludes(linkComponentText, 'record.detail_path', paths.linkComponent);
-requireIncludes(linkComponentText, 'View meeting detail', paths.linkComponent);
-requireIncludes(linkComponentText, "detail_path.startsWith('/timetable/meetings/')", paths.linkComponent);
-requireIncludes(monthlyPageText, 'getNormalizedTimetableMeetingDetail', paths.monthlyPage);
-requireIncludes(monthlyPageText, 'calendarRecords', paths.monthlyPage);
-requireIncludes(dayPageText, 'getNormalizedTimetableMeetingDetail', paths.dayPage);
-requireIncludes(dayPageText, 'tomorrowRecords', paths.dayPage);
-requireIncludes(currentTimetablePageText, 'getNormalizedTimetableMeetingDetail', paths.currentTimetablePage);
-requireIncludes(currentTimetablePageText, 'currentTimetableRecords', paths.currentTimetablePage);
-for (const [label, text] of [
-  [paths.monthlyPage, monthlyPageText],
-  [paths.dayPage, dayPageText],
-  [paths.currentTimetablePage, currentTimetablePageText],
+for (const [label, markers] of [
+  ['calendar', ['TimetableMeetingList', 'getCurrentCalendarWindowGroups', 'getTimetableDataState', '30-day racing calendar']],
+  ['tomorrow', ['TimetableMeetingList', 'getTimetableMeetingRowsForDate', 'getTimetableDateContext', "Tomorrow's timetable"]],
+  ['current', ['TimetableMeetingList', 'getGroupedTimetableMeetingRows', 'groupedTimetableRecords']],
+  ['list', ['record.detail_path', 'record.official_source_url', 'record.capability_rank', 'Reviewed programme summary', '確認済み番組概要']],
+  ['rows', ['getPublicTimetableMeetingRows', 'effective_public_rank', "effectiveRank === 'A' || effectiveRank === 'A+'", 'detail_path !== null']],
+  ['viewModel', ['meeting-list.json', 'meeting-details.json', 'getPublicTimetableMeetingDetail', "Extract<CapabilityRank, 'A' | 'A+'>"]],
+  ['detail', ['getPublicTimetableMeetingDetail', 'getPublicTimetableMeetingRows', "detail.effective_public_rank === 'A+'", 'Programme summary', 'Race timetable', 'Publication boundary']],
 ]) {
-  if (text.includes('NormalizedMeetingDetailLinks')) fail(`${label} must not use NormalizedMeetingDetailLinks.`);
-  if (text.includes('View meeting detail')) fail(`${label} must not render generic meeting detail links.`);
-  if (!text.includes('View race timetable')) fail(`${label} must render the A-only race timetable link label.`);
-  if (!text.includes("record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)")) {
-    fail(`${label} must restrict race timetable links to A records with stored timetable rows.`);
-  }
+  for (const marker of markers) requireIncludes(text[label], marker, files[label]);
 }
-requireIncludes(detailPageText, 'getStaticPaths', paths.detailPage);
-requireIncludes(detailPageText, 'meeting_id', paths.detailPage);
-requireIncludes(detailPageText, 'Race timetable', paths.detailPage);
-requireIncludes(detailPageText, 'post_time_local', paths.detailPage);
-requireIncludes(detailPageText, 'getNormalizedTimetableMeetingDetail', paths.detailPage);
-requireIncludes(detailPageText, 'This page does not include racecards, entries, odds, results, payouts, predictions, tips', paths.detailPage);
-requireIncludes(meetingDetailsDataText, 'jra-tokyo-racecourse-2026-06-07', paths.meetingDetailsData);
-requireIncludes(meetingDetailsDataText, "{ label: 'Race 1', post_time_local: '10:05', detail_source_label: 'Official source' }", paths.meetingDetailsData);
-requireIncludes(meetingDetailsDataText, "{ label: 'Race 12', post_time_local: '16:30', detail_source_label: 'Official source' }", paths.meetingDetailsData);
-requireIncludes(meetingDetailsDataText, 'Race names, horses, jockeys, entries, odds, results, and payouts are not stored or republished.', paths.meetingDetailsData);
-requireIncludes(dataModuleText, 'createNormalizedTimetableMeetingDetailPath', paths.dataModule);
-requireIncludes(currentStatusText, 'preview-readable through the calendar view model reader', paths.currentStatus);
 
-for (const field of safeDisplayFields) {
-  requireIncludes(dataModuleText, `'${field}'`, paths.dataModule);
-  requireIncludes(componentText, `record.${field}`, paths.component);
-  requireIncludes(linkComponentText, `record.${field}`, paths.linkComponent);
-}
-for (const field of prohibitedDisplayFields) {
-  if (componentText.includes(`record.${field}`)) {
-    fail(`${paths.component} must not display ${field} on the normalized preview surface.`);
-  }
-  if (linkComponentText.includes(`record.${field}`)) {
-    fail(`${paths.linkComponent} must not display ${field} on monthly/day timetable link surfaces.`);
+for (const retired of [
+  'NormalizedTimetableCalendarPreview',
+  'normalizedTimetableCalendarPreviewDays',
+  'getNormalizedTimetableMeetingDetail',
+  'NormalizedMeetingDetailLinks',
+]) {
+  for (const label of ['calendar', 'tomorrow']) {
+    if (text[label].includes(retired)) fail(`${files[label]} must not use retired token ${retired}.`);
   }
 }
-for (const [label, text] of Object.entries({ [paths.page]: pageText, [paths.component]: componentText, [paths.linkComponent]: linkComponentText, [paths.monthlyPage]: monthlyPageText, [paths.dayPage]: dayPageText, [paths.currentTimetablePage]: currentTimetablePageText, [paths.detailPage]: detailPageText, [paths.dataModule]: dataModuleText, [paths.meetingDetailsData]: meetingDetailsDataText })) {
-  for (const pattern of runtimeFetchPatterns) if (pattern.test(text)) fail(`${label} must not add live fetch runtime.`);
-  for (const pattern of parserPatterns) if (pattern.test(text)) fail(`${label} must not add parser/scraper logic.`);
+
+for (const [label, source] of Object.entries(text)) {
+  for (const pattern of [/\bfetch\s*\(/, /XMLHttpRequest/, /EventSource/, /WebSocket/, /DOMParser/, /cheerio/, /playwright/, /puppeteer/]) {
+    if (pattern.test(source)) fail(`${files[label]} must not add runtime fetch or parser logic.`);
+  }
 }
+
+for (const marker of [
+  'does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards',
+  'A details show only race label and post time',
+  'A+ details show only policy-approved programme summary fields',
+]) requireIncludes(text.detail, marker, files.detail);
+
+if (meetings?.schema_version !== 'public-timetable-meeting-list-v0') fail('Public meeting-list schema differs.');
+if (details?.schema_version !== 'public-timetable-meeting-details-v0') fail('Public meeting-details schema differs.');
+if (meetings?.generated_at !== details?.generated_at) fail('Public meeting list/detail generation timestamps differ.');
+if (!Array.isArray(meetings?.meetings)) fail('Public meetings must be an array.');
+if (!Array.isArray(details?.details)) fail('Public details must be an array.');
+if (normalized?.schema_version !== 'normalized-timetable-output-v0') fail('Historical normalized timetable schema differs.');
+
+const detailById = new Map((details?.details ?? []).map((record) => [record.meeting_id, record]));
+const meetingIds = new Set();
+const allowedMeetingKeys = [
+  'meeting_id', 'country_id', 'authority_id', 'racecourse_id', 'date', 'timezone',
+  'capability_rank', 'max_public_rank', 'effective_public_rank', 'first_race_time_local',
+  'last_race_time_local', 'policy_id', 'source_status', 'official_source_url',
+  'last_checked_date', 'detail_path', 'show_live_label', 'show_replay_label',
+].sort();
+const allowedDetailKeys = [
+  'meeting_id', 'country_id', 'authority_id', 'racecourse_id', 'date', 'timezone',
+  'capability_rank', 'max_public_rank', 'effective_public_rank', 'policy_id',
+  'official_source_url', 'source_status', 'last_checked_date', 'show_race_name',
+  'show_distance', 'show_surface', 'show_course', 'show_live_label',
+  'show_replay_label', 'timetable_rows',
+].sort();
+const allowedRowKeys = new Set(['label', 'post_time_local', 'race_name', 'distance_m', 'surface', 'course_label']);
+const prohibitedFragments = [
+  'horse', 'runner', 'jockey', 'trainer', 'entry', 'odds', 'betting', 'result',
+  'payout', 'prediction', 'tip', 'raw_html', 'raw_body', 'source_body', 'stream_url',
+];
+
+function checkProhibited(value, label) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => checkProhibited(entry, `${label}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, entry] of Object.entries(value)) {
+    const normalizedKey = key.toLowerCase();
+    if (prohibitedFragments.some((fragment) => normalizedKey.includes(fragment))) {
+      fail(`${label}.${key} uses a prohibited public key.`);
+    }
+    checkProhibited(entry, `${label}.${key}`);
+  }
+}
+
+for (const meeting of meetings?.meetings ?? []) {
+  if (meetingIds.has(meeting.meeting_id)) fail(`Duplicate public meeting ${meeting.meeting_id}.`);
+  meetingIds.add(meeting.meeting_id);
+  if (!exact(Object.keys(meeting).sort(), allowedMeetingKeys)) fail(`${meeting.meeting_id} public meeting keys differ.`);
+  const hasDetailRank = meeting.effective_public_rank === 'A' || meeting.effective_public_rank === 'A+';
+  if (hasDetailRank) {
+    if (meeting.detail_path !== `/timetable/meetings/${meeting.meeting_id}/`) fail(`${meeting.meeting_id} detail path differs.`);
+    if (!detailById.has(meeting.meeting_id)) fail(`${meeting.meeting_id} public detail is missing.`);
+  } else {
+    if (meeting.detail_path !== null) fail(`${meeting.meeting_id} lower-rank meeting exposes a detail path.`);
+    if (detailById.has(meeting.meeting_id)) fail(`${meeting.meeting_id} lower-rank meeting has public detail.`);
+  }
+  if (meeting.effective_public_rank === 'C' && (meeting.first_race_time_local !== null || meeting.last_race_time_local !== null)) {
+    fail(`${meeting.meeting_id} Rank C meeting exposes race times.`);
+  }
+  checkProhibited(meeting, `meeting:${meeting.meeting_id}`);
+}
+
+const detailIds = new Set();
+for (const detail of details?.details ?? []) {
+  if (detailIds.has(detail.meeting_id)) fail(`Duplicate public detail ${detail.meeting_id}.`);
+  detailIds.add(detail.meeting_id);
+  if (!meetingIds.has(detail.meeting_id)) fail(`${detail.meeting_id} detail has no public meeting.`);
+  if (!exact(Object.keys(detail).sort(), allowedDetailKeys)) fail(`${detail.meeting_id} public detail keys differ.`);
+  if (!['A', 'A+'].includes(detail.effective_public_rank)) fail(`${detail.meeting_id} detail rank must be A or A+.`);
+  if (!Array.isArray(detail.timetable_rows) || detail.timetable_rows.length === 0) fail(`${detail.meeting_id} detail rows are empty.`);
+  for (const [index, row] of (detail.timetable_rows ?? []).entries()) {
+    const rowKeys = Object.keys(row);
+    if (rowKeys.some((key) => !allowedRowKeys.has(key))) fail(`${detail.meeting_id} Race ${index + 1} uses unsupported public fields.`);
+    if (typeof row.label !== 'string' || typeof row.post_time_local !== 'string') fail(`${detail.meeting_id} Race ${index + 1} label/time differs.`);
+    if (detail.effective_public_rank === 'A' && rowKeys.some((key) => !['label', 'post_time_local'].includes(key))) {
+      fail(`${detail.meeting_id} Rank A row exposes A+ fields.`);
+    }
+  }
+  checkProhibited(detail, `detail:${detail.meeting_id}`);
+}
+
+const expectedDetailCount = (meetings?.meetings ?? []).filter((meeting) => ['A', 'A+'].includes(meeting.effective_public_rank)).length;
+if ((details?.details ?? []).length !== expectedDetailCount) fail('Public meeting/detail count closure differs.');
 
 const scripts = packageJson?.scripts ?? {};
 if (scripts['validate:normalized-timetable-preview-ui'] !== 'node scripts/check-normalized-timetable-preview-ui.mjs') {
-  fail('package.json must define validate:normalized-timetable-preview-ui.');
+  fail('package.json must retain validate:normalized-timetable-preview-ui.');
 }
-if (!scripts.check?.includes('validate:normalized-timetable-preview-ui')) {
-  fail('npm run check must run validate:normalized-timetable-preview-ui.');
-}
+if (!scripts.check?.includes('validate:normalized-timetable-preview-ui')) fail('npm run check must run validate:normalized-timetable-preview-ui.');
 
-if (errors.length === 0) {
-  const helper = await importHelper(helperText);
-  const summaries = helper.readCalendarMeetingSummariesFromNormalizedTimetable(normalizedTimetable);
-  for (const meetingId of expectedMeetingIds) {
-    if (!summaries.some((summary) => summary.meeting_id === meetingId)) {
-      fail(`${paths.normalizedTimetable} must expose ${meetingId} through the calendar view model reader.`);
-    }
-  }
-
-  const ranksWithDetailPages = new Set(summaries.map((summary) => summary.capability_rank));
-  for (const rank of ['A', 'B+', 'B']) {
-    if (!ranksWithDetailPages.has(rank)) fail(`Normalized meeting detail pages must include at least one ${rank} record.`);
-  }
-
-  const aLevelSample = summaries.find((summary) => summary.meeting_id === 'jra-tokyo-racecourse-2026-06-07');
-  if (!aLevelSample) {
-    fail('Normalized preview summaries must include the manually reviewed A-level JRA Tokyo sample.');
-  } else {
-    if (aLevelSample.capability_rank !== 'A') fail('The JRA Tokyo 2026-06-07 sample must use capability_rank A.');
-    if (aLevelSample.first_race_time_local !== '10:05') fail('The A-level sample must expose the reviewed first race time.');
-    if (aLevelSample.last_race_time_local !== '16:30') fail('The A-level sample must expose the reviewed last race time.');
-  }
-
-  const detailPaths = new Set(summaries.map((summary) => `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`));
-  for (const summary of summaries.filter((record) => ['A', 'B+', 'B'].includes(record.capability_rank))) {
-    const detailPath = `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`;
-    if (!detailPaths.has(detailPath)) {
-      fail(`${summary.capability_rank} meeting ${summary.meeting_id} must have a generated detail path.`);
-    }
-  }
-
-  const previewRows = summaries.map((summary) => ({
-    date: summary.date,
-    country_id: summary.country_id,
-    authority_id: summary.authority_id,
-    racecourse_id: summary.racecourse_id,
-    source_status: summary.source_status,
-    capability_rank: summary.capability_rank,
-    first_race_time_local: summary.first_race_time_local,
-    last_race_time_local: summary.last_race_time_local,
-    display_status: summary.display_status,
-    official_source_url: summary.official_source_url,
-    detail_path: `/timetable/meetings/${encodeURIComponent(summary.meeting_id)}/`,
-  }));
-
-  for (const row of previewRows) {
-    const keys = Object.keys(row).sort();
-    const expectedKeys = [...safeDisplayFields, 'detail_path'].sort();
-    if (keys.join(',') !== expectedKeys.join(',')) {
-      fail('Normalized preview rows must contain only the safe summary display fields.');
-    }
-    if (!detailPaths.has(row.detail_path)) {
-      fail(`Normalized preview detail path ${row.detail_path} must resolve to a generated meeting detail page.`);
-    }
-    if (row.capability_rank === 'C' && (row.first_race_time_local !== null || row.last_race_time_local !== null)) {
-      fail('Rank C preview rows must not expose first/last times.');
-    }
-    if (row.capability_rank === 'B' && row.last_race_time_local !== null) {
-      fail('Rank B preview rows must not expose last race time.');
-    }
-  }
-}
-
-if (errors.length > 0) {
-  console.error('Normalized timetable preview UI check failed:');
-  for (const error of errors) console.error(`- ${error}`);
+if (errors.length) {
+  console.error('Public v1 timetable UI and dataset check failed:');
+  errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
 
-console.log('Normalized timetable preview UI check passed.');
+console.log('Public v1 timetable UI and dataset check passed.');
+console.log(`PUBLIC_MEETINGS: ${meetings.meetings.length}`);
+console.log(`PUBLIC_DETAILS: ${details.details.length}`);
+console.log('DETAIL_RANKS: A,A+');
+console.log('RUNTIME_FETCH: false');
+console.log('PROHIBITED_PUBLIC_FIELDS: absent');

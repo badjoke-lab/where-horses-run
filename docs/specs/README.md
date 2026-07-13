@@ -9,8 +9,8 @@ Formal project specifications live here. Read `docs/governance/document-authorit
 - [global-timetable-architecture-2026-06-28-addendum.md](global-timetable-architecture-2026-06-28-addendum.md)
 - [authority-source-inventory-schema.md](authority-source-inventory-schema.md)
 - [authority-source-inventory-2026-06-28-addendum.md](authority-source-inventory-2026-06-28-addendum.md)
-- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md)
-- [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md)
+- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md) — Acquisition Route Inventory schema and operating boundary.
+- [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md) — Normalized Timetable Record schema and safe calendar-summary fields.
 - [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md)
 - [timetable-data-flow-and-display-contract.md](timetable-data-flow-and-display-contract.md)
 - [page-map.md](page-map.md)
@@ -20,6 +20,10 @@ Formal project specifications live here. Read `docs/governance/document-authorit
 - [operations-policy.md](operations-policy.md)
 - [racecourse-page-spec.md](racecourse-page-spec.md)
 - [page-link-architecture.md](page-link-architecture.md)
+
+## Acquisition route dry-run boundary
+
+The current route checker is dry-run/status-only. It performs no live fetching, has no scheduler, and performs no generated writeback. Future route records can be checked through this skeleton before implementation.
 
 ## Historical baseline
 

@@ -1,0 +1,79 @@
+name: Calendar NAR promotion post-apply check
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/audits/calendar-nar-current-window-promotion-apply-v1.json'
+      - 'data/audits/calendar-nar-current-window-promotion-proposal-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+      - 'data/static/calendar-nar-current-window-retry-policy-v1.json'
+      - 'data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json'
+      - 'docs/specs/README.md'
+      - 'scripts/check-m3-hong-kong-alpha-ui.mjs'
+      - 'scripts/check-m3-uae-generated-fallback.mjs'
+      - 'scripts/check-live-fetch-probe-status-ui.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'scripts/check-calendar-nar-current-window-retry.mjs'
+      - 'scripts/check-calendar-rank-aware-retry-queue.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
+      - 'scripts/check-japan-*.mjs'
+      - 'scripts/check-jra-*.mjs'
+      - 'scripts/timetable/build-nar-current-window-retry-spec.mjs'
+      - 'src/components/CountryDetailPage.astro'
+      - '.github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml'
+      - '.github/workflows/calendar-nar-current-window-promotion-apply.yml'
+      - '.github/workflows/calendar-nar-current-window-retry.yml'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
+      - '.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-nar-promotion-post-apply-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - name: Capture full repository check
+        shell: bash
+        run: |
+          set +e
+          npm run check > /tmp/nar-post-apply-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-post-apply-check.exit
+          tail -120 /tmp/nar-post-apply-check.log
+          exit 0
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-promotion-post-apply-check-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/nar-post-apply-check.log
+            /tmp/nar-post-apply-check.exit
+      - name: Enforce full repository check
+        run: |
+          status="$(cat /tmp/nar-post-apply-check.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi

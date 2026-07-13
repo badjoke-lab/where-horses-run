@@ -13,6 +13,7 @@ const retryPath = 'data/generated/timetable/nar-incremental-batches/july-2026-08
 const reviewPath = 'data/reviews/nar-incremental-v2-july-remainder-review.json';
 const detailApprovedPath = 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json';
 const scheduleApprovedPath = 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json';
+const currentWindowApprovedPath = 'data/candidates/nar-current-window-a-plus-approved.json';
 const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json';
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publicMeetingsPath = 'data/generated/timetable/public/meeting-list.json';
@@ -60,6 +61,7 @@ const retries = readJson(retryPath);
 const review = readJson(reviewPath);
 const detailApproved = readJson(detailApprovedPath);
 const scheduleApproved = readJson(scheduleApprovedPath);
+const currentWindowApproved = fs.existsSync(path.join(root, currentWindowApprovedPath)) ? readJson(currentWindowApprovedPath) : null;
 const authorityInventory = loadAuthoritySourceInventoryV1(root);
 const readinessRegistry = loadCalendarReadinessV1(root);
 const sourceBlobSha = execFileSync('git', ['hash-object', sourcePath], { cwd: root, encoding: 'utf8' }).trim();
@@ -122,9 +124,9 @@ for (const record of detailApproved.records ?? []) {
 }
 
 for (const record of scheduleApproved.records ?? []) {
-  if (record.capability_rank !== 'C' || record.review_status !== 'approved' || record.confidence !== 'high') fail(`${record.meeting_id} C status/rank differs.`);
-  if (record.first_race_time_local !== null || record.last_race_time_local !== null || (record.timetable_rows ?? []).length !== 0) fail(`${record.meeting_id} C record contains timetable detail.`);
-  if (record.source?.source_id !== scheduleSourceId || record.source?.extraction_method !== 'adapter_candidate') fail(`${record.meeting_id} C source identity differs.`);
+  if (record.capability_rank !== 'C' || record.review_status !== 'approved' || record.confidence !== 'high') fail(`${record.meeting_id} historical C status/rank differs.`);
+  if (record.first_race_time_local !== null || record.last_race_time_local !== null || (record.timetable_rows ?? []).length !== 0) fail(`${record.meeting_id} historical C record contains timetable detail.`);
+  if (record.source?.source_id !== scheduleSourceId || record.source?.extraction_method !== 'adapter_candidate') fail(`${record.meeting_id} historical C source identity differs.`);
 }
 
 for (const sourceId of [detailSourceId, scheduleSourceId]) {
@@ -147,30 +149,56 @@ if (requirePromoted) {
     const publicMeeting = publicMeetings.get(record.meeting_id);
     const publicDetail = publicDetails.get(record.meeting_id);
     if (!meeting || !detail || !publicMeeting || !publicDetail) {
-      fail(`${record.meeting_id} A+ record is missing from canonical or public projection.`);
+      fail(`${record.meeting_id} historical A+ record is missing from canonical or public projection.`);
       continue;
     }
-    if (meeting.capability_rank !== 'A+' || detail.capability_rank !== 'A+') fail(`${record.meeting_id} canonical A+ rank differs.`);
-    if (meeting.source_trace?.source_id !== detailSourceId || detail.source_trace?.source_id !== detailSourceId) fail(`${record.meeting_id} canonical A+ source differs.`);
-    if (publicMeeting.effective_public_rank !== 'A+' || publicDetail.effective_public_rank !== 'A+') fail(`${record.meeting_id} public A+ rank differs.`);
+    if (meeting.capability_rank !== 'A+' || detail.capability_rank !== 'A+') fail(`${record.meeting_id} historical canonical A+ rank differs.`);
+    if (meeting.source_trace?.source_id !== detailSourceId || detail.source_trace?.source_id !== detailSourceId) fail(`${record.meeting_id} historical canonical A+ source differs.`);
+    if (publicMeeting.effective_public_rank !== 'A+' || publicDetail.effective_public_rank !== 'A+') fail(`${record.meeting_id} historical public A+ rank differs.`);
     const expectedRows = record.timetable_rows.map(rowProjection);
-    if (!exact(detail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} canonical A+ rows differ.`);
-    if (!exact(publicDetail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} public A+ rows differ.`);
+    if (!exact(detail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} historical canonical A+ rows differ.`);
+    if (!exact(publicDetail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} historical public A+ rows differ.`);
   }
 
+  const subsequentById = new Map((currentWindowApproved?.records ?? []).map((record) => [record.meeting_id, record]));
+  const subsequentIds = sorted(subsequentById.keys());
+  if (currentWindowApproved?.review?.status !== 'approved' || currentWindowApproved?.review?.promotion_target !== 'canonical-timetable-v0') fail('current-window A+ approval state differs.');
+  if (subsequentIds.length !== 15 || !subsequentIds.every((id) => scheduleApprovedIds.includes(id))) fail('current-window A+ set must be exactly 15 meetings from the historical C set.');
+
+  let currentAPlus = 0;
+  let currentC = 0;
   for (const record of scheduleApproved.records ?? []) {
     const meeting = canonicalMeetings.get(record.meeting_id);
     const publicMeeting = publicMeetings.get(record.meeting_id);
     if (!meeting || !publicMeeting) {
-      fail(`${record.meeting_id} C record is missing from canonical or public projection.`);
+      fail(`${record.meeting_id} historical C record is missing from current canonical or public projection.`);
       continue;
     }
-    if (meeting.capability_rank !== 'C') fail(`${record.meeting_id} canonical C rank differs.`);
-    if (meeting.source_trace?.source_id !== scheduleSourceId) fail(`${record.meeting_id} canonical C source differs.`);
-    if (canonicalDetails.has(record.meeting_id)) fail(`${record.meeting_id} C record unexpectedly has canonical detail.`);
-    if (publicDetails.has(record.meeting_id)) fail(`${record.meeting_id} C record unexpectedly has public detail.`);
-    if (publicMeeting.effective_public_rank !== 'C') fail(`${record.meeting_id} public C rank differs.`);
+    const subsequent = subsequentById.get(record.meeting_id);
+    if (subsequent) {
+      currentAPlus += 1;
+      const detail = canonicalDetails.get(record.meeting_id);
+      const publicDetail = publicDetails.get(record.meeting_id);
+      if (!detail || !publicDetail) {
+        fail(`${record.meeting_id} subsequently promoted A+ detail is missing.`);
+        continue;
+      }
+      if (meeting.capability_rank !== 'A+' || detail.capability_rank !== 'A+') fail(`${record.meeting_id} subsequent canonical A+ rank differs.`);
+      if (meeting.source_trace?.source_id !== detailSourceId || detail.source_trace?.source_id !== detailSourceId) fail(`${record.meeting_id} subsequent canonical A+ source differs.`);
+      if (publicMeeting.effective_public_rank !== 'A+' || publicDetail.effective_public_rank !== 'A+') fail(`${record.meeting_id} subsequent public A+ rank differs.`);
+      const expectedRows = subsequent.timetable_rows.map(rowProjection);
+      if (!exact(detail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} subsequent canonical A+ rows differ.`);
+      if (!exact(publicDetail.timetable_rows.map(rowProjection), expectedRows)) fail(`${record.meeting_id} subsequent public A+ rows differ.`);
+    } else {
+      currentC += 1;
+      if (meeting.capability_rank !== 'C') fail(`${record.meeting_id} retained canonical C rank differs.`);
+      if (meeting.source_trace?.source_id !== scheduleSourceId) fail(`${record.meeting_id} retained canonical C source differs.`);
+      if (canonicalDetails.has(record.meeting_id)) fail(`${record.meeting_id} retained C record unexpectedly has canonical detail.`);
+      if (publicDetails.has(record.meeting_id)) fail(`${record.meeting_id} retained C record unexpectedly has public detail.`);
+      if (publicMeeting.effective_public_rank !== 'C') fail(`${record.meeting_id} retained public C rank differs.`);
+    }
   }
+  if (currentAPlus !== 15 || currentC !== 56) fail(`current historical-C split differs: A+=${currentAPlus} C=${currentC}`);
 }
 
 if (errors.length) {
@@ -180,8 +208,11 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_NAR_INCREMENTAL_V2_REVIEWED_PROMOTION: pass');
-console.log(`REVIEWED_MEETINGS: ${scheduledIds.length}`);
-console.log(`APPROVED_A_PLUS: ${detailApprovedIds.length}`);
-console.log(`APPROVED_C: ${scheduleApprovedIds.length}`);
+console.log(`HISTORICAL_REVIEWED_MEETINGS: ${scheduledIds.length}`);
+console.log(`HISTORICAL_APPROVED_A_PLUS: ${detailApprovedIds.length}`);
+console.log(`HISTORICAL_APPROVED_C: ${scheduleApprovedIds.length}`);
 console.log(`PROMOTED_PROJECTION_CHECKED: ${requirePromoted}`);
-console.log(`RETRY_MEETING_TARGETS: ${(retries.meeting_targets ?? []).length}`);
+console.log(`HISTORICAL_RETRY_MEETING_TARGETS: ${(retries.meeting_targets ?? []).length}`);
+if (requirePromoted) {
+  console.log('CURRENT_FROM_HISTORICAL_C: A+=15 C=56');
+}

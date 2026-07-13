@@ -4,7 +4,6 @@ import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const failures = [];
-
 const fail = (message) => failures.push(message);
 
 const readText = (relativePath) => {
@@ -45,6 +44,9 @@ const walkFiles = (relativeDir) => {
   }
   return files;
 };
+
+const sorted = (values) => [...values].sort((left, right) => left.localeCompare(right));
+const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const verificationPath = 'docs/runbooks/jra-record-level-source-verification.md';
 const prPath = 'docs/runbooks/pr-086.md';
@@ -110,15 +112,10 @@ for (const phrase of [
   'unresolved',
   'official meeting-date source URL',
   'official first-race-time source URL, if found',
-]) {
-  includesRequired(verification, phrase, 'Verification document');
-}
+]) includesRequired(verification, phrase, 'Verification document');
 
 for (const record of expectedRecords) {
-  for (const [field, value] of Object.entries(record)) {
-    includesRequired(verification, value, `${verificationPath} for ${record.candidate_id} (${field})`);
-  }
-
+  for (const [field, value] of Object.entries(record)) includesRequired(verification, value, `${verificationPath} for ${record.candidate_id} (${field})`);
   const heading = `### \`${record.candidate_id}\``;
   includesRequired(verification, heading, 'Verification document record heading');
   const sectionStart = verification.indexOf(heading);
@@ -138,22 +135,16 @@ for (const record of expectedRecords) {
     'meeting_date_confirmed',
     'first_race_time_confirmed',
     'match',
-  ]) {
-    includesRequired(sectionText, phrase, `${verificationPath} section for ${record.candidate_id}`);
-  }
+  ]) includesRequired(sectionText, phrase, `${verificationPath} section for ${record.candidate_id}`);
 }
 
 const allowedCandidateIds = new Set(expectedRecords.map((record) => record.candidate_id));
 for (const candidateMatch of verification.matchAll(/japan-jra-\d{4}-\d{2}-\d{2}-[a-z-]+/g)) {
-  if (!allowedCandidateIds.has(candidateMatch[0])) {
-    fail(`${verificationPath} must not document unexpected JRA candidate ${candidateMatch[0]}.`);
-  }
+  if (!allowedCandidateIds.has(candidateMatch[0])) fail(`${verificationPath} must not document unexpected JRA candidate ${candidateMatch[0]}.`);
 }
 
 for (const otherSystemPhrase of ['japan-nar-', 'japan-banei-', 'hong-kong-', 'uae-']) {
-  if (verification.includes(otherSystemPhrase)) {
-    fail(`${verificationPath} must not add or verify non-JRA candidate records (${otherSystemPhrase}).`);
-  }
+  if (verification.includes(otherSystemPhrase)) fail(`${verificationPath} must not add or verify non-JRA candidate records (${otherSystemPhrase}).`);
 }
 
 const forbiddenCoverageClaims = [
@@ -173,68 +164,60 @@ for (const pattern of forbiddenCoverageClaims) {
   }
 }
 
+// The four May 2026 records above are the immutable PR-086 evidence set.
+// Current operational candidates are validated through the synchronized JRA
+// pilot review rather than forced back to the PR-086 count and schema.
 const jraCandidates = readJson('data/candidates/japan-jra-candidates.json');
+const jraPilot = readJson('data/generated/timetable/jra-pilot-review.json');
 const candidateRecords = jraCandidates.records ?? [];
-if (candidateRecords.length !== expectedRecords.length) {
-  fail(`data/candidates/japan-jra-candidates.json must retain exactly ${expectedRecords.length} records; found ${candidateRecords.length}.`);
-}
-for (const expected of expectedRecords) {
-  const actual = candidateRecords.find((record) => record.candidate_id === expected.candidate_id);
-  if (!actual) {
-    fail(`data/candidates/japan-jra-candidates.json is missing ${expected.candidate_id}.`);
-    continue;
-  }
-  for (const field of ['racecourse_id', 'racecourse_name', 'date', 'start_time_local']) {
-    if (actual[field] !== expected[field]) {
-      fail(`${expected.candidate_id} ${field} must remain ${expected[field]}; found ${actual[field]}.`);
-    }
-  }
-}
+const candidateIds = sorted(candidateRecords.map((record) => record.meeting_id));
+const pilotIds = sorted(jraPilot.normalized?.meeting_ids ?? []);
+if (jraCandidates.schema_version !== 'timetable-candidate-v1' || jraCandidates.adapter_id !== 'jra-normalized-programme-candidate-v1') fail('Current JRA candidate envelope differs.');
+if (candidateRecords.length !== 24 || jraPilot.normalized?.candidate_count !== 24) fail(`Current JRA candidate/pilot count must remain synchronized at 24; found ${candidateRecords.length}.`);
+if (!exact(candidateIds, pilotIds)) fail('Current JRA candidate IDs differ from synchronized pilot review.');
+if (jraCandidates.generated_at !== jraPilot.generated_at) fail('Current JRA candidate generated_at differs from pilot review.');
+if (candidateRecords.some((record) => record.capability_rank !== 'A+' || record.review_status !== 'needs_review')) fail('Current JRA candidate rank/review boundary differs.');
+if (jraPilot.boundaries?.candidate_approved !== false || jraPilot.boundaries?.canonical_written !== false || jraPilot.boundaries?.public_projection_written !== false) fail('Current JRA pilot no-write boundary differs.');
 
-const expectedCandidateCounts = new Map([
-  ['data/candidates/japan-jra-candidates.json', 4],
-  ['data/candidates/japan-nar-candidates.json', 12],
+const narActivePath = 'data/candidates/japan-nar-candidates.json';
+if (existsSync(path.join(root, narActivePath))) fail('Legacy NAR candidate must remain absent from active candidate data.');
+const narArchive = readJson('data/archive/timetable/candidates/japan-nar-candidates.v0.json');
+if (narArchive.schema_version !== 'timetable-candidates-v0' || narArchive.source_adapter_id !== 'japan-nar-dry-run-adapter') fail('Historical NAR archive identity differs.');
+if ((narArchive.records ?? []).length !== 12) fail('Historical NAR archive must retain 12 records.');
+
+for (const [relativePath, expectedCount] of [
   ['data/candidates/japan-banei-candidates.json', 3],
   ['data/candidates/japan-active-window-approved-candidates.json', 19],
-]);
-for (const [relativePath, expectedCount] of expectedCandidateCounts) {
+]) {
   const file = readJson(relativePath);
   const count = file.records?.length ?? 0;
-  if (count !== expectedCount) {
-    fail(`${relativePath} must retain ${expectedCount} records; found ${count}. PR-086 must not add candidate records.`);
-  }
+  if (count !== expectedCount) fail(`${relativePath} must retain ${expectedCount} reviewed records; found ${count}.`);
 }
 
 const generatedJapan = readJson('data/generated/japan-active-timetable-records.json');
-if ((generatedJapan.records ?? []).length !== 15) {
-  fail('data/generated/japan-active-timetable-records.json must retain 15 records; PR-086 must not modify generated timetable records.');
-}
+if ((generatedJapan.records ?? []).length !== 15) fail('Historical Japan active-window generated set must retain 15 records.');
 
 for (const relativePath of [
   'data/generated/japan-public-overlay.json',
   'data/generated/japan-timetable-overlay.json',
   'data/generated/japan-promoted-timetable-records.json',
 ]) {
-  if (existsSync(path.join(root, relativePath))) {
-    fail(`${relativePath}: PR-086 must not add a public overlay replacement.`);
-  }
+  if (existsSync(path.join(root, relativePath))) fail(`${relativePath}: retired public overlay replacement must remain absent.`);
 }
 
 for (const relativePath of walkFiles('data/generated')) {
   if (!relativePath.endsWith('.json')) continue;
   const file = readJson(relativePath);
-  if (file.schema_version === 'timetable-overlay-promoted-v0' && file.country_id === 'japan') {
-    fail(`${relativePath}: PR-086 must not add a promoted Japan timetable overlay.`);
-  }
+  if (file.schema_version === 'timetable-overlay-promoted-v0' && file.country_id === 'japan') fail(`${relativePath}: retired promoted Japan timetable overlay must remain absent.`);
 }
 
 const changedResult = spawnSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'utf8' });
 if (changedResult.status === 0) {
   const changedFiles = changedResult.stdout.trim().split('\n').filter(Boolean);
   for (const relativePath of changedFiles) {
-    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: PR-086 must not change candidate data files.`);
-    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: PR-086 must not change generated timetable files.`);
-    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: PR-086 must not add public overlay replacement/runtime changes.');
+    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: validator execution must not mutate candidate data files.`);
+    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: validator execution must not mutate generated timetable files.`);
+    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: validator execution must not mutate runtime data loading.');
   }
 }
 
@@ -257,9 +240,7 @@ for (const phrase of [
   'What this does not do',
   'Validation commands',
   'Next PR: PR-087 JRA active-window source acquisition matrix',
-]) {
-  includesRequired(pr, phrase, 'PR-086 runbook');
-}
+]) includesRequired(pr, phrase, 'PR-086 runbook');
 
 for (const record of expectedRecords) includesRequired(pr, record.candidate_id, 'PR-086 runbook');
 for (const url of ['https://jra.jp/keiba/calendar2026/2026/5/0530.html', 'https://jra.jp/keiba/calendar2026/2026/5/0531.html']) {
@@ -274,3 +255,6 @@ if (failures.length) {
 }
 
 console.log('JRA record-level source verification validation passed.');
+console.log('PR_086_RECORD_VERIFICATION_STATE: historical');
+console.log('CURRENT_JRA_CANDIDATES: synchronized_24');
+console.log('LEGACY_NAR_CANDIDATES: archived_12');

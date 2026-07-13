@@ -24,6 +24,7 @@ const fixtures = readJson('data/fixtures/calendar-rank-aware-retry-queue-fixture
 const invalidFixtures = readJson('data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json');
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const canonical = readJson('data/generated/timetable/canonical/meetings.json');
+const approvedCurrentWindowCandidate = readJson('data/candidates/nar-current-window-a-plus-approved.json');
 const narRetryArtifact = readJson('data/generated/timetable/nar-incremental-batches/july-2026-08-through-31-run-001/retry-targets.json');
 const canonicalById = new Map((canonical.meetings ?? []).map((meeting) => [meeting.meeting_id, meeting]));
 
@@ -65,37 +66,63 @@ for (const requiredCase of ['c-to-best-available', 'b-to-b-plus', 'b-plus-to-a',
   if (!transitionCaseIds.has(requiredCase)) fail(`required transition case missing: ${requiredCase}`);
 }
 
+const historicalSourceIds = [...(narRetryArtifact.meeting_targets ?? [])].sort();
+if (historicalSourceIds.length !== 71 || new Set(historicalSourceIds).size !== 71) fail('Historical NAR July retry artifact must retain 71 unique meeting targets.');
+if (narRetryArtifact.reason_counts?.scheduled_pending_details !== 71) fail('Historical NAR July retry reason count differs.');
+const currentRemainingIds = [];
+const alreadyPromotedIds = [];
+for (const meetingId of historicalSourceIds) {
+  const meeting = canonicalById.get(meetingId);
+  if (!meeting) {
+    fail(`Historical NAR retry target missing from Canonical: ${meetingId}`);
+  } else if (meeting.capability_rank === 'C') {
+    currentRemainingIds.push(meetingId);
+  } else if (meeting.capability_rank === 'A+') {
+    alreadyPromotedIds.push(meetingId);
+  } else {
+    fail(`Historical NAR retry target has unsupported current rank ${meeting.capability_rank}: ${meetingId}`);
+  }
+}
+const approvedIds = (approvedCurrentWindowCandidate.records ?? []).map((record) => record.meeting_id).sort();
+if (approvedCurrentWindowCandidate.review?.status !== 'approved' || approvedCurrentWindowCandidate.review?.promotion_target !== 'canonical-timetable-v0') fail('Current-window approved Candidate state differs.');
+if (approvedIds.length !== 15 || new Set(approvedIds).size !== 15) fail('Current-window approved Candidate must contain 15 unique meetings.');
+if (!exact(alreadyPromotedIds.sort(), approvedIds)) fail('Historical Retry targets promoted to A+ differ from the reviewed current-window Candidate.');
+if (currentRemainingIds.length !== 56) fail(`Current NAR July Retry Queue expected 56 remaining C entries, got ${currentRemainingIds.length}.`);
+
+const currentRetryArtifact = structuredClone(narRetryArtifact);
+currentRetryArtifact.meeting_targets = [...currentRemainingIds].sort();
+currentRetryArtifact.reason_counts = { scheduled_pending_details: currentRemainingIds.length };
 let narProjectedQueue = null;
 try {
   narProjectedQueue = buildNarV2RetryQueueV1({
-    retryArtifact: narRetryArtifact,
+    retryArtifact: currentRetryArtifact,
     canonicalMeetings: canonical.meetings ?? [],
     registry,
   });
 } catch (error) {
-  fail(`NAR July retry projection failed: ${error.message}`);
+  fail(`Current NAR July retry projection failed: ${error.message}`);
 }
 
 if (narProjectedQueue) {
-  if (narProjectedQueue.entries.length !== 71) fail(`NAR July retry projection expected 71 entries, got ${narProjectedQueue.entries.length}`);
+  if (narProjectedQueue.entries.length !== 56) fail(`Current NAR July retry projection expected 56 entries, got ${narProjectedQueue.entries.length}`);
   const projectedIds = narProjectedQueue.entries.map((entry) => entry.meeting_id).sort();
-  const sourceIds = [...narRetryArtifact.meeting_targets].sort();
-  if (!exact(projectedIds, sourceIds)) fail('NAR July retry projection meeting IDs differ from immutable retry artifact.');
-  if (!narProjectedQueue.entries.every((entry) => entry.current_reviewed_rank === 'C')) fail('NAR July retry projection must preserve 71 current reviewed C ranks.');
-  if (!narProjectedQueue.entries.every((entry) => entry.latest_observed_rank === 'C')) fail('NAR July retry projection latest observed rank must remain C.');
-  if (!narProjectedQueue.entries.every((entry) => entry.collection_target_rank === 'best_available')) fail('NAR July retry projection target must remain Registry best_available.');
-  if (!narProjectedQueue.entries.every((entry) => entry.retry_reason === 'scheduled_pending_details')) fail('NAR July retry projection reason differs from immutable source artifact.');
-  if (!narProjectedQueue.entries.every((entry) => entry.primary_runner === 'github_actions' && entry.fallback_runner === 'local')) fail('NAR July retry projection runner profile differs from Registry.');
-  if (!narProjectedQueue.entries.every((entry) => entry.adapter_id === 'nar-monthly-detail-candidate-v1')) fail('NAR July retry projection must use NAR detail adapter.');
+  if (!exact(projectedIds, [...currentRemainingIds].sort())) fail('Current NAR July retry projection meeting IDs differ from Canonical C remainder.');
+  if (projectedIds.some((id) => approvedIds.includes(id))) fail('Promoted A+ meetings must not remain in the current Retry Queue.');
+  if (!narProjectedQueue.entries.every((entry) => entry.current_reviewed_rank === 'C')) fail('Current NAR July retry projection must contain only reviewed C ranks.');
+  if (!narProjectedQueue.entries.every((entry) => entry.latest_observed_rank === 'C')) fail('Current NAR July retry projection latest observed rank must remain C.');
+  if (!narProjectedQueue.entries.every((entry) => entry.collection_target_rank === 'best_available')) fail('Current NAR July retry projection target must remain Registry best_available.');
+  if (!narProjectedQueue.entries.every((entry) => entry.retry_reason === 'scheduled_pending_details')) fail('Current NAR July retry projection reason differs from immutable source artifact.');
+  if (!narProjectedQueue.entries.every((entry) => entry.primary_runner === 'github_actions' && entry.fallback_runner === 'local')) fail('Current NAR July retry projection runner profile differs from Registry.');
+  if (!narProjectedQueue.entries.every((entry) => entry.adapter_id === 'nar-monthly-detail-candidate-v1')) fail('Current NAR July retry projection must use NAR detail adapter.');
 
   const summary = summarizeRankAwareRetryQueueV1(narProjectedQueue);
   const expectedSummary = {
-    total_entries: 71,
-    by_system: { 'japan-nar-system': 71 },
-    by_current_rank: { C: 71, B: 0, 'B+': 0, A: 0, 'A+': 0 },
-    by_target_rank: { C: 0, B: 0, 'B+': 0, A: 0, 'A+': 0, best_available: 71 },
+    total_entries: 56,
+    by_system: { 'japan-nar-system': 56 },
+    by_current_rank: { C: 56, B: 0, 'B+': 0, A: 0, 'A+': 0 },
+    by_target_rank: { C: 0, B: 0, 'B+': 0, A: 0, 'A+': 0, best_available: 56 },
     by_reason: {
-      scheduled_pending_details: 71,
+      scheduled_pending_details: 56,
       detail_retry_required: 0,
       coverage_gap: 0,
       rank_upgrade_retry: 0,
@@ -105,14 +132,14 @@ if (narProjectedQueue) {
     },
     by_scope_mode: {
       selected_meetings: 0,
-      date_window: 71,
+      date_window: 56,
       single_date: 0,
       source_visible_horizon: 0,
     },
-    due_now_count: 71,
+    due_now_count: 56,
     deferred_count: 0,
   };
-  if (!exact(summary, expectedSummary)) fail(`NAR July retry summary differs: ${JSON.stringify(summary)}`);
+  if (!exact(summary, expectedSummary)) fail(`Current NAR July retry summary differs: ${JSON.stringify(summary)}`);
 }
 
 function applyPatches(base, patches) {
@@ -201,7 +228,9 @@ console.log('CALENDAR_RANK_AWARE_RETRY_QUEUE: pass');
 console.log(`FIXTURE_QUEUE_ENTRIES: ${fixtures.queue.entries.length}`);
 console.log(`TRANSITION_CASES: ${fixtures.transition_cases.length}`);
 console.log(`INVALID_CASES: ${invalidFixtures.cases.length}`);
-console.log(`NAR_JULY_RETRY_PROJECTION: ${narProjectedQueue?.entries.length ?? 0}`);
+console.log('NAR_JULY_HISTORICAL_RETRY_TARGETS: 71');
+console.log('NAR_JULY_PROMOTED_A_PLUS_REMOVED: 15');
+console.log(`NAR_JULY_CURRENT_RETRY_PROJECTION: ${narProjectedQueue?.entries.length ?? 0}`);
 console.log('REGISTRY_ROUTING_CROSS_CHECK: pass');
 console.log('CANONICAL_RANK_CROSS_CHECK: pass');
 console.log('MONOTONIC_RETRY_GAP_RULES: pass');

@@ -1,0 +1,61 @@
+{
+  "schema_version": "calendar-nar-current-window-promotion-apply-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-PROMOTION-APPLY",
+  "implementation_unit": "NAR-CURRENT-WINDOW-PROMOTION-02",
+  "decision": "apply_exact_reviewed_proposal_and_regenerate_public_projection",
+  "decided_at": "2026-07-13T08:20:00Z",
+  "source_review_ref": "data/reviews/nar-current-window-a-plus-review-v1.json",
+  "proposal_artifact": {
+    "workflow_run_id": 29234810155,
+    "artifact_id": 8272957804,
+    "artifact_name": "nar-current-window-promotion-proposal-29234810155",
+    "artifact_digest": "sha256:fe5baccc31f00efba79a1ef9e726ef663819e4fdfadff329f652185250eadf2d",
+    "approved_candidate_sha256": "95b273cb2a5b891269368e535c31560686e128718c801384b775060fd77b8e31",
+    "proposed_meetings_sha256": "00bfd411c8099651d62544000f1500077ffd980799214d2da04bfae6e80fd8d0",
+    "proposed_details_sha256": "cb6df0bcf4088275e52959adb629127645c025d297a0fe06426c200a51c19ec0"
+  },
+  "apply_scope": {
+    "branch": "work/calendar-nar-current-window-promotion-apply",
+    "approved_candidate_path": "data/candidates/nar-current-window-a-plus-approved.json",
+    "canonical_meetings_path": "data/generated/timetable/canonical/meetings.json",
+    "canonical_details_path": "data/generated/timetable/canonical/meeting-details.json",
+    "public_meetings_path": "data/generated/timetable/public/meeting-list.json",
+    "public_details_path": "data/generated/timetable/public/meeting-details.json",
+    "promoted_meeting_count": 15,
+    "promoted_detail_count": 15,
+    "approved_race_row_count": 180,
+    "retained_c_retry_target_count": 51
+  },
+  "post_apply_state": {
+    "canonical_applied": true,
+    "public_projection_regenerated": true,
+    "japan_a_plus_overrides_synchronized": true,
+    "jra_pilot_review_synchronized": true,
+    "operations_status_synchronized": true,
+    "operations_review_package_synchronized": true,
+    "public_country_internal_diagnostics_removed": true,
+    "full_repository_check_pending": true,
+    "final_owner_commit_retriggered": true
+  },
+  "required_post_apply_checks": [
+    "approved_candidate_exact_sha",
+    "canonical_meetings_exact_sha",
+    "canonical_details_exact_sha",
+    "deterministic_public_projection",
+    "fifteen_effective_public_a_plus_meetings",
+    "fifteen_effective_public_a_plus_details",
+    "fifty_one_retained_c_meetings",
+    "bilingual_rendered_verification",
+    "pipeline_v1_release_gate",
+    "repository_clean"
+  ],
+  "publication_boundary": {
+    "automatic_source_fetch": false,
+    "automatic_review": false,
+    "proposal_already_reviewed": true,
+    "branch_write_allowed": true,
+    "main_write_allowed": false,
+    "merge_required": true,
+    "deployment": false
+  }
+}

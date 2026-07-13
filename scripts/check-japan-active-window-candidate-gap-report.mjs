@@ -44,10 +44,16 @@ function walkFiles(relativeDir) {
   return files;
 }
 
-const reportPath = 'docs/runbooks/japan-active-window-candidate-gap-report.md';
-if (!existsSync(path.join(root, reportPath))) {
-  fail(`${reportPath} must exist`);
+function sorted(values) {
+  return [...values].sort((left, right) => left.localeCompare(right));
 }
+
+function exact(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+const reportPath = 'docs/runbooks/japan-active-window-candidate-gap-report.md';
+if (!existsSync(path.join(root, reportPath))) fail(`${reportPath} must exist`);
 
 const report = existsSync(path.join(root, reportPath)) ? read(reportPath) : '';
 const pr = existsSync(path.join(root, 'docs/runbooks/pr-085.md')) ? read('docs/runbooks/pr-085.md') : '';
@@ -63,9 +69,7 @@ for (const phrase of [
   'timezone`: `Asia/Tokyo`',
   'This PR does not fetch live source pages',
   'This PR does not add candidate records',
-]) {
-  includesRequired(report, phrase, 'Gap report');
-}
+]) includesRequired(report, phrase, 'Gap report');
 
 const jraSection = section(report, 'JRA');
 const narSection = section(report, 'NAR');
@@ -89,9 +93,7 @@ for (const phrase of [
   'NAR exact first race times are not stored',
   'JRA candidate records store exact `start_time_local` values, but those values require record-by-record official first-race-time verification before promotion',
   'Banei times must be rechecked',
-]) {
-  includesRequired(report, phrase, 'Gap report');
-}
+]) includesRequired(report, phrase, 'Gap report');
 
 if (!report.includes('| System | Inventory scope | Current records | Exact time status | Active-window completeness status | Next required action |')) {
   fail('Gap report must contain the required summary table');
@@ -115,50 +117,58 @@ for (const pattern of forbiddenClaims) {
   }
 }
 
-const expectedCandidateCounts = new Map([
-  ['data/candidates/japan-jra-candidates.json', 4],
-  ['data/candidates/japan-nar-candidates.json', 12],
+// PR-085 is a historical no-write gap report. Validate its historical inputs
+// separately from the later current operating candidates.
+const jraCandidate = readJson('data/candidates/japan-jra-candidates.json');
+const jraPilot = readJson('data/generated/timetable/jra-pilot-review.json');
+const jraIds = sorted((jraCandidate.records ?? []).map((record) => record.meeting_id));
+const pilotIds = sorted(jraPilot.normalized?.meeting_ids ?? []);
+if (jraCandidate.schema_version !== 'timetable-candidate-v1' || jraCandidate.adapter_id !== 'jra-normalized-programme-candidate-v1') fail('Current JRA candidate envelope differs.');
+if ((jraCandidate.records ?? []).length !== 24 || jraPilot.normalized?.candidate_count !== 24) fail('Current JRA candidate/pilot count must remain synchronized at 24.');
+if (!exact(jraIds, pilotIds)) fail('Current JRA candidate IDs differ from JRA pilot review.');
+if (jraCandidate.generated_at !== jraPilot.generated_at) fail('Current JRA candidate generated_at differs from JRA pilot review.');
+if ((jraCandidate.records ?? []).some((record) => record.capability_rank !== 'A+' || record.review_status !== 'needs_review')) fail('Current JRA candidate rank/review state differs.');
+
+const narActivePath = 'data/candidates/japan-nar-candidates.json';
+if (existsSync(path.join(root, narActivePath))) fail('Legacy NAR candidate must remain absent from active candidate data.');
+const narArchive = readJson('data/archive/timetable/candidates/japan-nar-candidates.v0.json');
+if (narArchive.schema_version !== 'timetable-candidates-v0' || narArchive.source_adapter_id !== 'japan-nar-dry-run-adapter') fail('Historical NAR archive identity differs.');
+if ((narArchive.records ?? []).length !== 12) fail('Historical NAR archive must retain 12 records.');
+
+for (const [relativePath, expectedCount] of [
   ['data/candidates/japan-banei-candidates.json', 3],
   ['data/candidates/japan-active-window-approved-candidates.json', 19],
-]);
-
-for (const [relativePath, expectedCount] of expectedCandidateCounts) {
+]) {
   const file = readJson(relativePath);
   const count = file.records?.length ?? 0;
-  if (count !== expectedCount) {
-    fail(`${relativePath} must retain ${expectedCount} records; found ${count}. PR-085 must not add candidate records.`);
-  }
+  if (count !== expectedCount) fail(`${relativePath} must retain ${expectedCount} reviewed records; found ${count}.`);
 }
 
 const generatedJapan = readJson('data/generated/japan-active-timetable-records.json');
-if ((generatedJapan.records ?? []).length !== 15) {
-  fail('data/generated/japan-active-timetable-records.json must retain 15 records; PR-085 must not modify generated timetable record count.');
-}
+if ((generatedJapan.records ?? []).length !== 15) fail('Historical Japan active-window generated set must retain 15 records.');
 
 const generatedNar = (generatedJapan.records ?? []).filter((record) => record.racing_type === 'NAR local meeting');
-if (generatedNar.length !== 12) fail(`Expected 12 generated NAR records; found ${generatedNar.length}.`);
+if (generatedNar.length !== 12) fail(`Historical generated NAR set must retain 12 records; found ${generatedNar.length}.`);
 if (!generatedNar.every((record) => record.start_time_local === 'Meeting date verified on NAR; exact first start time not stored')) {
-  fail('Generated NAR records must continue to state exact first start time not stored.');
+  fail('Historical generated NAR records must retain the exact-time-not-stored statement.');
 }
 
 const generatedBanei = (generatedJapan.records ?? []).filter((record) => record.racing_type === 'Banei meeting');
-if (generatedBanei.length !== 3) fail(`Expected 3 generated Banei records; found ${generatedBanei.length}.`);
+if (generatedBanei.length !== 3) fail(`Historical generated Banei set must retain 3 records; found ${generatedBanei.length}.`);
 
 for (const relativePath of [
   'data/generated/japan-public-overlay.json',
   'data/generated/japan-timetable-overlay.json',
   'data/generated/japan-promoted-timetable-records.json',
 ]) {
-  if (existsSync(path.join(root, relativePath))) {
-    fail(`${relativePath}: PR-085 must not add a public overlay replacement.`);
-  }
+  if (existsSync(path.join(root, relativePath))) fail(`${relativePath}: retired public overlay replacement must remain absent.`);
 }
 
 for (const relativePath of walkFiles('data/generated')) {
   if (!relativePath.endsWith('.json')) continue;
   const file = readJson(relativePath);
   if (file.schema_version === 'timetable-overlay-promoted-v0' && file.country_id === 'japan') {
-    fail(`${relativePath}: PR-085 must not add a promoted Japan timetable overlay.`);
+    fail(`${relativePath}: retired promoted Japan timetable overlay must remain absent.`);
   }
 }
 
@@ -166,9 +176,9 @@ const diff = spawnSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'u
 if (diff.status === 0) {
   const changed = diff.stdout.trim().split('\n').filter(Boolean);
   for (const relativePath of changed) {
-    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: PR-085 must not change candidate data files.`);
-    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: PR-085 must not change generated timetable files.`);
-    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: PR-085 must not add public overlay replacement/runtime changes.');
+    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: validator execution must not mutate candidate data files.`);
+    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: validator execution must not mutate generated timetable files.`);
+    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: validator execution must not mutate runtime data loading.');
   }
 }
 
@@ -189,9 +199,7 @@ for (const phrase of [
   'What this does not do',
   'Validation commands',
   'Next PR: PR-086 Japan JRA record-level source verification or next roadmap item',
-]) {
-  includesRequired(pr, phrase, 'PR-085 runbook');
-}
+]) includesRequired(pr, phrase, 'PR-085 runbook');
 
 if (failures.length) {
   console.error('Japan active-window candidate gap report validation failed:');
@@ -200,3 +208,6 @@ if (failures.length) {
 }
 
 console.log('Japan active-window candidate gap report validation passed.');
+console.log('PR_085_GAP_REPORT_STATE: historical');
+console.log('CURRENT_JRA_CANDIDATES: synchronized_24');
+console.log('LEGACY_NAR_CANDIDATES: archived_12');
