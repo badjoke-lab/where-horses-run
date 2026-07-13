@@ -1,8 +1,8 @@
 {
   "schema_version": "calendar-operations-review-package-v1",
   "work_id": "WHR-CAL-OPS-V1",
-  "as_of_date": "2026-07-13",
-  "generated_at": "2026-07-13T00:00:00.000Z",
+  "as_of_date": "2026-07-02",
+  "generated_at": "2026-07-02T00:00:00.000Z",
   "mode": "paused_review_only",
   "boundaries": {
     "network_fetch_performed": false,
@@ -13,7 +13,7 @@
     "pull_request_created": false
   },
   "input_digests": {
-    "operations_status_sha256": "08221655523c9d2ebea098b59d33e44387d7bfe9b6227a06836a9d3ab802777a",
+    "operations_status_sha256": "9a797e59044151d5d1819ed1dc19626216547c153ca8029d6b038c254e5b092b",
     "operations_control_sha256": "8e9430750a3c1fbfa8c7141c3b65ffa13dd5b916e232aa7e8418810e8f9d9bf7",
     "readiness_registry_sha256": "41c05ed07af5be2ca65027a5739d261b1a14b6191327b6bd8f41de7711a31282",
     "authority_inventory_sha256": "8aab9198b5d42f1e293b9da6c5d7126e62e6a2cc8bf2aee813cc89a7692ee3e2",
@@ -21,26 +21,25 @@
     "jra_candidate_sha256": "38d464ec0f887afdef0d11c6653c8dac107a9d3aebdfa998839b0201c64939ca"
   },
   "summary": {
-    "operator_action_count": 72,
+    "operator_action_count": 70,
     "action_counts": {
       "source_unavailable_review": 1,
       "blocked_review": 18,
       "source_revalidation_due": 31,
-      "manual_revalidation_due": 20,
-      "link_revalidation_due": 1,
+      "manual_revalidation_due": 19,
       "human_review_required": 1
     },
-    "revalidation_due_count": 52,
+    "revalidation_due_count": 50,
     "blocked_count": 18,
     "unavailable_count": 2,
-    "current_window_meeting_count": 79,
+    "current_window_meeting_count": 132,
     "public_projection_stale": false,
     "jra_refresh_required": false
   },
   "proposed_review": {
-    "branch_name": "ops/calendar-review-2026-07-13",
-    "title": "Calendar operations review 2026-07-13",
-    "commit_message": "chore: prepare Calendar operations review 2026-07-13",
+    "branch_name": "ops/calendar-review-2026-07-02",
+    "title": "Calendar operations review 2026-07-02",
+    "commit_message": "chore: prepare Calendar operations review 2026-07-02",
     "changed_files": [],
     "public_release_expected": false,
     "required_checks": [
@@ -209,7 +208,7 @@
       "type": "source_revalidation_due",
       "key": "argentina--argentina-palermo-system--palermo-schedules",
       "country_id": "argentina",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -217,7 +216,7 @@
       "type": "source_revalidation_due",
       "key": "bahrain--bahrain-turf-club-system--btc-racecard-route",
       "country_id": "bahrain",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -225,7 +224,7 @@
       "type": "source_revalidation_due",
       "key": "belgium--belgian-federation-calendar-system--belgium-racing-calendar",
       "country_id": "belgium",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -233,7 +232,7 @@
       "type": "source_revalidation_due",
       "key": "canada--canada-standardbred-system--standardbred-canada-racing",
       "country_id": "canada",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -241,7 +240,7 @@
       "type": "source_revalidation_due",
       "key": "chile--chile-venue-programme-network--teletrak-calendar",
       "country_id": "chile",
-      "reason": "checked 33 days ago; threshold 2 days",
+      "reason": "checked 22 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -249,7 +248,7 @@
       "type": "source_revalidation_due",
       "key": "dominican-republic--hvc-racing-system--hvc-programme-calendar",
       "country_id": "dominican-republic",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -257,7 +256,7 @@
       "type": "source_revalidation_due",
       "key": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
       "country_id": "estonia",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -265,7 +264,7 @@
       "type": "source_revalidation_due",
       "key": "france--france-france-galop-system--france-galop-calendar",
       "country_id": "france",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -273,7 +272,7 @@
       "type": "source_revalidation_due",
       "key": "france--france-letrot-system--letrot-upcoming",
       "country_id": "france",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -281,7 +280,7 @@
       "type": "source_revalidation_due",
       "key": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
       "country_id": "germany",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -289,7 +288,7 @@
       "type": "source_revalidation_due",
       "key": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
       "country_id": "hong-kong",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -297,7 +296,7 @@
       "type": "source_revalidation_due",
       "key": "india--india-bangalore-turf-club--bangalore-fixtures",
       "country_id": "india",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -305,7 +304,7 @@
       "type": "source_revalidation_due",
       "key": "india--india-rwitc-system--rwitc-calendar",
       "country_id": "india",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -313,7 +312,7 @@
       "type": "source_revalidation_due",
       "key": "ireland--ireland-hri-system--hri-fixtures",
       "country_id": "ireland",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -321,7 +320,7 @@
       "type": "source_revalidation_due",
       "key": "jamaica--jamaica-reviewed-system--caymanas-race-cards",
       "country_id": "jamaica",
-      "reason": "checked 25 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -329,7 +328,7 @@
       "type": "source_revalidation_due",
       "key": "japan--japan-jra-system--jra-programme",
       "country_id": "japan",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -337,7 +336,7 @@
       "type": "source_revalidation_due",
       "key": "lithuania--trotting-league-system--trotting-league-2026-calendar",
       "country_id": "lithuania",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -345,7 +344,7 @@
       "type": "source_revalidation_due",
       "key": "new-zealand--new-zealand-thoroughbred-system--loveracing-race-info",
       "country_id": "new-zealand",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -353,7 +352,7 @@
       "type": "source_revalidation_due",
       "key": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
       "country_id": "panama",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -361,7 +360,7 @@
       "type": "source_revalidation_due",
       "key": "peru--peru-monterrico-programme-system--monterrico-upcoming-programmes",
       "country_id": "peru",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -369,7 +368,7 @@
       "type": "source_revalidation_due",
       "key": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
       "country_id": "qatar",
-      "reason": "checked 28 days ago; threshold 2 days",
+      "reason": "checked 17 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -377,7 +376,7 @@
       "type": "source_revalidation_due",
       "key": "romania--romania-ploiesti-system--ploiesti-racing-notices",
       "country_id": "romania",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -385,7 +384,7 @@
       "type": "source_revalidation_due",
       "key": "saudi-arabia--saudi-arabia-jcsa-system--jcsa-races",
       "country_id": "saudi-arabia",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -393,7 +392,7 @@
       "type": "source_revalidation_due",
       "key": "serbia--serbia-belgrade-hippodrome-system--belgrade-2026-season",
       "country_id": "serbia",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -401,7 +400,7 @@
       "type": "source_revalidation_due",
       "key": "slovakia--slovakia-zavodisko-system--zavodisko-2026-calendar",
       "country_id": "slovakia",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -409,7 +408,7 @@
       "type": "source_revalidation_due",
       "key": "south-africa--south-africa-4racing-system--four-racing-programme",
       "country_id": "south-africa",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -417,7 +416,7 @@
       "type": "source_revalidation_due",
       "key": "south-africa--south-africa-gold-circle-system--gold-circle-programme",
       "country_id": "south-africa",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -425,7 +424,7 @@
       "type": "source_revalidation_due",
       "key": "south-korea--kra-national-racing-system--kra-today-race",
       "country_id": "south-korea",
-      "reason": "checked 34 days ago; threshold 2 days",
+      "reason": "checked 23 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -433,7 +432,7 @@
       "type": "source_revalidation_due",
       "key": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
       "country_id": "spain",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -441,7 +440,7 @@
       "type": "source_revalidation_due",
       "key": "turkey--tjk-national-racing-system--tjk-daily-programme",
       "country_id": "turkey",
-      "reason": "checked 33 days ago; threshold 2 days",
+      "reason": "checked 22 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -449,7 +448,7 @@
       "type": "source_revalidation_due",
       "key": "united-states--united-states-equibase-thoroughbred--equibase-entries",
       "country_id": "united-states",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -457,7 +456,7 @@
       "type": "manual_revalidation_due",
       "key": "australia--australia-racing-australia-thoroughbred--racing-australia-racebooks",
       "country_id": "australia",
-      "reason": "checked 23 days ago; threshold 2 days",
+      "reason": "checked 12 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -465,7 +464,7 @@
       "type": "manual_revalidation_due",
       "key": "austria--austria-reviewed-system--krieau-race-newspapers",
       "country_id": "austria",
-      "reason": "checked 25 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -473,15 +472,7 @@
       "type": "manual_revalidation_due",
       "key": "barbados--barbados-reviewed-system--barbados-programmes",
       "country_id": "barbados",
-      "reason": "checked 25 days ago; threshold 2 days",
-      "priority": 5,
-      "required_decision": "review source evidence and prepare a bounded candidate or registry update"
-    },
-    {
-      "type": "manual_revalidation_due",
-      "key": "botswana--kokotsha-horse-race--dailynews-2026-notice",
-      "country_id": "botswana",
-      "reason": "checked 13 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -489,7 +480,7 @@
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-cidade-jardim-system--cidade-jardim-programme",
       "country_id": "brazil",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -497,7 +488,7 @@
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-cristal-system--cristal-programme",
       "country_id": "brazil",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -505,7 +496,7 @@
       "type": "manual_revalidation_due",
       "key": "brazil--brazil-gavea-system--gavea-programme",
       "country_id": "brazil",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -513,7 +504,7 @@
       "type": "manual_revalidation_due",
       "key": "czech-republic--czech-chuchle-system--chuchle-racing-calendar",
       "country_id": "czech-republic",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -521,7 +512,7 @@
       "type": "manual_revalidation_due",
       "key": "czech-republic--czech-most-system--most-racing-calendar",
       "country_id": "czech-republic",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -529,7 +520,7 @@
       "type": "manual_revalidation_due",
       "key": "denmark--denmark-klampenborg-system--klampenborg-calendar",
       "country_id": "denmark",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -537,7 +528,7 @@
       "type": "manual_revalidation_due",
       "key": "ecuador--miguel-salem-dibo-system--msd-calendar",
       "country_id": "ecuador",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -545,7 +536,7 @@
       "type": "manual_revalidation_due",
       "key": "hungary--hungary-reviewed-system--kincsem-programmes",
       "country_id": "hungary",
-      "reason": "checked 25 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -553,7 +544,7 @@
       "type": "manual_revalidation_due",
       "key": "new-zealand--new-zealand-harness-system--hrnz-raceday-calendar",
       "country_id": "new-zealand",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -561,7 +552,7 @@
       "type": "manual_revalidation_due",
       "key": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
       "country_id": "puerto-rico",
-      "reason": "checked 25 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -569,7 +560,7 @@
       "type": "manual_revalidation_due",
       "key": "sweden--sweden-svensk-galopp-system--svensk-galopp-calendar",
       "country_id": "sweden",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -577,7 +568,7 @@
       "type": "manual_revalidation_due",
       "key": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",
       "country_id": "trinidad-and-tobago",
-      "reason": "checked 25 days ago; threshold 2 days",
+      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -585,7 +576,7 @@
       "type": "manual_revalidation_due",
       "key": "tunisia--sch-national-racing-system--sch-official-calendar",
       "country_id": "tunisia",
-      "reason": "checked 14 days ago; threshold 2 days",
+      "reason": "checked 3 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -593,7 +584,7 @@
       "type": "manual_revalidation_due",
       "key": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
       "country_id": "united-kingdom",
-      "reason": "checked 23 days ago; threshold 8 days",
+      "reason": "checked 12 days ago; threshold 8 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -601,7 +592,7 @@
       "type": "manual_revalidation_due",
       "key": "uruguay--uruguay-hru-system--hru-calendar",
       "country_id": "uruguay",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
@@ -609,16 +600,8 @@
       "type": "manual_revalidation_due",
       "key": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",
       "country_id": "zimbabwe",
-      "reason": "checked 26 days ago; threshold 2 days",
+      "reason": "checked 15 days ago; threshold 2 days",
       "priority": 5,
-      "required_decision": "review source evidence and prepare a bounded candidate or registry update"
-    },
-    {
-      "type": "link_revalidation_due",
-      "key": "nigeria--hrfn-national-system--hrfn-home",
-      "country_id": "nigeria",
-      "reason": "checked 14 days ago; threshold 8 days",
-      "priority": 6,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
     {
