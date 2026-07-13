@@ -1,0 +1,101 @@
+{
+  "schema_version": "calendar-japan-current-window-decision-v1",
+  "work_id": "WHR-CAL-JAPAN-CURRENT-WINDOW-OPERATIONS",
+  "implementation_unit": "JAPAN-CURRENT-WINDOW-01",
+  "decision_id": "JAPAN-CURRENT-WINDOW-2026-07-13",
+  "decided_at": "2026-07-13T07:45:50Z",
+  "window": {
+    "start_date": "2026-07-13",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Asia/Tokyo"
+  },
+  "canonical_generated_at": "2026-07-07T21:08:00Z",
+  "evidence": {
+    "workflow_run_id": 29233108790,
+    "artifact_id": 8272301477,
+    "artifact_name": "japan-current-window-audit-29233108790",
+    "artifact_digest": "sha256:c0eff9582b8f606b6214ad2058a39890563f4c3e2fefe125ddc080ac00bb2e61",
+    "audit_schema": "calendar-japan-current-window-audit-v1"
+  },
+  "summary": {
+    "system_count": 3,
+    "canonical_meeting_count": 78,
+    "target_ready_a_plus_count": 12,
+    "action_required_count": 66
+  },
+  "systems": [
+    {
+      "system_id": "japan-jra-system",
+      "canonical_meeting_count": 12,
+      "rank_counts": {
+        "C": 0,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 12
+      },
+      "first_meeting_date": "2026-07-18",
+      "last_meeting_date": "2026-07-26",
+      "latest_source_check_date": "2026-07-02",
+      "operational_state": "current_window_at_target_rank",
+      "decision": "retain_current_reviewed_a_plus_state",
+      "next_action": "no_rank_upgrade_action_in_this_window"
+    },
+    {
+      "system_id": "japan-nar-system",
+      "canonical_meeting_count": 66,
+      "rank_counts": {
+        "C": 66,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 0
+      },
+      "first_meeting_date": "2026-07-13",
+      "last_meeting_date": "2026-07-31",
+      "latest_source_check_date": "2026-07-07",
+      "operational_state": "selected_meeting_retry_required",
+      "decision": "run_selected_meeting_detail_retry",
+      "next_action": "prepare_review_only_nar_retry_for_66_meetings"
+    },
+    {
+      "system_id": "japan-banei-system",
+      "canonical_meeting_count": 0,
+      "rank_counts": {
+        "C": 0,
+        "B": 0,
+        "B+": 0,
+        "A": 0,
+        "A+": 0
+      },
+      "first_meeting_date": null,
+      "last_meeting_date": null,
+      "latest_source_check_date": null,
+      "operational_state": "no_canonical_meetings_in_window",
+      "decision": "acquire_schedule_before_detail_retry",
+      "next_action": "run_banei_date_window_schedule_acquisition_then_selected_detail_retry",
+      "interpretation_guard": "No Canonical meetings in this window is not a claim that no official Banei racing exists."
+    }
+  ],
+  "next_work": [
+    {
+      "work_id": "WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY",
+      "priority": 1,
+      "scope": "66 Canonical C meetings from 2026-07-13 through 2026-07-31"
+    },
+    {
+      "work_id": "WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION",
+      "priority": 2,
+      "scope": "2026-07-13 through 2026-08-11 schedule acquisition followed by detail retry where official detail is available"
+    }
+  ],
+  "side_effect_boundary": {
+    "network_fetch": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
