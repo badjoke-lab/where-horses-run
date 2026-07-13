@@ -21,6 +21,10 @@ Formal project specifications live here. Read `docs/governance/document-authorit
 - [racecourse-page-spec.md](racecourse-page-spec.md)
 - [page-link-architecture.md](page-link-architecture.md)
 
+## Acquisition route dry-run boundary
+
+The current route checker is dry-run/status-only. It performs no live fetching, has no scheduler, and performs no generated writeback. Future route records can be checked through this skeleton before implementation.
+
 ## Historical baseline
 
 - [where-horses-run-v0-spec.md](where-horses-run-v0-spec.md)
