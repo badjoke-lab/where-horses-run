@@ -8,16 +8,23 @@ const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const exists = (relativePath) => fs.existsSync(path.join(root, relativePath));
 
 const policy = readJson('data/static/calendar-japan-current-window-policy-v1.json');
 const historicalDecision = readJson('data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json');
 const retryResult = readJson('data/audits/calendar-nar-current-window-retry-result-v1.json');
-const applyDecision = readJson('data/audits/calendar-nar-current-window-promotion-apply-v1.json');
-const approvedCandidate = readJson('data/candidates/nar-current-window-a-plus-approved.json');
+const narApplyDecision = readJson('data/audits/calendar-nar-current-window-promotion-apply-v1.json');
+const narApprovedCandidate = readJson('data/candidates/nar-current-window-a-plus-approved.json');
+const baneiResult = readJson('data/audits/calendar-banei-current-window-acquisition-result-v1.json');
+const baneiCPath = 'data/candidates/banei-current-window-c-schedule-approved.json';
+const baneiAPlusPath = 'data/candidates/banei-current-window-a-plus-approved.json';
+const baneiApplied = exists(baneiCPath) && exists(baneiAPlusPath);
+const baneiC = baneiApplied ? readJson(baneiCPath) : null;
+const baneiAPlus = baneiApplied ? readJson(baneiAPlusPath) : null;
 const canonical = readJson('data/generated/timetable/canonical/meetings.json');
 const registry = readJson('data/static/calendar-acquisition-registry.json');
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
-const generatedAt = '2026-07-13T08:30:00Z';
+const generatedAt = '2026-07-14T00:30:00Z';
 let currentAudit = null;
 try {
   currentAudit = buildJapanCurrentWindowAuditV1({
@@ -81,13 +88,25 @@ if (currentAudit) {
   if (banei) {
     if (banei.primary_runner !== 'github_actions' || banei.fallback_runner !== 'reviewed_import') fail('current Banei runner state differs');
     if (banei.executor_id !== 'banei-schedule-detail-actions' || !exact(banei.supported_collection_modes, ['date_window', 'selected_meetings'])) fail('current Banei executor state differs');
-    if (banei.canonical_meeting_count !== 0 || banei.operational_state !== 'no_canonical_meetings_in_window') fail('current Banei empty-window state differs');
+    if (!baneiApplied) {
+      if (banei.canonical_meeting_count !== 0 || banei.operational_state !== 'no_canonical_meetings_in_window') fail('pre-apply Banei empty-window state differs');
+    } else {
+      if (banei.canonical_meeting_count !== 13 || !exact(banei.rank_counts, { C: 12, B: 0, 'B+': 0, A: 0, 'A+': 1 })) fail('applied Banei rank state differs');
+      if (banei.target_ready_count !== 1 || banei.retry_required_count !== 12 || banei.operational_state !== 'selected_meeting_retry_required') fail('applied Banei operational state differs');
+      if (!exact([...banei.target_ready_meeting_ids].sort(), [...baneiResult.a_plus_meeting_ids].sort())) fail('applied Banei A+ set differs');
+      if (!exact([...banei.retry_required_meeting_ids].sort(), [...baneiResult.lower_rank_meeting_ids].sort())) fail('applied Banei C retry set differs');
+    }
   }
+
+  const expectedMeetings = baneiApplied ? 91 : 78;
+  const expectedReady = baneiApplied ? 28 : 27;
+  const expectedAction = baneiApplied ? 63 : 51;
+  const expectedEmpty = baneiApplied ? [] : ['japan-banei-system'];
   if (currentAudit.summary.system_count !== 3
-    || currentAudit.summary.canonical_meeting_count !== 78
-    || currentAudit.summary.target_ready_count !== 27
-    || currentAudit.summary.retry_required_count !== 51) fail('current Japan window summary differs');
-  if (!exact(currentAudit.summary.systems_without_canonical_meetings, ['japan-banei-system'])) fail('current empty-system summary differs');
+    || currentAudit.summary.canonical_meeting_count !== expectedMeetings
+    || currentAudit.summary.target_ready_count !== expectedReady
+    || currentAudit.summary.retry_required_count !== expectedAction) fail('current Japan window summary differs');
+  if (!exact(currentAudit.summary.systems_without_canonical_meetings, expectedEmpty)) fail('current empty-system summary differs');
   if (!exact(currentAudit.summary.systems_requiring_action, ['japan-nar-system', 'japan-banei-system'])) fail('current action-required systems differ');
   if (Object.values(currentAudit.side_effect_boundary).some((value) => value !== false)) fail('current audit side-effect boundary differs');
 }
@@ -95,28 +114,39 @@ if (currentAudit) {
 if (retryResult.schema_version !== 'calendar-nar-current-window-retry-result-v1'
   || retryResult.result?.a_plus_candidate_count !== 15
   || retryResult.result?.retry_target_count !== 51) fail('NAR retry result dependency differs');
-if (approvedCandidate.schema_version !== 'timetable-candidate-v1'
-  || approvedCandidate.review?.status !== 'approved'
-  || approvedCandidate.records?.length !== 15) fail('approved NAR Candidate dependency differs');
-if (!exact([...approvedCandidate.records.map((record) => record.meeting_id)].sort(), [...retryResult.resolved_meeting_ids].sort())) fail('approved Candidate meeting set differs');
-if (applyDecision.schema_version !== 'calendar-nar-current-window-promotion-apply-v1'
-  || applyDecision.decision !== 'apply_exact_reviewed_proposal_and_regenerate_public_projection'
-  || applyDecision.apply_scope?.promoted_meeting_count !== 15
-  || applyDecision.apply_scope?.retained_c_retry_target_count !== 51) fail('NAR promotion apply decision differs');
+if (narApprovedCandidate.schema_version !== 'timetable-candidate-v1'
+  || narApprovedCandidate.review?.status !== 'approved'
+  || narApprovedCandidate.records?.length !== 15) fail('approved NAR Candidate dependency differs');
+if (!exact([...narApprovedCandidate.records.map((record) => record.meeting_id)].sort(), [...retryResult.resolved_meeting_ids].sort())) fail('approved NAR Candidate meeting set differs');
+if (narApplyDecision.schema_version !== 'calendar-nar-current-window-promotion-apply-v1'
+  || narApplyDecision.decision !== 'apply_exact_reviewed_proposal_and_regenerate_public_projection'
+  || narApplyDecision.apply_scope?.promoted_meeting_count !== 15
+  || narApplyDecision.apply_scope?.retained_c_retry_target_count !== 51) fail('NAR promotion apply decision differs');
+if (baneiResult.schema_version !== 'calendar-banei-current-window-acquisition-result-v1'
+  || baneiResult.result?.records_discovered !== 13
+  || baneiResult.result?.a_plus_candidate_count !== 1
+  || baneiResult.result?.lower_rank_candidate_count !== 12) fail('Banei acquisition result dependency differs');
+if (baneiApplied) {
+  if (baneiC?.review?.status !== 'approved' || baneiC.records?.length !== 12) fail('approved Banei C Candidate differs');
+  if (baneiAPlus?.review?.status !== 'approved' || baneiAPlus.records?.length !== 1) fail('approved Banei A+ Candidate differs');
+  if (!exact([...baneiC.records.map((record) => record.meeting_id)].sort(), [...baneiResult.lower_rank_meeting_ids].sort())) fail('approved Banei C meeting set differs');
+  if (!exact([...baneiAPlus.records.map((record) => record.meeting_id)].sort(), [...baneiResult.a_plus_meeting_ids].sort())) fail('approved Banei A+ meeting set differs');
+}
 
 for (const file of policy.systems.map((record) => record.entry_point)) {
-  if (!fs.existsSync(path.join(root, file))) fail(`operator entry point missing: ${file}`);
+  if (!exists(file)) fail(`operator entry point missing: ${file}`);
 }
 for (const file of [
   'data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json',
   'data/audits/calendar-nar-current-window-retry-result-v1.json',
   'data/audits/calendar-nar-current-window-promotion-apply-v1.json',
+  'data/audits/calendar-banei-current-window-acquisition-result-v1.json',
   'data/candidates/nar-current-window-a-plus-approved.json',
   'scripts/timetable/japan-current-window-audit-core.mjs',
   'scripts/timetable/build-japan-current-window-audit.mjs',
   'docs/calendar/japan-current-window-operations.md',
   '.github/workflows/calendar-japan-current-window-operations.yml',
-]) if (!fs.existsSync(path.join(root, file))) fail(`Japan current-window component missing: ${file}`);
+]) if (!exists(file)) fail(`Japan current-window component missing: ${file}`);
 const builder = readText('scripts/timetable/build-japan-current-window-audit.mjs');
 for (const phrase of ['output must remain outside the repository', 'network_fetch: false', 'canonical_write: false', 'public_write: false']) {
   if (!builder.includes(phrase)) fail(`Japan current-window builder missing ${phrase}`);
@@ -144,9 +174,9 @@ if (errors.length) {
 }
 console.log('CALENDAR_JAPAN_CURRENT_WINDOW_OPERATIONS: pass');
 console.log('HISTORICAL_STATE: JRA A+=12 / NAR C=66 / Banei=0');
-console.log('CURRENT_STATE: JRA A+=12 / NAR A+=15+C=51 / Banei=0');
-console.log('CURRENT_TARGET_READY_A_PLUS: 27');
-console.log('CURRENT_ACTION_REQUIRED: 51');
-console.log('NEXT_PRIORITY: WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION');
+console.log(`CURRENT_STATE: ${baneiApplied ? 'JRA A+=12 / NAR A+=15+C=51 / Banei A+=1+C=12' : 'JRA A+=12 / NAR A+=15+C=51 / Banei=0'}`);
+console.log(`CURRENT_TARGET_READY_A_PLUS: ${baneiApplied ? 28 : 27}`);
+console.log(`CURRENT_ACTION_REQUIRED: ${baneiApplied ? 63 : 51}`);
+console.log(`NEXT_PRIORITY: ${baneiApplied ? 'WHR-CAL-THREE-COUNTRY-OPERATING-REVIEW' : 'WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION'}`);
 console.log('NETWORK_FETCH: false');
 console.log('CANONICAL_PUBLIC_WRITE: false');
