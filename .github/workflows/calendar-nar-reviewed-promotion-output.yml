@@ -11,9 +11,22 @@ on:
       - 'data/generated/timetable/jra-pilot-review.json'
       - 'data/generated/timetable/operations-status.json'
       - 'data/generated/timetable/operations-review-package.json'
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/audits/calendar-nar-current-window-promotion-apply-v1.json'
+      - 'data/audits/calendar-nar-current-window-promotion-proposal-v1.json'
+      - 'data/static/calendar-nar-current-window-retry-policy-v1.json'
       - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'scripts/check-calendar-nar-current-window-retry.mjs'
+      - 'scripts/check-live-fetch-probe-status-ui.mjs'
+      - 'scripts/check-m3-hong-kong-alpha-ui.mjs'
+      - 'scripts/check-m3-uae-generated-fallback.mjs'
+      - 'scripts/timetable/build-nar-current-window-retry-spec.mjs'
+      - '.github/workflows/calendar-nar-current-window-promotion-apply.yml'
+      - '.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml'
+      - '.github/workflows/calendar-nar-current-window-retry.yml'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
   push:
     branches:
@@ -27,6 +40,7 @@ on:
       - 'data/generated/timetable/jra-pilot-review.json'
       - 'data/generated/timetable/operations-status.json'
       - 'data/generated/timetable/operations-review-package.json'
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
       - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
@@ -49,11 +63,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate historical and current approved candidate determinism
+      - name: Validate historical approved candidate determinism
         run: |
           node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
+      - name: Validate current-window approved Candidate envelope
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-current-window-a-plus-approved.json', 'utf8'));
+          const result = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-retry-result-v1.json', 'utf8'));
+          if (candidate.schema_version !== 'timetable-candidate-v1' || candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('current-window approved Candidate envelope differs');
+          if (candidate.records.length !== 15 || candidate.records.some((record) => record.capability_rank !== 'A+' || record.review_status !== 'approved')) throw new Error('current-window approved Candidate set differs');
+          const rows = candidate.records.reduce((sum, record) => sum + record.timetable_rows.length, 0);
+          if (rows !== 180) throw new Error(`current-window approved race rows differ: ${rows}`);
+          const approvedIds = candidate.records.map((record) => record.meeting_id).sort();
+          if (JSON.stringify(approvedIds) !== JSON.stringify([...result.resolved_meeting_ids].sort())) throw new Error('current-window approved meeting IDs differ from reviewed result');
+          if (result.unresolved_meeting_ids.length !== 51) throw new Error('current-window retained C set differs');
+          console.log('NAR_CURRENT_WINDOW_APPROVED_CANDIDATE: pass');
+          NODE
       - name: Validate cumulative canonical promotion determinism
         if: github.event_name == 'pull_request'
         env:
@@ -76,6 +105,26 @@ jobs:
           node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
           node scripts/check-calendar-nar-incremental-reviewed-promotion.mjs --require-promoted
           node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs --require-promoted
+      - name: Validate current-window promoted and retained sets
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-current-window-a-plus-approved.json', 'utf8'));
+          const result = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-retry-result-v1.json', 'utf8'));
+          const meetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const details = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
+          const publicMeetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const publicDetails = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
+          for (const record of candidate.records) {
+            if (meetings.get(record.meeting_id)?.capability_rank !== 'A+' || details.get(record.meeting_id)?.capability_rank !== 'A+') throw new Error(`${record.meeting_id} Canonical A+ promotion differs`);
+            if (publicMeetings.get(record.meeting_id)?.effective_public_rank !== 'A+' || publicDetails.get(record.meeting_id)?.effective_public_rank !== 'A+') throw new Error(`${record.meeting_id} public A+ promotion differs`);
+          }
+          for (const id of result.unresolved_meeting_ids) {
+            if (meetings.get(id)?.capability_rank !== 'C' || publicMeetings.get(id)?.effective_public_rank !== 'C') throw new Error(`${id} retained C state differs`);
+            if (details.has(id) || publicDetails.has(id)) throw new Error(`${id} unexpectedly has detail`);
+          }
+          console.log('NAR_CURRENT_WINDOW_PROMOTED_SET: pass promoted=15 retained_c=51');
+          NODE
       - name: Validate no canonical or public IDs were removed
         if: github.event_name == 'pull_request'
         env:
@@ -112,7 +161,7 @@ jobs:
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
               case "$file" in
-                .github/workflows/calendar-nar-reviewed-promotion-output.yml|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json) ;;
+                .github/workflows/calendar-nar-current-window-promotion-apply.yml|.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml|.github/workflows/calendar-nar-current-window-retry.yml|.github/workflows/calendar-nar-reviewed-promotion-output.yml|data/audits/calendar-nar-current-window-promotion-apply-v1.json|data/audits/calendar-nar-current-window-promotion-proposal-v1.json|data/candidates/nar-current-window-a-plus-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-japan-current-window-operations.mjs|scripts/check-calendar-nar-current-window-retry.mjs|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs|scripts/check-live-fetch-probe-status-ui.mjs|scripts/check-m3-hong-kong-alpha-ui.mjs|scripts/check-m3-uae-generated-fallback.mjs|scripts/timetable/build-nar-current-window-retry-spec.mjs) ;;
                 *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
               esac
             done <<< "$changed"
