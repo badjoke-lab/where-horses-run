@@ -118,7 +118,7 @@ jobs:
             if (candidate.records.length !== manifest.records_discovered || candidate.records.length !== coverage.records_discovered) throw new Error(`${batch.month} discovered counts differ`);
             if (JSON.stringify(manifest.rank_counts) !== JSON.stringify(report.rank_counts)) throw new Error(`${batch.month} rank counts differ`);
             for (const record of candidate.records) {
-              if (!['B', 'A+'].includes(record.capability_rank)) throw new Error(`${record.meeting_id} unsupported Banei rank ${record.capability_rank}`);
+              if (!['C', 'B', 'B+', 'A+'].includes(record.capability_rank)) throw new Error(`${record.meeting_id} unsupported Banei rank ${record.capability_rank}`);
               if (record.date < '2026-07-13' || record.date >= '2026-08-12') throw new Error(`${record.meeting_id} outside current window`);
               combinedRecords.push(record);
               rankCounts[record.capability_rank] += 1;
@@ -139,10 +139,11 @@ jobs:
           }
           const ids = combinedRecords.map((record) => record.meeting_id);
           if (new Set(ids).size !== ids.length) throw new Error('Banei two-month result contains duplicate meeting IDs');
-          if (rankCounts.C !== 0 || rankCounts['B+'] !== 0 || rankCounts.A !== 0) throw new Error('Banei two-month result emitted an unsupported intermediate rank');
-          if (rankCounts.B + rankCounts['A+'] !== combinedRecords.length) throw new Error('Banei two-month rank counts do not close');
+          if (rankCounts.A !== 0) throw new Error('Banei two-month result emitted unsupported Rank A');
+          if (rankCounts.C + rankCounts.B + rankCounts['B+'] + rankCounts['A+'] !== combinedRecords.length) throw new Error('Banei two-month rank counts do not close');
           if (new Set(combinedUnresolved).size !== combinedUnresolved.length) throw new Error('Banei unresolved meeting IDs contain duplicates');
           if (combinedUnresolved.some((id) => !ids.includes(id))) throw new Error('Banei unresolved meeting is outside discovered set');
+          if (combinedUnresolved.length !== rankCounts.C + rankCounts.B + rankCounts['B+']) throw new Error('Banei unresolved count differs from lower-rank records');
           const result = {
             schema_version: 'calendar-banei-current-window-acquisition-result-v1',
             work_id: 'WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION',
@@ -153,7 +154,9 @@ jobs:
             records_discovered: combinedRecords.length,
             rank_counts: rankCounts,
             a_plus_candidate_count: rankCounts['A+'],
+            c_fallback_count: rankCounts.C,
             b_fallback_count: rankCounts.B,
+            b_plus_fallback_count: rankCounts['B+'],
             unresolved_meeting_count: combinedUnresolved.length,
             source_error_count: combinedErrors.length,
             meeting_ids: ids.sort(),
