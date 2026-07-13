@@ -33,6 +33,13 @@ function exact(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function nextDate(date) {
+  const value = new Date(`${date}T00:00:00Z`);
+  assert(!Number.isNaN(value.getTime()), `invalid meeting date ${date}`);
+  value.setUTCDate(value.getUTCDate() + 1);
+  return value.toISOString().slice(0, 10);
+}
+
 export function sha256UaeJsonV1(value) {
   return crypto.createHash('sha256').update(`${JSON.stringify(value, null, 2)}\n`).digest('hex');
 }
@@ -80,6 +87,7 @@ export function buildUaeEraRankUpgradeArtifactsV1({
 
   const byId = canonicalMap(canonicalMeetings);
   const records = [];
+  const selectedDates = [];
   const unresolvedMeetingIds = [];
   const sourceErrors = [];
   for (const meetingId of [...job.requested_scope.meeting_ids].sort()) {
@@ -88,6 +96,7 @@ export function buildUaeEraRankUpgradeArtifactsV1({
     assert(canonical.country_id === COUNTRY_ID && canonical.authority_id === AUTHORITY_ID, `${meetingId} is not an ERA meeting`);
     assert(canonical.timezone === TIMEZONE, `${meetingId} timezone differs`);
     assert(canonical.capability_rank === 'C', `${meetingId} must currently be Rank C for C-to-A retry`);
+    selectedDates.push(canonical.date);
     const evidence = evidenceByMeetingId?.[meetingId] ?? null;
     if (!evidence) {
       unresolvedMeetingIds.push(meetingId);
@@ -119,7 +128,7 @@ export function buildUaeEraRankUpgradeArtifactsV1({
         source_id: SOURCE_ID,
         official_url: officialUrlFromEvidence(evidence),
         checked_at: evidence.generated_at,
-        extraction_method: 'adapter',
+        extraction_method: 'adapter_candidate',
       },
       confidence: 'high',
       review_status: 'needs_review',
@@ -127,6 +136,12 @@ export function buildUaeEraRankUpgradeArtifactsV1({
     });
   }
 
+  selectedDates.sort();
+  const candidateWindow = {
+    start_date: selectedDates[0],
+    end_date_exclusive: nextDate(selectedDates.at(-1)),
+    timezone: TIMEZONE,
+  };
   const requestedScope = {
     kind: 'selected_meetings',
     meeting_ids: [...job.requested_scope.meeting_ids].sort(),
@@ -144,7 +159,7 @@ export function buildUaeEraRankUpgradeArtifactsV1({
     country_id: COUNTRY_ID,
     authority_id: AUTHORITY_ID,
     source_id: SOURCE_ID,
-    candidate_window: null,
+    candidate_window: candidateWindow,
     records,
     review: {
       status: 'needs_review',
