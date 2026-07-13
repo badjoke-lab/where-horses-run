@@ -1,0 +1,45 @@
+{
+  "schema_version": "calendar-nar-current-window-retry-policy-v1",
+  "work_id": "WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY",
+  "implementation_unit": "NAR-CURRENT-WINDOW-RETRY-01",
+  "source_decision_ref": "data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json",
+  "window": {
+    "start_date": "2026-07-13",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Asia/Tokyo"
+  },
+  "selection": {
+    "country_id": "japan",
+    "authority_id": "nar-local-government-racing",
+    "current_rank": "C",
+    "expected_meeting_count": 66,
+    "expected_first_date": "2026-07-13",
+    "expected_last_date": "2026-07-31"
+  },
+  "job": {
+    "job_id": "nar-current-window-selected-retry-job-001",
+    "campaign_id": "nar-current-window-selected-retry-2026-07",
+    "batch_id": "nar-current-window-selected-retry-2026-07-batch-001",
+    "system_id": "japan-nar-system",
+    "runner": "github_actions",
+    "collection_mode": "selected_meetings",
+    "rank_strategy": "target_rank",
+    "target_rank": "A+",
+    "reason": "rank_upgrade_retry"
+  },
+  "review_contract": {
+    "candidate_state": "needs_review",
+    "promotion_eligible": false,
+    "canonical_write": false,
+    "public_write": false,
+    "publication_effect": "none"
+  },
+  "side_effect_boundary": {
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
