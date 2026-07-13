@@ -58,10 +58,6 @@ const officialSourceGroups =
     })
   })) ?? [];
 
-const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
-const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
-const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
-const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
 const timetableRecords = getPublicTimetableMeetingRowsByCountry(country.id).map((record) => ({
   meeting_id: record.meeting_id,
   date: record.date,
@@ -555,27 +551,19 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
     </section>
 
     <details class="country-technical">
-      <summary>{pick('Technical coverage details', '技術的な掲載状況')}</summary>
-      <div class="country-grid country-grid--3">
-        <article class="card country-card">
-          <h3>{pick('Dataset status', 'データセット状態')}</h3>
-          <p><strong>{pick('Country status:', '国status:')}</strong> {country.status}</p>
-          <p><strong>Coverage level:</strong> {country.coverage_level}</p>
-          <p><strong>Automation level:</strong> {country.auto_level}</p>
-          <p><strong>{pick('Active 30-day records:', '30日範囲内records:')}</strong> {activeWindowRecords.length}</p>
-          <p><strong>{pick('Out-of-window records:', '30日範囲外records:')}</strong> {outOfWindowRecords}</p>
-          {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
-        </article>
-        <article class="card country-card">
-          <h3>Fetch status</h3>
-          {countryFetchStatuses.length > 0 ? <ul>{countryFetchStatuses.map((status) => <li><strong>{status.source_id}</strong>: {status.status} — {status.message}</li>)}</ul> : <p>{pick('No fetch status entries are listed.', 'Fetch statusはまだありません。')}</p>}
-        </article>
-        <article class="card country-card">
-          <h3>Probe status</h3>
-          {countryLiveFetchProbes.length > 0 ? <ul>{countryLiveFetchProbes.map((probe) => <li><strong>{probe.source_id}</strong>: {probe.status} / HTTP {probe.http_status}</li>)}</ul> : <p>{pick('No live fetch probe metadata is listed.', 'Live fetch probe metadataはまだありません。')}</p>}
-        </article>
-      </div>
-    </details>
+  <summary>{pick('Dataset coverage details', 'データセット掲載状況')}</summary>
+  <div class="country-grid country-grid--1">
+    <article class="card country-card">
+      <h3>{pick('Dataset status', 'データセット状態')}</h3>
+      <p><strong>{pick('Country status:', '国status:')}</strong> {country.status}</p>
+      <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+      <p><strong>Automation level:</strong> {country.auto_level}</p>
+      <p><strong>{pick('Active 30-day records:', '30日範囲内records:')}</strong> {activeWindowRecords.length}</p>
+      <p><strong>{pick('Out-of-window records:', '30日範囲外records:')}</strong> {outOfWindowRecords}</p>
+      {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
+    </article>
+  </div>
+</details>
 
     <p class="country-back-link"><a href={countriesBackPath}>{pick('← Back to countries', '← 国一覧へ戻る')}</a></p>
   </div>
