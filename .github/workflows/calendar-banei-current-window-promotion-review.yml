@@ -89,7 +89,9 @@ jobs:
             data/generated/timetable/public/meeting-details.json \
             > /tmp/banei-promotion-protected-before.sha256
       - name: Build split-source reviewed promotion proposal
+        shell: bash
         run: |
+          set +e
           rm -rf /tmp/banei-current-window-promotion-proposal
           node scripts/timetable/prepare-banei-current-window-promotion-proposal.mjs \
             --campaign-result="$CAMPAIGN_RESULT" \
@@ -104,7 +106,30 @@ jobs:
             --august-manifest="$AUGUST_MANIFEST" \
             --august-review-queue="$AUGUST_REVIEW" \
             --output-dir=/tmp/banei-current-window-promotion-proposal \
-            > /tmp/banei-current-window-promotion-summary.json
+            > /tmp/banei-current-window-promotion-summary.json \
+            2> /tmp/banei-current-window-promotion-builder.log
+          status=$?
+          printf '%s\n' "$status" > /tmp/banei-current-window-promotion-builder.exit
+          cat /tmp/banei-current-window-promotion-builder.log
+          cat /tmp/banei-current-window-promotion-summary.json || true
+          exit 0
+      - name: Upload proposal builder diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: banei-current-window-promotion-builder-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/banei-current-window-promotion-builder.log
+            /tmp/banei-current-window-promotion-builder.exit
+            /tmp/banei-current-window-promotion-summary.json
+      - name: Enforce proposal builder
+        run: |
+          status="$(cat /tmp/banei-current-window-promotion-builder.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
       - name: Validate proposal closure
         run: |
           node --input-type=module - <<'NODE'
@@ -162,7 +187,10 @@ jobs:
         if: always()
         run: |
           rm -rf /tmp/banei-current-window-source /tmp/banei-current-window-promotion-proposal
-          rm -f /tmp/banei-current-window-promotion-summary.json
+          rm -f \
+            /tmp/banei-current-window-promotion-summary.json \
+            /tmp/banei-current-window-promotion-builder.log \
+            /tmp/banei-current-window-promotion-builder.exit
           changes="$(git status --porcelain --untracked-files=all)"
           if [ -n "$changes" ]; then
             printf '%s\n' "$changes"
