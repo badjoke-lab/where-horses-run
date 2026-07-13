@@ -3,6 +3,7 @@ name: Calendar HKJC rank-upgrade operations
 on:
   pull_request:
     paths:
+      - 'data/audits/calendar-hkjc-rank-upgrade-operations-v1.json'
       - 'data/static/calendar-readiness-hkjc-detail-v1.json'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/hkjc-rank-upgrade-operations-core.mjs'
@@ -38,10 +39,17 @@ jobs:
           node scripts/check-calendar-acquisition-registry.mjs
           node scripts/check-calendar-route-runner-policy.mjs
           node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Validate manual workflow safety boundaries
+      - name: Validate activation audit and manual workflow safety boundaries
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-hkjc-rank-upgrade-operations-v1.json', 'utf8'));
+          if (audit.schema_version !== 'calendar-hkjc-rank-upgrade-operations-v1') throw new Error('HKJC rank-upgrade audit schema differs');
+          if (audit.work_id !== 'WHR-CAL-HKJC-DETAIL-RECOVERY' || audit.implementation_unit !== 'HKJC-DETAIL-RECOVERY-02') throw new Error('HKJC rank-upgrade audit identity differs');
+          if (audit.decision !== 'activate_manual_selected_meeting_rank_upgrade_operations') throw new Error('HKJC rank-upgrade decision differs');
+          if (audit.accepted_contracts?.retry_scope !== 'selected_meetings' || audit.accepted_contracts?.review_state !== 'review_ready' || audit.accepted_contracts?.initial_promotion_state !== 'not_ready') throw new Error('HKJC rank-upgrade accepted Queue contracts differ');
+          if (audit.completion_proof?.starting_rank !== 'C' || audit.completion_proof?.observed_technical_rank !== 'A+' || audit.completion_proof?.effective_public_ceiling !== 'A') throw new Error('HKJC rank-upgrade completion proof differs');
+          if (Object.values(audit.side_effect_boundary ?? {}).some((value) => value !== false)) throw new Error('HKJC rank-upgrade audit side-effect boundary differs');
           for (const file of [
             '.github/workflows/calendar-hkjc-rank-upgrade-review.yml',
             '.github/workflows/calendar-hkjc-promotion-proposal.yml',
