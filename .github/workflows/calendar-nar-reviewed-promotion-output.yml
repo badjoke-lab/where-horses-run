@@ -55,7 +55,7 @@ jobs:
             exit 0
           fi
           changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
-          if printf '%s\n' "$changed" | grep -Eq '^(data/candidates/nar-|data/audits/calendar-nar-current-window-promotion-|data/generated/timetable/(canonical|public)/|data/generated/timetable/operations-|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-nar-|scripts/timetable/build-nar-current-window-retry-spec.mjs|\.github/workflows/calendar-nar-)'; then
+          if printf '%s\n' "$changed" | grep -Eq '^(data/candidates/nar-|data/audits/calendar-nar-current-window-promotion-|data/generated/timetable/(canonical|public)/|data/generated/timetable/operations-|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-nar-|scripts/timetable/build-nar-current-window-retry-spec.mjs)'; then
             echo 'changed=true' >> "$GITHUB_OUTPUT"
           else
             echo 'changed=false' >> "$GITHUB_OUTPUT"
