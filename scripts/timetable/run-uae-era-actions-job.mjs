@@ -11,6 +11,7 @@ import {
 } from './uae-era-rank-upgrade-core.mjs';
 
 const root = process.cwd();
+const SUPPORTED_COLLECTION_MODES = Object.freeze(['source_visible_horizon', 'selected_meetings']);
 const argument = (name) => process.argv.find((item) => item.startsWith(`--${name}=`))?.slice(name.length + 3) ?? null;
 const executionArg = argument('execution');
 const outputArg = argument('output-dir');
@@ -38,7 +39,9 @@ if (executionErrors.length) throw new Error(`UAE execution validation failed: ${
 if (execution.system_id !== 'uae-national-racing-system') throw new Error('UAE Actions executor requires uae-national-racing-system');
 if (execution.runner_used !== 'github_actions') throw new Error('UAE Actions executor requires github_actions');
 if (execution.executor_id !== 'uae-era-actions') throw new Error('UAE Actions executor identity differs');
-if (!['source_visible_horizon', 'selected_meetings'].includes(execution.collection_mode)) throw new Error('UAE Actions executor mode unsupported');
+if (execution.collection_mode !== 'source_visible_horizon' && execution.collection_mode !== 'selected_meetings') {
+  throw new Error(`UAE Actions executor mode unsupported: ${execution.collection_mode}; expected ${SUPPORTED_COLLECTION_MODES.join(',')}`);
+}
 if (Object.values(execution.side_effect_boundary ?? {}).some((value) => value !== false)) throw new Error('UAE Actions side-effect boundary must remain false');
 
 function resolveOutputDir() {
