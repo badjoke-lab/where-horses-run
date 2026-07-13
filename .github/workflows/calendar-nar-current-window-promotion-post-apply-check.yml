@@ -1,0 +1,56 @@
+name: Calendar NAR promotion post-apply check
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/audits/calendar-nar-current-window-promotion-apply-v1.json'
+      - 'data/audits/calendar-nar-current-window-promotion-proposal-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'scripts/check-m3-hong-kong-alpha-ui.mjs'
+      - '.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+      - run: npm ci
+      - name: Capture full repository check
+        shell: bash
+        run: |
+          set +e
+          npm run check > /tmp/nar-post-apply-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/nar-post-apply-check.exit
+          tail -120 /tmp/nar-post-apply-check.log
+          exit 0
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-promotion-post-apply-check-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/nar-post-apply-check.log
+            /tmp/nar-post-apply-check.exit
+      - name: Enforce full repository check
+        run: |
+          status="$(cat /tmp/nar-post-apply-check.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
