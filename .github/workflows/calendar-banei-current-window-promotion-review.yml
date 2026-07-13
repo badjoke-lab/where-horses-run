@@ -1,0 +1,170 @@
+name: Calendar Banei current-window promotion review
+
+on:
+  pull_request:
+    paths:
+      - 'data/reviews/banei-current-window-promotion-review-v1.json'
+      - 'data/audits/calendar-banei-current-window-acquisition-result-v1.json'
+      - 'scripts/timetable/prepare-banei-current-window-promotion-proposal.mjs'
+      - 'scripts/check-calendar-banei-current-window-promotion-review.mjs'
+      - 'docs/calendar/banei-current-window-promotion-review.md'
+      - '.github/workflows/calendar-banei-current-window-promotion-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare-reviewed-proposal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate review contract
+        run: |
+          node --check scripts/timetable/prepare-banei-current-window-promotion-proposal.mjs
+          node --check scripts/check-calendar-banei-current-window-promotion-review.mjs
+          node scripts/check-calendar-banei-current-window-promotion-review.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Download pinned Banei acquisition artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: banei-current-window-acquisition-29275669482
+          path: /tmp/banei-current-window-source
+          github-token: ${{ github.token }}
+          repository: badjoke-lab/where-horses-run
+          run-id: 29275669482
+      - name: Resolve pinned source files
+        shell: bash
+        run: |
+          resolve() {
+            local pattern="$1"
+            find /tmp/banei-current-window-source -type f -path "$pattern" -print -quit
+          }
+          campaign_result="$(resolve '*/tmp/banei-current-window-result.json')"
+          july_dir_pattern='*/data/generated/timetable/actions-multi-job/banei-current-window-july-2026-batch-001'
+          august_dir_pattern='*/data/generated/timetable/actions-multi-job/banei-current-window-august-2026-batch-001'
+          july_candidate="$(resolve "$july_dir_pattern/candidates.json")"
+          july_report="$(resolve "$july_dir_pattern/collection-report.json")"
+          july_coverage="$(resolve "$july_dir_pattern/coverage-observation.json")"
+          july_manifest="$(resolve "$july_dir_pattern/result-manifest.json")"
+          july_review="$(resolve "$july_dir_pattern/review-queue.json")"
+          august_candidate="$(resolve "$august_dir_pattern/candidates.json")"
+          august_report="$(resolve "$august_dir_pattern/collection-report.json")"
+          august_coverage="$(resolve "$august_dir_pattern/coverage-observation.json")"
+          august_manifest="$(resolve "$august_dir_pattern/result-manifest.json")"
+          august_review="$(resolve "$august_dir_pattern/review-queue.json")"
+          for pair in \
+            "CAMPAIGN_RESULT=$campaign_result" \
+            "JULY_CANDIDATE=$july_candidate" \
+            "JULY_REPORT=$july_report" \
+            "JULY_COVERAGE=$july_coverage" \
+            "JULY_MANIFEST=$july_manifest" \
+            "JULY_REVIEW=$july_review" \
+            "AUGUST_CANDIDATE=$august_candidate" \
+            "AUGUST_REPORT=$august_report" \
+            "AUGUST_COVERAGE=$august_coverage" \
+            "AUGUST_MANIFEST=$august_manifest" \
+            "AUGUST_REVIEW=$august_review"; do
+            value="${pair#*=}"
+            if [ -z "$value" ] || [ ! -f "$value" ]; then
+              printf 'missing pinned source: %s\n' "$pair"
+              exit 1
+            fi
+            echo "$pair" >> "$GITHUB_ENV"
+          done
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/banei-promotion-protected-before.sha256
+      - name: Build split-source reviewed promotion proposal
+        run: |
+          rm -rf /tmp/banei-current-window-promotion-proposal
+          node scripts/timetable/prepare-banei-current-window-promotion-proposal.mjs \
+            --campaign-result="$CAMPAIGN_RESULT" \
+            --july-candidate="$JULY_CANDIDATE" \
+            --july-report="$JULY_REPORT" \
+            --july-coverage="$JULY_COVERAGE" \
+            --july-manifest="$JULY_MANIFEST" \
+            --july-review-queue="$JULY_REVIEW" \
+            --august-candidate="$AUGUST_CANDIDATE" \
+            --august-report="$AUGUST_REPORT" \
+            --august-coverage="$AUGUST_COVERAGE" \
+            --august-manifest="$AUGUST_MANIFEST" \
+            --august-review-queue="$AUGUST_REVIEW" \
+            --output-dir=/tmp/banei-current-window-promotion-proposal \
+            > /tmp/banei-current-window-promotion-summary.json
+      - name: Validate proposal closure
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/banei-current-window-promotion-proposal';
+          const expected = [
+            'approved-a-plus-detail-candidate.json',
+            'approved-c-schedule-candidate.json',
+            'promotion-proposal.json',
+            'promotion-summary.json',
+            'proposed-canonical-meeting-details.json',
+            'proposed-canonical-meetings.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`proposal files differ: ${JSON.stringify(actual)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const cCandidate = read('approved-c-schedule-candidate.json');
+          const aPlusCandidate = read('approved-a-plus-detail-candidate.json');
+          const proposal = read('promotion-proposal.json');
+          const summary = read('promotion-summary.json');
+          if (cCandidate.source_id !== 'banei-official-schedule' || cCandidate.records.length !== 12 || cCandidate.records.some((record) => record.capability_rank !== 'C' || record.review_status !== 'approved')) throw new Error('approved C Candidate differs');
+          if (cCandidate.records.some((record) => record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0)) throw new Error('approved C Candidate invents detail');
+          if (aPlusCandidate.source_id !== 'nar-banei-race-list-deba-table' || aPlusCandidate.records.length !== 1 || aPlusCandidate.records[0].capability_rank !== 'A+') throw new Error('approved A+ Candidate differs');
+          if (aPlusCandidate.records[0].timetable_rows.length !== 12) throw new Error('approved A+ race rows differ');
+          if (proposal.promoted_meeting_count !== 13 || proposal.promoted_detail_count !== 1 || proposal.promoted_race_row_count !== 12 || proposal.retained_c_retry_target_count !== 12) throw new Error('Banei proposal counts differ');
+          if (summary.c_schedule_meeting_count !== 12 || summary.a_plus_meeting_count !== 1 || summary.a_plus_race_row_count !== 12) throw new Error('Banei promotion summary differs');
+          if (proposal.mutation_boundary.repository_write !== false || proposal.mutation_boundary.canonical_write !== false || proposal.mutation_boundary.public_write !== false || proposal.mutation_boundary.publication_effect !== 'none' || proposal.mutation_boundary.human_merge_required !== true) throw new Error('proposal mutation boundary differs');
+          for (const digest of [
+            proposal.approved_c_candidate_sha256,
+            proposal.approved_a_plus_candidate_sha256,
+            proposal.proposed_meetings_sha256,
+            proposal.proposed_details_sha256,
+          ]) if (!/^[a-f0-9]{64}$/.test(digest)) throw new Error('proposal digest differs');
+          console.log('BANEI_CURRENT_WINDOW_PROMOTION_PROPOSAL: pass');
+          console.log(JSON.stringify({ promoted_meetings: 13, promoted_details: 1, race_rows: 12, retained_c: 12 }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/banei-promotion-protected-before.sha256
+      - name: Upload reviewed promotion proposal
+        uses: actions/upload-artifact@v4
+        with:
+          name: banei-current-window-promotion-proposal-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/banei-current-window-promotion-summary.json
+            /tmp/banei-current-window-promotion-proposal/approved-c-schedule-candidate.json
+            /tmp/banei-current-window-promotion-proposal/approved-a-plus-detail-candidate.json
+            /tmp/banei-current-window-promotion-proposal/promotion-proposal.json
+            /tmp/banei-current-window-promotion-proposal/promotion-summary.json
+            /tmp/banei-current-window-promotion-proposal/proposed-canonical-meetings.json
+            /tmp/banei-current-window-promotion-proposal/proposed-canonical-meeting-details.json
+      - name: Prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/banei-current-window-source /tmp/banei-current-window-promotion-proposal
+          rm -f /tmp/banei-current-window-promotion-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
