@@ -1,0 +1,21 @@
+{
+  "schema_version": "authority-source-inventory-hkjc-detail-v1",
+  "records": [
+    {
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "authority_name_en": "Hong Kong Jockey Club",
+      "authority_name_local": "香港賽馬會",
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "hkjc-detail-reviewed-import",
+      "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard",
+      "source_kind": "racecard",
+      "source_status": "verified",
+      "last_checked_date": "2026-07-13",
+      "capability_rank": "A+",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official HKJC racecard routes provide Race 1-N post times and programme-summary fields. The operational source identity is bound to explicit reviewed import because hosted direct HTTP acquisition is not evidence-backed. Existing reviewed Happy Valley evidence contains nine continuous races and A+ technical fields; public output remains capped at A. Participant, betting, result, payout, prediction, raw-source, embedded-video, and direct-stream data remain excluded."
+    }
+  ]
+}

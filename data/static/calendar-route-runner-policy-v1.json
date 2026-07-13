@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-route-runner-policy-v1",
-  "policy_version": "calendar-route-runner-policy-2026-07-11",
+  "policy_version": "calendar-route-runner-policy-2026-07-13",
   "registry_compatibility": {
     "system_level_fields_remain_authoritative_for_legacy_jobs": true,
     "route_policy_is_additive": true,
@@ -43,13 +43,14 @@
         "date_window"
       ],
       "evidence_backed_observation_ranks": [
-        "B"
+        "B",
+        "A+"
       ],
       "automatic_planning_allowed": false,
       "automatic_execution_allowed": false,
       "human_review_required": true,
       "registry_activation": false,
-      "evidence_ref": "data/audits/calendar-hkjc-pilot-06-reviewed-import-evidence-v1.json"
+      "evidence_ref": "data/audits/calendar-hkjc-detail-operator-activation-v1.json"
     }
   ],
   "side_effect_boundary": {

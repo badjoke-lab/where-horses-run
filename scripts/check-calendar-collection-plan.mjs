@@ -73,7 +73,7 @@ else {
   const low = rankIsolation.jobs.find((job) => job.job_id === 'nar-low-rank-target-job-001');
   const high = rankIsolation.jobs.find((job) => job.job_id === 'jra-best-available-job-001');
   if (low?.target_rank !== 'C') fail('low-rank target Job changed.');
-  if (high?.rank_strategy !== 'best_available' || high?.target_rank !== null) fail('unrelated best-available Job was downgraded by lower-rank sibling Job.');
+  if (high?.rank_strategy !== 'best_available' || high?.target_rank !== null) fail('unrelated best-available Job was downgraded.');
 }
 
 if (invalidFixtures.schema_version !== 'calendar-collection-plan-invalid-cases-v1') fail('invalid Collection Plan fixture schema differs.');
@@ -89,23 +89,19 @@ for (const requiredCase of ['system-runner-mismatch', 'mixed-date-window-and-sel
   if (!invalidCaseIds.has(requiredCase)) fail(`required invalid Plan case missing: ${requiredCase}`);
 }
 
-const sourceErrorPlan = dualRunner;
-if (sourceErrorPlan) {
-  const outcomes = summarizeCollectionPlanOutcomesV1(sourceErrorPlan, [
+if (dualRunner) {
+  const outcomes = summarizeCollectionPlanOutcomesV1(dualRunner, [
     { job_id: 'jra-august-local-plan-job-001', status: 'source_error' },
     { job_id: 'nar-august-actions-plan-job-001', status: 'success' },
   ]);
   if (outcomes.counts.source_error !== 1 || outcomes.counts.success !== 1) fail('source-error isolation counts differ.');
-  const narOutcome = outcomes.results.find((item) => item.job_id === 'nar-august-actions-plan-job-001');
-  if (narOutcome?.status !== 'success') fail('one Job source error invalidated unrelated successful Job outcome.');
-}
+  if (outcomes.results.find((item) => item.job_id === 'nar-august-actions-plan-job-001')?.status !== 'success') fail('one Job source error invalidated unrelated success.');
 
-if (dualRunner) {
   const hybrid = structuredClone(dualRunner);
   hybrid.jobs[0].runner_policy = { mode: 'exact', runner: 'github_actions' };
   const partition = partitionCollectionPlanJobsV1(hybrid, registry);
   if (partition.valid_jobs.length !== 1 || partition.invalid_jobs.length !== 1) fail('independent Job validation partition differs.');
-  if (partition.valid_jobs[0]?.job_id !== 'nar-august-actions-plan-job-001') fail('valid unrelated Job was lost when sibling Job became invalid.');
+  if (partition.valid_jobs[0]?.job_id !== 'nar-august-actions-plan-job-001') fail('valid unrelated Job was lost.');
 }
 
 const hkjcProfile = registry.records.find((profile) => profile.system_id === 'hong-kong-hkjc-system');
@@ -113,19 +109,17 @@ if (!hkjcProfile) fail('HKJC Registry profile missing for required Plan fixture.
 else {
   if (hkjcProfile.profile_status !== 'provisional') fail('HKJC Plan profile must remain provisional.');
   if (hkjcProfile.primary_runner !== 'github_actions') fail('HKJC schedule primary runner must remain github_actions.');
-  if (hkjcProfile.fallback_runner !== null) fail('HKJC fallback runner must remain null during PILOT-06 reconciliation.');
-  if (!hkjcProfile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback_runner must remain pending during PILOT-06 reconciliation.');
-  if (hkjcProfile.supports_date_window !== true) fail('HKJC bounded date-window support required by Plan fixture is missing.');
-  if (hkjcProfile.detail_source_id !== null || hkjcProfile.detail_adapter_id !== null) fail('HKJC Plan fixture must not imply implemented detail acquisition.');
+  if (hkjcProfile.fallback_runner !== null || !hkjcProfile.pending_fields?.includes('fallback_runner')) fail('HKJC fallback runner must remain null and pending.');
+  if (hkjcProfile.supports_date_window !== true) fail('HKJC bounded date-window support is missing.');
+  if (hkjcProfile.detail_source_id !== 'hkjc-detail-reviewed-import' || hkjcProfile.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC operator detail source/adapter activation differs.');
+  if (!exact(hkjcProfile.supported_observation_ranks, ['C', 'B', 'B+', 'A', 'A+'])) fail('HKJC supported observation ranks differ.');
+  if (hkjcProfile.supports_selected_meetings !== false || hkjcProfile.supports_rank_upgrade_retry !== false) fail('HKJC Plan must not imply selected-meeting detail retry support.');
 }
 
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of [
-  'Stage ACP-5 — Collection Plan schema',
-  'JRA local + NAR Actions in one plan',
-  'NAR and HKJC Actions jobs with different date windows',
-  'one regular refresh plus one selected-meeting retry',
-]) if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+for (const phrase of ['Stage ACP-5 — Collection Plan schema','JRA local + NAR Actions in one plan','NAR and HKJC Actions jobs with different date windows','one regular refresh plus one selected-meeting retry']) {
+  if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+}
 const planContract = readText('docs/calendar/collection-plan.md');
 for (const phrase of ['A source error in one Job does not rewrite another Job outcome.', 'lower target rank in one Job must not downgrade another Job']) {
   if (!planContract.includes(phrase)) fail(`Collection Plan contract missing ${phrase}.`);
@@ -139,9 +133,6 @@ if (errors.length) {
 console.log('CALENDAR_COLLECTION_PLAN: pass');
 console.log(`VALID_PLANS: ${fixtures.plans.length}`);
 console.log(`INVALID_CASES: ${invalidFixtures.cases.length}`);
-console.log('DUAL_RUNNER_PLAN: JRA local + NAR github_actions');
-console.log('MULTI_COUNTRY_ACTIONS_PLAN: NAR + HKJC different windows');
-console.log('MIXED_PURPOSE_PLAN: regular refresh + selected retry');
-console.log('RANK_ISOLATION: pass');
+console.log('MULTI_COUNTRY_ACTIONS_PLAN: NAR + HKJC schedule windows');
+console.log('HKJC_OPERATOR_DETAIL_IDENTITY: registered; selected-meeting retry pending');
 console.log('SOURCE_ERROR_ISOLATION: pass');
-console.log('HKJC_SYSTEM_FALLBACK: pending');

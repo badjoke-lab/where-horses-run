@@ -1,0 +1,81 @@
+{
+  "schema_version": "calendar-hkjc-detail-operator-activation-v1",
+  "work_id": "WHR-CAL-HKJC-DETAIL-RECOVERY",
+  "implementation_unit": "HKJC-DETAIL-RECOVERY-01",
+  "decision": "activate_operator_reviewed_detail_path",
+  "decided_at": "2026-07-13T00:00:00Z",
+  "system_id": "hong-kong-hkjc-system",
+  "authority_id": "hkjc",
+  "schedule_route": {
+    "source_id": "hkjc-fixture-list",
+    "adapter_id": "hkjc-fixture-artifact-bridge-v1",
+    "runner": "github_actions",
+    "selection_mode": "collection_job",
+    "evidence_backed_observation_ranks": [
+      "C"
+    ]
+  },
+  "detail_route": {
+    "source_id": "hkjc-detail-reviewed-import",
+    "adapter_id": "hkjc-detail-reviewed-import-v1",
+    "runner": "reviewed_import",
+    "selection_mode": "operator_only",
+    "workflow": ".github/workflows/calendar-hkjc-detail-operator.yml",
+    "entry_point": "scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs",
+    "artifact_extractor": "scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs",
+    "evidence_backed_observation_ranks": [
+      "B",
+      "A+"
+    ],
+    "classifier_supported_observation_ranks": [
+      "C",
+      "B",
+      "B+",
+      "A",
+      "A+"
+    ],
+    "public_ceiling": "A"
+  },
+  "reviewed_reference": {
+    "meeting_id": "hkjc-happy-valley-racecourse-2026-06-10",
+    "date": "2026-06-10",
+    "racecourse_id": "happy-valley-racecourse",
+    "race_count": 9,
+    "first_race_time_local": "18:40",
+    "last_race_time_local": "22:50",
+    "technical_rank": "A+",
+    "canonical_ref": "data/generated/timetable/canonical/meeting-details.json",
+    "official_source_hostname": "racing.hkjc.com"
+  },
+  "operator_contract": {
+    "input_schema": "calendar-hkjc-detail-reviewed-import-v1",
+    "input_transport": "base64_workflow_dispatch",
+    "input_must_be_reviewed_public_safe": true,
+    "output_artifacts": [
+      "candidates.json",
+      "coverage-observation.json",
+      "collection-result-manifest.json",
+      "collection-report.json",
+      "input-evidence.json"
+    ],
+    "candidate_review_state": "needs_review",
+    "promotion_target": null,
+    "human_review_required": true
+  },
+  "remaining_after_activation": [
+    "selected_meeting_retry_ownership",
+    "c_to_higher_rank_retry_planning",
+    "review_queue_promotion_connection",
+    "fallback_runner_decision"
+  ],
+  "side_effect_boundary": {
+    "direct_network_fetch_by_operator": false,
+    "automatic_import": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}

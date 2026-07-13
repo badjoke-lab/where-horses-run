@@ -1,0 +1,117 @@
+name: Calendar HKJC detail operator activation
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-hkjc-detail-operator-activation-v1.json'
+      - 'data/static/authority-source-inventory-hkjc-detail-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-route-runner-policy-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/route-runner-policy.mjs'
+      - 'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs'
+      - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-route-runner-policy.mjs'
+      - 'docs/calendar/hkjc-route-specific-runner-policy.md'
+      - '.github/workflows/calendar-hkjc-detail-operator.yml'
+      - '.github/workflows/calendar-hkjc-detail-operator-activation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-operator-path:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate contracts and operator implementation
+        run: |
+          node --check scripts/timetable/load-authority-source-inventory.mjs
+          node --check scripts/timetable/route-runner-policy.mjs
+          node --check scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs
+          node --check scripts/check-calendar-acquisition-registry.mjs
+          node --check scripts/check-calendar-route-runner-policy.mjs
+          node scripts/check-calendar-hkjc-detail-reviewed-import.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-route-runner-policy.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/hkjc-detail-activation-protected-before.sha256
+      - name: Materialize reviewed A+ operator input outside repository
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const fixtures = JSON.parse(fs.readFileSync('data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json', 'utf8'));
+          const input = fixtures.valid_inputs.find((entry) => entry.id === 'reviewed-public-safe-a-plus')?.input;
+          if (!input) throw new Error('reviewed A+ fixture missing');
+          fs.writeFileSync('/tmp/hkjc-detail-activation-input.json', `${JSON.stringify(input, null, 2)}\n`);
+          NODE
+      - name: Build and extract operational review package
+        run: |
+          node scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs \
+            --input=/tmp/hkjc-detail-activation-input.json \
+            --output=/tmp/hkjc-detail-activation-package.json \
+            --batch-id=hkjc-detail-activation-a-plus-proof \
+            --campaign-id=hkjc-detail-operator-activation \
+            --job-id=hkjc-detail-activation-a-plus-proof-job \
+            > /tmp/hkjc-detail-activation-build-summary.json
+          node scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs \
+            --package=/tmp/hkjc-detail-activation-package.json \
+            --output-dir=/tmp/hkjc-detail-activation-artifacts \
+            > /tmp/hkjc-detail-activation-extract-summary.json
+      - name: Validate A+ operator proof
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/hkjc-detail-activation-artifacts';
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('candidates.json');
+          const coverage = read('coverage-observation.json');
+          const manifest = read('collection-result-manifest.json');
+          const report = read('collection-report.json');
+          const record = candidate.records[0];
+          if (candidate.records.length !== 1) throw new Error('expected one HKJC detail candidate');
+          if (record.capability_rank !== 'A+') throw new Error(`expected A+ proof, got ${record.capability_rank}`);
+          if (record.first_race_time_local !== '18:30' || record.last_race_time_local !== '19:00') throw new Error('A+ proof time boundary differs');
+          if (record.timetable_rows.length !== 2) throw new Error('A+ proof timetable row count differs');
+          if (coverage.coverage_claim !== 'source_window_complete' || coverage.unresolved_meeting_ids.length !== 0 || coverage.source_errors.length !== 0) throw new Error('A+ proof coverage differs');
+          if (manifest.runner_used !== 'reviewed_import' || manifest.rank_counts['A+'] !== 1) throw new Error('A+ proof manifest differs');
+          if (candidate.review.status !== 'needs_review' || candidate.review.promotion_target !== null) throw new Error('A+ proof review boundary differs');
+          if (report.network_fetch !== false || report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') throw new Error('A+ proof side-effect boundary differs');
+          console.log('HKJC_DETAIL_OPERATOR_A_PLUS_PROOF: pass');
+          console.log(JSON.stringify({
+            rank: record.capability_rank,
+            first_race_time_local: record.first_race_time_local,
+            last_race_time_local: record.last_race_time_local,
+            timetable_row_count: record.timetable_rows.length,
+            coverage_claim: coverage.coverage_claim,
+          }));
+          NODE
+      - name: Prove canonical and public state unchanged
+        run: sha256sum --check /tmp/hkjc-detail-activation-protected-before.sha256
+      - name: Prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/hkjc-detail-activation-artifacts
+          rm -f \
+            /tmp/hkjc-detail-activation-input.json \
+            /tmp/hkjc-detail-activation-package.json \
+            /tmp/hkjc-detail-activation-build-summary.json \
+            /tmp/hkjc-detail-activation-extract-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

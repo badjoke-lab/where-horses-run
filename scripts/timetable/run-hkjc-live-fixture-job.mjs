@@ -22,8 +22,9 @@ function assertExecution(value) {
   if (value.requested_scope?.timezone !== 'Asia/Hong_Kong') throw new Error('HKJC live fixture executor requires Asia/Hong_Kong timezone');
   if (value.source_route?.schedule_source_id !== 'hkjc-fixture-list') throw new Error('HKJC live fixture schedule source mismatch');
   if (value.source_route?.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') throw new Error('HKJC live fixture schedule adapter mismatch');
-  if (value.source_route?.detail_source_id !== null || value.source_route?.detail_adapter_id !== null) {
-    throw new Error('HKJC live fixture executor must not imply detail-source activation');
+  if (value.source_route?.detail_source_id !== 'hkjc-detail-reviewed-import'
+    || value.source_route?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') {
+    throw new Error('HKJC live fixture Registry route snapshot differs from the activated operator detail identity');
   }
   if (value.review_required !== true) throw new Error('HKJC live fixture execution must require review');
   for (const [key, enabled] of Object.entries(value.side_effect_boundary ?? {})) {
@@ -126,6 +127,8 @@ if (fixtureArg) {
     source_error_count: artifacts.coverage.source_errors.length,
     expected_coverage_claim: scenario.expected.coverage_claim,
     expected_records_discovered: scenario.expected.records_discovered,
+    schedule_only_execution: true,
+    operator_detail_route_invoked: false,
     repository_write: false,
     canonical_write: false,
     public_write: false,
@@ -150,6 +153,8 @@ try {
     records_discovered: artifacts.coverage.records_discovered,
     source_error_count: artifacts.coverage.source_errors.length,
     output_dir: path.relative(root, sharedOutput),
+    schedule_only_execution: true,
+    operator_detail_route_invoked: false,
     publication_effect: 'none',
     canonical_write: false,
     public_write: false,

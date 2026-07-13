@@ -18,6 +18,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/authority-source-inventory-banei-detail-v1.json',
     schemaVersion: 'authority-source-inventory-banei-detail-v1',
   },
+  {
+    key: 'hkjc_detail',
+    path: 'data/static/authority-source-inventory-hkjc-detail-v1.json',
+    schemaVersion: 'authority-source-inventory-hkjc-detail-v1',
+  },
 ]);
 
 function readJson(root, relativePath) {

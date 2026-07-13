@@ -88,14 +88,18 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "hkjc-fixture-list",
-      "detail_source_id": null,
+      "detail_source_id": "hkjc-detail-reviewed-import",
       "schedule_adapter_id": "hkjc-fixture-artifact-bridge-v1",
-      "detail_adapter_id": null,
+      "detail_adapter_id": "hkjc-detail-reviewed-import-v1",
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
       "supported_observation_ranks": [
-        "C"
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
       ],
       "supports_date_window": true,
       "supports_cross_month_window": false,
@@ -103,11 +107,9 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [
-        "fallback_runner",
-        "detail_source_id",
-        "detail_adapter_id"
+        "fallback_runner"
       ],
-      "operator_notes": "Provisional overall HKJC Stage 10 profile with evidence-backed C-level schedule path. PILOT-04 proved source_window_complete valid-empty schedule behavior through the GitHub Actions schedule executor. PILOT-05 accepted the artifact-only detail core and external review-artifact collector, but bounded hosted live evidence and route/session probes did not prove the GitHub Actions HTTP detail path. The previously declared local fallback had no HKJC local executor mapping in the runner compatibility contract, so PILOT-06 removes that unimplemented fallback claim and returns fallback_runner to pending. Detail source, detail adapter, and observation ranks above C remain pending. PILOT-06 now evaluates bounded local execution, reviewed-import operation, and alternate official detail-source routes without restoring direct canonical/public writes."
+      "operator_notes": "Provisional HKJC operating profile with two evidence-backed routes. GitHub Actions remains primary for the C-level schedule date-window path. Explicit operator-reviewed import is the registered detail source/adapter path and can classify reviewed public-safe B, B+, A, or A+ observations; public output remains capped at A. The detail route is not selectable by generic Collection Jobs or the Due-job Planner. Fallback execution, selected-meeting retry ownership, automatic import, approval, promotion, canonical/public writes, and unattended publication remain pending or disabled."
     },
     {
       "system_id": "uae-national-racing-system",

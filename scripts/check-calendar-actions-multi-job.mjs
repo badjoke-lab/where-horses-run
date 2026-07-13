@@ -30,9 +30,7 @@ for (const plan of fixtures.plans) {
     compiled.set(plan.plan_id, actionsPlan);
     const matrix = matrixFromActionsMultiJobPlanV1(actionsPlan);
     if (matrix.include.length !== actionsPlan.jobs.length) fail(`${plan.plan_id} matrix size differs from hosted Job count.`);
-    const matrixIds = matrix.include.map((entry) => entry.job_id);
-    const plannedIds = actionsPlan.jobs.map((entry) => entry.job_id);
-    if (!exact(matrixIds, plannedIds)) fail(`${plan.plan_id} matrix Job order differs.`);
+    if (!exact(matrix.include.map((entry) => entry.job_id), actionsPlan.jobs.map((entry) => entry.job_id))) fail(`${plan.plan_id} matrix Job order differs.`);
   } catch (error) {
     fail(`${plan.plan_id} compilation failed: ${error.message}`);
   }
@@ -40,9 +38,7 @@ for (const plan of fixtures.plans) {
 
 const dual = compiled.get('japan-dual-runner-august-001');
 if (!dual || dual.jobs.length !== 1 || dual.jobs[0].job_id !== 'nar-august-actions-plan-job-001') fail('dual-runner Plan must host only the NAR Actions Job.');
-if (!dual?.excluded.some((entry) => entry.job_id === 'jra-august-local-plan-job-001' && entry.reason === 'non_actions_runner' && entry.runner === 'local')) {
-  fail('dual-runner Plan must exclude JRA local Job without invalidating NAR Actions Job.');
-}
+if (!dual?.excluded.some((entry) => entry.job_id === 'jra-august-local-plan-job-001' && entry.reason === 'non_actions_runner' && entry.runner === 'local')) fail('dual-runner Plan must exclude JRA local Job.');
 
 const eastAsia = compiled.get('nar-hkjc-actions-window-001');
 if (!eastAsia || eastAsia.jobs.length !== 2 || eastAsia.excluded.length !== 0) fail('NAR/HKJC Plan must compile two hosted Jobs.');
@@ -51,8 +47,11 @@ const narEast = eastJobs.get('nar-september-actions-plan-job-001');
 const hkjcEast = eastJobs.get('hkjc-august-actions-plan-job-001');
 if (narEast?.execution.executor_id !== 'nar-incremental-v2-actions') fail('NAR hosted executor differs.');
 if (hkjcEast?.execution.executor_id !== 'hkjc-live-fixture-actions') fail('HKJC hosted executor differs.');
-if (hkjcEast?.execution.source_route?.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC hosted schedule adapter differs.');
-if (hkjcEast?.execution.source_route?.detail_source_id !== null || hkjcEast?.execution.source_route?.detail_adapter_id !== null) fail('HKJC hosted execution must not activate detail acquisition.');
+if (hkjcEast?.execution.source_route?.schedule_source_id !== 'hkjc-fixture-list'
+  || hkjcEast?.execution.source_route?.schedule_adapter_id !== 'hkjc-fixture-artifact-bridge-v1') fail('HKJC hosted schedule route differs.');
+if (hkjcEast?.execution.source_route?.detail_source_id !== 'hkjc-detail-reviewed-import'
+  || hkjcEast?.execution.source_route?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC hosted execution Registry snapshot must carry the current operator detail identity.');
+if (hkjcEast?.execution.runner_used !== 'github_actions' || hkjcEast?.execution.collection_mode !== 'date_window') fail('HKJC hosted execution must remain the schedule Actions route.');
 if (narEast?.execution.requested_scope.start_date !== '2026-09-01' || hkjcEast?.execution.requested_scope.start_date !== '2026-08-01') fail('NAR/HKJC independent windows were flattened.');
 if (narEast?.batch_id === hkjcEast?.batch_id) fail('NAR/HKJC hosted Jobs must have independent batch IDs.');
 
@@ -69,42 +68,28 @@ const baneiModes = (baneiActions?.jobs ?? []).map((entry) => entry.execution.col
 if (!exact(baneiModes, ['date_window', 'selected_meetings'])) fail('Banei Actions Plan must preserve date-window and selected-meeting modes.');
 if (!(baneiActions?.jobs ?? []).every((entry) => entry.execution.executor_id === 'banei-schedule-detail-actions')) fail('Banei hosted executor mapping differs.');
 if (new Set((baneiActions?.jobs ?? []).map((entry) => entry.batch_id)).size !== 2) fail('Banei hosted Jobs must have independent batch IDs.');
-if (!(baneiActions?.jobs ?? []).every((entry) => entry.execution.runner_used === 'github_actions')) fail('Banei hosted Jobs must resolve to GitHub Actions primary runner.');
+if (!(baneiActions?.jobs ?? []).every((entry) => entry.execution.runner_used === 'github_actions')) fail('Banei hosted Jobs must resolve to GitHub Actions.');
 
 const rankIsolation = compiled.get('rank-isolation-plan-001');
-if (!rankIsolation || rankIsolation.jobs.length !== 0) fail('rank-isolation Plan should have no currently executable Actions Jobs.');
-if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'nar-low-rank-target-job-001' && entry.reason === 'unsupported_collection_mode')) fail('NAR single-date Job must be excluded by executor mode support.');
-if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'jra-best-available-job-001' && entry.reason === 'non_actions_runner')) fail('JRA local Job must remain excluded from Actions runner.');
+if (!rankIsolation || rankIsolation.jobs.length !== 0) fail('rank-isolation Plan should have no executable Actions Jobs.');
+if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'nar-low-rank-target-job-001' && entry.reason === 'unsupported_collection_mode')) fail('NAR single-date Job exclusion differs.');
+if (!rankIsolation?.excluded.some((entry) => entry.job_id === 'jra-best-available-job-001' && entry.reason === 'non_actions_runner')) fail('JRA local Job exclusion differs.');
 
 if (eastAsia && narEast && hkjcEast) {
   const narSuccess = makeActionsJobStatusV1(narEast.execution, 'success', null);
   const hkjcSourceError = makeActionsJobStatusV1(hkjcEast.execution, 'source_error', 'bounded live fixture source unavailable');
   const summary = summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [narSuccess, hkjcSourceError]);
-  if (summary.counts.success !== 1 || summary.counts.source_error !== 1) fail('mixed campaign summary must preserve one success and one source_error.');
-  const narResult = summary.results.find((entry) => entry.job_id === narSuccess.job_id);
-  if (narResult?.status !== 'success') fail('HKJC source_error must not rewrite NAR success.');
-
+  if (summary.counts.success !== 1 || summary.counts.source_error !== 1) fail('mixed campaign summary differs.');
+  if (summary.results.find((entry) => entry.job_id === narSuccess.job_id)?.status !== 'success') fail('HKJC source error rewrote NAR success.');
   const missingSummary = summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [narSuccess]);
-  if (missingSummary.counts.success !== 1 || missingSummary.counts.not_run !== 1) fail('missing hosted status must become not_run without rewriting success.');
-
+  if (missingSummary.counts.success !== 1 || missingSummary.counts.not_run !== 1) fail('missing hosted status handling differs.');
   let duplicateRejected = false;
-  try {
-    summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [narSuccess, narSuccess]);
-  } catch {
-    duplicateRejected = true;
-  }
+  try { summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [narSuccess, narSuccess]); } catch { duplicateRejected = true; }
   if (!duplicateRejected) fail('duplicate status record must be rejected.');
-
   let unknownRejected = false;
-  try {
-    summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [{ ...narSuccess, job_id: 'unknown-job' }]);
-  } catch {
-    unknownRejected = true;
-  }
+  try { summarizeActionsCampaignV1(plans.get('nar-hkjc-actions-window-001'), eastAsia, [{ ...narSuccess, job_id: 'unknown-job' }]); } catch { unknownRejected = true; }
   if (!unknownRejected) fail('unknown status Job must be rejected.');
-
-  const drifted = { ...narSuccess, batch_id: 'wrong-batch' };
-  if (validateActionsJobStatusV1(drifted, narEast).length === 0) fail('status identity drift must be rejected.');
+  if (validateActionsJobStatusV1({ ...narSuccess, batch_id: 'wrong-batch' }, narEast).length === 0) fail('status identity drift must be rejected.');
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-actions-multi-job-'));
   const executionPath = path.join(tempDir, 'hkjc-execution.json');
@@ -117,49 +102,28 @@ if (eastAsia && narEast && hkjcEast) {
   fs.rmSync(tempDir, { recursive: true, force: true });
   if (result.status !== 0) fail(`HKJC live fixture check-only executor failed: ${result.stderr || result.stdout}`);
   else {
-    const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean);
-    const output = JSON.parse(lines.at(-1));
-    if (output.coverage_claim !== 'source_window_complete' || output.records_discovered !== 3 || output.source_error_count !== 0 || output.execution_mode !== 'fixture_check_only' || output.repository_write !== false) {
-      fail(`HKJC live fixture check-only result differs: ${JSON.stringify(output)}`);
-    }
+    const output = JSON.parse(result.stdout.trim().split(/\r?\n/).filter(Boolean).at(-1));
+    if (output.coverage_claim !== 'source_window_complete' || output.records_discovered !== 3 || output.source_error_count !== 0 || output.execution_mode !== 'fixture_check_only' || output.repository_write !== false) fail(`HKJC live fixture check-only result differs: ${JSON.stringify(output)}`);
   }
 }
 
 const workflow = readText('.github/workflows/calendar-actions-multi-job.yml');
-for (const phrase of [
-  'fail-fast: false',
-  'if: always()',
-  'permissions:\n  contents: read',
-  'actions/upload-artifact@v4',
-  'actions/download-artifact@v4',
-  'Build campaign summary without rewriting independent outcomes',
-]) {
+for (const phrase of ['fail-fast: false','if: always()','permissions:\n  contents: read','actions/upload-artifact@v4','actions/download-artifact@v4','Build campaign summary without rewriting independent outcomes']) {
   if (!workflow.includes(phrase)) fail(`Actions multi-job workflow missing ${phrase}.`);
 }
-if (/\bschedule\s*:|\bcron\s*:/.test(workflow)) fail('Actions multi-job workflow must not have schedule or cron trigger.');
-if (/contents:\s*write/.test(workflow)) fail('Actions multi-job workflow must not have contents: write.');
-for (const forbidden of ['promote-timetable', 'deploy', 'wrangler pages deploy']) {
-  if (workflow.includes(forbidden)) fail(`Actions multi-job workflow contains forbidden side effect command ${forbidden}.`);
-}
+if (/\bschedule\s*:|\bcron\s*:/.test(workflow) || /contents:\s*write/.test(workflow)) fail('Actions multi-job workflow trigger/permission boundary differs.');
+for (const forbidden of ['promote-timetable', 'deploy', 'wrangler pages deploy']) if (workflow.includes(forbidden)) fail(`Actions multi-job workflow contains forbidden command ${forbidden}.`);
 
 const docs = readText('docs/calendar/actions-multi-job-runner.md');
-for (const phrase of [
-  'fail-fast: false',
-  'One Job failure does not rewrite another Job result',
-  'source_error',
-  'full Runner Gate is not complete',
-  'Scheduled execution remains disabled',
-]) {
+for (const phrase of ['fail-fast: false','One Job failure does not rewrite another Job result','source_error','full Runner Gate is not complete','Scheduled execution remains disabled']) {
   if (!docs.includes(phrase)) fail(`Actions multi-job contract missing ${phrase}.`);
 }
 const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const heading of ['Stage ACP-10 — Actions multi-job runner', 'Stage ACP-11 — local multi-job runner']) {
-  if (!implementationPlan.includes(heading)) fail(`control-plane implementation plan missing ${heading}.`);
-}
+for (const heading of ['Stage ACP-10 — Actions multi-job runner', 'Stage ACP-11 — local multi-job runner']) if (!implementationPlan.includes(heading)) fail(`implementation plan missing ${heading}.`);
 const acp10Section = implementationPlan.split('## Stage ACP-10 — Actions multi-job runner')[1]?.split('## Stage ACP-11 — local multi-job runner')[0] ?? '';
 const acp11Section = implementationPlan.split('## Stage ACP-11 — local multi-job runner')[1]?.split('## Stage ACP-12 — review cohort planner')[0] ?? '';
-if (!acp10Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-10 complete.');
-if (!acp11Section.includes('Status: complete.')) fail('control-plane implementation plan must mark ACP-11 complete.');
+if (!acp10Section.includes('Status: complete.')) fail('ACP-10 must remain complete.');
+if (!acp11Section.includes('Status: complete.')) fail('ACP-11 must remain complete.');
 
 if (errors.length) {
   console.error(`CALENDAR_ACTIONS_MULTI_JOB: failed (${errors.length})`);
@@ -170,9 +134,6 @@ if (errors.length) {
 console.log('CALENDAR_ACTIONS_MULTI_JOB: pass');
 console.log(`PLANS_COMPILED: ${compiled.size}`);
 console.log(`NAR_HKJC_HOSTED_JOBS: ${eastAsia.jobs.length}`);
-console.log(`BANEI_HOSTED_JOBS: ${baneiActions.jobs.length}`);
-console.log('INDEPENDENT_WINDOWS: pass');
+console.log('HKJC_SCHEDULE_EXECUTOR: github_actions / C-only');
+console.log('HKJC_OPERATOR_DETAIL_IDENTITY: registered but not invoked');
 console.log('INDEPENDENT_OUTCOMES: pass');
-console.log('MISSING_STATUS_TO_NOT_RUN: pass');
-console.log('HKJC_LIVE_FIXTURE_CHECK_ONLY: pass');
-console.log('ACTIONS_WORKFLOW_BOUNDARY: pass');

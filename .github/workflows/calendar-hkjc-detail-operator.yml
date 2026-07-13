@@ -1,0 +1,178 @@
+name: Calendar HKJC detail operator
+
+on:
+  workflow_dispatch:
+    inputs:
+      reviewed_input_base64:
+        description: Base64-encoded calendar-hkjc-detail-reviewed-import-v1 JSON reviewed as public-safe
+        required: true
+        type: string
+      batch_id:
+        description: Stable kebab-case batch ID
+        required: true
+        type: string
+      campaign_id:
+        description: Stable kebab-case campaign ID
+        required: true
+        default: hkjc-manual-detail-operations
+        type: string
+      job_id:
+        description: Stable kebab-case job ID
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-hkjc-detail-operator-${{ inputs.batch_id }}
+  cancel-in-progress: false
+
+jobs:
+  build-review-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REVIEWED_INPUT_BASE64: ${{ inputs.reviewed_input_base64 }}
+      BATCH_ID: ${{ inputs.batch_id }}
+      CAMPAIGN_ID: ${{ inputs.campaign_id }}
+      JOB_ID: ${{ inputs.job_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate operator identifiers
+        run: |
+          node --input-type=module - <<'NODE'
+          const pattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+          for (const name of ['BATCH_ID', 'CAMPAIGN_ID', 'JOB_ID']) {
+            const value = process.env[name];
+            if (!pattern.test(String(value ?? ''))) throw new Error(`${name} must be a stable kebab-case ID`);
+          }
+          NODE
+      - name: Validate operator implementation
+        run: |
+          node --check scripts/timetable/hkjc-detail-reviewed-import-core.mjs
+          node --check scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs
+          node --check scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs
+          node scripts/check-calendar-hkjc-detail-reviewed-import.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-route-runner-policy.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/static/calendar-acquisition-registry.json \
+            > /tmp/hkjc-detail-operator-protected-before.sha256
+      - name: Decode reviewed public-safe input outside repository
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const encoded = String(process.env.REVIEWED_INPUT_BASE64 ?? '').trim();
+          if (!encoded) throw new Error('reviewed_input_base64 is empty');
+          let bytes;
+          try { bytes = Buffer.from(encoded, 'base64'); }
+          catch { throw new Error('reviewed_input_base64 is not valid base64'); }
+          if (bytes.length === 0 || bytes.length > 200_000) throw new Error('decoded reviewed input must be 1 through 200000 bytes');
+          const text = bytes.toString('utf8');
+          JSON.parse(text);
+          fs.writeFileSync('/tmp/hkjc-detail-reviewed-input.json', text.endsWith('\n') ? text : `${text}\n`);
+          NODE
+      - name: Build immutable reviewed-import package
+        run: |
+          node scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs \
+            --input=/tmp/hkjc-detail-reviewed-input.json \
+            --output=/tmp/hkjc-detail-reviewed-import-package.json \
+            --batch-id="$BATCH_ID" \
+            --campaign-id="$CAMPAIGN_ID" \
+            --job-id="$JOB_ID" \
+            > /tmp/hkjc-detail-operator-build-summary.json
+      - name: Extract review artifacts
+        run: |
+          rm -rf /tmp/hkjc-detail-review-artifacts
+          node scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs \
+            --package=/tmp/hkjc-detail-reviewed-import-package.json \
+            --output-dir=/tmp/hkjc-detail-review-artifacts \
+            > /tmp/hkjc-detail-operator-extract-summary.json
+      - name: Validate operational artifact closure
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/hkjc-detail-review-artifacts';
+          const expected = [
+            'candidates.json',
+            'collection-report.json',
+            'collection-result-manifest.json',
+            'coverage-observation.json',
+            'input-evidence.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`artifact set differs: ${JSON.stringify(actual)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('candidates.json');
+          const coverage = read('coverage-observation.json');
+          const manifest = read('collection-result-manifest.json');
+          const report = read('collection-report.json');
+          if (candidate.country_id !== 'hong-kong' || candidate.authority_id !== 'hkjc') throw new Error('candidate authority identity differs');
+          if (!Array.isArray(candidate.records) || candidate.records.length < 1 || candidate.records.length > 10) throw new Error('candidate record count must be 1 through 10');
+          if (candidate.records.some((record) => record.review_status !== 'needs_review')) throw new Error('all candidates must remain needs_review');
+          if (candidate.review.status !== 'needs_review' || candidate.review.promotion_target !== null) throw new Error('candidate review boundary differs');
+          if (manifest.system_id !== 'hong-kong-hkjc-system' || manifest.runner_used !== 'reviewed_import') throw new Error('manifest route identity differs');
+          const rankTotal = Object.values(manifest.rank_counts).reduce((sum, count) => sum + count, 0);
+          if (rankTotal !== manifest.records_discovered || manifest.records_discovered !== candidate.records.length) throw new Error('rank and record totals do not close');
+          if (JSON.stringify(coverage.unresolved_meeting_ids) !== JSON.stringify(manifest.unresolved_meeting_ids)) throw new Error('unresolved meeting state differs');
+          if (JSON.stringify(coverage.source_errors) !== JSON.stringify(manifest.source_errors)) throw new Error('source error state differs');
+          if (report.network_fetch !== false || report.raw_source_storage !== 'disabled') throw new Error('network/raw-source boundary differs');
+          if (report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') throw new Error('write/publication boundary differs');
+          const serialized = JSON.stringify({ candidate, coverage, manifest, report }).toLowerCase();
+          for (const forbidden of ['horse_name', 'jockey_name', 'trainer_name', 'odds_value', 'result_payload', 'payout_amount', 'raw_html', 'source_body', 'stream_url']) {
+            if (serialized.includes(`\"${forbidden}\"`)) throw new Error(`forbidden field retained: ${forbidden}`);
+          }
+          console.log('HKJC_DETAIL_OPERATOR_ARTIFACT_CLOSURE: pass');
+          console.log(JSON.stringify({
+            batch_id: manifest.batch_id,
+            records_discovered: manifest.records_discovered,
+            rank_counts: manifest.rank_counts,
+            coverage_claim: manifest.coverage_claim,
+            unresolved_meeting_count: manifest.unresolved_meeting_ids.length,
+            source_error_count: manifest.source_errors.length,
+          }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/hkjc-detail-operator-protected-before.sha256
+      - name: Upload HKJC review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: hkjc-detail-review-${{ inputs.batch_id }}-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/hkjc-detail-reviewed-import-package.json
+            /tmp/hkjc-detail-operator-build-summary.json
+            /tmp/hkjc-detail-operator-extract-summary.json
+            /tmp/hkjc-detail-review-artifacts/candidates.json
+            /tmp/hkjc-detail-review-artifacts/coverage-observation.json
+            /tmp/hkjc-detail-review-artifacts/collection-result-manifest.json
+            /tmp/hkjc-detail-review-artifacts/collection-report.json
+            /tmp/hkjc-detail-review-artifacts/input-evidence.json
+      - name: Cleanup and prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/hkjc-detail-review-artifacts
+          rm -f \
+            /tmp/hkjc-detail-reviewed-input.json \
+            /tmp/hkjc-detail-reviewed-import-package.json \
+            /tmp/hkjc-detail-operator-build-summary.json \
+            /tmp/hkjc-detail-operator-extract-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
