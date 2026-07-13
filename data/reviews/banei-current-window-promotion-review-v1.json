@@ -1,0 +1,98 @@
+{
+  "schema_version": "calendar-banei-current-window-promotion-review-v1",
+  "work_id": "WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-PROMOTION-REVIEW",
+  "implementation_unit": "BANEI-CURRENT-WINDOW-PROMOTION-01",
+  "source_result_ref": "data/audits/calendar-banei-current-window-acquisition-result-v1.json",
+  "source_artifact": {
+    "workflow_run_id": 29275669482,
+    "artifact_id": 8289240383,
+    "artifact_name": "banei-current-window-acquisition-29275669482",
+    "artifact_digest": "sha256:b1021380e6223c8a4dc7c2719a0d4c451a72de14e58784f4264bc7c91de38d3e",
+    "campaign_result_sha256": "f6161d6269fad0a6d25efb881df317ac5151ea49ef2b3522fef78bb1dc338b67",
+    "july": {
+      "batch_id": "banei-current-window-july-2026-batch-001",
+      "candidate_sha256": "93578f12bf1e8f8db2dfb31026905bfc57f7ae3db492790360c9618a556a79d4",
+      "collection_report_sha256": "d69131b1a7019415c53b67b15d985c4d2a4f3391201164996dc440493a4b544d",
+      "coverage_observation_sha256": "dac87dd1f71a53f7deb5bf46da347ce268055e69cbd742b8deea930e108bc918",
+      "result_manifest_sha256": "083cb0d7e58345de47eb537beac1dad666eeb7562f32f122e3bc055e80c2f548",
+      "review_queue_sha256": "91128efffc2ad41b106796ae381787961011654ca628d1aff0725df2ea109592"
+    },
+    "august": {
+      "batch_id": "banei-current-window-august-2026-batch-001",
+      "candidate_sha256": "9a839f838c46861d008095509bc5f355a0231485dcc8b7c2e713f318c2f23959",
+      "collection_report_sha256": "39890d5200115ec8a282e45b2dbf1c9f0ead15d77ad98ffb498803621c1f9c3f",
+      "coverage_observation_sha256": "d980d206b80db6b853b7bd4210b15124aa150fbf4482fc873da1117e5ebc5868",
+      "result_manifest_sha256": "4cd9d31314958e597ed4f67136028b03f79feb0f8a98710471ac721004a26131",
+      "review_queue_sha256": "3275e815857edf1ab9f62fdfe9f77a5a5685c05065f31f9d9c21ac2d1e250bd9"
+    }
+  },
+  "review": {
+    "status": "approved",
+    "reviewer": "badjoke-lab",
+    "reviewed_at": "2026-07-14T00:15:00Z",
+    "promotion_target": "canonical-timetable-v0",
+    "approval_scope": "exact_split_source_candidate_sets"
+  },
+  "approved_sets": [
+    {
+      "set_id": "banei-current-window-c-schedule-set",
+      "source_id": "banei-official-schedule",
+      "capability_rank": "C",
+      "meeting_count": 12,
+      "race_row_count": 0,
+      "meeting_ids": [
+        "banei-obihiro-racecourse-2026-07-18",
+        "banei-obihiro-racecourse-2026-07-19",
+        "banei-obihiro-racecourse-2026-07-20",
+        "banei-obihiro-racecourse-2026-07-25",
+        "banei-obihiro-racecourse-2026-07-26",
+        "banei-obihiro-racecourse-2026-07-27",
+        "banei-obihiro-racecourse-2026-08-01",
+        "banei-obihiro-racecourse-2026-08-02",
+        "banei-obihiro-racecourse-2026-08-03",
+        "banei-obihiro-racecourse-2026-08-08",
+        "banei-obihiro-racecourse-2026-08-09",
+        "banei-obihiro-racecourse-2026-08-10"
+      ]
+    },
+    {
+      "set_id": "banei-current-window-a-plus-detail-set",
+      "source_id": "nar-banei-race-list-deba-table",
+      "capability_rank": "A+",
+      "meeting_count": 1,
+      "race_row_count": 12,
+      "meeting_ids": [
+        "banei-obihiro-racecourse-2026-07-13"
+      ]
+    }
+  ],
+  "review_checks": {
+    "total_meeting_count": 13,
+    "c_meeting_count": 12,
+    "a_plus_meeting_count": 1,
+    "a_plus_race_row_count": 12,
+    "c_records_have_no_times": true,
+    "c_records_have_no_timetable_rows": true,
+    "a_plus_continuous_race_numbers": true,
+    "a_plus_all_post_times_complete": true,
+    "a_plus_all_race_names_complete": true,
+    "a_plus_all_distances_complete": true,
+    "a_plus_all_surfaces_complete": true,
+    "a_plus_all_course_labels_complete": true,
+    "official_source_hosts_only": true,
+    "participant_fields_approved": false,
+    "betting_fields_approved": false,
+    "result_fields_approved": false,
+    "payout_fields_approved": false,
+    "raw_source_approved": false,
+    "stream_fields_approved": false
+  },
+  "decision": "Approve exactly twelve public-safe Rank C schedule records from the official Banei monthly schedule and one complete public-safe Rank A+ detail record from the official NAR Banei RaceList/DebaTable route. Keep the two source sets separate for Pipeline v1 promotion.",
+  "side_effect_boundary": {
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
