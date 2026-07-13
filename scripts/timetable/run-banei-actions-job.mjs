@@ -32,14 +32,8 @@ function runNode(script, scriptArgs) {
   if (result.status !== 0) throw new Error(`${script} exited with status ${result.status}`);
 }
 
-function runGit(gitArgs, { allowFailure = false } = {}) {
-  const result = spawnSync('git', gitArgs, { cwd: root, stdio: 'ignore' });
-  if (result.error && !allowFailure) throw result.error;
-  if (result.status !== 0 && !allowFailure) throw new Error(`git ${gitArgs.join(' ')} exited with status ${result.status}`);
-}
-
-function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.resolve(root, relativePath), 'utf8'));
+function readJson(absoluteOrRelativePath) {
+  return JSON.parse(fs.readFileSync(path.resolve(root, absoluteOrRelativePath), 'utf8'));
 }
 
 function writeJson(relativePath, value) {
@@ -48,12 +42,34 @@ function writeJson(relativePath, value) {
   fs.writeFileSync(absolute, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-const defaultScheduleCandidate = 'data/candidates/banei-monthly-2026-07-full-month-candidates.json';
-const defaultScheduleReport = 'data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json';
+function nextMonth(month) {
+  const date = new Date(`${month}-01T00:00:00Z`);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  return date.toISOString().slice(0, 7);
+}
 
-function restoreScheduleCollectorOutputs() {
-  runGit(['restore', '--worktree', '--staged', defaultScheduleCandidate, defaultScheduleReport], { allowFailure: true });
-  runGit(['clean', '-f', '--', defaultScheduleCandidate, defaultScheduleReport], { allowFailure: true });
+function executionTargetMonth(value) {
+  if (value.collection_mode === 'date_window') {
+    const { start_date: startDate, end_date_exclusive: endDateExclusive, timezone } = value.requested_scope ?? {};
+    if (timezone !== 'Asia/Tokyo') throw new Error('Banei date-window timezone must be Asia/Tokyo');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate ?? '') || !/^\d{4}-\d{2}-\d{2}$/.test(endDateExclusive ?? '')) {
+      throw new Error('Banei date-window scope requires valid start and exclusive end dates');
+    }
+    const month = startDate.slice(0, 7);
+    const monthStart = `${month}-01`;
+    const monthEndExclusive = `${nextMonth(month)}-01`;
+    if (startDate < monthStart || endDateExclusive > monthEndExclusive || startDate >= endDateExclusive) {
+      throw new Error('Banei date-window Job must remain within one calendar month');
+    }
+    return month;
+  }
+  const meetingIds = value.requested_scope?.meeting_ids ?? [];
+  if (!Array.isArray(meetingIds) || meetingIds.length === 0) throw new Error('Banei selected-meeting scope is empty');
+  const months = [...new Set(meetingIds.map((meetingId) => meetingId.match(/-(\d{4}-\d{2})-\d{2}$/)?.[1]))];
+  if (months.some((month) => !month) || months.length !== 1) {
+    throw new Error('Banei selected-meeting Job must remain within one calendar month');
+  }
+  return months[0];
 }
 
 let scheduleInput;
@@ -75,12 +91,17 @@ try {
     detailCoverage = scenario.detail_coverage;
     detailReport = scenario.detail_report;
   } else {
+    const targetMonth = executionTargetMonth(execution);
     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-banei-actions-'));
-    runNode('scripts/timetable/collect-banei-full-month-calendar.mjs', []);
-    scheduleInput = readJson(defaultScheduleCandidate);
     const scheduleCandidatePath = path.join(tempRoot, 'schedule-candidate.json');
-    fs.writeFileSync(scheduleCandidatePath, `${JSON.stringify(scheduleInput, null, 2)}\n`);
-    restoreScheduleCollectorOutputs();
+    const scheduleReportPath = path.join(tempRoot, 'schedule-report.json');
+    runNode('scripts/timetable/collect-banei-full-month-calendar.mjs', [
+      `--target-month=${targetMonth}`,
+      `--candidate-output=${scheduleCandidatePath}`,
+      `--report-output=${scheduleReportPath}`,
+    ]);
+    scheduleInput = readJson(scheduleCandidatePath);
+    if (scheduleInput.target_month !== targetMonth) throw new Error('Banei collected schedule month differs from execution month');
 
     const detailRoot = path.join(tempRoot, 'detail');
     const collectorArgs = [
@@ -96,9 +117,9 @@ try {
       collectorArgs.push(`--meeting-ids=${execution.requested_scope.meeting_ids.join(',')}`);
     }
     runNode('scripts/timetable/collect-banei-detail-window.mjs', collectorArgs);
-    detailCandidate = JSON.parse(fs.readFileSync(path.join(detailRoot, 'candidate.json'), 'utf8'));
-    detailCoverage = JSON.parse(fs.readFileSync(path.join(detailRoot, 'coverage-observation.json'), 'utf8'));
-    detailReport = JSON.parse(fs.readFileSync(path.join(detailRoot, 'collection-report.json'), 'utf8'));
+    detailCandidate = readJson(path.join(detailRoot, 'candidate.json'));
+    detailCoverage = readJson(path.join(detailRoot, 'coverage-observation.json'));
+    detailReport = readJson(path.join(detailRoot, 'collection-report.json'));
   }
 
   const artifacts = buildBaneiActionsArtifactsV1({
@@ -120,6 +141,7 @@ try {
 
   console.log(JSON.stringify({
     batch_id: execution.batch_id,
+    target_month: scheduleInput.target_month ?? null,
     collection_mode: execution.collection_mode,
     records_discovered: artifacts.result_manifest.records_discovered,
     records_updated: artifacts.result_manifest.records_updated,
@@ -132,6 +154,5 @@ try {
     check_only: checkOnly,
   }));
 } finally {
-  if (!fixturePath) restoreScheduleCollectorOutputs();
   if (tempRoot) fs.rmSync(tempRoot, { recursive: true, force: true });
 }
