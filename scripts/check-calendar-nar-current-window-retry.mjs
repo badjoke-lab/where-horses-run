@@ -10,6 +10,7 @@ const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, re
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const policy = readJson('data/static/calendar-nar-current-window-retry-policy-v1.json');
 const decision = readJson('data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json');
+const resultAudit = readJson('data/audits/calendar-nar-current-window-retry-result-v1.json');
 const canonical = readJson('data/generated/timetable/canonical/meetings.json');
 
 if (policy.schema_version !== 'calendar-nar-current-window-retry-policy-v1') fail('NAR retry policy schema differs');
@@ -20,6 +21,26 @@ if (policy.job.runner !== 'github_actions' || policy.job.collection_mode !== 'se
 if (Object.values(policy.side_effect_boundary ?? {}).some((value) => value !== false)) fail('NAR retry policy side-effect boundary differs');
 const narDecision = decision.systems.find((record) => record.system_id === 'japan-nar-system');
 if (!narDecision || narDecision.canonical_meeting_count !== 66 || narDecision.rank_counts.C !== 66 || narDecision.decision !== 'run_selected_meeting_detail_retry') fail('NAR retry source decision differs');
+
+if (resultAudit.schema_version !== 'calendar-nar-current-window-retry-result-v1') fail('NAR retry result audit schema differs');
+if (resultAudit.work_id !== policy.work_id || resultAudit.implementation_unit !== policy.implementation_unit) fail('NAR retry result audit identity differs');
+if (resultAudit.decision !== 'accept_review_only_retry_result') fail('NAR retry result decision differs');
+if (resultAudit.batch_id !== policy.job.batch_id) fail('NAR retry result batch differs');
+if (resultAudit.evidence?.workflow_run_id !== 29233820152 || resultAudit.evidence?.artifact_id !== 8272633802) fail('NAR retry evidence identity differs');
+if (resultAudit.evidence?.artifact_digest !== 'sha256:304e980b2d011383fae62fc69d3b3708784aa4b49ef02e94c267862300e94421') fail('NAR retry evidence digest differs');
+if (resultAudit.scope?.selected_meeting_count !== 66 || resultAudit.scope?.current_rank !== 'C' || resultAudit.scope?.target_rank !== 'A+') fail('NAR retry result scope differs');
+if (resultAudit.result?.coverage_claim !== 'source_window_complete') fail('NAR retry result coverage differs');
+if (resultAudit.result?.a_plus_candidate_count !== 15 || resultAudit.result?.schedule_c_candidate_count !== 51) fail('NAR retry result candidate counts differ');
+if (resultAudit.result?.detail_blocker_count !== 51 || resultAudit.result?.unresolved_meeting_count !== 51 || resultAudit.result?.retry_target_count !== 51) fail('NAR retry result unresolved counts differ');
+if (resultAudit.result?.source_error_count !== 0) fail('NAR retry result source error count differs');
+if (resultAudit.result?.review_state !== 'needs_review' || resultAudit.result?.promotion_eligible !== false || resultAudit.result?.publication_effect !== 'none') fail('NAR retry result review/publication boundary differs');
+if (resultAudit.resolved_meeting_ids.length !== 15 || resultAudit.unresolved_meeting_ids.length !== 51) fail('NAR retry result ID counts differ');
+if (new Set(resultAudit.resolved_meeting_ids).size !== 15 || new Set(resultAudit.unresolved_meeting_ids).size !== 51) fail('NAR retry result IDs contain duplicates');
+if (resultAudit.resolved_meeting_ids.some((id) => resultAudit.unresolved_meeting_ids.includes(id))) fail('NAR retry resolved and unresolved sets overlap');
+if (new Set([...resultAudit.resolved_meeting_ids, ...resultAudit.unresolved_meeting_ids]).size !== 66) fail('NAR retry result ID closure differs');
+if (resultAudit.next_work?.[0]?.work_id !== 'WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-PROMOTION-REVIEW' || resultAudit.next_work?.[0]?.priority !== 1) fail('NAR promotion review next work differs');
+if (resultAudit.next_work?.[1]?.work_id !== 'WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-RETRY-REMAINING' || resultAudit.next_work?.[1]?.priority !== 2) fail('NAR remaining retry next work differs');
+if (Object.values(resultAudit.side_effect_boundary ?? {}).some((value) => value !== false)) fail('NAR retry result side-effect boundary differs');
 
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-nar-current-window-retry-check-'));
 try {
@@ -56,12 +77,15 @@ try {
       if (!meeting || meeting.authority_id !== 'nar-local-government-racing' || meeting.capability_rank !== 'C') fail(`NAR retry selected meeting differs: ${id}`);
       if (meeting?.date < policy.window.start_date || meeting?.date >= policy.window.end_date_exclusive) fail(`NAR retry selected meeting outside window: ${id}`);
     }
+    const recordedIds = [...resultAudit.resolved_meeting_ids, ...resultAudit.unresolved_meeting_ids].sort();
+    if (!exact(recordedIds, [...ids].sort())) fail('NAR retry historical result scope differs from current deterministic scope');
   }
 } finally {
   fs.rmSync(tempDir, { recursive: true, force: true });
 }
 
 for (const file of [
+  'data/audits/calendar-nar-current-window-retry-result-v1.json',
   'scripts/timetable/build-nar-current-window-retry-spec.mjs',
   '.github/workflows/calendar-nar-current-window-retry.yml',
   'docs/calendar/nar-current-window-retry.md',
@@ -79,7 +103,8 @@ if (errors.length) {
 }
 console.log('CALENDAR_NAR_CURRENT_WINDOW_RETRY: pass');
 console.log('SELECTED_MEETINGS: 66');
-console.log('CURRENT_RANK: C');
-console.log('TARGET_RANK: A+');
-console.log('RUNNER: github_actions');
+console.log('A_PLUS_CANDIDATES: 15');
+console.log('REMAINING_C_RETRY_TARGETS: 51');
+console.log('SOURCE_ERRORS: 0');
+console.log('NEXT_WORK: WHR-CAL-JAPAN-NAR-CURRENT-WINDOW-PROMOTION-REVIEW');
 console.log('CANONICAL_PUBLIC_WRITE: false');
