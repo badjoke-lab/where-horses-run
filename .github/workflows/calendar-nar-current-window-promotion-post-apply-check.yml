@@ -10,7 +10,15 @@ on:
       - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
       - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/static/calendar-nar-current-window-retry-policy-v1.json'
       - 'scripts/check-m3-hong-kong-alpha-ui.mjs'
+      - 'scripts/check-m3-uae-generated-fallback.mjs'
+      - 'scripts/check-live-fetch-probe-status-ui.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'scripts/check-calendar-nar-current-window-retry.mjs'
+      - 'scripts/timetable/build-nar-current-window-retry-spec.mjs'
+      - '.github/workflows/calendar-nar-current-window-retry.yml'
       - '.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml'
 
 permissions:
