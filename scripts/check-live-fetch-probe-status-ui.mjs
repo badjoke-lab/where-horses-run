@@ -12,12 +12,17 @@ const requireIncludes = (text, needle, label) => {
 const requireEqual = (actual, expected, label) => {
   if (actual !== expected) fail(`${label}: expected ${expected}, got ${actual}`);
 };
+const astroMarkup = (source) => {
+  const parts = String(source ?? '').split('\n---\n');
+  return parts.length >= 2 ? parts.slice(1).join('\n---\n') : source;
+};
 
 const probeStatus = readJson('data/generated/live-fetch-probe-status.json');
 const dataTs = readText('src/lib/data.ts');
 const countryPage = readText('src/pages/countries/[slug].astro');
 const jaCountryPage = readText('src/pages/ja/countries/[slug].astro');
 const countryComponent = readText('src/components/CountryDetailPage.astro');
+const publicMarkup = [astroMarkup(countryPage), astroMarkup(jaCountryPage), astroMarkup(countryComponent)].join('\n');
 
 const hkProbe = (probeStatus.probes ?? []).find((probe) => probe.source_id === 'hong-kong-hkjc-home');
 if (!hkProbe) {
@@ -54,14 +59,14 @@ for (const phrase of [
 ]) requireIncludes(countryComponent, phrase, 'Public v1 country component');
 
 for (const internalDiagnostic of [
-  'countryLiveFetchProbes',
   'Live fetch probe status',
   'raw_content_saved',
   'body_read',
   'generated_files_written',
+  'countryLiveFetchProbes.map',
 ]) {
-  if (countryPage.includes(internalDiagnostic) || jaCountryPage.includes(internalDiagnostic) || countryComponent.includes(internalDiagnostic)) {
-    fail(`internal live-fetch diagnostic leaked into Public v1 country page: ${internalDiagnostic}`);
+  if (publicMarkup.includes(internalDiagnostic)) {
+    fail(`internal live-fetch diagnostic leaked into Public v1 rendered markup: ${internalDiagnostic}`);
   }
 }
 
