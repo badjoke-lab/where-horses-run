@@ -1,0 +1,80 @@
+{
+  "schema_version": "calendar-japan-current-window-policy-v1",
+  "work_id": "WHR-CAL-JAPAN-CURRENT-WINDOW-OPERATIONS",
+  "implementation_unit": "JAPAN-CURRENT-WINDOW-01",
+  "window": {
+    "start_date": "2026-07-13",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Asia/Tokyo"
+  },
+  "target_rank": "A+",
+  "systems": [
+    {
+      "system_id": "japan-jra-system",
+      "authority_id": "jra",
+      "primary_runner": "local",
+      "fallback_runner": "reviewed_import",
+      "executor_id": "jra-refresh-local",
+      "entry_point": "scripts/timetable/refresh-jra.mjs",
+      "supported_collection_modes": [
+        "date_window"
+      ],
+      "supports_selected_meetings": false,
+      "supports_rank_upgrade_retry": false,
+      "expected_observation_ranks": [
+        "A+"
+      ],
+      "operating_route": "bounded_local_refresh_and_reviewed_import",
+      "low_rank_action": "manual_refresh_required"
+    },
+    {
+      "system_id": "japan-nar-system",
+      "authority_id": "nar-local-government-racing",
+      "primary_runner": "github_actions",
+      "fallback_runner": "local",
+      "executor_id": "nar-incremental-v2-actions",
+      "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
+      "supported_collection_modes": [
+        "date_window",
+        "selected_meetings"
+      ],
+      "supports_selected_meetings": true,
+      "supports_rank_upgrade_retry": true,
+      "expected_observation_ranks": [
+        "C",
+        "A+"
+      ],
+      "operating_route": "actions_date_window_plus_selected_retry",
+      "low_rank_action": "rank_upgrade_retry"
+    },
+    {
+      "system_id": "japan-banei-system",
+      "authority_id": "banei-tokachi",
+      "primary_runner": "github_actions",
+      "fallback_runner": "reviewed_import",
+      "executor_id": "banei-schedule-detail-actions",
+      "entry_point": "scripts/timetable/run-banei-actions-job.mjs",
+      "supported_collection_modes": [
+        "date_window",
+        "selected_meetings"
+      ],
+      "supports_selected_meetings": true,
+      "supports_rank_upgrade_retry": true,
+      "expected_observation_ranks": [
+        "B",
+        "A+"
+      ],
+      "operating_route": "actions_date_window_plus_selected_retry",
+      "low_rank_action": "rank_upgrade_retry"
+    }
+  ],
+  "side_effect_boundary": {
+    "network_fetch": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
