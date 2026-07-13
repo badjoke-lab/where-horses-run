@@ -9,6 +9,7 @@ const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath)
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const review = readJson('data/reviews/banei-current-window-promotion-review-v1.json');
+const activation = readJson('data/reviews/banei-current-window-schedule-readiness-activation-v1.json');
 const result = readJson('data/audits/calendar-banei-current-window-acquisition-result-v1.json');
 const canonical = readJson('data/generated/timetable/canonical/meetings.json');
 
@@ -44,12 +45,32 @@ for (const key of [
   'payout_fields_approved', 'raw_source_approved', 'stream_fields_approved',
 ]) if (review.review_checks?.[key] !== false) fail(`Banei prohibited review boundary differs: ${key}`);
 if (Object.values(review.side_effect_boundary ?? {}).some((value) => value !== false)) fail('Banei promotion review side-effect boundary differs');
+
+if (activation.schema_version !== 'calendar-banei-current-window-schedule-readiness-activation-v1') fail('Banei readiness activation schema differs');
+if (activation.work_id !== review.work_id || activation.implementation_unit !== review.implementation_unit) fail('Banei readiness activation identity differs');
+if (activation.source_result_ref !== review.source_result_ref) fail('Banei readiness activation result reference differs');
+if (activation.authority_source_key !== 'japan/banei-tokachi/banei-official-schedule'
+  || activation.system_id !== 'japan-banei-system'
+  || activation.source_id !== 'banei-official-schedule') fail('Banei readiness activation source identity differs');
+if (activation.reviewed_transition?.from_automation_mode !== 'link_only'
+  || activation.reviewed_transition?.to_automation_mode !== 'semi_automatic'
+  || !exact(activation.reviewed_transition?.canonical_rank_scope, ['C'])) fail('Banei readiness activation transition differs');
+if (activation.reviewed_transition?.confirmed_fields_required?.meeting_date !== true
+  || activation.reviewed_transition?.confirmed_fields_required?.racecourse !== true) fail('Banei readiness activation confirmed fields differ');
+if (activation.evidence?.workflow_run_id !== 29275669482
+  || activation.evidence?.artifact_id !== 8289240383
+  || activation.evidence?.reviewed_schedule_meeting_count !== 13
+  || activation.evidence?.reviewed_c_schedule_meeting_count !== 12
+  || activation.evidence?.raw_source_storage !== false) fail('Banei readiness activation evidence differs');
+if (Object.values(activation.side_effect_boundary ?? {}).some((value) => value !== false)) fail('Banei readiness activation side-effect boundary differs');
+
 if (result.result?.records_discovered !== 13 || result.result?.a_plus_candidate_count !== 1 || result.result?.lower_rank_candidate_count !== 12) fail('Banei acquisition result dependency differs');
 if (!exact(result.result?.rank_counts, { C: 12, B: 0, 'B+': 0, A: 0, 'A+': 1 })) fail('Banei acquisition result ranks differ');
 const currentWindowBanei = canonical.meetings.filter((meeting) => meeting.authority_id === 'banei-tokachi' && meeting.date >= '2026-07-13' && meeting.date < '2026-08-12');
 if (currentWindowBanei.length !== 0) fail(`Banei promotion baseline must remain zero before proposal application, got ${currentWindowBanei.length}`);
 
 for (const file of [
+  'data/reviews/banei-current-window-schedule-readiness-activation-v1.json',
   'scripts/timetable/prepare-banei-current-window-promotion-proposal.mjs',
   'docs/calendar/banei-current-window-promotion-review.md',
   '.github/workflows/calendar-banei-current-window-promotion-review.yml',
@@ -61,6 +82,8 @@ for (const phrase of [
   "source_id: 'nar-banei-race-list-deba-table'",
   'promoteApprovedCandidateV1',
   "sequential_promotion_order: ['C_schedule_set', 'A_plus_detail_set']",
+  'calendar-banei-current-window-readiness-activation-proposal-v1',
+  'readiness_registry_write: false',
   'human_merge_required: true',
   'existingWindowBanei.length === 0',
 ]) if (!builder.includes(phrase)) fail(`Banei promotion builder missing ${phrase}`);
@@ -70,6 +93,7 @@ for (const phrase of [
   'run-id: 29275669482',
   'prepare-banei-current-window-promotion-proposal.mjs',
   'actions/upload-artifact@v4',
+  'reviewed-readiness-activation.json',
   'Prove protected state unchanged',
 ]) if (!workflow.includes(phrase)) fail(`Banei promotion workflow missing ${phrase}`);
 if (/\bschedule\s*:|\bcron\s*:|contents:\s*write/.test(workflow)) fail('Banei promotion workflow enables scheduled or content-write operation');
@@ -86,5 +110,6 @@ console.log('CALENDAR_BANEI_CURRENT_WINDOW_PROMOTION_REVIEW: pass');
 console.log('APPROVED_C_MEETINGS: 12');
 console.log('APPROVED_A_PLUS_MEETINGS: 1');
 console.log('APPROVED_A_PLUS_RACE_ROWS: 12');
+console.log('READINESS_ACTIVATION: link_only -> semi_automatic / Rank C only');
 console.log('SOURCE_SETS: banei-official-schedule,nar-banei-race-list-deba-table');
 console.log('CANONICAL_PUBLIC_WRITE: false');
