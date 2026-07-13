@@ -9,7 +9,7 @@ Formal project specifications live here. Read `docs/governance/document-authorit
 - [global-timetable-architecture-2026-06-28-addendum.md](global-timetable-architecture-2026-06-28-addendum.md)
 - [authority-source-inventory-schema.md](authority-source-inventory-schema.md)
 - [authority-source-inventory-2026-06-28-addendum.md](authority-source-inventory-2026-06-28-addendum.md)
-- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md)
+- [timetable-acquisition-route-schema.md](timetable-acquisition-route-schema.md) — Acquisition Route Inventory schema and operating boundary.
 - [normalized-timetable-output-schema.md](normalized-timetable-output-schema.md)
 - [calendar-view-model-reader-contract.md](calendar-view-model-reader-contract.md)
 - [timetable-data-flow-and-display-contract.md](timetable-data-flow-and-display-contract.md)
