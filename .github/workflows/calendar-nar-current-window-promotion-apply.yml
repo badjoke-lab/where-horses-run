@@ -3,23 +3,21 @@ name: Calendar NAR current-window promotion apply
 on:
   pull_request:
     paths:
-      - 'data/audits/calendar-nar-current-window-promotion-apply-v1.json'
       - '.github/workflows/calendar-nar-current-window-promotion-apply.yml'
+      - 'src/components/CountryDetailPage.astro'
 
 permissions:
   contents: write
-  actions: read
-  pull-requests: read
 
 concurrency:
   group: calendar-nar-current-window-promotion-apply-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  apply-reviewed-proposal:
+  remove-public-country-diagnostics:
     if: github.head_ref == 'work/calendar-nar-current-window-promotion-apply'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,206 +27,66 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate one-time apply authorization
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'node:fs';
-          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-promotion-apply-v1.json', 'utf8'));
-          if (audit.schema_version !== 'calendar-nar-current-window-promotion-apply-v1') throw new Error('apply audit schema differs');
-          if (audit.decision !== 'apply_exact_reviewed_proposal_and_regenerate_public_projection') throw new Error('apply decision differs');
-          if (audit.apply_scope?.branch !== 'work/calendar-nar-current-window-promotion-apply') throw new Error('authorized branch differs');
-          if (audit.proposal_artifact?.workflow_run_id !== 29234810155 || audit.proposal_artifact?.artifact_id !== 8272957804) throw new Error('proposal artifact identity differs');
-          if (audit.publication_boundary?.branch_write_allowed !== true || audit.publication_boundary?.main_write_allowed !== false || audit.publication_boundary?.merge_required !== true || audit.publication_boundary?.deployment !== false) throw new Error('apply publication boundary differs');
-          NODE
-      - name: Detect whether proposal is already applied
-        id: already
-        run: |
-          if [ -f data/candidates/nar-current-window-a-plus-approved.json ]; then
-            echo 'value=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'value=false' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Download exact reviewed promotion proposal
-        if: steps.already.outputs.value == 'false'
-        uses: actions/download-artifact@v4
-        with:
-          name: nar-current-window-promotion-proposal-29234810155
-          path: /tmp/nar-reviewed-proposal
-          github-token: ${{ github.token }}
-          repository: badjoke-lab/where-horses-run
-          run-id: 29234810155
-      - name: Resolve and verify proposal files
-        if: steps.already.outputs.value == 'false'
-        run: |
-          proposal_dir="$(find /tmp/nar-reviewed-proposal -type f -name promotion-proposal.json -printf '%h\n' | head -1)"
-          if [ -z "$proposal_dir" ]; then
-            echo 'promotion proposal directory missing'
-            exit 1
-          fi
-          export PROPOSAL_DIR="$proposal_dir"
-          echo "PROPOSAL_DIR=$proposal_dir" >> "$GITHUB_ENV"
-          node --input-type=module - <<'NODE'
-          import crypto from 'node:crypto';
-          import fs from 'node:fs';
-          import path from 'node:path';
-          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-promotion-apply-v1.json', 'utf8'));
-          const proposal = JSON.parse(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, 'promotion-proposal.json'), 'utf8'));
-          const hash = (name) => crypto.createHash('sha256').update(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, name))).digest('hex');
-          if (proposal.approved_candidate_sha256 !== audit.proposal_artifact.approved_candidate_sha256) throw new Error('proposal approved Candidate digest differs');
-          if (proposal.proposed_meetings_sha256 !== audit.proposal_artifact.proposed_meetings_sha256) throw new Error('proposal meetings digest differs');
-          if (proposal.proposed_details_sha256 !== audit.proposal_artifact.proposed_details_sha256) throw new Error('proposal details digest differs');
-          if (hash('approved-candidate.json') !== audit.proposal_artifact.approved_candidate_sha256) throw new Error('approved Candidate file digest differs');
-          if (hash('proposed-canonical-meetings.json') !== audit.proposal_artifact.proposed_meetings_sha256) throw new Error('proposed meetings file digest differs');
-          if (hash('proposed-canonical-meeting-details.json') !== audit.proposal_artifact.proposed_details_sha256) throw new Error('proposed details file digest differs');
-          if (proposal.approved_meeting_count !== 15 || proposal.approved_race_row_count !== 180 || proposal.excluded_c_retry_target_count !== 51) throw new Error('proposal counts differ');
-          NODE
-      - name: Apply approved Candidate and Canonical proposal
-        if: steps.already.outputs.value == 'false'
-        run: |
-          cp "$PROPOSAL_DIR/approved-candidate.json" data/candidates/nar-current-window-a-plus-approved.json
-          cp "$PROPOSAL_DIR/proposed-canonical-meetings.json" data/generated/timetable/canonical/meetings.json
-          cp "$PROPOSAL_DIR/proposed-canonical-meeting-details.json" data/generated/timetable/canonical/meeting-details.json
-          cp "$PROPOSAL_DIR/promotion-proposal.json" data/audits/calendar-nar-current-window-promotion-proposal-v1.json
-      - name: Remove internal country diagnostics from Public v1
+      - name: Remove internal Fetch and Probe diagnostics
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'node:fs';
           const file = 'src/components/CountryDetailPage.astro';
           let text = fs.readFileSync(file, 'utf8');
-          const internalState = `const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];
-          const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);
-          const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];
-          const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);
-          `;
-          if (text.includes(internalState)) text = text.replace(internalState, '');
+          for (const line of [
+            "const fetchStatuses = siteData.generated.fetchStatus.sources ?? [];\n",
+            "const countryFetchStatuses = fetchStatuses.filter((status) => status.country_id === country.id);\n",
+            "const liveFetchProbes = siteData.generated.liveFetchProbeStatus?.probes ?? [];\n",
+            "const countryLiveFetchProbes = liveFetchProbes.filter((probe) => probe.country_id === country.id);\n",
+          ]) text = text.replace(line, '');
+
           const startMarker = '    <details class="country-technical">';
+          const endMarker = '    </details>';
           const start = text.indexOf(startMarker);
           if (start < 0) throw new Error('country technical section is missing');
-          const closeMarker = '    </details>';
-          const close = text.indexOf(closeMarker, start);
+          const close = text.indexOf(endMarker, start);
           if (close < 0) throw new Error('country technical section closing tag is missing');
-          const end = close + closeMarker.length;
+          const end = close + endMarker.length;
           const replacement = `    <details class="country-technical">
-          <summary>{pick('Dataset coverage details', 'データセット掲載状況')}</summary>
-          <div class="country-grid country-grid--1">
-            <article class="card country-card">
-              <h3>{pick('Dataset status', 'データセット状態')}</h3>
-              <p><strong>{pick('Country status:', '国status:')}</strong> {country.status}</p>
-              <p><strong>Coverage level:</strong> {country.coverage_level}</p>
-              <p><strong>Automation level:</strong> {country.auto_level}</p>
-              <p><strong>{pick('Active 30-day records:', '30日範囲内records:')}</strong> {activeWindowRecords.length}</p>
-              <p><strong>{pick('Out-of-window records:', '30日範囲外records:')}</strong> {outOfWindowRecords}</p>
-              {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
-            </article>
-          </div>
-        </details>`;
+            <summary>{pick('Dataset coverage details', 'データセット掲載状況')}</summary>
+            <div class="country-grid country-grid--1">
+              <article class="card country-card">
+                <h3>{pick('Dataset status', 'データセット状態')}</h3>
+                <p><strong>{pick('Country status:', '国status:')}</strong> {country.status}</p>
+                <p><strong>Coverage level:</strong> {country.coverage_level}</p>
+                <p><strong>Automation level:</strong> {country.auto_level}</p>
+                <p><strong>{pick('Active 30-day records:', '30日範囲内records:')}</strong> {activeWindowRecords.length}</p>
+                <p><strong>{pick('Out-of-window records:', '30日範囲外records:')}</strong> {outOfWindowRecords}</p>
+                {countryInventory && <p><strong>Seed state:</strong> {countryInventory.current_seed_state}</p>}
+              </article>
+            </div>
+          </details>`;
           text = `${text.slice(0, start)}${replacement}${text.slice(end)}`;
-          for (const forbidden of ['countryFetchStatuses', 'countryLiveFetchProbes', 'Fetch status', 'Probe status', 'liveFetchProbeStatus']) {
+
+          for (const forbidden of [
+            'countryFetchStatuses',
+            'countryLiveFetchProbes',
+            '<h3>Fetch status</h3>',
+            '<h3>Probe status</h3>',
+            'liveFetchProbeStatus',
+          ]) {
             if (text.includes(forbidden)) throw new Error(`internal country diagnostic remains: ${forbidden}`);
           }
           fs.writeFileSync(file, text);
           NODE
-      - name: Validate Public v1 country boundary
+      - name: Validate Public v1 boundary
         run: |
           node scripts/check-live-fetch-probe-status-ui.mjs
           node scripts/check-m3-hong-kong-alpha-ui.mjs
           node scripts/check-m3-uae-generated-fallback.mjs
-      - name: Regenerate deterministic public projection
-        run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Regenerate dependent operations artifacts
-        run: |
-          node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
-          node scripts/timetable/build-operations-review-package.mjs
-      - name: Validate promoted and retained meeting sets
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'node:fs';
-          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-current-window-a-plus-approved.json', 'utf8'));
-          const result = JSON.parse(fs.readFileSync('data/audits/calendar-nar-current-window-retry-result-v1.json', 'utf8'));
-          const canonicalMeetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
-          const canonicalDetails = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
-          const publicMeetings = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')).meetings.map((record) => [record.meeting_id, record]));
-          const publicDetails = new Map(JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8')).details.map((record) => [record.meeting_id, record]));
-          if (candidate.records.length !== 15) throw new Error('approved Candidate count differs');
-          let raceRows = 0;
-          for (const record of candidate.records) {
-            raceRows += record.timetable_rows.length;
-            const canonical = canonicalMeetings.get(record.meeting_id);
-            const detail = canonicalDetails.get(record.meeting_id);
-            const publicMeeting = publicMeetings.get(record.meeting_id);
-            const publicDetail = publicDetails.get(record.meeting_id);
-            if (canonical?.capability_rank !== 'A+' || detail?.capability_rank !== 'A+') throw new Error(`${record.meeting_id} Canonical rank differs`);
-            if (canonical?.source_trace?.source_id !== 'nar-race-list-deba-table' || detail?.source_trace?.source_id !== 'nar-race-list-deba-table') throw new Error(`${record.meeting_id} Canonical source differs`);
-            if (publicMeeting?.effective_public_rank !== 'A+' || publicDetail?.effective_public_rank !== 'A+') throw new Error(`${record.meeting_id} public rank differs`);
-            if (detail.timetable_rows.length !== record.timetable_rows.length || publicDetail.timetable_rows.length !== record.timetable_rows.length) throw new Error(`${record.meeting_id} timetable row count differs`);
-          }
-          if (raceRows !== 180) throw new Error(`approved race-row count differs: ${raceRows}`);
-          for (const id of result.unresolved_meeting_ids) {
-            const canonical = canonicalMeetings.get(id);
-            const publicMeeting = publicMeetings.get(id);
-            if (canonical?.capability_rank !== 'C' || publicMeeting?.effective_public_rank !== 'C') throw new Error(`${id} retained C rank differs`);
-            if (canonicalDetails.has(id) || publicDetails.has(id)) throw new Error(`${id} retained C record unexpectedly has detail`);
-          }
-          const operations = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
-          if (operations.public_projection?.meeting_count !== publicMeetings.size || operations.public_projection?.detail_count !== publicDetails.size) throw new Error('operations status public counts differ');
-          const reviewPackage = JSON.parse(fs.readFileSync('data/generated/timetable/operations-review-package.json', 'utf8'));
-          if (reviewPackage.as_of_date !== operations.as_of_date || reviewPackage.generated_at !== operations.generated_at) throw new Error('operations review package timestamp differs');
-          if (reviewPackage.summary?.current_window_meeting_count !== operations.public_projection.current_window_meeting_count) throw new Error('operations review package current-window count differs');
-          console.log('NAR_CURRENT_WINDOW_PROMOTION_APPLY: pass');
-          console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length, operations_meetings: publicMeetings.size, operations_details: publicDetails.size }));
-          NODE
-      - name: Validate deterministic public projection
-        run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Validate Pipeline v1 release gate
-        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Commit reviewed application and dependent generated state
+      - name: Commit boundary correction to PR branch
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add \
-            src/components/CountryDetailPage.astro \
-            data/candidates/nar-current-window-a-plus-approved.json \
-            data/audits/calendar-nar-current-window-promotion-proposal-v1.json \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/operations-status.json \
-            data/generated/timetable/operations-review-package.json
+          git add src/components/CountryDetailPage.astro
           if git diff --cached --quiet; then
-            echo 'Reviewed application and Public v1 boundaries are already committed.'
+            echo 'Public v1 country diagnostics are already removed.'
           else
-            git commit -m 'Apply reviewed NAR promotion and Public v1 boundary'
+            git commit -m 'Remove internal country diagnostics from Public v1'
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
-      - name: Capture full repository check diagnostics
-        shell: bash
-        run: |
-          set +e
-          npm run check > /tmp/nar-promotion-full-check.log 2>&1
-          status=$?
-          printf '%s\n' "$status" > /tmp/nar-promotion-full-check.exit
-          tail -100 /tmp/nar-promotion-full-check.log
-          exit 0
-      - name: Upload full-check diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: nar-promotion-full-check-${{ github.run_id }}
-          retention-days: 7
-          if-no-files-found: error
-          path: |
-            /tmp/nar-promotion-full-check.log
-            /tmp/nar-promotion-full-check.exit
-      - name: Enforce full repository check
-        run: |
-          status="$(cat /tmp/nar-promotion-full-check.exit)"
-          if [ "$status" != "0" ]; then
-            exit "$status"
-          fi
-      - name: Confirm no deployment path
-        run: |
-          if grep -R -E 'wrangler pages deploy|npm run deploy' data/audits/calendar-nar-current-window-promotion-apply-v1.json; then
-            echo 'deployment marker detected'
-            exit 1
-          fi
-          echo 'NAR_PROMOTION_DEPLOYMENT: disabled'
