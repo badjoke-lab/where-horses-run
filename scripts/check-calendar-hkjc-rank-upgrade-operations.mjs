@@ -28,6 +28,9 @@ const readiness = loadCalendarReadinessV1(root);
 const authorityInventory = loadAuthoritySourceInventoryV1(root);
 const input = structuredClone(fixtures.valid_inputs.find((entry) => entry.id === 'reviewed-public-safe-a-plus')?.input);
 if (!input) throw new Error('reviewed A+ fixture missing');
+input.generated_at = '2026-07-13T03:30:00Z';
+input.source_evidence.checked_at = '2026-07-13T03:30:00Z';
+input.review.reviewed_at = '2026-07-13T03:45:00Z';
 const meetingInput = input.meetings[0];
 const meetingId = meetingInput.meeting_id;
 const inputText = `${JSON.stringify(input, null, 2)}\n`;
@@ -139,7 +142,7 @@ try {
 }
 if (approvedCandidate) {
   if (approvedCandidate.review.status !== 'approved' || approvedCandidate.review.promotion_target !== 'canonical-timetable-v0') fail('approved candidate envelope differs');
-  if (!approvedCandidate.records.every((record) => record.review_status === 'approved')) fail('approved candidate record state differs');
+  if (!approvedCandidate.records.every((record) => record.review_status === 'approved' && record.source.extraction_method === 'reviewed_snapshot')) fail('approved candidate record state differs');
 }
 
 const readinessRecord = readiness.records.find((record) => record.authority_source_key === 'hong-kong/hkjc/hkjc-detail-reviewed-import');
@@ -176,7 +179,7 @@ if (approvedCandidate) {
     const detail = promotion.detailsDataset.details.find((row) => row.meeting_id === meetingId);
     if (promoted?.capability_rank !== 'A+' || promoted?.first_race_time_local !== '18:30' || promoted?.last_race_time_local !== '19:00') fail('promotion proposal meeting differs');
     if (detail?.timetable_rows?.length !== 2) fail('promotion proposal detail rows differ');
-    if (promotion.summary.promoted_meeting_count !== 1 || promotion.summary.promoted_detail_count !== 1) fail('promotion summary differs');
+    if (promotion.summary.promoted_meeting_ids.length !== 1 || promotion.summary.promoted_detail_ids.length !== 1) fail('promotion summary differs');
   } catch (error) {
     fail(`promotion proposal failed: ${error.message}`);
   }
