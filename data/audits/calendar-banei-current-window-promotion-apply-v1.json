@@ -35,6 +35,12 @@
     "promoted_race_row_count": 12,
     "retained_c_retry_target_count": 12
   },
+  "compatibility_reconciliation": {
+    "pipeline_public_projection": "readiness_state_aware",
+    "before_activation": "banei_official_schedule_excluded_as_link_only",
+    "after_activation": "historical_and_current_banei_schedule_records_project_at_rank_c_without_detail",
+    "current_window_expected": "one_a_plus_detail_and_twelve_c_meeting_rows"
+  },
   "required_post_apply_checks": [
     "proposal_and_file_sha256",
     "readiness_before_exact_match",
