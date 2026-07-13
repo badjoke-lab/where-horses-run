@@ -58,7 +58,7 @@ Collection Job
 -> Runner Execution
 -> official Banei monthly schedule
 -> official NAR Banei RaceList / DebaTable detail route
--> merged B or A+ Candidate
+-> merged C, B, B+, or A+ Candidate
 -> Coverage Observation
 -> Result Manifest
 -> Review Queue
@@ -70,7 +70,9 @@ The two monthly outputs are then reconciled into one campaign result.
 The campaign result records:
 
 - discovered meeting count;
+- C fallback count;
 - B fallback count;
+- B+ fallback count;
 - A+ detail count;
 - unresolved meeting count;
 - source error count;
@@ -81,9 +83,17 @@ The campaign result records:
 
 ## Rank interpretation
 
+### C
+
+The official schedule confirms the meeting identity and date but does not expose a usable race-time summary.
+
 ### B
 
-The official Banei schedule provides meeting identity and schedule-level timing information, but complete A+ race programme details were not obtained for that meeting.
+The official schedule exposes only the first-race time.
+
+### B+
+
+The official schedule exposes both first- and last-race times, but complete A+ race programme details were not obtained.
 
 ### A+
 
@@ -117,7 +127,7 @@ The GitHub Actions workflow has `contents: read`, writes review artifacts only i
 The result determines the next bounded action:
 
 1. review complete A+ candidates;
-2. retain B records where detail remains unavailable;
+2. retain C, B, or B+ records where detail remains unavailable;
 3. prepare a separate promotion proposal only for approved records;
 4. use selected-meeting retry only for the remaining lower-rank set;
 5. keep unattended publication disabled until the three-country operating review.
