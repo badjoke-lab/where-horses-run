@@ -1,0 +1,99 @@
+{
+  "schema_version": "calendar-uae-era-rank-upgrade-fixtures-v1",
+  "work_id": "WHR-CAL-UAE-ERA-DETAIL-RECOVERY",
+  "implementation_unit": "UAE-DETAIL-RECOVERY-02",
+  "canonical_meetings": [
+    {
+      "meeting_id": "era-al-ain-racecourse-2026-04-10",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "al-ain-racecourse",
+      "date": "2026-04-10",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C"
+    }
+  ],
+  "job": {
+    "schema_version": "calendar-collection-job-v1",
+    "job_id": "uae-al-ain-rank-upgrade-proof-job",
+    "campaign_id": "uae-rank-upgrade-operations-proof",
+    "system_id": "uae-national-racing-system",
+    "runner_policy": {
+      "mode": "exact",
+      "runner": "github_actions"
+    },
+    "collection_mode": "selected_meetings",
+    "requested_scope": {
+      "meeting_ids": [
+        "era-al-ain-racecourse-2026-04-10"
+      ]
+    },
+    "rank_strategy": "target_rank",
+    "target_rank": "A",
+    "reason": "rank_upgrade_retry",
+    "requested_at": "2026-07-13T06:00:00Z"
+  },
+  "evidence_by_meeting_id": {
+    "era-al-ain-racecourse-2026-04-10": {
+      "schema_version": "calendar-uae-era-detail-live-evidence-v1",
+      "work_id": "WHR-CAL-UAE-ERA-DETAIL-RECOVERY",
+      "implementation_unit": "UAE-DETAIL-RECOVERY-01",
+      "generated_at": "2026-07-13T06:05:00Z",
+      "source": {
+        "source_id": "era-racecard-public-timetable",
+        "authority_id": "emirates-racing-authority",
+        "official_hostname": "emiratesracing.com",
+        "route_template": "https://emiratesracing.com/racecard/{date}/{race_number}/declarations",
+        "response_body_retained": false
+      },
+      "meeting": {
+        "date": "2026-04-10",
+        "timezone": "Asia/Dubai",
+        "racecourse_id": "al-ain-racecourse",
+        "race_count": 10,
+        "meeting_complete": true
+      },
+      "classification": {
+        "rank": "A",
+        "first_race_time_local": "17:00",
+        "last_race_time_local": "21:30",
+        "timetable_rows": [
+          { "label": "Race 1", "post_time_local": "17:00" },
+          { "label": "Race 2", "post_time_local": "17:30" },
+          { "label": "Race 3", "post_time_local": "18:00" },
+          { "label": "Race 4", "post_time_local": "18:30" },
+          { "label": "Race 5", "post_time_local": "19:00" },
+          { "label": "Race 6", "post_time_local": "19:30" },
+          { "label": "Race 7", "post_time_local": "20:00" },
+          { "label": "Race 8", "post_time_local": "20:30" },
+          { "label": "Race 9", "post_time_local": "21:00" },
+          { "label": "Race 10", "post_time_local": "21:30" }
+        ]
+      },
+      "observations": [
+        { "race_number": 1, "post_time_local": "17:00", "source_url": "https://emiratesracing.com/racecard/2026-04-10/1/declarations" },
+        { "race_number": 2, "post_time_local": "17:30", "source_url": "https://emiratesracing.com/racecard/2026-04-10/2/declarations" },
+        { "race_number": 3, "post_time_local": "18:00", "source_url": "https://emiratesracing.com/racecard/2026-04-10/3/declarations" },
+        { "race_number": 4, "post_time_local": "18:30", "source_url": "https://emiratesracing.com/racecard/2026-04-10/4/declarations" },
+        { "race_number": 5, "post_time_local": "19:00", "source_url": "https://emiratesracing.com/racecard/2026-04-10/5/declarations" },
+        { "race_number": 6, "post_time_local": "19:30", "source_url": "https://emiratesracing.com/racecard/2026-04-10/6/declarations" },
+        { "race_number": 7, "post_time_local": "20:00", "source_url": "https://emiratesracing.com/racecard/2026-04-10/7/declarations" },
+        { "race_number": 8, "post_time_local": "20:30", "source_url": "https://emiratesracing.com/racecard/2026-04-10/8/declarations" },
+        { "race_number": 9, "post_time_local": "21:00", "source_url": "https://emiratesracing.com/racecard/2026-04-10/9/declarations" },
+        { "race_number": 10, "post_time_local": "21:30", "source_url": "https://emiratesracing.com/racecard/2026-04-10/10/declarations" }
+      ],
+      "source_errors": [],
+      "safety": {
+        "participant_fields_retained": false,
+        "betting_fields_retained": false,
+        "result_fields_retained": false,
+        "payout_fields_retained": false,
+        "raw_html_retained": false,
+        "canonical_write": false,
+        "public_write": false,
+        "publication_effect": "none",
+        "human_review_required": true
+      }
+    }
+  }
+}
