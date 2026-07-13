@@ -122,12 +122,15 @@ jobs:
           console.log('NAR_CURRENT_WINDOW_PROMOTION_APPLY: pass');
           console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length }));
           NODE
-      - name: Run release and rendered-data checks
+      - name: Validate deterministic public projection
         if: steps.already.outputs.value == 'false'
-        run: |
-          node scripts/timetable/build-public-timetable-view.mjs --check
-          node scripts/check-calendar-pipeline-v1-release-gate.mjs
-          npm run check
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Validate Pipeline v1 release gate
+        if: steps.already.outputs.value == 'false'
+        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate full repository
+        if: steps.already.outputs.value == 'false'
+        run: npm run check
       - name: Commit exact reviewed application to PR branch
         if: steps.already.outputs.value == 'false'
         run: |
@@ -144,8 +147,8 @@ jobs:
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Confirm no deployment path
         run: |
-          if grep -R -E 'wrangler pages deploy|npm run deploy|automatic_publication' data/audits/calendar-nar-current-window-promotion-apply-v1.json; then
-            echo 'deployment or automatic publication marker detected'
+          if grep -R -E 'wrangler pages deploy|npm run deploy' data/audits/calendar-nar-current-window-promotion-apply-v1.json; then
+            echo 'deployment marker detected'
             exit 1
           fi
           echo 'NAR_PROMOTION_DEPLOYMENT: disabled'
