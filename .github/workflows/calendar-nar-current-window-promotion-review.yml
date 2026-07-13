@@ -1,0 +1,132 @@
+name: Calendar NAR current-window promotion review
+
+on:
+  pull_request:
+    paths:
+      - 'data/reviews/nar-current-window-a-plus-review-v1.json'
+      - 'data/audits/calendar-nar-current-window-retry-result-v1.json'
+      - 'scripts/timetable/prepare-nar-current-window-promotion-proposal.mjs'
+      - 'scripts/check-calendar-nar-current-window-promotion-review.mjs'
+      - 'docs/calendar/nar-current-window-promotion-review.md'
+      - '.github/workflows/calendar-nar-current-window-promotion-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare-reviewed-proposal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate review contract
+        run: |
+          node --check scripts/timetable/prepare-nar-current-window-promotion-proposal.mjs
+          node --check scripts/check-calendar-nar-current-window-promotion-review.mjs
+          node scripts/check-calendar-nar-current-window-promotion-review.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Download pinned NAR retry artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nar-current-window-retry-29233820152
+          path: /tmp/nar-current-window-source
+          github-token: ${{ github.token }}
+          repository: badjoke-lab/where-horses-run
+          run-id: 29233820152
+      - name: Resolve pinned source paths
+        run: |
+          batch="$(find /tmp/nar-current-window-source -type f -path '*/data/candidates/nar-incremental-batches/nar-current-window-selected-retry-2026-07-batch-001/batch.json' -print -quit)"
+          report="$(find /tmp/nar-current-window-source -type f -path '*/data/generated/timetable/nar-incremental-batches/nar-current-window-selected-retry-2026-07-batch-001/collection-report.json' -print -quit)"
+          coverage="$(find /tmp/nar-current-window-source -type f -path '*/data/generated/timetable/nar-incremental-batches/nar-current-window-selected-retry-2026-07-batch-001/coverage-observation.json' -print -quit)"
+          retries="$(find /tmp/nar-current-window-source -type f -path '*/data/generated/timetable/nar-incremental-batches/nar-current-window-selected-retry-2026-07-batch-001/retry-targets.json' -print -quit)"
+          for pair in "BATCH_PATH=$batch" "REPORT_PATH=$report" "COVERAGE_PATH=$coverage" "RETRIES_PATH=$retries"; do
+            value="${pair#*=}"
+            if [ -z "$value" ] || [ ! -f "$value" ]; then
+              printf 'missing pinned source: %s\n' "$pair"
+              exit 1
+            fi
+            echo "$pair" >> "$GITHUB_ENV"
+          done
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/nar-promotion-protected-before.sha256
+      - name: Build reviewed A+ promotion proposal
+        run: |
+          rm -rf /tmp/nar-current-window-promotion-proposal
+          node scripts/timetable/prepare-nar-current-window-promotion-proposal.mjs \
+            --batch="$BATCH_PATH" \
+            --report="$REPORT_PATH" \
+            --coverage="$COVERAGE_PATH" \
+            --retries="$RETRIES_PATH" \
+            --output-dir=/tmp/nar-current-window-promotion-proposal \
+            > /tmp/nar-current-window-promotion-summary.json
+      - name: Validate proposal closure
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/nar-current-window-promotion-proposal';
+          const expected = [
+            'approved-candidate.json',
+            'promotion-proposal.json',
+            'promotion-summary.json',
+            'proposed-canonical-meeting-details.json',
+            'proposed-canonical-meetings.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`proposal files differ: ${JSON.stringify(actual)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('approved-candidate.json');
+          const proposal = read('promotion-proposal.json');
+          const promotion = read('promotion-summary.json');
+          if (candidate.schema_version !== 'timetable-candidate-v1' || candidate.review.status !== 'approved' || candidate.review.promotion_target !== 'canonical-timetable-v0') throw new Error('approved Candidate envelope differs');
+          if (candidate.records.length !== 15 || candidate.records.some((record) => record.capability_rank !== 'A+' || record.review_status !== 'approved')) throw new Error('approved Candidate record set differs');
+          const raceRows = candidate.records.reduce((sum, record) => sum + record.timetable_rows.length, 0);
+          if (raceRows !== 180) throw new Error(`approved race-row count differs: ${raceRows}`);
+          if (proposal.approved_meeting_count !== 15 || proposal.approved_race_row_count !== 180 || proposal.excluded_c_retry_target_count !== 51) throw new Error('promotion proposal counts differ');
+          if (proposal.mutation_boundary.repository_write !== false || proposal.mutation_boundary.canonical_write !== false || proposal.mutation_boundary.public_write !== false || proposal.mutation_boundary.publication_effect !== 'none' || proposal.mutation_boundary.human_merge_required !== true) throw new Error('proposal mutation boundary differs');
+          if (promotion.promoted_meeting_ids.length !== 15 || promotion.promoted_detail_ids.length !== 15) throw new Error('Pipeline promotion count differs');
+          for (const digest of [proposal.approved_candidate_sha256, proposal.proposed_meetings_sha256, proposal.proposed_details_sha256]) {
+            if (!/^[a-f0-9]{64}$/.test(digest)) throw new Error('proposal digest differs');
+          }
+          console.log('NAR_CURRENT_WINDOW_PROMOTION_PROPOSAL: pass');
+          console.log(JSON.stringify({ approved_meetings: candidate.records.length, approved_race_rows: raceRows, excluded_retry_targets: proposal.excluded_c_retry_target_count }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/nar-promotion-protected-before.sha256
+      - name: Upload reviewed promotion proposal
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-current-window-promotion-proposal-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/nar-current-window-promotion-summary.json
+            /tmp/nar-current-window-promotion-proposal/approved-candidate.json
+            /tmp/nar-current-window-promotion-proposal/promotion-proposal.json
+            /tmp/nar-current-window-promotion-proposal/promotion-summary.json
+            /tmp/nar-current-window-promotion-proposal/proposed-canonical-meetings.json
+            /tmp/nar-current-window-promotion-proposal/proposed-canonical-meeting-details.json
+      - name: Prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/nar-current-window-source /tmp/nar-current-window-promotion-proposal
+          rm -f /tmp/nar-current-window-promotion-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
