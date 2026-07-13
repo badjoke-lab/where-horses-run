@@ -29,16 +29,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate HKJC rank-upgrade implementation
+      - name: Validate syntax
         run: |
           node --check scripts/timetable/hkjc-rank-upgrade-operations-core.mjs
           node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
           node --check scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs
           node --check scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
-          node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
-          node scripts/check-calendar-acquisition-registry.mjs
-          node scripts/check-calendar-route-runner-policy.mjs
-          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate HKJC rank-upgrade proof
+        run: node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
+      - name: Validate Acquisition Registry compatibility
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate route-policy compatibility
+        run: node scripts/check-calendar-route-runner-policy.mjs
+      - name: Validate Pipeline v1 compatibility
+        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
       - name: Validate activation audit and manual workflow safety boundaries
         run: |
           node --input-type=module - <<'NODE'
