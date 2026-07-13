@@ -21,6 +21,9 @@ for (const name of requiredArgs) if (!values[name]) throw new Error(`--${name}=<
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
+function exact(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
 function externalPath(value, label) {
   const absolute = path.resolve(value);
   const relative = path.relative(root, absolute);
@@ -38,15 +41,12 @@ function sha256File(filePath) {
 function sha256Json(value) {
   return crypto.createHash('sha256').update(`${JSON.stringify(value, null, 2)}\n`).digest('hex');
 }
-function exact(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right);
-}
 function validTime(value) {
   return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
-function validateOfficialUrl(value, allowedHost, label) {
+function validateOfficialUrl(value, expectedHost, label) {
   const url = new URL(value);
-  assert(url.protocol === 'https:' && url.hostname.toLowerCase() === allowedHost, `${label} official URL differs`);
+  assert(url.protocol === 'https:' && url.hostname.toLowerCase() === expectedHost, `${label} official URL differs`);
 }
 function cloneApprovedRecord(record, notes) {
   return {
@@ -71,9 +71,9 @@ function cloneApprovedRecord(record, notes) {
 
 const paths = Object.fromEntries(Object.entries(values).map(([name, value]) => [name, externalPath(value, name)]));
 const outputDir = paths['output-dir'];
-const review = JSON.parse(fs.readFileSync(path.join(root, 'data/reviews/banei-current-window-promotion-review-v1.json'), 'utf8'));
-const activation = JSON.parse(fs.readFileSync(path.join(root, 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json'), 'utf8'));
-const resultAudit = JSON.parse(fs.readFileSync(path.join(root, review.source_result_ref), 'utf8'));
+const review = readJson(path.join(root, 'data/reviews/banei-current-window-promotion-review-v1.json'));
+const activation = readJson(path.join(root, 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json'));
+const resultAudit = readJson(path.join(root, review.source_result_ref));
 const campaignResult = readJson(paths['campaign-result']);
 const monthInputs = {
   july: {
@@ -98,10 +98,12 @@ assert(review.implementation_unit === 'BANEI-CURRENT-WINDOW-PROMOTION-01', 'Bane
 assert(review.review?.status === 'approved' && review.review?.promotion_target === 'canonical-timetable-v0', 'Banei review approval differs');
 assert(review.review?.approval_scope === 'exact_split_source_candidate_sets', 'Banei review approval scope differs');
 assert(Object.values(review.side_effect_boundary ?? {}).every((value) => value === false), 'Banei review side-effect boundary differs');
+
 assert(activation.schema_version === 'calendar-banei-current-window-schedule-readiness-activation-v1', 'Banei readiness activation schema differs');
 assert(activation.work_id === review.work_id && activation.implementation_unit === review.implementation_unit, 'Banei readiness activation identity differs');
 assert(activation.authority_source_key === 'japan/banei-tokachi/banei-official-schedule', 'Banei readiness activation source key differs');
-assert(activation.reviewed_transition?.from_automation_mode === 'link_only' && activation.reviewed_transition?.to_automation_mode === 'semi_automatic', 'Banei readiness transition differs');
+assert(activation.reviewed_transition?.from_readiness === 'link_only' && activation.reviewed_transition?.to_readiness === 'prototype_ready', 'Banei readiness state transition differs');
+assert(activation.reviewed_transition?.from_automation_mode === 'link_only' && activation.reviewed_transition?.to_automation_mode === 'semi_automatic', 'Banei automation transition differs');
 assert(activation.evidence?.artifact_id === review.source_artifact.artifact_id, 'Banei readiness activation evidence differs');
 assert(Object.values(activation.side_effect_boundary ?? {}).every((value) => value === false), 'Banei readiness activation side-effect boundary differs');
 assert(resultAudit.schema_version === 'calendar-banei-current-window-acquisition-result-v1', 'Banei acquisition result schema differs');
@@ -130,7 +132,7 @@ assert(exact(campaignResult.rank_counts, { C: 12, B: 0, 'B+': 0, A: 0, 'A+': 1 }
 assert(campaignResult.review_state === 'needs_review' && campaignResult.promotion_eligible === false, 'Banei campaign review boundary differs');
 assert(campaignResult.canonical_write === false && campaignResult.public_write === false && campaignResult.publication_effect === 'none', 'Banei campaign write boundary differs');
 
-const allSourceRecords = [];
+const sourceRecords = [];
 for (const [month, input] of Object.entries(monthInputs)) {
   const expectedBatch = review.source_artifact[month].batch_id;
   assert(input.candidate.schema_version === 'timetable-candidate-v1', `${month} Candidate schema differs`);
@@ -141,20 +143,20 @@ for (const [month, input] of Object.entries(monthInputs)) {
   assert(input.report.publication_effect === 'none', `${month} publication effect differs`);
   assert(input.candidate.records.length === input.manifest.records_discovered, `${month} Candidate/Manifest count differs`);
   assert(input.candidate.records.length === input.coverage.records_discovered, `${month} Candidate/Coverage count differs`);
-  allSourceRecords.push(...input.candidate.records);
+  sourceRecords.push(...input.candidate.records);
 }
 
-const sourceByMeeting = new Map(allSourceRecords.map((record) => [record.meeting_id, record]));
-assert(sourceByMeeting.size === 13 && allSourceRecords.length === 13, 'Banei source meeting set contains duplicates or missing records');
-const approvedCSet = review.approved_sets.find((set) => set.capability_rank === 'C');
-const approvedAPlusSet = review.approved_sets.find((set) => set.capability_rank === 'A+');
-assert(approvedCSet?.source_id === 'banei-official-schedule' && approvedCSet.meeting_count === 12, 'Banei approved C set differs');
-assert(approvedAPlusSet?.source_id === 'nar-banei-race-list-deba-table' && approvedAPlusSet.meeting_count === 1, 'Banei approved A+ set differs');
-assert(exact([...approvedCSet.meeting_ids].sort(), [...resultAudit.lower_rank_meeting_ids].sort()), 'Banei approved C IDs differ from acquisition result');
-assert(exact([...approvedAPlusSet.meeting_ids].sort(), [...resultAudit.a_plus_meeting_ids].sort()), 'Banei approved A+ IDs differ from acquisition result');
-assert(new Set([...approvedCSet.meeting_ids, ...approvedAPlusSet.meeting_ids]).size === 13, 'Banei approved source sets do not close to 13 meetings');
+const sourceByMeeting = new Map(sourceRecords.map((record) => [record.meeting_id, record]));
+assert(sourceByMeeting.size === 13 && sourceRecords.length === 13, 'Banei source meeting set contains duplicates or missing records');
+const cSet = review.approved_sets.find((set) => set.capability_rank === 'C');
+const aPlusSet = review.approved_sets.find((set) => set.capability_rank === 'A+');
+assert(cSet?.source_id === 'banei-official-schedule' && cSet.meeting_count === 12, 'Banei approved C set differs');
+assert(aPlusSet?.source_id === 'nar-banei-race-list-deba-table' && aPlusSet.meeting_count === 1, 'Banei approved A+ set differs');
+assert(exact([...cSet.meeting_ids].sort(), [...resultAudit.lower_rank_meeting_ids].sort()), 'Banei approved C IDs differ from acquisition result');
+assert(exact([...aPlusSet.meeting_ids].sort(), [...resultAudit.a_plus_meeting_ids].sort()), 'Banei approved A+ IDs differ from acquisition result');
+assert(new Set([...cSet.meeting_ids, ...aPlusSet.meeting_ids]).size === 13, 'Banei approved source sets do not close to 13 meetings');
 
-const cRecords = approvedCSet.meeting_ids.map((meetingId) => {
+const cRecords = cSet.meeting_ids.map((meetingId) => {
   const record = sourceByMeeting.get(meetingId);
   assert(record, `Banei approved C source record missing ${meetingId}`);
   assert(record.capability_rank === 'C', `${meetingId} approved C rank differs`);
@@ -166,7 +168,7 @@ const cRecords = approvedCSet.meeting_ids.map((meetingId) => {
   return cloneApprovedRecord(record, 'Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed.');
 }).sort((left, right) => left.date.localeCompare(right.date));
 
-const aPlusSource = sourceByMeeting.get(approvedAPlusSet.meeting_ids[0]);
+const aPlusSource = sourceByMeeting.get(aPlusSet.meeting_ids[0]);
 assert(aPlusSource, 'Banei approved A+ source record missing');
 assert(aPlusSource.capability_rank === 'A+', 'Banei approved A+ rank differs');
 assert(aPlusSource.source?.source_id === 'nar-banei-race-list-deba-table', 'Banei approved A+ source differs');
@@ -184,7 +186,7 @@ for (const [index, row] of aPlusSource.timetable_rows.entries()) {
 }
 const aPlusRecords = [cloneApprovedRecord(aPlusSource, 'Approved complete public-safe Banei A+ programme from official NAR Banei RaceList and DebaTable evidence. Participant, betting, result, payout, prediction, raw-source, and stream fields are excluded.')];
 
-const commonWindow = { start_date: '2026-07-13', end_date_exclusive: '2026-08-12', timezone: 'Asia/Tokyo' };
+const window = { start_date: '2026-07-13', end_date_exclusive: '2026-08-12', timezone: 'Asia/Tokyo' };
 const approvedC = {
   schema_version: 'timetable-candidate-v1',
   generated_at: monthInputs.august.candidate.generated_at,
@@ -192,7 +194,7 @@ const approvedC = {
   country_id: 'japan',
   authority_id: 'banei-tokachi',
   source_id: 'banei-official-schedule',
-  candidate_window: structuredClone(commonWindow),
+  candidate_window: structuredClone(window),
   records: cRecords,
   review: {
     status: 'approved',
@@ -209,7 +211,7 @@ const approvedAPlus = {
   country_id: 'japan',
   authority_id: 'banei-tokachi',
   source_id: 'nar-banei-race-list-deba-table',
-  candidate_window: structuredClone(commonWindow),
+  candidate_window: structuredClone(window),
   records: aPlusRecords,
   review: {
     status: 'approved',
@@ -220,21 +222,23 @@ const approvedAPlus = {
   },
 };
 
-const canonicalMeetings = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/canonical/meetings.json'), 'utf8'));
-const canonicalDetails = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/canonical/meeting-details.json'), 'utf8'));
-const existingWindowBanei = canonicalMeetings.meetings.filter((meeting) => meeting.authority_id === 'banei-tokachi' && meeting.date >= commonWindow.start_date && meeting.date < commonWindow.end_date_exclusive);
+const canonicalMeetings = readJson(path.join(root, 'data/generated/timetable/canonical/meetings.json'));
+const canonicalDetails = readJson(path.join(root, 'data/generated/timetable/canonical/meeting-details.json'));
+const existingWindowBanei = canonicalMeetings.meetings.filter((meeting) => meeting.authority_id === 'banei-tokachi' && meeting.date >= window.start_date && meeting.date < window.end_date_exclusive);
 assert(existingWindowBanei.length === 0, `Banei promotion baseline differs: expected 0 current-window meetings, got ${existingWindowBanei.length}`);
+
 const inventory = loadAuthoritySourceInventoryV1(root);
-const readiness = loadCalendarReadinessV1(root);
-const proposalReadiness = structuredClone(readiness);
+const proposalReadiness = structuredClone(loadCalendarReadinessV1(root));
 const scheduleReadiness = proposalReadiness.records.find((record) => record.authority_source_key === activation.authority_source_key);
 assert(scheduleReadiness, 'Banei schedule Calendar Readiness record is missing');
 assert(scheduleReadiness.system_id === activation.system_id, 'Banei schedule readiness system differs');
-assert(scheduleReadiness.automation_mode === activation.reviewed_transition.from_automation_mode, 'Banei schedule readiness pre-transition mode differs');
+assert(scheduleReadiness.readiness === activation.reviewed_transition.from_readiness, 'Banei schedule readiness pre-transition state differs');
+assert(scheduleReadiness.automation_mode === activation.reviewed_transition.from_automation_mode, 'Banei schedule readiness pre-transition automation differs');
 assert(activation.reviewed_transition.required_readiness.includes(scheduleReadiness.readiness), 'Banei schedule readiness state is not eligible for activation');
 assert(activation.reviewed_transition.required_source_status.includes(scheduleReadiness.source_status), 'Banei schedule source status is not eligible for activation');
 assert(scheduleReadiness.confirmed_fields?.meeting_date === true && scheduleReadiness.confirmed_fields?.racecourse === true, 'Banei schedule source does not confirm C identity fields');
 const readinessBefore = structuredClone(scheduleReadiness);
+scheduleReadiness.readiness = activation.reviewed_transition.to_readiness;
 scheduleReadiness.automation_mode = activation.reviewed_transition.to_automation_mode;
 scheduleReadiness.refresh_classes = [...new Set([...(scheduleReadiness.refresh_classes ?? []), ...activation.reviewed_transition.refresh_classes_add])];
 scheduleReadiness.implementation_status = activation.reviewed_transition.implementation_status;
@@ -242,7 +246,7 @@ scheduleReadiness.checked_date = activation.reviewed_transition.checked_date;
 scheduleReadiness.evidence_reviewed_at = activation.reviewed_transition.evidence_reviewed_at;
 scheduleReadiness.blocked_reason = null;
 scheduleReadiness.notes = `${scheduleReadiness.notes ?? ''} Reviewed current-window activation: official July/August 2026 monthly schedule collection produced 13 public-safe meeting identities in workflow 29275669482; Canonical promotion remains review-gated.`.trim();
-const readinessActivationProposal = {
+const readinessProposal = {
   schema_version: 'calendar-banei-current-window-readiness-activation-proposal-v1',
   work_id: review.work_id,
   implementation_unit: review.implementation_unit,
@@ -295,7 +299,7 @@ const proposal = {
   implementation_unit: review.implementation_unit,
   source_artifact: structuredClone(review.source_artifact),
   readiness_activation_ref: 'data/reviews/banei-current-window-schedule-readiness-activation-v1.json',
-  readiness_activation_sha256: sha256Json(readinessActivationProposal),
+  readiness_activation_sha256: sha256Json(readinessProposal),
   approved_c_candidate_sha256: sha256Json(approvedC),
   approved_a_plus_candidate_sha256: sha256Json(approvedAPlus),
   proposed_meetings_sha256: sha256Json(aPlusPromotion.meetingsDataset),
@@ -322,7 +326,7 @@ fs.mkdirSync(outputDir, { recursive: true });
 for (const [name, value] of Object.entries({
   'approved-c-schedule-candidate.json': approvedC,
   'approved-a-plus-detail-candidate.json': approvedAPlus,
-  'reviewed-readiness-activation.json': readinessActivationProposal,
+  'reviewed-readiness-activation.json': readinessProposal,
   'proposed-canonical-meetings.json': aPlusPromotion.meetingsDataset,
   'proposed-canonical-meeting-details.json': aPlusPromotion.detailsDataset,
   'promotion-summary.json': combinedSummary,
