@@ -2,9 +2,27 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const targetMonth = '2026-07';
-const candidatePath = 'data/candidates/banei-monthly-2026-07-full-month-candidates.json';
-const reportPath = 'data/generated/timetable/banei-monthly-2026-07-full-month-collection-report.json';
+const args = new Map(process.argv.slice(2).map((arg) => {
+  const index = arg.indexOf('=');
+  return index === -1 ? [arg, true] : [arg.slice(0, index), arg.slice(index + 1)];
+}));
+const targetMonth = args.get('--target-month') ?? '2026-07';
+if (!/^\d{4}-\d{2}$/.test(targetMonth)) throw new Error('--target-month must use YYYY-MM');
+const monthStartDate = new Date(`${targetMonth}-01T00:00:00Z`);
+if (Number.isNaN(monthStartDate.getTime()) || monthStartDate.toISOString().slice(0, 7) !== targetMonth) {
+  throw new Error('--target-month must be a real calendar month');
+}
+const nextMonthDate = new Date(monthStartDate);
+nextMonthDate.setUTCMonth(nextMonthDate.getUTCMonth() + 1);
+const nextMonth = nextMonthDate.toISOString().slice(0, 7);
+const monthEndDate = new Date(nextMonthDate);
+monthEndDate.setUTCDate(0);
+const monthStart = `${targetMonth}-01`;
+const monthEnd = monthEndDate.toISOString().slice(0, 10);
+const defaultCandidatePath = `data/candidates/banei-monthly-${targetMonth}-full-month-candidates.json`;
+const defaultReportPath = `data/generated/timetable/banei-monthly-${targetMonth}-full-month-collection-report.json`;
+const candidatePath = args.get('--candidate-output') ?? defaultCandidatePath;
+const reportPath = args.get('--report-output') ?? defaultReportPath;
 const sourceUrl = (() => {
   const epoch = Math.floor(Date.parse(`${targetMonth}-01T00:00:00+09:00`) / 1000);
   return `https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=${epoch}`;
@@ -109,7 +127,7 @@ function parseMonthlySchedule(html) {
     if (scheduleCells.length < dayCells.length) throw new Error(`Banei schedule row is shorter than day row ${days.join(',')}.`);
     for (let offset = 0; offset < dayCells.length; offset += 1) {
       const day = Number(dayCells[offset]?.text.match(/^\s*(\d{1,2})\s*$/)?.[1]);
-      if (!Number.isInteger(day) || day < 1 || day > 31) continue;
+      if (!Number.isInteger(day) || day < 1 || day > Number(monthEnd.slice(8, 10))) continue;
       const cell = scheduleCells[offset];
       if (!isMeetingCell(cell)) continue;
       const date = `${targetMonth}-${String(day).padStart(2, '0')}`;
@@ -133,8 +151,8 @@ function parseMonthlySchedule(html) {
   return [...dedup.values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function writeJson(relativePath, value) {
-  const absolute = path.join(root, relativePath);
+function writeJson(outputPath, value) {
+  const absolute = path.resolve(root, outputPath);
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
   fs.writeFileSync(absolute, `${JSON.stringify(value, null, 2)}\n`);
 }
@@ -142,15 +160,15 @@ function writeJson(relativePath, value) {
 const response = await fetch(sourceUrl, {
   redirect: 'follow',
   headers: {
-    'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; review-controlled Banei full-month collector)',
+    'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; review-controlled Banei monthly collector)',
     accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'accept-language': 'ja,en-US;q=0.8,en;q=0.6',
   },
 });
-if (!response.ok) throw new Error(`Banei monthly schedule fetch failed: HTTP ${response.status}`);
+if (!response.ok) throw new Error(`Banei monthly schedule fetch failed for ${targetMonth}: HTTP ${response.status}`);
 const decoded = decodeBody(Buffer.from(await response.arrayBuffer()));
 const meetings = parseMonthlySchedule(decoded.body);
-if (!meetings.length) throw new Error('Banei full-month schedule parser found no July meetings.');
+if (!meetings.length) throw new Error(`Banei full-month schedule parser found no meetings for ${targetMonth}.`);
 
 const generatedAt = new Date().toISOString();
 const report = {
@@ -158,8 +176,8 @@ const report = {
   generated_at: generatedAt,
   work_id: 'WHR-CAL-JAPAN-BANEI-A-PLUS',
   target_month: targetMonth,
-  month_start: '2026-07-01',
-  month_end: '2026-07-31',
+  month_start: monthStart,
+  month_end: monthEnd,
   through_date: null,
   official_schedule_url: response.url,
   schedule_http_status: response.status,
@@ -197,5 +215,9 @@ const candidates = {
 };
 writeJson(candidatePath, candidates);
 writeJson(reportPath, report);
-console.log(JSON.stringify(report, null, 2));
-console.log(`[banei-full-month] scheduled=${report.meetings_scheduled} time_summary=${report.time_summary_available} pending=${report.pending_detail_meetings}`);
+console.log(JSON.stringify({
+  ...report,
+  candidate_output: path.resolve(root, candidatePath),
+  report_output: path.resolve(root, reportPath),
+}, null, 2));
+console.log(`[banei-monthly] month=${targetMonth} scheduled=${report.meetings_scheduled} time_summary=${report.time_summary_available} pending=${report.pending_detail_meetings}`);
