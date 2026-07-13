@@ -22,8 +22,7 @@ on:
       - 'scripts/check-calendar-japan-current-window-operations.mjs'
       - 'scripts/check-calendar-nar-current-window-retry.mjs'
       - 'scripts/check-calendar-rank-aware-retry-queue.mjs'
-      - 'scripts/check-japan-official-timetable-source-evidence.mjs'
-      - 'scripts/check-japan-active-window-candidate-gap-report.mjs'
+      - 'scripts/check-japan-*.mjs'
       - 'scripts/check-live-fetch-probe-status-ui.mjs'
       - 'scripts/check-m3-hong-kong-alpha-ui.mjs'
       - 'scripts/check-m3-uae-generated-fallback.mjs'
@@ -50,8 +49,7 @@ on:
       - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
-      - 'scripts/check-japan-official-timetable-source-evidence.mjs'
-      - 'scripts/check-japan-active-window-candidate-gap-report.mjs'
+      - 'scripts/check-japan-*.mjs'
       - '.github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
 
@@ -109,10 +107,11 @@ jobs:
         run: |
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
-      - name: Validate Japan historical evidence and gap reports against current state
+      - name: Validate Japan historical evidence against current state
         run: |
           node scripts/check-japan-official-timetable-source-evidence.mjs
           node scripts/check-japan-active-window-candidate-gap-report.mjs
+          node scripts/check-jra-record-level-source-verification.mjs
       - name: Validate historical and incremental NAR promoted sets
         run: |
           node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
@@ -174,7 +173,7 @@ jobs:
             while IFS= read -r file; do
               [[ -z "$file" ]] && continue
               case "$file" in
-                .github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml|.github/workflows/calendar-nar-current-window-promotion-apply.yml|.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml|.github/workflows/calendar-nar-current-window-retry.yml|.github/workflows/calendar-nar-reviewed-promotion-output.yml|data/audits/calendar-nar-current-window-promotion-apply-v1.json|data/audits/calendar-nar-current-window-promotion-proposal-v1.json|data/candidates/nar-current-window-a-plus-approved.json|data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-japan-current-window-operations.mjs|scripts/check-calendar-nar-current-window-retry.mjs|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs|scripts/check-calendar-rank-aware-retry-queue.mjs|scripts/check-japan-official-timetable-source-evidence.mjs|scripts/check-japan-active-window-candidate-gap-report.mjs|scripts/check-live-fetch-probe-status-ui.mjs|scripts/check-m3-hong-kong-alpha-ui.mjs|scripts/check-m3-uae-generated-fallback.mjs|scripts/timetable/build-nar-current-window-retry-spec.mjs|src/components/CountryDetailPage.astro) ;;
+                .github/workflows/calendar-nar-incremental-v2-reviewed-promotion.yml|.github/workflows/calendar-nar-current-window-promotion-apply.yml|.github/workflows/calendar-nar-current-window-promotion-post-apply-check.yml|.github/workflows/calendar-nar-current-window-retry.yml|.github/workflows/calendar-nar-reviewed-promotion-output.yml|data/audits/calendar-nar-current-window-promotion-apply-v1.json|data/audits/calendar-nar-current-window-promotion-proposal-v1.json|data/candidates/nar-current-window-a-plus-approved.json|data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-japan-current-window-operations.mjs|scripts/check-calendar-nar-current-window-retry.mjs|scripts/check-calendar-nar-incremental-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs|scripts/check-calendar-rank-aware-retry-queue.mjs|scripts/check-japan-*.mjs|scripts/check-live-fetch-probe-status-ui.mjs|scripts/check-m3-hong-kong-alpha-ui.mjs|scripts/check-m3-uae-generated-fallback.mjs|scripts/timetable/build-nar-current-window-retry-spec.mjs|src/components/CountryDetailPage.astro) ;;
                 *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
               esac
             done <<< "$changed"
