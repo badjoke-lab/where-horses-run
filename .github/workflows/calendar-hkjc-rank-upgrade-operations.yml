@@ -10,6 +10,8 @@ on:
       - 'scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs'
       - 'scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs'
       - 'scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs'
       - 'scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs'
       - 'scripts/check-calendar-hkjc-rank-upgrade-operations.mjs'
       - 'docs/calendar/hkjc-rank-upgrade-operations.md'
@@ -38,10 +40,16 @@ jobs:
           node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
           node --check scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs
           node --check scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs
           node --check scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
           node --check scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
       - name: Validate HKJC Retry and Review Queue stage
         run: node scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+      - name: Validate HKJC approval stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-approval-stage.mjs
+      - name: Validate HKJC Readiness and Authority Source stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-readiness-stage.mjs
       - name: Validate HKJC promotion stage
         run: node scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
       - name: Validate aggregate HKJC rank-upgrade proof
