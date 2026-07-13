@@ -87,8 +87,8 @@ export function validateRouteRunnerPolicyV1(policy, registry, compatibilityContr
       if (route.primary_runner !== profile.primary_runner) errors.push(`${label} schedule primary runner must match system-level Registry primary runner`);
       if (route.source_id !== profile.schedule_source_id || route.adapter_id !== profile.schedule_adapter_id) errors.push(`${label} schedule source/adapter must match Registry schedule route`);
     } else if (route.route_kind === 'detail' && route.selection_mode === 'operator_only') {
-      if (profile.detail_source_id !== null || profile.detail_adapter_id !== null) errors.push(`${label} operator-only detail supplement requires unactivated Registry detail route`);
-      if (profile.fallback_runner !== null) errors.push(`${label} operator-only detail supplement requires system fallback to remain unclaimed`);
+      if (route.source_id !== profile.detail_source_id || route.adapter_id !== profile.detail_adapter_id) errors.push(`${label} operator-only detail source/adapter must match explicitly activated Registry detail route`);
+      if (profile.fallback_runner !== null) errors.push(`${label} operator-only detail route requires system fallback to remain unclaimed`);
     }
 
     if (compatibilityContract && route.selection_mode === 'collection_job') {
