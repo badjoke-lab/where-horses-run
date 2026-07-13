@@ -3,38 +3,23 @@ import path from 'node:path';
 
 const root = process.cwd();
 const errors = [];
-
-function fail(message) {
-  errors.push(message);
-}
-
-function readText(relativePath) {
-  return readFileSync(path.join(root, relativePath), 'utf8');
-}
-
-function readJson(relativePath) {
-  return JSON.parse(readText(relativePath));
-}
-
-function requireIncludes(text, needle, label) {
-  if (!String(text ?? '').includes(needle)) {
-    fail(`${label}: missing '${needle}'`);
-  }
-}
-
-function requireEqual(actual, expected, label) {
-  if (actual !== expected) {
-    fail(`${label}: expected ${expected}, got ${actual}`);
-  }
-}
+const fail = (message) => errors.push(message);
+const readText = (relativePath) => readFileSync(path.join(root, relativePath), 'utf8');
+const readJson = (relativePath) => JSON.parse(readText(relativePath));
+const requireIncludes = (text, needle, label) => {
+  if (!String(text ?? '').includes(needle)) fail(`${label}: missing '${needle}'`);
+};
+const requireEqual = (actual, expected, label) => {
+  if (actual !== expected) fail(`${label}: expected ${expected}, got ${actual}`);
+};
 
 const probeStatus = readJson('data/generated/live-fetch-probe-status.json');
 const dataTs = readText('src/lib/data.ts');
 const countryPage = readText('src/pages/countries/[slug].astro');
 const jaCountryPage = readText('src/pages/ja/countries/[slug].astro');
+const countryComponent = readText('src/components/CountryDetailPage.astro');
 
 const hkProbe = (probeStatus.probes ?? []).find((probe) => probe.source_id === 'hong-kong-hkjc-home');
-
 if (!hkProbe) {
   fail('live-fetch-probe-status: hong-kong-hkjc-home probe is missing');
 } else {
@@ -54,28 +39,44 @@ requireIncludes(dataTs, "import liveFetchProbeStatus from '../../data/generated/
 requireIncludes(dataTs, 'fetchStatus,', 'src/lib/data.ts generated fetchStatus comma');
 requireIncludes(dataTs, 'liveFetchProbeStatus', 'src/lib/data.ts generated export');
 
-for (const [label, text] of [
-  ['English country page', countryPage],
-  ['Japanese country page', jaCountryPage]
+for (const [label, text, locale] of [
+  ['English country route', countryPage, 'en'],
+  ['Japanese country route', jaCountryPage, 'ja'],
 ]) {
-  requireIncludes(text, 'countryLiveFetchProbes', label);
-  requireIncludes(text, 'Live fetch probe status', label);
-  requireIncludes(text, 'raw_content_saved', label);
-  requireIncludes(text, 'body_read', label);
-  requireIncludes(text, 'generated_files_written', label);
+  requireIncludes(text, 'CountryDetailPage', label);
+  requireIncludes(text, `locale="${locale}"`, label);
+}
+for (const phrase of [
+  'This section shows currently available verified meeting records.',
+  'この欄は、現在利用できる確認済み開催レコードを表示しています。',
+  'No verified meeting records are currently linked to this country page.',
+  'これは、この国で開催がないことを意味しません。',
+]) requireIncludes(countryComponent, phrase, 'Public v1 country component');
+
+for (const internalDiagnostic of [
+  'countryLiveFetchProbes',
+  'Live fetch probe status',
+  'raw_content_saved',
+  'body_read',
+  'generated_files_written',
+]) {
+  if (countryPage.includes(internalDiagnostic) || jaCountryPage.includes(internalDiagnostic) || countryComponent.includes(internalDiagnostic)) {
+    fail(`internal live-fetch diagnostic leaked into Public v1 country page: ${internalDiagnostic}`);
+  }
 }
 
 const statusText = readText('data/generated/live-fetch-probe-status.json');
 for (const forbidden of ['<html', '<body', '<script', '<table']) {
-  if (statusText.toLowerCase().includes(forbidden)) {
-    fail(`live fetch probe status must not contain raw HTML token ${forbidden}`);
-  }
+  if (statusText.toLowerCase().includes(forbidden)) fail(`live fetch probe status must not contain raw HTML token ${forbidden}`);
 }
 
 if (errors.length) {
-  console.error('Live fetch probe status UI check failed:');
+  console.error('Live fetch probe status internal-boundary check failed:');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log('Live fetch probe status UI check passed.');
+console.log('Live fetch probe status internal-boundary check passed.');
+console.log('PROBE_STATUS_DATA: retained_internal');
+console.log('PUBLIC_V1_COUNTRY_UI_EXPOSURE: false');
+console.log('RAW_CONTENT_STORAGE: false');
