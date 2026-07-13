@@ -56,6 +56,23 @@ current Canonical
 -> combined proposed Canonical meetings/details
 ```
 
+## Reviewed schedule Readiness activation
+
+The existing `banei-official-schedule` Readiness record still carries its historical `link_only` automation mode. Pipeline v1 correctly refuses Canonical promotion while that mode remains active.
+
+The successful July/August live campaign now provides reviewed evidence for a narrowly scoped transition:
+
+```text
+source: japan/banei-tokachi/banei-official-schedule
+automation_mode: link_only -> semi_automatic
+Canonical scope: Rank C meeting identity only
+confirmed fields: meeting date and Obihiro racecourse
+```
+
+This transition does not authorize race times or programme rows from the monthly schedule source. It also does not enable automatic approval, publication, or deployment.
+
+The review workflow applies the transition only to an in-memory copy of Calendar Readiness and emits `reviewed-readiness-activation.json`. The actual Registry file remains unchanged until the separate Apply PR is reviewed and merged.
+
 ## Review checks
 
 C records:
@@ -91,6 +108,7 @@ The review workflow produces:
 
 - approved C schedule Candidate;
 - approved A+ detail Candidate;
+- reviewed Readiness activation proposal;
 - proposed Canonical meetings;
 - proposed Canonical meeting details;
 - combined promotion summary;
@@ -99,6 +117,7 @@ The review workflow produces:
 Expected closure:
 
 ```text
+Readiness activation: link_only -> semi_automatic
 promoted meetings: 13
 promoted details: 1
 A+ race rows: 12
@@ -111,9 +130,10 @@ The workflow has read-only repository and Actions permissions.
 
 It does not:
 
+- write Calendar Readiness;
 - commit either approved Candidate;
 - write Canonical files;
 - regenerate public projection;
 - publish or deploy.
 
-A separate reviewed apply PR remains required.
+A separate reviewed Apply PR remains required.
