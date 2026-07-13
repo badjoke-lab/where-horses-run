@@ -21,7 +21,8 @@ const paths = {
   aliases: 'data/static/timetable-source-aliases-v1.json',
   authority: 'data/static/authority-source-inventory.json',
   publicMeetings: 'data/generated/timetable/public/meeting-list.json',
-  publicDetails: 'data/generated/timetable/public/meeting-details.json'
+  publicDetails: 'data/generated/timetable/public/meeting-details.json',
+  baneiCurrentWindowResult: 'data/audits/calendar-banei-current-window-acquisition-result-v1.json',
 };
 
 const canonicalMeetings = parse(paths.canonicalMeetings);
@@ -30,9 +31,10 @@ const policyData = parse(paths.policy);
 const readinessRegistry = loadCalendarReadinessV1(root);
 const sourceAliases = parse(paths.aliases);
 const authorityInventory = parse(paths.authority);
+const baneiCurrentWindowResult = parse(paths.baneiCurrentWindowResult);
 const publicBefore = {
   meetings: hash(paths.publicMeetings),
-  details: hash(paths.publicDetails)
+  details: hash(paths.publicDetails),
 };
 
 let first;
@@ -42,7 +44,7 @@ try {
     canonicalDetails,
     policyData,
     readinessRegistry,
-    sourceAliases
+    sourceAliases,
   });
 } catch (error) {
   fail(`valid public projection failed: ${error instanceof Error ? error.message : error}`);
@@ -55,7 +57,7 @@ if (first) {
       canonicalDetails,
       policyData,
       readinessRegistry,
-      sourceAliases
+      sourceAliases,
     });
     if (stable(first) !== stable(second)) fail('public projection is not deterministic');
   } catch (error) {
@@ -108,9 +110,9 @@ if (first) {
   }
 
   const jraDecision = first.audit.decisions.find((decision) =>
-    decision.readiness_id === 'japan--japan-jra-system--jra-programme' &&
-    decision.effective_public_rank === 'A+' &&
-    detailById.has(decision.meeting_id)
+    decision.readiness_id === 'japan--japan-jra-system--jra-programme'
+    && decision.effective_public_rank === 'A+'
+    && detailById.has(decision.meeting_id)
   );
   const jraDetail = jraDecision ? detailById.get(jraDecision.meeting_id) : null;
   if (!jraDecision) fail('missing current JRA A+ audit decision fixture');
@@ -150,13 +152,87 @@ if (first) {
     fail('UAE legacy source must project at reviewed C ceiling');
   }
 
-  for (const id of ['banei-obihiro-racecourse-2026-05-30', 'nar-kasamatsu-racecourse-2026-05-30']) {
-    const decision = decisionById.get(id);
-    if (!decision) fail(`missing legacy link-only decision ${id}`);
-    else if (decision.include_in_public_list || !String(decision.exclusion_reason).startsWith('readiness:link_only')) {
-      fail(`${id} link-only readiness must be excluded from public meeting rows`);
+  const kasamatsuId = 'nar-kasamatsu-racecourse-2026-05-30';
+  const kasamatsuDecision = decisionById.get(kasamatsuId);
+  if (!kasamatsuDecision) fail(`missing legacy link-only decision ${kasamatsuId}`);
+  else if (kasamatsuDecision.include_in_public_list || !String(kasamatsuDecision.exclusion_reason).startsWith('readiness:link_only')) {
+    fail(`${kasamatsuId} link-only readiness must be excluded from public meeting rows`);
+  }
+  if (meetingById.has(kasamatsuId)) fail(`${kasamatsuId} link-only record leaked into public meeting rows`);
+
+  const baneiReadiness = readinessRegistry.records.find((record) =>
+    record.authority_source_key === 'japan/banei-tokachi/banei-official-schedule'
+  );
+  if (!baneiReadiness) {
+    fail('missing Banei official schedule Readiness record');
+  } else if (baneiReadiness.readiness === 'link_only' || baneiReadiness.automation_mode === 'link_only') {
+    const legacyBaneiId = 'banei-obihiro-racecourse-2026-05-30';
+    const legacyDecision = decisionById.get(legacyBaneiId);
+    if (!legacyDecision) fail(`missing legacy link-only decision ${legacyBaneiId}`);
+    else if (legacyDecision.include_in_public_list || !String(legacyDecision.exclusion_reason).startsWith('readiness:link_only')) {
+      fail(`${legacyBaneiId} link-only readiness must be excluded before reviewed activation`);
     }
-    if (meetingById.has(id)) fail(`${id} link-only record leaked into public meeting rows`);
+    if (meetingById.has(legacyBaneiId)) fail(`${legacyBaneiId} link-only record leaked before reviewed activation`);
+  } else {
+    if (baneiReadiness.readiness !== 'prototype_ready' || baneiReadiness.automation_mode !== 'semi_automatic') {
+      fail('Banei reviewed schedule Readiness must be prototype_ready / semi_automatic');
+    }
+    if (baneiReadiness.technical_rank !== 'C' || baneiReadiness.public_ceiling !== 'C') {
+      fail('Banei reviewed schedule Readiness must remain limited to Rank C');
+    }
+
+    const legacyBaneiId = 'banei-obihiro-racecourse-2026-05-30';
+    const legacyDecision = decisionById.get(legacyBaneiId);
+    const legacyMeeting = meetingById.get(legacyBaneiId);
+    if (!legacyDecision || !legacyDecision.include_in_public_list || legacyDecision.effective_public_rank !== 'C') {
+      fail(`${legacyBaneiId} must project as reviewed Rank C after schedule Readiness activation`);
+    }
+    if (!legacyMeeting || legacyMeeting.effective_public_rank !== 'C' || legacyMeeting.detail_path !== null) {
+      fail(`${legacyBaneiId} public Rank C row differs after Readiness activation`);
+    }
+    if (legacyMeeting && (legacyMeeting.first_race_time_local !== null || legacyMeeting.last_race_time_local !== null)) {
+      fail(`${legacyBaneiId} Rank C row must not expose race times`);
+    }
+    if (detailById.has(legacyBaneiId)) fail(`${legacyBaneiId} Rank C row must not expose detail`);
+
+    const aPlusIds = [...(baneiCurrentWindowResult.a_plus_meeting_ids ?? [])].sort();
+    const cIds = [...(baneiCurrentWindowResult.lower_rank_meeting_ids ?? [])].sort();
+    if (aPlusIds.length !== 1 || cIds.length !== 12 || new Set([...aPlusIds, ...cIds]).size !== 13) {
+      fail('Banei current-window reviewed meeting sets differ');
+    }
+    for (const id of cIds) {
+      const decision = decisionById.get(id);
+      const meeting = meetingById.get(id);
+      if (!decision || !decision.include_in_public_list || decision.effective_public_rank !== 'C') {
+        fail(`${id} must project as reviewed Rank C`);
+      }
+      if (!meeting || meeting.effective_public_rank !== 'C' || meeting.detail_path !== null) {
+        fail(`${id} public Rank C meeting row differs`);
+      }
+      if (meeting && (meeting.first_race_time_local !== null || meeting.last_race_time_local !== null)) {
+        fail(`${id} Rank C meeting must not expose race times`);
+      }
+      if (detailById.has(id)) fail(`${id} Rank C meeting must not expose detail`);
+    }
+    for (const id of aPlusIds) {
+      const decision = decisionById.get(id);
+      const meeting = meetingById.get(id);
+      const detail = detailById.get(id);
+      if (!decision || !decision.include_in_public_list || decision.effective_public_rank !== 'A+') {
+        fail(`${id} must project as reviewed Rank A+`);
+      }
+      if (!meeting || meeting.effective_public_rank !== 'A+' || meeting.detail_path !== `/timetable/meetings/${id}/`) {
+        fail(`${id} public Rank A+ meeting row differs`);
+      }
+      if (!detail || detail.effective_public_rank !== 'A+' || detail.timetable_rows.length !== 12) {
+        fail(`${id} public Rank A+ detail differs`);
+      }
+      if (detail?.timetable_rows.some((row) =>
+        !('race_name' in row) || !('distance_m' in row) || !('surface' in row) || !('course_label' in row)
+      )) {
+        fail(`${id} public Rank A+ rows are incomplete`);
+      }
+    }
   }
 
   const raisedReadiness = clone(readinessRegistry);
@@ -190,7 +266,7 @@ for (const alias of sourceAliases.aliases) {
 
 const publicAfter = {
   meetings: hash(paths.publicMeetings),
-  details: hash(paths.publicDetails)
+  details: hash(paths.publicDetails),
 };
 if (stable(publicBefore) !== stable(publicAfter)) fail('pure projection validation modified committed public JSON');
 
@@ -215,4 +291,5 @@ if (errors.length) {
 console.log(`CALENDAR_PIPELINE_V1_PUBLIC_PROJECTION: pass public_meetings=${first.meetingListDataset.meetings.length} public_details=${first.meetingDetailsDataset.details.length}`);
 console.log(`DETERMINISTIC_GENERATED_AT: ${first.meetingListDataset.generated_at}`);
 console.log('PUBLIC_CEILING_ENFORCED: true');
+console.log('BANEI_READINESS_STATE_AWARE: true');
 console.log('COMMITTED_PUBLIC_JSON_MODIFIED: false');
