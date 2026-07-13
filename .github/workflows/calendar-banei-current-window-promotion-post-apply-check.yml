@@ -1,0 +1,104 @@
+name: Calendar Banei promotion post-apply check
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-banei-current-window-promotion-apply-v1.json'
+      - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'scripts/check-calendar-banei-current-window-acquisition.mjs'
+      - 'scripts/check-calendar-banei-current-window-promotion-review.mjs'
+      - 'scripts/timetable/build-banei-current-window-spec.mjs'
+      - '.github/workflows/calendar-banei-current-window-acquisition.yml'
+      - '.github/workflows/calendar-banei-current-window-promotion-post-apply-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate-post-apply-state:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Download exact reviewed proposal
+        uses: actions/download-artifact@v4
+        with:
+          name: banei-current-window-promotion-proposal-29277596978
+          path: /tmp/banei-reviewed-proposal
+          github-token: ${{ github.token }}
+          repository: badjoke-lab/where-horses-run
+          run-id: 29277596978
+      - name: Apply proposal in read-only workspace
+        run: |
+          proposal_dir="$(find /tmp/banei-reviewed-proposal -type f -name promotion-proposal.json -printf '%h\n' | head -1)"
+          if [ -z "$proposal_dir" ]; then
+            echo 'Banei promotion proposal directory missing'
+            exit 1
+          fi
+          cp "$proposal_dir/approved-c-schedule-candidate.json" data/candidates/banei-current-window-c-schedule-approved.json
+          cp "$proposal_dir/approved-a-plus-detail-candidate.json" data/candidates/banei-current-window-a-plus-approved.json
+          cp "$proposal_dir/promotion-proposal.json" data/audits/calendar-banei-current-window-promotion-proposal-v1.json
+          cp "$proposal_dir/promotion-summary.json" data/audits/calendar-banei-current-window-promotion-summary-v1.json
+          cp "$proposal_dir/reviewed-readiness-activation.json" data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json
+          cp "$proposal_dir/proposed-canonical-meetings.json" data/generated/timetable/canonical/meetings.json
+          cp "$proposal_dir/proposed-canonical-meeting-details.json" data/generated/timetable/canonical/meeting-details.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const registryPath = 'data/static/calendar-readiness-registry.json';
+          const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+          const proposal = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json', 'utf8'));
+          const index = registry.records.findIndex((record) => record.authority_source_key === proposal.authority_source_key);
+          if (index < 0) throw new Error('Banei schedule Readiness record is missing');
+          if (JSON.stringify(registry.records[index]) !== JSON.stringify(proposal.before)) throw new Error('Banei schedule Readiness before-state differs');
+          registry.records[index] = proposal.after;
+          fs.writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+          NODE
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Install dependencies
+        run: npm install --package-lock=false --no-audit --no-fund
+      - name: Capture full repository check
+        shell: bash
+        run: |
+          set +e
+          npm run check > /tmp/banei-post-apply-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/banei-post-apply-check.exit
+          tail -160 /tmp/banei-post-apply-check.log
+          exit 0
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: banei-promotion-post-apply-check-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/banei-post-apply-check.log
+            /tmp/banei-post-apply-check.exit
+      - name: Enforce full repository check
+        run: |
+          status="$(cat /tmp/banei-post-apply-check.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Prove repository source branch unchanged
+        if: always()
+        run: |
+          git reset --hard HEAD
+          git clean -fd
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
