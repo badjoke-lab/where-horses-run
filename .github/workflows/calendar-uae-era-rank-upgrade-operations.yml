@@ -1,0 +1,139 @@
+name: Calendar UAE ERA rank-upgrade operations
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-uae-era-rank-upgrade-operations-v1.json'
+      - 'data/fixtures/calendar-uae-era-rank-upgrade-fixtures-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'scripts/timetable/uae-era-rank-upgrade-core.mjs'
+      - 'scripts/timetable/run-uae-era-actions-job.mjs'
+      - 'scripts/timetable/run-uae-era-pdf-grid-actions.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/prepare-uae-era-promotion-proposal.mjs'
+      - 'scripts/check-calendar-uae-era-rank-upgrade-operations.mjs'
+      - 'docs/calendar/uae-era-rank-upgrade-operations.md'
+      - '.github/workflows/calendar-uae-era-rank-upgrade.yml'
+      - '.github/workflows/calendar-uae-era-promotion-proposal.yml'
+      - '.github/workflows/calendar-uae-era-rank-upgrade-operations.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-operations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate syntax and pure operations proof
+        run: |
+          node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
+          node --check scripts/timetable/run-uae-era-actions-job.mjs
+          node --check scripts/timetable/prepare-uae-era-promotion-proposal.mjs
+          node --check scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
+          node scripts/check-calendar-uae-era-rank-upgrade-operations.mjs
+      - name: Compile UAE selected-meeting Runner Execution
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import { loadCalendarAcquisitionRegistryV1 } from './scripts/timetable/load-calendar-acquisition-registry.mjs';
+          import { compileRunnerExecutionV1 } from './scripts/timetable/runner-compatibility.mjs';
+          const fixture = JSON.parse(fs.readFileSync('data/fixtures/calendar-uae-era-rank-upgrade-fixtures-v1.json', 'utf8'));
+          const registry = loadCalendarAcquisitionRegistryV1(process.cwd());
+          const compatibility = JSON.parse(fs.readFileSync('data/static/calendar-runner-compatibility-contract-v1.json', 'utf8'));
+          const execution = compileRunnerExecutionV1(fixture.job, { batch_id: 'uae-al-ain-rank-upgrade-proof' }, registry, compatibility);
+          if (execution.executor_id !== 'uae-era-actions') throw new Error('UAE executor differs');
+          if (execution.collection_mode !== 'selected_meetings' || execution.target_rank !== 'A' || execution.reason !== 'rank_upgrade_retry') throw new Error('UAE selected-meeting execution differs');
+          if (execution.review_required !== true || Object.values(execution.side_effect_boundary).some((value) => value !== false)) throw new Error('UAE execution review/side-effect boundary differs');
+          fs.writeFileSync('/tmp/uae-rank-upgrade-execution.json', `${JSON.stringify(execution, null, 2)}\n`);
+          NODE
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-rank-upgrade-protected-before.sha256
+      - name: Run bounded UAE selected-meeting fixture executor
+        run: |
+          rm -rf /tmp/uae-rank-upgrade-output
+          node scripts/timetable/run-uae-era-actions-job.mjs \
+            --execution=/tmp/uae-rank-upgrade-execution.json \
+            --output-dir=/tmp/uae-rank-upgrade-output \
+            --check-only-fixture=al-ain-a-proof \
+            > /tmp/uae-rank-upgrade-summary.json
+      - name: Validate output closure
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const dir = '/tmp/uae-rank-upgrade-output';
+          const expected = [
+            'candidates.json',
+            'collection-report.json',
+            'collection-result-manifest.json',
+            'coverage-observation.json',
+            'rank-aware-retry-queue.json',
+            'review-queue.json',
+          ].sort();
+          const actual = fs.readdirSync(dir).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`output files differ: ${JSON.stringify(actual)}`);
+          const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+          const candidate = read('candidates.json');
+          const manifest = read('collection-result-manifest.json');
+          const retry = read('rank-aware-retry-queue.json');
+          const review = read('review-queue.json');
+          const report = read('collection-report.json');
+          if (candidate.records.length !== 1 || candidate.records[0].capability_rank !== 'A' || candidate.records[0].timetable_rows.length !== 10) throw new Error('candidate proof differs');
+          if (candidate.records[0].first_race_time_local !== '17:00' || candidate.records[0].last_race_time_local !== '21:30') throw new Error('candidate times differ');
+          if (manifest.rank_counts.A !== 1 || manifest.coverage_claim !== 'source_window_complete') throw new Error('Manifest proof differs');
+          if (retry.entries.length !== 1 || retry.entries[0].collection_target_rank !== 'A' || retry.entries[0].primary_runner !== 'github_actions') throw new Error('Retry Queue proof differs');
+          if (review.entries.length !== 1 || review.entries[0].review_state !== 'review_ready' || review.entries[0].promotion_state !== 'not_ready') throw new Error('Review Queue proof differs');
+          if (report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') throw new Error('report boundary differs');
+          const summary = JSON.parse(fs.readFileSync('/tmp/uae-rank-upgrade-summary.json', 'utf8'));
+          if (summary.execution_mode !== 'fixture_check_only' || summary.records_discovered !== 1 || summary.review_state !== 'review_ready') throw new Error('runner summary differs');
+          console.log('UAE_ERA_RANK_UPGRADE_EXECUTOR_PROOF: pass');
+          NODE
+      - name: Validate shared contracts
+        run: |
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-collection-job.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+      - name: Validate audit and manual workflow boundaries
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-uae-era-rank-upgrade-operations-v1.json', 'utf8'));
+          if (audit.schema_version !== 'calendar-uae-era-rank-upgrade-operations-v1' || audit.implementation_unit !== 'UAE-DETAIL-RECOVERY-02') throw new Error('UAE operations audit identity differs');
+          if (audit.decision !== 'activate_selected_meeting_c_to_a_operations') throw new Error('UAE operations decision differs');
+          if (audit.reference_proof?.starting_rank !== 'C' || audit.reference_proof?.observed_rank !== 'A' || audit.reference_proof?.race_count !== 10) throw new Error('UAE reference proof differs');
+          if (Object.values(audit.side_effect_boundary ?? {}).some((value) => value !== false)) throw new Error('UAE audit side-effect boundary differs');
+          for (const file of ['.github/workflows/calendar-uae-era-rank-upgrade.yml', '.github/workflows/calendar-uae-era-promotion-proposal.yml']) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.includes('workflow_dispatch:') || !text.includes('contents: read')) throw new Error(`${file} manual/read-only boundary differs`);
+            if (/\bschedule\s*:|\bcron\s*:|contents:\s*write/.test(text)) throw new Error(`${file} enables unattended/write operation`);
+          }
+          console.log('UAE_ERA_RANK_UPGRADE_WORKFLOW_BOUNDARY: pass');
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/uae-rank-upgrade-protected-before.sha256
+      - name: Prove repository clean
+        if: always()
+        run: |
+          rm -rf /tmp/uae-rank-upgrade-output
+          rm -f /tmp/uae-rank-upgrade-execution.json /tmp/uae-rank-upgrade-summary.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
