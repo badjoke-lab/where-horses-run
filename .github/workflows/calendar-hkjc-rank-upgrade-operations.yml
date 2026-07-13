@@ -9,6 +9,8 @@ on:
       - 'scripts/timetable/hkjc-rank-upgrade-operations-core.mjs'
       - 'scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs'
       - 'scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs'
+      - 'scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs'
       - 'scripts/check-calendar-hkjc-rank-upgrade-operations.mjs'
       - 'docs/calendar/hkjc-rank-upgrade-operations.md'
       - '.github/workflows/calendar-hkjc-rank-upgrade-review.yml'
@@ -35,8 +37,14 @@ jobs:
           node --check scripts/timetable/hkjc-rank-upgrade-operations-core.mjs
           node --check scripts/timetable/prepare-hkjc-rank-upgrade-review.mjs
           node --check scripts/timetable/prepare-hkjc-detail-promotion-proposal.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+          node --check scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
           node --check scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
-      - name: Validate HKJC rank-upgrade proof
+      - name: Validate HKJC Retry and Review Queue stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-queue-stage.mjs
+      - name: Validate HKJC promotion stage
+        run: node scripts/check-calendar-hkjc-rank-upgrade-promotion-stage.mjs
+      - name: Validate aggregate HKJC rank-upgrade proof
         run: node scripts/check-calendar-hkjc-rank-upgrade-operations.mjs
       - name: Validate Acquisition Registry compatibility
         run: node scripts/check-calendar-acquisition-registry.mjs
