@@ -1,0 +1,57 @@
+{
+  "schema_version": "calendar-banei-current-window-schedule-readiness-activation-v1",
+  "work_id": "WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-PROMOTION-REVIEW",
+  "implementation_unit": "BANEI-CURRENT-WINDOW-PROMOTION-01",
+  "source_result_ref": "data/audits/calendar-banei-current-window-acquisition-result-v1.json",
+  "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
+  "system_id": "japan-banei-system",
+  "source_id": "banei-official-schedule",
+  "reviewed_transition": {
+    "from_automation_mode": "link_only",
+    "to_automation_mode": "semi_automatic",
+    "required_readiness": [
+      "ready",
+      "prototype_ready",
+      "manual_ready"
+    ],
+    "required_source_status": [
+      "verified",
+      "partial"
+    ],
+    "confirmed_fields_required": {
+      "meeting_date": true,
+      "racecourse": true
+    },
+    "canonical_rank_scope": [
+      "C"
+    ],
+    "refresh_classes_add": [
+      "monthly",
+      "manual"
+    ],
+    "implementation_status": "actions_live_validated",
+    "checked_date": "2026-07-14",
+    "evidence_reviewed_at": "2026-07-14"
+  },
+  "evidence": {
+    "workflow_run_id": 29275669482,
+    "artifact_id": 8289240383,
+    "artifact_digest": "sha256:b1021380e6223c8a4dc7c2719a0d4c451a72de14e58784f4264bc7c91de38d3e",
+    "reviewed_months": [
+      "2026-07",
+      "2026-08"
+    ],
+    "official_schedule_http_success": true,
+    "reviewed_schedule_meeting_count": 13,
+    "reviewed_c_schedule_meeting_count": 12,
+    "raw_source_storage": false
+  },
+  "decision": "Permit reviewed Canonical promotion of public-safe Rank C Banei schedule identities from the official monthly schedule. This transition does not authorize race-time or programme-detail claims from the schedule source and does not enable automatic approval, publication, or deployment.",
+  "side_effect_boundary": {
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "public_write": false,
+    "deployment": false
+  }
+}
