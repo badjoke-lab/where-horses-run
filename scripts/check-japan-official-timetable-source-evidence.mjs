@@ -96,6 +96,14 @@ function assertNoPositiveClaim(text, pattern, label) {
   }
 }
 
+function sorted(values) {
+  return [...values].sort((left, right) => left.localeCompare(right));
+}
+
+function exact(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 const evidence = readRequired('docs/runbooks/japan-official-timetable-source-evidence.md');
 const pr = readRequired('docs/runbooks/pr-084.md');
 const packageJson = readJson('package.json');
@@ -175,25 +183,46 @@ for (const phrase of [
   includesRequired(pr, phrase, 'PR-084 runbook');
 }
 
-const expectedCandidateCounts = new Map([
-  ['data/candidates/japan-jra-candidates.json', 4],
-  ['data/candidates/japan-nar-candidates.json', 12],
+// PR-084 remains a historical evidence-only unit. Current candidate state is
+// validated against the later reviewed operating artifacts instead of being
+// forced back to the record counts that existed when PR-084 was merged.
+const jraCandidate = readJson('data/candidates/japan-jra-candidates.json');
+const jraPilot = readJson('data/generated/timetable/jra-pilot-review.json');
+if (jraCandidate && jraPilot) {
+  const records = jraCandidate.records ?? [];
+  const pilotIds = sorted(jraPilot.normalized?.meeting_ids ?? []);
+  const candidateIds = sorted(records.map((record) => record.meeting_id));
+  if (jraCandidate.schema_version !== 'timetable-candidate-v1') fail('Current JRA candidate schema differs.');
+  if (jraCandidate.adapter_id !== 'jra-normalized-programme-candidate-v1') fail('Current JRA candidate adapter differs.');
+  if (jraCandidate.generated_at !== jraPilot.generated_at) fail('Current JRA candidate and pilot generated_at differ.');
+  if (records.length !== jraPilot.normalized?.candidate_count || records.length !== 24) fail(`Current JRA candidate count must match synchronized pilot count 24; found ${records.length}.`);
+  if (!exact(candidateIds, pilotIds)) fail('Current JRA candidate IDs differ from synchronized pilot review.');
+  if (records.some((record) => record.capability_rank !== 'A+' || record.review_status !== 'needs_review')) fail('Current JRA candidate rank/review boundary differs.');
+  if (jraPilot.boundaries?.candidate_approved !== false || jraPilot.boundaries?.canonical_written !== false || jraPilot.boundaries?.public_projection_written !== false) fail('Current JRA pilot write/approval boundary differs.');
+}
+
+const narActivePath = 'data/candidates/japan-nar-candidates.json';
+const narArchive = readJson('data/archive/timetable/candidates/japan-nar-candidates.v0.json');
+if (existsSync(path.join(root, narActivePath))) fail('Legacy NAR dry-run candidate must remain absent from active candidates.');
+if (narArchive) {
+  if (narArchive.schema_version !== 'timetable-candidates-v0') fail('Archived NAR candidate schema differs.');
+  if (narArchive.source_adapter_id !== 'japan-nar-dry-run-adapter') fail('Archived NAR candidate adapter differs.');
+  if ((narArchive.records ?? []).length !== 12) fail('Archived NAR candidate must retain the historical 12 records.');
+}
+
+for (const [relativePath, expectedCount] of [
   ['data/candidates/japan-banei-candidates.json', 3],
   ['data/candidates/japan-active-window-approved-candidates.json', 19],
-]);
-
-for (const [relativePath, expectedCount] of expectedCandidateCounts) {
+]) {
   const file = readJson(relativePath);
   if (!file) continue;
   const records = file.records ?? [];
-  if (records.length !== expectedCount) {
-    fail(`${relativePath} must retain ${expectedCount} records; found ${records.length}. PR-084 must not add new candidate timetable records.`);
-  }
+  if (records.length !== expectedCount) fail(`${relativePath} must retain ${expectedCount} reviewed records; found ${records.length}.`);
 }
 
 const generatedJapan = readJson('data/generated/japan-active-timetable-records.json');
 if (generatedJapan && (generatedJapan.records ?? []).length !== 15) {
-  fail('data/generated/japan-active-timetable-records.json must retain 15 records; PR-084 must not add generated Japan timetable records');
+  fail('data/generated/japan-active-timetable-records.json must retain its historical 15-record generated set');
 }
 
 for (const relativePath of [
@@ -201,9 +230,7 @@ for (const relativePath of [
   'data/generated/japan-timetable-overlay.json',
   'data/generated/japan-promoted-timetable-records.json',
 ]) {
-  if (existsSync(path.join(root, relativePath))) {
-    fail(`${relativePath}: PR-084 must not add a public overlay replacement`);
-  }
+  if (existsSync(path.join(root, relativePath))) fail(`${relativePath}: retired public overlay replacement must remain absent`);
 }
 
 for (const relativePath of walkFiles('data/generated')) {
@@ -211,7 +238,7 @@ for (const relativePath of walkFiles('data/generated')) {
   const file = readJson(relativePath);
   if (!file) continue;
   if (file.schema_version === 'timetable-overlay-promoted-v0' && file.country_id === 'japan') {
-    fail(`${relativePath}: PR-084 must not add a promoted Japan timetable overlay`);
+    fail(`${relativePath}: retired promoted Japan timetable overlay must remain absent`);
   }
 }
 
@@ -231,3 +258,6 @@ if (failures.length) {
 }
 
 console.log('Japan official timetable source evidence validation passed.');
+console.log('PR_084_EVIDENCE_STATE: historical');
+console.log('CURRENT_JRA_CANDIDATES: synchronized_with_pilot_review');
+console.log('LEGACY_NAR_CANDIDATES: archived_only');
