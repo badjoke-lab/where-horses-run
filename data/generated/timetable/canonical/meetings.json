@@ -1,7 +1,8 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-07-07T21:08:00Z",
+  "generated_at": "2026-07-13T08:10:00Z",
   "input_sources": [
+    "data/candidates/nar-current-window-a-plus-approved.json",
     "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json",
     "data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json",
     "data/candidates/nar-incremental-v2-july-remainder-c-approved.json",
@@ -2630,27 +2631,27 @@
       "racecourse_id": "morioka-racecourse",
       "date": "2026-07-13",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:50",
+      "last_race_time_local": "18:05",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F07%2F13",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-nagoya-racecourse-2026-07-13",
@@ -2659,27 +2660,27 @@
       "racecourse_id": "nagoya-racecourse",
       "date": "2026-07-13",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:25",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F07%2F13",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-13",
@@ -2688,27 +2689,27 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-07-13",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F07%2F13",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-kanazawa-racecourse-2026-07-14",
@@ -2717,27 +2718,27 @@
       "racecourse_id": "kanazawa-racecourse",
       "date": "2026-07-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "12:15",
+      "last_race_time_local": "18:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F07%2F14",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-monbetsu-racecourse-2026-07-14",
@@ -2746,27 +2747,27 @@
       "racecourse_id": "monbetsu-racecourse",
       "date": "2026-07-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:50",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F07%2F14",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-morioka-racecourse-2026-07-14",
@@ -2775,27 +2776,27 @@
       "racecourse_id": "morioka-racecourse",
       "date": "2026-07-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:30",
+      "last_race_time_local": "18:00",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F07%2F14",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-nagoya-racecourse-2026-07-14",
@@ -2804,27 +2805,27 @@
       "racecourse_id": "nagoya-racecourse",
       "date": "2026-07-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:20",
+      "last_race_time_local": "20:40",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F07%2F14",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-14",
@@ -2833,27 +2834,27 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-07-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F07%2F14",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-07-15",
@@ -2891,27 +2892,27 @@
       "racecourse_id": "monbetsu-racecourse",
       "date": "2026-07-15",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:45",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F07%2F15",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-nagoya-racecourse-2026-07-15",
@@ -2920,27 +2921,27 @@
       "racecourse_id": "nagoya-racecourse",
       "date": "2026-07-15",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:05",
+      "last_race_time_local": "20:40",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F07%2F15",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-sonoda-racecourse-2026-07-15",
@@ -2949,27 +2950,27 @@
       "racecourse_id": "sonoda-racecourse",
       "date": "2026-07-15",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "10:40",
+      "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F07%2F15",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-15",
@@ -2978,27 +2979,27 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-07-15",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F07%2F15",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-monbetsu-racecourse-2026-07-16",
@@ -3065,27 +3066,27 @@
       "racecourse_id": "sonoda-racecourse",
       "date": "2026-07-16",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "10:40",
+      "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F07%2F16",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-16",
@@ -3094,27 +3095,27 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-07-16",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F07%2F16",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-nagoya-racecourse-2026-07-17",
@@ -3152,27 +3153,27 @@
       "racecourse_id": "sonoda-racecourse",
       "date": "2026-07-17",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:20",
+      "last_race_time_local": "20:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=7&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F07%2F17",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-incremental-v2-july-remainder-c-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-window-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-07-07",
-        "generated_at": "2026-07-07T15:38:58.003Z",
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T07:58:52Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-13T08:10:00Z."
       },
-      "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+      "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-17",
