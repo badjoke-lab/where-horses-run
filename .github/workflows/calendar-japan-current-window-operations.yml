@@ -1,0 +1,93 @@
+name: Calendar Japan current-window operations
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-japan-current-window-policy-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'scripts/timetable/japan-current-window-audit-core.mjs'
+      - 'scripts/timetable/build-japan-current-window-audit.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'docs/calendar/japan-current-window-operations.md'
+      - '.github/workflows/calendar-japan-current-window-operations.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-current-window:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate syntax and contracts
+        run: |
+          node --check scripts/timetable/japan-current-window-audit-core.mjs
+          node --check scripts/timetable/build-japan-current-window-audit.mjs
+          node --check scripts/check-calendar-japan-current-window-operations.mjs
+          node scripts/check-calendar-japan-current-window-operations.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Record protected state hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/japan-current-window-protected-before.sha256
+      - name: Build current-window audit outside repository
+        run: |
+          node scripts/timetable/build-japan-current-window-audit.mjs \
+            --output=/tmp/calendar-japan-current-window-audit-v1.json \
+            --generated-at="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > /tmp/calendar-japan-current-window-audit-summary-v1.json
+      - name: Validate audit artifact closure
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('/tmp/calendar-japan-current-window-audit-v1.json', 'utf8'));
+          const summary = JSON.parse(fs.readFileSync('/tmp/calendar-japan-current-window-audit-summary-v1.json', 'utf8'));
+          if (audit.schema_version !== 'calendar-japan-current-window-audit-v1') throw new Error('audit schema differs');
+          if (audit.window.start_date !== '2026-07-13' || audit.window.end_date_exclusive !== '2026-08-12' || audit.window.timezone !== 'Asia/Tokyo') throw new Error('audit window differs');
+          if (audit.systems.length !== 3 || audit.summary.system_count !== 3) throw new Error('audit system count differs');
+          if (audit.summary.target_ready_count + audit.summary.retry_required_count !== audit.summary.canonical_meeting_count) throw new Error('audit summary does not close');
+          for (const system of audit.systems) {
+            const rankTotal = Object.values(system.rank_counts).reduce((total, value) => total + value, 0);
+            if (rankTotal !== system.canonical_meeting_count) throw new Error(`${system.system_id} rank counts do not close`);
+            if (system.target_ready_count + system.retry_required_count !== system.canonical_meeting_count) throw new Error(`${system.system_id} action counts do not close`);
+          }
+          if (summary.network_fetch !== false || summary.canonical_write !== false || summary.public_write !== false || summary.publication_effect !== 'none') throw new Error('summary side-effect boundary differs');
+          console.log('JAPAN_CURRENT_WINDOW_AUDIT_ARTIFACT: pass');
+          console.log(JSON.stringify(audit.summary));
+          for (const system of audit.systems) console.log(JSON.stringify({ system_id: system.system_id, meeting_count: system.canonical_meeting_count, rank_counts: system.rank_counts, state: system.operational_state }));
+          NODE
+      - name: Prove protected state unchanged
+        run: sha256sum --check /tmp/japan-current-window-protected-before.sha256
+      - name: Upload current-window audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: japan-current-window-audit-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/calendar-japan-current-window-audit-v1.json
+            /tmp/calendar-japan-current-window-audit-summary-v1.json
+      - name: Prove repository clean
+        if: always()
+        run: |
+          rm -f /tmp/calendar-japan-current-window-audit-v1.json /tmp/calendar-japan-current-window-audit-summary-v1.json
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
