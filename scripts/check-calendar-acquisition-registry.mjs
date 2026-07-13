@@ -114,6 +114,7 @@ const adapterEvidence = new Map([
   ['banei-nar-race-list-detail-v1', { path: 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json', marker: '"adapter_id": "banei-nar-race-list-detail-v1"' }],
   ['hong-kong-hkjc-dry-run-adapter', { path: 'data/candidates/hong-kong-hkjc-candidates.json', marker: '"source_adapter_id": "hong-kong-hkjc-dry-run-adapter"' }],
   ['hkjc-fixture-artifact-bridge-v1', { path: 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs', marker: "const ADAPTER_ID = 'hkjc-fixture-artifact-bridge-v1'" }],
+  ['hkjc-detail-reviewed-import-v1', { path: 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs', marker: "adapter_id: 'hkjc-detail-reviewed-import-v1'" }],
   ['uae-era-pdf-grid-actions-v1', { path: 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs', marker: "const ADAPTER_ID = 'uae-era-pdf-grid-actions-v1'" }],
   ['uae-era-racecard-detail-artifact-v1', { path: 'scripts/timetable/uae-era-detail-artifact-core.mjs', marker: "const ADAPTER_ID = 'uae-era-racecard-detail-artifact-v1'" }],
 ]);
@@ -200,8 +201,8 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
     } else if (record.system_id === 'japan-banei-system') {
       const selectedEvidence = readText('data/fixtures/calendar-banei-runner-selected-evidence-v1.json');
       const detailCollector = readText('scripts/timetable/collect-banei-detail-window.mjs');
-      if (!selectedEvidence.includes('\"scope_mode\": \"selected_meetings\"')
-        || !selectedEvidence.includes('\"selected_detail_live_success\": true')
+      if (!selectedEvidence.includes('"scope_mode": "selected_meetings"')
+        || !selectedEvidence.includes('"selected_detail_live_success": true')
         || !detailCollector.includes('--meeting-ids=')) {
         push('Banei selected-meeting adapter evidence is missing');
       }
@@ -258,9 +259,10 @@ if (baneiProfile?.profile_status !== 'active'
 }
 const hkjcProfile = registry.records.find((record) => record.system_id === 'hong-kong-hkjc-system');
 if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== null) fail('HKJC provisional profile must preserve evidence-backed Actions schedule routing and no unproven fallback runner.');
-if (!hkjcProfile?.pending_fields?.includes('fallback_runner')) fail('HKJC provisional profile must keep fallback_runner pending until runner compatibility evidence exists.');
-if (hkjcProfile?.detail_source_id !== null || hkjcProfile?.detail_adapter_id !== null) fail('HKJC provisional profile must not claim implemented detail acquisition.');
-if (JSON.stringify(hkjcProfile?.supported_observation_ranks) !== JSON.stringify(['C'])) fail('HKJC provisional profile must remain C-only until detail route evidence succeeds.');
+if (JSON.stringify(hkjcProfile?.pending_fields) !== JSON.stringify(['fallback_runner'])) fail('HKJC provisional profile must keep only fallback_runner pending.');
+if (hkjcProfile?.detail_source_id !== 'hkjc-detail-reviewed-import' || hkjcProfile?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC provisional profile must register the evidence-backed operator-reviewed detail source and adapter.');
+if (JSON.stringify(hkjcProfile?.supported_observation_ranks) !== JSON.stringify(['C', 'B', 'B+', 'A', 'A+'])) fail('HKJC provisional profile must preserve the full evidence-backed five-rank classifier path.');
+if (hkjcProfile?.supports_date_window !== true || hkjcProfile?.supports_selected_meetings !== false || hkjcProfile?.supports_rank_upgrade_retry !== false) fail('HKJC detail activation must preserve date-window operation while selected-meeting retry ownership remains pending.');
 
 const uaeProfile = registry.records.find((record) => record.system_id === 'uae-national-racing-system');
 if (uaeProfile?.profile_status !== 'provisional' || uaeProfile?.primary_runner !== 'github_actions' || uaeProfile?.fallback_runner !== null) fail('UAE provisional profile must preserve evidence-backed Actions schedule routing and no fallback runner.');
@@ -293,6 +295,6 @@ console.log(`ACTIVE_PROFILES: ${registry.records.filter((record) => record.profi
 console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.profile_status === 'provisional').length}`);
 console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
-console.log('HKJC_PROFILE: provisional / github_actions schedule primary / fallback pending / detail pending / C-only');
+console.log('HKJC_PROFILE: provisional / github_actions schedule primary / operator-reviewed detail active / fallback and rank-retry pending');
 console.log('UAE_PROFILE: provisional / C schedule + A detail / fallback and shared rank-retry routing pending');
 console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
