@@ -1,0 +1,55 @@
+{
+  "schema_version": "calendar-readiness-hkjc-detail-v1",
+  "records": [
+    {
+      "readiness_id": "hong-kong--hong-kong-hkjc-system--hkjc-detail-reviewed-import",
+      "country_id": "hong-kong",
+      "country_tracker_delivery_no": "14",
+      "system_id": "hong-kong-hkjc-system",
+      "system_name_en": "Hong Kong Jockey Club detail timetable system",
+      "authority_source_key": "hong-kong/hkjc/hkjc-detail-reviewed-import",
+      "racecourse_ids": [
+        "happy-valley-racecourse",
+        "sha-tin-racecourse"
+      ],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "A+",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "source_format": "reviewed_public_safe_json",
+      "access_mode": "manual_reviewed_import",
+      "automation_mode": "manual_import",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting",
+        "manual"
+      ],
+      "readiness": "manual_ready",
+      "implementation_status": "manual_operation",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-07-13",
+      "evidence_reviewed_at": "2026-07-13",
+      "revalidation_trigger": "Revalidate when the reviewed HKJC racecard field contract, official hostname, public-safe import schema, or operator-only route semantics change.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/hkjc-detail-operator-runbook.md",
+      "limitations": [
+        "The route is explicit operator-reviewed import; hosted direct HTTP detail acquisition is not claimed.",
+        "Technical A+ fields are accepted for validation, but public output remains capped at A.",
+        "Participant, betting, result, payout, prediction, raw-source, embedded-video, and direct-stream data remain excluded.",
+        "Retry selection, review, promotion, and publication remain separate operator-controlled steps."
+      ],
+      "notes": "Reviewed HKJC detail evidence supports C/B/B+/A/A+ technical classification for Happy Valley and Sha Tin under an A public ceiling. The accepted historical A+ reference contains nine continuous Happy Valley races on 2026-06-10 from 18:40 through 22:50."
+    }
+  ]
+}
