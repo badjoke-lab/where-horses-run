@@ -221,6 +221,10 @@ export function approveHkjcCandidateV1({ candidate, manifest, approval }) {
     },
     records: candidate.records.map((record) => ({
       ...record,
+      source: {
+        ...record.source,
+        extraction_method: 'reviewed_snapshot',
+      },
       review_status: 'approved',
     })),
   };
