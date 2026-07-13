@@ -15,7 +15,7 @@ jobs:
   apply-reviewed-proposal:
     if: github.head_ref == 'work/calendar-nar-current-window-promotion-apply'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,7 +36,7 @@ jobs:
           if (audit.proposal_artifact?.workflow_run_id !== 29234810155 || audit.proposal_artifact?.artifact_id !== 8272957804) throw new Error('proposal artifact identity differs');
           if (audit.publication_boundary?.branch_write_allowed !== true || audit.publication_boundary?.main_write_allowed !== false || audit.publication_boundary?.merge_required !== true || audit.publication_boundary?.deployment !== false) throw new Error('apply publication boundary differs');
           NODE
-      - name: Stop when proposal was already applied
+      - name: Detect whether proposal is already applied
         id: already
         run: |
           if [ -f data/candidates/nar-current-window-a-plus-approved.json ]; then
@@ -86,10 +86,10 @@ jobs:
           cp "$PROPOSAL_DIR/proposed-canonical-meeting-details.json" data/generated/timetable/canonical/meeting-details.json
           cp "$PROPOSAL_DIR/promotion-proposal.json" data/audits/calendar-nar-current-window-promotion-proposal-v1.json
       - name: Regenerate deterministic public projection
-        if: steps.already.outputs.value == 'false'
         run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Regenerate dependent operations status
+        run: node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
       - name: Validate promoted and retained meeting sets
-        if: steps.already.outputs.value == 'false'
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'node:fs';
@@ -119,17 +119,16 @@ jobs:
             if (canonical?.capability_rank !== 'C' || publicMeeting?.effective_public_rank !== 'C') throw new Error(`${id} retained C rank differs`);
             if (canonicalDetails.has(id) || publicDetails.has(id)) throw new Error(`${id} retained C record unexpectedly has detail`);
           }
+          const operations = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          if (operations.public_projection?.meeting_count !== publicMeetings.size || operations.public_projection?.detail_count !== publicDetails.size) throw new Error('operations status public counts differ');
           console.log('NAR_CURRENT_WINDOW_PROMOTION_APPLY: pass');
-          console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length }));
+          console.log(JSON.stringify({ promoted_a_plus: candidate.records.length, promoted_race_rows: raceRows, retained_c: result.unresolved_meeting_ids.length, operations_meetings: publicMeetings.size, operations_details: publicDetails.size }));
           NODE
       - name: Validate deterministic public projection
-        if: steps.already.outputs.value == 'false'
         run: node scripts/timetable/build-public-timetable-view.mjs --check
       - name: Validate Pipeline v1 release gate
-        if: steps.already.outputs.value == 'false'
         run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Commit exact reviewed application to PR branch
-        if: steps.already.outputs.value == 'false'
+      - name: Commit reviewed application and dependent generated state
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -139,11 +138,15 @@ jobs:
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-          git commit -m 'Apply reviewed NAR current-window A+ promotion'
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/operations-status.json
+          if git diff --cached --quiet; then
+            echo 'Reviewed application and dependent status are already committed.'
+          else
+            git commit -m 'Apply reviewed NAR current-window A+ promotion state'
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
       - name: Capture full repository check diagnostics
-        if: steps.already.outputs.value == 'false'
         shell: bash
         run: |
           set +e
@@ -153,7 +156,6 @@ jobs:
           tail -100 /tmp/nar-promotion-full-check.log
           exit 0
       - name: Upload full-check diagnostics
-        if: steps.already.outputs.value == 'false'
         uses: actions/upload-artifact@v4
         with:
           name: nar-promotion-full-check-${{ github.run_id }}
@@ -163,7 +165,6 @@ jobs:
             /tmp/nar-promotion-full-check.log
             /tmp/nar-promotion-full-check.exit
       - name: Enforce full repository check
-        if: steps.already.outputs.value == 'false'
         run: |
           status="$(cat /tmp/nar-promotion-full-check.exit)"
           if [ "$status" != "0" ]; then
