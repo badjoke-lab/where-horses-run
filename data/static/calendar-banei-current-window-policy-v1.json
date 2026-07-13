@@ -1,0 +1,58 @@
+{
+  "schema_version": "calendar-banei-current-window-policy-v1",
+  "work_id": "WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-ACQUISITION",
+  "implementation_unit": "BANEI-CURRENT-WINDOW-01",
+  "source_decision_ref": "data/audits/calendar-japan-current-window-decision-2026-07-13-v1.json",
+  "window": {
+    "start_date": "2026-07-13",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Asia/Tokyo"
+  },
+  "month_jobs": [
+    {
+      "target_month": "2026-07",
+      "job_id": "banei-current-window-july-job-001",
+      "campaign_id": "banei-current-window-acquisition-2026-07-08",
+      "batch_id": "banei-current-window-july-2026-batch-001",
+      "start_date": "2026-07-13",
+      "end_date_exclusive": "2026-08-01"
+    },
+    {
+      "target_month": "2026-08",
+      "job_id": "banei-current-window-august-job-001",
+      "campaign_id": "banei-current-window-acquisition-2026-07-08",
+      "batch_id": "banei-current-window-august-2026-batch-001",
+      "start_date": "2026-08-01",
+      "end_date_exclusive": "2026-08-12"
+    }
+  ],
+  "job_contract": {
+    "system_id": "japan-banei-system",
+    "runner_policy": {
+      "mode": "registry_primary",
+      "runner": null
+    },
+    "collection_mode": "date_window",
+    "rank_strategy": "best_available",
+    "target_rank": null,
+    "reason": "regular_refresh"
+  },
+  "campaign_result_contract": {
+    "merge_key": "meeting_id",
+    "accepted_ranks": ["B", "A+"],
+    "candidate_state": "needs_review",
+    "promotion_eligible": false,
+    "canonical_write": false,
+    "public_write": false,
+    "publication_effect": "none"
+  },
+  "side_effect_boundary": {
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "canonical_write": false,
+    "public_write": false,
+    "automatic_publication": false,
+    "deployment": false,
+    "raw_source_storage": false
+  }
+}
