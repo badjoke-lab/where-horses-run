@@ -43,18 +43,26 @@ for (const [name, html] of Object.entries(pages)) {
 if (!pages.calendarEn.includes('30-day racing calendar')) fail('English Calendar title is not dynamic.');
 if (!pages.calendarJa.includes('30日間の開催カレンダー')) fail('Japanese Calendar title is not dynamic.');
 
-const oldMeetingLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
+const juneSixDetailLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
 if (referenceDate === '2026-06-06') {
   for (const [name, html] of Object.entries(pages)) {
     if (!html.includes('data-calendar-data-status="current_window_available"')) {
       fail(`${name} must report current_window_available for the fixture date.`);
     }
   }
-  if (!pages.todayEn.includes(oldMeetingLink) || !pages.todayJa.includes(oldMeetingLink)) {
-    fail('Today pages do not render the known June 6 JRA meeting.');
+  if (!pages.todayEn.includes('Tokyo Racecourse') || !pages.todayJa.includes('東京競馬場')) {
+    fail('Today pages do not render the known June 6 JRA Rank C meeting card.');
   }
-  if (!pages.calendarEn.includes(oldMeetingLink) || !pages.calendarJa.includes(oldMeetingLink)) {
-    fail('Calendar pages do not render the known June 6 JRA meeting.');
+  if (!pages.calendarEn.includes('Tokyo Racecourse') || !pages.calendarJa.includes('東京競馬場')) {
+    fail('Calendar pages do not render the known June 6 JRA Rank C meeting card.');
+  }
+  for (const [name, html] of [
+    ['todayEn', pages.todayEn],
+    ['todayJa', pages.todayJa],
+    ['calendarEn', pages.calendarEn],
+    ['calendarJa', pages.calendarJa],
+  ]) {
+    if (html.includes(juneSixDetailLink)) fail(`${name} must not expose a detail link for the June 6 Rank C meeting.`);
   }
   if (!pages.tomorrowEn.includes('2026-06-07') || !pages.tomorrowJa.includes('2026-06-07')) {
     fail('Tomorrow pages do not resolve June 7 from the June 6 reference date.');
@@ -66,7 +74,7 @@ if (referenceDate === '2026-07-01') {
     if (!html.includes('data-calendar-data-status="stale_generation_with_window_records"')) {
       fail(`${name} must report stale_generation_with_window_records for the July 1 reference date.`);
     }
-    if (html.includes(oldMeetingLink)) fail(`${name} leaks an old June meeting into the current window.`);
+    if (html.includes(juneSixDetailLink)) fail(`${name} leaks an old June meeting detail link into the current window.`);
   }
   if (!pages.todayEn.includes('Sha Tin Racecourse') || !pages.todayJa.includes('Sha Tin Racecourse')) {
     fail('July 1 Today pages do not render the reviewed Sha Tin meeting.');
@@ -86,4 +94,5 @@ if (errors.length) {
 
 console.log(`CALENDAR_DYNAMIC_DATES_RENDERED: pass reference_date=${referenceDate} timezone=${timeZone}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
+console.log('RANK_C_DETAIL_LINK: absent');
 console.log('FIXED_JUNE_COPY: 0');
