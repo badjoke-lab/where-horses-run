@@ -10,6 +10,8 @@ on:
       - 'data/fixtures/calendar-uae-era-pilot-06-job-v1.json'
       - 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs'
       - 'scripts/timetable/run-uae-era-pdf-grid-actions.mjs'
+      - 'scripts/timetable/run-uae-era-actions-job.mjs'
+      - 'scripts/timetable/uae-era-rank-upgrade-core.mjs'
       - 'scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
       - 'docs/calendar/uae-era-pilot-06-profile-foundation.md'
@@ -25,7 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+          show-progress: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -34,15 +37,20 @@ jobs:
           python-version: '3.12'
       - name: Install coordinate extraction dependency
         run: python -m pip install --disable-pip-version-check pymupdf
-      - name: Validate PILOT-06 profile foundation and shared contracts
+      - name: Validate historical PILOT-06 and current UAE operations state
         run: |
           node --check scripts/timetable/uae-era-pdf-grid-candidate-core.mjs
           node --check scripts/timetable/run-uae-era-pdf-grid-actions.mjs
+          node --check scripts/timetable/run-uae-era-actions-job.mjs
+          node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
           node --check scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
           node scripts/check-calendar-uae-era-pilot-06-profile-foundation.mjs
-          node scripts/check-calendar-acquisition-registry.mjs
-          node scripts/check-calendar-runner-compatibility.mjs
-          node scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs
+      - name: Validate Acquisition Registry dependency
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Validate Runner Compatibility dependency
+        run: node scripts/check-calendar-runner-compatibility.mjs
+      - name: Validate PILOT-05 boundary mapping dependency
+        run: node scripts/check-calendar-uae-era-pilot-05-boundary-mapping-decision.mjs
       - name: Compile reviewed UAE Collection Job and Runner Execution
         run: |
           node --input-type=module - <<'NODE'
