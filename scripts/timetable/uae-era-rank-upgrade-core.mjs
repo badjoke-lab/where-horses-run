@@ -127,9 +127,15 @@ export function buildUaeEraRankUpgradeArtifactsV1({
     });
   }
 
-  const requestedScope = { kind: 'selected_meetings', meeting_ids: [...job.requested_scope.meeting_ids].sort() };
+  const requestedScope = {
+    kind: 'selected_meetings',
+    meeting_ids: [...job.requested_scope.meeting_ids].sort(),
+    timezone: TIMEZONE,
+  };
   const observedIds = records.map((record) => record.meeting_id).sort();
-  const observedScope = observedIds.length ? { kind: 'selected_meetings', meeting_ids: observedIds } : { kind: 'not_observed' };
+  const observedScope = observedIds.length
+    ? { kind: 'selected_meetings', meeting_ids: observedIds, timezone: TIMEZONE }
+    : { kind: 'not_observed', timezone: TIMEZONE };
   const coverageClaim = unresolvedMeetingIds.length === 0 && sourceErrors.length === 0 ? 'source_window_complete' : records.length ? 'partial' : 'none';
   const candidate = {
     schema_version: 'timetable-candidate-v1',
