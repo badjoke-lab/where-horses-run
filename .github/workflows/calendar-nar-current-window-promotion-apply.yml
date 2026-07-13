@@ -11,6 +11,10 @@ permissions:
   actions: read
   pull-requests: read
 
+concurrency:
+  group: calendar-nar-current-window-promotion-apply-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   apply-reviewed-proposal:
     if: github.head_ref == 'work/calendar-nar-current-window-promotion-apply'
