@@ -90,7 +90,7 @@ if (promoted?.capability_rank !== 'A+' || promoted.first_race_time_local !== '18
   throw new Error('promoted meeting differs');
 }
 if (detail?.timetable_rows?.length !== 2) throw new Error('promoted detail rows differ');
-if (promotion.summary.promoted_meeting_count !== 1 || promotion.summary.promoted_detail_count !== 1) throw new Error('promotion summary differs');
+if (promotion.summary.promoted_meeting_ids.length !== 1 || promotion.summary.promoted_detail_ids.length !== 1) throw new Error('promotion summary differs');
 console.log('CALENDAR_HKJC_RANK_UPGRADE_PROMOTION_STAGE: pass');
 console.log(`MEETING_ID: ${meeting.meeting_id}`);
 console.log(`TECHNICAL_RANK: ${promoted.capability_rank}`);
