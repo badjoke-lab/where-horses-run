@@ -17,6 +17,14 @@ function readJson(relativePath) {
   return JSON.parse(read(relativePath));
 }
 
+function readProtectedDiff() {
+  return spawnSync(
+    'git',
+    ['diff', '--no-ext-diff', '--binary', '--', 'data/candidates', 'data/generated', 'src/lib/data.ts'],
+    { cwd: root, encoding: 'utf8' },
+  );
+}
+
 function includesRequired(text, phrase, label) {
   if (!text.includes(phrase)) fail(`${label} must include: ${phrase}`);
 }
@@ -51,6 +59,9 @@ function sorted(values) {
 function exact(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
+
+const protectedDiffBefore = readProtectedDiff();
+if (protectedDiffBefore.status !== 0) fail('Unable to capture protected repository diff before validation.');
 
 const reportPath = 'docs/runbooks/japan-active-window-candidate-gap-report.md';
 if (!existsSync(path.join(root, reportPath))) fail(`${reportPath} must exist`);
@@ -172,14 +183,11 @@ for (const relativePath of walkFiles('data/generated')) {
   }
 }
 
-const diff = spawnSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'utf8' });
-if (diff.status === 0) {
-  const changed = diff.stdout.trim().split('\n').filter(Boolean);
-  for (const relativePath of changed) {
-    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: validator execution must not mutate candidate data files.`);
-    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: validator execution must not mutate generated timetable files.`);
-    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: validator execution must not mutate runtime data loading.');
-  }
+const protectedDiffAfter = readProtectedDiff();
+if (protectedDiffAfter.status !== 0) {
+  fail('Unable to capture protected repository diff after validation.');
+} else if (protectedDiffBefore.status === 0 && protectedDiffAfter.stdout !== protectedDiffBefore.stdout) {
+  fail('Validator execution must not mutate candidate, generated timetable, or runtime data files.');
 }
 
 if (packageJson.scripts?.['validate:japan-active-window-candidate-gap-report'] !== 'node scripts/check-japan-active-window-candidate-gap-report.mjs') {
