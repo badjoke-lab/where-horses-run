@@ -57,7 +57,8 @@ jobs:
             const registry = JSON.parse(fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8'));
             const proposal = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json', 'utf8'));
             const current = registry.records.find((record) => record.authority_source_key === proposal.authority_source_key);
-            applied = JSON.stringify(current) === JSON.stringify(proposal.after);
+            const normalizedAfter = { ...proposal.after, implementation_status: 'candidate_active' };
+            applied = JSON.stringify(current) === JSON.stringify(normalizedAfter);
           }
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `value=${applied ? 'true' : 'false'}\n`);
           console.log(`BANEI_REVIEWED_APPLICATION_COMMITTED: ${applied}`);
@@ -114,7 +115,7 @@ jobs:
           const canonicalDetails = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.canonical_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
           const publicMeetings = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.public_meetings_path, 'utf8')).meetings.map((record) => [record.meeting_id, record]));
           const publicDetails = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.public_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
-          if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic') throw new Error('Banei readiness after-state differs');
+          if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic' || readiness?.implementation_status !== 'candidate_active') throw new Error('Banei readiness after-state differs');
           if (cCandidate.records.length !== 12 || aPlusCandidate.records.length !== 1) throw new Error('Banei approved candidate counts differ');
           for (const record of cCandidate.records) {
             const canonical = canonicalMeetings.get(record.meeting_id);
