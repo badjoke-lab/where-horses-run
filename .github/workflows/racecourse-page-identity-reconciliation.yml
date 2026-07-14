@@ -1,0 +1,65 @@
+name: Racecourse page identity reconciliation
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/racecourse-page-identity-reconciliation-v1.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/static/racecourses*.json'
+      - 'docs/racecourses/identity-reconciliation.md'
+      - 'scripts/check-racecourse-page-identity-reconciliation.mjs'
+      - 'src/lib/data.ts'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - 'src/pages/timetable/meetings/**'
+      - 'src/pages/ja/timetable/meetings/**'
+      - '.github/workflows/racecourse-page-identity-reconciliation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/racecourse-page-identity-reconciliation-v1.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/static/racecourses*.json'
+      - 'docs/racecourses/identity-reconciliation.md'
+      - 'scripts/check-racecourse-page-identity-reconciliation.mjs'
+      - 'src/lib/data.ts'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - 'src/pages/timetable/meetings/**'
+      - 'src/pages/ja/timetable/meetings/**'
+      - '.github/workflows/racecourse-page-identity-reconciliation.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate checker syntax
+        run: node --check scripts/check-racecourse-page-identity-reconciliation.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build static site
+        run: npm run build
+      - name: Validate racecourse identity reconciliation
+        run: node scripts/check-racecourse-page-identity-reconciliation.mjs
+      - name: Validate diff hygiene and read-only boundary
+        run: |
+          git diff --check
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Racecourse identity reconciliation modified repository files.' >&2
+            exit 1
+          fi
