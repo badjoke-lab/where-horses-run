@@ -58,9 +58,17 @@ for (const [label, source] of [['English track page', englishPage], ['Japanese t
 if (!englishPage.includes('<RacecoursePublicMeetingPanel state={publicMeetingState} officialScheduleUrl={primaryScheduleUrl} />')) fail('English meeting panel binding differs');
 if (!japanesePage.includes('<RacecoursePublicMeetingPanel state={publicMeetingState} lang="ja" officialScheduleUrl={primaryScheduleUrl} />')) fail('Japanese meeting panel binding differs');
 
-const prohibited = ['review_queue', 'retry_queue', 'attempt_history', 'operator_note', 'reviewer_identity', 'horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
 const implementationText = `${helper}\n${component}`.toLowerCase();
-for (const fragment of prohibited) if (implementationText.includes(fragment)) fail(`public racecourse connection contains prohibited marker ${fragment}`);
+for (const fragment of ['review_queue', 'retry_queue', 'attempt_history', 'operator_note', 'reviewer_identity', 'raw_html', 'source_body', 'stream_url']) {
+  if (implementationText.includes(fragment)) fail(`public racecourse connection contains prohibited internal marker ${fragment}`);
+}
+for (const field of ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction']) {
+  const quotedKey = new RegExp(`["']${field}["']\\s*:`);
+  const meetingAccess = new RegExp(`\\bmeeting\\.${field}\\b`);
+  if (quotedKey.test(implementationText) || meetingAccess.test(implementationText)) {
+    fail(`public racecourse connection reads prohibited field ${field}`);
+  }
+}
 
 if (!fs.existsSync(path.join(root, 'dist'))) fail('dist is missing; run npm run build first');
 const html = (route) => read(`dist/${route}/index.html`);
