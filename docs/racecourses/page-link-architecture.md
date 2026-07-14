@@ -21,9 +21,9 @@ racing-type links: 72 / 72
 existing related-glossary links: 72 / 72
 country source-registry links: 72 / 72
 official external links: 68 / 72
-surface links: 0 / 54 applicable pages
+surface links: 0 / 52 applicable pages
 direction links: 0 / 46 applicable pages
-meeting-date links: 0 / 52 applicable pages
+rendered meeting-date links: 0
 data-status methodology links: 0 / 72
 unresolved surface/direction glossary concepts: 8
 ```
@@ -68,6 +68,21 @@ These amendments add official home routes only. They do not authorize parsing, t
 
 Today, Next, and upcoming meeting dates remain one meeting per row. The date itself links to the localized Calendar using a `date=YYYY-MM-DD` query. No race-level programme data is expanded on the racecourse page.
 
+The deterministic 2026-07-14 fixture renders meeting dates on 38 bilingual pages, and all 38 pages link every displayed Today, Next, and upcoming date to the localized Calendar.
+
+## Implemented result
+
+```text
+bilingual racecourse pages: 72
+official external links: 72 / 72
+surface glossary links: 52 / 52 applicable pages
+direction glossary links: 46 / 46 applicable pages
+rendered meeting-date links: 38 / 38 applicable pages
+data-status methodology links: 72 / 72
+broken internal page links: 0
+unresolved glossary concepts: 0
+```
+
 ## Internal-link integrity
 
 The permanent rendered gate validates:
@@ -78,6 +93,8 @@ The permanent rendered gate validates:
 - every internal page href against the built `dist` tree;
 - built CSS and other asset hrefs as assets rather than page routes;
 - zero unresolved surface/direction glossary concepts.
+
+The gate remains a permanent read-only pull-request and main-branch check for glossary concepts, official-route amendments, meeting-date links, racecourse pages, and the public meeting panel.
 
 ## Public boundary
 
