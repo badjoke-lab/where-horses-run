@@ -1,0 +1,89 @@
+name: Racecourse page bilingual QA
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/racecourse-page-*.json'
+      - 'data/static/racecourse-*.json'
+      - 'data/static/racecourses*.json'
+      - 'docs/racecourses/**'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/check-racecourse-page-*.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'src/components/RacecoursePublicMeetingPanel.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/data.ts'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - 'src/styles/**'
+      - '.github/workflows/racecourse-page-bilingual-qa.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/racecourse-page-*.json'
+      - 'data/static/racecourse-*.json'
+      - 'data/static/racecourses*.json'
+      - 'docs/racecourses/**'
+      - 'docs/project-roadmap.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/governance/document-authority.md'
+      - 'scripts/check-racecourse-page-*.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'src/components/RacecoursePublicMeetingPanel.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/data.ts'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - 'src/styles/**'
+      - '.github/workflows/racecourse-page-bilingual-qa.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate permanent QA syntax
+        run: |
+          node --check scripts/check-racecourse-page-bilingual-qa.mjs
+          node --check scripts/check-racecourse-page-bilingual-qa-rendered.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic bilingual site
+        run: npm run build
+      - name: Validate bilingual release readiness
+        run: node scripts/check-racecourse-page-bilingual-qa.mjs
+      - name: Validate inherited racecourse release chain
+        run: |
+          node scripts/check-racecourse-page-identity-reconciliation.mjs
+          node scripts/check-racecourse-page-public-timetable-connection.mjs
+          node scripts/check-racecourse-page-profile-evidence.mjs
+          node scripts/check-racecourse-page-link-architecture.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Validate read-only boundary
+        run: |
+          git diff --check
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Racecourse bilingual QA modified repository files.' >&2
+            exit 1
+          fi

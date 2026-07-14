@@ -79,6 +79,7 @@ Calendar human-readable contracts:
 - `docs/racecourses/public-timetable-connection.md`
 - `docs/racecourses/profile-evidence.md`
 - `docs/racecourses/page-link-architecture.md`
+- `docs/racecourses/bilingual-qa.md`
 - `docs/calendar/operations-v1-contract.md`
 - `docs/calendar/operations-v1-release-gate.md`
 - `docs/calendar/jra-pilot-foundation.md`
@@ -116,6 +117,7 @@ Calendar machine-readable contracts:
 - `data/audits/racecourse-page-public-timetable-connection-v1.json`
 - `data/audits/racecourse-page-profile-evidence-v1.json`
 - `data/audits/racecourse-page-link-architecture-v1.json`
+- `data/audits/racecourse-page-bilingual-qa-v1.json`
 - `data/static/racecourse-link-amendments-v1.json`
 - `data/static/racecourses-public-timetable-identities-v1.json`
 - `data/static/racecourse-profile-evidence-japan-v1.json`
@@ -155,6 +157,8 @@ Calendar machine-readable contracts:
 - `scripts/check-racecourse-page-public-timetable-connection.mjs`
 - `scripts/check-racecourse-page-profile-evidence.mjs`
 - `scripts/check-racecourse-page-link-architecture.mjs`
+- `scripts/check-racecourse-page-bilingual-qa.mjs`
+- `scripts/check-racecourse-page-bilingual-qa-rendered.mjs`
 - `src/lib/racecourses/publicRacecourseMeetingState.ts`
 - `src/components/RacecoursePublicMeetingPanel.astro`
 - `scripts/check-calendar-banei-retry-queue-state-apply.mjs`
