@@ -1,7 +1,9 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-07-13T08:10:00Z",
+  "generated_at": "2026-07-14T00:15:00Z",
   "input_sources": [
+    "data/candidates/banei-current-window-a-plus-approved.json",
+    "data/candidates/banei-current-window-c-schedule-approved.json",
     "data/candidates/nar-current-window-a-plus-approved.json",
     "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json",
     "data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json",
@@ -7611,6 +7613,154 @@
         }
       ],
       "summary_note": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-13",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-13",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-banei-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F07%2F13",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-a-plus-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.166Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:20",
+          "race_name": "めで鯛！中竹婚福徳円満記念Ｂ４－７",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:50",
+          "race_name": "２歳Ｄ－８",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:25",
+          "race_name": "２歳Ｄ－７",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:00",
+          "race_name": "２歳Ｄ－６",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:30",
+          "race_name": "駿睿誕生日なのに留守番記念２歳Ｃ－４",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:05",
+          "race_name": "祝！誠ちゃん丙午一巡り記念Ｃ２－１２",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:40",
+          "race_name": "ビタＳお兄ちゃん誕生日記念Ｃ２－９",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:15",
+          "race_name": "こだめ爆誕祭２０２６Ｃ１－８",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:50",
+          "race_name": "杉山のケン！転生の章２盃Ｂ４－３",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:25",
+          "race_name": "第３回それゆけゆめこ生誕祭Ｂ３－２",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:00",
+          "race_name": "特別",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:35",
+          "race_name": "Ｂ２－３",
+          "distance_m": 200,
+          "surface": "Dirt",
+          "course_label": "Banei Straight Course",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved complete public-safe Banei A+ programme from official NAR Banei RaceList and DebaTable evidence. Participant, betting, result, payout, prediction, raw-source, and stream fields are excluded."
     },
     {
       "meeting_id": "nar-urawa-racecourse-2026-07-13",

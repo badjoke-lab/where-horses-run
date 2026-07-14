@@ -1,7 +1,9 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-07-13T08:10:00Z",
+  "generated_at": "2026-07-14T00:15:00Z",
   "input_sources": [
+    "data/candidates/banei-current-window-a-plus-approved.json",
+    "data/candidates/banei-current-window-c-schedule-approved.json",
     "data/candidates/nar-current-window-a-plus-approved.json",
     "data/candidates/nar-incremental-2026-07-05-through-2026-07-07-approved.json",
     "data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json",
@@ -2683,6 +2685,35 @@
       "notes": "Approved from the pinned NAR current-window selected-meeting artifact. Only meeting identity and the six public-safe A+ timetable fields are included."
     },
     {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-13",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-13",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:20",
+      "last_race_time_local": "20:35",
+      "source_trace": {
+        "source_id": "nar-banei-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F07%2F13",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-a-plus-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.166Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved complete public-safe Banei A+ programme from official NAR Banei RaceList and DebaTable evidence. Participant, betting, result, payout, prediction, raw-source, and stream fields are excluded."
+    },
+    {
       "meeting_id": "nar-urawa-racecourse-2026-07-13",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -3321,6 +3352,35 @@
       "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
     },
     {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-18",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-18",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
       "meeting_id": "nar-saga-racecourse-2026-07-18",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -3524,6 +3584,35 @@
       "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
     },
     {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-19",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-19",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
       "meeting_id": "nar-kanazawa-racecourse-2026-07-20",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -3609,6 +3698,35 @@
         "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
       },
       "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-20",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-20",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
     },
     {
       "meeting_id": "nar-oi-racecourse-2026-07-20",
@@ -4162,6 +4280,35 @@
       "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
     },
     {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-25",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-25",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
       "meeting_id": "jra-sapporo-racecourse-2026-07-25",
       "country_id": "japan",
       "authority_id": "jra",
@@ -4336,6 +4483,35 @@
       "notes": "JRA official public-safe race metadata only. No runners, odds, results, payouts, predictions, or raw HTML are stored."
     },
     {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-26",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-26",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
       "meeting_id": "jra-sapporo-racecourse-2026-07-26",
       "country_id": "japan",
       "authority_id": "jra",
@@ -4450,6 +4626,35 @@
         "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
       },
       "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-07-27",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-07-27",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1782831600",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:44:55.145Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
     },
     {
       "meeting_id": "nar-kanazawa-racecourse-2026-07-28",
@@ -4914,6 +5119,180 @@
         "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-07T21:08:00Z."
       },
       "notes": "Approved from the pinned NAR monthly schedule-grid evidence. Timetable detail remains pending under source state scheduled_pending_details."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-01",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-01",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-02",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-02",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-03",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-03",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-08",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-09",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-09",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
+    },
+    {
+      "meeting_id": "banei-obihiro-racecourse-2026-08-10",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-10",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "banei-official-schedule",
+        "route_id": null,
+        "source_status": "partial",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000",
+        "source_label": "Banei Tokachi",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/banei-current-window-c-schedule-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-07-13",
+        "generated_at": "2026-07-13T18:45:07.029Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-07-14T00:15:00Z."
+      },
+      "notes": "Approved official Banei monthly-schedule meeting identity. Detail was not complete at observation time; no race times or programme rows are claimed."
     }
   ]
 }
