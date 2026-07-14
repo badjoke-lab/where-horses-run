@@ -13,6 +13,10 @@ on:
       - '.github/workflows/calendar-banei-current-window-promotion-post-apply-check.yml'
   workflow_dispatch:
 
+concurrency:
+  group: calendar-banei-promotion-post-apply-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
