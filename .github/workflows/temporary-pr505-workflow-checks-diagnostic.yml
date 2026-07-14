@@ -1,0 +1,54 @@
+name: Temporary PR505 workflow-check diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/run-pr505-workflow-checks-diagnostic.mjs'
+      - '.github/workflows/temporary-pr505-workflow-checks-diagnostic.yml'
+
+concurrency:
+  group: temporary-pr505-workflow-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'work/calendar-banei-current-window-promotion-apply'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --package-lock=false --no-audit --no-fund
+      - name: Run workflow checkers independently
+        shell: bash
+        run: |
+          set +e
+          node scripts/run-pr505-workflow-checks-diagnostic.mjs > /tmp/pr505-workflow-checks.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/pr505-workflow-checks.exit
+          tail -300 /tmp/pr505-workflow-checks.log
+          exit 0
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr505-workflow-checks-${{ github.run_id }}
+          retention-days: 3
+          if-no-files-found: error
+          path: |
+            /tmp/pr505-workflow-checks.log
+            /tmp/pr505-workflow-checks.exit
+      - name: Enforce diagnostic result
+        run: |
+          status="$(cat /tmp/pr505-workflow-checks.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
