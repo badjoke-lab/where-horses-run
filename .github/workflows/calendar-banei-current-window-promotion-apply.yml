@@ -6,6 +6,10 @@ on:
       - 'data/audits/calendar-banei-current-window-promotion-apply-v1.json'
       - '.github/workflows/calendar-banei-current-window-promotion-apply.yml'
 
+concurrency:
+  group: calendar-banei-current-window-promotion-apply-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   actions: read
