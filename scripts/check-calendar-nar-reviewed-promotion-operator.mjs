@@ -103,8 +103,13 @@ for (const marker of ['loadCalendarReadinessV1', 'resolveCalendarReadinessRegist
 for (const marker of ['jra-pilot-review.json', 'public_meeting_list_sha256', 'public_meeting_details_sha256']) {
   if (!jraPilotReviewBuilder.includes(marker)) fail(`JRA pilot review builder missing ${marker}.`);
 }
-for (const marker of ['JRA pilot review check failed', 'public projection meeting count is invalid', 'public projection detail count is invalid']) {
-  if (!jraPilotReviewValidator.includes(marker)) fail(`JRA pilot review validator missing ${marker}.`);
+for (const marker of [
+  'jra-pilot-review.json',
+  'Historical JRA pilot',
+  'Current JRA candidate count must be 24',
+  'PUBLIC_PROJECTION_WRITTEN_BY_PILOT: false',
+]) {
+  if (!jraPilotReviewValidator.includes(marker)) fail(`JRA pilot review validator missing current contract marker ${marker}.`);
 }
 for (const marker of ['operations-status.json', '--reference-date']) {
   if (!operationsBuilder.includes(marker)) fail(`operations status builder missing ${marker}.`);
@@ -132,7 +137,7 @@ const prohibited = ['runner', 'jockey', 'trainer', 'odds', 'payout', 'prediction
 for (const [name, text] of [['review', review], ['builder', builder], ['readiness supplement', readinessSupplement], ['authority supplement', authoritySupplement]]) {
   const lower = text.toLowerCase();
   for (const marker of prohibited) {
-    if (lower.includes(`\"${marker}\"`)) fail(`${name} contains prohibited key ${marker}.`);
+    if (lower.includes(`"${marker}"`)) fail(`${name} contains prohibited key ${marker}.`);
   }
 }
 
