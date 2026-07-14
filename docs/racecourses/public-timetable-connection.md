@@ -58,6 +58,8 @@ It also verifies next-meeting examples:
 
 Meydan is used as an explicit no-future-meeting example because its reviewed public meetings are outside the current 30-day window.
 
+The permanent gate reruns whenever the public meeting projection, racecourse meeting view model, rendered panel, bilingual racecourse pages, or its own contract changes.
+
 ## Public presentation
 
 Every English and Japanese racecourse page renders:
