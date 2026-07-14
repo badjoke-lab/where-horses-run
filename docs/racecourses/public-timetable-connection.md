@@ -56,7 +56,7 @@ It also verifies next-meeting examples:
 - Saga — 2026-07-16;
 - Kokura — 2026-07-18.
 
-Tokyo is used as an explicit no-future-meeting example for the current public window.
+Meydan is used as an explicit no-future-meeting example because its reviewed public meetings are outside the current 30-day window.
 
 ## Public presentation
 
