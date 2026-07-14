@@ -1,0 +1,41 @@
+name: Temporary racecourse page identity discovery
+
+on:
+  push:
+    branches:
+      - work/racecourse-page-identity-reconciliation
+    paths:
+      - 'scripts/audit-racecourse-page-identity-reconciliation.mjs'
+      - '.github/workflows/temporary-racecourse-page-identity-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate discovery script syntax
+        run: node --check scripts/audit-racecourse-page-identity-reconciliation.mjs
+      - name: Generate identity reconciliation discovery
+        run: node scripts/audit-racecourse-page-identity-reconciliation.mjs --output=/tmp/racecourse-page-identity-discovery.json
+      - name: Upload discovery artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racecourse-page-identity-discovery-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: /tmp/racecourse-page-identity-discovery.json
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
