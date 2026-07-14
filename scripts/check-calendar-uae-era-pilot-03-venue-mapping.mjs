@@ -15,7 +15,12 @@ for (const key of ['existing_trusted_mapping_may_be_reused', 'official_page_slug
 for (const key of ['automatic_canonical_creation', 'automatic_candidate_expansion']) {
   if (audit.mapping_policy?.[key] !== false) errors.push(`PILOT-03 mapping safety boundary differs: ${key}.`);
 }
-if (!Array.isArray(audit.venue_mappings) && !Array.isArray(audit.mappings)) errors.push('PILOT-03 historical venue mapping set missing.');
+if (!Array.isArray(audit.venues) || audit.venues.length !== 5) errors.push('PILOT-03 historical venue mapping set differs.');
+else {
+  const statuses = audit.venues.reduce((counts, venue) => ({ ...counts, [venue.mapping_status]: (counts[venue.mapping_status] ?? 0) + 1 }), {});
+  if (statuses.accepted_existing !== 1 || statuses.proposed_unapproved !== 4) errors.push(`PILOT-03 historical mapping states differ: ${JSON.stringify(statuses)}.`);
+  if (audit.venues.some((venue) => !venue.official_page_url?.startsWith('https://emiratesracing.com/racecourses/'))) errors.push('PILOT-03 official venue URL boundary differs.');
+}
 if (p2.schema_version !== 'calendar-uae-era-pilot-02-source-route-evidence-v1') errors.push('PILOT-02 mapping dependency differs.');
 if (!probe.includes('pdf') || !doc.toLowerCase().includes('venue mapping')) errors.push('PILOT-03 mapping implementation/documentation missing.');
 validateCurrentUaeState(root, errors);
