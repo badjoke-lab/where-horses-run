@@ -15,6 +15,12 @@ function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
+function readText(relativePath) {
+  const filePath = path.join(root, relativePath);
+  if (!fs.existsSync(filePath)) fail(`Missing file: ${relativePath}`);
+  return fs.readFileSync(filePath, 'utf8');
+}
+
 function assertFile(relativePath) {
   if (!fs.existsSync(path.join(root, relativePath))) fail(`Missing file: ${relativePath}`);
 }
@@ -54,6 +60,7 @@ for (const file of [
   'scripts/timetable/refresh-rolling.mjs',
   'scripts/timetable/refresh-race-times.mjs',
   'scripts/timetable/promote-timetable.mjs',
+  'scripts/timetable/promote-approved-candidate-v1.mjs',
   'scripts/timetable/archive-completed.mjs',
   'scripts/timetable/refresh-all.mjs',
   'scripts/timetable/build-current-timetable.mjs',
@@ -66,7 +73,6 @@ const commands = [
   ['node', ['scripts/timetable/refresh-annual.mjs']],
   ['node', ['scripts/timetable/refresh-rolling.mjs']],
   ['node', ['scripts/timetable/refresh-race-times.mjs']],
-  ['node', ['scripts/timetable/promote-timetable.mjs']],
   ['node', ['scripts/timetable/archive-completed.mjs']],
   ['node', ['scripts/timetable/build-current-timetable.mjs']],
   ['node', ['scripts/timetable/generate-update-report.mjs']],
@@ -82,6 +88,21 @@ for (const [cmd, args] of commands) {
   }
 }
 
+const promoteEntrypoint = readText('scripts/timetable/promote-timetable.mjs');
+for (const marker of ['Pipeline v1 canonical promotion entry point', '--input', "import './promote-approved-candidate-v1.mjs'"]) {
+  if (!promoteEntrypoint.includes(marker)) fail(`Promotion entrypoint must include: ${marker}`);
+}
+
+const promoteWithoutInput = spawnSync('node', ['scripts/timetable/promote-timetable.mjs'], {
+  cwd: root,
+  encoding: 'utf8'
+});
+const promotionDiagnostic = `${promoteWithoutInput.stdout}\n${promoteWithoutInput.stderr}`;
+if (promoteWithoutInput.status === 0) fail('Promotion must reject execution without an approved Candidate input.');
+if (!promotionDiagnostic.includes('--input <approved-candidate.json>')) {
+  fail('Promotion without input must explain the approved Candidate --input contract.');
+}
+
 const current = readJson('data/generated/timetable/current.json');
 const report = readJson('data/generated/timetable/update-report.json');
 const health = readJson('data/generated/timetable/source-health.json');
@@ -95,3 +116,4 @@ if (report.mode !== 'skeleton_no_live_fetch') fail('PR-109 must remain skeleton_
 if (current.mode !== 'skeleton_no_live_fetch') fail('current.json must remain skeleton_no_live_fetch.');
 
 console.log(`[timetable-refresh-skeleton] PASS: ${countries.size} countries, ${activeGroups.size} active groups, ${legacyGroups.size} legacy group, ${registry.sources.length} source rows.`);
+console.log('[timetable-refresh-skeleton] PROMOTION_INPUT_GATE: pass');
