@@ -357,6 +357,8 @@ Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
 Completed Work ID: `WHR-CAL-PUBLIC-V1`
 Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
+Current implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 
 Current NAR status:
 
@@ -378,12 +380,10 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. reconcile timetable-only venue IDs with canonical racecourse identities and fail safely when no detail page exists
-2. define one structured racecourse-page record per reviewed racecourse identity
-3. connect reviewed today and upcoming meeting state without inventing absent detail
-4. add official source, freshness, course, and distance profiles with explicit unknown states
-5. complete country, racing-type, glossary, Calendar, racecourse, and meeting page-link architecture
-6. validate bilingual responsive racecourse pages and internal-link integrity
+1. connect reviewed today and upcoming meeting state without inventing absent detail
+2. add official source, freshness, course, and distance profiles with explicit unknown states
+3. complete country, racing-type, glossary, Calendar, racecourse, and meeting page-link architecture
+4. validate bilingual responsive racecourse pages and internal-link integrity
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.

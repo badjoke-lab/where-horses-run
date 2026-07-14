@@ -109,6 +109,7 @@ import countryProfilesV297Macau from '../../data/static/country-profiles-v2-97-m
 import countryProfilesV298Greece from '../../data/static/country-profiles-v2-98-greece.json';
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
+import publicTimetableRacecourseIdentitiesV1 from '../../data/static/racecourses-public-timetable-identities-v1.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
 import countryPageRacecourses11Oman from '../../data/static/country-page-racecourses-11-oman.json';
 import countryPageRacecourses12Zimbabwe from '../../data/static/country-page-racecourses-12-zimbabwe.json';
@@ -270,6 +271,7 @@ const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override)
 const allRacecourses = [
   ...racecourses,
   ...racecourseExtensions,
+  ...publicTimetableRacecourseIdentitiesV1,
   ...countryPageRacecourses0104,
   ...countryPageRacecourses11Oman,
   ...countryPageRacecourses12Zimbabwe

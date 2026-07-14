@@ -25,7 +25,7 @@ const countries = getCountries();
 const country = countries.find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/ja/countries/${country.slug}/` : '/ja/countries/';
 const countrySourceHref = country ? `/ja/sources/${country.slug}/` : '/ja/sources/';
-const calendarHref = country ? `/ja/countries/${country.slug}/` : '/ja/calendar/';
+const calendarHref = '/ja/calendar/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
 
@@ -175,7 +175,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
     <h1 id="page-title">{track.name_ja}</h1>
     <p class="hero__summary">
       {track.name_local && track.name_local !== track.name_ja ? `${track.name_local} · ` : ''}
-      {country ? country.name_ja : track.country_id} / {track.city}
+      {country ? country.name_ja : track.country_id} / {formatValue(track.city)}
     </p>
     <p>{overview}</p>
     <p>
@@ -190,7 +190,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
     <article class="card">
       <h2>基本情報</h2>
       <p><strong>国:</strong> <a href={countryHref}>{country ? country.name_ja : track.country_id}</a></p>
-      <p><strong>都市 / 地域:</strong> {track.city} / {formatValue(track.region)}</p>
+      <p><strong>都市 / 地域:</strong> {formatValue(track.city)} / {formatValue(track.region)}</p>
       <p><strong>タイムゾーン:</strong> {track.timezone}</p>
       <p><strong>運営:</strong> {formatValue(operator.name)}</p>
       <p><strong>状態:</strong> {track.status}</p>
@@ -227,12 +227,14 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
   <section class="section-grid" aria-label="競馬種別とレース条件">
     <article class="card">
       <h2>競馬種別</h2>
-      <ul>
-        {track.racing_types.map((typeId) => {
-          const type = getRacingTypeById(typeId);
-          return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
-        })}
-      </ul>
+      {track.racing_types.length ? (
+        <ul>
+          {track.racing_types.map((typeId) => {
+            const type = getRacingTypeById(typeId);
+            return <li>{type ? <a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a> : typeId}</li>;
+          })}
+        </ul>
+      ) : <p>未掲載</p>}
     </article>
 
     {upcomingConditions.length ? (

@@ -25,6 +25,10 @@ const requiredFiles = [
   'data/audits/calendar-public-v1-release-decision-v1.json',
   'scripts/check-calendar-public-v1-navigation-qa.mjs',
   'scripts/check-calendar-public-v1-release-decision.mjs',
+  'docs/racecourses/identity-reconciliation.md',
+  'data/audits/racecourse-page-identity-reconciliation-v1.json',
+  'data/static/racecourses-public-timetable-identities-v1.json',
+  'scripts/check-racecourse-page-identity-reconciliation.mjs',
   'data/static/calendar-coverage-observation.schema.json',
   'data/static/calendar-validation-responsibilities-v1.json',
   'data/static/calendar-readiness-registry.json',
@@ -89,7 +93,9 @@ requirePhrases(start, 'START-HERE', [
   'primary runner: local',
   'primary runner: github_actions',
   'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`'
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`',
+  'Current implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`'
 ]);
 
 requirePhrases(roadmap, 'project roadmap', [

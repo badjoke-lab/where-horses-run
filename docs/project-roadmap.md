@@ -513,8 +513,10 @@ Scheduled acquisition execution and unattended publication remain disabled.
 ## Product follow-up phases
 
 Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
+Current implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 
-Current product stage: strengthen racecourse pages and page-link architecture.
+Current product stage: connect reviewed timetable state to the now-complete canonical racecourse identity set, then strengthen profile evidence and page-link architecture.
 
 1. strengthen racecourse pages and page-link architecture;
 2. implement glossary, racing types, search, filters, and SEO;
