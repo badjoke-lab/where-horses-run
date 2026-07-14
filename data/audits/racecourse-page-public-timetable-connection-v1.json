@@ -1,0 +1,82 @@
+{
+  "schema_version": "racecourse-page-public-timetable-connection-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-14",
+  "source_public_meeting_list": "data/generated/timetable/public/meeting-list.json",
+  "source_public_generated_at": "2026-07-14T00:15:00Z",
+  "fixture_reference_date": "2026-07-14",
+  "fixture_timezone": "Asia/Tokyo",
+  "scope": {
+    "canonical_racecourse_pages": 36,
+    "racecourses_with_public_meetings": 26,
+    "public_meetings": 169,
+    "public_window_days": 30,
+    "today_fixture_racecourse_ids": [
+      "kanazawa-racecourse",
+      "monbetsu-racecourse",
+      "morioka-racecourse",
+      "nagoya-racecourse",
+      "urawa-racecourse"
+    ],
+    "next_fixture_examples": [
+      { "racecourse_id": "sonoda-racecourse", "next_meeting_date": "2026-07-15" },
+      { "racecourse_id": "saga-racecourse", "next_meeting_date": "2026-07-16" },
+      { "racecourse_id": "kokura-racecourse", "next_meeting_date": "2026-07-18" }
+    ],
+    "no_future_fixture_example": "tokyo-racecourse"
+  },
+  "public_fields": [
+    "meeting_id",
+    "racecourse_id",
+    "date",
+    "timezone",
+    "effective_public_rank",
+    "first_race_time_local",
+    "last_race_time_local",
+    "source_status",
+    "official_source_url",
+    "last_checked_date",
+    "detail_path"
+  ],
+  "presentation": {
+    "today_state": true,
+    "next_meeting_state": true,
+    "upcoming_preview_limit": 8,
+    "reference_date_visible": true,
+    "public_generated_date_visible": true,
+    "public_rank_visible": true,
+    "official_source_visible": true,
+    "localized_detail_link": true,
+    "explicit_empty_state": true
+  },
+  "data_flow": {
+    "reader": "src/lib/timetable/publicTimetableViewModel.ts",
+    "racecourse_state_view_model": "src/lib/racecourses/publicRacecourseMeetingState.ts",
+    "rendered_component": "src/components/RacecoursePublicMeetingPanel.astro",
+    "english_route": "src/pages/tracks/[slug].astro",
+    "japanese_route": "src/pages/ja/tracks/[slug].astro"
+  },
+  "non_claims": [
+    "live or real-time schedule",
+    "complete month coverage without an explicit Completion Audit",
+    "race detail availability for C, B, or B+ meetings",
+    "participant or racecard completeness",
+    "automatic source refresh",
+    "automatic publication"
+  ],
+  "boundaries": {
+    "network_fetch": false,
+    "canonical_timetable_write": false,
+    "public_timetable_write": false,
+    "internal_queue_read": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "automatic_publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "RACECOURSE-PAGE-PROFILE-EVIDENCE-01"
+}
