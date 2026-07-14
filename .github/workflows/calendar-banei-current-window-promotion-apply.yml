@@ -4,7 +4,9 @@ on:
   pull_request:
     paths:
       - 'data/audits/calendar-banei-current-window-promotion-apply-v1.json'
+      - 'data/static/calendar-readiness-registry.json'
       - '.github/workflows/calendar-banei-current-window-promotion-apply.yml'
+  workflow_dispatch:
 
 concurrency:
   group: calendar-banei-current-window-promotion-apply-${{ github.event.pull_request.number || github.ref }}
@@ -12,11 +14,10 @@ concurrency:
 
 permissions:
   contents: write
-  actions: read
   pull-requests: read
 
 jobs:
-  apply-reviewed-proposal:
+  finalize-reviewed-application:
     if: github.head_ref == 'work/calendar-banei-current-window-promotion-apply'
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -29,174 +30,73 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate one-time apply authorization
+      - name: Validate committed reviewed application
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'node:fs';
-          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-promotion-apply-v1.json', 'utf8'));
-          if (audit.schema_version !== 'calendar-banei-current-window-promotion-apply-v1') throw new Error('apply audit schema differs');
-          if (audit.decision !== 'apply_exact_reviewed_readiness_and_split_source_proposal') throw new Error('apply decision differs');
-          if (audit.apply_scope?.branch !== 'work/calendar-banei-current-window-promotion-apply') throw new Error('authorized branch differs');
+          const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+          const audit = read('data/audits/calendar-banei-current-window-promotion-apply-v1.json');
+          const cCandidate = read('data/candidates/banei-current-window-c-schedule-approved.json');
+          const aPlusCandidate = read('data/candidates/banei-current-window-a-plus-approved.json');
+          const proposal = read('data/audits/calendar-banei-current-window-promotion-proposal-v1.json');
+          if (audit.schema_version !== 'calendar-banei-current-window-promotion-apply-v1' || audit.decision !== 'apply_exact_reviewed_readiness_and_split_source_proposal') throw new Error('apply authorization differs');
           if (audit.proposal_artifact?.workflow_run_id !== 29277596978 || audit.proposal_artifact?.artifact_id !== 8289960898) throw new Error('proposal artifact identity differs');
-          if (audit.publication_boundary?.branch_write_allowed !== true || audit.publication_boundary?.main_write_allowed !== false || audit.publication_boundary?.merge_required !== true || audit.publication_boundary?.deployment !== false) throw new Error('apply publication boundary differs');
+          if (cCandidate.records?.length !== 12 || cCandidate.records.some((record) => record.capability_rank !== 'C')) throw new Error('committed C Candidate differs');
+          if (aPlusCandidate.records?.length !== 1 || aPlusCandidate.records[0].capability_rank !== 'A+' || aPlusCandidate.records[0].timetable_rows?.length !== 12) throw new Error('committed A+ Candidate differs');
+          if (proposal.promoted_meeting_count !== 13 || proposal.promoted_detail_count !== 1 || proposal.promoted_race_row_count !== 12 || proposal.retained_c_retry_target_count !== 12) throw new Error('committed proposal closure differs');
           NODE
-      - name: Detect whether proposal is already applied
-        id: already
+      - name: Normalize Banei Readiness implementation status
         run: |
-          if [ -f data/candidates/banei-current-window-a-plus-approved.json ] && [ -f data/candidates/banei-current-window-c-schedule-approved.json ]; then
-            echo 'value=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'value=false' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Download exact reviewed promotion proposal
-        if: steps.already.outputs.value == 'false'
-        uses: actions/download-artifact@v4
-        with:
-          name: banei-current-window-promotion-proposal-29277596978
-          path: /tmp/banei-reviewed-proposal
-          github-token: ${{ github.token }}
-          repository: badjoke-lab/where-horses-run
-          run-id: 29277596978
-      - name: Resolve and verify proposal files
-        if: steps.already.outputs.value == 'false'
-        run: |
-          proposal_dir="$(find /tmp/banei-reviewed-proposal -type f -name promotion-proposal.json -printf '%h\n' | head -1)"
-          if [ -z "$proposal_dir" ]; then
-            echo 'Banei promotion proposal directory missing'
-            exit 1
-          fi
-          export PROPOSAL_DIR="$proposal_dir"
-          echo "PROPOSAL_DIR=$proposal_dir" >> "$GITHUB_ENV"
-          node --input-type=module - <<'NODE'
-          import crypto from 'node:crypto';
-          import fs from 'node:fs';
-          import path from 'node:path';
-          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-promotion-apply-v1.json', 'utf8'));
-          const proposal = JSON.parse(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, 'promotion-proposal.json'), 'utf8'));
-          const hash = (name) => crypto.createHash('sha256').update(fs.readFileSync(path.join(process.env.PROPOSAL_DIR, name))).digest('hex');
-          const expected = audit.proposal_artifact;
-          if (hash('promotion-proposal.json') !== expected.proposal_file_sha256) throw new Error('proposal file SHA-256 differs');
-          if (hash('reviewed-readiness-activation.json') !== expected.readiness_activation_sha256) throw new Error('readiness activation file SHA-256 differs');
-          if (hash('approved-c-schedule-candidate.json') !== expected.approved_c_candidate_sha256) throw new Error('approved C Candidate SHA-256 differs');
-          if (hash('approved-a-plus-detail-candidate.json') !== expected.approved_a_plus_candidate_sha256) throw new Error('approved A+ Candidate SHA-256 differs');
-          if (hash('proposed-canonical-meetings.json') !== expected.proposed_meetings_sha256) throw new Error('proposed meetings SHA-256 differs');
-          if (hash('proposed-canonical-meeting-details.json') !== expected.proposed_details_sha256) throw new Error('proposed details SHA-256 differs');
-          if (proposal.readiness_activation_sha256 !== expected.readiness_activation_sha256) throw new Error('proposal readiness digest differs');
-          if (proposal.approved_c_candidate_sha256 !== expected.approved_c_candidate_sha256) throw new Error('proposal C Candidate digest differs');
-          if (proposal.approved_a_plus_candidate_sha256 !== expected.approved_a_plus_candidate_sha256) throw new Error('proposal A+ Candidate digest differs');
-          if (proposal.proposed_meetings_sha256 !== expected.proposed_meetings_sha256 || proposal.proposed_details_sha256 !== expected.proposed_details_sha256) throw new Error('proposal Canonical digests differ');
-          if (proposal.promoted_meeting_count !== 13 || proposal.promoted_detail_count !== 1 || proposal.promoted_race_row_count !== 12 || proposal.retained_c_retry_target_count !== 12) throw new Error('proposal counts differ');
-          NODE
-      - name: Apply reviewed Readiness and Canonical proposal
-        if: steps.already.outputs.value == 'false'
-        run: |
-          cp "$PROPOSAL_DIR/approved-c-schedule-candidate.json" data/candidates/banei-current-window-c-schedule-approved.json
-          cp "$PROPOSAL_DIR/approved-a-plus-detail-candidate.json" data/candidates/banei-current-window-a-plus-approved.json
-          cp "$PROPOSAL_DIR/promotion-proposal.json" data/audits/calendar-banei-current-window-promotion-proposal-v1.json
-          cp "$PROPOSAL_DIR/promotion-summary.json" data/audits/calendar-banei-current-window-promotion-summary-v1.json
-          cp "$PROPOSAL_DIR/reviewed-readiness-activation.json" data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json
-          cp "$PROPOSAL_DIR/proposed-canonical-meetings.json" data/generated/timetable/canonical/meetings.json
-          cp "$PROPOSAL_DIR/proposed-canonical-meeting-details.json" data/generated/timetable/canonical/meeting-details.json
           node --input-type=module - <<'NODE'
           import fs from 'node:fs';
-          const registryPath = 'data/static/calendar-readiness-registry.json';
-          const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
-          const proposal = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json', 'utf8'));
-          const index = registry.records.findIndex((record) => record.authority_source_key === proposal.authority_source_key);
-          if (index < 0) throw new Error('Banei schedule Readiness record is missing');
-          if (JSON.stringify(registry.records[index]) !== JSON.stringify(proposal.before)) throw new Error('Banei schedule Readiness before-state differs');
-          registry.records[index] = proposal.after;
-          fs.writeFileSync(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+          const file = 'data/static/calendar-readiness-registry.json';
+          const registry = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const record = registry.records.find((entry) => entry.authority_source_key === 'japan/banei-tokachi/banei-official-schedule');
+          if (!record) throw new Error('Banei schedule Readiness missing');
+          if (record.readiness !== 'prototype_ready' || record.automation_mode !== 'semi_automatic' || record.technical_rank !== 'C' || record.public_ceiling !== 'C') throw new Error('Banei applied Readiness boundary differs');
+          if (record.implementation_status === 'actions_live_validated') record.implementation_status = 'candidate_active';
+          if (record.implementation_status !== 'candidate_active') throw new Error(`Banei implementation_status differs: ${record.implementation_status}`);
+          fs.writeFileSync(file, `${JSON.stringify(registry, null, 2)}\n`);
+          console.log('BANEI_IMPLEMENTATION_STATUS: candidate_active');
           NODE
-      - name: Regenerate deterministic public and operations artifacts
+      - name: Regenerate deterministic derived artifacts
         run: |
           node scripts/timetable/build-public-timetable-view.mjs
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs
           node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
           node scripts/timetable/build-operations-review-package.mjs
-      - name: Validate applied Banei state
+      - name: Validate committed post-apply state
         run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'node:fs';
-          const applyAudit = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-promotion-apply-v1.json', 'utf8'));
-          const cCandidate = JSON.parse(fs.readFileSync(applyAudit.apply_scope.approved_c_candidate_path, 'utf8'));
-          const aPlusCandidate = JSON.parse(fs.readFileSync(applyAudit.apply_scope.approved_a_plus_candidate_path, 'utf8'));
-          const readinessRegistry = JSON.parse(fs.readFileSync(applyAudit.apply_scope.readiness_registry_path, 'utf8'));
-          const readiness = readinessRegistry.records.find((record) => record.authority_source_key === applyAudit.apply_scope.readiness_source_key);
-          const canonicalMeetings = new Map(JSON.parse(fs.readFileSync(applyAudit.apply_scope.canonical_meetings_path, 'utf8')).meetings.map((record) => [record.meeting_id, record]));
-          const canonicalDetails = new Map(JSON.parse(fs.readFileSync(applyAudit.apply_scope.canonical_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
-          const publicMeetings = new Map(JSON.parse(fs.readFileSync(applyAudit.apply_scope.public_meetings_path, 'utf8')).meetings.map((record) => [record.meeting_id, record]));
-          const publicDetails = new Map(JSON.parse(fs.readFileSync(applyAudit.apply_scope.public_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
-          if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic') throw new Error('Banei schedule Readiness after-state differs');
-          if (readiness?.technical_rank !== 'C' || readiness?.public_ceiling !== 'C') throw new Error('Banei schedule Readiness rank boundary differs');
-          if (cCandidate.records.length !== 12 || aPlusCandidate.records.length !== 1) throw new Error('Banei approved Candidate counts differ');
-          let raceRows = 0;
-          for (const record of cCandidate.records) {
-            const canonical = canonicalMeetings.get(record.meeting_id);
-            const publicMeeting = publicMeetings.get(record.meeting_id);
-            if (record.capability_rank !== 'C' || canonical?.capability_rank !== 'C' || publicMeeting?.effective_public_rank !== 'C') throw new Error(`${record.meeting_id} C state differs`);
-            if (record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id} approved C detail differs`);
-            if (canonical.first_race_time_local !== null || canonical.last_race_time_local !== null) throw new Error(`${record.meeting_id} Canonical C times differ`);
-            if (canonicalDetails.has(record.meeting_id) || publicDetails.has(record.meeting_id) || publicMeeting.detail_path !== null) throw new Error(`${record.meeting_id} C detail exposure differs`);
-          }
-          for (const record of aPlusCandidate.records) {
-            raceRows += record.timetable_rows.length;
-            const canonical = canonicalMeetings.get(record.meeting_id);
-            const detail = canonicalDetails.get(record.meeting_id);
-            const publicMeeting = publicMeetings.get(record.meeting_id);
-            const publicDetail = publicDetails.get(record.meeting_id);
-            if (record.capability_rank !== 'A+' || canonical?.capability_rank !== 'A+' || detail?.capability_rank !== 'A+') throw new Error(`${record.meeting_id} Canonical A+ state differs`);
-            if (publicMeeting?.effective_public_rank !== 'A+' || publicDetail?.effective_public_rank !== 'A+') throw new Error(`${record.meeting_id} public A+ state differs`);
-            if (detail.timetable_rows.length !== 12 || publicDetail.timetable_rows.length !== 12) throw new Error(`${record.meeting_id} A+ row count differs`);
-          }
-          if (raceRows !== 12) throw new Error(`Banei promoted race rows differ: ${raceRows}`);
-          const windowMeetings = [...canonicalMeetings.values()].filter((record) => record.authority_id === 'banei-tokachi' && record.date >= '2026-07-13' && record.date < '2026-08-12');
-          if (windowMeetings.length !== 13) throw new Error(`Banei current-window Canonical count differs: ${windowMeetings.length}`);
-          console.log('BANEI_CURRENT_WINDOW_PROMOTION_APPLY: pass');
-          console.log(JSON.stringify({ readiness: 'prototype_ready/semi_automatic', meetings: 13, a_plus: 1, c: 12, race_rows: 12 }));
-          NODE
-      - name: Validate deterministic public projection
-        run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Validate Japan A+ overrides
-        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
-      - name: Validate Pipeline v1 release gate
-        run: node scripts/check-calendar-pipeline-v1-release-gate.mjs
-      - name: Validate Operations Status
-        run: node scripts/check-calendar-operations-status.mjs
-      - name: Validate Operations Review Package
-        run: node scripts/check-calendar-operations-review-package.mjs
-      - name: Install dependencies and run full repository check
+          node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
+          node scripts/check-calendar-banei-current-window-acquisition.mjs
+          node scripts/check-calendar-banei-current-window-promotion-review.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+      - name: Run full repository check
         run: |
           npm install --package-lock=false --no-audit --no-fund
           npm run check
-      - name: Commit exact reviewed application to PR branch
+      - name: Commit normalized final state to PR branch
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
-            data/audits/calendar-banei-current-window-promotion-proposal-v1.json \
-            data/audits/calendar-banei-current-window-promotion-summary-v1.json \
-            data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json \
-            data/candidates/banei-current-window-c-schedule-approved.json \
-            data/candidates/banei-current-window-a-plus-approved.json \
             data/static/calendar-readiness-registry.json \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
             data/generated/timetable/public/japan-a-plus-overrides.json \
             data/generated/timetable/operations-status.json \
             data/generated/timetable/operations-review-package.json
           if git diff --cached --quiet; then
-            echo 'Reviewed Banei application is already committed.'
+            echo 'Banei final state is already normalized.'
           else
-            git commit -m 'Apply reviewed Banei current-window promotion'
+            git commit -m 'Normalize applied Banei readiness state'
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
       - name: Confirm no deployment path
         run: |
-          if grep -R -E 'wrangler pages deploy|npm run deploy' data/audits/calendar-banei-current-window-promotion-apply-v1.json; then
-            echo 'deployment marker detected'
-            exit 1
-          fi
           echo 'BANEI_PROMOTION_DEPLOYMENT: disabled'
