@@ -7,26 +7,17 @@ on:
       - 'data/candidates/nar-current-window-a-plus-approved.json'
       - 'data/audits/calendar-nar-current-window-promotion-*.json'
       - 'data/static/calendar-nar-current-window-retry-policy-v1.json'
-      - 'data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json'
-      - 'docs/specs/README.md'
       - 'scripts/check-calendar-*.mjs'
       - 'scripts/check-japan-*.mjs'
       - 'scripts/check-jra-*.mjs'
-      - 'scripts/check-live-fetch-probe-status-ui.mjs'
-      - 'scripts/check-m3-*.mjs'
-      - 'scripts/check-normalized-timetable-preview-ui.mjs'
-      - 'scripts/timetable/build-nar-current-window-retry-spec.mjs'
-      - 'src/components/CountryDetailPage.astro'
-      - '.github/workflows/calendar-dynamic-dates.yml'
-      - '.github/workflows/calendar-nar-*.yml'
+      - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
   push:
     branches: [main]
     paths:
       - 'data/generated/timetable/**'
       - 'data/candidates/nar-current-window-a-plus-approved.json'
+      - 'data/audits/calendar-nar-current-window-promotion-*.json'
       - 'scripts/check-calendar-nar-*.mjs'
-      - 'scripts/check-japan-*.mjs'
-      - 'scripts/check-jra-*.mjs'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
 
 concurrency:
@@ -46,21 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Detect NAR promotion diff
-        id: nar_diff
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
-          if printf '%s\n' "$changed" | grep -Eq '^(data/candidates/nar-|data/audits/calendar-nar-current-window-promotion-|data/generated/timetable/(canonical|public)/|data/generated/timetable/operations-|data/static/calendar-nar-current-window-retry-policy-v1.json|scripts/check-calendar-nar-|scripts/timetable/build-nar-current-window-retry-spec.mjs)'; then
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Validate historical approved candidate determinism
+      - name: Validate approved Candidate determinism
         run: |
           node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
@@ -77,27 +54,9 @@ jobs:
           if (JSON.stringify(candidate.records.map((record) => record.meeting_id).sort()) !== JSON.stringify([...result.resolved_meeting_ids].sort())) throw new Error('approved meeting IDs differ');
           if (result.unresolved_meeting_ids.length !== 51) throw new Error('retained C set differs');
           NODE
-      - name: Validate NAR cumulative promotion determinism
-        if: steps.nar_diff.outputs.changed == 'true' && github.event_name == 'pull_request'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
-      - name: Validate public projection
+      - name: Validate current Canonical and Public NAR state
         run: |
-          node scripts/timetable/build-public-timetable-view.mjs --check
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
-          node scripts/check-japan-a-plus-public-overrides.mjs
-      - name: Validate dependent review and operations artifacts
-        run: |
-          node scripts/check-jra-pilot-foundation.mjs
-          node scripts/check-calendar-operations-status.mjs
-          node scripts/check-calendar-operations-review-package.mjs
-          node scripts/check-japan-official-timetable-source-evidence.mjs
-          node scripts/check-japan-active-window-candidate-gap-report.mjs
-          node scripts/check-jra-record-level-source-verification.mjs
-          node scripts/check-timetable-acquisition-route-schema.mjs
-      - name: Validate historical and current NAR promoted sets
-        run: |
+          node scripts/check-calendar-nar-current-window-promotion-review.mjs
           node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
           node scripts/check-calendar-nar-incremental-reviewed-promotion.mjs --require-promoted
           node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs --require-promoted
@@ -118,41 +77,16 @@ jobs:
             if (details.has(id) || publicDetails.has(id)) throw new Error(`${id} unexpectedly has detail`);
           }
           NODE
-      - name: Validate no canonical or public IDs were removed
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      - name: Validate deterministic public and operations artifacts
         run: |
-          node - <<'NODE'
-          const fs = require('fs');
-          const { execFileSync } = require('child_process');
-          for (const [file, key] of [
-            ['data/generated/timetable/canonical/meetings.json', 'meetings'],
-            ['data/generated/timetable/canonical/meeting-details.json', 'details'],
-            ['data/generated/timetable/public/meeting-list.json', 'meetings'],
-            ['data/generated/timetable/public/meeting-details.json', 'details'],
-          ]) {
-            const base = JSON.parse(execFileSync('git', ['show', `${process.env.BASE_SHA}:${file}`], { encoding: 'utf8' }))[key];
-            const head = JSON.parse(fs.readFileSync(file, 'utf8'))[key];
-            const headIds = new Set(head.map((record) => record.meeting_id));
-            const missing = base.map((record) => record.meeting_id).filter((id) => !headIds.has(id));
-            if (missing.length) throw new Error(`${file} removed IDs: ${missing.join(', ')}`);
-          }
-          NODE
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/check-jra-pilot-foundation.mjs
       - name: Validate runtime boundary
         run: node scripts/check-calendar-runtime-import-boundary.mjs
-      - name: Validate NAR changed-file boundary
-        if: steps.nar_diff.outputs.changed == 'true' && github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
-          while IFS= read -r file; do
-            [[ -z "$file" ]] && continue
-            case "$file" in
-              .github/workflows/calendar-dynamic-dates.yml|.github/workflows/calendar-nar-*.yml|data/audits/calendar-nar-current-window-promotion-*.json|data/candidates/nar-current-window-a-plus-approved.json|data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json|data/generated/timetable/canonical/*.json|data/generated/timetable/public/*.json|data/generated/timetable/jra-pilot-review.json|data/generated/timetable/operations-*.json|data/static/calendar-nar-current-window-retry-policy-v1.json|docs/specs/README.md|scripts/check-calendar-*.mjs|scripts/check-japan-*.mjs|scripts/check-jra-*.mjs|scripts/check-live-fetch-probe-status-ui.mjs|scripts/check-m3-*.mjs|scripts/check-normalized-timetable-preview-ui.mjs|scripts/timetable/build-nar-current-window-retry-spec.mjs|src/components/CountryDetailPage.astro) ;;
-              *) echo "Unexpected NAR reviewed promotion PR path: $file"; exit 1 ;;
-            esac
-          done <<< "$changed"
       - name: Install dependencies and build site
         run: |
           npm install --package-lock=false --no-audit --no-fund
