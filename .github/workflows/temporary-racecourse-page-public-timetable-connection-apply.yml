@@ -6,12 +6,16 @@ on:
       - main
     paths:
       - 'scripts/apply-racecourse-page-public-timetable-connection.mjs'
+      - 'data/audits/racecourse-page-public-timetable-connection-v1.json'
+      - 'docs/racecourses/public-timetable-connection.md'
       - '.github/workflows/temporary-racecourse-page-public-timetable-connection-apply.yml'
   push:
     branches:
       - work/racecourse-page-public-timetable-connection
     paths:
       - 'scripts/apply-racecourse-page-public-timetable-connection.mjs'
+      - 'data/audits/racecourse-page-public-timetable-connection-v1.json'
+      - 'docs/racecourses/public-timetable-connection.md'
       - '.github/workflows/temporary-racecourse-page-public-timetable-connection-apply.yml'
 
 permissions:
