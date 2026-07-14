@@ -360,7 +360,8 @@ Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
-Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 
 Current NAR status:
 
@@ -382,8 +383,7 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. complete country, racing-type, glossary, Calendar, racecourse, meeting, and official-source page-link architecture
-2. validate bilingual responsive racecourse pages and internal-link integrity
+1. validate bilingual responsive racecourse pages, metadata, accessibility markers, and final release readiness
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.

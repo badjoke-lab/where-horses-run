@@ -31,6 +31,10 @@ const countrySourceHref = country ? `/sources/${country.slug}/` : '/sources/';
 const calendarHref = '/calendar/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+const surfaceGlossaryIds = { turf: 'turf', dirt: 'dirt', 'all-weather': 'all-weather', 'jump-course': 'jump-course' };
+const directionGlossaryIds = { 'left-handed': 'left-handed-course', 'right-handed': 'right-handed-course', 'both-directions': 'both-directions-course', straight: 'straight-course' };
+const surfaceTermRows = track.surfaces.map((surface) => glossaryById.get(surfaceGlossaryIds[surface])).filter(Boolean);
+const directionTerm = glossaryById.get(directionGlossaryIds[track.direction]);
 
 const formatValue = (value: unknown) => {
   if (value === null || value === undefined || value === '') return 'Not listed yet';
@@ -190,8 +194,8 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
       <p><strong>Timezone:</strong> {track.timezone}</p>
       <p><strong>Operator:</strong> {formatValue(operator.name)}</p>
       <p><strong>Status:</strong> {track.status}</p>
-      <p><strong>Surfaces:</strong> {formatValue(track.surfaces)}</p>
-      <p><strong>Direction:</strong> {directionLabel(track.direction)}</p>
+      <p><strong>Surfaces:</strong>{' '}{surfaceTermRows.length ? surfaceTermRows.map((term, index) => <><a href={`/glossary/${term.slug}/`}>{term.term_en}</a>{index < surfaceTermRows.length - 1 ? ', ' : ''}</>) : formatValue(track.surfaces)}</p>
+      <p><strong>Direction:</strong>{' '}{directionTerm ? <a href={`/glossary/${directionTerm.slug}/`}>{directionLabel(track.direction)}</a> : directionLabel(track.direction)}</p>
       <p><strong>Representative course length:</strong> Turf {formatMeters(track.course_profile?.turf_circumference_m)} / Dirt {formatMeters(track.course_profile?.dirt_circumference_m)}</p>
       <p><strong>Home straight:</strong> {formatMeters(courseLayout.home_straight_m ?? track.course_profile?.home_straight_m)}</p>
     </article>
@@ -348,6 +352,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
       <p><strong>Capacity:</strong> {statusLabel(capacity.status)}</p>
       <p><strong>Race distances:</strong> {statusLabel(raceDistanceProfile.status)}</p>
       <p><strong>Last checked:</strong> {formatValue(track.data_status?.last_checked)}</p>
+      <p><a data-methodology-link href="/about/">About coverage and sources</a>{' · '}<a href={countrySourceHref}>Country source registry</a></p>
       <p>Where Horses Run organizes racecourse information and schedule links. It does not republish full entries, odds, results, payouts, predictions, or complete racecards.</p>
     </article>
   </section>

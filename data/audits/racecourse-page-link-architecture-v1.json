@@ -1,0 +1,99 @@
+{
+  "schema_version": "racecourse-page-link-architecture-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-LINK-ARCHITECTURE-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-14",
+  "discovery_workflow_run_id": 29337232504,
+  "discovery_artifact_id": 8312470888,
+  "discovery_artifact_digest": "sha256:d48f33c574f5d4671b56f5838124f91bed73a5a528bf1a00abca5720821ed861",
+  "baseline": {
+    "racecourses": 36,
+    "bilingual_pages": 72,
+    "public_meetings": 169,
+    "country_links_complete": 72,
+    "calendar_links_present": 72,
+    "racing_type_links_complete": 72,
+    "related_glossary_links_complete": 72,
+    "source_registry_links_present": 72,
+    "official_external_links_present": 68,
+    "surface_links_complete": 0,
+    "direction_links_complete": 18,
+    "meeting_date_links_complete": 0,
+    "data_status_methodology_links_present": 0,
+    "unresolved_glossary_candidates": 8,
+    "asset_false_positive_links": 72
+  },
+  "implemented": {
+    "racecourses": 36,
+    "bilingual_pages": 72,
+    "public_meetings": 169,
+    "country_links_complete": 72,
+    "calendar_links_present": 72,
+    "racing_type_links_complete": 72,
+    "related_glossary_links_complete": 72,
+    "source_registry_links_present": 72,
+    "official_external_links_present": 72,
+    "surface_link_applicable_pages": 52,
+    "surface_links_complete": 52,
+    "direction_link_applicable_pages": 46,
+    "direction_links_complete": 46,
+    "rendered_meeting_date_links_complete": true,
+    "data_status_methodology_links_present": 72,
+    "broken_internal_page_links": 0,
+    "unresolved_glossary_candidates": 0
+  },
+  "added_glossary_ids": [
+    "turf",
+    "dirt",
+    "all-weather",
+    "jump-course",
+    "left-handed-course",
+    "right-handed-course",
+    "both-directions-course",
+    "straight-course"
+  ],
+  "official_link_amendments": [
+    {
+      "racecourse_id": "hipodromo-chile",
+      "url": "https://www.hipodromo.cl/",
+      "source_status": "official_home_verified"
+    },
+    {
+      "racecourse_id": "seoul-racecourse",
+      "url": "https://park.kra.co.kr/",
+      "source_status": "official_home_verified"
+    }
+  ],
+  "link_contract": {
+    "country": "canonical_country_page",
+    "racing_type": "canonical_type_page_when_type_is_known",
+    "surface": "canonical_glossary_page_when_surface_is_known",
+    "direction": "canonical_glossary_page_when_direction_is_known",
+    "meeting_date": "every_rendered_today_next_and_upcoming_date_uses_localized_calendar_date_query",
+    "official_source": "external_official_url_plus_internal_country_source_registry",
+    "data_status": "localized_about_page_plus_internal_country_source_registry",
+    "related_terms": "canonical_localized_glossary_pages",
+    "internal_integrity": "every_page_href_must_resolve_after_ignoring_built_assets"
+  },
+  "public_boundary": {
+    "list_shape": "one_meeting_per_row",
+    "race_level_expansion_on_racecourse_page": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "raw_source_display": false,
+    "embedded_video": false,
+    "direct_stream_url": false
+  },
+  "boundaries": {
+    "network_fetch_by_gate": false,
+    "canonical_timetable_write": false,
+    "public_timetable_write": false,
+    "automatic_source_acceptance": false,
+    "automatic_publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "RACECOURSE-PAGE-BILINGUAL-QA-01"
+}

@@ -31,6 +31,10 @@ const countrySourceHref = country ? `/ja/sources/${country.slug}/` : '/ja/source
 const calendarHref = '/ja/calendar/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
+const surfaceGlossaryIds = { turf: 'turf', dirt: 'dirt', 'all-weather': 'all-weather', 'jump-course': 'jump-course' };
+const directionGlossaryIds = { 'left-handed': 'left-handed-course', 'right-handed': 'right-handed-course', 'both-directions': 'both-directions-course', straight: 'straight-course' };
+const surfaceTermRows = track.surfaces.map((surface) => glossaryById.get(surfaceGlossaryIds[surface])).filter(Boolean);
+const directionTerm = glossaryById.get(directionGlossaryIds[track.direction]);
 
 const formatValue = (value: unknown) => {
   if (value === null || value === undefined || value === '') return '未掲載';
@@ -190,8 +194,8 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
       <p><strong>タイムゾーン:</strong> {track.timezone}</p>
       <p><strong>運営:</strong> {formatValue(operator.name)}</p>
       <p><strong>状態:</strong> {track.status}</p>
-      <p><strong>馬場:</strong> {formatValue(track.surfaces)}</p>
-      <p><strong>回り:</strong> {directionLabel(track.direction)}</p>
+      <p><strong>馬場:</strong>{' '}{surfaceTermRows.length ? surfaceTermRows.map((term, index) => <><a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a>{index < surfaceTermRows.length - 1 ? ', ' : ''}</>) : formatValue(track.surfaces)}</p>
+      <p><strong>回り:</strong>{' '}{directionTerm ? <a href={`/ja/glossary/${directionTerm.slug}/`}>{directionLabel(track.direction)}</a> : directionLabel(track.direction)}</p>
       <p><strong>代表コース長:</strong> 芝 {formatMeters(track.course_profile?.turf_circumference_m)} / ダート {formatMeters(track.course_profile?.dirt_circumference_m)}</p>
       <p><strong>直線:</strong> {formatMeters(courseLayout.home_straight_m ?? track.course_profile?.home_straight_m)}</p>
     </article>
@@ -348,6 +352,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
       <p><strong>収容人数:</strong> {statusLabel(capacity.status)}</p>
       <p><strong>実施距離:</strong> {statusLabel(raceDistanceProfile.status)}</p>
       <p><strong>最終確認:</strong> {formatValue(track.data_status?.last_checked)}</p>
+      <p><a data-methodology-link href="/ja/about/">データ範囲について</a>{' · '}<a href={countrySourceHref}>国別ソース一覧</a></p>
       <p>Where Horses Run / 競馬どこ？ は、競馬場情報と開催予定への入口を整理するサイトです。出走表・オッズ・結果・払戻・予想・完全なレースカードは掲載しません。</p>
     </article>
   </section>
