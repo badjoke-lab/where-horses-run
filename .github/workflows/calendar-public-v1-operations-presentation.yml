@@ -49,7 +49,7 @@ jobs:
         run: rm -rf dist
       - name: Build stale-window fixture
         env:
-          WHR_CALENDAR_REFERENCE_DATE: '2026-07-12'
+          WHR_CALENDAR_REFERENCE_DATE: '2026-07-15'
           WHR_CALENDAR_TIMEZONE: Asia/Tokyo
         run: npm run build
       - name: Validate stale-window operations presentation

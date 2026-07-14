@@ -7,8 +7,9 @@ Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-PUBLIC-V1`
-Last reviewed: 2026-07-11
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Last reviewed: 2026-07-14
 
 ## Purpose
 
@@ -47,7 +48,7 @@ Completed Calendar foundations:
 - `WHR-CAL-JAPAN-A-PLUS-RECONCILE`;
 - `WHR-CAL-JAPAN-JRA-A-PLUS`.
 
-The NAR source pilot, Acquisition Control Plane foundation, Banei bounded operational integration, HKJC source-specific pilot handoff, and UAE ERA source-specific sequence are complete. Banei, HKJC, and UAE continue under their accepted reviewed operating boundaries. UAE ERA handoff accepted for bounded manual reviewed steady-state operation. The current programme work is `WHR-CAL-PUBLIC-V1`, focused on public release criteria and an explicit reviewed release decision; unattended publication remains disabled.
+The NAR source pilot, Acquisition Control Plane foundation, Banei bounded operational integration, HKJC source-specific pilot handoff, UAE ERA source-specific sequence, and Calendar Public v1 release decision are complete. Banei, HKJC, and UAE continue under their accepted reviewed operating boundaries. Calendar Public v1 release decision accepted for reviewed static public operation. The current programme work is `WHR-RACECOURSE-PAGES-V1`, focused on canonical racecourse pages and page-link architecture; unattended publication remains disabled.
 
 Reviewed NAR schedule coverage through 2026-07-31 has been promoted and published. The July 8–31 batch contains:
 
@@ -488,9 +489,13 @@ retry support
 
 ## Calendar public v1
 
-Work ID: `WHR-CAL-PUBLIC-V1`
+Status: complete.
 
-Release criteria:
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
+
+Calendar Public v1 release decision accepted for reviewed static public operation. The decision is recorded in `docs/calendar/public-v1-release-decision.md` and `data/audits/calendar-public-v1-release-decision-v1.json`.
+
+Completed release criteria:
 
 - dynamic Calendar, Today, and Tomorrow;
 - maintained approved-pilot records;
@@ -503,9 +508,13 @@ Release criteria:
 - operations and recovery ownership;
 - no participant, betting, result, payout, prediction, full-racecard, raw-source, embedded-video, or direct-stream output.
 
+Scheduled acquisition execution and unattended publication remain disabled.
+
 ## Product follow-up phases
 
-After Calendar Public v1:
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+
+Current product stage: strengthen racecourse pages and page-link architecture.
 
 1. strengthen racecourse pages and page-link architecture;
 2. implement glossary, racing types, search, filters, and SEO;
@@ -533,6 +542,11 @@ Every Calendar PR reads:
 11. applicable machine-readable policies, registries, controls, and public display boundaries.
 
 ## Historical transition markers
+
+Completed Public v1 transition retained for release-gate compatibility:
+
+> Current Work ID: `WHR-CAL-PUBLIC-V1`  
+> Next Work ID: `WHR-RACECOURSE-PAGES-V1`
 
 Completed historical implementation markers retained for release-gate compatibility:
 

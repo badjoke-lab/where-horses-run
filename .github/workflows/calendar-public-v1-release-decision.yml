@@ -1,0 +1,91 @@
+name: Calendar Public v1 release decision
+
+on:
+  pull_request:
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-public-v1-*.json'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/public-v1-*.md'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'scripts/check-calendar-public-v1-*.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'src/**'
+      - '.github/workflows/calendar-public-v1-operations-presentation.yml'
+      - '.github/workflows/calendar-public-v1-release-decision.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'START-HERE.md'
+      - 'data/audits/calendar-public-v1-*.json'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/implementation-roadmap.md'
+      - 'docs/calendar/public-v1-*.md'
+      - 'docs/governance/document-authority.md'
+      - 'docs/project-roadmap.md'
+      - 'scripts/check-calendar-public-v1-*.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
+      - 'src/**'
+      - '.github/workflows/calendar-public-v1-operations-presentation.yml'
+      - '.github/workflows/calendar-public-v1-release-decision.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate release checker syntax
+        run: node --check scripts/check-calendar-public-v1-release-decision.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build static site
+        run: npm run build
+      - name: Capture Public v1 release decision validation
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-public-v1-release-decision.mjs > /tmp/calendar-public-v1-release-decision.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/calendar-public-v1-release-decision.exit
+          cat /tmp/calendar-public-v1-release-decision.log
+          exit 0
+      - name: Upload release-decision diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-release-decision-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            /tmp/calendar-public-v1-release-decision.log
+            /tmp/calendar-public-v1-release-decision.exit
+      - name: Enforce Public v1 release decision
+        run: |
+          status="$(cat /tmp/calendar-public-v1-release-decision.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Prove release decision leaves repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Calendar Public v1 release decision modified repository files.' >&2
+            exit 1
+          fi

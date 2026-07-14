@@ -1,7 +1,7 @@
 # Calendar implementation roadmap
 
 Status: active canonical programme roadmap  
-Last reviewed: 2026-07-09
+Last reviewed: 2026-07-14
 
 ## Purpose
 
@@ -65,7 +65,8 @@ Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-PUBLIC-V1`
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 
 Completed transition marker:
 Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
@@ -191,14 +192,15 @@ System-level A+ is a ceiling, not invented meeting detail. A meeting may enter a
 
 ## Stage 6 — Japan pilot activation
 
-Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 active
+Status: JRA and NAR source pilots complete; Acquisition Control Plane complete; Banei, HKJC, and UAE ERA handoffs accepted; Calendar Public v1 complete
 Completed Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
 Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`  
 Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-PUBLIC-V1`
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 
 ```text
 WHR-CAL-JAPAN-JRA-A-PLUS
@@ -575,11 +577,13 @@ No pilot may require fixed-month completeness before ordinary valid partial prom
 
 ## Stage 11 — Calendar public v1
 
-Status: active current programme work
-Work ID: `WHR-CAL-PUBLIC-V1`
+Status: complete
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
 Completed implementation unit: `PUBLIC-V1-SURFACE-AUDIT-01`
 Completed implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`
-Current implementation unit: `PUBLIC-V1-OPERATIONS-PRESENTATION-01` — in review
+Completed implementation unit: `PUBLIC-V1-OPERATIONS-PRESENTATION-01`
+Completed implementation unit: `PUBLIC-V1-NAVIGATION-QA-01`
+Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`
 
 Release criteria include:
 
@@ -619,6 +623,29 @@ Current Public v1 operations-presentation evidence:
 - retry ownership is shown only as reviewed operations, without Queue counts, attempt history, or operator notes;
 - automatic acquisition, queue mutation, approval, promotion, and unattended publication remain disabled.
 
+Completed Public v1 release-decision evidence:
+
+- all ten release criteria are accepted;
+- static and dynamic English/Japanese route parity is permanently validated;
+- internal links on audited public routes resolve to rendered pages;
+- reviewed static public operation is accepted;
+- scheduled Job execution and unattended publication remain disabled;
+- completed transition: Current Work ID: `WHR-CAL-PUBLIC-V1`; Next Work ID: `WHR-RACECOURSE-PAGES-V1`.
+
+## Stage 12 — racecourse pages and page-link architecture
+
+Status: active current programme work
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+
+Initial sequence:
+
+1. reconcile timetable-only venue IDs with canonical racecourse identities;
+2. define the structured racecourse-page data contract;
+3. expose reviewed today and upcoming meeting state;
+4. add official source, freshness, course, and distance profiles without unsupported inference;
+5. connect country, type, glossary, Calendar, meeting, and racecourse navigation;
+6. validate bilingual responsive pages and internal-link integrity.
+
 ## Later product stages
 
 ### Racecourse pages and product navigation
@@ -644,12 +671,12 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. keep Banei, HKJC, and UAE in their accepted bounded reviewed steady-state operating modes
-2. audit dynamic Calendar, Today, and Tomorrow behavior against explicit timezone and safe empty/stale/failure rules
-3. reconcile maintained approved-pilot records with visible source, rank, coverage, freshness, review, and retry ownership
-4. verify one meeting per list row and C/B/B+/A/A+ public field boundaries across supported views
-5. complete bilingual responsive Calendar, country, racecourse, and meeting navigation QA
-6. prepare the explicit WHR-CAL-PUBLIC-V1 release decision without enabling unattended publication
+1. keep Calendar Public v1 and source-specific pilots in reviewed steady-state operation
+2. reconcile timetable-only venue IDs with canonical racecourse identities
+3. define and validate structured bilingual racecourse pages
+4. connect reviewed current and upcoming meeting state to racecourse pages
+5. add course, distance, source, and freshness profiles without unsupported inference
+6. complete page-link architecture and internal-link QA
 7. run source-specific Completion Audits only before making their corresponding completeness claims
 ```
 

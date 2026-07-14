@@ -182,15 +182,26 @@ for (const fixedCopy of ['June 2026 Calendar', '2026年6月 開催カレンダ�
   if (publicSourceText.includes(fixedCopy)) fail(`public surface retains fixed historical copy: ${fixedCopy}`);
 }
 
-for (const marker of [
-  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
-  'audit Calendar, Today, and Tomorrow',
-]) requireIncludes(startHere, marker, 'START-HERE.md');
-for (const marker of [
-  '## Stage 11 — Calendar public v1',
-  'Status: active current programme work',
-  'Work ID: `WHR-CAL-PUBLIC-V1`',
-]) requireIncludes(roadmap, marker, 'implementation-roadmap.md');
+const activePublicV1Entrypoint =
+  startHere.includes('Current Work ID: `WHR-CAL-PUBLIC-V1`') &&
+  startHere.includes('audit Calendar, Today, and Tomorrow');
+const completedPublicV1Entrypoint =
+  startHere.includes('Completed Work ID: `WHR-CAL-PUBLIC-V1`') &&
+  startHere.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`') &&
+  startHere.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`');
+if (!activePublicV1Entrypoint && !completedPublicV1Entrypoint) fail('START-HERE.md does not retain an active or completed Public v1 entrypoint.');
+
+const activePublicV1Roadmap =
+  roadmap.includes('## Stage 11 — Calendar public v1') &&
+  roadmap.includes('Status: active current programme work') &&
+  roadmap.includes('Work ID: `WHR-CAL-PUBLIC-V1`');
+const completedPublicV1Roadmap =
+  roadmap.includes('## Stage 11 — Calendar public v1') &&
+  roadmap.includes('Status: complete') &&
+  roadmap.includes('Completed Work ID: `WHR-CAL-PUBLIC-V1`') &&
+  roadmap.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`') &&
+  roadmap.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`');
+if (!activePublicV1Roadmap && !completedPublicV1Roadmap) fail('implementation-roadmap.md does not retain an active or completed Public v1 stage.');
 for (const marker of [
   'PUBLIC-V1-SURFACE-AUDIT-01',
   'One meeting per list row',

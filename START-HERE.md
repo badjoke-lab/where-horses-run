@@ -1,7 +1,7 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-07-10
+Last reviewed: 2026-07-14
 
 ## Required reading
 
@@ -46,6 +46,7 @@ docs/calendar/baseline-reconciliation-map.md
 docs/calendar/pipeline-v1-release-gate.md
 docs/calendar/dynamic-dates-release-gate.md
 docs/calendar/operations-v1-release-gate.md
+docs/calendar/public-v1-release-decision.md
 ```
 
 ## Active Calendar model
@@ -145,6 +146,11 @@ data/audits/calendar-baseline-migration-map.json
 data/audits/calendar-pipeline-v1-release-gate.json
 data/audits/calendar-dynamic-dates-release-gate.json
 data/audits/calendar-operations-v1-release-gate.json
+data/audits/calendar-public-v1-surface-audit-v1.json
+data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json
+data/audits/calendar-public-v1-operations-presentation-v1.json
+data/audits/calendar-public-v1-navigation-qa-v1.json
+data/audits/calendar-public-v1-release-decision-v1.json
 data/audits/japan-a-plus-reconciliation-completion.json
 data/audits/calendar-jra-a-plus-pilot-completion.json
 data/static/calendar-operations-control.json
@@ -238,6 +244,11 @@ scripts/check-calendar-baseline-reconciliation.mjs
 scripts/check-calendar-pipeline-v1-release-gate.mjs
 scripts/check-calendar-dynamic-dates-release-gate.mjs
 scripts/check-calendar-operations-v1-release-gate.mjs
+scripts/check-calendar-public-v1-surface-audit.mjs
+scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs
+scripts/check-calendar-public-v1-operations-presentation.mjs
+scripts/check-calendar-public-v1-navigation-qa.mjs
+scripts/check-calendar-public-v1-release-decision.mjs
 scripts/check-japan-a-plus-reconciliation-completion.mjs
 scripts/check-calendar-jra-pilot-completion.mjs
 scripts/check-project-governance-docs.mjs
@@ -344,7 +355,8 @@ Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
 Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
-Current Work ID: `WHR-CAL-PUBLIC-V1`
+Completed Work ID: `WHR-CAL-PUBLIC-V1`
+Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 
 Current NAR status:
 
@@ -366,14 +378,22 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. audit Calendar, Today, and Tomorrow against the Stage 11 dynamic-date and one-meeting-per-row release criteria
-2. reconcile maintained approved-pilot records with visible source, coverage, freshness, rank, and honest partial-coverage states
-3. validate safe current, stale, empty, source-failure, and retry-ownership presentation without inventing missing detail
-4. complete bilingual responsive QA for Calendar, country, racecourse, and meeting navigation boundaries
-5. prepare the explicit WHR-CAL-PUBLIC-V1 release decision while unattended publication remains disabled
+1. reconcile timetable-only venue IDs with canonical racecourse identities and fail safely when no detail page exists
+2. define one structured racecourse-page record per reviewed racecourse identity
+3. connect reviewed today and upcoming meeting state without inventing absent detail
+4. add official source, freshness, course, and distance profiles with explicit unknown states
+5. complete country, racing-type, glossary, Calendar, racecourse, and meeting page-link architecture
+6. validate bilingual responsive racecourse pages and internal-link integrity
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
+
+## Completed Public v1 transition
+
+> Current Work ID: `WHR-CAL-PUBLIC-V1`  
+> Next Work ID: `WHR-RACECOURSE-PAGES-V1`
+
+Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`
 
 ## Historical compatibility markers
 

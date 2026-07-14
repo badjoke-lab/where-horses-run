@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-14
 
 ## Authority order
 
@@ -70,6 +70,11 @@ Calendar human-readable contracts:
 - `docs/calendar/baseline-reconciliation-map.md`
 - `docs/calendar/pipeline-v1-release-gate.md`
 - `docs/calendar/dynamic-dates-release-gate.md`
+- `docs/calendar/public-v1-surface-audit.md`
+- `docs/calendar/public-v1-pilot-record-reconciliation.md`
+- `docs/calendar/public-v1-operations-presentation.md`
+- `docs/calendar/public-v1-navigation-qa.md`
+- `docs/calendar/public-v1-release-decision.md`
 - `docs/calendar/operations-v1-contract.md`
 - `docs/calendar/operations-v1-release-gate.md`
 - `docs/calendar/jra-pilot-foundation.md`
@@ -98,6 +103,11 @@ Calendar machine-readable contracts:
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
 - `data/audits/calendar-operations-v1-release-gate.json`
+- `data/audits/calendar-public-v1-surface-audit-v1.json`
+- `data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json`
+- `data/audits/calendar-public-v1-operations-presentation-v1.json`
+- `data/audits/calendar-public-v1-navigation-qa-v1.json`
+- `data/audits/calendar-public-v1-release-decision-v1.json`
 - `data/static/calendar-operations-control.json`
 - `data/static/calendar-operations-seasonal-policy.json`
 - `data/static/calendar-readiness-banei-detail-v1.json`
@@ -125,6 +135,11 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-operations-status.mjs`
 - `scripts/check-calendar-operations-review-package.mjs`
 - `scripts/check-calendar-operations-v1-release-gate.mjs`
+- `scripts/check-calendar-public-v1-surface-audit.mjs`
+- `scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs`
+- `scripts/check-calendar-public-v1-operations-presentation.mjs`
+- `scripts/check-calendar-public-v1-navigation-qa.mjs`
+- `scripts/check-calendar-public-v1-release-decision.mjs`
 - `scripts/check-calendar-banei-retry-queue-state-apply.mjs`
 - `scripts/check-calendar-banei-freshness-rollback-operating-evidence.mjs`
 - `scripts/check-calendar-banei-bilingual-public-display-qa.mjs`

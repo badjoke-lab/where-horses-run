@@ -21,6 +21,10 @@ const requiredFiles = [
   'data/static/calendar-banei-handoff-decision.schema.json',
   'data/static/calendar-banei-handoff-decision-v1.json',
   'scripts/check-calendar-banei-handoff-decision.mjs',
+  'docs/calendar/public-v1-release-decision.md',
+  'data/audits/calendar-public-v1-release-decision-v1.json',
+  'scripts/check-calendar-public-v1-navigation-qa.mjs',
+  'scripts/check-calendar-public-v1-release-decision.mjs',
   'data/static/calendar-coverage-observation.schema.json',
   'data/static/calendar-validation-responsibilities-v1.json',
   'data/static/calendar-readiness-registry.json',
@@ -83,7 +87,9 @@ requirePhrases(start, 'START-HERE', [
   'Rank-aware Retry Queue',
   'C/B/B+/A/A+',
   'primary runner: local',
-  'primary runner: github_actions'
+  'primary runner: github_actions',
+  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`'
 ]);
 
 requirePhrases(roadmap, 'project roadmap', [
@@ -93,7 +99,9 @@ requirePhrases(roadmap, 'project roadmap', [
   'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
   'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
   'Completed Work ID: `WHR-CAL-UAE-ERA`',
-  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Calendar Public v1 release decision accepted',
   'schedule-confirmed meetings: 82',
   'A+ detail records:            11',
   'C schedule records:           71',
@@ -120,7 +128,9 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
   'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
   'Completed Work ID: `WHR-CAL-UAE-ERA`',
-  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`',
   'ACP-1 — NAR formal workflow dispatch — complete',
   'Stage 7 — Acquisition Control Plane foundation',
   'Status: complete.',
@@ -280,4 +290,5 @@ console.log('COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
 console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
 console.log('COMPLETED_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
 console.log('COMPLETED_WORK_ID: WHR-CAL-UAE-ERA');
-console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('COMPLETED_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('CURRENT_WORK_ID: WHR-RACECOURSE-PAGES-V1');

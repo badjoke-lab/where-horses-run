@@ -1,7 +1,7 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-14
 
 Use these files together:
 
@@ -37,6 +37,8 @@ Use these files together:
 - [`public-v1-surface-audit.md`](public-v1-surface-audit.md) — Calendar Public v1 Calendar/Today/Tomorrow shared-surface audit, validator reconciliation, bilingual parity, one-meeting-per-row boundary, and rendered fixture matrix.
 - [`public-v1-pilot-record-reconciliation.md`](public-v1-pilot-record-reconciliation.md) — deterministic reviewed-coverage and additional-detail states across JRA, NAR, Banei, HKJC, and UAE public meeting rows.
 - [`public-v1-operations-presentation.md`](public-v1-operations-presentation.md) — bilingual current/stale/empty/source-failure and reviewed retry-ownership presentation without internal Queue publication.
+- [`public-v1-navigation-qa.md`](public-v1-navigation-qa.md) — rendered bilingual route parity, canonical/hreflang, language switching, meeting back links, and internal-link integrity.
+- [`public-v1-release-decision.md`](public-v1-release-decision.md) — accepted `WHR-CAL-PUBLIC-V1` reviewed static release decision and transition to `WHR-RACECOURSE-PAGES-V1`.
 - [`operations-v1-contract.md`](operations-v1-contract.md) — completed review-only status/report layer; later control-plane Operations v2 is additive.
 - [`operations-v1-release-gate.md`](operations-v1-release-gate.md) — Operations v1 completion and JRA pilot boundary.
 - [`japan-full-month-scope-policy.md`](japan-full-month-scope-policy.md) — July completion-audit policy; full-month completeness is not an ordinary update gate.
@@ -141,6 +143,8 @@ data/audits/calendar-dynamic-dates-release-gate.json
 data/audits/calendar-public-v1-surface-audit-v1.json
 data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json
 data/audits/calendar-public-v1-operations-presentation-v1.json
+data/audits/calendar-public-v1-navigation-qa-v1.json
+data/audits/calendar-public-v1-release-decision-v1.json
 data/audits/calendar-operations-v1-release-gate.json
 data/static/calendar-operations-control.json
 data/static/calendar-operations-seasonal-policy.json
