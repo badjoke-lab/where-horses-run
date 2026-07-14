@@ -50,7 +50,33 @@ for (const countryId of expectedCountries) {
 }
 if (countries.size !== 13) fail(`Expected exactly 13 historical country ids, got ${countries.size}.`);
 
-const forbidden = ['fixture', 'sample', 'mock', 'needs_review', 'not_checked'];
+const prohibitedFields = new Set([
+  'raw_body',
+  'raw_html',
+  'source_body',
+  'entries',
+  'horses',
+  'jockeys',
+  'trainers',
+  'odds',
+  'results',
+  'payouts',
+  'predictions',
+  'tips',
+  'stream_url'
+]);
+function walk(value, label) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => walk(entry, `${label}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, entry] of Object.entries(value)) {
+    if (prohibitedFields.has(key.toLowerCase())) fail(`${label}.${key}: prohibited historical field.`);
+    walk(entry, `${label}.${key}`);
+  }
+}
+
 for (const record of historical.records) {
   if (record.data_origin !== 'real_source') fail(`${record.country_id}: historical data_origin must be real_source.`);
   if (!['A', 'B', 'C'].includes(record.data_level)) fail(`${record.country_id}: historical data_level must be A/B/C.`);
@@ -61,10 +87,7 @@ for (const record of historical.records) {
   if (!record.source_trace.source_url?.startsWith('https://')) fail(`${record.country_id}: source_url must be https official source.`);
   if (!record.source_trace.last_checked) fail(`${record.country_id}: last_checked missing.`);
   if (!record.source_trace.parser) fail(`${record.country_id}: parser missing.`);
-  const serialized = JSON.stringify(record).toLowerCase();
-  for (const term of forbidden) {
-    if (serialized.includes(term)) fail(`${record.country_id}: forbidden historical term ${term}.`);
-  }
+  walk(record, record.country_id);
 }
 
 if (page.includes('real-calendar-all-countries.json')) {
