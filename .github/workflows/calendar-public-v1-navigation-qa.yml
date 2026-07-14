@@ -50,8 +50,31 @@ jobs:
         run: npm install --package-lock=false
       - name: Build static site
         run: npm run build
-      - name: Validate rendered bilingual navigation
-        run: node scripts/check-calendar-public-v1-navigation-qa.mjs
+      - name: Capture rendered bilingual navigation QA
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-public-v1-navigation-qa.mjs > /tmp/calendar-public-v1-navigation-qa.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/calendar-public-v1-navigation-qa.exit
+          cat /tmp/calendar-public-v1-navigation-qa.log
+          exit 0
+      - name: Upload navigation QA diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-navigation-qa-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/calendar-public-v1-navigation-qa.log
+            /tmp/calendar-public-v1-navigation-qa.exit
+      - name: Enforce rendered bilingual navigation QA
+        run: |
+          status="$(cat /tmp/calendar-public-v1-navigation-qa.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
       - name: Prove QA leaves repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
