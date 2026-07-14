@@ -1,0 +1,95 @@
+{
+  "schema_version": "racecourse-page-bilingual-qa-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-BILINGUAL-QA-01",
+  "status": "accepted_complete",
+  "decision": "accepted_for_reviewed_static_public_operation",
+  "reviewed_at": "2026-07-14",
+  "fixture": {
+    "reference_date": "2026-07-14",
+    "timezone": "Asia/Tokyo"
+  },
+  "discovery": {
+    "workflow_run_id": 29340082256,
+    "artifact_id": 8313636993,
+    "artifact_digest": "sha256:8d12efa25df751d233077d00dc67d09429cf774094986fa19076da240290b4c6",
+    "rendered_schema_version": "racecourse-page-bilingual-qa-discovery-v2"
+  },
+  "counts": {
+    "racecourses": 36,
+    "bilingual_pages": 72,
+    "route_pairs_complete": 36,
+    "language_valid": 72,
+    "titles_valid": 72,
+    "descriptions_valid": 72,
+    "canonical_valid": 72,
+    "self_hreflang_valid": 72,
+    "counterpart_hreflang_valid": 72,
+    "x_default_valid": 72,
+    "language_switch_valid": 72,
+    "one_h1_valid": 72,
+    "unique_ids_valid": 72,
+    "image_alt_valid": 72,
+    "nonempty_anchors_valid": 72,
+    "skip_links_valid": 72,
+    "main_landmarks_valid": 72,
+    "labeled_headers_valid": 72,
+    "labeled_navs_valid": 72,
+    "panel_labels_valid": 72,
+    "reference_dates_valid": 72,
+    "public_boundary_notices_valid": 72,
+    "required_section_pairs_valid": 360,
+    "optional_section_pairs_valid": 108,
+    "heading_level_pairs_valid": 36,
+    "errors": 0
+  },
+  "source_contracts": {
+    "metadata": true,
+    "inferred_bilingual_routes": true,
+    "accessibility": true,
+    "responsive": true,
+    "no_large_fixed_width": true,
+    "prohibited_field_access": true
+  },
+  "completed_units": [
+    "RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01",
+    "RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01",
+    "RACECOURSE-PAGE-PROFILE-EVIDENCE-01",
+    "RACECOURSE-PAGE-LINK-ARCHITECTURE-01",
+    "RACECOURSE-PAGE-BILINGUAL-QA-01"
+  ],
+  "release_criteria": {
+    "canonical_bilingual_identity": true,
+    "reviewed_public_timetable_connection": true,
+    "official_profile_evidence_with_explicit_unknowns": true,
+    "complete_internal_page_link_architecture": true,
+    "localized_metadata_and_language_switching": true,
+    "responsive_source_contract": true,
+    "accessibility_source_and_rendered_contract": true,
+    "public_display_boundary_preserved": true,
+    "read_only_validation": true
+  },
+  "public_boundary": {
+    "list_shape": "one_meeting_per_row",
+    "race_level_expansion_on_racecourse_page": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "full_racecard_display": false,
+    "raw_source_display": false,
+    "embedded_video": false,
+    "direct_stream_url": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "canonical_timetable_write": false,
+    "public_timetable_write": false,
+    "automatic_source_acceptance": false,
+    "automatic_publication": false,
+    "deployment": false
+  },
+  "completed_work_id": "WHR-RACECOURSE-PAGES-V1",
+  "next_work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "next_implementation_unit": "GLOSSARY-SCHEMA-EXTENSION-01"
+}
