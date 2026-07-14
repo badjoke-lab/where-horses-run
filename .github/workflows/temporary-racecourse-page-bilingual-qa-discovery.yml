@@ -1,0 +1,64 @@
+name: Temporary racecourse page bilingual QA discovery
+
+on:
+  push:
+    branches:
+      - work/racecourse-page-bilingual-qa
+    paths:
+      - 'scripts/audit-racecourse-page-bilingual-qa.mjs'
+      - '.github/workflows/temporary-racecourse-page-bilingual-qa-discovery.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/audit-racecourse-page-bilingual-qa.mjs'
+      - '.github/workflows/temporary-racecourse-page-bilingual-qa-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate audit syntax
+        run: node --check scripts/audit-racecourse-page-bilingual-qa.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic bilingual site
+        run: npm run build
+      - name: Capture bilingual QA discovery
+        shell: bash
+        run: |
+          set +e
+          node scripts/audit-racecourse-page-bilingual-qa.mjs --output=/tmp/racecourse-page-bilingual-qa-discovery.json > /tmp/racecourse-page-bilingual-qa.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/racecourse-page-bilingual-qa.exit
+          cat /tmp/racecourse-page-bilingual-qa.log
+          exit 0
+      - name: Upload discovery artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racecourse-page-bilingual-qa-discovery-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/racecourse-page-bilingual-qa-discovery.json
+            /tmp/racecourse-page-bilingual-qa.log
+            /tmp/racecourse-page-bilingual-qa.exit
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
