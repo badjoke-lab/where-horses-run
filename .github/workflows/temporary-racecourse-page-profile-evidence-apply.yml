@@ -1,0 +1,92 @@
+name: Temporary racecourse page profile evidence apply
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply-racecourse-page-profile-evidence.mjs'
+      - '.github/workflows/temporary-racecourse-page-profile-evidence-apply.yml'
+  push:
+    branches:
+      - work/racecourse-page-profile-evidence
+    paths:
+      - 'scripts/apply-racecourse-page-profile-evidence.mjs'
+      - '.github/workflows/temporary-racecourse-page-profile-evidence-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-racecourse-page-profile-evidence-apply
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.repository == 'badjoke-lab/where-horses-run' && (github.event_name == 'push' || github.head_ref == 'work/racecourse-page-profile-evidence')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/racecourse-page-profile-evidence
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply reviewed profile evidence
+        run: |
+          node --check scripts/apply-racecourse-page-profile-evidence.mjs
+          node scripts/apply-racecourse-page-profile-evidence.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build static site
+        run: npm run build
+      - name: Capture profile evidence validation
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-racecourse-page-profile-evidence.mjs > /tmp/racecourse-page-profile-evidence.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/racecourse-page-profile-evidence.exit
+          cat /tmp/racecourse-page-profile-evidence.log
+          exit 0
+      - name: Upload profile evidence diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racecourse-page-profile-evidence-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/racecourse-page-profile-evidence.log
+            /tmp/racecourse-page-profile-evidence.exit
+      - name: Enforce profile evidence validation
+        run: |
+          status="$(cat /tmp/racecourse-page-profile-evidence.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Validate inherited racecourse and Public v1 gates
+        run: |
+          node scripts/check-racecourse-page-identity-reconciliation.mjs
+          node scripts/check-racecourse-page-public-timetable-connection.mjs
+          node scripts/check-calendar-public-v1-navigation-qa.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary discovery and apply mechanisms
+        run: |
+          rm scripts/audit-racecourse-page-profile-evidence.mjs
+          rm .github/workflows/temporary-racecourse-page-profile-evidence-discovery.yml
+          rm scripts/apply-racecourse-page-profile-evidence.mjs
+          rm .github/workflows/temporary-racecourse-page-profile-evidence-apply.yml
+      - name: Commit exact profile evidence state
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --exit-code && {
+            echo 'Expected racecourse profile evidence changes were not produced.' >&2
+            exit 1
+          }
+          git commit -m 'Complete racecourse page profile evidence'
+          git push origin HEAD:work/racecourse-page-profile-evidence
