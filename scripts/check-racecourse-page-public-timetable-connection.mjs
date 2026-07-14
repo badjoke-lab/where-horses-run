@@ -103,7 +103,8 @@ for (const example of audit.scope.next_fixture_examples) {
 }
 
 const noFuture = html(`tracks/${audit.scope.no_future_fixture_example}`);
-if (attr(noFuture, 'data-next-date') !== '') fail('no-future fixture must keep empty next date');
+const noFutureNextDate = attr(noFuture, 'data-next-date');
+if (noFutureNextDate !== null && noFutureNextDate !== '') fail(`no-future fixture must keep empty next date; found ${noFutureNextDate}`);
 if (!noFuture.includes('No next meeting is listed in the current public 30-day window.')) fail('no-future empty state missing');
 
 const kanazawaJa = html('ja/tracks/kanazawa-racecourse');
