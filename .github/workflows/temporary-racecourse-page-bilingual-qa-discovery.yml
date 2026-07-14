@@ -5,13 +5,13 @@ on:
     branches:
       - work/racecourse-page-bilingual-qa
     paths:
-      - 'scripts/audit-racecourse-page-bilingual-qa.mjs'
+      - 'scripts/audit-racecourse-page-bilingual-qa-v2.mjs'
       - '.github/workflows/temporary-racecourse-page-bilingual-qa-discovery.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'scripts/audit-racecourse-page-bilingual-qa.mjs'
+      - 'scripts/audit-racecourse-page-bilingual-qa-v2.mjs'
       - '.github/workflows/temporary-racecourse-page-bilingual-qa-discovery.yml'
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Validate audit syntax
-        run: node --check scripts/audit-racecourse-page-bilingual-qa.mjs
+        run: node --check scripts/audit-racecourse-page-bilingual-qa-v2.mjs
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
       - name: Build deterministic bilingual site
@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          node scripts/audit-racecourse-page-bilingual-qa.mjs --output=/tmp/racecourse-page-bilingual-qa-discovery.json > /tmp/racecourse-page-bilingual-qa.log 2>&1
+          node scripts/audit-racecourse-page-bilingual-qa-v2.mjs --output=/tmp/racecourse-page-bilingual-qa-discovery.json > /tmp/racecourse-page-bilingual-qa.log 2>&1
           status=$?
           printf '%s\n' "$status" > /tmp/racecourse-page-bilingual-qa.exit
           cat /tmp/racecourse-page-bilingual-qa.log
