@@ -145,11 +145,16 @@ for (const marker of [
   'Retry Queue entries',
   '2026-07-12 / Asia/Tokyo',
 ]) requireIncludes(doc, marker, 'public-v1-operations-presentation.md');
-for (const marker of [
-  'Current Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Completed implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`',
-  'Current implementation unit: `PUBLIC-V1-OPERATIONS-PRESENTATION-01`',
-]) requireIncludes(roadmap, marker, 'implementation-roadmap.md');
+const activeOperationsPresentationStage =
+  roadmap.includes('Current Work ID: `WHR-CAL-PUBLIC-V1`') &&
+  roadmap.includes('Completed implementation unit: `PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01`') &&
+  roadmap.includes('Current implementation unit: `PUBLIC-V1-OPERATIONS-PRESENTATION-01`');
+const completedOperationsPresentationStage =
+  roadmap.includes('Completed Work ID: `WHR-CAL-PUBLIC-V1`') &&
+  roadmap.includes('Completed implementation unit: `PUBLIC-V1-OPERATIONS-PRESENTATION-01`') &&
+  roadmap.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`') &&
+  roadmap.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`');
+if (!activeOperationsPresentationStage && !completedOperationsPresentationStage) fail('implementation-roadmap.md does not retain an active or completed operations-presentation stage.');
 
 for (const validator of [
   'scripts/check-calendar-public-v1-surface-audit.mjs',
