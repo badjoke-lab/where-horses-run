@@ -7,6 +7,16 @@ on:
     paths:
       - 'scripts/apply-calendar-public-v1-release-decision.mjs'
       - '.github/workflows/temporary-calendar-public-v1-release-decision-apply.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply-calendar-public-v1-release-decision.mjs'
+      - '.github/workflows/temporary-calendar-public-v1-release-decision-apply.yml'
+      - 'data/audits/calendar-public-v1-release-decision-v1.json'
+      - 'docs/calendar/public-v1-release-decision.md'
+      - 'scripts/check-calendar-public-v1-release-decision.mjs'
+      - '.github/workflows/calendar-public-v1-release-decision.yml'
 
 permissions:
   contents: write
@@ -17,7 +27,7 @@ concurrency:
 
 jobs:
   apply:
-    if: github.repository == 'badjoke-lab/where-horses-run'
+    if: github.repository == 'badjoke-lab/where-horses-run' && (github.event_name == 'push' || github.head_ref == 'work/calendar-public-v1-release-decision')
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
