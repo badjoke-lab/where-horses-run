@@ -1,0 +1,105 @@
+name: Temporary racecourse page bilingual QA apply
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply-racecourse-page-bilingual-qa.mjs'
+      - '.github/workflows/temporary-racecourse-page-bilingual-qa-apply.yml'
+  push:
+    branches:
+      - work/racecourse-page-bilingual-qa
+    paths:
+      - 'scripts/apply-racecourse-page-bilingual-qa.mjs'
+      - '.github/workflows/temporary-racecourse-page-bilingual-qa-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-racecourse-page-bilingual-qa-apply
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.repository == 'badjoke-lab/where-horses-run' && (github.event_name == 'push' || github.head_ref == 'work/racecourse-page-bilingual-qa')
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/racecourse-page-bilingual-qa
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Correct updater quote markers and apply release transition
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/apply-racecourse-page-bilingual-qa.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          text = text.replaceAll("RACECOURSE-PAGE-BILINGUAL-QA-01'", "RACECOURSE-PAGE-BILINGUAL-QA-01`'");
+          text = text.replaceAll("GLOSSARY-SCHEMA-EXTENSION-01'", "GLOSSARY-SCHEMA-EXTENSION-01`'");
+          fs.writeFileSync(file, text);
+          NODE
+          node --check scripts/apply-racecourse-page-bilingual-qa.mjs
+          node scripts/apply-racecourse-page-bilingual-qa.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic bilingual site
+        run: npm run build
+      - name: Capture bilingual release validation
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-racecourse-page-bilingual-qa.mjs > /tmp/racecourse-page-bilingual-qa.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/racecourse-page-bilingual-qa.exit
+          cat /tmp/racecourse-page-bilingual-qa.log
+          exit 0
+      - name: Upload bilingual QA diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racecourse-page-bilingual-qa-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            /tmp/racecourse-page-bilingual-qa.log
+            /tmp/racecourse-page-bilingual-qa.exit
+      - name: Enforce bilingual release validation
+        run: |
+          status="$(cat /tmp/racecourse-page-bilingual-qa.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Validate inherited release chain
+        run: |
+          node scripts/check-racecourse-page-identity-reconciliation.mjs
+          node scripts/check-racecourse-page-public-timetable-connection.mjs
+          node scripts/check-racecourse-page-profile-evidence.mjs
+          node scripts/check-racecourse-page-link-architecture.mjs
+          node scripts/check-calendar-public-v1-navigation-qa.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary discovery and apply mechanisms
+        run: |
+          rm scripts/audit-racecourse-page-bilingual-qa.mjs
+          rm .github/workflows/temporary-racecourse-page-bilingual-qa-discovery.yml
+          rm scripts/apply-racecourse-page-bilingual-qa.mjs
+          rm .github/workflows/temporary-racecourse-page-bilingual-qa-apply.yml
+      - name: Commit exact racecourse release state
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --exit-code && {
+            echo 'Expected racecourse bilingual QA changes were not produced.' >&2
+            exit 1
+          }
+          git commit -m 'Complete racecourse page bilingual QA'
+          git push origin HEAD:work/racecourse-page-bilingual-qa
