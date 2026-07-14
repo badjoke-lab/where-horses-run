@@ -47,7 +47,7 @@ for (const marker of [
   'showMeetingDetails',
   'record.official_source_url',
   'record.detail_path',
-  'one row represents one meeting',
+  'One row represents one meeting',
   '1行につき1開催',
   'does not mean there is no racing',
   '開催がないことを意味しません',
