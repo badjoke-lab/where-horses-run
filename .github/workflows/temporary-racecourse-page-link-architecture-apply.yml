@@ -1,0 +1,96 @@
+name: Temporary racecourse page link architecture apply
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply-racecourse-page-link-architecture.mjs'
+      - '.github/workflows/temporary-racecourse-page-link-architecture-apply.yml'
+  push:
+    branches:
+      - work/racecourse-page-link-architecture
+    paths:
+      - 'scripts/apply-racecourse-page-link-architecture.mjs'
+      - '.github/workflows/temporary-racecourse-page-link-architecture-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-racecourse-page-link-architecture-apply
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.repository == 'badjoke-lab/where-horses-run' && (github.event_name == 'push' || github.head_ref == 'work/racecourse-page-link-architecture')
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/racecourse-page-link-architecture
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply reviewed link architecture
+        run: |
+          node --check scripts/apply-racecourse-page-link-architecture.mjs
+          node scripts/apply-racecourse-page-link-architecture.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic bilingual site
+        run: npm run build
+      - name: Capture link architecture validation
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-racecourse-page-link-architecture.mjs > /tmp/racecourse-page-link-architecture.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/racecourse-page-link-architecture.exit
+          cat /tmp/racecourse-page-link-architecture.log
+          exit 0
+      - name: Upload link architecture diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racecourse-page-link-architecture-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/racecourse-page-link-architecture.log
+            /tmp/racecourse-page-link-architecture.exit
+      - name: Enforce link architecture validation
+        run: |
+          status="$(cat /tmp/racecourse-page-link-architecture.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Validate inherited racecourse and Public v1 gates
+        run: |
+          node scripts/check-racecourse-page-identity-reconciliation.mjs
+          node scripts/check-racecourse-page-public-timetable-connection.mjs
+          node scripts/check-racecourse-page-profile-evidence.mjs
+          node scripts/check-calendar-public-v1-navigation-qa.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary discovery and apply mechanisms
+        run: |
+          rm scripts/audit-racecourse-page-link-architecture.mjs
+          rm .github/workflows/temporary-racecourse-page-link-architecture-discovery.yml
+          rm scripts/apply-racecourse-page-link-architecture.mjs
+          rm .github/workflows/temporary-racecourse-page-link-architecture-apply.yml
+      - name: Commit exact link architecture state
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --exit-code && {
+            echo 'Expected racecourse page-link changes were not produced.' >&2
+            exit 1
+          }
+          git commit -m 'Complete racecourse page-link architecture'
+          git push origin HEAD:work/racecourse-page-link-architecture
