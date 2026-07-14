@@ -60,6 +60,8 @@ errors: 0
 
 The source contract also confirms canonical/hreflang metadata, inferred bilingual routes, accessibility markers, responsive auto-fit grids, a mobile media query, no large fixed-width page layout, and no access to prohibited participant, betting, result, payout, prediction, raw-source, or stream fields.
 
+The permanent `Racecourse page bilingual QA` workflow reruns for racecourse audits, records, pages, shared layout and panel code, styles, roadmaps, governance, and its own contract on pull requests and on `main`. The temporary discovery and transition mechanisms are not part of the accepted repository state.
+
 ## Completed implementation chain
 
 1. `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01` — all 26 public timetable venue IDs resolve to canonical bilingual pages;
