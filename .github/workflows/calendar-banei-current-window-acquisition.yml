@@ -50,8 +50,18 @@ jobs:
           NODE
       - name: Confirm no acquisition or deployment side effect
         run: |
-          if grep -E 'run-banei-actions-job|wrangler pages deploy|npm run deploy|contents: write' .github/workflows/calendar-banei-current-window-acquisition.yml; then
-            echo 'retired acquisition workflow contains an execution or deployment path'
-            exit 1
-          fi
-          echo 'BANEI_ACQUISITION_SIDE_EFFECTS: disabled'
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const text = fs.readFileSync('.github/workflows/calendar-banei-current-window-acquisition.yml', 'utf8');
+          const executable = text.slice(0, text.indexOf('- name: Confirm no acquisition or deployment side effect'));
+          const forbidden = [
+            'run-banei-' + 'actions-job',
+            'wrangler pages ' + 'deploy',
+            'npm run ' + 'deploy',
+            'contents: ' + 'write',
+          ];
+          for (const marker of forbidden) {
+            if (executable.includes(marker)) throw new Error(`retired workflow contains forbidden execution marker: ${marker}`);
+          }
+          console.log('BANEI_ACQUISITION_SIDE_EFFECTS: disabled');
+          NODE
