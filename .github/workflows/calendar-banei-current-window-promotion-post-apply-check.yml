@@ -4,6 +4,15 @@ on:
   pull_request:
     paths:
       - 'data/audits/calendar-banei-current-window-promotion-apply-v1.json'
+      - 'data/audits/calendar-banei-current-window-promotion-proposal-v1.json'
+      - 'data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json'
+      - 'data/candidates/banei-current-window-c-schedule-approved.json'
+      - 'data/candidates/banei-current-window-a-plus-approved.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
       - 'scripts/check-calendar-pipeline-v1-public-projection.mjs'
       - 'scripts/check-calendar-japan-current-window-operations.mjs'
       - 'scripts/check-calendar-banei-current-window-acquisition.mjs'
@@ -33,7 +42,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Detect committed reviewed application
+        id: applied
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const required = [
+            'data/candidates/banei-current-window-c-schedule-approved.json',
+            'data/candidates/banei-current-window-a-plus-approved.json',
+            'data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json'
+          ];
+          let applied = required.every((file) => fs.existsSync(file));
+          if (applied) {
+            const registry = JSON.parse(fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8'));
+            const proposal = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-readiness-activation-proposal-v1.json', 'utf8'));
+            const current = registry.records.find((record) => record.authority_source_key === proposal.authority_source_key);
+            applied = JSON.stringify(current) === JSON.stringify(proposal.after);
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `value=${applied ? 'true' : 'false'}\n`);
+          console.log(`BANEI_REVIEWED_APPLICATION_COMMITTED: ${applied}`);
+          NODE
       - name: Download exact reviewed proposal
+        if: steps.applied.outputs.value == 'false'
         uses: actions/download-artifact@v4
         with:
           name: banei-current-window-promotion-proposal-29277596978
@@ -42,6 +72,7 @@ jobs:
           repository: badjoke-lab/where-horses-run
           run-id: 29277596978
       - name: Apply proposal in read-only workspace
+        if: steps.applied.outputs.value == 'false'
         run: |
           proposal_dir="$(find /tmp/banei-reviewed-proposal -type f -name promotion-proposal.json -printf '%h\n' | head -1)"
           if [ -z "$proposal_dir" ]; then
@@ -70,37 +101,45 @@ jobs:
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs
           node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
           node scripts/timetable/build-operations-review-package.mjs
-      - name: Install dependencies
-        run: npm install --package-lock=false --no-audit --no-fund
-      - name: Capture full repository check
-        shell: bash
+      - name: Validate committed Banei state
         run: |
-          set +e
-          npm run check > /tmp/banei-post-apply-check.log 2>&1
-          status=$?
-          printf '%s\n' "$status" > /tmp/banei-post-apply-check.exit
-          tail -160 /tmp/banei-post-apply-check.log
-          exit 0
-      - name: Upload diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: banei-promotion-post-apply-check-${{ github.run_id }}
-          retention-days: 7
-          if-no-files-found: error
-          path: |
-            /tmp/banei-post-apply-check.log
-            /tmp/banei-post-apply-check.exit
-      - name: Enforce full repository check
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const audit = JSON.parse(fs.readFileSync('data/audits/calendar-banei-current-window-promotion-apply-v1.json', 'utf8'));
+          const cCandidate = JSON.parse(fs.readFileSync(audit.apply_scope.approved_c_candidate_path, 'utf8'));
+          const aPlusCandidate = JSON.parse(fs.readFileSync(audit.apply_scope.approved_a_plus_candidate_path, 'utf8'));
+          const readinessRegistry = JSON.parse(fs.readFileSync(audit.apply_scope.readiness_registry_path, 'utf8'));
+          const readiness = readinessRegistry.records.find((record) => record.authority_source_key === audit.apply_scope.readiness_source_key);
+          const canonicalMeetings = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.canonical_meetings_path, 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const canonicalDetails = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.canonical_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
+          const publicMeetings = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.public_meetings_path, 'utf8')).meetings.map((record) => [record.meeting_id, record]));
+          const publicDetails = new Map(JSON.parse(fs.readFileSync(audit.apply_scope.public_details_path, 'utf8')).details.map((record) => [record.meeting_id, record]));
+          if (readiness?.readiness !== 'prototype_ready' || readiness?.automation_mode !== 'semi_automatic') throw new Error('Banei readiness after-state differs');
+          if (cCandidate.records.length !== 12 || aPlusCandidate.records.length !== 1) throw new Error('Banei approved candidate counts differ');
+          for (const record of cCandidate.records) {
+            const canonical = canonicalMeetings.get(record.meeting_id);
+            const publicMeeting = publicMeetings.get(record.meeting_id);
+            if (canonical?.capability_rank !== 'C' || publicMeeting?.effective_public_rank !== 'C') throw new Error(`${record.meeting_id} C state differs`);
+            if (canonicalDetails.has(record.meeting_id) || publicDetails.has(record.meeting_id) || publicMeeting.detail_path !== null) throw new Error(`${record.meeting_id} C detail exposure differs`);
+          }
+          const aPlus = aPlusCandidate.records[0];
+          if (canonicalDetails.get(aPlus.meeting_id)?.timetable_rows.length !== 12 || publicDetails.get(aPlus.meeting_id)?.timetable_rows.length !== 12) throw new Error('Banei A+ row count differs');
+          console.log('BANEI_COMMITTED_POST_APPLY_STATE: pass');
+          NODE
+      - name: Validate deterministic derived artifacts
         run: |
-          status="$(cat /tmp/banei-post-apply-check.exit)"
-          if [ "$status" != "0" ]; then
-            exit "$status"
-          fi
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+      - name: Install dependencies and run full repository check
+        run: |
+          npm install --package-lock=false --no-audit --no-fund
+          npm run check
       - name: Prove repository source branch unchanged
         if: always()
         run: |
-          git reset --hard HEAD
-          git clean -fd
           changes="$(git status --porcelain --untracked-files=all)"
           if [ -n "$changes" ]; then
             printf '%s\n' "$changes"
