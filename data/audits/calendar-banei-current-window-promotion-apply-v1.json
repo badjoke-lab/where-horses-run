@@ -55,6 +55,10 @@
     "full_repository_check",
     "repository_clean"
   ],
+  "final_verification": {
+    "triggered_by": "badjoke-lab",
+    "reason": "Re-run checks from a user-authored commit after the reviewed application was committed by github-actions[bot]."
+  },
   "publication_boundary": {
     "automatic_source_fetch": false,
     "automatic_review": false,
