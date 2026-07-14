@@ -6,12 +6,14 @@ on:
       - main
     paths:
       - 'scripts/apply-racecourse-page-profile-evidence.mjs'
+      - 'scripts/check-racecourse-page-profile-evidence.mjs'
       - '.github/workflows/temporary-racecourse-page-profile-evidence-apply.yml'
   push:
     branches:
       - work/racecourse-page-profile-evidence
     paths:
       - 'scripts/apply-racecourse-page-profile-evidence.mjs'
+      - 'scripts/check-racecourse-page-profile-evidence.mjs'
       - '.github/workflows/temporary-racecourse-page-profile-evidence-apply.yml'
 
 permissions:
@@ -38,6 +40,31 @@ jobs:
         run: |
           node --check scripts/apply-racecourse-page-profile-evidence.mjs
           node scripts/apply-racecourse-page-profile-evidence.mjs
+      - name: Align rendered labels and formatted metric checks
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const replaceOnce = (file, search, replacement) => {
+            const before = fs.readFileSync(file, 'utf8');
+            if (!before.includes(search)) throw new Error(`${file}: expected patch marker missing`);
+            fs.writeFileSync(file, before.replace(search, replacement));
+          };
+          replaceOnce(
+            'scripts/check-racecourse-page-profile-evidence.mjs',
+            "    if (!en.includes(String(record.course_profile.dirt_circumference_m)) || !ja.includes(String(record.course_profile.dirt_circumference_m))) fail(`${record.id}: rendered dirt course metric missing`);",
+            "    const renderedDirt = new Intl.NumberFormat('en-US').format(record.course_profile.dirt_circumference_m);\n    if (!en.includes(renderedDirt) || !ja.includes(renderedDirt)) fail(`${record.id}: rendered dirt course metric missing`);",
+          );
+          replaceOnce(
+            'src/pages/tracks/[slug].astro',
+            "    'right-handed': 'Right-handed',\n    straight: 'Straight',",
+            "    'right-handed': 'Right-handed',\n    'both-directions': 'Both directions',\n    straight: 'Straight',",
+          );
+          replaceOnce(
+            'src/pages/ja/tracks/[slug].astro',
+            "    'right-handed': '右回り',\n    straight: '直線',",
+            "    'right-handed': '右回り',\n    'both-directions': '左右両回り',\n    straight: '直線',",
+          );
+          NODE
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
       - name: Build static site
