@@ -7,6 +7,12 @@ on:
     paths:
       - 'scripts/audit-racecourse-page-identity-reconciliation.mjs'
       - '.github/workflows/temporary-racecourse-page-identity-discovery.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/audit-racecourse-page-identity-reconciliation.mjs'
+      - '.github/workflows/temporary-racecourse-page-identity-discovery.yml'
   workflow_dispatch:
 
 permissions:
