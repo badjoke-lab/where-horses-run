@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/glossary-entry-v2.schema.json",
+  "title": "Where Horses Run glossary entry v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "slug",
+    "term_en",
+    "term_ja",
+    "category",
+    "summary_en",
+    "summary_ja",
+    "aliases_en",
+    "aliases_ja",
+    "reading_ja",
+    "pronunciation_en",
+    "beginner_explanation_en",
+    "beginner_explanation_ja",
+    "related_term_ids",
+    "source_ids",
+    "evidence_status",
+    "public_boundary",
+    "content_status",
+    "last_reviewed"
+  ],
+  "properties": {
+    "schema_version": { "const": "glossary-entry-v2" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "term_en": { "type": "string", "minLength": 1 },
+    "term_ja": { "type": "string", "minLength": 1 },
+    "category": {
+      "enum": [
+        "race_type",
+        "breed",
+        "role",
+        "data_term",
+        "official_source",
+        "track_term",
+        "surface",
+        "governance_term"
+      ]
+    },
+    "summary_en": { "type": "string", "minLength": 1 },
+    "summary_ja": { "type": "string", "minLength": 1 },
+    "aliases_en": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "aliases_ja": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "reading_ja": { "type": ["string", "null"], "minLength": 1 },
+    "pronunciation_en": { "type": ["string", "null"], "minLength": 1 },
+    "beginner_explanation_en": { "type": ["string", "null"], "minLength": 1 },
+    "beginner_explanation_ja": { "type": ["string", "null"], "minLength": 1 },
+    "related_term_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "uniqueItems": true
+    },
+    "source_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "uniqueItems": true
+    },
+    "evidence_status": {
+      "enum": ["baseline_definition", "reviewed_secondary", "reviewed_official", "mixed_reviewed"]
+    },
+    "public_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "prohibited_dataset_keys", "republish_dataset"],
+      "properties": {
+        "mode": { "enum": ["definition_only", "definition_and_navigation"] },
+        "prohibited_dataset_keys": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "entries",
+              "participant_data",
+              "odds",
+              "results",
+              "payouts",
+              "predictions",
+              "raw_source_body",
+              "embedded_video",
+              "direct_stream_url"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "republish_dataset": { "const": false }
+      }
+    },
+    "content_status": { "enum": ["draft_review_only", "baseline_reviewed", "enriched_reviewed"] },
+    "last_reviewed": { "type": "string", "format": "date" }
+  }
+}
