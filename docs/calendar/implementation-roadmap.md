@@ -639,14 +639,14 @@ Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
-Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 
 Identity reconciliation result: 26 of 26 public timetable racecourse IDs resolve to canonical bilingual pages. Public timetable connection result: all 36 bilingual racecourse pages expose reviewed Today, Next, and upcoming meeting state. Profile evidence result: thirteen former identity-only Japanese records now have official location and high-level course evidence while unsupported race-distance, lighting, elevation, season-completeness, and notable-race fields remain explicit unknowns.
 
 Initial sequence:
 
-1. connect country, type, glossary, Calendar, meeting, racecourse, and official-source navigation;
-2. validate bilingual responsive pages and internal-link integrity.
+1. validate bilingual responsive pages, metadata, accessibility markers, and final release readiness.
 
 ## Later product stages
 
@@ -674,8 +674,7 @@ From the current repository state:
 
 ```text
 1. keep Calendar Public v1 and source-specific pilots in reviewed steady-state operation
-2. complete racecourse page-link architecture
-3. validate bilingual racecourse pages and internal-link integrity
+2. validate bilingual racecourse pages, metadata, accessibility markers, and release readiness
 7. run source-specific Completion Audits only before making their corresponding completeness claims
 ```
 

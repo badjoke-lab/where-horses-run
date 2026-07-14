@@ -516,9 +516,10 @@ Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
-Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
+Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 
-Current product stage: all canonical racecourse pages show reviewed public meetings, and the thirteen former identity-only Japanese records now carry official location and high-level course evidence. Next complete bilingual page-link architecture without broadening the public data boundary.
+Current product stage: all canonical racecourse pages now connect reviewed meetings, countries, racing types, glossary concepts, official routes, source registries, and coverage explanation. Next complete bilingual responsive, metadata, accessibility, and release-readiness QA.
 
 1. strengthen racecourse pages and page-link architecture;
 2. implement glossary, racing types, search, filters, and SEO;

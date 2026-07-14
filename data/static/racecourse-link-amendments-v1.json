@@ -1,0 +1,64 @@
+{
+  "schema_version": "racecourse-link-amendments-v1",
+  "reviewed_at": "2026-07-14",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-LINK-ARCHITECTURE-01",
+  "source_records": [
+    {
+      "id": "chile-hipodromo-chile-home",
+      "country_id": "chile",
+      "source_type": "official",
+      "url": "https://www.hipodromo.cl/",
+      "data_type": "link_only",
+      "auto_level": "C",
+      "terms_risk": "unknown",
+      "notes": "Official Hipódromo Chile home route. Link-first only; programme, participant, betting, result, and stream content remain outside this amendment.",
+      "m3_status": "alpha_link_first",
+      "m3_notes": "Venue-level official route for racecourse navigation."
+    },
+    {
+      "id": "south-korea-kra-seoul-home",
+      "country_id": "south-korea",
+      "source_type": "official",
+      "url": "https://park.kra.co.kr/",
+      "data_type": "link_only",
+      "auto_level": "C",
+      "terms_risk": "unknown",
+      "notes": "Official Korea Racing Authority LetsRun Park route for Seoul. Link-first only; programme, participant, betting, result, and stream content remain outside this amendment.",
+      "m3_status": "alpha_link_first",
+      "m3_notes": "Venue-level official route for racecourse navigation."
+    }
+  ],
+  "records": [
+    {
+      "id": "hipodromo-chile",
+      "official_links": [
+        {
+          "label_en": "Hipódromo Chile official site",
+          "label_ja": "イポドロモ・チレ公式サイト",
+          "source_id": "chile-hipodromo-chile-home",
+          "url": "https://www.hipodromo.cl/",
+          "link_type": "official"
+        }
+      ],
+      "related_sources": [
+        "chile-hipodromo-chile-home"
+      ]
+    },
+    {
+      "id": "seoul-racecourse",
+      "official_links": [
+        {
+          "label_en": "KRA LetsRun Park Seoul official site",
+          "label_ja": "KRAソウル競馬場公式サイト",
+          "source_id": "south-korea-kra-seoul-home",
+          "url": "https://park.kra.co.kr/",
+          "link_type": "official"
+        }
+      ],
+      "related_sources": [
+        "south-korea-kra-seoul-home"
+      ]
+    }
+  ]
+}

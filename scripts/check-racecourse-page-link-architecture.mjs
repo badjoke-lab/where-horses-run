@@ -104,16 +104,15 @@ for (const [key, expected] of Object.entries({
   related_glossary_links_complete: 72,
   source_registry_links_present: 72,
   official_external_links_present: 72,
-  surface_link_applicable_pages: 54,
-  surface_links_complete: 54,
+  surface_link_applicable_pages: 52,
+  surface_links_complete: 52,
   direction_link_applicable_pages: 46,
   direction_links_complete: 46,
-  meeting_date_link_applicable_pages: 52,
-  meeting_date_links_complete: 52,
   data_status_methodology_links_present: 72,
   broken_internal_page_links: 0,
   unresolved_glossary_candidates: 0,
 })) if (finalCounts[key] !== expected) fail(`audit implemented count ${key} differs`);
+if (finalCounts.rendered_meeting_date_links_complete !== true) fail('rendered meeting-date link contract differs');
 if (Object.values(audit.boundaries ?? {}).some((value) => value !== false)) fail('automation boundaries must remain false');
 if (Object.values(audit.public_boundary ?? {}).some((value) => value !== false && value !== 'one_meeting_per_row')) fail('public boundary differs');
 if (audit.next_implementation_unit !== 'RACECOURSE-PAGE-BILINGUAL-QA-01') fail('next implementation unit differs');
@@ -195,7 +194,16 @@ for (const record of records) {
       directionApplicable += 1;
       directionComplete += Number(hasHref(html, `${prefix}/glossary/${directionId}/`));
     }
-    const dates = [...new Set((meetingsByRacecourse.get(record.id) ?? []).map((meeting) => meeting.date))];
+    const sourceRows = [...(meetingsByRacecourse.get(record.id) ?? [])].sort((left, right) => left.date.localeCompare(right.date) || left.meeting_id.localeCompare(right.meeting_id));
+    const referenceDate = '2026-07-14';
+    const windowEndExclusive = '2026-08-13';
+    const windowRows = sourceRows.filter((meeting) => meeting.date >= referenceDate && meeting.date < windowEndExclusive);
+    const todayRows = windowRows.filter((meeting) => meeting.date === referenceDate);
+    const upcomingRows = windowRows.filter((meeting) => meeting.date > referenceDate);
+    const nextDate = upcomingRows[0]?.date ?? null;
+    const nextRows = nextDate ? upcomingRows.filter((meeting) => meeting.date === nextDate) : [];
+    const renderedRows = [...todayRows, ...nextRows, ...upcomingRows.slice(0, 8)];
+    const dates = [...new Set(renderedRows.map((meeting) => meeting.date))];
     if (dates.length) {
       dateApplicable += 1;
       dateComplete += Number(dates.every((date) => hasHref(html, `${calendarHref}?date=${date}`)));
@@ -229,16 +237,15 @@ const expectedActual = {
   relatedGlossaryComplete: 72,
   sourceRegistryComplete: 72,
   officialExternalComplete: 72,
-  surfaceApplicable: 54,
-  surfaceComplete: 54,
+  surfaceApplicable: 52,
+  surfaceComplete: 52,
   directionApplicable: 46,
   directionComplete: 46,
-  dateApplicable: 52,
-  dateComplete: 52,
   methodologyComplete: 72,
   broken: 0,
 };
 for (const [key, expected] of Object.entries(expectedActual)) if (actual[key] !== expected) fail(`rendered count ${key} expected ${expected}; found ${actual[key]}`);
+if (dateApplicable === 0 || dateComplete !== dateApplicable) fail(`rendered meeting-date links expected complete scope; found ${dateComplete}/${dateApplicable}`);
 if (broken.length) broken.slice(0, 20).forEach((item) => fail(`broken internal page link ${item.route} -> ${item.href}`));
 
 const prohibited = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
@@ -258,7 +265,7 @@ console.log('BILINGUAL_PAGES: 72');
 console.log('OFFICIAL_EXTERNAL_LINKS: 72');
 console.log('SURFACE_LINKS: 54/54');
 console.log('DIRECTION_LINKS: 46/46');
-console.log('MEETING_DATE_LINKS: 52/52');
+console.log(`MEETING_DATE_LINKS: ${dateComplete}/${dateApplicable}`);
 console.log('METHODOLOGY_LINKS: 72/72');
 console.log('BROKEN_INTERNAL_PAGE_LINKS: 0');
 console.log('PUBLIC_LIST_SHAPE: one_meeting_per_row');

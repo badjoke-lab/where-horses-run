@@ -111,6 +111,7 @@ import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import publicTimetableRacecourseIdentitiesV1 from '../../data/static/racecourses-public-timetable-identities-v1.json';
 import racecourseProfileEvidenceJapanV1 from '../../data/static/racecourse-profile-evidence-japan-v1.json';
+import racecourseLinkAmendmentsV1 from '../../data/static/racecourse-link-amendments-v1.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
 import countryPageRacecourses11Oman from '../../data/static/country-page-racecourses-11-oman.json';
 import countryPageRacecourses12Zimbabwe from '../../data/static/country-page-racecourses-12-zimbabwe.json';
@@ -281,6 +282,17 @@ function applyRacecourseProfileEvidence<T extends Record<string, any>>(racecours
   };
 }
 
+const racecourseLinkAmendmentById = new Map(racecourseLinkAmendmentsV1.records.map((record) => [record.id, record]));
+function applyRacecourseLinkAmendment<T extends Record<string, any>>(racecourse: T) {
+  const amendment = racecourseLinkAmendmentById.get(racecourse.id);
+  if (!amendment) return racecourse;
+  return {
+    ...racecourse,
+    official_links: [...(racecourse.official_links ?? []), ...(amendment.official_links ?? [])],
+    related_sources: [...new Set([...(racecourse.related_sources ?? []), ...(amendment.related_sources ?? [])])],
+  };
+}
+
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
 const allRacecourses = [
   ...racecourses,
@@ -289,7 +301,7 @@ const allRacecourses = [
   ...countryPageRacecourses0104,
   ...countryPageRacecourses11Oman,
   ...countryPageRacecourses12Zimbabwe
-].map(applyRacecourseProfileEvidence).map((racecourse) => ({
+].map(applyRacecourseProfileEvidence).map(applyRacecourseLinkAmendment).map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;
@@ -319,7 +331,8 @@ const allSources = [
   ...countryPageSources6976,
   ...countryPageSources7784,
   ...countryPageSources8592,
-  ...countryPageSources9398
+  ...countryPageSources9398,
+  ...racecourseLinkAmendmentsV1.source_records
 ] as const;
 
 const countryProfiles = buildCountryDetailProfiles(allProfilesV2);

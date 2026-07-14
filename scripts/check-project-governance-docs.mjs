@@ -38,6 +38,10 @@ const requiredFiles = [
   'data/audits/racecourse-page-profile-evidence-v1.json',
   'data/static/racecourse-profile-evidence-japan-v1.json',
   'scripts/check-racecourse-page-profile-evidence.mjs',
+  'docs/racecourses/page-link-architecture.md',
+  'data/audits/racecourse-page-link-architecture-v1.json',
+  'data/static/racecourse-link-amendments-v1.json',
+  'scripts/check-racecourse-page-link-architecture.mjs',
   'data/static/calendar-coverage-observation.schema.json',
   'data/static/calendar-validation-responsibilities-v1.json',
   'data/static/calendar-readiness-registry.json',
@@ -106,7 +110,8 @@ requirePhrases(start, 'START-HERE', [
   'Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`'
+  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
+  'Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`'
 ]);
 
 requirePhrases(roadmap, 'project roadmap', [
@@ -120,7 +125,8 @@ requirePhrases(roadmap, 'project roadmap', [
   'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
   'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
+  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
+  'Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
   'Calendar Public v1 release decision accepted',
   'schedule-confirmed meetings: 82',
   'A+ detail records:            11',
@@ -153,7 +159,8 @@ requirePhrases(implementationRoadmap, 'implementation roadmap', [
   'Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
+  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
+  'Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
   'ACP-1 — NAR formal workflow dispatch — complete',
   'Stage 7 — Acquisition Control Plane foundation',
   'Status: complete.',

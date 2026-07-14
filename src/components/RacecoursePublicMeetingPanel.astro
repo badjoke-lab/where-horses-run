@@ -10,6 +10,8 @@ interface Props {
 
 const { state, lang = 'en', officialScheduleUrl } = Astro.props;
 const isJapanese = lang === 'ja';
+const calendarHref = isJapanese ? '/ja/calendar/' : '/calendar/';
+const calendarDateHref = (date) => `${calendarHref}?date=${date}`;
 const localizedDetailPath = (meeting: PublicTimetableMeetingRow) => {
   if (!meeting.detail_path) return null;
   return isJapanese ? `/ja${meeting.detail_path}` : meeting.detail_path;
@@ -55,7 +57,7 @@ const generatedDate = state.generated_at.slice(0, 10);
             const timeRange = formatTimeRange(meeting);
             return (
               <li>
-                <strong>{meeting.date}</strong>
+                <strong><a href={calendarDateHref(meeting.date)}>{meeting.date}</a></strong>
                 {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
                 {timeRange ? ` · ${timeRange}` : ''}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
@@ -78,7 +80,7 @@ const generatedDate = state.generated_at.slice(0, 10);
             const timeRange = formatTimeRange(meeting);
             return (
               <li>
-                <strong>{meeting.date}</strong>
+                <strong><a href={calendarDateHref(meeting.date)}>{meeting.date}</a></strong>
                 {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
                 {timeRange ? ` · ${timeRange}` : ''}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
@@ -101,7 +103,7 @@ const generatedDate = state.generated_at.slice(0, 10);
           const detailPath = localizedDetailPath(meeting);
           return (
             <li>
-              <span>{meeting.date}</span>
+              <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
               <span>{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}</span>
               {detailPath ? <a href={detailPath}>{isJapanese ? '詳細' : 'Detail'}</a> : <a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>}
             </li>
@@ -117,7 +119,7 @@ const generatedDate = state.generated_at.slice(0, 10);
         : 'This panel uses only the public meeting list. It does not display entries, odds, results, payouts, predictions, or internal queue state.'}
     </p>
     <p>
-      <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'}</a>
+      <a href={calendarHref}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'}</a>
       {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定' : 'Official schedule'}</a></> : null}
     </p>
   </article>
