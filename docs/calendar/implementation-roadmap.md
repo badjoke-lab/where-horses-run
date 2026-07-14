@@ -636,15 +636,17 @@ Completed Public v1 release-decision evidence:
 
 Status: active current programme work
 Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
+Current implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
+
+Identity reconciliation result: 26 of 26 public timetable racecourse IDs now resolve to canonical bilingual pages; thirteen identity-only records retain unknown profile fields until separate review.
 
 Initial sequence:
 
-1. reconcile timetable-only venue IDs with canonical racecourse identities;
-2. define the structured racecourse-page data contract;
-3. expose reviewed today and upcoming meeting state;
-4. add official source, freshness, course, and distance profiles without unsupported inference;
-5. connect country, type, glossary, Calendar, meeting, and racecourse navigation;
-6. validate bilingual responsive pages and internal-link integrity.
+1. connect reviewed today and upcoming meeting state;
+2. add official source, freshness, course, and distance profiles without unsupported inference;
+3. connect country, type, glossary, Calendar, meeting, and racecourse navigation;
+4. validate bilingual responsive pages and internal-link integrity.
 
 ## Later product stages
 
@@ -672,9 +674,9 @@ From the current repository state:
 
 ```text
 1. keep Calendar Public v1 and source-specific pilots in reviewed steady-state operation
-2. reconcile timetable-only venue IDs with canonical racecourse identities
-3. define and validate structured bilingual racecourse pages
-4. connect reviewed current and upcoming meeting state to racecourse pages
+2. connect reviewed current and upcoming meeting state to canonical racecourse pages
+3. add reviewed source and profile fields without unsupported inference
+4. complete racecourse page-link architecture
 5. add course, distance, source, and freshness profiles without unsupported inference
 6. complete page-link architecture and internal-link QA
 7. run source-specific Completion Audits only before making their corresponding completeness claims
@@ -713,4 +715,4 @@ Accepted state:
 - 64-record review-only evidence with source-window closure;
 - detail route, fallback runner, arbitrary date-window mode, selected-meeting mode, retry automation, automatic execution, approval, promotion, publication, canonical write, and public write remain disabled.
 
-Current programme Work ID: `WHR-CAL-PUBLIC-V1`. UAE maintenance may continue incrementally under the accepted handoff boundary without blocking Public v1 release-readiness work.
+Current programme Work ID: `WHR-RACECOURSE-PAGES-V1`. UAE maintenance may continue incrementally under the accepted handoff boundary without blocking Public v1 release-readiness work.

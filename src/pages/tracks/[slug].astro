@@ -25,7 +25,7 @@ const countries = getCountries();
 const country = countries.find((entry) => entry.id === track.country_id);
 const countryHref = country ? `/countries/${country.slug}/` : '/countries/';
 const countrySourceHref = country ? `/sources/${country.slug}/` : '/sources/';
-const calendarHref = country ? `/countries/${country.slug}/` : '/calendar/';
+const calendarHref = '/calendar/';
 const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
 const sourcesById = new Map(siteData.sources.map((source) => [source.id, source]));
 
@@ -175,7 +175,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
     <h1 id="page-title">{track.name_en}</h1>
     <p class="hero__summary">
       {track.name_local && track.name_local !== track.name_en ? `${track.name_local} · ` : ''}
-      {country ? country.name_en : track.country_id} / {track.city}
+      {country ? country.name_en : track.country_id} / {formatValue(track.city)}
     </p>
     <p>{overview}</p>
     <p>
@@ -190,7 +190,7 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
     <article class="card">
       <h2>Quick facts</h2>
       <p><strong>Country:</strong> <a href={countryHref}>{country ? country.name_en : track.country_id}</a></p>
-      <p><strong>City / region:</strong> {track.city} / {formatValue(track.region)}</p>
+      <p><strong>City / region:</strong> {formatValue(track.city)} / {formatValue(track.region)}</p>
       <p><strong>Timezone:</strong> {track.timezone}</p>
       <p><strong>Operator:</strong> {formatValue(operator.name)}</p>
       <p><strong>Status:</strong> {track.status}</p>
@@ -227,12 +227,14 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
   <section class="section-grid" aria-label="Racing types and race conditions">
     <article class="card">
       <h2>Racing types</h2>
-      <ul>
-        {track.racing_types.map((typeId) => {
-          const type = getRacingTypeById(typeId);
-          return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
-        })}
-      </ul>
+      {track.racing_types.length ? (
+        <ul>
+          {track.racing_types.map((typeId) => {
+            const type = getRacingTypeById(typeId);
+            return <li>{type ? <a href={`/types/${type.slug}/`}>{type.name_en}</a> : typeId}</li>;
+          })}
+        </ul>
+      ) : <p>Not listed yet.</p>}
     </article>
 
     {upcomingConditions.length ? (
