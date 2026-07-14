@@ -15,21 +15,52 @@ function read(relativePath) {
 }
 
 const page = read('src/pages/major-countries/current-timetable.astro');
-const component = read('src/components/CurrentTimetableDimensions.astro');
+const list = read('src/components/TimetableMeetingList.astro');
+const rowAdapter = read('src/data/timetableMeetingRows.ts');
+const historicalDimensions = read('src/components/CurrentTimetableDimensions.astro');
 
-if (!page.includes('CurrentTimetableDimensions')) fail('Page must import and render CurrentTimetableDimensions.');
-if (!page.includes('function countBy')) fail('Page must define countBy for dimension summaries.');
-
-for (const prop of ['countries', 'groups', 'dates', 'racecourses']) {
-  if (!page.includes(`${prop}={`)) fail(`Page must pass ${prop} to the dimensions component.`);
-  if (!component.includes(prop)) fail(`Component must reference ${prop}.`);
+for (const marker of [
+  'TimetableMeetingList',
+  'getGroupedTimetableMeetingRows',
+  'groups={groupedTimetableRecords}',
+  'Current timetable',
+]) {
+  if (!page.includes(marker)) fail(`Current timetable page must include ${marker}.`);
 }
 
-for (const label of ['By country', 'By system', 'By date', 'By racecourse']) {
-  if (!component.includes(label)) fail(`Component must render ${label}.`);
+if (page.includes('CurrentTimetableDimensions')) {
+  fail('Current timetable page must not restore the retired aggregate dimensions panel.');
+}
+if (page.includes('current-integrated.json')) {
+  fail('Current timetable page must not read the retired integrated dataset directly.');
 }
 
-if (!component.includes('records')) fail('Component must show record counts.');
-if (!component.includes('dimension-grid')) fail('Component must provide a dimension grid wrapper.');
+for (const marker of [
+  'getPublicTimetableMeetingRows',
+  'getGroupedTimetableMeetingRows',
+  'effective_public_rank',
+]) {
+  if (!rowAdapter.includes(marker)) fail(`Timetable row adapter must include ${marker}.`);
+}
 
-console.log('[pr-121-current-timetable-dimensions] PASS');
+for (const marker of [
+  'group.records.map((record) => (',
+  '<li class="meeting-card">',
+  'record.official_source_url',
+  'record.detail_path',
+]) {
+  if (!list.includes(marker)) fail(`TimetableMeetingList must include ${marker}.`);
+}
+if (list.includes('<table')) fail('Current timetable must remain one meeting per list row.');
+if (/record\.(?:races|race_rows|timetable_rows|programme)\.map/.test(list)) {
+  fail('Current timetable list must not expand race-by-race rows.');
+}
+
+// PR-121's dimension component is retained only as historical implementation
+// evidence. It must remain self-contained and must not be wired back into the
+// current Public v1 list surface.
+for (const marker of ['By country', 'By system', 'By date', 'By racecourse', 'dimension-grid']) {
+  if (!historicalDimensions.includes(marker)) fail(`Historical dimensions component must retain ${marker}.`);
+}
+
+console.log('[pr-121-current-timetable-dimensions] PASS: retired dimensions remain detached from Public v1 list UI');
