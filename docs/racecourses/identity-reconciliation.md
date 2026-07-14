@@ -72,6 +72,8 @@ Racecourse pages render missing profile fields as `Not listed yet` or `未掲載
 
 The Calendar link always targets `/calendar/` or `/ja/calendar/`. Meeting detail pages resolve the new identities through the canonical registry and link to the matching bilingual racecourse route.
 
+The permanent `Racecourse page identity reconciliation` Actions gate reruns on racecourse records, public meeting identities, racecourse pages, and meeting-detail navigation changes.
+
 ## Evidence
 
 - discovery workflow run: `29328467780`;
