@@ -1,0 +1,63 @@
+{
+  "schema_version": "calendar-public-v1-navigation-qa-v1",
+  "work_id": "WHR-CAL-PUBLIC-V1",
+  "implementation_unit": "PUBLIC-V1-NAVIGATION-QA-01",
+  "status": "active",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "static_route_pairs": [
+    { "id": "home", "en": "/", "ja": "/ja/" },
+    { "id": "about", "en": "/about/", "ja": "/ja/about/" },
+    { "id": "archive", "en": "/archive/", "ja": "/ja/archive/" },
+    { "id": "calendar", "en": "/calendar/", "ja": "/ja/calendar/" },
+    { "id": "countries", "en": "/countries/", "ja": "/ja/countries/" },
+    { "id": "disclaimer", "en": "/disclaimer/", "ja": "/ja/disclaimer/" },
+    { "id": "glossary", "en": "/glossary/", "ja": "/ja/glossary/" },
+    { "id": "sources", "en": "/sources/", "ja": "/ja/sources/" },
+    { "id": "today", "en": "/today/", "ja": "/ja/today/" },
+    { "id": "tomorrow", "en": "/tomorrow/", "ja": "/ja/tomorrow/" },
+    { "id": "tracks", "en": "/tracks/", "ja": "/ja/tracks/" },
+    { "id": "types", "en": "/types/", "ja": "/ja/types/" },
+    {
+      "id": "current-timetable",
+      "en": "/major-countries/current-timetable/",
+      "ja": "/ja/major-countries/current-timetable/"
+    }
+  ],
+  "dynamic_route_families": [
+    { "id": "countries", "en_prefix": "/countries/", "ja_prefix": "/ja/countries/" },
+    { "id": "tracks", "en_prefix": "/tracks/", "ja_prefix": "/ja/tracks/" },
+    { "id": "types", "en_prefix": "/types/", "ja_prefix": "/ja/types/" },
+    { "id": "glossary", "en_prefix": "/glossary/", "ja_prefix": "/ja/glossary/" },
+    { "id": "sources", "en_prefix": "/sources/", "ja_prefix": "/ja/sources/" },
+    {
+      "id": "meeting-details",
+      "en_prefix": "/timetable/meetings/",
+      "ja_prefix": "/ja/timetable/meetings/"
+    }
+  ],
+  "meeting_detail_back_links": {
+    "en": [
+      "/calendar/",
+      "/today/",
+      "/major-countries/current-timetable/"
+    ],
+    "ja": [
+      "/ja/calendar/",
+      "/ja/today/",
+      "/ja/major-countries/current-timetable/"
+    ]
+  },
+  "findings_fixed": [
+    "English meeting-detail pages previously defaulted the language switch to the Japanese home page.",
+    "Japanese meeting-detail pages linked to a current-timetable route that was not rendered."
+  ],
+  "boundaries": {
+    "canonical_data_write": false,
+    "public_dataset_write": false,
+    "network_fetch": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "deployment": false
+  }
+}
