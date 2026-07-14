@@ -23,15 +23,25 @@ const workflow = read('.github/workflows/timetable-scheduled-refresh.yml');
 const script = read('scripts/timetable/live-source-snapshot.mjs');
 
 for (const text of [
-  'schedule:',
   'workflow_dispatch:',
+  'live_fetch:',
+  'source_limit:',
   'WHR_LIVE_FETCH',
   'WHR_LIVE_FETCH_LIMIT',
   'node scripts/timetable/live-source-snapshot.mjs',
+  'node scripts/timetable/apply-live-source-snapshot.mjs',
   'node scripts/timetable/build-current-integrated.mjs',
+  "if: inputs.live_fetch == 'true'",
   'peter-evans/create-pull-request@v6'
 ]) {
   if (!workflow.includes(text)) fail(`Workflow missing ${text}.`);
+}
+
+if (/^\s*schedule:\s*$/m.test(workflow)) {
+  fail('Timetable refresh must remain manual review-gated and must not restore unattended schedule execution.');
+}
+if (!workflow.includes('Create reviewable generated update PR')) {
+  fail('Manual live refresh must produce a reviewable generated-data PR rather than write main directly.');
 }
 
 for (const text of [
@@ -70,4 +80,4 @@ for (const record of snapshot.records) {
   if (record.fetch_status !== 'not_run') fail('Dry-run records must use not_run status.');
 }
 
-console.log('[pr-123-scheduled-refresh] PASS');
+console.log('[pr-123-scheduled-refresh] PASS: manual review-gated refresh, unattended schedule disabled');
