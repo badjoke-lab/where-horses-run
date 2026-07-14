@@ -54,10 +54,22 @@ for (const countryId of expectedCountries) {
 }
 if (countries.size !== 13) fail(`Expected exactly 13 country ids, got ${countries.size}.`);
 
-const activeSources = registry.sources.filter((source) => source.status === 'active');
-const legacySources = registry.sources.filter((source) => source.status === 'legacy');
-if (activeSources.length !== registry.expected_counts.active_groups) fail('Active group count mismatch.');
-if (legacySources.length !== registry.expected_counts.legacy_groups) fail('Legacy group count mismatch.');
+const activeGroups = new Set(
+  registry.sources
+    .filter((source) => source.status === 'active')
+    .map((source) => `${source.country_id}/${source.group_id}`)
+);
+const legacyGroups = new Set(
+  registry.sources
+    .filter((source) => source.status === 'legacy')
+    .map((source) => `${source.country_id}/${source.group_id}`)
+);
+if (activeGroups.size !== registry.expected_counts.active_groups) {
+  fail(`Active group count mismatch: expected ${registry.expected_counts.active_groups}, got ${activeGroups.size}.`);
+}
+if (legacyGroups.size !== registry.expected_counts.legacy_groups) {
+  fail(`Legacy group count mismatch: expected ${registry.expected_counts.legacy_groups}, got ${legacyGroups.size}.`);
+}
 
 for (const source of registry.sources) {
   for (const key of ['country_id', 'group_id', 'status', 'source_kind', 'url', 'parser', 'target_level', 'refresh_cadence']) {
@@ -95,4 +107,4 @@ for (const file of [
 
 run('scripts/check-pr-126-scheduled-refresh-completion-gate.mjs');
 
-console.log('[pr-127-v0-gate] PASS');
+console.log(`[pr-127-v0-gate] PASS: ${countries.size} countries, ${activeGroups.size} active groups, ${legacyGroups.size} legacy group`);
