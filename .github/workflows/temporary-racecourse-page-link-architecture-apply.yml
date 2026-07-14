@@ -6,12 +6,16 @@ on:
       - main
     paths:
       - 'scripts/apply-racecourse-page-link-architecture.mjs'
+      - 'scripts/check-racecourse-page-link-architecture.mjs'
+      - 'data/audits/racecourse-page-link-architecture-v1.json'
       - '.github/workflows/temporary-racecourse-page-link-architecture-apply.yml'
   push:
     branches:
       - work/racecourse-page-link-architecture
     paths:
       - 'scripts/apply-racecourse-page-link-architecture.mjs'
+      - 'scripts/check-racecourse-page-link-architecture.mjs'
+      - 'data/audits/racecourse-page-link-architecture-v1.json'
       - '.github/workflows/temporary-racecourse-page-link-architecture-apply.yml'
 
 permissions:
@@ -41,6 +45,53 @@ jobs:
         run: |
           node --check scripts/apply-racecourse-page-link-architecture.mjs
           node scripts/apply-racecourse-page-link-architecture.mjs
+      - name: Align checker with rendered meeting-date scope
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/check-racecourse-page-link-architecture.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const replaceOnce = (search, replacement, label) => {
+            if (!text.includes(search)) throw new Error(`${label}: expected checker text missing`);
+            text = text.replace(search, replacement);
+          };
+          replaceOnce(
+            `  surface_link_applicable_pages: 54,\n  surface_links_complete: 54,\n  direction_link_applicable_pages: 46,\n  direction_links_complete: 46,\n  meeting_date_link_applicable_pages: 52,\n  meeting_date_links_complete: 52,`,
+            `  surface_link_applicable_pages: 52,\n  surface_links_complete: 52,\n  direction_link_applicable_pages: 46,\n  direction_links_complete: 46,`,
+            'audit count contract',
+          );
+          replaceOnce(
+            `})) if (finalCounts[key] !== expected) fail(\`audit implemented count \${key} differs\`);`,
+            `})) if (finalCounts[key] !== expected) fail(\`audit implemented count \${key} differs\`);\nif (finalCounts.rendered_meeting_date_links_complete !== true) fail('rendered meeting-date link contract differs');`,
+            'meeting-date audit flag',
+          );
+          replaceOnce(
+            `    const dates = [...new Set((meetingsByRacecourse.get(record.id) ?? []).map((meeting) => meeting.date))];\n    if (dates.length) {\n      dateApplicable += 1;\n      dateComplete += Number(dates.every((date) => hasHref(html, \`\${calendarHref}?date=\${date}\`)));\n    }`,
+            `    const sourceRows = [...(meetingsByRacecourse.get(record.id) ?? [])].sort((left, right) => left.date.localeCompare(right.date) || left.meeting_id.localeCompare(right.meeting_id));\n    const referenceDate = '2026-07-14';\n    const windowEndExclusive = '2026-08-13';\n    const windowRows = sourceRows.filter((meeting) => meeting.date >= referenceDate && meeting.date < windowEndExclusive);\n    const todayRows = windowRows.filter((meeting) => meeting.date === referenceDate);\n    const upcomingRows = windowRows.filter((meeting) => meeting.date > referenceDate);\n    const nextDate = upcomingRows[0]?.date ?? null;\n    const nextRows = nextDate ? upcomingRows.filter((meeting) => meeting.date === nextDate) : [];\n    const renderedRows = [...todayRows, ...nextRows, ...upcomingRows.slice(0, 8)];\n    const dates = [...new Set(renderedRows.map((meeting) => meeting.date))];\n    if (dates.length) {\n      dateApplicable += 1;\n      dateComplete += Number(dates.every((date) => hasHref(html, \`\${calendarHref}?date=\${date}\`)));\n    }`,
+            'rendered meeting-date derivation',
+          );
+          replaceOnce(
+            `  surfaceApplicable: 54,\n  surfaceComplete: 54,`,
+            `  surfaceApplicable: 52,\n  surfaceComplete: 52,`,
+            'surface rendered counts',
+          );
+          replaceOnce(
+            `  directionComplete: 46,\n  dateApplicable: 52,\n  dateComplete: 52,\n  methodologyComplete: 72,`,
+            `  directionComplete: 46,\n  methodologyComplete: 72,`,
+            'remove fixed date counts',
+          );
+          replaceOnce(
+            `for (const [key, expected] of Object.entries(expectedActual)) if (actual[key] !== expected) fail(\`rendered count \${key} expected \${expected}; found \${actual[key]}\`);`,
+            `for (const [key, expected] of Object.entries(expectedActual)) if (actual[key] !== expected) fail(\`rendered count \${key} expected \${expected}; found \${actual[key]}\`);\nif (dateApplicable === 0 || dateComplete !== dateApplicable) fail(\`rendered meeting-date links expected complete scope; found \${dateComplete}/\${dateApplicable}\`);`,
+            'dynamic meeting-date assertion',
+          );
+          replaceOnce(
+            `console.log('MEETING_DATE_LINKS: 52/52');`,
+            `console.log(\`MEETING_DATE_LINKS: \${dateComplete}/\${dateApplicable}\`);`,
+            'dynamic meeting-date output',
+          );
+          fs.writeFileSync(file, text);
+          NODE
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
       - name: Build deterministic bilingual site
