@@ -54,7 +54,7 @@ const authorityNameById: Record<string, string> = {
 };
 const countryName = country?.name_en ?? titleCaseId(meeting.country_id);
 const countryPath = country ? `/countries/${country.slug}/` : '/countries/';
-const trackPath = track ? `/tracks/${track.slug}/` : `/tracks/${meeting.racecourse_id}/`;
+const trackPath = track ? `/tracks/${track.slug}/` : '/tracks/';
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
 
 const pageKind = detail.effective_public_rank === 'A+' ? 'Programme summary' : 'Race timetable';
@@ -74,6 +74,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
   title={`${racecourseName} ${pageKind.toLowerCase()} | Where Horses Run`}
   description="Public-safe meeting detail with official-source link and policy-controlled timetable coverage."
   canonicalPath={`/timetable/meetings/${meeting.meeting_id}/`}
+  alternatePath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
 >
   <nav class="detail-nav" aria-label="Meeting detail navigation">
     <a href="/calendar/">← Calendar</a>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
+import { getGroupedTimetableMeetingRows } from '../../../data/timetableMeetingRows';
+
+const groupedTimetableRecords = getGroupedTimetableMeetingRows();
+---
+
+<BaseLayout
+  title="2026年6月タイムテーブル | 競馬どこ？"
+  description="開催日順に整理した2026年6月の開催一覧です。各開催に公式ソースを1件ずつ示し、レース別時刻を確認済みの開催だけ詳細ページへ案内します。"
+  lang="ja"
+  canonicalPath="/ja/major-countries/current-timetable/"
+  alternatePath="/major-countries/current-timetable/"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">現在のタイムテーブル</p>
+    <h1 id="page-title">2026年6月タイムテーブル</h1>
+    <p class="hero__summary">
+      開催日ごとに表示します。公開ランクに応じて表示する時刻情報の範囲を制御します。
+    </p>
+  </section>
+
+  <section aria-label="2026年6月の開催日別タイムテーブル">
+    <TimetableMeetingList
+      groups={groupedTimetableRecords}
+      lang="ja"
+      emptyLabel="2026年6月の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+    />
+  </section>
+</BaseLayout>

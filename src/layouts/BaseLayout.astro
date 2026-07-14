@@ -23,12 +23,25 @@ const {
 
 const isJapanese = lang === 'ja';
 const homeHref = isJapanese ? '/ja/' : '/';
-const defaultAlternateHref = isJapanese ? '/' : '/ja/';
+const canonicalPathname = canonicalPath ?? Astro.url.pathname;
+const bilingualPathPatterns = [
+  /^\/$/,
+  /^\/ja\/$/,
+  /^\/(?:ja\/)?(?:about|archive|calendar|countries|disclaimer|glossary|sources|today|tomorrow|tracks|types)(?:\/.*)?$/,
+  /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/,
+  /^\/(?:ja\/)?major-countries\/current-timetable\/$/,
+];
+const hasBilingualCounterpart = bilingualPathPatterns.some((pattern) => pattern.test(canonicalPathname));
+const inferredAlternateHref = isJapanese
+  ? canonicalPathname.replace(/^\/ja(?=\/)/, '') || '/'
+  : `/ja${canonicalPathname}`;
+const defaultAlternateHref = hasBilingualCounterpart
+  ? inferredAlternateHref
+  : isJapanese ? '/' : '/ja/';
 const languageSwitchHref = alternatePath ?? defaultAlternateHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
 const siteUrl = 'https://whr.badjoke-lab.com';
-const canonicalPathname = canonicalPath ?? Astro.url.pathname;
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
 const alternateUrl = `${siteUrl}${languageSwitchHref}`;
 const xDefaultUrl = `${siteUrl}${isJapanese ? languageSwitchHref : canonicalPathname}`;
