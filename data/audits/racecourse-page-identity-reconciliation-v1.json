@@ -1,0 +1,94 @@
+{
+  "schema_version": "racecourse-page-identity-reconciliation-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-14",
+  "source_public_meeting_list": "data/generated/timetable/public/meeting-list.json",
+  "source_public_generated_at": "2026-07-14T00:15:00Z",
+  "discovery_workflow_run_id": 29328467780,
+  "discovery_artifact_id": 8308928476,
+  "discovery_artifact_digest": "sha256:806a2dfbfaf8c5087da00a2cb4705a4cf631797a53dfe966e64383e6cd0df930",
+  "baseline": {
+    "canonical_records": 23,
+    "public_meetings": 169,
+    "public_racecourse_ids": 26,
+    "canonical_exact_ids": 13,
+    "unresolved_ids": 13,
+    "meetings_on_unresolved_ids": 114
+  },
+  "implemented": {
+    "canonical_records": 36,
+    "public_meetings": 169,
+    "public_racecourse_ids": 26,
+    "canonical_exact_ids": 26,
+    "unresolved_ids": 0,
+    "meetings_on_unresolved_ids": 0,
+    "new_identity_only_records": 13,
+    "new_english_routes": 13,
+    "new_japanese_routes": 13
+  },
+  "resolved_identity_ids": [
+    "funabashi-racecourse",
+    "kanazawa-racecourse",
+    "kasamatsu-racecourse",
+    "kawasaki-racecourse",
+    "kochi-racecourse",
+    "kokura-racecourse",
+    "monbetsu-racecourse",
+    "morioka-racecourse",
+    "nagoya-racecourse",
+    "oi-racecourse",
+    "saga-racecourse",
+    "sonoda-racecourse",
+    "urawa-racecourse"
+  ],
+  "identity_policy": {
+    "record_scope": "identity_and_official_source_route_only",
+    "profile_status": "identity_only",
+    "location_fields": "unknown_until_separately_reviewed",
+    "course_fields": "unknown_until_separately_reviewed",
+    "distance_fields": "unknown_until_separately_reviewed",
+    "schedule_fields": "official_link_only_until_public_timetable_connection",
+    "page_generation": "one_english_and_one_japanese_route_per_canonical_identity",
+    "meeting_detail_link_rule": "link_only_when_canonical_identity_exists"
+  },
+  "evidence_sources": [
+    {
+      "source_id": "japan-nar-racecourse-guide",
+      "url": "https://www.keiba.go.jp/guide/",
+      "scope": "twelve NAR racecourse identities"
+    },
+    {
+      "source_id": "japan-jairs-racecourses",
+      "url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/",
+      "scope": "Kokura racecourse identity"
+    },
+    {
+      "source_id": "reviewed-public-timetable",
+      "path": "data/generated/timetable/public/meeting-list.json",
+      "scope": "current public identity use and meeting counts"
+    }
+  ],
+  "non_claims": [
+    "verified city or region",
+    "verified course surface or direction",
+    "verified course circumference or home-straight length",
+    "verified race-distance profile",
+    "complete racecourse history or notable-race list",
+    "automatic live schedule connection"
+  ],
+  "boundaries": {
+    "network_fetch": false,
+    "canonical_timetable_write": false,
+    "public_timetable_write": false,
+    "unsupported_profile_inference": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "automatic_publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01"
+}
