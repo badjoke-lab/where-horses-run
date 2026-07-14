@@ -1,0 +1,174 @@
+---
+import type { PublicRacecourseMeetingState } from '../lib/racecourses/publicRacecourseMeetingState';
+import type { PublicTimetableMeetingRow } from '../lib/timetable/publicTimetableViewModel';
+
+interface Props {
+  state: PublicRacecourseMeetingState;
+  lang?: 'en' | 'ja';
+  officialScheduleUrl?: string;
+}
+
+const { state, lang = 'en', officialScheduleUrl } = Astro.props;
+const isJapanese = lang === 'ja';
+const localizedDetailPath = (meeting: PublicTimetableMeetingRow) => {
+  if (!meeting.detail_path) return null;
+  return isJapanese ? `/ja${meeting.detail_path}` : meeting.detail_path;
+};
+const formatTimeRange = (meeting: PublicTimetableMeetingRow) => {
+  if (!meeting.first_race_time_local && !meeting.last_race_time_local) return null;
+  if (meeting.first_race_time_local && meeting.last_race_time_local) {
+    return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
+  }
+  return meeting.first_race_time_local ?? meeting.last_race_time_local;
+};
+const upcomingPreview = state.upcoming_meetings.slice(0, 8);
+const generatedDate = state.generated_at.slice(0, 10);
+---
+
+<section
+  class="racecourse-meeting-panel"
+  aria-labelledby="reviewed-meeting-state-title"
+  data-racecourse-public-meeting-state
+  data-racecourse-id={state.racecourse_id}
+  data-reference-date={state.reference_date}
+  data-total-public-meetings={state.total_public_meeting_count}
+  data-today-count={state.today_meetings.length}
+  data-next-date={state.next_meeting_date ?? ''}
+>
+  <div class="racecourse-meeting-panel__heading">
+    <div>
+      <p class="racecourse-meeting-panel__eyebrow">{isJapanese ? '公開カレンダー接続' : 'Public Calendar connection'}</p>
+      <h2 id="reviewed-meeting-state-title">{isJapanese ? '確認済み開催情報' : 'Reviewed meeting state'}</h2>
+    </div>
+    <p class="racecourse-meeting-panel__meta">
+      {isJapanese ? `基準日 ${state.reference_date} / 生成日 ${generatedDate}` : `Reference ${state.reference_date} / generated ${generatedDate}`}
+    </p>
+  </div>
+
+  <div class="racecourse-meeting-panel__grid">
+    <article class="card" data-meeting-state="today">
+      <h3>{isJapanese ? '本日' : 'Today'}</h3>
+      {state.today_meetings.length ? (
+        <ul>
+          {state.today_meetings.map((meeting) => {
+            const detailPath = localizedDetailPath(meeting);
+            const timeRange = formatTimeRange(meeting);
+            return (
+              <li>
+                <strong>{meeting.date}</strong>
+                {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
+                {timeRange ? ` · ${timeRange}` : ''}
+                {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
+                {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p>{isJapanese ? '本日の確認済み公開開催はありません。' : 'No reviewed public meeting is listed for today.'}</p>
+      )}
+    </article>
+
+    <article class="card" data-meeting-state="next">
+      <h3>{isJapanese ? '次回' : 'Next'}</h3>
+      {state.next_meetings.length ? (
+        <ul>
+          {state.next_meetings.map((meeting) => {
+            const detailPath = localizedDetailPath(meeting);
+            const timeRange = formatTimeRange(meeting);
+            return (
+              <li>
+                <strong>{meeting.date}</strong>
+                {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
+                {timeRange ? ` · ${timeRange}` : ''}
+                {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
+                {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p>{isJapanese ? '現在の公開30日窓には次回開催がありません。' : 'No next meeting is listed in the current public 30-day window.'}</p>
+      )}
+    </article>
+  </div>
+
+  <article class="card" data-meeting-state="upcoming">
+    <h3>{isJapanese ? '今後の確認済み開催' : 'Upcoming reviewed meetings'}</h3>
+    {upcomingPreview.length ? (
+      <ul class="racecourse-meeting-panel__upcoming">
+        {upcomingPreview.map((meeting) => {
+          const detailPath = localizedDetailPath(meeting);
+          return (
+            <li>
+              <span>{meeting.date}</span>
+              <span>{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}</span>
+              {detailPath ? <a href={detailPath}>{isJapanese ? '詳細' : 'Detail'}</a> : <a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>}
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <p>{isJapanese ? 'この競馬場について、基準日以降の確認済み公開開催はありません。' : 'No reviewed public meeting is listed for this racecourse after the reference date.'}</p>
+    )}
+    <p class="racecourse-meeting-panel__boundary">
+      {isJapanese
+        ? 'この欄は公開用meeting listだけを使用します。出走馬、オッズ、結果、払戻、予想、内部キュー情報は表示しません。'
+        : 'This panel uses only the public meeting list. It does not display entries, odds, results, payouts, predictions, or internal queue state.'}
+    </p>
+    <p>
+      <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'}</a>
+      {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定' : 'Official schedule'}</a></> : null}
+    </p>
+  </article>
+</section>
+
+<style>
+  .racecourse-meeting-panel {
+    margin-block-start: 2rem;
+  }
+
+  .racecourse-meeting-panel__heading {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-block-end: 1rem;
+  }
+
+  .racecourse-meeting-panel__eyebrow,
+  .racecourse-meeting-panel__meta,
+  .racecourse-meeting-panel__boundary {
+    color: var(--whr-color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .racecourse-meeting-panel__grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    margin-block-end: 1rem;
+  }
+
+  .racecourse-meeting-panel__upcoming {
+    display: grid;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .racecourse-meeting-panel__upcoming li {
+    align-items: center;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: minmax(7rem, auto) 1fr auto;
+  }
+
+  @media (max-width: 40rem) {
+    .racecourse-meeting-panel__upcoming li {
+      align-items: start;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
