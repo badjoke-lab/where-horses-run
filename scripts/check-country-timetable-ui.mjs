@@ -16,75 +16,82 @@ function requireIncludes(content, needle, label) {
   if (!content.includes(needle)) fail(`${label}: missing ${needle}`);
 }
 
-function requirePattern(content, pattern, label, message) {
-  if (!pattern.test(content)) fail(`${label}: ${message}`);
+const englishRoutePath = 'src/pages/countries/[slug].astro';
+const japaneseRoutePath = 'src/pages/ja/countries/[slug].astro';
+const componentPath = 'src/components/CountryDetailPage.astro';
+const viewModelPath = 'src/lib/timetable/publicTimetableViewModel.ts';
+const dataPath = 'data/generated/timetable/public/meeting-list.json';
+
+const englishRoute = read(englishRoutePath);
+const japaneseRoute = read(japaneseRoutePath);
+const component = read(componentPath);
+const viewModel = read(viewModelPath);
+const publicMeetings = JSON.parse(read(dataPath));
+
+for (const [label, route, locale] of [
+  [englishRoutePath, englishRoute, 'en'],
+  [japaneseRoutePath, japaneseRoute, 'ja'],
+]) {
+  requireIncludes(route, 'CountryDetailPage', label);
+  requireIncludes(route, `locale="${locale}"`, label);
 }
 
-const dataTs = read('src/lib/data.ts');
-const englishPage = read('src/pages/countries/[slug].astro');
-const japanesePage = read('src/pages/ja/countries/[slug].astro');
+for (const marker of [
+  'getPublicTimetableMeetingRowsByCountry',
+  'createCalendarDateContext',
+  'filterRecordsForWindow',
+  'activeWindowRecords',
+  'upcomingMeetings',
+  'primaryMeetings',
+  'remainingMeetings',
+  'showMeetingDetails',
+  'record.official_source_url',
+  'record.detail_path',
+  'one row represents one meeting',
+  '1行につき1開催',
+  'does not mean there is no racing',
+  '開催がないことを意味しません',
+]) requireIncludes(component, marker, componentPath);
 
-requirePattern(
-  dataTs,
-  /import\s+timetables\s+from\s+['"]\.\.\/\.\.\/data\/generated\/timetables\.json['"];/,
-  'src/lib/data.ts',
-  'must import data/generated/timetables.json'
-);
-requirePattern(
-  dataTs,
-  /generated:\s*{[\s\S]*\btimetables\b[\s\S]*}/,
-  'src/lib/data.ts',
-  'must export timetables through siteData.generated'
-);
+for (const marker of [
+  'meeting-list.json',
+  'meeting-details.json',
+  'getPublicTimetableMeetingRowsByCountry',
+  'effective_public_rank',
+  'official_source_url',
+]) requireIncludes(viewModel, marker, viewModelPath);
 
-for (const [label, content] of [
-  ['src/pages/countries/[slug].astro', englishPage],
-  ['src/pages/ja/countries/[slug].astro', japanesePage],
-]) {
-  requireIncludes(content, 'siteData.generated.timetables', label);
-  requireIncludes(content, 'timetableRecords', label);
-  requireIncludes(content, 'hasTimetableFallback', label);
-  requirePattern(content, /manual fallback|手動fallback/i, label, 'must include fallback/manual state wording');
-  requirePattern(content, /official source links for final confirmation|公式ソースリンク.*最終確認|最終確認.*公式ソースリンク/i, label, 'must include official confirmation wording');
-  requirePattern(content, /Live fetching:\s*<\/strong>\s*disabled|live fetch:\s*<\/strong>\s*disabled/i, label, 'must state live fetch/fetching is disabled');
-  requirePattern(content, /generated_at|Last generated|last generated/i, label, 'must show generated time when fallback data matches');
-  requirePattern(content, /source_url|timetableSources|公式ソース|Official source/i, label, 'must show source IDs or source links');
+if (publicMeetings.schema_version !== 'public-timetable-meeting-list-v0') {
+  fail(`${dataPath}: schema must be public-timetable-meeting-list-v0`);
+}
+if (!Array.isArray(publicMeetings.meetings) || publicMeetings.meetings.length === 0) {
+  fail(`${dataPath}: must contain reviewed public meetings`);
 }
 
-requireIncludes(englishPage, 'Safe timetable data', 'src/pages/countries/[slug].astro');
-requireIncludes(englishPage, 'No safe timetable records are listed for this country yet.', 'src/pages/countries/[slug].astro');
-requireIncludes(englishPage, 'Records: no verified timetable records yet.', 'src/pages/countries/[slug].astro');
-requireIncludes(japanesePage, '安全な開催時刻データ', 'src/pages/ja/countries/[slug].astro');
-requireIncludes(japanesePage, '確認済みレコード', 'src/pages/ja/countries/[slug].astro');
-requireIncludes(japanesePage, 'この国の安全な開催時刻レコードはまだありません。', 'src/pages/ja/countries/[slug].astro');
+if (!component.includes('<table class="country-table">')) {
+  fail(`${componentPath}: must render the one-meeting-per-row country timetable table`);
+}
+if (!component.includes('primaryMeetings.map((record) => (') || !component.includes('remainingMeetings.map((record) => (')) {
+  fail(`${componentPath}: must render each meeting record independently`);
+}
+if (/record\.(?:races|race_rows|timetable_rows|programme)\.map/.test(component)) {
+  fail(`${componentPath}: country listing must not expand race-by-race programme rows`);
+}
 
-const forbiddenTimetableFieldPatterns = [
-  /record\.(?:racecard|card_body|entries?|horses?|jockeys?|odds?|results?|payouts?|dividends?|predictions?|tips?)\b/i,
-  /(?:racecard|card_body|entries?|horses?|jockeys?|odds?|results?|payouts?|dividends?|predictions?|tips?)\s*:/i,
-];
-
-for (const [label, content] of [
-  ['src/pages/countries/[slug].astro', englishPage],
-  ['src/pages/ja/countries/[slug].astro', japanesePage],
+const combined = `${englishRoute}\n${japaneseRoute}\n${component}\n${viewModel}`;
+for (const forbidden of [
+  /record\.(?:racecard|card_body|entries?|horses?|jockeys?|trainers?|odds?|results?|payouts?|dividends?|predictions?|tips?|raw_html|stream_url)\b/i,
+  /<iframe\b/i,
 ]) {
-  const timetableSectionMatch = content.match(/<section class="section-grid" aria-label="(?:Safe timetable data|安全な開催時刻データ)">[\s\S]*?<\/section>/);
-  if (!timetableSectionMatch) {
-    fail(`${label}: missing safe timetable data section`);
-    continue;
-  }
-
-  const timetableSection = timetableSectionMatch[0];
-  for (const pattern of forbiddenTimetableFieldPatterns) {
-    if (pattern.test(timetableSection)) {
-      fail(`${label}: forbidden timetable display field matched ${pattern}`);
-    }
-  }
+  if (forbidden.test(combined)) fail(`Country Public v1 timetable surface contains forbidden pattern ${forbidden}`);
 }
 
 if (errors.length) {
-  console.error('Country timetable UI check failed:');
+  console.error('Country Public v1 timetable UI check failed:');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log('Country timetable UI check passed.');
+console.log('Country Public v1 timetable UI check passed.');
+console.log(`PUBLIC_MEETINGS: ${publicMeetings.meetings.length}`);
+console.log('COUNTRY_ONE_MEETING_PER_ROW: pass');
