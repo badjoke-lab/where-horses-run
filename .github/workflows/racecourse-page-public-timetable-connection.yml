@@ -1,0 +1,66 @@
+name: Racecourse page public timetable connection
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/racecourse-page-public-timetable-connection-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/racecourses/public-timetable-connection.md'
+      - 'scripts/check-racecourse-page-public-timetable-connection.mjs'
+      - 'src/components/RacecoursePublicMeetingPanel.astro'
+      - 'src/lib/racecourses/publicRacecourseMeetingState.ts'
+      - 'src/lib/timetable/**'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - '.github/workflows/racecourse-page-public-timetable-connection.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/racecourse-page-public-timetable-connection-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/racecourses/public-timetable-connection.md'
+      - 'scripts/check-racecourse-page-public-timetable-connection.mjs'
+      - 'src/components/RacecoursePublicMeetingPanel.astro'
+      - 'src/lib/racecourses/publicRacecourseMeetingState.ts'
+      - 'src/lib/timetable/**'
+      - 'src/pages/tracks/**'
+      - 'src/pages/ja/tracks/**'
+      - '.github/workflows/racecourse-page-public-timetable-connection.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate checker syntax
+        run: node --check scripts/check-racecourse-page-public-timetable-connection.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic racecourse fixture
+        run: npm run build
+      - name: Validate public timetable connection
+        run: node scripts/check-racecourse-page-public-timetable-connection.mjs
+      - name: Validate read-only boundary
+        run: |
+          git diff --check
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Racecourse timetable connection modified repository files.' >&2
+            exit 1
+          fi
