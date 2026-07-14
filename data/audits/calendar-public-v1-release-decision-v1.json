@@ -1,0 +1,101 @@
+{
+  "schema_version": "calendar-public-v1-release-decision-v1",
+  "decision_id": "calendar-public-v1-release-2026-07-14",
+  "work_id": "WHR-CAL-PUBLIC-V1",
+  "implementation_unit": "PUBLIC-V1-RELEASE-DECISION-01",
+  "status": "complete",
+  "decided_at": "2026-07-14",
+  "decision": "accepted_for_reviewed_static_public_operation",
+  "completion_claim": "calendar_public_v1_release_criteria_satisfied",
+  "next_work_id": "WHR-RACECOURSE-PAGES-V1",
+  "next_stage": "racecourse_pages_and_page_link_architecture",
+  "completed_units": [
+    "PUBLIC-V1-SURFACE-AUDIT-01",
+    "PUBLIC-V1-PILOT-RECORD-RECONCILIATION-01",
+    "PUBLIC-V1-OPERATIONS-PRESENTATION-01",
+    "PUBLIC-V1-NAVIGATION-QA-01",
+    "PUBLIC-V1-RELEASE-DECISION-01"
+  ],
+  "release_criteria": {
+    "dynamic_calendar_today_tomorrow": true,
+    "maintained_approved_pilot_records": true,
+    "one_meeting_per_list_row": true,
+    "five_rank_public_boundaries": true,
+    "visible_source_coverage_freshness": true,
+    "honest_partial_coverage": true,
+    "safe_stale_empty_failure_presentation": true,
+    "bilingual_responsive_navigation": true,
+    "review_and_retry_ownership": true,
+    "prohibited_output_excluded": true
+  },
+  "evidence_records": [
+    "data/audits/calendar-public-v1-surface-audit-v1.json",
+    "data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json",
+    "data/audits/calendar-public-v1-operations-presentation-v1.json",
+    "data/audits/calendar-public-v1-navigation-qa-v1.json"
+  ],
+  "required_validators": [
+    "scripts/check-calendar-public-v1-surface-audit.mjs",
+    "scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs",
+    "scripts/check-calendar-public-v1-operations-presentation.mjs",
+    "scripts/check-calendar-public-v1-navigation-qa.mjs",
+    "scripts/check-calendar-pipeline-v1-release-gate.mjs",
+    "scripts/check-calendar-dynamic-dates-release-gate.mjs",
+    "scripts/check-calendar-operations-v1-release-gate.mjs",
+    "scripts/check-project-governance-docs.mjs"
+  ],
+  "public_routes": [
+    "/calendar/",
+    "/ja/calendar/",
+    "/today/",
+    "/ja/today/",
+    "/tomorrow/",
+    "/ja/tomorrow/",
+    "/major-countries/current-timetable/",
+    "/ja/major-countries/current-timetable/"
+  ],
+  "accepted_operating_model": {
+    "public_surface": "static_build_from_reviewed_public_projection",
+    "ordinary_coverage": "incremental_partial_allowed",
+    "completion_claims": "explicit_completion_audit_only",
+    "source_confirmation": "official_source_remains_final_authority",
+    "maintenance": "reviewed_incremental_operation",
+    "publication": "human_reviewed_merge_only"
+  },
+  "boundaries": {
+    "network_fetch_by_release_gate": false,
+    "canonical_data_write": false,
+    "public_dataset_write": false,
+    "automatic_acquisition": false,
+    "automatic_queue_mutation": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "scheduled_job_execution": false,
+    "unattended_publication": false,
+    "deployment": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "full_racecard_display": false,
+    "raw_source_display": false,
+    "embedded_video_display": false,
+    "direct_stream_display": false
+  },
+  "non_claims": [
+    "complete global race coverage",
+    "complete detail coverage for every meeting",
+    "automatic source freshness",
+    "automatic approval or publication",
+    "month-wide or season-wide completeness without a Completion Audit",
+    "publication of internal Review Queue, Retry Queue, operator, or reviewer records"
+  ],
+  "next_stage_scope": [
+    "one canonical page per reviewed racecourse identity",
+    "today and upcoming meeting state from reviewed public timetable data",
+    "course and distance profiles without unsupported inference",
+    "official source and freshness presentation",
+    "country, racing-type, glossary, Calendar, and meeting cross-navigation",
+    "racecourse identity reconciliation for timetable-only venue IDs"
+  ]
+}
