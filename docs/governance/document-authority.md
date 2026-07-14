@@ -77,6 +77,7 @@ Calendar human-readable contracts:
 - `docs/calendar/public-v1-release-decision.md`
 - `docs/racecourses/identity-reconciliation.md`
 - `docs/racecourses/public-timetable-connection.md`
+- `docs/racecourses/profile-evidence.md`
 - `docs/calendar/operations-v1-contract.md`
 - `docs/calendar/operations-v1-release-gate.md`
 - `docs/calendar/jra-pilot-foundation.md`
@@ -112,7 +113,9 @@ Calendar machine-readable contracts:
 - `data/audits/calendar-public-v1-release-decision-v1.json`
 - `data/audits/racecourse-page-identity-reconciliation-v1.json`
 - `data/audits/racecourse-page-public-timetable-connection-v1.json`
+- `data/audits/racecourse-page-profile-evidence-v1.json`
 - `data/static/racecourses-public-timetable-identities-v1.json`
+- `data/static/racecourse-profile-evidence-japan-v1.json`
 - `data/static/calendar-operations-control.json`
 - `data/static/calendar-operations-seasonal-policy.json`
 - `data/static/calendar-readiness-banei-detail-v1.json`
@@ -147,6 +150,7 @@ Calendar machine-readable contracts:
 - `scripts/check-calendar-public-v1-release-decision.mjs`
 - `scripts/check-racecourse-page-identity-reconciliation.mjs`
 - `scripts/check-racecourse-page-public-timetable-connection.mjs`
+- `scripts/check-racecourse-page-profile-evidence.mjs`
 - `src/lib/racecourses/publicRacecourseMeetingState.ts`
 - `src/components/RacecoursePublicMeetingPanel.astro`
 - `scripts/check-calendar-banei-retry-queue-state-apply.mjs`

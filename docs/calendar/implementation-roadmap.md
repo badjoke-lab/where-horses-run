@@ -638,15 +638,15 @@ Status: active current programme work
 Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
-Current implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
+Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
+Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
 
-Identity reconciliation result: 26 of 26 public timetable racecourse IDs now resolve to canonical bilingual pages. Public timetable connection result: all 36 bilingual racecourse pages now expose reviewed Today, Next, and upcoming meeting state from the public meeting list; thirteen identity-only records retain unknown profile fields until separate review.
+Identity reconciliation result: 26 of 26 public timetable racecourse IDs resolve to canonical bilingual pages. Public timetable connection result: all 36 bilingual racecourse pages expose reviewed Today, Next, and upcoming meeting state. Profile evidence result: thirteen former identity-only Japanese records now have official location and high-level course evidence while unsupported race-distance, lighting, elevation, season-completeness, and notable-race fields remain explicit unknowns.
 
 Initial sequence:
 
-1. add official source, freshness, location, course, and distance profiles without unsupported inference;
-2. connect country, type, glossary, Calendar, meeting, and racecourse navigation;
-3. validate bilingual responsive pages and internal-link integrity.
+1. connect country, type, glossary, Calendar, meeting, racecourse, and official-source navigation;
+2. validate bilingual responsive pages and internal-link integrity.
 
 ## Later product stages
 
@@ -674,11 +674,8 @@ From the current repository state:
 
 ```text
 1. keep Calendar Public v1 and source-specific pilots in reviewed steady-state operation
-2. add reviewed source and profile fields without unsupported inference
-3. complete racecourse page-link architecture
-4. validate bilingual racecourse pages and internal-link integrity
-5. add course, distance, source, and freshness profiles without unsupported inference
-6. complete page-link architecture and internal-link QA
+2. complete racecourse page-link architecture
+3. validate bilingual racecourse pages and internal-link integrity
 7. run source-specific Completion Audits only before making their corresponding completeness claims
 ```
 

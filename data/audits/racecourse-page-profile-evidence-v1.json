@@ -1,0 +1,109 @@
+{
+  "schema_version": "racecourse-page-profile-evidence-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "implementation_unit": "RACECOURSE-PAGE-PROFILE-EVIDENCE-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-14",
+  "discovery_workflow_run_id": 29330797854,
+  "discovery_artifact_id": 8309864484,
+  "discovery_artifact_digest": "sha256:8371940095e273c2e50087776a50582c753ded2a397cb691a8cbe18f7fa729f1",
+  "baseline": {
+    "racecourses": 36,
+    "identity_only_records": 13,
+    "no_profile_records": 13,
+    "complete_core_profiles": 8,
+    "field_counts": {
+      "city": 23,
+      "region": 23,
+      "racing_types": 22,
+      "surfaces": 14,
+      "direction": 10,
+      "course_profile": 23,
+      "distance_profile": 8,
+      "seasonality": 23,
+      "schedule_source": 1
+    }
+  },
+  "implemented": {
+    "reviewed_japan_records": 13,
+    "identity_only_records": 0,
+    "no_profile_records": 0,
+    "complete_core_profiles": 8,
+    "field_counts": {
+      "city": 36,
+      "region": 36,
+      "racing_types": 35,
+      "surfaces": 27,
+      "direction": 23,
+      "course_profile": 36,
+      "distance_profile": 8,
+      "seasonality": 36,
+      "public_calendar_connection": 36
+    }
+  },
+  "reviewed_record_ids": [
+    "funabashi-racecourse",
+    "kanazawa-racecourse",
+    "kasamatsu-racecourse",
+    "kawasaki-racecourse",
+    "kochi-racecourse",
+    "kokura-racecourse",
+    "monbetsu-racecourse",
+    "morioka-racecourse",
+    "nagoya-racecourse",
+    "oi-racecourse",
+    "saga-racecourse",
+    "sonoda-racecourse",
+    "urawa-racecourse"
+  ],
+  "source_sets": [
+    {
+      "source_id": "japan-nar-racecourse-guide",
+      "scope": "twelve NAR venue pages and the official NAR course table",
+      "venue_url_pattern": "https://www.keiba.go.jp/guide/{venue_number}/",
+      "course_url": "https://www.keiba.go.jp/guide/course/"
+    },
+    {
+      "source_id": "japan-jairs-racecourses",
+      "scope": "Kokura venue and course details",
+      "venue_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/j08.html",
+      "course_url": "https://japanracing.jp/en/racing/go_racing/jra_racecourses/course_details/kokura.html"
+    },
+    {
+      "source_id": "japan-jra-home",
+      "scope": "Kokura official venue route",
+      "venue_url": "https://www.jra.go.jp/facilities/race/kokura/"
+    }
+  ],
+  "field_policy": {
+    "location": "official_venue_page_only",
+    "racing_type": "official_authority_context_only",
+    "surface_direction_course_dimensions": "official_course_table_only",
+    "distance_profile": "remain_unknown_without_an_official_race_distance_menu",
+    "seasonality": "partial_until_separate_calendar_completeness_review",
+    "schedule": "reviewed_public_calendar_connection",
+    "unknown_fields": "remain_null_or_empty"
+  },
+  "retained_unknowns": {
+    "race_distance_profiles": 13,
+    "venue_lighting_status": 13,
+    "elevation_notes": 13,
+    "complete_seasonality": 13,
+    "notable_races": 13,
+    "kokura_home_straight": 1
+  },
+  "boundaries": {
+    "network_fetch_by_gate": false,
+    "canonical_timetable_write": false,
+    "public_timetable_write": false,
+    "automatic_source_acceptance": false,
+    "unsupported_profile_inference": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false,
+    "automatic_publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "RACECOURSE-PAGE-LINK-ARCHITECTURE-01"
+}
