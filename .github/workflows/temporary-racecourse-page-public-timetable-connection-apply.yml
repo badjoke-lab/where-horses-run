@@ -1,0 +1,69 @@
+name: Temporary racecourse public timetable connection apply
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/apply-racecourse-page-public-timetable-connection.mjs'
+      - '.github/workflows/temporary-racecourse-page-public-timetable-connection-apply.yml'
+  push:
+    branches:
+      - work/racecourse-page-public-timetable-connection
+    paths:
+      - 'scripts/apply-racecourse-page-public-timetable-connection.mjs'
+      - '.github/workflows/temporary-racecourse-page-public-timetable-connection-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-racecourse-page-public-timetable-connection-apply
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.repository == 'badjoke-lab/where-horses-run' && (github.event_name == 'push' || github.head_ref == 'work/racecourse-page-public-timetable-connection')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      WHR_CALENDAR_REFERENCE_DATE: '2026-07-14'
+      WHR_CALENDAR_TIMEZONE: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/racecourse-page-public-timetable-connection
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Apply reviewed public timetable connection
+        run: |
+          node --check scripts/apply-racecourse-page-public-timetable-connection.mjs
+          node scripts/apply-racecourse-page-public-timetable-connection.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build deterministic racecourse fixture
+        run: npm run build
+      - name: Validate racecourse public timetable connection
+        run: node scripts/check-racecourse-page-public-timetable-connection.mjs
+      - name: Validate inherited racecourse and Public v1 gates
+        run: |
+          node scripts/check-racecourse-page-identity-reconciliation.mjs
+          node scripts/check-calendar-public-v1-navigation-qa.mjs
+          node scripts/check-project-governance-docs.mjs
+      - name: Remove temporary apply mechanism
+        run: |
+          rm scripts/apply-racecourse-page-public-timetable-connection.mjs
+          rm .github/workflows/temporary-racecourse-page-public-timetable-connection-apply.yml
+      - name: Commit exact public timetable connection
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --exit-code && {
+            echo 'Expected racecourse timetable connection changes were not produced.' >&2
+            exit 1
+          }
+          git commit -m 'Complete racecourse public timetable connection'
+          git push origin HEAD:work/racecourse-page-public-timetable-connection
