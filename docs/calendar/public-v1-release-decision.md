@@ -46,6 +46,8 @@ Machine-readable evidence is recorded in:
 - `data/audits/calendar-public-v1-navigation-qa-v1.json`;
 - `data/audits/calendar-public-v1-release-decision-v1.json`.
 
+The release-decision gate remains a permanent read-only pull-request and main-branch validation after this transition.
+
 ## Accepted operating model
 
 Calendar Public v1 is a static surface generated from reviewed public projection data.
