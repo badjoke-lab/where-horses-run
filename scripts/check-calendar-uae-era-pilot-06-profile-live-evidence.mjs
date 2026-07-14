@@ -27,7 +27,7 @@ if (accepted.acquisition_profile_status !== 'provisional' || accepted.detail_sou
 if (audit.decision?.profile_foundation !== 'evidence_backed_review_only_c_level' || audit.decision?.canonical_publication_path !== 'not_activated') errors.push('PILOT-06 historical decision differs.');
 if (jobFixture.job?.collection_mode !== 'source_visible_horizon' || jobFixture.expected?.records_discovered !== 64) errors.push('PILOT-06 Job fixture differs.');
 if (p5.venue_mapping_approval?.decision?.approved_mapping_count !== 5) errors.push('PILOT-05 mapping approval dependency differs.');
-for (const file of ['docs/calendar/uae-era-pilot-06-profile-foundation.md', '.github/workflows/calendar-uae-era-pilot-06-profile-live-evidence.yml']) {
+for (const file of ['docs/calendar/uae-era-pilot-06-profile-foundation.md', '.github/workflows/calendar-uae-era-pilot-06-profile-foundation.yml']) {
   if (!fs.existsSync(path.join(root, file))) errors.push(`PILOT-06 component missing: ${file}.`);
 }
 
