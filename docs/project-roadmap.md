@@ -515,9 +515,10 @@ Scheduled acquisition execution and unattended publication remain disabled.
 Current Work ID: `WHR-RACECOURSE-PAGES-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
-Current implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
+Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
+Current implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
 
-Current product stage: all canonical racecourse pages now show reviewed Today, Next, and upcoming public meetings; next strengthen official source, freshness, location, course, and distance evidence before completing page-link architecture.
+Current product stage: all canonical racecourse pages show reviewed public meetings, and the thirteen former identity-only Japanese records now carry official location and high-level course evidence. Next complete bilingual page-link architecture without broadening the public data boundary.
 
 1. strengthen racecourse pages and page-link architecture;
 2. implement glossary, racing types, search, filters, and SEO;

@@ -110,6 +110,7 @@ import countryProfilesV298Greece from '../../data/static/country-profiles-v2-98-
 import racecourses from '../../data/static/racecourses.json';
 import racecourseExtensions from '../../data/static/racecourses-extensions.json';
 import publicTimetableRacecourseIdentitiesV1 from '../../data/static/racecourses-public-timetable-identities-v1.json';
+import racecourseProfileEvidenceJapanV1 from '../../data/static/racecourse-profile-evidence-japan-v1.json';
 import countryPageRacecourses0104 from '../../data/static/country-page-racecourses-01-04.json';
 import countryPageRacecourses11Oman from '../../data/static/country-page-racecourses-11-oman.json';
 import countryPageRacecourses12Zimbabwe from '../../data/static/country-page-racecourses-12-zimbabwe.json';
@@ -267,6 +268,19 @@ const allProfilesV2 = [
   ...countryProfilesV298Greece
 ] as const;
 
+const racecourseProfileEvidenceById = new Map(racecourseProfileEvidenceJapanV1.records.map((record) => [record.id, record]));
+function applyRacecourseProfileEvidence<T extends Record<string, any>>(racecourse: T) {
+  const evidence = racecourseProfileEvidenceById.get(racecourse.id);
+  if (!evidence) return racecourse;
+  return {
+    ...racecourse,
+    ...evidence,
+    course_profile: { ...racecourse.course_profile, ...evidence.course_profile },
+    seasonality: { ...racecourse.seasonality, ...evidence.seasonality },
+    data_status: { ...racecourse.data_status, ...evidence.data_status },
+  };
+}
+
 const racecourseOverrideById = new Map(racecourseProfileOverrides.map((override) => [override.id, override]));
 const allRacecourses = [
   ...racecourses,
@@ -275,7 +289,7 @@ const allRacecourses = [
   ...countryPageRacecourses0104,
   ...countryPageRacecourses11Oman,
   ...countryPageRacecourses12Zimbabwe
-].map((racecourse) => ({
+].map(applyRacecourseProfileEvidence).map((racecourse) => ({
   ...racecourse,
   ...(racecourseOverrideById.get(racecourse.id) ?? {})
 })) as const;

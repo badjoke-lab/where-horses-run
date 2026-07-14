@@ -98,7 +98,8 @@ for (const record of evidence.records) {
     const en = fs.readFileSync(enPath, 'utf8');
     const ja = fs.readFileSync(jaPath, 'utf8');
     if (!en.includes(record.city) || !en.includes(record.region) || !ja.includes(record.city) || !ja.includes(record.region)) fail(`${record.id}: rendered location evidence missing`);
-    if (!en.includes(String(record.course_profile.dirt_circumference_m)) || !ja.includes(String(record.course_profile.dirt_circumference_m))) fail(`${record.id}: rendered dirt course metric missing`);
+    const renderedDirt = new Intl.NumberFormat('en-US').format(record.course_profile.dirt_circumference_m);
+    if (!en.includes(renderedDirt) || !ja.includes(renderedDirt)) fail(`${record.id}: rendered dirt course metric missing`);
     if (record.course_profile.home_straight_m !== null && (!en.includes(String(record.course_profile.home_straight_m)) || !ja.includes(String(record.course_profile.home_straight_m)))) fail(`${record.id}: rendered straight metric missing`);
     if (!en.includes('Not listed yet') || !ja.includes('未掲載')) fail(`${record.id}: retained unknown state is not explicit`);
   }
