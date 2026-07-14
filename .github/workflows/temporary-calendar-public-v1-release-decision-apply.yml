@@ -54,8 +54,31 @@ jobs:
         run: npm install --package-lock=false
       - name: Build static site
         run: npm run build
-      - name: Validate Public v1 release decision
-        run: node scripts/check-calendar-public-v1-release-decision.mjs
+      - name: Capture Public v1 release decision validation
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-calendar-public-v1-release-decision.mjs > /tmp/calendar-public-v1-release-decision-apply.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/calendar-public-v1-release-decision-apply.exit
+          cat /tmp/calendar-public-v1-release-decision-apply.log
+          exit 0
+      - name: Upload apply diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-public-v1-release-decision-apply-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            /tmp/calendar-public-v1-release-decision-apply.log
+            /tmp/calendar-public-v1-release-decision-apply.exit
+      - name: Enforce Public v1 release decision
+        run: |
+          status="$(cat /tmp/calendar-public-v1-release-decision-apply.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
       - name: Remove temporary apply mechanism
         run: |
           rm scripts/apply-calendar-public-v1-release-decision.mjs
