@@ -154,7 +154,7 @@ const sourceContracts = {
 for (const [key, passed] of Object.entries(sourceContracts)) if (!passed) errors.push(`source contract: ${key}`);
 
 const audit = {
-  schema_version: 'racecourse-page-bilingual-qa-discovery-v2',
+  schema_version: 'racecourse-page-bilingual-qa-rendered-v1',
   work_id: 'WHR-RACECOURSE-PAGES-V1',
   implementation_unit: 'RACECOURSE-PAGE-BILINGUAL-QA-01',
   fixture: { reference_date: '2026-07-14', timezone: 'Asia/Tokyo' },

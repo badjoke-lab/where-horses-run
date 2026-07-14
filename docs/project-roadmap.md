@@ -512,14 +512,18 @@ Scheduled acquisition execution and unattended publication remain disabled.
 
 ## Product follow-up phases
 
-Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Completed Work ID: `WHR-RACECOURSE-PAGES-V1`
+Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
 Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
-Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
+Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
+Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
 
-Current product stage: all canonical racecourse pages now connect reviewed meetings, countries, racing types, glossary concepts, official routes, source registries, and coverage explanation. Next complete bilingual responsive, metadata, accessibility, and release-readiness QA.
+Racecourse-page release decision: accepted for reviewed static public operation. All 36 canonical identities and 72 bilingual pages satisfy identity, public-timetable, profile-evidence, page-link, metadata, responsive, accessibility, language-parity, and public-boundary gates.
+
+Current product stage: extend the reviewed glossary contract, then expand racing-type, breed, role, timetable, and official-source terminology before search, filtering, and SEO work.
 
 1. strengthen racecourse pages and page-link architecture;
 2. implement glossary, racing types, search, filters, and SEO;

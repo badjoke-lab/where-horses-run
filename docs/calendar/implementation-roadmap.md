@@ -634,19 +634,18 @@ Completed Public v1 release-decision evidence:
 
 ## Stage 12 — racecourse pages and page-link architecture
 
-Status: active current programme work
-Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Status: complete.
+Completed Work ID: `WHR-RACECOURSE-PAGES-V1`
+Next Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
 Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
-Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
+Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 
-Identity reconciliation result: 26 of 26 public timetable racecourse IDs resolve to canonical bilingual pages. Public timetable connection result: all 36 bilingual racecourse pages expose reviewed Today, Next, and upcoming meeting state. Profile evidence result: thirteen former identity-only Japanese records now have official location and high-level course evidence while unsupported race-distance, lighting, elevation, season-completeness, and notable-race fields remain explicit unknowns.
+Racecourse-page release decision: accepted for reviewed static public operation. All 26 public timetable racecourse IDs resolve to canonical identities; all 36 English and 36 Japanese pages expose reviewed meeting state, explicit profile evidence boundaries, complete page-link architecture, localized metadata and language switching, responsive layout, accessibility markers, and zero rendered QA errors.
 
-Initial sequence:
-
-1. validate bilingual responsive pages, metadata, accessibility markers, and final release readiness.
+The permanent gate remains read-only. Scheduled acquisition execution and unattended publication remain disabled.
 
 ## Later product stages
 
@@ -656,7 +655,10 @@ Strengthen canonical racecourse pages, current/next meeting state, recent review
 
 ### Glossary, racing types, search, filtering, SEO
 
-Implement reviewed terminology, local names, readings/pronunciation metadata where supported, navigation, search/filtering, metadata, sitemap, canonical/hreflang, structured data, methodology, coverage, and limitations pages.
+Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
+Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
+
+Implement reviewed terminology, local names, readings/pronunciation metadata where supported, navigation, search/filtering, metadata, sitemap, canonical/hreflang, structured data, methodology, coverage, and limitations pages. Explaining restricted concepts is allowed; republishing entries, odds, results, payouts, or other prohibited datasets is not.
 
 ### Expansion cohorts
 
@@ -673,9 +675,10 @@ Nominal daily, weekly, monthly, and seasonal rhythms are scheduling priorities, 
 From the current repository state:
 
 ```text
-1. keep Calendar Public v1 and source-specific pilots in reviewed steady-state operation
-2. validate bilingual racecourse pages, metadata, accessibility markers, and release readiness
-7. run source-specific Completion Audits only before making their corresponding completeness claims
+1. keep Calendar Public v1 and racecourse pages in reviewed steady-state operation
+2. extend the glossary schema and dictionary evidence contract
+3. expand reviewed racing-type, breed, role, timetable, and official-source terms
+4. run source-specific Completion Audits only before making their corresponding completeness claims
 ```
 
 ## Per-PR document review
@@ -711,4 +714,4 @@ Accepted state:
 - 64-record review-only evidence with source-window closure;
 - detail route, fallback runner, arbitrary date-window mode, selected-meeting mode, retry automation, automatic execution, approval, promotion, publication, canonical write, and public write remain disabled.
 
-Current programme Work ID: `WHR-RACECOURSE-PAGES-V1`. UAE maintenance may continue incrementally under the accepted handoff boundary without blocking Public v1 release-readiness work.
+Current programme Work ID: `WHR-GLOSSARY-DICTIONARY-V1`. UAE maintenance may continue incrementally under the accepted handoff boundary without blocking Public v1 release-readiness work.

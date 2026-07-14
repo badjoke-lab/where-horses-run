@@ -356,12 +356,14 @@ Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
 Completed Work ID: `WHR-CAL-PUBLIC-V1`
-Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Completed Work ID: `WHR-RACECOURSE-PAGES-V1`
+Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
 Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
-Current implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
+Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
+Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
 
 Current NAR status:
 
@@ -383,7 +385,9 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 ## Active sequence
 
 ```text
-1. validate bilingual responsive racecourse pages, metadata, accessibility markers, and final release readiness
+1. extend the glossary schema without weakening the public-data boundary
+2. expand racing-type, breed, role, timetable, and official-source terms
+3. add multilingual cleanup, related-term graph, beginner explanations, and glossary QA
 ```
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
