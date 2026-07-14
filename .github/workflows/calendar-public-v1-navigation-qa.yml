@@ -1,0 +1,62 @@
+name: Calendar Public v1 bilingual navigation QA
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-public-v1-navigation-qa-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/calendar/public-v1-navigation-qa.md'
+      - 'scripts/check-calendar-public-v1-navigation-qa.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/data/**'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/**'
+      - '.github/workflows/calendar-public-v1-navigation-qa.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/calendar-public-v1-navigation-qa-v1.json'
+      - 'data/generated/timetable/public/**'
+      - 'docs/calendar/public-v1-navigation-qa.md'
+      - 'scripts/check-calendar-public-v1-navigation-qa.mjs'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/data/**'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/**'
+      - 'src/pages/**'
+      - '.github/workflows/calendar-public-v1-navigation-qa.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate QA script syntax
+        run: node --check scripts/check-calendar-public-v1-navigation-qa.mjs
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - name: Build static site
+        run: npm run build
+      - name: Validate rendered bilingual navigation
+        run: node scripts/check-calendar-public-v1-navigation-qa.mjs
+      - name: Prove QA leaves repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'Calendar Public v1 navigation QA modified repository files.' >&2
+            exit 1
+          fi
