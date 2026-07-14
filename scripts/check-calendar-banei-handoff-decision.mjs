@@ -15,6 +15,7 @@ const schema = readJson('data/static/calendar-banei-handoff-decision.schema.json
 const registry = readJson('data/static/calendar-acquisition-registry.json');
 const readiness = loadCalendarReadinessV1(root);
 const policies = readJson('src/data/publicationDisplayPolicies.json');
+const promotionApply = readJson('data/audits/calendar-banei-current-window-promotion-apply-v1.json');
 
 if (schema.$schema !== 'https://json-schema.org/draft/2020-12/schema') fail('handoff schema draft differs.');
 if (schema.$id !== 'https://whr.badjoke-lab.com/schemas/calendar-banei-handoff-decision.schema.json') fail('handoff schema ID differs.');
@@ -98,7 +99,16 @@ else {
 }
 if (!legacyReadiness) fail('Banei legacy schedule Readiness missing.');
 else {
-  if (legacyReadiness.public_ceiling !== 'C' || legacyReadiness.readiness !== 'link_only') fail('Banei legacy schedule Readiness must remain C / link_only.');
+  if (legacyReadiness.technical_rank !== 'C' || legacyReadiness.public_ceiling !== 'C') fail('Banei legacy schedule rank boundary differs.');
+  if (legacyReadiness.readiness !== 'prototype_ready' || legacyReadiness.automation_mode !== 'semi_automatic' || legacyReadiness.implementation_status !== 'candidate_active') {
+    fail('Banei legacy schedule current reviewed activation differs.');
+  }
+}
+if (promotionApply.schema_version !== 'calendar-banei-current-window-promotion-apply-v1') fail('Banei promotion apply audit schema differs.');
+if (promotionApply.decision !== 'apply_exact_reviewed_readiness_and_split_source_proposal') fail('Banei promotion apply decision differs.');
+if (promotionApply.apply_scope?.readiness_source_key !== 'japan/banei-tokachi/banei-official-schedule') fail('Banei promotion apply readiness source differs.');
+if (promotionApply.apply_scope?.promoted_meeting_count !== 13 || promotionApply.apply_scope?.promoted_detail_count !== 1 || promotionApply.apply_scope?.promoted_race_row_count !== 12) {
+  fail('Banei promotion apply counts differ.');
 }
 
 const publicBoundary = decision.public_display_boundary;
@@ -113,7 +123,7 @@ const expectedBoundaryKeys = [
 if (!exactKeys(publicBoundary, expectedBoundaryKeys)) fail('public display boundary keys differ.');
 if (publicBoundary.detail_source_public_ceiling !== 'A+') fail('detail-source public ceiling differs.');
 if (publicBoundary.legacy_schedule_source_public_ceiling !== 'C') fail('legacy schedule public ceiling differs.');
-if (publicBoundary.legacy_schedule_source_readiness !== 'link_only') fail('legacy schedule readiness differs.');
+if (publicBoundary.legacy_schedule_source_readiness !== 'link_only') fail('historical handoff schedule readiness differs.');
 if (publicBoundary.list_surface_rule !== 'one_meeting_per_row') fail('list surface rule differs.');
 if (publicBoundary.a_plus_surface_rule !== 'meeting_detail_only') fail('A+ surface rule differs.');
 
@@ -217,7 +227,8 @@ console.log('JULY_FULL_MONTH_COMPLETENESS_CLAIM_MADE: false');
 console.log('PRIMARY_RUNNER: github_actions');
 console.log('FALLBACK_RUNNER: reviewed_import');
 console.log('DETAIL_SOURCE_PUBLIC_CEILING: A+');
-console.log('LEGACY_SCHEDULE_READINESS: C / link_only');
+console.log('HISTORICAL_HANDOFF_SCHEDULE_READINESS: C / link_only');
+console.log('CURRENT_SCHEDULE_READINESS: C / prototype_ready / candidate_active');
 console.log('SCHEDULER_JOB_EXECUTION: false');
 console.log('AUTOMATIC_APPROVAL_PROMOTION_PUBLICATION: false');
 console.log('NEXT_WORK_ID: WHR-CAL-HONG-KONG-HKJC');

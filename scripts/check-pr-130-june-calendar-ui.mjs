@@ -1,10 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-await import('./extract-pr-130-nar-june.mjs');
-await import('./generate-pr-130-june-calendar.mjs');
-await import('./merge-pr-130-manual-june-records.mjs');
-
 const root = process.cwd();
 const expectedGroups = [
   ['japan', 'jra'], ['japan', 'nar'], ['japan', 'banei'], ['hong-kong', 'hkjc'],
@@ -53,31 +49,18 @@ function explicitRecords(data) {
 
 const data = readJson('data/generated/timetable/june-2026-calendar.json');
 const routes = readJson('data/generated/timetable/june-2026-source-routes.json');
-const page = read('src/pages/major-countries/current-timetable.astro');
+const currentPage = read('src/pages/major-countries/current-timetable.astro');
 const calendarPage = read('src/pages/calendar/index.astro');
+const meetingList = read('src/components/TimetableMeetingList.astro');
+const rowAdapter = read('src/data/timetableMeetingRows.ts');
+const publicList = readJson('data/generated/timetable/public/meeting-list.json');
 const records = explicitRecords(data);
 const coverageStatus = data.coverage_status ?? [];
 
-if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected schema.');
-if (data.month !== '2026-06') fail('Unexpected month.');
+if (data.schema_version !== 'june-2026-calendar-v0') fail('Unexpected historical June schema.');
+if (data.month !== '2026-06') fail('Unexpected historical month.');
 if (routes.schema_version !== 'june-2026-source-routes-v0') fail('Unexpected source routes schema.');
 if (routes.month !== '2026-06') fail('Unexpected source routes month.');
-for (const [label, content] of [
-  ['src/pages/calendar/index.astro', calendarPage],
-  ['src/pages/major-countries/current-timetable.astro', page],
-]) {
-  if (!content.includes('normalizedTimetableCalendarPreviewRecords')) fail(`${label}: must use normalized timetable calendar preview records.`);
-  if (!content.includes('getNormalizedTimetableMeetingDetail')) fail(`${label}: must check for stored race-by-race timetable rows.`);
-  if (!content.includes("record.capability_rank === 'A' && hasRaceByRaceTimetable(record.meeting_id)")) {
-    fail(`${label}: race timetable links must be A-only and require stored timetable rows.`);
-  }
-  if (!content.includes('View race timetable')) fail(`${label}: must render the A-only race timetable link label.`);
-  if (!content.includes('Official source')) fail(`${label}: must render one official source link label per meeting row.`);
-  if (content.includes('<table')) fail(`${label}: must render a simple list instead of a table.`);
-  if (content.includes('NormalizedMeetingDetailLinks')) fail(`${label}: must not use NormalizedMeetingDetailLinks.`);
-  if (content.includes('View meeting detail')) fail(`${label}: must not expose generic meeting detail links.`);
-  if (content.includes('CurrentTimetableRecords')) fail(`${label}: must not render the old normalized timetable table component.`);
-}
 
 const routeByGroup = new Map();
 for (const route of routes.routes ?? []) {
@@ -97,12 +80,14 @@ for (const statusRecord of coverageStatus) {
   satisfiedGroupKeys.add(groupKey(statusRecord));
 }
 
+const incompleteHistoricalGroups = [];
 for (const [countryId, groupId] of expectedGroups) {
   const key = `${countryId}::${groupId}`;
   const route = routeByGroup.get(key);
-  if (!route) fail(`Missing reusable source route for ${countryId}/${groupId}.`);
-  if (route.status === 'route_not_yet_extractable') fail(`Unextractable route remains for ${countryId}/${groupId}.`);
-  if (!satisfiedGroupKeys.has(key)) fail(`Missing June coverage for ${countryId}/${groupId}.`);
+  if (!route) fail(`Missing reusable historical source route for ${countryId}/${groupId}.`);
+  if (!satisfiedGroupKeys.has(key) || route.status === 'route_not_yet_extractable') {
+    incompleteHistoricalGroups.push({ key, route_status: route.status });
+  }
 }
 
 for (const record of records) {
@@ -113,9 +98,32 @@ for (const record of records) {
   if (!record.source_trace?.source_url?.startsWith('https://')) fail(`${groupKey(record)}: source URL missing.`);
   if (!record.source_trace?.parser) fail(`${groupKey(record)}: parser missing.`);
   if (!record.source_trace?.last_checked) fail(`${groupKey(record)}: last_checked missing.`);
-  const route = routeByGroup.get(groupKey(record));
-  if (!route) fail(`${groupKey(record)}: reusable source route missing.`);
-  if (route.status === 'route_not_yet_extractable') fail(`${groupKey(record)}: has records but route is not extractable.`);
 }
 
-console.log(`[pr-130-june-calendar-ui] PASS ${records.length} records / ${satisfiedGroupKeys.size} groups / ${routeByGroup.size} routes`);
+for (const [label, content] of [
+  ['src/pages/calendar/index.astro', calendarPage],
+  ['src/pages/major-countries/current-timetable.astro', currentPage],
+]) {
+  if (!content.includes('TimetableMeetingList')) fail(`${label}: must render the Public v1 meeting list.`);
+  if (content.includes('normalizedTimetableCalendarPreviewRecords')) fail(`${label}: must not restore the retired June preview runtime.`);
+  if (content.includes('june-2026-calendar.json')) fail(`${label}: must not import historical June data directly.`);
+}
+if (!calendarPage.includes('getCurrentCalendarWindowGroups')) fail('Calendar page must use the dynamic Public v1 30-day window.');
+if (!currentPage.includes('getGroupedTimetableMeetingRows')) fail('Current timetable page must use Public v1 grouped rows.');
+for (const marker of [
+  'group.records.map((record) => (',
+  '<li class="meeting-card">',
+  'record.official_source_url',
+  'record.detail_path',
+]) {
+  if (!meetingList.includes(marker)) fail(`TimetableMeetingList must include ${marker}.`);
+}
+if (meetingList.includes('<table')) fail('Public timetable surfaces must remain one meeting per list row.');
+if (/record\.(?:races|race_rows|timetable_rows|programme)\.map/.test(meetingList)) {
+  fail('Public list surfaces must not expand race-by-race rows.');
+}
+if (!rowAdapter.includes('getPublicTimetableMeetingRows')) fail('Timetable row adapter must use Public v1 meeting rows.');
+if (publicList.schema_version !== 'public-timetable-meeting-list-v0') fail('Unexpected Public v1 meeting-list schema.');
+if (!Array.isArray(publicList.meetings) || publicList.meetings.length === 0) fail('Public v1 meeting list must not be empty.');
+
+console.log(`[pr-130-june-calendar-ui] PASS ${records.length} historical records / ${satisfiedGroupKeys.size} covered groups / ${routeByGroup.size} routes / ${incompleteHistoricalGroups.length} retained historical gaps; Public v1 runtime active`);

@@ -15,8 +15,9 @@ const rows = lines.map((line) => line.split('\t'));
 const countries = new Map(rows.filter((row) => Number(row[deliveryIndex]) >= 37 && Number(row[deliveryIndex]) <= 52).map((row) => [row[slugIndex], row[deliveryIndex]]));
 const first52Countries = new Set(rows.filter((row) => Number(row[deliveryIndex]) >= 1 && Number(row[deliveryIndex]) <= 52).map((row) => row[slugIndex]));
 const expected = { malaysia:1, thailand:1, philippines:1, mauritius:1, argentina:1, germany:1, italy:2, spain:1, norway:2, finland:1, netherlands:1, switzerland:2, poland:1, romania:1, serbia:1, slovakia:1 };
-const postBackfillTransitionIds = new Set([
-  'united-arab-emirates--uae-national-racing-system--era-season-calendar',
+const postBackfillHistoricalReadiness = new Map([
+  ['united-arab-emirates--uae-national-racing-system--era-season-calendar', 'manual_ready'],
+  ['japan--japan-banei-system--banei-official-schedule', 'link_only'],
 ]);
 const postBackfillRecoveryIds = new Set([
   'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable',
@@ -49,9 +50,10 @@ const targetCounts = countBy(targets);
 if (targetCounts.prototype_ready !== 6 || targetCounts.manual_ready !== 13 || (targetCounts.link_only ?? 0) || (targetCounts.blocked ?? 0)) fail('target readiness mix must be prototype=6 manual=13 link=0 blocked=0');
 const baselineRecords = (registry.records ?? []).filter((record) => first52Countries.has(record.country_id) && !postBackfillRecoveryIds.has(record.readiness_id));
 if (baselineRecords.length !== 70) fail(`entries 01-52 must retain 70 readiness records including reviewed transitions; found ${baselineRecords.length}`);
-const historicalBaselineRecords = baselineRecords.map((record) => postBackfillTransitionIds.has(record.readiness_id)
-  ? { ...record, readiness: 'manual_ready' }
-  : record);
+const historicalBaselineRecords = baselineRecords.map((record) => {
+  const historicalReadiness = postBackfillHistoricalReadiness.get(record.readiness_id);
+  return historicalReadiness ? { ...record, readiness: historicalReadiness } : record;
+});
 const baselineCounts = countBy(historicalBaselineRecords);
 if (baselineCounts.prototype_ready !== 35 || baselineCounts.manual_ready !== 27 || baselineCounts.blocked !== 4 || baselineCounts.link_only !== 4) fail('historical entries 01-52 readiness mix is invalid');
 
@@ -64,13 +66,20 @@ else {
   if ((uaeRecovery.racecourse_ids ?? []).length !== 5) fail('UAE detail recovery must retain five approved racecourse IDs');
 }
 
-const uaeTransition = (registry.records ?? []).find((record) => postBackfillTransitionIds.has(record.readiness_id));
+const uaeTransition = (registry.records ?? []).find((record) => record.readiness_id === 'united-arab-emirates--uae-national-racing-system--era-season-calendar');
 if (!uaeTransition) fail('UAE source-pilot transition readiness record is missing');
 else {
   if (uaeTransition.country_tracker_delivery_no !== '01') fail('UAE transition delivery number differs');
   if (uaeTransition.readiness !== 'prototype_ready') fail('UAE transition readiness differs');
   if (uaeTransition.implementation_status !== 'fixture_validated') fail('UAE transition implementation status differs');
   if ((uaeTransition.racecourse_ids ?? []).length !== 5) fail('UAE transition must retain five approved racecourse IDs');
+}
+
+const baneiTransition = (registry.records ?? []).find((record) => record.readiness_id === 'japan--japan-banei-system--banei-official-schedule');
+if (!baneiTransition) fail('Banei reviewed activation readiness record is missing');
+else {
+  if (baneiTransition.readiness !== 'prototype_ready' || baneiTransition.automation_mode !== 'semi_automatic' || baneiTransition.implementation_status !== 'candidate_active') fail('Banei reviewed activation state differs');
+  if (baneiTransition.technical_rank !== 'C' || baneiTransition.public_ceiling !== 'C') fail('Banei reviewed activation rank boundary differs');
 }
 
 for (let delivery = 37; delivery <= 52; delivery += 1) {

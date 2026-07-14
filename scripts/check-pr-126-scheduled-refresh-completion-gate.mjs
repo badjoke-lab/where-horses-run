@@ -32,17 +32,24 @@ const workflow = read('.github/workflows/timetable-scheduled-refresh.yml');
 
 for (const text of [
   'workflow_dispatch:',
-  'schedule:',
+  'live_fetch:',
+  'source_limit:',
   'WHR_LIVE_FETCH',
   'node scripts/timetable/live-source-snapshot.mjs',
   'node scripts/timetable/apply-live-source-snapshot.mjs',
   'node scripts/timetable/build-current-integrated.mjs',
   'node scripts/check-pr-123-scheduled-refresh-foundation.mjs',
   'node scripts/check-pr-124-refresh-health-report.mjs',
+  "if: inputs.live_fetch == 'true'",
+  'Create reviewable generated update PR',
   'peter-evans/create-pull-request@v6',
   'generated/timetable-refresh'
 ]) {
   if (!workflow.includes(text)) fail(`Workflow missing ${text}.`);
+}
+
+if (/^\s*schedule:\s*$/m.test(workflow)) {
+  fail('Refresh completion gate must not restore unattended schedule execution.');
 }
 
 for (const file of [
@@ -68,4 +75,4 @@ for (const file of [
   read(file);
 }
 
-console.log('[pr-126-refresh-completion] PASS');
+console.log('[pr-126-refresh-completion] PASS: manual review-gated refresh completion');

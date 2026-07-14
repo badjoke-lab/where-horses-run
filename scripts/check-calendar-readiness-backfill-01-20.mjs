@@ -6,6 +6,7 @@ const errors = [];
 const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const uaeDetailRecoveryId = 'united-arab-emirates--uae-national-racing-system--era-racecard-public-timetable';
+const baneiScheduleId = 'japan--japan-banei-system--banei-official-schedule';
 
 const registry = readJson('data/static/calendar-readiness-registry.json');
 const authorityInventory = readJson('data/static/authority-source-inventory.json');
@@ -99,12 +100,17 @@ const expectedBlocked = new Set([
 ]);
 const expectedLinkOnly = new Set([
   'japan--japan-nar-system--nar-monthly-convene-info',
-  'japan--japan-banei-system--banei-official-schedule',
 ]);
 
 for (const record of targetRecords) {
   if (expectedBlocked.has(record.readiness_id) && record.readiness !== 'blocked') fail(`${record.readiness_id}: must remain blocked`);
   if (expectedLinkOnly.has(record.readiness_id) && record.readiness !== 'link_only') fail(`${record.readiness_id}: must remain link_only`);
+  if (record.readiness_id === baneiScheduleId) {
+    if (record.readiness !== 'prototype_ready' || record.automation_mode !== 'semi_automatic' || record.implementation_status !== 'candidate_active') {
+      fail(`${record.readiness_id}: reviewed activation state differs`);
+    }
+    if (record.technical_rank !== 'C' || record.public_ceiling !== 'C') fail(`${record.readiness_id}: reviewed rank boundary differs`);
+  }
   if (record.readiness === 'blocked' && !expectedBlocked.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected blocked record in entries 01-20`);
   if (record.readiness === 'link_only' && !expectedLinkOnly.has(record.readiness_id)) fail(`${record.readiness_id}: unexpected link-only record in entries 01-20`);
 }
@@ -129,6 +135,7 @@ console.log('TARGET_HISTORICAL_READINESS_RECORDS: 30');
 console.log('UAE_DETAIL_RECOVERY_RECORDS: 1');
 console.log('MINIMUM_AUTHORITY_SOURCE_RECORDS: 31');
 console.log('TARGET_BLOCKED_RECORDS: 4');
-console.log('TARGET_LINK_ONLY_RECORDS: 2');
+console.log('TARGET_LINK_ONLY_RECORDS: 1');
+console.log('TARGET_REVIEWED_ACTIVATIONS: 1');
 console.log(`TARGET_IMPLEMENTATION_NOT_STARTED: ${targetNotStarted}`);
 console.log(`CUMULATIVE_READINESS_RECORDS: ${registry.records.length}`);

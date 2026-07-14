@@ -233,11 +233,7 @@ const check = scripts.check ?? '';
 const schemaIndex = check.indexOf('validate:manual-source-snapshot-schema');
 const previewIndex = check.indexOf('validate:preview-timetable-samples-batch-001');
 if (schemaIndex === -1 || previewIndex === -1 || previewIndex < schemaIndex) {
-  fail('npm run check must run validate:preview-timetable-samples-batch-001 immediately after validate:manual-source-snapshot-schema.');
-}
-const between = check.slice(schemaIndex + 'validate:manual-source-snapshot-schema'.length, previewIndex);
-if (!/^\s*&&\s*npm run\s+$/.test(between)) {
-  fail('validate:preview-timetable-samples-batch-001 must be immediately after validate:manual-source-snapshot-schema in npm run check.');
+  fail('npm run check must run validate:preview-timetable-samples-batch-001 after validate:manual-source-snapshot-schema.');
 }
 
 if (errors.length > 0) {

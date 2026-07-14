@@ -22,6 +22,7 @@ const profile = parse('data/static/country-profiles-v2-13-japan.json')[0];
 const sourceSummary = parse('docs/timetable-source-tests/13-japan/final-summary.json');
 const narControl = parse('data/static/local-racing-pilot-control-v2.json');
 const baneiControl = parse('data/static/banei-pilot-control.json');
+const baneiApprovedCandidate = parse('data/candidates/banei-current-window-a-plus-approved.json');
 const canonicalDetails = parse('data/generated/timetable/canonical/meeting-details.json');
 const publicMeetings = parse('data/generated/timetable/public/meeting-list.json');
 const publicDetails = parse('data/generated/timetable/public/meeting-details.json');
@@ -143,8 +144,47 @@ for (const detail of publicDetails.details.filter((detail) => detail.country_id 
     fail(`${detail.meeting_id} NAR A+ is not backed by the reviewed RaceList/DebaTable source.`);
   }
 }
-if (publicDetails.details.some((detail) => detail.country_id === 'japan' && detail.authority_id === 'banei-tokachi' && detail.effective_public_rank === 'A+')) {
-  fail('banei-tokachi must remain pending pilot rather than public A+.');
+
+const approvedBaneiRecords = baneiApprovedCandidate.records ?? [];
+const approvedBaneiIds = new Set(approvedBaneiRecords.map((record) => record.meeting_id));
+const baneiPublicAPlusDetails = publicDetails.details.filter((detail) =>
+  detail.country_id === 'japan' &&
+  detail.authority_id === 'banei-tokachi' &&
+  detail.effective_public_rank === 'A+'
+);
+if (
+  baneiApprovedCandidate.schema_version !== 'timetable-candidate-v1' ||
+  baneiApprovedCandidate.country_id !== 'japan' ||
+  baneiApprovedCandidate.authority_id !== 'banei-tokachi' ||
+  baneiApprovedCandidate.source_id !== 'nar-banei-race-list-deba-table' ||
+  baneiApprovedCandidate.review?.status !== 'approved' ||
+  baneiApprovedCandidate.review?.promotion_target !== 'canonical-timetable-v0' ||
+  approvedBaneiRecords.length !== 1
+) {
+  fail('Banei reviewed A+ Candidate envelope differs.');
+}
+if (baneiPublicAPlusDetails.length !== approvedBaneiRecords.length) {
+  fail('Banei public A+ set must exactly match the reviewed Candidate set.');
+}
+const baneiAllowedFields = new Set(['label', 'post_time_local', 'race_name', 'distance_m', 'surface', 'course_label']);
+const baneiForbiddenFragments = ['horse', 'jockey', 'trainer', 'odds', 'payout', 'result', 'prediction', 'raw_html', 'source_body', 'stream_url'];
+for (const detail of baneiPublicAPlusDetails) {
+  if (!approvedBaneiIds.has(detail.meeting_id)) fail(`${detail.meeting_id} is not in the reviewed Banei A+ Candidate.`);
+  const candidate = approvedBaneiRecords.find((record) => record.meeting_id === detail.meeting_id);
+  const canonical = canonicalDetailById.get(detail.meeting_id);
+  if (canonical?.source_trace?.source_id !== 'nar-banei-race-list-deba-table') fail(`${detail.meeting_id} Banei A+ source differs.`);
+  if (candidate?.capability_rank !== 'A+' || candidate?.review_status !== 'approved') fail(`${detail.meeting_id} Banei Candidate approval differs.`);
+  if (detail.timetable_rows?.length !== 12 || candidate?.timetable_rows?.length !== 12) fail(`${detail.meeting_id} Banei A+ must retain exactly 12 reviewed rows.`);
+  if (!detail.show_race_name || !detail.show_distance || !detail.show_surface || !detail.show_course) fail(`${detail.meeting_id} Banei A+ display flags are incomplete.`);
+  for (const row of detail.timetable_rows ?? []) {
+    for (const key of Object.keys(row)) {
+      if (!baneiAllowedFields.has(key)) fail(`${detail.meeting_id} exposes disallowed Banei A+ field ${key}.`);
+      if (baneiForbiddenFragments.some((fragment) => key.toLowerCase().includes(fragment))) fail(`${detail.meeting_id} exposes forbidden Banei field ${key}.`);
+    }
+    for (const key of baneiAllowedFields) {
+      if (!(key in row) || row[key] === null || row[key] === '') fail(`${detail.meeting_id} Banei row is missing ${key}.`);
+    }
+  }
 }
 
 for (const stale of [
@@ -182,6 +222,7 @@ if (errors.length) {
 console.log('JAPAN_A_PLUS_RECONCILIATION_COMPLETION: pass');
 console.log(`JULY_JRA_A_PLUS_MEETINGS: ${julyJraMeetings.length}`);
 console.log(`JULY_JRA_TIMETABLE_ROWS: ${julyRows}`);
+console.log(`REVIEWED_BANEI_A_PLUS_DETAILS: ${baneiPublicAPlusDetails.length}`);
 console.log('CURRENT_WORK_ID: WHR-CAL-JAPAN-JRA-A-PLUS');
 console.log('NEXT_WORK_ID: WHR-CAL-JAPAN-NAR-A-PLUS');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');

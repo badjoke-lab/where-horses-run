@@ -24,6 +24,12 @@ const readJson = (relativePath) => {
   }
 };
 
+const readProtectedDiff = () => spawnSync(
+  'git',
+  ['diff', '--no-ext-diff', '--binary', '--', 'data/candidates', 'data/generated', 'src/lib/data.ts'],
+  { cwd: root, encoding: 'utf8' },
+);
+
 const includesRequired = (text, phrase, context) => {
   if (!text.includes(phrase)) fail(`${context} must include ${phrase}`);
 };
@@ -47,6 +53,9 @@ const walkFiles = (relativeDir) => {
 
 const sorted = (values) => [...values].sort((left, right) => left.localeCompare(right));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+
+const protectedDiffBefore = readProtectedDiff();
+if (protectedDiffBefore.status !== 0) fail('Unable to capture protected repository diff before validation.');
 
 const verificationPath = 'docs/runbooks/jra-record-level-source-verification.md';
 const prPath = 'docs/runbooks/pr-086.md';
@@ -211,14 +220,11 @@ for (const relativePath of walkFiles('data/generated')) {
   if (file.schema_version === 'timetable-overlay-promoted-v0' && file.country_id === 'japan') fail(`${relativePath}: retired promoted Japan timetable overlay must remain absent.`);
 }
 
-const changedResult = spawnSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'utf8' });
-if (changedResult.status === 0) {
-  const changedFiles = changedResult.stdout.trim().split('\n').filter(Boolean);
-  for (const relativePath of changedFiles) {
-    if (relativePath.startsWith('data/candidates/')) fail(`${relativePath}: validator execution must not mutate candidate data files.`);
-    if (relativePath.startsWith('data/generated/')) fail(`${relativePath}: validator execution must not mutate generated timetable files.`);
-    if (relativePath === 'src/lib/data.ts') fail('src/lib/data.ts: validator execution must not mutate runtime data loading.');
-  }
+const protectedDiffAfter = readProtectedDiff();
+if (protectedDiffAfter.status !== 0) {
+  fail('Unable to capture protected repository diff after validation.');
+} else if (protectedDiffBefore.status === 0 && protectedDiffAfter.stdout !== protectedDiffBefore.stdout) {
+  fail('Validator execution must not mutate candidate, generated timetable, or runtime data files.');
 }
 
 if (packageJson.scripts?.['validate:jra-record-level-source-verification'] !== 'node scripts/check-jra-record-level-source-verification.mjs') {

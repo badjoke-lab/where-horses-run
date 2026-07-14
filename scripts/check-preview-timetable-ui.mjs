@@ -19,11 +19,25 @@ const expectedGroups = [
   'united-arab-emirates/era',
   'south-korea/kra',
 ];
-const requiredPhrases = [
+const activePreviewRequiredPhrases = [
   'static manual sample',
   'not live coverage',
   'full country coverage is not complete',
   'official source',
+];
+const retiredPreviewRequiredPhrases = [
+  'legacy preview retired',
+  'development-era normalized samples',
+  'not rendered here',
+  'reviewed public timetable projections',
+  'not public runtime inputs',
+  'linked official source',
+];
+const retiredPreviewRequiredLinks = [
+  'href="/calendar/"',
+  'href="/today/"',
+  'href="/tomorrow/"',
+  'href="/major-countries/current-timetable/"',
 ];
 const requiredRenderFields = [
   'display_country',
@@ -112,18 +126,32 @@ const combinedUiText = `${pageText}\n${componentText}`;
 const preview = readJson(paths.preview);
 const packageJson = readJson(paths.package);
 const packageAtHead = readPackageAtHead();
+const retiredPreview = pageText.includes('Legacy Timetable Preview Retired') && pageText.toLowerCase().includes('legacy preview retired');
 
-if (!pageText.includes('majorCountryPreviewTimetableSamples') && !dataModuleText.includes('preview-timetable-samples-batch-001.json')) {
-  fail(`${paths.page} must reference the combined preview timetable module backed by preview-timetable-samples-batch-001.json.`);
-}
 if (!pageText.includes('Major Country Timetable Preview')) {
   fail(`${paths.page} must include the title "Major Country Timetable Preview".`);
 }
-for (const phrase of requiredPhrases) {
-  if (!pageText.toLowerCase().includes(phrase)) fail(`${paths.page} must include the phrase "${phrase}".`);
-}
-for (const field of requiredRenderFields) {
-  if (!combinedUiText.includes(field)) fail(`Preview timetable UI must render or reference ${field}.`);
+
+if (retiredPreview) {
+  if (pageText.includes('majorCountryPreviewTimetableSamples') || pageText.includes('PreviewTimetableSamples')) {
+    fail(`${paths.page} must not render the retired preview timetable module.`);
+  }
+  for (const phrase of retiredPreviewRequiredPhrases) {
+    if (!pageText.toLowerCase().includes(phrase)) fail(`${paths.page} must include the retired-route phrase "${phrase}".`);
+  }
+  for (const link of retiredPreviewRequiredLinks) {
+    if (!pageText.includes(link)) fail(`${paths.page} must link to the current public route ${link}.`);
+  }
+} else {
+  if (!pageText.includes('majorCountryPreviewTimetableSamples') && !dataModuleText.includes('preview-timetable-samples-batch-001.json')) {
+    fail(`${paths.page} must reference the combined preview timetable module backed by preview-timetable-samples-batch-001.json.`);
+  }
+  for (const phrase of activePreviewRequiredPhrases) {
+    if (!pageText.toLowerCase().includes(phrase)) fail(`${paths.page} must include the phrase "${phrase}".`);
+  }
+  for (const field of requiredRenderFields) {
+    if (!combinedUiText.includes(field)) fail(`Preview timetable UI must render or reference ${field}.`);
+  }
 }
 
 const previewRecords = Array.isArray(preview?.records) ? preview.records : [];
@@ -190,4 +218,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('Preview timetable UI check passed.');
+console.log(`Preview timetable UI check passed (${retiredPreview ? 'retired route' : 'active preview'}).`);

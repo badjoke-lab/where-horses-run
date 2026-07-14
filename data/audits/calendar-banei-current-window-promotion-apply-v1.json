@@ -1,0 +1,77 @@
+{
+  "schema_version": "calendar-banei-current-window-promotion-apply-v1",
+  "work_id": "WHR-CAL-JAPAN-BANEI-CURRENT-WINDOW-PROMOTION-APPLY",
+  "implementation_unit": "BANEI-CURRENT-WINDOW-PROMOTION-02",
+  "decision": "apply_exact_reviewed_readiness_and_split_source_proposal",
+  "decided_at": "2026-07-14T00:30:00Z",
+  "source_review_refs": [
+    "data/reviews/banei-current-window-promotion-review-v1.json",
+    "data/reviews/banei-current-window-schedule-readiness-activation-v1.json"
+  ],
+  "proposal_artifact": {
+    "workflow_run_id": 29277596978,
+    "artifact_id": 8289960898,
+    "artifact_name": "banei-current-window-promotion-proposal-29277596978",
+    "artifact_digest": "sha256:e872ef7129a5a66dd39176708d4117f1bf749cdfca3c16f5d8aeb9ad0ba0fcb3",
+    "proposal_file_sha256": "fe5278e77cb6044f141478e8a3e9649e540633132aedd9548add37fa530e107b",
+    "readiness_activation_sha256": "58335b01f1100d8736a20fa4dc9c22606fee475a39fb592dfeb082f38dcc4aea",
+    "approved_c_candidate_sha256": "0a4e2df8251c61ff1e81e759e0c5174e9ac950d405da46e54e31b779f7e743f9",
+    "approved_a_plus_candidate_sha256": "7cc1a22d26dcdc4f53f062d35c2ec8dd994b59d68cec4e2ce4bf29c7e78a2edd",
+    "proposed_meetings_sha256": "9be1d169d4fac6257a59c9c2c4f6eeab635eb363bc4dda91f10995596f18c2fa",
+    "proposed_details_sha256": "8c8841aace240396ec7732fafa656086905d3941ecd76bcc2367f971e435c18a"
+  },
+  "apply_scope": {
+    "branch": "work/calendar-banei-current-window-promotion-apply",
+    "readiness_registry_path": "data/static/calendar-readiness-registry.json",
+    "readiness_source_key": "japan/banei-tokachi/banei-official-schedule",
+    "approved_c_candidate_path": "data/candidates/banei-current-window-c-schedule-approved.json",
+    "approved_a_plus_candidate_path": "data/candidates/banei-current-window-a-plus-approved.json",
+    "canonical_meetings_path": "data/generated/timetable/canonical/meetings.json",
+    "canonical_details_path": "data/generated/timetable/canonical/meeting-details.json",
+    "public_meetings_path": "data/generated/timetable/public/meeting-list.json",
+    "public_details_path": "data/generated/timetable/public/meeting-details.json",
+    "promoted_meeting_count": 13,
+    "promoted_detail_count": 1,
+    "promoted_race_row_count": 12,
+    "retained_c_retry_target_count": 12
+  },
+  "compatibility_reconciliation": {
+    "pipeline_public_projection": "readiness_state_aware",
+    "before_activation": "banei_official_schedule_excluded_as_link_only",
+    "after_activation": "historical_and_current_banei_schedule_records_project_at_rank_c_without_detail",
+    "current_window_expected": "one_a_plus_detail_and_twelve_c_meeting_rows"
+  },
+  "required_post_apply_checks": [
+    "proposal_and_file_sha256",
+    "readiness_before_exact_match",
+    "readiness_after_prototype_ready_semi_automatic",
+    "thirteen_canonical_banei_meetings",
+    "one_canonical_a_plus_detail",
+    "twelve_canonical_c_records_without_detail",
+    "deterministic_public_projection",
+    "one_public_a_plus_detail_with_twelve_rows",
+    "twelve_public_c_records_without_detail",
+    "pipeline_v1_release_gate",
+    "full_repository_check",
+    "repository_clean"
+  ],
+  "final_verification": {
+    "triggered_by": "badjoke-lab",
+    "triggered_at": "2026-07-14T07:15:00Z",
+    "completed_at": "2026-07-14T07:17:00Z",
+    "workflow_run_id": 29313905896,
+    "result": "pass",
+    "implementation_status": "candidate_active",
+    "reason": "The committed Banei state was normalized and passed the final repository-wide verification after historical/current checker reconciliation.",
+    "temporary_diagnostics_removed": true
+  },
+  "publication_boundary": {
+    "automatic_source_fetch": false,
+    "automatic_review": false,
+    "proposal_already_reviewed": true,
+    "branch_write_allowed": true,
+    "main_write_allowed": false,
+    "merge_required": true,
+    "deployment": false
+  }
+}

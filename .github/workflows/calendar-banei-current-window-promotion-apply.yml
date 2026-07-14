@@ -1,0 +1,102 @@
+name: Calendar Banei current-window promotion apply
+
+on:
+  pull_request:
+    paths:
+      - 'data/audits/calendar-banei-current-window-promotion-apply-v1.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - '.github/workflows/calendar-banei-current-window-promotion-apply.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: calendar-banei-current-window-promotion-apply-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  finalize-reviewed-application:
+    if: github.head_ref == 'work/calendar-banei-current-window-promotion-apply'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          token: ${{ github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate committed reviewed application
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+          const audit = read('data/audits/calendar-banei-current-window-promotion-apply-v1.json');
+          const cCandidate = read('data/candidates/banei-current-window-c-schedule-approved.json');
+          const aPlusCandidate = read('data/candidates/banei-current-window-a-plus-approved.json');
+          const proposal = read('data/audits/calendar-banei-current-window-promotion-proposal-v1.json');
+          if (audit.schema_version !== 'calendar-banei-current-window-promotion-apply-v1' || audit.decision !== 'apply_exact_reviewed_readiness_and_split_source_proposal') throw new Error('apply authorization differs');
+          if (audit.proposal_artifact?.workflow_run_id !== 29277596978 || audit.proposal_artifact?.artifact_id !== 8289960898) throw new Error('proposal artifact identity differs');
+          if (cCandidate.records?.length !== 12 || cCandidate.records.some((record) => record.capability_rank !== 'C')) throw new Error('committed C Candidate differs');
+          if (aPlusCandidate.records?.length !== 1 || aPlusCandidate.records[0].capability_rank !== 'A+' || aPlusCandidate.records[0].timetable_rows?.length !== 12) throw new Error('committed A+ Candidate differs');
+          if (proposal.promoted_meeting_count !== 13 || proposal.promoted_detail_count !== 1 || proposal.promoted_race_row_count !== 12 || proposal.retained_c_retry_target_count !== 12) throw new Error('committed proposal closure differs');
+          NODE
+      - name: Normalize Banei Readiness implementation status
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const file = 'data/static/calendar-readiness-registry.json';
+          const registry = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const record = registry.records.find((entry) => entry.authority_source_key === 'japan/banei-tokachi/banei-official-schedule');
+          if (!record) throw new Error('Banei schedule Readiness missing');
+          if (record.readiness !== 'prototype_ready' || record.automation_mode !== 'semi_automatic' || record.technical_rank !== 'C' || record.public_ceiling !== 'C') throw new Error('Banei applied Readiness boundary differs');
+          if (record.implementation_status === 'actions_live_validated') record.implementation_status = 'candidate_active';
+          if (record.implementation_status !== 'candidate_active') throw new Error(`Banei implementation_status differs: ${record.implementation_status}`);
+          fs.writeFileSync(file, `${JSON.stringify(registry, null, 2)}\n`);
+          console.log('BANEI_IMPLEMENTATION_STATUS: candidate_active');
+          NODE
+      - name: Regenerate deterministic derived artifacts
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date=2026-07-02
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Validate committed post-apply state
+        run: |
+          node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
+          node scripts/check-calendar-banei-current-window-acquisition.mjs
+          node scripts/check-calendar-banei-current-window-promotion-review.mjs
+          node scripts/check-calendar-contracts.mjs
+          node scripts/check-calendar-pipeline-v1-release-gate.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+      - name: Run full repository check
+        run: |
+          npm install --package-lock=false --no-audit --no-fund
+          npm run check
+      - name: Commit normalized final state to PR branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            data/static/calendar-readiness-registry.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo 'Banei final state is already normalized.'
+          else
+            git commit -m 'Normalize applied Banei readiness state'
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
+      - name: Confirm no deployment path
+        run: |
+          echo 'BANEI_PROMOTION_DEPLOYMENT: disabled'

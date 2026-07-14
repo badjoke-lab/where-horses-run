@@ -38,7 +38,7 @@ const expectedActiveGroups = [
   'south-africa/four-racing',
   'south-africa/gold-circle',
 ];
-const requiredPagePhrases = [
+const activePageRequiredPhrases = [
   'Major Country Timetable Preview',
   'static manual sample',
   'not live coverage',
@@ -46,6 +46,21 @@ const requiredPagePhrases = [
   'Singapore',
   'legacy/no active racing',
   'official source',
+];
+const retiredPageRequiredPhrases = [
+  'Major Country Timetable Preview',
+  'legacy preview retired',
+  'development-era normalized samples',
+  'not rendered here',
+  'reviewed public timetable projections',
+  'not public runtime inputs',
+  'linked official source',
+];
+const retiredPageRequiredLinks = [
+  'href="/calendar/"',
+  'href="/today/"',
+  'href="/tomorrow/"',
+  'href="/major-countries/current-timetable/"',
 ];
 const requiredRenderFields = [
   'display_country',
@@ -142,6 +157,7 @@ const implementationText = {
   [paths.page]: pageText,
   [paths.component]: componentText,
 };
+const retiredPreview = pageText.includes('Legacy Timetable Preview Retired') && pageText.toLowerCase().includes('legacy preview retired');
 
 if (!dataModuleText.includes('data/static/preview-timetable-samples-batch-001.json')) {
   fail(`${paths.dataModule} must import batch 001 preview JSON.`);
@@ -165,17 +181,29 @@ for (const notice of ['Static manual samples only', 'not live coverage', 'Full c
   if (!dataModuleText.toLowerCase().includes(notice.toLowerCase())) fail(`${paths.dataModule} notice must include "${notice}".`);
 }
 
-if (!pageText.includes('majorCountryPreviewTimetableSamples')) {
-  fail(`${paths.page} must reference the combined data module.`);
-}
-if (/import[^;]+preview-timetable-samples-batch-001\.json/.test(pageText)) {
-  fail(`${paths.page} must no longer import only batch 001 JSON directly.`);
-}
-for (const phrase of requiredPagePhrases) {
-  if (!pageText.toLowerCase().includes(phrase.toLowerCase())) fail(`${paths.page} must include the phrase "${phrase}".`);
-}
-for (const field of requiredRenderFields) {
-  if (!uiText.includes(field)) fail(`Preview timetable page or component must render or reference ${field}.`);
+if (retiredPreview) {
+  if (pageText.includes('majorCountryPreviewTimetableSamples') || pageText.includes('PreviewTimetableSamples')) {
+    fail(`${paths.page} must not render the retired combined preview module.`);
+  }
+  for (const phrase of retiredPageRequiredPhrases) {
+    if (!pageText.toLowerCase().includes(phrase.toLowerCase())) fail(`${paths.page} must include the retired-route phrase "${phrase}".`);
+  }
+  for (const link of retiredPageRequiredLinks) {
+    if (!pageText.includes(link)) fail(`${paths.page} must link to the current public route ${link}.`);
+  }
+} else {
+  if (!pageText.includes('majorCountryPreviewTimetableSamples')) {
+    fail(`${paths.page} must reference the combined data module.`);
+  }
+  if (/import[^;]+preview-timetable-samples-batch-001\.json/.test(pageText)) {
+    fail(`${paths.page} must no longer import only batch 001 JSON directly.`);
+  }
+  for (const phrase of activePageRequiredPhrases) {
+    if (!pageText.toLowerCase().includes(phrase.toLowerCase())) fail(`${paths.page} must include the phrase "${phrase}".`);
+  }
+  for (const field of requiredRenderFields) {
+    if (!uiText.includes(field)) fail(`Preview timetable page or component must render or reference ${field}.`);
+  }
 }
 
 const records = [
@@ -253,4 +281,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('Combined preview timetable UI check passed.');
+console.log(`Combined preview timetable UI check passed (${retiredPreview ? 'retired route' : 'active preview'}).`);
