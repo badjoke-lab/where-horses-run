@@ -76,6 +76,8 @@ Profile facts are accepted only from:
 
 The permanent gate does not perform network requests. It validates the reviewed repository evidence, source identifiers, exact course metrics, rendered bilingual pages, and explicit unknown-state behavior.
 
+The gate remains a permanent read-only pull-request and main-branch check for profile records, runtime integration, and bilingual racecourse rendering.
+
 ## Public data boundary
 
 This unit does not add participants, entries, jockeys, trainers, odds, results, payouts, predictions, full racecards, raw source bodies, embedded video, or direct stream URLs.
