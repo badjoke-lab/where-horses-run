@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RacecoursePublicMeetingPanel from '../../../components/RacecoursePublicMeetingPanel.astro';
+import { getPublicRacecourseMeetingState } from '../../../lib/racecourses/publicRacecourseMeetingState';
 import {
   getCountries,
   getGlossaryEntries,
@@ -20,6 +22,7 @@ if (!track) {
   return Astro.redirect('/ja/tracks/');
 }
 
+const publicMeetingState = getPublicRacecourseMeetingState(track.id, track.timezone);
 const profile = track as any;
 const countries = getCountries();
 const country = countries.find((entry) => entry.id === track.country_id);
@@ -100,7 +103,6 @@ const capacity = toRecord(profile.capacity_profile);
 const courseLayout = toRecord(profile.course_layout);
 const raceDistanceProfile = toRecord(profile.race_distance_profile);
 const visitorLinks = toRecord(profile.visitor_links);
-const upcomingMeetings = track.schedule_summary?.upcoming_meetings ?? [];
 const upcomingConditions = track.distance_profile?.upcoming_conditions ?? [];
 
 const primaryScheduleUrl = typeof visitorLinks.official_schedule === 'string'
@@ -113,13 +115,6 @@ const primaryCourseUrl = typeof visitorLinks.official_course_details === 'string
   ? visitorLinks.official_course_details
   : officialLinks.find((link) => link.url.includes('course_details'))?.url;
 
-const meetingFields: Array<[string, string[]]> = [
-  ['日付', ['date', 'local_date', 'meeting_date']],
-  ['1R', ['first_post', 'first_race_time', 'first_race']],
-  ['最終', ['last_race_time', 'last_race']],
-  ['レース数', ['race_count', 'races']],
-  ['状態', ['status']]
-];
 const raceConditionFields: Array<[string, string[]]> = [
   ['日付', ['date', 'local_date']],
   ['R', ['race_number', 'race_no', 'race']],
@@ -211,18 +206,9 @@ const hasCapacity = typeof capacity.total_capacity === 'number' || typeof capaci
       </article>
     ) : null}
 
-    <article class="card">
-      <h2>開催予定</h2>
-      {upcomingMeetings.length ? (
-        <ul>
-          {upcomingMeetings.map((meeting) => <li>{formatRecordFields(meeting, meetingFields)}</li>)}
-        </ul>
-      ) : (
-        <p>このページでは、直近の開催予定はまだ表示していません。カレンダー側のデータ接続後、この欄に開催予定を表示します。</p>
-      )}
-      <p>{primaryScheduleUrl ? <a href={primaryScheduleUrl}>最新の開催予定を見る</a> : <a href={calendarHref}>カレンダーを見る</a>}</p>
-    </article>
   </section>
+
+  <RacecoursePublicMeetingPanel state={publicMeetingState} lang="ja" officialScheduleUrl={primaryScheduleUrl} />
 
   <section class="section-grid" aria-label="競馬種別とレース条件">
     <article class="card">
