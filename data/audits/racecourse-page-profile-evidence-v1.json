@@ -6,7 +6,7 @@
   "reviewed_at": "2026-07-14",
   "discovery_workflow_run_id": 29330797854,
   "discovery_artifact_id": 8309864484,
-  "discovery_artifact_digest": "sha256:3f12161d1010fea63ba622c5f29d1d224c1d7b799a6426671bfc08d4b0551cb8",
+  "discovery_artifact_digest": "sha256:8371940095e273c2e50087776a50582c753ded2a397cb691a8cbe18f7fa729f1",
   "baseline": {
     "racecourses": 36,
     "identity_only_records": 13,
@@ -14,29 +14,29 @@
     "complete_core_profiles": 8,
     "field_counts": {
       "city": 23,
-      "region": 20,
-      "racing_types": 23,
-      "surfaces": 23,
-      "direction": 17,
-      "course_profile": 11,
-      "distance_profile": 10,
+      "region": 23,
+      "racing_types": 22,
+      "surfaces": 14,
+      "direction": 10,
+      "course_profile": 23,
+      "distance_profile": 8,
       "seasonality": 23,
-      "schedule_source": 12
+      "schedule_source": 1
     }
   },
   "implemented": {
     "reviewed_japan_records": 13,
     "identity_only_records": 0,
     "no_profile_records": 0,
-    "complete_core_profiles": 9,
+    "complete_core_profiles": 8,
     "field_counts": {
       "city": 36,
-      "region": 33,
-      "racing_types": 36,
-      "surfaces": 36,
-      "direction": 30,
-      "course_profile": 24,
-      "distance_profile": 11,
+      "region": 36,
+      "racing_types": 35,
+      "surfaces": 27,
+      "direction": 23,
+      "course_profile": 36,
+      "distance_profile": 8,
       "seasonality": 36,
       "public_calendar_connection": 36
     }
@@ -61,7 +61,7 @@
       "source_id": "japan-nar-racecourse-guide",
       "scope": "twelve NAR venue pages and the official NAR course table",
       "venue_url_pattern": "https://www.keiba.go.jp/guide/{venue_number}/",
-      "course_url": "https://www.keiba.go.jp/guide/course.html"
+      "course_url": "https://www.keiba.go.jp/guide/course/"
     },
     {
       "source_id": "japan-jairs-racecourses",
@@ -79,17 +79,18 @@
     "location": "official_venue_page_only",
     "racing_type": "official_authority_context_only",
     "surface_direction_course_dimensions": "official_course_table_only",
-    "distance_profile": "official_structured_course_lengths_only",
+    "distance_profile": "remain_unknown_without_an_official_race_distance_menu",
     "seasonality": "partial_until_separate_calendar_completeness_review",
     "schedule": "reviewed_public_calendar_connection",
     "unknown_fields": "remain_null_or_empty"
   },
   "retained_unknowns": {
-    "nar_race_distance_profiles": 12,
+    "race_distance_profiles": 13,
     "venue_lighting_status": 13,
     "elevation_notes": 13,
     "complete_seasonality": 13,
-    "notable_races": 13
+    "notable_races": 13,
+    "kokura_home_straight": 1
   },
   "boundaries": {
     "network_fetch_by_gate": false,
