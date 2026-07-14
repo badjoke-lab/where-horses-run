@@ -19,15 +19,26 @@ racecourses: 36
 identity-only records: 13
 records with no core profile: 13
 complete core profiles: 8
+city: 23
+region: 23
+racing types: 22
+surfaces: 14
+direction: 10
+course profile: 23
+race-distance profile: 8
 ```
 
 The thirteen profile-empty records were Funabashi, Kanazawa, Kasamatsu, Kawasaki, Kochi, Kokura, Monbetsu, Morioka, Nagoya, Oi, Saga, Sonoda, and Urawa.
 
 ## Reviewed evidence
 
-For the twelve NAR venues, the official venue pages confirm location and the official NAR course table confirms surface, direction, one-lap course length, and home-straight length. Morioka has both dirt and turf course dimensions. Oi has outer and inner dirt courses; the outer-course values are used as representative values in the current schema.
+For the twelve NAR venues, the official venue pages confirm location and the official NAR course table confirms surface, direction, one-lap course length, and distance from the start of the home straight to the finish. Morioka has separate dirt and turf courses. Monbetsu and Funabashi have outer and inner layouts. Oi has an outer course usable in both directions and a right-handed inner course.
 
-For Kokura, JAIRS/JRA official pages confirm Kitakyushu, Fukuoka, right-handed operation, turf A/B/C courses, a dirt course, and steeplechase courses. The profile stores the published course lengths as the structured distance profile and uses the turf A-course length as the representative turf circumference.
+The official values correct earlier provisional assumptions: Funabashi uses 308m to the finish, Kasamatsu uses 201m, and Oi must not be reduced to a right-handed-only venue.
+
+For Kokura, JAIRS/JRA official pages confirm Kitakyushu, Fukuoka, right-handed operation, turf A/B/C courses, a dirt course, and steeplechase courses. The current schema stores the turf A-course and dirt-course lengths as representative course circumferences. The B/C and steeplechase values remain in the source-backed course notes.
+
+Course circumference is not a race-distance menu. No race-distance profile is created for these thirteen records.
 
 ## Implemented result
 
@@ -35,14 +46,14 @@ For Kokura, JAIRS/JRA official pages confirm Kitakyushu, Fukuoka, right-handed o
 reviewed Japanese records: 13
 identity-only records remaining: 0
 records with no core profile remaining: 0
-complete core profiles: 9
+complete core profiles: 8
 city coverage: 36 / 36
-region coverage: 33 / 36
-racing-type coverage: 36 / 36
-surface coverage: 36 / 36
-direction coverage: 30 / 36
-course-profile coverage: 24 / 36
-distance-profile coverage: 11 / 36
+region coverage: 36 / 36
+racing-type coverage: 35 / 36
+surface coverage: 27 / 36
+direction coverage: 23 / 36
+course-profile coverage: 36 / 36
+race-distance-profile coverage: 8 / 36
 seasonality coverage: 36 / 36
 public Calendar connection: 36 / 36
 ```
@@ -51,9 +62,9 @@ The thirteen records use `official_profile_partial`. This means location and hig
 
 ## Retained unknowns
 
-The NAR course table does not provide a complete race-distance menu for the twelve reviewed NAR venues. Their distance profiles therefore remain empty. Lighting, elevation, complete seasonality, notable-race lists, and unsupported visitor details also remain unknown.
+The official course pages do not provide a complete race-distance menu for the thirteen reviewed venues. Their race-distance profiles therefore remain empty. Kokura's home-straight length is also left unknown because the reviewed official page does not state it.
 
-Unknown values continue to render as `Not listed yet` or `未掲載`.
+Lighting, elevation, complete seasonality, notable-race lists, and unsupported visitor details remain unknown. Unknown values continue to render as `Not listed yet` or `未掲載`.
 
 ## Source boundary
 
