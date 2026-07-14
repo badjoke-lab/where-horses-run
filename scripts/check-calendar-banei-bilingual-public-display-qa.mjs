@@ -7,6 +7,7 @@ const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 
 const readiness = readJson('data/static/calendar-readiness-registry.json');
+const acquisition = readJson('data/static/calendar-acquisition-registry.json');
 const policies = readJson('src/data/publicationDisplayPolicies.json');
 const cCandidate = readJson('data/candidates/banei-current-window-c-schedule-approved.json');
 const aPlusCandidate = readJson('data/candidates/banei-current-window-a-plus-approved.json');
@@ -14,17 +15,22 @@ const publicMeetings = readJson('data/generated/timetable/public/meeting-list.js
 const publicDetails = readJson('data/generated/timetable/public/meeting-details.json');
 
 const scheduleReadiness = readiness.records.find((record) => record.authority_source_key === 'japan/banei-tokachi/banei-official-schedule');
-const detailReadiness = readiness.records.find((record) => record.authority_source_key === 'japan/banei-tokachi/nar-banei-race-list-deba-table');
 if (!scheduleReadiness) fail('Banei schedule Readiness missing.');
 else {
   if (scheduleReadiness.technical_rank !== 'C' || scheduleReadiness.public_ceiling !== 'C') fail('Banei schedule Readiness rank boundary differs.');
   if (scheduleReadiness.readiness !== 'prototype_ready' || scheduleReadiness.automation_mode !== 'semi_automatic') fail('Banei schedule Readiness applied state differs.');
-  if (!scheduleReadiness.racecourse_ids?.includes('obihiro-racecourse')) fail('Banei schedule Readiness racecourse scope differs.');
+  if (scheduleReadiness.confirmed_fields?.meeting_date !== true || scheduleReadiness.confirmed_fields?.racecourse !== true) fail('Banei schedule confirmed fields differ.');
+  if (scheduleReadiness.confirmed_fields?.first_race_time !== false || scheduleReadiness.confirmed_fields?.per_race_post_times !== false) fail('Banei schedule C boundary differs.');
 }
-if (!detailReadiness) fail('Banei detail Readiness missing.');
+
+const profile = acquisition.records.find((record) => record.system_id === 'japan-banei-system');
+if (!profile) fail('Banei Acquisition profile missing.');
 else {
-  if (detailReadiness.technical_rank !== 'A+' || detailReadiness.public_ceiling !== 'A+') fail('Banei detail Readiness rank boundary differs.');
-  if (detailReadiness.readiness !== 'prototype_ready' || detailReadiness.automation_mode !== 'semi_automatic') fail('Banei detail Readiness operating state differs.');
+  if (profile.profile_status !== 'active' || profile.primary_runner !== 'github_actions') fail('Banei Acquisition profile state differs.');
+  if (profile.schedule_source_id !== 'banei-official-schedule') fail('Banei schedule source route differs.');
+  if (profile.detail_source_id !== 'nar-banei-race-list-deba-table') fail('Banei detail source route differs.');
+  if (profile.technical_capability_rank !== 'A+' || profile.public_ceiling !== 'A+') fail('Banei detail capability boundary differs.');
+  if (profile.supports_selected_meetings !== true || profile.supports_rank_upgrade_retry !== true) fail('Banei selected/rank-retry modes differ.');
 }
 
 const policy = policies.policies.find((entry) => entry.id === 'banei-reviewed-a-plus');
