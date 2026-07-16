@@ -103,9 +103,10 @@ if (audit.next_implementation_unit !== contract.next_implementation_unit) fail('
 
 const dataSource = read(dataPath);
 for (const marker of [
-  'getCountries', "normalize('NFKC')", 'getCountryFilterRecords', 'getCountryFilterOptions',
+  'getCountries', "normalize('NFKC')", 'splitCountryRegions',
+  'getCountryFilterRecords', 'getCountryFilterOptions',
   '/countries/${country.slug}/', '/ja/countries/${country.slug}/',
-  'records.flatMap((record) => record.racingTypes)',
+  'records.flatMap((record) => record.racingTypes)', 'record.regions',
 ]) if (!dataSource.includes(marker)) fail(`country filter data projection missing ${marker}`);
 for (const forbidden of ['fetch(', 'XMLHttpRequest', 'localStorage', 'sessionStorage', 'document.cookie']) {
   if (dataSource.includes(forbidden)) fail(`country filter data projection contains forbidden marker ${forbidden}`);
@@ -116,11 +117,12 @@ for (const marker of [
   'data-country-directory', 'data-country-filter-form', 'data-country-filter-query',
   'data-country-filter-region', 'data-country-filter-racing-type', 'data-country-filter-status',
   'data-country-filter-coverage', 'data-country-filter-reset', 'data-country-filter-count',
-  'data-country-filter-empty', 'data-country-record', 'data-country-search-text', '<noscript>',
+  'data-country-filter-empty', 'data-country-record', 'data-country-region',
+  'data-country-regions', 'data-country-search-text', '<noscript>',
   'new URLSearchParams(window.location.search)', "params.get('q')", "restoreSelect(regionSelect, 'region')",
   "restoreSelect(racingTypeSelect, 'racing_type')", "restoreSelect(statusSelect, 'status')",
   "restoreSelect(coverageSelect, 'coverage')", "normalize('NFKC')", 'window.history.replaceState',
-  'record.hidden = !show', "queryInput.addEventListener('input', apply)",
+  'regions.includes(region)', 'record.hidden = !show', "queryInput.addEventListener('input', apply)",
 ]) if (!component.includes(marker)) fail(`country filter component missing ${marker}`);
 for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
   if (component.includes(forbidden)) fail(`country filter component contains forbidden marker ${forbidden}`);
@@ -170,7 +172,8 @@ function verifyRenderedDirectory({ file, lang, routePrefix }) {
   const cards = [...html.matchAll(/<article[^>]*data-country-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
   const cardAttributeValues = (name) => cards.flatMap((card) => attributeValues(card, name));
   const ids = cardAttributeValues('data-country-id');
-  const regions = cardAttributeValues('data-country-region');
+  const displayRegions = cardAttributeValues('data-country-region');
+  const regionGroups = cardAttributeValues('data-country-regions');
   const racingTypeGroups = cardAttributeValues('data-country-racing-types');
   const statuses = cardAttributeValues('data-country-status');
   const coverageLevels = cardAttributeValues('data-country-coverage');
@@ -179,7 +182,8 @@ function verifyRenderedDirectory({ file, lang, routePrefix }) {
   const measurements = {
     records: recordCount(html),
     ids: ids.length,
-    regions: regions.length,
+    displayRegions: displayRegions.length,
+    regionGroups: regionGroups.length,
     racingTypeGroups: racingTypeGroups.length,
     statuses: statuses.length,
     coverageLevels: coverageLevels.length,
@@ -190,7 +194,7 @@ function verifyRenderedDirectory({ file, lang, routePrefix }) {
   if (new Set(ids).size !== 98) fail(`${file}: duplicate country IDs detected`);
   if (searchTexts.some((value) => !value.trim())) fail(`${file}: empty country search text detected`);
 
-  const expectedRegions = uniqueSorted(regions);
+  const expectedRegions = uniqueSorted(regionGroups.flatMap((value) => value.split('|').filter(Boolean)));
   const expectedRacingTypes = uniqueSorted(racingTypeGroups.flatMap((value) => value.split('|').filter(Boolean)));
   const expectedStatuses = uniqueSorted(statuses);
   const expectedCoverage = uniqueSorted(coverageLevels);
