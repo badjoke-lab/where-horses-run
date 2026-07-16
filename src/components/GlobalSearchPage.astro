@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { SearchLocale, SearchRecord, SearchRecordType } from '../lib/search-data';
+
+interface Props {
+  locale: SearchLocale;
+  records: SearchRecord[];
+}
+
+const { locale, records } = Astro.props;
+const isJapanese = locale === 'ja';
+const typeLabels: Record<SearchRecordType, string> = isJapanese
+  ? { country: '国・地域', racecourse: '競馬場', glossary: '用語' }
+  : { country: 'Country or region', racecourse: 'Racecourse', glossary: 'Glossary term' };
+const counts = records.reduce(
+  (result, record) => {
+    result[record.type] += 1;
+    return result;
+  },
+  { country: 0, racecourse: 0, glossary: 0 } as Record<SearchRecordType, number>,
+);
+---
+
+<BaseLayout
+  title={isJapanese ? '検索 | 競馬どこ？' : 'Search | Where Horses Run'}
+  description={isJapanese
+    ? '国・地域、競馬場、競馬用語をまとめて検索できます。'
+    : 'Search countries and regions, racecourses, and racing glossary terms.'}
+  lang={locale}
+  canonicalPath={isJapanese ? '/ja/search/' : '/search/'}
+  alternatePath={isJapanese ? '/search/' : '/ja/search/'}
+>
+  <section
+    class="hero"
+    aria-labelledby="page-title"
+    data-global-search
+    data-search-records={records.length}
+    data-search-countries={counts.country}
+    data-search-racecourses={counts.racecourse}
+    data-search-glossary={counts.glossary}
+  >
+    <p class="hero__eyebrow">{isJapanese ? 'サイト内検索' : 'Global search'}</p>
+    <h1 id="page-title">{isJapanese ? '検索' : 'Search'}</h1>
+    <p class="hero__summary">
+      {isJapanese
+        ? '国・地域、競馬場、競馬用語を一つの索引から探せます。'
+        : 'Find countries and regions, racecourses, and glossary terms from one index.'}
+    </p>
+    <p>
+      {isJapanese
+        ? `${counts.country}地域・${counts.racecourse}競馬場・${counts.glossary}用語、合計${records.length}件。`
+        : `${counts.country} countries and regions, ${counts.racecourse} racecourses, and ${counts.glossary} glossary terms — ${records.length} records total.`}
+    </p>
+  </section>
+
+  <section class="card" aria-labelledby="search-controls-heading">
+    <h2 id="search-controls-heading">{isJapanese ? '検索条件' : 'Search controls'}</h2>
+    <form data-search-form role="search">
+      <p>
+        <label for="global-search-query"><strong>{isJapanese ? 'キーワード' : 'Keyword'}</strong></label><br />
+        <input
+          id="global-search-query"
+          name="q"
+          type="search"
+          autocomplete="off"
+          placeholder={isJapanese ? '例：東京競馬場、日本、発走時刻' : 'Example: Tokyo Racecourse, Japan, Post time'}
+          data-search-query
+        />
+      </p>
+      <p>
+        <label for="global-search-type"><strong>{isJapanese ? '種別' : 'Type'}</strong></label><br />
+        <select id="global-search-type" name="type" data-search-type>
+          <option value="all">{isJapanese ? 'すべて' : 'All types'}</option>
+          <option value="country">{typeLabels.country}</option>
+          <option value="racecourse">{typeLabels.racecourse}</option>
+          <option value="glossary">{typeLabels.glossary}</option>
+        </select>
+      </p>
+      <button type="submit">{isJapanese ? '検索' : 'Search'}</button>
+    </form>
+    <p aria-live="polite" data-search-count>
+      {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
+    </p>
+    <noscript>
+      <p>{isJapanese
+        ? 'JavaScriptが無効な場合は、下の全件一覧からリンクを選べます。'
+        : 'With JavaScript disabled, use the complete linked list below.'}</p>
+    </noscript>
+  </section>
+
+  <section class="section-grid" aria-label={isJapanese ? '検索結果' : 'Search results'} data-search-results>
+    {records.map((record) => (
+      <article
+        class="card"
+        data-search-record
+        data-search-type={record.type}
+        data-search-text={record.searchText}
+      >
+        <p><strong>{typeLabels[record.type]}</strong></p>
+        <h2><a href={record.href}>{record.label}</a></h2>
+        {record.alternateLabel && <p>{record.alternateLabel}</p>}
+        {record.meta && <p>{record.meta}</p>}
+        <p>{record.description}</p>
+      </article>
+    ))}
+  </section>
+
+  <section class="card" data-search-empty hidden>
+    <h2>{isJapanese ? '該当する項目がありません' : 'No matching records'}</h2>
+    <p>{isJapanese
+      ? '表記を短くするか、種別を「すべて」に戻してください。'
+      : 'Try a shorter term or reset the type filter to All types.'}</p>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-global-search]')?.parentElement;
+      if (!root) return;
+      const form = root.querySelector('[data-search-form]');
+      const queryInput = root.querySelector('[data-search-query]');
+      const typeSelect = root.querySelector('[data-search-type]');
+      const count = root.querySelector('[data-search-count]');
+      const empty = root.querySelector('[data-search-empty]');
+      const records = [...root.querySelectorAll('[data-search-record]')];
+      const isJapanese = document.documentElement.lang === 'ja';
+      const normalize = (value) => value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const params = new URLSearchParams(window.location.search);
+      queryInput.value = params.get('q') ?? '';
+      const requestedType = params.get('type') ?? 'all';
+      if ([...typeSelect.options].some((option) => option.value === requestedType)) {
+        typeSelect.value = requestedType;
+      }
+
+      const apply = () => {
+        const query = normalize(queryInput.value);
+        const type = typeSelect.value;
+        let visible = 0;
+        for (const record of records) {
+          const matchesQuery = !query || record.dataset.searchText.includes(query);
+          const matchesType = type === 'all' || record.dataset.searchType === type;
+          const show = matchesQuery && matchesType;
+          record.hidden = !show;
+          if (show) visible += 1;
+        }
+        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
+        empty.hidden = visible !== 0;
+
+        const next = new URLSearchParams();
+        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
+        if (type !== 'all') next.set('type', type);
+        const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
+        window.history.replaceState(null, '', nextUrl);
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        apply();
+      });
+      queryInput.addEventListener('input', apply);
+      typeSelect.addEventListener('change', apply);
+      apply();
+    })();
+  </script>
+</BaseLayout>
