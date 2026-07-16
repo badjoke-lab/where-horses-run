@@ -77,7 +77,7 @@ Turf, Dirt, All-weather course, and Jump course remain surface or course-layout 
 
 ### Governing body
 
-JRA, NAR, HKJC, ERA, and other authorities are organizations or official-source concepts. They are not racing types.
+A governing body is not a racing type. JRA, NAR, HKJC, ERA, and other authorities are organizations or official-source concepts.
 
 ## Public boundary
 
