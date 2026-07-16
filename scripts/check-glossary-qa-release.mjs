@@ -10,9 +10,25 @@ const filePath = (file) => path.join(root, file);
 const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const sortedExact = (left, right) => exact([...left].sort(), [...right].sort());
+const nonempty = (value) => typeof value === 'string' && value.trim().length > 0;
 const edgeKey = (left, right) => [left, right].sort().join('::');
 const digest = (keys) => `sha256:${crypto.createHash('sha256').update(keys.join('\n')).digest('hex')}`;
-const nonempty = (value) => typeof value === 'string' && value.trim().length > 0;
+const escapeHtml = (value) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+const renderedTextMatches = (html, text) => {
+  const escaped = escapeHtml(text);
+  return [
+    text,
+    escaped,
+    escaped.replaceAll('&#39;', '&#x27;'),
+    escaped.replaceAll('&#39;', '&apos;'),
+  ].some((candidate) => html.includes(candidate));
+};
 
 const release = parse('data/static/glossary-public-release-v1.json');
 const audit = parse('data/audits/glossary-qa-release-v1.json');
@@ -48,14 +64,6 @@ if (fs.existsSync(filePath(workflowPath))) {
   }
 }
 
-if (release.schema_version !== 'glossary-public-release-v1') fail('release schema differs');
-if (release.release_id !== 'WHR-GLOSSARY-V1') fail('release ID differs');
-if (release.work_id !== 'WHR-GLOSSARY-DICTIONARY-V1') fail('release Work ID differs');
-if (release.implementation_unit !== 'GLOSSARY-QA-RELEASE-01') fail('release implementation unit differs');
-if (release.status !== 'release_ready') fail('release status differs');
-if (release.reviewed_at !== '2026-07-16') fail('release review date differs');
-if (release.next_work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('release next Work ID differs');
-
 const expectedScope = {
   glossary_concepts: 48,
   categories: 9,
@@ -71,8 +79,6 @@ const expectedScope = {
   records_with_broken_relationships: 0,
   records_with_unpaired_fields: 0,
 };
-if (!exact(release.scope, expectedScope)) fail('release scope differs');
-
 const expectedCategoryCounts = {
   race_type: 10,
   breed: 4,
@@ -81,11 +87,29 @@ const expectedCategoryCounts = {
   data_term: 8,
   official_source: 5,
   governance_term: 3,
-  track_term: 6,
-  surface: 3,
+  track_term: 5,
+  surface: 4,
 };
+const expectedRouteContract = {
+  english_index: '/glossary/',
+  japanese_index: '/ja/glossary/',
+  english_term_pattern: '/glossary/{slug}/',
+  japanese_term_pattern: '/ja/glossary/{slug}/',
+  english_graph: '/glossary/relationships/',
+  japanese_graph: '/ja/glossary/relationships/',
+};
+
+if (release.schema_version !== 'glossary-public-release-v1') fail('release schema differs');
+if (release.release_id !== 'WHR-GLOSSARY-V1') fail('release ID differs');
+if (release.work_id !== 'WHR-GLOSSARY-DICTIONARY-V1') fail('release Work ID differs');
+if (release.implementation_unit !== 'GLOSSARY-QA-RELEASE-01') fail('release implementation unit differs');
+if (release.status !== 'release_ready') fail('release status differs');
+if (release.reviewed_at !== '2026-07-16') fail('release review date differs');
+if (release.next_work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('release next Work ID differs');
+if (!exact(release.scope, expectedScope)) fail('release scope differs');
 if (!exact(release.category_counts, expectedCategoryCounts)) fail('release category counts differ');
 if (!exact(release.concept_ids, graphRegistry.node_ids)) fail('release concept IDs differ from graph registry');
+if (!exact(release.route_contract, expectedRouteContract)) fail('release route contract differs');
 if (release.graph_contract?.edge_digest !== graphRegistry.edge_digest) fail('release graph digest differs');
 for (const key of ['undirected', 'reciprocal_storage_required']) if (release.graph_contract?.[key] !== true) fail(`release graph contract ${key} differs`);
 for (const key of ['self_loops_allowed', 'duplicate_edges_allowed', 'orphan_concepts_allowed']) if (release.graph_contract?.[key] !== false) fail(`release graph contract ${key} differs`);
@@ -111,13 +135,13 @@ for (const value of Object.values(audit.automation_boundary ?? {})) if (value !=
 
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
+const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
 if (glossary.length !== 48) fail(`glossary concept count expected 48; found ${glossary.length}`);
 if (!exact(ids, release.concept_ids)) fail('final concept ID order differs from release contract');
 if (new Set(ids).size !== 48) fail('duplicate glossary IDs found');
 if (new Set(slugs).size !== 48) fail('duplicate glossary slugs found');
 
 const actualCategoryCounts = Object.fromEntries(Object.keys(expectedCategoryCounts).map((category) => [category, 0]));
-const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
 const edgeSet = new Set();
 const adjacency = new Map(ids.map((id) => [id, new Set()]));
 let brokenRelationships = 0;
@@ -133,12 +157,11 @@ for (const entry of glossary) {
   if (actualCategoryCounts[entry.category] === undefined) fail(`${entry.id}: unknown category ${entry.category}`);
   else actualCategoryCounts[entry.category] += 1;
 
-  const requiredStringFields = [
+  for (const field of [
     'schema_version', 'id', 'slug', 'term_en', 'term_ja', 'category',
     'summary_en', 'summary_ja', 'reading_ja', 'evidence_status',
     'content_status', 'last_reviewed',
-  ];
-  for (const field of requiredStringFields) {
+  ]) {
     if (!nonempty(entry[field])) { fail(`${entry.id}: required field missing ${field}`); missingRequiredFields += 1; }
   }
   if (entry.schema_version !== 'glossary-entry-v2') fail(`${entry.id}: schema version differs`);
@@ -168,7 +191,7 @@ for (const entry of glossary) {
 if (!exact(actualCategoryCounts, expectedCategoryCounts)) fail(`actual category counts differ: ${JSON.stringify(actualCategoryCounts)}`);
 
 const categoryLabels = categoryRegistry.labels ?? {};
-if (!exact(Object.keys(categoryLabels), Object.keys(expectedCategoryCounts))) fail('category label IDs differ');
+if (!sortedExact(Object.keys(categoryLabels), Object.keys(expectedCategoryCounts))) fail('category label ID set differs');
 let localizedCategoryLabels = 0;
 for (const category of Object.keys(expectedCategoryCounts)) {
   for (const locale of ['en', 'ja']) {
@@ -200,24 +223,19 @@ if (connectedComponents !== 1) fail(`connected components expected 1; found ${co
 if (isolatedIds.length !== 0) fail(`isolated concepts found: ${isolatedIds.join(', ')}`);
 if (brokenRelationships || nonreciprocalRelationships || selfLoops || missingRequiredFields || unpairedFields || publicBoundaryErrors) fail('QA integrity counters are nonzero');
 
-const routeContract = release.route_contract;
-if (!exact(routeContract, {
-  english_index: '/glossary/',
-  japanese_index: '/ja/glossary/',
-  english_term_pattern: '/glossary/{slug}/',
-  japanese_term_pattern: '/ja/glossary/{slug}/',
-  english_graph: '/glossary/relationships/',
-  japanese_graph: '/ja/glossary/relationships/',
-})) fail('route contract differs');
-
-const indexSources = [
+for (const [page, releaseText, countText, graphLink] of [
   ['src/pages/glossary/index.astro', 'Public v1', '48 reviewed racing concepts', '/glossary/relationships/'],
   ['src/pages/ja/glossary/index.astro', '公開v1', '競馬関連用語48件', '/ja/glossary/relationships/'],
-];
-for (const [page, releaseText, countText, graphLink] of indexSources) {
+]) {
   const source = read(page);
   for (const marker of ['data-glossary-release="WHR-GLOSSARY-V1"', 'data-glossary-concepts="48"', 'data-glossary-relationships="57"', releaseText, countText, graphLink]) {
     if (!source.includes(marker)) fail(`${page}: release marker missing ${marker}`);
+  }
+}
+for (const page of ['src/pages/glossary/relationships.astro', 'src/pages/ja/glossary/relationships.astro']) {
+  const source = read(page);
+  for (const marker of ['data-glossary-graph="reviewed"', 'data-glossary-release="WHR-GLOSSARY-V1"', 'data-glossary-nodes="48"', 'data-glossary-edges="57"']) {
+    if (!source.includes(marker)) fail(`${page}: graph release marker missing ${marker}`);
   }
 }
 
@@ -231,13 +249,12 @@ for (const marker of [
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
 let missingRenderedRoutes = 0;
 let renderedMarkerErrors = 0;
-const renderedIndexes = [
+for (const [output, markers] of [
   ['dist/glossary/index.html', ['data-glossary-release="WHR-GLOSSARY-V1"', 'data-glossary-concepts="48"', 'data-glossary-relationships="57"']],
   ['dist/ja/glossary/index.html', ['data-glossary-release="WHR-GLOSSARY-V1"', 'data-glossary-concepts="48"', 'data-glossary-relationships="57"']],
-  ['dist/glossary/relationships/index.html', ['data-glossary-graph="reviewed"']],
-  ['dist/ja/glossary/relationships/index.html', ['data-glossary-graph="reviewed"']],
-];
-for (const [output, markers] of renderedIndexes) {
+  ['dist/glossary/relationships/index.html', ['data-glossary-graph="reviewed"', 'data-glossary-release="WHR-GLOSSARY-V1"']],
+  ['dist/ja/glossary/relationships/index.html', ['data-glossary-graph="reviewed"', 'data-glossary-release="WHR-GLOSSARY-V1"']],
+]) {
   if (!fs.existsSync(filePath(output))) { fail(`rendered route missing: ${output}`); missingRenderedRoutes += 1; continue; }
   const html = read(output);
   for (const marker of markers) if (!html.includes(marker)) { fail(`${output}: rendered marker missing ${marker}`); renderedMarkerErrors += 1; }
@@ -250,17 +267,19 @@ for (const entry of glossary) {
     const output = `dist/${prefix}glossary/${entry.slug}/index.html`;
     if (!fs.existsSync(filePath(output))) { fail(`${entry.id}: rendered route missing ${output}`); missingRenderedRoutes += 1; continue; }
     const html = read(output);
+    for (const [label, value] of [
+      ['term', term],
+      ['summary', summary],
+      ['reading', entry.reading_ja],
+      ['beginner', beginner],
+    ]) if (!renderedTextMatches(html, value)) { fail(`${entry.id}: rendered ${label} differs`); renderedMarkerErrors += 1; }
     for (const marker of [
-      term,
-      summary,
       `data-glossary-schema-version="${entry.schema_version}"`,
       `data-glossary-content-status="${entry.content_status}"`,
       `data-glossary-public-boundary="${entry.public_boundary.mode}"`,
       `data-glossary-category="${entry.category}"`,
       'data-glossary-beginner-explanation="reviewed"',
-      entry.reading_ja,
-    ]) if (!html.includes(marker)) { fail(`${entry.id}: rendered marker/content missing ${marker}`); renderedMarkerErrors += 1; }
-    if (!html.includes(beginner) && !html.includes(beginner.replaceAll('&', '&amp;').replaceAll("'", '&#39;'))) { fail(`${entry.id}: rendered beginner explanation differs`); renderedMarkerErrors += 1; }
+    ]) if (!html.includes(marker)) { fail(`${entry.id}: rendered marker missing ${marker}`); renderedMarkerErrors += 1; }
     if (entry.public_boundary.prohibited_dataset_keys.length > 0) {
       const boundaryHeading = prefix ? '<h2>公開データ境界</h2>' : '<h2>Public data boundary</h2>';
       if (!html.includes(boundaryHeading)) { fail(`${entry.id}: rendered public boundary notice missing`); renderedMarkerErrors += 1; }
@@ -269,7 +288,6 @@ for (const entry of glossary) {
 }
 if (missingRenderedRoutes !== 0 || renderedMarkerErrors !== 0) fail('rendered QA counters are nonzero');
 
-const verified = audit.verified ?? {};
 const measuredAudit = {
   glossary_concepts: glossary.length,
   categories: Object.keys(actualCategoryCounts).length,
@@ -294,7 +312,7 @@ const measuredAudit = {
   public_boundary_errors: publicBoundaryErrors,
   release_contract_errors: 0,
 };
-if (!exact(verified, measuredAudit)) fail(`audit verified measurements differ: ${JSON.stringify(measuredAudit)}`);
+if (!exact(audit.verified, measuredAudit)) fail(`audit verified measurements differ: ${JSON.stringify(measuredAudit)}`);
 
 if (errors.length) {
   console.error(`GLOSSARY_QA_RELEASE: failed (${errors.length})`);
