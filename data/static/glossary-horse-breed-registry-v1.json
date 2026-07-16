@@ -1,0 +1,112 @@
+{
+  "schema_version": "glossary-horse-breed-registry-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-HORSE-BREED-EXPANSION-01",
+  "reviewed_at": "2026-07-16",
+  "scope": {
+    "baseline_glossary_records": 26,
+    "implemented_glossary_records": 31,
+    "breed_records": 4,
+    "horse_type_records": 1,
+    "new_bilingual_routes": 10,
+    "implemented_bilingual_routes": 62
+  },
+  "breed_ids": [
+    "thoroughbred",
+    "arabian-horse",
+    "american-quarter-horse",
+    "standardbred"
+  ],
+  "horse_type_ids": [
+    "draft-horse"
+  ],
+  "classification_boundaries": {
+    "breed_is_not_racing_type": true,
+    "horse_type_is_not_breed": true,
+    "horse_type_is_not_racing_type": true,
+    "standardbred_is_not_trotting_or_pacing": true,
+    "draft_horse_is_not_banei_racing": true
+  },
+  "records": [
+    {
+      "id": "thoroughbred",
+      "category": "breed",
+      "term_en": "Thoroughbred",
+      "term_ja": "サラブレッド",
+      "summary_en": "A recognized horse breed maintained through stud-book registration and strongly associated with racing. The breed entry describes the horse and remains separate from Thoroughbred flat racing as a racing type.",
+      "summary_ja": "血統登録によって管理され、競馬との結び付きが強い馬の品種。馬そのものの品種を説明する項目であり、競馬種別であるサラブレッド平地競馬とは分けて扱う。",
+      "aliases_en": ["Thoroughbred horse"],
+      "aliases_ja": ["サラブレッド種"],
+      "reading_ja": "さらぶれっど",
+      "beginner_explanation_en": "Thoroughbred is the breed of horse. Thoroughbred flat racing is the type of racing in which that breed competes.",
+      "beginner_explanation_ja": "サラブレッドは馬の品種です。サラブレッド平地競馬は、その品種の馬が出走する競馬の形式です。",
+      "related_racing_type_ids": ["thoroughbred-racing"],
+      "source_ids": ["united-states-jockey-club-registry"],
+      "evidence_status": "reviewed_official"
+    },
+    {
+      "id": "arabian-horse",
+      "category": "breed",
+      "term_en": "Arabian horse",
+      "term_ja": "アラブ馬",
+      "summary_en": "A recognized horse breed represented by dedicated breed registries and used across racing, endurance, showing, and other equestrian activities. The breed remains separate from Arabian racing as a racing category.",
+      "summary_ja": "専用の品種登録団体によって扱われ、競馬、エンデュランス、ショーなど幅広い馬術活動で用いられる馬の品種。競馬種別であるアラブ競馬とは分けて扱う。",
+      "aliases_en": ["Arabian"],
+      "aliases_ja": ["アラビアンホース"],
+      "reading_ja": "あらぶうま",
+      "beginner_explanation_en": "Arabian horse is the breed. Arabian racing is racing organized for horses of that breed.",
+      "beginner_explanation_ja": "アラブ馬は馬の品種です。アラブ競馬は、その品種の馬を対象にした競馬です。",
+      "related_racing_type_ids": ["arabian-racing"],
+      "source_ids": ["united-states-arabian-horse-association"],
+      "evidence_status": "reviewed_official"
+    },
+    {
+      "id": "american-quarter-horse",
+      "category": "breed",
+      "term_en": "American Quarter Horse",
+      "term_ja": "アメリカン・クォーターホース",
+      "summary_en": "A recognized horse breed associated with rapid acceleration over short distances and also used in a wide range of working and sport disciplines. The breed remains separate from Quarter Horse racing as a racing category.",
+      "summary_ja": "短距離での加速力と結び付けられ、作業や多様な馬術競技にも用いられる馬の品種。競馬種別であるクォーターホース競馬とは分けて扱う。",
+      "aliases_en": ["Quarter Horse"],
+      "aliases_ja": ["クォーターホース"],
+      "reading_ja": "あめりかん・くぉーたーほーす",
+      "beginner_explanation_en": "American Quarter Horse is the breed. Quarter Horse racing is the short-distance racing category associated with that breed.",
+      "beginner_explanation_ja": "アメリカン・クォーターホースは馬の品種です。クォーターホース競馬は、その品種と結び付く短距離競馬の形式です。",
+      "related_racing_type_ids": ["quarter-horse-racing"],
+      "source_ids": ["united-states-aqha"],
+      "evidence_status": "reviewed_official"
+    },
+    {
+      "id": "standardbred",
+      "category": "breed",
+      "term_en": "Standardbred",
+      "term_ja": "スタンダードブレッド",
+      "summary_en": "A recognized horse breed closely associated with harness racing. Individual Standardbreds may compete in trotting or pacing, but the breed itself is not a gait or racing type.",
+      "summary_ja": "繋駕競走との結び付きが強い馬の品種。スタンダードブレッドの馬はトロット競走またはペース競走に出走するが、品種自体は歩様や競馬種別ではない。",
+      "aliases_en": ["Standardbred horse"],
+      "aliases_ja": ["スタンダードブレッド種"],
+      "reading_ja": "すたんだーどぶれっど",
+      "beginner_explanation_en": "Standardbred is the breed. Harness racing is the racing code, while trotting and pacing describe the gait-based forms used in that code.",
+      "beginner_explanation_ja": "スタンダードブレッドは馬の品種です。繋駕競走は競馬の形式で、トロットとペースはその中の歩様別形式です。",
+      "related_racing_type_ids": ["harness-racing", "trotting", "pacing"],
+      "source_ids": ["united-states-usta"],
+      "evidence_status": "reviewed_official"
+    },
+    {
+      "id": "draft-horse",
+      "category": "horse_type",
+      "term_en": "Draft horse",
+      "term_ja": "輓馬",
+      "summary_en": "A broad horse type developed for pulling heavy loads. Draft horse includes multiple breeds and must not be represented as one breed or as a synonym for Banei racing.",
+      "summary_ja": "重い荷を引く用途に適した馬の広いタイプ。複数の品種を含むため単一品種として扱わず、ばんえい競馬そのものの同義語にもならない。",
+      "aliases_en": ["Draught horse", "Heavy horse"],
+      "aliases_ja": ["ばん馬", "重種馬"],
+      "reading_ja": "ばんば",
+      "beginner_explanation_en": "Draft horse describes a group of powerful horse breeds. Banei racing is a racing format that uses draft horses.",
+      "beginner_explanation_ja": "輓馬は力の強い複数の馬品種をまとめたタイプです。ばんえい競馬は、そのような馬を使う競馬の形式です。",
+      "related_racing_type_ids": ["banei-racing"],
+      "source_ids": ["japan-banei-home"],
+      "evidence_status": "mixed_reviewed"
+    }
+  ]
+}
