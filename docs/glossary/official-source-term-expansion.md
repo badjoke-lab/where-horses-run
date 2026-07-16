@@ -47,7 +47,7 @@ The glossary therefore contains 48 records and 96 bilingual routes after this un
 
 ### Official provenance is not republication permission
 
-An Official source is published or maintained by the organization responsible for the information. The label identifies provenance. It does not mean that Where Horses Run may copy the source body, republish the full dataset, or automatically accept every value.
+An Official source is published or maintained by the organization responsible for the information. The label identifies provenance. It does not mean that Where Horses Run may copy the source body, republish the full dataset, or apply automatic source acceptance to every value.
 
 ### Official calendar is not a complete racecard
 
@@ -86,7 +86,7 @@ This unit publishes definitions and navigation only.
 It does not:
 
 - copy raw source bodies;
-- automatically accept source content;
+- apply automatic source acceptance;
 - republish complete racecards;
 - republish entries or participant lists;
 - republish odds, results, or payouts;
