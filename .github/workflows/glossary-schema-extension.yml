@@ -42,8 +42,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Install dependencies
-        run: npm install
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
       - name: Build bilingual glossary routes
         run: npm run build
       - name: Validate glossary schema extension
