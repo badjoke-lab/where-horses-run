@@ -24,11 +24,13 @@
     "steeplechase"
   ],
   "classification_boundaries": {
-    "breed_ids_reserved_for_later": [
+    "breed_ids_separate_from_race_types": [
       "thoroughbred",
       "arabian-horse",
       "american-quarter-horse",
-      "standardbred",
+      "standardbred"
+    ],
+    "horse_type_ids_separate_from_race_types": [
       "draft-horse"
     ],
     "surface_ids_not_race_types": [
@@ -124,8 +126,8 @@
       "parent_race_type_id": null,
       "term_en": "Arabian racing",
       "term_ja": "アラブ競馬",
-      "summary_en": "Racing restricted to or principally contested by Arabian horses. The racing type is separate from the Arabian horse breed entry that may be added to the breed glossary.",
-      "summary_ja": "アラブ馬を対象または中心として行う競馬。競馬種別としての呼称であり、今後品種辞典に追加するアラブ馬の品種定義とは分けて扱う。",
+      "summary_en": "Racing restricted to or principally contested by Arabian horses. The racing type is separate from the Arabian horse breed definition.",
+      "summary_ja": "アラブ馬を対象または中心として行う競馬。競馬種別としての呼称であり、アラブ馬の品種定義とは分けて扱う。",
       "classification_note": "Breed-qualified racing category; not the Arabian breed record."
     },
     {
@@ -146,7 +148,7 @@
       "term_ja": "ばんえい競馬",
       "summary_en": "A Japanese racing format in which draft horses pull weighted sleds over a straight sand course with two hill-shaped obstacles. Despite those obstacles, it is classified separately from jump racing.",
       "summary_ja": "大型馬が重量のあるそりを引き、二つの山形障害がある直線の砂コースを進む日本独自の競馬。障害物を使用するが、障害競馬とは別の競馬種別として扱う。",
-      "classification_note": "Separate sled-racing category; not jump racing."
+      "classification_note": "Separate sled-racing category; draft horse is a horse type and not a racing type."
     }
   ]
 }
