@@ -143,8 +143,8 @@ function statusLabel(value: string): string {
           data-racecourse-record
           data-racecourse-id={record.id}
           data-racecourse-country={record.countryId}
-          data-racecourse-racing-types={record.racingTypes.map((type) => type.id).join('|')}
-          data-racecourse-surfaces={record.surfaces.join('|')}
+          data-racecourse-racing-types={record.racingTypes.map((type) => type.id).join('|') || 'none'}
+          data-racecourse-surfaces={record.surfaces.join('|') || 'none'}
           data-racecourse-search-text={record.searchText}
         >
           <h2><a href={record.href}>{record.name}</a></h2>
@@ -223,8 +223,8 @@ function statusLabel(value: string): string {
         let visible = 0;
 
         for (const record of records) {
-          const racingTypes = (record.dataset.racecourseRacingTypes ?? '').split('|').filter(Boolean);
-          const surfaces = (record.dataset.racecourseSurfaces ?? '').split('|').filter(Boolean);
+          const racingTypes = (record.dataset.racecourseRacingTypes ?? '').split('|').filter((value) => value && value !== 'none');
+          const surfaces = (record.dataset.racecourseSurfaces ?? '').split('|').filter((value) => value && value !== 'none');
           const show =
             (!query || (record.dataset.racecourseSearchText ?? '').includes(query)) &&
             (country === 'all' || record.dataset.racecourseCountry === country) &&
