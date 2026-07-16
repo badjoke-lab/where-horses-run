@@ -1,0 +1,98 @@
+{
+  "schema_version": "glossary-racing-type-expansion-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-RACING-TYPE-EXPANSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 23,
+    "race_type_records": 7,
+    "bilingual_routes": 46
+  },
+  "implemented": {
+    "glossary_records": 26,
+    "race_type_records": 10,
+    "browse_primary_records": 8,
+    "supporting_definition_records": 2,
+    "bilingual_routes": 52,
+    "new_records": 3,
+    "reconciled_existing_records": 7,
+    "duplicate_ids": 0,
+    "duplicate_slugs": 0,
+    "broken_registry_parents": 0,
+    "registry_glossary_mismatches": 0,
+    "rendered_route_errors": 0
+  },
+  "added_ids": [
+    "flat-racing",
+    "jump-racing",
+    "steeplechase"
+  ],
+  "reconciled_ids": [
+    "thoroughbred-racing",
+    "harness-racing",
+    "trotting",
+    "pacing",
+    "arabian-racing",
+    "quarter-horse-racing",
+    "banei-racing"
+  ],
+  "browse_primary_ids": [
+    "thoroughbred-racing",
+    "jump-racing",
+    "harness-racing",
+    "trotting",
+    "pacing",
+    "arabian-racing",
+    "quarter-horse-racing",
+    "banei-racing"
+  ],
+  "supporting_definition_ids": [
+    "flat-racing",
+    "steeplechase"
+  ],
+  "classification_boundaries": {
+    "breed_ids_reserved_for_later": [
+      "thoroughbred",
+      "arabian-horse",
+      "american-quarter-horse",
+      "standardbred",
+      "draft-horse"
+    ],
+    "surface_ids_not_race_types": [
+      "turf",
+      "dirt",
+      "all-weather",
+      "jump-course"
+    ],
+    "governing_body_examples_not_race_types": [
+      "jra",
+      "nar",
+      "hkjc",
+      "era"
+    ],
+    "banei_is_jump_racing": false,
+    "flat_racing_is_surface": false,
+    "trotting_and_pacing_are_breeds": false
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "entries_dataset": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false,
+    "predictions_dataset": false,
+    "raw_source_body": false,
+    "embedded_video": false,
+    "direct_stream_url": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-HORSE-BREED-EXPANSION-01"
+}
