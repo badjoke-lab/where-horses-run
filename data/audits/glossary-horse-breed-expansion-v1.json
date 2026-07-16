@@ -1,0 +1,72 @@
+{
+  "schema_version": "glossary-horse-breed-expansion-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-HORSE-BREED-EXPANSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 26,
+    "breed_records": 0,
+    "horse_type_records": 0,
+    "bilingual_routes": 52
+  },
+  "implemented": {
+    "glossary_records": 31,
+    "breed_records": 4,
+    "horse_type_records": 1,
+    "new_records": 5,
+    "bilingual_routes": 62,
+    "new_bilingual_routes": 10,
+    "official_source_links": 4,
+    "mixed_source_links": 1,
+    "broken_related_term_ids": 0,
+    "broken_source_ids": 0,
+    "classification_conflation_errors": 0,
+    "rendered_route_errors": 0
+  },
+  "added_breed_ids": [
+    "thoroughbred",
+    "arabian-horse",
+    "american-quarter-horse",
+    "standardbred"
+  ],
+  "added_horse_type_ids": [
+    "draft-horse"
+  ],
+  "relationship_pairs": [
+    ["thoroughbred", "thoroughbred-racing"],
+    ["arabian-horse", "arabian-racing"],
+    ["american-quarter-horse", "quarter-horse-racing"],
+    ["standardbred", "harness-racing"],
+    ["standardbred", "trotting"],
+    ["standardbred", "pacing"],
+    ["draft-horse", "banei-racing"]
+  ],
+  "classification_boundaries": {
+    "breed_is_not_racing_type": true,
+    "horse_type_is_not_breed": true,
+    "horse_type_is_not_racing_type": true,
+    "standardbred_is_not_trotting_or_pacing": true,
+    "draft_horse_is_not_banei_racing": true
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "registry_dataset": false,
+    "pedigree_dataset": false,
+    "ownership_dataset": false,
+    "entries_dataset": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false,
+    "raw_source_body": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-ROLE-EXPANSION-01"
+}
