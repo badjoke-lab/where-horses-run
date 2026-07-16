@@ -14,6 +14,7 @@ interface Props {
 
 const { locale, records, options } = Astro.props;
 const isJapanese = locale === 'ja';
+const directoryPath = isJapanese ? '/ja/countries/' : '/countries/';
 
 const racingTypeLabelsJa: Record<string, string> = {
   'thoroughbred-flat': 'サラブレッド平地競走',
@@ -78,7 +79,7 @@ function statusLabel(value: string): string {
     ? '世界98か国・地域を、地域、競馬種別、状態、カバーレベルで絞り込めます。'
     : 'Browse and filter 98 horse racing countries and regions by region, racing type, status, and coverage level.'}
   lang={locale}
-  canonicalPath={isJapanese ? '/ja/countries/' : '/countries/'}
+  canonicalPath={directoryPath}
   alternatePath={isJapanese ? '/countries/' : '/ja/countries/'}
 >
   <div
@@ -109,6 +110,26 @@ function statusLabel(value: string): string {
       </section>
     )}
 
+    <section aria-labelledby="region-navigation-heading" data-region-filter-navigation>
+      <h2 id="region-navigation-heading">{isJapanese ? '地域から探す' : 'Browse by region'}</h2>
+      <div class="section-grid">
+        {options.regions.map((region) => (
+          <article class="card" data-region-filter-card data-region-id={region.id} data-region-count={region.count}>
+            <h3>
+              <a
+                href={`${directoryPath}?region=${encodeURIComponent(region.id)}`}
+                data-region-filter-link
+                data-region-filter-id={region.id}
+              >
+                {regionLabel(region.id)}
+              </a>
+            </h3>
+            <p>{isJapanese ? `${region.count}か国・地域` : `${region.count} countries and regions`}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
     <section class="card" aria-labelledby="country-filter-heading">
       <h2 id="country-filter-heading">{isJapanese ? '絞り込み条件' : 'Filter countries and regions'}</h2>
       <form data-country-filter-form role="search">
@@ -127,7 +148,9 @@ function statusLabel(value: string): string {
           <label for="country-filter-region"><strong>{isJapanese ? '地域' : 'Region'}</strong></label><br />
           <select id="country-filter-region" name="region" data-country-filter-region>
             <option value="all">{isJapanese ? 'すべての地域' : 'All regions'}</option>
-            {options.regions.map((region) => <option value={region}>{regionLabel(region)}</option>)}
+            {options.regions.map((region) => (
+              <option value={region.id}>{regionLabel(region.id)} ({region.count})</option>
+            ))}
           </select>
         </p>
         <p>
@@ -161,8 +184,8 @@ function statusLabel(value: string): string {
       </p>
       <noscript>
         <p>{isJapanese
-          ? 'JavaScriptが無効な場合は、下の98件の一覧から選べます。'
-          : 'With JavaScript disabled, use the complete list of 98 linked records below.'}</p>
+          ? 'JavaScriptが無効な場合は、下の98件の一覧から選べます。地域リンクを開いても完全な一覧は維持されます。'
+          : 'With JavaScript disabled, use the complete list of 98 linked records below. Region links preserve the complete fallback list.'}</p>
       </noscript>
     </section>
 
@@ -173,6 +196,7 @@ function statusLabel(value: string): string {
           data-country-record
           data-country-id={record.id}
           data-country-region={record.region}
+          data-country-regions={record.regions.join('|')}
           data-country-racing-types={record.racingTypes.join('|')}
           data-country-status={record.status}
           data-country-coverage={String(record.coverageLevel)}
@@ -213,6 +237,7 @@ function statusLabel(value: string): string {
       const count = root.querySelector('[data-country-filter-count]');
       const empty = root.querySelector('[data-country-filter-empty]');
       const records = [...root.querySelectorAll('[data-country-record]')];
+      const regionLinks = [...root.querySelectorAll('[data-region-filter-link]')];
       const isJapanese = document.documentElement.lang === 'ja';
 
       if (!form || !queryInput || !regionSelect || !racingTypeSelect || !statusSelect || !coverageSelect || !resetButton || !count || !empty) return;
@@ -244,15 +269,21 @@ function statusLabel(value: string): string {
         let visible = 0;
 
         for (const record of records) {
+          const regions = (record.dataset.countryRegions ?? '').split('|').filter(Boolean);
           const racingTypes = (record.dataset.countryRacingTypes ?? '').split('|').filter(Boolean);
           const show =
             (!query || (record.dataset.countrySearchText ?? '').includes(query)) &&
-            (region === 'all' || record.dataset.countryRegion === region) &&
+            (region === 'all' || regions.includes(region)) &&
             (racingType === 'all' || racingTypes.includes(racingType)) &&
             (status === 'all' || record.dataset.countryStatus === status) &&
             (coverage === 'all' || record.dataset.countryCoverage === coverage);
           record.hidden = !show;
           if (show) visible += 1;
+        }
+
+        for (const link of regionLinks) {
+          if (region !== 'all' && link.dataset.regionFilterId === region) link.setAttribute('aria-current', 'page');
+          else link.removeAttribute('aria-current');
         }
 
         count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
