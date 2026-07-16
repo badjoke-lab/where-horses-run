@@ -1,6 +1,6 @@
 # Glossary racing-type expansion
 
-Status: implemented for review
+Status: complete
 
 Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 
@@ -10,7 +10,7 @@ Last reviewed: 2026-07-16
 
 ## Purpose
 
-Expand the reviewed glossary from its seven racing-type baseline records into a stable racing-type taxonomy without conflating racing types, horse breeds, racing surfaces, course layouts, or governing bodies.
+Expand the reviewed glossary from its seven racing-type baseline records into a stable racing-type taxonomy without conflating racing types, horse breeds, horse types, racing surfaces, course layouts, or governing bodies.
 
 ## Baseline
 
@@ -40,7 +40,7 @@ Two supporting glossary definitions are also included:
 - Flat racing;
 - Steeplechase.
 
-This produces ten reviewed racing-type glossary records and 52 total bilingual glossary routes.
+This produces ten reviewed racing-type glossary records and 52 total bilingual glossary routes at completion of this unit.
 
 ## Added records
 
@@ -63,13 +63,11 @@ Legacy English and Japanese labels for Thoroughbred racing remain as aliases so 
 
 ### Horse breed
 
-The following concepts are reserved for `GLOSSARY-HORSE-BREED-EXPANSION-01` and are not created as racing-type records here:
+Thoroughbred, Arabian horse, American Quarter Horse, and Standardbred are breed records. They remain separate from racing-type records with similar names.
 
-- Thoroughbred;
-- Arabian horse;
-- American Quarter Horse;
-- Standardbred;
-- draft horse.
+### Horse type
+
+Draft horse is a broad horse type covering multiple heavy working breeds. It must not be treated as a single breed or as the Banei racing type itself.
 
 ### Surface and course layout
 
@@ -85,20 +83,20 @@ The glossary may explain and navigate between racing concepts. This unit does no
 
 ## Runtime and validation
 
-The existing glossary index and dynamic detail routes automatically render all 26 records in English and Japanese.
+The existing glossary index and dynamic detail routes automatically rendered all 26 records in English and Japanese at this unit's release point.
 
 The permanent gate:
 
-- builds all 52 bilingual glossary routes;
+- preserves the 52-route racing-type release baseline while allowing later glossary additions;
 - preserves the original v2 schema-migration baseline;
 - validates the ten-record racing-type registry;
 - validates parent classifications;
 - verifies old labels retained as aliases where required;
-- rejects breed, surface, governing-body, and Banei/Jump conflation;
+- rejects breed, horse-type, surface, governing-body, and Banei/Jump conflation;
 - verifies rendered content and metadata;
 - proves the repository remains clean;
 - performs no network request, publication, or deployment.
 
-## Next unit
+## Completed next unit
 
-`GLOSSARY-HORSE-BREED-EXPANSION-01` will add reviewed breed definitions without reclassifying breed-qualified racing types as breeds.
+`GLOSSARY-HORSE-BREED-EXPANSION-01` adds reviewed breed definitions and a separate Draft horse type without reclassifying breed-qualified racing types as breeds.
