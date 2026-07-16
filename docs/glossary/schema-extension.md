@@ -1,6 +1,6 @@
 # Glossary schema extension
 
-Status: implemented for review
+Status: complete
 
 Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 
@@ -27,7 +27,7 @@ records with any extension field: 0
 schema files: 0
 ```
 
-Current category counts are:
+Baseline category counts were:
 
 - data term: 4;
 - race type: 7;
@@ -37,7 +37,7 @@ Current category counts are:
 
 ## v2 entry contract
 
-Every glossary record now keeps the original fields and adds:
+Every glossary record keeps the original fields and adds:
 
 - `schema_version`;
 - English and Japanese aliases;
@@ -55,24 +55,36 @@ The schema permits future categories for breeds, official sources, and governanc
 
 ## Safe migration defaults
 
-Existing records are not enriched by guesswork.
+The original 23 records were migrated without enrichment by guesswork.
 
-- aliases remain empty until reviewed;
-- reading and pronunciation remain null until reviewed;
-- beginner explanations remain null until reviewed;
-- related terms remain empty until the relation graph is reviewed;
-- source IDs remain empty until evidence is attached;
-- evidence status is `baseline_definition`;
-- content status is `baseline_reviewed`;
-- review date is 2026-07-16.
+- aliases remained empty until reviewed;
+- reading and pronunciation remained null until reviewed;
+- beginner explanations remained null until reviewed;
+- related terms remained empty until the relation graph is reviewed;
+- source IDs remained empty until evidence is attached;
+- evidence status was `baseline_definition`;
+- content status was `baseline_reviewed`;
+- review date was 2026-07-16.
 
-The existing English and Japanese term names, categories, summaries, slugs, routes, and page descriptions remain unchanged.
+The migration preserved the original English and Japanese term names, categories, summaries, slugs, routes, and page descriptions.
+
+## Expansion compatibility
+
+The schema-extension checker now treats the 23 migrated records and 46 bilingual routes as a protected minimum baseline rather than a permanent maximum.
+
+Later reviewed units may:
+
+- add new v2 records;
+- enrich existing records;
+- update review dates;
+- render reviewed aliases or other optional fields;
+- increase category and route counts.
+
+Later units may not remove any of the 23 baseline IDs, weaken the v2 required-field contract, break related-term or source references, or enable dataset republication.
 
 ## Public behavior
 
-All 23 records now render the v2 contract on the existing 46 bilingual routes.
-
-The baseline pages show the reviewed term, summary, category, counterpart language term, content status, and review date. Optional aliases, reading, pronunciation, beginner explanations, related terms, and source sections remain hidden until reviewed values exist.
+The baseline pages show the reviewed term, summary, category, counterpart-language term, content status, and review date. Optional aliases, reading, pronunciation, beginner explanations, related terms, and source sections appear only when reviewed values exist.
 
 Restricted concepts may show a public-boundary notice, but the pages do not republish participant, racecard, odds, result, or payout datasets.
 
@@ -86,14 +98,16 @@ The schema does not permit predictions, recommendations, raw source bodies, embe
 
 ## Runtime compatibility
 
-The glossary index and detail routes continue to read `data/static/glossary.json`. The additional fields are optional in presentation and do not create empty public sections.
+The glossary index and detail routes continue to read `data/static/glossary.json`. Optional presentation fields do not create empty public sections.
 
-The permanent workflow builds the site and runs the schema-extension checker. The checker validates the two JSON schemas, every migrated record, ID and slug uniqueness, relationship/source references, restricted-concept boundaries, all 46 bilingual routes, rendered metadata, the permanent workflow itself, temporary-workflow removal, and clean-worktree behavior.
+The permanent workflow builds the site and runs the schema-extension checker. The checker validates the two JSON schemas, the protected migration baseline, all current records and routes, ID and slug uniqueness, relationship/source references, restricted-concept boundaries, rendered metadata, the permanent workflow itself, temporary-workflow removal, and clean-worktree behavior.
 
 ## Automation boundary
 
 The permanent gate performs no source fetch, automatic source acceptance, automatic content promotion, publication, or deployment.
 
-## Next unit
+## Completed next unit
 
-`GLOSSARY-RACING-TYPE-EXPANSION-01` will expand and reconcile racing-type terms against the canonical type registry without conflating racing types, horse breeds, surfaces, or governing bodies.
+`GLOSSARY-RACING-TYPE-EXPANSION-01` expands and reconciles racing-type terms against `data/static/glossary-racing-type-registry-v1.json` without conflating racing types, horse breeds, surfaces, course layouts, or governing bodies.
+
+The next implementation unit is `GLOSSARY-HORSE-BREED-EXPANSION-01`.
