@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadGlossary } from './glossary-data-loader.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -22,7 +23,7 @@ if (fs.existsSync(filePath(workflowPath))) {
 const audit = parse('data/audits/glossary-schema-extension-v1.json');
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
 const collectionSchema = parse('data/static/glossary-v2.schema.json');
-const glossary = parse('data/static/glossary.json');
+const glossary = loadGlossary(root);
 
 const sourceIds = new Set();
 for (const filename of fs.readdirSync(filePath('data/static'))) {
