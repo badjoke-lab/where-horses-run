@@ -13,7 +13,10 @@ const audit = parse('data/audits/glossary-horse-breed-expansion-v1.json');
 const registry = parse('data/static/glossary-horse-breed-registry-v1.json');
 const glossary = parse('data/static/glossary.json');
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
-const sources = parse('data/static/sources.json');
+const sources = [
+  ...parse('data/static/sources.json'),
+  ...parse('data/static/glossary-breed-sources-v1.json'),
+];
 const workflowPath = '.github/workflows/glossary-horse-breed-expansion.yml';
 const docPath = 'docs/glossary/horse-breed-expansion.md';
 
@@ -58,10 +61,9 @@ if (!entrySchema.properties?.category?.enum?.includes('horse_type')) fail('gloss
 
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
-const idSet = new Set(ids);
 const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
 if (glossary.length !== 31) fail(`glossary record count expected 31; found ${glossary.length}`);
-if (idSet.size !== glossary.length) fail('glossary IDs are not unique');
+if (new Set(ids).size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
 if (glossary.filter((entry) => entry.category === 'breed').length !== 4) fail('breed count differs');
 if (glossary.filter((entry) => entry.category === 'horse_type').length !== 1) fail('horse-type count differs');
@@ -70,13 +72,12 @@ if (glossary.filter((entry) => entry.category === 'race_type').length !== 10) fa
 const registryIds = registry.records.map((record) => record.id);
 if (!exact(registryIds, [...expectedBreedIds, ...expectedHorseTypeIds])) fail('registry record order/content differs');
 const sourceIds = new Set(sources.map((source) => source.id));
-const expectedOfficialSourceIds = new Set([
+for (const sourceId of [
   'united-states-jockey-club-registry',
   'united-states-arabian-horse-association',
   'united-states-aqha',
   'united-states-usta',
-]);
-for (const sourceId of expectedOfficialSourceIds) if (!sourceIds.has(sourceId)) fail(`official breed source missing: ${sourceId}`);
+]) if (!sourceIds.has(sourceId)) fail(`official breed source missing: ${sourceId}`);
 
 for (const record of registry.records) {
   const entry = entryById.get(record.id);
@@ -84,11 +85,12 @@ for (const record of registry.records) {
     fail(`registry record missing from glossary: ${record.id}`);
     continue;
   }
-  for (const field of ['category', 'term_en', 'term_ja', 'summary_en', 'summary_ja', 'aliases_en', 'aliases_ja', 'reading_ja', 'beginner_explanation_en', 'beginner_explanation_ja', 'source_ids', 'evidence_status']) {
-    const registryField = field === 'beginner_explanation_en' ? 'beginner_explanation_en' : field === 'beginner_explanation_ja' ? 'beginner_explanation_ja' : field;
-    const recordValue = record[registryField] ?? (field === 'beginner_explanation_en' ? record.beginner_explanation_en : field === 'beginner_explanation_ja' ? record.beginner_explanation_ja : undefined);
-    if (!exact(entry[field], recordValue)) fail(`${record.id}: glossary ${field} differs from registry`);
-  }
+  for (const field of [
+    'category', 'term_en', 'term_ja', 'summary_en', 'summary_ja',
+    'aliases_en', 'aliases_ja', 'reading_ja',
+    'beginner_explanation_en', 'beginner_explanation_ja',
+    'source_ids', 'evidence_status',
+  ]) if (!exact(entry[field], record[field])) fail(`${record.id}: glossary ${field} differs from registry`);
   if (!exact(entry.related_term_ids, record.related_racing_type_ids)) fail(`${record.id}: related racing types differ`);
   if (entry.content_status !== 'enriched_reviewed') fail(`${record.id}: content status differs`);
   if (entry.last_reviewed !== '2026-07-16') fail(`${record.id}: review date differs`);
@@ -113,8 +115,7 @@ for (const entry of glossary) {
   }
 }
 
-const boundaries = registry.classification_boundaries ?? {};
-if (Object.values(boundaries).some((value) => value !== true)) fail('classification boundary differs');
+if (Object.values(registry.classification_boundaries ?? {}).some((value) => value !== true)) fail('classification boundary differs');
 if (entryById.get('draft-horse')?.category !== 'horse_type') fail('Draft horse must be horse_type');
 if (entryById.get('standardbred')?.category !== 'breed') fail('Standardbred must be breed');
 for (const id of ['trotting', 'pacing', 'harness-racing', 'banei-racing']) {
@@ -124,16 +125,8 @@ for (const id of ['trotting', 'pacing', 'harness-racing', 'banei-racing']) {
 const doc = read(docPath);
 for (const marker of [
   'GLOSSARY-HORSE-BREED-EXPANSION-01',
-  'Thoroughbred',
-  'Arabian horse',
-  'American Quarter Horse',
-  'Standardbred',
-  'Draft horse',
-  'horse_type',
-  'reciprocal',
-  'registry',
-  'pedigree',
-  'GLOSSARY-ROLE-EXPANSION-01',
+  'Thoroughbred', 'Arabian horse', 'American Quarter Horse', 'Standardbred', 'Draft horse',
+  'horse_type', 'reciprocal', 'registry', 'pedigree', 'GLOSSARY-ROLE-EXPANSION-01',
 ]) if (!doc.includes(marker)) fail(`horse-breed expansion document missing ${marker}`);
 
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
@@ -156,14 +149,12 @@ for (const entry of glossary) {
 }
 for (const id of [...expectedBreedIds, ...expectedHorseTypeIds]) {
   const entry = entryById.get(id);
-  for (const [prefix, aliasHeading, beginnerHeading, relatedHeading, sourceHeading] of [
-    ['', '<h2 id="aliases-heading">Aliases</h2>', '<h2 id="beginner-heading">Beginner explanation</h2>', '<h2 id="related-heading">Related terms</h2>', '<h2 id="sources-heading">Reviewed source IDs</h2>'],
-    ['ja/', '<h2 id="aliases-heading">別名</h2>', '<h2 id="beginner-heading">初心者向け説明</h2>', '<h2 id="related-heading">関連用語</h2>', '<h2 id="sources-heading">確認済みソースID</h2>'],
+  for (const [prefix, markers] of [
+    ['', ['<h2 id="aliases-heading">Aliases</h2>', '<h2 id="beginner-heading">Beginner explanation</h2>', '<h2 id="related-heading">Related terms</h2>', '<h2 id="sources-heading">Reviewed source IDs</h2>']],
+    ['ja/', ['<h2 id="aliases-heading">別名</h2>', '<h2 id="beginner-heading">初心者向け説明</h2>', '<h2 id="related-heading">関連用語</h2>', '<h2 id="sources-heading">確認済みソースID</h2>']],
   ]) {
     const html = fs.readFileSync(filePath(`dist/${prefix}glossary/${id}/index.html`), 'utf8');
-    for (const marker of [aliasHeading, beginnerHeading, relatedHeading, sourceHeading]) {
-      if (!html.includes(marker)) { fail(`${id}: rendered optional section missing ${marker}`); renderedErrors += 1; }
-    }
+    for (const marker of markers) if (!html.includes(marker)) { fail(`${id}: rendered optional section missing ${marker}`); renderedErrors += 1; }
     if (!html.includes(entry.reading_ja)) { fail(`${id}: Japanese reading is missing from rendered page`); renderedErrors += 1; }
   }
 }
