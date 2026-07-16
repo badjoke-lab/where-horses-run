@@ -1,0 +1,57 @@
+{
+  "schema_version": "source-status-filters-audit-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "SOURCE-STATUS-FILTERS-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "verified": {
+    "source_records": 172,
+    "english_rendered_records": 172,
+    "japanese_rendered_records": 172,
+    "countries_with_sources": 98,
+    "directory_routes": 2,
+    "bilingual_country_source_routes": 196,
+    "filter_controls": 7,
+    "url_parameters": 7,
+    "duplicate_source_ids": 0,
+    "missing_search_text": 0,
+    "missing_filter_attributes": 0,
+    "unknown_country_options": 0,
+    "unknown_source_type_options": 0,
+    "unknown_data_type_options": 0,
+    "unknown_auto_level_options": 0,
+    "unknown_terms_risk_options": 0,
+    "unknown_registry_status_options": 0,
+    "broken_country_source_links": 0,
+    "invalid_external_source_urls": 0,
+    "no_javascript_missing_records": 0,
+    "temporary_discovery_workflows": 0,
+    "contract_errors": 0,
+    "rendered_marker_errors": 0
+  },
+  "behavior": {
+    "combined_filters_work_together": true,
+    "url_state_is_restored": true,
+    "result_count_is_live": true,
+    "zero_result_state_is_present": true,
+    "clear_filters_is_present": true,
+    "missing_registry_status_is_explicit": true,
+    "complete_list_exists_without_javascript": true
+  },
+  "privacy_boundary": {
+    "external_filter_service_enabled": false,
+    "server_filter_endpoint_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_generation_enabled": false,
+    "live_fetch_enabled": false,
+    "automatic_source_acceptance_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "REGION-FILTERS-01",
+  "next_implementation_unit": "GLOSSARY-SEARCH-IMPROVEMENT-01"
+}
