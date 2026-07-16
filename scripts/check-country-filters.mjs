@@ -72,7 +72,7 @@ for (const [key, value] of Object.entries(contract.public_boundary ?? {})) {
 }
 for (const value of Object.values(contract.privacy_boundary ?? {})) if (value !== false) fail('country privacy boundary differs');
 for (const value of Object.values(contract.automation_boundary ?? {})) if (value !== false) fail('country automation boundary differs');
-if (contract.next_implementation_unit !== 'RACECOURSE-FILTERS-01') fail('next country filter unit differs');
+if (contract.next_implementation_unit !== 'RACE-TYPE-FILTERS-01') fail('next country filter unit differs');
 
 if (audit.schema_version !== 'country-filters-audit-v1') fail('country filter audit schema differs');
 if (audit.work_id !== contract.work_id || audit.implementation_unit !== contract.implementation_unit || audit.reviewed_at !== contract.reviewed_at) fail('country filter audit identity differs');
@@ -137,7 +137,7 @@ const doc = read(docPath);
 for (const marker of [
   'COUNTRY-FILTERS-01', '98', '/countries/', '/ja/countries/',
   'racing_type', 'NFKC', 'JavaScript is disabled', 'external filter service',
-  'RACECOURSE-FILTERS-01',
+  'RACE-TYPE-FILTERS-01',
 ]) if (!doc.includes(marker)) fail(`country filter documentation missing ${marker}`);
 
 if (fs.existsSync(filePath(workflowPath))) {
@@ -243,4 +243,4 @@ console.log('URL_PARAMETERS: 5');
 console.log('NO_JAVASCRIPT_FALLBACK: complete');
 console.log('EXTERNAL_FILTER_SERVICE: false');
 console.log('QUERY_LOGGING: false');
-console.log('NEXT_IMPLEMENTATION_UNIT: RACECOURSE-FILTERS-01');
+console.log('NEXT_IMPLEMENTATION_UNIT: RACE-TYPE-FILTERS-01');
