@@ -1,0 +1,8 @@
+---
+import GlobalSearchPage from '../../components/GlobalSearchPage.astro';
+import { getGlobalSearchRecords } from '../../lib/search-data';
+
+const records = getGlobalSearchRecords('en');
+---
+
+<GlobalSearchPage locale="en" records={records} />
