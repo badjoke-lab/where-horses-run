@@ -1,8 +1,9 @@
 import baselineGlossary from '../../data/static/glossary.json';
 import roleGlossaryOverlay from '../../data/static/glossary-entries-role-v1.json';
 import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetable-v1.json';
+import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
 
-const overlays = [roleGlossaryOverlay, timetableGlossaryOverlay] as const;
+const overlays = [roleGlossaryOverlay, timetableGlossaryOverlay, officialSourceGlossaryOverlay] as const;
 const order = baselineGlossary.map((entry) => entry.id);
 const byId = new Map(baselineGlossary.map((entry) => [entry.id, entry]));
 

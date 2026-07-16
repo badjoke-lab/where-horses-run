@@ -1,0 +1,81 @@
+{
+  "schema_version": "glossary-official-source-term-expansion-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-OFFICIAL-SOURCE-TERM-EXPANSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 40,
+    "official_source_records": 0,
+    "governance_term_records": 0,
+    "bilingual_routes": 80
+  },
+  "implemented": {
+    "glossary_records": 48,
+    "official_source_records": 5,
+    "governance_term_records": 3,
+    "new_records": 8,
+    "reconciled_existing_records": 2,
+    "bilingual_routes": 96,
+    "new_bilingual_routes": 16,
+    "reciprocal_relationships": 9,
+    "broken_related_term_ids": 0,
+    "classification_conflation_errors": 0,
+    "rendered_route_errors": 0
+  },
+  "added_official_source_ids": [
+    "official-source",
+    "official-calendar",
+    "official-racecard",
+    "link-first-source",
+    "source-status"
+  ],
+  "added_governance_term_ids": [
+    "governing-body",
+    "racing-authority",
+    "racecourse-operator"
+  ],
+  "reconciled_ids": [
+    "fixture",
+    "racecard"
+  ],
+  "relationship_pairs": [
+    ["official-source", "official-calendar"],
+    ["official-source", "official-racecard"],
+    ["official-source", "link-first-source"],
+    ["official-source", "source-status"],
+    ["official-source", "racecourse-operator"],
+    ["official-calendar", "fixture"],
+    ["official-racecard", "racecard"],
+    ["link-first-source", "source-status"],
+    ["governing-body", "racing-authority"]
+  ],
+  "classification_boundaries": {
+    "official_source_is_not_site_copy": true,
+    "official_source_is_not_automatic_acceptance": true,
+    "governing_body_and_racing_authority_are_distinct_concepts": true,
+    "racecourse_operator_is_not_always_governing_body": true,
+    "official_calendar_is_not_full_racecard": true,
+    "official_racecard_is_not_republished_dataset": true,
+    "link_first_is_not_live_fetch": true,
+    "source_status_is_not_quality_score": true
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "automatic_source_acceptance": false,
+    "source_body_republication": false,
+    "entries_dataset": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-MULTILINGUAL-FIELD-CLEANUP-01"
+}
