@@ -2,7 +2,7 @@
   "schema_version": "glossary-racing-type-expansion-v1",
   "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
   "implementation_unit": "GLOSSARY-RACING-TYPE-EXPANSION-01",
-  "status": "implemented_for_review",
+  "status": "complete",
   "reviewed_at": "2026-07-16",
   "baseline": {
     "glossary_records": 23,
@@ -52,11 +52,13 @@
     "steeplechase"
   ],
   "classification_boundaries": {
-    "breed_ids_reserved_for_later": [
+    "breed_ids_separate_from_race_types": [
       "thoroughbred",
       "arabian-horse",
       "american-quarter-horse",
-      "standardbred",
+      "standardbred"
+    ],
+    "horse_type_ids_separate_from_race_types": [
       "draft-horse"
     ],
     "surface_ids_not_race_types": [
