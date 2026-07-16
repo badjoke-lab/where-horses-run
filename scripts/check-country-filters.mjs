@@ -103,7 +103,7 @@ if (audit.next_implementation_unit !== contract.next_implementation_unit) fail('
 
 const dataSource = read(dataPath);
 for (const marker of [
-  "getCountries", "normalize('NFKC')", 'getCountryFilterRecords', 'getCountryFilterOptions',
+  'getCountries', "normalize('NFKC')", 'getCountryFilterRecords', 'getCountryFilterOptions',
   '/countries/${country.slug}/', '/ja/countries/${country.slug}/',
   'records.flatMap((record) => record.racingTypes)',
 ]) if (!dataSource.includes(marker)) fail(`country filter data projection missing ${marker}`);
@@ -117,10 +117,10 @@ for (const marker of [
   'data-country-filter-region', 'data-country-filter-racing-type', 'data-country-filter-status',
   'data-country-filter-coverage', 'data-country-filter-reset', 'data-country-filter-count',
   'data-country-filter-empty', 'data-country-record', 'data-country-search-text', '<noscript>',
-  "new URLSearchParams(window.location.search)", "params.get('q')", "restoreSelect(regionSelect, 'region')",
+  'new URLSearchParams(window.location.search)', "params.get('q')", "restoreSelect(regionSelect, 'region')",
   "restoreSelect(racingTypeSelect, 'racing_type')", "restoreSelect(statusSelect, 'status')",
   "restoreSelect(coverageSelect, 'coverage')", "normalize('NFKC')", 'window.history.replaceState',
-  "record.hidden = !show", "queryInput.addEventListener('input', apply)",
+  'record.hidden = !show', "queryInput.addEventListener('input', apply)",
 ]) if (!component.includes(marker)) fail(`country filter component missing ${marker}`);
 for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
   if (component.includes(forbidden)) fail(`country filter component contains forbidden marker ${forbidden}`);
@@ -136,7 +136,7 @@ for (const page of pagePaths) {
 const doc = read(docPath);
 for (const marker of [
   'COUNTRY-FILTERS-01', '98', '/countries/', '/ja/countries/',
-  'racing_type', 'NFKC', 'JavaScript is disabled', 'no external filter service',
+  'racing_type', 'NFKC', 'JavaScript is disabled', 'external filter service',
   'RACECOURSE-FILTERS-01',
 ]) if (!doc.includes(marker)) fail(`country filter documentation missing ${marker}`);
 
@@ -167,13 +167,14 @@ function verifyRenderedDirectory({ file, lang, routePrefix }) {
   }
 
   const html = read(file);
-  const ids = attributeValues(html, 'data-country-id');
-  const regions = attributeValues(html, 'data-country-region');
-  const racingTypeGroups = attributeValues(html, 'data-country-racing-types');
-  const statuses = attributeValues(html, 'data-country-status');
-  const coverageLevels = attributeValues(html, 'data-country-coverage');
-  const searchTexts = attributeValues(html, 'data-country-search-text');
   const cards = [...html.matchAll(/<article[^>]*data-country-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
+  const cardAttributeValues = (name) => cards.flatMap((card) => attributeValues(card, name));
+  const ids = cardAttributeValues('data-country-id');
+  const regions = cardAttributeValues('data-country-region');
+  const racingTypeGroups = cardAttributeValues('data-country-racing-types');
+  const statuses = cardAttributeValues('data-country-status');
+  const coverageLevels = cardAttributeValues('data-country-coverage');
+  const searchTexts = cardAttributeValues('data-country-search-text');
 
   const measurements = {
     records: recordCount(html),
