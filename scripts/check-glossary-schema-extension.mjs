@@ -14,7 +14,7 @@ if (!fs.existsSync(filePath(workflowPath))) fail('permanent glossary schema work
 if (fs.existsSync(filePath(temporaryWorkflowPath))) fail('temporary glossary discovery workflow must be removed');
 if (fs.existsSync(filePath(workflowPath))) {
   const workflow = read(workflowPath);
-  for (const marker of ['npm ci', 'npm run build', 'node scripts/check-glossary-schema-extension.mjs', 'git status --porcelain']) {
+  for (const marker of ['npm install --package-lock=false', 'npm run build', 'node scripts/check-glossary-schema-extension.mjs', 'git status --porcelain']) {
     if (!workflow.includes(marker)) fail(`permanent workflow missing ${marker}`);
   }
 }
