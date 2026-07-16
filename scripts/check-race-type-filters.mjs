@@ -123,10 +123,11 @@ for (const marker of [
   'data-racecourse-filter-surface', 'data-racecourse-filter-reset',
   'data-racecourse-filter-count', 'data-racecourse-filter-empty', 'data-racecourse-record',
   'data-racecourse-country', 'data-racecourse-racing-types', 'data-racecourse-surfaces',
-  'data-racecourse-search-text', '<noscript>', 'new URLSearchParams(window.location.search)',
-  "params.get('q')", "restoreSelect(countrySelect, 'country')",
-  "restoreSelect(racingTypeSelect, 'racing_type')", "restoreSelect(surfaceSelect, 'surface')",
-  "normalize('NFKC')", 'window.history.replaceState', 'record.hidden = !show',
+  'data-racecourse-search-text', "|| 'none'", "value !== 'none'", '<noscript>',
+  'new URLSearchParams(window.location.search)', "params.get('q')",
+  "restoreSelect(countrySelect, 'country')", "restoreSelect(racingTypeSelect, 'racing_type')",
+  "restoreSelect(surfaceSelect, 'surface')", "normalize('NFKC')",
+  'window.history.replaceState', 'record.hidden = !show',
   "queryInput.addEventListener('input', apply)",
 ]) if (!component.includes(marker)) fail(`racecourse filter component missing ${marker}`);
 for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
@@ -202,8 +203,8 @@ function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typeP
   if (searchTexts.some((value) => !value.trim())) fail(`${file}: empty racecourse search text detected`);
 
   const expectedCountries = uniqueSorted(countries);
-  const expectedRacingTypes = uniqueSorted(racingTypeGroups.flatMap((value) => value.split('|').filter(Boolean)));
-  const expectedSurfaces = uniqueSorted(surfaceGroups.flatMap((value) => value.split('|').filter(Boolean)));
+  const expectedRacingTypes = uniqueSorted(racingTypeGroups.flatMap((value) => value.split('|').filter((item) => item && item !== 'none')));
+  const expectedSurfaces = uniqueSorted(surfaceGroups.flatMap((value) => value.split('|').filter((item) => item && item !== 'none')));
   const actualCountries = optionValues(html, 'racecourse-filter-country');
   const actualRacingTypes = optionValues(html, 'racecourse-filter-racing-type');
   const actualSurfaces = optionValues(html, 'racecourse-filter-surface');
