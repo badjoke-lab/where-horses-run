@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getGlossaryCategoryLabel,
+  getGlossaryEntries,
+  getGlossaryEntryBySlug,
+  getGlossaryRelationshipEdges,
+} from '../../lib/glossary-data';
+
+const entries = getGlossaryEntries();
+const edges = getGlossaryRelationshipEdges();
+const graphEntries = entries.map((entry) => ({
+  entry,
+  related: entry.related_term_ids
+    .flatMap((id) => {
+      const relatedEntry = getGlossaryEntryBySlug(id);
+      return relatedEntry ? [relatedEntry] : [];
+    })
+    .sort((left, right) => left.term_en.localeCompare(right.term_en)),
+}));
+---
+
+<BaseLayout
+  title="Glossary relationship graph | Where Horses Run"
+  description="Explore reviewed relationships between racing types, horse breeds, roles, race data, racecourse terms, and official-source concepts."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary graph</p>
+    <h1 id="page-title">Glossary relationship graph</h1>
+    <p class="hero__summary">
+      Browse the reviewed links that connect all released glossary concepts. A relationship means the concepts are useful to read together; it does not mean they are synonyms.
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="Graph summary">
+    <article class="card">
+      <h2>Concepts</h2>
+      <p><strong>{entries.length}</strong> reviewed glossary nodes</p>
+    </article>
+    <article class="card">
+      <h2>Relationships</h2>
+      <p><strong>{edges.length}</strong> reviewed undirected edges</p>
+    </article>
+    <article class="card">
+      <h2>Connectivity</h2>
+      <p><strong>1</strong> connected component, <strong>0</strong> isolated concepts</p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="Glossary adjacency list">
+    {graphEntries.map(({ entry, related }) => (
+      <article
+        class="card"
+        data-graph-node-id={entry.id}
+        data-graph-node-category={entry.category}
+        data-graph-node-degree={related.length}
+      >
+        <h2><a href={`/glossary/${entry.slug}/`}>{entry.term_en}</a></h2>
+        <p>{getGlossaryCategoryLabel(entry.category, 'en')} · {related.length} related terms</p>
+        <ul>
+          {related.map((relatedEntry) => (
+            <li
+              data-related-term-id={relatedEntry.id}
+              data-related-category={relatedEntry.category}
+            >
+              <a href={`/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_en}</a>
+              {' — '}{getGlossaryCategoryLabel(relatedEntry.category, 'en')}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+
+  <p><a href="/glossary/">Back to glossary</a></p>
+</BaseLayout>
