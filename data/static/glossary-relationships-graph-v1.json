@@ -10,7 +10,8 @@
       "right-handed-course",
       "both-directions-course",
       "straight-course",
-      "racecourse-operator"
+      "racecourse-operator",
+      "banei-racing"
     ]
   },
   {
@@ -47,7 +48,25 @@
   },
   {
     "id": "flat-racing",
-    "add_related_term_ids": ["turf", "dirt", "all-weather"]
+    "add_related_term_ids": [
+      "turf",
+      "dirt",
+      "all-weather",
+      "arabian-racing",
+      "quarter-horse-racing"
+    ]
+  },
+  {
+    "id": "arabian-racing",
+    "add_related_term_ids": ["flat-racing"]
+  },
+  {
+    "id": "quarter-horse-racing",
+    "add_related_term_ids": ["flat-racing"]
+  },
+  {
+    "id": "banei-racing",
+    "add_related_term_ids": ["racecourse"]
   },
   {
     "id": "racecourse-operator",
