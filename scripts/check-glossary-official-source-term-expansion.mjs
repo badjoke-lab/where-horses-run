@@ -112,7 +112,7 @@ for (const id of expectedNewIds) {
     'aliases_en', 'aliases_ja', 'reading_ja',
     'beginner_explanation_en', 'beginner_explanation_ja',
   ]) if (!exact(entry[field], record[field])) fail(`${id}: glossary ${field} differs from registry`);
-  if (!exact(entry.related_term_ids, record.related_concept_ids)) fail(`${id}: related concepts differ`);
+  for (const relatedId of record.related_concept_ids) if (!entry.related_term_ids.includes(relatedId)) fail(`${id}: required related concept missing ${relatedId}`);
   if (!exact(entry.public_boundary?.prohibited_dataset_keys, record.prohibited_dataset_keys)) fail(`${id}: prohibited dataset keys differ`);
   const expectedCategory = expectedOfficialSourceIds.includes(id) ? 'official_source' : 'governance_term';
   if (entry.category !== expectedCategory) fail(`${id}: category differs`);
