@@ -1,0 +1,97 @@
+name: Glossary timetable term expansion gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-schema-extension-v1.json'
+      - 'data/audits/glossary-racing-type-expansion-v1.json'
+      - 'data/audits/glossary-horse-breed-expansion-v1.json'
+      - 'data/audits/glossary-role-expansion-v1.json'
+      - 'data/audits/glossary-timetable-term-expansion-v1.json'
+      - 'data/static/glossary.json'
+      - 'data/static/glossary-entry-v2.schema.json'
+      - 'data/static/glossary-racing-type-registry-v1.json'
+      - 'data/static/glossary-horse-breed-registry-v1.json'
+      - 'data/static/glossary-role-registry-v1.json'
+      - 'data/static/glossary-timetable-term-registry-v1.json'
+      - 'data/static/glossary-entries-role-v1.json'
+      - 'data/static/glossary-entries-timetable-v1.json'
+      - 'docs/glossary/role-expansion.md'
+      - 'docs/glossary/timetable-term-expansion.md'
+      - 'scripts/glossary-data-loader.mjs'
+      - 'scripts/check-glossary-schema-extension.mjs'
+      - 'scripts/check-glossary-racing-type-expansion.mjs'
+      - 'scripts/check-glossary-horse-breed-expansion.mjs'
+      - 'scripts/check-glossary-role-expansion.mjs'
+      - 'scripts/check-glossary-timetable-term-expansion.mjs'
+      - 'src/lib/glossary-data.ts'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-timetable-term-expansion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-schema-extension-v1.json'
+      - 'data/audits/glossary-racing-type-expansion-v1.json'
+      - 'data/audits/glossary-horse-breed-expansion-v1.json'
+      - 'data/audits/glossary-role-expansion-v1.json'
+      - 'data/audits/glossary-timetable-term-expansion-v1.json'
+      - 'data/static/glossary.json'
+      - 'data/static/glossary-entry-v2.schema.json'
+      - 'data/static/glossary-racing-type-registry-v1.json'
+      - 'data/static/glossary-horse-breed-registry-v1.json'
+      - 'data/static/glossary-role-registry-v1.json'
+      - 'data/static/glossary-timetable-term-registry-v1.json'
+      - 'data/static/glossary-entries-role-v1.json'
+      - 'data/static/glossary-entries-timetable-v1.json'
+      - 'docs/glossary/role-expansion.md'
+      - 'docs/glossary/timetable-term-expansion.md'
+      - 'scripts/glossary-data-loader.mjs'
+      - 'scripts/check-glossary-schema-extension.mjs'
+      - 'scripts/check-glossary-racing-type-expansion.mjs'
+      - 'scripts/check-glossary-horse-breed-expansion.mjs'
+      - 'scripts/check-glossary-role-expansion.mjs'
+      - 'scripts/check-glossary-timetable-term-expansion.mjs'
+      - 'src/lib/glossary-data.ts'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-timetable-term-expansion.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build bilingual glossary routes
+        run: npm run build
+      - name: Preserve glossary v2 migration contract
+        run: node scripts/check-glossary-schema-extension.mjs
+      - name: Preserve racing-type release contract
+        run: node scripts/check-glossary-racing-type-expansion.mjs
+      - name: Preserve horse-breed release contract
+        run: node scripts/check-glossary-horse-breed-expansion.mjs
+      - name: Preserve role release contract
+        run: node scripts/check-glossary-role-expansion.mjs
+      - name: Validate timetable term expansion
+        run: node scripts/check-glossary-timetable-term-expansion.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
