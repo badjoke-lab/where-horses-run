@@ -1,6 +1,6 @@
 # Glossary horse breed expansion
 
-Status: implemented for review
+Status: complete
 
 Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 
@@ -34,7 +34,7 @@ One separate horse-type record is added:
 
 - Draft horse.
 
-The glossary therefore contains 31 records and 62 bilingual routes after this unit.
+The glossary contained 31 records and 62 bilingual routes at completion of this unit.
 
 ## Why Draft horse is not a breed record
 
@@ -67,7 +67,7 @@ These source records provide links and evidence identifiers only. No registry, p
 
 ## Beginner explanations
 
-Each new entry includes a short English and Japanese explanation that states the classification boundary directly. For example:
+Each new entry includes a short English and Japanese explanation that states the classification boundary directly.
 
 - the horse is the breed;
 - the race is the racing type;
@@ -92,16 +92,17 @@ It does not publish:
 
 The permanent gate:
 
+- preserves the 31-record and 62-route breed release baseline while allowing later glossary additions;
 - validates the expanded nine-category glossary schema;
 - preserves the v2 migration and racing-type release baselines;
 - validates all four breeds and the one horse type against the canonical registry;
 - validates official source IDs and reciprocal relationships;
 - rejects breed/racing-type and breed/horse-type conflation;
-- builds and checks all 62 bilingual glossary routes;
+- verifies all current bilingual glossary routes;
 - verifies aliases, readings, beginner explanations, sources, and related terms render only when present;
 - proves the repository remains clean;
 - performs no network request, publication, or deployment.
 
-## Next unit
+## Completed next unit
 
-`GLOSSARY-ROLE-EXPANSION-01` will expand reviewed racing roles while keeping participant datasets outside the public glossary.
+`GLOSSARY-ROLE-EXPANSION-01` expands reviewed racing roles while keeping participant, ownership, pedigree, weight, inquiry, and disciplinary datasets outside the public glossary.
