@@ -7,7 +7,7 @@ Reviewed: 2026-07-16
 
 ## Purpose
 
-The country directory now treats broad regions as reviewed facets instead of requiring an exact match against a compound source label.
+The country directory now treats the source-derived region vocabulary as reviewed facets instead of requiring an exact match against a compound source label.
 
 A country whose source value is:
 
@@ -26,20 +26,33 @@ The original public region label remains visible on the country card.
 
 ## Region facets
 
-Eight broad facets are released:
+Nineteen source-derived facets are released:
 
 ```text
 Africa
 Asia
 Caribbean
+Central America
+Central Asia
+East Africa
+East Asia
 Europe
 Middle East
+North Africa
 North America
 Oceania
 South America
+South Caucasus
+Southeast Asia
+Southern Africa
+Southern Europe
+West Africa
+West Asia
 ```
 
-Each facet shows its current country-and-region count. Counts are derived from the same 98 static country records used by the directory.
+This taxonomy intentionally preserves the current source data. Broad labels and subregion labels may coexist. The implementation does not guess a hierarchy or silently collapse reviewed labels into eight broader groups.
+
+Each facet shows its current country-and-region count. Counts are derived from the same 98 static country records used by the directory and are frozen in `region-filter-contract-v1.json` for release validation.
 
 ## Routes
 
@@ -69,7 +82,7 @@ No new country records or detail routes are created.
 The bilingual directory now provides:
 
 - a visible Browse by region / 地域から探す section;
-- eight region cards per locale;
+- nineteen region cards per locale;
 - a current count on every region card;
 - direct region-filter links;
 - region options with counts inside the existing filter form;
@@ -87,17 +100,28 @@ When JavaScript is disabled, the complete list remains readable and every countr
 
 ## Localization
 
-The same eight canonical IDs are used in both locales. Japanese labels are display-only translations:
+The same nineteen canonical English IDs are used in both locales. Japanese labels are display-only translations:
 
 ```text
 Africa -> アフリカ
 Asia -> アジア
 Caribbean -> カリブ海地域
+Central America -> 中央アメリカ
+Central Asia -> 中央アジア
+East Africa -> 東アフリカ
+East Asia -> 東アジア
 Europe -> ヨーロッパ
 Middle East -> 中東
+North Africa -> 北アフリカ
 North America -> 北米
 Oceania -> オセアニア
 South America -> 南米
+South Caucasus -> 南コーカサス
+Southeast Asia -> 東南アジア
+Southern Africa -> 南部アフリカ
+Southern Europe -> 南ヨーロッパ
+West Africa -> 西アフリカ
+West Asia -> 西アジア
 ```
 
 URLs and machine-readable attributes continue to use the canonical English IDs.
@@ -135,7 +159,7 @@ The permanent read-only Actions gate is:
 .github/workflows/region-filters.yml
 ```
 
-The gate builds the site, preserves the glossary, global search, country-filter, and race-type-filter contracts, validates the eight region IDs, compares navigation counts against rendered card memberships, checks all 16 bilingual region links, and proves the repository remains clean.
+The gate builds the site, preserves the glossary, global search, country-filter, and race-type-filter contracts, validates all nineteen region IDs and counts, compares navigation counts against rendered card memberships, checks all 38 bilingual region links, and proves the repository remains clean.
 
 ## Next implementation unit
 
