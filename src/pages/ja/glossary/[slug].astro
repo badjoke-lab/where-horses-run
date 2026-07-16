@@ -17,10 +17,12 @@ if (!entry) {
   return Astro.redirect('/ja/glossary/');
 }
 
-const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
-  const relatedEntry = getGlossaryEntryBySlug(relatedId);
-  return relatedEntry ? [relatedEntry] : [];
-});
+const relatedEntries = entry.related_term_ids
+  .flatMap((relatedId) => {
+    const relatedEntry = getGlossaryEntryBySlug(relatedId);
+    return relatedEntry ? [relatedEntry] : [];
+  })
+  .sort((left, right) => left.term_ja.localeCompare(right.term_ja, 'ja'));
 ---
 
 <BaseLayout title={`${entry.term_ja} | 用語 | 競馬どこ？`} description={entry.summary_ja} lang="ja">
@@ -78,11 +80,19 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
   {entry.related_term_ids.length > 0 && (
     <section class="card" aria-labelledby="related-heading">
       <h2 id="related-heading">関連用語</h2>
+      <p>確認済みの関係 {relatedEntries.length}件。関連があることは同義語であることを意味しません。</p>
       <ul>
         {relatedEntries.map((relatedEntry) => (
-          <li><a href={`/ja/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_ja}</a></li>
+          <li
+            data-related-term-id={relatedEntry.id}
+            data-related-category={relatedEntry.category}
+          >
+            <a href={`/ja/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_ja}</a>
+            {' — '}{getGlossaryCategoryLabel(relatedEntry.category, 'ja')}
+          </li>
         ))}
       </ul>
+      <p><a href="/ja/glossary/relationships/">用語関係グラフ全体を見る</a></p>
     </section>
   )}
 

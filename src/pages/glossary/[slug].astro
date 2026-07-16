@@ -17,10 +17,12 @@ if (!entry) {
   return Astro.redirect('/glossary/');
 }
 
-const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
-  const relatedEntry = getGlossaryEntryBySlug(relatedId);
-  return relatedEntry ? [relatedEntry] : [];
-});
+const relatedEntries = entry.related_term_ids
+  .flatMap((relatedId) => {
+    const relatedEntry = getGlossaryEntryBySlug(relatedId);
+    return relatedEntry ? [relatedEntry] : [];
+  })
+  .sort((left, right) => left.term_en.localeCompare(right.term_en));
 ---
 
 <BaseLayout title={`${entry.term_en} | Glossary`} description={entry.summary_en}>
@@ -80,11 +82,19 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
   {entry.related_term_ids.length > 0 && (
     <section class="card" aria-labelledby="related-heading">
       <h2 id="related-heading">Related terms</h2>
+      <p>{relatedEntries.length} reviewed connections. Related concepts are not necessarily synonyms.</p>
       <ul>
         {relatedEntries.map((relatedEntry) => (
-          <li><a href={`/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_en}</a></li>
+          <li
+            data-related-term-id={relatedEntry.id}
+            data-related-category={relatedEntry.category}
+          >
+            <a href={`/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_en}</a>
+            {' — '}{getGlossaryCategoryLabel(relatedEntry.category, 'en')}
+          </li>
         ))}
       </ul>
+      <p><a href="/glossary/relationships/">Explore the full relationship graph</a></p>
     </section>
   )}
 

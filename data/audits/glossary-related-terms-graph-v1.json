@@ -1,0 +1,72 @@
+{
+  "schema_version": "glossary-related-terms-graph-audit-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-RELATED-TERMS-GRAPH-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_nodes": 48,
+    "edges": 34,
+    "connected_components": 18,
+    "isolated_nodes": 8,
+    "bilingual_term_routes": 96,
+    "graph_page_routes": 0
+  },
+  "implemented": {
+    "glossary_nodes": 48,
+    "edges": 57,
+    "added_edges": 23,
+    "connected_components": 1,
+    "isolated_nodes": 0,
+    "self_loops": 0,
+    "duplicate_edges": 0,
+    "nonreciprocal_edges": 0,
+    "bilingual_term_routes": 96,
+    "graph_page_routes": 2,
+    "rendered_route_errors": 0,
+    "new_concept_ids": 0,
+    "removed_concept_ids": 0
+  },
+  "formerly_isolated_ids": [
+    "racecourse",
+    "turf",
+    "dirt",
+    "all-weather",
+    "left-handed-course",
+    "right-handed-course",
+    "both-directions-course",
+    "straight-course"
+  ],
+  "connection_bridges": [
+    ["racecourse", "racecourse-operator"],
+    ["meeting", "racecard"],
+    ["entries", "driver"],
+    ["entries", "jockey"],
+    ["entries", "trainer"],
+    ["entries", "owner"],
+    ["odds", "payouts"],
+    ["official-source", "governing-body"],
+    ["official-source", "racing-authority"],
+    ["flat-racing", "arabian-racing"],
+    ["flat-racing", "quarter-horse-racing"],
+    ["racecourse", "banei-racing"]
+  ],
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "concept_id_change": false,
+    "route_removal": false,
+    "source_body_republication": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_relation_inference": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-BEGINNER-EXPLANATIONS-01"
+}
