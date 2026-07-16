@@ -61,28 +61,7 @@ jobs:
       - name: Preserve country filter contract
         run: node scripts/check-country-filters.mjs
       - name: Validate race type filters
-        id: race_type_filters
-        shell: bash
-        run: |
-          set +e
-          node scripts/check-race-type-filters.mjs > race-type-filter-check.log 2>&1
-          status=$?
-          cat race-type-filter-check.log
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload race type filter diagnostics
-        if: steps.race_type_filters.outputs.status != '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: race-type-filter-check-log
-          path: race-type-filter-check.log
-          retention-days: 1
-      - name: Fail when race type filter validation failed
-        if: steps.race_type_filters.outputs.status != '0'
-        run: exit 1
-      - name: Remove diagnostic log
-        if: always()
-        run: rm -f race-type-filter-check.log
+        run: node scripts/check-race-type-filters.mjs
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
