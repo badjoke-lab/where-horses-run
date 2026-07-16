@@ -1,0 +1,61 @@
+name: Global search foundation gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/global-search-foundation-v1.json'
+      - 'data/static/global-search-contract-v1.json'
+      - 'docs/search/global-search-foundation.md'
+      - 'scripts/check-global-search-foundation.mjs'
+      - 'src/components/GlobalSearchPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/search-data.ts'
+      - 'src/pages/search/**'
+      - 'src/pages/ja/search/**'
+      - '.github/workflows/global-search-foundation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/global-search-foundation-v1.json'
+      - 'data/static/global-search-contract-v1.json'
+      - 'docs/search/global-search-foundation.md'
+      - 'scripts/check-global-search-foundation.mjs'
+      - 'src/components/GlobalSearchPage.astro'
+      - 'src/layouts/BaseLayout.astro'
+      - 'src/lib/search-data.ts'
+      - 'src/pages/search/**'
+      - 'src/pages/ja/search/**'
+      - '.github/workflows/global-search-foundation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build bilingual search routes and site
+        run: npm run build
+      - name: Preserve glossary public v1 contract
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Validate global search foundation
+        run: node scripts/check-global-search-foundation.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
