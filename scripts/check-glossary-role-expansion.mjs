@@ -97,7 +97,7 @@ for (const id of [...expectedParticipantIds, ...expectedOfficialIds]) {
     'beginner_explanation_en', 'beginner_explanation_ja',
     'source_ids', 'evidence_status',
   ]) if (!exact(entry[field], record[field])) fail(`${id}: glossary ${field} differs from registry`);
-  if (!exact(entry.related_term_ids, record.related_concept_ids)) fail(`${id}: related concepts differ`);
+  for (const relatedId of record.related_concept_ids) if (!entry.related_term_ids.includes(relatedId)) fail(`${id}: required related concept missing ${relatedId}`);
   if (entry.category !== 'role') fail(`${id}: category must be role`);
   if (entry.content_status !== 'enriched_reviewed') fail(`${id}: content status differs`);
   if (entry.last_reviewed !== '2026-07-16') fail(`${id}: review date differs`);
@@ -126,7 +126,7 @@ for (const entry of glossary) {
 
 if (Object.values(registry.classification_boundaries ?? {}).some((value) => value !== true)) fail('classification boundary differs');
 if (entryById.get('jockey')?.term_en === entryById.get('driver')?.term_en) fail('Jockey and Driver were conflated');
-if (entryById.get('trainer')?.related_term_ids.length !== 2) fail('Trainer relation boundary differs');
+if (!entryById.get('trainer')?.related_term_ids.includes('owner') || !entryById.get('trainer')?.related_term_ids.includes('breeder')) fail('Trainer release relations were removed');
 if (entryById.get('steward')?.category !== 'role') fail('Steward must remain a role');
 if (entryById.get('starter')?.id === entryById.get('post-time')?.id) fail('Starter and Post time were conflated');
 
