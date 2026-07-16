@@ -1,0 +1,292 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type {
+  CountryDirectoryLocale,
+  CountryFilterOptions,
+  CountryFilterRecord,
+} from '../lib/country-filter-data';
+
+interface Props {
+  locale: CountryDirectoryLocale;
+  records: CountryFilterRecord[];
+  options: CountryFilterOptions;
+}
+
+const { locale, records, options } = Astro.props;
+const isJapanese = locale === 'ja';
+
+const racingTypeLabelsJa: Record<string, string> = {
+  'thoroughbred-flat': 'サラブレッド平地競走',
+  'thoroughbred-racing': 'サラブレッド競馬',
+  'jump-racing': '障害競走',
+  steeplechase: '障害競走',
+  'harness-racing': '繋駕速歩競走',
+  trotting: 'トロット競走',
+  pacing: 'ペース競走',
+  'arabian-racing': 'アラブ競馬',
+  'quarter-horse-racing': 'クォーターホース競走',
+  'banei-racing': 'ばんえい競馬',
+};
+
+const regionLabelsJa: Record<string, string> = {
+  Africa: 'アフリカ',
+  Asia: 'アジア',
+  Caribbean: 'カリブ海地域',
+  Europe: 'ヨーロッパ',
+  'Middle East': '中東',
+  'North America': '北米',
+  Oceania: 'オセアニア',
+  'South America': '南米',
+};
+
+function humanize(value: string): string {
+  return value
+    .split('-')
+    .map((part) => part ? `${part[0].toUpperCase()}${part.slice(1)}` : part)
+    .join(' ');
+}
+
+function racingTypeLabel(value: string): string {
+  return isJapanese ? racingTypeLabelsJa[value] ?? humanize(value) : humanize(value);
+}
+
+function regionLabel(value: string): string {
+  if (!isJapanese) return value;
+  return value
+    .split(' / ')
+    .map((part) => regionLabelsJa[part] ?? part)
+    .join(' / ');
+}
+
+function statusLabel(value: string): string {
+  if (!isJapanese) return humanize(value);
+  const labels: Record<string, string> = {
+    active: '公開中',
+    limited: '限定公開',
+    inactive: '非公開',
+    planned: '準備中',
+    archived: 'アーカイブ',
+    unknown: '不明',
+  };
+  return labels[value] ?? value;
+}
+---
+
+<BaseLayout
+  title={isJapanese ? '国・地域 | 競馬どこ？' : 'Countries | Where Horses Run'}
+  description={isJapanese
+    ? '世界98か国・地域を、地域、競馬種別、状態、カバーレベルで絞り込めます。'
+    : 'Browse and filter 98 horse racing countries and regions by region, racing type, status, and coverage level.'}
+  lang={locale}
+  canonicalPath={isJapanese ? '/ja/countries/' : '/countries/'}
+  alternatePath={isJapanese ? '/countries/' : '/ja/countries/'}
+>
+  <div
+    data-country-directory
+    data-country-records={records.length}
+    data-country-regions={options.regions.length}
+    data-country-racing-types={options.racingTypes.length}
+    data-country-statuses={options.statuses.length}
+    data-country-coverage-levels={options.coverageLevels.length}
+  >
+    <section class="hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">Countries & regions</p>
+      <h1 id="page-title">{isJapanese ? '国・地域' : 'Countries'}</h1>
+      <p class="hero__summary">
+        {isJapanese
+          ? '競馬開催国・地域を、名称、地域、競馬種別、公開状態、カバーレベルから探せます。'
+          : 'Find racing jurisdictions by name, region, racing type, publication status, and coverage level.'}
+      </p>
+      <p>{isJapanese ? `${records.length}か国・地域を公開中です。` : `${records.length} countries and regions are listed.`}</p>
+    </section>
+
+    {!isJapanese && (
+      <section class="section-grid" aria-label="Major country preview links">
+        <article class="card">
+          <h2><a href="/major-countries/preview-timetable/">Major Country Timetable Preview</a></h2>
+          <p>View the first static manual timetable samples for major-country source groups. This is not live coverage.</p>
+        </article>
+      </section>
+    )}
+
+    <section class="card" aria-labelledby="country-filter-heading">
+      <h2 id="country-filter-heading">{isJapanese ? '絞り込み条件' : 'Filter countries and regions'}</h2>
+      <form data-country-filter-form role="search">
+        <p>
+          <label for="country-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
+          <input
+            id="country-filter-query"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder={isJapanese ? '例：日本、アジア、ばんえい' : 'Example: Japan, Asia, harness'}
+            data-country-filter-query
+          />
+        </p>
+        <p>
+          <label for="country-filter-region"><strong>{isJapanese ? '地域' : 'Region'}</strong></label><br />
+          <select id="country-filter-region" name="region" data-country-filter-region>
+            <option value="all">{isJapanese ? 'すべての地域' : 'All regions'}</option>
+            {options.regions.map((region) => <option value={region}>{regionLabel(region)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="country-filter-racing-type"><strong>{isJapanese ? '競馬種別' : 'Racing type'}</strong></label><br />
+          <select id="country-filter-racing-type" name="racing_type" data-country-filter-racing-type>
+            <option value="all">{isJapanese ? 'すべての競馬種別' : 'All racing types'}</option>
+            {options.racingTypes.map((racingType) => <option value={racingType}>{racingTypeLabel(racingType)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="country-filter-status"><strong>{isJapanese ? '公開状態' : 'Publication status'}</strong></label><br />
+          <select id="country-filter-status" name="status" data-country-filter-status>
+            <option value="all">{isJapanese ? 'すべての状態' : 'All statuses'}</option>
+            {options.statuses.map((status) => <option value={status}>{statusLabel(status)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="country-filter-coverage"><strong>{isJapanese ? 'カバーレベル' : 'Coverage level'}</strong></label><br />
+          <select id="country-filter-coverage" name="coverage" data-country-filter-coverage>
+            <option value="all">{isJapanese ? 'すべてのレベル' : 'All coverage levels'}</option>
+            {options.coverageLevels.map((level) => <option value={String(level)}>Level {level}</option>)}
+          </select>
+        </p>
+        <p>
+          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
+          <button type="button" data-country-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
+        </p>
+      </form>
+      <p aria-live="polite" data-country-filter-count>
+        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
+      </p>
+      <noscript>
+        <p>{isJapanese
+          ? 'JavaScriptが無効な場合は、下の98件の一覧から選べます。'
+          : 'With JavaScript disabled, use the complete list of 98 linked records below.'}</p>
+      </noscript>
+    </section>
+
+    <section class="section-grid" aria-label={isJapanese ? '国・地域一覧' : 'Country and region list'} data-country-filter-results>
+      {records.map((record) => (
+        <article
+          class="card"
+          data-country-record
+          data-country-id={record.id}
+          data-country-region={record.region}
+          data-country-racing-types={record.racingTypes.join('|')}
+          data-country-status={record.status}
+          data-country-coverage={String(record.coverageLevel)}
+          data-country-search-text={record.searchText}
+        >
+          <h2><a href={record.href}>{record.name}</a></h2>
+          {record.alternateName && record.alternateName !== record.name && <p>{record.alternateName}</p>}
+          {record.localName && ![record.name, record.alternateName].includes(record.localName) && <p>{record.localName}</p>}
+          <p>{record.summary}</p>
+          <p><strong>{isJapanese ? '地域' : 'Region'}:</strong> {regionLabel(record.region)}</p>
+          <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong> {record.racingTypes.length ? record.racingTypes.map(racingTypeLabel).join(' · ') : (isJapanese ? '未分類' : 'Not classified')}</p>
+          <p><strong>{isJapanese ? '状態' : 'Status'}:</strong> {statusLabel(record.status)}</p>
+          <p><strong>{isJapanese ? 'カバー' : 'Coverage'}:</strong> Level {record.coverageLevel} / Auto {record.autoLevel}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="card" data-country-filter-empty hidden>
+      <h2>{isJapanese ? '該当する国・地域がありません' : 'No matching countries or regions'}</h2>
+      <p>{isJapanese
+        ? 'キーワードを短くするか、いずれかの条件を「すべて」に戻してください。'
+        : 'Try a shorter keyword or reset one or more filters to All.'}</p>
+    </section>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-country-directory]');
+      if (!root) return;
+
+      const form = root.querySelector('[data-country-filter-form]');
+      const queryInput = root.querySelector('[data-country-filter-query]');
+      const regionSelect = root.querySelector('[data-country-filter-region]');
+      const racingTypeSelect = root.querySelector('[data-country-filter-racing-type]');
+      const statusSelect = root.querySelector('[data-country-filter-status]');
+      const coverageSelect = root.querySelector('[data-country-filter-coverage]');
+      const resetButton = root.querySelector('[data-country-filter-reset]');
+      const count = root.querySelector('[data-country-filter-count]');
+      const empty = root.querySelector('[data-country-filter-empty]');
+      const records = [...root.querySelectorAll('[data-country-record]')];
+      const isJapanese = document.documentElement.lang === 'ja';
+
+      if (!form || !queryInput || !regionSelect || !racingTypeSelect || !statusSelect || !coverageSelect || !resetButton || !count || !empty) return;
+
+      const normalize = (value) => value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const params = new URLSearchParams(window.location.search);
+      queryInput.value = params.get('q') ?? '';
+
+      const restoreSelect = (select, parameter) => {
+        const requested = params.get(parameter) ?? 'all';
+        if ([...select.options].some((option) => option.value === requested)) select.value = requested;
+      };
+      restoreSelect(regionSelect, 'region');
+      restoreSelect(racingTypeSelect, 'racing_type');
+      restoreSelect(statusSelect, 'status');
+      restoreSelect(coverageSelect, 'coverage');
+
+      const apply = () => {
+        const query = normalize(queryInput.value);
+        const region = regionSelect.value;
+        const racingType = racingTypeSelect.value;
+        const status = statusSelect.value;
+        const coverage = coverageSelect.value;
+        let visible = 0;
+
+        for (const record of records) {
+          const racingTypes = (record.dataset.countryRacingTypes ?? '').split('|').filter(Boolean);
+          const show =
+            (!query || (record.dataset.countrySearchText ?? '').includes(query)) &&
+            (region === 'all' || record.dataset.countryRegion === region) &&
+            (racingType === 'all' || racingTypes.includes(racingType)) &&
+            (status === 'all' || record.dataset.countryStatus === status) &&
+            (coverage === 'all' || record.dataset.countryCoverage === coverage);
+          record.hidden = !show;
+          if (show) visible += 1;
+        }
+
+        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
+        empty.hidden = visible !== 0;
+
+        const next = new URLSearchParams();
+        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
+        if (region !== 'all') next.set('region', region);
+        if (racingType !== 'all') next.set('racing_type', racingType);
+        if (status !== 'all') next.set('status', status);
+        if (coverage !== 'all') next.set('coverage', coverage);
+        const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
+        window.history.replaceState(null, '', nextUrl);
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        apply();
+      });
+      queryInput.addEventListener('input', apply);
+      regionSelect.addEventListener('change', apply);
+      racingTypeSelect.addEventListener('change', apply);
+      statusSelect.addEventListener('change', apply);
+      coverageSelect.addEventListener('change', apply);
+      resetButton.addEventListener('click', () => {
+        queryInput.value = '';
+        regionSelect.value = 'all';
+        racingTypeSelect.value = 'all';
+        statusSelect.value = 'all';
+        coverageSelect.value = 'all';
+        apply();
+        queryInput.focus();
+      });
+      apply();
+    })();
+  </script>
+</BaseLayout>
