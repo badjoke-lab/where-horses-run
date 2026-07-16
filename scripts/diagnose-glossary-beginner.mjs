@@ -42,4 +42,6 @@ const result = {
   non_beginner_changed_ids: after.filter((entry) => JSON.stringify(strip(entry)) !== JSON.stringify(strip(byId.get(entry.id)))).map((entry) => entry.id),
   patch_ids: patches.map((patch) => patch.id),
 };
+const output = `${JSON.stringify(result, null, 2)}\n`;
+fs.writeFileSync(path.join(root, 'beginner-diagnostics.json'), output);
 console.log(`BEGINNER_DIAGNOSTICS=${JSON.stringify(result)}`);
