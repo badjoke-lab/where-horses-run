@@ -41,8 +41,8 @@ if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit 
 if (audit.reviewed_at !== '2026-07-16') fail('audit review date differs');
 if (audit.discovery?.artifact_digest !== 'sha256:c6d024f9e3b6164d68b091dc690842cc2333cccc115ce7761971a9940bbdfb9a') fail('discovery artifact digest differs');
 if (audit.baseline?.records !== 23 || audit.baseline?.categories !== 5 || audit.baseline?.records_with_any_extension_field !== 0 || audit.baseline?.schema_files !== 0) fail('baseline counts differ');
-if (audit.implemented?.records !== 23 || audit.implemented?.categories !== 5 || audit.implemented?.bilingual_routes !== 46 || audit.implemented?.records_with_all_extension_fields !== 23 || audit.implemented?.entry_schema_files !== 2 || audit.implemented?.broken_related_term_ids !== 0 || audit.implemented?.broken_source_ids !== 0 || audit.implemented?.rendered_route_errors !== 0) fail('implemented counts differ');
-if (audit.next_implementation_unit !== 'GLOSSARY-RACING-TYPE-EXPANSION-01') fail('next implementation unit differs');
+if (audit.implemented?.records !== 23 || audit.implemented?.categories !== 5 || audit.implemented?.bilingual_routes !== 46 || audit.implemented?.records_with_all_extension_fields !== 23 || audit.implemented?.entry_schema_files !== 2 || audit.implemented?.broken_related_term_ids !== 0 || audit.implemented?.broken_source_ids !== 0 || audit.implemented?.rendered_route_errors !== 0) fail('implemented migration counts differ');
+if (audit.next_implementation_unit !== 'GLOSSARY-RACING-TYPE-EXPANSION-01') fail('historical next implementation unit differs');
 if (Object.entries(audit.public_boundary ?? {}).some(([key, value]) => key === 'definition_and_navigation_allowed' ? value !== true : value !== false)) fail('audit public boundary differs');
 if (Object.values(audit.automation_boundary ?? {}).some((value) => value !== false)) fail('audit automation boundary differs');
 
@@ -60,23 +60,34 @@ const allowedCategories = entrySchema.properties?.category?.enum ?? [];
 if (JSON.stringify(allowedCategories) !== JSON.stringify(audit.allowed_categories)) fail('allowed category order/content differs');
 if (entrySchema.properties?.public_boundary?.properties?.republish_dataset?.const !== false) fail('schema must prohibit dataset republication');
 
+const baselineIds = [
+  'thoroughbred-racing', 'harness-racing', 'trotting', 'pacing', 'arabian-racing',
+  'quarter-horse-racing', 'banei-racing', 'racecourse', 'meeting', 'racecard',
+  'post-time', 'fixture', 'jockey', 'driver', 'trainer', 'turf', 'dirt',
+  'all-weather', 'jump-course', 'left-handed-course', 'right-handed-course',
+  'both-directions-course', 'straight-course',
+];
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
 const idSet = new Set(ids);
-if (glossary.length !== 23) fail(`glossary record count expected 23; found ${glossary.length}`);
+if (glossary.length < audit.implemented.records) fail(`glossary record count regressed below ${audit.implemented.records}; found ${glossary.length}`);
 if (idSet.size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
+for (const id of baselineIds) if (!idSet.has(id)) fail(`baseline glossary record removed: ${id}`);
+
 const categoryCounts = Object.fromEntries([...new Set(glossary.map((entry) => entry.category))]
   .sort()
   .map((category) => [category, glossary.filter((entry) => entry.category === category).length]));
-if (JSON.stringify(categoryCounts) !== JSON.stringify(audit.baseline.category_counts)) fail('category counts changed during schema migration');
+for (const [category, count] of Object.entries(audit.baseline.category_counts)) {
+  if ((categoryCounts[category] ?? 0) < count) fail(`category ${category} regressed below schema-migration baseline ${count}`);
+}
 
 const restrictedRules = audit.restricted_concept_rules ?? {};
 for (const entry of glossary) {
   for (const field of requiredKeys) if (!Object.hasOwn(entry, field)) fail(`${entry.id}: missing ${field}`);
   for (const field of Object.keys(entry)) if (!allowedKeys.has(field)) fail(`${entry.id}: unsupported field ${field}`);
   if (entry.schema_version !== 'glossary-entry-v2') fail(`${entry.id}: schema version differs`);
-  if (entry.slug !== entry.id) fail(`${entry.id}: slug must remain equal to ID in the current baseline`);
+  if (entry.slug !== entry.id) fail(`${entry.id}: slug must remain equal to ID`);
   if (!allowedCategories.includes(entry.category)) fail(`${entry.id}: unsupported category ${entry.category}`);
   for (const field of ['term_en', 'term_ja', 'summary_en', 'summary_ja']) {
     if (typeof entry[field] !== 'string' || !entry[field].trim()) fail(`${entry.id}: invalid ${field}`);
@@ -91,11 +102,11 @@ for (const entry of glossary) {
   for (const sourceId of entry.source_ids) if (!sourceIds.has(sourceId)) fail(`${entry.id}: broken source ID ${sourceId}`);
   if (!['baseline_definition', 'reviewed_secondary', 'reviewed_official', 'mixed_reviewed'].includes(entry.evidence_status)) fail(`${entry.id}: invalid evidence status`);
   if (!['draft_review_only', 'baseline_reviewed', 'enriched_reviewed'].includes(entry.content_status)) fail(`${entry.id}: invalid content status`);
-  if (entry.last_reviewed !== audit.migration_defaults.last_reviewed) fail(`${entry.id}: review date differs`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.last_reviewed)) fail(`${entry.id}: invalid review date`);
   if (!entry.public_boundary || entry.public_boundary.republish_dataset !== false || !['definition_only', 'definition_and_navigation'].includes(entry.public_boundary.mode)) fail(`${entry.id}: invalid public boundary`);
   const restricted = entry.public_boundary.prohibited_dataset_keys;
   if (!Array.isArray(restricted) || new Set(restricted).size !== restricted.length) fail(`${entry.id}: invalid prohibited dataset keys`);
-  if (JSON.stringify(restricted) !== JSON.stringify(restrictedRules[entry.id] ?? [])) fail(`${entry.id}: restricted concept keys differ`);
+  if (Object.hasOwn(restrictedRules, entry.id) && JSON.stringify(restricted) !== JSON.stringify(restrictedRules[entry.id])) fail(`${entry.id}: restricted concept keys differ from migration baseline`);
 }
 
 const indexSource = read('src/pages/glossary/index.astro');
@@ -116,7 +127,10 @@ if (!indexSource.includes('getGlossaryEntries') || !jaIndexSource.includes('getG
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
 let renderedErrors = 0;
 for (const entry of glossary) {
-  for (const [lang, prefix, term, summary] of [['en', '', entry.term_en, entry.summary_en], ['ja', 'ja/', entry.term_ja, entry.summary_ja]]) {
+  for (const [lang, prefix, term, summary, aliases, aliasHeading, beginner, beginnerHeading, relatedHeading] of [
+    ['en', '', entry.term_en, entry.summary_en, entry.aliases_en, '<h2 id="aliases-heading">Aliases</h2>', entry.beginner_explanation_en, '<h2 id="beginner-heading">Beginner explanation</h2>', '<h2 id="related-heading">Related terms</h2>'],
+    ['ja', 'ja/', entry.term_ja, entry.summary_ja, entry.aliases_ja, '<h2 id="aliases-heading">別名</h2>', entry.beginner_explanation_ja, '<h2 id="beginner-heading">初心者向け説明</h2>', '<h2 id="related-heading">関連用語</h2>'],
+  ]) {
     const output = filePath(`dist/${prefix}glossary/${entry.slug}/index.html`);
     if (!fs.existsSync(output)) {
       fail(`${entry.id}: missing ${lang} route`);
@@ -124,15 +138,14 @@ for (const entry of glossary) {
       continue;
     }
     const html = fs.readFileSync(output, 'utf8');
-    if (!html.includes(term) || !html.includes(summary)) { fail(`${entry.id}: ${lang} baseline content changed`); renderedErrors += 1; }
-    if (!html.includes('data-glossary-schema-version="glossary-entry-v2"') || !html.includes('data-glossary-content-status="baseline_reviewed"') || !html.includes('data-glossary-public-boundary="definition_and_navigation"')) {
+    if (!html.includes(term) || !html.includes(summary)) { fail(`${entry.id}: ${lang} content differs`); renderedErrors += 1; }
+    if (!html.includes('data-glossary-schema-version="glossary-entry-v2"') || !html.includes(`data-glossary-content-status="${entry.content_status}"`) || !html.includes(`data-glossary-public-boundary="${entry.public_boundary.mode}"`)) {
       fail(`${entry.id}: ${lang} schema markers missing`);
       renderedErrors += 1;
     }
-    if (html.includes('<h2 id="aliases-heading">Aliases</h2>') || html.includes('<h2 id="aliases-heading">別名</h2>') || html.includes('<h2 id="beginner-heading">Beginner explanation</h2>') || html.includes('<h2 id="beginner-heading">初心者向け説明</h2>') || html.includes('<h2 id="related-heading">Related terms</h2>') || html.includes('<h2 id="related-heading">関連用語</h2>')) {
-      fail(`${entry.id}: ${lang} empty optional section rendered`);
-      renderedErrors += 1;
-    }
+    if ((aliases.length > 0) !== html.includes(aliasHeading)) { fail(`${entry.id}: ${lang} alias rendering differs`); renderedErrors += 1; }
+    if ((Boolean(beginner)) !== html.includes(beginnerHeading)) { fail(`${entry.id}: ${lang} beginner rendering differs`); renderedErrors += 1; }
+    if ((entry.related_term_ids.length > 0) !== html.includes(relatedHeading)) { fail(`${entry.id}: ${lang} related-term rendering differs`); renderedErrors += 1; }
   }
 }
 if (renderedErrors !== 0) fail(`rendered route errors: ${renderedErrors}`);
@@ -143,10 +156,10 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('GLOSSARY_SCHEMA_EXTENSION: pass');
-console.log('GLOSSARY_RECORDS: 23');
-console.log('BILINGUAL_ROUTES: 46');
+console.log(`GLOSSARY_RECORDS: ${glossary.length}`);
+console.log(`BILINGUAL_ROUTES: ${glossary.length * 2}`);
 console.log('SCHEMA_FILES: 2');
-console.log('MIGRATED_V2_RECORDS: 23');
+console.log(`MIGRATED_V2_RECORDS: ${glossary.length}`);
 console.log('PERMANENT_WORKFLOW: enabled');
 console.log('DATASET_REPUBLICATION: false');
-console.log('NEXT_IMPLEMENTATION_UNIT: GLOSSARY-RACING-TYPE-EXPANSION-01');
+console.log('SCHEMA_MIGRATION_BASELINE_PRESERVED: 23');
