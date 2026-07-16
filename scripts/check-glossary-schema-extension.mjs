@@ -7,6 +7,17 @@ const fail = (message) => errors.push(message);
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 
+const permanentWorkflowPath = '.github/workflows/glossary-schema-extension.yml';
+const temporaryWorkflowPath = '.github/workflows/temporary-glossary-schema-extension-discovery.yml';
+if (!fs.existsSync(path.join(root, permanentWorkflowPath))) fail('permanent glossary schema workflow is missing');
+if (fs.existsSync(path.join(root, temporaryWorkflowPath))) fail('temporary glossary schema discovery workflow must be removed');
+if (fs.existsSync(path.join(root, permanentWorkflowPath))) {
+  const workflow = read(permanentWorkflowPath);
+  for (const marker of ['npm install', 'npm run build', 'node scripts/check-glossary-schema-extension.mjs', 'git status --porcelain']) {
+    if (!workflow.includes(marker)) fail(`permanent workflow missing ${marker}`);
+  }
+}
+
 const audit = parse('data/audits/glossary-schema-extension-v1.json');
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
 const collectionSchema = parse('data/static/glossary-v2.schema.json');
@@ -134,5 +145,6 @@ console.log('GLOSSARY_RECORDS: 23');
 console.log('BILINGUAL_ROUTES: 46');
 console.log('SCHEMA_FILES: 2');
 console.log('MIGRATED_V2_RECORDS: 23');
+console.log('PERMANENT_WORKFLOW: enabled');
 console.log('DATASET_REPUBLICATION: false');
 console.log('NEXT_IMPLEMENTATION_UNIT: GLOSSARY-RACING-TYPE-EXPANSION-01');
