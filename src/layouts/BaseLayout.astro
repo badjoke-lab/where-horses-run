@@ -27,7 +27,7 @@ const canonicalPathname = canonicalPath ?? Astro.url.pathname;
 const bilingualPathPatterns = [
   /^\/$/,
   /^\/ja\/$/,
-  /^\/(?:ja\/)?(?:about|archive|calendar|countries|disclaimer|glossary|sources|today|tomorrow|tracks|types)(?:\/.*)?$/,
+  /^\/(?:ja\/)?(?:about|archive|calendar|countries|disclaimer|glossary|search|sources|today|tomorrow|tracks|types)(?:\/.*)?$/,
   /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/,
   /^\/(?:ja\/)?major-countries\/current-timetable\/$/,
 ];
@@ -87,6 +87,7 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
           <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
             <a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
             <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
+            <a href={isJapanese ? '/ja/search/' : '/search/'}>{isJapanese ? '検索' : 'Search'}</a>
             <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
             <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
             <a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
