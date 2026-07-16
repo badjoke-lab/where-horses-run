@@ -1,25 +1,26 @@
 {
-  "schema_version": "country-filters-audit-v1",
+  "schema_version": "race-type-filters-audit-v1",
   "work_id": "WHR-SEARCH-FILTER-SEO-V1",
-  "implementation_unit": "COUNTRY-FILTERS-01",
+  "implementation_unit": "RACE-TYPE-FILTERS-01",
   "status": "implemented_for_review",
   "reviewed_at": "2026-07-16",
   "verified": {
-    "country_records": 98,
-    "english_rendered_records": 98,
-    "japanese_rendered_records": 98,
+    "racecourse_records": 36,
+    "english_rendered_records": 36,
+    "japanese_rendered_records": 36,
     "directory_routes": 2,
-    "bilingual_detail_routes": 196,
-    "filter_controls": 5,
-    "url_parameters": 5,
-    "duplicate_country_ids": 0,
+    "bilingual_detail_routes": 72,
+    "filter_controls": 4,
+    "url_parameters": 4,
+    "duplicate_racecourse_ids": 0,
     "missing_search_text": 0,
     "missing_filter_attributes": 0,
-    "unknown_region_options": 0,
+    "unknown_country_options": 0,
     "unknown_racing_type_options": 0,
-    "unknown_status_options": 0,
-    "unknown_coverage_options": 0,
+    "unknown_surface_options": 0,
+    "broken_racecourse_links": 0,
     "broken_country_links": 0,
+    "broken_racing_type_links": 0,
     "no_javascript_missing_records": 0,
     "contract_errors": 0,
     "rendered_marker_errors": 0
@@ -46,5 +47,6 @@
     "automatic_publication_enabled": false,
     "deployment_enabled": false
   },
-  "next_implementation_unit": "RACE-TYPE-FILTERS-01"
+  "previous_implementation_unit": "COUNTRY-FILTERS-01",
+  "next_implementation_unit": "REGION-FILTERS-01"
 }

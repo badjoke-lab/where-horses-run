@@ -129,5 +129,5 @@ The gate builds the site, preserves the glossary public v1 and global search con
 ## Next implementation unit
 
 ```text
-RACECOURSE-FILTERS-01
+RACE-TYPE-FILTERS-01
 ```

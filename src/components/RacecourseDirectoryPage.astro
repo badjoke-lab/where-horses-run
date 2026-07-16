@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type {
+  RacecourseDirectoryLocale,
+  RacecourseFilterOptions,
+  RacecourseFilterRecord,
+} from '../lib/racecourse-filter-data';
+
+interface Props {
+  locale: RacecourseDirectoryLocale;
+  records: RacecourseFilterRecord[];
+  options: RacecourseFilterOptions;
+}
+
+const { locale, records, options } = Astro.props;
+const isJapanese = locale === 'ja';
+
+const surfaceLabelsJa: Record<string, string> = {
+  turf: '芝',
+  dirt: 'ダート',
+  'all-weather': 'オールウェザー',
+  'jump-course': '障害コース',
+  sand: '砂',
+};
+
+const directionLabelsJa: Record<string, string> = {
+  'left-handed': '左回り',
+  'right-handed': '右回り',
+  'both-directions': '両回り',
+  straight: '直線',
+  unknown: '未確認',
+};
+
+const statusLabelsJa: Record<string, string> = {
+  active: '公開中',
+  limited: '限定公開',
+  inactive: '非公開',
+  planned: '準備中',
+  unknown: '不明',
+};
+
+function humanize(value: string): string {
+  return value
+    .split('-')
+    .map((part) => part ? `${part[0].toUpperCase()}${part.slice(1)}` : part)
+    .join(' ');
+}
+
+function surfaceLabel(value: string): string {
+  return isJapanese ? surfaceLabelsJa[value] ?? humanize(value) : humanize(value);
+}
+
+function directionLabel(value: string): string {
+  return isJapanese ? directionLabelsJa[value] ?? humanize(value) : humanize(value);
+}
+
+function statusLabel(value: string): string {
+  return isJapanese ? statusLabelsJa[value] ?? humanize(value) : humanize(value);
+}
+---
+
+<BaseLayout
+  title={isJapanese ? '競馬場 | 競馬どこ？' : 'Racecourses | Where Horses Run'}
+  description={isJapanese
+    ? '36競馬場を名称、国・地域、競馬種別、馬場から絞り込めます。'
+    : 'Search and filter 36 racecourses by name, country or region, racing type, and surface.'}
+  lang={locale}
+  canonicalPath={isJapanese ? '/ja/tracks/' : '/tracks/'}
+  alternatePath={isJapanese ? '/tracks/' : '/ja/tracks/'}
+>
+  <div
+    data-racecourse-directory
+    data-racecourse-records={records.length}
+    data-racecourse-country-options={options.countries.length}
+    data-racecourse-racing-type-options={options.racingTypes.length}
+    data-racecourse-surface-options={options.surfaces.length}
+  >
+    <section class="hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">Racecourses</p>
+      <h1 id="page-title">{isJapanese ? '競馬場' : 'Racecourses'}</h1>
+      <p class="hero__summary">
+        {isJapanese
+          ? '登録済みの競馬場を、名称、国・地域、競馬種別、馬場から探せます。'
+          : 'Find listed racecourses by name, country or region, racing type, and surface.'}
+      </p>
+      <p>{isJapanese ? `${records.length}競馬場を掲載しています。` : `${records.length} racecourses are listed.`}</p>
+    </section>
+
+    <section class="card" aria-labelledby="racecourse-filter-heading">
+      <h2 id="racecourse-filter-heading">{isJapanese ? '競馬場の絞り込み' : 'Filter racecourses'}</h2>
+      <form data-racecourse-filter-form role="search">
+        <p>
+          <label for="racecourse-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
+          <input
+            id="racecourse-filter-query"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder={isJapanese ? '例：東京、芝、障害' : 'Example: Tokyo, turf, jump'}
+            data-racecourse-filter-query
+          />
+        </p>
+        <p>
+          <label for="racecourse-filter-country"><strong>{isJapanese ? '国・地域' : 'Country or region'}</strong></label><br />
+          <select id="racecourse-filter-country" name="country" data-racecourse-filter-country>
+            <option value="all">{isJapanese ? 'すべての国・地域' : 'All countries and regions'}</option>
+            {options.countries.map((country) => <option value={country.id}>{country.label}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="racecourse-filter-racing-type"><strong>{isJapanese ? '競馬種別' : 'Racing type'}</strong></label><br />
+          <select id="racecourse-filter-racing-type" name="racing_type" data-racecourse-filter-racing-type>
+            <option value="all">{isJapanese ? 'すべての競馬種別' : 'All racing types'}</option>
+            {options.racingTypes.map((type) => <option value={type.id}>{type.label}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="racecourse-filter-surface"><strong>{isJapanese ? '馬場' : 'Surface'}</strong></label><br />
+          <select id="racecourse-filter-surface" name="surface" data-racecourse-filter-surface>
+            <option value="all">{isJapanese ? 'すべての馬場' : 'All surfaces'}</option>
+            {options.surfaces.map((surface) => <option value={surface}>{surfaceLabel(surface)}</option>)}
+          </select>
+        </p>
+        <p>
+          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
+          <button type="button" data-racecourse-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
+        </p>
+      </form>
+      <p aria-live="polite" data-racecourse-filter-count>
+        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
+      </p>
+      <noscript>
+        <p>{isJapanese
+          ? 'JavaScriptが無効な場合は、下の36件の一覧から選べます。'
+          : 'With JavaScript disabled, use the complete list of 36 linked records below.'}</p>
+      </noscript>
+    </section>
+
+    <section class="section-grid" aria-label={isJapanese ? '競馬場一覧' : 'Racecourse list'} data-racecourse-filter-results>
+      {records.map((record) => (
+        <article
+          class="card"
+          data-racecourse-record
+          data-racecourse-id={record.id}
+          data-racecourse-country={record.countryId}
+          data-racecourse-racing-types={record.racingTypes.map((type) => type.id).join('|') || 'none'}
+          data-racecourse-surfaces={record.surfaces.join('|') || 'none'}
+          data-racecourse-search-text={record.searchText}
+        >
+          <h2><a href={record.href}>{record.name}</a></h2>
+          {record.alternateName && record.alternateName !== record.name && <p>{record.alternateName}</p>}
+          {record.localName && ![record.name, record.alternateName].includes(record.localName) && <p>{record.localName}</p>}
+          <p>
+            <strong>{isJapanese ? '国・地域' : 'Country or region'}:</strong>{' '}
+            {record.countryHref ? <a href={record.countryHref}>{record.countryName}</a> : record.countryName}
+          </p>
+          <p><strong>{isJapanese ? '都市・地域' : 'City and region'}:</strong> {[record.city, record.region].filter(Boolean).join(' / ') || (isJapanese ? '未確認' : 'Not confirmed')}</p>
+          <p><strong>{isJapanese ? '馬場' : 'Surfaces'}:</strong> {record.surfaces.length ? record.surfaces.map(surfaceLabel).join(' · ') : (isJapanese ? '未確認' : 'Not confirmed')}</p>
+          <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong></p>
+          {record.racingTypes.length ? (
+            <ul>
+              {record.racingTypes.map((type) => (
+                <li>{type.href ? <a href={type.href}>{type.label}</a> : type.label}</li>
+              ))}
+            </ul>
+          ) : <p>{isJapanese ? '未分類' : 'Not classified'}</p>}
+          <p><strong>{isJapanese ? '回り方向' : 'Direction'}:</strong> {directionLabel(record.direction)}</p>
+          <p><strong>{isJapanese ? '状態' : 'Status'}:</strong> {statusLabel(record.status)}</p>
+          <p><strong>{isJapanese ? '開催予定' : 'Schedule'}:</strong> {humanize(record.scheduleStatus)}</p>
+          <p><strong>{isJapanese ? 'コース情報' : 'Course profile'}:</strong> {humanize(record.courseProfileStatus)}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="card" data-racecourse-filter-empty hidden>
+      <h2>{isJapanese ? '該当する競馬場がありません' : 'No matching racecourses'}</h2>
+      <p>{isJapanese
+        ? 'キーワードを短くするか、いずれかの条件を「すべて」に戻してください。'
+        : 'Try a shorter keyword or reset one or more filters to All.'}</p>
+    </section>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-racecourse-directory]');
+      if (!root) return;
+
+      const form = root.querySelector('[data-racecourse-filter-form]');
+      const queryInput = root.querySelector('[data-racecourse-filter-query]');
+      const countrySelect = root.querySelector('[data-racecourse-filter-country]');
+      const racingTypeSelect = root.querySelector('[data-racecourse-filter-racing-type]');
+      const surfaceSelect = root.querySelector('[data-racecourse-filter-surface]');
+      const resetButton = root.querySelector('[data-racecourse-filter-reset]');
+      const count = root.querySelector('[data-racecourse-filter-count]');
+      const empty = root.querySelector('[data-racecourse-filter-empty]');
+      const records = [...root.querySelectorAll('[data-racecourse-record]')];
+      const isJapanese = document.documentElement.lang === 'ja';
+
+      if (!form || !queryInput || !countrySelect || !racingTypeSelect || !surfaceSelect || !resetButton || !count || !empty) return;
+
+      const normalize = (value) => value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const params = new URLSearchParams(window.location.search);
+      queryInput.value = params.get('q') ?? '';
+
+      const restoreSelect = (select, parameter) => {
+        const requested = params.get(parameter) ?? 'all';
+        if ([...select.options].some((option) => option.value === requested)) select.value = requested;
+      };
+      restoreSelect(countrySelect, 'country');
+      restoreSelect(racingTypeSelect, 'racing_type');
+      restoreSelect(surfaceSelect, 'surface');
+
+      const apply = () => {
+        const query = normalize(queryInput.value);
+        const country = countrySelect.value;
+        const racingType = racingTypeSelect.value;
+        const surface = surfaceSelect.value;
+        let visible = 0;
+
+        for (const record of records) {
+          const racingTypes = (record.dataset.racecourseRacingTypes ?? '').split('|').filter((value) => value && value !== 'none');
+          const surfaces = (record.dataset.racecourseSurfaces ?? '').split('|').filter((value) => value && value !== 'none');
+          const show =
+            (!query || (record.dataset.racecourseSearchText ?? '').includes(query)) &&
+            (country === 'all' || record.dataset.racecourseCountry === country) &&
+            (racingType === 'all' || racingTypes.includes(racingType)) &&
+            (surface === 'all' || surfaces.includes(surface));
+          record.hidden = !show;
+          if (show) visible += 1;
+        }
+
+        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
+        empty.hidden = visible !== 0;
+
+        const next = new URLSearchParams();
+        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
+        if (country !== 'all') next.set('country', country);
+        if (racingType !== 'all') next.set('racing_type', racingType);
+        if (surface !== 'all') next.set('surface', surface);
+        const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
+        window.history.replaceState(null, '', nextUrl);
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        apply();
+      });
+      queryInput.addEventListener('input', apply);
+      countrySelect.addEventListener('change', apply);
+      racingTypeSelect.addEventListener('change', apply);
+      surfaceSelect.addEventListener('change', apply);
+      resetButton.addEventListener('click', () => {
+        queryInput.value = '';
+        countrySelect.value = 'all';
+        racingTypeSelect.value = 'all';
+        surfaceSelect.value = 'all';
+        apply();
+        queryInput.focus();
+      });
+      apply();
+    })();
+  </script>
+</BaseLayout>

@@ -1,0 +1,71 @@
+name: Race type filters gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/race-type-filters-v1.json'
+      - 'data/static/race-type-filter-contract-v1.json'
+      - 'data/audits/country-filters-v1.json'
+      - 'data/static/country-filter-contract-v1.json'
+      - 'docs/search/country-filters.md'
+      - 'docs/search/race-type-filters.md'
+      - 'scripts/check-country-filters.mjs'
+      - 'scripts/check-race-type-filters.mjs'
+      - 'src/components/RacecourseDirectoryPage.astro'
+      - 'src/lib/racecourse-filter-data.ts'
+      - 'src/pages/tracks/index.astro'
+      - 'src/pages/ja/tracks/index.astro'
+      - '.github/workflows/race-type-filters.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/race-type-filters-v1.json'
+      - 'data/static/race-type-filter-contract-v1.json'
+      - 'data/audits/country-filters-v1.json'
+      - 'data/static/country-filter-contract-v1.json'
+      - 'docs/search/country-filters.md'
+      - 'docs/search/race-type-filters.md'
+      - 'scripts/check-country-filters.mjs'
+      - 'scripts/check-race-type-filters.mjs'
+      - 'src/components/RacecourseDirectoryPage.astro'
+      - 'src/lib/racecourse-filter-data.ts'
+      - 'src/pages/tracks/index.astro'
+      - 'src/pages/ja/tracks/index.astro'
+      - '.github/workflows/race-type-filters.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build bilingual racecourse directories and site
+        run: npm run build
+      - name: Preserve glossary public v1 contract
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Preserve global search foundation contract
+        run: node scripts/check-global-search-foundation.mjs
+      - name: Preserve country filter contract
+        run: node scripts/check-country-filters.mjs
+      - name: Validate race type filters
+        run: node scripts/check-race-type-filters.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
