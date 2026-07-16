@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import {
+  getGlossaryCategoryLabel,
+  getGlossaryEntries,
+  getGlossaryEntryBySlug,
+  getGlossaryRelationshipEdges,
+} from '../../../lib/glossary-data';
+
+const entries = getGlossaryEntries();
+const edges = getGlossaryRelationshipEdges();
+const graphEntries = entries.map((entry) => ({
+  entry,
+  related: entry.related_term_ids
+    .flatMap((id) => {
+      const relatedEntry = getGlossaryEntryBySlug(id);
+      return relatedEntry ? [relatedEntry] : [];
+    })
+    .sort((left, right) => left.term_ja.localeCompare(right.term_ja, 'ja')),
+}));
+---
+
+<BaseLayout
+  title="用語関係グラフ | 競馬どこ？"
+  description="競馬種別、馬の品種、役割、競馬データ、競馬場用語、公式ソース概念の確認済み関係を一覧できます。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Glossary graph</p>
+    <h1 id="page-title">用語関係グラフ</h1>
+    <p class="hero__summary">
+      公開済みの全用語を結ぶ確認済みの関係を一覧できます。関係があることは、一緒に読むと理解しやすいことを示し、同義語であることを意味しません。
+    </p>
+  </section>
+
+  <section class="section-grid" aria-label="グラフ概要">
+    <article class="card">
+      <h2>概念</h2>
+      <p>確認済み用語ノード <strong>{entries.length}</strong>件</p>
+    </article>
+    <article class="card">
+      <h2>関係</h2>
+      <p>確認済み無向辺 <strong>{edges.length}</strong>件</p>
+    </article>
+    <article class="card">
+      <h2>接続状態</h2>
+      <p>連結成分 <strong>1</strong>、孤立概念 <strong>0</strong></p>
+    </article>
+  </section>
+
+  <section class="section-grid" aria-label="用語隣接一覧">
+    {graphEntries.map(({ entry, related }) => (
+      <article
+        class="card"
+        data-graph-node-id={entry.id}
+        data-graph-node-category={entry.category}
+        data-graph-node-degree={related.length}
+      >
+        <h2><a href={`/ja/glossary/${entry.slug}/`}>{entry.term_ja}</a></h2>
+        <p>{getGlossaryCategoryLabel(entry.category, 'ja')}・関連用語 {related.length}件</p>
+        <ul>
+          {related.map((relatedEntry) => (
+            <li
+              data-related-term-id={relatedEntry.id}
+              data-related-category={relatedEntry.category}
+            >
+              <a href={`/ja/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_ja}</a>
+              {' — '}{getGlossaryCategoryLabel(relatedEntry.category, 'ja')}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+
+  <p><a href="/ja/glossary/">用語一覧へ戻る</a></p>
+</BaseLayout>
