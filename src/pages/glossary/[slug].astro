@@ -33,6 +33,7 @@ const relatedEntries = entry.related_term_ids
     data-glossary-content-status={entry.content_status}
     data-glossary-public-boundary={entry.public_boundary.mode}
     data-glossary-category={entry.category}
+    data-glossary-beginner-explanation="reviewed"
   >
     <p class="hero__eyebrow">Glossary term</p>
     <h1 id="page-title">{entry.term_en}</h1>
@@ -72,12 +73,10 @@ const relatedEntries = entry.related_term_ids
     </section>
   )}
 
-  {entry.beginner_explanation_en && (
-    <section class="card" aria-labelledby="beginner-heading">
-      <h2 id="beginner-heading">Beginner explanation</h2>
-      <p>{entry.beginner_explanation_en}</p>
-    </section>
-  )}
+  <section class="card" aria-labelledby="beginner-heading">
+    <h2 id="beginner-heading">Beginner explanation</h2>
+    <p>{entry.beginner_explanation_en}</p>
+  </section>
 
   {entry.related_term_ids.length > 0 && (
     <section class="card" aria-labelledby="related-heading">
