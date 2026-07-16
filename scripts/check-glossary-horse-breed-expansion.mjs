@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadGlossary } from './glossary-data-loader.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -11,7 +12,7 @@ const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const audit = parse('data/audits/glossary-horse-breed-expansion-v1.json');
 const registry = parse('data/static/glossary-horse-breed-registry-v1.json');
-const glossary = parse('data/static/glossary.json');
+const glossary = loadGlossary(root);
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
 const sources = [
   ...parse('data/static/sources.json'),
