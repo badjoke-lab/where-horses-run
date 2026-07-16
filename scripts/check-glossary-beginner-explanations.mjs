@@ -9,6 +9,21 @@ const filePath = (file) => path.join(root, file);
 const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const escapeHtml = (value) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+const renderedTextMatches = (html, text) => {
+  const escaped = escapeHtml(text);
+  return [
+    text,
+    escaped,
+    escaped.replaceAll('&#39;', '&#x27;'),
+    escaped.replaceAll('&#39;', '&apos;'),
+  ].some((candidate) => html.includes(candidate));
+};
 
 const audit = parse('data/audits/glossary-beginner-explanations-v1.json');
 const registry = parse('data/static/glossary-beginner-explanation-registry-v1.json');
@@ -219,7 +234,7 @@ for (const entry of glossary) {
     const html = fs.readFileSync(output, 'utf8');
     if (!html.includes('data-glossary-beginner-explanation="reviewed"')) { fail(`${entry.id}: rendered beginner marker missing`); renderedErrors += 1; }
     if (!html.includes(heading)) { fail(`${entry.id}: rendered beginner heading missing`); renderedErrors += 1; }
-    if (!html.includes(text)) { fail(`${entry.id}: rendered beginner text differs`); renderedErrors += 1; }
+    if (!renderedTextMatches(html, text)) { fail(`${entry.id}: rendered beginner text differs`); renderedErrors += 1; }
   }
 }
 for (const graphPage of ['dist/glossary/relationships/index.html', 'dist/ja/glossary/relationships/index.html']) {
