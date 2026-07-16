@@ -1,14 +1,19 @@
 import baselineGlossary from '../../data/static/glossary.json';
 import roleGlossaryOverlay from '../../data/static/glossary-entries-role-v1.json';
+import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetable-v1.json';
 
-const roleOverrideById = new Map(roleGlossaryOverlay.map((entry) => [entry.id, entry]));
+const overlays = [roleGlossaryOverlay, timetableGlossaryOverlay] as const;
+const order = baselineGlossary.map((entry) => entry.id);
+const byId = new Map(baselineGlossary.map((entry) => [entry.id, entry]));
 
-const mergedBaseline = baselineGlossary.map((entry) => roleOverrideById.get(entry.id) ?? entry);
-const newRoleEntries = roleGlossaryOverlay.filter(
-  (entry) => !baselineGlossary.some((baseline) => baseline.id === entry.id),
-);
+for (const overlay of overlays) {
+  for (const entry of overlay) {
+    if (!byId.has(entry.id)) order.push(entry.id);
+    byId.set(entry.id, entry);
+  }
+}
 
-const glossary = [...mergedBaseline, ...newRoleEntries] as const;
+const glossary = order.map((id) => byId.get(id)!);
 
 export type GlossaryEntry = (typeof glossary)[number];
 

@@ -1,0 +1,90 @@
+{
+  "schema_version": "glossary-timetable-term-expansion-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-TIMETABLE-TERM-EXPANSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 36,
+    "data_term_records": 4,
+    "bilingual_routes": 72
+  },
+  "implemented": {
+    "glossary_records": 40,
+    "data_term_records": 8,
+    "schedule_context_records": 3,
+    "race_document_records": 2,
+    "market_outcome_records": 3,
+    "new_records": 4,
+    "reconciled_existing_records": 4,
+    "bilingual_routes": 80,
+    "new_bilingual_routes": 8,
+    "reciprocal_relationships": 7,
+    "broken_related_term_ids": 0,
+    "classification_conflation_errors": 0,
+    "rendered_route_errors": 0
+  },
+  "added_ids": [
+    "entries",
+    "odds",
+    "results",
+    "payouts"
+  ],
+  "reconciled_ids": [
+    "meeting",
+    "racecard",
+    "fixture",
+    "post-time"
+  ],
+  "schedule_context_ids": [
+    "meeting",
+    "fixture",
+    "post-time"
+  ],
+  "race_document_ids": [
+    "racecard",
+    "entries"
+  ],
+  "market_outcome_ids": [
+    "odds",
+    "results",
+    "payouts"
+  ],
+  "relationship_pairs": [
+    ["meeting", "fixture"],
+    ["meeting", "steward"],
+    ["racecard", "entries"],
+    ["racecard", "post-time"],
+    ["racecard", "odds"],
+    ["post-time", "starter"],
+    ["results", "payouts"]
+  ],
+  "classification_boundaries": {
+    "meeting_is_not_fixture": true,
+    "post_time_is_not_actual_start": true,
+    "racecard_is_not_entries_dataset": true,
+    "entries_are_not_results": true,
+    "odds_are_not_prediction": true,
+    "results_are_not_payouts": true,
+    "payouts_are_not_odds": true,
+    "definitions_are_not_live_dataset": true
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "entries_dataset": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false,
+    "predictions_dataset": false,
+    "raw_source_body": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-OFFICIAL-SOURCE-TERM-EXPANSION-01"
+}
