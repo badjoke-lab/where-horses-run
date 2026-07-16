@@ -1,0 +1,104 @@
+[
+  {
+    "id": "racecourse",
+    "add_related_term_ids": [
+      "turf",
+      "dirt",
+      "all-weather",
+      "jump-course",
+      "left-handed-course",
+      "right-handed-course",
+      "both-directions-course",
+      "straight-course",
+      "racecourse-operator"
+    ]
+  },
+  {
+    "id": "turf",
+    "add_related_term_ids": ["racecourse", "flat-racing"]
+  },
+  {
+    "id": "dirt",
+    "add_related_term_ids": ["racecourse", "flat-racing"]
+  },
+  {
+    "id": "all-weather",
+    "add_related_term_ids": ["racecourse", "flat-racing"]
+  },
+  {
+    "id": "jump-course",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "left-handed-course",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "right-handed-course",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "both-directions-course",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "straight-course",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "flat-racing",
+    "add_related_term_ids": ["turf", "dirt", "all-weather"]
+  },
+  {
+    "id": "racecourse-operator",
+    "add_related_term_ids": ["racecourse"]
+  },
+  {
+    "id": "meeting",
+    "add_related_term_ids": ["racecard"]
+  },
+  {
+    "id": "racecard",
+    "add_related_term_ids": ["meeting"]
+  },
+  {
+    "id": "entries",
+    "add_related_term_ids": ["jockey", "driver", "trainer", "owner"]
+  },
+  {
+    "id": "jockey",
+    "add_related_term_ids": ["entries"]
+  },
+  {
+    "id": "driver",
+    "add_related_term_ids": ["entries"]
+  },
+  {
+    "id": "trainer",
+    "add_related_term_ids": ["entries"]
+  },
+  {
+    "id": "owner",
+    "add_related_term_ids": ["entries"]
+  },
+  {
+    "id": "odds",
+    "add_related_term_ids": ["payouts"]
+  },
+  {
+    "id": "payouts",
+    "add_related_term_ids": ["odds"]
+  },
+  {
+    "id": "official-source",
+    "add_related_term_ids": ["governing-body", "racing-authority"]
+  },
+  {
+    "id": "governing-body",
+    "add_related_term_ids": ["official-source"]
+  },
+  {
+    "id": "racing-authority",
+    "add_related_term_ids": ["official-source"]
+  }
+]
