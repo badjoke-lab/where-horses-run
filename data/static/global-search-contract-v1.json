@@ -1,0 +1,94 @@
+{
+  "schema_version": "global-search-contract-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "GLOBAL-SEARCH-FOUNDATION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "scope": {
+    "country_records": 98,
+    "racecourse_records": 36,
+    "glossary_records": 48,
+    "total_records": 182,
+    "locales": 2,
+    "search_routes": 2,
+    "record_type_filters": 3,
+    "no_javascript_fallback_records_per_locale": 182
+  },
+  "record_types": ["country", "racecourse", "glossary"],
+  "route_contract": {
+    "english_search": "/search/",
+    "japanese_search": "/ja/search/",
+    "country_route_pattern_en": "/countries/{slug}/",
+    "country_route_pattern_ja": "/ja/countries/{slug}/",
+    "racecourse_route_pattern_en": "/tracks/{slug}/",
+    "racecourse_route_pattern_ja": "/ja/tracks/{slug}/",
+    "glossary_route_pattern_en": "/glossary/{slug}/",
+    "glossary_route_pattern_ja": "/ja/glossary/{slug}/"
+  },
+  "search_contract": {
+    "unicode_normalization": "NFKC",
+    "case_insensitive": true,
+    "whitespace_normalized": true,
+    "url_query_parameter": "q",
+    "url_type_parameter": "type",
+    "live_client_filtering": true,
+    "form_submission_supported": true,
+    "zero_result_state_required": true,
+    "no_javascript_complete_list_required": true,
+    "server_or_external_search_service_required": false
+  },
+  "indexed_fields": {
+    "country": [
+      "name_en",
+      "name_ja",
+      "name_local",
+      "region",
+      "racing_types",
+      "summary_en",
+      "summary_ja"
+    ],
+    "racecourse": [
+      "name_en",
+      "name_ja",
+      "name_local",
+      "country names",
+      "city",
+      "region",
+      "racing_types",
+      "surfaces",
+      "direction"
+    ],
+    "glossary": [
+      "term_en",
+      "term_ja",
+      "reading_ja",
+      "aliases_en",
+      "aliases_ja",
+      "summary_en",
+      "summary_ja",
+      "beginner_explanation_en",
+      "beginner_explanation_ja",
+      "category"
+    ]
+  },
+  "public_boundary": {
+    "public_page_labels_allowed": true,
+    "public_summaries_allowed": true,
+    "public_internal_links_allowed": true,
+    "participant_data_allowed": false,
+    "complete_racecards_allowed": false,
+    "odds_allowed": false,
+    "results_allowed": false,
+    "payouts_allowed": false,
+    "predictions_allowed": false,
+    "raw_source_bodies_allowed": false
+  },
+  "automation_boundary": {
+    "external_search_service_enabled": false,
+    "search_analytics_enabled": false,
+    "query_logging_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "next_implementation_unit": "COUNTRY-FILTERS-01"
+}
