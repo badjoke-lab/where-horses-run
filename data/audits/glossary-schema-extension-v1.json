@@ -3,7 +3,7 @@
   "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
   "implementation_unit": "GLOSSARY-SCHEMA-EXTENSION-01",
   "status": "implemented_for_review",
-  "reviewed_at": "2026-07-14",
+  "reviewed_at": "2026-07-16",
   "discovery": {
     "workflow_run_id": 29341409988,
     "artifact_id": 8314164264,
@@ -74,13 +74,25 @@
     "public_boundary_mode": "definition_and_navigation",
     "republish_dataset": false,
     "content_status": "baseline_reviewed",
-    "last_reviewed": "2026-07-14"
+    "last_reviewed": "2026-07-16"
   },
   "restricted_concept_rules": {
-    "racecard": ["entries", "participant_data", "odds", "results", "payouts"],
-    "jockey": ["participant_data"],
-    "driver": ["participant_data"],
-    "trainer": ["participant_data"]
+    "racecard": [
+      "entries",
+      "participant_data",
+      "odds",
+      "results",
+      "payouts"
+    ],
+    "jockey": [
+      "participant_data"
+    ],
+    "driver": [
+      "participant_data"
+    ],
+    "trainer": [
+      "participant_data"
+    ]
   },
   "public_boundary": {
     "definition_and_navigation_allowed": true,
