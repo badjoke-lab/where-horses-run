@@ -1,37 +1,9 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCountries } from '../../lib/data';
+import CountryDirectoryPage from '../../components/CountryDirectoryPage.astro';
+import { getCountryFilterOptions, getCountryFilterRecords } from '../../lib/country-filter-data';
 
-const countries = getCountries();
+const records = getCountryFilterRecords('en');
+const options = getCountryFilterOptions(records);
 ---
 
-<BaseLayout
-  title="Countries | Where Horses Run"
-  description="Browse horse racing countries and regions with official source coverage notes."
->
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Countries & regions</p>
-    <h1 id="page-title">Countries</h1>
-    <p class="hero__summary">
-      Browse racing jurisdictions by country or region. Each page links toward official sources and shows the current coverage level.
-    </p>
-  </section>
-
-  <section class="section-grid" aria-label="Major country preview links">
-    <article class="card">
-      <h2><a href="/major-countries/preview-timetable/">Major Country Timetable Preview</a></h2>
-      <p>View the first static manual timetable samples for major-country source groups. This is not live coverage and full country coverage is not complete yet.</p>
-    </article>
-  </section>
-
-  <section class="section-grid" aria-label="Country list">
-    {countries.map((country) => (
-      <article class="card">
-        <h2><a href={`/countries/${country.slug}/`}>{country.name_en}</a></h2>
-        <p>{country.summary_en}</p>
-        <p><strong>Status:</strong> {country.status}</p>
-        <p><strong>Coverage:</strong> Level {country.coverage_level} / Auto {country.auto_level}</p>
-      </article>
-    ))}
-  </section>
-</BaseLayout>
+<CountryDirectoryPage locale="en" records={records} options={options} />
