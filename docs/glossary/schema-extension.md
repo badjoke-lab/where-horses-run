@@ -6,6 +6,8 @@ Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 
 Implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
 
+Last reviewed: 2026-07-16
+
 ## Purpose
 
 The glossary needs a stable reviewed contract before it expands into racing types, horse breeds, roles, timetable terms, official-source concepts, multilingual cleanup, related-term navigation, and beginner explanations.
@@ -62,9 +64,17 @@ Existing records are not enriched by guesswork.
 - source IDs remain empty until evidence is attached;
 - evidence status is `baseline_definition`;
 - content status is `baseline_reviewed`;
-- review date is 2026-07-14.
+- review date is 2026-07-16.
 
 The existing English and Japanese term names, categories, summaries, slugs, routes, and page descriptions remain unchanged.
+
+## Public behavior
+
+All 23 records now render the v2 contract on the existing 46 bilingual routes.
+
+The baseline pages show the reviewed term, summary, category, counterpart language term, content status, and review date. Optional aliases, reading, pronunciation, beginner explanations, related terms, and source sections remain hidden until reviewed values exist.
+
+Restricted concepts may show a public-boundary notice, but the pages do not republish participant, racecard, odds, result, or payout datasets.
 
 ## Public boundary
 
@@ -76,13 +86,13 @@ The schema does not permit predictions, recommendations, raw source bodies, embe
 
 ## Runtime compatibility
 
-The existing glossary index and detail routes continue to read `data/static/glossary.json`. The additional fields are optional in presentation and do not create empty public sections.
+The glossary index and detail routes continue to read `data/static/glossary.json`. The additional fields are optional in presentation and do not create empty public sections.
 
-The permanent gate validates the two JSON schemas, every migrated record, ID and slug uniqueness, relationship/source references, restricted-concept boundaries, all 46 bilingual routes, metadata, and clean-worktree behavior.
+The permanent workflow builds the site and runs the schema-extension checker. The checker validates the two JSON schemas, every migrated record, ID and slug uniqueness, relationship/source references, restricted-concept boundaries, all 46 bilingual routes, rendered metadata, the permanent workflow itself, temporary-workflow removal, and clean-worktree behavior.
 
 ## Automation boundary
 
-The permanent gate performs no network request, automatic source acceptance, automatic content promotion, publication, or deployment.
+The permanent gate performs no source fetch, automatic source acceptance, automatic content promotion, publication, or deployment.
 
 ## Next unit
 
