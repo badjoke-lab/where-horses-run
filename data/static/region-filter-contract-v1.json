@@ -1,0 +1,74 @@
+{
+  "schema_version": "region-filter-contract-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "REGION-FILTERS-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "scope": {
+    "country_records": 98,
+    "region_facets": 8,
+    "locales": 2,
+    "directory_routes": 2,
+    "region_navigation_links_per_locale": 8,
+    "region_navigation_links_total": 16,
+    "no_javascript_fallback_records_per_locale": 98
+  },
+  "region_ids": [
+    "Africa",
+    "Asia",
+    "Caribbean",
+    "Europe",
+    "Middle East",
+    "North America",
+    "Oceania",
+    "South America"
+  ],
+  "region_contract": {
+    "source_field": "region",
+    "separator": "/",
+    "trim_membership_values": true,
+    "deduplicate_membership_values": true,
+    "multiple_region_memberships_allowed": true,
+    "region_count_required": true,
+    "region_navigation_required": true,
+    "url_parameter": "region",
+    "url_state_restoration_required": true,
+    "active_region_marker_required": true,
+    "combined_country_filters_preserved": true,
+    "no_javascript_complete_list_required": true
+  },
+  "route_contract": {
+    "english_directory": "/countries/",
+    "japanese_directory": "/ja/countries/",
+    "english_region_pattern": "/countries/?region={region}",
+    "japanese_region_pattern": "/ja/countries/?region={region}"
+  },
+  "public_boundary": {
+    "public_region_labels_allowed": true,
+    "public_region_counts_allowed": true,
+    "public_country_links_allowed": true,
+    "participant_dataset_republication_allowed": false,
+    "complete_racecard_republication_allowed": false,
+    "odds_republication_allowed": false,
+    "result_republication_allowed": false,
+    "payout_republication_allowed": false,
+    "prediction_content_allowed": false,
+    "raw_source_body_republication_allowed": false
+  },
+  "privacy_boundary": {
+    "external_filter_service_enabled": false,
+    "server_filter_endpoint_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_generation_enabled": false,
+    "live_fetch_enabled": false,
+    "automatic_source_acceptance_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "RACE-TYPE-FILTERS-01",
+  "next_implementation_unit": "SOURCE-STATUS-FILTERS-01"
+}
