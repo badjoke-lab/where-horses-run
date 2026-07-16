@@ -29,12 +29,44 @@ const expectedRegionIds = [
   'Africa',
   'Asia',
   'Caribbean',
+  'Central America',
+  'Central Asia',
+  'East Africa',
+  'East Asia',
   'Europe',
   'Middle East',
+  'North Africa',
   'North America',
   'Oceania',
   'South America',
+  'South Caucasus',
+  'Southeast Asia',
+  'Southern Africa',
+  'Southern Europe',
+  'West Africa',
+  'West Asia',
 ];
+const expectedRegionCounts = {
+  Africa: 9,
+  Asia: 12,
+  Caribbean: 7,
+  'Central America': 7,
+  'Central Asia': 1,
+  'East Africa': 1,
+  'East Asia': 2,
+  Europe: 28,
+  'Middle East': 6,
+  'North Africa': 2,
+  'North America': 3,
+  Oceania: 2,
+  'South America': 10,
+  'South Caucasus': 1,
+  'Southeast Asia': 2,
+  'Southern Africa': 1,
+  'Southern Europe': 1,
+  'West Africa': 1,
+  'West Asia': 3,
+};
 
 if (contract.schema_version !== 'region-filter-contract-v1') fail('region filter contract schema differs');
 if (contract.work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('region filter Work ID differs');
@@ -43,20 +75,23 @@ if (!['implemented_for_review', 'complete'].includes(contract.status)) fail('reg
 if (contract.reviewed_at !== '2026-07-16') fail('region filter review date differs');
 if (!exact(contract.scope, {
   country_records: 98,
-  region_facets: 8,
+  region_facets: 19,
   locales: 2,
   directory_routes: 2,
-  region_navigation_links_per_locale: 8,
-  region_navigation_links_total: 16,
+  region_navigation_links_per_locale: 19,
+  region_navigation_links_total: 38,
   no_javascript_fallback_records_per_locale: 98,
 })) fail('region filter scope differs');
 if (!exact(contract.region_ids, expectedRegionIds)) fail('region filter ID contract differs');
+if (!exact(contract.region_counts, expectedRegionCounts)) fail('region filter count contract differs');
 if (!exact(contract.region_contract, {
   source_field: 'region',
   separator: '/',
   trim_membership_values: true,
   deduplicate_membership_values: true,
   multiple_region_memberships_allowed: true,
+  source_derived_taxonomy_preserved: true,
+  broad_and_subregion_labels_may_coexist: true,
   region_count_required: true,
   region_navigation_required: true,
   url_parameter: 'region',
@@ -87,9 +122,9 @@ if (!exact(audit.verified, {
   country_records: 98,
   english_rendered_records: 98,
   japanese_rendered_records: 98,
-  region_facets: 8,
-  english_region_navigation_links: 8,
-  japanese_region_navigation_links: 8,
+  region_facets: 19,
+  english_region_navigation_links: 19,
+  japanese_region_navigation_links: 19,
   countries_without_region_membership: 0,
   unknown_region_ids: 0,
   duplicate_region_memberships: 0,
@@ -120,7 +155,8 @@ for (const marker of [
   'data-region-count', 'data-region-filter-link', 'data-region-filter-id',
   'data-country-regions', 'encodeURIComponent(region.id)',
   "regions.includes(region)", "link.setAttribute('aria-current', 'page')",
-  "restoreSelect(regionSelect, 'region')", '<noscript>',
+  "restoreSelect(regionSelect, 'region')", "'Central America': '中央アメリカ'",
+  "'West Asia': '西アジア'", '<noscript>',
 ]) if (!component.includes(marker)) fail(`region component missing ${marker}`);
 for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
   if (component.includes(forbidden)) fail(`region component contains forbidden marker ${forbidden}`);
@@ -128,9 +164,9 @@ for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage
 
 const doc = read(docPath);
 for (const marker of [
-  'REGION-FILTERS-01', 'Africa', 'South America', '/countries/?region=Asia',
-  '/ja/countries/?region=Asia', 'aria-current="page"', 'JavaScript is disabled',
-  'SOURCE-STATUS-FILTERS-01',
+  'REGION-FILTERS-01', 'Nineteen source-derived facets', 'Central America', 'West Asia',
+  '/countries/?region=Asia', '/ja/countries/?region=Asia', 'aria-current="page"',
+  'JavaScript is disabled', '38 bilingual region links', 'SOURCE-STATUS-FILTERS-01',
 ]) if (!doc.includes(marker)) fail(`region documentation missing ${marker}`);
 
 if (fs.existsSync(filePath(workflowPath))) {
@@ -165,7 +201,7 @@ function verifyRenderedRegions({ file, lang, directoryPath }) {
   const countryCards = [...html.matchAll(/<article[^>]*data-country-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
   const regionCards = [...html.matchAll(/<article[^>]*data-region-filter-card(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
   if (countryCards.length !== 98) fail(`${file}: country card count differs ${countryCards.length}`);
-  if (regionCards.length !== 8) fail(`${file}: region navigation card count differs ${regionCards.length}`);
+  if (regionCards.length !== 19) fail(`${file}: region navigation card count differs ${regionCards.length}`);
 
   const membershipCounts = new Map(expectedRegionIds.map((id) => [id, 0]));
   let countriesWithoutMembership = 0;
@@ -185,6 +221,9 @@ function verifyRenderedRegions({ file, lang, directoryPath }) {
   if (duplicateMemberships !== 0) fail(`${file}: duplicate region memberships ${duplicateMemberships}`);
   if (unknownRegionIds !== 0) fail(`${file}: unknown region IDs ${unknownRegionIds}`);
 
+  const measuredCounts = Object.fromEntries(expectedRegionIds.map((id) => [id, membershipCounts.get(id)]));
+  if (!exact(measuredCounts, expectedRegionCounts)) fail(`${file}: measured region counts differ ${JSON.stringify(measuredCounts)}`);
+
   const optionIds = optionValues(html, 'country-filter-region');
   if (!optionIds || !sameSet(optionIds, expectedRegionIds)) fail(`${file}: region option set differs`);
 
@@ -196,7 +235,7 @@ function verifyRenderedRegions({ file, lang, directoryPath }) {
     const count = Number(attributeValues(card, 'data-region-count')[0]);
     const href = card.match(/data-region-filter-link[^>]*href="([^"]+)"|href="([^"]+)"[^>]*data-region-filter-link/)?.slice(1).find(Boolean);
     if (id) navIds.push(id);
-    if (!id || count !== membershipCounts.get(id)) countMismatches += 1;
+    if (!id || count !== membershipCounts.get(id) || count !== expectedRegionCounts[id]) countMismatches += 1;
     const expectedHref = `${directoryPath}?region=${encodeURIComponent(id ?? '')}`;
     if (href !== expectedHref) brokenRegionLinks += 1;
   }
@@ -205,7 +244,7 @@ function verifyRenderedRegions({ file, lang, directoryPath }) {
   if (brokenRegionLinks !== 0) fail(`${file}: broken region links ${brokenRegionLinks}`);
 
   for (const marker of [
-    'data-country-records="98"', 'data-country-regions="8"',
+    'data-country-records="98"', 'data-country-regions="19"',
     'data-region-filter-navigation', 'data-region-filter-link',
     'data-country-filter-region', '<noscript>',
   ]) if (!html.includes(marker)) fail(`${file}: rendered region marker missing ${marker}`);
@@ -224,8 +263,8 @@ if (errors.length) {
 
 console.log('REGION_FILTERS: pass');
 console.log('COUNTRY_RECORDS: 98');
-console.log('REGION_FACETS: 8');
-console.log('REGION_NAVIGATION_LINKS: 16');
+console.log('REGION_FACETS: 19');
+console.log('REGION_NAVIGATION_LINKS: 38');
 console.log('MULTIPLE_REGION_MEMBERSHIPS: supported');
 console.log('NO_JAVASCRIPT_FALLBACK: complete');
 console.log('EXTERNAL_FILTER_SERVICE: false');
