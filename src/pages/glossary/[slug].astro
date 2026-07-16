@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../lib/glossary-data';
+import {
+  getGlossaryCategoryLabel,
+  getGlossaryEntries,
+  getGlossaryEntryBySlug,
+} from '../../lib/glossary-data';
 
 export function getStaticPaths() {
   return getGlossaryEntries().map((entry) => ({ params: { slug: entry.slug } }));
@@ -26,6 +30,7 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
     data-glossary-schema-version={entry.schema_version}
     data-glossary-content-status={entry.content_status}
     data-glossary-public-boundary={entry.public_boundary.mode}
+    data-glossary-category={entry.category}
   >
     <p class="hero__eyebrow">Glossary term</p>
     <h1 id="page-title">{entry.term_en}</h1>
@@ -35,12 +40,12 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
   <section class="section-grid" aria-label="Glossary detail">
     <article class="card">
       <h2>Category</h2>
-      <p>{entry.category}</p>
+      <p>{getGlossaryCategoryLabel(entry.category, 'en')}</p>
     </article>
     <article class="card">
       <h2>Japanese term</h2>
       <p>{entry.term_ja}</p>
-      {entry.reading_ja && <p>Reading: {entry.reading_ja}</p>}
+      <p>Reading: {entry.reading_ja}</p>
     </article>
     <article class="card">
       <h2>Review status</h2>

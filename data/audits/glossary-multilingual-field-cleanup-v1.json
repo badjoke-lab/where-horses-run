@@ -1,0 +1,82 @@
+{
+  "schema_version": "glossary-multilingual-field-cleanup-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-MULTILINGUAL-FIELD-CLEANUP-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 48,
+    "bilingual_routes": 96,
+    "records_with_reading_ja": 29,
+    "records_missing_reading_ja": 19,
+    "localized_category_labels": 0,
+    "raw_category_labels_in_ui": true
+  },
+  "implemented": {
+    "glossary_records": 48,
+    "bilingual_routes": 96,
+    "records_with_reading_ja": 48,
+    "records_missing_reading_ja": 0,
+    "patched_reading_records": 19,
+    "localized_category_labels": 18,
+    "categories": 9,
+    "duplicate_aliases": 0,
+    "canonical_term_alias_collisions": 0,
+    "unpaired_beginner_explanations": 0,
+    "trim_errors": 0,
+    "language_fallback_errors": 0,
+    "rendered_route_errors": 0,
+    "new_concept_ids": 0,
+    "removed_concept_ids": 0
+  },
+  "reading_patch_ids": [
+    "thoroughbred-racing",
+    "flat-racing",
+    "jump-racing",
+    "steeplechase",
+    "harness-racing",
+    "trotting",
+    "pacing",
+    "arabian-racing",
+    "quarter-horse-racing",
+    "banei-racing",
+    "racecourse",
+    "turf",
+    "dirt",
+    "all-weather",
+    "jump-course",
+    "left-handed-course",
+    "right-handed-course",
+    "both-directions-course",
+    "straight-course"
+  ],
+  "category_ids": [
+    "race_type",
+    "breed",
+    "horse_type",
+    "role",
+    "data_term",
+    "official_source",
+    "track_term",
+    "surface",
+    "governance_term"
+  ],
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "concept_id_change": false,
+    "route_change": false,
+    "source_body_republication": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_translation": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-RELATED-TERMS-GRAPH-01"
+}

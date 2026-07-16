@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getGlossaryEntries } from '../../../lib/glossary-data';
+import { getGlossaryCategoryLabel, getGlossaryEntries } from '../../../lib/glossary-data';
 
 const entries = getGlossaryEntries();
 ---
@@ -20,10 +20,10 @@ const entries = getGlossaryEntries();
 
   <section class="section-grid" aria-label="用語一覧">
     {entries.map((entry) => (
-      <article class="card">
+      <article class="card" data-glossary-category={entry.category}>
         <h2><a href={`/ja/glossary/${entry.slug}/`}>{entry.term_ja}</a></h2>
         <p>{entry.summary_ja}</p>
-        <p><strong>分類:</strong> {entry.category}</p>
+        <p><strong>分類:</strong> {getGlossaryCategoryLabel(entry.category, 'ja')}</p>
       </article>
     ))}
   </section>

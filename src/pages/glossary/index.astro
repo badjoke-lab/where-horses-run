@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getGlossaryEntries } from '../../lib/glossary-data';
+import { getGlossaryCategoryLabel, getGlossaryEntries } from '../../lib/glossary-data';
 
 const entries = getGlossaryEntries();
 ---
@@ -19,10 +19,10 @@ const entries = getGlossaryEntries();
 
   <section class="section-grid" aria-label="Glossary list">
     {entries.map((entry) => (
-      <article class="card">
+      <article class="card" data-glossary-category={entry.category}>
         <h2><a href={`/glossary/${entry.slug}/`}>{entry.term_en}</a></h2>
         <p>{entry.summary_en}</p>
-        <p><strong>Category:</strong> {entry.category}</p>
+        <p><strong>Category:</strong> {getGlossaryCategoryLabel(entry.category, 'en')}</p>
       </article>
     ))}
   </section>

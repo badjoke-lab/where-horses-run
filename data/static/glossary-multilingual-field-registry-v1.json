@@ -1,0 +1,73 @@
+{
+  "schema_version": "glossary-multilingual-field-registry-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-MULTILINGUAL-FIELD-CLEANUP-01",
+  "reviewed_at": "2026-07-16",
+  "scope": {
+    "glossary_records": 48,
+    "bilingual_routes": 96,
+    "records_with_reading_before": 29,
+    "records_with_reading_after": 48,
+    "patched_reading_records": 19,
+    "categories": 9,
+    "localized_category_labels": 18,
+    "new_concept_ids": 0,
+    "removed_concept_ids": 0
+  },
+  "reading_patch_ids": [
+    "thoroughbred-racing",
+    "flat-racing",
+    "jump-racing",
+    "steeplechase",
+    "harness-racing",
+    "trotting",
+    "pacing",
+    "arabian-racing",
+    "quarter-horse-racing",
+    "banei-racing",
+    "racecourse",
+    "turf",
+    "dirt",
+    "all-weather",
+    "jump-course",
+    "left-handed-course",
+    "right-handed-course",
+    "both-directions-course",
+    "straight-course"
+  ],
+  "category_ids": [
+    "race_type",
+    "breed",
+    "horse_type",
+    "role",
+    "data_term",
+    "official_source",
+    "track_term",
+    "surface",
+    "governance_term"
+  ],
+  "field_policy": {
+    "term_en_required": true,
+    "term_ja_required": true,
+    "reading_ja_required_after_cleanup": true,
+    "pronunciation_en_optional": true,
+    "aliases_language_specific": true,
+    "aliases_trimmed_and_unique": true,
+    "canonical_term_not_repeated_as_alias": true,
+    "beginner_explanation_language_pair": true,
+    "silent_cross_language_fallback": false,
+    "category_id_remains_machine_readable": true,
+    "category_label_localized_for_display": true
+  },
+  "category_labels": {
+    "race_type": { "en": "Racing type", "ja": "競馬種別" },
+    "breed": { "en": "Horse breed", "ja": "馬の品種" },
+    "horse_type": { "en": "Horse type", "ja": "馬のタイプ" },
+    "role": { "en": "Racing role", "ja": "競馬関係者・役割" },
+    "data_term": { "en": "Race data term", "ja": "競馬データ用語" },
+    "official_source": { "en": "Official source", "ja": "公式ソース" },
+    "track_term": { "en": "Racecourse term", "ja": "競馬場用語" },
+    "surface": { "en": "Surface and course", "ja": "馬場・走路" },
+    "governance_term": { "en": "Governance and operation", "ja": "統括・運営用語" }
+  }
+}
