@@ -53,7 +53,28 @@ jobs:
       - name: Preserve race type filter contract
         run: node scripts/check-race-type-filters.mjs
       - name: Validate region filters
-        run: node scripts/check-region-filters.mjs
+        id: region_filters
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-region-filters.mjs > region-filter-check.log 2>&1
+          status=$?
+          cat region-filter-check.log
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload region filter diagnostics
+        if: steps.region_filters.outputs.status != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: region-filter-check-log
+          path: region-filter-check.log
+          retention-days: 1
+      - name: Fail when region filter validation failed
+        if: steps.region_filters.outputs.status != '0'
+        run: exit 1
+      - name: Remove diagnostic log
+        if: always()
+        run: rm -f region-filter-check.log
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
