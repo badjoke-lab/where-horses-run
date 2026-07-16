@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../../lib/glossary-data';
+import {
+  getGlossaryCategoryLabel,
+  getGlossaryEntries,
+  getGlossaryEntryBySlug,
+} from '../../../lib/glossary-data';
 
 export function getStaticPaths() {
   return getGlossaryEntries().map((entry) => ({ params: { slug: entry.slug } }));
@@ -26,6 +30,7 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
     data-glossary-schema-version={entry.schema_version}
     data-glossary-content-status={entry.content_status}
     data-glossary-public-boundary={entry.public_boundary.mode}
+    data-glossary-category={entry.category}
   >
     <p class="hero__eyebrow">競馬用語</p>
     <h1 id="page-title">{entry.term_ja}</h1>
@@ -35,7 +40,7 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
   <section class="section-grid" aria-label="用語詳細">
     <article class="card">
       <h2>分類</h2>
-      <p>{entry.category}</p>
+      <p>{getGlossaryCategoryLabel(entry.category, 'ja')}</p>
     </article>
     <article class="card">
       <h2>英語表記</h2>
@@ -58,12 +63,10 @@ const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
     </section>
   )}
 
-  {entry.reading_ja && (
-    <section class="card" aria-labelledby="reading-heading">
-      <h2 id="reading-heading">読み</h2>
-      <p>{entry.reading_ja}</p>
-    </section>
-  )}
+  <section class="card" aria-labelledby="reading-heading">
+    <h2 id="reading-heading">読み</h2>
+    <p>{entry.reading_ja}</p>
+  </section>
 
   {entry.beginner_explanation_ja && (
     <section class="card" aria-labelledby="beginner-heading">
