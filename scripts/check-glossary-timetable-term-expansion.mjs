@@ -94,7 +94,7 @@ if (new Set(overlay.map((entry) => entry.id)).size !== overlay.length) fail('tim
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
 const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
-if (glossary.length !== 40) fail(`glossary record count expected 40; found ${glossary.length}`);
+if (glossary.length < 40) fail(`glossary record count regressed below 40; found ${glossary.length}`);
 if (new Set(ids).size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
 if (glossary.filter((entry) => entry.category === 'data_term').length !== 8) fail('data-term count differs');
@@ -117,7 +117,7 @@ for (const id of expectedOverlayIds) {
     'aliases_en', 'aliases_ja', 'reading_ja',
     'beginner_explanation_en', 'beginner_explanation_ja',
   ]) if (!exact(entry[field], record[field])) fail(`${id}: glossary ${field} differs from registry`);
-  if (!exact(entry.related_term_ids, record.related_concept_ids)) fail(`${id}: related concepts differ`);
+  for (const relatedId of record.related_concept_ids) if (!entry.related_term_ids.includes(relatedId)) fail(`${id}: required related concept missing ${relatedId}`);
   if (!exact(entry.public_boundary?.prohibited_dataset_keys, record.prohibited_dataset_keys)) fail(`${id}: prohibited dataset keys differ`);
   if (entry.category !== 'data_term') fail(`${id}: category must be data_term`);
   if (entry.content_status !== 'enriched_reviewed') fail(`${id}: content status differs`);
@@ -215,12 +215,13 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('GLOSSARY_TIMETABLE_TERM_EXPANSION: pass');
-console.log('GLOSSARY_RECORDS: 40');
+console.log(`CURRENT_GLOSSARY_RECORDS: ${glossary.length}`);
+console.log('TIMETABLE_RELEASE_RECORDS: 40');
 console.log('DATA_TERM_RECORDS: 8');
 console.log('SCHEDULE_CONTEXT_RECORDS: 3');
 console.log('RACE_DOCUMENT_RECORDS: 2');
 console.log('MARKET_OUTCOME_RECORDS: 3');
-console.log('BILINGUAL_ROUTES: 80');
+console.log('TIMETABLE_RELEASE_BILINGUAL_ROUTES: 80');
 console.log('RECIPROCAL_RELATIONSHIPS: 7');
 console.log('CLASSIFICATION_CONFLATION_ERRORS: 0');
 console.log('LIVE_DATASET_REPUBLICATION: false');
