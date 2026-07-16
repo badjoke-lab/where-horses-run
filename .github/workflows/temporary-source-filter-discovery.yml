@@ -1,0 +1,58 @@
+name: Temporary source filter discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/components/SourceDirectoryPage.astro'
+      - 'src/lib/source-filter-data.ts'
+      - 'src/pages/sources/index.astro'
+      - 'src/pages/ja/sources/index.astro'
+      - '.github/workflows/temporary-source-filter-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build source directories and site
+        run: npm run build
+      - name: Capture source filter facets
+        shell: bash
+        run: |
+          node <<'NODE' > source-filter-facets.json
+          const fs = require('node:fs');
+          const html = fs.readFileSync('dist/sources/index.html', 'utf8');
+          const cards = [...html.matchAll(/<article[^>]*data-source-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
+          const values = (name) => cards.map((card) => card.match(new RegExp(`${name}="([^"]*)"`))?.[1] ?? '');
+          const unique = (items) => [...new Set(items)].sort();
+          console.log(JSON.stringify({
+            sourceRecords: cards.length,
+            countryIds: unique(values('data-source-country')),
+            sourceTypes: unique(values('data-source-source-type')),
+            dataTypes: unique(values('data-source-data-type')),
+            autoLevels: unique(values('data-source-auto-level')),
+            termsRisks: unique(values('data-source-risk')),
+            registryStatuses: unique(values('data-source-status')),
+            emptySearchText: values('data-source-search-text').filter((value) => !value).length,
+          }, null, 2));
+          NODE
+          cat source-filter-facets.json
+      - name: Upload source filter facets
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-filter-facets
+          path: source-filter-facets.json
+          retention-days: 1
