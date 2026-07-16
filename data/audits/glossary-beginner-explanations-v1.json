@@ -1,0 +1,66 @@
+{
+  "schema_version": "glossary-beginner-explanations-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-BEGINNER-EXPLANATIONS-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 48,
+    "bilingual_term_routes": 96,
+    "graph_page_routes": 2,
+    "records_with_paired_beginner_explanations": 29,
+    "records_missing_paired_beginner_explanations": 19
+  },
+  "implemented": {
+    "glossary_records": 48,
+    "bilingual_term_routes": 96,
+    "graph_page_routes": 2,
+    "records_with_paired_beginner_explanations": 48,
+    "records_missing_paired_beginner_explanations": 0,
+    "patched_records": 19,
+    "unpaired_explanations": 0,
+    "empty_explanations": 0,
+    "summary_copy_errors": 0,
+    "rendered_explanation_errors": 0,
+    "new_concept_ids": 0,
+    "removed_concept_ids": 0,
+    "changed_routes": 0
+  },
+  "patch_ids": [
+    "thoroughbred-racing",
+    "flat-racing",
+    "jump-racing",
+    "steeplechase",
+    "harness-racing",
+    "trotting",
+    "pacing",
+    "arabian-racing",
+    "quarter-horse-racing",
+    "banei-racing",
+    "racecourse",
+    "turf",
+    "dirt",
+    "all-weather",
+    "jump-course",
+    "left-handed-course",
+    "right-handed-course",
+    "both-directions-course",
+    "straight-course"
+  ],
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "betting_advice_allowed": false,
+    "prediction_content_allowed": false,
+    "participant_dataset_republication_allowed": false,
+    "odds_result_payout_republication_allowed": false,
+    "raw_source_body_republication_allowed": false
+  },
+  "automation_boundary": {
+    "automatic_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "live_fetch_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "next_implementation_unit": "GLOSSARY-QA-RELEASE-01"
+}

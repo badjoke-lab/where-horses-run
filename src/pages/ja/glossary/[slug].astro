@@ -33,6 +33,7 @@ const relatedEntries = entry.related_term_ids
     data-glossary-content-status={entry.content_status}
     data-glossary-public-boundary={entry.public_boundary.mode}
     data-glossary-category={entry.category}
+    data-glossary-beginner-explanation="reviewed"
   >
     <p class="hero__eyebrow">競馬用語</p>
     <h1 id="page-title">{entry.term_ja}</h1>
@@ -70,12 +71,10 @@ const relatedEntries = entry.related_term_ids
     <p>{entry.reading_ja}</p>
   </section>
 
-  {entry.beginner_explanation_ja && (
-    <section class="card" aria-labelledby="beginner-heading">
-      <h2 id="beginner-heading">初心者向け説明</h2>
-      <p>{entry.beginner_explanation_ja}</p>
-    </section>
-  )}
+  <section class="card" aria-labelledby="beginner-heading">
+    <h2 id="beginner-heading">初心者向け説明</h2>
+    <p>{entry.beginner_explanation_ja}</p>
+  </section>
 
   {entry.related_term_ids.length > 0 && (
     <section class="card" aria-labelledby="related-heading">

@@ -9,6 +9,7 @@ const overlayPriority = new Map([
 
 const fieldPatchPriority = new Map([
   ['glossary-fields-multilingual-v1.json', 10],
+  ['glossary-fields-beginner-v1.json', 20],
 ]);
 
 const relationshipPatchPriority = new Map([

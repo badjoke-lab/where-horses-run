@@ -3,6 +3,7 @@ import roleGlossaryOverlay from '../../data/static/glossary-entries-role-v1.json
 import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetable-v1.json';
 import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
 import multilingualFieldPatches from '../../data/static/glossary-fields-multilingual-v1.json';
+import beginnerExplanationPatches from '../../data/static/glossary-fields-beginner-v1.json';
 import relationshipGraphPatches from '../../data/static/glossary-relationships-graph-v1.json';
 import categoryLabelRegistry from '../../data/static/glossary-category-labels-v1.json';
 
@@ -28,6 +29,12 @@ for (const overlay of overlays) {
 for (const patch of multilingualFieldPatches) {
   const current = byId.get(patch.id);
   if (!current) throw new Error(`Unknown glossary field-patch ID: ${patch.id}`);
+  byId.set(patch.id, { ...current, ...patch } as GlossaryRecord);
+}
+
+for (const patch of beginnerExplanationPatches) {
+  const current = byId.get(patch.id);
+  if (!current) throw new Error(`Unknown beginner-explanation patch ID: ${patch.id}`);
   byId.set(patch.id, { ...current, ...patch } as GlossaryRecord);
 }
 
