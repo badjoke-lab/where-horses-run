@@ -23,3 +23,10 @@ jobs:
           show-progress: false
       - name: Print diagnostics
         run: node scripts/diagnose-glossary-beginner.mjs
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: beginner-diagnostics
+          path: beginner-diagnostics.json
+          if-no-files-found: error
+          retention-days: 1
