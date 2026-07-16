@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadGlossary } from './glossary-data-loader.mjs';
 
 const root = process.cwd();
 const errors = [];
@@ -11,7 +12,7 @@ const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const audit = parse('data/audits/glossary-horse-breed-expansion-v1.json');
 const registry = parse('data/static/glossary-horse-breed-registry-v1.json');
-const glossary = parse('data/static/glossary.json');
+const glossary = loadGlossary(root);
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
 const sources = [
   ...parse('data/static/sources.json'),
@@ -40,7 +41,7 @@ if (fs.existsSync(filePath(workflowPath))) {
 if (audit.schema_version !== 'glossary-horse-breed-expansion-v1') fail('audit schema differs');
 if (audit.work_id !== 'WHR-GLOSSARY-DICTIONARY-V1') fail('audit Work ID differs');
 if (audit.implementation_unit !== 'GLOSSARY-HORSE-BREED-EXPANSION-01') fail('audit implementation unit differs');
-if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit status differs');
+if (audit.status !== 'complete') fail('horse-breed audit must be complete');
 if (audit.reviewed_at !== '2026-07-16') fail('audit review date differs');
 if (audit.baseline?.glossary_records !== 26 || audit.baseline?.breed_records !== 0 || audit.baseline?.horse_type_records !== 0 || audit.baseline?.bilingual_routes !== 52) fail('audit baseline differs');
 if (audit.implemented?.glossary_records !== 31 || audit.implemented?.breed_records !== 4 || audit.implemented?.horse_type_records !== 1 || audit.implemented?.new_records !== 5 || audit.implemented?.bilingual_routes !== 62 || audit.implemented?.new_bilingual_routes !== 10 || audit.implemented?.official_source_links !== 4 || audit.implemented?.mixed_source_links !== 1) fail('audit implemented counts differ');
@@ -62,7 +63,7 @@ if (!entrySchema.properties?.category?.enum?.includes('horse_type')) fail('gloss
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
 const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
-if (glossary.length !== 31) fail(`glossary record count expected 31; found ${glossary.length}`);
+if (glossary.length < 31) fail(`glossary record count regressed below 31; found ${glossary.length}`);
 if (new Set(ids).size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
 if (glossary.filter((entry) => entry.category === 'breed').length !== 4) fail('breed count differs');
@@ -166,10 +167,11 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('GLOSSARY_HORSE_BREED_EXPANSION: pass');
-console.log('GLOSSARY_RECORDS: 31');
+console.log(`CURRENT_GLOSSARY_RECORDS: ${glossary.length}`);
+console.log('BREED_RELEASE_RECORDS: 31');
 console.log('BREED_RECORDS: 4');
 console.log('HORSE_TYPE_RECORDS: 1');
-console.log('BILINGUAL_ROUTES: 62');
+console.log('BREED_RELEASE_BILINGUAL_ROUTES: 62');
 console.log('RECIPROCAL_RELATIONSHIPS: 7');
 console.log('CLASSIFICATION_CONFLATION_ERRORS: 0');
 console.log('REGISTRY_DATASET_REPUBLICATION: false');

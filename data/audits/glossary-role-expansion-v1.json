@@ -1,0 +1,88 @@
+{
+  "schema_version": "glossary-role-expansion-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-ROLE-EXPANSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "baseline": {
+    "glossary_records": 31,
+    "role_records": 3,
+    "bilingual_routes": 62
+  },
+  "implemented": {
+    "glossary_records": 36,
+    "role_records": 8,
+    "participant_role_records": 5,
+    "race_official_role_records": 3,
+    "new_records": 5,
+    "reconciled_existing_records": 3,
+    "bilingual_routes": 72,
+    "new_bilingual_routes": 10,
+    "reciprocal_relationships": 6,
+    "broken_related_term_ids": 0,
+    "classification_conflation_errors": 0,
+    "rendered_route_errors": 0
+  },
+  "added_ids": [
+    "owner",
+    "breeder",
+    "steward",
+    "starter",
+    "clerk-of-scales"
+  ],
+  "reconciled_ids": [
+    "jockey",
+    "driver",
+    "trainer"
+  ],
+  "participant_role_ids": [
+    "jockey",
+    "driver",
+    "trainer",
+    "owner",
+    "breeder"
+  ],
+  "race_official_role_ids": [
+    "steward",
+    "starter",
+    "clerk-of-scales"
+  ],
+  "relationship_pairs": [
+    ["jockey", "clerk-of-scales"],
+    ["driver", "harness-racing"],
+    ["trainer", "owner"],
+    ["trainer", "breeder"],
+    ["steward", "meeting"],
+    ["starter", "post-time"]
+  ],
+  "classification_boundaries": {
+    "role_definition_is_not_person_list": true,
+    "owner_role_is_not_ownership_dataset": true,
+    "breeder_role_is_not_pedigree_dataset": true,
+    "steward_is_not_governing_body": true,
+    "starter_is_not_post_time": true,
+    "clerk_of_scales_is_not_weight_dataset": true,
+    "jockey_is_not_driver": true,
+    "trainer_is_not_owner_or_breeder": true
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "participant_dataset": false,
+    "ownership_dataset": false,
+    "pedigree_dataset": false,
+    "weight_dataset": false,
+    "inquiry_dataset": false,
+    "disciplinary_dataset": false,
+    "entries_dataset": false,
+    "results_dataset": false,
+    "raw_source_body": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-TIMETABLE-TERM-EXPANSION-01"
+}

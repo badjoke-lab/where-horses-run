@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../../lib/data';
+import { getGlossaryEntries, getGlossaryEntryBySlug } from '../../../lib/glossary-data';
 
 export function getStaticPaths() {
   return getGlossaryEntries().map((entry) => ({ params: { slug: entry.slug } }));
