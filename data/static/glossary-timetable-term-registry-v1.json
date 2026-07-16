@@ -1,0 +1,163 @@
+{
+  "schema_version": "glossary-timetable-term-registry-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-TIMETABLE-TERM-EXPANSION-01",
+  "reviewed_at": "2026-07-16",
+  "scope": {
+    "baseline_glossary_records": 36,
+    "implemented_glossary_records": 40,
+    "baseline_data_term_records": 4,
+    "implemented_data_term_records": 8,
+    "schedule_context_records": 3,
+    "race_document_records": 2,
+    "market_outcome_records": 3,
+    "new_bilingual_routes": 8,
+    "implemented_bilingual_routes": 80
+  },
+  "schedule_context_ids": [
+    "meeting",
+    "fixture",
+    "post-time"
+  ],
+  "race_document_ids": [
+    "racecard",
+    "entries"
+  ],
+  "market_outcome_ids": [
+    "odds",
+    "results",
+    "payouts"
+  ],
+  "classification_boundaries": {
+    "meeting_is_not_fixture": true,
+    "post_time_is_not_actual_start": true,
+    "racecard_is_not_entries_dataset": true,
+    "entries_are_not_results": true,
+    "odds_are_not_prediction": true,
+    "results_are_not_payouts": true,
+    "payouts_are_not_odds": true,
+    "definitions_are_not_live_dataset": true
+  },
+  "records": [
+    {
+      "id": "meeting",
+      "term_group": "schedule_context",
+      "term_en": "Meeting",
+      "term_ja": "開催（ミーティング）",
+      "summary_en": "An organized period or session of racing presented under a racing program. Its exact duration and structure vary by jurisdiction, so it is distinct from an individual fixture date.",
+      "summary_ja": "一つの競馬番組として組織される開催期間または開催単位。期間や構成は地域によって異なるため、個別の開催日程であるフィクスチャとは分けて扱う。",
+      "aliases_en": ["Race meeting"],
+      "aliases_ja": ["競馬開催", "開催日"],
+      "reading_ja": "かいさい（みーてぃんぐ）",
+      "beginner_explanation_en": "A meeting is the organized racing event or period. A fixture is one scheduled calendar item within the racing schedule.",
+      "beginner_explanation_ja": "ミーティングは競馬開催のまとまりです。フィクスチャはカレンダー上の個別の開催予定を表します。",
+      "related_concept_ids": ["fixture", "steward"],
+      "prohibited_dataset_keys": []
+    },
+    {
+      "id": "racecard",
+      "term_group": "race_document",
+      "term_en": "Racecard",
+      "term_ja": "レースカード（出走表）",
+      "summary_en": "A published document or page that organizes the races for a meeting and may include entries, scheduled post times, weights, odds, and other race information. Where Horses Run links to official racecards instead of republishing complete racecard datasets.",
+      "summary_ja": "開催の各競走を整理し、出走情報、発走予定時刻、負担重量、オッズなどを含む場合がある公表文書またはページ。Where Horses Runは完全な出走表を再掲載せず、公式ページへ案内する。",
+      "aliases_en": ["Card", "Race program"],
+      "aliases_ja": ["出走表"],
+      "reading_ja": "れーすかーど（しゅっそうひょう）",
+      "beginner_explanation_en": "A racecard is the organized page for a set of races. Entries, post times, and odds are individual types of information that may appear on it.",
+      "beginner_explanation_ja": "レースカードは複数の競走をまとめたページです。出走情報、発走予定時刻、オッズは、その中に掲載されることがある個別情報です。",
+      "related_concept_ids": ["entries", "post-time", "odds"],
+      "prohibited_dataset_keys": ["entries", "participant_data", "odds", "results", "payouts"]
+    },
+    {
+      "id": "fixture",
+      "term_group": "schedule_context",
+      "term_en": "Fixture",
+      "term_ja": "開催日程（フィクスチャ）",
+      "summary_en": "A scheduled racing date or calendar item. A fixture states that racing is planned, while a meeting describes the organized racing event or period associated with the schedule.",
+      "summary_ja": "競馬が予定されている日付またはカレンダー項目。フィクスチャは開催予定を示し、ミーティングはその日程に対応する競馬開催のまとまりを表す。",
+      "aliases_en": ["Race fixture"],
+      "aliases_ja": ["開催予定", "開催日"],
+      "reading_ja": "かいさいにってい（ふぃくすちゃ）",
+      "beginner_explanation_en": "A fixture is a date on the racing calendar. It does not by itself contain the full racecard or participant data.",
+      "beginner_explanation_ja": "フィクスチャは競馬カレンダー上の予定日です。それ自体が完全な出走表や参加者データを意味するわけではありません。",
+      "related_concept_ids": ["meeting"],
+      "prohibited_dataset_keys": []
+    },
+    {
+      "id": "post-time",
+      "term_group": "schedule_context",
+      "term_en": "Post time",
+      "term_ja": "発走予定時刻",
+      "summary_en": "The scheduled time for a race to start, normally expressed in the racecourse local time. It is a schedule value and may differ from the actual start time.",
+      "summary_ja": "競走が開始される予定時刻で、通常は競馬場の現地時刻で示される。日程上の値であり、実際の発走時刻と一致しない場合がある。",
+      "aliases_en": ["Scheduled start time"],
+      "aliases_ja": ["発走時刻"],
+      "reading_ja": "はっそうよていじこく",
+      "beginner_explanation_en": "Post time is when the race is scheduled to begin. The starter manages the actual starting procedure.",
+      "beginner_explanation_ja": "発走予定時刻はレースが始まる予定の時刻です。実際の発走手続はスターターが管理します。",
+      "related_concept_ids": ["starter", "racecard"],
+      "prohibited_dataset_keys": []
+    },
+    {
+      "id": "entries",
+      "term_group": "race_document",
+      "term_en": "Entries",
+      "term_ja": "出走登録・出走情報",
+      "summary_en": "Horses and associated participants registered, nominated, declared, or otherwise listed for a race, depending on the source stage and jurisdiction. An entries dataset is distinct from the definition of the term.",
+      "summary_ja": "情報源の段階や地域制度に応じて、競走への登録、申込み、出走宣言、または出走予定として掲載された馬と関係者の情報。用語の定義と実際の出走情報データセットは分けて扱う。",
+      "aliases_en": ["Race entries", "Declared runners"],
+      "aliases_ja": ["出走馬情報", "出走登録"],
+      "reading_ja": "しゅっそうとうろく・しゅっそうじょうほう",
+      "beginner_explanation_en": "Entries identify who is listed to take part in a race at a particular stage. They are not the same as final results.",
+      "beginner_explanation_ja": "出走情報は、ある段階で誰が競走に参加予定として掲載されているかを示します。確定した競走結果とは別の情報です。",
+      "related_concept_ids": ["racecard"],
+      "prohibited_dataset_keys": ["entries", "participant_data"]
+    },
+    {
+      "id": "odds",
+      "term_group": "market_outcome",
+      "term_en": "Odds",
+      "term_ja": "オッズ",
+      "summary_en": "Betting-market prices or ratios associated with possible race outcomes. Odds can change and are not a prediction or recommendation produced by Where Horses Run.",
+      "summary_ja": "競走の起こり得る結果に対して示される賭け市場の価格または比率。オッズは変動し得るもので、Where Horses Runが作成する予測や推奨ではない。",
+      "aliases_en": ["Betting odds", "Prices"],
+      "aliases_ja": ["予想配当率"],
+      "reading_ja": "おっず",
+      "beginner_explanation_en": "Odds describe betting-market prices. They do not state the official result and are not advice from this site.",
+      "beginner_explanation_ja": "オッズは賭け市場の価格を表します。公式結果を示すものでも、このサイトからの助言でもありません。",
+      "related_concept_ids": ["racecard"],
+      "prohibited_dataset_keys": ["odds", "predictions"]
+    },
+    {
+      "id": "results",
+      "term_group": "market_outcome",
+      "term_en": "Results",
+      "term_ja": "競走結果",
+      "summary_en": "The officially published outcome of a race, such as finishing order and race status. Results describe what happened in the race and remain distinct from betting payouts.",
+      "summary_ja": "着順や競走成立状況など、公式に公表された競走の結果。競走で何が起きたかを示す情報であり、賭けの払戻とは分けて扱う。",
+      "aliases_en": ["Race results", "Official results"],
+      "aliases_ja": ["成績", "確定結果"],
+      "reading_ja": "きょうそうけっか",
+      "beginner_explanation_en": "Results show the official outcome of the race. Payouts show how winning bets were settled.",
+      "beginner_explanation_ja": "競走結果はレースの公式な結末を示します。払戻は的中した賭けがどのように精算されたかを示します。",
+      "related_concept_ids": ["payouts"],
+      "prohibited_dataset_keys": ["results", "participant_data"]
+    },
+    {
+      "id": "payouts",
+      "term_group": "market_outcome",
+      "term_en": "Payouts",
+      "term_ja": "払戻",
+      "summary_en": "Amounts or returns officially declared for winning betting selections after settlement. Payouts depend on the applicable betting system and are distinct from pre-race odds and race results.",
+      "summary_ja": "的中した賭けの精算後に公式発表される払戻額または払戻率。適用される投票制度によって決まり、競走前のオッズや競走結果とは別の情報。",
+      "aliases_en": ["Dividends", "Returns"],
+      "aliases_ja": ["払戻金", "配当"],
+      "reading_ja": "はらいもどし",
+      "beginner_explanation_en": "Payouts state the return for winning bets. They are calculated after the outcome and are not the same as odds.",
+      "beginner_explanation_ja": "払戻は的中した賭けに対する返還額を示します。結果の後に決まり、オッズとは同じではありません。",
+      "related_concept_ids": ["results"],
+      "prohibited_dataset_keys": ["payouts"]
+    }
+  ]
+}
