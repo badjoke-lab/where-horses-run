@@ -7,6 +7,7 @@ const fail = (message) => errors.push(message);
 const filePath = (file) => path.join(root, file);
 const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
+const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const audit = parse('data/audits/glossary-racing-type-expansion-v1.json');
 const registry = parse('data/static/glossary-racing-type-registry-v1.json');
@@ -29,7 +30,7 @@ if (fs.existsSync(filePath(workflowPath))) {
 if (audit.schema_version !== 'glossary-racing-type-expansion-v1') fail('audit schema differs');
 if (audit.work_id !== 'WHR-GLOSSARY-DICTIONARY-V1') fail('audit Work ID differs');
 if (audit.implementation_unit !== 'GLOSSARY-RACING-TYPE-EXPANSION-01') fail('audit implementation unit differs');
-if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit status differs');
+if (audit.status !== 'complete') fail('racing-type audit must be complete');
 if (audit.reviewed_at !== '2026-07-16') fail('audit review date differs');
 if (audit.baseline?.glossary_records !== 23 || audit.baseline?.race_type_records !== 7 || audit.baseline?.bilingual_routes !== 46) fail('audit baseline differs');
 if (audit.implemented?.glossary_records !== 26 || audit.implemented?.race_type_records !== 10 || audit.implemented?.browse_primary_records !== 8 || audit.implemented?.supporting_definition_records !== 2 || audit.implemented?.bilingual_routes !== 52 || audit.implemented?.new_records !== 3 || audit.implemented?.reconciled_existing_records !== 7) fail('audit implemented counts differ');
@@ -42,7 +43,6 @@ if (registry.work_id !== audit.work_id || registry.implementation_unit !== audit
 if (registry.reviewed_at !== audit.reviewed_at) fail('registry review date differs');
 if (registry.scope?.baseline_race_type_records !== 7 || registry.scope?.implemented_race_type_records !== 10 || registry.scope?.browse_primary_records !== 8 || registry.scope?.supporting_definition_records !== 2) fail('registry scope differs');
 
-const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const expectedBrowseIds = [
   'thoroughbred-racing', 'jump-racing', 'harness-racing', 'trotting',
   'pacing', 'arabian-racing', 'quarter-horse-racing', 'banei-racing',
@@ -61,7 +61,7 @@ if (!exact(audit.reconciled_ids, expectedReconciledIds)) fail('reconciled IDs di
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
 const idSet = new Set(ids);
-if (glossary.length !== 26) fail(`glossary record count expected 26; found ${glossary.length}`);
+if (glossary.length < 26) fail(`glossary record count regressed below 26; found ${glossary.length}`);
 if (idSet.size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
 
@@ -94,7 +94,16 @@ for (const record of registry.records) {
 for (const id of raceTypeById.keys()) if (!registryIds.includes(id)) fail(`race-type glossary record missing from registry: ${id}`);
 
 const boundaries = registry.classification_boundaries ?? {};
-for (const id of boundaries.breed_ids_reserved_for_later ?? []) if (idSet.has(id)) fail(`breed record entered during racing-type unit: ${id}`);
+for (const id of boundaries.breed_ids_separate_from_race_types ?? []) {
+  const entry = glossary.find((candidate) => candidate.id === id);
+  if (entry && entry.category !== 'breed') fail(`${id}: expected breed classification after later expansion`);
+  if (raceTypeById.has(id)) fail(`${id}: breed was also classified as race type`);
+}
+for (const id of boundaries.horse_type_ids_separate_from_race_types ?? []) {
+  const entry = glossary.find((candidate) => candidate.id === id);
+  if (entry && entry.category !== 'horse_type') fail(`${id}: expected horse-type classification after later expansion`);
+  if (raceTypeById.has(id)) fail(`${id}: horse type was also classified as race type`);
+}
 for (const id of boundaries.surface_ids_not_race_types ?? []) {
   const entry = glossary.find((candidate) => candidate.id === id);
   if (!entry || entry.category !== 'surface') fail(`${id}: surface classification changed`);
@@ -116,9 +125,10 @@ for (const marker of [
   'Jump racing',
   'Flat racing',
   'Steeplechase',
-  'breed',
-  'surface',
-  'governing body',
+  'Horse breed',
+  'Horse type',
+  'Surface and course layout',
+  'Governing body',
   'GLOSSARY-HORSE-BREED-EXPANSION-01',
 ]) if (!doc.includes(marker)) fail(`racing-type expansion document missing ${marker}`);
 
@@ -143,7 +153,7 @@ for (const entry of glossary) {
 for (const id of expectedAddedIds) {
   for (const prefix of ['', 'ja/']) {
     if (!fs.existsSync(filePath(`dist/${prefix}glossary/${id}/index.html`))) {
-      fail(`${id}: missing new bilingual route`);
+      fail(`${id}: missing racing-type release route`);
       renderedErrors += 1;
     }
   }
@@ -156,12 +166,12 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('GLOSSARY_RACING_TYPE_EXPANSION: pass');
-console.log('GLOSSARY_RECORDS: 26');
+console.log(`CURRENT_GLOSSARY_RECORDS: ${glossary.length}`);
+console.log('RACING_TYPE_RELEASE_RECORDS: 26');
 console.log('RACE_TYPE_RECORDS: 10');
 console.log('BROWSE_PRIMARY_RECORDS: 8');
 console.log('SUPPORTING_DEFINITION_RECORDS: 2');
-console.log('BILINGUAL_ROUTES: 52');
-console.log('NEW_RECORDS: flat-racing,jump-racing,steeplechase');
+console.log('RACING_TYPE_RELEASE_BILINGUAL_ROUTES: 52');
 console.log('CLASSIFICATION_CONFLATION_ERRORS: 0');
 console.log('DATASET_REPUBLICATION: false');
 console.log('NEXT_IMPLEMENTATION_UNIT: GLOSSARY-HORSE-BREED-EXPANSION-01');
