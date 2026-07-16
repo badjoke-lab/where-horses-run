@@ -11,6 +11,7 @@ export interface CountryFilterRecord {
   localName: string;
   summary: string;
   region: string;
+  regions: string[];
   status: string;
   racingTypes: string[];
   coverageLevel: number;
@@ -18,8 +19,13 @@ export interface CountryFilterRecord {
   searchText: string;
 }
 
+export interface CountryRegionOption {
+  id: string;
+  count: number;
+}
+
 export interface CountryFilterOptions {
-  regions: string[];
+  regions: CountryRegionOption[];
   racingTypes: string[];
   statuses: string[];
   coverageLevels: number[];
@@ -52,6 +58,10 @@ function uniqueStrings(values: string[]): string[] {
   return [...new Set(values.filter(nonempty))].sort((left, right) => left.localeCompare(right, 'en'));
 }
 
+export function splitCountryRegions(value: string): string[] {
+  return uniqueStrings(value.split('/').map((part) => part.trim()));
+}
+
 export function getCountryFilterRecords(locale: CountryDirectoryLocale): CountryFilterRecord[] {
   const isJapanese = locale === 'ja';
 
@@ -62,6 +72,7 @@ export function getCountryFilterRecords(locale: CountryDirectoryLocale): Country
     const localName = nonempty(country.name_local) ? country.name_local : '';
     const summary = isJapanese ? country.summary_ja ?? '' : country.summary_en ?? '';
     const region = nonempty(country.region) ? country.region : 'Unknown';
+    const regions = splitCountryRegions(region);
     const status = nonempty(country.status) ? country.status : 'unknown';
     const racingTypes = uniqueStrings([...(country.racing_types ?? [])]);
     const coverageLevel = Number.isFinite(country.coverage_level) ? Number(country.coverage_level) : 0;
@@ -75,6 +86,7 @@ export function getCountryFilterRecords(locale: CountryDirectoryLocale): Country
       localName,
       summary,
       region,
+      ...regions,
       status,
       autoLevel,
       ...racingTypes,
@@ -89,6 +101,7 @@ export function getCountryFilterRecords(locale: CountryDirectoryLocale): Country
       localName,
       summary,
       region,
+      regions,
       status,
       racingTypes,
       coverageLevel,
@@ -99,8 +112,15 @@ export function getCountryFilterRecords(locale: CountryDirectoryLocale): Country
 }
 
 export function getCountryFilterOptions(records: CountryFilterRecord[]): CountryFilterOptions {
+  const regionCounts = new Map<string, number>();
+  for (const record of records) {
+    for (const region of record.regions) regionCounts.set(region, (regionCounts.get(region) ?? 0) + 1);
+  }
+
   return {
-    regions: uniqueStrings(records.map((record) => record.region)),
+    regions: [...regionCounts.entries()]
+      .map(([id, count]) => ({ id, count }))
+      .sort((left, right) => left.id.localeCompare(right.id, 'en')),
     racingTypes: uniqueStrings(records.flatMap((record) => record.racingTypes)),
     statuses: uniqueStrings(records.map((record) => record.status)),
     coverageLevels: [...new Set(records.map((record) => record.coverageLevel))].sort((left, right) => left - right),
