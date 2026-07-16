@@ -1,0 +1,75 @@
+name: Glossary public v1 QA release gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-*.json'
+      - 'data/static/glossary*.json'
+      - 'docs/glossary/**'
+      - 'scripts/glossary-data-loader.mjs'
+      - 'scripts/check-glossary-*.mjs'
+      - 'src/lib/glossary-data.ts'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-qa-release.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-*.json'
+      - 'data/static/glossary*.json'
+      - 'docs/glossary/**'
+      - 'scripts/glossary-data-loader.mjs'
+      - 'scripts/check-glossary-*.mjs'
+      - 'src/lib/glossary-data.ts'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-qa-release.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build all glossary public v1 routes
+        run: npm run build
+      - name: Preserve glossary v2 migration contract
+        run: node scripts/check-glossary-schema-extension.mjs
+      - name: Preserve racing-type release contract
+        run: node scripts/check-glossary-racing-type-expansion.mjs
+      - name: Preserve horse-breed release contract
+        run: node scripts/check-glossary-horse-breed-expansion.mjs
+      - name: Preserve role release contract
+        run: node scripts/check-glossary-role-expansion.mjs
+      - name: Preserve timetable-term release contract
+        run: node scripts/check-glossary-timetable-term-expansion.mjs
+      - name: Preserve official-source release contract
+        run: node scripts/check-glossary-official-source-term-expansion.mjs
+      - name: Preserve multilingual field contract
+        run: node scripts/check-glossary-multilingual-field-cleanup.mjs
+      - name: Preserve related-term graph contract
+        run: node scripts/check-glossary-related-terms-graph.mjs
+      - name: Preserve beginner-explanation contract
+        run: node scripts/check-glossary-beginner-explanations.mjs
+      - name: Validate glossary public v1 release
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
