@@ -12,11 +12,22 @@ const entry = getGlossaryEntryBySlug(slug ?? '');
 if (!entry) {
   return Astro.redirect('/ja/glossary/');
 }
+
+const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
+  const relatedEntry = getGlossaryEntryBySlug(relatedId);
+  return relatedEntry ? [relatedEntry] : [];
+});
 ---
 
 <BaseLayout title={`${entry.term_ja} | 用語 | 競馬どこ？`} description={entry.summary_ja} lang="ja">
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Glossary term</p>
+  <section
+    class="hero"
+    aria-labelledby="page-title"
+    data-glossary-schema-version={entry.schema_version}
+    data-glossary-content-status={entry.content_status}
+    data-glossary-public-boundary={entry.public_boundary.mode}
+  >
+    <p class="hero__eyebrow">競馬用語</p>
     <h1 id="page-title">{entry.term_ja}</h1>
     <p class="hero__summary">{entry.summary_ja}</p>
   </section>
@@ -27,10 +38,66 @@ if (!entry) {
       <p>{entry.category}</p>
     </article>
     <article class="card">
-      <h2>English</h2>
+      <h2>英語表記</h2>
       <p>{entry.term_en}</p>
+      {entry.pronunciation_en && <p>発音補助: {entry.pronunciation_en}</p>}
+    </article>
+    <article class="card">
+      <h2>確認状態</h2>
+      <p>{entry.content_status === 'baseline_reviewed' ? '基礎定義確認済み' : '拡張内容確認済み'}</p>
+      <p>最終確認日: <time datetime={entry.last_reviewed}>{entry.last_reviewed}</time></p>
     </article>
   </section>
+
+  {entry.aliases_ja.length > 0 && (
+    <section class="card" aria-labelledby="aliases-heading">
+      <h2 id="aliases-heading">別名</h2>
+      <ul>
+        {entry.aliases_ja.map((alias) => <li>{alias}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {entry.reading_ja && (
+    <section class="card" aria-labelledby="reading-heading">
+      <h2 id="reading-heading">読み</h2>
+      <p>{entry.reading_ja}</p>
+    </section>
+  )}
+
+  {entry.beginner_explanation_ja && (
+    <section class="card" aria-labelledby="beginner-heading">
+      <h2 id="beginner-heading">初心者向け説明</h2>
+      <p>{entry.beginner_explanation_ja}</p>
+    </section>
+  )}
+
+  {entry.related_term_ids.length > 0 && (
+    <section class="card" aria-labelledby="related-heading">
+      <h2 id="related-heading">関連用語</h2>
+      <ul>
+        {relatedEntries.map((relatedEntry) => (
+          <li><a href={`/ja/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_ja}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {entry.source_ids.length > 0 && (
+    <section class="card" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">確認済みソースID</h2>
+      <ul>
+        {entry.source_ids.map((sourceId) => <li><code>{sourceId}</code></li>)}
+      </ul>
+    </section>
+  )}
+
+  {entry.public_boundary.prohibited_dataset_keys.length > 0 && (
+    <aside class="card" aria-label="公開データ境界">
+      <h2>公開データ境界</h2>
+      <p>このページは用語の意味だけを説明します。関連する出走者、レースカード、オッズ、結果、払戻データは再掲載しません。</p>
+    </aside>
+  )}
 
   <p><a href="/ja/glossary/">一覧へ戻る</a></p>
 </BaseLayout>

@@ -187,8 +187,11 @@ const activePublicV1Entrypoint =
   startHere.includes('audit Calendar, Today, and Tomorrow');
 const completedPublicV1Entrypoint =
   startHere.includes('Completed Work ID: `WHR-CAL-PUBLIC-V1`') &&
-  startHere.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`') &&
-  startHere.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`');
+  startHere.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`') &&
+  (
+    startHere.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`') ||
+    startHere.includes('Completed Work ID: `WHR-RACECOURSE-PAGES-V1`')
+  );
 if (!activePublicV1Entrypoint && !completedPublicV1Entrypoint) fail('START-HERE.md does not retain an active or completed Public v1 entrypoint.');
 
 const activePublicV1Roadmap =
@@ -200,7 +203,7 @@ const completedPublicV1Roadmap =
   roadmap.includes('Status: complete') &&
   roadmap.includes('Completed Work ID: `WHR-CAL-PUBLIC-V1`') &&
   roadmap.includes('Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`') &&
-  roadmap.includes('Current Work ID: `WHR-RACECOURSE-PAGES-V1`');
+  roadmap.includes('Completed Work ID: `WHR-RACECOURSE-PAGES-V1`');
 if (!activePublicV1Roadmap && !completedPublicV1Roadmap) fail('implementation-roadmap.md does not retain an active or completed Public v1 stage.');
 for (const marker of [
   'PUBLIC-V1-SURFACE-AUDIT-01',

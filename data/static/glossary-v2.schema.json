@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/glossary-v2.schema.json",
+  "title": "Where Horses Run glossary collection v2",
+  "type": "array",
+  "minItems": 1,
+  "items": { "$ref": "./glossary-entry-v2.schema.json" }
+}

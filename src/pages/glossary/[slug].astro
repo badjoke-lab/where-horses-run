@@ -12,10 +12,21 @@ const entry = getGlossaryEntryBySlug(slug ?? '');
 if (!entry) {
   return Astro.redirect('/glossary/');
 }
+
+const relatedEntries = entry.related_term_ids.flatMap((relatedId) => {
+  const relatedEntry = getGlossaryEntryBySlug(relatedId);
+  return relatedEntry ? [relatedEntry] : [];
+});
 ---
 
 <BaseLayout title={`${entry.term_en} | Glossary`} description={entry.summary_en}>
-  <section class="hero" aria-labelledby="page-title">
+  <section
+    class="hero"
+    aria-labelledby="page-title"
+    data-glossary-schema-version={entry.schema_version}
+    data-glossary-content-status={entry.content_status}
+    data-glossary-public-boundary={entry.public_boundary.mode}
+  >
     <p class="hero__eyebrow">Glossary term</p>
     <h1 id="page-title">{entry.term_en}</h1>
     <p class="hero__summary">{entry.summary_en}</p>
@@ -29,8 +40,64 @@ if (!entry) {
     <article class="card">
       <h2>Japanese term</h2>
       <p>{entry.term_ja}</p>
+      {entry.reading_ja && <p>Reading: {entry.reading_ja}</p>}
+    </article>
+    <article class="card">
+      <h2>Review status</h2>
+      <p>{entry.content_status === 'baseline_reviewed' ? 'Baseline definition reviewed' : 'Enriched content reviewed'}</p>
+      <p>Last reviewed: <time datetime={entry.last_reviewed}>{entry.last_reviewed}</time></p>
     </article>
   </section>
+
+  {entry.aliases_en.length > 0 && (
+    <section class="card" aria-labelledby="aliases-heading">
+      <h2 id="aliases-heading">Aliases</h2>
+      <ul>
+        {entry.aliases_en.map((alias) => <li>{alias}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {entry.pronunciation_en && (
+    <section class="card" aria-labelledby="pronunciation-heading">
+      <h2 id="pronunciation-heading">Pronunciation</h2>
+      <p>{entry.pronunciation_en}</p>
+    </section>
+  )}
+
+  {entry.beginner_explanation_en && (
+    <section class="card" aria-labelledby="beginner-heading">
+      <h2 id="beginner-heading">Beginner explanation</h2>
+      <p>{entry.beginner_explanation_en}</p>
+    </section>
+  )}
+
+  {entry.related_term_ids.length > 0 && (
+    <section class="card" aria-labelledby="related-heading">
+      <h2 id="related-heading">Related terms</h2>
+      <ul>
+        {relatedEntries.map((relatedEntry) => (
+          <li><a href={`/glossary/${relatedEntry.slug}/`}>{relatedEntry.term_en}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {entry.source_ids.length > 0 && (
+    <section class="card" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Reviewed source IDs</h2>
+      <ul>
+        {entry.source_ids.map((sourceId) => <li><code>{sourceId}</code></li>)}
+      </ul>
+    </section>
+  )}
+
+  {entry.public_boundary.prohibited_dataset_keys.length > 0 && (
+    <aside class="card" aria-label="Public data boundary">
+      <h2>Public data boundary</h2>
+      <p>This page explains the concept only. Where Horses Run does not republish the associated participant, racecard, odds, result, or payout datasets.</p>
+    </aside>
+  )}
 
   <p><a href="/glossary/">Back</a></p>
 </BaseLayout>

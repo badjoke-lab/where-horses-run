@@ -14,6 +14,9 @@ const parse = (file) => {
     return null;
   }
 };
+const requireOne = (text, markers, label) => {
+  if (!markers.some((marker) => text.includes(marker))) fail(`${label} missing one of: ${markers.join(' | ')}`);
+};
 
 const decision = parse('data/audits/calendar-public-v1-release-decision-v1.json');
 const surface = parse('data/audits/calendar-public-v1-surface-audit-v1.json');
@@ -90,15 +93,28 @@ if ((navigation?.dynamic_route_families?.length ?? 0) !== 6) fail('six dynamic b
 if (navigation?.boundaries && Object.values(navigation.boundaries).some((value) => value !== false)) fail('navigation QA boundaries changed');
 
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Completed Work ID: `WHR-CAL-PUBLIC-V1`', 'Current Work ID: `WHR-RACECOURSE-PAGES-V1`', 'PUBLIC-V1-RELEASE-DECISION-01', 'docs/calendar/public-v1-release-decision.md']],
-  ['docs/project-roadmap.md', projectRoadmap, ['Completed Work ID: `WHR-CAL-PUBLIC-V1`', 'Current Work ID: `WHR-RACECOURSE-PAGES-V1`', 'Calendar Public v1 release decision accepted', 'racecourse pages and page-link architecture']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Stage 11 — Calendar public v1', 'Status: complete', 'Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`', 'Current Work ID: `WHR-RACECOURSE-PAGES-V1`']],
+  ['START-HERE.md', startHere, ['Completed Work ID: `WHR-CAL-PUBLIC-V1`', 'PUBLIC-V1-RELEASE-DECISION-01', 'docs/calendar/public-v1-release-decision.md']],
+  ['docs/project-roadmap.md', projectRoadmap, ['Completed Work ID: `WHR-CAL-PUBLIC-V1`', 'Calendar Public v1 release decision accepted', 'racecourse pages and page-link architecture']],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Stage 11 — Calendar public v1', 'Status: complete', 'Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`']],
   ['docs/governance/document-authority.md', authority, ['docs/calendar/public-v1-release-decision.md', 'data/audits/calendar-public-v1-release-decision-v1.json', 'scripts/check-calendar-public-v1-release-decision.mjs']],
   ['docs/calendar/README.md', calendarIndex, ['public-v1-release-decision.md', 'WHR-CAL-PUBLIC-V1', 'WHR-RACECOURSE-PAGES-V1']],
   ['docs/calendar/public-v1-release-decision.md', releaseDoc, ['accepted_for_reviewed_static_public_operation', 'WHR-RACECOURSE-PAGES-V1', 'unattended publication', 'Completion Audit']],
 ]) {
   for (const marker of markers) if (!text.includes(marker)) fail(`${file} missing ${marker}`);
 }
+
+requireOne(startHere, [
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
+], 'START-HERE.md post-Public-v1 transition');
+requireOne(projectRoadmap, [
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
+], 'docs/project-roadmap.md post-Public-v1 transition');
+requireOne(implementationRoadmap, [
+  'Current Work ID: `WHR-RACECOURSE-PAGES-V1`',
+  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
+], 'docs/calendar/implementation-roadmap.md post-Public-v1 transition');
 
 if (/^\s*schedule:/m.test(scheduledWorkflow) || scheduledWorkflow.includes('cron:')) fail('scheduled acquisition execution must remain disabled');
 if (!releaseWorkflow.includes('contents: read')) fail('release workflow must remain read-only');

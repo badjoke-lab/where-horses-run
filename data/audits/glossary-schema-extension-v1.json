@@ -1,0 +1,117 @@
+{
+  "schema_version": "glossary-schema-extension-v1",
+  "work_id": "WHR-GLOSSARY-DICTIONARY-V1",
+  "implementation_unit": "GLOSSARY-SCHEMA-EXTENSION-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "discovery": {
+    "workflow_run_id": 29341409988,
+    "artifact_id": 8314164264,
+    "artifact_digest": "sha256:c6d024f9e3b6164d68b091dc690842cc2333cccc115ce7761971a9940bbdfb9a"
+  },
+  "baseline": {
+    "records": 23,
+    "categories": 5,
+    "bilingual_routes": 46,
+    "records_missing_basic_fields": 0,
+    "duplicate_ids": 0,
+    "duplicate_slugs": 0,
+    "records_with_any_extension_field": 0,
+    "schema_files": 0,
+    "category_counts": {
+      "data_term": 4,
+      "race_type": 7,
+      "role": 3,
+      "surface": 4,
+      "track_term": 5
+    }
+  },
+  "implemented": {
+    "records": 23,
+    "categories": 5,
+    "bilingual_routes": 46,
+    "records_missing_required_fields": 0,
+    "duplicate_ids": 0,
+    "duplicate_slugs": 0,
+    "records_with_all_extension_fields": 23,
+    "entry_schema_files": 2,
+    "broken_related_term_ids": 0,
+    "broken_source_ids": 0,
+    "rendered_route_errors": 0
+  },
+  "required_extension_fields": [
+    "aliases_en",
+    "aliases_ja",
+    "reading_ja",
+    "pronunciation_en",
+    "beginner_explanation_en",
+    "beginner_explanation_ja",
+    "related_term_ids",
+    "source_ids",
+    "evidence_status",
+    "public_boundary",
+    "content_status",
+    "last_reviewed"
+  ],
+  "allowed_categories": [
+    "race_type",
+    "breed",
+    "role",
+    "data_term",
+    "official_source",
+    "track_term",
+    "surface",
+    "governance_term"
+  ],
+  "migration_defaults": {
+    "schema_version": "glossary-entry-v2",
+    "aliases": "empty_until_reviewed",
+    "reading_and_pronunciation": "null_until_reviewed",
+    "beginner_explanation": "null_until_reviewed",
+    "related_terms": "empty_until_graph_review",
+    "source_ids": "empty_until_evidence_review",
+    "evidence_status": "baseline_definition",
+    "public_boundary_mode": "definition_and_navigation",
+    "republish_dataset": false,
+    "content_status": "baseline_reviewed",
+    "last_reviewed": "2026-07-16"
+  },
+  "restricted_concept_rules": {
+    "racecard": [
+      "entries",
+      "participant_data",
+      "odds",
+      "results",
+      "payouts"
+    ],
+    "jockey": [
+      "participant_data"
+    ],
+    "driver": [
+      "participant_data"
+    ],
+    "trainer": [
+      "participant_data"
+    ]
+  },
+  "public_boundary": {
+    "definition_and_navigation_allowed": true,
+    "entries_dataset": false,
+    "participant_dataset": false,
+    "odds_dataset": false,
+    "results_dataset": false,
+    "payouts_dataset": false,
+    "predictions_dataset": false,
+    "raw_source_body": false,
+    "embedded_video": false,
+    "direct_stream_url": false
+  },
+  "automation_boundary": {
+    "network_fetch_by_gate": false,
+    "automatic_source_acceptance": false,
+    "automatic_content_promotion": false,
+    "publication": false,
+    "deployment": false
+  },
+  "next_implementation_unit": "GLOSSARY-RACING-TYPE-EXPANSION-01"
+}
