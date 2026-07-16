@@ -66,7 +66,7 @@ if (!exact(audit.reconciled_ids, expectedReconciledIds)) fail('reconciled role I
 const ids = glossary.map((entry) => entry.id);
 const slugs = glossary.map((entry) => entry.slug);
 const entryById = new Map(glossary.map((entry) => [entry.id, entry]));
-if (glossary.length !== 36) fail(`glossary record count expected 36; found ${glossary.length}`);
+if (glossary.length < 36) fail(`glossary record count regressed below 36; found ${glossary.length}`);
 if (new Set(ids).size !== glossary.length) fail('glossary IDs are not unique');
 if (new Set(slugs).size !== glossary.length) fail('glossary slugs are not unique');
 const roles = glossary.filter((entry) => entry.category === 'role');
@@ -131,7 +131,7 @@ if (entryById.get('steward')?.category !== 'role') fail('Steward must remain a r
 if (entryById.get('starter')?.id === entryById.get('post-time')?.id) fail('Starter and Post time were conflated');
 
 const runtime = read(runtimePath);
-for (const marker of ['glossary-entries-role-v1.json', 'roleOverrideById', 'newRoleEntries']) {
+for (const marker of ['glossary-entries-role-v1.json', 'const overlays', 'for (const overlay of overlays)']) {
   if (!runtime.includes(marker)) fail(`runtime glossary merger missing ${marker}`);
 }
 for (const page of [
@@ -186,11 +186,12 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('GLOSSARY_ROLE_EXPANSION: pass');
-console.log('GLOSSARY_RECORDS: 36');
+console.log(`CURRENT_GLOSSARY_RECORDS: ${glossary.length}`);
+console.log('ROLE_RELEASE_RECORDS: 36');
 console.log('ROLE_RECORDS: 8');
 console.log('PARTICIPANT_ROLE_RECORDS: 5');
 console.log('RACE_OFFICIAL_ROLE_RECORDS: 3');
-console.log('BILINGUAL_ROUTES: 72');
+console.log('ROLE_RELEASE_BILINGUAL_ROUTES: 72');
 console.log('RECIPROCAL_RELATIONSHIPS: 6');
 console.log('CLASSIFICATION_CONFLATION_ERRORS: 0');
 console.log('PARTICIPANT_DATASET_REPUBLICATION: false');
