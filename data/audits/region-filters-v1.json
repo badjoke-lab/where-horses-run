@@ -1,0 +1,50 @@
+{
+  "schema_version": "region-filters-audit-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "REGION-FILTERS-01",
+  "status": "implemented_for_review",
+  "reviewed_at": "2026-07-16",
+  "verified": {
+    "country_records": 98,
+    "english_rendered_records": 98,
+    "japanese_rendered_records": 98,
+    "region_facets": 8,
+    "english_region_navigation_links": 8,
+    "japanese_region_navigation_links": 8,
+    "countries_without_region_membership": 0,
+    "unknown_region_ids": 0,
+    "duplicate_region_memberships": 0,
+    "region_option_set_mismatches": 0,
+    "region_navigation_set_mismatches": 0,
+    "region_count_mismatches": 0,
+    "broken_region_links": 0,
+    "no_javascript_missing_records": 0,
+    "contract_errors": 0,
+    "rendered_marker_errors": 0
+  },
+  "behavior": {
+    "compound_region_labels_are_split": true,
+    "multiple_region_memberships_are_preserved": true,
+    "region_counts_match_country_memberships": true,
+    "region_links_restore_filter_state": true,
+    "active_region_is_marked": true,
+    "other_country_filters_remain_combinable": true,
+    "complete_list_exists_without_javascript": true
+  },
+  "privacy_boundary": {
+    "external_filter_service_enabled": false,
+    "server_filter_endpoint_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_generation_enabled": false,
+    "live_fetch_enabled": false,
+    "automatic_source_acceptance_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "RACE-TYPE-FILTERS-01",
+  "next_implementation_unit": "SOURCE-STATUS-FILTERS-01"
+}
