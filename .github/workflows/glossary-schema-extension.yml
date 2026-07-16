@@ -1,0 +1,57 @@
+name: Glossary schema extension gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-schema-extension-v1.json'
+      - 'data/static/glossary.json'
+      - 'data/static/glossary-entry-v2.schema.json'
+      - 'data/static/glossary-v2.schema.json'
+      - 'docs/glossary/schema-extension.md'
+      - 'scripts/check-glossary-schema-extension.mjs'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-schema-extension.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-schema-extension-v1.json'
+      - 'data/static/glossary.json'
+      - 'data/static/glossary-entry-v2.schema.json'
+      - 'data/static/glossary-v2.schema.json'
+      - 'docs/glossary/schema-extension.md'
+      - 'scripts/check-glossary-schema-extension.mjs'
+      - 'src/pages/glossary/**'
+      - 'src/pages/ja/glossary/**'
+      - '.github/workflows/glossary-schema-extension.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install
+      - name: Build bilingual glossary routes
+        run: npm run build
+      - name: Validate glossary schema extension
+        run: node scripts/check-glossary-schema-extension.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
