@@ -51,28 +51,7 @@ jobs:
       - name: Preserve global search foundation contract
         run: node scripts/check-global-search-foundation.mjs
       - name: Validate country filters
-        id: country_filters
-        shell: bash
-        run: |
-          set +e
-          node scripts/check-country-filters.mjs > country-filter-check.log 2>&1
-          status=$?
-          cat country-filter-check.log
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload country filter diagnostics
-        if: steps.country_filters.outputs.status != '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: country-filter-check-log
-          path: country-filter-check.log
-          retention-days: 1
-      - name: Fail when country filter validation failed
-        if: steps.country_filters.outputs.status != '0'
-        run: exit 1
-      - name: Remove diagnostic log
-        if: always()
-        run: rm -f country-filter-check.log
+        run: node scripts/check-country-filters.mjs
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
