@@ -1,0 +1,61 @@
+name: Country filters gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/country-filters-v1.json'
+      - 'data/static/country-filter-contract-v1.json'
+      - 'docs/search/country-filters.md'
+      - 'scripts/check-country-filters.mjs'
+      - 'src/components/CountryDirectoryPage.astro'
+      - 'src/lib/country-filter-data.ts'
+      - 'src/pages/countries/index.astro'
+      - 'src/pages/ja/countries/index.astro'
+      - '.github/workflows/country-filters.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/country-filters-v1.json'
+      - 'data/static/country-filter-contract-v1.json'
+      - 'docs/search/country-filters.md'
+      - 'scripts/check-country-filters.mjs'
+      - 'src/components/CountryDirectoryPage.astro'
+      - 'src/lib/country-filter-data.ts'
+      - 'src/pages/countries/index.astro'
+      - 'src/pages/ja/countries/index.astro'
+      - '.github/workflows/country-filters.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build bilingual country directories and site
+        run: npm run build
+      - name: Preserve glossary public v1 contract
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Preserve global search foundation contract
+        run: node scripts/check-global-search-foundation.mjs
+      - name: Validate country filters
+        run: node scripts/check-country-filters.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
