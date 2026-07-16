@@ -9,6 +9,7 @@ const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const count = (text, marker) => text.split(marker).length - 1;
+const countSearchRecords = (html) => html.match(/data-search-record(?=[\s>])/g)?.length ?? 0;
 
 const contract = parse('data/static/global-search-contract-v1.json');
 const audit = parse('data/audits/global-search-foundation-v1.json');
@@ -88,7 +89,7 @@ if (audit.next_implementation_unit !== contract.next_implementation_unit) fail('
 
 const dataSource = read(dataPath);
 for (const marker of [
-  "getCountries", "getRacecourses", "getGlossaryEntries", "normalize('NFKC')",
+  'getCountries', 'getRacecourses', 'getGlossaryEntries', "normalize('NFKC')",
   "type: 'country'", "type: 'racecourse'", "type: 'glossary'",
   '/countries/${country.slug}/', '/tracks/${racecourse.slug}/', '/glossary/${entry.slug}/',
   '/ja/countries/${country.slug}/', '/ja/tracks/${racecourse.slug}/', '/ja/glossary/${entry.slug}/',
@@ -103,14 +104,14 @@ for (const marker of [
   'data-search-type={record.type}', 'data-search-text={record.searchText}',
   'data-search-empty', '<noscript>', 'new URLSearchParams(window.location.search)',
   "params.get('q')", "params.get('type')", "normalize('NFKC')",
-  "record.hidden = !show", 'window.history.replaceState',
+  'record.hidden = !show', 'window.history.replaceState',
 ]) if (!component.includes(marker)) fail(`search component missing ${marker}`);
 for (const forbidden of ['fetch(', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
   if (component.includes(forbidden)) fail(`search component contains forbidden marker ${forbidden}`);
 }
 
 const layout = read(layoutPath);
-for (const marker of ["|search|", "'/ja/search/' : '/search/'", "'検索' : 'Search'"]) {
+for (const marker of ['|search|', "'/ja/search/' : '/search/'", "'検索' : 'Search'"]) {
   if (!layout.includes(marker)) fail(`base layout missing search marker ${marker}`);
 }
 for (const page of pagePaths) {
@@ -158,7 +159,7 @@ for (const page of renderedPages) {
   if (!fs.existsSync(filePath(page.file))) { fail(`rendered search route missing: ${page.file}`); renderedMarkerErrors += 1; continue; }
   const html = read(page.file);
   const measurements = {
-    all: count(html, 'data-search-record'),
+    all: countSearchRecords(html),
     country: count(html, 'data-search-type="country"'),
     racecourse: count(html, 'data-search-type="racecourse"'),
     glossary: count(html, 'data-search-type="glossary"'),
