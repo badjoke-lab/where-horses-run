@@ -1,0 +1,71 @@
+name: Open Graph social card gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/open-graph-social-cards-v1.json'
+      - 'data/static/open-graph-social-cards-contract-v1.json'
+      - 'docs/seo/open-graph-social-cards.md'
+      - 'scripts/check-open-graph-social-cards.mjs'
+      - 'scripts/social-card-integration.mjs'
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/open-graph-social-cards.yml'
+      - '.github/workflows/temporary-open-graph-social-cards-discovery.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/open-graph-social-cards-v1.json'
+      - 'data/static/open-graph-social-cards-contract-v1.json'
+      - 'docs/seo/open-graph-social-cards.md'
+      - 'scripts/check-open-graph-social-cards.mjs'
+      - 'scripts/social-card-integration.mjs'
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/open-graph-social-cards.yml'
+      - '.github/workflows/temporary-open-graph-social-cards-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site and social card
+        run: npm run build
+      - name: Preserve Phase 10 UX release contract
+        run: node scripts/check-ux-polish-release.mjs
+      - name: Preserve sitemap and robots contract
+        run: node scripts/check-sitemap-robots.mjs
+      - name: Preserve canonical and hreflang review
+        run: node scripts/check-canonical-hreflang-review.mjs
+      - name: Preserve structured data baseline
+        run: node scripts/check-structured-data-baseline.mjs
+      - name: Preserve country page metadata
+        run: node scripts/check-country-page-metadata.mjs
+      - name: Preserve racecourse page metadata
+        run: node scripts/check-racecourse-page-metadata.mjs
+      - name: Preserve glossary page metadata
+        run: node scripts/check-glossary-page-metadata.mjs
+      - name: Validate Open Graph social cards
+        run: node scripts/check-open-graph-social-cards.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
