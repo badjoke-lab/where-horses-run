@@ -1,0 +1,130 @@
+name: Temporary country page metadata discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'scripts/country-page-metadata-integration.mjs'
+      - '.github/workflows/temporary-country-page-metadata-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Capture country metadata measurements
+        shell: bash
+        run: |
+          node <<'NODE' > country-page-metadata-discovery.json
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          function walk(directory) {
+            return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+              const absolute = path.join(directory, entry.name);
+              return entry.isDirectory() ? walk(absolute) : [absolute];
+            });
+          }
+
+          function decode(value) {
+            return value
+              .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+              .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+              .replaceAll('&quot;', '"')
+              .replaceAll('&#39;', "'")
+              .replaceAll('&#x27;', "'")
+              .replaceAll('&lt;', '<')
+              .replaceAll('&gt;', '>')
+              .replaceAll('&amp;', '&');
+          }
+
+          const files = walk('dist').filter((file) => /(?:^|\/)countries\/[^/]+\/index\.html$/.test(file.split(path.sep).join('/')));
+          const summary = {
+            pages: files.length,
+            englishPages: 0,
+            japanesePages: 0,
+            slugs: 0,
+            scripts: 0,
+            validJsonScripts: 0,
+            collectionPageNodes: 0,
+            countryNodes: 0,
+            baselineLinks: 0,
+            canonicalMismatches: 0,
+            pageFieldMismatches: 0,
+            countryNameMismatches: 0,
+            missingAlternateNames: 0,
+            missingReviewDates: 0,
+            unexpectedTypes: 0,
+            unsafeLessThanCharacters: 0,
+          };
+          const slugs = new Set();
+
+          for (const file of files) {
+            const normalized = file.split(path.sep).join('/');
+            const route = normalized.match(/dist\/(ja\/)?countries\/([^/]+)\/index\.html$/);
+            if (!route) continue;
+            const locale = route[1] ? 'ja' : 'en';
+            const slug = route[2];
+            slugs.add(slug);
+            if (locale === 'ja') summary.japanesePages += 1;
+            else summary.englishPages += 1;
+
+            const html = fs.readFileSync(file, 'utf8');
+            const canonical = decode(html.match(/<link\s+[^>]*rel="canonical"[^>]*href="([^"]+)"|<link\s+[^>]*href="([^"]+)"[^>]*rel="canonical"/)?.slice(1).find(Boolean) || '');
+            const title = decode(html.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.replace(/<[^>]*>/g, '').trim() || '');
+            const description = decode(html.match(/<meta\s+[^>]*name="description"[^>]*content="([^"]+)"|<meta\s+[^>]*content="([^"]+)"[^>]*name="description"/)?.slice(1).find(Boolean) || '');
+            const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1];
+            const heading = decode(html.match(/<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/)?.[1]?.replace(/<[^>]*>/g, '').trim() || '');
+            const suffix = locale === 'ja' ? 'の競馬カレンダー・競馬場ガイド' : ' Horse Racing Calendar & Racecourses';
+            const countryName = heading.endsWith(suffix) ? heading.slice(0, -suffix.length).trim() : '';
+
+            const scripts = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*data-country-page-metadata="collection-country-v1"[^>]*>([\s\S]*?)<\/script>/g)];
+            summary.scripts += scripts.length;
+            if (scripts.length !== 1) continue;
+            if (scripts[0][1].includes('<')) summary.unsafeLessThanCharacters += 1;
+            let data;
+            try {
+              data = JSON.parse(scripts[0][1]);
+              summary.validJsonScripts += 1;
+            } catch {
+              continue;
+            }
+            const graph = Array.isArray(data['@graph']) ? data['@graph'] : [];
+            const collection = graph.find((node) => node['@type'] === 'CollectionPage');
+            const country = graph.find((node) => node['@type'] === 'Country');
+            summary.collectionPageNodes += collection ? 1 : 0;
+            summary.countryNodes += country ? 1 : 0;
+            summary.unexpectedTypes += graph.filter((node) => !['CollectionPage', 'Country'].includes(node['@type'])).length;
+            if (collection?.['@id'] === `${canonical}#webpage` && country?.mainEntityOfPage?.['@id'] === `${canonical}#webpage`) summary.baselineLinks += 1;
+            if (collection?.url !== canonical || country?.url !== canonical) summary.canonicalMismatches += 1;
+            if (collection?.name !== title || collection?.description !== description || collection?.inLanguage !== lang) summary.pageFieldMismatches += 1;
+            if (country?.name !== countryName) summary.countryNameMismatches += 1;
+            if (!Array.isArray(country?.alternateName) || country.alternateName.length === 0) summary.missingAlternateNames += 1;
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(collection?.lastReviewed || '')) summary.missingReviewDates += 1;
+          }
+
+          summary.slugs = slugs.size;
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+          cat country-page-metadata-discovery.json
+      - name: Upload country metadata discovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: country-page-metadata-discovery
+          path: country-page-metadata-discovery.json
+          retention-days: 1
