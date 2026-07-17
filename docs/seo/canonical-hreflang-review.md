@@ -28,6 +28,8 @@ x-default links: 766
 Language-switch links: 769
 ```
 
+The frozen set therefore contains 769 canonical links, 383 bilingual clusters, and 2,298 hreflang links.
+
 Every paired page emits the same three-link cluster:
 
 ```text
