@@ -1,0 +1,101 @@
+{
+  "schema_version": "racecourse-page-metadata-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "RACECOURSE-PAGE-METADATA-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "racecourse_entities": 36,
+    "locales": 2,
+    "bilingual_detail_routes": 72,
+    "english_detail_routes": 36,
+    "japanese_detail_routes": 36,
+    "json_ld_scripts": 72,
+    "graph_nodes": 144,
+    "collection_page_nodes": 72,
+    "place_nodes": 72,
+    "baseline_links": 72,
+    "country_area_links": 72,
+    "visible_address_values": 72,
+    "alternate_name_arrays": 72,
+    "schema_types": 2
+  },
+  "route_contract": {
+    "english_pattern": "/tracks/{slug}/",
+    "japanese_pattern": "/ja/tracks/{slug}/",
+    "directory_routes_included": false,
+    "one_english_and_one_japanese_route_per_slug": true,
+    "same_origin_required": true,
+    "query_parameters_allowed": false,
+    "fragments_allowed": false,
+    "trailing_slash_required": true
+  },
+  "collection_page_contract": {
+    "type": "CollectionPage",
+    "id_pattern": "{canonical-url}#webpage",
+    "url_source": "rendered-canonical",
+    "name_source": "rendered-title",
+    "description_source": "rendered-meta-description",
+    "language_source": "rendered-html-lang",
+    "website_relation": "https://whr.badjoke-lab.com/#website",
+    "about_pattern": "{canonical-url}#place",
+    "main_entity_pattern": "{canonical-url}#place"
+  },
+  "place_contract": {
+    "type": "Place",
+    "id_pattern": "{canonical-url}#place",
+    "url_source": "rendered-canonical",
+    "name_source": "visible-page-heading",
+    "alternate_name_sources": [
+      "paired-locale-visible-page-heading",
+      "visible-local-name-in-hero"
+    ],
+    "address_source": "visible-city-region-field",
+    "contained_in_place_id_source": "visible-country-page-link",
+    "contained_in_place_name_source": "visible-country-link-text",
+    "main_entity_of_page_pattern": "{canonical-url}#webpage",
+    "sports_activity_location_claim_allowed": false,
+    "same_as_claim_allowed": false,
+    "owner_or_operator_claim_allowed": false,
+    "event_claim_allowed": false
+  },
+  "serialization_contract": {
+    "context": "https://schema.org",
+    "format": "JSON-LD",
+    "script_type": "application/ld+json",
+    "script_marker": "data-racecourse-page-metadata",
+    "script_marker_value": "collection-place-v1",
+    "scripts_per_detail_page": 1,
+    "graph_nodes_per_script": 2,
+    "less_than_characters_escaped": true,
+    "valid_json_required": true
+  },
+  "public_boundary": {
+    "visible_page_metadata_allowed": true,
+    "public_place_identity_allowed": true,
+    "visible_location_text_allowed": true,
+    "country_area_relationship_allowed": true,
+    "sports_business_classification_allowed": false,
+    "official_source_same_as_allowed": false,
+    "operator_identity_claim_allowed": false,
+    "event_claim_allowed": false,
+    "participant_dataset_claim_allowed": false,
+    "betting_or_prediction_claim_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_schema_service_enabled": false,
+    "automatic_entity_inference_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "COUNTRY-PAGE-METADATA-01",
+  "next_implementation_unit": "GLOSSARY-PAGE-METADATA-01"
+}
