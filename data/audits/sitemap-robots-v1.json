@@ -1,0 +1,64 @@
+{
+  "schema_version": "sitemap-robots-audit-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "SITEMAP-ROBOTS-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "verified": {
+    "sitemap_urls": 767,
+    "english_urls": 385,
+    "japanese_urls": 382,
+    "route_families": 15,
+    "duplicate_urls": 0,
+    "non_https_urls": 0,
+    "wrong_origin_urls": 0,
+    "query_or_fragment_urls": 0,
+    "urls_without_trailing_slash": 0,
+    "missing_rendered_html_canonicals": 0,
+    "sitemap_urls_without_rendered_canonicals": 0,
+    "rendered_canonicals_missing_from_sitemap": 0,
+    "rendered_404_urls": 0,
+    "noindex_urls": 0,
+    "manual_public_sitemap_files": 0,
+    "external_sitemap_dependencies": 0,
+    "robots_disallow_directives": 0,
+    "robots_sitemap_directive_errors": 0,
+    "temporary_discovery_workflows": 0,
+    "contract_errors": 0,
+    "output_errors": 0
+  },
+  "behavior": {
+    "build_output_drives_sitemap": true,
+    "canonical_urls_drive_entries": true,
+    "routes_are_deduplicated": true,
+    "routes_are_sorted_deterministically": true,
+    "future_noindex_routes_are_excluded": true,
+    "rendered_404_is_excluded": true,
+    "robots_allows_public_crawling": true,
+    "robots_points_to_generated_sitemap": true
+  },
+  "public_boundary": {
+    "public_canonical_routes_allowed": true,
+    "public_sitemap_allowed": true,
+    "public_robots_allowed": true,
+    "query_state_urls_allowed": false,
+    "candidate_routes_allowed": false,
+    "private_routes_allowed": false,
+    "noindex_routes_allowed": false,
+    "rendered_404_allowed": false
+  },
+  "privacy_boundary": {
+    "crawler_request_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_content_generation_enabled": false,
+    "automatic_route_publication_enabled": false,
+    "external_sitemap_service_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "UX-POLISH-RELEASE-01",
+  "next_implementation_unit": "STRUCTURED-DATA-BASELINE-01"
+}

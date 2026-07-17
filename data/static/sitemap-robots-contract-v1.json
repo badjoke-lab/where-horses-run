@@ -1,0 +1,92 @@
+{
+  "schema_version": "sitemap-robots-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "SITEMAP-ROBOTS-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "sitemap_urls": 767,
+    "english_urls": 385,
+    "japanese_urls": 382,
+    "route_families": 15,
+    "country_routes": 198,
+    "source_routes": 198,
+    "meeting_detail_routes": 158,
+    "glossary_routes": 100,
+    "racecourse_routes": 74,
+    "racing_type_routes": 18,
+    "major_country_routes": 5,
+    "root_routes": 2,
+    "about_routes": 2,
+    "archive_routes": 2,
+    "calendar_routes": 2,
+    "disclaimer_routes": 2,
+    "search_routes": 2,
+    "today_routes": 2,
+    "tomorrow_routes": 2
+  },
+  "detail_route_counts": {
+    "country_detail_routes": 196,
+    "source_country_routes": 196,
+    "meeting_detail_routes": 158,
+    "glossary_term_routes": 96,
+    "glossary_relationship_routes": 2,
+    "racecourse_detail_routes": 72,
+    "racing_type_detail_routes": 16
+  },
+  "generation_contract": {
+    "astro_build_done_hook_required": true,
+    "rendered_html_is_source_of_truth": true,
+    "canonical_link_is_url_source": true,
+    "manual_sitemap_source_allowed": false,
+    "external_sitemap_dependency_required": false,
+    "rendered_404_excluded": true,
+    "noindex_html_excluded": true,
+    "same_origin_required": true,
+    "https_required": true,
+    "query_parameters_allowed": false,
+    "fragments_allowed": false,
+    "trailing_slash_required": true,
+    "duplicate_urls_allowed": false,
+    "deterministic_path_sort_required": true,
+    "empty_sitemap_allowed": false
+  },
+  "robots_contract": {
+    "path": "/robots.txt",
+    "user_agent": "*",
+    "allow": "/",
+    "sitemap": "https://whr.badjoke-lab.com/sitemap.xml",
+    "disallow_directives": 0
+  },
+  "output_contract": {
+    "sitemap_path": "dist/sitemap.xml",
+    "robots_path": "dist/robots.txt",
+    "sitemap_xml_namespace": "http://www.sitemaps.org/schemas/sitemap/0.9",
+    "sitemap_encoding": "UTF-8"
+  },
+  "public_boundary": {
+    "public_canonical_routes_allowed": true,
+    "public_sitemap_allowed": true,
+    "public_robots_allowed": true,
+    "query_state_urls_allowed": false,
+    "candidate_routes_allowed": false,
+    "private_routes_allowed": false,
+    "noindex_routes_allowed": false,
+    "rendered_404_allowed": false
+  },
+  "privacy_boundary": {
+    "crawler_request_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_content_generation_enabled": false,
+    "automatic_route_publication_enabled": false,
+    "external_sitemap_service_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "UX-POLISH-RELEASE-01",
+  "next_implementation_unit": "STRUCTURED-DATA-BASELINE-01"
+}

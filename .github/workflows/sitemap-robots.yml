@@ -1,0 +1,61 @@
+name: Sitemap and robots gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/sitemap-robots-v1.json'
+      - 'data/static/sitemap-robots-contract-v1.json'
+      - 'docs/seo/sitemap-robots.md'
+      - 'public/robots.txt'
+      - 'public/sitemap.xml'
+      - 'scripts/check-sitemap-robots.mjs'
+      - 'scripts/sitemap-robots-integration.mjs'
+      - '.github/workflows/sitemap-robots.yml'
+      - '.github/workflows/temporary-sitemap-robots-discovery.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/sitemap-robots-v1.json'
+      - 'data/static/sitemap-robots-contract-v1.json'
+      - 'docs/seo/sitemap-robots.md'
+      - 'public/robots.txt'
+      - 'public/sitemap.xml'
+      - 'scripts/check-sitemap-robots.mjs'
+      - 'scripts/sitemap-robots-integration.mjs'
+      - '.github/workflows/sitemap-robots.yml'
+      - '.github/workflows/temporary-sitemap-robots-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site and generated crawler files
+        run: npm run build
+      - name: Preserve Phase 10 UX release contract
+        run: node scripts/check-ux-polish-release.mjs
+      - name: Validate sitemap and robots
+        run: node scripts/check-sitemap-robots.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
