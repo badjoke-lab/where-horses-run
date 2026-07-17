@@ -1,0 +1,69 @@
+name: Glossary page metadata gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/glossary-page-metadata-v1.json'
+      - 'data/static/glossary-page-metadata-contract-v1.json'
+      - 'docs/seo/glossary-page-metadata.md'
+      - 'scripts/check-glossary-page-metadata.mjs'
+      - 'scripts/glossary-page-metadata-integration.mjs'
+      - '.github/workflows/glossary-page-metadata.yml'
+      - '.github/workflows/temporary-glossary-page-metadata-discovery.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/glossary-page-metadata-v1.json'
+      - 'data/static/glossary-page-metadata-contract-v1.json'
+      - 'docs/seo/glossary-page-metadata.md'
+      - 'scripts/check-glossary-page-metadata.mjs'
+      - 'scripts/glossary-page-metadata-integration.mjs'
+      - '.github/workflows/glossary-page-metadata.yml'
+      - '.github/workflows/temporary-glossary-page-metadata-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Preserve Phase 10 UX release contract
+        run: node scripts/check-ux-polish-release.mjs
+      - name: Preserve sitemap and robots contract
+        run: node scripts/check-sitemap-robots.mjs
+      - name: Preserve structured data baseline
+        run: node scripts/check-structured-data-baseline.mjs
+      - name: Preserve country page metadata
+        run: node scripts/check-country-page-metadata.mjs
+      - name: Preserve racecourse page metadata
+        run: node scripts/check-racecourse-page-metadata.mjs
+      - name: Preserve glossary Public v1 release
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Preserve glossary search improvement
+        run: node scripts/check-glossary-search-improvement.mjs
+      - name: Validate glossary page metadata
+        run: node scripts/check-glossary-page-metadata.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
