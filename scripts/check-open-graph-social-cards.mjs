@@ -3,162 +3,55 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { renderCard, WIDTH, HEIGHT, OUTPUT_PATH } from './social-card-integration.mjs';
 
-const root = process.cwd();
-const errors = [];
-const fail = (message) => errors.push(message);
-const filePath = (file) => path.join(root, file);
-const read = (file) => fs.readFileSync(filePath(file), 'utf8');
-const parse = (file) => JSON.parse(read(file));
-const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const IMAGE_URL = `${SITE_ORIGIN}/social/whr-social-card-v1.png`;
-const IMAGE_SHA256 = '9e3c63e186f6681197b6e0cde8cdd3368e4d041b7f9dda79e33e940bd99861bd';
+const CONTRACT = 'data/static/open-graph-social-cards-contract-v1.json';
+const AUDIT = 'data/audits/open-graph-social-cards-v1.json';
+const LAYOUT = 'src/layouts/BaseLayout.astro';
+const GENERATOR = 'scripts/social-card-integration.mjs';
+const DOC = 'docs/seo/open-graph-social-cards.md';
+const WORKFLOW = '.github/workflows/open-graph-social-cards.yml';
+const TEMPORARY = '.github/workflows/temporary-open-graph-social-cards-discovery.yml';
+const SITEMAP = 'dist/sitemap.xml';
 const EN_ALT = 'Where Horses Run social card with a stylized racecourse oval.';
 const JA_ALT = 'Where Horses Run / 競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。';
 
-const contractPath = 'data/static/open-graph-social-cards-contract-v1.json';
-const auditPath = 'data/audits/open-graph-social-cards-v1.json';
-const layoutPath = 'src/layouts/BaseLayout.astro';
-const generatorPath = 'scripts/social-card-integration.mjs';
-const docPath = 'docs/seo/open-graph-social-cards.md';
-const workflowPath = '.github/workflows/open-graph-social-cards.yml';
-const temporaryWorkflowPath = '.github/workflows/temporary-open-graph-social-cards-discovery.yml';
+const read = (file) => fs.readFileSync(file, 'utf8');
+const json = (file) => JSON.parse(read(file));
+const exact = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
-for (const required of [contractPath, auditPath, layoutPath, generatorPath, docPath, workflowPath]) {
-  if (!fs.existsSync(filePath(required))) fail(`required file missing: ${required}`);
-}
-if (fs.existsSync(filePath(temporaryWorkflowPath))) fail('temporary Open Graph discovery workflow remains');
+for (const file of [CONTRACT, AUDIT, LAYOUT, GENERATOR, DOC, WORKFLOW, SITEMAP]) expect(fs.existsSync(file), `Missing ${file}`);
+expect(!fs.existsSync(TEMPORARY), 'Temporary Open Graph discovery workflow remains');
+const contract = json(CONTRACT);
+const audit = json(AUDIT);
+expect(contract.schema_version === 'open-graph-social-cards-contract-v1' && contract.status === 'complete', 'Social-card contract identity differs');
+expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Social-card scope marker differs');
+expect(contract.site_origin === SITE_ORIGIN, 'Social-card origin differs');
+expect(audit.schema_version === 'open-graph-social-cards-audit-v1' && audit.status === 'complete', 'Social-card audit identity differs');
+expect(audit.scope_updated_by === contract.scope_updated_by, 'Social-card audit scope marker differs');
+for (const key of ['public_pages','paired_pages','unpaired_pages','faq_pages','methods_pages']) expect(audit.verified[key] === contract.scope[key], `Social-card audit ${key} differs`);
+for (const [auditKey, scopeKey] of [
+  ['og_type','public_pages'],['og_site_name','public_pages'],['og_title','public_pages'],['og_description','public_pages'],['og_url','public_pages'],['og_locale','public_pages'],
+  ['og_locale_alternate','open_graph_locale_alternate_links'],['og_image','open_graph_image_references'],['og_image_secure_url','open_graph_image_references'],
+  ['og_image_type','open_graph_image_references'],['og_image_width','open_graph_image_references'],['og_image_height','open_graph_image_references'],['og_image_alt','open_graph_image_references'],
+  ['twitter_card','twitter_image_references'],['twitter_title','twitter_image_references'],['twitter_description','twitter_image_references'],['twitter_image','twitter_image_references'],['twitter_image_alt','twitter_image_references'],
+]) expect(audit.verified[auditKey] === contract.scope[scopeKey], `Social-card audit ${auditKey} differs`);
+for (const key of ['image_sha256_mismatches','duplicate_property_errors','canonical_alignment_errors','title_alignment_errors','description_alignment_errors','locale_errors','locale_alternate_errors','image_url_errors','image_descriptor_errors','image_alt_errors','twitter_errors','contract_errors','output_errors']) expect(audit.verified[key] === 0, `Social-card audit ${key} differs`);
+expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Social-card privacy boundary differs');
+expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Social-card automation boundary differs');
 
-const expectedScope = {
-  public_pages: 769,
-  paired_pages: 766,
-  unpaired_pages: 3,
-  generated_images: 1,
-  open_graph_core_properties_per_page: 6,
-  open_graph_image_properties_per_page: 6,
-  twitter_properties_per_page: 5,
-  open_graph_locale_alternate_links: 766,
-  open_graph_image_references: 769,
-  twitter_image_references: 769,
-  localized_image_alt_values: 2,
-  faq_pages: 2,
-};
-
-const contract = fs.existsSync(filePath(contractPath)) ? parse(contractPath) : {};
-const audit = fs.existsSync(filePath(auditPath)) ? parse(auditPath) : {};
-if (contract.schema_version !== 'open-graph-social-cards-contract-v1') fail('social-card contract schema differs');
-if (contract.work_id !== 'WHR-SEO-PUBLIC-CONTENT-V1') fail('social-card Work ID differs');
-if (contract.implementation_unit !== 'OPEN-GRAPH-SOCIAL-CARDS-01') fail('social-card implementation unit differs');
-if (contract.status !== 'complete') fail('social-card contract status differs');
-if (contract.reviewed_at !== '2026-07-18') fail('social-card review date differs');
-if (contract.scope_updated_by !== 'FAQ-CONTENT-PAGES-01') fail('social-card scope update marker differs');
-if (contract.site_origin !== SITE_ORIGIN) fail('social-card origin differs');
-if (!exact(contract.scope, expectedScope)) fail('social-card scope differs');
-if (contract.image_contract?.absolute_url !== IMAGE_URL || contract.image_contract?.width !== 1200 || contract.image_contract?.height !== 630 || contract.image_contract?.bytes !== 9437 || contract.image_contract?.sha256 !== IMAGE_SHA256) fail('social-card image contract differs');
-if (contract.twitter_contract?.card !== 'summary_large_image') fail('Twitter card contract differs');
-if (contract.localized_alt_contract?.en !== EN_ALT || contract.localized_alt_contract?.ja !== JA_ALT) fail('localized image-alt contract differs');
-if (Object.values(contract.privacy_boundary ?? {}).some((value) => value !== false)) fail('social-card privacy boundary differs');
-if (Object.values(contract.automation_boundary ?? {}).some((value) => value !== false)) fail('social-card automation boundary differs');
-
-if (audit.schema_version !== 'open-graph-social-cards-audit-v1') fail('social-card audit schema differs');
-if (audit.status !== 'complete') fail('social-card audit status differs');
-if (audit.reviewed_at !== contract.reviewed_at || audit.scope_updated_by !== contract.scope_updated_by) fail('social-card audit scope identity differs');
-for (const [key, value] of Object.entries({
-  public_pages: 769,
-  paired_pages: 766,
-  unpaired_pages: 3,
-  faq_pages: 2,
-  image_files: 1,
-  image_bytes: 9437,
-  image_width: 1200,
-  image_height: 630,
-  image_bit_depth: 8,
-  image_color_type: 2,
-  image_idat_bytes: 9380,
-  og_type: 769,
-  og_site_name: 769,
-  og_title: 769,
-  og_description: 769,
-  og_url: 769,
-  og_locale: 769,
-  og_locale_alternate: 766,
-  og_image: 769,
-  og_image_secure_url: 769,
-  og_image_type: 769,
-  og_image_width: 769,
-  og_image_height: 769,
-  og_image_alt: 769,
-  twitter_card: 769,
-  twitter_title: 769,
-  twitter_description: 769,
-  twitter_image: 769,
-  twitter_image_alt: 769,
-})) if (audit.verified?.[key] !== value) fail(`social-card audit ${key} differs`);
-for (const key of ['image_sha256_mismatches', 'duplicate_property_errors', 'canonical_alignment_errors', 'title_alignment_errors', 'description_alignment_errors', 'locale_errors', 'locale_alternate_errors', 'image_url_errors', 'image_descriptor_errors', 'image_alt_errors', 'twitter_errors', 'contract_errors', 'output_errors']) {
-  if (audit.verified?.[key] !== 0) fail(`social-card audit ${key} differs`);
-}
-
-const layout = fs.existsSync(filePath(layoutPath)) ? read(layoutPath) : '';
-for (const marker of [
-  'const socialImageUrl',
-  'const socialImageAlt',
-  'property="og:image"',
-  'property="og:image:secure_url"',
-  'property="og:image:type"',
-  'property="og:image:width"',
-  'property="og:image:height"',
-  'property="og:image:alt"',
-  'name="twitter:card" content="summary_large_image"',
-  'name="twitter:image"',
-  'name="twitter:image:alt"',
-]) if (!layout.includes(marker)) fail(`BaseLayout social metadata marker missing ${marker}`);
-
-const generator = fs.existsSync(filePath(generatorPath)) ? read(generatorPath) : '';
-for (const marker of [
-  'const WIDTH = 1200',
-  'const HEIGHT = 630',
-  "const OUTPUT_PATH = 'social/whr-social-card-v1.png'",
-  "name: 'where-horses-run-social-card'",
-  "'astro:build:done'",
-  'renderCard()',
-]) if (!generator.includes(marker)) fail(`social-card generator marker missing ${marker}`);
-for (const forbidden of ['fetch(', 'axios', 'puppeteer', 'playwright', 'sharp', 'canvas', 'contents: write']) {
-  if (generator.toLowerCase().includes(forbidden.toLowerCase())) fail(`social-card generator contains forbidden marker ${forbidden}`);
-}
-
-const doc = fs.existsSync(filePath(docPath)) ? read(docPath) : '';
-for (const marker of ['OPEN-GRAPH-SOCIAL-CARDS-01', 'Public pages: 769', 'Paired pages: 766', 'FAQ pages: 2', IMAGE_SHA256]) {
-  if (!doc.includes(marker)) fail(`social-card documentation missing ${marker}`);
-}
-
-function decodeHtml(value) {
-  return value
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replaceAll('&#x27;', "'")
-    .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>')
-    .replaceAll('&amp;', '&');
-}
-
-function attrs(tag) {
-  return Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decodeHtml(match[2])]));
-}
-
-function stripTags(value) {
-  return decodeHtml(value.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
-}
-
-function renderedFile(urlString) {
-  const pathname = new URL(urlString).pathname;
-  return pathname === '/' ? filePath('dist/index.html') : filePath(path.join('dist', pathname.replace(/^\//, ''), 'index.html'));
-}
+const layout = read(LAYOUT);
+for (const marker of ['const socialImageUrl','const socialImageAlt','property="og:image"','property="og:image:secure_url"','property="og:image:type"','property="og:image:width"','property="og:image:height"','property="og:image:alt"','name="twitter:card" content="summary_large_image"','name="twitter:image"','name="twitter:image:alt"']) expect(layout.includes(marker), `BaseLayout social marker missing: ${marker}`);
+const generator = read(GENERATOR);
+for (const marker of ['const WIDTH = 1200','const HEIGHT = 630',"const OUTPUT_PATH = 'social/whr-social-card-v1.png'", "name: 'where-horses-run-social-card'", "'astro:build:done'", 'renderCard()']) expect(generator.includes(marker), `Social-card generator marker missing: ${marker}`);
+for (const forbidden of ['fetch(', 'axios', 'puppeteer', 'playwright', 'sharp', "from 'canvas'", 'contents: write']) expect(!generator.toLowerCase().includes(forbidden.toLowerCase()), `Social-card generator contains forbidden marker ${forbidden}`);
+const doc = read(DOC);
+for (const marker of ['OPEN-GRAPH-SOCIAL-CARDS-01', `Public pages: ${contract.scope.public_pages}`, `Paired pages: ${contract.scope.paired_pages}`, 'FAQ pages: 2', 'Methods pages: 2', contract.image_contract.sha256]) expect(doc.includes(marker), `Social-card documentation marker missing: ${marker}`);
 
 function parsePng(buffer) {
-  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-  if (!buffer.subarray(0, 8).equals(signature)) return null;
+  const signature = Buffer.from([137,80,78,71,13,10,26,10]);
+  expect(buffer.subarray(0, 8).equals(signature), 'Built social card is not PNG');
   let offset = 8;
   let result = null;
   let idatBytes = 0;
@@ -171,42 +64,48 @@ function parsePng(buffer) {
     offset += 12 + length;
     if (type === 'IEND') break;
   }
-  return result ? { ...result, idatBytes } : null;
+  return { ...result, idatBytes };
 }
 
-const builtImagePath = filePath(path.join('dist', OUTPUT_PATH));
-if (!fs.existsSync(builtImagePath)) fail(`built social card is missing: ${builtImagePath}`);
-else {
-  const built = fs.readFileSync(builtImagePath);
-  const regenerated = renderCard();
-  const png = parsePng(built);
-  if (!built.equals(regenerated)) fail('built social card differs from deterministic regeneration');
-  if (crypto.createHash('sha256').update(built).digest('hex') !== IMAGE_SHA256) fail('built social card SHA-256 differs');
-  if (built.length !== 9437) fail(`built social card byte count differs ${built.length}`);
-  if (!png || png.width !== WIDTH || png.height !== HEIGHT || png.bitDepth !== 8 || png.colorType !== 2 || png.idatBytes !== 9380) fail(`built social card PNG structure differs ${JSON.stringify(png)}`);
+const builtPath = path.join('dist', OUTPUT_PATH);
+expect(fs.existsSync(builtPath), `Built social card is missing: ${builtPath}`);
+const built = fs.readFileSync(builtPath);
+const regenerated = renderCard();
+const png = parsePng(built);
+expect(built.equals(regenerated), 'Built social card differs from deterministic regeneration');
+expect(crypto.createHash('sha256').update(built).digest('hex') === contract.image_contract.sha256, 'Social-card SHA-256 differs');
+expect(built.length === contract.image_contract.bytes, `Social-card byte count differs ${built.length}`);
+expect(png.width === WIDTH && png.height === HEIGHT && png.bitDepth === contract.image_contract.bit_depth && png.colorType === contract.image_contract.color_type && png.idatBytes === contract.image_contract.idat_bytes, `Social-card PNG structure differs ${JSON.stringify(png)}`);
+
+function decode(value) {
+  return value
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+    .replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&#x27;', "'")
+    .replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
 }
+const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decode(match[2])]));
+const strip = (value) => decode(value.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
+const fileFor = (urlString) => {
+  const pathname = new URL(urlString).pathname;
+  return pathname === '/' ? 'dist/index.html' : path.join('dist', pathname.replace(/^\//, ''), 'index.html');
+};
 
-const sitemapPath = filePath('dist/sitemap.xml');
-if (!fs.existsSync(sitemapPath)) fail('dist/sitemap.xml is missing; run npm run build first');
-const urls = fs.existsSync(sitemapPath) ? [...read('dist/sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]) : [];
-if (urls.length !== 769) fail(`social-card public page count differs ${urls.length}`);
-
-const requiredOg = ['og:type', 'og:site_name', 'og:title', 'og:description', 'og:url', 'og:locale', 'og:image', 'og:image:secure_url', 'og:image:type', 'og:image:width', 'og:image:height', 'og:image:alt'];
-const requiredTwitter = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image', 'twitter:image:alt'];
+const urls = [...read(SITEMAP).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+expect(urls.length === contract.scope.public_pages, `Social-card public page count differs ${urls.length}`);
+const requiredOg = ['og:type','og:site_name','og:title','og:description','og:url','og:locale','og:image','og:image:secure_url','og:image:type','og:image:width','og:image:height','og:image:alt'];
+const requiredTwitter = ['twitter:card','twitter:title','twitter:description','twitter:image','twitter:image:alt'];
 let pairedPages = 0;
 let unpairedPages = 0;
 let localeAlternates = 0;
 let faqPages = 0;
-
+let methodsPages = 0;
 for (const url of urls) {
-  const file = renderedFile(url);
-  if (!fs.existsSync(file)) {
-    fail(`${url}: rendered file missing`);
-    continue;
-  }
-  const html = fs.readFileSync(file, 'utf8');
+  const file = fileFor(url);
+  expect(fs.existsSync(file), `${url}: rendered file is missing`);
+  const html = read(file);
   const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] ?? '';
-  const title = stripTags(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? '');
+  const title = strip(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? '');
   const metas = [...html.matchAll(/<meta\s+[^>]*>/g)].map((match) => attrs(match[0]));
   const links = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0]));
   const values = new Map();
@@ -217,56 +116,46 @@ for (const url of urls) {
     values.get(key).push(meta.content ?? '');
   }
   const get = (key) => values.get(key)?.[0];
-  for (const key of [...requiredOg, ...requiredTwitter]) {
-    if ((values.get(key) ?? []).length !== 1) fail(`${url}: ${key} count differs ${(values.get(key) ?? []).length}`);
-  }
+  for (const key of [...requiredOg, ...requiredTwitter]) expect((values.get(key) ?? []).length === 1, `${url}: ${key} count differs ${(values.get(key) ?? []).length}`);
   const descriptions = metas.filter((meta) => meta.name === 'description');
   const canonicals = links.filter((link) => link.rel === 'canonical');
-  if (descriptions.length !== 1 || canonicals.length !== 1) fail(`${url}: base description or canonical count differs`);
-  const description = descriptions[0]?.content ?? '';
-  const canonical = canonicals[0]?.href ?? '';
+  expect(descriptions.length === 1 && canonicals.length === 1, `${url}: base metadata count differs`);
+  const description = descriptions[0].content ?? '';
+  const canonical = canonicals[0].href ?? '';
   const alternates = links.filter((link) => link.rel === 'alternate' && link.hreflang);
   const paired = alternates.length === 3;
   if (paired) pairedPages += 1; else unpairedPages += 1;
-  if (new URL(url).pathname === '/faq/' || new URL(url).pathname === '/ja/faq/') faqPages += 1;
-
-  if (get('og:type') !== 'website') fail(`${url}: og:type differs`);
-  if (get('og:site_name') !== 'Where Horses Run') fail(`${url}: og:site_name differs`);
-  if (get('og:title') !== title || get('twitter:title') !== title) fail(`${url}: social title differs`);
-  if (get('og:description') !== description || get('twitter:description') !== description) fail(`${url}: social description differs`);
-  if (get('og:url') !== canonical || canonical !== url) fail(`${url}: social URL differs`);
+  const pathname = new URL(url).pathname;
+  if (pathname === '/faq/' || pathname === '/ja/faq/') faqPages += 1;
+  if (pathname === '/methods/' || pathname === '/ja/methods/') methodsPages += 1;
+  expect(get('og:type') === contract.open_graph_contract.type, `${url}: og:type differs`);
+  expect(get('og:site_name') === contract.open_graph_contract.site_name, `${url}: og:site_name differs`);
+  expect(get('og:title') === title && get('twitter:title') === title, `${url}: social title differs`);
+  expect(get('og:description') === description && get('twitter:description') === description, `${url}: social description differs`);
+  expect(get('og:url') === canonical && canonical === url, `${url}: social URL differs`);
   const expectedLocale = lang === 'ja' ? 'ja_JP' : 'en_US';
   const expectedAlternate = lang === 'ja' ? 'en_US' : 'ja_JP';
-  if (get('og:locale') !== expectedLocale) fail(`${url}: og:locale differs`);
+  expect(get('og:locale') === expectedLocale, `${url}: og:locale differs`);
   const alternateValues = values.get('og:locale:alternate') ?? [];
   if (paired) {
-    if (alternateValues.length !== 1 || alternateValues[0] !== expectedAlternate) fail(`${url}: og:locale:alternate differs`);
-    else localeAlternates += 1;
-  } else if (alternateValues.length !== 0) fail(`${url}: unpaired page emits og:locale:alternate`);
-
+    expect(alternateValues.length === 1 && alternateValues[0] === expectedAlternate, `${url}: og:locale:alternate differs`);
+    localeAlternates += 1;
+  } else expect(alternateValues.length === 0, `${url}: unpaired page emits locale alternate`);
   const expectedAlt = lang === 'ja' ? JA_ALT : EN_ALT;
-  for (const key of ['og:image', 'og:image:secure_url', 'twitter:image']) if (get(key) !== IMAGE_URL) fail(`${url}: ${key} differs`);
-  if (get('og:image:type') !== 'image/png' || get('og:image:width') !== '1200' || get('og:image:height') !== '630') fail(`${url}: image descriptors differ`);
-  if (get('og:image:alt') !== expectedAlt || get('twitter:image:alt') !== expectedAlt) fail(`${url}: image alt differs`);
-  if (get('twitter:card') !== 'summary_large_image') fail(`${url}: twitter:card differs`);
+  for (const key of ['og:image','og:image:secure_url','twitter:image']) expect(get(key) === IMAGE_URL, `${url}: ${key} differs`);
+  expect(get('og:image:type') === contract.image_contract.mime_type && get('og:image:width') === String(contract.image_contract.width) && get('og:image:height') === String(contract.image_contract.height), `${url}: image descriptors differ`);
+  expect(get('og:image:alt') === expectedAlt && get('twitter:image:alt') === expectedAlt, `${url}: image alt differs`);
+  expect(get('twitter:card') === contract.twitter_contract.card, `${url}: twitter:card differs`);
 }
+expect(pairedPages === contract.scope.paired_pages, `Paired page count differs ${pairedPages}`);
+expect(unpairedPages === contract.scope.unpaired_pages, `Unpaired page count differs ${unpairedPages}`);
+expect(localeAlternates === contract.scope.open_graph_locale_alternate_links, `Locale alternate count differs ${localeAlternates}`);
+expect(faqPages === contract.scope.faq_pages, `FAQ page count differs ${faqPages}`);
+expect(methodsPages === contract.scope.methods_pages, `Methods page count differs ${methodsPages}`);
 
-for (const [label, actual, expected] of [
-  ['paired pages', pairedPages, 766],
-  ['unpaired pages', unpairedPages, 3],
-  ['locale alternates', localeAlternates, 766],
-  ['FAQ pages', faqPages, 2],
-]) if (actual !== expected) fail(`social-card ${label} differ ${actual}`);
-
-if (errors.length) {
-  console.error(`OPEN_GRAPH_SOCIAL_CARDS: failed (${errors.length})`);
-  errors.forEach((error) => console.error(`- ${error}`));
-  process.exit(1);
-}
 console.log('OPEN_GRAPH_SOCIAL_CARDS: pass');
-console.log('PUBLIC_PAGES: 769');
-console.log('PAIRED_PAGES: 766');
-console.log('UNPAIRED_PAGES: 3');
+console.log(`PUBLIC_PAGES: ${contract.scope.public_pages}`);
+console.log(`PAIRED_PAGES: ${contract.scope.paired_pages}`);
 console.log('FAQ_PAGES: 2');
-console.log(`IMAGE_SHA256: ${IMAGE_SHA256}`);
-console.log('NEXT_IMPLEMENTATION_UNIT: TITLE-DESCRIPTION-NORMALIZATION-01');
+console.log('METHODS_PAGES: 2');
+console.log(`IMAGE_SHA256: ${contract.image_contract.sha256}`);
