@@ -66,20 +66,20 @@ const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.
 
 const timeCoverageNoteByRank: Record<string, string> = {
   A: 'This public detail page shows race labels and post times only.',
-  'A+': 'This public detail page shows race labels, post times, and policy-approved programme summary fields only.',
+  'A+': 'This public detail page shows race labels, post times, and only the programme-summary fields allowed by the publication policy.',
 };
 ---
 
 <BaseLayout
-  title={`${racecourseName} ${pageKind.toLowerCase()} | Where Horses Run`}
-  description="Public-safe meeting detail with official-source link and policy-controlled timetable coverage."
+  title={`${racecourseName} — ${meeting.date} ${pageKind} | Where Horses Run`}
+  description={`Official-source based ${pageKind.toLowerCase()} for ${racecourseName} on ${meeting.date}, with public-policy-controlled timetable information and the official source link.`}
   canonicalPath={`/timetable/meetings/${meeting.meeting_id}/`}
   alternatePath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
 >
   <nav class="detail-nav" aria-label="Meeting detail navigation">
     <a href="/calendar/">← Calendar</a>
     <a href="/today/">← Today</a>
-    <a href="/major-countries/current-timetable/">← Current Timetable</a>
+    <a href="/major-countries/current-timetable/">← Current timetable</a>
   </nav>
 
   <section aria-labelledby="page-title">
@@ -88,7 +88,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
     <p>{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
     <p>Timezone: {detail.timezone}</p>
-    <p>Capability rank: {detail.capability_rank}</p>
+    <p>Acquisition rank: {detail.capability_rank}</p>
     <p>Public rank: {detail.effective_public_rank}</p>
     <p>Publication policy: {detail.policy_id}</p>
     <p>Source status: {detail.source_status}</p>
@@ -97,14 +97,14 @@ const timeCoverageNoteByRank: Record<string, string> = {
   <section aria-labelledby="coverage-title">
     <h2 id="coverage-title">Time coverage</h2>
     <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
-    <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
+    <p>Where Horses Run does not republish runners, horse names, jockey names, trainer names, odds, results, payouts, predictions, betting picks, raw source text, or a complete racecard.</p>
   </section>
 
   {hasRaceRows && (
     <section aria-labelledby="race-timetable-title">
       <h2 id="race-timetable-title">{pageKind}</h2>
-      <p>{detail.timetable_rows.length} public-safe timetable rows.</p>
-      <div class="table-scroll" role="region" aria-label="Public-safe race timetable" tabindex="0">
+      <p>Public timetable rows: {detail.timetable_rows.length}</p>
+      <div class="table-scroll" role="region" aria-label="Public race timetable" tabindex="0">
         <table>
           <thead>
             <tr>
@@ -141,8 +141,8 @@ const timeCoverageNoteByRank: Record<string, string> = {
 
   <section aria-labelledby="boundary-title">
     <h2 id="boundary-title">Publication boundary</h2>
-    <p>This page uses the public meeting detail dataset. A details show only race label and post time. A+ details show only policy-approved programme summary fields.</p>
-    <p>Complete official information should be confirmed at the official source.</p>
+    <p>This page reads only the public meeting-detail dataset. Rank A exposes race labels and post times only. Rank A+ exposes only the programme-summary fields allowed by the reviewed policy.</p>
+    <p>Use the official source for the complete official information.</p>
   </section>
 </BaseLayout>
 
