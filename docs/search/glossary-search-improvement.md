@@ -55,6 +55,8 @@ Every record is searchable through:
 - category ID;
 - English and Japanese category labels.
 
+The canonical source field for the Japanese reading is `reading_ja`.
+
 Searching is intentionally bilingual in both locale pages. An English query can find a concept on the Japanese directory, and a Japanese query can find the same concept on the English directory.
 
 ## Category filters
