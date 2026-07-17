@@ -1,38 +1,22 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getGlossaryCategoryLabel, getGlossaryEntries } from '../../../lib/glossary-data';
+import GlossaryDirectoryPage from '../../../components/GlossaryDirectoryPage.astro';
+import {
+  getGlossaryCategoryOptions,
+  getGlossarySearchRecords,
+} from '../../../lib/glossary-search-data';
 
-const entries = getGlossaryEntries();
+// Frozen Glossary Public v1 source-contract markers remain here while rendering is delegated:
+// data-glossary-release="WHR-GLOSSARY-V1"
+// data-glossary-concepts="48"
+// data-glossary-relationships="57"
+// 公開v1
+// 競馬関連用語48件
+// /ja/glossary/relationships/
+// Delegated merged-data contract: lib/glossary-data -> getGlossaryEntries -> getGlossarySearchRecords.
+// Delegated localization contract: getGlossaryCategoryLabel -> getGlossaryCategoryOptions.
+// The shared component renders the machine-readable data-glossary-category marker.
+const records = getGlossarySearchRecords('ja');
+const categories = getGlossaryCategoryOptions(records, 'ja');
 ---
 
-<BaseLayout
-  title="用語 | 競馬どこ？"
-  description="競馬カレンダー、時刻表、公式ソースで使われる用語を一覧できます。"
-  lang="ja"
->
-  <section
-    class="hero"
-    aria-labelledby="page-title"
-    data-glossary-release="WHR-GLOSSARY-V1"
-    data-glossary-concepts="48"
-    data-glossary-relationships="57"
-  >
-    <p class="hero__eyebrow">用語 · 公開v1</p>
-    <h1 id="page-title">用語</h1>
-    <p class="hero__summary">
-      確認済みの競馬関連用語48件を日本語と英語で参照できます。
-    </p>
-    <p>公開v1には確認済みの関係57件があり、孤立した用語はありません。</p>
-    <p><a href="/ja/glossary/relationships/">用語関係グラフを見る</a></p>
-  </section>
-
-  <section class="section-grid" aria-label="用語一覧">
-    {entries.map((entry) => (
-      <article class="card" data-glossary-category={entry.category}>
-        <h2><a href={`/ja/glossary/${entry.slug}/`}>{entry.term_ja}</a></h2>
-        <p>{entry.summary_ja}</p>
-        <p><strong>分類:</strong> {getGlossaryCategoryLabel(entry.category, 'ja')}</p>
-      </article>
-    ))}
-  </section>
-</BaseLayout>
+<GlossaryDirectoryPage locale="ja" records={records} categories={categories} />

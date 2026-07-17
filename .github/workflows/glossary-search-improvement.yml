@@ -1,0 +1,73 @@
+name: Glossary search improvement gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-search-improvement-v1.json'
+      - 'data/static/glossary*.json'
+      - 'data/static/glossary-search-improvement-contract-v1.json'
+      - 'docs/search/glossary-search-improvement.md'
+      - 'scripts/check-glossary-search-improvement.mjs'
+      - 'src/components/GlossaryDirectoryPage.astro'
+      - 'src/lib/glossary-data.ts'
+      - 'src/lib/glossary-search-data.ts'
+      - 'src/pages/glossary/index.astro'
+      - 'src/pages/ja/glossary/index.astro'
+      - '.github/workflows/glossary-search-improvement.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/glossary-search-improvement-v1.json'
+      - 'data/static/glossary*.json'
+      - 'data/static/glossary-search-improvement-contract-v1.json'
+      - 'docs/search/glossary-search-improvement.md'
+      - 'scripts/check-glossary-search-improvement.mjs'
+      - 'src/components/GlossaryDirectoryPage.astro'
+      - 'src/lib/glossary-data.ts'
+      - 'src/lib/glossary-search-data.ts'
+      - 'src/pages/glossary/index.astro'
+      - 'src/pages/ja/glossary/index.astro'
+      - '.github/workflows/glossary-search-improvement.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build bilingual glossary directories and site
+        run: npm run build
+      - name: Preserve glossary public v1 contract
+        run: node scripts/check-glossary-qa-release.mjs
+      - name: Preserve global search foundation contract
+        run: node scripts/check-global-search-foundation.mjs
+      - name: Preserve country filter contract
+        run: node scripts/check-country-filters.mjs
+      - name: Preserve race type filter contract
+        run: node scripts/check-race-type-filters.mjs
+      - name: Preserve region filter contract
+        run: node scripts/check-region-filters.mjs
+      - name: Preserve source status filter contract
+        run: node scripts/check-source-status-filters.mjs
+      - name: Validate glossary search improvement
+        run: node scripts/check-glossary-search-improvement.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
