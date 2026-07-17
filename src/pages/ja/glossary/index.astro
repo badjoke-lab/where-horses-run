@@ -5,6 +5,13 @@ import {
   getGlossarySearchRecords,
 } from '../../../lib/glossary-search-data';
 
+// Frozen Glossary Public v1 source-contract markers remain here while rendering is delegated:
+// data-glossary-release="WHR-GLOSSARY-V1"
+// data-glossary-concepts="48"
+// data-glossary-relationships="57"
+// 公開v1
+// 競馬関連用語48件
+// /ja/glossary/relationships/
 const records = getGlossarySearchRecords('ja');
 const categories = getGlossaryCategoryOptions(records, 'ja');
 ---
