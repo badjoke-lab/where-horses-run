@@ -4,6 +4,7 @@ import '../styles/base.css';
 import '../styles/layout.css';
 import '../styles/components.css';
 import '../styles/mobile-navigation.css';
+import '../styles/desktop-layout.css';
 import '../styles/utilities.css';
 
 interface Props {
@@ -100,6 +101,7 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
         aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}
         data-mobile-navigation="details-summary-v1"
         data-mobile-navigation-links="9"
+        data-desktop-layout="responsive-shell-v1"
       >
         <div class="site-header__inner">
           <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
@@ -125,7 +127,7 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
         </div>
       </header>
 
-      <main id="main-content" class="main-content">
+      <main id="main-content" class="main-content" data-desktop-content="responsive-grid-v1">
         <slot />
       </main>
 
