@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type {
+  GlossaryCategoryOption,
+  GlossarySearchRecord,
+} from '../lib/glossary-search-data';
+import type { GlossaryLocale } from '../lib/glossary-data';
+
+interface Props {
+  locale: GlossaryLocale;
+  records: GlossarySearchRecord[];
+  categories: GlossaryCategoryOption[];
+}
+
+const { locale, records, categories } = Astro.props;
+const isJapanese = locale === 'ja';
+const basePath = isJapanese ? '/ja/glossary/' : '/glossary/';
+---
+
+<BaseLayout
+  title={isJapanese ? '用語 | 競馬どこ？' : 'Glossary | Where Horses Run'}
+  description={isJapanese
+    ? '競馬カレンダー、時刻表、公式ソースで使われる用語を検索・分類できます。'
+    : 'Search racing terms used in calendars, timetables, source pages, and racecourse profiles.'}
+  lang={locale}
+  canonicalPath={basePath}
+  alternatePath={isJapanese ? '/glossary/' : '/ja/glossary/'}
+>
+  <div
+    data-glossary-directory
+    data-glossary-records={records.length}
+    data-glossary-categories={categories.length}
+  >
+    <section
+      class="hero"
+      aria-labelledby="page-title"
+      data-glossary-release="WHR-GLOSSARY-V1"
+      data-glossary-concepts="48"
+      data-glossary-relationships="57"
+    >
+      <p class="hero__eyebrow">{isJapanese ? '用語 · 公開v1' : 'Glossary · Public v1'}</p>
+      <h1 id="page-title">{isJapanese ? '用語' : 'Glossary'}</h1>
+      <p class="hero__summary">
+        {isJapanese
+          ? '確認済みの競馬関連用語48件を、日本語・英語・読み・別名・説明文から探せます。'
+          : 'Find 48 reviewed racing concepts by English or Japanese term, reading, alias, or explanation.'}
+      </p>
+      <p>{isJapanese
+        ? '公開v1には9分類と確認済みの関係57件があり、孤立した用語はありません。'
+        : 'Public v1 includes nine categories and 57 reviewed relationships with no isolated concepts.'}</p>
+      <p><a href={isJapanese ? '/ja/glossary/relationships/' : '/glossary/relationships/'}>
+        {isJapanese ? '用語関係グラフを見る' : 'Explore the relationship graph'}
+      </a></p>
+    </section>
+
+    <section class="card" aria-labelledby="glossary-filter-heading">
+      <h2 id="glossary-filter-heading">{isJapanese ? '用語を探す' : 'Find a term'}</h2>
+      <form data-glossary-filter-form role="search">
+        <p>
+          <label for="glossary-filter-query"><strong>{isJapanese ? '用語・読み・別名・説明' : 'Term, reading, alias, or explanation'}</strong></label><br />
+          <input
+            id="glossary-filter-query"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder={isJapanese ? '例：発走時刻、racecard、じょっきー' : 'Example: post time, racecard, jockey'}
+            data-glossary-filter-query
+          />
+        </p>
+        <p>
+          <label for="glossary-filter-category"><strong>{isJapanese ? '分類' : 'Category'}</strong></label><br />
+          <select id="glossary-filter-category" name="category" data-glossary-filter-category>
+            <option value="all">{isJapanese ? 'すべての分類' : 'All categories'}</option>
+            {categories.map((category) => (
+              <option value={category.id}>{category.label} ({category.count})</option>
+            ))}
+          </select>
+        </p>
+        <p>
+          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
+          <button type="button" data-glossary-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
+        </p>
+      </form>
+      <p aria-live="polite" data-glossary-filter-count>
+        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} concepts`}
+      </p>
+      <noscript>
+        <p>{isJapanese
+          ? 'JavaScriptが無効な場合は、下の用語一覧48件をそのまま参照できます。'
+          : 'With JavaScript disabled, the complete list of 48 concepts remains available below.'}</p>
+      </noscript>
+    </section>
+
+    <section class="card" aria-labelledby="glossary-category-heading" data-glossary-category-navigation>
+      <h2 id="glossary-category-heading">{isJapanese ? '分類から探す' : 'Browse by category'}</h2>
+      <div class="section-grid">
+        {categories.map((category) => (
+          <article
+            class="card"
+            data-glossary-category-card
+            data-glossary-category-id={category.id}
+            data-glossary-category-count={category.count}
+          >
+            <h3><a href={category.href} data-glossary-category-link>{category.label}</a></h3>
+            <p>{isJapanese ? `${category.count}件` : `${category.count} concepts`}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-grid" aria-label={isJapanese ? '用語一覧' : 'Glossary list'} data-glossary-filter-results>
+      {records.map((record) => (
+        <article
+          class="card"
+          data-glossary-record
+          data-glossary-id={record.id}
+          data-glossary-category={record.category}
+          data-glossary-search-text={record.searchText}
+        >
+          <h2><a href={record.href}>{record.term}</a></h2>
+          <p><small>{record.secondaryTerm}</small></p>
+          {isJapanese && record.reading && <p><strong>読み:</strong> {record.reading}</p>}
+          <p>{record.summary}</p>
+          {record.aliases.length > 0 && (
+            <p><strong>{isJapanese ? '別名' : 'Aliases'}:</strong> {record.aliases.join(', ')}</p>
+          )}
+          <p><strong>{isJapanese ? '分類' : 'Category'}:</strong> {record.categoryLabel}</p>
+          <p><strong>{isJapanese ? '関連用語' : 'Related terms'}:</strong> {record.relatedCount}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="card" data-glossary-filter-empty hidden>
+      <h2>{isJapanese ? '該当する用語がありません' : 'No matching concepts'}</h2>
+      <p>{isJapanese
+        ? 'キーワードを短くするか、分類を「すべて」に戻してください。'
+        : 'Try a shorter keyword or reset the category to All.'}</p>
+    </section>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-glossary-directory]');
+      if (!root) return;
+      const form = root.querySelector('[data-glossary-filter-form]');
+      const queryInput = root.querySelector('[data-glossary-filter-query]');
+      const categorySelect = root.querySelector('[data-glossary-filter-category]');
+      const resetButton = root.querySelector('[data-glossary-filter-reset]');
+      const count = root.querySelector('[data-glossary-filter-count]');
+      const empty = root.querySelector('[data-glossary-filter-empty]');
+      const records = [...root.querySelectorAll('[data-glossary-record]')];
+      const categoryLinks = [...root.querySelectorAll('[data-glossary-category-link]')];
+      const isJapanese = document.documentElement.lang === 'ja';
+      if (!form || !queryInput || !categorySelect || !resetButton || !count || !empty) return;
+
+      const normalize = (value) => value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+      const params = new URLSearchParams(window.location.search);
+      queryInput.value = params.get('q') ?? '';
+      const requestedCategory = params.get('category') ?? 'all';
+      if ([...categorySelect.options].some((option) => option.value === requestedCategory)) {
+        categorySelect.value = requestedCategory;
+      }
+
+      const apply = () => {
+        const query = normalize(queryInput.value);
+        const category = categorySelect.value;
+        let visible = 0;
+        for (const record of records) {
+          const show =
+            (!query || (record.dataset.glossarySearchText ?? '').includes(query)) &&
+            (category === 'all' || record.dataset.glossaryCategory === category);
+          record.hidden = !show;
+          if (show) visible += 1;
+        }
+        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} concepts`;
+        empty.hidden = visible !== 0;
+        for (const link of categoryLinks) {
+          const selected = new URL(link.href).searchParams.get('category') === category;
+          if (selected) link.setAttribute('aria-current', 'page');
+          else link.removeAttribute('aria-current');
+        }
+        const next = new URLSearchParams();
+        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
+        if (category !== 'all') next.set('category', category);
+        window.history.replaceState(null, '', `${window.location.pathname}${next.size ? `?${next}` : ''}`);
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        apply();
+      });
+      queryInput.addEventListener('input', apply);
+      categorySelect.addEventListener('change', apply);
+      resetButton.addEventListener('click', () => {
+        queryInput.value = '';
+        categorySelect.value = 'all';
+        apply();
+        queryInput.focus();
+      });
+      apply();
+    })();
+  </script>
+</BaseLayout>
