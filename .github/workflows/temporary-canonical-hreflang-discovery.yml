@@ -1,0 +1,179 @@
+name: Temporary canonical hreflang discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/temporary-canonical-hreflang-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Capture canonical and hreflang measurements
+        shell: bash
+        run: |
+          node <<'NODE' > canonical-hreflang-discovery.json
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const origin = 'https://whr.badjoke-lab.com';
+
+          function walk(directory) {
+            return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+              const absolute = path.join(directory, entry.name);
+              return entry.isDirectory() ? walk(absolute) : [absolute];
+            });
+          }
+
+          function decode(value) {
+            return value
+              .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+              .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+              .replaceAll('&quot;', '"')
+              .replaceAll('&#39;', "'")
+              .replaceAll('&#x27;', "'")
+              .replaceAll('&lt;', '<')
+              .replaceAll('&gt;', '>')
+              .replaceAll('&amp;', '&');
+          }
+
+          function attrs(tag) {
+            return Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decode(match[2])]));
+          }
+
+          function outputUrl(file) {
+            const relative = path.relative('dist', file).split(path.sep).join('/');
+            if (relative === 'index.html') return `${origin}/`;
+            return `${origin}/${relative.replace(/index\.html$/, '')}`;
+          }
+
+          const files = walk('dist').filter((file) => file.endsWith('.html') && path.basename(file) !== '404.html');
+          const records = new Map();
+          const summary = {
+            publicPages: files.length,
+            canonicalLinks: 0,
+            uniqueCanonicalUrls: 0,
+            canonicalSelfMismatches: 0,
+            canonicalOriginErrors: 0,
+            canonicalQueryOrFragmentErrors: 0,
+            canonicalTrailingSlashErrors: 0,
+            pairedPages: 0,
+            bilingualClusters: 0,
+            englishPairedPages: 0,
+            japanesePairedPages: 0,
+            unpairedPages: 0,
+            unpairedEnglishPages: 0,
+            unpairedJapanesePages: 0,
+            hreflangLinks: 0,
+            selfHreflangLinks: 0,
+            alternateHreflangLinks: 0,
+            xDefaultLinks: 0,
+            missingSelfLinks: 0,
+            missingAlternateLinks: 0,
+            missingXDefaultLinks: 0,
+            unexpectedHreflangLinks: 0,
+            reciprocalErrors: 0,
+            clusterSetErrors: 0,
+            languageErrors: 0,
+            xDefaultErrors: 0,
+            unpairedHreflangErrors: 0,
+            languageSwitchLinks: 0,
+            unpairedLanguageSwitchHomeFallbacks: 0,
+            unpairedPaths: [],
+          };
+
+          for (const file of files) {
+            const html = fs.readFileSync(file, 'utf8');
+            const url = outputUrl(file);
+            const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] || '';
+            const linkTags = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0]));
+            const canonicalLinks = linkTags.filter((link) => link.rel === 'canonical');
+            const alternates = linkTags.filter((link) => link.rel === 'alternate' && link.hreflang);
+            const switchTag = html.match(/<li[^>]*class="site-nav__language"[^>]*>[\s\S]*?<a\s+([^>]*)>/)?.[1];
+            const switchAttrs = switchTag ? attrs(`<a ${switchTag}>`) : {};
+            summary.languageSwitchLinks += switchAttrs.href ? 1 : 0;
+            summary.canonicalLinks += canonicalLinks.length;
+            summary.hreflangLinks += alternates.length;
+            const canonical = canonicalLinks[0]?.href || '';
+            if (canonical !== url || canonicalLinks.length !== 1) summary.canonicalSelfMismatches += 1;
+            if (!canonical.startsWith(origin)) summary.canonicalOriginErrors += 1;
+            if (canonical) {
+              const parsed = new URL(canonical);
+              if (parsed.search || parsed.hash) summary.canonicalQueryOrFragmentErrors += 1;
+              if (parsed.pathname !== '/' && !parsed.pathname.endsWith('/')) summary.canonicalTrailingSlashErrors += 1;
+            }
+            records.set(url, { file, url, lang, canonical, alternates, switchAttrs });
+          }
+
+          summary.uniqueCanonicalUrls = new Set([...records.values()].map((record) => record.canonical)).size;
+          const visited = new Set();
+          for (const record of records.values()) {
+            if (!['en', 'ja'].includes(record.lang)) summary.languageErrors += 1;
+            const self = record.alternates.filter((link) => link.hreflang === record.lang);
+            const oppositeCode = record.lang === 'ja' ? 'en' : 'ja';
+            const opposite = record.alternates.filter((link) => link.hreflang === oppositeCode);
+            const xDefault = record.alternates.filter((link) => link.hreflang === 'x-default');
+            const other = record.alternates.filter((link) => ![record.lang, oppositeCode, 'x-default'].includes(link.hreflang));
+            const counterpartUrl = opposite[0]?.href;
+            const counterpart = counterpartUrl ? records.get(counterpartUrl) : null;
+            const paired = Boolean(counterpart);
+
+            if (paired) {
+              summary.pairedPages += 1;
+              if (record.lang === 'en') summary.englishPairedPages += 1;
+              else summary.japanesePairedPages += 1;
+              if (self.length !== 1 || self[0].href !== record.url) summary.missingSelfLinks += 1;
+              else summary.selfHreflangLinks += 1;
+              if (opposite.length !== 1) summary.missingAlternateLinks += 1;
+              else summary.alternateHreflangLinks += 1;
+              const expectedDefault = record.lang === 'en' ? record.url : counterpartUrl;
+              if (xDefault.length !== 1) summary.missingXDefaultLinks += 1;
+              else {
+                summary.xDefaultLinks += 1;
+                if (xDefault[0].href !== expectedDefault) summary.xDefaultErrors += 1;
+              }
+              if (other.length || record.alternates.length !== 3) summary.unexpectedHreflangLinks += 1;
+              const returnLink = counterpart.alternates.find((link) => link.hreflang === record.lang);
+              if (!returnLink || returnLink.href !== record.url) summary.reciprocalErrors += 1;
+              const leftSet = record.alternates.map((link) => `${link.hreflang}:${link.href}`).sort();
+              const rightSet = counterpart.alternates.map((link) => `${link.hreflang}:${link.href}`).sort();
+              if (JSON.stringify(leftSet) !== JSON.stringify(rightSet)) summary.clusterSetErrors += 1;
+              const clusterKey = [record.url, counterpartUrl].sort().join('::');
+              visited.add(clusterKey);
+            } else {
+              summary.unpairedPages += 1;
+              if (record.lang === 'en') summary.unpairedEnglishPages += 1;
+              else summary.unpairedJapanesePages += 1;
+              summary.unpairedPaths.push(new URL(record.url).pathname);
+              if (record.alternates.length !== 0) summary.unpairedHreflangErrors += 1;
+              const expectedHome = record.lang === 'ja' ? '/' : '/ja/';
+              if (record.switchAttrs.href === expectedHome) summary.unpairedLanguageSwitchHomeFallbacks += 1;
+            }
+          }
+          summary.bilingualClusters = visited.size;
+          summary.unpairedPaths.sort();
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+          cat canonical-hreflang-discovery.json
+      - name: Upload canonical hreflang discovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-hreflang-discovery
+          path: canonical-hreflang-discovery.json
+          retention-days: 1
