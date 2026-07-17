@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `CANONICAL-HREFLANG-REVIEW-01`  
 Reviewed: 2026-07-18  
-Scope updated by: `FAQ-CONTENT-PAGES-01`
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
@@ -13,22 +13,22 @@ The complete public route set has a reviewed self-canonical and localized-altern
 ## Current inventory
 
 ```text
-Public pages: 769
-Canonical links: 769
-Unique canonical URLs: 769
-Paired pages: 766
-Bilingual clusters: 383
-English paired pages: 383
-Japanese paired pages: 383
+Public pages: 771
+Canonical links: 771
+Unique canonical URLs: 771
+Paired pages: 768
+Bilingual clusters: 384
+English paired pages: 384
+Japanese paired pages: 384
 Unpaired pages: 3
-Hreflang links: 2,298
-Self links: 766
-Opposite-locale links: 766
-x-default links: 766
-Language-switch links: 769
+Hreflang links: 2,304
+Self links: 768
+Opposite-locale links: 768
+x-default links: 768
+Language-switch links: 771
 ```
 
-The frozen set therefore contains 769 canonical links, 383 bilingual clusters, and 2,298 hreflang links.
+The frozen set therefore contains 771 canonical links, 384 bilingual clusters, and 2,304 hreflang links.
 
 Every paired page emits the same three-link cluster:
 
@@ -40,7 +40,7 @@ hreflang="x-default"
 
 The English URL is the `x-default` target.
 
-## FAQ bilingual cluster
+## Explicit content-page clusters
 
 The FAQ routes form one verified reciprocal cluster:
 
@@ -49,7 +49,14 @@ The FAQ routes form one verified reciprocal cluster:
 /ja/faq/
 ```
 
-Both pages are self-canonical, list each other, use `/faq/` as `x-default`, and keep the visible language switch aligned with the opposite page.
+The Methods routes form one verified reciprocal cluster:
+
+```text
+/methods/
+/ja/methods/
+```
+
+Each pair is self-canonical, lists the opposite language, uses the English route as `x-default`, and keeps the visible language switch aligned with the counterpart.
 
 ## Unpaired pages
 
@@ -77,7 +84,7 @@ Read-only Actions gate:
 .github/workflows/canonical-hreflang-review.yml
 ```
 
-The checker scans all 769 sitemap pages, verifies one self-canonical per page, reconstructs all 383 clusters, compares reciprocal link sets, validates `x-default`, confirms the FAQ pair, and preserves the three unpaired exceptions.
+The checker scans all 771 sitemap pages, verifies one self-canonical per page, reconstructs all 384 clusters, compares reciprocal link sets, validates `x-default`, confirms the FAQ and Methods pairs, and preserves the three unpaired exceptions.
 
 ## Boundaries
 
