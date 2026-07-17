@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs';
+import countryPageMetadataIntegration from './scripts/country-page-metadata-integration.mjs';
 
 // Static builds read committed public timetable projections only.
 // Candidate, canonical, and public-data generation run through explicit
@@ -8,5 +9,5 @@ import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs';
 export default defineConfig({
   site: 'https://whr.badjoke-lab.com',
   trailingSlash: 'always',
-  integrations: [sitemapRobotsIntegration()]
+  integrations: [sitemapRobotsIntegration(), countryPageMetadataIntegration()]
 });
