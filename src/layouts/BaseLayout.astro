@@ -41,6 +41,19 @@ const defaultAlternateHref = hasBilingualCounterpart
 const languageSwitchHref = alternatePath ?? defaultAlternateHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
+const navigationItems = [
+  { href: isJapanese ? '/ja/today/' : '/today/', label: isJapanese ? '今日' : 'Today' },
+  { href: isJapanese ? '/ja/calendar/' : '/calendar/', label: isJapanese ? 'カレンダー' : 'Calendar' },
+  { href: isJapanese ? '/ja/search/' : '/search/', label: isJapanese ? '検索' : 'Search' },
+  { href: isJapanese ? '/ja/countries/' : '/countries/', label: isJapanese ? '国・地域' : 'Countries' },
+  { href: isJapanese ? '/ja/tracks/' : '/tracks/', label: isJapanese ? '競馬場' : 'Racecourses' },
+  { href: isJapanese ? '/ja/types/' : '/types/', label: isJapanese ? '競馬種別' : 'Racing Types' },
+  { href: isJapanese ? '/ja/glossary/' : '/glossary/', label: isJapanese ? '用語' : 'Glossary' },
+  { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? 'ソース' : 'Sources' },
+];
+const isCurrentNavigationItem = (href: string) =>
+  canonicalPathname === href || canonicalPathname.startsWith(href);
+
 const siteUrl = 'https://whr.badjoke-lab.com';
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
 const alternateUrl = `${siteUrl}${languageSwitchHref}`;
@@ -81,20 +94,33 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     </a>
 
     <div class="site-shell">
-      <header class="site-header" aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}>
+      <header
+        class="site-header"
+        aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}
+        data-mobile-navigation="details-summary-v1"
+        data-mobile-navigation-links="9"
+      >
         <div class="site-header__inner">
           <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
-          <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
-            <a href={isJapanese ? '/ja/today/' : '/today/'}>{isJapanese ? '今日' : 'Today'}</a>
-            <a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a>
-            <a href={isJapanese ? '/ja/search/' : '/search/'}>{isJapanese ? '検索' : 'Search'}</a>
-            <a href={isJapanese ? '/ja/countries/' : '/countries/'}>{isJapanese ? '国・地域' : 'Countries'}</a>
-            <a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
-            <a href={isJapanese ? '/ja/types/' : '/types/'}>{isJapanese ? '競馬種別' : 'Racing Types'}</a>
-            <a href={isJapanese ? '/ja/glossary/' : '/glossary/'}>{isJapanese ? '用語' : 'Glossary'}</a>
-            <a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? 'ソース' : 'Sources'}</a>
-            <a href={languageSwitchHref}>{alternateLabel}</a>
-          </nav>
+          <details class="site-navigation">
+            <summary class="site-navigation__summary">
+              <span>{isJapanese ? 'メニュー' : 'Menu'}</span>
+            </summary>
+            <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+              <ul class="site-nav__list">
+                {navigationItems.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+                <li class="site-nav__language">
+                  <a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a>
+                </li>
+              </ul>
+            </nav>
+          </details>
         </div>
       </header>
 
