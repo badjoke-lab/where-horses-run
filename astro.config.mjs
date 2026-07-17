@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs';
 import countryPageMetadataIntegration from './scripts/country-page-metadata-integration.mjs';
 import racecoursePageMetadataIntegration from './scripts/racecourse-page-metadata-integration.mjs';
+import glossaryPageMetadataIntegration from './scripts/glossary-page-metadata-integration.mjs';
 
 // Static builds read committed public timetable projections only.
 // Candidate, canonical, and public-data generation run through explicit
@@ -14,6 +15,7 @@ export default defineConfig({
   // page-specific metadata transforms in deterministic order.
   integrations: [sitemapRobotsIntegration()].concat(
     countryPageMetadataIntegration(),
-    racecoursePageMetadataIntegration()
+    racecoursePageMetadataIntegration(),
+    glossaryPageMetadataIntegration()
   )
 });
