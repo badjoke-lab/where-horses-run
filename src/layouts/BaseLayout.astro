@@ -5,6 +5,7 @@ import '../styles/layout.css';
 import '../styles/components.css';
 import '../styles/mobile-navigation.css';
 import '../styles/desktop-layout.css';
+import '../styles/ux-polish.css';
 import '../styles/utilities.css';
 
 interface Props {
@@ -109,7 +110,11 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 
     <title>{title}</title>
   </head>
-  <body data-no-js-fallback="complete-list-v1">
+  <body
+    data-no-js-fallback="complete-list-v1"
+    data-ux-polish-release="WHR-UX-DISCOVERY-V1"
+    data-ux-polish-phase="10"
+  >
     <a class="skip-link" href="#main-content">
       {isJapanese ? '本文へ移動' : 'Skip to content'}
     </a>
