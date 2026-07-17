@@ -1,0 +1,55 @@
+{
+  "schema_version": "desktop-layout-contract-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "DESKTOP-LAYOUT-IMPROVEMENT-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "locales": 2,
+    "desktop_start_px": 721,
+    "wide_desktop_start_px": 960,
+    "content_max_width_px": 1120,
+    "header_columns": 2,
+    "section_grid_min_rem": 17,
+    "country_two_column_min_rem": 20,
+    "country_three_column_min_rem": 16
+  },
+  "layout_contract": {
+    "mobile_rules_changed": false,
+    "desktop_stylesheet_isolated": true,
+    "header_uses_explicit_columns": true,
+    "brand_column_is_intrinsic": true,
+    "navigation_column_can_shrink": true,
+    "navigation_is_right_aligned": true,
+    "section_grid_uses_auto_fit": true,
+    "section_cards_use_equal_rows": true,
+    "section_cards_stretch": true,
+    "long_card_content_wraps": true,
+    "country_grids_use_auto_fit": true,
+    "hero_reading_width_is_bounded": true,
+    "completed_mobile_navigation_preserved": true
+  },
+  "representative_routes": [
+    "/",
+    "/ja/",
+    "/countries/",
+    "/ja/countries/",
+    "/glossary/",
+    "/ja/glossary/",
+    "/sources/",
+    "/ja/sources/"
+  ],
+  "privacy_boundary": {
+    "layout_telemetry_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_layout_generation_enabled": false,
+    "external_layout_service_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "MOBILE-NAVIGATION-IMPROVEMENT-01",
+  "next_implementation_unit": "NO-JS-FALLBACK-REVIEW-01"
+}
