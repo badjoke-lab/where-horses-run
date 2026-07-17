@@ -1,0 +1,187 @@
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  align-items: end;
+  gap: var(--whr-space-3);
+  margin-block-start: var(--whr-space-3);
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) > p {
+  margin: 0;
+}
+
+:is(
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) > p:last-child {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--whr-space-2);
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) :is(input, select, button) {
+  min-height: 2.75rem;
+  font: inherit;
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) :is(input, select) {
+  width: 100%;
+  margin-block-start: var(--whr-space-1);
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--whr-color-border);
+  background: var(--whr-color-bg);
+  color: var(--whr-color-text);
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) :is(input, select):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) button {
+  align-self: end;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--whr-color-text);
+  background: var(--whr-color-text);
+  color: var(--whr-color-bg);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) button:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+:is(
+  [data-search-form],
+  [data-country-filter-form],
+  [data-racecourse-filter-form],
+  [data-source-filter-form],
+  [data-glossary-filter-form]
+) button:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+:is(
+  [data-country-filter-reset],
+  [data-racecourse-filter-reset],
+  [data-source-filter-reset],
+  [data-glossary-filter-reset]
+) {
+  background: transparent !important;
+  color: var(--whr-color-text) !important;
+}
+
+:is(
+  [data-search-count],
+  [data-country-filter-count],
+  [data-racecourse-filter-count],
+  [data-source-filter-count],
+  [data-glossary-filter-count]
+) {
+  margin-block: var(--whr-space-3) 0;
+  padding-block-start: var(--whr-space-2);
+  border-block-start: 1px solid var(--whr-color-border);
+  font-weight: 700;
+}
+
+:is(
+  [data-search-results],
+  [data-country-filter-results],
+  [data-racecourse-filter-results],
+  [data-source-filter-results],
+  [data-glossary-filter-results]
+) > .card {
+  position: relative;
+}
+
+:is(
+  [data-search-results],
+  [data-country-filter-results],
+  [data-racecourse-filter-results],
+  [data-source-filter-results],
+  [data-glossary-filter-results]
+) > .card h2 a {
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.18em;
+}
+
+:is(
+  [data-search-empty],
+  [data-country-filter-empty],
+  [data-racecourse-filter-empty],
+  [data-source-filter-empty],
+  [data-glossary-filter-empty]
+) {
+  margin-block-start: var(--whr-space-4);
+  border-style: dashed;
+}
+
+@media (max-width: 720px) {
+  :is(
+    [data-search-form],
+    [data-country-filter-form],
+    [data-racecourse-filter-form],
+    [data-source-filter-form],
+    [data-glossary-filter-form]
+  ) {
+    grid-template-columns: 1fr;
+  }
+
+  :is(
+    [data-search-form],
+    [data-country-filter-form],
+    [data-racecourse-filter-form],
+    [data-source-filter-form],
+    [data-glossary-filter-form]
+  ) button {
+    width: 100%;
+  }
+}
