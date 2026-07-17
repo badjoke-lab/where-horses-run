@@ -59,7 +59,17 @@ jobs:
       - name: Preserve region filter contract
         run: node scripts/check-region-filters.mjs
       - name: Validate source status filters
-        run: node scripts/check-source-status-filters.mjs
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/check-source-status-filters.mjs 2>&1 | tee "$RUNNER_TEMP/source-status-filter-check.log"
+      - name: Upload source filter diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-status-filter-check-log
+          path: ${{ runner.temp }}/source-status-filter-check.log
+          retention-days: 1
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
