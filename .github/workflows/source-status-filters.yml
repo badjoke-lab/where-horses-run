@@ -58,6 +58,17 @@ jobs:
         run: node scripts/check-race-type-filters.mjs
       - name: Preserve region filter contract
         run: node scripts/check-region-filters.mjs
+      - name: Capture source ID diagnostics
+        shell: bash
+        run: |
+          node <<'NODE' > "$RUNNER_TEMP/source-status-filter-duplicates.json"
+          const fs = require('node:fs');
+          const html = fs.readFileSync('dist/sources/index.html', 'utf8');
+          const ids = [...html.matchAll(/data-source-id="([^"]*)"/g)].map((match) => match[1]);
+          const counts = ids.reduce((map, id) => map.set(id, (map.get(id) ?? 0) + 1), new Map());
+          const duplicates = [...counts.entries()].filter(([, count]) => count > 1);
+          console.log(JSON.stringify({ total: ids.length, unique: counts.size, duplicates }, null, 2));
+          NODE
       - name: Validate source status filters
         shell: bash
         run: |
@@ -67,8 +78,8 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: source-status-filter-check-log
-          path: ${{ runner.temp }}/source-status-filter-check.log
+          name: source-status-filter-diagnostics
+          path: ${{ runner.temp }}/source-status-filter-*
           retention-days: 1
       - name: Prove repository clean
         run: |
