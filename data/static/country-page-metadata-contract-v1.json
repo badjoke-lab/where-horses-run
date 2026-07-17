@@ -1,0 +1,96 @@
+{
+  "schema_version": "country-page-metadata-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "COUNTRY-PAGE-METADATA-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "area_entities": 98,
+    "locales": 2,
+    "bilingual_detail_routes": 196,
+    "english_detail_routes": 98,
+    "japanese_detail_routes": 98,
+    "json_ld_scripts": 196,
+    "graph_nodes": 392,
+    "collection_page_nodes": 196,
+    "administrative_area_nodes": 196,
+    "baseline_links": 196,
+    "visible_review_dates": 196,
+    "alternate_name_arrays": 196,
+    "schema_types": 2
+  },
+  "route_contract": {
+    "english_pattern": "/countries/{slug}/",
+    "japanese_pattern": "/ja/countries/{slug}/",
+    "directory_routes_included": false,
+    "one_english_and_one_japanese_route_per_slug": true,
+    "same_origin_required": true,
+    "query_parameters_allowed": false,
+    "fragments_allowed": false,
+    "trailing_slash_required": true
+  },
+  "collection_page_contract": {
+    "type": "CollectionPage",
+    "id_pattern": "{canonical-url}#webpage",
+    "url_source": "rendered-canonical",
+    "name_source": "rendered-title",
+    "description_source": "rendered-meta-description",
+    "language_source": "rendered-html-lang",
+    "review_date_source": "visible-profile-reviewed-field",
+    "website_relation": "https://whr.badjoke-lab.com/#website",
+    "about_pattern": "{canonical-url}#administrative-area",
+    "main_entity_pattern": "{canonical-url}#administrative-area"
+  },
+  "administrative_area_contract": {
+    "type": "AdministrativeArea",
+    "id_pattern": "{canonical-url}#administrative-area",
+    "url_source": "rendered-canonical",
+    "name_source": "visible-page-heading",
+    "alternate_name_sources": [
+      "paired-locale-visible-page-heading",
+      "visible-local-name-field"
+    ],
+    "main_entity_of_page_pattern": "{canonical-url}#webpage",
+    "country_type_claim_allowed": false,
+    "same_as_claim_allowed": false,
+    "sovereignty_claim_allowed": false
+  },
+  "serialization_contract": {
+    "context": "https://schema.org",
+    "format": "JSON-LD",
+    "script_type": "application/ld+json",
+    "script_marker": "data-country-page-metadata",
+    "script_marker_value": "collection-administrative-area-v1",
+    "scripts_per_detail_page": 1,
+    "graph_nodes_per_script": 2,
+    "less_than_characters_escaped": true,
+    "valid_json_required": true
+  },
+  "public_boundary": {
+    "visible_page_metadata_allowed": true,
+    "public_area_identity_allowed": true,
+    "public_review_date_allowed": true,
+    "unverified_country_classification_allowed": false,
+    "official_source_same_as_allowed": false,
+    "organization_claim_allowed": false,
+    "event_claim_allowed": false,
+    "participant_dataset_claim_allowed": false,
+    "betting_or_prediction_claim_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_schema_service_enabled": false,
+    "automatic_entity_inference_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "STRUCTURED-DATA-BASELINE-01",
+  "next_implementation_unit": "RACECOURSE-PAGE-METADATA-01"
+}
