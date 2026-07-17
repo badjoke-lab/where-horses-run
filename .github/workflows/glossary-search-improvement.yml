@@ -50,32 +50,6 @@ jobs:
         run: npm install --package-lock=false
       - name: Build bilingual glossary directories and site
         run: npm run build
-      - name: Capture legacy glossary checker diagnostics
-        shell: bash
-        run: |
-          log="$RUNNER_TEMP/glossary-legacy-checkers.log"
-          : > "$log"
-          for checker in \
-            scripts/check-glossary-schema-extension.mjs \
-            scripts/check-glossary-racing-type-expansion.mjs \
-            scripts/check-glossary-horse-breed-expansion.mjs \
-            scripts/check-glossary-role-expansion.mjs \
-            scripts/check-glossary-timetable-term-expansion.mjs \
-            scripts/check-glossary-official-source-term-expansion.mjs \
-            scripts/check-glossary-multilingual-field-cleanup.mjs \
-            scripts/check-glossary-related-terms-graph.mjs \
-            scripts/check-glossary-beginner-explanations.mjs; do
-            printf '\n===== %s =====\n' "$checker" >> "$log"
-            node "$checker" >> "$log" 2>&1 || true
-          done
-          cat "$log"
-      - name: Upload legacy glossary checker diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: glossary-legacy-checker-diagnostics
-          path: ${{ runner.temp }}/glossary-legacy-checkers.log
-          retention-days: 1
       - name: Preserve glossary public v1 contract
         run: node scripts/check-glossary-qa-release.mjs
       - name: Preserve global search foundation contract
