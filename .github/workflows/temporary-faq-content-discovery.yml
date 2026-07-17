@@ -92,8 +92,8 @@ jobs:
             const canonical = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0])).find((link) => link.rel === 'canonical')?.href || '';
             const alternates = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0])).filter((link) => link.rel === 'alternate' && link.hreflang);
             const questions = [...html.matchAll(/<article\s+[^>]*class="[^"]*faq-item[^"]*"[^>]*>([\s\S]*?)<\/article>/g)].map((match) => ({
-              question: strip(match[1].match(/<h2>([\s\S]*?)<\/h2>/)?.[1] || ''),
-              answer: strip(match[1].match(/<p>([\s\S]*?)<\/p>/)?.[1] || ''),
+              question: strip(match[1].match(/<h2[^>]*>([\s\S]*?)<\/h2>/)?.[1] || ''),
+              answer: strip(match[1].match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1] || ''),
             }));
             const scripts = [...html.matchAll(/<script([^>]*type="application\/ld\+json"[^>]*)>([\s\S]*?)<\/script>/g)];
             const faqScripts = scripts.filter((script) => /data-faq-structured-data="faq-page-v1"/.test(script[1]));
@@ -137,6 +137,7 @@ jobs:
             expectedHreflangLinks: (pages.length - 3) * 3,
             faqPages: faqPages.length,
             faqVisibleQuestions: faqPages.reduce((sum, page) => sum + page.visibleQuestions, 0),
+            faqVisibleAnswers: faqPages.reduce((sum, page) => sum + page.visibleAnswers, 0),
             faqStructuredQuestions: faqPages.reduce((sum, page) => sum + page.structuredQuestions, 0),
             faqPagesDetail: faqPages,
             errors,
