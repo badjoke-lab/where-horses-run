@@ -1,0 +1,286 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type {
+  SourceDirectoryLocale,
+  SourceFilterOptions,
+  SourceFilterRecord,
+} from '../lib/source-filter-data';
+
+interface Props {
+  locale: SourceDirectoryLocale;
+  records: SourceFilterRecord[];
+  options: SourceFilterOptions;
+}
+
+const { locale, records, options } = Astro.props;
+const isJapanese = locale === 'ja';
+
+const valueLabelsJa: Record<string, string> = {
+  official: '公式',
+  reference: '参考',
+  licensed: 'ライセンス済み',
+  link_only: 'リンクのみ',
+  unknown: '不明',
+  not_recorded: '未記録',
+  alpha_link_first: 'アルファ・リンク優先',
+  low: '低',
+  medium: '中',
+  high: '高',
+};
+
+function humanize(value: string): string {
+  return value
+    .split('_')
+    .flatMap((part) => part.split('-'))
+    .map((part) => part ? `${part[0].toUpperCase()}${part.slice(1)}` : part)
+    .join(' ');
+}
+
+function valueLabel(value: string): string {
+  return isJapanese ? valueLabelsJa[value] ?? humanize(value) : humanize(value);
+}
+---
+
+<BaseLayout
+  title={isJapanese ? 'ソース | 競馬どこ？' : 'Sources | Where Horses Run'}
+  description={isJapanese
+    ? '公式・参考ソースを、国・地域、ソース種別、データ種別、自動化レベル、利用条件リスク、登録状態で絞り込めます。'
+    : 'Browse source links by country, source type, data type, automation level, terms risk, and registry status.'}
+  lang={locale}
+  canonicalPath={isJapanese ? '/ja/sources/' : '/sources/'}
+  alternatePath={isJapanese ? '/sources/' : '/ja/sources/'}
+>
+  <div
+    data-source-directory
+    data-source-records={records.length}
+    data-source-country-options={options.countries.length}
+    data-source-type-options={options.sourceTypes.length}
+    data-source-data-type-options={options.dataTypes.length}
+    data-source-auto-level-options={options.autoLevels.length}
+    data-source-risk-options={options.termsRisks.length}
+    data-source-status-options={options.registryStatuses.length}
+  >
+    <section class="hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">Sources</p>
+      <h1 id="page-title">{isJapanese ? 'ソース' : 'Sources'}</h1>
+      <p class="hero__summary">
+        {isJapanese
+          ? '国・地域や開催情報の確認に使うソースを、公開済みの登録メタデータから探せます。'
+          : 'Find source entries used for country, racecourse, and timetable coverage notes.'}
+      </p>
+      <p>{isJapanese ? `${records.length}件のソースを掲載しています。` : `${records.length} source records are listed.`}</p>
+    </section>
+
+    <section class="card" aria-labelledby="source-filter-heading">
+      <h2 id="source-filter-heading">{isJapanese ? 'ソースの絞り込み' : 'Filter sources'}</h2>
+      <form data-source-filter-form role="search">
+        <p>
+          <label for="source-filter-query"><strong>{isJapanese ? '名称・URL・キーワード' : 'Name, URL, or keyword'}</strong></label><br />
+          <input
+            id="source-filter-query"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder={isJapanese ? '例：JRA、calendar、link first' : 'Example: JRA, calendar, link first'}
+            data-source-filter-query
+          />
+        </p>
+        <p>
+          <label for="source-filter-country"><strong>{isJapanese ? '国・地域' : 'Country or region'}</strong></label><br />
+          <select id="source-filter-country" name="country" data-source-filter-country>
+            <option value="all">{isJapanese ? 'すべての国・地域' : 'All countries and regions'}</option>
+            {options.countries.map((country) => <option value={country.id}>{country.label}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="source-filter-source-type"><strong>{isJapanese ? 'ソース種別' : 'Source type'}</strong></label><br />
+          <select id="source-filter-source-type" name="source_type" data-source-filter-source-type>
+            <option value="all">{isJapanese ? 'すべてのソース種別' : 'All source types'}</option>
+            {options.sourceTypes.map((value) => <option value={value}>{valueLabel(value)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="source-filter-data-type"><strong>{isJapanese ? 'データ種別' : 'Data type'}</strong></label><br />
+          <select id="source-filter-data-type" name="data_type" data-source-filter-data-type>
+            <option value="all">{isJapanese ? 'すべてのデータ種別' : 'All data types'}</option>
+            {options.dataTypes.map((value) => <option value={value}>{valueLabel(value)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="source-filter-auto-level"><strong>{isJapanese ? '自動化レベル' : 'Automation level'}</strong></label><br />
+          <select id="source-filter-auto-level" name="auto_level" data-source-filter-auto-level>
+            <option value="all">{isJapanese ? 'すべての自動化レベル' : 'All automation levels'}</option>
+            {options.autoLevels.map((value) => <option value={value}>{value}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="source-filter-risk"><strong>{isJapanese ? '利用条件リスク' : 'Terms risk'}</strong></label><br />
+          <select id="source-filter-risk" name="risk" data-source-filter-risk>
+            <option value="all">{isJapanese ? 'すべてのリスク状態' : 'All risk states'}</option>
+            {options.termsRisks.map((value) => <option value={value}>{valueLabel(value)}</option>)}
+          </select>
+        </p>
+        <p>
+          <label for="source-filter-status"><strong>{isJapanese ? '登録状態' : 'Registry status'}</strong></label><br />
+          <select id="source-filter-status" name="status" data-source-filter-status>
+            <option value="all">{isJapanese ? 'すべての登録状態' : 'All registry statuses'}</option>
+            {options.registryStatuses.map((value) => <option value={value}>{valueLabel(value)}</option>)}
+          </select>
+        </p>
+        <p>
+          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
+          <button type="button" data-source-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
+        </p>
+      </form>
+      <p aria-live="polite" data-source-filter-count>
+        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
+      </p>
+      <noscript>
+        <p>{isJapanese
+          ? 'JavaScriptが無効な場合は、下の全ソース一覧から選べます。'
+          : 'With JavaScript disabled, use the complete linked source list below.'}</p>
+      </noscript>
+    </section>
+
+    <section class="section-grid" aria-label={isJapanese ? 'ソース一覧' : 'Source list'} data-source-filter-results>
+      {records.map((record) => (
+        <article
+          class="card"
+          data-source-record
+          data-source-id={record.id}
+          data-source-country={record.countryId}
+          data-source-source-type={record.sourceType}
+          data-source-data-type={record.dataType}
+          data-source-auto-level={record.autoLevel}
+          data-source-risk={record.termsRisk}
+          data-source-status={record.registryStatus}
+          data-source-search-text={record.searchText}
+        >
+          <h2><a href={record.url}>{record.id}</a></h2>
+          <p>
+            <strong>{isJapanese ? '国・地域' : 'Country or region'}:</strong>{' '}
+            {record.countryHref ? <a href={record.countryHref}>{record.countryName}</a> : record.countryName}
+          </p>
+          <p><strong>{isJapanese ? 'ソース種別' : 'Source type'}:</strong> {valueLabel(record.sourceType)}</p>
+          <p><strong>{isJapanese ? 'データ種別' : 'Data type'}:</strong> {valueLabel(record.dataType)}</p>
+          <p><strong>{isJapanese ? '自動化レベル' : 'Automation level'}:</strong> {record.autoLevel}</p>
+          <p><strong>{isJapanese ? '利用条件リスク' : 'Terms risk'}:</strong> {valueLabel(record.termsRisk)}</p>
+          <p><strong>{isJapanese ? '登録状態' : 'Registry status'}:</strong> {valueLabel(record.registryStatus)}</p>
+          {record.notes && <p>{record.notes}</p>}
+        </article>
+      ))}
+    </section>
+
+    <section class="card" data-source-filter-empty hidden>
+      <h2>{isJapanese ? '該当するソースがありません' : 'No matching sources'}</h2>
+      <p>{isJapanese
+        ? 'キーワードを短くするか、いずれかの条件を「すべて」に戻してください。'
+        : 'Try a shorter keyword or reset one or more filters to All.'}</p>
+    </section>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-source-directory]');
+      if (!root) return;
+
+      const form = root.querySelector('[data-source-filter-form]');
+      const queryInput = root.querySelector('[data-source-filter-query]');
+      const countrySelect = root.querySelector('[data-source-filter-country]');
+      const sourceTypeSelect = root.querySelector('[data-source-filter-source-type]');
+      const dataTypeSelect = root.querySelector('[data-source-filter-data-type]');
+      const autoLevelSelect = root.querySelector('[data-source-filter-auto-level]');
+      const riskSelect = root.querySelector('[data-source-filter-risk]');
+      const statusSelect = root.querySelector('[data-source-filter-status]');
+      const resetButton = root.querySelector('[data-source-filter-reset]');
+      const count = root.querySelector('[data-source-filter-count]');
+      const empty = root.querySelector('[data-source-filter-empty]');
+      const records = [...root.querySelectorAll('[data-source-record]')];
+      const isJapanese = document.documentElement.lang === 'ja';
+
+      if (!form || !queryInput || !countrySelect || !sourceTypeSelect || !dataTypeSelect || !autoLevelSelect || !riskSelect || !statusSelect || !resetButton || !count || !empty) return;
+
+      const normalize = (value) => value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const params = new URLSearchParams(window.location.search);
+      queryInput.value = params.get('q') ?? '';
+
+      const restoreSelect = (select, parameter) => {
+        const requested = params.get(parameter) ?? 'all';
+        if ([...select.options].some((option) => option.value === requested)) select.value = requested;
+      };
+      restoreSelect(countrySelect, 'country');
+      restoreSelect(sourceTypeSelect, 'source_type');
+      restoreSelect(dataTypeSelect, 'data_type');
+      restoreSelect(autoLevelSelect, 'auto_level');
+      restoreSelect(riskSelect, 'risk');
+      restoreSelect(statusSelect, 'status');
+
+      const apply = () => {
+        const query = normalize(queryInput.value);
+        const country = countrySelect.value;
+        const sourceType = sourceTypeSelect.value;
+        const dataType = dataTypeSelect.value;
+        const autoLevel = autoLevelSelect.value;
+        const risk = riskSelect.value;
+        const status = statusSelect.value;
+        let visible = 0;
+
+        for (const record of records) {
+          const show =
+            (!query || (record.dataset.sourceSearchText ?? '').includes(query)) &&
+            (country === 'all' || record.dataset.sourceCountry === country) &&
+            (sourceType === 'all' || record.dataset.sourceSourceType === sourceType) &&
+            (dataType === 'all' || record.dataset.sourceDataType === dataType) &&
+            (autoLevel === 'all' || record.dataset.sourceAutoLevel === autoLevel) &&
+            (risk === 'all' || record.dataset.sourceRisk === risk) &&
+            (status === 'all' || record.dataset.sourceStatus === status);
+          record.hidden = !show;
+          if (show) visible += 1;
+        }
+
+        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
+        empty.hidden = visible !== 0;
+
+        const next = new URLSearchParams();
+        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
+        if (country !== 'all') next.set('country', country);
+        if (sourceType !== 'all') next.set('source_type', sourceType);
+        if (dataType !== 'all') next.set('data_type', dataType);
+        if (autoLevel !== 'all') next.set('auto_level', autoLevel);
+        if (risk !== 'all') next.set('risk', risk);
+        if (status !== 'all') next.set('status', status);
+        const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
+        window.history.replaceState(null, '', nextUrl);
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        apply();
+      });
+      queryInput.addEventListener('input', apply);
+      countrySelect.addEventListener('change', apply);
+      sourceTypeSelect.addEventListener('change', apply);
+      dataTypeSelect.addEventListener('change', apply);
+      autoLevelSelect.addEventListener('change', apply);
+      riskSelect.addEventListener('change', apply);
+      statusSelect.addEventListener('change', apply);
+      resetButton.addEventListener('click', () => {
+        queryInput.value = '';
+        countrySelect.value = 'all';
+        sourceTypeSelect.value = 'all';
+        dataTypeSelect.value = 'all';
+        autoLevelSelect.value = 'all';
+        riskSelect.value = 'all';
+        statusSelect.value = 'all';
+        apply();
+        queryInput.focus();
+      });
+      apply();
+    })();
+  </script>
+</BaseLayout>
