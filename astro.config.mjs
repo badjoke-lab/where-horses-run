@@ -9,5 +9,7 @@ import countryPageMetadataIntegration from './scripts/country-page-metadata-inte
 export default defineConfig({
   site: 'https://whr.badjoke-lab.com',
   trailingSlash: 'always',
-  integrations: [sitemapRobotsIntegration(), countryPageMetadataIntegration()]
+  // Preserve the crawler-file integration as the build baseline, then append
+  // page-specific metadata transforms in deterministic order.
+  integrations: [sitemapRobotsIntegration()].concat(countryPageMetadataIntegration())
 });
