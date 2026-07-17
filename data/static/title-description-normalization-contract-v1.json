@@ -4,16 +4,18 @@
   "implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
   "status": "complete",
   "reviewed_at": "2026-07-18",
+  "scope_updated_by": "FAQ-CONTENT-PAGES-01",
   "site_origin": "https://whr.badjoke-lab.com",
   "scope": {
-    "public_pages": 767,
-    "english_pages": 385,
-    "japanese_pages": 382,
+    "public_pages": 769,
+    "english_pages": 386,
+    "japanese_pages": 383,
     "meeting_detail_pages": 158,
     "english_meeting_detail_pages": 79,
     "japanese_meeting_detail_pages": 79,
     "country_detail_pages": 196,
-    "normalized_country_description_pages": 4
+    "normalized_country_description_pages": 4,
+    "faq_pages": 2
   },
   "normalization_contract": {
     "one_title_tag_per_page": true,
@@ -48,6 +50,12 @@
     "visible_area_name_prefix_required": true,
     "underlying_reviewed_summary_preserved": true
   },
+  "faq_contract": {
+    "paths": ["/faq/", "/ja/faq/"],
+    "unique_titles_required": true,
+    "unique_descriptions_required": true,
+    "social_and_jsonld_alignment_required": true
+  },
   "alignment_contract": {
     "open_graph_title_matches_title": true,
     "open_graph_description_matches_description": true,
@@ -69,7 +77,7 @@
     "existing_public_facts_reused": true,
     "meeting_date_added_to_metadata": true,
     "country_name_added_to_duplicated_descriptions": true,
-    "visible_body_copy_changed": false,
+    "visible_body_copy_changed_by_normalizer": false,
     "new_race_or_participant_data_added": false,
     "official_source_text_copied": false
   },

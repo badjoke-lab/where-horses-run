@@ -4,13 +4,15 @@
   "implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
   "status": "complete",
   "reviewed_at": "2026-07-18",
+  "scope_updated_by": "FAQ-CONTENT-PAGES-01",
   "verified": {
-    "public_pages": 767,
-    "english_pages": 385,
-    "japanese_pages": 382,
+    "public_pages": 769,
+    "english_pages": 386,
+    "japanese_pages": 383,
     "meeting_detail_pages": 158,
     "country_detail_pages": 196,
     "normalized_country_description_pages": 4,
+    "faq_pages": 2,
     "missing_titles": 0,
     "missing_descriptions": 0,
     "duplicate_title_tag_pages": 0,
@@ -23,6 +25,8 @@
     "twitter_description_errors": 0,
     "jsonld_title_errors": 0,
     "jsonld_description_errors": 0,
+    "faq_title_errors": 0,
+    "faq_description_errors": 0,
     "whitespace_errors": 0,
     "newline_errors": 0,
     "temporary_discovery_workflows": 0,
@@ -41,27 +45,22 @@
     "duplicate_description_groups": 0,
     "meeting_duplicate_title_groups": 0,
     "meeting_duplicate_description_groups": 0,
-    "country_duplicate_description_groups": 0
-  },
-  "length_distribution_after": {
-    "title_all": { "min": 10, "median": 31, "p90": 66, "max": 76, "average": 35.28 },
-    "title_en": { "min": 15, "median": 40, "p90": 69, "max": 76, "average": 47.13 },
-    "title_ja": { "min": 10, "median": 24, "p90": 31, "max": 38, "average": 23.34 },
-    "description_all": { "min": 11, "median": 67, "p90": 159, "max": 259, "average": 79.0 },
-    "description_en": { "min": 35, "median": 102, "p90": 161, "max": 259, "average": 111.33 },
-    "description_ja": { "min": 11, "median": 44, "p90": 70, "max": 101, "average": 46.41 }
+    "country_duplicate_description_groups": 0,
+    "faq_duplicate_title_groups": 0,
+    "faq_duplicate_description_groups": 0
   },
   "behavior": {
     "meeting_metadata_uses_visible_date": true,
     "meeting_metadata_uses_visible_racecourse_name": true,
     "meeting_metadata_uses_visible_page_kind": true,
     "country_duplicate_descriptions_gain_visible_area_name": true,
+    "faq_metadata_is_unique_and_aligned": true,
     "social_and_jsonld_metadata_remain_aligned": true,
-    "visible_page_body_is_unchanged": true,
+    "normalizer_does_not_change_visible_page_body": true,
     "length_outliers_are_audited_not_automatically_truncated": true
   },
   "public_boundary": {
-    "new_public_racing_facts_added": false,
+    "new_public_racing_facts_added_by_normalizer": false,
     "participant_data_added": false,
     "odds_results_or_payout_data_added": false,
     "official_source_body_republished": false

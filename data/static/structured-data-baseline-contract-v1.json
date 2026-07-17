@@ -3,15 +3,16 @@
   "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
   "implementation_unit": "STRUCTURED-DATA-BASELINE-01",
   "status": "complete",
-  "reviewed_at": "2026-07-17",
+  "reviewed_at": "2026-07-18",
+  "scope_updated_by": "FAQ-CONTENT-PAGES-01",
   "scope": {
-    "public_pages": 767,
-    "english_pages": 385,
-    "japanese_pages": 382,
-    "json_ld_scripts": 767,
-    "graph_nodes": 1534,
-    "website_nodes": 767,
-    "webpage_nodes": 767,
+    "public_pages": 769,
+    "english_pages": 386,
+    "japanese_pages": 383,
+    "json_ld_scripts": 769,
+    "graph_nodes": 1538,
+    "website_nodes": 769,
+    "webpage_nodes": 769,
     "schema_types": 2
   },
   "website_contract": {
@@ -42,7 +43,7 @@
     "less_than_characters_escaped": true,
     "valid_json_required": true
   },
-  "excluded_claims": {
+  "excluded_baseline_claims": {
     "organization": true,
     "person": true,
     "search_action": true,
@@ -51,7 +52,14 @@
     "place": true,
     "country": true,
     "defined_term": true,
+    "faq_page": true,
     "breadcrumb_list": true
+  },
+  "page_specific_script_boundary": {
+    "separate_reviewed_scripts_allowed": true,
+    "faq_page_scripts": 2,
+    "faq_question_nodes": 24,
+    "baseline_script_must_not_duplicate_page_specific_entities": true
   },
   "public_boundary": {
     "public_website_identity_allowed": true,
@@ -59,7 +67,6 @@
     "canonical_title_description_language_allowed": true,
     "unverified_organization_claim_allowed": false,
     "unverified_event_claim_allowed": false,
-    "page_specific_entity_claim_allowed": false,
     "participant_dataset_claim_allowed": false,
     "betting_or_prediction_claim_allowed": false
   },

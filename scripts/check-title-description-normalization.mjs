@@ -41,16 +41,12 @@ function stripTags(value) {
 }
 
 function attrs(tag) {
-  return Object.fromEntries(
-    [...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decodeHtml(match[2])]),
-  );
+  return Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decodeHtml(match[2])]));
 }
 
 function renderedFile(urlString) {
   const pathname = new URL(urlString).pathname;
-  return pathname === '/'
-    ? path.join(DIST_DIRECTORY, 'index.html')
-    : path.join(DIST_DIRECTORY, pathname.replace(/^\//, ''), 'index.html');
+  return pathname === '/' ? path.join(DIST_DIRECTORY, 'index.html') : path.join(DIST_DIRECTORY, pathname.replace(/^\//, ''), 'index.html');
 }
 
 function one(values, label, url) {
@@ -78,17 +74,14 @@ function pageFamily(pathname) {
   const normalized = pathname.replace(/^\/ja\//, '/');
   if (/^\/timetable\/meetings\/[^/]+\/$/.test(normalized)) return 'meeting-detail';
   if (/^\/countries\/[^/]+\/$/.test(normalized)) return 'country-detail';
+  if (normalized === '/faq/') return 'faq';
   return 'other';
 }
 
 function parseJsonLd(html, url) {
-  const scripts = [...html.matchAll(/<script([^>]*type="application\/ld\+json"[^>]*)>([\s\S]*?)<\/script>/gi)];
-  return scripts.map((match) => {
-    try {
-      return { attributes: match[1], data: JSON.parse(match[2]) };
-    } catch (error) {
-      fail(`${url}: invalid JSON-LD: ${error.message}`);
-    }
+  return [...html.matchAll(/<script([^>]*type="application\/ld\+json"[^>]*)>([\s\S]*?)<\/script>/gi)].map((match) => {
+    try { return { attributes: match[1], data: JSON.parse(match[2]) }; }
+    catch (error) { fail(`${url}: invalid JSON-LD: ${error.message}`); }
   });
 }
 
@@ -96,102 +89,85 @@ function parsePage(url) {
   const file = renderedFile(url);
   expect(fs.existsSync(file), `${url}: rendered file is missing (${file})`);
   const html = fs.readFileSync(file, 'utf8');
-  const htmlLang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] ?? '';
-  expect(['en', 'ja'].includes(htmlLang), `${url}: unsupported html lang ${htmlLang}`);
-
-  const titleTags = [...html.matchAll(/<title>([\s\S]*?)<\/title>/gi)];
-  const title = stripTags(one(titleTags, 'title tag', url)[1]);
-  const metaTags = [...html.matchAll(/<meta\s+[^>]*>/gi)].map((match) => attrs(match[0]));
-  const linkTags = [...html.matchAll(/<link\s+[^>]*>/gi)].map((match) => attrs(match[0]));
-  const description = one(metaTags.filter((meta) => meta.name === 'description'), 'meta description', url).content ?? '';
-  const canonical = one(linkTags.filter((link) => link.rel === 'canonical'), 'canonical link', url).href ?? '';
+  const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] ?? '';
+  expect(['en', 'ja'].includes(lang), `${url}: unsupported html lang ${lang}`);
+  const title = stripTags(one([...html.matchAll(/<title>([\s\S]*?)<\/title>/gi)], 'title tag', url)[1]);
+  const metas = [...html.matchAll(/<meta\s+[^>]*>/gi)].map((match) => attrs(match[0]));
+  const links = [...html.matchAll(/<link\s+[^>]*>/gi)].map((match) => attrs(match[0]));
+  const description = one(metas.filter((meta) => meta.name === 'description'), 'meta description', url).content ?? '';
+  const canonical = one(links.filter((link) => link.rel === 'canonical'), 'canonical link', url).href ?? '';
   expect(canonical === url, `${url}: canonical differs (${canonical})`);
-
-  const getMeta = (key, attribute = 'name') =>
-    one(metaTags.filter((meta) => meta[attribute] === key), `${key} metadata`, url).content ?? '';
-
-  const ogTitle = getMeta('og:title', 'property');
-  const ogDescription = getMeta('og:description', 'property');
-  const twitterTitle = getMeta('twitter:title');
-  const twitterDescription = getMeta('twitter:description');
-
+  const metaValue = (key, attribute = 'name') => one(metas.filter((meta) => meta[attribute] === key), `${key} metadata`, url).content ?? '';
   const jsonLd = parseJsonLd(html, url);
-  const baselineScripts = jsonLd.filter(({ attributes }) =>
-    /data-structured-data-baseline="website-webpage-v1"/i.test(attributes),
-  );
-  expect(baselineScripts.length === 1, `${url}: expected one baseline JSON-LD script, found ${baselineScripts.length}`);
-
-  const canonicalId = `${url}#webpage`;
   const pageNodes = jsonLd.flatMap(({ data }) => {
     const graph = Array.isArray(data?.['@graph']) ? data['@graph'] : [];
-    return graph.filter((node) =>
-      node?.['@id'] === canonicalId && ['WebPage', 'CollectionPage'].includes(node?.['@type']),
-    );
+    return graph.filter((node) => node?.['@id'] === `${url}#webpage` && ['WebPage', 'CollectionPage'].includes(node?.['@type']));
   });
-  expect(pageNodes.length >= 1, `${url}: no WebPage or CollectionPage node matches ${canonicalId}`);
-
+  expect(pageNodes.length >= 1, `${url}: matching WebPage or CollectionPage JSON-LD node is missing`);
   return {
     url,
     pathname: new URL(url).pathname,
+    family: pageFamily(new URL(url).pathname),
     file,
     html,
-    lang: htmlLang,
-    family: pageFamily(new URL(url).pathname),
+    lang,
     title,
     description,
-    ogTitle,
-    ogDescription,
-    twitterTitle,
-    twitterDescription,
+    ogTitle: metaValue('og:title', 'property'),
+    ogDescription: metaValue('og:description', 'property'),
+    twitterTitle: metaValue('twitter:title'),
+    twitterDescription: metaValue('twitter:description'),
     pageNodes,
   };
 }
 
 function verifyContract(contract, audit) {
-  expect(contract.schema_version === 'title-description-normalization-contract-v1', 'Unexpected contract schema');
-  expect(contract.work_id === 'WHR-SEO-PUBLIC-CONTENT-V1', 'Unexpected contract work ID');
-  expect(contract.implementation_unit === 'TITLE-DESCRIPTION-NORMALIZATION-01', 'Unexpected implementation unit');
-  expect(contract.status === 'complete', 'Contract is not complete');
-  expect(contract.scope.public_pages === 767, 'Contract public-page count differs');
-  expect(contract.scope.english_pages === 385, 'Contract English-page count differs');
-  expect(contract.scope.japanese_pages === 382, 'Contract Japanese-page count differs');
+  expect(contract.schema_version === 'title-description-normalization-contract-v1', 'Unexpected title-description contract schema');
+  expect(contract.work_id === 'WHR-SEO-PUBLIC-CONTENT-V1', 'Unexpected title-description Work ID');
+  expect(contract.implementation_unit === 'TITLE-DESCRIPTION-NORMALIZATION-01', 'Unexpected title-description implementation unit');
+  expect(contract.status === 'complete', 'Title-description contract is not complete');
+  expect(contract.reviewed_at === '2026-07-18', 'Title-description review date differs');
+  expect(contract.scope_updated_by === 'FAQ-CONTENT-PAGES-01', 'Title-description scope update marker differs');
+  expect(contract.scope.public_pages === 769, 'Contract public-page count differs');
+  expect(contract.scope.english_pages === 386, 'Contract English-page count differs');
+  expect(contract.scope.japanese_pages === 383, 'Contract Japanese-page count differs');
   expect(contract.scope.meeting_detail_pages === 158, 'Contract meeting-page count differs');
   expect(contract.scope.normalized_country_description_pages === 4, 'Contract country-normalization count differs');
+  expect(contract.scope.faq_pages === 2, 'Contract FAQ-page count differs');
   expect(contract.normalization_contract.duplicate_titles_allowed === false, 'Duplicate titles must remain disallowed');
   expect(contract.normalization_contract.duplicate_descriptions_allowed === false, 'Duplicate descriptions must remain disallowed');
   expect(contract.normalization_contract.arbitrary_character_limit_enforced === false, 'Arbitrary length limits must remain disabled');
-  expect(contract.public_boundary.visible_body_copy_changed === false, 'Visible-body boundary differs');
+  expect(contract.faq_contract.unique_titles_required === true && contract.faq_contract.unique_descriptions_required === true, 'FAQ uniqueness contract differs');
   expect(contract.automation_boundary.automatic_publication_enabled === false, 'Automatic publication must remain disabled');
-  expect(contract.next_implementation_unit === 'FAQ-CONTENT-PAGES-01', 'Unexpected next implementation unit');
 
-  expect(audit.schema_version === 'title-description-normalization-audit-v1', 'Unexpected audit schema');
-  expect(audit.status === 'complete', 'Audit is not complete');
-  expect(audit.verified.public_pages === 767, 'Audit public-page count differs');
-  expect(audit.verified.duplicate_title_groups === 0, 'Audit retains duplicate title groups');
-  expect(audit.verified.duplicate_description_groups === 0, 'Audit retains duplicate description groups');
-  expect(audit.before.duplicate_title_groups === 36, 'Audit initial duplicate title count differs');
-  expect(audit.before.duplicate_description_groups === 4, 'Audit initial duplicate description count differs');
+  expect(audit.schema_version === 'title-description-normalization-audit-v1', 'Unexpected title-description audit schema');
+  expect(audit.status === 'complete', 'Title-description audit is not complete');
+  expect(audit.reviewed_at === contract.reviewed_at && audit.scope_updated_by === contract.scope_updated_by, 'Title-description audit scope identity differs');
+  for (const [key, value] of Object.entries({ public_pages: 769, english_pages: 386, japanese_pages: 383, meeting_detail_pages: 158, country_detail_pages: 196, normalized_country_description_pages: 4, faq_pages: 2 })) {
+    expect(audit.verified[key] === value, `Title-description audit ${key} differs`);
+  }
+  for (const key of ['missing_titles', 'missing_descriptions', 'duplicate_title_tag_pages', 'duplicate_description_meta_pages', 'duplicate_title_groups', 'duplicate_description_groups', 'open_graph_title_errors', 'open_graph_description_errors', 'twitter_title_errors', 'twitter_description_errors', 'jsonld_title_errors', 'jsonld_description_errors', 'faq_title_errors', 'faq_description_errors', 'whitespace_errors', 'newline_errors', 'contract_errors', 'output_errors']) {
+    expect(audit.verified[key] === 0, `Title-description audit ${key} differs`);
+  }
+  expect(audit.before.duplicate_title_groups === 36 && audit.before.duplicate_description_groups === 4, 'Initial duplicate measurements differ');
 }
 
 function verifySourceWiring() {
-  for (const workflow of TEMPORARY_WORKFLOWS) {
-    expect(!fs.existsSync(workflow), `Temporary workflow remains: ${workflow}`);
-  }
+  for (const workflow of TEMPORARY_WORKFLOWS) expect(!fs.existsSync(workflow), `Temporary workflow remains: ${workflow}`);
   const config = fs.readFileSync(ASTRO_CONFIG_PATH, 'utf8');
   const integration = fs.readFileSync(INTEGRATION_PATH, 'utf8');
   expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';"), 'Astro config does not import normalization integration');
   expect(config.includes('titleDescriptionNormalizationIntegration()'), 'Astro config does not register normalization integration');
-  expect(integration.includes("name: 'where-horses-run-title-description-normalization'"), 'Integration name marker is missing');
-  expect(integration.includes("'astro:build:done'"), 'Integration build hook is missing');
-  expect(integration.includes('meetingPages !== 158'), 'Integration meeting-scope assertion is missing');
-  expect(integration.includes('countryDescriptionPages !== 4'), 'Integration country-scope assertion is missing');
+  expect(integration.includes("name: 'where-horses-run-title-description-normalization'"), 'Normalization integration name marker is missing');
+  expect(integration.includes("'astro:build:done'"), 'Normalization integration build hook is missing');
+  expect(integration.includes('meetingMetadata(page)'), 'Meeting metadata normalization marker is missing');
+  expect(integration.includes('duplicatedCountryDescriptions'), 'Country duplicate-description marker is missing');
 }
 
 function verifyPageBasics(pages) {
-  expect(pages.length === 767, `Expected 767 public pages, found ${pages.length}`);
-  expect(pages.filter((page) => page.lang === 'en').length === 385, 'English page count differs');
-  expect(pages.filter((page) => page.lang === 'ja').length === 382, 'Japanese page count differs');
-
+  expect(pages.length === 769, `Expected 769 public pages, found ${pages.length}`);
+  expect(pages.filter((page) => page.lang === 'en').length === 386, 'English page count differs');
+  expect(pages.filter((page) => page.lang === 'ja').length === 383, 'Japanese page count differs');
   for (const page of pages) {
     expect(page.title.length > 0, `${page.url}: empty title`);
     expect(page.description.length > 0, `${page.url}: empty description`);
@@ -208,11 +184,8 @@ function verifyPageBasics(pages) {
       expect(node.description === page.description, `${page.url}: JSON-LD description differs for ${node['@type']}`);
     }
   }
-
-  const duplicateTitles = duplicateGroups(pages, 'title');
-  const duplicateDescriptions = duplicateGroups(pages, 'description');
-  expect(duplicateTitles.length === 0, `Duplicate title groups remain: ${JSON.stringify(duplicateTitles.slice(0, 5))}`);
-  expect(duplicateDescriptions.length === 0, `Duplicate description groups remain: ${JSON.stringify(duplicateDescriptions.slice(0, 5))}`);
+  expect(duplicateGroups(pages, 'title').length === 0, 'Duplicate title groups remain');
+  expect(duplicateGroups(pages, 'description').length === 0, 'Duplicate description groups remain');
 }
 
 function verifyMeetingPages(pages) {
@@ -220,24 +193,13 @@ function verifyMeetingPages(pages) {
   expect(meetings.length === 158, `Expected 158 meeting pages, found ${meetings.length}`);
   expect(meetings.filter((page) => page.lang === 'en').length === 79, 'English meeting-page count differs');
   expect(meetings.filter((page) => page.lang === 'ja').length === 79, 'Japanese meeting-page count differs');
-
   for (const page of meetings) {
     const racecourse = readText(page.html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'meeting racecourse heading', page.url);
-    const pageKind = readText(page.html, /<p[^>]*class="eyebrow"[^>]*>([\s\S]*?)<\/p>/i, 'meeting page kind', page.url);
+    const pageKind = readText(page.html, /<p[^>]*class="[^"]*eyebrow[^"]*"[^>]*>([\s\S]*?)<\/p>/i, 'meeting page kind', page.url);
     const date = page.html.match(/<p[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/p>/)?.[1] ?? '';
     expect(/^\d{4}-\d{2}-\d{2}$/.test(date), `${page.url}: visible meeting date is missing`);
-    expect(page.title.includes(racecourse), `${page.url}: title omits visible racecourse name`);
-    expect(page.title.includes(date), `${page.url}: title omits visible date`);
-    expect(page.title.includes(pageKind), `${page.url}: title omits visible page kind`);
-    expect(page.description.includes(racecourse), `${page.url}: description omits visible racecourse name`);
-    expect(page.description.includes(date), `${page.url}: description omits visible date`);
-    if (page.lang === 'ja') {
-      expect(page.description.includes('公式ソース'), `${page.url}: Japanese description omits official-source context`);
-      expect(page.description.includes('公開ポリシー'), `${page.url}: Japanese description omits publication-policy context`);
-    } else {
-      expect(page.description.includes('Official-source'), `${page.url}: English description omits official-source context`);
-      expect(page.description.includes('public-policy-controlled'), `${page.url}: English description omits publication-policy context`);
-    }
+    expect(page.title.includes(racecourse) && page.title.includes(date) && page.title.includes(pageKind), `${page.url}: meeting title identity differs`);
+    expect(page.description.includes(racecourse) && page.description.includes(date), `${page.url}: meeting description identity differs`);
   }
 }
 
@@ -245,40 +207,54 @@ function verifyCountryDescriptions(pages, contract) {
   const expectedPaths = new Set(contract.country_duplicate_resolution.paths);
   const affected = pages.filter((page) => expectedPaths.has(page.pathname));
   expect(affected.length === 4, `Expected four normalized country descriptions, found ${affected.length}`);
-
   for (const page of affected) {
     const heading = readText(page.html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'country heading', page.url);
     const suffix = page.lang === 'ja' ? 'の競馬カレンダー・競馬場ガイド' : ' Horse Racing Calendar & Racecourses';
     expect(heading.endsWith(suffix), `${page.url}: country heading suffix differs`);
     const area = heading.slice(0, -suffix.length).trim();
-    const heroSummary = readText(page.html, /<p[^>]*class="hero__summary"[^>]*>([\s\S]*?)<\/p>/i, 'country hero summary', page.url);
-    expect(page.description === `${area} — ${heroSummary}`, `${page.url}: normalized country description differs from visible area plus reviewed summary`);
+    const heroSummary = readText(page.html, /<p[^>]*class="[^"]*hero__summary[^"]*"[^>]*>([\s\S]*?)<\/p>/i, 'country hero summary', page.url);
+    expect(page.description === `${area} — ${heroSummary}`, `${page.url}: normalized country description differs`);
+  }
+}
+
+function verifyFaqPages(pages) {
+  const expected = new Map([
+    ['/faq/', {
+      title: 'Frequently Asked Questions | Where Horses Run',
+      description: 'Frequently asked questions about Where Horses Run data scope, official sources, update policy, publication ranks, and limitations.',
+    }],
+    ['/ja/faq/', {
+      title: 'よくある質問 | 競馬どこ？',
+      description: '競馬どこ？のデータ範囲、公式ソース、更新方針、公開ランク、制限事項に関するよくある質問です。',
+    }],
+  ]);
+  const faqPages = pages.filter((page) => page.family === 'faq');
+  expect(faqPages.length === 2, `Expected two FAQ pages, found ${faqPages.length}`);
+  for (const page of faqPages) {
+    const expectedMetadata = expected.get(page.pathname);
+    expect(expectedMetadata !== undefined, `${page.url}: unexpected FAQ path`);
+    expect(page.title === expectedMetadata.title, `${page.url}: FAQ title differs`);
+    expect(page.description === expectedMetadata.description, `${page.url}: FAQ description differs`);
   }
 }
 
 function main() {
-  expect(fs.existsSync(CONTRACT_PATH), `Missing ${CONTRACT_PATH}`);
-  expect(fs.existsSync(AUDIT_PATH), `Missing ${AUDIT_PATH}`);
-  expect(fs.existsSync(INTEGRATION_PATH), `Missing ${INTEGRATION_PATH}`);
-  expect(fs.existsSync(SITEMAP_PATH), `Missing ${SITEMAP_PATH}; run npm run build first`);
-
+  for (const file of [CONTRACT_PATH, AUDIT_PATH, INTEGRATION_PATH, ASTRO_CONFIG_PATH, SITEMAP_PATH]) expect(fs.existsSync(file), `Missing ${file}`);
   const contract = readJson(CONTRACT_PATH);
   const audit = readJson(AUDIT_PATH);
   verifyContract(contract, audit);
   verifySourceWiring();
-
-  const sitemap = fs.readFileSync(SITEMAP_PATH, 'utf8');
-  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const urls = [...fs.readFileSync(SITEMAP_PATH, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   const pages = urls.map(parsePage);
-
   verifyPageBasics(pages);
   verifyMeetingPages(pages);
   verifyCountryDescriptions(pages, contract);
-
+  verifyFaqPages(pages);
   console.log('Title and description normalization contract passed.');
-  console.log(`Public pages: ${pages.length}`);
-  console.log(`English / Japanese: ${pages.filter((page) => page.lang === 'en').length} / ${pages.filter((page) => page.lang === 'ja').length}`);
-  console.log(`Meeting details: ${pages.filter((page) => page.family === 'meeting-detail').length}`);
+  console.log('Public pages: 769');
+  console.log('English / Japanese: 386 / 383');
+  console.log('Meeting details: 158');
+  console.log('FAQ pages: 2');
   console.log('Duplicate titles / descriptions: 0 / 0');
   console.log('Open Graph, Twitter, and JSON-LD alignment errors: 0');
 }

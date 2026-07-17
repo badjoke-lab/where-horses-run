@@ -1,0 +1,102 @@
+{
+  "schema_version": "faq-content-pages-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "FAQ-CONTENT-PAGES-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "public_pages": 769,
+    "english_pages": 386,
+    "japanese_pages": 383,
+    "faq_pages": 2,
+    "languages": 2,
+    "questions_per_page": 12,
+    "visible_questions": 24,
+    "visible_answers": 24,
+    "faqpage_scripts": 2,
+    "structured_questions": 24,
+    "structured_answers": 24,
+    "home_page_faq_links": 2,
+    "related_page_links": 8
+  },
+  "routes": {
+    "en": {
+      "path": "/faq/",
+      "title": "Frequently Asked Questions | Where Horses Run",
+      "description": "Frequently asked questions about Where Horses Run data scope, official sources, update policy, publication ranks, and limitations.",
+      "alternate_path": "/ja/faq/"
+    },
+    "ja": {
+      "path": "/ja/faq/",
+      "title": "よくある質問 | 競馬どこ？",
+      "description": "競馬どこ？のデータ範囲、公式ソース、更新方針、公開ランク、制限事項に関するよくある質問です。",
+      "alternate_path": "/faq/"
+    }
+  },
+  "visible_content_contract": {
+    "question_heading_level": 2,
+    "answer_paragraph_required": true,
+    "questions_are_unique_within_page": true,
+    "answers_are_non_empty": true,
+    "english_japanese_topic_parity_required": true,
+    "official_source_priority_explained": true,
+    "data_scope_explained": true,
+    "update_policy_explained": true,
+    "publication_ranks_explained": true,
+    "coverage_variation_explained": true,
+    "official_confirmation_limit_explained": true,
+    "excluded_racecard_data_explained": true,
+    "betting_advice_exclusion_explained": true,
+    "live_replay_boundary_explained": true
+  },
+  "structured_data_contract": {
+    "type": "FAQPage",
+    "script_marker": "data-faq-structured-data",
+    "script_marker_value": "faq-page-v1",
+    "scripts_per_faq_page": 1,
+    "questions_per_script": 12,
+    "visible_question_text_must_match": true,
+    "visible_answer_text_must_match": true,
+    "webpage_relation_required": true,
+    "less_than_characters_escaped": true,
+    "valid_json_required": true
+  },
+  "navigation_contract": {
+    "english_home_links_to_faq": true,
+    "japanese_home_links_to_faq": true,
+    "faq_links_to_about": true,
+    "faq_links_to_disclaimer": true,
+    "faq_links_to_sources": true,
+    "faq_links_to_glossary": true
+  },
+  "public_boundary": {
+    "official_source_priority_allowed": true,
+    "data_scope_allowed": true,
+    "update_policy_allowed": true,
+    "limitations_allowed": true,
+    "publication_rank_explanation_allowed": true,
+    "revenue_or_monetization_discussion_allowed": false,
+    "budget_discussion_allowed": false,
+    "other_project_relationships_allowed": false,
+    "internal_circumstances_allowed": false,
+    "betting_advice_allowed": false,
+    "participant_or_racecard_republication_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_content_service_enabled": false,
+    "automatic_question_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
+  "next_implementation_unit": "METHODS-DATA-POLICY-01"
+}

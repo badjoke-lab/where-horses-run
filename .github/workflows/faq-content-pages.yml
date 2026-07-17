@@ -1,0 +1,119 @@
+name: FAQ content pages gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/components/FaqPage.astro'
+      - 'src/pages/faq/index.astro'
+      - 'src/pages/ja/faq/index.astro'
+      - 'src/pages/index.astro'
+      - 'src/pages/ja/index.astro'
+      - 'data/static/faq-content-pages-contract-v1.json'
+      - 'data/audits/faq-content-pages-v1.json'
+      - 'docs/seo/faq-content-pages.md'
+      - 'scripts/check-faq-content-pages.mjs'
+      - 'data/static/sitemap-robots-contract-v1.json'
+      - 'data/audits/sitemap-robots-v1.json'
+      - 'docs/seo/sitemap-robots.md'
+      - 'scripts/check-sitemap-robots.mjs'
+      - 'data/static/structured-data-baseline-contract-v1.json'
+      - 'data/audits/structured-data-baseline-v1.json'
+      - 'docs/seo/structured-data-baseline.md'
+      - 'scripts/check-structured-data-baseline.mjs'
+      - 'data/static/canonical-hreflang-review-contract-v1.json'
+      - 'data/audits/canonical-hreflang-review-v1.json'
+      - 'docs/seo/canonical-hreflang-review.md'
+      - 'scripts/check-canonical-hreflang-review.mjs'
+      - 'data/static/open-graph-social-cards-contract-v1.json'
+      - 'data/audits/open-graph-social-cards-v1.json'
+      - 'docs/seo/open-graph-social-cards.md'
+      - 'scripts/check-open-graph-social-cards.mjs'
+      - 'data/static/title-description-normalization-contract-v1.json'
+      - 'data/audits/title-description-normalization-v1.json'
+      - 'docs/seo/title-description-normalization.md'
+      - 'scripts/check-title-description-normalization.mjs'
+      - '.github/workflows/faq-content-pages.yml'
+      - '.github/workflows/temporary-faq-content-discovery.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/components/FaqPage.astro'
+      - 'src/pages/faq/index.astro'
+      - 'src/pages/ja/faq/index.astro'
+      - 'src/pages/index.astro'
+      - 'src/pages/ja/index.astro'
+      - 'data/static/faq-content-pages-contract-v1.json'
+      - 'data/audits/faq-content-pages-v1.json'
+      - 'docs/seo/faq-content-pages.md'
+      - 'scripts/check-faq-content-pages.mjs'
+      - 'data/static/sitemap-robots-contract-v1.json'
+      - 'data/audits/sitemap-robots-v1.json'
+      - 'docs/seo/sitemap-robots.md'
+      - 'scripts/check-sitemap-robots.mjs'
+      - 'data/static/structured-data-baseline-contract-v1.json'
+      - 'data/audits/structured-data-baseline-v1.json'
+      - 'docs/seo/structured-data-baseline.md'
+      - 'scripts/check-structured-data-baseline.mjs'
+      - 'data/static/canonical-hreflang-review-contract-v1.json'
+      - 'data/audits/canonical-hreflang-review-v1.json'
+      - 'docs/seo/canonical-hreflang-review.md'
+      - 'scripts/check-canonical-hreflang-review.mjs'
+      - 'data/static/open-graph-social-cards-contract-v1.json'
+      - 'data/audits/open-graph-social-cards-v1.json'
+      - 'docs/seo/open-graph-social-cards.md'
+      - 'scripts/check-open-graph-social-cards.mjs'
+      - 'data/static/title-description-normalization-contract-v1.json'
+      - 'data/audits/title-description-normalization-v1.json'
+      - 'docs/seo/title-description-normalization.md'
+      - 'scripts/check-title-description-normalization.mjs'
+      - '.github/workflows/faq-content-pages.yml'
+      - '.github/workflows/temporary-faq-content-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Preserve Phase 10 UX release contract
+        run: node scripts/check-ux-polish-release.mjs
+      - name: Preserve sitemap and robots contract
+        run: node scripts/check-sitemap-robots.mjs
+      - name: Preserve structured data baseline
+        run: node scripts/check-structured-data-baseline.mjs
+      - name: Preserve country page metadata
+        run: node scripts/check-country-page-metadata.mjs
+      - name: Preserve racecourse page metadata
+        run: node scripts/check-racecourse-page-metadata.mjs
+      - name: Preserve glossary page metadata
+        run: node scripts/check-glossary-page-metadata.mjs
+      - name: Preserve canonical and hreflang review
+        run: node scripts/check-canonical-hreflang-review.mjs
+      - name: Preserve Open Graph social cards
+        run: node scripts/check-open-graph-social-cards.mjs
+      - name: Preserve title and description normalization
+        run: node scripts/check-title-description-normalization.mjs
+      - name: Validate FAQ content pages
+        run: node scripts/check-faq-content-pages.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

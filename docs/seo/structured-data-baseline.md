@@ -3,152 +3,73 @@
 Status: complete  
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `STRUCTURED-DATA-BASELINE-01`  
-Reviewed: 2026-07-17
+Reviewed: 2026-07-18  
+Scope updated by: `FAQ-CONTENT-PAGES-01`
 
 ## Purpose
 
-Every public canonical page now exposes one conservative JSON-LD baseline derived from metadata that already exists in the rendered page.
+Every public canonical page exposes one conservative JSON-LD baseline derived from its rendered title, description, canonical URL, and language.
 
-The baseline establishes stable site and page identities before country, racecourse, glossary, and other page-specific metadata are added in later Phase 11 units.
-
-## Shared implementation
-
-The baseline is rendered by:
+## Current baseline inventory
 
 ```text
-src/layouts/BaseLayout.astro
+769 public pages
+English pages: 386
+Japanese pages: 383
+Baseline JSON-LD scripts: 769
+WebSite nodes: 769
+WebPage nodes: 769
+Baseline graph nodes: 1,538
 ```
 
-Every public page receives one script identified by:
+Each marked baseline script contains exactly:
 
-```html
-<script
-  type="application/ld+json"
-  data-structured-data-baseline="website-webpage-v1"
->
-```
+- one stable `WebSite` node for Where Horses Run / 競馬どこ？;
+- one `WebPage` node matching the current page’s canonical, title, description, and language.
 
-The JSON is serialized from static page metadata and escapes less-than characters before insertion into the script element.
+The shared implementation is `src/components/StructuredDataBaseline.astro`, delegated from `src/layouts/BaseLayout.astro`.
 
-## Graph contract
+## Page-specific scripts
 
-Each script uses:
+Page-specific structured data remains separate from the baseline. The bilingual FAQ pages add:
 
 ```text
-@context: https://schema.org
+FAQPage scripts: 2
+FAQ Question nodes: 24
 ```
 
-and contains exactly two graph nodes.
+Those nodes are generated from the same visible question-and-answer arrays and are not duplicated inside the shared baseline graph.
 
-### WebSite
+The baseline itself does not infer Organization, Person, SearchAction, Event, SportsEvent, Place, Country, DefinedTerm, FAQPage, or BreadcrumbList entities.
 
-The stable site node is:
+## Serialization contract
 
-```text
-@type: WebSite
-@id: https://whr.badjoke-lab.com/#website
-url: https://whr.badjoke-lab.com/
-name: Where Horses Run
-alternateName: 競馬どこ？
-inLanguage: en, ja
-```
+- format: JSON-LD;
+- context: `https://schema.org`;
+- script marker: `data-structured-data-baseline="website-webpage-v1"`;
+- one baseline script per public page;
+- two baseline graph nodes per page;
+- valid JSON required;
+- literal less-than characters are escaped before insertion.
 
-The same site identity appears on every page.
+## Verification
 
-### WebPage
-
-Each page node uses:
-
-```text
-@type: WebPage
-@id: {canonical-url}#webpage
-url: existing canonical URL
-name: existing page title
-description: existing meta description
-inLanguage: existing html lang
-isPartOf: https://whr.badjoke-lab.com/#website
-```
-
-No new title, summary, language, or canonical source is introduced by the structured-data layer.
-
-## Frozen scope
-
-Discovery validated all 767 public pages currently present in the sitemap:
-
-```text
-English pages: 385
-Japanese pages: 382
-JSON-LD scripts: 767
-Valid JSON scripts: 767
-WebSite nodes: 767
-WebPage nodes: 767
-Total graph nodes: 1,534
-```
-
-Measured mismatches were all zero for:
-
-- missing or duplicate scripts;
-- invalid JSON;
-- schema context;
-- site IDs;
-- page IDs;
-- canonical URLs;
-- page languages;
-- missing names;
-- missing descriptions;
-- unexpected schema types.
-
-## Claims intentionally excluded
-
-This baseline does not publish:
-
-- `Organization` or `Person` ownership claims;
-- `SearchAction` claims for the client-side static search;
-- `Event` or `SportsEvent` claims;
-- `Place` or `Country` page-specific claims;
-- `DefinedTerm` glossary claims;
-- `BreadcrumbList` navigation claims.
-
-Those types require page-specific contracts or additional reviewed facts. Country, racecourse, and glossary metadata are assigned to PR-123, PR-124, and PR-125 rather than inferred globally.
-
-The anonymous project identity is not converted into an unverified organization entity.
-
-## Public and privacy boundary
-
-Allowed:
-
-- public website identity;
-- public page identity;
-- existing canonical URL, title, description, and language.
-
-Not allowed:
-
-- unverified organization or event claims;
-- page-specific entity inference in the shared baseline;
-- participant dataset claims;
-- betting or prediction claims;
-- visitor identifiers, logging, cookies, storage, or analytics;
-- external schema services;
-- automatic entity inference, content generation, publication, or deployment.
-
-## Validation
-
-The permanent checker is:
+Permanent checker:
 
 ```text
 scripts/check-structured-data-baseline.mjs
 ```
 
-The permanent read-only Actions gate is:
+Read-only Actions gate:
 
 ```text
 .github/workflows/structured-data-baseline.yml
 ```
 
-The checker parses every public rendered HTML page, requires exactly one marked JSON-LD script and two graph nodes, compares the WebPage node with the page's canonical, title, description, and language, validates the stable WebSite node, rejects unsupported types, verifies script-safe serialization, and preserves both the Phase 10 release and sitemap contracts.
+The checker scans all 769 sitemap pages, compares the baseline `WebPage` identity with rendered metadata, verifies the stable `WebSite` identity, and confirms that the two FAQ scripts remain separate.
 
-## Next implementation unit
+## Boundaries
 
-```text
-COUNTRY-PAGE-METADATA-01
-```
+No unverified organization or event identity, participant dataset, betting or prediction claim, visitor identifier, analytics, cookie, client storage, external schema service, automatic inference, publication, or deployment is introduced.
+
+Next implementation unit: `COUNTRY-PAGE-METADATA-01`.
