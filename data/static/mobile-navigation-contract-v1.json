@@ -1,0 +1,80 @@
+{
+  "schema_version": "mobile-navigation-contract-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "MOBILE-NAVIGATION-IMPROVEMENT-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "locales": 2,
+    "primary_navigation_links_per_locale": 8,
+    "language_switch_links_per_locale": 1,
+    "total_navigation_links_per_locale": 9,
+    "menu_summaries": 2,
+    "mobile_breakpoint_px": 720,
+    "minimum_navigation_target_px": 44
+  },
+  "navigation_contract": {
+    "container_element": "details",
+    "toggle_element": "summary",
+    "list_element": "ul",
+    "item_element": "li",
+    "javascript_required": false,
+    "closed_by_default_on_mobile": true,
+    "visible_without_open_attribute_on_desktop": true,
+    "current_page_aria_marker_required": true,
+    "language_hreflang_required": true,
+    "skip_link_preserved": true,
+    "keyboard_focus_indicator_required": true,
+    "mobile_vertical_navigation_required": true,
+    "desktop_wrapped_navigation_preserved": true
+  },
+  "primary_route_ids": [
+    "today",
+    "calendar",
+    "search",
+    "countries",
+    "tracks",
+    "types",
+    "glossary",
+    "sources"
+  ],
+  "english_routes": [
+    "/today/",
+    "/calendar/",
+    "/search/",
+    "/countries/",
+    "/tracks/",
+    "/types/",
+    "/glossary/",
+    "/sources/"
+  ],
+  "japanese_routes": [
+    "/ja/today/",
+    "/ja/calendar/",
+    "/ja/search/",
+    "/ja/countries/",
+    "/ja/tracks/",
+    "/ja/types/",
+    "/ja/glossary/",
+    "/ja/sources/"
+  ],
+  "labels": {
+    "english_menu": "Menu",
+    "japanese_menu": "メニュー",
+    "english_language_switch": "日本語",
+    "japanese_language_switch": "English"
+  },
+  "privacy_boundary": {
+    "navigation_interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_navigation_generation_enabled": false,
+    "external_navigation_service_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "GLOSSARY-SEARCH-IMPROVEMENT-01",
+  "next_implementation_unit": "DESKTOP-LAYOUT-IMPROVEMENT-01"
+}
