@@ -1,0 +1,82 @@
+{
+  "schema_version": "structured-data-baseline-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "STRUCTURED-DATA-BASELINE-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "public_pages": 767,
+    "english_pages": 385,
+    "japanese_pages": 382,
+    "json_ld_scripts": 767,
+    "graph_nodes": 1534,
+    "website_nodes": 767,
+    "webpage_nodes": 767,
+    "schema_types": 2
+  },
+  "website_contract": {
+    "type": "WebSite",
+    "id": "https://whr.badjoke-lab.com/#website",
+    "url": "https://whr.badjoke-lab.com/",
+    "name": "Where Horses Run",
+    "alternate_name": "競馬どこ？",
+    "languages": ["en", "ja"]
+  },
+  "webpage_contract": {
+    "type": "WebPage",
+    "id_pattern": "{canonical-url}#webpage",
+    "url_source": "canonical",
+    "name_source": "page-title",
+    "description_source": "meta-description",
+    "language_source": "html-lang",
+    "website_relation": "https://whr.badjoke-lab.com/#website"
+  },
+  "serialization_contract": {
+    "context": "https://schema.org",
+    "format": "JSON-LD",
+    "script_type": "application/ld+json",
+    "script_marker": "data-structured-data-baseline",
+    "script_marker_value": "website-webpage-v1",
+    "scripts_per_page": 1,
+    "graph_nodes_per_page": 2,
+    "less_than_characters_escaped": true,
+    "valid_json_required": true
+  },
+  "excluded_claims": {
+    "organization": true,
+    "person": true,
+    "search_action": true,
+    "event": true,
+    "sports_event": true,
+    "place": true,
+    "country": true,
+    "defined_term": true,
+    "breadcrumb_list": true
+  },
+  "public_boundary": {
+    "public_website_identity_allowed": true,
+    "public_page_identity_allowed": true,
+    "canonical_title_description_language_allowed": true,
+    "unverified_organization_claim_allowed": false,
+    "unverified_event_claim_allowed": false,
+    "page_specific_entity_claim_allowed": false,
+    "participant_dataset_claim_allowed": false,
+    "betting_or_prediction_claim_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_schema_service_enabled": false,
+    "automatic_entity_inference_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "SITEMAP-ROBOTS-01",
+  "next_implementation_unit": "COUNTRY-PAGE-METADATA-01"
+}
