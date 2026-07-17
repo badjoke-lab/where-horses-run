@@ -1,0 +1,206 @@
+name: Temporary Open Graph social card discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'scripts/social-card-integration.mjs'
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/temporary-open-graph-social-cards-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Capture social card measurements
+        shell: bash
+        run: |
+          node <<'NODE' > open-graph-social-cards-discovery.json
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const crypto = require('node:crypto');
+          const zlib = require('node:zlib');
+          const origin = 'https://whr.badjoke-lab.com';
+          const imageUrl = `${origin}/social/whr-social-card-v1.png`;
+
+          function walk(directory) {
+            return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+              const absolute = path.join(directory, entry.name);
+              return entry.isDirectory() ? walk(absolute) : [absolute];
+            });
+          }
+
+          function decode(value) {
+            return value
+              .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+              .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+              .replaceAll('&quot;', '"')
+              .replaceAll('&#39;', "'")
+              .replaceAll('&#x27;', "'")
+              .replaceAll('&lt;', '<')
+              .replaceAll('&gt;', '>')
+              .replaceAll('&amp;', '&');
+          }
+
+          function attrs(tag) {
+            return Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decode(match[2])]));
+          }
+
+          function parsePng(buffer) {
+            if (!buffer.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) throw new Error('Social card is not PNG');
+            let offset = 8;
+            let width = null;
+            let height = null;
+            let colorType = null;
+            let bitDepth = null;
+            let idatBytes = 0;
+            while (offset < buffer.length) {
+              const length = buffer.readUInt32BE(offset);
+              const type = buffer.subarray(offset + 4, offset + 8).toString('ascii');
+              const data = buffer.subarray(offset + 8, offset + 8 + length);
+              if (type === 'IHDR') {
+                width = data.readUInt32BE(0);
+                height = data.readUInt32BE(4);
+                bitDepth = data[8];
+                colorType = data[9];
+              }
+              if (type === 'IDAT') idatBytes += length;
+              offset += 12 + length;
+              if (type === 'IEND') break;
+            }
+            return { width, height, bitDepth, colorType, idatBytes };
+          }
+
+          const imagePath = 'dist/social/whr-social-card-v1.png';
+          const image = fs.readFileSync(imagePath);
+          const png = parsePng(image);
+          const files = walk('dist').filter((file) => file.endsWith('.html') && path.basename(file) !== '404.html');
+          const summary = {
+            publicPages: files.length,
+            imagePath,
+            imageBytes: image.length,
+            imageSha256: crypto.createHash('sha256').update(image).digest('hex'),
+            imageWidth: png.width,
+            imageHeight: png.height,
+            imageBitDepth: png.bitDepth,
+            imageColorType: png.colorType,
+            imageIdatBytes: png.idatBytes,
+            ogType: 0,
+            ogSiteName: 0,
+            ogTitle: 0,
+            ogDescription: 0,
+            ogUrl: 0,
+            ogLocale: 0,
+            ogLocaleAlternate: 0,
+            ogImage: 0,
+            ogImageSecureUrl: 0,
+            ogImageType: 0,
+            ogImageWidth: 0,
+            ogImageHeight: 0,
+            ogImageAlt: 0,
+            twitterCard: 0,
+            twitterTitle: 0,
+            twitterDescription: 0,
+            twitterImage: 0,
+            twitterImageAlt: 0,
+            pairedPages: 0,
+            unpairedPages: 0,
+            metadataErrors: 0,
+            duplicatePropertyErrors: 0,
+            canonicalAlignmentErrors: 0,
+            titleAlignmentErrors: 0,
+            descriptionAlignmentErrors: 0,
+            localeErrors: 0,
+            localeAlternateErrors: 0,
+            imageUrlErrors: 0,
+            imageDescriptorErrors: 0,
+            imageAltErrors: 0,
+            twitterErrors: 0,
+          };
+
+          const expectedEnglishAlt = 'Where Horses Run social card with a stylized racecourse oval.';
+          const expectedJapaneseAlt = 'Where Horses Run / 競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。';
+          const requiredOg = ['og:type','og:site_name','og:title','og:description','og:url','og:locale','og:image','og:image:secure_url','og:image:type','og:image:width','og:image:height','og:image:alt'];
+          const requiredTwitter = ['twitter:card','twitter:title','twitter:description','twitter:image','twitter:image:alt'];
+
+          for (const file of files) {
+            const html = fs.readFileSync(file, 'utf8');
+            const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] || '';
+            const title = decode(html.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.replace(/<[^>]*>/g, '').trim() || '');
+            const metaDescription = [...html.matchAll(/<meta\s+[^>]*>/g)].map((match) => attrs(match[0])).find((meta) => meta.name === 'description')?.content || '';
+            const canonical = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0])).find((link) => link.rel === 'canonical')?.href || '';
+            const hreflangLinks = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0])).filter((link) => link.rel === 'alternate' && link.hreflang);
+            const paired = hreflangLinks.length === 3;
+            if (paired) summary.pairedPages += 1;
+            else summary.unpairedPages += 1;
+
+            const metas = [...html.matchAll(/<meta\s+[^>]*>/g)].map((match) => attrs(match[0]));
+            const values = new Map();
+            for (const meta of metas) {
+              const key = meta.property || meta.name;
+              if (!key) continue;
+              if (!values.has(key)) values.set(key, []);
+              values.get(key).push(meta.content);
+            }
+            for (const key of [...requiredOg, ...requiredTwitter]) {
+              if ((values.get(key) || []).length !== 1) summary.duplicatePropertyErrors += 1;
+            }
+            const get = (key) => values.get(key)?.[0];
+
+            if (get('og:type') === 'website') summary.ogType += 1;
+            if (get('og:site_name') === 'Where Horses Run') summary.ogSiteName += 1;
+            if (get('og:title') === title) summary.ogTitle += 1; else summary.titleAlignmentErrors += 1;
+            if (get('og:description') === metaDescription) summary.ogDescription += 1; else summary.descriptionAlignmentErrors += 1;
+            if (get('og:url') === canonical) summary.ogUrl += 1; else summary.canonicalAlignmentErrors += 1;
+            const expectedLocale = lang === 'ja' ? 'ja_JP' : 'en_US';
+            const expectedAlternate = lang === 'ja' ? 'en_US' : 'ja_JP';
+            if (get('og:locale') === expectedLocale) summary.ogLocale += 1; else summary.localeErrors += 1;
+            const alternateValues = values.get('og:locale:alternate') || [];
+            if (paired) {
+              if (alternateValues.length === 1 && alternateValues[0] === expectedAlternate) summary.ogLocaleAlternate += 1;
+              else summary.localeAlternateErrors += 1;
+            } else if (alternateValues.length !== 0) summary.localeAlternateErrors += 1;
+
+            if (get('og:image') === imageUrl) summary.ogImage += 1; else summary.imageUrlErrors += 1;
+            if (get('og:image:secure_url') === imageUrl) summary.ogImageSecureUrl += 1; else summary.imageUrlErrors += 1;
+            if (get('og:image:type') === 'image/png') summary.ogImageType += 1; else summary.imageDescriptorErrors += 1;
+            if (get('og:image:width') === '1200') summary.ogImageWidth += 1; else summary.imageDescriptorErrors += 1;
+            if (get('og:image:height') === '630') summary.ogImageHeight += 1; else summary.imageDescriptorErrors += 1;
+            const expectedAlt = lang === 'ja' ? expectedJapaneseAlt : expectedEnglishAlt;
+            if (get('og:image:alt') === expectedAlt) summary.ogImageAlt += 1; else summary.imageAltErrors += 1;
+
+            if (get('twitter:card') === 'summary_large_image') summary.twitterCard += 1; else summary.twitterErrors += 1;
+            if (get('twitter:title') === title) summary.twitterTitle += 1; else summary.twitterErrors += 1;
+            if (get('twitter:description') === metaDescription) summary.twitterDescription += 1; else summary.twitterErrors += 1;
+            if (get('twitter:image') === imageUrl) summary.twitterImage += 1; else summary.twitterErrors += 1;
+            if (get('twitter:image:alt') === expectedAlt) summary.twitterImageAlt += 1; else summary.twitterErrors += 1;
+          }
+
+          summary.metadataErrors = summary.duplicatePropertyErrors + summary.canonicalAlignmentErrors + summary.titleAlignmentErrors + summary.descriptionAlignmentErrors + summary.localeErrors + summary.localeAlternateErrors + summary.imageUrlErrors + summary.imageDescriptorErrors + summary.imageAltErrors + summary.twitterErrors;
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+          cat open-graph-social-cards-discovery.json
+      - name: Upload social card discovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-graph-social-cards-discovery
+          path: |
+            open-graph-social-cards-discovery.json
+            dist/social/whr-social-card-v1.png
+          retention-days: 1
