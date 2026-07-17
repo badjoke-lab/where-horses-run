@@ -1,0 +1,73 @@
+{
+  "schema_version": "ux-polish-release-audit-v1",
+  "release_id": "WHR-UX-DISCOVERY-V1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "UX-POLISH-RELEASE-01",
+  "status": "release_ready",
+  "reviewed_at": "2026-07-17",
+  "verified": {
+    "completed_units": 10,
+    "locales": 2,
+    "discovery_surfaces": 5,
+    "bilingual_discovery_routes": 10,
+    "responsive_form_types": 5,
+    "reset_action_types": 4,
+    "live_count_types": 5,
+    "empty_state_types": 5,
+    "minimum_control_target_px": 44,
+    "missing_release_markers": 0,
+    "missing_stylesheet_imports": 0,
+    "missing_responsive_form_selectors": 0,
+    "missing_control_height_rules": 0,
+    "missing_focus_rules": 0,
+    "missing_reset_distinction_rules": 0,
+    "missing_live_count_rules": 0,
+    "missing_result_link_rules": 0,
+    "missing_empty_state_rules": 0,
+    "no_js_regressions": 0,
+    "mobile_navigation_regressions": 0,
+    "desktop_layout_regressions": 0,
+    "contract_errors": 0,
+    "rendered_marker_errors": 0
+  },
+  "behavior": {
+    "forms_adapt_to_available_width": true,
+    "mobile_forms_use_one_column": true,
+    "mobile_actions_use_full_width": true,
+    "controls_meet_minimum_height": true,
+    "keyboard_focus_is_visible": true,
+    "primary_and_reset_actions_are_distinct": true,
+    "live_counts_are_separated": true,
+    "result_links_are_emphasized": true,
+    "empty_states_are_distinguished": true,
+    "no_js_fallback_remains_complete": true
+  },
+  "public_boundary": {
+    "discovery_and_navigation_allowed": true,
+    "reviewed_public_metadata_allowed": true,
+    "participant_dataset_republication_allowed": false,
+    "complete_racecard_republication_allowed": false,
+    "odds_republication_allowed": false,
+    "result_republication_allowed": false,
+    "payout_republication_allowed": false,
+    "prediction_content_allowed": false,
+    "betting_advice_allowed": false,
+    "raw_source_body_republication_allowed": false
+  },
+  "privacy_boundary": {
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_content_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "external_search_service_enabled": false,
+    "server_side_filtering_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "NO-JS-FALLBACK-REVIEW-01",
+  "next_implementation_unit": "SITEMAP-ROBOTS-01"
+}
