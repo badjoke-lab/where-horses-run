@@ -1,0 +1,228 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  locale: 'en' | 'ja';
+}
+
+const { locale } = Astro.props;
+const isJa = locale === 'ja';
+
+const content = isJa
+  ? {
+      title: 'よくある質問 | 競馬どこ？',
+      description: '競馬どこ？のデータ範囲、公式ソース、更新方針、公開ランク、制限事項に関するよくある質問です。',
+      eyebrow: 'FAQ',
+      heading: 'よくある質問',
+      summary: '競馬どこ？の情報源、掲載範囲、更新方法、表示しない情報について説明します。',
+      sectionLabel: 'よくある質問と回答',
+      relatedHeading: '関連ページ',
+      relatedText: 'サイトの概要、免責事項、公式ソース、用語辞書もあわせて確認してください。',
+      links: [
+        { href: '/ja/about/', label: '概要' },
+        { href: '/ja/disclaimer/', label: '免責事項' },
+        { href: '/ja/sources/', label: '公式ソース' },
+        { href: '/ja/glossary/', label: '用語辞書' },
+      ],
+      items: [
+        {
+          question: '競馬どこ？とは何ですか？',
+          answer: '競馬どこ？は、世界の競馬開催国、競馬場、カレンダー、確認済みの時刻表、競馬種別、用語、公式ソースへの導線を整理する静的ファーストのガイドです。公式の番組表、出走表、結果、馬券ページの代替ではありません。',
+        },
+        {
+          question: 'どのような情報を確認できますか？',
+          answer: '国・地域別の競馬概要、競馬場、競馬種別、公式ソース、用語説明を確認できます。レビュー済みデータがある範囲では、開催日や公開可能な発走時刻も表示します。',
+        },
+        {
+          question: '情報はどこから取得していますか？',
+          answer: '主催者、規制機関、競馬場などの公式ソースと、用途を限定して確認した参考ソースを使用します。各ページの公式ソースリンクを、最新かつ完全な情報の最終確認先として案内します。',
+        },
+        {
+          question: 'すべての国・地域や競馬場を同じ詳しさで掲載していますか？',
+          answer: 'いいえ。確認できる公式情報、ソースの構造、レビュー状況が異なるため、掲載範囲は国・地域、競馬場、主催者ごとに異なります。各ページのカバー範囲やソース状態を確認してください。',
+        },
+        {
+          question: '情報はどのくらいの頻度で更新されますか？',
+          answer: '確認可能な公式ソースとレビュー済み証拠が揃ったときに更新します。リアルタイム更新を保証するものではありません。開催直前の変更は必ず公式ソースで確認してください。',
+        },
+        {
+          question: 'C、B、B+、A、A+の公開ランクは何を意味しますか？',
+          answer: 'Cは開催日と競馬場、Bは第1レース時刻、B+は第1・最終レース時刻、Aはレースラベルと発走時刻を表示できる範囲です。A+は開催詳細ページに限り、レビュー済みポリシーで許可されたレース名、距離、馬場種別、コースを追加できる軽量な番組概要です。',
+        },
+        {
+          question: '近日開催が表示されていない場合、その国では競馬がないのですか？',
+          answer: 'いいえ。表示できる確認済み開催レコードが現在ないことを示すだけで、その国・地域に競馬がないことを意味しません。最新日程はページ内の公式ソースで確認してください。',
+        },
+        {
+          question: '掲載されている開催日や発走時刻は確定情報ですか？',
+          answer: '確定を保証するものではありません。日程や時刻は変更、中止、延期される場合があります。観戦や移動などの判断前に、必ず公式ソースで最終確認してください。',
+        },
+        {
+          question: '出走馬、馬名、騎手、調教師、オッズ、結果、払戻は掲載しますか？',
+          answer: '掲載しません。出走表、馬名、騎手名、調教師名、枠順、斤量、オッズ、結果、払戻、予想、買い目、完全なレースカードはサイト内コンテンツの対象外です。',
+        },
+        {
+          question: '馬券の予想や賭け方を案内しますか？',
+          answer: '案内しません。競馬どこ？は情報探索用のガイドであり、馬券の推奨、予想、買い目、賭けの助言を提供しません。',
+        },
+        {
+          question: 'ライブ配信やリプレイを視聴できますか？',
+          answer: '動画の埋め込み、直接ストリームURL、非公式ミラー、転載映像は扱いません。レビュー済みの公式ライブまたはリプレイ導線を案内する場合も、表示された利用条件を確認し、公式サービスを利用してください。',
+        },
+        {
+          question: '公式ソースと用語辞書はどのように使えばよいですか？',
+          answer: '公式ソースは最新かつ完全な開催情報を確認するために使用してください。用語辞書は、開催、発走時刻、競馬場、馬場、役割などの意味を理解するための補助情報です。現在情報については公式ソースを優先してください。',
+        },
+      ],
+    }
+  : {
+      title: 'Frequently Asked Questions | Where Horses Run',
+      description: 'Frequently asked questions about Where Horses Run data scope, official sources, update policy, publication ranks, and limitations.',
+      eyebrow: 'FAQ',
+      heading: 'Frequently Asked Questions',
+      summary: 'How Where Horses Run uses sources, defines coverage, updates information, and limits what it publishes.',
+      sectionLabel: 'Frequently asked questions and answers',
+      relatedHeading: 'Related pages',
+      relatedText: 'Read the project overview, disclaimer, official-source directory, and glossary for more context.',
+      links: [
+        { href: '/about/', label: 'About' },
+        { href: '/disclaimer/', label: 'Disclaimer' },
+        { href: '/sources/', label: 'Official Sources' },
+        { href: '/glossary/', label: 'Glossary' },
+      ],
+      items: [
+        {
+          question: 'What is Where Horses Run?',
+          answer: 'Where Horses Run is a static-first guide to horse-racing countries, racecourses, calendars, reviewed timetables, racing types, terminology, and official-source routes around the world. It is not a replacement for official programmes, entries, results, or betting pages.',
+        },
+        {
+          question: 'What information can I find here?',
+          answer: 'You can browse country and region racing overviews, racecourses, racing types, official sources, and glossary explanations. Where reviewed data is available, the site also shows meeting dates and publication-safe post-time information.',
+        },
+        {
+          question: 'Where does the information come from?',
+          answer: 'The site uses official sources from organizers, regulators, and racecourses, together with reviewed reference sources used for a limited purpose. Official-source links on each page remain the final place to confirm current and complete information.',
+        },
+        {
+          question: 'Is every country, region, and racecourse covered in the same detail?',
+          answer: 'No. Coverage varies because official information, source structure, and review status differ by country, region, racecourse, and organizer. Check each page’s coverage notes and source status.',
+        },
+        {
+          question: 'How often is the information updated?',
+          answer: 'Information is updated when reviewable official-source evidence is available. The site does not promise real-time updates. Always confirm late changes on the official source before a meeting.',
+        },
+        {
+          question: 'What do the C, B, B+, A, and A+ publication ranks mean?',
+          answer: 'C covers meeting date and racecourse. B adds the first-race time. B+ adds first- and last-race times. A permits race labels and post times. A+ is a lightweight programme summary on meeting-detail pages and may add policy-approved race name, distance, surface, and course fields.',
+        },
+        {
+          question: 'If no upcoming meetings are shown, does that mean there is no racing?',
+          answer: 'No. It only means that no approved meeting record is currently available for display. It does not prove that racing is absent in that country or region. Use the listed official sources for the latest schedule.',
+        },
+        {
+          question: 'Are listed meeting dates and post times guaranteed?',
+          answer: 'No. Dates and times can change, be postponed, or be cancelled. Confirm the final information on the official source before making travel, viewing, or other plans.',
+        },
+        {
+          question: 'Does the site publish entries, horse names, jockeys, trainers, odds, results, or payouts?',
+          answer: 'No. Entries, horse names, jockey and trainer names, draws, weights, odds, results, payouts, predictions, betting picks, and complete racecards are outside the site’s publication scope.',
+        },
+        {
+          question: 'Does Where Horses Run provide betting advice?',
+          answer: 'No. Where Horses Run is an information-discovery guide. It does not provide wagering recommendations, predictions, betting picks, or gambling advice.',
+        },
+        {
+          question: 'Can I watch live racing or replays here?',
+          answer: 'The site does not embed video or publish direct stream URLs, unofficial mirrors, or copied recordings. If a reviewed official live or replay route is listed, follow the displayed access conditions and use the official service.',
+        },
+        {
+          question: 'How should I use the official-source links and glossary?',
+          answer: 'Use official-source links to confirm the latest and complete meeting information. Use the glossary to understand terms such as meeting, post time, racecourse, surface, and racing roles. For current facts, the official source takes priority.',
+        },
+      ],
+    };
+
+const canonicalPath = isJa ? '/ja/faq/' : '/faq/';
+const alternatePath = isJa ? '/faq/' : '/ja/faq/';
+const canonicalUrl = `https://whr.badjoke-lab.com${canonicalPath}`;
+const faqStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${canonicalUrl}#faq`,
+  url: canonicalUrl,
+  name: content.title,
+  description: content.description,
+  inLanguage: locale,
+  isPartOf: { '@id': `${canonicalUrl}#webpage` },
+  mainEntity: content.items.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+const faqStructuredDataJson = JSON.stringify(faqStructuredData).replace(/</g, '\\u003c');
+---
+
+<BaseLayout
+  title={content.title}
+  description={content.description}
+  lang={locale}
+  canonicalPath={canonicalPath}
+  alternatePath={alternatePath}
+>
+  <script
+    type="application/ld+json"
+    data-faq-structured-data="faq-page-v1"
+    set:html={faqStructuredDataJson}
+  ></script>
+
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">{content.eyebrow}</p>
+    <h1 id="page-title">{content.heading}</h1>
+    <p class="hero__summary">{content.summary}</p>
+  </section>
+
+  <section class="faq-list" aria-label={content.sectionLabel}>
+    {content.items.map((item, index) => (
+      <article class="card faq-item" id={`question-${index + 1}`}>
+        <h2>{item.question}</h2>
+        <p>{item.answer}</p>
+      </article>
+    ))}
+  </section>
+
+  <section class="card faq-related" aria-labelledby="related-pages-heading">
+    <h2 id="related-pages-heading">{content.relatedHeading}</h2>
+    <p>{content.relatedText}</p>
+    <p>
+      {content.links.map((link, index) => (
+        <>
+          {index > 0 && ' · '}
+          <a href={link.href}>{link.label}</a>
+        </>
+      ))}
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .faq-list {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 2rem;
+  }
+
+  .faq-item h2,
+  .faq-item p,
+  .faq-related h2,
+  .faq-related p {
+    margin-block: 0 0.75rem;
+  }
+
+  .faq-related {
+    margin-block-start: 2rem;
+  }
+</style>
