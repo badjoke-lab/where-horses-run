@@ -15,7 +15,7 @@ The fallback now removes those inert controls from the no-JavaScript experience 
 
 ## Reviewed surfaces
 
-Ten routes are covered:
+The ten routes are covered:
 
 ```text
 /search/
