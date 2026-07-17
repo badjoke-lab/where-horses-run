@@ -7,9 +7,13 @@ on:
     paths:
       - 'data/audits/source-status-filters-v1.json'
       - 'data/static/source-status-filter-contract-v1.json'
+      - 'data/static/sources.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/racecourse-link-amendments-v1.json'
       - 'docs/search/source-status-filters.md'
       - 'scripts/check-source-status-filters.mjs'
       - 'src/components/SourceDirectoryPage.astro'
+      - 'src/lib/data.ts'
       - 'src/lib/source-filter-data.ts'
       - 'src/pages/sources/index.astro'
       - 'src/pages/ja/sources/index.astro'
@@ -21,9 +25,13 @@ on:
     paths:
       - 'data/audits/source-status-filters-v1.json'
       - 'data/static/source-status-filter-contract-v1.json'
+      - 'data/static/sources.json'
+      - 'data/static/country-page-sources-*.json'
+      - 'data/static/racecourse-link-amendments-v1.json'
       - 'docs/search/source-status-filters.md'
       - 'scripts/check-source-status-filters.mjs'
       - 'src/components/SourceDirectoryPage.astro'
+      - 'src/lib/data.ts'
       - 'src/lib/source-filter-data.ts'
       - 'src/pages/sources/index.astro'
       - 'src/pages/ja/sources/index.astro'
@@ -58,29 +66,8 @@ jobs:
         run: node scripts/check-race-type-filters.mjs
       - name: Preserve region filter contract
         run: node scripts/check-region-filters.mjs
-      - name: Capture source ID diagnostics
-        shell: bash
-        run: |
-          node <<'NODE' > "$RUNNER_TEMP/source-status-filter-duplicates.json"
-          const fs = require('node:fs');
-          const html = fs.readFileSync('dist/sources/index.html', 'utf8');
-          const ids = [...html.matchAll(/data-source-id="([^"]*)"/g)].map((match) => match[1]);
-          const counts = ids.reduce((map, id) => map.set(id, (map.get(id) ?? 0) + 1), new Map());
-          const duplicates = [...counts.entries()].filter(([, count]) => count > 1);
-          console.log(JSON.stringify({ total: ids.length, unique: counts.size, duplicates }, null, 2));
-          NODE
       - name: Validate source status filters
-        shell: bash
-        run: |
-          set -o pipefail
-          node scripts/check-source-status-filters.mjs 2>&1 | tee "$RUNNER_TEMP/source-status-filter-check.log"
-      - name: Upload source filter diagnostics on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-status-filter-diagnostics
-          path: ${{ runner.temp }}/source-status-filter-*
-          retention-days: 1
+        run: node scripts/check-source-status-filters.mjs
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
