@@ -1,0 +1,67 @@
+name: No-JavaScript fallback review gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/audits/no-js-fallback-review-v1.json'
+      - 'data/static/no-js-fallback-review-contract-v1.json'
+      - 'docs/search/no-js-fallback-review.md'
+      - 'scripts/check-no-js-fallback-review.mjs'
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/no-js-fallback-review.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/audits/no-js-fallback-review-v1.json'
+      - 'data/static/no-js-fallback-review-contract-v1.json'
+      - 'docs/search/no-js-fallback-review.md'
+      - 'scripts/check-no-js-fallback-review.mjs'
+      - 'src/layouts/BaseLayout.astro'
+      - '.github/workflows/no-js-fallback-review.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete bilingual site
+        run: npm run build
+      - name: Preserve global search foundation contract
+        run: node scripts/check-global-search-foundation.mjs
+      - name: Preserve country filter contract
+        run: node scripts/check-country-filters.mjs
+      - name: Preserve race type filter contract
+        run: node scripts/check-race-type-filters.mjs
+      - name: Preserve region filter contract
+        run: node scripts/check-region-filters.mjs
+      - name: Preserve source status filter contract
+        run: node scripts/check-source-status-filters.mjs
+      - name: Preserve glossary search improvement contract
+        run: node scripts/check-glossary-search-improvement.mjs
+      - name: Preserve mobile navigation improvement contract
+        run: node scripts/check-mobile-navigation-improvement.mjs
+      - name: Preserve desktop layout improvement contract
+        run: node scripts/check-desktop-layout-improvement.mjs
+      - name: Validate no-JavaScript fallback review
+        run: node scripts/check-no-js-fallback-review.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

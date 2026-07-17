@@ -88,9 +88,28 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
+    <noscript>
+      <style data-no-js-fallback-style>
+        [data-search-form],
+        [data-country-filter-form],
+        [data-racecourse-filter-form],
+        [data-source-filter-form],
+        [data-glossary-filter-form],
+        [data-search-count],
+        [data-country-filter-count],
+        [data-racecourse-filter-count],
+        [data-source-filter-count],
+        [data-glossary-filter-count],
+        [data-region-filter-navigation],
+        [data-glossary-category-navigation] {
+          display: none !important;
+        }
+      </style>
+    </noscript>
+
     <title>{title}</title>
   </head>
-  <body>
+  <body data-no-js-fallback="complete-list-v1">
     <a class="skip-link" href="#main-content">
       {isJapanese ? '本文へ移動' : 'Skip to content'}
     </a>
