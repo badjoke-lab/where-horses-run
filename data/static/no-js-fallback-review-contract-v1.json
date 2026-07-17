@@ -1,0 +1,108 @@
+{
+  "schema_version": "no-js-fallback-review-contract-v1",
+  "work_id": "WHR-SEARCH-FILTER-SEO-V1",
+  "implementation_unit": "NO-JS-FALLBACK-REVIEW-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "locales": 2,
+    "discovery_surfaces": 5,
+    "reviewed_routes": 10,
+    "record_cards_per_locale": 535,
+    "record_cards_total": 1070,
+    "inert_forms_hidden": 10,
+    "live_counts_hidden": 10,
+    "query_only_navigation_sections_hidden": 4,
+    "fallback_messages": 10,
+    "native_mobile_menus": 10
+  },
+  "surface_contracts": [
+    {
+      "id": "global_search",
+      "english_route": "/search/",
+      "japanese_route": "/ja/search/",
+      "records_per_locale": 182,
+      "record_marker": "data-search-record",
+      "form_marker": "data-search-form",
+      "count_marker": "data-search-count"
+    },
+    {
+      "id": "country_directory",
+      "english_route": "/countries/",
+      "japanese_route": "/ja/countries/",
+      "records_per_locale": 98,
+      "record_marker": "data-country-record",
+      "form_marker": "data-country-filter-form",
+      "count_marker": "data-country-filter-count"
+    },
+    {
+      "id": "racecourse_directory",
+      "english_route": "/tracks/",
+      "japanese_route": "/ja/tracks/",
+      "records_per_locale": 36,
+      "record_marker": "data-racecourse-record",
+      "form_marker": "data-racecourse-filter-form",
+      "count_marker": "data-racecourse-filter-count"
+    },
+    {
+      "id": "source_directory",
+      "english_route": "/sources/",
+      "japanese_route": "/ja/sources/",
+      "records_per_locale": 171,
+      "record_marker": "data-source-record",
+      "form_marker": "data-source-filter-form",
+      "count_marker": "data-source-filter-count"
+    },
+    {
+      "id": "glossary_directory",
+      "english_route": "/glossary/",
+      "japanese_route": "/ja/glossary/",
+      "records_per_locale": 48,
+      "record_marker": "data-glossary-record",
+      "form_marker": "data-glossary-filter-form",
+      "count_marker": "data-glossary-filter-count"
+    }
+  ],
+  "fallback_contract": {
+    "shared_noscript_style_required": true,
+    "inert_forms_must_be_hidden": true,
+    "live_counts_must_be_hidden": true,
+    "query_only_navigation_must_be_hidden": true,
+    "complete_record_lists_must_remain_visible": true,
+    "record_links_must_remain_available": true,
+    "empty_states_must_remain_hidden": true,
+    "localized_fallback_message_required": true,
+    "native_mobile_navigation_must_remain_available": true,
+    "skip_link_must_remain_available": true,
+    "javascript_required_for_fallback": false,
+    "server_filter_endpoint_required": false
+  },
+  "hidden_selectors": [
+    "[data-search-form]",
+    "[data-country-filter-form]",
+    "[data-racecourse-filter-form]",
+    "[data-source-filter-form]",
+    "[data-glossary-filter-form]",
+    "[data-search-count]",
+    "[data-country-filter-count]",
+    "[data-racecourse-filter-count]",
+    "[data-source-filter-count]",
+    "[data-glossary-filter-count]",
+    "[data-region-filter-navigation]",
+    "[data-glossary-category-navigation]"
+  ],
+  "privacy_boundary": {
+    "fallback_interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "server_side_filtering_enabled": false,
+    "external_search_service_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "DESKTOP-LAYOUT-IMPROVEMENT-01",
+  "next_implementation_unit": "UX-POLISH-RELEASE-01"
+}
