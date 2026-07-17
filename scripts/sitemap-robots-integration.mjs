@@ -63,7 +63,7 @@ export default function sitemapRobotsIntegration() {
             noIndexFiles += 1;
             continue;
           }
-          canonicalUrls.add(extractCanonical(html, path.relative(outputDirectory, file)) .toString());
+          canonicalUrls.add(extractCanonical(html, path.relative(outputDirectory, file)).toString());
         }
 
         const urls = [...canonicalUrls].sort(compareUrls);
