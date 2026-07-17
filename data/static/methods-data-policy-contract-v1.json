@@ -1,0 +1,89 @@
+{
+  "schema_version": "methods-data-policy-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "METHODS-DATA-POLICY-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "public_pages": 771,
+    "english_pages": 387,
+    "japanese_pages": 384,
+    "methods_pages": 2,
+    "languages": 2,
+    "sections_per_page": 9,
+    "visible_sections": 18,
+    "paragraphs_per_page": 18,
+    "visible_paragraphs": 36,
+    "about_page_method_links": 2,
+    "related_page_links": 8
+  },
+  "routes": {
+    "en": {
+      "path": "/methods/",
+      "title": "Methods and Data Policy | Where Horses Run",
+      "description": "How Where Horses Run prioritizes official sources, reviews data, handles dates and timezones, applies publication ranks, updates records, and states limitations.",
+      "alternate_path": "/ja/methods/"
+    },
+    "ja": {
+      "path": "/ja/methods/",
+      "title": "データの方法と公開方針 | 競馬どこ？",
+      "description": "競馬どこ？の公式ソース優先、レビュー手順、日付と時刻帯、公開ランク、更新・訂正・制限事項を説明します。",
+      "alternate_path": "/methods/"
+    }
+  },
+  "content_contract": {
+    "official_source_priority_required": true,
+    "official_and_reference_source_roles_required": true,
+    "review_before_publication_required": true,
+    "local_date_and_timezone_policy_required": true,
+    "generated_calendar_view_policy_required": true,
+    "publication_rank_policy_required": true,
+    "last_checked_meaning_required": true,
+    "correction_reduction_removal_policy_required": true,
+    "excluded_information_and_limitations_required": true,
+    "english_japanese_topic_parity_required": true,
+    "empty_sections_allowed": false,
+    "empty_paragraphs_allowed": false
+  },
+  "navigation_contract": {
+    "english_about_links_to_methods": true,
+    "japanese_about_links_to_methods": true,
+    "methods_links_to_about": true,
+    "methods_links_to_faq": true,
+    "methods_links_to_disclaimer": true,
+    "methods_links_to_sources": true
+  },
+  "public_boundary": {
+    "official_source_priority_allowed": true,
+    "source_classification_allowed": true,
+    "review_process_allowed": true,
+    "date_timezone_policy_allowed": true,
+    "publication_rank_policy_allowed": true,
+    "update_and_correction_policy_allowed": true,
+    "limitations_allowed": true,
+    "revenue_or_monetization_discussion_allowed": false,
+    "budget_discussion_allowed": false,
+    "other_project_relationships_allowed": false,
+    "internal_circumstances_allowed": false,
+    "source_specific_internal_risk_posture_allowed": false,
+    "betting_advice_allowed": false,
+    "participant_or_racecard_republication_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_content_service_enabled": false,
+    "automatic_policy_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "FAQ-CONTENT-PAGES-01",
+  "next_implementation_unit": "SEO-QA-RELEASE-01"
+}
