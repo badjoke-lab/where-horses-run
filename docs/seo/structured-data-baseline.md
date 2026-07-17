@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `STRUCTURED-DATA-BASELINE-01`  
 Reviewed: 2026-07-18  
-Scope updated by: `FAQ-CONTENT-PAGES-01`
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
@@ -13,34 +13,28 @@ Every public canonical page exposes one conservative JSON-LD baseline derived fr
 ## Current baseline inventory
 
 ```text
-769 public pages
-English pages: 386
-Japanese pages: 383
-Baseline JSON-LD scripts: 769
-WebSite nodes: 769
-WebPage nodes: 769
-Baseline graph nodes: 1,538
+771 public pages
+English pages: 387
+Japanese pages: 384
+Baseline JSON-LD scripts: 771
+WebSite nodes: 771
+WebPage nodes: 771
+Baseline graph nodes: 1,542
 ```
 
-Each marked baseline script contains exactly:
-
-- one stable `WebSite` node for Where Horses Run / 競馬どこ？;
-- one `WebPage` node matching the current page’s canonical, title, description, and language.
-
-The shared implementation is `src/components/StructuredDataBaseline.astro`, delegated from `src/layouts/BaseLayout.astro`.
+Each marked baseline script contains exactly one stable `WebSite` node and one `WebPage` node matching the current page’s canonical, title, description, and language.
 
 ## Page-specific scripts
 
-Page-specific structured data remains separate from the baseline. The bilingual FAQ pages add:
+Page-specific structured data remains separate from the baseline:
 
 ```text
 FAQPage scripts: 2
 FAQ Question nodes: 24
+Methods page-specific scripts: 0
 ```
 
-Those nodes are generated from the same visible question-and-answer arrays and are not duplicated inside the shared baseline graph.
-
-The baseline itself does not infer Organization, Person, SearchAction, Event, SportsEvent, Place, Country, DefinedTerm, FAQPage, or BreadcrumbList entities.
+The Methods pages use the shared `WebPage` baseline only. The baseline itself does not infer Organization, Person, SearchAction, Event, SportsEvent, Place, Country, DefinedTerm, FAQPage, or BreadcrumbList entities.
 
 ## Serialization contract
 
@@ -50,23 +44,14 @@ The baseline itself does not infer Organization, Person, SearchAction, Event, Sp
 - one baseline script per public page;
 - two baseline graph nodes per page;
 - valid JSON required;
-- literal less-than characters are escaped before insertion.
+- literal less-than characters are escaped.
 
 ## Verification
 
-Permanent checker:
+Permanent checker: `scripts/check-structured-data-baseline.mjs`  
+Read-only gate: `.github/workflows/structured-data-baseline.yml`
 
-```text
-scripts/check-structured-data-baseline.mjs
-```
-
-Read-only Actions gate:
-
-```text
-.github/workflows/structured-data-baseline.yml
-```
-
-The checker scans all 769 sitemap pages, compares the baseline `WebPage` identity with rendered metadata, verifies the stable `WebSite` identity, and confirms that the two FAQ scripts remain separate.
+The checker scans all 771 sitemap pages, compares `WebPage` identity with rendered metadata, verifies the stable `WebSite` identity, confirms the two FAQ scripts remain separate, and confirms the Methods pair adds no unsupported page-specific schema.
 
 ## Boundaries
 
