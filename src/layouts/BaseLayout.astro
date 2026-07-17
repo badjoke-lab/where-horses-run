@@ -63,6 +63,33 @@ const alternateUrl = `${siteUrl}${languageSwitchHref}`;
 const xDefaultUrl = `${siteUrl}${isJapanese ? languageSwitchHref : canonicalPathname}`;
 const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
+const websiteId = `${siteUrl}/#website`;
+const webpageId = `${canonicalUrl}#webpage`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      url: `${siteUrl}/`,
+      name: 'Where Horses Run',
+      alternateName: '競馬どこ？',
+      inLanguage: ['en', 'ja'],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': webpageId,
+      url: canonicalUrl,
+      name: title,
+      description,
+      inLanguage: lang,
+      isPartOf: {
+        '@id': websiteId,
+      },
+    },
+  ],
+};
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -88,6 +115,12 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <script
+      type="application/ld+json"
+      data-structured-data-baseline="website-webpage-v1"
+      set:html={structuredDataJson}
+    ></script>
 
     <noscript>
       <style data-no-js-fallback-style>
