@@ -1,0 +1,92 @@
+{
+  "schema_version": "title-description-normalization-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "public_pages": 767,
+    "english_pages": 385,
+    "japanese_pages": 382,
+    "meeting_detail_pages": 158,
+    "english_meeting_detail_pages": 79,
+    "japanese_meeting_detail_pages": 79,
+    "country_detail_pages": 196,
+    "normalized_country_description_pages": 4
+  },
+  "normalization_contract": {
+    "one_title_tag_per_page": true,
+    "one_meta_description_per_page": true,
+    "empty_titles_allowed": false,
+    "empty_descriptions_allowed": false,
+    "duplicate_titles_allowed": false,
+    "duplicate_descriptions_allowed": false,
+    "leading_or_trailing_whitespace_allowed": false,
+    "repeated_whitespace_allowed": false,
+    "newlines_allowed": false,
+    "arbitrary_character_limit_enforced": false,
+    "meaning_preserving_outliers_allowed": true
+  },
+  "meeting_contract": {
+    "visible_date_required": true,
+    "date_in_title_required": true,
+    "date_in_description_required": true,
+    "visible_racecourse_name_in_title_required": true,
+    "visible_racecourse_name_in_description_required": true,
+    "visible_page_kind_in_title_required": true,
+    "official_source_context_in_description_required": true,
+    "public_policy_context_in_description_required": true
+  },
+  "country_duplicate_resolution": {
+    "paths": [
+      "/countries/algeria/",
+      "/countries/egypt/",
+      "/ja/countries/algeria/",
+      "/ja/countries/egypt/"
+    ],
+    "visible_area_name_prefix_required": true,
+    "underlying_reviewed_summary_preserved": true
+  },
+  "alignment_contract": {
+    "open_graph_title_matches_title": true,
+    "open_graph_description_matches_description": true,
+    "twitter_title_matches_title": true,
+    "twitter_description_matches_description": true,
+    "baseline_jsonld_name_matches_title": true,
+    "baseline_jsonld_description_matches_description": true
+  },
+  "measured_result": {
+    "duplicate_title_groups_before": 36,
+    "duplicate_description_groups_before": 4,
+    "duplicate_title_groups_after": 0,
+    "duplicate_description_groups_after": 0,
+    "metadata_alignment_errors_after": 0,
+    "whitespace_errors_after": 0,
+    "newline_errors_after": 0
+  },
+  "public_boundary": {
+    "existing_public_facts_reused": true,
+    "meeting_date_added_to_metadata": true,
+    "country_name_added_to_duplicated_descriptions": true,
+    "visible_body_copy_changed": false,
+    "new_race_or_participant_data_added": false,
+    "official_source_text_copied": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_seo_service_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "OPEN-GRAPH-SOCIAL-CARDS-01",
+  "next_implementation_unit": "FAQ-CONTENT-PAGES-01"
+}

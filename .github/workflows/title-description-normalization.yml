@@ -1,0 +1,73 @@
+name: Title and description normalization gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/title-description-normalization-v1.json'
+      - 'data/static/title-description-normalization-contract-v1.json'
+      - 'docs/seo/title-description-normalization.md'
+      - 'scripts/check-title-description-normalization.mjs'
+      - 'scripts/title-description-normalization-integration.mjs'
+      - '.github/workflows/title-description-normalization.yml'
+      - '.github/workflows/temporary-title-description-normalization-discovery.yml'
+      - '.github/workflows/temporary-title-description-build-diagnostic.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'astro.config.mjs'
+      - 'data/audits/title-description-normalization-v1.json'
+      - 'data/static/title-description-normalization-contract-v1.json'
+      - 'docs/seo/title-description-normalization.md'
+      - 'scripts/check-title-description-normalization.mjs'
+      - 'scripts/title-description-normalization-integration.mjs'
+      - '.github/workflows/title-description-normalization.yml'
+      - '.github/workflows/temporary-title-description-normalization-discovery.yml'
+      - '.github/workflows/temporary-title-description-build-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Preserve Phase 10 UX release contract
+        run: node scripts/check-ux-polish-release.mjs
+      - name: Preserve sitemap and robots contract
+        run: node scripts/check-sitemap-robots.mjs
+      - name: Preserve canonical and hreflang review
+        run: node scripts/check-canonical-hreflang-review.mjs
+      - name: Preserve structured data baseline
+        run: node scripts/check-structured-data-baseline.mjs
+      - name: Preserve country page metadata
+        run: node scripts/check-country-page-metadata.mjs
+      - name: Preserve racecourse page metadata
+        run: node scripts/check-racecourse-page-metadata.mjs
+      - name: Preserve glossary page metadata
+        run: node scripts/check-glossary-page-metadata.mjs
+      - name: Preserve Open Graph social cards
+        run: node scripts/check-open-graph-social-cards.mjs
+      - name: Validate title and description normalization
+        run: node scripts/check-title-description-normalization.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
