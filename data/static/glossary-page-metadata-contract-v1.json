@@ -1,0 +1,106 @@
+{
+  "schema_version": "glossary-page-metadata-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "GLOSSARY-PAGE-METADATA-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "scope": {
+    "term_entities": 48,
+    "locales": 2,
+    "bilingual_detail_routes": 96,
+    "english_detail_routes": 48,
+    "japanese_detail_routes": 48,
+    "relationship_routes_excluded": 2,
+    "directory_routes_excluded": 2,
+    "json_ld_scripts": 96,
+    "graph_nodes": 192,
+    "collection_page_nodes": 96,
+    "defined_term_nodes": 96,
+    "baseline_links": 96,
+    "term_set_links": 96,
+    "visible_review_dates": 96,
+    "alternate_name_arrays": 96,
+    "alternate_name_values": 260,
+    "schema_types": 2
+  },
+  "route_contract": {
+    "english_pattern": "/glossary/{slug}/",
+    "japanese_pattern": "/ja/glossary/{slug}/",
+    "directory_routes_included": false,
+    "relationship_routes_included": false,
+    "one_english_and_one_japanese_route_per_slug": true,
+    "same_origin_required": true,
+    "query_parameters_allowed": false,
+    "fragments_allowed": false,
+    "trailing_slash_required": true
+  },
+  "collection_page_contract": {
+    "type": "CollectionPage",
+    "id_pattern": "{canonical-url}#webpage",
+    "url_source": "rendered-canonical",
+    "name_source": "rendered-title",
+    "description_source": "rendered-meta-description",
+    "language_source": "rendered-html-lang",
+    "review_date_source": "visible-last-reviewed-time",
+    "website_relation": "https://whr.badjoke-lab.com/#website",
+    "about_pattern": "{canonical-url}#defined-term",
+    "main_entity_pattern": "{canonical-url}#defined-term"
+  },
+  "defined_term_contract": {
+    "type": "DefinedTerm",
+    "id_pattern": "{canonical-url}#defined-term",
+    "url_source": "rendered-canonical",
+    "name_source": "visible-page-heading",
+    "description_source": "visible-hero-summary",
+    "alternate_name_sources": [
+      "paired-locale-visible-page-heading",
+      "visible-aliases-from-both-locales"
+    ],
+    "english_term_set_id": "https://whr.badjoke-lab.com/glossary/#defined-term-set",
+    "japanese_term_set_id": "https://whr.badjoke-lab.com/ja/glossary/#defined-term-set",
+    "main_entity_of_page_pattern": "{canonical-url}#webpage",
+    "term_code_claim_allowed": false,
+    "same_as_claim_allowed": false,
+    "relationship_equivalence_claim_allowed": false
+  },
+  "serialization_contract": {
+    "context": "https://schema.org",
+    "format": "JSON-LD",
+    "script_type": "application/ld+json",
+    "script_marker": "data-glossary-page-metadata",
+    "script_marker_value": "collection-defined-term-v1",
+    "scripts_per_detail_page": 1,
+    "graph_nodes_per_script": 2,
+    "less_than_characters_escaped": true,
+    "valid_json_required": true
+  },
+  "public_boundary": {
+    "visible_page_metadata_allowed": true,
+    "public_defined_term_identity_allowed": true,
+    "visible_summary_allowed": true,
+    "visible_aliases_allowed": true,
+    "visible_review_date_allowed": true,
+    "term_set_relationship_allowed": true,
+    "same_as_claim_allowed": false,
+    "term_code_inference_allowed": false,
+    "synonym_inference_from_related_terms_allowed": false,
+    "participant_dataset_claim_allowed": false,
+    "betting_or_prediction_claim_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_schema_service_enabled": false,
+    "automatic_entity_inference_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "RACECOURSE-PAGE-METADATA-01",
+  "next_implementation_unit": "CANONICAL-HREFLANG-REVIEW-01"
+}
