@@ -9,7 +9,7 @@ Reviewed: 2026-07-17
 
 The bilingual source directory now exposes the reviewed public source registry as a static-first, filterable directory.
 
-The implementation covers 172 reviewed public source records across 98 countries and regions. It does not fetch source pages, copy source bodies, infer permissions, or alter publication status.
+The implementation covers 171 unique reviewed public source records across 98 countries and regions. It does not fetch source pages, copy source bodies, infer permissions, or alter publication status.
 
 ## Routes
 
@@ -73,7 +73,7 @@ The query string is updated with `history.replaceState`. No query is sent to a s
 
 ## Static-first behavior
 
-All 172 records are rendered into each locale before JavaScript runs.
+All 171 records are rendered into each locale before JavaScript runs.
 
 When JavaScript is available, the controls hide and reveal the already-rendered records.
 
@@ -102,7 +102,9 @@ The implementation adds no live fetch, server filter endpoint, query logging, co
 
 ## Validation
 
-The temporary discovery workflow measured the merged source registry and was removed before release.
+The temporary discovery workflow measured 172 rendered rows and exposed one duplicate source ID. The duplicate `chile-hipodromo-chile-home` amendment record was removed while its canonical country-source record and racecourse relationship were preserved. The released contract therefore freezes 171 unique source records.
+
+The temporary discovery workflow was removed before release.
 
 The permanent checker is:
 
