@@ -1,0 +1,87 @@
+name: Temporary methods data policy discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/components/MethodsPage.astro'
+      - 'src/pages/methods/index.astro'
+      - 'src/pages/ja/methods/index.astro'
+      - 'src/pages/about/index.astro'
+      - 'src/pages/ja/about/index.astro'
+      - '.github/workflows/temporary-methods-data-policy-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Measure methods pages and public inventory
+        shell: bash
+        run: |
+          node <<'NODE' > methods-data-policy-discovery.json
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const strip = (value) => value.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+            .replaceAll('&amp;', '&').replaceAll('&quot;', '"').replaceAll('&#39;', "'");
+          const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], match[2]]));
+          const fileFor = (urlString) => {
+            const pathname = new URL(urlString).pathname;
+            return pathname === '/' ? 'dist/index.html' : path.join('dist', pathname.replace(/^\//, ''), 'index.html');
+          };
+          const sitemap = fs.readFileSync('dist/sitemap.xml', 'utf8');
+          const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+          const methodsUrls = ['https://whr.badjoke-lab.com/methods/', 'https://whr.badjoke-lab.com/ja/methods/'];
+          const methods = methodsUrls.map((url) => {
+            const html = fs.readFileSync(fileFor(url), 'utf8');
+            const sections = [...html.matchAll(/<section\s+[^>]*class="[^"]*methods-section[^"]*"[^>]*>([\s\S]*?)<\/section>/g)];
+            const headings = sections.map((match) => strip(match[1].match(/<h2[^>]*>([\s\S]*?)<\/h2>/)?.[1] || ''));
+            const paragraphs = sections.flatMap((match) => [...match[1].matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((paragraph) => strip(paragraph[1])));
+            const links = [...html.matchAll(/<link\s+[^>]*>/g)].map((match) => attrs(match[0]));
+            return {
+              url,
+              lang: html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] || '',
+              title: strip(html.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''),
+              description: attrs(html.match(/<meta\s+[^>]*name="description"[^>]*>/)?.[0] || '').content || '',
+              canonical: links.find((link) => link.rel === 'canonical')?.href || '',
+              hreflangLinks: links.filter((link) => link.rel === 'alternate' && link.hreflang).length,
+              sections: sections.length,
+              headings,
+              paragraphs: paragraphs.length,
+              emptyParagraphs: paragraphs.filter((paragraph) => !paragraph).length,
+            };
+          });
+          console.log(JSON.stringify({
+            publicPages: urls.length,
+            englishPages: urls.filter((url) => !new URL(url).pathname.startsWith('/ja/')).length,
+            japanesePages: urls.filter((url) => new URL(url).pathname.startsWith('/ja/')).length,
+            pairedPages: urls.length - 3,
+            bilingualClusters: (urls.length - 3) / 2,
+            expectedHreflangLinks: (urls.length - 3) * 3,
+            methodsPages: methods.length,
+            methodsSections: methods.reduce((sum, page) => sum + page.sections, 0),
+            methodsParagraphs: methods.reduce((sum, page) => sum + page.paragraphs, 0),
+            methods,
+          }, null, 2));
+          NODE
+          cat methods-data-policy-discovery.json
+      - name: Upload discovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: methods-data-policy-discovery
+          path: methods-data-policy-discovery.json
+          retention-days: 1
