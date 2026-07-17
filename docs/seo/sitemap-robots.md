@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `SITEMAP-ROBOTS-01`  
 Reviewed: 2026-07-18  
-Scope updated by: `FAQ-CONTENT-PAGES-01`
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
@@ -13,11 +13,12 @@ The production sitemap is generated from the completed static build. Rendered pu
 ## Current public inventory
 
 ```text
-769 public canonical URLs
-English URLs: 386
-Japanese URLs: 383
-Route families: 16
+771 public canonical URLs
+English URLs: 387
+Japanese URLs: 384
+Route families: 17
 FAQ routes: 2
+Methods routes: 2
 ```
 
 Major route totals:
@@ -43,6 +44,7 @@ Glossary relationship routes: 2
 Racecourse detail routes: 72
 Racing type detail routes: 16
 FAQ content routes: 2
+Methods content routes: 2
 ```
 
 ## Generation contract
@@ -63,7 +65,7 @@ FAQ content routes: 2
 https://whr.badjoke-lab.com/sitemap.xml
 ```
 
-The FAQ routes `/faq/` and `/ja/faq/` are public, self-canonical, bilingual, and included in the generated sitemap.
+The FAQ and Methods bilingual route pairs are public, self-canonical, and included in the generated sitemap.
 
 ## Verification
 
