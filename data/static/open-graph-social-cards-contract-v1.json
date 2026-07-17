@@ -1,0 +1,94 @@
+{
+  "schema_version": "open-graph-social-cards-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "OPEN-GRAPH-SOCIAL-CARDS-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "public_pages": 767,
+    "paired_pages": 764,
+    "unpaired_pages": 3,
+    "generated_images": 1,
+    "open_graph_core_properties_per_page": 6,
+    "open_graph_image_properties_per_page": 6,
+    "twitter_properties_per_page": 5,
+    "open_graph_locale_alternate_links": 764,
+    "open_graph_image_references": 767,
+    "twitter_image_references": 767,
+    "localized_image_alt_values": 2
+  },
+  "image_contract": {
+    "path": "/social/whr-social-card-v1.png",
+    "build_output_path": "dist/social/whr-social-card-v1.png",
+    "absolute_url": "https://whr.badjoke-lab.com/social/whr-social-card-v1.png",
+    "mime_type": "image/png",
+    "width": 1200,
+    "height": 630,
+    "bit_depth": 8,
+    "color_type": 2,
+    "bytes": 9437,
+    "idat_bytes": 9380,
+    "sha256": "9e3c63e186f6681197b6e0cde8cdd3368e4d041b7f9dda79e33e940bd99861bd",
+    "generator": "scripts/social-card-integration.mjs",
+    "external_image_service_required": false,
+    "external_font_required": false,
+    "additional_package_required": false,
+    "deterministic_generation_required": true
+  },
+  "open_graph_contract": {
+    "type": "website",
+    "site_name": "Where Horses Run",
+    "title_source": "rendered-title",
+    "description_source": "rendered-meta-description",
+    "url_source": "rendered-canonical",
+    "locale_source": "rendered-html-lang",
+    "locale_alternate_on_verified_pairs_only": true,
+    "image_url": "https://whr.badjoke-lab.com/social/whr-social-card-v1.png",
+    "secure_image_url_required": true,
+    "image_type_required": true,
+    "image_width_required": true,
+    "image_height_required": true,
+    "localized_image_alt_required": true,
+    "one_value_per_required_property": true
+  },
+  "twitter_contract": {
+    "card": "summary_large_image",
+    "title_source": "rendered-title",
+    "description_source": "rendered-meta-description",
+    "image_url": "https://whr.badjoke-lab.com/social/whr-social-card-v1.png",
+    "localized_image_alt_required": true,
+    "one_value_per_required_property": true
+  },
+  "localized_alt_contract": {
+    "en": "Where Horses Run social card with a stylized racecourse oval.",
+    "ja": "Where Horses Run / 競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。"
+  },
+  "public_boundary": {
+    "public_social_preview_metadata_allowed": true,
+    "public_generated_brand_card_allowed": true,
+    "page_title_and_description_reuse_allowed": true,
+    "verified_locale_alternate_allowed": true,
+    "false_locale_alternate_allowed": false,
+    "participant_or_racecard_image_allowed": false,
+    "odds_result_or_prediction_image_allowed": false,
+    "third_party_source_image_republication_allowed": false
+  },
+  "privacy_boundary": {
+    "remote_image_request_tracking_enabled": false,
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_image_generation_service_enabled": false,
+    "automatic_source_image_selection_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "CANONICAL-HREFLANG-REVIEW-01",
+  "next_implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01"
+}
