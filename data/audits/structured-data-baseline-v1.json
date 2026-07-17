@@ -1,0 +1,73 @@
+{
+  "schema_version": "structured-data-baseline-audit-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "STRUCTURED-DATA-BASELINE-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "verified": {
+    "public_pages": 767,
+    "english_pages": 385,
+    "japanese_pages": 382,
+    "json_ld_scripts": 767,
+    "valid_json_scripts": 767,
+    "website_nodes": 767,
+    "webpage_nodes": 767,
+    "missing_scripts": 0,
+    "multiple_scripts": 0,
+    "context_mismatches": 0,
+    "website_id_mismatches": 0,
+    "website_field_mismatches": 0,
+    "webpage_id_mismatches": 0,
+    "canonical_url_mismatches": 0,
+    "title_mismatches": 0,
+    "description_mismatches": 0,
+    "language_mismatches": 0,
+    "website_relation_mismatches": 0,
+    "missing_names": 0,
+    "missing_descriptions": 0,
+    "unexpected_types": 0,
+    "organization_nodes": 0,
+    "search_action_nodes": 0,
+    "event_nodes": 0,
+    "unsafe_less_than_characters": 0,
+    "temporary_discovery_workflows": 0,
+    "contract_errors": 0,
+    "rendered_marker_errors": 0
+  },
+  "behavior": {
+    "every_public_page_has_one_script": true,
+    "every_script_contains_one_website_node": true,
+    "every_script_contains_one_webpage_node": true,
+    "page_identity_matches_existing_metadata": true,
+    "language_matches_rendered_html": true,
+    "website_identity_is_stable": true,
+    "unsupported_entity_claims_are_absent": true,
+    "json_is_script_safe": true
+  },
+  "public_boundary": {
+    "public_website_identity_allowed": true,
+    "public_page_identity_allowed": true,
+    "canonical_title_description_language_allowed": true,
+    "unverified_organization_claim_allowed": false,
+    "unverified_event_claim_allowed": false,
+    "page_specific_entity_claim_allowed": false,
+    "participant_dataset_claim_allowed": false,
+    "betting_or_prediction_claim_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_schema_service_enabled": false,
+    "automatic_entity_inference_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "SITEMAP-ROBOTS-01",
+  "next_implementation_unit": "COUNTRY-PAGE-METADATA-01"
+}

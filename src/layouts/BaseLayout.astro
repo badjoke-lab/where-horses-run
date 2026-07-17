@@ -1,4 +1,5 @@
 ---
+import StructuredDataBaseline from '../components/StructuredDataBaseline.astro';
 import '../styles/theme.css';
 import '../styles/base.css';
 import '../styles/layout.css';
@@ -88,6 +89,14 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <StructuredDataBaseline
+      title={title}
+      description={description}
+      lang={lang}
+      canonicalUrl={canonicalUrl}
+      siteUrl={siteUrl}
+    />
 
     <noscript>
       <style data-no-js-fallback-style>

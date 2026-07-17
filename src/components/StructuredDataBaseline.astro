@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  lang: 'en' | 'ja';
+  canonicalUrl: string;
+  siteUrl: string;
+}
+
+const { title, description, lang, canonicalUrl, siteUrl } = Astro.props;
+const websiteId = `${siteUrl}/#website`;
+const webpageId = `${canonicalUrl}#webpage`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      url: `${siteUrl}/`,
+      name: 'Where Horses Run',
+      alternateName: '競馬どこ？',
+      inLanguage: ['en', 'ja'],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': webpageId,
+      url: canonicalUrl,
+      name: title,
+      description,
+      inLanguage: lang,
+      isPartOf: {
+        '@id': websiteId,
+      },
+    },
+  ],
+};
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+---
+
+<script
+  type="application/ld+json"
+  data-structured-data-baseline="website-webpage-v1"
+  set:html={structuredDataJson}
+></script>
