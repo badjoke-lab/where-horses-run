@@ -68,6 +68,10 @@ const xDefaultUrl = metadataAlternateHref
   : null;
 const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
+const socialImageUrl = `${siteUrl}/social/whr-social-card-v1.png`;
+const socialImageAlt = isJapanese
+  ? 'Where Horses Run / 競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。'
+  : 'Where Horses Run social card with a stylized racecourse oval.';
 ---
 
 <!doctype html>
@@ -92,11 +96,19 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content={ogLocale} />
-    <meta property="og:locale:alternate" content={alternateOgLocale} />
+    {alternateUrl && <meta property="og:locale:alternate" content={alternateOgLocale} />}
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
 
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
 
     <StructuredDataBaseline
       title={title}
