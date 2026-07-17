@@ -1,0 +1,83 @@
+{
+  "schema_version": "canonical-hreflang-review-audit-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "CANONICAL-HREFLANG-REVIEW-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "verified": {
+    "public_pages": 767,
+    "canonical_links": 767,
+    "unique_canonical_urls": 767,
+    "canonical_self_mismatches": 0,
+    "canonical_origin_errors": 0,
+    "canonical_query_or_fragment_errors": 0,
+    "canonical_trailing_slash_errors": 0,
+    "paired_pages": 764,
+    "bilingual_clusters": 382,
+    "english_paired_pages": 382,
+    "japanese_paired_pages": 382,
+    "unpaired_pages": 3,
+    "unpaired_english_pages": 3,
+    "unpaired_japanese_pages": 0,
+    "hreflang_links": 2292,
+    "self_hreflang_links": 764,
+    "alternate_hreflang_links": 764,
+    "x_default_links": 764,
+    "missing_self_links": 0,
+    "missing_alternate_links": 0,
+    "missing_x_default_links": 0,
+    "unexpected_hreflang_links": 0,
+    "reciprocal_errors": 0,
+    "cluster_set_errors": 0,
+    "language_errors": 0,
+    "x_default_errors": 0,
+    "unpaired_hreflang_errors": 0,
+    "language_switch_links": 767,
+    "unpaired_language_switch_home_fallbacks": 3,
+    "temporary_discovery_workflows": 0,
+    "contract_errors": 0,
+    "output_errors": 0
+  },
+  "behavior": {
+    "every_public_page_has_one_self_canonical": true,
+    "canonical_set_matches_sitemap": true,
+    "every_localized_page_has_self_and_opposite_hreflang": true,
+    "localized_pairs_are_reciprocal": true,
+    "localized_pair_link_sets_are_identical": true,
+    "x_default_points_to_english_version": true,
+    "unpaired_pages_emit_no_hreflang_cluster": true,
+    "language_navigation_remains_available_on_unpaired_pages": true,
+    "navigation_fallback_is_separate_from_seo_equivalence": true
+  },
+  "unpaired_paths": [
+    "/major-countries/preview-timetable/",
+    "/major-countries/source-health/",
+    "/major-countries/timetable/"
+  ],
+  "public_boundary": {
+    "public_canonical_metadata_allowed": true,
+    "verified_localized_pair_metadata_allowed": true,
+    "x_default_to_english_version_allowed": true,
+    "false_localized_equivalence_allowed": false,
+    "query_state_canonical_allowed": false,
+    "cross_origin_canonical_allowed": false,
+    "automatic_redirect_added": false
+  },
+  "privacy_boundary": {
+    "visitor_language_detection_enabled": false,
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_seo_service_enabled": false,
+    "automatic_route_inference_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "GLOSSARY-PAGE-METADATA-01",
+  "next_implementation_unit": "OPEN-GRAPH-SOCIAL-CARDS-01"
+}

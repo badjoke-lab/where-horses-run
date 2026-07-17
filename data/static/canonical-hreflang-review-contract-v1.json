@@ -1,0 +1,89 @@
+{
+  "schema_version": "canonical-hreflang-review-contract-v1",
+  "work_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "implementation_unit": "CANONICAL-HREFLANG-REVIEW-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-17",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "scope": {
+    "public_pages": 767,
+    "canonical_links": 767,
+    "unique_canonical_urls": 767,
+    "paired_pages": 764,
+    "bilingual_clusters": 382,
+    "english_paired_pages": 382,
+    "japanese_paired_pages": 382,
+    "unpaired_pages": 3,
+    "unpaired_english_pages": 3,
+    "unpaired_japanese_pages": 0,
+    "hreflang_links": 2292,
+    "self_hreflang_links": 764,
+    "alternate_hreflang_links": 764,
+    "x_default_links": 764,
+    "language_switch_links": 767,
+    "unpaired_language_switch_home_fallbacks": 3
+  },
+  "canonical_contract": {
+    "one_canonical_per_public_page": true,
+    "canonical_is_self_referencing": true,
+    "canonical_matches_sitemap_url": true,
+    "https_required": true,
+    "same_origin_required": true,
+    "query_parameters_allowed": false,
+    "fragments_allowed": false,
+    "trailing_slash_required": true,
+    "duplicate_canonicals_allowed": false
+  },
+  "hreflang_contract": {
+    "languages": ["en", "ja"],
+    "paired_pages_only": true,
+    "links_per_paired_page": 3,
+    "self_reference_required": true,
+    "opposite_locale_reference_required": true,
+    "reciprocal_reference_required": true,
+    "identical_cluster_sets_required": true,
+    "x_default_required": true,
+    "x_default_target": "english-version",
+    "fully_qualified_urls_required": true,
+    "unpaired_pages_must_omit_hreflang": true,
+    "explicit_alternate_path_may_define_pair": true
+  },
+  "navigation_separation_contract": {
+    "language_switch_remains_on_every_public_page": true,
+    "paired_page_switch_targets_counterpart": true,
+    "unpaired_english_switch_targets_japanese_home": true,
+    "unpaired_japanese_switch_targets_english_home": true,
+    "navigation_fallback_must_not_create_hreflang_equivalence": true
+  },
+  "unpaired_paths": [
+    "/major-countries/preview-timetable/",
+    "/major-countries/source-health/",
+    "/major-countries/timetable/"
+  ],
+  "public_boundary": {
+    "public_canonical_metadata_allowed": true,
+    "verified_localized_pair_metadata_allowed": true,
+    "x_default_to_english_version_allowed": true,
+    "false_localized_equivalence_allowed": false,
+    "query_state_canonical_allowed": false,
+    "cross_origin_canonical_allowed": false,
+    "automatic_redirect_added": false
+  },
+  "privacy_boundary": {
+    "visitor_language_detection_enabled": false,
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "external_seo_service_enabled": false,
+    "automatic_route_inference_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled": false
+  },
+  "previous_implementation_unit": "GLOSSARY-PAGE-METADATA-01",
+  "next_implementation_unit": "OPEN-GRAPH-SOCIAL-CARDS-01"
+}

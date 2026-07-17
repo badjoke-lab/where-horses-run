@@ -39,10 +39,12 @@ const hasBilingualCounterpart = bilingualPathPatterns.some((pattern) => pattern.
 const inferredAlternateHref = isJapanese
   ? canonicalPathname.replace(/^\/ja(?=\/)/, '') || '/'
   : `/ja${canonicalPathname}`;
-const defaultAlternateHref = hasBilingualCounterpart
+const explicitAlternateHref = alternatePath ?? null;
+const metadataAlternateHref = explicitAlternateHref ?? (hasBilingualCounterpart ? inferredAlternateHref : null);
+const defaultLanguageSwitchHref = hasBilingualCounterpart
   ? inferredAlternateHref
   : isJapanese ? '/' : '/ja/';
-const languageSwitchHref = alternatePath ?? defaultAlternateHref;
+const languageSwitchHref = explicitAlternateHref ?? defaultLanguageSwitchHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
 const navigationItems = [
@@ -60,8 +62,10 @@ const isCurrentNavigationItem = (href: string) =>
 
 const siteUrl = 'https://whr.badjoke-lab.com';
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
-const alternateUrl = `${siteUrl}${languageSwitchHref}`;
-const xDefaultUrl = `${siteUrl}${isJapanese ? languageSwitchHref : canonicalPathname}`;
+const alternateUrl = metadataAlternateHref ? `${siteUrl}${metadataAlternateHref}` : null;
+const xDefaultUrl = metadataAlternateHref
+  ? `${siteUrl}${isJapanese ? metadataAlternateHref : canonicalPathname}`
+  : null;
 const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 ---
@@ -74,9 +78,13 @@ const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
     <meta name="description" content={description} />
 
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="alternate" hreflang={isJapanese ? 'en' : 'ja'} href={alternateUrl} />
-    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
-    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+    {alternateUrl && xDefaultUrl && (
+      <>
+        <link rel="alternate" hreflang={isJapanese ? 'en' : 'ja'} href={alternateUrl} />
+        <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+        <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+      </>
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Where Horses Run" />
