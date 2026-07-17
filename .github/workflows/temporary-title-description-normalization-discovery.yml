@@ -1,0 +1,242 @@
+name: Temporary title and description normalization discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-title-description-normalization-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Capture title and description measurements
+        shell: bash
+        run: |
+          node <<'NODE' > title-description-normalization-discovery.json
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          function decode(value) {
+            return value
+              .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+              .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+              .replaceAll('&quot;', '"')
+              .replaceAll('&#39;', "'")
+              .replaceAll('&#x27;', "'")
+              .replaceAll('&lt;', '<')
+              .replaceAll('&gt;', '>')
+              .replaceAll('&amp;', '&');
+          }
+
+          function attrs(tag) {
+            return Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decode(match[2])]));
+          }
+
+          function renderedFile(urlString) {
+            const pathname = new URL(urlString).pathname;
+            return pathname === '/' ? 'dist/index.html' : path.join('dist', pathname.replace(/^\//, ''), 'index.html');
+          }
+
+          function stats(values) {
+            const sorted = [...values].sort((a, b) => a - b);
+            const percentile = (fraction) => sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))] ?? 0;
+            return {
+              min: sorted[0] ?? 0,
+              p10: percentile(0.10),
+              p25: percentile(0.25),
+              median: percentile(0.50),
+              p75: percentile(0.75),
+              p90: percentile(0.90),
+              max: sorted.at(-1) ?? 0,
+              average: sorted.length ? Number((sorted.reduce((sum, value) => sum + value, 0) / sorted.length).toFixed(2)) : 0,
+            };
+          }
+
+          function duplicateGroups(records, field) {
+            const groups = new Map();
+            for (const record of records) {
+              const value = record[field];
+              if (!groups.has(value)) groups.set(value, []);
+              groups.get(value).push(record.url);
+            }
+            return [...groups.entries()]
+              .filter(([, urls]) => urls.length > 1)
+              .map(([value, urls]) => ({ value, count: urls.length, urls: urls.sort() }))
+              .sort((left, right) => right.count - left.count || left.value.localeCompare(right.value));
+          }
+
+          function family(pathname) {
+            if (pathname === '/' || pathname === '/ja/') return 'root';
+            const normalized = pathname.replace(/^\/ja\//, '/');
+            if (/^\/countries\/[^/]+\/$/.test(normalized)) return 'country-detail';
+            if (normalized === '/countries/') return 'country-directory';
+            if (/^\/tracks\/[^/]+\/$/.test(normalized)) return 'racecourse-detail';
+            if (normalized === '/tracks/') return 'racecourse-directory';
+            if (/^\/glossary\/relationships\/$/.test(normalized)) return 'glossary-relationships';
+            if (/^\/glossary\/[^/]+\/$/.test(normalized)) return 'glossary-detail';
+            if (normalized === '/glossary/') return 'glossary-directory';
+            if (/^\/sources\/[^/]+\/$/.test(normalized)) return 'source-country-detail';
+            if (normalized === '/sources/') return 'source-directory';
+            if (/^\/types\/[^/]+\/$/.test(normalized)) return 'racing-type-detail';
+            if (normalized === '/types/') return 'racing-type-directory';
+            if (/^\/timetable\/meetings\/[^/]+\/$/.test(normalized)) return 'meeting-detail';
+            if (normalized.startsWith('/major-countries/')) return 'major-countries';
+            return normalized.split('/').filter(Boolean)[0] || 'other';
+          }
+
+          const sitemap = fs.readFileSync('dist/sitemap.xml', 'utf8');
+          const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+          const records = [];
+          const errors = [];
+
+          for (const url of urls) {
+            const file = renderedFile(url);
+            if (!fs.existsSync(file)) {
+              errors.push(`${url}: missing rendered file`);
+              continue;
+            }
+            const html = fs.readFileSync(file, 'utf8');
+            const lang = html.match(/<html\s+[^>]*lang="([^"]+)"/)?.[1] || '';
+            const titleMatches = [...html.matchAll(/<title>([\s\S]*?)<\/title>/gi)];
+            const title = titleMatches.length === 1 ? decode(titleMatches[0][1].replace(/<[^>]*>/g, '').trim()) : '';
+            const metas = [...html.matchAll(/<meta\s+[^>]*>/g)].map((match) => attrs(match[0]));
+            const descriptions = metas.filter((meta) => meta.name === 'description').map((meta) => meta.content || '');
+            const description = descriptions.length === 1 ? descriptions[0] : '';
+            const ogTitle = metas.filter((meta) => meta.property === 'og:title').map((meta) => meta.content || '');
+            const ogDescription = metas.filter((meta) => meta.property === 'og:description').map((meta) => meta.content || '');
+            const twitterTitle = metas.filter((meta) => meta.name === 'twitter:title').map((meta) => meta.content || '');
+            const twitterDescription = metas.filter((meta) => meta.name === 'twitter:description').map((meta) => meta.content || '');
+            const jsonLdScripts = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*data-structured-data-baseline="website-webpage-v1"[^>]*>([\s\S]*?)<\/script>/g)];
+            let webpage = null;
+            if (jsonLdScripts.length === 1) {
+              try {
+                const data = JSON.parse(jsonLdScripts[0][1]);
+                webpage = data['@graph']?.find((node) => node['@type'] === 'WebPage') || null;
+              } catch (error) {
+                errors.push(`${url}: invalid baseline JSON-LD ${error.message}`);
+              }
+            }
+            const pathname = new URL(url).pathname;
+            records.push({
+              url,
+              pathname,
+              lang,
+              family: family(pathname),
+              title,
+              description,
+              titleLength: [...title].length,
+              descriptionLength: [...description].length,
+              titleTagCount: titleMatches.length,
+              descriptionMetaCount: descriptions.length,
+              ogTitleCount: ogTitle.length,
+              ogDescriptionCount: ogDescription.length,
+              twitterTitleCount: twitterTitle.length,
+              twitterDescriptionCount: twitterDescription.length,
+              ogTitle: ogTitle[0] || '',
+              ogDescription: ogDescription[0] || '',
+              twitterTitle: twitterTitle[0] || '',
+              twitterDescription: twitterDescription[0] || '',
+              jsonLdName: webpage?.name || '',
+              jsonLdDescription: webpage?.description || '',
+            });
+          }
+
+          const english = records.filter((record) => record.lang === 'en');
+          const japanese = records.filter((record) => record.lang === 'ja');
+          const titleDuplicateGroups = duplicateGroups(records, 'title');
+          const descriptionDuplicateGroups = duplicateGroups(records, 'description');
+          const englishTitleDuplicates = duplicateGroups(english, 'title');
+          const japaneseTitleDuplicates = duplicateGroups(japanese, 'title');
+          const englishDescriptionDuplicates = duplicateGroups(english, 'description');
+          const japaneseDescriptionDuplicates = duplicateGroups(japanese, 'description');
+          const byFamily = Object.fromEntries([...new Set(records.map((record) => record.family))].sort().map((name) => {
+            const familyRecords = records.filter((record) => record.family === name);
+            return [name, {
+              pages: familyRecords.length,
+              englishPages: familyRecords.filter((record) => record.lang === 'en').length,
+              japanesePages: familyRecords.filter((record) => record.lang === 'ja').length,
+              titleLengths: stats(familyRecords.map((record) => record.titleLength)),
+              descriptionLengths: stats(familyRecords.map((record) => record.descriptionLength)),
+              duplicateTitleGroups: duplicateGroups(familyRecords, 'title').length,
+              duplicateDescriptionGroups: duplicateGroups(familyRecords, 'description').length,
+            }];
+          }));
+
+          const summary = {
+            publicPages: records.length,
+            englishPages: english.length,
+            japanesePages: japanese.length,
+            errors,
+            missingTitles: records.filter((record) => !record.title).map((record) => record.url),
+            missingDescriptions: records.filter((record) => !record.description).map((record) => record.url),
+            duplicateTitleTagPages: records.filter((record) => record.titleTagCount !== 1).map((record) => ({ url: record.url, count: record.titleTagCount })),
+            duplicateDescriptionMetaPages: records.filter((record) => record.descriptionMetaCount !== 1).map((record) => ({ url: record.url, count: record.descriptionMetaCount })),
+            duplicateTitleGroups: titleDuplicateGroups,
+            duplicateDescriptionGroups: descriptionDuplicateGroups,
+            duplicateTitleGroupsWithinLocale: {
+              en: englishTitleDuplicates,
+              ja: japaneseTitleDuplicates,
+            },
+            duplicateDescriptionGroupsWithinLocale: {
+              en: englishDescriptionDuplicates,
+              ja: japaneseDescriptionDuplicates,
+            },
+            titleLengths: {
+              all: stats(records.map((record) => record.titleLength)),
+              en: stats(english.map((record) => record.titleLength)),
+              ja: stats(japanese.map((record) => record.titleLength)),
+            },
+            descriptionLengths: {
+              all: stats(records.map((record) => record.descriptionLength)),
+              en: stats(english.map((record) => record.descriptionLength)),
+              ja: stats(japanese.map((record) => record.descriptionLength)),
+            },
+            titleOutliers: records.filter((record) => record.titleLength < 15 || record.titleLength > 80).map((record) => ({ url: record.url, lang: record.lang, length: record.titleLength, value: record.title })),
+            descriptionOutliers: records.filter((record) => record.descriptionLength < 40 || record.descriptionLength > 200).map((record) => ({ url: record.url, lang: record.lang, length: record.descriptionLength, value: record.description })),
+            whitespaceErrors: records.filter((record) => /^\s|\s$|\s{2,}/.test(record.title) || /^\s|\s$|\s{2,}/.test(record.description)).map((record) => record.url),
+            newlineErrors: records.filter((record) => /[\r\n]/.test(record.title) || /[\r\n]/.test(record.description)).map((record) => record.url),
+            titleBrandPatterns: {
+              englishWithWhereHorsesRun: english.filter((record) => record.title.includes('Where Horses Run')).length,
+              japaneseWithWhereHorsesRun: japanese.filter((record) => record.title.includes('Where Horses Run')).length,
+              japaneseWithJapaneseBrand: japanese.filter((record) => record.title.includes('競馬どこ？')).length,
+            },
+            alignmentErrors: {
+              openGraphTitle: records.filter((record) => record.ogTitleCount !== 1 || record.ogTitle !== record.title).map((record) => record.url),
+              openGraphDescription: records.filter((record) => record.ogDescriptionCount !== 1 || record.ogDescription !== record.description).map((record) => record.url),
+              twitterTitle: records.filter((record) => record.twitterTitleCount !== 1 || record.twitterTitle !== record.title).map((record) => record.url),
+              twitterDescription: records.filter((record) => record.twitterDescriptionCount !== 1 || record.twitterDescription !== record.description).map((record) => record.url),
+              jsonLdTitle: records.filter((record) => record.jsonLdName !== record.title).map((record) => record.url),
+              jsonLdDescription: records.filter((record) => record.jsonLdDescription !== record.description).map((record) => record.url),
+            },
+            longestTitles: [...records].sort((a, b) => b.titleLength - a.titleLength).slice(0, 25).map((record) => ({ url: record.url, lang: record.lang, family: record.family, length: record.titleLength, value: record.title })),
+            shortestTitles: [...records].sort((a, b) => a.titleLength - b.titleLength).slice(0, 25).map((record) => ({ url: record.url, lang: record.lang, family: record.family, length: record.titleLength, value: record.title })),
+            longestDescriptions: [...records].sort((a, b) => b.descriptionLength - a.descriptionLength).slice(0, 25).map((record) => ({ url: record.url, lang: record.lang, family: record.family, length: record.descriptionLength, value: record.description })),
+            shortestDescriptions: [...records].sort((a, b) => a.descriptionLength - b.descriptionLength).slice(0, 25).map((record) => ({ url: record.url, lang: record.lang, family: record.family, length: record.descriptionLength, value: record.description })),
+            byFamily,
+          };
+
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+      - name: Upload title and description discovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: title-description-normalization-discovery
+          path: title-description-normalization-discovery.json
+          retention-days: 1
