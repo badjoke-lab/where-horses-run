@@ -136,7 +136,7 @@ function meetingMetadata(page) {
   if (!match) return null;
   const racecourseName = readText(page.html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'meeting heading', page.relative);
   const pageKind = readText(page.html, /<p[^>]*class="eyebrow"[^>]*>([\s\S]*?)<\/p>/i, 'meeting page kind', page.relative);
-  const date = page.html.match(/<p>(\d{4}-\d{2}-\d{2})<\/p>/)?.[1];
+  const date = page.html.match(/<p[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/p>/)?.[1];
   if (!date) throw new Error(`Missing meeting date in ${page.relative}`);
   if (page.lang === 'ja') {
     return {
