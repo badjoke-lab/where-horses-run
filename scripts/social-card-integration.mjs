@@ -60,7 +60,7 @@ function chunk(type, data) {
   return Buffer.concat([length, typeBuffer, data, checksum]);
 }
 
-function createCanvas() {
+function createPixelBuffer() {
   const pixels = Buffer.alloc(WIDTH * HEIGHT * 3);
   for (let offset = 0; offset < pixels.length; offset += 3) {
     pixels[offset] = BACKGROUND[0];
@@ -139,7 +139,7 @@ function drawText(pixels, text, x, y, scale, color, spacing = 1) {
 }
 
 function renderCard() {
-  const pixels = createCanvas();
+  const pixels = createPixelBuffer();
 
   // Frame and hierarchy.
   line(pixels, 52, 52, WIDTH - 52, 52, INK, 3);
