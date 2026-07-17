@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
-const MARKER = 'collection-country-v1';
+const MARKER = 'collection-administrative-area-v1';
 
 async function walk(directory) {
   const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -134,12 +134,12 @@ function uniqueNames(values, currentName) {
 }
 
 function buildMetadata(page, counterpart) {
-  const countryId = `${page.canonicalUrl}#country`;
+  const areaId = `${page.canonicalUrl}#administrative-area`;
   const webpageId = `${page.canonicalUrl}#webpage`;
   const alternateName = uniqueNames([counterpart.name, page.localName], page.name);
-  const countryNode = {
-    '@type': 'Country',
-    '@id': countryId,
+  const administrativeAreaNode = {
+    '@type': 'AdministrativeArea',
+    '@id': areaId,
     url: page.canonicalUrl,
     name: page.name,
     ...(alternateName.length ? { alternateName } : {}),
@@ -154,12 +154,12 @@ function buildMetadata(page, counterpart) {
     inLanguage: page.locale,
     isPartOf: { '@id': WEBSITE_ID },
     lastReviewed: page.lastReviewed,
-    about: { '@id': countryId },
-    mainEntity: { '@id': countryId },
+    about: { '@id': areaId },
+    mainEntity: { '@id': areaId },
   };
   return {
     '@context': 'https://schema.org',
-    '@graph': [collectionPageNode, countryNode],
+    '@graph': [collectionPageNode, administrativeAreaNode],
   };
 }
 
