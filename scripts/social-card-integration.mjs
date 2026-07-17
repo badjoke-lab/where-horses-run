@@ -149,7 +149,7 @@ function renderCard() {
   drawText(pixels, 'WHERE HORSES RUN', 90, 88, 7, INK, 1);
   line(pixels, 90, 150, WIDTH - 90, 150, MUTED, 2);
   drawText(pixels, 'WHR', 90, 225, 27, INK, 1);
-  drawText(pixels, 'RACING CALENDARS  RACECOURSES  SOURCES', 92, 484, 5, INK, 1);
+  drawText(pixels, 'CALENDARS  RACECOURSES  SOURCES', 92, 484, 5, INK, 1);
 
   // Abstract racecourse oval and finishing marker.
   ellipse(pixels, 960, 320, 165, 155, INK, 9);
