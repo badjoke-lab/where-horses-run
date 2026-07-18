@@ -54,19 +54,38 @@ jobs:
         run: |
           command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser
       - name: Render every public page at mobile widths
-        run: node scripts/run-v1-mobile-qa-browser.mjs
-      - name: Normalize permanent report name
-        run: mv v1-mobile-qa-discovery.json v1-mobile-qa-report.json
-      - name: Validate v1 mobile QA contract and report
-        run: node scripts/check-v1-mobile-qa.mjs
-      - name: Upload mobile QA report
+        shell: bash
+        run: |
+          set +e
+          node scripts/run-v1-mobile-qa-browser.mjs > /tmp/v1-mobile-qa-browser.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/v1-mobile-qa-browser.exit
+          cat /tmp/v1-mobile-qa-browser.log
+          if [ -f v1-mobile-qa-discovery.json ]; then
+            mv v1-mobile-qa-discovery.json v1-mobile-qa-report.json
+          fi
+          exit 0
+      - name: Upload mobile QA diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: v1-mobile-qa-report
-          path: v1-mobile-qa-report.json
-          if-no-files-found: error
+          path: |
+            /tmp/v1-mobile-qa-browser.log
+            /tmp/v1-mobile-qa-browser.exit
+            v1-mobile-qa-report.json
+          if-no-files-found: warn
           retention-days: 7
+      - name: Enforce browser runner success
+        run: |
+          status="$(cat /tmp/v1-mobile-qa-browser.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Normalize permanent report name
+        run: test -f v1-mobile-qa-report.json
+      - name: Validate v1 mobile QA contract and report
+        run: node scripts/check-v1-mobile-qa.mjs
       - name: Remove generated report
         if: always()
         run: rm -f v1-mobile-qa-report.json v1-mobile-qa-discovery.json
