@@ -3,12 +3,29 @@
   min-width: 0;
 }
 
-.gap-item {
-  overflow-wrap: anywhere;
-}
-
+.gap-item,
 .gap-item a,
 .gap-item p,
 .gap-item h3 {
   overflow-wrap: anywhere;
+}
+
+.detail-nav a,
+.browse-grid summary {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.45rem;
+}
+
+@media (max-width: 720px) {
+  .site-navigation,
+  .site-navigation > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .site-navigation:not([open]) > .site-nav {
+    display: none;
+  }
 }
