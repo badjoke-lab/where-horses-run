@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `TITLE-DESCRIPTION-NORMALIZATION-01`  
 Reviewed: 2026-07-18  
-Scope updated by: `FAQ-CONTENT-PAGES-01`
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
@@ -13,13 +13,14 @@ The complete public route set has a rendered title and description uniqueness co
 ## Current inventory
 
 ```text
-Public pages: 769
-English pages: 386
-Japanese pages: 383
+Public pages: 771
+English pages: 387
+Japanese pages: 384
 Meeting-detail pages: 158
 Country-detail pages: 196
 Normalized country descriptions: 4
 FAQ pages: 2
+Methods pages: 2
 Missing titles: 0
 Missing descriptions: 0
 Duplicate title groups: 0
@@ -36,13 +37,15 @@ No race row, participant, odds, result, payout, prediction, or source-body conte
 
 The Algeria and Egypt descriptions in both languages preserve the reviewed hero summary and add the visible country name as a metadata prefix. Visible page body copy is unchanged by the normalizer.
 
-## FAQ metadata
+## FAQ and Methods metadata
 
-The two FAQ pages have distinct English and Japanese titles and descriptions:
+The FAQ and Methods bilingual pairs have distinct English and Japanese titles and descriptions:
 
 ```text
 /faq/
 /ja/faq/
+/methods/
+/ja/methods/
 ```
 
 Their title and description values remain aligned with Open Graph, Twitter, and baseline `WebPage` JSON-LD metadata.
@@ -71,7 +74,7 @@ Read-only Actions gate:
 .github/workflows/title-description-normalization.yml
 ```
 
-The checker scans all 769 sitemap pages and verifies one title and description, zero duplicates, clean whitespace, 158 date-specific meeting pages, four country-prefix resolutions, two unique FAQ pages, and Open Graph, Twitter, and JSON-LD alignment.
+The checker scans all 771 sitemap pages and verifies one title and description, zero duplicates, clean whitespace, 158 date-specific meeting pages, four country-prefix resolutions, two unique FAQ pages, two unique Methods pages, and Open Graph, Twitter, and JSON-LD alignment.
 
 ## Boundaries
 
