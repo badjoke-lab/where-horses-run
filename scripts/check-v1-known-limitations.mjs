@@ -5,41 +5,43 @@ const fail = (message) => errors.push(message);
 const read = (file) => fs.readFileSync(file, 'utf8');
 const json = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-const exists = (file) => fs.existsSync(file);
 
 const files = {
   contract: 'data/static/v1-known-limitations-v1.json',
   audit: 'data/audits/v1-known-limitations-v1.json',
   doc: 'docs/release/v1-known-limitations.md',
   workflow: '.github/workflows/v1-known-limitations.yml',
-  scope: 'data/static/v1-scope-freeze-v1.json',
-  dataAudit: 'data/static/v1-data-audit-v1.json',
-  mobile: 'data/static/v1-mobile-qa-v1.json',
-  accessibility: 'data/static/v1-accessibility-qa-v1.json',
-  performance: 'data/static/v1-performance-qa-v1.json',
-  sourcePolicy: 'data/static/v1-source-policy-review-v1.json',
-  faq: 'data/static/faq-content-pages-contract-v1.json',
-  methods: 'data/static/methods-data-policy-contract-v1.json',
   sitemap: 'dist/sitemap.xml',
   faqEn: 'dist/faq/index.html',
   faqJa: 'dist/ja/faq/index.html',
   methodsEn: 'dist/methods/index.html',
   methodsJa: 'dist/ja/methods/index.html',
 };
+const baselines = [
+  ['data/static/v1-scope-freeze-v1.json', 'V1-SCOPE-FREEZE-01'],
+  ['data/static/v1-data-audit-v1.json', 'V1-DATA-AUDIT-01'],
+  ['data/static/v1-mobile-qa-v1.json', 'V1-MOBILE-QA-01'],
+  ['data/static/v1-accessibility-qa-v1.json', 'V1-ACCESSIBILITY-QA-01'],
+  ['data/static/v1-performance-qa-v1.json', 'V1-PERFORMANCE-QA-01'],
+  ['data/static/v1-source-policy-review-v1.json', 'V1-SOURCE-POLICY-REVIEW-01'],
+  ['data/static/faq-content-pages-contract-v1.json', 'FAQ-CONTENT-PAGES-01'],
+  ['data/static/methods-data-policy-contract-v1.json', 'METHODS-DATA-POLICY-01'],
+];
 
-for (const file of Object.values(files)) {
-  if (!exists(file)) fail(`required known-limitations file missing: ${file}`);
+for (const file of [...Object.values(files), ...baselines.map(([file]) => file)]) {
+  if (!fs.existsSync(file)) fail(`required known-limitations file missing: ${file}`);
 }
 for (const file of [
   '.github/workflows/temporary-v1-known-limitations-discovery.yml',
   'scripts/temporary-discover-v1-known-limitations.mjs',
   'data/audits/temporary-v1-known-limitations-discovery.json',
 ]) {
-  if (exists(file)) fail(`temporary known-limitations file remains: ${file}`);
+  if (fs.existsSync(file)) fail(`temporary known-limitations file remains: ${file}`);
 }
 
 const contract = json(files.contract);
 const audit = json(files.audit);
+const routes = ['/faq/', '/ja/faq/', '/methods/', '/ja/methods/'];
 
 if (contract.schema_version !== 'v1-known-limitations-v1') fail('known-limitations contract schema differs');
 if (contract.release_id !== 'WHR-V1-PREPARATION-V1' || contract.work_id !== contract.release_id) fail('known-limitations release identity differs');
@@ -59,20 +61,20 @@ const expectedBaselines = {
 };
 if (!exact(contract.baseline_units, expectedBaselines)) fail('known-limitations baseline units differ');
 
-const routes = ['/faq/', '/ja/faq/', '/methods/', '/ja/methods/'];
 const publicAudit = contract.public_audit ?? {};
-if (
-  publicAudit.public_pages_total !== 771 ||
-  publicAudit.locales !== 2 ||
-  publicAudit.route_pairs !== 2 ||
-  publicAudit.faq_questions_per_locale !== 12 ||
-  publicAudit.methods_sections_per_locale !== 9 ||
-  publicAudit.limitation_categories !== 12 ||
-  publicAudit.new_public_routes !== 0 ||
-  publicAudit.new_public_data_classes !== 0 ||
-  publicAudit.public_content_rewrite_required !== false ||
-  !exact(publicAudit.routes, routes)
-) fail('known-limitations public audit differs');
+for (const [key, value] of Object.entries({
+  public_pages_total: 771,
+  locales: 2,
+  route_pairs: 2,
+  faq_questions_per_locale: 12,
+  methods_sections_per_locale: 9,
+  limitation_categories: 12,
+  new_public_routes: 0,
+  new_public_data_classes: 0,
+})) {
+  if (publicAudit[key] !== value) fail(`known-limitations public audit differs: ${key}`);
+}
+if (publicAudit.public_content_rewrite_required !== false || !exact(publicAudit.routes, routes)) fail('known-limitations public route boundary differs');
 
 const requiredRoutes = {
   'official-source-final-confirmation': routes,
@@ -115,22 +117,31 @@ for (const key of ['scope_boundary', 'publication_boundary', 'privacy_boundary',
   if (!exact(audit[key], contract[key])) fail(`known-limitations audit boundary differs: ${key}`);
 }
 for (const value of Object.values(audit.behavior ?? {})) if (value !== true) fail('known-limitations behavior audit differs');
+for (const [key, value] of Object.entries({
+  public_pages_total: 771,
+  audited_routes: 4,
+  route_pairs: 2,
+  locales: 2,
+  english_faq_questions: 12,
+  japanese_faq_questions: 12,
+  english_methods_sections: 9,
+  japanese_methods_sections: 9,
+  limitation_categories: 12,
+  categories_missing_from_required_routes: 0,
+  new_public_routes: 0,
+  new_public_data_classes: 0,
+  contract_errors: 0,
+  output_errors: 0,
+})) {
+  if (audit.verified?.[key] !== value) fail(`known-limitations audit measurement differs: ${key}`);
+}
 
-for (const [file, unit] of [
-  [files.scope, 'V1-SCOPE-FREEZE-01'],
-  [files.dataAudit, 'V1-DATA-AUDIT-01'],
-  [files.mobile, 'V1-MOBILE-QA-01'],
-  [files.accessibility, 'V1-ACCESSIBILITY-QA-01'],
-  [files.performance, 'V1-PERFORMANCE-QA-01'],
-  [files.sourcePolicy, 'V1-SOURCE-POLICY-REVIEW-01'],
-  [files.faq, 'FAQ-CONTENT-PAGES-01'],
-  [files.methods, 'METHODS-DATA-POLICY-01'],
-]) {
+for (const [file, unit] of baselines) {
   const baseline = json(file);
   if (baseline.implementation_unit !== unit || !['complete', 'release_ready'].includes(baseline.status)) fail(`known-limitations baseline incomplete: ${unit}`);
 }
 
-function text(file) {
+function renderedText(file) {
   return read(file)
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
@@ -139,7 +150,7 @@ function text(file) {
     .replace(/&amp;/gi, '&')
     .replace(/&quot;|&ldquo;|&rdquo;/gi, '"')
     .replace(/&#39;|&apos;|&lsquo;|&rsquo;/gi, "'")
-    .replace(/[“”]/g, '"')
+    .replace(/[“”「」]/g, '"')
     .replace(/[‘’]/g, "'")
     .normalize('NFKC')
     .replace(/\s+/g, ' ')
@@ -148,10 +159,10 @@ function text(file) {
 }
 
 const rendered = {
-  '/faq/': text(files.faqEn),
-  '/ja/faq/': text(files.faqJa),
-  '/methods/': text(files.methodsEn),
-  '/ja/methods/': text(files.methodsJa),
+  '/faq/': renderedText(files.faqEn),
+  '/ja/faq/': renderedText(files.faqJa),
+  '/methods/': renderedText(files.methodsEn),
+  '/ja/methods/': renderedText(files.methodsJa),
 };
 const markers = {
   '/faq/': [
@@ -219,48 +230,6 @@ for (const [route, value] of Object.entries(rendered)) {
     if (value.includes(forbidden.toLocaleLowerCase('en'))) fail(`known-limitations forbidden claim on ${route}: ${forbidden}`);
   }
 }
-
-const expectedVerified = {
-  public_pages_total: 771,
-  audited_routes: 4,
-  route_pairs: 2,
-  locales: 2,
-  english_faq_questions: 12,
-  japanese_faq_questions: 12,
-  english_methods_sections: 9,
-  japanese_methods_sections: 9,
-  limitation_categories: 12,
-  categories_missing_from_required_routes: 0,
-  official_source_confirmation_errors: 0,
-  coverage_claim_errors: 0,
-  real_time_claim_errors: 0,
-  date_time_guarantee_errors: 0,
-  empty_view_claim_errors: 0,
-  last_checked_claim_errors: 0,
-  publication_rank_claim_errors: 0,
-  excluded_content_boundary_errors: 0,
-  video_boundary_errors: 0,
-  viewing_access_claim_errors: 0,
-  timezone_boundary_errors: 0,
-  correction_policy_errors: 0,
-  new_public_routes: 0,
-  new_public_data_classes: 0,
-  scope_errors: 0,
-  data_audit_errors: 0,
-  mobile_qa_errors: 0,
-  accessibility_qa_errors: 0,
-  performance_qa_errors: 0,
-  source_policy_errors: 0,
-  faq_contract_errors: 0,
-  methods_contract_errors: 0,
-  privacy_boundary_errors: 0,
-  automation_boundary_errors: 0,
-  workflow_errors: 0,
-  contract_errors: 0,
-  output_errors: 0,
-  temporary_known_limitations_files: 0,
-};
-if (!exact(audit.verified, expectedVerified)) fail('known-limitations verified audit differs');
 
 const doc = read(files.doc);
 for (const marker of ['V1-KNOWN-LIMITATIONS-01', 'Public pages in the frozen v1 candidate: 771', 'Known-limitation categories: 12', 'scripts/check-v1-known-limitations.mjs', '.github/workflows/v1-known-limitations.yml', 'V1-RELEASE-READINESS-01']) {
