@@ -7,9 +7,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "M3 alpha source. Link-first and dry-run only. Use the official JRA site for confirmation. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "notes": "Official JRA source for final confirmation. Where Horses Run publishes only reviewed link and timetable fields within the public data boundary.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "Japan alpha source record candidate. Start with official-source routing and page-level verification before parser or live fetch work."
+    "m3_notes": "Official-source routing record for JRA calendar and organiser confirmation."
   },
   {
     "id": "japan-jairs-racecourses",
@@ -19,9 +19,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "Official JAIRS/JRA English racecourse guide source. Link-first and dry-run only. Use for source-safe racecourse profile confirmation, not for republishing racecards, entries, horse names, jockey names, odds, results, payouts, prediction, or tips content. Live fetching requires separate source-specific review.",
+    "notes": "Official JAIRS/JRA English racecourse guide used for racecourse-profile confirmation. Complete race details remain on official pages.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "Racecourse profile routing source for official-source confirmation. This is not calendar coverage and adds no parser or live fetch."
+    "m3_notes": "Official racecourse-profile routing source; it does not establish calendar coverage."
   },
   {
     "id": "japan-nar-home",
@@ -31,9 +31,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "M3 Japan source split. Link-first and dry-run only. Use the official NAR site for confirmation. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "notes": "Official NAR source for final confirmation. Where Horses Run publishes only reviewed link and timetable fields within the public data boundary.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "NAR official-source routing record. This is not NAR timetable coverage and adds no parser or live fetch."
+    "m3_notes": "Official-source routing record for NAR organiser and calendar confirmation."
   },
   {
     "id": "japan-nar-racecourse-guide",
@@ -43,9 +43,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "Official NAR racecourse guide source. Link-first and dry-run only. Use this for racecourse inventory confirmation, not for republishing racecards, entries, horse names, jockey names, odds, results, payouts, prediction, or tips content. Live fetching requires separate source-specific review.",
+    "notes": "Official NAR racecourse guide used for racecourse inventory confirmation. Complete race details remain on official pages.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "NAR racecourse inventory source record. This is not NAR calendar coverage."
+    "m3_notes": "Official racecourse-inventory routing source; it does not establish calendar coverage."
   },
   {
     "id": "japan-banei-home",
@@ -55,9 +55,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "M3 Japan source split. Link-first and dry-run only. Use the official Banei Tokachi site for confirmation. Do not republish racecards, entries, horse names, jockey names, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "notes": "Official Banei Tokachi source for final confirmation. Where Horses Run publishes only reviewed link and timetable fields within the public data boundary.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "Banei official-source routing record. This is not Banei timetable coverage and adds no parser or live fetch."
+    "m3_notes": "Official-source routing record for Banei organiser and schedule confirmation."
   },
   {
     "id": "japan-banei-monthly-schedule",
@@ -67,9 +67,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "Official Banei Tokachi monthly schedule source candidate. Link-first and dry-run only. Do not store source response bodies and do not republish racecards, entries, horse names, jockey names, odds, results, payouts, prediction, or tips content. Live fetching requires separate source-specific review.",
+    "notes": "Official Banei Tokachi monthly-schedule route. Published fields are limited to reviewed public timetable information, with official pages used for complete details.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "Banei monthly schedule routing record. This is not Banei calendar coverage and adds no parser or live fetch."
+    "m3_notes": "Official monthly-schedule routing record; current public calendar coverage is stated separately."
   },
   {
     "id": "hong-kong-hkjc-home",
@@ -79,9 +79,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "M3 alpha source. Link-first and dry-run only. Use the official HKJC site for confirmation. Do not republish racecards, entries, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "notes": "Official HKJC source for final confirmation. Where Horses Run publishes only reviewed link and timetable fields within the public data boundary.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "First M3 alpha timetable coverage candidate with fixture/parser/normalizer/dry-run checks."
+    "m3_notes": "Official-source routing record for Hong Kong fixture and organiser confirmation."
   },
   {
     "id": "uae-era-home",
@@ -91,9 +91,9 @@
     "data_type": "link_only",
     "auto_level": "B",
     "terms_risk": "unknown",
-    "notes": "M3 alpha source. Link-first and dry-run only. Use the official Emirates Racing Authority site for confirmation. Do not republish racecards, entries, odds, results, payouts, or prediction/tip content, including betting tips. Live fetching requires separate source-specific review.",
+    "notes": "Official Emirates Racing source for final confirmation. Where Horses Run publishes only reviewed link and timetable fields within the public data boundary.",
     "m3_status": "alpha_link_first",
-    "m3_notes": "UAE alpha source record candidate. Start with official-source routing and page-level verification before parser or live fetch work."
+    "m3_notes": "Official-source routing record for UAE calendar and organiser confirmation."
   },
   {
     "id": "morocco-sorec-home",
@@ -103,6 +103,6 @@
     "data_type": "link_only",
     "auto_level": "C",
     "terms_risk": "unknown",
-    "notes": "Official source candidate. Programme format requires verification."
+    "notes": "Official SOREC source. Current public use is link-first, and programme details require source verification before timetable publication."
   }
 ]
