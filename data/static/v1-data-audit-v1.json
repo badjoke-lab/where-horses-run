@@ -1,0 +1,126 @@
+{
+  "schema_version": "v1-data-audit-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-DATA-AUDIT-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "baseline_release_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "scope_contract_id": "V1-SCOPE-FREEZE-01",
+  "input_inventory": {
+    "data_module_json_imports": 152,
+    "unique_data_module_json_imports": 152,
+    "audited_json_files": 154,
+    "static_json_files": 148,
+    "generated_json_files": 6,
+    "sitemap_urls": 771,
+    "top_level_rows": 462,
+    "url_values": 372,
+    "note_like_metadata_values": 339,
+    "placeholder_values": 41,
+    "static_racecourse_placeholder_values": 36,
+    "generated_placeholder_values": 5
+  },
+  "merged_collections": {
+    "countries": {
+      "records": 98,
+      "identifiers": 98,
+      "slugs": 98
+    },
+    "country_profiles": {
+      "records": 98,
+      "identifiers": 98,
+      "slugs": 98
+    },
+    "racecourses": {
+      "records": 36,
+      "identifiers": 36,
+      "slugs": 36
+    },
+    "sources": {
+      "records": 171,
+      "identifiers": 171,
+      "slugs": 0
+    }
+  },
+  "data_quality_contract": {
+    "existing_schema_and_reference_validation_required": true,
+    "every_imported_json_file_must_parse": true,
+    "duplicate_ids_within_files_allowed": false,
+    "duplicate_slugs_within_files_allowed": false,
+    "duplicate_ids_across_merged_collections_allowed": false,
+    "duplicate_slugs_across_merged_collections_allowed": false,
+    "invalid_http_or_https_urls_allowed": false,
+    "forbidden_public_data_keys_allowed": false,
+    "restricted_internal_workflow_text_allowed": false,
+    "placeholder_values_allowed_when_explicitly_classified": true,
+    "note_like_metadata_allowed_when_public_safe": true,
+    "country_id_reconciliation_required": true,
+    "complete_static_build_required": true,
+    "frozen_v1_scope_required": true
+  },
+  "placeholder_contract": {
+    "total": 41,
+    "static_racecourse_values": 36,
+    "generated_schedule_values": 5,
+    "placeholder_is_a_status_not_a_coverage_claim": true,
+    "placeholder_must_not_be_treated_as_verified_meeting_data": true,
+    "placeholder_count_growth_allowed_without_review": false
+  },
+  "public_text_contract": {
+    "files_scanned": 154,
+    "restricted_text_matches": 0,
+    "restricted_rendered_text_matches": 0,
+    "development_phase_language_allowed": false,
+    "parser_or_acquisition_target_language_allowed": false,
+    "internal_automation_candidate_language_allowed": false,
+    "pr_number_provenance_in_public_data_allowed": false,
+    "public_source_confirmation_language_allowed": true,
+    "public_coverage_limit_language_allowed": true
+  },
+  "id_reconciliation_contract": {
+    "file": "data/static/country-page-id-inventory-01-12-reconciliation-v1.json",
+    "racecourse_overrides": 4,
+    "allowed_transition": "reserved-to-registered",
+    "base_inventory_must_remain_unmodified_during_validation": true,
+    "public_registry_is_current_source_of_truth": true
+  },
+  "correction_summary": {
+    "corrected_data_files": 8,
+    "governance_reconciliation_files": 1,
+    "country_registry_records_reworded": 10,
+    "source_records_reworded": 15,
+    "generated_status_files_reworded": 3,
+    "country_profile_records_reviewed": 4,
+    "country_coverage_inventory_records_reviewed": 3,
+    "restricted_text_matches_before": 29,
+    "restricted_text_matches_after": 0
+  },
+  "public_boundary": {
+    "reviewed_entity_and_source_metadata_allowed": true,
+    "reviewed_coverage_status_allowed": true,
+    "public_safe_notes_and_limitations_allowed": true,
+    "explicit_placeholder_status_allowed": true,
+    "participant_or_complete_racecard_fields_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "internal_workflow_or_acquisition_details_allowed": false,
+    "revenue_budget_other_project_or_internal_circumstance_discussion_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_data_correction_enabled": false,
+    "automatic_scope_expansion_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "previous_implementation_unit": "V1-SCOPE-FREEZE-01",
+  "next_implementation_unit": "V1-MOBILE-QA-01"
+}
