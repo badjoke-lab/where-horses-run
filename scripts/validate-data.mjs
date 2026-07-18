@@ -326,7 +326,7 @@ function validateSources(rows, countryIds) {
   for (const row of rows || []) {
     if (!row || typeof row !== 'object') continue;
     const label = `sources:${row.id || 'unknown'}`;
-    for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'terms_risk']) {
+    for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'notes']) {
       requireString(row[key], `${label}.${key}`);
     }
     if (row.country_id && !countryIds.has(row.country_id)) {
