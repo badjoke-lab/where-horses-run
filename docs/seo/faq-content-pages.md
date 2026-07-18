@@ -3,11 +3,12 @@
 Status: complete  
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `FAQ-CONTENT-PAGES-01`  
-Reviewed: 2026-07-18
+Reviewed: 2026-07-18  
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
-Where Horses Run now has bilingual public FAQ pages that explain how the site should be used and where its information boundaries lie.
+Where Horses Run has bilingual public FAQ pages that explain how the site should be used and where its information boundaries lie.
 
 The FAQ makes source priority, coverage variation, update limits, publication ranks, excluded racecard data, betting-advice exclusion, and official live/replay boundaries visible without exposing internal operating circumstances.
 
@@ -20,7 +21,7 @@ The FAQ makes source priority, coverage variation, update limits, publication ra
 
 The two routes are:
 
-- public and included in the 769-URL sitemap;
+- public and included in the 771-URL sitemap;
 - self-canonical;
 - one reciprocal English/Japanese hreflang cluster;
 - linked from the corresponding English and Japanese home pages;
@@ -81,21 +82,21 @@ Structured answers: 24
 Visible/structured mismatches: 0
 ```
 
-## Expanded public inventory
+## Current public inventory
 
-Adding the FAQ pair changes the public route inventory to:
+After the Methods pair was added, the complete public route inventory is:
 
 ```text
-Public pages: 769
-English pages: 386
-Japanese pages: 383
-Bilingual clusters: 383
-Paired pages: 766
+Public pages: 771
+English pages: 387
+Japanese pages: 384
+Bilingual clusters: 384
+Paired pages: 768
 Unpaired pages: 3
-Hreflang links: 2,298
+Hreflang links: 2,304
 ```
 
-The Sitemap, Structured Data Baseline, Canonical/Hreflang, Open Graph, and Title/Description contracts are updated in the same implementation unit.
+The FAQ content itself remains unchanged. The Sitemap, Structured Data Baseline, Canonical/Hreflang, Open Graph, and Title/Description contracts now include both the FAQ and Methods pairs.
 
 ## Verification
 
