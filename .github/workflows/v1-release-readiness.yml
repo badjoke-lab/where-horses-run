@@ -93,6 +93,9 @@ jobs:
           if [ -f v1-performance-qa-discovery.json ]; then
             mv v1-performance-qa-discovery.json v1-performance-qa-report.json
           fi
+          if [ -f v1-performance-qa-report.json ]; then
+            node -e "const fs=require('fs');const p='v1-performance-qa-report.json';const r=JSON.parse(fs.readFileSync(p,'utf8'));r.javascriptFiles=r.typeTotals?.javascript?.files??0;fs.writeFileSync(p,JSON.stringify(r,null,2)+'\\n');"
+          fi
           exit 0
       - name: Upload release-readiness performance diagnostics
         if: always()
