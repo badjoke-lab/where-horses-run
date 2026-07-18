@@ -11,9 +11,9 @@
     "coverage_level": 3,
     "auto_level": "B",
     "available_locales": ["en", "ja"],
-    "summary_en": "Major racing jurisdiction with central, local, and Banei racing systems. v0 should link to official sources and avoid republishing entries, odds, results, or payouts.",
-    "summary_ja": "中央競馬、地方競馬、ばんえい競馬を含む主要競馬地域。v0では公式ソースへの案内を優先し、出走表・オッズ・結果・払戻は再掲載しない。",
-    "notes": "Split internally as japan-jra, japan-nar, and japan-banei when parser work begins."
+    "summary_en": "Major racing jurisdiction with central, local, and Banei systems. Coverage prioritizes official schedule and source links and does not republish entries, odds, results, or payouts.",
+    "summary_ja": "中央競馬、地方競馬、ばんえい競馬を含む主要競馬地域です。公式日程と公式ソースへの案内を優先し、出走表・オッズ・結果・払戻は再掲載しません。",
+    "notes": "Coverage is organised across JRA, NAR, and Banei official source routes."
   },
   {
     "id": "hong-kong",
@@ -27,8 +27,8 @@
     "coverage_level": 3,
     "auto_level": "B",
     "available_locales": ["en", "ja"],
-    "summary_en": "Centralized racing jurisdiction with official fixture and racecard sources. Strong early candidate for timetable extraction with strict field limits.",
-    "summary_ja": "公式の開催日程・レースカード情報が集約されている地域。時刻表抽出の初期候補だが、抽出項目は厳しく制限する。"
+    "summary_en": "Centralized racing jurisdiction with official fixture and programme sources. Timetable coverage uses reviewed public fields and directs users to official pages for complete race details.",
+    "summary_ja": "公式の開催日程と番組情報が集約されている地域です。時刻表は確認済みの公開項目に限定し、完全な競走情報は公式ページで確認する構成です。"
   },
   {
     "id": "united-arab-emirates",
@@ -42,8 +42,8 @@
     "coverage_level": 3,
     "auto_level": "B",
     "available_locales": ["en", "ja"],
-    "summary_en": "Important Gulf racing jurisdiction with authority and racecourse operator sources. Page-level verification is required before automation.",
-    "summary_ja": "湾岸地域の重要な競馬地域。公式機関・競馬場運営元のソースを扱うが、自動化前にページ単位の検証が必要。"
+    "summary_en": "Important Gulf racing jurisdiction with authority and racecourse-operator sources. Published timetable details require page-level source verification.",
+    "summary_ja": "湾岸地域の重要な競馬地域です。公式機関と競馬場運営元のソースを扱い、時刻表の掲載内容はページ単位で確認します。"
   },
   {
     "id": "south-korea",
@@ -57,8 +57,8 @@
     "coverage_level": 2,
     "auto_level": "C",
     "available_locales": ["en", "ja"],
-    "summary_en": "Strategically important racing jurisdiction. Start with official links and calendar-level coverage until page structure is verified.",
-    "summary_ja": "戦略的に重要な競馬地域。ページ構造確認までは公式リンクと開催日レベルの扱いを優先する。"
+    "summary_en": "South Korean racing is covered through official Korea Racing Authority routes. Current pages prioritize official links and reviewed calendar-level information.",
+    "summary_ja": "韓国競馬は韓国馬事会の公式導線を中心に扱います。現在のページは公式リンクと確認済みの開催日レベル情報を優先します。"
   },
   {
     "id": "turkey",
@@ -72,8 +72,8 @@
     "coverage_level": 3,
     "auto_level": "B",
     "available_locales": ["en", "ja"],
-    "summary_en": "Centralized racing source candidate with Turkish-language official programme pages. Parser readiness must be verified separately.",
-    "summary_ja": "トルコ語の公式番組ページを持つ集中型ソース候補。parser適性は別途確認する。"
+    "summary_en": "Centralized racing jurisdiction with Turkish-language official programme pages. Published timetable details require separate source-format verification.",
+    "summary_ja": "トルコ語の公式番組ページを持つ集中型の競馬地域です。時刻表の掲載内容はソース形式を個別に確認します。"
   },
   {
     "id": "morocco",
@@ -87,8 +87,8 @@
     "coverage_level": 2,
     "auto_level": "C",
     "available_locales": ["en", "ja"],
-    "summary_en": "Important non-English and non-Japanese Alpha jurisdiction. Begin with official links and calendar/programme verification.",
-    "summary_ja": "英語圏・日本語圏以外を広げるための重要なAlpha対象。公式リンクと開催日程・番組確認から始める。"
+    "summary_en": "Moroccan racing is covered through official institution, racecourse, and programme routes, with link-first presentation where timetable verification is incomplete.",
+    "summary_ja": "モロッコ競馬は公式機関、競馬場、番組の公式導線を中心に扱い、時刻表の確認が不十分な範囲はリンク中心で表示します。"
   },
   {
     "id": "chile",
@@ -102,8 +102,8 @@
     "coverage_level": 2,
     "auto_level": "C",
     "available_locales": ["en", "ja"],
-    "summary_en": "Multiple racecourse operators. Start with selected official programme links rather than one national parser.",
-    "summary_ja": "複数の競馬場運営元があるため、全国一括parserではなく代表的な公式番組リンクから始める。"
+    "summary_en": "Multiple racecourse operators publish official programme information. Coverage uses selected official routes rather than assuming one national source.",
+    "summary_ja": "複数の競馬場運営元が公式番組情報を公開しています。全国共通ソースを前提とせず、確認済みの公式導線を個別に案内します。"
   },
   {
     "id": "peru",
@@ -117,8 +117,8 @@
     "coverage_level": 2,
     "auto_level": "C",
     "available_locales": ["en", "ja"],
-    "summary_en": "Alpha jurisdiction for South America coverage. Official URL and programme format require verification before automation.",
-    "summary_ja": "南米カバーのAlpha対象。自動化前に公式URLと番組形式の検証が必要。"
+    "summary_en": "Peruvian racing coverage is under review. Official URLs and programme formats require confirmation before timetable details are published.",
+    "summary_ja": "ペルー競馬の掲載範囲は確認中です。時刻表の詳細を掲載する前に、公式URLと番組形式を確認します。"
   },
   {
     "id": "mexico",
@@ -132,8 +132,8 @@
     "coverage_level": 2,
     "auto_level": "C",
     "available_locales": ["en", "ja"],
-    "summary_en": "Alpha jurisdiction for regional balance. Treat as link-first until current official programme format is verified.",
-    "summary_ja": "地域バランスのためのAlpha対象。現在の公式番組形式を確認するまではリンク中心で扱う。"
+    "summary_en": "Mexican racing coverage is under review. Current pages remain link-first until the official programme format is confirmed.",
+    "summary_ja": "メキシコ競馬の掲載範囲は確認中です。公式番組形式を確認するまでは公式リンク中心で案内します。"
   },
   {
     "id": "bahrain",
@@ -147,7 +147,7 @@
     "coverage_level": 3,
     "auto_level": "B",
     "available_locales": ["en", "ja"],
-    "summary_en": "Useful Gulf coverage candidate. Parser readiness should be checked after UAE.",
-    "summary_ja": "湾岸地域カバーの有用な候補。UAEの後にparser適性を確認する。"
+    "summary_en": "Gulf racing jurisdiction with official programme and organizer sources. Timetable details are published only after source verification.",
+    "summary_ja": "公式番組と運営主体のソースを持つ湾岸地域の競馬地域です。時刻表の詳細はソース確認後に掲載します。"
   }
 ]

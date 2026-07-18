@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "base_inventory": "data/static/country-page-id-inventory-01-12.json",
+  "reviewed_at": "2026-07-18",
+  "reason": "The public racecourse registries are the current source of truth for IDs that were reserved in the initial country-page inventory and registered later.",
+  "racecourse_registry_status_overrides": [
+    {
+      "id": "jebel-ali-racecourse",
+      "country_id": "united-arab-emirates",
+      "previous_status": "reserved",
+      "effective_status": "registered"
+    },
+    {
+      "id": "abu-dhabi-turf-club",
+      "country_id": "united-arab-emirates",
+      "previous_status": "reserved",
+      "effective_status": "registered"
+    },
+    {
+      "id": "sharjah-racecourse",
+      "country_id": "united-arab-emirates",
+      "previous_status": "reserved",
+      "effective_status": "registered"
+    },
+    {
+      "id": "al-ain-racecourse",
+      "country_id": "united-arab-emirates",
+      "previous_status": "reserved",
+      "effective_status": "registered"
+    }
+  ]
+}

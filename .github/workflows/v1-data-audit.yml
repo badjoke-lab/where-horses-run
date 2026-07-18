@@ -1,0 +1,67 @@
+name: v1 data audit gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/static/**'
+      - 'data/generated/**'
+      - 'src/lib/data.ts'
+      - 'scripts/validate-data.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12-reconciled.mjs'
+      - 'scripts/check-v1-data-audit.mjs'
+      - 'data/audits/v1-data-audit-v1.json'
+      - 'docs/release/v1-data-audit.md'
+      - '.github/workflows/v1-data-audit.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/**'
+      - 'data/generated/**'
+      - 'src/lib/data.ts'
+      - 'scripts/validate-data.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12-reconciled.mjs'
+      - 'scripts/check-v1-data-audit.mjs'
+      - 'data/audits/v1-data-audit-v1.json'
+      - 'docs/release/v1-data-audit.md'
+      - '.github/workflows/v1-data-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Validate existing data schemas and references
+        run: npm run validate:data
+      - name: Build complete static site
+        run: npm run build
+      - name: Preserve Phase 11 SEO QA release
+        run: node scripts/check-seo-qa-release.mjs
+      - name: Preserve v1 scope freeze
+        run: node scripts/check-v1-scope-freeze.mjs
+      - name: Validate reconciled country ID inventory
+        run: node scripts/check-country-page-id-inventory-01-12-reconciled.mjs
+      - name: Validate complete v1 data audit
+        run: node scripts/check-v1-data-audit.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
