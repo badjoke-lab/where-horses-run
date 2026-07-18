@@ -31,7 +31,9 @@ jobs:
       - name: Install dependencies without generating a lockfile
         run: npm install --package-lock=false
       - name: Validate discovery script syntax
-        run: node --check scripts/temporary-discover-v1-performance-qa.mjs
+        run: |
+          node --check scripts/temporary-discover-v1-performance-qa.mjs
+          node --check scripts/temporary-measure-v1-performance-key-pages.mjs
       - name: Build complete static site
         run: npm run build
       - name: Measure complete static performance inventory
@@ -43,6 +45,8 @@ jobs:
           printf '%s\n' "$status" > v1-performance-qa-discovery.exit
           cat v1-performance-qa-discovery.log
           exit 0
+      - name: Measure key public routes
+        run: node scripts/temporary-measure-v1-performance-key-pages.mjs
       - name: Upload performance discovery
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,6 +56,7 @@ jobs:
             v1-performance-qa-discovery.log
             v1-performance-qa-discovery.exit
             v1-performance-qa-discovery.json
+            v1-performance-key-pages.json
           if-no-files-found: warn
           retention-days: 1
       - name: Enforce discovery success
