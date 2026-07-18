@@ -1,0 +1,43 @@
+name: Temporary v1 mobile QA discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'scripts/temporary-discover-v1-mobile-qa.mjs'
+      - '.github/workflows/temporary-v1-mobile-qa-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Build complete static site
+        run: npm run build
+      - name: Show available browser
+        run: |
+          command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser
+      - name: Measure every public page at mobile widths
+        run: node scripts/temporary-discover-v1-mobile-qa.mjs
+      - name: Upload mobile QA discovery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1-mobile-qa-discovery
+          path: v1-mobile-qa-discovery.json
+          if-no-files-found: warn
+          retention-days: 1
