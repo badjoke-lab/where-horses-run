@@ -69,10 +69,12 @@ Nested-interactive instances: 0
 ```text
 Images: 0
 Visible form controls: 40
-Details elements: 973
+Details elements: 969
 Tables: 180
-Navigation landmarks: 1,126
+Navigation landmarks: 1,127
 ```
+
+The performance review retired four obsolete browse disclosures from the legacy major-country timetable and added one named navigation landmark for the current public routes. The full accessibility audit still reports zero errors.
 
 The zero image count reflects the rendered v1 page inventory. The social card is a generated crawler asset and is not embedded as an HTML content image.
 
