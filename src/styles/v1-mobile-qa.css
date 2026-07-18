@@ -1,21 +1,44 @@
 .gap-grid > *,
-.gap-item {
+.gap-item,
+.browse-panel,
+.timetable-records,
+.coverage-gaps,
+.browse-grid,
+.record-grid,
+.gap-grid,
+.timetable-card,
+.record-meta,
+.record-meta > *,
+.source-links,
+.race-list {
   min-width: 0;
+  max-width: 100%;
 }
 
 .gap-item,
 .gap-item a,
 .gap-item p,
-.gap-item h3 {
+.gap-item h3,
+.record-meta dd,
+.source-links,
+.race-list {
   overflow-wrap: anywhere;
 }
 
+.country-jump-nav a {
+  min-width: 2.75rem;
+  justify-content: center;
+}
+
 .detail-nav a,
+.retired-preview__nav a,
 .browse-grid summary {
+  min-width: 2.75rem;
   min-height: 2.75rem;
   display: inline-flex;
   align-items: center;
-  padding-block: 0.45rem;
+  justify-content: center;
+  padding: 0.45rem;
 }
 
 @media (max-width: 720px) {
