@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/country-page-id-inventory-01-12-reconciliation-v1.json'
       - 'data/static/country-profiles-v2*.json'
       - 'data/static/country-page-countries-*.json'
       - 'data/static/country-page-sources-*.json'
@@ -14,12 +15,14 @@ on:
       - 'data/static/racecourses-extensions.json'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12-reconciled.mjs'
       - '.github/workflows/country-page-id-inventory-01-12.yml'
   push:
     branches:
       - main
     paths:
       - 'data/static/country-page-id-inventory-01-12.json'
+      - 'data/static/country-page-id-inventory-01-12-reconciliation-v1.json'
       - 'data/static/country-profiles-v2*.json'
       - 'data/static/country-page-countries-*.json'
       - 'data/static/country-page-sources-*.json'
@@ -30,6 +33,7 @@ on:
       - 'data/static/racecourses-extensions.json'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'scripts/check-country-page-id-inventory-01-12.mjs'
+      - 'scripts/check-country-page-id-inventory-01-12-reconciled.mjs'
       - '.github/workflows/country-page-id-inventory-01-12.yml'
 
 permissions:
@@ -52,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          node scripts/check-country-page-id-inventory-01-12.mjs 2>&1 | tee country-page-id-validation.log
+          node scripts/check-country-page-id-inventory-01-12-reconciled.mjs 2>&1 | tee country-page-id-validation.log
           status=${PIPESTATUS[0]}
           echo "status=${status}" >> "$GITHUB_OUTPUT"
           exit 0
