@@ -26,21 +26,10 @@
     "unknown_country_ids": 0,
     "missing_required_fields": 0,
     "missing_public_notes": 0,
-    "source_type_counts": {
-      "official": 171
-    },
-    "data_type_counts": {
-      "link_only": 171
-    },
-    "auto_level_counts": {
-      "B": 9,
-      "C": 162
-    },
-    "url_path_kinds": {
-      "host_root": 69,
-      "deep_page": 99,
-      "pdf": 3
-    }
+    "source_type_counts": {"official": 171},
+    "data_type_counts": {"link_only": 171},
+    "auto_level_counts": {"B": 9, "C": 162},
+    "url_path_kinds": {"host_root": 69, "deep_page": 99, "pdf": 3}
   },
   "normalization": {
     "terms_risk_fields_removed": 171,
@@ -61,16 +50,7 @@
     "url_parameters": 2,
     "keyword_parameter": "q",
     "country_parameter": "country",
-    "public_record_fields": [
-      "id",
-      "url",
-      "country_id",
-      "country_href",
-      "source_type",
-      "data_type",
-      "notes",
-      "search_text"
-    ],
+    "public_record_fields": ["id", "url", "country_id", "country_href", "source_type", "data_type", "notes", "search_text"],
     "rendered_internal_metadata_instances": 0,
     "internal_html_attribute_instances": 0,
     "internal_search_text_instances": 0,
@@ -116,5 +96,5 @@
     "documentation": "docs/release/v1-source-policy-review.md"
   },
   "previous_implementation_unit": "V1-PERFORMANCE-QA-01",
-  "next_implementation_unit": "V1-LAUNCH-READINESS-01"
+  "next_implementation_unit": "V1-KNOWN-LIMITATIONS-01"
 }
