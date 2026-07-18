@@ -174,7 +174,7 @@ const evaluation = String.raw`(() => {
     if ((el.getAttribute('aria-label') || '').trim()) return false;
     if (refsText(el.getAttribute('aria-labelledby'))) return false;
     if (el.closest('label')) return false;
-    if (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`)) return false;
+    if (el.id && document.querySelector('label[for="' + CSS.escape(el.id) + '"]')) return false;
     return true;
   }).map(describe);
   const detailsWithoutSummary = [...document.querySelectorAll('details')].filter((el) => !el.querySelector(':scope > summary')).map(describe);
