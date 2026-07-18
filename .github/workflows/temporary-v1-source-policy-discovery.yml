@@ -1,0 +1,65 @@
+name: Temporary v1 source policy discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/static/**'
+      - 'src/lib/data.ts'
+      - 'src/lib/source-filter-data.ts'
+      - 'src/components/SourceDirectoryPage.astro'
+      - 'src/pages/sources/**'
+      - 'src/pages/ja/sources/**'
+      - 'scripts/temporary-discover-v1-source-policy.mjs'
+      - '.github/workflows/temporary-v1-source-policy-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Validate discovery script syntax
+        run: node --check scripts/temporary-discover-v1-source-policy.mjs
+      - name: Validate source data references
+        run: npm run validate:data
+      - name: Build complete static site
+        run: npm run build
+      - name: Measure source registry and rendered policy exposure
+        shell: bash
+        run: |
+          set +e
+          node scripts/temporary-discover-v1-source-policy.mjs > v1-source-policy-discovery.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > v1-source-policy-discovery.exit
+          cat v1-source-policy-discovery.log
+          exit 0
+      - name: Upload source policy discovery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1-source-policy-discovery
+          path: |
+            v1-source-policy-discovery.log
+            v1-source-policy-discovery.exit
+            v1-source-policy-discovery.json
+          if-no-files-found: warn
+          retention-days: 1
+      - name: Enforce discovery success
+        run: |
+          status="$(cat v1-source-policy-discovery.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
