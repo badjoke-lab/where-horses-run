@@ -12,6 +12,7 @@ on:
       - 'src/pages/sources/**'
       - 'src/pages/ja/sources/**'
       - 'scripts/temporary-discover-v1-source-policy.mjs'
+      - 'scripts/temporary-normalize-v1-source-policy.mjs'
       - '.github/workflows/temporary-v1-source-policy-discovery.yml'
   workflow_dispatch:
 
@@ -31,13 +32,17 @@ jobs:
           node-version: 22.12.0
       - name: Install dependencies without generating a lockfile
         run: npm install --package-lock=false
-      - name: Validate discovery script syntax
-        run: node --check scripts/temporary-discover-v1-source-policy.mjs
-      - name: Validate source data references
+      - name: Validate temporary script syntax
+        run: |
+          node --check scripts/temporary-normalize-v1-source-policy.mjs
+          node --check scripts/temporary-discover-v1-source-policy.mjs
+      - name: Normalize source registry public fields
+        run: node scripts/temporary-normalize-v1-source-policy.mjs
+      - name: Validate normalized source data references
         run: npm run validate:data
       - name: Build complete static site
         run: npm run build
-      - name: Measure source registry and rendered policy exposure
+      - name: Measure normalized registry and rendered policy exposure
         shell: bash
         run: |
           set +e
@@ -46,16 +51,20 @@ jobs:
           printf '%s\n' "$status" > v1-source-policy-discovery.exit
           cat v1-source-policy-discovery.log
           exit 0
-      - name: Upload source policy discovery
+      - name: Upload normalized source registry and discovery
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: v1-source-policy-discovery
           path: |
+            data/static/sources.json
+            data/static/country-page-sources-*.json
+            data/static/racecourse-link-amendments-v1.json
+            v1-source-policy-normalization.json
             v1-source-policy-discovery.log
             v1-source-policy-discovery.exit
             v1-source-policy-discovery.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 1
       - name: Enforce discovery success
         run: |
