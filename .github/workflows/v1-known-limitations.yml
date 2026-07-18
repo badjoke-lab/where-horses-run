@@ -79,7 +79,26 @@ jobs:
       - name: Preserve Methods and Data Policy pages
         run: node scripts/check-methods-data-policy.mjs
       - name: Validate v1 known limitations
-        run: node scripts/check-v1-known-limitations.mjs
+        id: known_limitations
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/check-v1-known-limitations.mjs 2>&1 | tee v1-known-limitations-check.log
+      - name: Upload known-limitations diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1-known-limitations-check
+          path: v1-known-limitations-check.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove diagnostics from worktree
+        if: always()
+        run: rm -f v1-known-limitations-check.log
+      - name: Fail when known-limitations validation failed
+        if: steps.known_limitations.outcome == 'failure'
+        run: exit 1
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
