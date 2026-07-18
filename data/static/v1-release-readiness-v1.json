@@ -1,0 +1,117 @@
+{
+  "schema_version": "v1-release-readiness-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-RELEASE-READINESS-01",
+  "status": "release_candidate_ready",
+  "reviewed_at": "2026-07-18",
+  "baseline_release_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "completed_units": [
+    "V1-SCOPE-FREEZE-01",
+    "V1-DATA-AUDIT-01",
+    "V1-MOBILE-QA-01",
+    "V1-ACCESSIBILITY-QA-01",
+    "V1-PERFORMANCE-QA-01",
+    "V1-SOURCE-POLICY-REVIEW-01",
+    "V1-KNOWN-LIMITATIONS-01"
+  ],
+  "candidate_inventory": {
+    "locales": 2,
+    "public_pages": 771,
+    "english_pages": 387,
+    "japanese_pages": 384,
+    "route_families": 17,
+    "audited_json_files": 154,
+    "top_level_data_rows": 462,
+    "official_source_records": 171,
+    "countries_and_regions_with_sources": 98,
+    "racecourse_records": 36,
+    "mobile_page_viewport_checks": 2313,
+    "accessibility_page_checks": 771,
+    "performance_measured_pages": 771,
+    "known_limitation_categories": 12,
+    "new_public_routes": 0,
+    "new_public_data_classes": 0
+  },
+  "quality_results": {
+    "scope_contract_complete": true,
+    "data_audit_complete": true,
+    "mobile_qa_complete": true,
+    "mobile_required_errors": 0,
+    "accessibility_qa_complete": true,
+    "accessibility_required_errors": 0,
+    "performance_qa_complete": true,
+    "performance_budget_errors": 0,
+    "source_policy_review_complete": true,
+    "source_policy_errors": 0,
+    "known_limitations_complete": true,
+    "known_limitations_errors": 0,
+    "phase_11_seo_release_complete": true,
+    "complete_static_build_required": true,
+    "all_sitemap_routes_required": true,
+    "repository_clean_proof_required": true
+  },
+  "release_materials": {
+    "release_notes": "docs/release/v1-release-notes.md",
+    "readiness_document": "docs/release/v1-release-readiness.md",
+    "release_notes_complete": true,
+    "known_limitations_included": true,
+    "official_source_priority_included": true,
+    "publication_boundary_included": true,
+    "privacy_boundary_included": true,
+    "automation_boundary_included": true,
+    "internal_revenue_budget_or_other_project_context_included": false
+  },
+  "cleanup": {
+    "temporary_v1_preparation_files": 0,
+    "temporary_discovery_workflows": 0,
+    "temporary_discovery_scripts": 0,
+    "generated_diagnostic_files_committed": 0,
+    "repository_clean_after_gate": true
+  },
+  "release_decision": {
+    "readiness_decision": "ready_for_v1_release_decision",
+    "final_release_decision_complete": false,
+    "release_tag_created": false,
+    "deployment_authorized": false,
+    "deployment_performed": false,
+    "next_required_unit": "V1-RELEASE-DECISION-01"
+  },
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "existing_public_data_classes_only": true,
+    "public_release_notes_allowed": true,
+    "known_limitations_allowed": true,
+    "official_source_priority_allowed": true,
+    "participant_or_complete_racecard_fields_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "embedded_video_or_direct_stream_urls_allowed": false,
+    "internal_revenue_budget_other_project_or_circumstance_discussion_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_scope_expansion_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "release_tag_creation_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "source_contract": {
+    "checker": "scripts/check-v1-release-readiness.mjs",
+    "workflow": ".github/workflows/v1-release-readiness.yml",
+    "audit": "data/audits/v1-release-readiness-v1.json",
+    "documentation": "docs/release/v1-release-readiness.md",
+    "release_notes": "docs/release/v1-release-notes.md"
+  },
+  "previous_implementation_unit": "V1-KNOWN-LIMITATIONS-01",
+  "next_implementation_unit": "V1-RELEASE-DECISION-01"
+}
