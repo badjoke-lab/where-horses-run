@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  locale: 'en' | 'ja';
+}
+
+const { locale } = Astro.props;
+const isJa = locale === 'ja';
+
+const content = isJa
+  ? {
+      title: 'データの方法と公開方針 | 競馬どこ？',
+      description: '競馬どこ？の公式ソース優先、レビュー手順、日付と時刻帯、公開ランク、更新・訂正・制限事項を説明します。',
+      eyebrow: 'Methods & Data Policy',
+      heading: 'データの方法と公開方針',
+      summary: '情報をどのように確認し、どの範囲を公開し、何を公式ソースで最終確認すべきかを説明します。',
+      sections: [
+        {
+          heading: '1. 基本原則',
+          paragraphs: [
+            '競馬どこ？は、公式ソースへの到達を助ける静的ファーストのガイドです。取得できる情報をすべて再掲載するのではなく、確認できた範囲と公開表示境界に従って情報を整理します。',
+            '現在情報については主催者、規制機関、競馬場などの公式ソースを優先します。このサイトの表示と公式ソースが異なる場合は、公式ソースを最終確認先としてください。',
+          ],
+        },
+        {
+          heading: '2. ソースの扱い',
+          paragraphs: [
+            '公式ソースは、開催日、競馬場、発走時刻、主催者情報などの現在情報を確認するために使用します。ページ内の公式リンクは、最新かつ完全な情報へ進むための導線です。',
+            '参考ソースは、用語、歴史的文脈、競馬体系、公式導線の発見など、限定した目的で使用する場合があります。参考ソースだけを根拠に現行開催を確定しません。',
+          ],
+        },
+        {
+          heading: '3. レビューから公開まで',
+          paragraphs: [
+            '候補情報は、対象、日付、場所、ソース、公開可能な項目を確認した後に、公開用データへ反映します。未確認の候補や内部作業状態をそのまま公開ページへ出しません。',
+            '同じ情報でも、確認できる粒度によって公開範囲が異なります。確認できない項目は推測で補わず、表示を薄くして公式ソースへ案内します。',
+          ],
+        },
+        {
+          heading: '4. 日付・時刻・タイムゾーン',
+          paragraphs: [
+            '開催日と発走時刻は、原則として公式ソースが示す開催地の現地日付・現地時刻として扱います。ページにタイムゾーンが表示される場合は、その開催情報を解釈するための基準です。',
+            '夏時間、公式時刻の変更、延期、中止などにより表示後に情報が変わる場合があります。移動、観戦、配信視聴などの前には公式ソースで再確認してください。',
+          ],
+        },
+        {
+          heading: '5. Today・Tomorrow・カレンダー',
+          paragraphs: [
+            'Today、Tomorrow、カレンダー、現在のタイムテーブルは、コミット済みのレビュー済み公開データから生成します。表示される開催は、その時点で公開可能と判断された範囲です。',
+            '開催が表示されていないことは、その国・地域で競馬がないことを意味しません。確認済み公開レコードがない場合や、公式情報を再確認中の場合があります。',
+          ],
+        },
+        {
+          heading: '6. 公開ランク',
+          paragraphs: [
+            'Cは開催日と競馬場、Bは第1レース時刻、B+は第1・最終レース時刻、Aはレースラベルと発走時刻を表示できる範囲です。',
+            'A+は開催詳細ページに限り、レビュー済みの公開ポリシーで許可されたレース名、距離、馬場種別、コースを追加できる軽量な番組概要です。完全なレースカードではありません。',
+          ],
+        },
+        {
+          heading: '7. 確認日と更新',
+          paragraphs: [
+            '「最終確認」や確認日は、そのソースまたは項目を最後にレビューした日を示します。情報がその後変わっていないことや、次の開催まで有効であることを保証する表示ではありません。',
+            '更新は、確認可能な公式情報とレビュー済み証拠が揃ったときに行います。リアルタイム更新や、すべての変更の即時反映は保証しません。',
+          ],
+        },
+        {
+          heading: '8. 訂正・縮小・削除',
+          paragraphs: [
+            '誤り、古い情報、根拠不足、公式導線の変更が確認された場合は、該当情報を訂正、表示縮小、または削除します。確度が下がった場合は、詳細を残すより公式リンク中心の表示へ戻します。',
+            '異なるソースが食い違う場合は、現在情報に最も近い公式ソースを優先し、解消できない不一致を推測で統合しません。',
+          ],
+        },
+        {
+          heading: '9. 掲載しない情報と制限事項',
+          paragraphs: [
+            '出走表、馬名、騎手名、調教師名、枠順、斤量、オッズ、結果、払戻、予想、買い目、完全なレースカード、公式本文の転載は扱いません。動画の埋め込み、直接ストリームURL、非公式ミラー、転載映像も扱いません。',
+            '競馬どこ？は情報探索を助けるガイドであり、開催の実施、時刻の確定、情報の完全性、観戦可否を保証しません。最終判断には公式ソースを使用してください。',
+          ],
+        },
+      ],
+      relatedHeading: '関連ページ',
+      relatedText: 'サイトの目的、よくある質問、免責事項、公式ソースも確認してください。',
+      relatedLinks: [
+        { href: '/ja/about/', label: '概要' },
+        { href: '/ja/faq/', label: 'よくある質問' },
+        { href: '/ja/disclaimer/', label: '免責事項' },
+        { href: '/ja/sources/', label: '公式ソース' },
+      ],
+    }
+  : {
+      title: 'Methods and Data Policy | Where Horses Run',
+      description: 'How Where Horses Run prioritizes official sources, reviews data, handles dates and timezones, applies publication ranks, updates records, and states limitations.',
+      eyebrow: 'Methods & Data Policy',
+      heading: 'Methods and Data Policy',
+      summary: 'How information is reviewed, what is published, and what should be confirmed on the official source.',
+      sections: [
+        {
+          heading: '1. Core principle',
+          paragraphs: [
+            'Where Horses Run is a static-first guide that helps people reach official horse-racing information. It does not republish everything that can be collected. Information is organized according to verified scope and the public-display boundary.',
+            'For current facts, official sources from organizers, regulators, and racecourses take priority. If this site and an official source differ, use the official source for final confirmation.',
+          ],
+        },
+        {
+          heading: '2. How sources are used',
+          paragraphs: [
+            'Official sources are used to confirm current facts such as meeting dates, racecourses, post times, and organizer information. Official links on public pages are routes to the latest and complete information.',
+            'Reference sources may be used for a limited purpose such as terminology, historical context, racing-system context, or discovery of an official route. A current meeting is not confirmed from a reference source alone.',
+          ],
+        },
+        {
+          heading: '3. Review before publication',
+          paragraphs: [
+            'Candidate information is checked for subject, date, place, source, and publication-safe fields before it enters the public dataset. Unreviewed candidates and internal work states are not exposed as public records.',
+            'The same source can support different levels of public detail. Missing fields are not filled by inference. When a field cannot be confirmed, the page stays lighter and directs the reader to the official source.',
+          ],
+        },
+        {
+          heading: '4. Dates, times, and timezones',
+          paragraphs: [
+            'Meeting dates and post times are normally treated as local dates and local times in the timezone used by the official source. When a timezone appears on a page, it is the interpretation basis for that meeting information.',
+            'Daylight-saving changes, official time changes, postponements, and cancellations can make information change after publication. Confirm the official source before travel, viewing, or other plans.',
+          ],
+        },
+        {
+          heading: '5. Today, Tomorrow, and calendar views',
+          paragraphs: [
+            'Today, Tomorrow, Calendar, and Current Timetable views are generated from committed, reviewed public data. Displayed meetings represent the scope approved for public display at that point.',
+            'An empty view does not prove that no racing exists in a country or region. It can mean that no reviewed public record is available or that official information still needs rechecking.',
+          ],
+        },
+        {
+          heading: '6. Publication ranks',
+          paragraphs: [
+            'C covers meeting date and racecourse. B adds the first-race time. B+ adds first- and last-race times. A permits race labels and post times.',
+            'A+ is a lightweight programme summary on meeting-detail pages. It may add policy-approved race name, distance, surface, and course fields. It is not a complete racecard.',
+          ],
+        },
+        {
+          heading: '7. Last checked and updates',
+          paragraphs: [
+            'A “Last checked” date records when a source or field was last reviewed. It does not guarantee that the information has not changed since then or remains valid for the next meeting.',
+            'Records are updated when reviewable official information and evidence are available. Real-time updates and immediate coverage of every change are not promised.',
+          ],
+        },
+        {
+          heading: '8. Corrections, reduction, and removal',
+          paragraphs: [
+            'When an error, stale information, insufficient support, or an official-route change is confirmed, the affected information may be corrected, reduced, or removed. If confidence decreases, the page returns to a lighter official-link-first presentation rather than retaining unsupported detail.',
+            'When sources disagree, the official source closest to the current fact takes priority. Unresolved conflicts are not merged through speculation.',
+          ],
+        },
+        {
+          heading: '9. Excluded information and limitations',
+          paragraphs: [
+            'The site does not publish entries, horse names, jockey or trainer names, draws, weights, odds, results, payouts, predictions, betting picks, complete racecards, or copied official-source text. It also does not embed video or provide direct stream URLs, unofficial mirrors, or copied recordings.',
+            'Where Horses Run is an information-discovery guide. It does not guarantee that a meeting will take place, that a time is final, that coverage is complete, or that viewing access is available. Use the official source for final decisions.',
+          ],
+        },
+      ],
+      relatedHeading: 'Related pages',
+      relatedText: 'Read the project overview, FAQ, disclaimer, and official-source directory for more context.',
+      relatedLinks: [
+        { href: '/about/', label: 'About' },
+        { href: '/faq/', label: 'FAQ' },
+        { href: '/disclaimer/', label: 'Disclaimer' },
+        { href: '/sources/', label: 'Official Sources' },
+      ],
+    };
+
+const canonicalPath = isJa ? '/ja/methods/' : '/methods/';
+const alternatePath = isJa ? '/methods/' : '/ja/methods/';
+---
+
+<BaseLayout
+  title={content.title}
+  description={content.description}
+  lang={locale}
+  canonicalPath={canonicalPath}
+  alternatePath={alternatePath}
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">{content.eyebrow}</p>
+    <h1 id="page-title">{content.heading}</h1>
+    <p class="hero__summary">{content.summary}</p>
+  </section>
+
+  <div class="methods-sections">
+    {content.sections.map((section) => (
+      <section class="card methods-section">
+        <h2>{section.heading}</h2>
+        {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </section>
+    ))}
+  </div>
+
+  <section class="card methods-related" aria-labelledby="related-pages-heading">
+    <h2 id="related-pages-heading">{content.relatedHeading}</h2>
+    <p>{content.relatedText}</p>
+    <p>
+      {content.relatedLinks.map((link, index) => (
+        <>
+          {index > 0 && ' · '}
+          <a href={link.href}>{link.label}</a>
+        </>
+      ))}
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .methods-sections {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 2rem;
+  }
+
+  .methods-section h2,
+  .methods-section p,
+  .methods-related h2,
+  .methods-related p {
+    margin-block: 0 0.75rem;
+  }
+
+  .methods-related {
+    margin-block-start: 2rem;
+  }
+</style>

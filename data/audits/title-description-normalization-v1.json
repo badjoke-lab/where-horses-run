@@ -4,15 +4,16 @@
   "implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
   "status": "complete",
   "reviewed_at": "2026-07-18",
-  "scope_updated_by": "FAQ-CONTENT-PAGES-01",
+  "scope_updated_by": "METHODS-DATA-POLICY-01",
   "verified": {
-    "public_pages": 769,
-    "english_pages": 386,
-    "japanese_pages": 383,
+    "public_pages": 771,
+    "english_pages": 387,
+    "japanese_pages": 384,
     "meeting_detail_pages": 158,
     "country_detail_pages": 196,
     "normalized_country_description_pages": 4,
     "faq_pages": 2,
+    "methods_pages": 2,
     "missing_titles": 0,
     "missing_descriptions": 0,
     "duplicate_title_tag_pages": 0,
@@ -27,6 +28,8 @@
     "jsonld_description_errors": 0,
     "faq_title_errors": 0,
     "faq_description_errors": 0,
+    "methods_title_errors": 0,
+    "methods_description_errors": 0,
     "whitespace_errors": 0,
     "newline_errors": 0,
     "temporary_discovery_workflows": 0,
@@ -47,7 +50,9 @@
     "meeting_duplicate_description_groups": 0,
     "country_duplicate_description_groups": 0,
     "faq_duplicate_title_groups": 0,
-    "faq_duplicate_description_groups": 0
+    "faq_duplicate_description_groups": 0,
+    "methods_duplicate_title_groups": 0,
+    "methods_duplicate_description_groups": 0
   },
   "behavior": {
     "meeting_metadata_uses_visible_date": true,
@@ -55,6 +60,7 @@
     "meeting_metadata_uses_visible_page_kind": true,
     "country_duplicate_descriptions_gain_visible_area_name": true,
     "faq_metadata_is_unique_and_aligned": true,
+    "methods_metadata_is_unique_and_aligned": true,
     "social_and_jsonld_metadata_remain_aligned": true,
     "normalizer_does_not_change_visible_page_body": true,
     "length_outliers_are_audited_not_automatically_truncated": true

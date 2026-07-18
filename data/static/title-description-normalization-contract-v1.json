@@ -4,18 +4,19 @@
   "implementation_unit": "TITLE-DESCRIPTION-NORMALIZATION-01",
   "status": "complete",
   "reviewed_at": "2026-07-18",
-  "scope_updated_by": "FAQ-CONTENT-PAGES-01",
+  "scope_updated_by": "METHODS-DATA-POLICY-01",
   "site_origin": "https://whr.badjoke-lab.com",
   "scope": {
-    "public_pages": 769,
-    "english_pages": 386,
-    "japanese_pages": 383,
+    "public_pages": 771,
+    "english_pages": 387,
+    "japanese_pages": 384,
     "meeting_detail_pages": 158,
     "english_meeting_detail_pages": 79,
     "japanese_meeting_detail_pages": 79,
     "country_detail_pages": 196,
     "normalized_country_description_pages": 4,
-    "faq_pages": 2
+    "faq_pages": 2,
+    "methods_pages": 2
   },
   "normalization_contract": {
     "one_title_tag_per_page": true,
@@ -52,6 +53,12 @@
   },
   "faq_contract": {
     "paths": ["/faq/", "/ja/faq/"],
+    "unique_titles_required": true,
+    "unique_descriptions_required": true,
+    "social_and_jsonld_alignment_required": true
+  },
+  "methods_contract": {
+    "paths": ["/methods/", "/ja/methods/"],
     "unique_titles_required": true,
     "unique_descriptions_required": true,
     "social_and_jsonld_alignment_required": true

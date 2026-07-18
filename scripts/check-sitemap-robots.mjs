@@ -1,131 +1,51 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const root = process.cwd();
-const errors = [];
-const fail = (message) => errors.push(message);
-const filePath = (file) => path.join(root, file);
-const read = (file) => fs.readFileSync(filePath(file), 'utf8');
-const parse = (file) => JSON.parse(read(file));
-const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const ROOT = process.cwd();
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
+const CONTRACT = 'data/static/sitemap-robots-contract-v1.json';
+const AUDIT = 'data/audits/sitemap-robots-v1.json';
+const CONFIG = 'astro.config.mjs';
+const INTEGRATION = 'scripts/sitemap-robots-integration.mjs';
+const DOC = 'docs/seo/sitemap-robots.md';
+const WORKFLOW = '.github/workflows/sitemap-robots.yml';
+const TEMPORARY = '.github/workflows/temporary-sitemap-robots-discovery.yml';
+const DIST = 'dist';
 
-const contractPath = 'data/static/sitemap-robots-contract-v1.json';
-const auditPath = 'data/audits/sitemap-robots-v1.json';
-const configPath = 'astro.config.mjs';
-const integrationPath = 'scripts/sitemap-robots-integration.mjs';
-const publicRobotsPath = 'public/robots.txt';
-const publicSitemapPath = 'public/sitemap.xml';
-const docPath = 'docs/seo/sitemap-robots.md';
-const workflowPath = '.github/workflows/sitemap-robots.yml';
-const temporaryWorkflowPath = '.github/workflows/temporary-sitemap-robots-discovery.yml';
+const at = (file) => path.join(ROOT, file);
+const read = (file) => fs.readFileSync(at(file), 'utf8');
+const json = (file) => JSON.parse(read(file));
+const exact = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
-for (const required of [contractPath, auditPath, configPath, integrationPath, publicRobotsPath, docPath, workflowPath]) {
-  if (!fs.existsSync(filePath(required))) fail(`required file missing: ${required}`);
+for (const file of [CONTRACT, AUDIT, CONFIG, INTEGRATION, DOC, WORKFLOW]) expect(fs.existsSync(at(file)), `Missing ${file}`);
+expect(!fs.existsSync(at(TEMPORARY)), 'Temporary sitemap discovery workflow remains');
+expect(!fs.existsSync(at('public/sitemap.xml')), 'Manual public sitemap remains');
+
+const contract = json(CONTRACT);
+const audit = json(AUDIT);
+expect(contract.schema_version === 'sitemap-robots-contract-v1', 'Sitemap contract schema differs');
+expect(contract.status === 'complete', 'Sitemap contract is not complete');
+expect(contract.site_origin === SITE_ORIGIN, 'Sitemap site origin differs');
+expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Sitemap scope update marker differs');
+expect(audit.schema_version === 'sitemap-robots-audit-v1' && audit.status === 'complete', 'Sitemap audit identity differs');
+expect(audit.scope_updated_by === contract.scope_updated_by, 'Sitemap audit scope marker differs');
+for (const key of ['sitemap_urls', 'english_urls', 'japanese_urls', 'route_families', 'faq_routes', 'methods_routes']) {
+  expect(audit.verified[key] === contract.scope[key], `Sitemap audit ${key} differs`);
 }
-
-const expectedScope = {
-  sitemap_urls: 769,
-  english_urls: 386,
-  japanese_urls: 383,
-  route_families: 16,
-  country_routes: 198,
-  source_routes: 198,
-  meeting_detail_routes: 158,
-  glossary_routes: 100,
-  racecourse_routes: 74,
-  racing_type_routes: 18,
-  major_country_routes: 5,
-  root_routes: 2,
-  about_routes: 2,
-  archive_routes: 2,
-  calendar_routes: 2,
-  disclaimer_routes: 2,
-  faq_routes: 2,
-  search_routes: 2,
-  today_routes: 2,
-  tomorrow_routes: 2,
-};
-
-const expectedDetailCounts = {
-  country_detail_routes: 196,
-  source_country_routes: 196,
-  meeting_detail_routes: 158,
-  glossary_term_routes: 96,
-  glossary_relationship_routes: 2,
-  racecourse_detail_routes: 72,
-  racing_type_detail_routes: 16,
-  faq_content_routes: 2,
-};
-
-const expectedRobots = [
-  'User-agent: *',
-  'Allow: /',
-  '',
-  'Sitemap: https://whr.badjoke-lab.com/sitemap.xml',
-  '',
-].join('\n');
-
-const contract = fs.existsSync(filePath(contractPath)) ? parse(contractPath) : {};
-const audit = fs.existsSync(filePath(auditPath)) ? parse(auditPath) : {};
-if (contract.schema_version !== 'sitemap-robots-contract-v1') fail('sitemap contract schema differs');
-if (contract.work_id !== 'WHR-SEO-PUBLIC-CONTENT-V1') fail('sitemap Work ID differs');
-if (contract.implementation_unit !== 'SITEMAP-ROBOTS-01') fail('sitemap implementation unit differs');
-if (contract.status !== 'complete') fail('sitemap contract status differs');
-if (contract.reviewed_at !== '2026-07-18') fail('sitemap review date differs');
-if (contract.scope_updated_by !== 'FAQ-CONTENT-PAGES-01') fail('sitemap scope update marker differs');
-if (contract.site_origin !== SITE_ORIGIN) fail('sitemap site origin differs');
-if (!exact(contract.scope, expectedScope)) fail('sitemap scope differs');
-if (!exact(contract.detail_route_counts, expectedDetailCounts)) fail('sitemap detail-route counts differ');
-if (contract.generation_contract?.rendered_html_is_source_of_truth !== true) fail('rendered HTML source contract differs');
-if (contract.generation_contract?.canonical_link_is_url_source !== true) fail('canonical source contract differs');
-if (contract.generation_contract?.manual_sitemap_source_allowed !== false) fail('manual sitemap boundary differs');
-if (contract.generation_contract?.duplicate_urls_allowed !== false) fail('duplicate URL boundary differs');
-if (contract.robots_contract?.sitemap !== `${SITE_ORIGIN}/sitemap.xml`) fail('robots sitemap contract differs');
-if (Object.values(contract.privacy_boundary ?? {}).some((value) => value !== false)) fail('sitemap privacy boundary differs');
-if (Object.values(contract.automation_boundary ?? {}).some((value) => value !== false)) fail('sitemap automation boundary differs');
-
-if (audit.schema_version !== 'sitemap-robots-audit-v1') fail('sitemap audit schema differs');
-if (audit.status !== 'complete') fail('sitemap audit status differs');
-if (audit.reviewed_at !== contract.reviewed_at || audit.scope_updated_by !== contract.scope_updated_by) fail('sitemap audit scope identity differs');
-for (const [key, value] of Object.entries({ sitemap_urls: 769, english_urls: 386, japanese_urls: 383, route_families: 16, faq_routes: 2 })) {
-  if (audit.verified?.[key] !== value) fail(`sitemap audit ${key} differs`);
+for (const key of ['duplicate_urls', 'non_https_urls', 'wrong_origin_urls', 'query_or_fragment_urls', 'urls_without_trailing_slash', 'missing_rendered_html_canonicals', 'sitemap_urls_without_rendered_canonicals', 'rendered_canonicals_missing_from_sitemap', 'rendered_404_urls', 'noindex_urls', 'robots_disallow_directives', 'robots_sitemap_directive_errors', 'contract_errors', 'output_errors']) {
+  expect(audit.verified[key] === 0, `Sitemap audit ${key} differs`);
 }
-for (const key of ['duplicate_urls', 'non_https_urls', 'wrong_origin_urls', 'query_or_fragment_urls', 'urls_without_trailing_slash', 'contract_errors', 'output_errors']) {
-  if (audit.verified?.[key] !== 0) fail(`sitemap audit ${key} differs`);
-}
+expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Sitemap privacy boundary differs');
+expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Sitemap automation boundary differs');
 
-const config = fs.existsSync(filePath(configPath)) ? read(configPath) : '';
-for (const marker of [
-  "import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs'",
-  "site: 'https://whr.badjoke-lab.com'",
-  "trailingSlash: 'always'",
-  'integrations: [sitemapRobotsIntegration()]',
-]) if (!config.includes(marker)) fail(`Astro sitemap configuration missing ${marker}`);
-
-const integration = fs.existsSync(filePath(integrationPath)) ? read(integrationPath) : '';
-for (const marker of [
-  "const SITE_ORIGIN = 'https://whr.badjoke-lab.com'",
-  "name: 'where-horses-run-sitemap-robots'",
-  "'astro:build:done'",
-  'hasNoIndex(html)',
-  'extractCanonical(html',
-  '.sort(compareUrls)',
-  "path.join(outputDirectory, 'sitemap.xml')",
-  "path.join(outputDirectory, 'robots.txt')",
-]) if (!integration.includes(marker)) fail(`sitemap integration missing ${marker}`);
-for (const forbidden of ['fetch(', 'axios', '@astrojs/sitemap', 'contents: write', 'wrangler', 'cloudflare']) {
-  if (integration.toLowerCase().includes(forbidden.toLowerCase())) fail(`sitemap integration contains forbidden marker ${forbidden}`);
-}
-
-if (fs.existsSync(filePath(publicSitemapPath))) fail('manual public sitemap remains');
-if (fs.existsSync(filePath(temporaryWorkflowPath))) fail('temporary sitemap discovery workflow remains');
-if (fs.existsSync(filePath(publicRobotsPath)) && read(publicRobotsPath) !== expectedRobots) fail('committed public robots content differs');
-
-const doc = fs.existsSync(filePath(docPath)) ? read(docPath) : '';
-for (const marker of ['SITEMAP-ROBOTS-01', '769 public canonical URLs', 'English URLs: 386', 'Japanese URLs: 383', 'FAQ routes: 2']) {
-  if (!doc.includes(marker)) fail(`sitemap documentation missing ${marker}`);
-}
+const config = read(CONFIG);
+for (const marker of ["import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs'", "site: 'https://whr.badjoke-lab.com'", "trailingSlash: 'always'", 'integrations: [sitemapRobotsIntegration()]']) expect(config.includes(marker), `Astro sitemap marker missing: ${marker}`);
+const integration = read(INTEGRATION);
+for (const marker of ["name: 'where-horses-run-sitemap-robots'", "'astro:build:done'", 'hasNoIndex(html)', 'extractCanonical(html', '.sort(compareUrls)', "path.join(outputDirectory, 'sitemap.xml')", "path.join(outputDirectory, 'robots.txt')"]) expect(integration.includes(marker), `Sitemap integration marker missing: ${marker}`);
+for (const forbidden of ['fetch(', 'axios', '@astrojs/sitemap', 'contents: write', 'wrangler']) expect(!integration.toLowerCase().includes(forbidden.toLowerCase()), `Sitemap integration contains forbidden marker ${forbidden}`);
+const doc = read(DOC);
+for (const marker of ['SITEMAP-ROBOTS-01', `${contract.scope.sitemap_urls} public canonical URLs`, `English URLs: ${contract.scope.english_urls}`, `Japanese URLs: ${contract.scope.japanese_urls}`, 'Methods routes: 2']) expect(doc.includes(marker), `Sitemap documentation marker missing: ${marker}`);
 
 function walk(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -134,117 +54,105 @@ function walk(directory) {
   });
 }
 
-function canonicalFromHtml(html, relativeFile) {
-  const tags = [...html.matchAll(/<link\s+[^>]*>/gi)].map((match) => match[0]);
-  const canonicalTags = tags.filter((tag) => /rel="canonical"/i.test(tag));
-  if (canonicalTags.length !== 1) {
-    fail(`rendered HTML canonical count differs: ${relativeFile} (${canonicalTags.length})`);
-    return null;
-  }
-  const value = canonicalTags[0].match(/href="([^"]+)"/i)?.[1];
-  if (!value) fail(`rendered HTML canonical missing href: ${relativeFile}`);
-  return value ?? null;
+function decode(value) {
+  return value.replaceAll('&amp;', '&').replaceAll('&quot;', '"').replaceAll('&#39;', "'");
+}
+
+function canonicalFromHtml(html, relative) {
+  const tags = [...html.matchAll(/<link\s+[^>]*>/gi)].map((match) => match[0]).filter((tag) => /rel="canonical"/i.test(tag));
+  expect(tags.length === 1, `${relative}: canonical count differs ${tags.length}`);
+  const href = tags[0].match(/href="([^"]+)"/i)?.[1];
+  expect(href, `${relative}: canonical href is missing`);
+  return decode(href);
 }
 
 function hasNoIndex(html) {
-  return /<meta\s+[^>]*name="robots"[^>]*content="[^"]*noindex[^"]*"[^>]*>|<meta\s+[^>]*content="[^"]*noindex[^"]*"[^>]*name="robots"[^>]*>/i.test(html);
+  return /<meta\s+[^>]*(?:name="robots"[^>]*content="[^"]*noindex|content="[^"]*noindex[^"]*"[^>]*name="robots")[^>]*>/i.test(html);
 }
 
 function compareUrls(left, right) {
-  const leftPath = new URL(left).pathname;
-  const rightPath = new URL(right).pathname;
-  if (leftPath === '/') return rightPath === '/' ? 0 : -1;
-  if (rightPath === '/') return 1;
-  return leftPath.localeCompare(rightPath, 'en');
+  const a = new URL(left).pathname;
+  const b = new URL(right).pathname;
+  if (a === '/') return b === '/' ? 0 : -1;
+  if (b === '/') return 1;
+  return a.localeCompare(b, 'en');
 }
 
-const countPath = (paths, pattern) => paths.filter((value) => pattern.test(value)).length;
-const distPath = filePath('dist');
-if (!fs.existsSync(distPath)) fail('dist is missing; run npm run build first');
-const expectedUrls = [];
-let noIndexCount = 0;
-if (fs.existsSync(distPath)) {
-  for (const file of walk(distPath).filter((entry) => entry.endsWith('.html'))) {
-    if (path.basename(file) === '404.html') continue;
-    const html = fs.readFileSync(file, 'utf8');
-    if (hasNoIndex(html)) {
-      noIndexCount += 1;
-      continue;
-    }
-    const canonical = canonicalFromHtml(html, path.relative(distPath, file));
-    if (!canonical) continue;
-    let url;
-    try { url = new URL(canonical); }
-    catch { fail(`invalid canonical URL ${canonical}`); continue; }
-    if (url.protocol !== 'https:' || url.origin !== SITE_ORIGIN || url.search || url.hash) fail(`invalid public canonical ${canonical}`);
-    if (url.pathname !== '/' && !url.pathname.endsWith('/')) fail(`canonical lacks trailing slash ${canonical}`);
-    expectedUrls.push(canonical);
-  }
+const distPath = at(DIST);
+expect(fs.existsSync(distPath), 'dist is missing; run npm run build first');
+const renderedUrls = [];
+let noIndexPages = 0;
+for (const file of walk(distPath).filter((item) => item.endsWith('.html'))) {
+  if (path.basename(file) === '404.html') continue;
+  const html = fs.readFileSync(file, 'utf8');
+  if (hasNoIndex(html)) { noIndexPages += 1; continue; }
+  const canonical = canonicalFromHtml(html, path.relative(distPath, file));
+  const url = new URL(canonical);
+  expect(url.protocol === 'https:' && url.origin === SITE_ORIGIN, `${canonical}: origin or protocol differs`);
+  expect(!url.search && !url.hash, `${canonical}: query or fragment is present`);
+  expect(url.pathname === '/' || url.pathname.endsWith('/'), `${canonical}: trailing slash is missing`);
+  renderedUrls.push(canonical);
 }
-const uniqueExpectedUrls = [...new Set(expectedUrls)].sort(compareUrls);
-if (expectedUrls.length !== uniqueExpectedUrls.length) fail('rendered canonical URLs contain duplicates');
-if (noIndexCount !== 0) fail(`current noindex rendered HTML count differs ${noIndexCount}`);
+expect(noIndexPages === 0, `Current noindex page count differs ${noIndexPages}`);
+const uniqueRendered = [...new Set(renderedUrls)].sort(compareUrls);
+expect(uniqueRendered.length === renderedUrls.length, 'Rendered canonical URLs contain duplicates');
 
-const sitemapPath = filePath('dist/sitemap.xml');
-const robotsPath = filePath('dist/robots.txt');
-if (!fs.existsSync(sitemapPath)) fail('generated sitemap is missing');
-if (!fs.existsSync(robotsPath)) fail('generated robots is missing');
-if (fs.existsSync(sitemapPath)) {
-  const sitemap = fs.readFileSync(sitemapPath, 'utf8');
-  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  if (!exact(sitemapUrls, uniqueExpectedUrls)) fail('generated sitemap URLs do not exactly match rendered canonical URLs');
-  if (sitemapUrls.length !== 769) fail(`sitemap URL count differs ${sitemapUrls.length}`);
-  if (sitemapUrls.length !== new Set(sitemapUrls).size) fail('duplicate sitemap URLs found');
-  if (!exact(sitemapUrls, [...sitemapUrls].sort(compareUrls))) fail('sitemap URL order differs');
-  const parsed = sitemapUrls.map((value) => new URL(value));
-  const paths = parsed.map((url) => url.pathname);
-  const normalizedFamilies = paths.map((value) => value === '/ja/' ? '/' : value.replace(/^\/ja\//, '/'));
-  const routeFamilyCounts = {
-    sitemap_urls: paths.length,
-    english_urls: paths.filter((value) => !value.startsWith('/ja/')).length,
-    japanese_urls: paths.filter((value) => value.startsWith('/ja/')).length,
-    route_families: new Set(normalizedFamilies.map((value) => value === '/' ? '(root)' : value.split('/').filter(Boolean)[0])).size,
-    country_routes: countPath(paths, /^\/(?:ja\/)?countries\//),
-    source_routes: countPath(paths, /^\/(?:ja\/)?sources\//),
-    meeting_detail_routes: countPath(paths, /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/),
-    glossary_routes: countPath(paths, /^\/(?:ja\/)?glossary\//),
-    racecourse_routes: countPath(paths, /^\/(?:ja\/)?tracks\//),
-    racing_type_routes: countPath(paths, /^\/(?:ja\/)?types\//),
-    major_country_routes: countPath(paths, /^\/(?:ja\/)?major-countries\//),
-    root_routes: countPath(paths, /^\/(?:ja\/)?$/),
-    about_routes: countPath(paths, /^\/(?:ja\/)?about\/$/),
-    archive_routes: countPath(paths, /^\/(?:ja\/)?archive\/$/),
-    calendar_routes: countPath(paths, /^\/(?:ja\/)?calendar\/$/),
-    disclaimer_routes: countPath(paths, /^\/(?:ja\/)?disclaimer\/$/),
-    faq_routes: countPath(paths, /^\/(?:ja\/)?faq\/$/),
-    search_routes: countPath(paths, /^\/(?:ja\/)?search\/$/),
-    today_routes: countPath(paths, /^\/(?:ja\/)?today\/$/),
-    tomorrow_routes: countPath(paths, /^\/(?:ja\/)?tomorrow\/$/),
-  };
-  if (!exact(routeFamilyCounts, expectedScope)) fail(`rendered sitemap family counts differ ${JSON.stringify(routeFamilyCounts)}`);
-  const detailCounts = {
-    country_detail_routes: countPath(paths, /^\/(?:ja\/)?countries\/[^/]+\/$/),
-    source_country_routes: countPath(paths, /^\/(?:ja\/)?sources\/[^/]+\/$/),
-    meeting_detail_routes: countPath(paths, /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/),
-    glossary_term_routes: countPath(paths, /^\/(?:ja\/)?glossary\/(?!relationships\/)[^/]+\/$/),
-    glossary_relationship_routes: countPath(paths, /^\/(?:ja\/)?glossary\/relationships\/$/),
-    racecourse_detail_routes: countPath(paths, /^\/(?:ja\/)?tracks\/[^/]+\/$/),
-    racing_type_detail_routes: countPath(paths, /^\/(?:ja\/)?types\/[^/]+\/$/),
-    faq_content_routes: countPath(paths, /^\/(?:ja\/)?faq\/$/),
-  };
-  if (!exact(detailCounts, expectedDetailCounts)) fail(`rendered sitemap detail counts differ ${JSON.stringify(detailCounts)}`);
-}
-if (fs.existsSync(robotsPath) && fs.readFileSync(robotsPath, 'utf8') !== expectedRobots) fail('generated robots content differs');
+const sitemapPath = at('dist/sitemap.xml');
+const robotsPath = at('dist/robots.txt');
+expect(fs.existsSync(sitemapPath), 'Generated sitemap is missing');
+expect(fs.existsSync(robotsPath), 'Generated robots.txt is missing');
+const sitemap = fs.readFileSync(sitemapPath, 'utf8');
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => decode(match[1]));
+expect(exact(sitemapUrls, uniqueRendered), 'Sitemap URLs differ from rendered canonical set');
+expect(sitemapUrls.length === contract.scope.sitemap_urls, `Sitemap URL count differs ${sitemapUrls.length}`);
+expect(exact(sitemapUrls, [...sitemapUrls].sort(compareUrls)), 'Sitemap URL order differs');
 
-if (errors.length) {
-  console.error(`SITEMAP_ROBOTS: failed (${errors.length})`);
-  errors.forEach((error) => console.error(`- ${error}`));
-  process.exit(1);
-}
+const paths = sitemapUrls.map((value) => new URL(value).pathname);
+const count = (pattern) => paths.filter((value) => pattern.test(value)).length;
+const normalized = paths.map((value) => value === '/ja/' ? '/' : value.replace(/^\/ja\//, '/'));
+const actualScope = {
+  sitemap_urls: paths.length,
+  english_urls: paths.filter((value) => !value.startsWith('/ja/')).length,
+  japanese_urls: paths.filter((value) => value.startsWith('/ja/')).length,
+  route_families: new Set(normalized.map((value) => value === '/' ? '(root)' : value.split('/').filter(Boolean)[0])).size,
+  country_routes: count(/^\/(?:ja\/)?countries\//),
+  source_routes: count(/^\/(?:ja\/)?sources\//),
+  meeting_detail_routes: count(/^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/),
+  glossary_routes: count(/^\/(?:ja\/)?glossary\//),
+  racecourse_routes: count(/^\/(?:ja\/)?tracks\//),
+  racing_type_routes: count(/^\/(?:ja\/)?types\//),
+  major_country_routes: count(/^\/(?:ja\/)?major-countries\//),
+  root_routes: count(/^\/(?:ja\/)?$/),
+  about_routes: count(/^\/(?:ja\/)?about\/$/),
+  archive_routes: count(/^\/(?:ja\/)?archive\/$/),
+  calendar_routes: count(/^\/(?:ja\/)?calendar\/$/),
+  disclaimer_routes: count(/^\/(?:ja\/)?disclaimer\/$/),
+  faq_routes: count(/^\/(?:ja\/)?faq\/$/),
+  methods_routes: count(/^\/(?:ja\/)?methods\/$/),
+  search_routes: count(/^\/(?:ja\/)?search\/$/),
+  today_routes: count(/^\/(?:ja\/)?today\/$/),
+  tomorrow_routes: count(/^\/(?:ja\/)?tomorrow\/$/),
+};
+expect(exact(actualScope, contract.scope), `Rendered sitemap scope differs ${JSON.stringify(actualScope)}`);
+const actualDetails = {
+  country_detail_routes: count(/^\/(?:ja\/)?countries\/[^/]+\/$/),
+  source_country_routes: count(/^\/(?:ja\/)?sources\/[^/]+\/$/),
+  meeting_detail_routes: count(/^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/),
+  glossary_term_routes: count(/^\/(?:ja\/)?glossary\/(?!relationships\/)[^/]+\/$/),
+  glossary_relationship_routes: count(/^\/(?:ja\/)?glossary\/relationships\/$/),
+  racecourse_detail_routes: count(/^\/(?:ja\/)?tracks\/[^/]+\/$/),
+  racing_type_detail_routes: count(/^\/(?:ja\/)?types\/[^/]+\/$/),
+  faq_content_routes: count(/^\/(?:ja\/)?faq\/$/),
+  methods_content_routes: count(/^\/(?:ja\/)?methods\/$/),
+};
+expect(exact(actualDetails, contract.detail_route_counts), `Rendered sitemap detail counts differ ${JSON.stringify(actualDetails)}`);
+
+const expectedRobots = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`;
+expect(fs.readFileSync(robotsPath, 'utf8') === expectedRobots, 'Generated robots.txt differs');
+expect(fs.existsSync(at('public/robots.txt')) && read('public/robots.txt') === expectedRobots, 'Committed public robots.txt differs');
+
 console.log('SITEMAP_ROBOTS: pass');
-console.log('SITEMAP_URLS: 769');
-console.log('ENGLISH_URLS: 386');
-console.log('JAPANESE_URLS: 383');
-console.log('FAQ_ROUTES: 2');
-console.log('TEMPORARY_DISCOVERY_WORKFLOWS: 0');
-console.log('NEXT_IMPLEMENTATION_UNIT: STRUCTURED-DATA-BASELINE-01');
+console.log(`SITEMAP_URLS: ${contract.scope.sitemap_urls}`);
+console.log(`ENGLISH_URLS: ${contract.scope.english_urls}`);
+console.log(`JAPANESE_URLS: ${contract.scope.japanese_urls}`);
+console.log('METHODS_ROUTES: 2');

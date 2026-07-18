@@ -4,7 +4,7 @@ Status: complete
 Work ID: `WHR-SEO-PUBLIC-CONTENT-V1`  
 Implementation unit: `OPEN-GRAPH-SOCIAL-CARDS-01`  
 Reviewed: 2026-07-18  
-Scope updated by: `FAQ-CONTENT-PAGES-01`
+Scope updated by: `METHODS-DATA-POLICY-01`
 
 ## Purpose
 
@@ -13,16 +13,17 @@ Every public page exposes complete Open Graph and Twitter preview metadata backe
 ## Current rendered scope
 
 ```text
-Public pages: 769
-Paired pages: 766
+Public pages: 771
+Paired pages: 768
 Unpaired pages: 3
 FAQ pages: 2
-Open Graph image references: 769
-Open Graph locale alternates: 766
-Twitter summary_large_image cards: 769
+Methods pages: 2
+Open Graph image references: 771
+Open Graph locale alternates: 768
+Twitter summary_large_image cards: 771
 ```
 
-The FAQ pages reuse their rendered page title, description, canonical URL, language, localized image alt, and the same site-owned brand card as all other public pages.
+The FAQ and Methods pages reuse their rendered page title, description, canonical URL, language, localized image alt, and the same site-owned brand card as all other public pages.
 
 ## Generated image
 
@@ -47,7 +48,7 @@ Each public page has one value for:
 - `og:image`, secure URL, MIME type, width, height, and localized alt;
 - `twitter:card`, title, description, image, and localized alt.
 
-`og:locale:alternate` is emitted only on the 766 pages that have a verified localized counterpart. The three English-only legacy pages omit it.
+`og:locale:alternate` is emitted only on the 768 pages that have a verified localized counterpart. The three English-only legacy pages omit it.
 
 ## Verification
 
@@ -63,7 +64,7 @@ Read-only Actions gate:
 .github/workflows/open-graph-social-cards.yml
 ```
 
-The checker regenerates the PNG in memory, verifies byte equality and checksum, parses its PNG structure, and scans all 769 sitemap pages for complete and aligned Open Graph and Twitter metadata.
+The checker regenerates the PNG in memory, verifies byte equality and checksum, parses its PNG structure, and scans all 771 sitemap pages for complete and aligned Open Graph and Twitter metadata, including the two FAQ pages and two Methods pages.
 
 ## Boundaries
 
