@@ -1,0 +1,112 @@
+{
+  "schema_version": "v1-accessibility-qa-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-ACCESSIBILITY-QA-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "baseline_release_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "scope_contract_id": "V1-SCOPE-FREEZE-01",
+  "data_audit_contract_id": "V1-DATA-AUDIT-01",
+  "mobile_qa_contract_id": "V1-MOBILE-QA-01",
+  "browser_audit": {
+    "engine": "Chrome DevTools Protocol",
+    "browser_mode": "headless-new",
+    "public_pages": 771,
+    "page_checks": 771,
+    "viewport_width_css_px": 1280,
+    "viewport_height_css_px": 900,
+    "device_scale_factor": 1,
+    "local_static_server_only": true,
+    "external_network_required": false
+  },
+  "required_results": {
+    "failed_page_loads": 0,
+    "pages_with_errors": 0,
+    "title_errors": 0,
+    "language_errors": 0,
+    "main_errors": 0,
+    "skip_link_errors": 0,
+    "h1_errors": 0,
+    "heading_jump_instances": 0,
+    "duplicate_id_instances": 0,
+    "missing_aria_reference_instances": 0,
+    "unnamed_link_instances": 0,
+    "unnamed_control_instances": 0,
+    "image_alt_errors": 0,
+    "form_label_errors": 0,
+    "details_summary_errors": 0,
+    "table_header_errors": 0,
+    "nav_name_errors": 0,
+    "nested_interactive_instances": 0
+  },
+  "semantic_inventory": {
+    "images": 0,
+    "form_controls": 40,
+    "details_elements": 973,
+    "tables": 180,
+    "navigation_landmarks": 1126
+  },
+  "audit_rules": {
+    "nonempty_document_title_required": true,
+    "route_language_must_match_html_lang": true,
+    "exactly_one_main_landmark_required": true,
+    "main_content_id_required": true,
+    "skip_link_to_main_required": true,
+    "skip_link_must_be_first_focusable": true,
+    "exactly_one_h1_required": true,
+    "heading_level_jumps_allowed": false,
+    "duplicate_ids_allowed": false,
+    "broken_aria_references_allowed": false,
+    "unnamed_links_allowed": false,
+    "unnamed_buttons_summaries_or_button_roles_allowed": false,
+    "images_without_alt_allowed": false,
+    "unlabelled_form_controls_allowed": false,
+    "details_without_direct_summary_allowed": false,
+    "tables_without_header_cells_allowed": false,
+    "unnamed_navigation_landmarks_allowed": false,
+    "nested_interactive_controls_allowed": false
+  },
+  "source_contract": {
+    "browser_runner": "scripts/run-v1-accessibility-qa-browser.mjs",
+    "checker": "scripts/check-v1-accessibility-qa.mjs",
+    "workflow": ".github/workflows/v1-accessibility-qa.yml",
+    "report": "v1-accessibility-qa-report.json"
+  },
+  "quality_contract": {
+    "complete_static_build_required": true,
+    "all_sitemap_routes_required": true,
+    "browser_dom_required": true,
+    "phase_10_ux_release_required": true,
+    "phase_11_seo_release_required": true,
+    "v1_scope_freeze_required": true,
+    "v1_data_audit_required": true,
+    "v1_mobile_qa_required": true,
+    "repository_clean_proof_required": true
+  },
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "existing_public_data_classes_only": true,
+    "semantic_labeling_and_keyboard_qa_allowed": true,
+    "participant_or_complete_racecard_fields_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "internal_workflow_or_acquisition_details_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_content_correction_enabled": false,
+    "automatic_scope_expansion_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "previous_implementation_unit": "V1-MOBILE-QA-01",
+  "next_implementation_unit": "V1-PERFORMANCE-QA-01"
+}
