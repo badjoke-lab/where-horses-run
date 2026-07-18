@@ -1,0 +1,103 @@
+{
+  "schema_version": "v1-mobile-qa-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-MOBILE-QA-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "baseline_release_id": "WHR-SEO-PUBLIC-CONTENT-V1",
+  "scope_contract_id": "V1-SCOPE-FREEZE-01",
+  "data_audit_contract_id": "V1-DATA-AUDIT-01",
+  "browser_audit": {
+    "engine": "Chrome DevTools Protocol",
+    "browser_mode": "headless-new",
+    "public_pages": 771,
+    "viewports_css_px": [320, 375, 720],
+    "viewport_height_css_px": 900,
+    "device_scale_factor": 1,
+    "page_viewport_checks": 2313,
+    "minimum_interactive_target_css_px": 44,
+    "horizontal_overflow_tolerance_css_px": 1,
+    "local_static_server_only": true,
+    "external_network_required": false
+  },
+  "required_results": {
+    "failed_page_loads": 0,
+    "page_level_horizontal_overflow_checks": 0,
+    "pages_with_small_targets": 0,
+    "small_target_instances": 0,
+    "viewport_meta_errors": 0,
+    "oversized_image_checks": 0
+  },
+  "diagnostic_inventory": {
+    "pages_containing_tables": 176,
+    "pages_containing_pre": 0,
+    "pages_containing_code": 12,
+    "pages_containing_forms": 10,
+    "internal_table_overflow_checks": 231,
+    "uncontained_nowrap_diagnostics": 54,
+    "internal_table_overflow_is_allowed_inside_explicit_scroll_or_mobile_table_presentation": true,
+    "diagnostics_do_not_override_page_level_failure_rules": true
+  },
+  "fixes": {
+    "country_jump_links_minimum_target": true,
+    "country_details_summary_minimum_target": true,
+    "meeting_detail_back_links_minimum_target": true,
+    "legacy_timetable_navigation_minimum_target": true,
+    "major_country_browse_summary_minimum_target": true,
+    "major_country_grid_min_width_reset": true,
+    "long_status_and_source_text_wrapping": true,
+    "closed_mobile_navigation_removed_from_layout": true,
+    "mobile_body_width_floor_removed": true,
+    "main_content_horizontal_overflow_contained": true
+  },
+  "source_contract": {
+    "layout_import": "src/layouts/BaseLayout.astro",
+    "style_file": "src/styles/v1-mobile-qa.css",
+    "browser_runner": "scripts/run-v1-mobile-qa-browser.mjs",
+    "checker": "scripts/check-v1-mobile-qa.mjs",
+    "workflow": ".github/workflows/v1-mobile-qa.yml",
+    "report": "v1-mobile-qa-report.json"
+  },
+  "quality_contract": {
+    "complete_static_build_required": true,
+    "all_sitemap_routes_required": true,
+    "every_route_checked_at_every_viewport": true,
+    "viewport_meta_required": true,
+    "page_level_horizontal_scrolling_allowed": false,
+    "oversized_visible_images_allowed": false,
+    "audited_navigation_summary_form_and_button_targets_below_44px_allowed": false,
+    "explicit_local_table_scrolling_allowed": true,
+    "no_javascript_readability_required": true,
+    "phase_10_ux_release_required": true,
+    "phase_11_seo_release_required": true,
+    "v1_scope_freeze_required": true,
+    "v1_data_audit_required": true,
+    "repository_clean_proof_required": true
+  },
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "existing_public_data_classes_only": true,
+    "responsive_presentation_changes_allowed": true,
+    "participant_or_complete_racecard_fields_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "internal_workflow_or_acquisition_details_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_content_correction_enabled": false,
+    "automatic_scope_expansion_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "previous_implementation_unit": "V1-DATA-AUDIT-01",
+  "next_implementation_unit": "V1-ACCESSIBILITY-QA-01"
+}
