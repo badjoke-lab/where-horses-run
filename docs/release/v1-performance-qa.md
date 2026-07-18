@@ -73,7 +73,7 @@ Element tags after: 93
 Element tags reduced: 8,908
 
 Distribution bytes before: 11,060,613
-Distribution bytes after retirement: 10,572,496
+Historical post-retirement Distribution bytes: 10,572,496
 Distribution bytes reduced by retirement: 488,117
 ```
 
