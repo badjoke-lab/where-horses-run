@@ -81,6 +81,13 @@
   gap: var(--whr-space-2) var(--whr-space-3);
 }
 
+.country-jump-nav a {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.45rem;
+}
+
 .country-section {
   padding-block: var(--whr-space-5);
   border-bottom: 1px solid var(--whr-color-border);
@@ -220,8 +227,12 @@
 
 .country-more > summary,
 .country-technical > summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   font-weight: 700;
+  padding-block: 0.45rem;
 }
 
 .country-more[open] > summary,
@@ -328,6 +339,10 @@
   .country-jump-nav {
     display: grid;
     gap: var(--whr-space-1);
+  }
+
+  .country-jump-nav a {
+    width: 100%;
   }
 
   .country-table td {
