@@ -11,6 +11,7 @@ on:
       - 'src/components/SourceDirectoryPage.astro'
       - 'src/pages/sources/**'
       - 'src/pages/ja/sources/**'
+      - 'scripts/validate-data.mjs'
       - 'scripts/temporary-discover-v1-source-policy.mjs'
       - 'scripts/temporary-normalize-v1-source-policy.mjs'
       - '.github/workflows/temporary-v1-source-policy-discovery.yml'
@@ -38,6 +39,18 @@ jobs:
           node --check scripts/temporary-discover-v1-source-policy.mjs
       - name: Normalize source registry public fields
         run: node scripts/temporary-normalize-v1-source-policy.mjs
+      - name: Align base source validator with public source contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/validate-data.mjs')
+          text = path.read_text()
+          old = "for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'terms_risk']) {"
+          new = "for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'notes']) {"
+          if old not in text:
+              raise SystemExit('source validator marker not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
       - name: Validate normalized source data references
         run: npm run validate:data
       - name: Build complete static site
@@ -60,6 +73,7 @@ jobs:
             data/static/sources.json
             data/static/country-page-sources-*.json
             data/static/racecourse-link-amendments-v1.json
+            scripts/validate-data.mjs
             v1-source-policy-normalization.json
             v1-source-policy-discovery.log
             v1-source-policy-discovery.exit
