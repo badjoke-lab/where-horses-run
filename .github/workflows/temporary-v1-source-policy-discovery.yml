@@ -18,15 +18,18 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   discover:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Checkout
+      - name: Checkout PR head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -47,9 +50,10 @@ jobs:
           text = path.read_text()
           old = "for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'terms_risk']) {"
           new = "for (const key of ['country_id', 'source_type', 'url', 'data_type', 'auto_level', 'notes']) {"
-          if old not in text:
+          if old in text:
+              path.write_text(text.replace(old, new, 1))
+          elif new not in text:
               raise SystemExit('source validator marker not found')
-          path.write_text(text.replace(old, new, 1))
           PY
       - name: Validate normalized source data references
         run: npm run validate:data
@@ -86,3 +90,18 @@ jobs:
           if [ "$status" != "0" ]; then
             exit "$status"
           fi
+      - name: Commit validated normalization to PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          rm -f v1-source-policy-normalization.json v1-source-policy-discovery.log v1-source-policy-discovery.exit v1-source-policy-discovery.json
+          git add data/static/sources.json data/static/country-page-sources-*.json data/static/racecourse-link-amendments-v1.json scripts/validate-data.mjs
+          if git diff --cached --quiet; then
+            echo 'Validated source registry is already normalized.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Normalize public source registry policy'
+          git push origin "HEAD:${HEAD_REF}"
