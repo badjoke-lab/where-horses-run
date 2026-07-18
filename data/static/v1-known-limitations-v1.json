@@ -1,0 +1,136 @@
+{
+  "schema_version": "v1-known-limitations-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-KNOWN-LIMITATIONS-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "baseline_units": {
+    "scope": "V1-SCOPE-FREEZE-01",
+    "data_audit": "V1-DATA-AUDIT-01",
+    "mobile_qa": "V1-MOBILE-QA-01",
+    "accessibility_qa": "V1-ACCESSIBILITY-QA-01",
+    "performance_qa": "V1-PERFORMANCE-QA-01",
+    "source_policy": "V1-SOURCE-POLICY-REVIEW-01",
+    "faq": "FAQ-CONTENT-PAGES-01",
+    "methods": "METHODS-DATA-POLICY-01"
+  },
+  "public_audit": {
+    "public_pages_total": 771,
+    "locales": 2,
+    "route_pairs": 2,
+    "routes": [
+      "/faq/",
+      "/ja/faq/",
+      "/methods/",
+      "/ja/methods/"
+    ],
+    "faq_questions_per_locale": 12,
+    "methods_sections_per_locale": 9,
+    "limitation_categories": 12,
+    "new_public_routes": 0,
+    "new_public_data_classes": 0,
+    "public_content_rewrite_required": false
+  },
+  "limitations": [
+    {
+      "id": "official-source-final-confirmation",
+      "meaning": "Official sources remain the final confirmation point for current and complete information.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "coverage-varies",
+      "meaning": "Coverage depth varies by country, region, racecourse, organiser, source structure, and review status.",
+      "required_routes": ["/faq/", "/ja/faq/"]
+    },
+    {
+      "id": "not-real-time",
+      "meaning": "The site does not promise real-time updates or immediate coverage of every change.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "dates-and-times-can-change",
+      "meaning": "Meeting dates and post times can change, be postponed, or be cancelled.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "empty-view-is-not-absence",
+      "meaning": "An empty current or upcoming view does not prove that no racing exists.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "last-checked-is-not-validity",
+      "meaning": "A last-checked date does not guarantee continuing validity or unchanged information.",
+      "required_routes": ["/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "publication-rank-is-a-display-boundary",
+      "meaning": "C through A+ describe publication-safe display scope and do not claim completeness.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "participant-betting-and-result-data-excluded",
+      "meaning": "Entries, participant fields, odds, results, payouts, predictions, betting picks, and complete racecards are excluded.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "video-and-direct-streams-excluded",
+      "meaning": "Embedded video, direct stream URLs, unofficial mirrors, and copied recordings are excluded.",
+      "required_routes": ["/faq/", "/ja/faq/", "/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "viewing-access-not-guaranteed",
+      "meaning": "A listed official route does not guarantee that viewing access is available.",
+      "required_routes": ["/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "local-time-and-daylight-saving",
+      "meaning": "Dates and times are interpreted in the official source's local context and can be affected by timezone and daylight-saving changes.",
+      "required_routes": ["/methods/", "/ja/methods/"]
+    },
+    {
+      "id": "correction-reduction-and-removal",
+      "meaning": "Stale, unsupported, conflicting, or incorrect information may be corrected, reduced, or removed instead of being inferred.",
+      "required_routes": ["/methods/", "/ja/methods/"]
+    }
+  ],
+  "scope_boundary": {
+    "new_route_family_allowed": false,
+    "new_public_data_class_allowed": false,
+    "coverage_completeness_claim_allowed": false,
+    "real_time_guarantee_allowed": false,
+    "official_confirmation_requirement_may_be_removed": false
+  },
+  "publication_boundary": {
+    "known_limitations_may_be_described": true,
+    "official_source_priority_may_be_described": true,
+    "review_and_correction_policy_may_be_described": true,
+    "participant_data_allowed": false,
+    "complete_racecards_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "embedded_video_allowed": false,
+    "direct_stream_urls_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_limitation_inference_enabled": false,
+    "automatic_publication_enabled": false,
+    "automatic_translation_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "release_contract": {
+    "checker": "scripts/check-v1-known-limitations.mjs",
+    "workflow": ".github/workflows/v1-known-limitations.yml",
+    "documentation": "docs/release/v1-known-limitations.md",
+    "audit": "data/audits/v1-known-limitations-v1.json"
+  },
+  "previous_implementation_unit": "V1-SOURCE-POLICY-REVIEW-01",
+  "next_implementation_unit": "V1-RELEASE-READINESS-01"
+}
