@@ -1,0 +1,39 @@
+name: Temporary v1 data audit discovery
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/temporary-discover-v1-data-audit.mjs'
+      - '.github/workflows/temporary-v1-data-audit-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
+      - name: Validate required data schemas and references
+        run: npm run validate:data
+      - name: Build complete static site
+        run: npm run build
+      - name: Measure v1 data inventory and public-boundary risks
+        run: node scripts/temporary-discover-v1-data-audit.mjs
+      - name: Upload discovery report
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1-data-audit-discovery
+          path: v1-data-audit-discovery.json
+          retention-days: 1
