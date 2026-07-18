@@ -26,15 +26,33 @@ jobs:
           node-version: 22.12.0
       - name: Install dependencies without generating a lockfile
         run: npm install --package-lock=false
+      - name: Validate discovery script syntax
+        run: node --check scripts/temporary-discover-v1-accessibility-qa.mjs
       - name: Build complete static site
         run: npm run build
       - name: Measure accessibility semantics on every public page
-        run: node scripts/temporary-discover-v1-accessibility-qa.mjs
+        shell: bash
+        run: |
+          set +e
+          node scripts/temporary-discover-v1-accessibility-qa.mjs > /tmp/v1-accessibility-qa-discovery.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > /tmp/v1-accessibility-qa-discovery.exit
+          cat /tmp/v1-accessibility-qa-discovery.log
+          exit 0
       - name: Upload accessibility discovery
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: v1-accessibility-qa-discovery
-          path: v1-accessibility-qa-discovery.json
+          path: |
+            /tmp/v1-accessibility-qa-discovery.log
+            /tmp/v1-accessibility-qa-discovery.exit
+            v1-accessibility-qa-discovery.json
           if-no-files-found: warn
           retention-days: 1
+      - name: Enforce discovery runner success
+        run: |
+          status="$(cat /tmp/v1-accessibility-qa-discovery.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
