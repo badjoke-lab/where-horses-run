@@ -5,7 +5,11 @@ on:
     branches:
       - main
     paths:
+      - 'data/static/**'
+      - 'data/generated/**'
+      - 'src/lib/data.ts'
       - 'scripts/temporary-discover-v1-data-audit.mjs'
+      - 'scripts/temporary-scan-v1-data-public-boundary.mjs'
       - '.github/workflows/temporary-v1-data-audit-discovery.yml'
   workflow_dispatch:
 
@@ -29,11 +33,15 @@ jobs:
         run: npm run validate:data
       - name: Build complete static site
         run: npm run build
-      - name: Measure v1 data inventory and public-boundary risks
+      - name: Measure complete v1 data inventory
         run: node scripts/temporary-discover-v1-data-audit.mjs
-      - name: Upload discovery report
+      - name: Scan all public input text for internal workflow language
+        run: node scripts/temporary-scan-v1-data-public-boundary.mjs
+      - name: Upload discovery reports
         uses: actions/upload-artifact@v4
         with:
           name: v1-data-audit-discovery
-          path: v1-data-audit-discovery.json
+          path: |
+            v1-data-audit-discovery.json
+            v1-data-public-boundary-discovery.json
           retention-days: 1
