@@ -14,11 +14,13 @@ The complete 771-page static build has been measured with deterministic file and
 Public pages: 771
 Rendered HTML pages: 771
 Distribution files: 776
-Distribution bytes: 10,572,496
-Distribution gzip bytes: 2,441,502
+Distribution bytes: 10,453,195
+Distribution gzip bytes: 2,437,594
+HTML bytes: 10,367,299
+HTML gzip bytes: 2,424,990
 ```
 
-The audit preserves the frozen v1 route and data scope.
+The audit preserves the frozen v1 route and data scope. The current measurement includes the Source Policy reduction of the bilingual Sources directories.
 
 ## Static-first result
 
@@ -71,11 +73,24 @@ Element tags after: 93
 Element tags reduced: 8,908
 
 Distribution bytes before: 11,060,613
-Distribution bytes after: 10,572,496
-Distribution bytes reduced: 488,117
+Historical post-retirement Distribution bytes: 10,572,496
+Distribution bytes reduced by retirement: 488,117
 ```
 
 No public route was removed.
+
+## Source Policy reduction
+
+The Source Policy review removed operational source metadata from the public directory projection and reduced the form from seven filters to keyword and country.
+
+```text
+Sources EN: 134,579 bytes / 19,219 gzip / 2,075 tags
+Sources JA: 138,688 bytes / 20,003 gzip / 2,075 tags
+Current distribution reduction from the previous performance baseline: 119,301 bytes
+Current distribution gzip reduction: 3,908 bytes
+```
+
+Official links, public notes, 171 records per locale, and the complete no-JavaScript list remain available.
 
 ## Key page measurements
 
@@ -84,8 +99,8 @@ Current timetable EN: 287,440 bytes / 7,638 gzip / 5,187 tags
 Current timetable JA: 291,083 bytes / 8,183 gzip / 5,187 tags
 Search EN: 153,217 bytes / 33,347 gzip / 1,552 tags
 Search JA: 154,831 bytes / 32,043 gzip / 1,552 tags
-Sources EN: 190,587 bytes / 20,585 gzip / 3,132 tags
-Sources JA: 199,587 bytes / 21,600 gzip / 3,132 tags
+Sources EN: 134,579 bytes / 19,219 gzip / 2,075 tags
+Sources JA: 138,688 bytes / 20,003 gzip / 2,075 tags
 Legacy timetable notice: 8,213 bytes / 2,245 gzip / 93 tags
 ```
 

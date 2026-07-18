@@ -68,11 +68,13 @@ Nested-interactive instances: 0
 
 ```text
 Images: 0
-Visible form controls: 40
+Visible form controls: 30
 Details elements: 969
 Tables: 180
 Navigation landmarks: 1,127
 ```
+
+The Source Policy review reduced the two Sources-directory forms from seven controls each to two controls each. Previous Visible form controls: 40. The current inventory is 30, and all controls remain labelled.
 
 The performance review retired four obsolete browse disclosures from the legacy major-country timetable and added one named navigation landmark for the current public routes. The full accessibility audit still reports zero errors.
 

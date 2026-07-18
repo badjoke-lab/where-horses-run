@@ -8,10 +8,9 @@ const filePath = (file) => path.join(root, file);
 const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-const uniqueSorted = (values) => [...new Set(values)].sort((left, right) => left.localeCompare(right, 'en'));
-const sameSet = (left, right) => exact(uniqueSorted(left), uniqueSorted(right));
-const attribute = (html, name) => html.match(new RegExp(`${name}="([^"]*)"`))?.[1] ?? null;
-const attributes = (html, name) => [...html.matchAll(new RegExp(`${name}="([^"]*)"`, 'g'))].map((match) => match[1]);
+const uniqueSorted = (values) => [...new Set(values)].sort((a, b) => a.localeCompare(b, 'en'));
+const attr = (html, name) => html.match(new RegExp(`${name}="([^"]*)"`))?.[1] ?? null;
+const attrs = (html, name) => [...html.matchAll(new RegExp(`${name}="([^"]*)"`, 'g'))].map((match) => match[1]);
 
 const paths = {
   contract: 'data/static/source-status-filter-contract-v1.json',
@@ -22,53 +21,59 @@ const paths = {
   japanesePage: 'src/pages/ja/sources/index.astro',
   doc: 'docs/search/source-status-filters.md',
   workflow: '.github/workflows/source-status-filters.yml',
-  temporaryWorkflow: '.github/workflows/temporary-source-filter-discovery.yml',
 };
-
-for (const required of Object.values(paths).filter((value) => value !== paths.temporaryWorkflow)) {
+const temporaryPaths = [
+  '.github/workflows/temporary-source-filter-discovery.yml',
+  '.github/workflows/temporary-v1-source-policy-discovery.yml',
+  'scripts/temporary-discover-v1-source-policy.mjs',
+  'scripts/temporary-normalize-v1-source-policy.mjs',
+];
+for (const required of Object.values(paths)) {
   if (!fs.existsSync(filePath(required))) fail(`required file missing: ${required}`);
+}
+for (const temporary of temporaryPaths) {
+  if (fs.existsSync(filePath(temporary))) fail(`temporary source-policy file remains: ${temporary}`);
 }
 
 const contract = parse(paths.contract);
 const audit = parse(paths.audit);
-const expectedOptions = {
-  source_types: ['official'],
-  data_types: ['link_only'],
-  auto_levels: ['B', 'C'],
-  terms_risks: ['unknown'],
-  registry_statuses: ['alpha_link_first', 'not_recorded', 'pending_reachability'],
-};
 const expectedScope = {
   source_records: 171,
+  source_registry_files: 26,
   countries_with_sources: 98,
   locales: 2,
   directory_routes: 2,
   bilingual_country_source_routes: 196,
-  filter_controls: 7,
-  url_parameters: 7,
+  filter_controls: 2,
+  url_parameters: 2,
   no_javascript_fallback_records_per_locale: 171,
 };
 const expectedVerified = {
   source_records: 171,
+  source_registry_files: 26,
   english_rendered_records: 171,
   japanese_rendered_records: 171,
   countries_with_sources: 98,
   directory_routes: 2,
   bilingual_country_source_routes: 196,
-  filter_controls: 7,
-  url_parameters: 7,
+  filter_controls: 2,
+  url_parameters: 2,
   duplicate_source_ids: 0,
-  missing_search_text: 0,
-  missing_filter_attributes: 0,
-  unknown_country_options: 0,
-  unknown_source_type_options: 0,
-  unknown_data_type_options: 0,
-  unknown_auto_level_options: 0,
-  unknown_terms_risk_options: 0,
-  unknown_registry_status_options: 0,
-  broken_country_source_links: 0,
   invalid_external_source_urls: 0,
+  missing_public_notes: 0,
+  missing_search_text: 0,
+  missing_public_attributes: 0,
+  broken_country_source_links: 0,
   no_javascript_missing_records: 0,
+  terms_risk_fields: 0,
+  m3_status_fields: 0,
+  m3_notes_fields: 0,
+  auto_level_fields: 171,
+  rendered_auto_level_instances: 0,
+  rendered_terms_risk_instances: 0,
+  rendered_registry_status_instances: 0,
+  internal_search_text_instances: 0,
+  internal_html_attribute_instances: 0,
   temporary_discovery_workflows: 0,
   contract_errors: 0,
   rendered_marker_errors: 0,
@@ -77,21 +82,12 @@ const expectedVerified = {
 if (contract.schema_version !== 'source-status-filter-contract-v1') fail('contract schema differs');
 if (contract.work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('Work ID differs');
 if (contract.implementation_unit !== 'SOURCE-STATUS-FILTERS-01') fail('implementation unit differs');
-if (contract.status !== 'complete' || contract.reviewed_at !== '2026-07-17') fail('contract release state differs');
+if (contract.status !== 'complete' || contract.reviewed_at !== '2026-07-18') fail('contract release state differs');
+if (contract.policy_revision_unit !== 'V1-SOURCE-POLICY-REVIEW-01') fail('policy revision unit differs');
 if (!exact(contract.scope, expectedScope)) fail('contract scope differs');
-if (!exact(contract.option_contract, expectedOptions)) fail('option contract differs');
-
-const filterContract = contract.filter_contract ?? {};
-for (const [key, value] of Object.entries({
+if (!exact(contract.filter_contract, {
   keyword_parameter: 'q',
   country_parameter: 'country',
-  source_type_parameter: 'source_type',
-  data_type_parameter: 'data_type',
-  auto_level_parameter: 'auto_level',
-  terms_risk_parameter: 'risk',
-  registry_status_parameter: 'status',
-  registry_status_source_field: 'm3_status',
-  missing_registry_status_value: 'not_recorded',
   unicode_normalization: 'NFKC',
   case_insensitive: true,
   whitespace_normalized: true,
@@ -101,109 +97,106 @@ for (const [key, value] of Object.entries({
   zero_result_state_required: true,
   clear_filters_required: true,
   no_javascript_complete_list_required: true,
-})) if (filterContract[key] !== value) fail(`filter contract differs: ${key}`);
-
-const recordContract = contract.record_contract ?? {};
-const expectedFields = ['id', 'url', 'country_id', 'country_href', 'source_type', 'data_type', 'auto_level', 'terms_risk', 'registry_status', 'search_text'];
-if (!exact(recordContract.required_fields, expectedFields)) fail('required source fields differ');
-if (recordContract.english_country_source_pattern !== '/sources/{country-slug}/') fail('English source route pattern differs');
-if (recordContract.japanese_country_source_pattern !== '/ja/sources/{country-slug}/') fail('Japanese source route pattern differs');
-if (recordContract.duplicate_ids_allowed !== false || recordContract.empty_search_text_allowed !== false || recordContract.unknown_filter_values_allowed !== false) fail('source uniqueness contract differs');
-if (recordContract.external_source_url_required !== true) fail('external URL requirement differs');
-
-for (const [key, value] of Object.entries(contract.public_boundary ?? {})) {
-  const allowed = ['public_source_ids_allowed', 'public_source_urls_allowed', 'public_country_links_allowed', 'public_source_metadata_allowed'].includes(key);
-  if (value !== allowed) fail(`public boundary differs: ${key}`);
+})) fail('filter contract differs');
+const projection = contract.public_projection ?? {};
+if (!exact(projection.fields, ['id', 'url', 'country_id', 'country_href', 'source_type', 'data_type', 'notes', 'search_text'])) fail('public projection fields differ');
+if (!exact(projection.source_type_values, ['official']) || !exact(projection.data_type_values, ['link_only'])) fail('public source values differ');
+if (projection.duplicate_ids_allowed !== false || projection.empty_notes_allowed !== false || projection.empty_search_text_allowed !== false || projection.external_source_url_required !== true) fail('public projection requirements differ');
+if (projection.english_country_source_pattern !== '/sources/{country-slug}/' || projection.japanese_country_source_pattern !== '/ja/sources/{country-slug}/') fail('country source route patterns differ');
+const internal = contract.internal_metadata_boundary ?? {};
+for (const key of ['auto_level_exposed_in_directory', 'terms_risk_allowed_in_registry', 'm3_status_allowed_in_registry', 'm3_notes_allowed_in_registry', 'internal_metadata_allowed_in_search_text', 'internal_metadata_allowed_in_html_attributes', 'internal_metadata_allowed_in_visible_labels']) {
+  if (internal[key] !== false) fail(`internal metadata boundary differs: ${key}`);
 }
+if (internal.auto_level_retained_in_registry !== true) fail('auto-level retention boundary differs');
 for (const value of Object.values(contract.privacy_boundary ?? {})) if (value !== false) fail('privacy boundary differs');
 for (const value of Object.values(contract.automation_boundary ?? {})) if (value !== false) fail('automation boundary differs');
-if (contract.previous_implementation_unit !== 'REGION-FILTERS-01' || contract.next_implementation_unit !== 'GLOSSARY-SEARCH-IMPROVEMENT-01') fail('roadmap linkage differs');
 
 if (audit.schema_version !== 'source-status-filters-audit-v1') fail('audit schema differs');
-if (audit.work_id !== contract.work_id || audit.implementation_unit !== contract.implementation_unit || audit.reviewed_at !== contract.reviewed_at || audit.status !== 'complete') fail('audit release identity differs');
+if (audit.work_id !== contract.work_id || audit.implementation_unit !== contract.implementation_unit || audit.reviewed_at !== contract.reviewed_at || audit.policy_revision_unit !== contract.policy_revision_unit || audit.status !== 'complete') fail('audit identity differs');
 if (!exact(audit.verified, expectedVerified)) fail('audit measurements differ');
 for (const value of Object.values(audit.behavior ?? {})) if (value !== true) fail('audit behavior differs');
-if (!exact(audit.privacy_boundary, contract.privacy_boundary) || !exact(audit.automation_boundary, contract.automation_boundary)) fail('audit boundary snapshot differs');
-if (audit.previous_implementation_unit !== contract.previous_implementation_unit || audit.next_implementation_unit !== contract.next_implementation_unit) fail('audit roadmap linkage differs');
+if (!exact(audit.public_boundary, contract.public_boundary) || !exact(audit.privacy_boundary, contract.privacy_boundary) || !exact(audit.automation_boundary, contract.automation_boundary)) fail('audit boundary snapshot differs');
+
+const registryFiles = [
+  'data/static/sources.json',
+  ...fs.readdirSync(filePath('data/static')).filter((name) => /^country-page-sources-.*\.json$/.test(name)).sort().map((name) => `data/static/${name}`),
+  'data/static/racecourse-link-amendments-v1.json',
+];
+if (registryFiles.length !== 26) fail(`source registry file count differs: ${registryFiles.length}`);
+const sourceRows = [];
+for (const file of registryFiles) {
+  const value = parse(file);
+  const rows = Array.isArray(value) ? value : Array.isArray(value.source_records) ? value.source_records : [];
+  sourceRows.push(...rows);
+}
+if (sourceRows.length !== 171) fail(`source record count differs: ${sourceRows.length}`);
+const ids = sourceRows.map((row) => row.id);
+if (new Set(ids).size !== ids.length) fail(`duplicate source IDs remain: ${ids.length - new Set(ids).size}`);
+let termsRiskFields = 0;
+let m3StatusFields = 0;
+let m3NotesFields = 0;
+let autoLevelFields = 0;
+let missingNotes = 0;
+let invalidUrls = 0;
+for (const row of sourceRows) {
+  if (Object.hasOwn(row, 'terms_risk')) termsRiskFields += 1;
+  if (Object.hasOwn(row, 'm3_status')) m3StatusFields += 1;
+  if (Object.hasOwn(row, 'm3_notes')) m3NotesFields += 1;
+  if (typeof row.auto_level === 'string' && row.auto_level.trim()) autoLevelFields += 1;
+  if (typeof row.notes !== 'string' || !row.notes.trim()) missingNotes += 1;
+  if (row.source_type !== 'official') fail(`non-official source type remains: ${row.id}`);
+  if (row.data_type !== 'link_only') fail(`non-link-only data type remains: ${row.id}`);
+  try {
+    const url = new URL(row.url);
+    if (!['http:', 'https:'].includes(url.protocol)) invalidUrls += 1;
+  } catch {
+    invalidUrls += 1;
+  }
+}
+if (termsRiskFields || m3StatusFields || m3NotesFields) fail(`internal registry fields remain: terms=${termsRiskFields}, status=${m3StatusFields}, notes=${m3NotesFields}`);
+if (autoLevelFields !== 171) fail(`auto-level retention differs: ${autoLevelFields}`);
+if (missingNotes) fail(`public source notes missing: ${missingNotes}`);
+if (invalidUrls) fail(`invalid source URLs remain: ${invalidUrls}`);
 
 const dataSource = read(paths.data);
-for (const marker of ['SourceFilterRecord', 'SourceFilterOptions', 'normalizeSourceFilterText', "normalize('NFKC')", 'getSourceFilterRecords', 'getSourceFilterOptions', "source.m3_status) ? source.m3_status : 'not_recorded'"]) {
+for (const marker of ['SourceFilterRecord', 'SourceFilterOptions', 'normalizeSourceFilterText', "normalize('NFKC')", 'getSourceFilterRecords', 'getSourceFilterOptions']) {
   if (!dataSource.includes(marker)) fail(`data projection missing: ${marker}`);
 }
 const component = read(paths.component);
-for (const marker of ['data-source-directory', 'data-source-filter-form', 'data-source-filter-query', 'data-source-filter-country', 'data-source-filter-source-type', 'data-source-filter-data-type', 'data-source-filter-auto-level', 'data-source-filter-risk', 'data-source-filter-status', 'data-source-filter-reset', 'data-source-filter-count', 'data-source-filter-empty', 'data-source-record', 'data-source-search-text', "restoreSelect(statusSelect, 'status')", 'window.history.replaceState', '<noscript>']) {
+for (const marker of ['data-source-directory', 'data-source-filter-controls="2"', 'data-source-url-parameters="2"', 'data-source-filter-query', 'data-source-filter-country', 'data-source-filter-reset', 'data-source-filter-count', 'data-source-filter-empty', 'data-source-record', 'data-source-search-text', 'window.history.replaceState', '<noscript>']) {
   if (!component.includes(marker)) fail(`component missing: ${marker}`);
 }
+const forbiddenPublicMarkers = ['autoLevel', 'termsRisk', 'registryStatus', 'm3_status', 'terms_risk', 'data-source-auto-level', 'data-source-risk', 'data-source-status', 'source-filter-auto-level', 'source-filter-risk', 'source-filter-status', 'Automation level', 'Terms risk', 'Registry status', '自動化レベル', '利用条件リスク', '登録状態'];
 for (const source of [dataSource, component]) {
-  for (const forbidden of ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) {
-    if (source.includes(forbidden)) fail(`forbidden client behavior found: ${forbidden}`);
-  }
-}
-for (const [page, locale] of [[paths.englishPage, 'en'], [paths.japanesePage, 'ja']]) {
-  const source = read(page);
-  for (const marker of ['SourceDirectoryPage', 'getSourceFilterOptions', 'getSourceFilterRecords', `locale="${locale}"`]) if (!source.includes(marker)) fail(`${page} missing ${marker}`);
+  for (const marker of forbiddenPublicMarkers) if (source.includes(marker)) fail(`internal public marker remains: ${marker}`);
+  for (const forbidden of ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'localStorage', 'sessionStorage', 'document.cookie']) if (source.includes(forbidden)) fail(`forbidden client behavior found: ${forbidden}`);
 }
 
-const doc = read(paths.doc);
-for (const marker of ['SOURCE-STATUS-FILTERS-01', '171 unique reviewed public source records', '98 countries and regions', 'chile-hipodromo-chile-home', 'scripts/check-source-status-filters.mjs', '.github/workflows/source-status-filters.yml', 'GLOSSARY-SEARCH-IMPROVEMENT-01']) {
-  if (!doc.includes(marker)) fail(`documentation missing: ${marker}`);
-}
-const workflow = read(paths.workflow);
-for (const marker of ['npm install --package-lock=false', 'npm run build', 'node scripts/check-glossary-qa-release.mjs', 'node scripts/check-global-search-foundation.mjs', 'node scripts/check-country-filters.mjs', 'node scripts/check-race-type-filters.mjs', 'node scripts/check-region-filters.mjs', 'node scripts/check-source-status-filters.mjs', 'git status --porcelain']) {
-  if (!workflow.includes(marker)) fail(`workflow missing: ${marker}`);
-}
-for (const forbidden of ['schedule:', 'cron:', 'contents: write', 'pull-requests: write', 'wrangler', 'cloudflare']) {
-  if (workflow.toLowerCase().includes(forbidden.toLowerCase())) fail(`workflow contains forbidden marker: ${forbidden}`);
-}
-if (fs.existsSync(filePath(paths.temporaryWorkflow))) fail('temporary source discovery workflow remains');
-
-function optionValues(html, selectId) {
-  const match = html.match(new RegExp(`<select[^>]*id="${selectId}"[^>]*>([\\s\\S]*?)<\\/select>`));
-  if (!match) return null;
-  return [...match[1].matchAll(/<option value="([^"]*)"/g)].map((option) => option[1]).filter((value) => value !== 'all');
-}
-
-function verifyRenderedDirectory({ file, lang, countryPrefix }) {
+function verifyRenderedDirectory(file, lang, countryPrefix) {
   if (!fs.existsSync(filePath(file))) return fail(`rendered directory missing: ${file}`);
   const html = read(file);
   const cards = [...html.matchAll(/<article[^>]*data-source-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
   if (cards.length !== 171) fail(`${file}: source card count differs ${cards.length}`);
-
-  const ids = [];
+  const cardIds = [];
   const countries = [];
   const countryHrefs = [];
-  const optionSets = { sourceTypes: [], dataTypes: [], autoLevels: [], risks: [], statuses: [] };
   let missingAttributes = 0;
   let missingSearchText = 0;
   let badCountryLinks = 0;
   let badExternalUrls = 0;
-
   for (const card of cards) {
-    const values = {
-      id: attribute(card, 'data-source-id'),
-      country: attribute(card, 'data-source-country'),
-      sourceType: attribute(card, 'data-source-source-type'),
-      dataType: attribute(card, 'data-source-data-type'),
-      autoLevel: attribute(card, 'data-source-auto-level'),
-      risk: attribute(card, 'data-source-risk'),
-      status: attribute(card, 'data-source-status'),
-      searchText: attribute(card, 'data-source-search-text'),
-    };
-    if (Object.values(values).some((value) => value === null)) missingAttributes += 1;
-    if (!values.searchText) missingSearchText += 1;
-    if (values.id) ids.push(values.id);
-    if (values.country) countries.push(values.country);
-    if (values.sourceType) optionSets.sourceTypes.push(values.sourceType);
-    if (values.dataType) optionSets.dataTypes.push(values.dataType);
-    if (values.autoLevel) optionSets.autoLevels.push(values.autoLevel);
-    if (values.risk) optionSets.risks.push(values.risk);
-    if (values.status) optionSets.statuses.push(values.status);
-
-    const hrefs = attributes(card, 'href');
+    const id = attr(card, 'data-source-id');
+    const country = attr(card, 'data-source-country');
+    const searchText = attr(card, 'data-source-search-text');
+    if (!id || !country || searchText === null) missingAttributes += 1;
+    if (!searchText) missingSearchText += 1;
+    if (id) cardIds.push(id);
+    if (country) countries.push(country);
+    const hrefs = attrs(card, 'href');
     const external = hrefs.find((href) => /^https?:\/\//i.test(href));
     try {
-      const parsed = new URL((external ?? '').replaceAll('&amp;', '&'));
-      if (!['http:', 'https:'].includes(parsed.protocol)) badExternalUrls += 1;
+      const url = new URL((external ?? '').replaceAll('&amp;', '&'));
+      if (!['http:', 'https:'].includes(url.protocol)) badExternalUrls += 1;
     } catch {
       badExternalUrls += 1;
     }
@@ -211,57 +204,47 @@ function verifyRenderedDirectory({ file, lang, countryPrefix }) {
     if (!countryHref || !countryHref.endsWith('/')) badCountryLinks += 1;
     else countryHrefs.push(countryHref);
   }
-
-  if (ids.length !== new Set(ids).size) fail(`${file}: duplicate source IDs ${ids.length - new Set(ids).size}`);
-  if (missingAttributes) fail(`${file}: missing filter attributes ${missingAttributes}`);
-  if (missingSearchText) fail(`${file}: missing search text ${missingSearchText}`);
-  if (badCountryLinks) fail(`${file}: broken country source links ${badCountryLinks}`);
-  if (badExternalUrls) fail(`${file}: invalid external URLs ${badExternalUrls}`);
+  if (new Set(cardIds).size !== 171) fail(`${file}: rendered source IDs are not unique`);
   if (new Set(countries).size !== 98) fail(`${file}: countries with sources differ ${new Set(countries).size}`);
-  if (!sameSet(optionSets.sourceTypes, expectedOptions.source_types)) fail(`${file}: source types differ`);
-  if (!sameSet(optionSets.dataTypes, expectedOptions.data_types)) fail(`${file}: data types differ`);
-  if (!sameSet(optionSets.autoLevels, expectedOptions.auto_levels)) fail(`${file}: automation levels differ`);
-  if (!sameSet(optionSets.risks, expectedOptions.terms_risks)) fail(`${file}: terms risks differ`);
-  if (!sameSet(optionSets.statuses, expectedOptions.registry_statuses)) fail(`${file}: registry statuses differ`);
-
-  const controls = [
-    ['source-filter-country', countries],
-    ['source-filter-source-type', expectedOptions.source_types],
-    ['source-filter-data-type', expectedOptions.data_types],
-    ['source-filter-auto-level', expectedOptions.auto_levels],
-    ['source-filter-risk', expectedOptions.terms_risks],
-    ['source-filter-status', expectedOptions.registry_statuses],
-  ];
-  for (const [id, expected] of controls) {
-    const actual = optionValues(html, id);
-    if (!actual || !sameSet(actual, expected)) fail(`${file}: option set differs for ${id}`);
-  }
-
-  const uniqueRoutes = uniqueSorted(countryHrefs);
-  if (uniqueRoutes.length !== 98) fail(`${file}: country source route count differs ${uniqueRoutes.length}`);
-  for (const href of uniqueRoutes) {
+  if (missingAttributes) fail(`${file}: public attributes missing ${missingAttributes}`);
+  if (missingSearchText) fail(`${file}: search text missing ${missingSearchText}`);
+  if (badCountryLinks) fail(`${file}: country source links broken ${badCountryLinks}`);
+  if (badExternalUrls) fail(`${file}: external source URLs invalid ${badExternalUrls}`);
+  const routes = uniqueSorted(countryHrefs);
+  if (routes.length !== 98) fail(`${file}: country source route count differs ${routes.length}`);
+  for (const href of routes) {
     const rendered = path.join('dist', href.replace(/^\//, ''), 'index.html');
     if (!fs.existsSync(filePath(rendered))) fail(`${file}: rendered country source route missing ${href}`);
   }
-  for (const marker of ['data-source-records="171"', 'data-source-country-options="98"', 'data-source-type-options="1"', 'data-source-data-type-options="1"', 'data-source-auto-level-options="2"', 'data-source-risk-options="1"', 'data-source-status-options="3"', 'data-source-filter-form', 'data-source-filter-empty', '<noscript>']) {
+  for (const marker of ['data-source-records="171"', 'data-source-country-options="98"', 'data-source-filter-controls="2"', 'data-source-url-parameters="2"', 'data-source-filter-form', 'data-source-filter-empty', '<noscript>']) {
     if (!html.includes(marker)) fail(`${file}: rendered marker missing ${marker}`);
   }
+  for (const marker of forbiddenPublicMarkers) if (html.includes(marker)) fail(`${file}: internal rendered marker remains ${marker}`);
   if (!html.includes(`<html lang="${lang}"`)) fail(`${file}: rendered locale differs`);
 }
-
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
-verifyRenderedDirectory({ file: 'dist/sources/index.html', lang: 'en', countryPrefix: '/sources/' });
-verifyRenderedDirectory({ file: 'dist/ja/sources/index.html', lang: 'ja', countryPrefix: '/ja/sources/' });
+verifyRenderedDirectory('dist/sources/index.html', 'en', '/sources/');
+verifyRenderedDirectory('dist/ja/sources/index.html', 'ja', '/ja/sources/');
+
+for (const [page, locale] of [[paths.englishPage, 'en'], [paths.japanesePage, 'ja']]) {
+  const source = read(page);
+  for (const marker of ['SourceDirectoryPage', 'getSourceFilterOptions', 'getSourceFilterRecords', `locale="${locale}"`]) if (!source.includes(marker)) fail(`${page} missing ${marker}`);
+}
+const doc = read(paths.doc);
+for (const marker of ['SOURCE-STATUS-FILTERS-01', 'V1-SOURCE-POLICY-REVIEW-01', '171', '98', '2 controls', 'scripts/check-source-status-filters.mjs', '.github/workflows/source-status-filters.yml']) if (!doc.includes(marker)) fail(`documentation missing: ${marker}`);
+const workflow = read(paths.workflow);
+for (const marker of ['permissions:', 'contents: read', 'npm install --package-lock=false', 'npm run build', 'node scripts/check-source-status-filters.mjs', 'git status --porcelain']) if (!workflow.includes(marker)) fail(`workflow missing: ${marker}`);
+for (const forbidden of ['schedule:', 'cron:', 'contents: write', 'pull-requests: write', 'wrangler', 'cloudflare', 'deploy']) if (workflow.toLowerCase().includes(forbidden.toLowerCase())) fail(`workflow contains forbidden marker: ${forbidden}`);
 
 if (errors.length) {
   console.error(`SOURCE_STATUS_FILTERS: failed (${errors.length})`);
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
-
 console.log('SOURCE_STATUS_FILTERS: pass');
 console.log('SOURCE_RECORDS: 171');
 console.log('COUNTRIES_WITH_SOURCES: 98');
-console.log('BILINGUAL_COUNTRY_SOURCE_ROUTES: 196');
-console.log('FILTER_CONTROLS: 7');
-console.log('TEMPORARY_DISCOVERY_WORKFLOWS: 0');
+console.log('FILTER_CONTROLS: 2');
+console.log('URL_PARAMETERS: 2');
+console.log('INTERNAL_REGISTRY_FIELDS: 0');
+console.log('INTERNAL_RENDERED_FIELDS: 0');

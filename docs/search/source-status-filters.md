@@ -1,127 +1,126 @@
-# Source status filters
+# Public source directory filters
 
 Status: complete  
-Work ID: `WHR-SEARCH-FILTER-SEO-V1`  
-Implementation unit: `SOURCE-STATUS-FILTERS-01`  
-Reviewed: 2026-07-17
+Original work ID: `WHR-SEARCH-FILTER-SEO-V1`  
+Original implementation unit: `SOURCE-STATUS-FILTERS-01`  
+Policy revision unit: `V1-SOURCE-POLICY-REVIEW-01`  
+Reviewed: 2026-07-18
 
-## Purpose
+## Decision
 
-The bilingual source directory now exposes the reviewed public source registry as a static-first, filterable directory.
+The bilingual Sources directory remains a static-first directory of 171 official source links across 98 countries and regions.
 
-The implementation covers 171 unique reviewed public source records across 98 countries and regions. It does not fetch source pages, copy source bodies, infer permissions, or alter publication status.
+The public interface now exposes only information useful to a visitor choosing and opening an official source. Source-specific automation level, terms-risk assessment, and registry-stage metadata are operational concerns and are no longer displayed, searchable, or encoded in public HTML attributes.
 
-## Routes
-
-English directory:
+## Routes and inventory
 
 ```text
 /sources/
-```
-
-Japanese directory:
-
-```text
 /ja/sources/
-```
-
-Each rendered source card links to the public country source route for its country or region. The release therefore preserves 196 bilingual country source routes:
-
-```text
 /sources/{country-slug}/
 /ja/sources/{country-slug}/
 ```
 
-## Filters
+The release preserves:
 
-Seven controls are available in both locales:
+- 171 unique source records;
+- 98 countries and regions with source records;
+- 2 bilingual directory routes;
+- 196 bilingual country-source routes;
+- 171 statically rendered cards per directory locale.
+
+## Public controls
+
+Both directories provide 2 controls:
 
 1. keyword: `q`
 2. country or region: `country`
-3. source type: `source_type`
-4. data type: `data_type`
-5. automation level: `auto_level`
-6. terms risk: `risk`
-7. registry status: `status`
 
-The current reviewed option sets are:
+Keyword matching uses Unicode NFKC normalization, case-insensitive comparison, and normalized whitespace. The two controls can be combined. Their state is restored from the URL, and `history.replaceState` updates the current URL without sending the query to a server.
+
+The directory keeps a live result count, a visible zero-result state, and one clear-filters action. With JavaScript disabled, the complete list remains readable and linked.
+
+## Public record projection
+
+The visitor-facing projection is limited to:
+
+- source ID;
+- official external URL;
+- country or region and country-source link;
+- public source type;
+- public data type;
+- public coverage or confirmation note;
+- normalized search text derived only from those public values.
+
+The visible card uses plain visitor-facing labels such as `Official` and `Link for official confirmation`. The directory does not present an internal risk score, collection capability, registry stage, or approval state as user guidance.
+
+## Internal metadata boundary
+
+The merged source registry continues to retain `auto_level` because existing acquisition and validation code depends on it. It is not part of the public directory projection.
+
+The following source-specific fields were removed from all 171 public-repository source records:
 
 ```text
-source_type: official
-data_type: link_only
-auto_level: B, C
-risk: unknown
-status: alpha_link_first, not_recorded, pending_reachability
+terms_risk: 171 fields removed
+m3_status: 163 fields removed
+m3_notes: 163 fields removed
 ```
 
-A missing `m3_status` value is represented explicitly as `not_recorded`. The UI does not silently treat missing registry metadata as approved, reachable, or safe for automation.
+Seven records that previously had no public note were given neutral official-confirmation notes. The final registry therefore has 171 non-empty public notes.
 
-## User behavior
+The permanent checker rejects:
 
-The directory supports:
+- any `terms_risk`, `m3_status`, or `m3_notes` field in the 26 merged source-registry files;
+- any automation, terms-risk, or registry-status value in public search text;
+- any internal source metadata in public HTML attributes;
+- any visible `Automation level`, `Terms risk`, or `Registry status` label;
+- duplicate source IDs, missing public notes, invalid external URLs, or broken country-source links.
 
-- Unicode NFKC keyword normalization;
-- case-insensitive and whitespace-normalized matching;
-- combined use of all seven controls;
-- live result counts;
-- a visible zero-result state;
-- one clear-filters action;
-- query-parameter restoration after navigation;
-- country source links and official external source links on every record.
+## Publication boundary
 
-The query string is updated with `history.replaceState`. No query is sent to a server or external search service.
-
-## Static-first behavior
-
-All 171 records are rendered into each locale before JavaScript runs.
-
-When JavaScript is available, the controls hide and reveal the already-rendered records.
-
-When JavaScript is disabled, the complete linked source list remains readable. The page does not require a filter endpoint, client storage, cookies, or an external index.
-
-## Public and privacy boundary
+The directory is a route to official sources. It is not a permission claim and not a replacement for official racecards, timetable products, results, wagering pages, or streaming services.
 
 Allowed:
 
-- public source IDs;
-- official public source URLs;
-- public country source links;
-- reviewed source metadata already present in the public registry;
-- client-side URL state.
+- official source URLs;
+- country and racecourse confirmation routes;
+- high-level public coverage notes;
+- reviewed timetable and racecourse context within the existing publication ranks.
 
 Not allowed:
 
-- participant datasets;
-- complete racecards;
-- odds, results, or payouts;
-- predictions;
-- raw source bodies;
-- automatic source acceptance or publication.
+- participant datasets or complete racecards;
+- horses, jockeys, trainers, draws, weights, or field details;
+- odds, results, payouts, predictions, or betting advice;
+- copied source bodies or raw HTML;
+- embedded video, direct stream URLs, unofficial mirrors, or redistributed recordings.
 
-The implementation adds no live fetch, server filter endpoint, query logging, cookies, analytics, automatic generation, automatic publication, or deployment behavior.
+Where coverage is limited or uncertain, the public page remains thin and links to the official source for final confirmation.
 
-## Validation
+## Privacy and static-first behavior
 
-The temporary discovery workflow measured 172 rendered rows and exposed one duplicate source ID. The duplicate `chile-hipodromo-chile-home` amendment record was removed while its canonical country-source record and racecourse relationship were preserved. The released contract therefore freezes 171 unique source records.
+All 171 cards are rendered before JavaScript runs. Filtering only hides or reveals existing cards.
 
-The temporary discovery workflow was removed before release.
+The feature adds no external search service, filter endpoint, query logging, analytics, cookies, client storage, live source fetch, automatic source acceptance, automatic publication, or deployment behavior.
 
-The permanent checker is:
+## Permanent validation
+
+Checker:
 
 ```text
 scripts/check-source-status-filters.mjs
 ```
 
-The permanent read-only Actions gate is:
+Read-only Actions gate:
 
 ```text
 .github/workflows/source-status-filters.yml
 ```
 
-The gate builds the site, preserves the glossary, global-search, country-filter, race-type-filter, and region-filter contracts, validates both source directories, checks the frozen option sets, verifies all 196 bilingual country source routes, rejects duplicate source IDs or missing filter attributes, confirms the temporary workflow is absent, and proves the repository remains clean.
+The gate builds the complete site, preserves the prior search and glossary foundations, validates all 26 registry files, checks both 171-card source directories, verifies all 196 country-source routes, rejects internal metadata exposure, removes generated output, and proves the repository remains clean.
 
-## Next implementation unit
+## Current policy unit
 
 ```text
-GLOSSARY-SEARCH-IMPROVEMENT-01
+V1-SOURCE-POLICY-REVIEW-01
 ```

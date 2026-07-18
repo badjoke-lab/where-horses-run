@@ -1,0 +1,100 @@
+{
+  "schema_version": "v1-source-policy-review-v1",
+  "release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-PREPARATION-V1",
+  "implementation_unit": "V1-SOURCE-POLICY-REVIEW-01",
+  "status": "complete",
+  "reviewed_at": "2026-07-18",
+  "baseline_units": {
+    "scope": "V1-SCOPE-FREEZE-01",
+    "data_audit": "V1-DATA-AUDIT-01",
+    "mobile_qa": "V1-MOBILE-QA-01",
+    "accessibility_qa": "V1-ACCESSIBILITY-QA-01",
+    "performance_qa": "V1-PERFORMANCE-QA-01",
+    "source_directory": "SOURCE-STATUS-FILTERS-01"
+  },
+  "registry_inventory": {
+    "source_registry_files": 26,
+    "source_records": 171,
+    "unique_source_ids": 171,
+    "countries_with_sources": 98,
+    "unique_hosts": 124,
+    "duplicate_url_values": 3,
+    "duplicate_source_ids": 0,
+    "invalid_urls": 0,
+    "non_https_urls": 0,
+    "unknown_country_ids": 0,
+    "missing_required_fields": 0,
+    "missing_public_notes": 0,
+    "source_type_counts": {"official": 171},
+    "data_type_counts": {"link_only": 171},
+    "auto_level_counts": {"B": 9, "C": 162},
+    "url_path_kinds": {"host_root": 69, "deep_page": 99, "pdf": 3}
+  },
+  "normalization": {
+    "terms_risk_fields_removed": 171,
+    "m3_status_fields_removed": 163,
+    "m3_notes_fields_removed": 163,
+    "total_internal_fields_removed": 497,
+    "public_notes_added": 7,
+    "auto_level_fields_retained": 171,
+    "source_ids_changed": 0,
+    "source_urls_changed": 0
+  },
+  "public_directory": {
+    "locales": 2,
+    "directory_routes": 2,
+    "records_per_locale": 171,
+    "country_source_routes": 196,
+    "filter_controls": 2,
+    "url_parameters": 2,
+    "keyword_parameter": "q",
+    "country_parameter": "country",
+    "public_record_fields": ["id", "url", "country_id", "country_href", "source_type", "data_type", "notes", "search_text"],
+    "rendered_internal_metadata_instances": 0,
+    "internal_html_attribute_instances": 0,
+    "internal_search_text_instances": 0,
+    "no_javascript_complete_list_required": true
+  },
+  "duplicate_url_policy": {
+    "duplicate_url_values_allowed": true,
+    "duplicate_source_ids_allowed": false,
+    "reason": "One official URL may support distinct reviewed organiser, calendar, racecourse, or membership records. Record identity and public note must remain distinct."
+  },
+  "publication_boundary": {
+    "official_source_links_allowed": true,
+    "public_confirmation_notes_allowed": true,
+    "calendar_racecourse_and_country_context_allowed": true,
+    "publication_rank_context_allowed": true,
+    "participant_data_allowed": false,
+    "complete_racecards_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "embedded_video_allowed": false,
+    "direct_stream_urls_allowed": false,
+    "unofficial_mirrors_or_redistributed_recordings_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_source_acceptance_enabled": false,
+    "automatic_terms_inference_enabled": false,
+    "automatic_publication_enabled": false,
+    "automatic_translation_enabled": false,
+    "deployment_enabled_by_this_unit": false
+  },
+  "source_contract": {
+    "directory_contract": "data/static/source-status-filter-contract-v1.json",
+    "directory_checker": "scripts/check-source-status-filters.mjs",
+    "checker": "scripts/check-v1-source-policy-review.mjs",
+    "workflow": ".github/workflows/v1-source-policy-review.yml",
+    "documentation": "docs/release/v1-source-policy-review.md"
+  },
+  "previous_implementation_unit": "V1-PERFORMANCE-QA-01",
+  "next_implementation_unit": "V1-KNOWN-LIMITATIONS-01"
+}

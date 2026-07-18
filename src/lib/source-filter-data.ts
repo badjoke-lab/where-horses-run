@@ -16,29 +16,18 @@ export interface SourceFilterRecord {
   countryHref: string;
   sourceType: string;
   dataType: string;
-  autoLevel: string;
-  termsRisk: string;
-  registryStatus: string;
   notes: string;
   searchText: string;
 }
 
 export interface SourceFilterOptions {
   countries: SourceFilterReference[];
-  sourceTypes: string[];
-  dataTypes: string[];
-  autoLevels: string[];
-  termsRisks: string[];
-  registryStatuses: string[];
 }
 
 type FilterableSource = Source & {
   notes?: string;
-  m3_status?: string;
-  terms_risk?: string;
   source_type?: string;
   data_type?: string;
-  auto_level?: string;
 };
 
 export function normalizeSourceFilterText(value: string): string {
@@ -51,10 +40,6 @@ export function normalizeSourceFilterText(value: string): string {
 
 function nonempty(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
-}
-
-function uniqueStrings(values: string[]): string[] {
-  return [...new Set(values.filter(nonempty))].sort((left, right) => left.localeCompare(right, 'en'));
 }
 
 export function getSourceFilterRecords(locale: SourceDirectoryLocale): SourceFilterRecord[] {
@@ -72,11 +57,8 @@ export function getSourceFilterRecords(locale: SourceDirectoryLocale): SourceFil
       const countryHref = country
         ? isJapanese ? `/ja/sources/${country.slug}/` : `/sources/${country.slug}/`
         : '';
-      const sourceType = nonempty(source.source_type) ? source.source_type : 'not_recorded';
-      const dataType = nonempty(source.data_type) ? source.data_type : 'not_recorded';
-      const autoLevel = nonempty(source.auto_level) ? source.auto_level : 'not_recorded';
-      const termsRisk = nonempty(source.terms_risk) ? source.terms_risk : 'not_recorded';
-      const registryStatus = nonempty(source.m3_status) ? source.m3_status : 'not_recorded';
+      const sourceType = nonempty(source.source_type) ? source.source_type : 'official';
+      const dataType = nonempty(source.data_type) ? source.data_type : 'link_only';
       const notes = nonempty(source.notes) ? source.notes : '';
       const searchText = normalizeSourceFilterText([
         source.id,
@@ -87,9 +69,6 @@ export function getSourceFilterRecords(locale: SourceDirectoryLocale): SourceFil
         countryName,
         sourceType,
         dataType,
-        autoLevel,
-        termsRisk,
-        registryStatus,
         notes,
       ].filter(nonempty).join(' '));
 
@@ -101,9 +80,6 @@ export function getSourceFilterRecords(locale: SourceDirectoryLocale): SourceFil
         countryHref,
         sourceType,
         dataType,
-        autoLevel,
-        termsRisk,
-        registryStatus,
         notes,
         searchText,
       };
@@ -125,10 +101,5 @@ export function getSourceFilterOptions(records: SourceFilterRecord[]): SourceFil
 
   return {
     countries: [...countryById.values()].sort((left, right) => left.label.localeCompare(right.label)),
-    sourceTypes: uniqueStrings(records.map((record) => record.sourceType)),
-    dataTypes: uniqueStrings(records.map((record) => record.dataType)),
-    autoLevels: uniqueStrings(records.map((record) => record.autoLevel)),
-    termsRisks: uniqueStrings(records.map((record) => record.termsRisk)),
-    registryStatuses: uniqueStrings(records.map((record) => record.registryStatus)),
   };
 }
