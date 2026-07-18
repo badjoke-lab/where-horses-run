@@ -72,13 +72,7 @@ jobs:
         run: node scripts/check-v1-scope-freeze.mjs
       - name: Preserve v1 data audit
         run: node scripts/check-v1-data-audit.mjs
-      - name: Preserve v1 mobile QA
-        run: node scripts/check-v1-mobile-qa.mjs
-      - name: Preserve v1 accessibility QA
-        run: node scripts/check-v1-accessibility-qa.mjs
-      - name: Preserve v1 performance QA
-        run: node scripts/check-v1-performance-qa.mjs
-      - name: Preserve v1 source policy review
+      - name: Preserve v1 source policy review and QA baselines
         run: node scripts/check-v1-source-policy-review.mjs
       - name: Preserve FAQ content pages
         run: node scripts/check-faq-content-pages.mjs
