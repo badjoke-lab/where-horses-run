@@ -1,0 +1,104 @@
+{
+  "schema_version": "v1-production-confirmation-v1",
+  "release_id": "WHR-V1",
+  "work_id": "WHR-V1-RELEASE",
+  "implementation_unit": "V1-PRODUCTION-CONFIRMATION-01",
+  "status": "complete",
+  "confirmed_at": "2026-07-19",
+  "origin": "https://whr.badjoke-lab.com",
+  "release_decision_unit": "V1-RELEASE-DECISION-01",
+  "release_commit": "6d45895fb04ccbc3160e763c54438a4d51dff905",
+  "required_routes": [
+    {"path": "/", "kind": "html", "locale": "en", "markers": ["Where Horses Run"]},
+    {"path": "/ja/", "kind": "html", "locale": "ja", "markers": ["競馬どこ"]},
+    {"path": "/calendar/", "kind": "html", "locale": "en", "markers": ["Calendar"]},
+    {"path": "/ja/calendar/", "kind": "html", "locale": "ja", "markers": ["カレンダー"]},
+    {"path": "/faq/", "kind": "html", "locale": "en", "markers": ["Frequently Asked Questions"]},
+    {"path": "/ja/faq/", "kind": "html", "locale": "ja", "markers": ["よくある質問"]},
+    {"path": "/methods/", "kind": "html", "locale": "en", "markers": ["Methods and Data Policy"]},
+    {"path": "/ja/methods/", "kind": "html", "locale": "ja", "markers": ["データの方法と公開方針"]},
+    {"path": "/sources/", "kind": "html", "locale": "en", "markers": ["official source records"]},
+    {"path": "/ja/sources/", "kind": "html", "locale": "ja", "markers": ["公式ソースを掲載"]},
+    {"path": "/sitemap.xml", "kind": "sitemap", "expected_urls": 771},
+    {"path": "/robots.txt", "kind": "robots", "markers": ["Sitemap: https://whr.badjoke-lab.com/sitemap.xml"]}
+  ],
+  "request_contract": {
+    "method": "GET",
+    "timeout_ms": 20000,
+    "redirect_mode": "follow",
+    "cache_control": "no-cache",
+    "user_agent": "WhereHorsesRun-ProductionConfirmation/1.0",
+    "external_network_required": true,
+    "authentication_required": false
+  },
+  "response_contract": {
+    "required_http_status": 200,
+    "required_origin_after_redirect": "https://whr.badjoke-lab.com",
+    "html_content_type_prefix": "text/html",
+    "sitemap_content_type_allowed": ["application/xml", "text/xml"],
+    "robots_content_type_prefix": "text/plain",
+    "html_language_must_match_locale": true,
+    "canonical_must_match_route": true,
+    "sitemap_url_count": 771,
+    "sitemap_must_include_required_html_routes": true,
+    "robots_must_reference_sitemap": true
+  },
+  "acceptance": {
+    "required_route_checks": 12,
+    "required_html_checks": 10,
+    "required_sitemap_checks": 1,
+    "required_robots_checks": 1,
+    "failed_requests_allowed": 0,
+    "non_200_responses_allowed": 0,
+    "redirect_origin_errors_allowed": 0,
+    "content_type_errors_allowed": 0,
+    "marker_errors_allowed": 0,
+    "language_errors_allowed": 0,
+    "canonical_errors_allowed": 0,
+    "sitemap_count_errors_allowed": 0,
+    "sitemap_route_errors_allowed": 0,
+    "robots_errors_allowed": 0
+  },
+  "release_result": {
+    "release_decision_complete": true,
+    "production_deployment_authorized": true,
+    "production_public_surface_confirmed": true,
+    "release_tag_required": false,
+    "release_tag_created": false,
+    "github_release_created": false,
+    "next_stage": "reviewed_incremental_maintenance"
+  },
+  "scope_boundary": {
+    "new_public_routes_added": 0,
+    "new_public_data_classes_added": 0,
+    "public_content_changed": false,
+    "production_probe_is_read_only": true,
+    "canonical_data_write_allowed": false,
+    "deployment_action_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_collected": false,
+    "interaction_logging_added": false,
+    "cookies_added": false,
+    "client_storage_added": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "probe_may_read_public_routes": true,
+    "probe_may_write_public_routes": false,
+    "probe_may_deploy": false,
+    "probe_may_create_release_tag": false,
+    "probe_may_create_github_release": false,
+    "probe_may_mutate_repository": false
+  },
+  "source_contract": {
+    "runner": "scripts/run-v1-production-confirmation.mjs",
+    "checker": "scripts/check-v1-production-confirmation.mjs",
+    "workflow": ".github/workflows/v1-production-confirmation.yml",
+    "audit": "data/audits/v1-production-confirmation-v1.json",
+    "documentation": "docs/release/v1-production-confirmation.md",
+    "report": "v1-production-confirmation-report.json"
+  },
+  "previous_implementation_unit": "V1-RELEASE-DECISION-01",
+  "next_stage": "reviewed_incremental_maintenance"
+}
