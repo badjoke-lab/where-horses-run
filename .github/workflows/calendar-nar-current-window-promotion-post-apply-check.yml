@@ -49,16 +49,22 @@ jobs:
           node-version: 22.12.0
       - name: Install build dependencies without lockfile mutation
         run: npm install --package-lock=false --no-audit --no-fund
-      - name: Validate NAR reviewed post-apply contracts
+      - name: Validate Japan current-window state
+        run: node scripts/check-calendar-japan-current-window-operations.mjs
+      - name: Validate historical NAR retry scope
+        run: node scripts/check-calendar-nar-current-window-retry.mjs
+      - name: Validate Rank-aware Retry Queue
+        run: node scripts/check-calendar-rank-aware-retry-queue.mjs
+      - name: Validate NAR reviewed promotion
+        run: node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
+      - name: Validate NAR promotion output determinism
+        run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+      - name: Validate operations derivatives
         run: |
-          node scripts/check-calendar-japan-current-window-operations.mjs
-          node scripts/check-calendar-nar-current-window-retry.mjs
-          node scripts/check-calendar-rank-aware-retry-queue.mjs
-          node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
-          node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
-          node scripts/validate-data.mjs
+      - name: Validate repository data
+        run: node scripts/validate-data.mjs
       - name: Build repository with reviewed post-apply state
         run: npm run build
       - name: Prove repository source branch unchanged
