@@ -111,6 +111,56 @@ try {
   if (forbiddenRun.status === 0 || !`${forbiddenRun.stderr}${forbiddenRun.stdout}`.includes('non-JSON review artifact is forbidden')) {
     fail('non-JSON artifact was not rejected');
   }
+
+  const integrationArtifacts = path.join(tempRoot, 'integration-artifacts');
+  const integrationPayload = path.join(tempRoot, 'integration-payload');
+  const integrationStatusRoot = path.join(tempRoot, 'integration-status-root');
+  const integrationReceipt = path.join(tempRoot, 'integration-receipt.json');
+  fs.mkdirSync(integrationStatusRoot, { recursive: true });
+  writeJson(
+    path.join(integrationArtifacts, 'generated/timetable/actions-multi-job-status/generated-batch.json'),
+    { schema_version: 'calendar-actions-job-status-v1', status: 'success' },
+  );
+  writeJson(
+    path.join(integrationArtifacts, 'candidates/nar-incremental-batches/generated-batch/batch.json'),
+    { schema_version: 'nar-incremental-batch-v2', review: { status: 'needs_review' } },
+  );
+  const integrationOutput = path.join(
+    integrationPayload,
+    'data/generated/timetable/daily-acquisition-summaries/2026-07-19.json',
+  );
+  const integrationRun = spawnSync(process.execPath, [
+    'scripts/timetable/summarize-actions-multi-job.mjs',
+    '--plan-id=rank-isolation-plan-001',
+    `--status-root=${integrationStatusRoot}`,
+    `--output=${integrationOutput}`,
+  ], {
+    cwd: root,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      GITHUB_ACTIONS: 'true',
+      GITHUB_RUN_ID: '29695247741',
+      GITHUB_SHA: 'b6d1f0924ff557948e056f44a475ad509f442601',
+      WHR_DAILY_REVIEW_ARTIFACT_ROOT: integrationArtifacts,
+      WHR_DAILY_REVIEW_PAYLOAD_ROOT: integrationPayload,
+      WHR_DAILY_REVIEW_RECEIPT_PATH: integrationReceipt,
+    },
+  });
+  if (integrationRun.status !== 0) fail(`summary-stage materialization failed: ${integrationRun.stderr || integrationRun.stdout}`);
+  const integrationLine = integrationRun.stdout.trim().split(/\r?\n/).filter(Boolean).at(-1);
+  const integrationResult = integrationLine ? JSON.parse(integrationLine) : null;
+  if (integrationResult?.materialized_review_artifact_count !== 2) {
+    fail(`summary-stage materialized count differs: ${integrationLine}`);
+  }
+  for (const relativePath of [
+    'data/generated/timetable/actions-multi-job-status/generated-batch.json',
+    'data/candidates/nar-incremental-batches/generated-batch/batch.json',
+  ]) {
+    if (!fs.existsSync(path.join(integrationPayload, relativePath))) {
+      fail(`summary-stage materialization missing ${relativePath}`);
+    }
+  }
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
@@ -124,5 +174,6 @@ if (errors.length) {
 console.log('CALENDAR_DAILY_REVIEW_ARTIFACT_DELIVERY: pass');
 console.log('STRIPPED_DATA_ROOT: supported');
 console.log('EXPLICIT_DATA_ROOT: supported');
+console.log('SUMMARY_STAGE_MATERIALIZATION: pass');
 console.log('NON_JSON_ARTIFACT: rejected');
 console.log('PUBLICATION_SIDE_EFFECTS: disabled');
