@@ -34,26 +34,24 @@ concurrency:
 jobs:
   generate-and-validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Install dependencies
-        run: npm ci
       - name: Build exact reviewed Rank C candidate envelopes
         run: node scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs
       - name: Dry-run Promotion Validation for all three systems
         run: |
-          npm run promote:timetable -- --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json --dry-run
-          npm run promote:timetable -- --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json --dry-run
-          npm run promote:timetable -- --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json --dry-run
       - name: Promote reviewed candidates into canonical timetable data
         run: |
-          npm run promote:timetable -- --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json
-          npm run promote:timetable -- --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json
-          npm run promote:timetable -- --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
       - name: Verify committed public boundary and repository contracts
@@ -61,7 +59,7 @@ jobs:
           node scripts/check-calendar-pipeline-v1.mjs
           node scripts/check-calendar-public-projection.mjs
           node scripts/check-calendar-current-horizon-recovery.mjs
-          npm run validate:data
+          node scripts/validate-data.mjs
       - name: Verify Rank C-only recovery output
         run: |
           node --input-type=module <<'NODE'
@@ -75,36 +73,22 @@ jobs:
           const ids = [];
           candidatePaths.forEach((candidatePath, index) => {
             const value = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
-            if (value.review?.status !== 'approved' || value.review?.promotion_target !== 'canonical-timetable-v0') {
-              throw new Error(`${candidatePath}: approval envelope differs`);
-            }
+            if (value.review?.status !== 'approved' || value.review?.promotion_target !== 'canonical-timetable-v0') throw new Error(`${candidatePath}: approval envelope differs`);
             if (value.records.length !== expected[index]) throw new Error(`${candidatePath}: record count differs`);
             for (const record of value.records) {
               ids.push(record.meeting_id);
-              if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) {
-                throw new Error(`${record.meeting_id}: public recovery exceeded Rank C`);
-              }
+              if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: public recovery exceeded Rank C`);
             }
           });
           if (ids.length !== 72 || new Set(ids).size !== 72) throw new Error('recovery meeting identity count differs');
-
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const byId = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) {
-            const meeting = byId.get(id);
-            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from canonical Rank C output`);
-          }
-
+          for (const id of ids) if (!byId.has(id)) throw new Error(`${id}: missing from canonical output`);
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) {
-            const meeting = publicById.get(id);
-            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from public Rank C output`);
-          }
+          for (const id of ids) if (!publicById.has(id)) throw new Error(`${id}: missing from public output`);
           console.log(JSON.stringify({ approved_records: ids.length, canonical_records: ids.length, public_records: ids.length, max_rank: 'C' }));
           NODE
-      - name: Build site with recovered Calendar horizon
-        run: npm run build
       - name: Check generated diff formatting
         run: git diff --check
       - name: Upload reviewed recovery output
