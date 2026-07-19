@@ -29,8 +29,9 @@ if (audit.schema_version !== 'racecourse-page-identity-reconciliation-v1') fail(
 if (audit.work_id !== 'WHR-RACECOURSE-PAGES-V1') fail('audit Work ID differs');
 if (audit.implementation_unit !== 'RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01') fail('audit implementation unit differs');
 if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit status differs');
+if (audit.source_public_generated_at !== publicMeetings.generated_at) fail('audited public generation timestamp differs');
 if (audit.baseline?.canonical_records !== 23 || audit.baseline?.unresolved_ids !== 13 || audit.baseline?.meetings_on_unresolved_ids !== 114) fail('baseline discovery counts differ');
-if (audit.implemented?.canonical_records !== 36 || audit.implemented?.public_racecourse_ids !== 26 || audit.implemented?.canonical_exact_ids !== 26 || audit.implemented?.unresolved_ids !== 0) fail('implemented reconciliation counts differ');
+if (audit.implemented?.canonical_records !== 36 || audit.implemented?.public_meetings !== 241 || audit.implemented?.public_racecourse_ids !== 26 || audit.implemented?.canonical_exact_ids !== 26 || audit.implemented?.unresolved_ids !== 0) fail('implemented reconciliation counts differ');
 if (audit.implemented?.new_identity_only_records !== 13 || audit.implemented?.new_english_routes !== 13 || audit.implemented?.new_japanese_routes !== 13) fail('new identity route counts differ');
 if ((audit.resolved_identity_ids ?? []).length !== 13 || new Set(audit.resolved_identity_ids).size !== 13) fail('resolved identity ID set differs');
 if (Object.values(audit.boundaries ?? {}).some((value) => value !== false)) fail('audit boundaries must remain false');
@@ -66,7 +67,7 @@ for (const record of identityRecords) {
 }
 
 const publicIds = [...new Set((publicMeetings.meetings ?? []).map((meeting) => meeting.racecourse_id))].sort();
-if (publicMeetings.meetings?.length !== 169 || publicIds.length !== 26) fail('public timetable meeting/identity counts differ');
+if (publicMeetings.meetings?.length !== audit.implemented.public_meetings || publicIds.length !== audit.implemented.public_racecourse_ids) fail('public timetable meeting/identity counts differ');
 for (const racecourseId of publicIds) if (!canonicalById.has(racecourseId)) fail(`public timetable racecourse remains unresolved: ${racecourseId}`);
 
 const prohibitedFragments = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
@@ -98,10 +99,10 @@ if (errors.length) {
 }
 
 console.log('RACECOURSE_PAGE_IDENTITY_RECONCILIATION: pass');
-console.log('PUBLIC_MEETINGS: 169');
-console.log('PUBLIC_RACECOURSE_IDS: 26');
-console.log('CANONICAL_EXACT_IDS: 26');
-console.log('UNRESOLVED_IDS: 0');
-console.log('IDENTITY_ONLY_RECORDS: 13');
+console.log(`PUBLIC_MEETINGS: ${audit.implemented.public_meetings}`);
+console.log(`PUBLIC_RACECOURSE_IDS: ${audit.implemented.public_racecourse_ids}`);
+console.log(`CANONICAL_EXACT_IDS: ${audit.implemented.canonical_exact_ids}`);
+console.log(`UNRESOLVED_IDS: ${audit.implemented.unresolved_ids}`);
+console.log(`IDENTITY_ONLY_RECORDS: ${audit.implemented.new_identity_only_records}`);
 console.log('BILINGUAL_ROUTES_ADDED: 26');
 console.log('UNSUPPORTED_PROFILE_INFERENCE: false');

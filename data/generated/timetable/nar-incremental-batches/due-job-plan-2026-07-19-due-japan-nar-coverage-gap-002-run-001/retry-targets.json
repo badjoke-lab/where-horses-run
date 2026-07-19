@@ -1,0 +1,36 @@
+{
+  "schema_version": "nar-incremental-retry-targets-v2",
+  "batch_id": "due-job-plan-2026-07-19-due-japan-nar-coverage-gap-002-run-001",
+  "generated_at": "2026-07-19T16:55:09.292Z",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "system_id": "japan-nar-system",
+  "source_id": "nar-schedule-detail-batch",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-08-15",
+    "end_date_exclusive": "2026-08-18",
+    "timezone": "Asia/Tokyo"
+  },
+  "date_targets": [
+    "2026-08-15",
+    "2026-08-16",
+    "2026-08-17"
+  ],
+  "meeting_targets": [
+    "nar-kanazawa-racecourse-2026-08-17",
+    "nar-morioka-racecourse-2026-08-16",
+    "nar-morioka-racecourse-2026-08-17",
+    "nar-oi-racecourse-2026-08-15",
+    "nar-oi-racecourse-2026-08-16",
+    "nar-oi-racecourse-2026-08-17",
+    "nar-saga-racecourse-2026-08-15",
+    "nar-saga-racecourse-2026-08-16"
+  ],
+  "reason_counts": {
+    "scheduled_pending_details": 8
+  },
+  "operator_mode": "manual_irregular_retry",
+  "scheduled_retry": "disabled",
+  "canonical_write": "disabled",
+  "public_write": "disabled"
+}
