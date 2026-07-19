@@ -109,6 +109,7 @@ Calendar machine-readable contracts:
 - `data/static/authority-source-inventory.json`
 - `data/static/timetable-candidate-v1.schema.json`
 - `data/static/calendar-due-job-policy-v1.json`
+- `data/static/calendar-daily-acquisition-policy-v1.json`
 - `data/audits/calendar-baseline-migration-map.json`
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
@@ -146,6 +147,9 @@ Calendar machine-readable contracts:
 - `data/archive/timetable/candidates/japan-nar-candidates.v0.json`
 - `scripts/timetable/coverage-observation-validation.mjs`
 - `scripts/timetable/build-calendar-live-planner-state.mjs`
+- `scripts/timetable/daily-acquisition-policy.mjs`
+- `scripts/timetable/validate-daily-acquisition-plan.mjs`
+- `scripts/check-calendar-daily-acquisition-policy.mjs`
 - `scripts/check-calendar-coverage-observation-schema.mjs`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
@@ -198,7 +202,7 @@ Before work begins:
 4. confirm tracker or registry state;
 5. record whether Cloudflare is required.
 
-For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, and operations document before changing workflow, policy, runner, draft-PR, or publication behavior.
+For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, and daily execution policy before changing workflow, policy, runner, draft-PR, or publication behavior.
 
 The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
 
