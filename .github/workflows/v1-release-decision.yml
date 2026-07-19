@@ -125,13 +125,51 @@ jobs:
           fi
       - name: Preserve v1 performance contract and budgets
         run: node scripts/check-v1-performance-qa.mjs
-      - name: Preserve v1 release readiness
-        run: node scripts/check-v1-release-readiness.mjs
-      - name: Validate v1 release decision
-        run: node scripts/check-v1-release-decision.mjs
+      - name: Evaluate v1 release readiness
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-v1-release-readiness.mjs > v1-release-decision-readiness.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > v1-release-decision-readiness.exit
+          cat v1-release-decision-readiness.log
+          exit 0
+      - name: Evaluate v1 release decision
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-v1-release-decision.mjs > v1-release-decision-check.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > v1-release-decision-check.exit
+          cat v1-release-decision-check.log
+          exit 0
+      - name: Upload release-decision validation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1-release-decision-validation
+          path: |
+            v1-release-decision-readiness.log
+            v1-release-decision-readiness.exit
+            v1-release-decision-check.log
+            v1-release-decision-check.exit
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Enforce v1 release readiness
+        run: |
+          status="$(cat v1-release-decision-readiness.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
+      - name: Enforce v1 release decision
+        run: |
+          status="$(cat v1-release-decision-check.exit)"
+          if [ "$status" != "0" ]; then
+            exit "$status"
+          fi
       - name: Remove generated diagnostics
         if: always()
-        run: rm -f v1-performance-qa-report.json v1-performance-qa-discovery.json v1-release-decision-performance.log v1-release-decision-performance.exit
+        run: rm -f v1-performance-qa-report.json v1-performance-qa-discovery.json v1-release-decision-performance.log v1-release-decision-performance.exit v1-release-decision-readiness.log v1-release-decision-readiness.exit v1-release-decision-check.log v1-release-decision-check.exit
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
