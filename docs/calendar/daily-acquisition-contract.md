@@ -15,14 +15,36 @@ Due-job policy
 + committed public meeting horizon
 + Acquisition Registry
 + runner compatibility
++ daily acquisition execution policy
 + source-specific adapters
 -> validated daily Collection Plan
--> independent hosted acquisition Jobs
+-> independently authorized hosted acquisition Jobs
 -> immutable review artifacts
 -> one human-review draft PR
 ```
 
 The system ends at the human-review boundary.
+
+## Two-policy boundary
+
+The Due-job policy remains planning-only. Its machine-readable boundary continues to require:
+
+```text
+artifact_only: true
+jobs_executed: false
+automatic_approval: false
+automatic_promotion: false
+automatic_publication: false
+automatic_deployment: false
+```
+
+Scheduled hosted execution is authorized separately by:
+
+```text
+data/static/calendar-daily-acquisition-policy-v1.json
+```
+
+That execution policy may authorize only exact combinations of system, reason, collection mode, runner, and executor. It must keep automatic approval, promotion, publication, merge, and deployment disabled. A generated Actions Plan must pass the execution-policy validator before any Job starts.
 
 ## Required daily flow
 
@@ -30,16 +52,17 @@ The system ends at the human-review boundary.
 03:17 UTC scheduled trigger
 -> derive current planner state
 -> validate planner state
--> generate Due-job Plan
+-> generate planning-only Due-job Plan
 -> extract Collection Plan
 -> compile GitHub Actions-capable Jobs
--> preserve non-hosted Jobs as explicit exclusions
--> execute hosted Jobs independently
+-> validate every hosted Job against the daily execution policy
+-> preserve non-hosted or unauthorized Jobs as explicit exclusions or failures
+-> execute authorized hosted Jobs independently
 -> summarize success / partial / source_error / not_run
 -> create or update one draft review PR
 ```
 
-Planning and acquisition are automated. Approval and publication are not.
+Planning and bounded acquisition are automated. Approval and publication are not.
 
 ## State inputs
 
@@ -49,6 +72,7 @@ The daily planner state may use only reviewed or committed control inputs:
 - reviewed `last_checked_date` values;
 - Acquisition Registry profiles;
 - Due-job policy;
+- daily acquisition execution policy;
 - an explicit reviewed Rank-aware Retry Queue when supplied;
 - the workflow planning timestamp.
 
@@ -68,23 +92,24 @@ proposed gap: 2026-08-01 through 2026-08-18 exclusive
 
 It must not create internal holes merely because no meeting exists on an individual date.
 
-## Runner boundary
+## Runner and source-policy boundary
 
-The Acquisition Registry remains authoritative.
+The Acquisition Registry, Due-job policy, and daily execution policy are jointly authoritative.
 
-- `github_actions` Jobs may execute in the scheduled workflow.
+- `github_actions` Jobs may execute only when all three layers permit the exact Job.
 - local-primary Jobs remain excluded from hosted execution.
 - reviewed-import Jobs remain human-controlled.
 - no workflow may silently substitute a runner outside Registry and compatibility rules.
+- executor capability does not by itself enable a system's regular scheduled refresh.
 
 Current expected behavior:
 
 ```text
-JRA: planned when due, excluded from hosted execution, local/reviewed path required
-NAR: hosted acquisition supported
-Banei: hosted acquisition supported within declared modes
-HKJC: hosted bounded schedule acquisition supported
-UAE ERA: only declared supported source-horizon or selected-meeting modes may be planned
+JRA: due work may be planned, but hosted execution is excluded; local/reviewed path required
+NAR: authorized hosted acquisition is supported within declared modes and reasons
+Banei: regular refresh remains disabled; only reviewed selected-meeting rank retry is authorized
+HKJC: authorized hosted bounded schedule acquisition is supported
+UAE ERA: not yet in the daily Due-job policy; seasonal disposition remains operator-controlled
 ```
 
 ## Review PR contract
@@ -97,6 +122,7 @@ automation/calendar-daily-acquisition-review
 
 The draft PR may contain only review-boundary artifacts produced by supported acquisition Jobs, including:
 
+- retained planner state and exact Due-job and Actions Plans;
 - Job status records;
 - source-specific candidate batches;
 - Coverage and Manifest artifacts;
@@ -111,7 +137,8 @@ The scheduled system must not:
 
 - approve a candidate;
 - mark human review complete;
-- promote candidate data into Canonical data;
+- perform automatic Canonical promotion;
+- perform automatic public projection;
 - write public meeting-list or meeting-detail projection files;
 - merge its own PR;
 - deploy the site;
@@ -123,6 +150,7 @@ The scheduled system must not:
 ## Failure behavior
 
 - Planning or validation failure stops all execution.
+- Execution-policy rejection stops all execution before source access.
 - One independent Job failure must not cancel other Jobs.
 - `source_error` remains `source_error`.
 - A valid shorter source horizon remains partial coverage, not fabricated completeness.
@@ -152,12 +180,14 @@ This continuation is outside the scheduled daily acquisition workflow.
 `WHR-CAL-DAILY-ACQUISITION` is complete only when all of the following are evidenced:
 
 1. live planner state is derived without fixture input;
-2. Due-job Plan validation passes against current Registry and policy;
+2. Due-job Plan validation passes against current Registry and planning policy;
 3. generated Collection Plans can be consumed directly by the Actions runner;
-4. hosted NAR, Banei, and HKJC Jobs preserve independent outcomes;
-5. JRA local-primary exclusion is explicit;
-6. a scheduled run creates or updates a draft review PR;
-7. no automatic approval, Canonical write, public projection, merge, or deployment occurs;
-8. source-error and no-hosted-job scenarios are tested;
-9. the rolling horizon recovery run is reviewed separately before publication;
-10. the canonical roadmap and implementation schedule identify this Work ID and boundary.
+4. every hosted Job passes the separate daily execution policy;
+5. hosted NAR and HKJC Jobs preserve independent outcomes;
+6. Banei regular refresh is rejected while reviewed selected-meeting retry remains eligible;
+7. JRA local-primary exclusion is explicit;
+8. a main-branch activation or scheduled run creates or updates a draft review PR;
+9. no automatic approval, Canonical write, public projection, merge, or deployment occurs;
+10. source-error and no-hosted-job scenarios are tested;
+11. the rolling horizon recovery run is reviewed separately before publication;
+12. the canonical roadmap and implementation schedule identify this Work ID and boundary.
