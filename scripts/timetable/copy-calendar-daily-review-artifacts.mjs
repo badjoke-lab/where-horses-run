@@ -1,44 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-
-const args = new Map(
-  process.argv.slice(2).map((item) => {
-    const separator = item.indexOf('=');
-    if (!item.startsWith('--') || separator === -1) return [item, null];
-    return [item.slice(2, separator), item.slice(separator + 1)];
-  }),
-);
-
-function required(name) {
-  const value = args.get(name);
-  if (typeof value !== 'string' || value.trim() === '') {
-    throw new Error(`--${name}=<value> is required`);
-  }
-  return value;
-}
-
-function optional(name, fallback = null) {
-  const value = args.get(name);
-  return typeof value === 'string' && value !== '' ? value : fallback;
-}
-
-function booleanArg(name, fallback = false) {
-  const value = optional(name, null);
-  if (value === null) return fallback;
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  throw new Error(`--${name} must be true or false`);
-}
-
-const artifactRoot = path.resolve(required('artifact-root'));
-const payloadRoot = path.resolve(required('payload-root'));
-const receiptPath = path.resolve(required('receipt'));
-const runId = required('run-id');
-const sourceSha = required('source-sha');
-const allowEmpty = booleanArg('allow-empty', false);
-
-if (!/^[0-9]+$/.test(runId)) throw new Error('--run-id must be numeric');
-if (!/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('--source-sha must be a 40-character lowercase SHA');
+import { fileURLToPath } from 'node:url';
 
 const mappings = Object.freeze([
   {
@@ -94,68 +56,119 @@ function safeDestination(root, relativePath) {
   return destination;
 }
 
-const copiedByDestination = new Map();
-const rootsFound = [];
+export function copyCalendarDailyReviewArtifacts({
+  artifactRoot,
+  payloadRoot,
+  receiptPath,
+  runId,
+  sourceSha,
+  allowEmpty = false,
+}) {
+  const resolvedArtifactRoot = path.resolve(artifactRoot);
+  const resolvedPayloadRoot = path.resolve(payloadRoot);
+  const resolvedReceiptPath = path.resolve(receiptPath);
 
-for (const mapping of mappings) {
-  const sourceCandidates = [
-    path.join(artifactRoot, mapping.source),
-    path.join(artifactRoot, 'data', mapping.source),
-  ];
+  if (!/^[0-9]+$/.test(String(runId ?? ''))) throw new Error('runId must be numeric');
+  if (!/^[0-9a-f]{40}$/.test(String(sourceSha ?? ''))) throw new Error('sourceSha must be a 40-character lowercase SHA');
 
-  for (const sourceRoot of sourceCandidates) {
-    if (!fs.existsSync(sourceRoot)) continue;
-    rootsFound.push(path.relative(artifactRoot, sourceRoot));
-    for (const sourceFile of walkJsonFiles(sourceRoot)) {
-      const relativeFile = path.relative(sourceRoot, sourceFile);
-      const destinationRelative = path.join(mapping.destination, relativeFile);
-      const destinationFile = safeDestination(payloadRoot, destinationRelative);
-      const sourceBytes = fs.readFileSync(sourceFile);
+  const copiedByDestination = new Map();
+  const rootsFound = [];
 
-      if (copiedByDestination.has(destinationRelative)) {
-        const previousBytes = copiedByDestination.get(destinationRelative);
-        if (!previousBytes.equals(sourceBytes)) {
-          throw new Error(`conflicting artifact content for ${destinationRelative}`);
+  for (const mapping of mappings) {
+    const sourceCandidates = [
+      path.join(resolvedArtifactRoot, mapping.source),
+      path.join(resolvedArtifactRoot, 'data', mapping.source),
+    ];
+
+    for (const sourceRoot of sourceCandidates) {
+      if (!fs.existsSync(sourceRoot)) continue;
+      rootsFound.push(path.relative(resolvedArtifactRoot, sourceRoot));
+      for (const sourceFile of walkJsonFiles(sourceRoot)) {
+        const relativeFile = path.relative(sourceRoot, sourceFile);
+        const destinationRelative = path.join(mapping.destination, relativeFile);
+        const destinationFile = safeDestination(resolvedPayloadRoot, destinationRelative);
+        const sourceBytes = fs.readFileSync(sourceFile);
+
+        if (copiedByDestination.has(destinationRelative)) {
+          const previousBytes = copiedByDestination.get(destinationRelative);
+          if (!previousBytes.equals(sourceBytes)) {
+            throw new Error(`conflicting artifact content for ${destinationRelative}`);
+          }
+          continue;
         }
-        continue;
-      }
 
-      if (fs.existsSync(destinationFile)) {
-        const existing = fs.readFileSync(destinationFile);
-        if (!existing.equals(sourceBytes)) {
-          throw new Error(`payload already contains different content for ${destinationRelative}`);
+        if (fs.existsSync(destinationFile)) {
+          const existing = fs.readFileSync(destinationFile);
+          if (!existing.equals(sourceBytes)) {
+            throw new Error(`payload already contains different content for ${destinationRelative}`);
+          }
+        } else {
+          fs.mkdirSync(path.dirname(destinationFile), { recursive: true });
+          fs.writeFileSync(destinationFile, sourceBytes);
         }
-      } else {
-        fs.mkdirSync(path.dirname(destinationFile), { recursive: true });
-        fs.writeFileSync(destinationFile, sourceBytes);
+        copiedByDestination.set(destinationRelative, sourceBytes);
       }
-      copiedByDestination.set(destinationRelative, sourceBytes);
     }
   }
+
+  if (copiedByDestination.size === 0 && !allowEmpty) {
+    throw new Error('no supported review artifacts were found');
+  }
+
+  const receipt = {
+    schema_version: 'calendar-daily-review-artifact-delivery-v1',
+    generated_at: new Date().toISOString(),
+    source_run_id: String(runId),
+    source_sha: String(sourceSha),
+    artifact_layouts_seen: [...new Set(rootsFound)].sort(),
+    copied_file_count: copiedByDestination.size,
+    copied_files: [...copiedByDestination.keys()].sort(),
+    review_branch: 'automation/calendar-daily-acquisition-review',
+    publication_boundary: {
+      automatic_approval: false,
+      canonical_written: false,
+      public_projection_written: false,
+      automatic_merge: false,
+      deployment_performed: false,
+    },
+  };
+
+  fs.mkdirSync(path.dirname(resolvedReceiptPath), { recursive: true });
+  fs.writeFileSync(resolvedReceiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
+  return receipt;
 }
 
-if (copiedByDestination.size === 0 && !allowEmpty) {
-  throw new Error('no supported review artifacts were found');
+function parseCliArgs() {
+  const args = new Map(
+    process.argv.slice(2).map((item) => {
+      const separator = item.indexOf('=');
+      if (!item.startsWith('--') || separator === -1) return [item, null];
+      return [item.slice(2, separator), item.slice(separator + 1)];
+    }),
+  );
+
+  const required = (name) => {
+    const value = args.get(name);
+    if (typeof value !== 'string' || value.trim() === '') throw new Error(`--${name}=<value> is required`);
+    return value;
+  };
+  const allowEmptyValue = args.get('allow-empty');
+  if (allowEmptyValue !== undefined && !['true', 'false'].includes(allowEmptyValue)) {
+    throw new Error('--allow-empty must be true or false');
+  }
+
+  return {
+    artifactRoot: required('artifact-root'),
+    payloadRoot: required('payload-root'),
+    receiptPath: required('receipt'),
+    runId: required('run-id'),
+    sourceSha: required('source-sha'),
+    allowEmpty: allowEmptyValue === 'true',
+  };
 }
 
-const receipt = {
-  schema_version: 'calendar-daily-review-artifact-delivery-v1',
-  generated_at: new Date().toISOString(),
-  source_run_id: runId,
-  source_sha: sourceSha,
-  artifact_layouts_seen: [...new Set(rootsFound)].sort(),
-  copied_file_count: copiedByDestination.size,
-  copied_files: [...copiedByDestination.keys()].sort(),
-  review_branch: 'automation/calendar-daily-acquisition-review',
-  publication_boundary: {
-    automatic_approval: false,
-    canonical_written: false,
-    public_projection_written: false,
-    automatic_merge: false,
-    deployment_performed: false,
-  },
-};
-
-fs.mkdirSync(path.dirname(receiptPath), { recursive: true });
-fs.writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
-console.log(JSON.stringify({ receipt: receiptPath, copied_file_count: receipt.copied_file_count }));
+const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : null;
+if (invokedPath === fileURLToPath(import.meta.url)) {
+  const receipt = copyCalendarDailyReviewArtifacts(parseCliArgs());
+  console.log(JSON.stringify({ receipt: path.resolve(parseCliArgs().receiptPath), copied_file_count: receipt.copied_file_count }));
+}
