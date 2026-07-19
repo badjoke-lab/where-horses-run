@@ -1,0 +1,215 @@
+name: Calendar daily acquisition review
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'scripts/timetable/plan-actions-multi-job.mjs'
+      - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'scripts/timetable/plan-actions-multi-job.mjs'
+      - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'data/static/calendar-due-job-policy-v1.json'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: calendar-daily-acquisition-review
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check orchestration script syntax
+        run: |
+          node --check scripts/timetable/build-calendar-live-planner-state.mjs
+          node --check scripts/timetable/plan-actions-multi-job.mjs
+          node --check scripts/timetable/summarize-actions-multi-job.mjs
+      - name: Validate existing planning and runner contracts
+        run: |
+          node scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+      - name: Exercise live-state and plan-file boundaries
+        run: |
+          node scripts/timetable/build-calendar-live-planner-state.mjs \
+            --as-of=2026-07-19T03:17:00Z \
+            --output=.calendar-live-state.json
+          node scripts/timetable/plan-calendar-due-jobs.mjs \
+            --state=.calendar-live-state.json \
+            --output=.calendar-due-job-plan.json
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-file=.calendar-due-job-plan.json \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+          mkdir -p .calendar-empty-status
+          node scripts/timetable/summarize-actions-multi-job.mjs \
+            --plan-file=.calendar-due-job-plan.json \
+            --status-root=.calendar-empty-status \
+            --output=.calendar-actions-summary.json
+      - name: Check diff formatting
+        run: git diff --check
+
+  plan:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      matrix: ${{ steps.compile.outputs.matrix }}
+      hosted_jobs: ${{ steps.compile.outputs.hosted_jobs }}
+      plan_id: ${{ steps.compile.outputs.plan_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - id: clock
+        name: Resolve planning time
+        shell: bash
+        run: echo "as_of=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - name: Build planner state from the committed public horizon
+        run: |
+          node scripts/timetable/build-calendar-live-planner-state.mjs \
+            --as-of="${{ steps.clock.outputs.as_of }}" \
+            --output=.calendar-live-state.json
+      - name: Plan due collection jobs without approval or publication
+        run: |
+          node scripts/timetable/plan-calendar-due-jobs.mjs \
+            --state=.calendar-live-state.json \
+            --output=.calendar-due-job-plan.json
+      - id: compile
+        name: Compile GitHub Actions-capable jobs
+        shell: bash
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-file=.calendar-due-job-plan.json \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+          node -e "const fs=require('fs');const due=JSON.parse(fs.readFileSync('.calendar-due-job-plan.json'));fs.writeFileSync('.calendar-collection-plan.json',JSON.stringify(due.collection_plan,null,2)+'\n');"
+          echo "matrix=$(cat .calendar-actions-matrix.json)" >> "$GITHUB_OUTPUT"
+          echo "hosted_jobs=$(node -p \"require('./.calendar-actions-plan.json').jobs.length\")" >> "$GITHUB_OUTPUT"
+          echo "plan_id=$(node -p \"require('./.calendar-actions-plan.json').plan_id\")" >> "$GITHUB_OUTPUT"
+      - name: Upload immutable daily planning artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-daily-acquisition-plan
+          retention-days: 14
+          path: |
+            .calendar-live-state.json
+            .calendar-due-job-plan.json
+            .calendar-collection-plan.json
+            .calendar-actions-plan.json
+            .calendar-actions-matrix.json
+
+  execute:
+    if: needs.plan.outputs.hosted_jobs != '0'
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Write immutable execution specification
+        env:
+          EXECUTION_JSON: ${{ toJson(matrix.execution) }}
+        run: printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
+      - name: Run one independent hosted acquisition job
+        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=.calendar-execution.json
+      - name: Upload independent acquisition artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-daily-job-${{ matrix.job_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            data/generated/timetable/actions-multi-job-status/${{ matrix.batch_id }}.json
+            data/generated/timetable/nar-incremental-batches/${{ matrix.batch_id }}/
+            data/candidates/nar-incremental-batches/${{ matrix.batch_id }}/
+            data/generated/timetable/actions-multi-job/${{ matrix.batch_id }}/
+
+  review-pr:
+    if: always() && needs.plan.result == 'success'
+    needs:
+      - plan
+      - execute
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Download the daily plan
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-daily-acquisition-plan
+          path: .calendar-daily-plan
+      - name: Download hosted job artifacts
+        if: needs.plan.outputs.hosted_jobs != '0'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: calendar-daily-job-*
+          merge-multiple: true
+          path: .
+      - id: metadata
+        name: Build review summary
+        shell: bash
+        run: |
+          mkdir -p .calendar-daily-status data/generated/timetable/daily-acquisition-summaries
+          find data/generated/timetable/actions-multi-job-status -type f -name '*.json' -exec cp {} .calendar-daily-status/ \; 2>/dev/null || true
+          node scripts/timetable/summarize-actions-multi-job.mjs \
+            --plan-file=.calendar-daily-plan/.calendar-collection-plan.json \
+            --status-root=.calendar-daily-status \
+            --output=.calendar-actions-campaign-summary.json
+          review_date=$(date -u +%F)
+          cp .calendar-actions-campaign-summary.json "data/generated/timetable/daily-acquisition-summaries/${review_date}.json"
+          echo "review_date=${review_date}" >> "$GITHUB_OUTPUT"
+      - name: Create or update the human-review draft PR
+        if: needs.plan.outputs.hosted_jobs != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/calendar-daily-acquisition-review
+          delete-branch: true
+          draft: true
+          commit-message: "Collect calendar review artifacts ${{ steps.metadata.outputs.review_date }}"
+          title: "Calendar acquisition review ${{ steps.metadata.outputs.review_date }}"
+          body: |
+            Daily official-source acquisition artifacts generated from the committed public calendar horizon.
+
+            This pull request is review-only. It does not approve candidates, promote canonical timetable data, rebuild the public projection, merge itself, or deploy the site.
+
+            Review the independent job status records, candidate batches, source errors, coverage claims, and excluded non-Actions jobs. JRA local-primary work remains excluded and requires the existing reviewed local operator path.
+          add-paths: |
+            data/generated/timetable/actions-multi-job-status/**
+            data/generated/timetable/nar-incremental-batches/**
+            data/generated/timetable/actions-multi-job/**
+            data/generated/timetable/daily-acquisition-summaries/**
+            data/candidates/nar-incremental-batches/**
