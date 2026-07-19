@@ -9,15 +9,25 @@ const args = new Map(process.argv.slice(2).map((arg) => {
   return index === -1 ? [arg, true] : [arg.slice(0, index), arg.slice(index + 1)];
 }));
 const planId = args.get('--plan-id');
+const planFile = args.get('--plan-file');
 const output = args.get('--output');
 const matrixOutput = args.get('--matrix-output');
-if (!planId || !output || !matrixOutput) {
-  throw new Error('--plan-id, --output, and --matrix-output are required');
+if ((!planId && !planFile) || (planId && planFile) || !output || !matrixOutput) {
+  throw new Error('provide exactly one of --plan-id or --plan-file, plus --output and --matrix-output');
 }
 
-const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
-const plan = planFixtures.plans.find((entry) => entry.plan_id === planId);
-if (!plan) throw new Error(`unknown Collection Plan ${planId}`);
+function loadPlan() {
+  if (planFile) {
+    const value = JSON.parse(fs.readFileSync(path.resolve(root, planFile), 'utf8'));
+    return value.schema_version === 'calendar-due-job-plan-v1' ? value.collection_plan : value;
+  }
+  const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
+  const plan = planFixtures.plans.find((entry) => entry.plan_id === planId);
+  if (!plan) throw new Error(`unknown Collection Plan ${planId}`);
+  return plan;
+}
+
+const plan = loadPlan();
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const compatibilityContract = JSON.parse(fs.readFileSync(path.join(root, 'data/static/calendar-runner-compatibility-contract-v1.json'), 'utf8'));
 const actionsPlan = planActionsMultiJobV1(plan, registry, compatibilityContract);
