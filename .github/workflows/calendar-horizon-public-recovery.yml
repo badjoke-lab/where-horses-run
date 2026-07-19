@@ -55,13 +55,13 @@ jobs:
           node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Verify committed public boundary and repository contracts
-        run: |
-          node scripts/check-calendar-pipeline-v1.mjs
-          node scripts/check-calendar-public-projection.mjs
-          node scripts/check-calendar-current-horizon-recovery.mjs
-          node scripts/validate-data.mjs
-      - name: Verify Rank C-only recovery output
+      - name: Verify Pipeline v1 promotion contract
+        run: node scripts/check-calendar-pipeline-v1.mjs
+      - name: Verify public projection contract
+        run: node scripts/check-calendar-public-projection.mjs
+      - name: Validate generated repository data
+        run: node scripts/validate-data.mjs
+      - name: Verify Rank C-only recovered horizon
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
@@ -84,11 +84,19 @@ jobs:
           if (ids.length !== 72 || new Set(ids).size !== 72) throw new Error('recovery meeting identity count differs');
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const byId = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) if (!byId.has(id)) throw new Error(`${id}: missing from canonical output`);
+          for (const id of ids) {
+            const meeting = byId.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from canonical Rank C output`);
+          }
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) if (!publicById.has(id)) throw new Error(`${id}: missing from public output`);
-          console.log(JSON.stringify({ approved_records: ids.length, canonical_records: ids.length, public_records: ids.length, max_rank: 'C' }));
+          for (const id of ids) {
+            const meeting = publicById.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from public Rank C output`);
+          }
+          const recoveryDates = ids.map((id) => publicById.get(id).date).sort();
+          if (recoveryDates[0] !== '2026-08-01' || recoveryDates.at(-1) !== '2026-08-17') throw new Error('recovered public horizon date range differs');
+          console.log(JSON.stringify({ approved_records: ids.length, canonical_records: ids.length, public_records: ids.length, first_date: recoveryDates[0], last_date: recoveryDates.at(-1), max_rank: 'C' }));
           NODE
       - name: Check generated diff formatting
         run: git diff --check
