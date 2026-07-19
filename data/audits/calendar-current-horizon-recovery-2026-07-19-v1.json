@@ -1,0 +1,123 @@
+{
+  "schema_version": "calendar-current-horizon-recovery-audit-v1",
+  "work_id": "WHR-CAL-DAILY-ACQUISITION",
+  "generated_at": "2026-07-19T15:00:00Z",
+  "window": {
+    "start_date": "2026-07-19",
+    "end_date_exclusive": "2026-08-18",
+    "timezone_reference": "Asia/Tokyo"
+  },
+  "publication_boundary": {
+    "canonical_written": false,
+    "public_projection_written": false,
+    "deployment_performed": false,
+    "human_review_required": true
+  },
+  "systems": [
+    {
+      "system_id": "japan-jra-system",
+      "latest_public_meeting_date": "2026-07-26",
+      "season_state": "active",
+      "disposition": "recovery_required",
+      "recovery_start_date": "2026-07-27",
+      "recovery_end_date_exclusive": "2026-08-18",
+      "expected_meeting_dates": [
+        "2026-08-01",
+        "2026-08-02",
+        "2026-08-08",
+        "2026-08-09",
+        "2026-08-15",
+        "2026-08-16"
+      ],
+      "runner_disposition": "reviewed_local_operator",
+      "official_source_urls": [
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0801.html",
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0802.html",
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0808.html",
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0809.html",
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0815.html",
+        "https://www.jra.go.jp/keiba/calendar2026/2026/8/0816.html"
+      ],
+      "checked_date": "2026-07-19",
+      "note": "The public projection stops before reviewed official August programmes. Final race-day details remain subject to later official confirmation."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "latest_public_meeting_date": "2026-07-31",
+      "season_state": "active",
+      "disposition": "recovery_required",
+      "recovery_start_date": "2026-08-01",
+      "recovery_end_date_exclusive": "2026-08-18",
+      "expected_meeting_dates": [],
+      "runner_disposition": "authorized_github_actions_review_artifacts",
+      "official_source_urls": [
+        "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=8&k_year=2026",
+        "https://www.keiba.go.jp/RaceScheduleList/RaceScheduleListTop.html"
+      ],
+      "checked_date": "2026-07-19",
+      "note": "The official August monthly schedule is available. Exact meeting identities must come from the existing reviewed NAR acquisition path."
+    },
+    {
+      "system_id": "japan-banei-system",
+      "latest_public_meeting_date": "2026-08-10",
+      "season_state": "active",
+      "disposition": "bounded_manual_recovery_required",
+      "recovery_start_date": "2026-08-11",
+      "recovery_end_date_exclusive": "2026-08-18",
+      "expected_meeting_dates": [
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17"
+      ],
+      "runner_disposition": "reviewed_manual_recovery_regular_schedule_disabled",
+      "official_source_urls": [
+        "https://sp.keiba.go.jp/KeibaWebSP/MonthlyConveneInfo/S_ConveneNiteiRacecourse?k_jyo=%E5%B8%AF%E5%BA%83%E3%81%B0&k_month=8&k_year=2026"
+      ],
+      "checked_date": "2026-07-19",
+      "note": "The three official meeting dates extend the public horizon, but the daily policy continues to reject ordinary Banei date-window execution."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "latest_public_meeting_date": "2026-07-15",
+      "season_state": "offseason",
+      "disposition": "no_recovery_job",
+      "recovery_start_date": null,
+      "recovery_end_date_exclusive": null,
+      "expected_meeting_dates": [],
+      "runner_disposition": "season_suppressed",
+      "official_source_urls": [
+        "https://racing.hkjc.com/en-us/local/information/fixture"
+      ],
+      "checked_date": "2026-07-19",
+      "note": "No reviewed local fixture appears after July 15 within the current rolling window; absence is treated as season state, not a coverage gap."
+    },
+    {
+      "system_id": "united-arab-emirates-era-system",
+      "latest_public_meeting_date": "2026-04-11",
+      "season_state": "offseason",
+      "disposition": "no_recovery_job",
+      "recovery_start_date": null,
+      "recovery_end_date_exclusive": null,
+      "expected_meeting_dates": [],
+      "runner_disposition": "season_suppressed_until_preseason_review",
+      "official_source_urls": [
+        "https://emiratesracing.com/news/the-emirates-racing-authority-era-has-announced-the-official-schedule-for-the-2026-2027-uae-horse-racing-season",
+        "https://emiratesracing.com/season-calendar/current-season"
+      ],
+      "checked_date": "2026-07-19",
+      "note": "The next official season begins October 22, outside this audit window."
+    }
+  ],
+  "summary": {
+    "recovery_required_systems": [
+      "japan-jra-system",
+      "japan-nar-system",
+      "japan-banei-system"
+    ],
+    "season_suppressed_systems": [
+      "hong-kong-hkjc-system",
+      "united-arab-emirates-era-system"
+    ],
+    "next_step": "produce reviewed JRA, NAR, and Banei candidate artifacts without public or canonical writes"
+  }
+}
