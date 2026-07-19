@@ -41,15 +41,10 @@ concurrency:
 
 jobs:
   generate-and-validate:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -123,24 +118,6 @@ jobs:
           node scripts/check-jra-pilot-foundation.mjs
       - name: Check generated diff formatting
         run: git diff --check
-      - name: Commit exact recovered derivatives to this draft PR branch
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- \
-            data/generated/timetable/public/japan-a-plus-overrides.json \
-            data/generated/timetable/operations-status.json \
-            data/generated/timetable/operations-review-package.json
-          if git diff --cached --quiet; then
-            echo 'Recovered derivative artifacts already match the PR branch.'
-            exit 0
-          fi
-          git commit -m 'Commit recovered Calendar derivative artifacts'
-          git push origin "HEAD:${HEAD_REF}"
       - name: Upload reviewed recovery output
         if: always()
         uses: actions/upload-artifact@v4
