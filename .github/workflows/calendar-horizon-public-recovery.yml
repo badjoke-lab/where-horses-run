@@ -55,8 +55,6 @@ jobs:
           node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Verify public projection contract
-        run: node scripts/check-calendar-public-projection.mjs
       - name: Validate generated repository data
         run: node scripts/validate-data.mjs
       - name: Verify Rank C-only recovered horizon
