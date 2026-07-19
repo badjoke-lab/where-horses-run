@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
 import { planActionsMultiJobV1, summarizeActionsCampaignV1 } from './actions-multi-job-core.mjs';
+import { copyCalendarDailyReviewArtifacts } from './copy-calendar-daily-review-artifacts.mjs';
 
 const root = process.cwd();
 const args = new Map(process.argv.slice(2).map((arg) => {
@@ -49,10 +50,35 @@ for (const file of collectJsonFiles(path.resolve(root, statusRoot))) {
   if (value.schema_version === 'calendar-actions-job-status-v1') statuses.push(value);
 }
 const summary = summarizeActionsCampaignV1(plan, actionsPlan, statuses);
-fs.writeFileSync(path.resolve(root, output), `${JSON.stringify(summary, null, 2)}\n`);
+const resolvedOutput = path.resolve(root, output);
+fs.mkdirSync(path.dirname(resolvedOutput), { recursive: true });
+fs.writeFileSync(resolvedOutput, `${JSON.stringify(summary, null, 2)}\n`);
+
+let materializedReviewArtifactCount = null;
+if (process.env.GITHUB_ACTIONS === 'true') {
+  const artifactRoot = path.resolve(process.env.WHR_DAILY_REVIEW_ARTIFACT_ROOT ?? '/tmp/calendar-job-artifacts');
+  const payloadRoot = path.resolve(process.env.WHR_DAILY_REVIEW_PAYLOAD_ROOT ?? '/tmp/calendar-review-payload');
+  const payloadPrefix = `${payloadRoot}${path.sep}`;
+  if (resolvedOutput.startsWith(payloadPrefix) && fs.existsSync(artifactRoot)) {
+    const receiptPath = path.resolve(
+      process.env.WHR_DAILY_REVIEW_RECEIPT_PATH ?? '/tmp/calendar-daily-review-artifact-receipt.json',
+    );
+    const receipt = copyCalendarDailyReviewArtifacts({
+      artifactRoot,
+      payloadRoot,
+      receiptPath,
+      runId: process.env.GITHUB_RUN_ID,
+      sourceSha: process.env.GITHUB_SHA,
+      allowEmpty: true,
+    });
+    materializedReviewArtifactCount = receipt.copied_file_count;
+  }
+}
+
 console.log(JSON.stringify({
   plan_id: summary.plan_id,
   hosted_job_count: summary.hosted_job_count,
   excluded_job_count: summary.excluded_job_count,
   counts: summary.counts,
+  materialized_review_artifact_count: materializedReviewArtifactCount,
 }));
