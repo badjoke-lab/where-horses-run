@@ -7,22 +7,36 @@ import { makeActionsJobStatusV1 } from './actions-multi-job-core.mjs';
 
 const root = process.cwd();
 const executionArg = process.argv.find((item) => item.startsWith('--execution='));
+const jobArg = process.argv.find((item) => item.startsWith('--job='));
+const statusOutputArg = process.argv.find((item) => item.startsWith('--status-output='));
+const validateOnly = process.argv.includes('--validate-only');
 if (!executionArg) throw new Error('--execution=<path> is required');
 const executionPath = path.resolve(root, executionArg.slice('--execution='.length));
 const execution = JSON.parse(fs.readFileSync(executionPath, 'utf8'));
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const contract = JSON.parse(fs.readFileSync(path.join(root, 'data/static/calendar-runner-compatibility-contract-v1.json'), 'utf8'));
-const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
-const matchingJobs = planFixtures.plans.flatMap((plan) => plan.jobs).filter((job) => job.job_id === execution.job_id);
-if (matchingJobs.length !== 1) throw new Error(`expected exactly one fixture Job for ${execution.job_id}, found ${matchingJobs.length}`);
-const job = matchingJobs[0];
-const executionErrors = validateRunnerExecutionV1(execution, job, registry, contract);
-if (executionErrors.length) throw new Error(`execution validation failed: ${executionErrors.join('; ')}`);
-if (execution.runner_used !== 'github_actions') throw new Error('Actions dispatcher requires github_actions runner');
 
-const statusDir = path.join(root, 'data/generated/timetable/actions-multi-job-status');
-const statusPath = path.join(statusDir, `${execution.batch_id}.json`);
-fs.mkdirSync(statusDir, { recursive: true });
+if (typeof execution?.batch_id !== 'string' || execution.batch_id.trim() === '') {
+  throw new Error('execution batch_id is required before status-path construction');
+}
+const statusPath = statusOutputArg
+  ? path.resolve(root, statusOutputArg.slice('--status-output='.length))
+  : path.join(root, 'data/generated/timetable/actions-multi-job-status', `${execution.batch_id}.json`);
+fs.mkdirSync(path.dirname(statusPath), { recursive: true });
+
+function resolveCollectionJob() {
+  if (jobArg) {
+    const jobPath = path.resolve(root, jobArg.slice('--job='.length));
+    return JSON.parse(fs.readFileSync(jobPath, 'utf8'));
+  }
+
+  const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
+  const matchingJobs = planFixtures.plans.flatMap((plan) => plan.jobs).filter((job) => job.job_id === execution.job_id);
+  if (matchingJobs.length !== 1) {
+    throw new Error(`generated or non-fixture execution requires --job=<path>; fixture lookup found ${matchingJobs.length} Job(s) for ${execution.job_id}`);
+  }
+  return matchingJobs[0];
+}
 
 function runNode(script, args = [], env = process.env) {
   const result = spawnSync(process.execPath, [script, ...args], {
@@ -55,33 +69,42 @@ function outcomeFromCoverage(coverage) {
 let statusRecord;
 let failed = false;
 try {
-  if (execution.executor_id === 'nar-incremental-v2-actions') {
-    if (!['date_window', 'selected_meetings'].includes(execution.collection_mode)) {
-      throw new Error(`NAR Actions executor does not support ${execution.collection_mode}`);
-    }
-    const scope = execution.requested_scope;
-    const env = {
-      ...process.env,
-      WHR_BATCH_ID: execution.batch_id,
-      WHR_MODE: execution.collection_mode,
-      WHR_START_DATE: execution.collection_mode === 'date_window' ? scope.start_date : '',
-      WHR_END_DATE_EXCLUSIVE: execution.collection_mode === 'date_window' ? scope.end_date_exclusive : '',
-      WHR_MEETING_IDS: execution.collection_mode === 'selected_meetings' ? scope.meeting_ids.join(',') : '',
-    };
-    runNode('scripts/timetable/run-nar-incremental-v2-actions.mjs', [], env);
-  } else if (execution.executor_id === 'hkjc-live-fixture-actions') {
-    runNode('scripts/timetable/run-hkjc-live-fixture-job.mjs', [`--execution=${executionPath}`]);
-  } else if (execution.executor_id === 'banei-schedule-detail-actions') {
-    runNode('scripts/timetable/run-banei-actions-job.mjs', [`--execution=${executionPath}`]);
-  } else if (execution.executor_id === 'uae-era-actions') {
-    runNode('scripts/timetable/run-uae-era-actions-job.mjs', [`--execution=${executionPath}`]);
-  } else {
-    throw new Error(`unsupported Actions executor ${execution.executor_id}`);
-  }
+  const job = resolveCollectionJob();
+  const executionErrors = validateRunnerExecutionV1(execution, job, registry, contract);
+  if (executionErrors.length) throw new Error(`execution validation failed: ${executionErrors.join('; ')}`);
+  if (execution.runner_used !== 'github_actions') throw new Error('Actions dispatcher requires github_actions runner');
 
-  const coveragePath = coveragePathForExecution(execution);
-  const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
-  statusRecord = makeActionsJobStatusV1(execution, outcomeFromCoverage(coverage), null);
+  if (validateOnly) {
+    statusRecord = makeActionsJobStatusV1(execution, 'success', 'validation_only_no_source_execution');
+  } else {
+    if (execution.executor_id === 'nar-incremental-v2-actions') {
+      if (!['date_window', 'selected_meetings'].includes(execution.collection_mode)) {
+        throw new Error(`NAR Actions executor does not support ${execution.collection_mode}`);
+      }
+      const scope = execution.requested_scope;
+      const env = {
+        ...process.env,
+        WHR_BATCH_ID: execution.batch_id,
+        WHR_MODE: execution.collection_mode,
+        WHR_START_DATE: execution.collection_mode === 'date_window' ? scope.start_date : '',
+        WHR_END_DATE_EXCLUSIVE: execution.collection_mode === 'date_window' ? scope.end_date_exclusive : '',
+        WHR_MEETING_IDS: execution.collection_mode === 'selected_meetings' ? scope.meeting_ids.join(',') : '',
+      };
+      runNode('scripts/timetable/run-nar-incremental-v2-actions.mjs', [], env);
+    } else if (execution.executor_id === 'hkjc-live-fixture-actions') {
+      runNode('scripts/timetable/run-hkjc-live-fixture-job.mjs', [`--execution=${executionPath}`]);
+    } else if (execution.executor_id === 'banei-schedule-detail-actions') {
+      runNode('scripts/timetable/run-banei-actions-job.mjs', [`--execution=${executionPath}`]);
+    } else if (execution.executor_id === 'uae-era-actions') {
+      runNode('scripts/timetable/run-uae-era-actions-job.mjs', [`--execution=${executionPath}`]);
+    } else {
+      throw new Error(`unsupported Actions executor ${execution.executor_id}`);
+    }
+
+    const coveragePath = coveragePathForExecution(execution);
+    const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
+    statusRecord = makeActionsJobStatusV1(execution, outcomeFromCoverage(coverage), null);
+  }
 } catch (error) {
   failed = true;
   const detail = String(error?.message ?? error).slice(0, 500);
@@ -89,5 +112,9 @@ try {
 }
 
 fs.writeFileSync(statusPath, `${JSON.stringify(statusRecord, null, 2)}\n`);
-console.log(JSON.stringify({ status_path: path.relative(root, statusPath), status: statusRecord.status }));
+console.log(JSON.stringify({
+  status_path: path.relative(root, statusPath),
+  status: statusRecord.status,
+  execution_mode: validateOnly ? 'validation_only' : 'source_execution',
+}));
 if (failed) process.exitCode = 1;
