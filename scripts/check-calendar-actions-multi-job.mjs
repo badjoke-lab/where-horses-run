@@ -31,6 +31,18 @@ for (const plan of fixtures.plans) {
     const matrix = matrixFromActionsMultiJobPlanV1(actionsPlan);
     if (matrix.include.length !== actionsPlan.jobs.length) fail(`${plan.plan_id} matrix size differs from hosted Job count.`);
     if (!exact(matrix.include.map((entry) => entry.job_id), actionsPlan.jobs.map((entry) => entry.job_id))) fail(`${plan.plan_id} matrix Job order differs.`);
+
+    const sourceJobs = new Map(plan.jobs.map((job) => [job.job_id, job]));
+    for (const item of actionsPlan.jobs) {
+      const sourceJob = sourceJobs.get(item.job_id);
+      if (!sourceJob || !exact(item.collection_job, sourceJob)) fail(`${plan.plan_id}/${item.job_id} Actions Plan lost the exact Collection Job snapshot.`);
+      if (item.collection_job?.job_id !== item.execution?.job_id) fail(`${plan.plan_id}/${item.job_id} Collection Job and execution identity differ.`);
+    }
+    for (const entry of matrix.include) {
+      const planned = actionsPlan.jobs.find((item) => item.job_id === entry.job_id);
+      if (!planned || !exact(entry.collection_job, planned.collection_job)) fail(`${plan.plan_id}/${entry.job_id} matrix lost the Collection Job snapshot.`);
+      if (entry.collection_job?.job_id !== entry.execution?.job_id) fail(`${plan.plan_id}/${entry.job_id} matrix Job/execution identity differs.`);
+    }
   } catch (error) {
     fail(`${plan.plan_id} compilation failed: ${error.message}`);
   }
@@ -114,6 +126,11 @@ for (const phrase of ['fail-fast: false','if: always()','permissions:\n  content
 if (/\bschedule\s*:|\bcron\s*:/.test(workflow) || /contents:\s*write/.test(workflow)) fail('Actions multi-job workflow trigger/permission boundary differs.');
 for (const forbidden of ['promote-timetable', 'deploy', 'wrangler pages deploy']) if (workflow.includes(forbidden)) fail(`Actions multi-job workflow contains forbidden command ${forbidden}.`);
 
+const dailyWorkflow = readText('.github/workflows/calendar-daily-acquisition.yml');
+for (const phrase of ['COLLECTION_JOB_JSON', '--job=.calendar-collection-job.json', 'include-hidden-files: true']) {
+  if (!dailyWorkflow.includes(phrase)) fail(`Daily Actions workflow missing generated-Job dispatch phrase ${phrase}.`);
+}
+
 const docs = readText('docs/calendar/actions-multi-job-runner.md');
 for (const phrase of ['fail-fast: false','One Job failure does not rewrite another Job result','source_error','full Runner Gate is not complete','Scheduled execution remains disabled']) {
   if (!docs.includes(phrase)) fail(`Actions multi-job contract missing ${phrase}.`);
@@ -134,6 +151,7 @@ if (errors.length) {
 console.log('CALENDAR_ACTIONS_MULTI_JOB: pass');
 console.log(`PLANS_COMPILED: ${compiled.size}`);
 console.log(`NAR_HKJC_HOSTED_JOBS: ${eastAsia.jobs.length}`);
+console.log('GENERATED_COLLECTION_JOB_SNAPSHOT: preserved');
 console.log('HKJC_SCHEDULE_EXECUTOR: github_actions / C-only');
 console.log('HKJC_OPERATOR_DETAIL_IDENTITY: registered but not invoked');
 console.log('INDEPENDENT_OUTCOMES: pass');
