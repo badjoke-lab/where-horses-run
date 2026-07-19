@@ -1,0 +1,91 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-07-19T15:15:00Z",
+  "adapter_id": "banei-horizon-recovery-reviewed-schedule-v1",
+  "country_id": "japan",
+  "authority_id": "banei-tokachi",
+  "source_id": "banei-official-schedule",
+  "candidate_window": {
+    "start_date": "2026-08-15",
+    "end_date_exclusive": "2026-08-18",
+    "timezone": "Asia/Tokyo"
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-banei-obihiro-racecourse-2026-08-15",
+      "meeting_id": "banei-obihiro-racecourse-2026-08-15",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racing_system_id": "japan-banei-system",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-15",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "banei-official-schedule",
+        "official_url": "https://sp.keiba.go.jp/KeibaWebSP/MonthlyConveneInfo/S_ConveneNiteiRacecourse?k_jyo=%E5%B8%AF%E5%BA%83%E3%81%B0&k_month=8&k_year=2026",
+        "checked_at": "2026-07-19T15:15:00Z",
+        "extraction_method": "reviewed_snapshot"
+      },
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Official Banei monthly schedule confirms the Obihiro meeting identity only. No race times or programme rows are claimed; ordinary daily Banei refresh remains disabled and human review is required."
+    },
+    {
+      "candidate_id": "candidate-banei-obihiro-racecourse-2026-08-16",
+      "meeting_id": "banei-obihiro-racecourse-2026-08-16",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racing_system_id": "japan-banei-system",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-16",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "banei-official-schedule",
+        "official_url": "https://sp.keiba.go.jp/KeibaWebSP/MonthlyConveneInfo/S_ConveneNiteiRacecourse?k_jyo=%E5%B8%AF%E5%BA%83%E3%81%B0&k_month=8&k_year=2026",
+        "checked_at": "2026-07-19T15:15:00Z",
+        "extraction_method": "reviewed_snapshot"
+      },
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Official Banei monthly schedule confirms the Obihiro meeting identity only. No race times or programme rows are claimed; ordinary daily Banei refresh remains disabled and human review is required."
+    },
+    {
+      "candidate_id": "candidate-banei-obihiro-racecourse-2026-08-17",
+      "meeting_id": "banei-obihiro-racecourse-2026-08-17",
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "racing_system_id": "japan-banei-system",
+      "racecourse_id": "obihiro-racecourse",
+      "date": "2026-08-17",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "banei-official-schedule",
+        "official_url": "https://sp.keiba.go.jp/KeibaWebSP/MonthlyConveneInfo/S_ConveneNiteiRacecourse?k_jyo=%E5%B8%AF%E5%BA%83%E3%81%B0&k_month=8&k_year=2026",
+        "checked_at": "2026-07-19T15:15:00Z",
+        "extraction_method": "reviewed_snapshot"
+      },
+      "confidence": "medium",
+      "review_status": "needs_review",
+      "notes": "Official Banei monthly schedule confirms the Obihiro meeting identity only. No race times or programme rows are claimed; ordinary daily Banei refresh remains disabled and human review is required."
+    }
+  ],
+  "review": {
+    "status": "needs_review",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Three C-rank Obihiro meeting identity candidates from the official August schedule. No times, race rows, approval, or publication claim.",
+    "promotion_target": null
+  }
+}

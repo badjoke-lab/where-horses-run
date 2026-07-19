@@ -1,0 +1,55 @@
+name: Calendar horizon recovery candidates
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
+      - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
+      - 'data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'scripts/check-calendar-horizon-recovery-candidates.mjs'
+      - 'docs/calendar/horizon-recovery-candidate-review-2026-08-17.md'
+      - '.github/workflows/calendar-horizon-recovery-candidates.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
+      - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
+      - 'data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/timetable-candidate-v1.schema.json'
+      - 'scripts/check-calendar-horizon-recovery-candidates.mjs'
+      - 'docs/calendar/horizon-recovery-candidate-review-2026-08-17.md'
+      - '.github/workflows/calendar-horizon-recovery-candidates.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check recovery validator syntax
+        run: node --check scripts/check-calendar-horizon-recovery-candidates.mjs
+      - name: Validate repository data schemas
+        run: npm run validate:data
+      - name: Validate recovery candidate boundaries
+        run: node scripts/check-calendar-horizon-recovery-candidates.mjs
+      - name: Validate existing Calendar contracts
+        run: |
+          node scripts/check-calendar-current-horizon-recovery.mjs
+          node scripts/check-calendar-daily-acquisition-policy.mjs
+          node scripts/check-calendar-contracts.mjs
+      - name: Check diff formatting
+        run: git diff --check
