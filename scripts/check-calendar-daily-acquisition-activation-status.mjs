@@ -80,7 +80,8 @@ fs.rmSync(tempDir, { recursive: true, force: true });
 
 const workflow = readText('.github/workflows/calendar-daily-acquisition.yml');
 for (const phrase of [
-  'calendar-daily-acquisition-activation-status-v1',
+  'data/generated/timetable/daily-acquisition-status/latest.json',
+  'data/generated/timetable/daily-acquisition-status/runs/${GITHUB_RUN_ID}.json',
   'automation/calendar-daily-acquisition-review',
   'write-calendar-daily-acquisition-status.mjs',
   'git push origin "HEAD:${REVIEW_BRANCH}"',
