@@ -87,7 +87,7 @@ if (currentAudit) {
     if (jra.primary_runner !== 'local' || jra.fallback_runner !== 'reviewed_import') fail('current JRA runner state differs');
     if (jra.executor_id !== 'jra-refresh-local' || !exact(jra.supported_collection_modes, ['date_window'])) fail('current JRA executor state differs');
     if (jra.canonical_meeting_count !== 24 || !exact(jra.rank_counts, { C: 12, B: 0, 'B+': 0, A: 0, 'A+': 12 })) fail('current JRA rank state differs');
-    if (jra.target_ready_count !== 12 || jra.retry_required_count !== 12 || jra.operational_state !== 'selected_meeting_retry_required') fail('current JRA operational state differs');
+    if (jra.target_ready_count !== 12 || jra.retry_required_count !== 12 || jra.operational_state !== 'manual_refresh_required') fail('current JRA operational state differs');
     if (!exact([...jra.retry_required_meeting_ids].sort(), jraRecoveryWindowIds)) fail('current JRA C recovery set differs');
   }
   if (nar) {
@@ -123,7 +123,7 @@ if (currentAudit) {
     || currentAudit.summary.retry_required_count !== expectedAction) fail('current Japan window summary differs');
   if (!exact(currentAudit.summary.systems_without_canonical_meetings, expectedEmpty)) fail('current empty-system summary differs');
   const expectedActionSystems = baneiApplied
-    ? ['japan-banei-system', 'japan-jra-system', 'japan-nar-system']
+    ? ['japan-jra-system', 'japan-nar-system', 'japan-banei-system']
     : ['japan-jra-system', 'japan-nar-system'];
   if (!exact(currentAudit.summary.systems_requiring_action, expectedActionSystems)) fail('current action-required systems differ');
   if (Object.values(currentAudit.side_effect_boundary).some((value) => value !== false)) fail('current audit side-effect boundary differs');
