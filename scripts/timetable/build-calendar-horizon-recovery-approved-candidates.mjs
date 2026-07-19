@@ -5,6 +5,7 @@ const root = process.cwd();
 const REVIEWED_AT = '2026-07-19T17:00:00Z';
 const REVIEWER = 'badjoke-lab';
 const PROMOTION_TARGET = 'canonical-timetable-v0';
+const BANEI_AUGUST_SCHEDULE_URL = 'https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1785510000';
 
 const paths = Object.freeze({
   narBatches: [
@@ -164,12 +165,19 @@ const jra = buildReviewedCopy(
 );
 const banei = buildReviewedCopy(
   paths.baneiInput,
-  'Approved three Rank C Banei Obihiro meeting identities from the official August schedule; ordinary automated Banei refresh remains disabled.',
+  'Approved three Rank C Banei Obihiro meeting identities from the registered official August schedule; ordinary automated Banei refresh remains disabled.',
   'banei-horizon-recovery-reviewed-schedule-promotion-v1',
 );
+for (const record of banei.records) {
+  record.source.official_url = BANEI_AUGUST_SCHEDULE_URL;
+  record.source.extraction_method = 'adapter_candidate';
+  record.confidence = 'low';
+  record.notes = 'Approved official Banei August monthly-schedule meeting identity. No race times or programme rows are claimed; ordinary automated Banei refresh remains disabled.';
+}
 
 assert(jra.records.length === 18, `expected 18 JRA records, found ${jra.records.length}`);
 assert(banei.records.length === 3, `expected 3 Banei records, found ${banei.records.length}`);
+assert(banei.records.every((record) => new URL(record.source.official_url).hostname === 'www.banei-keiba.or.jp'), 'Banei official source hostname differs');
 
 const allIds = [...nar.records, ...jra.records, ...banei.records].map((record) => record.meeting_id);
 assert(new Set(allIds).size === allIds.length, 'cross-system recovery meeting IDs must be unique');
