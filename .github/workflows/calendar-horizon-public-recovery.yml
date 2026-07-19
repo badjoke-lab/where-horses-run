@@ -42,11 +42,12 @@ jobs:
           node-version: 22.12.0
       - name: Build exact reviewed Rank C candidate envelopes
         run: node scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs
-      - name: Dry-run Promotion Validation for all three systems
-        run: |
-          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json --dry-run
-          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json --dry-run
-          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json --dry-run
+      - name: Dry-run NAR Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json --dry-run
+      - name: Dry-run JRA Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json --dry-run
+      - name: Dry-run Banei Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json --dry-run
       - name: Promote reviewed candidates into canonical timetable data
         run: |
           node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json
@@ -92,9 +93,11 @@ jobs:
       - name: Check generated diff formatting
         run: git diff --check
       - name: Upload reviewed recovery output
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: calendar-horizon-public-recovery-output
+          if-no-files-found: warn
           retention-days: 14
           path: |
             data/candidates/nar-august-2026-horizon-recovery-c-approved.json
