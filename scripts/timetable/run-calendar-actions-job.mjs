@@ -7,22 +7,33 @@ import { makeActionsJobStatusV1 } from './actions-multi-job-core.mjs';
 
 const root = process.cwd();
 const executionArg = process.argv.find((item) => item.startsWith('--execution='));
+const jobArg = process.argv.find((item) => item.startsWith('--job='));
 if (!executionArg) throw new Error('--execution=<path> is required');
 const executionPath = path.resolve(root, executionArg.slice('--execution='.length));
 const execution = JSON.parse(fs.readFileSync(executionPath, 'utf8'));
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const contract = JSON.parse(fs.readFileSync(path.join(root, 'data/static/calendar-runner-compatibility-contract-v1.json'), 'utf8'));
-const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
-const matchingJobs = planFixtures.plans.flatMap((plan) => plan.jobs).filter((job) => job.job_id === execution.job_id);
-if (matchingJobs.length !== 1) throw new Error(`expected exactly one fixture Job for ${execution.job_id}, found ${matchingJobs.length}`);
-const job = matchingJobs[0];
-const executionErrors = validateRunnerExecutionV1(execution, job, registry, contract);
-if (executionErrors.length) throw new Error(`execution validation failed: ${executionErrors.join('; ')}`);
-if (execution.runner_used !== 'github_actions') throw new Error('Actions dispatcher requires github_actions runner');
 
+if (typeof execution?.batch_id !== 'string' || execution.batch_id.trim() === '') {
+  throw new Error('execution batch_id is required before status-path construction');
+}
 const statusDir = path.join(root, 'data/generated/timetable/actions-multi-job-status');
 const statusPath = path.join(statusDir, `${execution.batch_id}.json`);
 fs.mkdirSync(statusDir, { recursive: true });
+
+function resolveCollectionJob() {
+  if (jobArg) {
+    const jobPath = path.resolve(root, jobArg.slice('--job='.length));
+    return JSON.parse(fs.readFileSync(jobPath, 'utf8'));
+  }
+
+  const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
+  const matchingJobs = planFixtures.plans.flatMap((plan) => plan.jobs).filter((job) => job.job_id === execution.job_id);
+  if (matchingJobs.length !== 1) {
+    throw new Error(`generated or non-fixture execution requires --job=<path>; fixture lookup found ${matchingJobs.length} Job(s) for ${execution.job_id}`);
+  }
+  return matchingJobs[0];
+}
 
 function runNode(script, args = [], env = process.env) {
   const result = spawnSync(process.execPath, [script, ...args], {
@@ -55,6 +66,11 @@ function outcomeFromCoverage(coverage) {
 let statusRecord;
 let failed = false;
 try {
+  const job = resolveCollectionJob();
+  const executionErrors = validateRunnerExecutionV1(execution, job, registry, contract);
+  if (executionErrors.length) throw new Error(`execution validation failed: ${executionErrors.join('; ')}`);
+  if (execution.runner_used !== 'github_actions') throw new Error('Actions dispatcher requires github_actions runner');
+
   if (execution.executor_id === 'nar-incremental-v2-actions') {
     if (!['date_window', 'selected_meetings'].includes(execution.collection_mode)) {
       throw new Error(`NAR Actions executor does not support ${execution.collection_mode}`);
