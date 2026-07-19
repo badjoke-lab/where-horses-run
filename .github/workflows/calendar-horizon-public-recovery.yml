@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/calendar-horizon-public-recovery.yml'
       - 'scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
       - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
       - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
       - 'data/candidates/nar-incremental-batches/**'
@@ -12,12 +13,15 @@ on:
       - 'data/generated/timetable/nar-incremental-batches/**'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/calendar-horizon-public-recovery.yml'
       - 'scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
       - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
       - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
       - 'data/candidates/nar-incremental-batches/**'
@@ -25,6 +29,8 @@ on:
       - 'data/generated/timetable/nar-incremental-batches/**'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
 
 permissions:
   contents: read
@@ -35,10 +41,15 @@ concurrency:
 
 jobs:
   generate-and-validate:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -57,6 +68,11 @@ jobs:
           node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Rebuild public and operations derivatives
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14
+          node scripts/timetable/build-operations-review-package.mjs
       - name: Validate generated repository data
         run: node scripts/validate-data.mjs
       - name: Verify Rank C-only recovered horizon
@@ -96,8 +112,35 @@ jobs:
           if (recoveryDates[0] !== '2026-08-01' || recoveryDates.at(-1) !== '2026-08-17') throw new Error('recovered public horizon date range differs');
           console.log(JSON.stringify({ approved_records: ids.length, canonical_records: ids.length, public_records: ids.length, first_date: recoveryDates[0], last_date: recoveryDates.at(-1), max_rank: 'C' }));
           NODE
+      - name: Verify legacy public and operations consumers
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/check-calendar-japan-current-window-operations.mjs
+          node scripts/check-jra-pilot-foundation.mjs
       - name: Check generated diff formatting
         run: git diff --check
+      - name: Commit exact recovered derivatives to this draft PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo 'Recovered derivative artifacts already match the PR branch.'
+            exit 0
+          fi
+          git commit -m 'Commit recovered Calendar derivative artifacts'
+          git push origin "HEAD:${HEAD_REF}"
       - name: Upload reviewed recovery output
         if: always()
         uses: actions/upload-artifact@v4
@@ -113,3 +156,6 @@ jobs:
             data/generated/timetable/canonical/meeting-details.json
             data/generated/timetable/public/meeting-list.json
             data/generated/timetable/public/meeting-details.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
+            data/generated/timetable/operations-status.json
+            data/generated/timetable/operations-review-package.json
