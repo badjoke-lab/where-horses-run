@@ -8,7 +8,7 @@ Last reviewed: 2026-07-19
 
 This contract defines the reviewed daily acquisition system used to keep the public Calendar horizon maintainable without enabling unattended publication.
 
-The system connects the already implemented components:
+The system connects:
 
 ```text
 Due-job policy
@@ -20,8 +20,9 @@ Due-job policy
 + source-specific adapters
 -> validated daily Collection Plan
 -> independently authorized hosted acquisition Jobs
--> immutable review artifacts
--> one human-review draft PR
+-> immutable review artifacts and activation status
+-> stable human-review branch
+-> existing Draft PR #559
 ```
 
 The system ends at the human-review boundary.
@@ -94,7 +95,9 @@ A season-state record permits or suppresses planning only. It does not approve c
 -> preserve non-hosted or unauthorized Jobs as explicit exclusions or failures
 -> execute authorized hosted Jobs independently
 -> summarize success / partial / source_error / not_run
--> create or update one draft review PR
+-> write activation status for every run outcome
+-> push review-safe evidence to the stable review branch
+-> expose it through existing Draft PR #559
 ```
 
 Planning and bounded acquisition are automated. Approval and publication are not.
@@ -155,24 +158,71 @@ HKJC: offseason; no coverage gap and no due Job
 UAE ERA: offseason; outside the daily Due-job policy and no recovery Job in this window
 ```
 
-## Review PR contract
+## Stable review branch contract
 
-The scheduled workflow maintains one draft PR on:
+The stable review branch is:
 
 ```text
 automation/calendar-daily-acquisition-review
 ```
 
-The draft PR may contain only review-boundary artifacts produced by supported acquisition Jobs, including:
+It backs Draft PR #559.
+
+The branch and Draft PR are created once by an explicit operator action. The unattended workflow must not require `pull-requests: write` and must not create, close, reopen, ready, merge, or delete a pull request.
+
+The workflow may use `contents: write` only in the final review-delivery Job to push review-safe evidence to the existing branch. It must not push Canonical timetable data, public projection data, approval decisions, or deployment state.
+
+A later activation updates the same branch and Draft PR. It must not open one PR per day.
+
+## Activation-status contract
+
+Every main-branch activation, scheduled run, or manual dispatch must produce an activation-status record, including when:
+
+- planning succeeds;
+- planning fails;
+- hosted execution succeeds;
+- one or more hosted Jobs fail;
+- execution is skipped because no hosted Job exists.
+
+The schema is:
+
+```text
+data/static/calendar-daily-acquisition-activation-status.schema.json
+```
+
+The stable review branch stores:
+
+```text
+data/generated/timetable/daily-acquisition-status/latest.json
+data/generated/timetable/daily-acquisition-status/runs/<github-run-id>.json
+```
+
+The status must bind:
+
+- source commit and ref;
+- workflow run identity and attempt;
+- event type;
+- planning result;
+- execution result;
+- hosted Job count or null when planning failed;
+- plan identity or null when planning failed;
+- the fixed review branch;
+- explicit false values for automatic approval, Canonical write, public projection, automatic merge, and deployment.
+
+A zero-Job activation still updates status and retained plans. It must not fabricate candidate artifacts.
+
+## Review-artifact contract
+
+When planning succeeds, the review branch may contain:
 
 - retained planner state and exact Due-job and Actions Plans;
-- Job status records;
+- campaign summaries;
+- independent Job status records;
 - source-specific candidate batches;
 - Coverage and Manifest artifacts;
-- campaign summaries;
 - explicit source errors and partial results.
 
-A later run may update the same open draft PR. It must not create one unattended PR per day when an existing review PR is open.
+Only public-safe, review-boundary artifacts may be pushed. Raw source bodies, secrets, cookies, credentials, participant data, betting data, results, payouts, predictions, and direct stream URLs remain prohibited.
 
 ## Mandatory prohibitions
 
@@ -183,7 +233,7 @@ The scheduled system must not:
 - perform automatic Canonical promotion;
 - perform automatic public projection;
 - write public meeting-list or meeting-detail projection files;
-- merge its own PR;
+- create or merge its own PR;
 - deploy the site;
 - delete existing meetings because one acquisition run omitted them;
 - fabricate missing race times or timetable rows;
@@ -199,26 +249,28 @@ The scheduled system must not:
 - One independent Job failure must not cancel other Jobs.
 - `source_error` remains `source_error`.
 - A valid shorter source horizon remains partial coverage, not fabricated completeness.
-- Missing hosted-capable Jobs produces no draft PR mutation.
+- No hosted Job is recorded as an auditable zero-Job activation.
 - Excluded JRA or other non-hosted work remains visible in the plan and campaign summary.
+- Planning and execution failures must still be delivered to the stable review branch as activation status.
+- Review-branch push failure fails the workflow and requires corrective operation.
 - No failure path writes Canonical or public data.
 
 ## Human review and publication continuation
 
-After the draft PR is generated, the existing reviewed publication pipeline remains:
+After Draft PR #559 receives new evidence, the existing reviewed publication pipeline remains:
 
 ```text
 human review
--> approved candidate envelope
+-> exact approved candidate envelope
 -> Promotion Validation
 -> Canonical promotion
 -> deterministic public projection
 -> rendered QA
--> merge
+-> merge of a separate publication PR
 -> Cloudflare Pages deployment
 ```
 
-This continuation is outside the scheduled daily acquisition workflow.
+Draft PR #559 is an operating queue. It must not be merged merely because the workflow updated it.
 
 ## Completion gate
 
@@ -233,8 +285,10 @@ This continuation is outside the scheduled daily acquisition workflow.
 7. hosted NAR Jobs preserve independent outcomes and HKJC is correctly suppressed while offseason;
 8. Banei regular refresh is rejected while reviewed selected-meeting retry remains eligible;
 9. JRA local-primary exclusion is explicit;
-10. a main-branch activation or scheduled run creates or updates a draft review PR when hosted Jobs exist;
-11. no automatic approval, Canonical write, public projection, merge, or deployment occurs;
-12. source-error and no-hosted-job scenarios are tested;
-13. the rolling horizon recovery run is reviewed separately before publication;
-14. the canonical roadmap and implementation schedule identify this Work ID and boundary.
+10. stable review branch and Draft PR #559 exist before unattended delivery;
+11. main-branch activation or scheduled run updates activation status on the stable review branch;
+12. success, failure, and zero-hosted-Job outcomes remain auditable;
+13. the workflow requires no pull-request write permission;
+14. no automatic approval, Canonical write, public projection, merge, or deployment occurs;
+15. the rolling horizon recovery run is reviewed separately before publication;
+16. the canonical roadmap and implementation schedule identify this Work ID and boundary.

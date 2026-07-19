@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-daily-acquisition-activation-status.schema.json",
+  "title": "Calendar daily acquisition activation status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "run_id",
+    "run_attempt",
+    "event_name",
+    "source_sha",
+    "source_ref",
+    "plan_result",
+    "execute_result",
+    "hosted_jobs",
+    "plan_id",
+    "review_branch",
+    "publication_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "calendar-daily-acquisition-activation-status-v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "run_attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "event_name": {
+      "enum": [
+        "schedule",
+        "workflow_dispatch",
+        "push"
+      ]
+    },
+    "source_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan_result": {
+      "$ref": "#/$defs/jobResult"
+    },
+    "execute_result": {
+      "$ref": "#/$defs/jobResult"
+    },
+    "hosted_jobs": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "plan_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "review_branch": {
+      "const": "automation/calendar-daily-acquisition-review"
+    },
+    "publication_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatic_approval",
+        "canonical_written",
+        "public_projection_written",
+        "automatic_merge",
+        "deployment_performed"
+      ],
+      "properties": {
+        "automatic_approval": {
+          "const": false
+        },
+        "canonical_written": {
+          "const": false
+        },
+        "public_projection_written": {
+          "const": false
+        },
+        "automatic_merge": {
+          "const": false
+        },
+        "deployment_performed": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "jobResult": {
+      "enum": [
+        "success",
+        "failure",
+        "cancelled",
+        "skipped"
+      ]
+    }
+  }
+}

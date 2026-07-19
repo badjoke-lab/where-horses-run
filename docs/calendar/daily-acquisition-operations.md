@@ -23,12 +23,14 @@ The daily operation closes the gap between the artifact-only Due-job Planner and
 
 At 03:17 UTC each day it:
 
-1. derives a bounded planner state from the committed public meeting horizon;
-2. creates a validated Due-job Plan;
+1. derives a bounded planner state from the committed public meeting horizon and reviewed season states;
+2. creates a validated planning-only Due-job Plan;
 3. compiles only GitHub Actions-compatible Jobs;
-4. executes those Jobs independently with `fail-fast: false`;
-5. preserves source errors and partial outcomes instead of rewriting them as success;
-6. creates or updates one draft review pull request containing the generated acquisition artifacts.
+4. authorizes exact hosted Jobs against the separate daily execution policy;
+5. executes authorized Jobs independently with `fail-fast: false`;
+6. preserves source errors and partial outcomes instead of rewriting them as success;
+7. writes one activation-status record even when planning fails, execution fails, or no hosted Job exists;
+8. pushes the status, plans, summaries, and available acquisition artifacts to the stable review branch backing Draft PR #559.
 
 ## Publication boundary
 
@@ -37,70 +39,120 @@ The operation does not:
 - approve candidates;
 - promote candidates into Canonical timetable data;
 - write the public meeting list or meeting details;
-- merge its own draft pull request;
+- create or merge its own pull request;
 - deploy Cloudflare Pages.
 
 Human review remains mandatory before Canonical promotion and public projection.
 
 ## Runner and policy boundary
 
-The scheduled operation executes only Jobs that both:
+The scheduled operation executes only Jobs that:
 
-1. are enabled by the current Due-job policy; and
-2. resolve to `github_actions` through the Acquisition Registry and runner compatibility contract.
+1. are planned by the current Due-job policy;
+2. are allowed by reviewed system season state;
+3. resolve to `github_actions` through the Acquisition Registry and runner compatibility contract; and
+4. pass the daily execution policy's exact system, reason, mode, runner, and executor allow-list.
 
 Current practical effect:
 
 - NAR: hosted date-window, source-horizon, and reviewed Retry Queue acquisition where planned;
-- HKJC: hosted bounded schedule-window acquisition where planned;
-- Banei: regular refresh, coverage-gap, and source-revalidation planning remain disabled; only explicitly reviewed rank-retry work may enter the daily plan;
+- HKJC: hosted bounded schedule-window acquisition only while reviewed state is active;
+- Banei: regular refresh, coverage-gap, and source-revalidation planning remain disabled; only explicitly reviewed selected-meeting rank retry may execute;
 - JRA: due work may be planned but is excluded from hosted execution because the primary runner remains local and reviewed import is the fallback;
-- UAE ERA: not yet present in the daily Due-job policy; DA-00 must record its seasonal disposition until a separate wake-up policy is adopted.
+- UAE ERA: not present in the daily Due-job policy and season-suppressed until a separate reviewed wake-up decision.
 
-The workflow must not broaden a source-specific policy merely because an Actions executor exists. The draft PR body must state that excluded JRA work still requires the reviewed local operator path and that omitted seasonal systems require an explicit operator disposition.
+The workflow must not broaden a source-specific policy merely because an Actions executor exists.
 
 ## State derivation
 
-`scripts/timetable/build-calendar-live-planner-state.mjs` derives conservative operational state from the committed public meeting list.
+`scripts/timetable/build-calendar-live-planner-state.mjs` derives conservative operational state from:
 
-It uses:
+- the committed public meeting list;
+- `data/static/calendar-system-season-state-v1.json`;
+- the latest reviewed `last_checked_date` evidence;
+- the Acquisition Registry and Due-job policy;
+- an explicit reviewed Retry Queue when supplied.
 
-- each configured system's latest public meeting date as the visible horizon;
-- the latest reviewed `last_checked_date` as collection freshness evidence;
-- the next public meeting date for proximity planning;
-- a tail-only coverage gap when the committed horizon does not cover the next 30 days;
-- an empty Retry Queue unless an explicit reviewed Queue path is supplied.
+It uses each active system's latest public meeting date as the visible horizon and proposes only a tail coverage gap. An offseason system receives no coverage gap. Absence on one date is never treated as cancellation or an internal data hole.
 
-Absence of a meeting on an individual date is never treated as a cancellation or a missing meeting. Only the unrepresented tail after the latest known meeting is proposed as a bounded coverage gap.
+Missing or expired reviewed season state stops planning.
 
-## Draft PR behavior
+## Stable review branch and Draft PR
 
-The scheduled workflow uses a stable automation branch:
+The review branch is:
 
 ```text
 automation/calendar-daily-acquisition-review
 ```
 
-A new run updates the existing draft PR when one is already open. This prevents one unattended PR per day while allowing newly collected batches and status evidence to accumulate for human review.
+The stable human-review pull request is Draft PR #559.
+
+The branch and Draft PR are bootstrapped once by an explicit operator action. The unattended workflow does not request `pull-requests: write` and does not create, close, reopen, ready, merge, or delete pull requests.
+
+Each activation pushes review-safe evidence to the existing branch. This avoids relying on repository settings that may prevent GitHub Actions from creating pull requests and avoids opening one PR per day.
+
+## Activation status
+
+Every main-branch activation, scheduled run, or manual dispatch writes:
+
+```text
+data/generated/timetable/daily-acquisition-status/latest.json
+data/generated/timetable/daily-acquisition-status/runs/<github-run-id>.json
+```
+
+The schema is:
+
+```text
+data/static/calendar-daily-acquisition-activation-status.schema.json
+```
+
+The status records:
+
+- source commit and ref;
+- GitHub run identity and attempt;
+- planning result;
+- execution result;
+- hosted Job count when planning succeeded;
+- plan identity when planning succeeded;
+- the fixed review branch;
+- explicit false values for approval, Canonical write, public projection, automatic merge, and deployment.
+
+## Result delivery
+
+When planning succeeds, the review branch also receives the exact retained planner state, Due-job Plan, Actions Plan, and campaign summary.
+
+When hosted Jobs produce artifacts, the branch may also receive:
+
+- independent Job status records;
+- NAR schedule/detail candidate batches;
+- Coverage Observation and Result Manifest artifacts;
+- source-error and partial-result evidence;
+- other explicitly permitted source-specific review artifacts.
+
+No hosted Jobs means the activation status and retained plans still update, but no candidate artifact is fabricated.
 
 ## Failure behavior
 
+- Missing, invalid, or expired reviewed season state stops planning and is recorded as `plan_result: failure`.
+- Planning or authorization failure prevents source execution.
 - One Job failure does not cancel independent Jobs.
 - Source errors remain explicit status artifacts.
-- No hosted Jobs means no draft PR mutation.
-- A planning or validation failure stops acquisition.
+- Execution failure is recorded on the stable review branch.
+- No hosted Jobs is an auditable zero-Job activation, not a silent no-op.
+- A branch-push failure fails the workflow and requires corrective operation; it does not authorize publication.
 - No failure path writes Canonical or public timetable data.
 
 ## Operator continuation
 
-When the draft PR contains reviewable data, the operator must:
+When Draft PR #559 contains new evidence, the operator must:
 
-1. inspect every Job outcome and source error;
-2. confirm requested versus observed coverage;
-3. confirm rank classification and missing fields;
-4. separate valid partial batches from blocked batches;
-5. approve an exact candidate envelope only after source review;
-6. use the existing Promotion Validation and public-projection path;
-7. run rendered bilingual QA before merge.
+1. inspect activation status and exact plan identity;
+2. inspect every Job outcome and source error;
+3. confirm requested versus observed coverage;
+4. confirm rank classification and missing fields;
+5. separate valid partial batches from blocked batches;
+6. approve an exact candidate envelope only after source review;
+7. use the existing Promotion Validation and public-projection path;
+8. run rendered bilingual QA before any publication merge.
 
-The daily workflow never performs these steps on behalf of the reviewer.
+The daily workflow never performs these steps on behalf of the reviewer. Draft PR #559 is an operating queue and must not be merged merely because it changed.

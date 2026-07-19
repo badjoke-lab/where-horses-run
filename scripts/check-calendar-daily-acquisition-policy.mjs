@@ -93,16 +93,19 @@ for (const phrase of [
   "cron: '17 3 * * *'",
   'permissions:\n  contents: read',
   'validate-daily-acquisition-plan.mjs',
-  'peter-evans/create-pull-request@v7',
-  'draft: true',
-  'human-review draft PR',
+  'write-calendar-daily-acquisition-status.mjs',
+  'automation/calendar-daily-acquisition-review',
+  'Push evidence to the stable human-review branch',
+  'git push origin "HEAD:${REVIEW_BRANCH}"',
 ]) {
   if (!workflow.includes(phrase)) fail(`daily acquisition workflow missing ${phrase}`);
 }
-if (!/review-pr:[\s\S]*permissions:\n\s+contents: write\n\s+pull-requests: write/.test(workflow)) {
-  fail('review-pr job must own the only write permissions');
+if (!/review-pr:[\s\S]*permissions:\n\s+contents: write/.test(workflow)) {
+  fail('review branch update job must own contents write permission');
 }
-for (const forbidden of ['promote-timetable', 'build-public-timetable-view', 'wrangler pages deploy', 'merge_pull_request']) {
+if (/pull-requests:\s*write/.test(workflow)) fail('daily acquisition workflow must not require pull-request write permission');
+if (/peter-evans\/create-pull-request/.test(workflow)) fail('daily acquisition workflow must not create pull requests itself');
+for (const forbidden of ['promote-timetable', 'build-public-timetable-view', 'wrangler pages deploy', 'merge_pull_request', 'gh pr merge']) {
   if (workflow.includes(forbidden)) fail(`daily acquisition workflow contains forbidden command ${forbidden}`);
 }
 
@@ -112,6 +115,7 @@ for (const phrase of [
   'calendar-daily-acquisition-policy-v1.json',
   'automatic Canonical promotion',
   'automatic public projection',
+  'automation/calendar-daily-acquisition-review',
 ]) {
   if (!contract.includes(phrase)) fail(`daily acquisition contract missing ${phrase}`);
 }
@@ -128,4 +132,6 @@ console.log('BANEI_REGULAR_REFRESH: rejected');
 console.log('BANEI_SELECTED_COVERAGE_GAP: rejected');
 console.log('BANEI_SELECTED_RETRY: authorized');
 console.log('JRA_HOSTED_EXECUTION: excluded by Registry');
+console.log('STABLE_REVIEW_BRANCH_PUSH: enabled');
+console.log('AUTOMATIC_PR_CREATION: not required');
 console.log('AUTOMATIC_PUBLICATION: disabled');
