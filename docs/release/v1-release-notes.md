@@ -3,6 +3,7 @@
 Release: `WHR-V1`  
 Preparation release: `WHR-V1-PREPARATION-V1`  
 Prepared: 2026-07-18  
+Preparation Status: ready for final release decision  
 Accepted: 2026-07-19  
 Status: accepted for reviewed static public release
 
@@ -68,7 +69,9 @@ The accepted v1 release has completed:
 
 ## Release and deployment model
 
-Where Horses Run v1 is accepted for reviewed static public release. Production deployment is authorized by merging the final release-decision change to `main` under the repository Deployment and CI policy.
+The release-readiness work does not create a release tag, publish automatically, authorize deployment, or perform deployment. Those actions remained outside the candidate review until the separate final release decision.
+
+Where Horses Run v1 is now accepted for reviewed static public release. Production deployment is authorized by merging the final release-decision change to `main` under the repository Deployment and CI policy.
 
 Publication remains human-reviewed merge only. The release-decision gate does not deploy, create a release tag, create a GitHub Release, write canonical data, or mutate public datasets. A `v1.0.0` tag is recommended for repository history but is not required for release acceptance.
 
