@@ -1,14 +1,17 @@
 # Where Horses Run v1 release notes
 
-Release candidate: `WHR-V1-PREPARATION-V1`  
+Release: `WHR-V1`  
+Preparation release: `WHR-V1-PREPARATION-V1`  
 Prepared: 2026-07-18  
-Status: ready for final release decision
+Preparation Status: ready for final release decision  
+Accepted: 2026-07-19  
+Status: accepted for reviewed static public release
 
 ## What v1 provides
 
 Where Horses Run is a static-first bilingual guide for finding horse-racing countries and regions, racecourses, racing types, reviewed meeting dates and timetable information, terminology, and official-source links.
 
-The v1 candidate contains:
+The accepted v1 release contains:
 
 - 771 public pages;
 - 387 English pages and 384 Japanese pages;
@@ -52,7 +55,7 @@ The v1 scope excludes:
 
 ## Quality review completed
 
-The v1 candidate has completed:
+The accepted v1 release has completed:
 
 - scope freeze;
 - complete public-data audit;
@@ -61,10 +64,19 @@ The v1 candidate has completed:
 - deterministic static performance measurement and regression budgets across all 771 pages;
 - complete public-source registry and source-directory policy review;
 - bilingual known-limitations review across FAQ and Methods pages;
-- final release-readiness aggregation and cleanup.
+- final release-readiness aggregation and cleanup;
+- final release decision.
+
+## Release and deployment model
+
+The release-readiness work does not create a release tag, publish automatically, authorize deployment, or perform deployment. Those actions remained outside the candidate review until the separate final release decision.
+
+Where Horses Run v1 is now accepted for reviewed static public release. Production deployment is authorized by merging the final release-decision change to `main` under the repository Deployment and CI policy.
+
+Publication remains human-reviewed merge only. The release-decision gate does not deploy, create a release tag, create a GitHub Release, write canonical data, or mutate public datasets. A `v1.0.0` tag is recommended for repository history but is not required for release acceptance.
 
 ## Privacy and automation
 
-The v1 candidate adds no visitor identifiers, interaction or query logging, analytics, cookies, or client storage.
+The v1 release adds no visitor identifiers, interaction or query logging, analytics, cookies, or client storage.
 
-The release-readiness work does not create a release tag, publish automatically, authorize deployment, or perform deployment. Those actions remain outside this candidate review and require a separate final release decision.
+Unattended publication, automatic approval, automatic translation, and unreviewed content generation remain disabled.

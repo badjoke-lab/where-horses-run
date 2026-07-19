@@ -1,0 +1,117 @@
+{
+  "schema_version": "v1-release-decision-v1",
+  "release_id": "WHR-V1",
+  "preparation_release_id": "WHR-V1-PREPARATION-V1",
+  "work_id": "WHR-V1-RELEASE",
+  "implementation_unit": "V1-RELEASE-DECISION-01",
+  "status": "complete",
+  "decided_at": "2026-07-19",
+  "decision": "accepted_for_reviewed_static_public_release",
+  "candidate_baseline": {
+    "release_readiness_unit": "V1-RELEASE-READINESS-01",
+    "release_readiness_status": "release_candidate_ready",
+    "baseline_commit": "57da4a73d0646603eb59e3f5faff9ceaf5a3213e",
+    "public_pages": 771,
+    "english_pages": 387,
+    "japanese_pages": 384,
+    "route_families": 17,
+    "official_source_records": 171,
+    "countries_and_regions_with_sources": 98,
+    "racecourse_records": 36,
+    "known_limitation_categories": 12
+  },
+  "release_criteria": {
+    "scope_frozen": true,
+    "public_data_audited": true,
+    "mobile_qa_passed": true,
+    "accessibility_qa_passed": true,
+    "performance_qa_passed": true,
+    "source_policy_reviewed": true,
+    "known_limitations_reviewed": true,
+    "release_readiness_passed": true,
+    "release_notes_complete": true,
+    "complete_static_build_required": true,
+    "all_sitemap_routes_required": true,
+    "repository_clean_proof_required": true
+  },
+  "accepted_operating_model": {
+    "public_surface": "static_build_from_reviewed_public_projection",
+    "ordinary_coverage": "incremental_partial_allowed",
+    "completion_claims": "explicit_completion_audit_only",
+    "source_confirmation": "official_source_remains_final_authority",
+    "maintenance": "reviewed_incremental_operation",
+    "publication": "human_reviewed_merge_only",
+    "unattended_publication": false
+  },
+  "release_actions": {
+    "final_release_decision_complete": true,
+    "production_deployment_authorized": true,
+    "production_deployment_trigger": "merge_to_main",
+    "deployment_performed_by_release_gate": false,
+    "production_confirmation_required_after_merge": true,
+    "production_confirmation_recorded_by_this_contract": false,
+    "recommended_release_tag": "v1.0.0",
+    "release_tag_required_for_acceptance": false,
+    "release_tag_created_by_this_unit": false,
+    "github_release_created_by_this_unit": false
+  },
+  "evidence_records": [
+    "data/static/v1-release-readiness-v1.json",
+    "data/audits/v1-release-readiness-v1.json",
+    "data/static/v1-scope-freeze-v1.json",
+    "data/static/v1-data-audit-v1.json",
+    "data/static/v1-mobile-qa-v1.json",
+    "data/static/v1-accessibility-qa-v1.json",
+    "data/static/v1-performance-qa-v1.json",
+    "data/static/v1-source-policy-review-v1.json",
+    "data/static/v1-known-limitations-v1.json",
+    "docs/release/v1-release-notes.md"
+  ],
+  "non_claims": [
+    "complete global race coverage",
+    "complete detail coverage for every meeting",
+    "real-time or guaranteed-current information",
+    "automatic source freshness",
+    "automatic approval or publication",
+    "guaranteed viewing access",
+    "publication of participant, betting, result, payout, or complete-racecard data"
+  ],
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "existing_public_data_classes_only": true,
+    "public_v1_release_status_allowed": true,
+    "public_release_notes_allowed": true,
+    "known_limitations_required": true,
+    "official_source_priority_required": true,
+    "participant_or_complete_racecard_fields_allowed": false,
+    "odds_results_payouts_predictions_or_betting_advice_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "embedded_video_or_direct_stream_urls_allowed": false,
+    "internal_revenue_budget_other_project_or_circumstance_discussion_allowed": false
+  },
+  "privacy_boundary": {
+    "visitor_identifiers_enabled": false,
+    "interaction_logging_enabled": false,
+    "query_logging_enabled": false,
+    "cookies_enabled": false,
+    "client_storage_enabled": false,
+    "analytics_added": false
+  },
+  "automation_boundary": {
+    "automatic_scope_expansion_enabled": false,
+    "automatic_content_generation_enabled": false,
+    "automatic_translation_enabled": false,
+    "automatic_publication_enabled": false,
+    "release_tag_creation_enabled_by_gate": false,
+    "deployment_enabled_by_gate": false
+  },
+  "source_contract": {
+    "checker": "scripts/check-v1-release-decision.mjs",
+    "workflow": ".github/workflows/v1-release-decision.yml",
+    "audit": "data/audits/v1-release-decision-v1.json",
+    "documentation": "docs/release/v1-release-decision.md",
+    "release_notes": "docs/release/v1-release-notes.md"
+  },
+  "previous_implementation_unit": "V1-RELEASE-READINESS-01",
+  "next_stage": "reviewed_incremental_maintenance"
+}

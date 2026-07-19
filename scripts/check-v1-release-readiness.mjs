@@ -141,7 +141,7 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
 
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-readiness performance report schema differs');
 if (performanceReport.publicPages !== 771 || performanceReport.measuredPages !== 771) fail('release-readiness performance report page count differs');
-if (performanceReport.javascriptFiles !== 0 || performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-readiness static-first performance result differs');
+if ((performanceReport.typeTotals?.javascript?.files ?? 0) !== 0 || performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-readiness static-first performance result differs');
 
 const sitemap = read(files.sitemap);
 if (count(sitemap, /<loc>/g) !== 771) fail('release-readiness sitemap route count differs');
