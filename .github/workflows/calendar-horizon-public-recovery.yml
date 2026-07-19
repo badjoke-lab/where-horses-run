@@ -35,15 +35,10 @@ concurrency:
 
 jobs:
   generate-and-validate:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -103,28 +98,6 @@ jobs:
           NODE
       - name: Check generated diff formatting
         run: git diff --check
-      - name: Commit exact reviewed output to this draft PR branch
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- \
-            data/candidates/nar-august-2026-horizon-recovery-c-approved.json \
-            data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json \
-            data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-          if git diff --cached --quiet; then
-            echo 'Reviewed recovery outputs already match the PR branch.'
-            exit 0
-          fi
-          git commit -m 'Commit reviewed Calendar horizon recovery output'
-          git push origin "HEAD:${HEAD_REF}"
       - name: Upload reviewed recovery output
         if: always()
         uses: actions/upload-artifact@v4
