@@ -134,10 +134,14 @@ jobs:
           node scripts/check-calendar-pipeline-v1-release-gate.mjs
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
-      - name: Install dependencies and run full repository check
-        run: |
-          npm install --package-lock=false --no-audit --no-fund
-          npm run check
+          node scripts/check-calendar-japan-current-window-operations.mjs
+          node scripts/check-calendar-banei-current-window-acquisition.mjs
+          node scripts/check-calendar-banei-current-window-promotion-review.mjs
+          node scripts/validate-data.mjs
+      - name: Install build dependencies without lockfile mutation
+        run: npm install --package-lock=false --no-audit --no-fund
+      - name: Build repository with reviewed post-apply state
+        run: npm run build
       - name: Prove repository source branch unchanged
         if: always()
         run: |

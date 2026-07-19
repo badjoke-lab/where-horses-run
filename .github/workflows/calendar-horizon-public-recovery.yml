@@ -1,0 +1,138 @@
+name: Calendar horizon public recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-horizon-public-recovery.yml'
+      - 'scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
+      - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
+      - 'data/candidates/nar-incremental-batches/**'
+      - 'data/candidates/*horizon-recovery*approved.json'
+      - 'data/generated/timetable/nar-incremental-batches/**'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-horizon-public-recovery.yml'
+      - 'scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs'
+      - 'scripts/check-calendar-japan-current-window-operations.mjs'
+      - 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16.json'
+      - 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17.json'
+      - 'data/candidates/nar-incremental-batches/**'
+      - 'data/candidates/*horizon-recovery*approved.json'
+      - 'data/generated/timetable/nar-incremental-batches/**'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-horizon-public-recovery-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Build exact reviewed Rank C candidate envelopes
+        run: node scripts/timetable/build-calendar-horizon-recovery-approved-candidates.mjs
+      - name: Dry-run NAR Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json --dry-run
+      - name: Dry-run JRA Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json --dry-run
+      - name: Dry-run Banei Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json --dry-run
+      - name: Promote reviewed candidates into canonical timetable data
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
+      - name: Build deterministic public timetable projection
+        run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Rebuild public and operations derivatives
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Validate generated repository data
+        run: node scripts/validate-data.mjs
+      - name: Verify Rank C-only recovered horizon
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidatePaths = [
+            'data/candidates/nar-august-2026-horizon-recovery-c-approved.json',
+            'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json',
+            'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json',
+          ];
+          const expected = [51, 18, 3];
+          const ids = [];
+          candidatePaths.forEach((candidatePath, index) => {
+            const value = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
+            if (value.review?.status !== 'approved' || value.review?.promotion_target !== 'canonical-timetable-v0') throw new Error(`${candidatePath}: approval envelope differs`);
+            if (value.records.length !== expected[index]) throw new Error(`${candidatePath}: record count differs`);
+            for (const record of value.records) {
+              ids.push(record.meeting_id);
+              if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: public recovery exceeded Rank C`);
+            }
+          });
+          if (ids.length !== 72 || new Set(ids).size !== 72) throw new Error('recovery meeting identity count differs');
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const byId = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          for (const id of ids) {
+            const meeting = byId.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from canonical Rank C output`);
+          }
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          for (const id of ids) {
+            const meeting = publicById.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from public Rank C output`);
+          }
+          const recoveryDates = ids.map((id) => publicById.get(id).date).sort();
+          if (recoveryDates[0] !== '2026-08-01' || recoveryDates.at(-1) !== '2026-08-17') throw new Error('recovered public horizon date range differs');
+          console.log(JSON.stringify({ approved_records: ids.length, canonical_records: ids.length, public_records: ids.length, first_date: recoveryDates[0], last_date: recoveryDates.at(-1), max_rank: 'C' }));
+          NODE
+      - name: Verify legacy public and operations consumers
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/check-calendar-japan-current-window-operations.mjs
+          node scripts/check-jra-pilot-foundation.mjs
+      - name: Check generated diff formatting
+        run: git diff --check
+      - name: Upload reviewed recovery output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-horizon-public-recovery-output
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            data/candidates/nar-august-2026-horizon-recovery-c-approved.json
+            data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json
+            data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
+            data/generated/timetable/operations-status.json
+            data/generated/timetable/operations-review-package.json

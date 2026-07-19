@@ -19,15 +19,16 @@ if (audit.work_id !== 'WHR-RACECOURSE-PAGES-V1') fail('audit Work ID differs');
 if (audit.implementation_unit !== 'RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01') fail('audit implementation unit differs');
 if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit status differs');
 if (audit.fixture_reference_date !== '2026-07-14' || audit.fixture_timezone !== 'Asia/Tokyo') fail('fixture boundary differs');
-if (audit.scope?.canonical_racecourse_pages !== 36 || audit.scope?.racecourses_with_public_meetings !== 26 || audit.scope?.public_meetings !== 169) fail('scope counts differ');
+if (audit.source_public_generated_at !== publicMeetings.generated_at) fail('audited public generation timestamp differs');
+if (audit.scope?.canonical_racecourse_pages !== 36 || audit.scope?.racecourses_with_public_meetings !== 26 || audit.scope?.public_meetings !== 241) fail('scope counts differ');
 if ((audit.scope?.today_fixture_racecourse_ids ?? []).length !== 5) fail('today fixture racecourse set differs');
 if ((audit.scope?.next_fixture_examples ?? []).length !== 3) fail('next fixture examples differ');
 if (audit.presentation?.upcoming_preview_limit !== 8) fail('upcoming preview limit differs');
 if (Object.values(audit.boundaries ?? {}).some((value) => value !== false)) fail('connection boundaries must remain false');
 if (audit.next_implementation_unit !== 'RACECOURSE-PAGE-PROFILE-EVIDENCE-01') fail('next implementation unit differs');
 
-if ((publicMeetings.meetings ?? []).length !== 169) fail('public meeting count differs');
-if (new Set(publicMeetings.meetings.map((meeting) => meeting.racecourse_id)).size !== 26) fail('public racecourse identity count differs');
+if ((publicMeetings.meetings ?? []).length !== audit.scope.public_meetings) fail('public meeting count differs');
+if (new Set(publicMeetings.meetings.map((meeting) => meeting.racecourse_id)).size !== audit.scope.racecourses_with_public_meetings) fail('public racecourse identity count differs');
 
 for (const marker of [
   'createCalendarDateContext',
@@ -117,9 +118,9 @@ if (errors.length) {
 }
 
 console.log('RACECOURSE_PAGE_PUBLIC_TIMETABLE_CONNECTION: pass');
-console.log('REFERENCE_DATE: 2026-07-14');
-console.log('PUBLIC_MEETINGS: 169');
-console.log('PUBLIC_RACECOURSE_IDS: 26');
+console.log(`REFERENCE_DATE: ${audit.fixture_reference_date}`);
+console.log(`PUBLIC_MEETINGS: ${audit.scope.public_meetings}`);
+console.log(`PUBLIC_RACECOURSE_IDS: ${audit.scope.racecourses_with_public_meetings}`);
 console.log('RENDERED_BILINGUAL_RACECOURSE_ROUTES: 72');
 console.log('TODAY_FIXTURE_RACECOURSES: 5');
 console.log('INTERNAL_QUEUE_READ: false');
