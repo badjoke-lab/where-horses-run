@@ -58,6 +58,8 @@ jobs:
       - name: Validate NAR reviewed promotion
         run: node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs
       - name: Validate NAR promotion output determinism
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
       - name: Validate operations derivatives
         run: |
