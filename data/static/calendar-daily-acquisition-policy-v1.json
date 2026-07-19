@@ -1,0 +1,63 @@
+{
+  "schema_version": "calendar-daily-acquisition-policy-v1",
+  "policy_version": "calendar-daily-acquisition-policy-2026-07-19",
+  "enabled": true,
+  "planner": {
+    "due_job_policy_path": "data/static/calendar-due-job-policy-v1.json",
+    "require_artifact_only_plan": true
+  },
+  "execution": {
+    "execute_hosted_jobs": true,
+    "allowed_runner": "github_actions",
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "automatic_merge": false,
+    "automatic_deployment": false,
+    "systems": [
+      {
+        "system_id": "japan-nar-system",
+        "allowed_reasons": [
+          "regular_refresh",
+          "coverage_gap",
+          "rank_upgrade_retry",
+          "source_revalidation"
+        ],
+        "allowed_collection_modes": [
+          "date_window",
+          "source_visible_horizon",
+          "selected_meetings"
+        ],
+        "allowed_executors": [
+          "nar-incremental-v2-actions"
+        ]
+      },
+      {
+        "system_id": "hong-kong-hkjc-system",
+        "allowed_reasons": [
+          "regular_refresh",
+          "coverage_gap",
+          "source_revalidation"
+        ],
+        "allowed_collection_modes": [
+          "date_window"
+        ],
+        "allowed_executors": [
+          "hkjc-live-fixture-actions"
+        ]
+      },
+      {
+        "system_id": "japan-banei-system",
+        "allowed_reasons": [
+          "rank_upgrade_retry"
+        ],
+        "allowed_collection_modes": [
+          "selected_meetings"
+        ],
+        "allowed_executors": [
+          "banei-schedule-detail-actions"
+        ]
+      }
+    ]
+  }
+}
