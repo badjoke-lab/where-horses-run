@@ -53,10 +53,10 @@ jobs:
           node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-august-2026-horizon-recovery-c-approved.json
           node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json
           node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json
+      - name: Verify Pipeline v1 promotion contract before public projection
+        run: node scripts/check-calendar-pipeline-v1.mjs
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Verify Pipeline v1 promotion contract
-        run: node scripts/check-calendar-pipeline-v1.mjs
       - name: Verify public projection contract
         run: node scripts/check-calendar-public-projection.mjs
       - name: Validate generated repository data
