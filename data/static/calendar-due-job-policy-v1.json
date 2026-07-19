@@ -1,9 +1,9 @@
 {
   "schema_version": "calendar-due-job-policy-v1",
-  "policy_version": "calendar-due-job-policy-2026-07-09",
+  "policy_version": "calendar-due-job-policy-2026-07-19",
   "scheduler": {
     "cadence_hours": 24,
-    "max_jobs_per_plan": 12,
+    "max_jobs_per_plan": 64,
     "artifact_retention_days": 14,
     "artifact_only": true,
     "execute_jobs": false,
@@ -95,7 +95,7 @@
       "system_id": "japan-banei-system",
       "enabled": true,
       "regular_refresh": {
-        "enabled": false,
+        "enabled": true,
         "freshness_threshold_hours": 168,
         "meeting_proximity_days": 3,
         "proximity_min_age_hours": 24,
@@ -103,11 +103,11 @@
         "horizon_buffer_days": 2
       },
       "coverage_gap": {
-        "enabled": false,
+        "enabled": true,
         "max_window_days": 7
       },
       "source_revalidation": {
-        "enabled": false,
+        "enabled": true,
         "min_interval_hours": 24,
         "window_days": 7
       },
