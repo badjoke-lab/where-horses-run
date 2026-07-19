@@ -95,7 +95,7 @@
       "system_id": "japan-banei-system",
       "enabled": true,
       "regular_refresh": {
-        "enabled": true,
+        "enabled": false,
         "freshness_threshold_hours": 168,
         "meeting_proximity_days": 3,
         "proximity_min_age_hours": 24,
@@ -103,11 +103,11 @@
         "horizon_buffer_days": 2
       },
       "coverage_gap": {
-        "enabled": true,
+        "enabled": false,
         "max_window_days": 7
       },
       "source_revalidation": {
-        "enabled": true,
+        "enabled": false,
         "min_interval_hours": 24,
         "window_days": 7
       },
