@@ -1,7 +1,21 @@
 # Calendar daily acquisition review operation
 
-Status: proposed active reviewed-acquisition operation  
-Work ID: `WHR-CAL-DAILY-ACQUISITION`
+Status: implementation candidate; operating evidence pending  
+Work ID: `WHR-CAL-DAILY-ACQUISITION`  
+Last reviewed: 2026-07-19
+
+## Canonical reading order
+
+Use these documents together:
+
+1. [`daily-acquisition-contract.md`](daily-acquisition-contract.md) — binding behavior and prohibition contract;
+2. [`daily-acquisition-implementation-schedule.md`](daily-acquisition-implementation-schedule.md) — staged implementation and acceptance schedule;
+3. this document — ordinary operator behavior;
+4. [`due-job-planner.md`](due-job-planner.md) — policy-based planning semantics;
+5. [`actions-multi-job-runner.md`](actions-multi-job-runner.md) — independent hosted execution semantics;
+6. [`pipeline-v1-promotion.md`](pipeline-v1-promotion.md) and [`pipeline-v1-public-projection.md`](pipeline-v1-public-projection.md) — later human-reviewed publication continuation.
+
+The implementation is not accepted as steady-state merely because the workflow file exists. The schedule's operating-evidence gates must pass first.
 
 ## Purpose
 
@@ -72,3 +86,17 @@ A new run updates the existing draft PR when one is already open. This prevents 
 - No hosted Jobs means no draft PR mutation.
 - A planning or validation failure stops acquisition.
 - No failure path writes Canonical or public timetable data.
+
+## Operator continuation
+
+When the draft PR contains reviewable data, the operator must:
+
+1. inspect every Job outcome and source error;
+2. confirm requested versus observed coverage;
+3. confirm rank classification and missing fields;
+4. separate valid partial batches from blocked batches;
+5. approve an exact candidate envelope only after source review;
+6. use the existing Promotion Validation and public-projection path;
+7. run rendered bilingual QA before merge.
+
+The daily workflow never performs these steps on behalf of the reviewer.
