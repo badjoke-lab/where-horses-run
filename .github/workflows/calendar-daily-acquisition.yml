@@ -12,6 +12,7 @@ on:
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
       - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
@@ -39,6 +40,7 @@ on:
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
       - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
@@ -81,6 +83,7 @@ jobs:
           node --check scripts/timetable/summarize-actions-multi-job.mjs
           node --check scripts/timetable/daily-acquisition-policy.mjs
           node --check scripts/timetable/validate-daily-acquisition-plan.mjs
+          node --check scripts/timetable/write-calendar-daily-plan-outputs.mjs
           node --check scripts/timetable/write-calendar-daily-acquisition-status.mjs
           node --check scripts/check-calendar-daily-acquisition-policy.mjs
           node --check scripts/check-calendar-daily-acquisition-activation-status.mjs
@@ -94,6 +97,7 @@ jobs:
           node scripts/check-calendar-daily-acquisition-activation-status.mjs
           node scripts/check-calendar-current-horizon-recovery.mjs
       - name: Exercise live-state and plan-file boundaries
+        shell: bash
         run: |
           node scripts/timetable/build-calendar-live-planner-state.mjs \
             --as-of=2026-07-19T15:00:00Z \
@@ -108,6 +112,17 @@ jobs:
           node scripts/timetable/validate-daily-acquisition-plan.mjs \
             --due-plan=.calendar-due-job-plan.json \
             --actions-plan=.calendar-actions-plan.json
+          output_file=.calendar-test-github-output
+          : > "$output_file"
+          node scripts/timetable/write-calendar-daily-plan-outputs.mjs \
+            --due-plan=.calendar-due-job-plan.json \
+            --actions-plan=.calendar-actions-plan.json \
+            --matrix=.calendar-actions-matrix.json \
+            --collection-plan=.calendar-collection-plan.json \
+            --github-output="$output_file"
+          grep -q '^matrix=' "$output_file"
+          grep -q '^hosted_jobs=' "$output_file"
+          grep -q '^plan_id=' "$output_file"
           mkdir -p .calendar-empty-status
           node scripts/timetable/summarize-actions-multi-job.mjs \
             --plan-file=.calendar-due-job-plan.json \
@@ -121,9 +136,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
-      matrix: ${{ steps.compile.outputs.matrix }}
-      hosted_jobs: ${{ steps.compile.outputs.hosted_jobs }}
-      plan_id: ${{ steps.compile.outputs.plan_id }}
+      matrix: ${{ steps.outputs.outputs.matrix }}
+      hosted_jobs: ${{ steps.outputs.outputs.hosted_jobs }}
+      plan_id: ${{ steps.outputs.outputs.plan_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -151,25 +166,32 @@ jobs:
           node scripts/timetable/plan-calendar-due-jobs.mjs \
             --state=.calendar-live-state.json \
             --output=.calendar-due-job-plan.json
-      - id: compile
-        name: Compile and authorize GitHub Actions-capable jobs
-        shell: bash
+      - name: Compile GitHub Actions-capable jobs
         run: |
           node scripts/timetable/plan-actions-multi-job.mjs \
             --plan-file=.calendar-due-job-plan.json \
             --output=.calendar-actions-plan.json \
             --matrix-output=.calendar-actions-matrix.json
+      - name: Authorize every hosted job
+        run: |
           node scripts/timetable/validate-daily-acquisition-plan.mjs \
             --due-plan=.calendar-due-job-plan.json \
             --actions-plan=.calendar-actions-plan.json
-          node -e "const fs=require('fs');const due=JSON.parse(fs.readFileSync('.calendar-due-job-plan.json'));fs.writeFileSync('.calendar-collection-plan.json',JSON.stringify(due.collection_plan,null,2)+'\n');"
-          echo "matrix=$(cat .calendar-actions-matrix.json)" >> "$GITHUB_OUTPUT"
-          echo "hosted_jobs=$(node -p \"require('./.calendar-actions-plan.json').jobs.length\")" >> "$GITHUB_OUTPUT"
-          echo "plan_id=$(node -p \"require('./.calendar-actions-plan.json').plan_id\")" >> "$GITHUB_OUTPUT"
-      - name: Upload immutable daily planning artifacts
+      - id: outputs
+        name: Write collection plan and GitHub outputs
+        run: |
+          node scripts/timetable/write-calendar-daily-plan-outputs.mjs \
+            --due-plan=.calendar-due-job-plan.json \
+            --actions-plan=.calendar-actions-plan.json \
+            --matrix=.calendar-actions-matrix.json \
+            --collection-plan=.calendar-collection-plan.json \
+            --github-output="$GITHUB_OUTPUT"
+      - name: Upload daily planning diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: calendar-daily-acquisition-plan
+          if-no-files-found: warn
           retention-days: 14
           path: |
             .calendar-live-state.json
@@ -226,8 +248,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Download the daily plan when planning succeeded
-        if: needs.plan.result == 'success'
+      - name: Download available daily planning diagnostics
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: calendar-daily-acquisition-plan
@@ -274,38 +296,46 @@ jobs:
             "$payload/data/generated/timetable/daily-acquisition-status/latest.json" \
             "$payload/data/generated/timetable/daily-acquisition-status/runs/${GITHUB_RUN_ID}.json"
 
-          if [ "$PLAN_RESULT" = "success" ]; then
-            review_date=$(date -u +%F)
+          review_date=$(date -u +%F)
+          plan_dir="$payload/data/generated/timetable/daily-acquisition-plans/${review_date}"
+          mkdir -p "$plan_dir"
+          if [ -d /tmp/calendar-daily-plan ]; then
+            for file in \
+              .calendar-live-state.json \
+              .calendar-due-job-plan.json \
+              .calendar-collection-plan.json \
+              .calendar-actions-plan.json \
+              .calendar-actions-matrix.json; do
+              if [ -f "/tmp/calendar-daily-plan/$file" ]; then
+                cp "/tmp/calendar-daily-plan/$file" "$plan_dir/${file#.calendar-}"
+              fi
+            done
+          fi
+
+          if [ -f /tmp/calendar-daily-plan/.calendar-collection-plan.json ]; then
             status_root=/tmp/calendar-daily-status
             rm -rf "$status_root"
             mkdir -p "$status_root"
             if [ -d /tmp/calendar-job-artifacts ]; then
               find /tmp/calendar-job-artifacts -path '*/actions-multi-job-status/*.json' -type f -exec cp {} "$status_root"/ \;
             fi
-
             node scripts/timetable/summarize-actions-multi-job.mjs \
               --plan-file=/tmp/calendar-daily-plan/.calendar-collection-plan.json \
               --status-root="$status_root" \
               --output="$payload/data/generated/timetable/daily-acquisition-summaries/${review_date}.json"
-
-            plan_dir="$payload/data/generated/timetable/daily-acquisition-plans/${review_date}"
-            mkdir -p "$plan_dir"
-            cp /tmp/calendar-daily-plan/.calendar-live-state.json "$plan_dir/planner-state.json"
-            cp /tmp/calendar-daily-plan/.calendar-due-job-plan.json "$plan_dir/due-job-plan.json"
-            cp /tmp/calendar-daily-plan/.calendar-actions-plan.json "$plan_dir/actions-plan.json"
-
-            for rel in \
-              data/generated/timetable/actions-multi-job-status \
-              data/generated/timetable/nar-incremental-batches \
-              data/generated/timetable/actions-multi-job \
-              data/candidates/nar-incremental-batches; do
-              src="/tmp/calendar-job-artifacts/$rel"
-              if [ -d "$src" ]; then
-                mkdir -p "$payload/$(dirname "$rel")"
-                cp -R "$src" "$payload/$rel"
-              fi
-            done
           fi
+
+          for rel in \
+            data/generated/timetable/actions-multi-job-status \
+            data/generated/timetable/nar-incremental-batches \
+            data/generated/timetable/actions-multi-job \
+            data/candidates/nar-incremental-batches; do
+            src="/tmp/calendar-job-artifacts/$rel"
+            if [ -d "$src" ]; then
+              mkdir -p "$payload/$(dirname "$rel")"
+              cp -R "$src" "$payload/$rel"
+            fi
+          done
       - name: Push evidence to the stable human-review branch
         env:
           REVIEW_BRANCH: automation/calendar-daily-acquisition-review
