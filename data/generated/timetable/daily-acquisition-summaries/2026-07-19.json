@@ -1,0 +1,56 @@
+{
+  "schema_version": "calendar-actions-campaign-summary-v1",
+  "plan_id": "due-job-plan-2026-07-19",
+  "campaign_id": "scheduled-planning-2026-07-19",
+  "generated_at": "2026-07-19T16:38:20Z",
+  "hosted_job_count": 2,
+  "excluded_job_count": 2,
+  "results": [
+    {
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "status": "success"
+    },
+    {
+      "job_id": "due-japan-nar-coverage-gap-002",
+      "status": "success"
+    }
+  ],
+  "counts": {
+    "success": 2
+  },
+  "excluded": [
+    {
+      "job_id": "due-japan-jra-source-revalidation-001",
+      "reason": "non_actions_runner",
+      "runner": "local"
+    },
+    {
+      "job_id": "due-japan-nar-source-horizon-001",
+      "reason": "unsupported_collection_mode",
+      "runner": "github_actions",
+      "collection_mode": "source_visible_horizon"
+    }
+  ],
+  "status_records": [
+    {
+      "schema_version": "calendar-actions-job-status-v1",
+      "campaign_id": "scheduled-planning-2026-07-19",
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "batch_id": "due-job-plan-2026-07-19-due-japan-nar-coverage-gap-001-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "status": "success",
+      "detail": null
+    },
+    {
+      "schema_version": "calendar-actions-job-status-v1",
+      "campaign_id": "scheduled-planning-2026-07-19",
+      "job_id": "due-japan-nar-coverage-gap-002",
+      "batch_id": "due-job-plan-2026-07-19-due-japan-nar-coverage-gap-002-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "status": "success",
+      "detail": null
+    }
+  ]
+}
