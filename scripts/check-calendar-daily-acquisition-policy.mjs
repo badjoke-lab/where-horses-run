@@ -61,23 +61,25 @@ else {
   }
 }
 
-const banei = fixtures.plans.find((plan) => plan.plan_id === 'banei-actions-window-selected-001');
-if (!banei) fail('Banei Actions fixture Plan missing');
+const baneiGeneral = fixtures.plans.find((plan) => plan.plan_id === 'banei-actions-window-selected-001');
+if (!baneiGeneral) fail('Banei general Actions fixture Plan missing');
 else {
-  const actionsPlan = planActionsMultiJobV1(banei, registry, compatibility);
-  const validation = validateDailyActionsPlanV1(policy, dueWrapper(banei), actionsPlan);
+  const actionsPlan = planActionsMultiJobV1(baneiGeneral, registry, compatibility);
+  const validation = validateDailyActionsPlanV1(policy, dueWrapper(baneiGeneral), actionsPlan);
   if (!validation.some((error) => error.includes('mode date_window is not authorized'))) {
     fail('Banei regular date-window execution must be rejected by daily policy');
   }
-
-  const retryJob = banei.jobs.find((job) => job.collection_mode === 'selected_meetings' && job.reason === 'rank_upgrade_retry');
-  if (!retryJob) fail('Banei selected rank-retry fixture Job missing');
-  else {
-    const retryPlan = { ...banei, plan_id: 'banei-daily-retry-policy-check', jobs: [retryJob] };
-    const retryActions = planActionsMultiJobV1(retryPlan, registry, compatibility);
-    const retryValidation = validateDailyActionsPlanV1(policy, dueWrapper(retryPlan), retryActions);
-    if (retryValidation.length) fail(`authorized Banei selected retry rejected: ${retryValidation.join('; ')}`);
+  if (!validation.some((error) => error.includes('reason coverage_gap is not authorized'))) {
+    fail('Banei selected coverage-gap execution must be rejected by daily policy');
   }
+}
+
+const baneiRetry = fixtures.plans.find((plan) => plan.plan_id === 'banei-reviewed-retry-ops-001');
+if (!baneiRetry) fail('Banei reviewed rank-retry fixture Plan missing');
+else {
+  const retryActions = planActionsMultiJobV1(baneiRetry, registry, compatibility);
+  const retryValidation = validateDailyActionsPlanV1(policy, dueWrapper(baneiRetry), retryActions);
+  if (retryValidation.length) fail(`authorized Banei selected retry rejected: ${retryValidation.join('; ')}`);
 }
 
 const unsafePolicy = structuredClone(policy);
@@ -123,6 +125,7 @@ if (errors.length) {
 console.log('CALENDAR_DAILY_ACQUISITION_POLICY: pass');
 console.log('NAR_HKJC_HOSTED_EXECUTION: authorized');
 console.log('BANEI_REGULAR_REFRESH: rejected');
+console.log('BANEI_SELECTED_COVERAGE_GAP: rejected');
 console.log('BANEI_SELECTED_RETRY: authorized');
 console.log('JRA_HOSTED_EXECUTION: excluded by Registry');
 console.log('AUTOMATIC_PUBLICATION: disabled');
