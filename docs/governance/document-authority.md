@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-07-14
+Last reviewed: 2026-07-19
 
 ## Authority order
 
@@ -55,6 +55,10 @@ Calendar human-readable contracts:
 - `docs/calendar/acquisition-control-plane-contract.md`
 - `docs/calendar/acquisition-control-plane-implementation-plan.md`
 - `docs/calendar/implementation-roadmap.md`
+- `docs/calendar/daily-acquisition-contract.md`
+- `docs/calendar/daily-acquisition-implementation-schedule.md`
+- `docs/calendar/daily-acquisition-roadmap-addendum.md`
+- `docs/calendar/daily-acquisition-operations.md`
 - `docs/calendar/japan-full-month-scope-policy.md`
 - `docs/calendar/nar-a-plus-pilot-plan.md`
 - `docs/calendar/nar-monthly-collection-contract.md`
@@ -104,6 +108,8 @@ Calendar machine-readable contracts:
 - `data/static/authority-source-inventory.schema.json`
 - `data/static/authority-source-inventory.json`
 - `data/static/timetable-candidate-v1.schema.json`
+- `data/static/calendar-due-job-policy-v1.json`
+- `data/static/calendar-daily-acquisition-policy-v1.json`
 - `data/audits/calendar-baseline-migration-map.json`
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
@@ -140,6 +146,10 @@ Calendar machine-readable contracts:
 - `data/generated/timetable/local-racing-pilot-review.json`
 - `data/archive/timetable/candidates/japan-nar-candidates.v0.json`
 - `scripts/timetable/coverage-observation-validation.mjs`
+- `scripts/timetable/build-calendar-live-planner-state.mjs`
+- `scripts/timetable/daily-acquisition-policy.mjs`
+- `scripts/timetable/validate-daily-acquisition-plan.mjs`
+- `scripts/check-calendar-daily-acquisition-policy.mjs`
 - `scripts/check-calendar-coverage-observation-schema.mjs`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
@@ -176,8 +186,9 @@ Calendar machine-readable contracts:
 - `scripts/check-jra-final-normalized-handoff.mjs`
 - `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
+- `.github/workflows/calendar-daily-acquisition.yml`
 
-The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are planned canonical artifacts. Until those schemas are implemented, `docs/calendar/acquisition-control-plane-contract.md` and its implementation plan govern their semantics and implementation order.
+The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are implemented canonical artifacts. `docs/calendar/acquisition-control-plane-contract.md`, its implementation plan, and the active daily-acquisition contract govern orchestration, scheduling, runner, review, and publication boundaries.
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
 
@@ -190,6 +201,8 @@ Before work begins:
 3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, and the applicable machine-readable contract;
 4. confirm tracker or registry state;
 5. record whether Cloudflare is required.
+
+For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, and daily execution policy before changing workflow, policy, runner, draft-PR, or publication behavior.
 
 The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
 

@@ -38,7 +38,7 @@ racecourse records:  36
 
 The accepted release has completed scope freeze, public-data audit, mobile QA, accessibility QA, static performance QA, source-policy review, known-limitations review, release readiness, and final release decision.
 
-Current work is reviewed incremental maintenance inside the accepted v1 scope. Scheduled acquisition and unattended publication remain disabled. New route families, public data classes, user features, transactional features, or publication modes require a separate scope decision.
+Current work is reviewed incremental maintenance inside the accepted v1 scope. A separately authorized scheduled acquisition path may create official-source review artifacts and a draft pull request, while automatic approval, Canonical promotion, public projection, merge, unattended publication, and deployment remain disabled. Source-specific policy still controls whether ordinary refresh or only reviewed retry work may execute. New route families, public data classes, user features, transactional features, or publication modes require a separate scope decision.
 
 ## Documentation
 
@@ -52,6 +52,10 @@ Start here:
 - [Documentation index](docs/README.md)
 - [Country page programme](docs/country-pages/README.md)
 - [Calendar programme](docs/calendar/README.md)
+- [Daily acquisition contract](docs/calendar/daily-acquisition-contract.md)
+- [Daily acquisition implementation schedule](docs/calendar/daily-acquisition-implementation-schedule.md)
+- [Daily acquisition roadmap addendum](docs/calendar/daily-acquisition-roadmap-addendum.md)
+- [Daily acquisition operator flow](docs/calendar/daily-acquisition-operations.md)
 - [Deployment and CI policy](docs/operations/deployment-and-ci-policy.md)
 - [Global-first timetable architecture](docs/specs/global-timetable-architecture.md)
 - [Historical v0 product baseline](docs/specs/where-horses-run-v0-spec.md)
