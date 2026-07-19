@@ -38,7 +38,7 @@ racecourse records:  36
 
 The accepted release has completed scope freeze, public-data audit, mobile QA, accessibility QA, static performance QA, source-policy review, known-limitations review, release readiness, and final release decision.
 
-Current work is reviewed incremental maintenance inside the accepted v1 scope. Scheduled acquisition may create review-only artifacts and a draft pull request, while automatic approval, Canonical promotion, public projection, merge, unattended publication, and deployment remain disabled. New route families, public data classes, user features, transactional features, or publication modes require a separate scope decision.
+Current work is reviewed incremental maintenance inside the accepted v1 scope. A separately authorized scheduled acquisition path may create official-source review artifacts and a draft pull request, while automatic approval, Canonical promotion, public projection, merge, unattended publication, and deployment remain disabled. Source-specific policy still controls whether ordinary refresh or only reviewed retry work may execute. New route families, public data classes, user features, transactional features, or publication modes require a separate scope decision.
 
 ## Documentation
 
