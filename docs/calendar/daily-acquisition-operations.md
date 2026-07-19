@@ -42,18 +42,22 @@ The operation does not:
 
 Human review remains mandatory before Canonical promotion and public projection.
 
-## Runner boundary
+## Runner and policy boundary
 
-The scheduled operation executes only Jobs that resolve to `github_actions` through the Acquisition Registry and runner compatibility contract.
+The scheduled operation executes only Jobs that both:
+
+1. are enabled by the current Due-job policy; and
+2. resolve to `github_actions` through the Acquisition Registry and runner compatibility contract.
 
 Current practical effect:
 
-- NAR: hosted date-window, source-horizon, and selected-meeting acquisition where planned;
-- Banei: hosted date-window and selected-meeting acquisition where planned;
-- HKJC: hosted bounded fixture-window acquisition;
-- JRA: planned but excluded because the primary runner remains local and reviewed import is the fallback.
+- NAR: hosted date-window, source-horizon, and reviewed Retry Queue acquisition where planned;
+- HKJC: hosted bounded schedule-window acquisition where planned;
+- Banei: regular refresh, coverage-gap, and source-revalidation planning remain disabled; only explicitly reviewed rank-retry work may enter the daily plan;
+- JRA: due work may be planned but is excluded from hosted execution because the primary runner remains local and reviewed import is the fallback;
+- UAE ERA: not yet present in the daily Due-job policy; DA-00 must record its seasonal disposition until a separate wake-up policy is adopted.
 
-The draft PR body must state that excluded JRA work still requires the reviewed local operator path.
+The workflow must not broaden a source-specific policy merely because an Actions executor exists. The draft PR body must state that excluded JRA work still requires the reviewed local operator path and that omitted seasonal systems require an explicit operator disposition.
 
 ## State derivation
 
