@@ -16,7 +16,7 @@ The read-only production probe runs from GitHub Actions against:
 https://whr.badjoke-lab.com
 ```
 
-The release commit recorded for this confirmation is `6d45895fb04ccbc3160e763c54438a4d51dff905`.
+The release commit `6d45895fb04ccbc3160e763c54438a4d51dff905` is recorded for this confirmation.
 
 The public site does not expose hosting-platform commit metadata, so the probe confirms the live public surface after the release merge rather than claiming that the response itself proves an internal deployment identifier.
 
