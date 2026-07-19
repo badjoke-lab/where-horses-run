@@ -34,9 +34,15 @@ const orderedCandidatePaths = [
   jraRecoveryPath,
   baneiRecoveryPath,
 ];
-const inputPaths = orderedCandidatePaths.filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
+const availableCandidatePaths = orderedCandidatePaths.filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
 for (const requiredPath of [currentWindowAPlusPath, narRecoveryPath, jraRecoveryPath, baneiRecoveryPath]) {
-  if (!inputPaths.includes(requiredPath)) throw new Error(`required approved Candidate is missing: ${requiredPath}`);
+  if (!availableCandidatePaths.includes(requiredPath)) throw new Error(`required approved Candidate is missing: ${requiredPath}`);
+}
+
+const baseInputSources = new Set(meetingsDataset.input_sources ?? []);
+const inputPaths = availableCandidatePaths.filter((inputPath) => !baseInputSources.has(inputPath));
+for (const recoveryPath of [narRecoveryPath, jraRecoveryPath, baneiRecoveryPath]) {
+  if (!inputPaths.includes(recoveryPath)) throw new Error(`recovery Candidate is already present in the PR base or missing: ${recoveryPath}`);
 }
 
 const applied = [];
@@ -68,7 +74,6 @@ if (!exact(meetingsDataset, committedMeetings)) throw new Error('cumulative revi
 if (!exact(detailsDataset, committedDetails)) throw new Error('cumulative reviewed promotion output differs from committed canonical details');
 
 const expectedCounts = new Map([
-  [currentWindowAPlusPath, [15, 15]],
   [narRecoveryPath, [51, 0]],
   [jraRecoveryPath, [18, 0]],
   [baneiRecoveryPath, [3, 0]],
@@ -80,9 +85,22 @@ for (const [inputPath, [expectedMeetings, expectedDetails]] of expectedCounts) {
   }
 }
 
+const currentWindowCandidate = readJson(currentWindowAPlusPath);
+const baseMeetingById = new Map(readBaseJson(meetingsPath).meetings.map((meeting) => [meeting.meeting_id, meeting]));
+const baseDetailById = new Map(readBaseJson(detailsPath).details.map((detail) => [detail.meeting_id, detail]));
+if (currentWindowCandidate.records.length !== 15 || !baseInputSources.has(currentWindowAPlusPath)) {
+  throw new Error('current-window NAR A+ promotion is not present in the PR base');
+}
+for (const record of currentWindowCandidate.records) {
+  if (baseMeetingById.get(record.meeting_id)?.capability_rank !== 'A+' || baseDetailById.get(record.meeting_id)?.capability_rank !== 'A+') {
+    throw new Error(`current-window NAR A+ base state differs: ${record.meeting_id}`);
+  }
+}
+
 console.log('CALENDAR_NAR_INCREMENTAL_V2_PROMOTION_OUTPUT_DETERMINISM: pass');
 console.log(`BASE_MEETINGS: ${readBaseJson(meetingsPath).meetings.length}`);
 console.log(`HEAD_MEETINGS: ${committedMeetings.meetings.length}`);
 console.log(`BASE_DETAILS: ${readBaseJson(detailsPath).details.length}`);
 console.log(`HEAD_DETAILS: ${committedDetails.details.length}`);
+console.log(`SKIPPED_BASE_CANDIDATES: ${JSON.stringify(availableCandidatePaths.filter((inputPath) => baseInputSources.has(inputPath)))}`);
 console.log(`APPLIED_CANDIDATES: ${JSON.stringify(applied)}`);
