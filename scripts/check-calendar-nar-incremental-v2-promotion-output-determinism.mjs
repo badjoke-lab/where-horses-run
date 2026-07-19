@@ -14,6 +14,9 @@ const detailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const historicalCPath = 'data/candidates/nar-incremental-v2-july-remainder-c-approved.json';
 const historicalAPlusPath = 'data/candidates/nar-incremental-v2-july-remainder-a-plus-approved.json';
 const currentWindowAPlusPath = 'data/candidates/nar-current-window-a-plus-approved.json';
+const narRecoveryPath = 'data/candidates/nar-august-2026-horizon-recovery-c-approved.json';
+const jraRecoveryPath = 'data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json';
+const baneiRecoveryPath = 'data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json';
 
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readBaseJson = (relativePath) => JSON.parse(execFileSync('git', ['show', `${baseSha}:${relativePath}`], { cwd: root, encoding: 'utf8' }));
@@ -23,8 +26,18 @@ const authorityInventory = loadAuthoritySourceInventoryV1(root);
 const readinessRegistry = loadCalendarReadinessV1(root);
 let meetingsDataset = readBaseJson(meetingsPath);
 let detailsDataset = readBaseJson(detailsPath);
-const inputPaths = [historicalCPath, historicalAPlusPath, currentWindowAPlusPath].filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
-if (!inputPaths.includes(currentWindowAPlusPath)) throw new Error('current-window approved NAR Candidate is missing');
+const orderedCandidatePaths = [
+  historicalCPath,
+  historicalAPlusPath,
+  currentWindowAPlusPath,
+  narRecoveryPath,
+  jraRecoveryPath,
+  baneiRecoveryPath,
+];
+const inputPaths = orderedCandidatePaths.filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
+for (const requiredPath of [currentWindowAPlusPath, narRecoveryPath, jraRecoveryPath, baneiRecoveryPath]) {
+  if (!inputPaths.includes(requiredPath)) throw new Error(`required approved Candidate is missing: ${requiredPath}`);
+}
 
 const applied = [];
 for (const inputPath of inputPaths) {
@@ -51,11 +64,21 @@ for (const inputPath of inputPaths) {
 
 const committedMeetings = readJson(meetingsPath);
 const committedDetails = readJson(detailsPath);
-if (!exact(meetingsDataset, committedMeetings)) throw new Error('cumulative NAR meeting promotion output differs from committed canonical meetings');
-if (!exact(detailsDataset, committedDetails)) throw new Error('cumulative NAR detail promotion output differs from committed canonical details');
+if (!exact(meetingsDataset, committedMeetings)) throw new Error('cumulative reviewed promotion output differs from committed canonical meetings');
+if (!exact(detailsDataset, committedDetails)) throw new Error('cumulative reviewed promotion output differs from committed canonical details');
 
-const currentApplied = applied.find((entry) => entry.input_path === currentWindowAPlusPath);
-if (currentApplied?.promoted_meetings !== 15 || currentApplied?.promoted_details !== 15) throw new Error('current-window NAR promotion count differs');
+const expectedCounts = new Map([
+  [currentWindowAPlusPath, [15, 15]],
+  [narRecoveryPath, [51, 0]],
+  [jraRecoveryPath, [18, 0]],
+  [baneiRecoveryPath, [3, 0]],
+]);
+for (const [inputPath, [expectedMeetings, expectedDetails]] of expectedCounts) {
+  const entry = applied.find((item) => item.input_path === inputPath);
+  if (entry?.promoted_meetings !== expectedMeetings || entry?.promoted_details !== expectedDetails) {
+    throw new Error(`${inputPath} promotion count differs`);
+  }
+}
 
 console.log('CALENDAR_NAR_INCREMENTAL_V2_PROMOTION_OUTPUT_DETERMINISM: pass');
 console.log(`BASE_MEETINGS: ${readBaseJson(meetingsPath).meetings.length}`);
