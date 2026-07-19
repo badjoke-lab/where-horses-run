@@ -59,6 +59,7 @@ Calendar human-readable contracts:
 - `docs/calendar/daily-acquisition-implementation-schedule.md`
 - `docs/calendar/daily-acquisition-roadmap-addendum.md`
 - `docs/calendar/daily-acquisition-operations.md`
+- `docs/calendar/current-horizon-recovery-2026-07-19.md`
 - `docs/calendar/japan-full-month-scope-policy.md`
 - `docs/calendar/nar-a-plus-pilot-plan.md`
 - `docs/calendar/nar-monthly-collection-contract.md`
@@ -110,6 +111,8 @@ Calendar machine-readable contracts:
 - `data/static/timetable-candidate-v1.schema.json`
 - `data/static/calendar-due-job-policy-v1.json`
 - `data/static/calendar-daily-acquisition-policy-v1.json`
+- `data/static/calendar-system-season-state-v1.json`
+- `data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json`
 - `data/audits/calendar-baseline-migration-map.json`
 - `data/audits/calendar-pipeline-v1-release-gate.json`
 - `data/audits/calendar-dynamic-dates-release-gate.json`
@@ -150,6 +153,7 @@ Calendar machine-readable contracts:
 - `scripts/timetable/daily-acquisition-policy.mjs`
 - `scripts/timetable/validate-daily-acquisition-plan.mjs`
 - `scripts/check-calendar-daily-acquisition-policy.mjs`
+- `scripts/check-calendar-current-horizon-recovery.mjs`
 - `scripts/check-calendar-coverage-observation-schema.mjs`
 - `scripts/check-calendar-contracts.mjs`
 - `scripts/check-calendar-baseline-reconciliation.mjs`
@@ -202,7 +206,7 @@ Before work begins:
 4. confirm tracker or registry state;
 5. record whether Cloudflare is required.
 
-For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, and daily execution policy before changing workflow, policy, runner, draft-PR, or publication behavior.
+For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, reviewed season-state file, current-horizon audit, and daily execution policy before changing workflow, policy, season state, runner, draft-PR, or publication behavior.
 
 The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
 
