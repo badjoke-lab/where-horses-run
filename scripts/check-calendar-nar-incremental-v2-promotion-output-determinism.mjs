@@ -102,5 +102,6 @@ console.log(`BASE_MEETINGS: ${readBaseJson(meetingsPath).meetings.length}`);
 console.log(`HEAD_MEETINGS: ${committedMeetings.meetings.length}`);
 console.log(`BASE_DETAILS: ${readBaseJson(detailsPath).details.length}`);
 console.log(`HEAD_DETAILS: ${committedDetails.details.length}`);
+console.log(`BASE_INPUT_SOURCE_COUNT: ${baseInputSources.size}`);
 console.log(`SKIPPED_BASE_CANDIDATES: ${JSON.stringify(availableCandidatePaths.filter((inputPath) => baseInputSources.has(inputPath)))}`);
 console.log(`APPLIED_CANDIDATES: ${JSON.stringify(applied)}`);
