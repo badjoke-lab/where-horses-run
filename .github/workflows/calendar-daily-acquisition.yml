@@ -10,10 +10,18 @@ on:
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'scripts/timetable/daily-acquisition-policy.mjs'
+      - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-daily-acquisition-policy-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
       - 'data/generated/timetable/public/meeting-list.json'
+      - 'docs/calendar/daily-acquisition-contract.md'
+      - 'docs/calendar/daily-acquisition-implementation-schedule.md'
+      - 'docs/calendar/daily-acquisition-operations.md'
+      - 'docs/calendar/daily-acquisition-roadmap-addendum.md'
   push:
     branches:
       - main
@@ -22,11 +30,21 @@ on:
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
+      - 'scripts/timetable/daily-acquisition-policy.mjs'
+      - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-daily-acquisition-policy-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'docs/calendar/daily-acquisition-contract.md'
+      - 'docs/calendar/daily-acquisition-implementation-schedule.md'
+      - 'docs/calendar/daily-acquisition-operations.md'
+      - 'docs/calendar/daily-acquisition-roadmap-addendum.md'
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: calendar-daily-acquisition-review
@@ -47,11 +65,15 @@ jobs:
           node --check scripts/timetable/build-calendar-live-planner-state.mjs
           node --check scripts/timetable/plan-actions-multi-job.mjs
           node --check scripts/timetable/summarize-actions-multi-job.mjs
+          node --check scripts/timetable/daily-acquisition-policy.mjs
+          node --check scripts/timetable/validate-daily-acquisition-plan.mjs
+          node --check scripts/check-calendar-daily-acquisition-policy.mjs
       - name: Validate existing planning and runner contracts
         run: |
           node scripts/check-calendar-due-job-planner.mjs
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-daily-acquisition-policy.mjs
       - name: Exercise live-state and plan-file boundaries
         run: |
           node scripts/timetable/build-calendar-live-planner-state.mjs \
@@ -64,6 +86,9 @@ jobs:
             --plan-file=.calendar-due-job-plan.json \
             --output=.calendar-actions-plan.json \
             --matrix-output=.calendar-actions-matrix.json
+          node scripts/timetable/validate-daily-acquisition-plan.mjs \
+            --due-plan=.calendar-due-job-plan.json \
+            --actions-plan=.calendar-actions-plan.json
           mkdir -p .calendar-empty-status
           node scripts/timetable/summarize-actions-multi-job.mjs \
             --plan-file=.calendar-due-job-plan.json \
@@ -73,7 +98,7 @@ jobs:
         run: git diff --check
 
   plan:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -85,6 +110,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Validate daily execution policy before planning
+        run: |
+          node scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-runner-compatibility.mjs
+          node scripts/check-calendar-daily-acquisition-policy.mjs
       - id: clock
         name: Resolve planning time
         shell: bash
@@ -100,13 +131,16 @@ jobs:
             --state=.calendar-live-state.json \
             --output=.calendar-due-job-plan.json
       - id: compile
-        name: Compile GitHub Actions-capable jobs
+        name: Compile and authorize GitHub Actions-capable jobs
         shell: bash
         run: |
           node scripts/timetable/plan-actions-multi-job.mjs \
             --plan-file=.calendar-due-job-plan.json \
             --output=.calendar-actions-plan.json \
             --matrix-output=.calendar-actions-matrix.json
+          node scripts/timetable/validate-daily-acquisition-plan.mjs \
+            --due-plan=.calendar-due-job-plan.json \
+            --actions-plan=.calendar-actions-plan.json
           node -e "const fs=require('fs');const due=JSON.parse(fs.readFileSync('.calendar-due-job-plan.json'));fs.writeFileSync('.calendar-collection-plan.json',JSON.stringify(due.collection_plan,null,2)+'\n');"
           echo "matrix=$(cat .calendar-actions-matrix.json)" >> "$GITHUB_OUTPUT"
           echo "hosted_jobs=$(node -p \"require('./.calendar-actions-plan.json').jobs.length\")" >> "$GITHUB_OUTPUT"
@@ -160,6 +194,9 @@ jobs:
     needs:
       - plan
       - execute
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -180,10 +217,10 @@ jobs:
           merge-multiple: true
           path: .
       - id: metadata
-        name: Build review summary
+        name: Build review summary and retained plan snapshot
         shell: bash
         run: |
-          mkdir -p .calendar-daily-status data/generated/timetable/daily-acquisition-summaries
+          mkdir -p .calendar-daily-status data/generated/timetable/daily-acquisition-summaries data/generated/timetable/daily-acquisition-plans
           find data/generated/timetable/actions-multi-job-status -type f -name '*.json' -exec cp {} .calendar-daily-status/ \; 2>/dev/null || true
           node scripts/timetable/summarize-actions-multi-job.mjs \
             --plan-file=.calendar-daily-plan/.calendar-collection-plan.json \
@@ -191,11 +228,16 @@ jobs:
             --output=.calendar-actions-campaign-summary.json
           review_date=$(date -u +%F)
           cp .calendar-actions-campaign-summary.json "data/generated/timetable/daily-acquisition-summaries/${review_date}.json"
+          mkdir -p "data/generated/timetable/daily-acquisition-plans/${review_date}"
+          cp .calendar-daily-plan/.calendar-live-state.json "data/generated/timetable/daily-acquisition-plans/${review_date}/planner-state.json"
+          cp .calendar-daily-plan/.calendar-due-job-plan.json "data/generated/timetable/daily-acquisition-plans/${review_date}/due-job-plan.json"
+          cp .calendar-daily-plan/.calendar-actions-plan.json "data/generated/timetable/daily-acquisition-plans/${review_date}/actions-plan.json"
           echo "review_date=${review_date}" >> "$GITHUB_OUTPUT"
       - name: Create or update the human-review draft PR
-        if: needs.plan.outputs.hosted_jobs != '0'
+        if: github.ref == 'refs/heads/main' && needs.plan.outputs.hosted_jobs != '0'
         uses: peter-evans/create-pull-request@v7
         with:
+          base: main
           branch: automation/calendar-daily-acquisition-review
           delete-branch: true
           draft: true
@@ -206,10 +248,11 @@ jobs:
 
             This pull request is review-only. It does not approve candidates, promote canonical timetable data, rebuild the public projection, merge itself, or deploy the site.
 
-            Review the independent job status records, candidate batches, source errors, coverage claims, and excluded non-Actions jobs. JRA local-primary work remains excluded and requires the existing reviewed local operator path.
+            Review the retained planner state, Due-job Plan, authorized Actions Plan, independent job status records, candidate batches, source errors, and coverage claims. JRA local-primary work remains excluded and requires the existing reviewed local operator path. Banei regular refresh remains disabled; only reviewed rank-retry work is eligible. UAE seasonal handling remains an explicit operator disposition until a separate wake-up policy is adopted.
           add-paths: |
             data/generated/timetable/actions-multi-job-status/**
             data/generated/timetable/nar-incremental-batches/**
             data/generated/timetable/actions-multi-job/**
             data/generated/timetable/daily-acquisition-summaries/**
+            data/generated/timetable/daily-acquisition-plans/**
             data/candidates/nar-incremental-batches/**
