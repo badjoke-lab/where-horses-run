@@ -1,8 +1,8 @@
 # Calendar daily acquisition review operation
 
-Status: implementation candidate; operating evidence pending  
+Status: active reviewed operation; scheduled-cycle acceptance evidence pending  
 Work ID: `WHR-CAL-DAILY-ACQUISITION`  
-Last reviewed: 2026-07-19
+Last reviewed: 2026-07-20
 
 ## Canonical reading order
 
@@ -15,11 +15,11 @@ Use these documents together:
 5. [`actions-multi-job-runner.md`](actions-multi-job-runner.md) — independent hosted execution semantics;
 6. [`pipeline-v1-promotion.md`](pipeline-v1-promotion.md) and [`pipeline-v1-public-projection.md`](pipeline-v1-public-projection.md) — later human-reviewed publication continuation.
 
-The implementation is not accepted as steady-state merely because the workflow file exists. The schedule's operating-evidence gates must pass first.
+The implementation has real main-branch operating and publication evidence. Final steady-state acceptance still requires the first retained scheduled cron cycle and a retained zero-hosted-Job activation.
 
 ## Purpose
 
-The daily operation closes the gap between the artifact-only Due-job Planner and the existing GitHub Actions acquisition executors.
+The daily operation closes the gap between the planning-only Due-job Planner and the existing GitHub Actions acquisition executors.
 
 At 03:17 UTC each day it:
 
@@ -31,6 +31,21 @@ At 03:17 UTC each day it:
 6. preserves source errors and partial outcomes instead of rewriting them as success;
 7. writes one activation-status record even when planning fails, execution fails, or no hosted Job exists;
 8. pushes the status, plans, summaries, and available acquisition artifacts to the stable review branch backing Draft PR #559.
+
+## Accepted operating evidence
+
+The operation has retained all of the following real outcomes:
+
+- planning failure with execution skipped;
+- generated-plan success followed by an execution-path defect;
+- two independent successful NAR hosted acquisition Jobs;
+- repeated updates to the same stable review branch and Draft PR;
+- 51 NAR August Rank C candidate meetings plus Coverage, report, retry-target, and status artifacts;
+- reviewed separation of acquisition from approval and publication;
+- reviewed public recovery through 2026-08-17;
+- English and Japanese production verification after deployment.
+
+Draft PR #559 remains the operating review queue and is not a publication PR.
 
 ## Publication boundary
 
