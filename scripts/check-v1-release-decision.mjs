@@ -160,7 +160,7 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
 }
 
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-decision performance report schema differs');
-if (performanceReport.publicPages !== 771 || performanceReport.measuredPages !== 771 || performanceReport.javascriptFiles !== 0) fail('release-decision performance report inventory differs');
+if (performanceReport.publicPages !== 771 || performanceReport.measuredPages !== 771 || (performanceReport.typeTotals?.javascript?.files ?? 0) !== 0) fail('release-decision performance report inventory differs');
 if (performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-decision static-first performance result differs');
 
 const sitemap = read(files.sitemap);
