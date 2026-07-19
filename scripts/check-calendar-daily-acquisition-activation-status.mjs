@@ -78,6 +78,13 @@ const badRun = spawnSync(process.execPath, [
 if (badRun.status === 0) fail('unsupported activation Job result was accepted');
 fs.rmSync(tempDir, { recursive: true, force: true });
 
+const deliveryRun = spawnSync(process.execPath, [
+  'scripts/check-calendar-daily-review-artifact-delivery.mjs',
+], { cwd: root, encoding: 'utf8' });
+if (deliveryRun.status !== 0) {
+  fail(`daily review artifact delivery failed: ${deliveryRun.stderr || deliveryRun.stdout}`);
+}
+
 const workflow = readText('.github/workflows/calendar-daily-acquisition.yml');
 for (const phrase of [
   'data/generated/timetable/daily-acquisition-status/latest.json',
@@ -106,5 +113,6 @@ console.log('CALENDAR_DAILY_ACQUISITION_ACTIVATION_STATUS: pass');
 console.log('STABLE_REVIEW_BRANCH: automation/calendar-daily-acquisition-review');
 console.log('PLAN_FAILURE_STATUS: retained');
 console.log('EXECUTION_FAILURE_STATUS: retained');
+console.log('REVIEW_ARTIFACT_DELIVERY: verified');
 console.log('PR_CREATION_PERMISSION: not required');
 console.log('PUBLICATION_SIDE_EFFECTS: disabled');
