@@ -46,23 +46,25 @@ if (historicalResult.result?.a_plus_candidate_count !== 15
 
 const remaining = policy.remaining_campaign;
 if (remaining?.status !== 'manual_retry_available') throw new Error('NAR remaining campaign status differs');
-const meetings = canonical.meetings
-  .filter((meeting) => (
-    meeting.country_id === remaining.selection.country_id
-    && meeting.authority_id === remaining.selection.authority_id
-    && meeting.capability_rank === remaining.selection.current_rank
-    && meeting.date >= policy.window.start_date
-    && meeting.date < policy.window.end_date_exclusive
-  ))
-  .sort((left, right) => left.date.localeCompare(right.date) || left.meeting_id.localeCompare(right.meeting_id));
-const meetingIds = meetings.map((meeting) => meeting.meeting_id);
-if (new Set(meetingIds).size !== meetingIds.length) throw new Error('NAR remaining retry meeting IDs are not unique');
-if (meetingIds.length !== remaining.selection.expected_meeting_count) throw new Error(`NAR remaining retry count differs: ${meetingIds.length}`);
-if (meetings[0]?.date !== remaining.selection.expected_first_date || meetings.at(-1)?.date !== remaining.selection.expected_last_date) throw new Error('NAR remaining retry date boundary differs');
-if (JSON.stringify([...meetingIds].sort()) !== JSON.stringify([...historicalResult.unresolved_meeting_ids].sort())) {
-  throw new Error('NAR current C scope differs from the historical unresolved set');
-}
 const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+const meetingIds = [...historicalResult.unresolved_meeting_ids].sort();
+if (new Set(meetingIds).size !== meetingIds.length) throw new Error('NAR historical unresolved meeting IDs are not unique');
+if (meetingIds.length !== remaining.selection.expected_meeting_count) throw new Error(`NAR remaining retry count differs: ${meetingIds.length}`);
+const meetings = meetingIds.map((meetingId) => {
+  const meeting = canonicalById.get(meetingId);
+  if (!meeting) throw new Error(`NAR historical unresolved meeting is missing from Canonical: ${meetingId}`);
+  if (meeting.country_id !== remaining.selection.country_id
+    || meeting.authority_id !== remaining.selection.authority_id
+    || meeting.capability_rank !== remaining.selection.current_rank) {
+    throw new Error(`NAR historical unresolved meeting state differs: ${meetingId}`);
+  }
+  if (meeting.date < policy.window.start_date || meeting.date >= policy.window.end_date_exclusive) {
+    throw new Error(`NAR historical unresolved meeting is outside the reviewed window: ${meetingId}`);
+  }
+  return meeting;
+}).sort((left, right) => left.date.localeCompare(right.date) || left.meeting_id.localeCompare(right.meeting_id));
+const orderedMeetingIds = meetings.map((meeting) => meeting.meeting_id);
+if (meetings[0]?.date !== remaining.selection.expected_first_date || meetings.at(-1)?.date !== remaining.selection.expected_last_date) throw new Error('NAR remaining retry date boundary differs');
 for (const id of historicalResult.resolved_meeting_ids) {
   if (canonicalById.get(id)?.capability_rank !== 'A+') throw new Error(`NAR promoted meeting is not A+: ${id}`);
 }
@@ -75,7 +77,7 @@ const job = {
   system_id: jobPolicy.system_id,
   runner_policy: { mode: 'exact', runner: jobPolicy.runner },
   collection_mode: jobPolicy.collection_mode,
-  requested_scope: { meeting_ids: meetingIds },
+  requested_scope: { meeting_ids: orderedMeetingIds },
   rank_strategy: jobPolicy.rank_strategy,
   target_rank: jobPolicy.target_rank,
   reason: jobPolicy.reason,
@@ -98,11 +100,11 @@ const scope = {
   window: structuredClone(policy.window),
   historical_selected_meeting_count: policy.historical_campaign.selection.selected_meeting_count,
   promoted_a_plus_meeting_count: historicalResult.resolved_meeting_ids.length,
-  selected_meeting_count: meetingIds.length,
+  selected_meeting_count: orderedMeetingIds.length,
   first_meeting_date: meetings[0].date,
   last_meeting_date: meetings.at(-1).date,
-  meeting_ids: meetingIds,
-  existing_rank_counts: { C: meetingIds.length, B: 0, 'B+': 0, A: 0, 'A+': 0 },
+  meeting_ids: orderedMeetingIds,
+  existing_rank_counts: { C: orderedMeetingIds.length, B: 0, 'B+': 0, A: 0, 'A+': 0 },
   target_rank: 'A+',
   execution_policy: structuredClone(policy.execution_policy),
   side_effect_boundary: structuredClone(policy.side_effect_boundary),
@@ -111,7 +113,7 @@ fs.mkdirSync(outputDir, { recursive: true });
 fs.writeFileSync(path.join(outputDir, 'collection-job.json'), `${JSON.stringify(job, null, 2)}\n`);
 fs.writeFileSync(path.join(outputDir, 'runner-execution.json'), `${JSON.stringify(execution, null, 2)}\n`);
 fs.writeFileSync(path.join(outputDir, 'retry-scope.json'), `${JSON.stringify(scope, null, 2)}\n`);
-fs.writeFileSync(path.join(outputDir, 'meeting-ids.txt'), `${meetingIds.join('\n')}\n`);
+fs.writeFileSync(path.join(outputDir, 'meeting-ids.txt'), `${orderedMeetingIds.join('\n')}\n`);
 console.log(JSON.stringify({
   schema_version: 'calendar-nar-current-window-retry-spec-summary-v1',
   work_id: policy.work_id,
@@ -120,7 +122,7 @@ console.log(JSON.stringify({
   batch_id: jobPolicy.batch_id,
   historical_selected_meeting_count: scope.historical_selected_meeting_count,
   promoted_a_plus_meeting_count: scope.promoted_a_plus_meeting_count,
-  selected_meeting_count: meetingIds.length,
+  selected_meeting_count: orderedMeetingIds.length,
   first_meeting_date: meetings[0].date,
   last_meeting_date: meetings.at(-1).date,
   target_rank: 'A+',
