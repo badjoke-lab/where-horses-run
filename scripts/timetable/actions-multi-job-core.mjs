@@ -75,6 +75,7 @@ export function planActionsMultiJobV1(plan, registry, compatibilityContract) {
       jobs.push({
         job_id: job.job_id,
         batch_id: batchId,
+        collection_job: structuredClone(job),
         execution,
         status_artifact_path: `data/generated/timetable/actions-multi-job-status/${batchId}.json`,
         artifact_paths: artifactPathsForExecution(execution),
@@ -100,6 +101,7 @@ export function matrixFromActionsMultiJobPlanV1(actionsPlan) {
     include: actionsPlan.jobs.map((item) => ({
       job_id: item.job_id,
       batch_id: item.batch_id,
+      collection_job: item.collection_job,
       execution: item.execution,
       artifact_paths: item.artifact_paths,
     })),

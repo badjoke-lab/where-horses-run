@@ -31,6 +31,18 @@ for (const plan of fixtures.plans) {
     const matrix = matrixFromActionsMultiJobPlanV1(actionsPlan);
     if (matrix.include.length !== actionsPlan.jobs.length) fail(`${plan.plan_id} matrix size differs from hosted Job count.`);
     if (!exact(matrix.include.map((entry) => entry.job_id), actionsPlan.jobs.map((entry) => entry.job_id))) fail(`${plan.plan_id} matrix Job order differs.`);
+
+    const sourceJobs = new Map(plan.jobs.map((job) => [job.job_id, job]));
+    for (const item of actionsPlan.jobs) {
+      const sourceJob = sourceJobs.get(item.job_id);
+      if (!sourceJob || !exact(item.collection_job, sourceJob)) fail(`${plan.plan_id}/${item.job_id} Actions Plan lost the exact Collection Job snapshot.`);
+      if (item.collection_job?.job_id !== item.execution?.job_id) fail(`${plan.plan_id}/${item.job_id} Collection Job and execution identity differ.`);
+    }
+    for (const entry of matrix.include) {
+      const planned = actionsPlan.jobs.find((item) => item.job_id === entry.job_id);
+      if (!planned || !exact(entry.collection_job, planned.collection_job)) fail(`${plan.plan_id}/${entry.job_id} matrix lost the Collection Job snapshot.`);
+      if (entry.collection_job?.job_id !== entry.execution?.job_id) fail(`${plan.plan_id}/${entry.job_id} matrix Job/execution identity differs.`);
+    }
   } catch (error) {
     fail(`${plan.plan_id} compilation failed: ${error.message}`);
   }
@@ -107,12 +119,85 @@ if (eastAsia && narEast && hkjcEast) {
   }
 }
 
+const generatedSourcePlan = plans.get('nar-hkjc-actions-window-001');
+const generatedSourceJob = generatedSourcePlan?.jobs.find((job) => job.job_id === 'nar-september-actions-plan-job-001');
+if (!generatedSourcePlan || !generatedSourceJob) {
+  fail('generated dispatcher source fixture is missing.');
+} else {
+  const generatedCampaignId = 'generated-daily-dispatch-check-campaign';
+  const generatedJob = {
+    ...structuredClone(generatedSourceJob),
+    job_id: 'generated-daily-dispatch-check-job-001',
+    campaign_id: generatedCampaignId,
+  };
+  const generatedPlan = {
+    schema_version: 'calendar-collection-plan-v1',
+    plan_id: 'generated-daily-dispatch-check-plan',
+    campaign_id: generatedCampaignId,
+    created_at: generatedSourcePlan.created_at,
+    jobs: [generatedJob],
+  };
+
+  let generatedActions = null;
+  try {
+    generatedActions = planActionsMultiJobV1(generatedPlan, registry, compatibility);
+  } catch (error) {
+    fail(`generated dispatcher Plan failed to compile: ${error.message}`);
+  }
+
+  const generatedPlannedJob = generatedActions?.jobs?.[0];
+  if (!generatedPlannedJob || generatedActions.jobs.length !== 1 || generatedActions.excluded.length !== 0) {
+    fail('generated dispatcher Plan must compile exactly one hosted Job.');
+  } else {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-generated-actions-dispatch-'));
+    const jobPath = path.join(tempDir, 'job.json');
+    const executionPath = path.join(tempDir, 'execution.json');
+    const statusPath = path.join(tempDir, 'status.json');
+    const fallbackStatusPath = path.join(tempDir, 'fallback-status.json');
+    fs.writeFileSync(jobPath, `${JSON.stringify(generatedPlannedJob.collection_job, null, 2)}\n`);
+    fs.writeFileSync(executionPath, `${JSON.stringify(generatedPlannedJob.execution, null, 2)}\n`);
+
+    const explicitRun = spawnSync(process.execPath, [
+      'scripts/timetable/run-calendar-actions-job.mjs',
+      `--job=${jobPath}`,
+      `--execution=${executionPath}`,
+      `--status-output=${statusPath}`,
+      '--validate-only',
+    ], { cwd: root, encoding: 'utf8' });
+    if (explicitRun.status !== 0) {
+      fail(`generated explicit Job dispatch failed: ${explicitRun.stderr || explicitRun.stdout}`);
+    } else {
+      const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+      if (status.status !== 'success' || status.detail !== 'validation_only_no_source_execution') fail('generated explicit Job dispatch status differs.');
+      if (status.job_id !== generatedJob.job_id || status.batch_id !== generatedPlannedJob.batch_id) fail('generated explicit Job dispatch identity differs.');
+    }
+
+    const fallbackRun = spawnSync(process.execPath, [
+      'scripts/timetable/run-calendar-actions-job.mjs',
+      `--execution=${executionPath}`,
+      `--status-output=${fallbackStatusPath}`,
+      '--validate-only',
+    ], { cwd: root, encoding: 'utf8' });
+    if (fallbackRun.status === 0) fail('generated Job without explicit --job unexpectedly used fixture fallback.');
+    else {
+      const status = JSON.parse(fs.readFileSync(fallbackStatusPath, 'utf8'));
+      if (status.status !== 'source_error' || !status.detail.includes('requires --job=<path>')) fail('generated Job fallback rejection status differs.');
+    }
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+}
+
 const workflow = readText('.github/workflows/calendar-actions-multi-job.yml');
 for (const phrase of ['fail-fast: false','if: always()','permissions:\n  contents: read','actions/upload-artifact@v4','actions/download-artifact@v4','Build campaign summary without rewriting independent outcomes']) {
   if (!workflow.includes(phrase)) fail(`Actions multi-job workflow missing ${phrase}.`);
 }
 if (/\bschedule\s*:|\bcron\s*:/.test(workflow) || /contents:\s*write/.test(workflow)) fail('Actions multi-job workflow trigger/permission boundary differs.');
 for (const forbidden of ['promote-timetable', 'deploy', 'wrangler pages deploy']) if (workflow.includes(forbidden)) fail(`Actions multi-job workflow contains forbidden command ${forbidden}.`);
+
+const dailyWorkflow = readText('.github/workflows/calendar-daily-acquisition.yml');
+for (const phrase of ['COLLECTION_JOB_JSON', '--job=.calendar-collection-job.json', 'include-hidden-files: true']) {
+  if (!dailyWorkflow.includes(phrase)) fail(`Daily Actions workflow missing generated-Job dispatch phrase ${phrase}.`);
+}
 
 const docs = readText('docs/calendar/actions-multi-job-runner.md');
 for (const phrase of ['fail-fast: false','One Job failure does not rewrite another Job result','source_error','full Runner Gate is not complete','Scheduled execution remains disabled']) {
@@ -134,6 +219,9 @@ if (errors.length) {
 console.log('CALENDAR_ACTIONS_MULTI_JOB: pass');
 console.log(`PLANS_COMPILED: ${compiled.size}`);
 console.log(`NAR_HKJC_HOSTED_JOBS: ${eastAsia.jobs.length}`);
+console.log('GENERATED_COLLECTION_JOB_SNAPSHOT: preserved');
+console.log('GENERATED_JOB_EXPLICIT_DISPATCH: pass');
+console.log('GENERATED_JOB_FIXTURE_FALLBACK: rejected');
 console.log('HKJC_SCHEDULE_EXECUTOR: github_actions / C-only');
 console.log('HKJC_OPERATOR_DETAIL_IDENTITY: registered but not invoked');
 console.log('INDEPENDENT_OUTCOMES: pass');

@@ -2,7 +2,7 @@
 
 Status: active canonical contract  
 Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-07-19
 
 ## Purpose
 
@@ -16,7 +16,9 @@ Collection Plan
 -> resolve Registry runner policy
 -> filter github_actions-capable Jobs
 -> verify executor collection-mode support
--> compile independent execution specifications
+-> preserve the exact Collection Job snapshot
+-> compile an independent execution specification
+-> matrix entry carries Collection Job + execution together
 -> matrix execution with fail-fast: false
 -> independent status and batch artifacts
 -> campaign summary
@@ -46,6 +48,8 @@ data/static/calendar-acquisition-registry.json
 data/static/calendar-runner-compatibility-contract-v1.json
 ```
 
+Fixture-backed Plans remain available for manual workflow selection and deterministic CI. Generated daily Plans are supplied directly and must not be reconstructed from the fixture file.
+
 ## Hosted-capable filtering
 
 A Job is admitted to the Actions matrix only when all of these conditions hold:
@@ -71,16 +75,66 @@ Every hosted Job receives a deterministic independent batch ID:
 
 The batch ID is attached to the compiled runner execution specification and is not shared with unrelated Jobs in the same Plan.
 
-Each matrix entry retains:
+Each Actions Plan item and matrix entry retains:
 
 ```text
 job_id
 batch_id
+exact Collection Job snapshot
 execution specification
 artifact paths
 ```
 
 Different systems and different requested scopes remain independent.
+
+## Generated Collection Job dispatch
+
+The dispatcher validates an execution specification against the exact Collection Job that produced it.
+
+The normal hosted path is:
+
+```text
+matrix.collection_job
+-> .calendar-collection-job.json
+matrix.execution
+-> .calendar-execution.json
+
+run-calendar-actions-job.mjs
+  --job=.calendar-collection-job.json
+  --execution=.calendar-execution.json
+```
+
+The dispatcher must verify that Job and execution agree on:
+
+```text
+campaign identity
+Job identity
+system identity
+runner
+collection mode
+requested scope
+rank strategy
+target rank
+reason
+Registry source route
+executor mapping
+batch identity
+```
+
+A generated daily Job is not required to exist in `data/fixtures/calendar-collection-plans-v1.json`.
+
+Fixture lookup without `--job` is retained only as a backward-compatible path for older fixture-backed invocations. If an execution Job ID is absent from the fixture set, the dispatcher rejects it unless an explicit Job file is supplied. It must never invent or substitute a fixture Job merely because the execution uses the same system or scope.
+
+The dispatcher provides validation-only mode for deterministic CI:
+
+```text
+--job=<generated-job.json>
+--execution=<execution.json>
+--status-output=<temporary-status.json>
+--validate-only
+```
+
+This proves generated Job/execution identity without network access or source acquisition.
 
 ## Matrix isolation
 
@@ -108,6 +162,8 @@ success
 partial
 source_error
 ```
+
+The dispatcher constructs the status path from a validated non-empty batch ID before source execution. Job/execution validation failure therefore remains an explicit `source_error` status when a status output path is available.
 
 The campaign summary reuses the Collection Plan outcome model and adds `not_run` for a planned hosted Job with no valid status artifact.
 
@@ -175,7 +231,7 @@ HKJC -> August date window
 
 Both Jobs resolve to GitHub Actions, but their requested windows remain different.
 
-The matrix compiles two independent execution specifications and two independent batch IDs.
+The matrix compiles two independent Collection Job/execution pairs and two independent batch IDs.
 
 The campaign may therefore end as:
 
@@ -229,9 +285,11 @@ Every hosted Job also has an independent status JSON artifact.
 
 The final campaign summary is uploaded separately.
 
+Generated daily planning artifacts may use dot-prefixed temporary filenames. Workflows that upload those files must explicitly enable hidden-file inclusion so the exact Plan, matrix, and Job evidence is not silently omitted.
+
 ## Security and publication boundary
 
-The Actions multi-job workflow uses:
+The manual Actions multi-job workflow uses:
 
 ```text
 permissions:
@@ -259,6 +317,9 @@ ACP-10 is complete when:
 
 - a validated Collection Plan can be filtered to hosted-capable Jobs;
 - hosted Jobs can keep different scopes and targets;
+- each matrix entry preserves the exact Collection Job and compiled execution pair;
+- generated non-fixture Jobs can be explicitly dispatched and validated;
+- fixture fallback cannot silently replace a generated Job;
 - matrix execution is isolated with `fail-fast: false`;
 - each Job preserves independent batch and status artifacts;
 - failure in one Job does not rewrite another Job outcome;
@@ -275,4 +336,4 @@ After ACP-10, ACP-11 local multi-job execution becomes current shared work.
 
 Banei source-specific implementation may begin on the already satisfied minimum handoff gate and does not need to wait for the full Actions matrix or scheduler. The shared local runner remains necessary before the full Runner Gate is closed.
 
-Scheduled execution remains disabled until later due-job planning and scheduling stages are explicitly implemented.
+Scheduled execution remains disabled in this manual workflow. Separately governed daily acquisition may execute generated hosted Jobs only under the active daily acquisition contract, reviewed season state, Due-job policy, and daily execution policy, and still stops at the human-review boundary.

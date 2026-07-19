@@ -7,6 +7,8 @@ on:
   pull_request:
     paths:
       - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
@@ -14,6 +16,7 @@ on:
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
       - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
       - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
+      - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
       - 'scripts/check-calendar-current-horizon-recovery.mjs'
@@ -35,6 +38,8 @@ on:
       - main
     paths:
       - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
@@ -42,6 +47,7 @@ on:
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
       - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
       - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
+      - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
       - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
       - 'scripts/check-calendar-current-horizon-recovery.mjs'
@@ -78,6 +84,8 @@ jobs:
           node-version: 22.12.0
       - name: Check orchestration script syntax
         run: |
+          node --check scripts/timetable/actions-multi-job-core.mjs
+          node --check scripts/timetable/run-calendar-actions-job.mjs
           node --check scripts/timetable/build-calendar-live-planner-state.mjs
           node --check scripts/timetable/plan-actions-multi-job.mjs
           node --check scripts/timetable/summarize-actions-multi-job.mjs
@@ -85,6 +93,7 @@ jobs:
           node --check scripts/timetable/validate-daily-acquisition-plan.mjs
           node --check scripts/timetable/write-calendar-daily-plan-outputs.mjs
           node --check scripts/timetable/write-calendar-daily-acquisition-status.mjs
+          node --check scripts/check-calendar-actions-multi-job.mjs
           node --check scripts/check-calendar-daily-acquisition-policy.mjs
           node --check scripts/check-calendar-daily-acquisition-activation-status.mjs
           node --check scripts/check-calendar-current-horizon-recovery.mjs
@@ -96,7 +105,7 @@ jobs:
           node scripts/check-calendar-daily-acquisition-policy.mjs
           node scripts/check-calendar-daily-acquisition-activation-status.mjs
           node scripts/check-calendar-current-horizon-recovery.mjs
-      - name: Exercise live-state and plan-file boundaries
+      - name: Exercise live-state, generated-plan, and dispatch boundaries
         shell: bash
         run: |
           node scripts/timetable/build-calendar-live-planner-state.mjs \
@@ -123,6 +132,14 @@ jobs:
           grep -q '^matrix=' "$output_file"
           grep -q '^hosted_jobs=' "$output_file"
           grep -q '^plan_id=' "$output_file"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
+          if (matrix.include.length === 0) throw new Error('fixed daily validation requires a hosted Job');
+          if (!matrix.include.every((entry) => entry.collection_job?.job_id === entry.execution?.job_id)) {
+            throw new Error('matrix Collection Job and execution identity differ');
+          }
+          NODE
           mkdir -p .calendar-empty-status
           node scripts/timetable/summarize-actions-multi-job.mjs \
             --plan-file=.calendar-due-job-plan.json \
@@ -192,6 +209,7 @@ jobs:
         with:
           name: calendar-daily-acquisition-plan
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 14
           path: |
             .calendar-live-state.json
@@ -213,12 +231,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Write immutable execution specification
+      - name: Write immutable Collection Job and execution specifications
         env:
+          COLLECTION_JOB_JSON: ${{ toJson(matrix.collection_job) }}
           EXECUTION_JSON: ${{ toJson(matrix.execution) }}
-        run: printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
+        shell: bash
+        run: |
+          printf '%s\n' "$COLLECTION_JOB_JSON" > .calendar-collection-job.json
+          printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
       - name: Run one independent hosted acquisition job
-        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=.calendar-execution.json
+        run: |
+          node scripts/timetable/run-calendar-actions-job.mjs \
+            --job=.calendar-collection-job.json \
+            --execution=.calendar-execution.json
       - name: Upload independent acquisition artifacts
         if: always()
         uses: actions/upload-artifact@v4

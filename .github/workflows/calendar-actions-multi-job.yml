@@ -135,12 +135,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Write immutable execution specification
+      - name: Write immutable Collection Job and execution specifications
         env:
+          COLLECTION_JOB_JSON: ${{ toJson(matrix.collection_job) }}
           EXECUTION_JSON: ${{ toJson(matrix.execution) }}
-        run: printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
+        shell: bash
+        run: |
+          printf '%s\n' "$COLLECTION_JOB_JSON" > .calendar-collection-job.json
+          printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
       - name: Run independent hosted Job
-        run: node scripts/timetable/run-calendar-actions-job.mjs --execution=.calendar-execution.json
+        run: |
+          node scripts/timetable/run-calendar-actions-job.mjs \
+            --job=.calendar-collection-job.json \
+            --execution=.calendar-execution.json
       - name: Upload independent Job artifacts
         if: always()
         uses: actions/upload-artifact@v4
