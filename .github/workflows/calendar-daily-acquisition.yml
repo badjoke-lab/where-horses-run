@@ -12,10 +12,13 @@ on:
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
+      - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
       - 'scripts/check-calendar-current-horizon-recovery.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-daily-acquisition-policy-v1.json'
+      - 'data/static/calendar-daily-acquisition-activation-status.schema.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
@@ -36,10 +39,13 @@ on:
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
+      - 'scripts/timetable/write-calendar-daily-acquisition-status.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
+      - 'scripts/check-calendar-daily-acquisition-activation-status.mjs'
       - 'scripts/check-calendar-current-horizon-recovery.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-daily-acquisition-policy-v1.json'
+      - 'data/static/calendar-daily-acquisition-activation-status.schema.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
@@ -75,14 +81,17 @@ jobs:
           node --check scripts/timetable/summarize-actions-multi-job.mjs
           node --check scripts/timetable/daily-acquisition-policy.mjs
           node --check scripts/timetable/validate-daily-acquisition-plan.mjs
+          node --check scripts/timetable/write-calendar-daily-acquisition-status.mjs
           node --check scripts/check-calendar-daily-acquisition-policy.mjs
+          node --check scripts/check-calendar-daily-acquisition-activation-status.mjs
           node --check scripts/check-calendar-current-horizon-recovery.mjs
-      - name: Validate existing planning, runner, and recovery contracts
+      - name: Validate existing planning, runner, recovery, and activation contracts
         run: |
           node scripts/check-calendar-due-job-planner.mjs
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
           node scripts/check-calendar-daily-acquisition-policy.mjs
+          node scripts/check-calendar-daily-acquisition-activation-status.mjs
           node scripts/check-calendar-current-horizon-recovery.mjs
       - name: Exercise live-state and plan-file boundaries
         run: |
@@ -126,6 +135,7 @@ jobs:
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
           node scripts/check-calendar-daily-acquisition-policy.mjs
+          node scripts/check-calendar-daily-acquisition-activation-status.mjs
           node scripts/check-calendar-current-horizon-recovery.mjs
       - id: clock
         name: Resolve planning time
@@ -201,69 +211,128 @@ jobs:
             data/generated/timetable/actions-multi-job/${{ matrix.batch_id }}/
 
   review-pr:
-    if: always() && needs.plan.result == 'success'
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
     needs:
       - plan
       - execute
     permissions:
       contents: write
-      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Download the daily plan
+      - name: Download the daily plan when planning succeeded
+        if: needs.plan.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: calendar-daily-acquisition-plan
-          path: .calendar-daily-plan
-      - name: Download hosted job artifacts
-        if: needs.plan.outputs.hosted_jobs != '0'
+          path: /tmp/calendar-daily-plan
+      - name: Download hosted job artifacts when Jobs were planned
+        if: needs.plan.result == 'success' && needs.plan.outputs.hosted_jobs != '0'
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           pattern: calendar-daily-job-*
           merge-multiple: true
-          path: .
-      - id: metadata
-        name: Build review summary and retained plan snapshot
+          path: /tmp/calendar-job-artifacts
+      - name: Build review-branch payload and activation status
+        env:
+          PLAN_RESULT: ${{ needs.plan.result }}
+          EXECUTE_RESULT: ${{ needs.execute.result }}
+          HOSTED_JOBS: ${{ needs.plan.outputs.hosted_jobs }}
+          PLAN_ID: ${{ needs.plan.outputs.plan_id }}
+          REVIEW_BRANCH: automation/calendar-daily-acquisition-review
         shell: bash
         run: |
-          mkdir -p .calendar-daily-status data/generated/timetable/daily-acquisition-summaries data/generated/timetable/daily-acquisition-plans
-          find data/generated/timetable/actions-multi-job-status -type f -name '*.json' -exec cp {} .calendar-daily-status/ \; 2>/dev/null || true
-          node scripts/timetable/summarize-actions-multi-job.mjs \
-            --plan-file=.calendar-daily-plan/.calendar-collection-plan.json \
-            --status-root=.calendar-daily-status \
-            --output=.calendar-actions-campaign-summary.json
-          review_date=$(date -u +%F)
-          cp .calendar-actions-campaign-summary.json "data/generated/timetable/daily-acquisition-summaries/${review_date}.json"
-          mkdir -p "data/generated/timetable/daily-acquisition-plans/${review_date}"
-          cp .calendar-daily-plan/.calendar-live-state.json "data/generated/timetable/daily-acquisition-plans/${review_date}/planner-state.json"
-          cp .calendar-daily-plan/.calendar-due-job-plan.json "data/generated/timetable/daily-acquisition-plans/${review_date}/due-job-plan.json"
-          cp .calendar-daily-plan/.calendar-actions-plan.json "data/generated/timetable/daily-acquisition-plans/${review_date}/actions-plan.json"
-          echo "review_date=${review_date}" >> "$GITHUB_OUTPUT"
-      - name: Create or update the human-review draft PR
-        if: github.ref == 'refs/heads/main' && needs.plan.outputs.hosted_jobs != '0'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          base: main
-          branch: automation/calendar-daily-acquisition-review
-          delete-branch: true
-          draft: true
-          commit-message: "Collect calendar review artifacts ${{ steps.metadata.outputs.review_date }}"
-          title: "Calendar acquisition review ${{ steps.metadata.outputs.review_date }}"
-          body: |
-            Daily official-source acquisition artifacts generated from the committed public calendar horizon and reviewed system season states.
+          payload=/tmp/calendar-review-payload
+          rm -rf "$payload"
+          mkdir -p \
+            "$payload/data/generated/timetable/daily-acquisition-status/runs" \
+            "$payload/data/generated/timetable/daily-acquisition-summaries" \
+            "$payload/data/generated/timetable/daily-acquisition-plans"
 
-            This pull request is review-only. It does not approve candidates, promote canonical timetable data, rebuild the public projection, merge itself, or deploy the site.
+          generated_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          node scripts/timetable/write-calendar-daily-acquisition-status.mjs \
+            --generated-at="$generated_at" \
+            --run-id="$GITHUB_RUN_ID" \
+            --run-attempt="$GITHUB_RUN_ATTEMPT" \
+            --event-name="$GITHUB_EVENT_NAME" \
+            --source-sha="$GITHUB_SHA" \
+            --source-ref="$GITHUB_REF" \
+            --plan-result="$PLAN_RESULT" \
+            --execute-result="$EXECUTE_RESULT" \
+            --hosted-jobs="$HOSTED_JOBS" \
+            --plan-id="$PLAN_ID" \
+            --review-branch="$REVIEW_BRANCH" \
+            --output="$payload/data/generated/timetable/daily-acquisition-status/latest.json"
+          cp \
+            "$payload/data/generated/timetable/daily-acquisition-status/latest.json" \
+            "$payload/data/generated/timetable/daily-acquisition-status/runs/${GITHUB_RUN_ID}.json"
 
-            Review the retained planner state, Due-job Plan, authorized Actions Plan, independent job status records, candidate batches, source errors, and coverage claims. JRA local-primary work remains excluded and requires the existing reviewed local operator path. Banei regular refresh remains disabled; only reviewed rank-retry work is eligible. HKJC and UAE are season-suppressed for the current reviewed window and must not be treated as coverage gaps.
-          add-paths: |
-            data/generated/timetable/actions-multi-job-status/**
-            data/generated/timetable/nar-incremental-batches/**
-            data/generated/timetable/actions-multi-job/**
-            data/generated/timetable/daily-acquisition-summaries/**
-            data/generated/timetable/daily-acquisition-plans/**
-            data/candidates/nar-incremental-batches/**
+          if [ "$PLAN_RESULT" = "success" ]; then
+            review_date=$(date -u +%F)
+            status_root=/tmp/calendar-daily-status
+            rm -rf "$status_root"
+            mkdir -p "$status_root"
+            if [ -d /tmp/calendar-job-artifacts ]; then
+              find /tmp/calendar-job-artifacts -path '*/actions-multi-job-status/*.json' -type f -exec cp {} "$status_root"/ \;
+            fi
+
+            node scripts/timetable/summarize-actions-multi-job.mjs \
+              --plan-file=/tmp/calendar-daily-plan/.calendar-collection-plan.json \
+              --status-root="$status_root" \
+              --output="$payload/data/generated/timetable/daily-acquisition-summaries/${review_date}.json"
+
+            plan_dir="$payload/data/generated/timetable/daily-acquisition-plans/${review_date}"
+            mkdir -p "$plan_dir"
+            cp /tmp/calendar-daily-plan/.calendar-live-state.json "$plan_dir/planner-state.json"
+            cp /tmp/calendar-daily-plan/.calendar-due-job-plan.json "$plan_dir/due-job-plan.json"
+            cp /tmp/calendar-daily-plan/.calendar-actions-plan.json "$plan_dir/actions-plan.json"
+
+            for rel in \
+              data/generated/timetable/actions-multi-job-status \
+              data/generated/timetable/nar-incremental-batches \
+              data/generated/timetable/actions-multi-job \
+              data/candidates/nar-incremental-batches; do
+              src="/tmp/calendar-job-artifacts/$rel"
+              if [ -d "$src" ]; then
+                mkdir -p "$payload/$(dirname "$rel")"
+                cp -R "$src" "$payload/$rel"
+              fi
+            done
+          fi
+      - name: Push evidence to the stable human-review branch
+        env:
+          REVIEW_BRANCH: automation/calendar-daily-acquisition-review
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "${REVIEW_BRANCH}:refs/remotes/origin/${REVIEW_BRANCH}"
+          git switch -C "$REVIEW_BRANCH" "refs/remotes/origin/${REVIEW_BRANCH}"
+          git merge --no-edit "$GITHUB_SHA"
+          cp -R /tmp/calendar-review-payload/. .
+
+          git add -A -- \
+            data/generated/timetable/daily-acquisition-status \
+            data/generated/timetable/daily-acquisition-plans
+          for rel in \
+            data/generated/timetable/daily-acquisition-summaries \
+            data/generated/timetable/actions-multi-job-status \
+            data/generated/timetable/nar-incremental-batches \
+            data/generated/timetable/actions-multi-job \
+            data/candidates/nar-incremental-batches; do
+            if [ -e "$rel" ]; then git add -A -- "$rel"; fi
+          done
+
+          if git diff --cached --quiet; then
+            echo 'No review-branch payload changes.'
+            exit 0
+          fi
+          git commit -m "Record calendar acquisition run ${GITHUB_RUN_ID}"
+          git push origin "HEAD:${REVIEW_BRANCH}"
