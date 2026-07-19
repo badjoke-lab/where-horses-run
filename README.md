@@ -22,27 +22,31 @@ Japanese subtitle: **世界の競馬開催カレンダー・レース時刻表**
 
 This project does **not** republish entries, horses, jockeys, odds, results, payouts, race tips, predictions, full racecards, raw official text, embedded video, or direct stream URLs. Complete information should be confirmed on official sources.
 
-## Development status
+## Release status
 
-Active development.
-
-Current formally published country-page scope:
+Where Horses Run v1 is accepted for reviewed static public release under Release ID `WHR-V1` and implementation unit `V1-RELEASE-DECISION-01`.
 
 ```text
-98 English routes
-98 Japanese routes
-196 published bilingual routes
+public pages:       771
+English pages:      387
+Japanese pages:     384
+route families:      17
+official sources:   171
+countries/regions:   98
+racecourse records:  36
 ```
 
-The 98-country/region country-page programme and Calendar Readiness backfill are complete. JRA and NAR source pilots, the Acquisition Control Plane foundation, and Banei bounded operational integration are complete. The current source-specific Work ID is `WHR-CAL-HONG-KONG-HKJC`; `WHR-CAL-UAE-ERA` follows after the HKJC pilot handoff boundary is explicitly reviewed.
+The accepted release has completed scope freeze, public-data audit, mobile QA, accessibility QA, static performance QA, source-policy review, known-limitations review, release readiness, and final release decision.
 
-The repository contains Calendar, Today, Tomorrow, timetable view models, generated data, candidate/promotion foundations, shared acquisition/review control-plane contracts, and source-specific pilot implementations. Scheduled acquisition execution and unattended publication remain disabled unless separately approved.
+Current work is reviewed incremental maintenance inside the accepted v1 scope. Scheduled acquisition and unattended publication remain disabled. New route families, public data classes, user features, transactional features, or publication modes require a separate scope decision.
 
 ## Documentation
 
 Start here:
 
 - [Current development entry point](START-HERE.md)
+- [v1 release decision](docs/release/v1-release-decision.md)
+- [v1 release notes](docs/release/v1-release-notes.md)
 - [Project roadmap](docs/project-roadmap.md)
 - [Documentation authority](docs/governance/document-authority.md)
 - [Documentation index](docs/README.md)
