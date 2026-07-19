@@ -13,15 +13,19 @@ on:
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
+      - 'scripts/check-calendar-current-horizon-recovery.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-daily-acquisition-policy-v1.json'
+      - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json'
       - 'data/generated/timetable/public/meeting-list.json'
       - 'docs/calendar/daily-acquisition-contract.md'
       - 'docs/calendar/daily-acquisition-implementation-schedule.md'
       - 'docs/calendar/daily-acquisition-operations.md'
       - 'docs/calendar/daily-acquisition-roadmap-addendum.md'
+      - 'docs/calendar/current-horizon-recovery-2026-07-19.md'
   push:
     branches:
       - main
@@ -33,15 +37,19 @@ on:
       - 'scripts/timetable/daily-acquisition-policy.mjs'
       - 'scripts/timetable/validate-daily-acquisition-plan.mjs'
       - 'scripts/check-calendar-daily-acquisition-policy.mjs'
+      - 'scripts/check-calendar-current-horizon-recovery.mjs'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-daily-acquisition-policy-v1.json'
+      - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json'
       - 'data/generated/timetable/public/meeting-list.json'
       - 'docs/calendar/daily-acquisition-contract.md'
       - 'docs/calendar/daily-acquisition-implementation-schedule.md'
       - 'docs/calendar/daily-acquisition-operations.md'
       - 'docs/calendar/daily-acquisition-roadmap-addendum.md'
+      - 'docs/calendar/current-horizon-recovery-2026-07-19.md'
 
 permissions:
   contents: read
@@ -68,16 +76,18 @@ jobs:
           node --check scripts/timetable/daily-acquisition-policy.mjs
           node --check scripts/timetable/validate-daily-acquisition-plan.mjs
           node --check scripts/check-calendar-daily-acquisition-policy.mjs
-      - name: Validate existing planning and runner contracts
+          node --check scripts/check-calendar-current-horizon-recovery.mjs
+      - name: Validate existing planning, runner, and recovery contracts
         run: |
           node scripts/check-calendar-due-job-planner.mjs
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
           node scripts/check-calendar-daily-acquisition-policy.mjs
+          node scripts/check-calendar-current-horizon-recovery.mjs
       - name: Exercise live-state and plan-file boundaries
         run: |
           node scripts/timetable/build-calendar-live-planner-state.mjs \
-            --as-of=2026-07-19T03:17:00Z \
+            --as-of=2026-07-19T15:00:00Z \
             --output=.calendar-live-state.json
           node scripts/timetable/plan-calendar-due-jobs.mjs \
             --state=.calendar-live-state.json \
@@ -110,17 +120,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate daily execution policy before planning
+      - name: Validate daily policy and reviewed season dispositions before planning
         run: |
           node scripts/check-calendar-due-job-planner.mjs
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
           node scripts/check-calendar-daily-acquisition-policy.mjs
+          node scripts/check-calendar-current-horizon-recovery.mjs
       - id: clock
         name: Resolve planning time
         shell: bash
         run: echo "as_of=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-      - name: Build planner state from the committed public horizon
+      - name: Build planner state from the committed horizon and reviewed season states
         run: |
           node scripts/timetable/build-calendar-live-planner-state.mjs \
             --as-of="${{ steps.clock.outputs.as_of }}" \
@@ -244,11 +255,11 @@ jobs:
           commit-message: "Collect calendar review artifacts ${{ steps.metadata.outputs.review_date }}"
           title: "Calendar acquisition review ${{ steps.metadata.outputs.review_date }}"
           body: |
-            Daily official-source acquisition artifacts generated from the committed public calendar horizon.
+            Daily official-source acquisition artifacts generated from the committed public calendar horizon and reviewed system season states.
 
             This pull request is review-only. It does not approve candidates, promote canonical timetable data, rebuild the public projection, merge itself, or deploy the site.
 
-            Review the retained planner state, Due-job Plan, authorized Actions Plan, independent job status records, candidate batches, source errors, and coverage claims. JRA local-primary work remains excluded and requires the existing reviewed local operator path. Banei regular refresh remains disabled; only reviewed rank-retry work is eligible. UAE seasonal handling remains an explicit operator disposition until a separate wake-up policy is adopted.
+            Review the retained planner state, Due-job Plan, authorized Actions Plan, independent job status records, candidate batches, source errors, and coverage claims. JRA local-primary work remains excluded and requires the existing reviewed local operator path. Banei regular refresh remains disabled; only reviewed rank-retry work is eligible. HKJC and UAE are season-suppressed for the current reviewed window and must not be treated as coverage gaps.
           add-paths: |
             data/generated/timetable/actions-multi-job-status/**
             data/generated/timetable/nar-incremental-batches/**
