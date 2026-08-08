@@ -1,0 +1,48 @@
+name: One-shot Calendar August derivatives regenerate
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-shot-calendar-august-derivatives-regenerate.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Regenerate public and operations derivatives from current recovery output
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14
+          node scripts/timetable/build-operations-review-package.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/validate-data.mjs
+          git diff --check
+      - name: Commit exact regenerated derivatives
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo 'Derivatives already current.'
+            exit 0
+          fi
+          git commit -m '[CF-Pages-Skip] Regenerate Calendar derivatives from August recovery'
+          git push origin HEAD:${{ github.head_ref }}
