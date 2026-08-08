@@ -1,0 +1,84 @@
+name: One-shot August Calendar planner patch
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-shot-august-calendar-planner-patch.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'data/static/calendar-system-season-state-v1.json'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch future-season wake-up handling
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/timetable/due-job-planner.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const before = `    if (systemState.season_state !== 'active') {
+              decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: \`Season state is \${systemState.season_state}; regular due-job generation is suppressed.\` });
+              continue;
+            }
+        
+            const token = stableSystemToken(systemState.system_id);`;
+          const after = `    const token = stableSystemToken(systemState.system_id);
+            if (systemState.season_state !== 'active') {
+              const wakeUpGaps = Array.isArray(systemState.coverage_gaps) ? systemState.coverage_gaps : [];
+              if (systemState.season_state === 'offseason'
+                && wakeUpGaps.length > 0
+                && rule.coverage_gap.enabled
+                && profile.supports_date_window) {
+                let gapIndex = 0;
+                for (const gap of wakeUpGaps) {
+                  for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days)) {
+                    gapIndex += 1;
+                    addJob(makeJob({
+                      jobId: \`due-\${token}-season-wake-up-\${String(gapIndex).padStart(3, '0')}\`,
+                      campaignId,
+                      systemId: systemState.system_id,
+                      mode: 'date_window',
+                      scope,
+                      rankStrategy: 'best_available',
+                      targetRank: null,
+                      reason: 'coverage_gap',
+                      requestedAt: state.as_of,
+                    }), 'season_wake_up', \`Reviewed future active window \${scope.start_date}..\${scope.end_date_exclusive} is due without collecting offseason dates.\`);
+                  }
+                }
+                continue;
+              }
+              decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: \`Season state is \${systemState.season_state}; regular due-job generation is suppressed.\` });
+              continue;
+            }`;
+          if (!text.includes(before)) throw new Error('expected season-inactive planner block not found');
+          text = text.replace(before, after);
+          fs.writeFileSync(file, text);
+          NODE
+          node --check scripts/timetable/due-job-planner.mjs
+          node --check scripts/timetable/build-calendar-live-planner-state.mjs
+      - name: Commit exact planner change to recovery branch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- scripts/timetable/due-job-planner.mjs
+          if git diff --cached --quiet; then
+            echo 'No planner patch required.'
+            exit 0
+          fi
+          git commit -m '[CF-Pages-Skip] Handle future season wake-up gaps'
+          git push origin HEAD:${{ github.head_ref }}
