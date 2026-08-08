@@ -29,13 +29,13 @@ jobs:
           import fs from 'node:fs';
           const file = 'scripts/timetable/due-job-planner.mjs';
           let text = fs.readFileSync(file, 'utf8');
-          const before = `    if (systemState.season_state !== 'active') {
-              decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: \`Season state is \${systemState.season_state}; regular due-job generation is suppressed.\` });
-              continue;
-            }
-        
-            const token = stableSystemToken(systemState.system_id);`;
-          const after = `    const token = stableSystemToken(systemState.system_id);
+          const startMarker = "    if (systemState.season_state !== 'active') {";
+          const tokenMarker = '    const token = stableSystemToken(systemState.system_id);';
+          const start = text.indexOf(startMarker);
+          const tokenStart = text.indexOf(tokenMarker, start);
+          if (start < 0 || tokenStart < 0) throw new Error('season-inactive planner boundaries not found');
+          const tokenEnd = tokenStart + tokenMarker.length;
+          const replacement = `    const token = stableSystemToken(systemState.system_id);
             if (systemState.season_state !== 'active') {
               const wakeUpGaps = Array.isArray(systemState.coverage_gaps) ? systemState.coverage_gaps : [];
               if (systemState.season_state === 'offseason'
@@ -64,8 +64,7 @@ jobs:
               decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: \`Season state is \${systemState.season_state}; regular due-job generation is suppressed.\` });
               continue;
             }`;
-          if (!text.includes(before)) throw new Error('expected season-inactive planner block not found');
-          text = text.replace(before, after);
+          text = text.slice(0, start) + replacement + text.slice(tokenEnd);
           fs.writeFileSync(file, text);
           NODE
           node --check scripts/timetable/due-job-planner.mjs
