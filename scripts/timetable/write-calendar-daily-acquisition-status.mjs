@@ -34,6 +34,7 @@ const executeResult = args.get('--execute-result');
 const hostedJobsRaw = args.get('--hosted-jobs') ?? '';
 const planIdRaw = args.get('--plan-id') ?? '';
 const reviewBranch = args.get('--review-branch');
+const meetingListInput = args.get('--meeting-list') ?? 'data/generated/timetable/public/meeting-list.json';
 const outputPath = args.get('--output');
 
 if (Number.isNaN(Date.parse(generatedAt))) throw new Error('--generated-at must be a valid date-time');
@@ -60,7 +61,7 @@ function addDays(date, days) {
 }
 
 function publicationFreshness() {
-  const meetingListPath = path.join(root, 'data/generated/timetable/public/meeting-list.json');
+  const meetingListPath = path.resolve(root, meetingListInput);
   const meetingList = JSON.parse(fs.readFileSync(meetingListPath, 'utf8'));
   const dates = (meetingList.meetings ?? []).map((meeting) => meeting.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date));
   const publicHorizonEndDate = dates.sort().at(-1) ?? null;
