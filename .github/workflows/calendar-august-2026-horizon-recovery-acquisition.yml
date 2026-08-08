@@ -20,7 +20,7 @@ jobs:
   acquire-review-artifacts:
     if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -69,17 +69,59 @@ jobs:
           cp data/generated/timetable/jra-refresh-report.json /tmp/calendar-recovery/jra/collection-report.json
           cp data/generated/timetable/jra-normalized-timetable.json /tmp/calendar-recovery/jra/normalized-meetings.json
 
-      - name: Collect NAR August and September schedule evidence
+      - name: Collect NAR August and September schedule-only evidence
         shell: bash
         run: |
-          mkdir -p /tmp/calendar-recovery/nar/2026-08 /tmp/calendar-recovery/nar/2026-09
-          node scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs --month=2026-08 --through-date=2026-08-31
-          cp data/candidates/nar-monthly-meeting-candidates.json /tmp/calendar-recovery/nar/2026-08/candidates.json
-          cp data/generated/timetable/nar-monthly-collection-report.json /tmp/calendar-recovery/nar/2026-08/collection-report.json
-          git checkout -- data/candidates/nar-monthly-meeting-candidates.json data/generated/timetable/nar-monthly-collection-report.json
-          node scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs --month=2026-09 --through-date=2026-09-06
-          cp data/candidates/nar-monthly-meeting-candidates.json /tmp/calendar-recovery/nar/2026-09/candidates.json
-          cp data/generated/timetable/nar-monthly-collection-report.json /tmp/calendar-recovery/nar/2026-09/collection-report.json
+          mkdir -p /tmp/calendar-recovery/nar
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { parseNarMonthlyScheduleGrid } from './scripts/timetable/parse-nar-monthly-schedule-grid.mjs';
+          const matrix = JSON.parse(fs.readFileSync('data/static/nar-flat-racecourse-compatibility-v1.json', 'utf8'));
+          const venues = matrix.records.map((record) => ({
+            venue_code: record.venue_code,
+            racecourse_id: record.racecourse_id,
+            name_en: record.name_en,
+            name_ja: record.name_ja,
+            schedule_aliases: record.schedule_aliases ?? [],
+          }));
+          const decode = (buffer) => ['utf-8', 'shift_jis'].map((encoding) => {
+            const html = new TextDecoder(encoding).decode(buffer);
+            const score = ['月別開催日程', ...venues.map((venue) => venue.name_ja)]
+              .reduce((sum, token) => sum + html.split(token).length - 1, 0);
+            return { encoding, html, score };
+          }).sort((a, b) => b.score - a.score)[0];
+          const all = [];
+          const reports = [];
+          for (const month of ['2026-08', '2026-09']) {
+            const [year, mm] = month.split('-');
+            const url = `https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=${Number(mm)}&k_year=${year}`;
+            const response = await fetch(url, { redirect: 'follow', headers: { 'user-agent': 'WhereHorsesRun/1.0 (+review-controlled schedule-only recovery)', accept: 'text/html,*/*' } });
+            if (!response.ok) throw new Error(`NAR monthly schedule ${month} HTTP ${response.status}`);
+            const decoded = decode(Buffer.from(await response.arrayBuffer()));
+            const parsed = parseNarMonthlyScheduleGrid({ html: decoded.html, month, venues });
+            reports.push({ month, official_schedule_url: response.url, http_status: response.status, encoding: decoded.encoding, meetings_scheduled: parsed.meetings_scheduled, racecourses_checked: parsed.racecourses_checked });
+            for (const venue of parsed.records) {
+              for (const meeting of venue.meetings) {
+                if (meeting.date <= '2026-08-17' || meeting.date > '2026-09-06') continue;
+                all.push({
+                  meeting_id: `nar-${venue.racecourse_id}-${meeting.date}`,
+                  country_id: 'japan', authority_id: 'nar-local-government-racing', racing_system_id: 'japan-nar-system',
+                  racecourse_id: venue.racecourse_id, date: meeting.date, timezone: 'Asia/Tokyo',
+                  official_source_url: reports.at(-1).official_schedule_url,
+                  race_list_url: meeting.race_list_url,
+                  source_status: 'verified', capability_rank: 'C',
+                  first_race_time_local: null, last_race_time_local: null, timetable_rows: [],
+                });
+              }
+            }
+          }
+          all.sort((a, b) => `${a.date}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.racecourse_id}`));
+          const ids = new Set(all.map((record) => record.meeting_id));
+          if (ids.size !== all.length) throw new Error('duplicate NAR schedule-only recovery meeting_id');
+          fs.writeFileSync('/tmp/calendar-recovery/nar/candidates.json', JSON.stringify({ schema_version: 'timetable-candidate-v1', generated_at: new Date().toISOString(), adapter_id: 'nar-monthly-schedule-candidate-v1', country_id: 'japan', authority_id: 'nar-local-government-racing', source_id: 'nar-monthly-schedule', candidate_window: { start_date: '2026-08-18', end_date_exclusive: '2026-09-07', timezone: 'Asia/Tokyo' }, records: all.map((record) => ({ candidate_id: `candidate-${record.meeting_id}`, ...record, source: { source_id: 'nar-monthly-schedule', official_url: record.official_source_url, checked_at: new Date().toISOString(), extraction_method: 'official_monthly_schedule_grid' }, confidence: 'high', review_status: 'needs_review', notes: 'Schedule-only Rank C recovery candidate.' })), review: { status: 'needs_review', reviewed_at: null, reviewer: null, summary: 'NAR schedule-only rolling-horizon recovery. Human review required.', promotion_target: null } }, null, 2) + '\n');
+          fs.writeFileSync('/tmp/calendar-recovery/nar/collection-report.json', JSON.stringify({ schema_version: 'nar-schedule-only-recovery-report-v1', generated_at: new Date().toISOString(), requested_window: { start_date: '2026-08-18', end_date_exclusive: '2026-09-07' }, source_reports: reports, records_discovered: all.length, publication_effect: 'none' }, null, 2) + '\n');
+          console.log(`NAR_SCHEDULE_ONLY_RECOVERY: meetings=${all.length}`);
+          NODE
 
       - name: Collect Banei August and September schedule evidence
         shell: bash
