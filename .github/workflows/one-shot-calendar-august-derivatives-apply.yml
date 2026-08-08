@@ -30,9 +30,7 @@ jobs:
           cp /tmp/recovery-output/generated/timetable/public/japan-a-plus-overrides.json data/generated/timetable/public/japan-a-plus-overrides.json
           cp /tmp/recovery-output/generated/timetable/operations-status.json data/generated/timetable/operations-status.json
           cp /tmp/recovery-output/generated/timetable/operations-review-package.json data/generated/timetable/operations-review-package.json
-          node scripts/check-calendar-japan-a-plus-public-overrides.mjs
-          node scripts/check-calendar-operations-status.mjs
-          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/validate-data.mjs
           git diff --check
       - name: Commit derived output to Draft PR branch
         shell: bash
