@@ -1,0 +1,127 @@
+name: Calendar August 2026 horizon recovery acquisition
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-august-2026-horizon-recovery-acquisition.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'scripts/timetable/due-job-planner.mjs'
+      - 'scripts/check-calendar-current-horizon-recovery.mjs'
+      - 'data/static/calendar-system-season-state-v1.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-august-2026-horizon-recovery-acquisition-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acquire-review-artifacts:
+    if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Validate historical boundary and current wake-up planning
+        shell: bash
+        run: |
+          node scripts/check-calendar-current-horizon-recovery.mjs
+          node scripts/timetable/build-calendar-live-planner-state.mjs \
+            --as-of=2026-08-08T13:45:00Z \
+            --output=/tmp/calendar-aug8-state.json
+          node scripts/timetable/plan-calendar-due-jobs.mjs \
+            --state=/tmp/calendar-aug8-state.json \
+            --output=/tmp/calendar-aug8-plan.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const state = JSON.parse(fs.readFileSync('/tmp/calendar-aug8-state.json', 'utf8'));
+          const plan = JSON.parse(fs.readFileSync('/tmp/calendar-aug8-plan.json', 'utf8'));
+          const hkjc = state.system_states.find((record) => record.system_id === 'hong-kong-hkjc-system');
+          if (hkjc?.season_state !== 'offseason') throw new Error('HKJC must still be offseason on August 8');
+          if (hkjc?.future_active_start_date !== '2026-09-06') throw new Error('HKJC future active start must be September 6');
+          if (JSON.stringify(hkjc.coverage_gaps) !== JSON.stringify([{ start_date: '2026-09-06', end_date_exclusive: '2026-09-07', timezone: 'Asia/Hong_Kong' }])) {
+            throw new Error(`HKJC wake-up gap differs: ${JSON.stringify(hkjc?.coverage_gaps)}`);
+          }
+          const hkjcJobs = plan.collection_plan.jobs.filter((job) => job.system_id === 'hong-kong-hkjc-system');
+          if (hkjcJobs.length !== 1) throw new Error(`expected one HKJC wake-up job, got ${hkjcJobs.length}`);
+          const job = hkjcJobs[0];
+          if (job.reason !== 'coverage_gap' || job.requested_scope.start_date !== '2026-09-06' || job.requested_scope.end_date_exclusive !== '2026-09-07') {
+            throw new Error(`HKJC wake-up job differs: ${JSON.stringify(job)}`);
+          }
+          const baneiOrdinary = plan.collection_plan.jobs.filter((job) => job.system_id === 'japan-banei-system' && job.reason !== 'rank_upgrade_retry');
+          if (baneiOrdinary.length) throw new Error('Banei ordinary unattended recovery must remain disabled');
+          console.log(`AUG8_PLANNER: pass jobs=${plan.collection_plan.jobs.length} hkjc_wakeup=1`);
+          NODE
+
+      - name: Collect JRA official programme evidence through September 6
+        shell: bash
+        run: |
+          mkdir -p /tmp/calendar-recovery/jra
+          node scripts/timetable/refresh-jra.mjs --from=2026-08-17 --to=2026-09-06
+          cp data/generated/timetable/jra-race-time-snapshot.json /tmp/calendar-recovery/jra/source-snapshot.json
+          cp data/generated/timetable/jra-refresh-report.json /tmp/calendar-recovery/jra/collection-report.json
+          cp data/generated/timetable/jra-normalized-timetable.json /tmp/calendar-recovery/jra/normalized-meetings.json
+
+      - name: Collect NAR August and September schedule evidence
+        shell: bash
+        run: |
+          mkdir -p /tmp/calendar-recovery/nar/2026-08 /tmp/calendar-recovery/nar/2026-09
+          node scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs --month=2026-08 --through-date=2026-08-31
+          cp data/candidates/nar-monthly-meeting-candidates.json /tmp/calendar-recovery/nar/2026-08/candidates.json
+          cp data/generated/timetable/nar-monthly-collection-report.json /tmp/calendar-recovery/nar/2026-08/collection-report.json
+          git checkout -- data/candidates/nar-monthly-meeting-candidates.json data/generated/timetable/nar-monthly-collection-report.json
+          node scripts/timetable/normalize-nar-monthly-schedule-fetch.mjs --month=2026-09 --through-date=2026-09-06
+          cp data/candidates/nar-monthly-meeting-candidates.json /tmp/calendar-recovery/nar/2026-09/candidates.json
+          cp data/generated/timetable/nar-monthly-collection-report.json /tmp/calendar-recovery/nar/2026-09/collection-report.json
+
+      - name: Collect Banei August and September schedule evidence
+        shell: bash
+        run: |
+          mkdir -p /tmp/calendar-recovery/banei/2026-08 /tmp/calendar-recovery/banei/2026-09
+          node scripts/timetable/collect-banei-full-month-calendar.mjs \
+            --target-month=2026-08 \
+            --candidate-output=/tmp/calendar-recovery/banei/2026-08/candidates.json \
+            --report-output=/tmp/calendar-recovery/banei/2026-08/collection-report.json
+          node scripts/timetable/collect-banei-full-month-calendar.mjs \
+            --target-month=2026-09 \
+            --candidate-output=/tmp/calendar-recovery/banei/2026-09/candidates.json \
+            --report-output=/tmp/calendar-recovery/banei/2026-09/collection-report.json
+
+      - name: Collect HKJC September 6 wake-up evidence
+        shell: bash
+        run: |
+          mkdir -p /tmp/calendar-recovery/hkjc
+          node scripts/timetable/collect-hkjc-fixture-artifacts.mjs \
+            --from=2026-09-06 \
+            --to-exclusive=2026-09-07 \
+            --output-dir=/tmp/calendar-recovery/hkjc \
+            --batch-id=hkjc-2026-09-06-horizon-recovery \
+            --campaign-id=calendar-august-2026-horizon-recovery \
+            --job-id=hkjc-season-wake-up-2026-09-06
+
+      - name: Copy planner evidence and verify repository was not changed for publication
+        shell: bash
+        run: |
+          mkdir -p /tmp/calendar-recovery/planner
+          cp /tmp/calendar-aug8-state.json /tmp/calendar-recovery/planner/live-state.json
+          cp /tmp/calendar-aug8-plan.json /tmp/calendar-recovery/planner/due-job-plan.json
+          git checkout -- data/generated/timetable data/candidates || true
+          if ! git diff --quiet; then
+            echo 'Unexpected tracked repository changes after read-only acquisition:'
+            git status --short
+            exit 1
+          fi
+
+      - name: Upload exact review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-august-2026-horizon-recovery-review-artifacts
+          retention-days: 14
+          path: /tmp/calendar-recovery
