@@ -37,7 +37,7 @@ Scheduled hosted execution is authorized separately by:
 data/static/calendar-daily-acquisition-policy-v1.json
 ```
 
-A hosted Job may run only when its exact system, reason, collection mode, runner, and executor are allowed. Automatic approval, Canonical promotion, public projection, merge, and deployment must remain false.
+A hosted Job may run only when its exact system, reason, collection mode, runner, and executor are allowed. Automatic approval, automatic Canonical promotion, automatic public projection, automatic merge, and automatic deployment must remain false.
 
 ## Reviewed season-window boundary
 
