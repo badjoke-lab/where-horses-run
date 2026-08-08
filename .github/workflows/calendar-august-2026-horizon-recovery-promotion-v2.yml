@@ -1,0 +1,101 @@
+name: Calendar August 2026 horizon recovery promotion v2
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-august-2026-horizon-recovery-promotion-v2.yml'
+      - 'scripts/timetable/build-calendar-august-2026-recovery-approved-candidates.mjs'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: calendar-august-2026-horizon-recovery-promotion-v2-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-and-validate:
+    if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Download exact reviewed acquisition artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-august-2026-horizon-recovery-review-artifacts
+          path: /tmp/calendar-recovery
+          github-token: ${{ github.token }}
+          run-id: 31261234892
+      - name: Build exact approved Rank C envelopes
+        run: node scripts/timetable/build-calendar-august-2026-recovery-approved-candidates.mjs --artifact-root=/tmp/calendar-recovery --reviewed-at=2026-08-08T14:15:00Z
+      - name: Dry-run Promotion Validation
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json --dry-run
+      - name: Promote reviewed candidates in read-only workspace
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json
+          node scripts/timetable/build-public-timetable-view.mjs
+      - name: Validate exact Rank C public recovery
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const paths = [
+            ['data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json', 18],
+            ['data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json', 69],
+            ['data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json', 8],
+            ['data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json', 1],
+          ];
+          const ids = [];
+          for (const [file, count] of paths) {
+            const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+            if (value.records.length !== count || value.review.status !== 'approved') throw new Error(`${file}: approval/count differs`);
+            ids.push(...value.records.map((record) => record.meeting_id));
+          }
+          if (ids.length !== 96 || new Set(ids).size !== 96) throw new Error('approved recovery identity total differs');
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          for (const id of ids) {
+            if (canonicalById.get(id)?.capability_rank !== 'C') throw new Error(`${id}: canonical Rank C missing`);
+            const meeting = publicById.get(id);
+            if (!meeting || meeting.effective_public_rank !== 'C' || meeting.first_race_time_local !== null || meeting.last_race_time_local !== null) throw new Error(`${id}: public Rank C boundary differs`);
+          }
+          const dates = ids.map((id) => publicById.get(id).date).sort();
+          if (dates[0] !== '2026-08-18' || dates.at(-1) !== '2026-09-06') throw new Error(`recovery range differs ${dates[0]}..${dates.at(-1)}`);
+          const publicMax = publicList.meetings.map((meeting) => meeting.date).sort().at(-1);
+          if (publicMax !== '2026-09-06') throw new Error(`public maximum date differs ${publicMax}`);
+          console.log(`AUG8_PUBLIC_RECOVERY: pass records=${ids.length} total_public=${publicList.meetings.length} max_date=${publicMax}`);
+          NODE
+          node scripts/validate-data.mjs
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          git diff --check
+      - name: Upload exact recovery output
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-august-2026-horizon-recovery-promotion-output-v2
+          retention-days: 14
+          path: |
+            data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+            data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+            data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json
+            data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json
+            data/generated/timetable/horizon-recovery-2026-08-08/
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
