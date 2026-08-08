@@ -64,7 +64,7 @@ const narRecords = nar.records.map((record) => ({
   country_id: 'japan', authority_id: 'nar-local-government-racing', racing_system_id: 'japan-nar-system',
   racecourse_id: record.racecourse_id, date: record.date, timezone: 'Asia/Tokyo',
   capability_rank: 'C', first_race_time_local: null, last_race_time_local: null, timetable_rows: [],
-  source: { source_id: 'nar-monthly-schedule-grid', official_url: record.official_source_url, checked_at: nar.generated_at, extraction_method: 'reviewed_monthly_schedule_grid' },
+  source: { source_id: 'nar-monthly-schedule-grid', official_url: record.official_source_url, checked_at: nar.generated_at, extraction_method: 'adapter_candidate' },
   confidence: 'high', review_status: 'approved',
   notes: 'Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted.',
 }));
@@ -102,7 +102,7 @@ const hkjcRecords = hkjc.records.map((record) => ({
   meeting_id: record.meeting_id,
   country_id: 'hong-kong', authority_id: 'hkjc', racing_system_id: 'hong-kong-hkjc-system', racecourse_id: record.racecourse_id,
   date: record.date, timezone: 'Asia/Hong_Kong', capability_rank: 'C', first_race_time_local: null, last_race_time_local: null, timetable_rows: [],
-  source: { source_id: 'hkjc-fixture-list', official_url: record.source.official_url, checked_at: record.source.checked_at, extraction_method: 'reviewed_fixture_parser' },
+  source: { source_id: 'hkjc-fixture-list', official_url: record.source.official_url, checked_at: record.source.checked_at, extraction_method: 'adapter_candidate' },
   confidence: 'high', review_status: 'approved',
   notes: 'Official HKJC fixture confirms the September 6 Sha Tin meeting identity. Recovery is capped at Rank C; no race times or programme rows are claimed.',
 }));
