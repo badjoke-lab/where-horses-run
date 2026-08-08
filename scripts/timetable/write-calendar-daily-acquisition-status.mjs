@@ -53,6 +53,26 @@ if (hostedJobsRaw !== '') {
 }
 const planId = planIdRaw === '' ? null : planIdRaw;
 
+function addDays(date, days) {
+  const value = new Date(`${date}T00:00:00Z`);
+  value.setUTCDate(value.getUTCDate() + days);
+  return value.toISOString().slice(0, 10);
+}
+
+function publicationFreshness() {
+  const meetingListPath = path.join(root, 'data/generated/timetable/public/meeting-list.json');
+  const meetingList = JSON.parse(fs.readFileSync(meetingListPath, 'utf8'));
+  const dates = (meetingList.meetings ?? []).map((meeting) => meeting.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date));
+  const publicHorizonEndDate = dates.sort().at(-1) ?? null;
+  const planningDate = generatedAt.slice(0, 10);
+  const requiredHorizonEndDate = addDays(planningDate, 29);
+  return {
+    public_horizon_end_date: publicHorizonEndDate,
+    required_horizon_end_date: requiredHorizonEndDate,
+    publication_review_required: publicHorizonEndDate === null || publicHorizonEndDate < requiredHorizonEndDate,
+  };
+}
+
 const status = {
   schema_version: 'calendar-daily-acquisition-activation-status-v1',
   generated_at: generatedAt,
@@ -66,6 +86,7 @@ const status = {
   hosted_jobs: hostedJobs,
   plan_id: planId,
   review_branch: reviewBranch,
+  publication_freshness: publicationFreshness(),
   publication_boundary: {
     automatic_approval: false,
     canonical_written: false,
@@ -85,4 +106,5 @@ console.log(JSON.stringify({
   execute_result: status.execute_result,
   hosted_jobs: status.hosted_jobs,
   review_branch: status.review_branch,
+  publication_freshness: status.publication_freshness,
 }));
