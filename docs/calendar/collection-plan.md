@@ -2,14 +2,16 @@
 
 Status: active multi-job acquisition campaign contract  
 Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`  
-Last reviewed: 2026-07-08
+Last reviewed: 2026-08-08
 
 ## Purpose
 
-A Collection Plan groups independently valid Collection Jobs under one campaign.
+A Collection Plan groups independently valid Collection Jobs under one campaign. It may contain zero Jobs when planning succeeds and no acquisition work is due.
 
 ```text
 Collection Plan
+-> zero Jobs: explicit steady-state no-op
+or
 -> Job A
 -> Job B
 -> Job C
@@ -49,13 +51,27 @@ created_at
 jobs
 ```
 
-Every Job must use:
+`jobs` must be an array. An empty array is valid when the planner finds no due acquisition work.
+
+A zero-job Plan means:
+
+- planning succeeded;
+- no source execution is required;
+- the Actions matrix is empty;
+- execution is skipped;
+- activation status and retained Plan evidence still update;
+- no Candidate is fabricated;
+- no approval or publication side effect occurs.
+
+This is distinct from planning failure.
+
+Every present Job must use:
 
 ```text
 schema_version: calendar-collection-job-v1
 ```
 
-Every Job `campaign_id` must equal the Plan `campaign_id`.
+Every present Job `campaign_id` must equal the Plan `campaign_id`.
 
 `job_id` values must be unique within the Plan.
 
@@ -69,7 +85,7 @@ partitionCollectionPlanJobsV1
 summarizeCollectionPlanOutcomesV1
 ```
 
-`validateCollectionPlanV1` validates the whole request contract.
+`validateCollectionPlanV1` validates the whole request contract, including a valid zero-job steady-state Plan.
 
 `partitionCollectionPlanJobsV1` preserves independent Job diagnostics. One invalid Job does not erase a valid sibling Job from the validation partition.
 
@@ -99,9 +115,17 @@ NAR Job -> success
 
 The Plan summary must preserve both facts.
 
-This is not yet the Collection Result Manifest schema. Result Manifest remains a later control-plane stage.
+For a zero-job Plan, the result list and outcome counts are both empty. The absence of Jobs is itself the auditable planning result.
 
 ## Required valid examples
+
+### Zero-job steady state
+
+```text
+jobs: []
+```
+
+This is valid only as the result of successful planning when no work is due. It is not a shortcut around due work.
 
 ### JRA local + NAR Actions
 
@@ -125,7 +149,7 @@ HKJC github_actions bounded-generator date window
 
 The windows are deliberately different.
 
-The HKJC Registry profile remains provisional. It represents the existing safe dry-run candidate generator and approved active-window bundle path. It does not claim live fetch, arbitrary source parsing, or implemented detail acquisition.
+The HKJC Registry profile remains provisional. It represents the existing safe dry-run candidate generator and approved active-window bundle path. It does not imply unrestricted source parsing or automatic publication.
 
 ### Regular refresh + selected-meeting retry
 
@@ -164,41 +188,15 @@ The negative fixture set rejects:
 - mixed date-window and selected-meeting scope inside one Job;
 - duplicate Job IDs;
 - Job campaign mismatch;
-- empty Jobs array.
+- `jobs` values that are not arrays.
+
+An empty Jobs array is no longer an invalid Plan; it is the explicit zero-job steady-state result.
 
 Job-level invalidity is still enforced by the Collection Job validator.
 
 ## HKJC provisional profile boundary
 
-The Collection Plan stage extends the Acquisition Registry with:
-
-```text
-system_id: hong-kong-hkjc-system
-profile_status: provisional
-primary_runner: github_actions
-fallback_runner: local
-schedule_source_id: hkjc-fixture-list
-schedule_adapter_id: hong-kong-hkjc-dry-run-adapter
-supports_date_window: true
-```
-
-Pending fields remain:
-
-```text
-detail_source_id
-detail_adapter_id
-```
-
-The profile is grounded in:
-
-- reviewed HKJC Readiness A+ technical capability / A public ceiling;
-- Authority/Source inventory record `hkjc-fixture-list`;
-- merged dry-run candidate generator;
-- merged approved active-window bundle;
-- local validation command path;
-- top-level check integration suitable for GitHub Actions execution.
-
-No live acquisition path is claimed.
+The Collection Plan stage uses the Acquisition Registry profile for `hong-kong-hkjc-system`. Its schedule path may use bounded GitHub Actions date-window acquisition under the separate reviewed execution policy. Detail/retry capability remains separately controlled and must not be inferred from schedule capability.
 
 ## Separation from review and promotion
 
@@ -210,7 +208,7 @@ A Plan is not:
 - a publication batch;
 - a deployment unit.
 
-Later stages may derive review cohorts from Result Manifests and policy, but Plan membership alone must not force Jobs into one review or promotion unit.
+A zero-job Plan also does not assert that the **public** horizon is fresh. Publication freshness is reported separately by the daily activation status.
 
 ## Safety boundary
 
@@ -218,28 +216,6 @@ Collection Plans must not contain:
 
 - source IDs or adapter IDs at Plan level;
 - source bodies or raw HTML;
-- participant or horse data;
-- jockey or trainer data;
-- betting or odds data;
-- result or payout data;
-- prediction or tip data;
-- credentials, cookies, tokens, or bypass instructions;
+- participant, horse, jockey, trainer, betting, odds, result, payout, prediction, or tip data;
+- credentials, cookies, tokens, restricted-access details, or bypass instructions;
 - approval, promotion, publication, or deployment state.
-
-Plan validation has no acquisition, approval, promotion, publication, or deployment side effect.
-
-## Next stage
-
-The next control-plane stage is the shared five-rank classifier contract.
-
-It must validate:
-
-```text
-C
-B
-B+
-A
-A+
-```
-
-without forcing a C-only intermediate state and without allowing later lower-detail observations to silently downgrade a higher reviewed rank.
