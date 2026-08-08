@@ -176,12 +176,35 @@ export function planDueJobsV1(policy, state, registry) {
     }
     if (!SEASON_STATES.includes(systemState.season_state)) throw new Error(`season_state invalid for ${systemState.system_id}`);
     if (!SOURCE_HEALTH.includes(systemState.source_health)) throw new Error(`source_health invalid for ${systemState.system_id}`);
-    if (systemState.season_state !== 'active') {
-      decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: `Season state is ${systemState.season_state}; regular due-job generation is suppressed.` });
+    const token = stableSystemToken(systemState.system_id);
+  if (systemState.season_state !== 'active') {
+    const wakeUpGaps = Array.isArray(systemState.coverage_gaps) ? systemState.coverage_gaps : [];
+    if (systemState.season_state === 'offseason'
+      && wakeUpGaps.length > 0
+      && rule.coverage_gap.enabled
+      && profile.supports_date_window) {
+      let gapIndex = 0;
+      for (const gap of wakeUpGaps) {
+        for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days)) {
+          gapIndex += 1;
+          addJob(makeJob({
+            jobId: `due-${token}-season-wake-up-${String(gapIndex).padStart(3, '0')}`,
+            campaignId,
+            systemId: systemState.system_id,
+            mode: 'date_window',
+            scope,
+            rankStrategy: 'best_available',
+            targetRank: null,
+            reason: 'coverage_gap',
+            requestedAt: state.as_of,
+          }), 'season_wake_up', `Reviewed future active window ${scope.start_date}..${scope.end_date_exclusive} is due without collecting offseason dates.`);
+        }
+      }
       continue;
     }
-
-    const token = stableSystemToken(systemState.system_id);
+    decisions.push({ system_id: systemState.system_id, trigger: 'season_inactive', disposition: 'not_due', job_id: null, detail: `Season state is ${systemState.season_state}; regular due-job generation is suppressed.` });
+    continue;
+  }
     const startDate = addDays(planningDate, 1);
     const regularEnd = addDays(startDate, rule.regular_refresh.window_days);
 
