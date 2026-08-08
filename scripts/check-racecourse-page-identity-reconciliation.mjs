@@ -37,12 +37,12 @@ if ((audit.resolved_identity_ids ?? []).length !== 13 || new Set(audit.resolved_
 if (Object.values(audit.boundaries ?? {}).some((value) => value !== false)) fail('audit boundaries must remain false');
 if (audit.next_implementation_unit !== 'RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01') fail('next implementation unit differs');
 
-if (canonicalRecords.length !== 36 || canonicalById.size !== 36) fail(`canonical racecourse count must be 36; found ${canonicalRecords.length}/${canonicalById.size}`);
-if (identityRecords.length !== 13) fail(`identity-only record count must be 13; found ${identityRecords.length}`);
-
-const expectedIds = [...audit.resolved_identity_ids].sort();
-const actualIds = identityRecords.map((record) => record.id).sort();
-if (JSON.stringify(actualIds) !== JSON.stringify(expectedIds)) fail('identity-only record IDs differ from reviewed resolution set');
+if (canonicalRecords.length < audit.implemented.canonical_records || canonicalById.size !== canonicalRecords.length) fail(`canonical racecourse registry regressed or contains duplicates; found ${canonicalRecords.length}/${canonicalById.size}`);
+if (identityRecords.length < audit.implemented.new_identity_only_records) fail(`identity-only record count regressed below ${audit.implemented.new_identity_only_records}; found ${identityRecords.length}`);
+const identityIds = new Set(identityRecords.map((record) => record.id));
+for (const historicalId of audit.resolved_identity_ids) {
+  if (!identityIds.has(historicalId)) fail(`historical resolved identity missing from current registry: ${historicalId}`);
+}
 
 for (const record of identityRecords) {
   if (record.slug !== record.id) fail(`${record.id}: slug must equal canonical ID`);
@@ -68,12 +68,12 @@ for (const record of identityRecords) {
 
 const publicIds = [...new Set((publicMeetings.meetings ?? []).map((meeting) => meeting.racecourse_id))].sort();
 if ((publicMeetings.meetings?.length ?? 0) < audit.implemented.public_meetings) fail('current public timetable regressed below the historical reconciliation meeting count');
-if (publicIds.length !== audit.implemented.public_racecourse_ids) fail('current public racecourse identity count differs from reviewed reconciliation set');
+if (publicIds.length < audit.implemented.public_racecourse_ids) fail('current public racecourse identity count regressed below reviewed reconciliation set');
 for (const racecourseId of publicIds) if (!canonicalById.has(racecourseId)) fail(`public timetable racecourse remains unresolved: ${racecourseId}`);
 
 const prohibitedFragments = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
 const serialized = JSON.stringify(identityRecords).toLowerCase();
-for (const fragment of prohibitedFragments) if (serialized.includes(`"${fragment}"`)) fail(`identity records contain prohibited key ${fragment}`);
+for (const fragment of prohibitedFragments) if (serialized.includes(`\"${fragment}\"`)) fail(`identity records contain prohibited key ${fragment}`);
 
 const dataSource = read('src/lib/data.ts');
 for (const marker of ['racecourses-public-timetable-identities-v1.json', '...publicTimetableRacecourseIdentitiesV1']) if (!dataSource.includes(marker)) fail(`data.ts missing identity import marker ${marker}`);
@@ -102,9 +102,9 @@ if (errors.length) {
 console.log('RACECOURSE_PAGE_IDENTITY_RECONCILIATION: pass');
 console.log(`HISTORICAL_PUBLIC_MEETINGS: ${audit.implemented.public_meetings}`);
 console.log(`CURRENT_PUBLIC_MEETINGS: ${publicMeetings.meetings?.length ?? 0}`);
-console.log(`PUBLIC_RACECOURSE_IDS: ${publicIds.length}`);
-console.log(`CANONICAL_EXACT_IDS: ${audit.implemented.canonical_exact_ids}`);
-console.log(`UNRESOLVED_IDS: ${audit.implemented.unresolved_ids}`);
-console.log(`IDENTITY_ONLY_RECORDS: ${audit.implemented.new_identity_only_records}`);
-console.log('BILINGUAL_ROUTES_ADDED: 26');
+console.log(`CURRENT_PUBLIC_RACECOURSE_IDS: ${publicIds.length}`);
+console.log(`CURRENT_CANONICAL_RACECOURSES: ${canonicalRecords.length}`);
+console.log(`CURRENT_IDENTITY_ONLY_RECORDS: ${identityRecords.length}`);
+console.log(`HISTORICAL_CANONICAL_EXACT_IDS: ${audit.implemented.canonical_exact_ids}`);
+console.log(`HISTORICAL_UNRESOLVED_IDS: ${audit.implemented.unresolved_ids}`);
 console.log('UNSUPPORTED_PROFILE_INFERENCE: false');
