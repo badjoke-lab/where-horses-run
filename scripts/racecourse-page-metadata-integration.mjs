@@ -6,6 +6,14 @@ const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 const MARKER = 'collection-place-v1';
 const PLACEHOLDERS = new Set(['Not listed yet', '未掲載', 'Location pending', '所在地未掲載']);
+const RACECOURSE_DATA_FILES = [
+  'data/static/racecourses.json',
+  'data/static/racecourses-extensions.json',
+  'data/static/racecourses-public-timetable-identities-v1.json',
+  'data/static/country-page-racecourses-01-04.json',
+  'data/static/country-page-racecourses-11-oman.json',
+  'data/static/country-page-racecourses-12-zimbabwe.json',
+];
 
 async function walk(directory) {
   const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -16,6 +24,23 @@ async function walk(directory) {
     else files.push(absolute);
   }
   return files;
+}
+
+async function loadExpectedRacecourseSlugs() {
+  const ids = [];
+  for (const file of RACECOURSE_DATA_FILES) {
+    const content = await fs.readFile(path.join(process.cwd(), file), 'utf8');
+    const records = JSON.parse(content);
+    if (!Array.isArray(records)) throw new Error(`Racecourse registry must be an array: ${file}`);
+    for (const record of records) {
+      if (!record?.id || !record?.slug) throw new Error(`Racecourse registry identity missing in ${file}`);
+      if (record.id !== record.slug) throw new Error(`Racecourse registry id/slug differs in ${file}: ${record.id} / ${record.slug}`);
+      ids.push(record.slug);
+    }
+  }
+  const unique = new Set(ids);
+  if (unique.size !== ids.length) throw new Error(`Duplicate racecourse slug in registry: ${ids.length} records / ${unique.size} unique slugs`);
+  return unique;
 }
 
 function decodeHtml(value) {
@@ -212,8 +237,15 @@ export default function racecoursePageMetadataIntegration() {
           locales.set(page.locale, page);
         }
 
-        if (bySlug.size !== 36 || pages.length !== 72) {
-          throw new Error(`Racecourse metadata scope differs: ${bySlug.size} slugs / ${pages.length} pages`);
+        const expectedSlugs = await loadExpectedRacecourseSlugs();
+        const renderedSlugs = new Set(bySlug.keys());
+        const missingSlugs = [...expectedSlugs].filter((slug) => !renderedSlugs.has(slug)).sort();
+        const unexpectedSlugs = [...renderedSlugs].filter((slug) => !expectedSlugs.has(slug)).sort();
+        if (missingSlugs.length || unexpectedSlugs.length || pages.length !== expectedSlugs.size * 2) {
+          throw new Error(
+            `Racecourse metadata scope differs: ${renderedSlugs.size} slugs / ${pages.length} pages; `
+            + `registry ${expectedSlugs.size} slugs; missing [${missingSlugs.join(', ')}]; unexpected [${unexpectedSlugs.join(', ')}]`,
+          );
         }
 
         let injected = 0;

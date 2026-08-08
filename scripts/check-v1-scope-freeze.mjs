@@ -166,6 +166,7 @@ expect(seoRelease.release_id === contract.baseline_release_id, 'v1 scope baselin
 expect(seoRelease.implementation_unit === 'SEO-QA-RELEASE-01' && seoRelease.status === 'release_ready', 'v1 scope baseline release is not ready');
 expect(seoAudit.release_id === seoRelease.release_id && seoAudit.status === 'release_ready', 'v1 scope baseline audit differs');
 
+// These released documents are historical reference snapshots. Keep them exact.
 const baseline = contract.baseline_inventory;
 const seoScope = seoRelease.scope;
 const sitemapScope = sitemapContract.scope;
@@ -189,8 +190,11 @@ for (const [label, actual, expected] of [
   ['Methods routes', detailScope.methods_content_routes, baseline.methods_content_routes],
 ]) expect(actual === expected, `v1 baseline contract differs: ${label} (${actual} !== ${expected})`);
 
+// The current rendered inventory may grow inside an already-reviewed public data
+// class. This check permits only bilingual racecourse-detail growth; it does not
+// permit a new route family, capability, public data class, or feature.
 const urls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-expect(urls.length === baseline.public_pages, `v1 rendered sitemap count differs ${urls.length}`);
+expect(urls.length >= baseline.public_pages, `v1 rendered sitemap count regressed ${urls.length}`);
 const paths = urls.map((url) => new URL(url).pathname);
 const renderedFamilies = [...new Set(paths.map((pathname) => {
   const normalized = pathname.startsWith('/ja/') ? pathname.slice(3) : pathname;
@@ -200,17 +204,28 @@ const renderedFamilies = [...new Set(paths.map((pathname) => {
 expect(exact(renderedFamilies, [...routeFamilies].sort()), `v1 rendered route families differ: ${renderedFamilies.join(', ')}`);
 
 const count = (pattern) => paths.filter((pathname) => pattern.test(pathname)).length;
+const currentRacecourseDetails = count(/^\/(?:ja\/)?tracks\/[^/]+\/$/);
+const racecourseDetailDelta = currentRacecourseDetails - baseline.racecourse_detail_routes;
+expect(racecourseDetailDelta >= 0, `v1 racecourse detail inventory regressed ${currentRacecourseDetails}`);
+expect(racecourseDetailDelta % 2 === 0, `v1 racecourse detail growth is not bilingual ${racecourseDetailDelta}`);
+const perLanguageDelta = racecourseDetailDelta / 2;
+const currentEnglishPages = paths.filter((pathname) => !pathname.startsWith('/ja/')).length;
+const currentJapanesePages = paths.filter((pathname) => pathname.startsWith('/ja/')).length;
+expect(urls.length === baseline.public_pages + racecourseDetailDelta, `v1 rendered sitemap growth is not explained by racecourse detail routes ${urls.length}`);
+expect(currentEnglishPages === baseline.english_pages + perLanguageDelta, `v1 rendered English inventory differs ${currentEnglishPages}`);
+expect(currentJapanesePages === baseline.japanese_pages + perLanguageDelta, `v1 rendered Japanese inventory differs ${currentJapanesePages}`);
+
 for (const [label, actual, expected] of [
   ['rendered country details', count(/^\/(?:ja\/)?countries\/[^/]+\/$/), baseline.country_detail_routes],
   ['rendered source-country routes', count(/^\/(?:ja\/)?sources\/[^/]+\/$/), baseline.source_country_routes],
   ['rendered meeting details', count(/^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/), baseline.meeting_detail_routes],
   ['rendered glossary terms', count(/^\/(?:ja\/)?glossary\/(?!relationships\/)[^/]+\/$/), baseline.glossary_term_routes],
   ['rendered glossary relationships', count(/^\/(?:ja\/)?glossary\/relationships\/$/), baseline.glossary_relationship_routes],
-  ['rendered racecourse details', count(/^\/(?:ja\/)?tracks\/[^/]+\/$/), baseline.racecourse_detail_routes],
   ['rendered racing-type details', count(/^\/(?:ja\/)?types\/[^/]+\/$/), baseline.racing_type_detail_routes],
   ['rendered FAQ routes', count(/^\/(?:ja\/)?faq\/$/), baseline.faq_content_routes],
   ['rendered Methods routes', count(/^\/(?:ja\/)?methods\/$/), baseline.methods_content_routes],
 ]) expect(actual === expected, `v1 rendered inventory differs: ${label} (${actual} !== ${expected})`);
+expect(currentRacecourseDetails === baseline.racecourse_detail_routes + racecourseDetailDelta, 'v1 current racecourse detail inventory differs');
 
 const doc = read(DOC_PATH);
 for (const marker of [
@@ -241,7 +256,9 @@ for (const forbidden of ['schedule:', 'cron:', 'contents: write', 'pull-requests
 
 console.log('V1_SCOPE_FREEZE: pass');
 console.log(`RELEASE_ID: ${contract.release_id}`);
-console.log(`PUBLIC_PAGES: ${baseline.public_pages}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${baseline.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${urls.length}`);
+console.log(`CURRENT_RACECOURSE_DETAIL_ROUTES: ${currentRacecourseDetails}`);
 console.log(`ROUTE_FAMILIES: ${baseline.route_families}`);
 console.log(`INCLUDED_CAPABILITIES: ${capabilities.length}`);
 console.log(`PUBLIC_DATA_CLASSES: ${publicDataClasses.length}`);

@@ -30,14 +30,14 @@ expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Social-card scop
 expect(contract.site_origin === SITE_ORIGIN, 'Social-card origin differs');
 expect(audit.schema_version === 'open-graph-social-cards-audit-v1' && audit.status === 'complete', 'Social-card audit identity differs');
 expect(audit.scope_updated_by === contract.scope_updated_by, 'Social-card audit scope marker differs');
-for (const key of ['public_pages','paired_pages','unpaired_pages','faq_pages','methods_pages']) expect(audit.verified[key] === contract.scope[key], `Social-card audit ${key} differs`);
+for (const key of ['public_pages','paired_pages','unpaired_pages','faq_pages','methods_pages']) expect(audit.verified[key] === contract.scope[key], `Social-card historical audit ${key} differs`);
 for (const [auditKey, scopeKey] of [
   ['og_type','public_pages'],['og_site_name','public_pages'],['og_title','public_pages'],['og_description','public_pages'],['og_url','public_pages'],['og_locale','public_pages'],
   ['og_locale_alternate','open_graph_locale_alternate_links'],['og_image','open_graph_image_references'],['og_image_secure_url','open_graph_image_references'],
   ['og_image_type','open_graph_image_references'],['og_image_width','open_graph_image_references'],['og_image_height','open_graph_image_references'],['og_image_alt','open_graph_image_references'],
   ['twitter_card','twitter_image_references'],['twitter_title','twitter_image_references'],['twitter_description','twitter_image_references'],['twitter_image','twitter_image_references'],['twitter_image_alt','twitter_image_references'],
-]) expect(audit.verified[auditKey] === contract.scope[scopeKey], `Social-card audit ${auditKey} differs`);
-for (const key of ['image_sha256_mismatches','duplicate_property_errors','canonical_alignment_errors','title_alignment_errors','description_alignment_errors','locale_errors','locale_alternate_errors','image_url_errors','image_descriptor_errors','image_alt_errors','twitter_errors','contract_errors','output_errors']) expect(audit.verified[key] === 0, `Social-card audit ${key} differs`);
+]) expect(audit.verified[auditKey] === contract.scope[scopeKey], `Social-card historical audit ${auditKey} differs`);
+for (const key of ['image_sha256_mismatches','duplicate_property_errors','canonical_alignment_errors','title_alignment_errors','description_alignment_errors','locale_errors','locale_alternate_errors','image_url_errors','image_descriptor_errors','image_alt_errors','twitter_errors','contract_errors','output_errors']) expect(audit.verified[key] === 0, `Social-card historical audit ${key} differs`);
 expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Social-card privacy boundary differs');
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Social-card automation boundary differs');
 
@@ -47,7 +47,7 @@ const generator = read(GENERATOR);
 for (const marker of ['const WIDTH = 1200','const HEIGHT = 630',"const OUTPUT_PATH = 'social/whr-social-card-v1.png'", "name: 'where-horses-run-social-card'", "'astro:build:done'", 'renderCard()']) expect(generator.includes(marker), `Social-card generator marker missing: ${marker}`);
 for (const forbidden of ['fetch(', 'axios', 'puppeteer', 'playwright', 'sharp', "from 'canvas'", 'contents: write']) expect(!generator.toLowerCase().includes(forbidden.toLowerCase()), `Social-card generator contains forbidden marker ${forbidden}`);
 const doc = read(DOC);
-for (const marker of ['OPEN-GRAPH-SOCIAL-CARDS-01', `Public pages: ${contract.scope.public_pages}`, `Paired pages: ${contract.scope.paired_pages}`, 'FAQ pages: 2', 'Methods pages: 2', contract.image_contract.sha256]) expect(doc.includes(marker), `Social-card documentation marker missing: ${marker}`);
+for (const marker of ['OPEN-GRAPH-SOCIAL-CARDS-01', `Public pages: ${contract.scope.public_pages}`, `Paired pages: ${contract.scope.paired_pages}`, 'FAQ pages: 2', 'Methods pages: 2', contract.image_contract.sha256]) expect(doc.includes(marker), `Social-card historical documentation marker missing: ${marker}`);
 
 function parsePng(buffer) {
   const signature = Buffer.from([137,80,78,71,13,10,26,10]);
@@ -78,8 +78,7 @@ expect(built.length === contract.image_contract.bytes, `Social-card byte count d
 expect(png.width === WIDTH && png.height === HEIGHT && png.bitDepth === contract.image_contract.bit_depth && png.colorType === contract.image_contract.color_type && png.idatBytes === contract.image_contract.idat_bytes, `Social-card PNG structure differs ${JSON.stringify(png)}`);
 
 function decode(value) {
-  return value
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+  return value.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
     .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
     .replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&#x27;', "'")
     .replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
@@ -92,7 +91,7 @@ const fileFor = (urlString) => {
 };
 
 const urls = [...read(SITEMAP).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-expect(urls.length === contract.scope.public_pages, `Social-card public page count differs ${urls.length}`);
+expect(urls.length >= contract.scope.public_pages, `Social-card current public page count shrank ${urls.length}`);
 const requiredOg = ['og:type','og:site_name','og:title','og:description','og:url','og:locale','og:image','og:image:secure_url','og:image:type','og:image:width','og:image:height','og:image:alt'];
 const requiredTwitter = ['twitter:card','twitter:title','twitter:description','twitter:image','twitter:image:alt'];
 let pairedPages = 0;
@@ -147,15 +146,17 @@ for (const url of urls) {
   expect(get('og:image:alt') === expectedAlt && get('twitter:image:alt') === expectedAlt, `${url}: image alt differs`);
   expect(get('twitter:card') === contract.twitter_contract.card, `${url}: twitter:card differs`);
 }
-expect(pairedPages === contract.scope.paired_pages, `Paired page count differs ${pairedPages}`);
 expect(unpairedPages === contract.scope.unpaired_pages, `Unpaired page count differs ${unpairedPages}`);
-expect(localeAlternates === contract.scope.open_graph_locale_alternate_links, `Locale alternate count differs ${localeAlternates}`);
+expect(pairedPages === urls.length - unpairedPages, `Paired page count differs ${pairedPages}`);
+expect(pairedPages >= contract.scope.paired_pages, `Paired page scope shrank ${pairedPages}`);
+expect(localeAlternates === pairedPages, `Locale alternate count differs ${localeAlternates}`);
 expect(faqPages === contract.scope.faq_pages, `FAQ page count differs ${faqPages}`);
 expect(methodsPages === contract.scope.methods_pages, `Methods page count differs ${methodsPages}`);
 
 console.log('OPEN_GRAPH_SOCIAL_CARDS: pass');
-console.log(`PUBLIC_PAGES: ${contract.scope.public_pages}`);
-console.log(`PAIRED_PAGES: ${contract.scope.paired_pages}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.scope.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${urls.length}`);
+console.log(`CURRENT_PAIRED_PAGES: ${pairedPages}`);
 console.log('FAQ_PAGES: 2');
 console.log('METHODS_PAGES: 2');
 console.log(`IMAGE_SHA256: ${contract.image_contract.sha256}`);

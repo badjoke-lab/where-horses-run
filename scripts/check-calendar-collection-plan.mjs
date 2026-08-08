@@ -26,6 +26,7 @@ if (!exact(schema.required_fields, expectedRequiredFields)) fail('Collection Pla
 if (!exact(collectionPlanV1Contract.requiredFields, expectedRequiredFields)) fail('Collection Plan validation core required fields differ.');
 if (schema.job_schema_version !== 'calendar-collection-job-v1') fail('Collection Plan job schema version differs.');
 if (!Array.isArray(schema.closure_rules) || schema.closure_rules.length < 12) fail('Collection Plan closure rules are incomplete.');
+if (!schema.closure_rules.some((rule) => rule.includes('may be empty'))) fail('Collection Plan schema must document zero-job steady state.');
 if (!Array.isArray(schema.explicit_exclusions) || schema.explicit_exclusions.length < 5) fail('Collection Plan exclusions are incomplete.');
 
 if (fixtures.schema_version !== 'calendar-collection-plan-fixtures-v1') fail('Collection Plan fixture schema differs.');
@@ -37,6 +38,18 @@ for (const [index, plan] of (fixtures.plans ?? []).entries()) {
   if (planById.has(plan.plan_id)) fail(`duplicate valid fixture plan_id ${plan.plan_id}`);
   planById.set(plan.plan_id, plan);
 }
+
+const zeroJobPlan = {
+  schema_version: 'calendar-collection-plan-v1',
+  plan_id: 'zero-job-steady-state-001',
+  campaign_id: 'zero-job-steady-state',
+  created_at: '2026-08-08T13:45:00Z',
+  jobs: [],
+};
+const zeroErrors = validateCollectionPlanV1(zeroJobPlan, registry);
+if (zeroErrors.length) fail(`zero-job steady-state plan failed: ${zeroErrors.join('; ')}`);
+const zeroOutcomes = summarizeCollectionPlanOutcomesV1(zeroJobPlan, []);
+if (zeroOutcomes.results.length !== 0 || Object.keys(zeroOutcomes.counts).length !== 0) fail('zero-job outcome summary differs.');
 
 const dualRunner = planById.get('japan-dual-runner-august-001');
 if (!dualRunner || dualRunner.jobs.length !== 2) fail('JRA/NAR dual-runner plan missing.');
@@ -85,7 +98,7 @@ for (const [index, testCase] of (invalidFixtures.cases ?? []).entries()) {
   invalidCaseIds.add(testCase.case_id);
   if (validateCollectionPlanV1(testCase.plan, registry).length === 0) fail(`invalid plan unexpectedly passed: ${testCase.case_id}`);
 }
-for (const requiredCase of ['system-runner-mismatch', 'mixed-date-window-and-selected-meeting-scope', 'duplicate-job-id', 'campaign-id-mismatch', 'empty-jobs']) {
+for (const requiredCase of ['system-runner-mismatch', 'mixed-date-window-and-selected-meeting-scope', 'duplicate-job-id', 'campaign-id-mismatch', 'jobs-not-array']) {
   if (!invalidCaseIds.has(requiredCase)) fail(`required invalid Plan case missing: ${requiredCase}`);
 }
 
@@ -121,8 +134,8 @@ for (const phrase of ['Stage ACP-5 — Collection Plan schema','JRA local + NAR 
   if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
 }
 const planContract = readText('docs/calendar/collection-plan.md');
-for (const phrase of ['A source error in one Job does not rewrite another Job outcome.', 'lower target rank in one Job must not downgrade another Job']) {
-  if (!planContract.includes(phrase)) fail(`Collection Plan contract missing ${phrase}.`);
+for (const phrase of ['A source error in one Job does not rewrite another Job outcome.', 'lower target rank in one Job must not downgrade another Job', 'zero-job']) {
+  if (!planContract.toLowerCase().includes(phrase.toLowerCase())) fail(`Collection Plan contract missing ${phrase}.`);
 }
 
 if (errors.length) {
@@ -133,6 +146,7 @@ if (errors.length) {
 console.log('CALENDAR_COLLECTION_PLAN: pass');
 console.log(`VALID_PLANS: ${fixtures.plans.length}`);
 console.log(`INVALID_CASES: ${invalidFixtures.cases.length}`);
+console.log('ZERO_JOB_STEADY_STATE: pass');
 console.log('MULTI_COUNTRY_ACTIONS_PLAN: NAR + HKJC schedule windows');
 console.log('HKJC_OPERATOR_DETAIL_IDENTITY: registered; selected-meeting retry pending');
 console.log('SOURCE_ERROR_ISOLATION: pass');

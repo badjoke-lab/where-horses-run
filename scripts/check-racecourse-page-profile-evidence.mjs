@@ -34,7 +34,9 @@ const expectedIds = [...audit.reviewed_record_ids].sort();
 const actualIds = evidence.records.map((record) => record.id).sort();
 if (JSON.stringify(actualIds) !== JSON.stringify(expectedIds)) fail('evidence record IDs differ from audit');
 if (new Set(actualIds).size !== 13) fail('evidence record IDs must be unique');
-if (identityRecords.length !== 13) fail('identity-only base record count differs');
+if (identityRecords.length < audit.baseline.identity_only_records) fail('current identity registry regressed below the historical base record count');
+const currentIdentityIds = new Set(identityRecords.map((record) => record.id));
+for (const historicalId of expectedIds) if (!currentIdentityIds.has(historicalId)) fail(`historical profiled identity missing from current registry: ${historicalId}`);
 
 const narExpected = new Map([
   ['monbetsu-racecourse', ['Hidaka', 'Hokkaido', 'right-handed', 1600, null, 330, true, '02']],
@@ -87,7 +89,7 @@ for (const record of evidence.records) {
 for (const marker of ['racecourse-profile-evidence-japan-v1.json', 'racecourseProfileEvidenceById', 'applyRacecourseProfileEvidence']) if (!dataSource.includes(marker)) fail(`data.ts missing ${marker}`);
 const prohibited = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
 const serialized = JSON.stringify(evidence).toLowerCase();
-for (const fragment of prohibited) if (serialized.includes(`"${fragment}"`)) fail(`evidence contains prohibited key ${fragment}`);
+for (const fragment of prohibited) if (serialized.includes(`\"${fragment}\"`)) fail(`evidence contains prohibited key ${fragment}`);
 
 if (!fs.existsSync(path.join(root, 'dist'))) fail('dist is missing; run npm run build first');
 for (const record of evidence.records) {
@@ -112,9 +114,10 @@ if (errors.length) {
 }
 
 console.log('RACECOURSE_PAGE_PROFILE_EVIDENCE: pass');
-console.log('REVIEWED_JAPAN_RECORDS: 13');
-console.log('IDENTITY_ONLY_RECORDS: 0');
-console.log('NO_PROFILE_RECORDS: 0');
-console.log('COMPLETE_CORE_PROFILES: 8');
-console.log('RACE_DISTANCE_PROFILES_RETAINED_UNKNOWN: 13');
+console.log(`HISTORICAL_REVIEWED_JAPAN_RECORDS: ${evidence.records.length}`);
+console.log(`CURRENT_IDENTITY_BASE_RECORDS: ${identityRecords.length}`);
+console.log('HISTORICAL_IDENTITY_ONLY_RECORDS_AFTER_PROFILE_OVERLAY: 0');
+console.log('HISTORICAL_NO_PROFILE_RECORDS: 0');
+console.log('HISTORICAL_COMPLETE_CORE_PROFILES: 8');
+console.log('HISTORICAL_RACE_DISTANCE_PROFILES_RETAINED_UNKNOWN: 13');
 console.log('UNSUPPORTED_PROFILE_INFERENCE: false');

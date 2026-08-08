@@ -3,11 +3,12 @@
 Status: active implementation schedule  
 Work ID: `WHR-CAL-DAILY-ACQUISITION`  
 Started: 2026-07-19  
-Current stage: `DA-06` stable review-branch delivery correction; activation evidence pending
+Last reviewed: 2026-08-08  
+Current stage: `DA-08` reviewed rolling-horizon recovery through 2026-09-06; final CI and production confirmation pending
 
 ## Objective
 
-Turn the reviewed static Calendar into a maintainable daily loop without enabling unattended publication:
+Maintain a reviewed rolling Calendar without unattended publication:
 
 ```text
 committed public horizon
@@ -15,45 +16,25 @@ committed public horizon
 -> planning-only Due-job Plan
 -> separately authorized hosted acquisition
 -> activation status and immutable review artifacts
--> stable review branch
--> Draft PR #559
--> human review
+-> stable review branch / Draft PR #559
+-> human source and rank review
+-> separately reviewed Promotion Validation
+-> Canonical/public projection
+-> rendered QA
+-> reviewed publication merge
 ```
 
-This schedule does not authorize automatic approval, Canonical promotion, public projection, merge, or deployment.
+Automatic approval, Canonical promotion, public projection, merge, and deployment remain prohibited in the daily workflow.
 
-## Stage DA-00 — current-horizon recovery audit
+## Stage DA-00 — initial current-horizon recovery audit
 
-Status: complete in PR #557.
+Status: complete in PR #557; retained as a historical 2026-07-19 baseline.
 
-Implemented artifacts:
-
-```text
-docs/calendar/current-horizon-recovery-2026-07-19.md
-data/audits/calendar-current-horizon-recovery-2026-07-19-v1.json
-data/static/calendar-system-season-state-v1.json
-scripts/check-calendar-current-horizon-recovery.mjs
-```
-
-Reviewed dispositions for 2026-07-19 through 2026-08-17:
-
-```text
-JRA: active / recovery required / local reviewed path
-NAR: active / recovery required / authorized hosted path
-Banei: active / bounded manual recovery / ordinary daily refresh disabled
-HKJC: offseason / no recovery Job
-UAE ERA: offseason / no recovery Job
-```
-
-Completion evidence:
-
-- all five systems have explicit reviewed dispositions;
-- HKJC and UAE are not misclassified as missing coverage;
-- no Canonical/public/deployment write occurred.
+The July audit proved the original five-system dispositions and the recovery requirement through 2026-08-17. `scripts/check-calendar-current-horizon-recovery.mjs` now treats that audit as historical evidence and allows current public data to advance beyond the July floor.
 
 ## Stage DA-01 — canonical contract and documentation
 
-Status: foundation merged in PR #556; stable-delivery correction current.
+Status: complete; current operational wording updated in the August recovery PR.
 
 Canonical documents:
 
@@ -64,72 +45,52 @@ docs/calendar/daily-acquisition-roadmap-addendum.md
 docs/calendar/daily-acquisition-operations.md
 ```
 
-Current completion condition:
-
-```text
-contract, schedule, operation, machine-readable policy,
-activation status, and workflow delivery behavior agree
-```
-
 ## Stage DA-02 — season-aware live planner state
 
-Status: complete in PR #557.
-
-Implemented artifacts:
-
-```text
-scripts/timetable/build-calendar-live-planner-state.mjs
-data/static/calendar-system-season-state-v1.json
-```
+Status: implemented and extended on 2026-08-08.
 
 Accepted behavior:
 
-- uses committed public data rather than test fixtures;
-- requires a reviewed active/offseason/unknown state covering the planning date;
+- uses committed public data rather than fixed test fixtures;
+- requires exactly one reviewed season-state window for the planning date;
+- supports multiple non-overlapping reviewed season windows for one system;
 - creates tail-only gaps for active systems;
-- creates no gap for offseason systems;
-- fails closed on missing or expired reviewed season state;
-- accepts an explicit reviewed Retry Queue when supplied;
-- performs no network request or authoritative data write.
+- suppresses ordinary collection during offseason;
+- if a reviewed future `active` window begins inside the rolling horizon, creates a gap only for that future active interval;
+- fails closed on missing, overlapping, or expired reviewed season state;
+- performs no network request or publication write.
+
+August 8 proof:
+
+```text
+HKJC on 2026-08-08: offseason
+reviewed future active start: 2026-09-06
+planned wake-up gap: 2026-09-06..2026-09-07 only
+UAE next active start: 2026-10-22, outside the current 30-day window
+```
 
 ## Stage DA-03 — generated-plan runner compatibility
 
-Status: complete implementation in PR #556; operating evidence pending.
+Status: complete and operating.
 
-Implemented interfaces:
-
-```text
-plan-actions-multi-job.mjs --plan-file=<Due-job-or-Collection-Plan>
-summarize-actions-multi-job.mjs --plan-file=<Due-job-or-Collection-Plan>
-```
-
-Acceptance requires a real daily plan to flow through compilation and summary without fixture substitution.
+Real generated Collection Jobs are passed explicitly to executors. Fixture lookup is compatibility fallback only. This was proven during the July NAR activation sequence and is used by scheduled daily runs.
 
 ## Stage DA-04 — separate execution authorization
 
-Status: complete implementation in PR #556; operating evidence pending.
+Status: complete and operating.
 
-Implemented artifacts:
+Current boundary:
 
-```text
-data/static/calendar-daily-acquisition-policy-v1.json
-scripts/timetable/daily-acquisition-policy.mjs
-scripts/timetable/validate-daily-acquisition-plan.mjs
-scripts/check-calendar-daily-acquisition-policy.mjs
-```
-
-Accepted boundary:
-
-- Due-job policy remains planning-only;
-- hosted execution requires exact system/reason/mode/runner/executor permission;
-- JRA hosted execution is rejected;
-- Banei regular refresh and coverage-gap execution are rejected;
+- NAR hosted acquisition is allowed for declared refresh, coverage, retry, and revalidation modes;
+- HKJC hosted bounded fixture acquisition is allowed when a reviewed active interval is due;
+- JRA hosted execution remains excluded; reviewed local acquisition is required;
+- Banei ordinary refresh, coverage-gap, and source-revalidation execution remain disabled;
 - reviewed Banei selected-meeting rank retry remains eligible;
-- approval, promotion, publication, merge, and deployment remain false.
+- no execution policy grants approval or publication authority.
 
 ## Stage DA-05 — scheduled hosted acquisition
 
-Status: workflow merged; first auditable activation result pending.
+Status: complete and operating.
 
 Workflow:
 
@@ -144,166 +105,127 @@ Schedule:
 12:17 JST daily
 ```
 
-Required run behavior:
-
-1. validate current contracts, policy, audit, and season states;
-2. derive live planner state;
-3. generate planning-only Due-job Plan;
-4. compile hosted-capable Jobs;
-5. authorize every hosted Job separately;
-6. execute independent Jobs with `fail-fast: false`;
-7. retain plans, statuses, summaries, candidates, Coverage, Manifest, partial outcomes, and source errors;
-8. preserve JRA as a non-hosted exclusion;
-9. perform no approval or publication action.
-
-Completion condition:
-
-```text
-one main-branch activation, scheduled run, or manual dispatch
-produces an auditable activation result and exact plan evidence
-```
+Observed evidence includes successful scheduled NAR acquisition on 2026-08-08. The daily system continued running after the July publication and correctly accumulated review artifacts in Draft PR #559.
 
 ## Stage DA-06 — stable Draft PR delivery and activation evidence
 
-Status: implementation correction current.
+Status: complete and operating.
 
-### Stable review surface
-
-The branch and Draft PR are bootstrapped once by an explicit operator:
+Stable review surface:
 
 ```text
 branch: automation/calendar-daily-acquisition-review
 Draft PR: #559
 ```
 
-The unattended workflow must not create pull requests. It requires no `pull-requests: write` permission.
+Draft PR #559 is an operating queue and must not be merged merely because automation updated it.
 
-The final workflow Job may use `contents: write` only to push review-safe evidence to the existing branch.
+Every activation records:
 
-### Activation-status artifacts
-
-```text
-data/static/calendar-daily-acquisition-activation-status.schema.json
-scripts/timetable/write-calendar-daily-acquisition-status.mjs
-scripts/check-calendar-daily-acquisition-activation-status.mjs
-
-data/generated/timetable/daily-acquisition-status/latest.json
-data/generated/timetable/daily-acquisition-status/runs/<github-run-id>.json
-```
-
-Every activation must record:
-
-- source SHA and ref;
-- run ID and attempt;
+- source SHA/ref and run identity;
 - trigger event;
-- planning result;
-- execution result;
-- hosted Job count or null;
-- plan ID or null;
+- plan and execution result;
+- hosted Job count and plan identity;
 - stable review branch;
-- all publication side effects as false.
+- publication side effects as false;
+- public-horizon freshness:
+  - `public_horizon_end_date`;
+  - `required_horizon_end_date`;
+  - `publication_review_required`.
 
-### Required scenarios
+The freshness signal was added after the August 8 incident exposed a gap between successful acquisition and stalled human publication review.
 
-1. successful plan and hosted execution;
-2. planning failure with execution skipped;
-3. hosted execution failure with independent outcomes retained;
-4. zero-hosted-Job activation;
-5. JRA exclusion;
-6. Banei regular-refresh rejection;
-7. HKJC and UAE season suppression;
-8. repeated run updates the same branch and Draft PR;
-9. no pull-request creation permission;
-10. no Canonical/public/deployment command.
+## Stage DA-07 — recovery candidates and source review
 
-Completion condition:
+Status: complete for the current 2026-08-08 through 2026-09-06 recovery window.
+
+Reviewed new Rank C identities:
 
 ```text
-Draft PR #559 receives status and exact plan evidence
-for a real main-branch activation or scheduled run,
-including failure or zero-Job outcomes
+JRA:   18 meetings, 2026-08-22 through 2026-09-06
+NAR:   69 meetings, 2026-08-18 through 2026-09-06
+Banei:  8 meetings, 2026-08-22 through 2026-09-06
+HKJC:   1 meeting, Sha Tin on 2026-09-06
+Total: 96 meetings
 ```
 
-## Stage DA-07 — recovery candidates
+All recovery envelopes are deliberately capped at Rank C:
 
-Status: partially complete.
+- meeting date and racecourse only;
+- no first/final race time;
+- no per-race rows;
+- no race names, distances, surfaces, runners, odds, results, payouts, predictions, raw HTML, or stream URLs.
 
-Completed in PR #558:
-
-```text
-JRA: 18 C-rank needs_review meeting identities
-Banei: 3 C-rank needs_review meeting identities
-```
-
-The candidate records claim no first/final race time and no timetable rows. They remain outside Canonical and public projection.
-
-Pending:
+Source acquisition and approval generation are reproducible through:
 
 ```text
-NAR August hosted acquisition artifacts
-source and coverage review for all recovery candidates
-exact approval envelopes
+scripts/timetable/build-calendar-august-2026-recovery-approved-candidates.mjs
+data/generated/timetable/horizon-recovery-2026-08-08/
 ```
 
 ## Stage DA-08 — reviewed Canonical and public recovery
 
-Status: pending.
+Status: in final PR validation.
 
-Required sequence:
+Draft PR #567 contains the reviewed recovery output.
+
+Verified in read-only Promotion Validation before branch application:
 
 ```text
-review JRA, NAR, and Banei recovery evidence
--> exact approved envelopes
--> Promotion Validation
--> Canonical promotion
--> deterministic public projection
--> bilingual rendered QA
--> publication PR merge
--> Cloudflare Pages deployment
+new approved identities: 96
+public meeting count after recovery: 337
+public maximum meeting date: 2026-09-06
+new public rank: C only
 ```
 
-This stage is separate from the daily workflow and Draft PR #559.
-
-Completion condition:
+Remaining completion sequence:
 
 ```text
-the reviewed public Calendar covers the required rolling window
-through 2026-08-17 without fabricated detail
+normal repository CI
+-> bilingual rendered QA
+-> PR #567 Ready
+-> reviewed merge
+-> normal Cloudflare production deployment
+-> one-shot production freshness verification
 ```
 
 ## Stage DA-09 — steady-state acceptance
 
-Status: pending.
+Status: not yet closed.
 
-Acceptance requires:
+The August 8 incident established an additional acceptance requirement: a successful acquisition cycle is insufficient when the reviewed public horizon is stale.
 
-- at least one successful activation or scheduled cycle;
-- at least one failure or source-error result retained without cross-Job corruption;
-- at least one zero-Job result retained;
+Steady-state acceptance requires:
+
+- successful scheduled acquisition evidence;
+- failure/source-error evidence retained without cross-Job corruption;
 - repeated updates to Draft PR #559;
-- documented operator review procedure;
 - explicit JRA local ownership;
 - explicit Banei ordinary-refresh prohibition;
-- explicit HKJC and UAE seasonal ownership;
+- reviewed seasonal ownership for HKJC and UAE;
 - renewal of season-state windows before expiry;
-- no unattended publication permissions;
-- production freshness confirmed after reviewed publication.
+- no unattended publication permission;
+- every activation exposes whether the public 30-day horizon is complete;
+- `publication_review_required=true` is treated as an operator action item, not a green steady state;
+- production freshness is confirmed after each reviewed horizon publication.
 
-Only after DA-09 may `WHR-CAL-DAILY-ACQUISITION` be marked complete.
+Only after DA-09 may `WHR-CAL-DAILY-ACQUISITION` be marked fully accepted.
 
-## PR history and current sequence
+## PR history
 
 ```text
-PR #556 — two-policy workflow foundation — merged
-PR #557 — season-aware planning and current-horizon audit — merged
-PR #558 — JRA and Banei recovery candidates — merged
+PR #556 — two-policy daily workflow foundation — merged
+PR #557 — season-aware planning and July horizon audit — merged
+PR #558 — JRA/Banei July recovery candidates — merged
 PR #559 — stable daily human-review queue — open Draft, never auto-merged
-current correction — activation status and stable-branch push delivery
-next — NAR hosted recovery evidence
-next — reviewed Canonical/public recovery
-next — scheduled-cycle and steady-state acceptance
+PR #560 — stable branch delivery correction — merged
+PR #561 — plan/output diagnostics correction — merged
+PR #562 — explicit generated Collection Job dispatch — merged
+PR #563 — review-artifact delivery correction — merged
+PR #564 — reviewed public recovery through 2026-08-17 — merged
+PR #567 — current recovery through 2026-09-06 + future-season wake-up + stale-publication signal — Draft
 ```
 
 ## Current decision
 
-The workflow foundation, season-aware planner, recovery audit, and JRA/Banei candidates are implemented. The operating system is not accepted yet because no auditable daily activation status has reached Draft PR #559. The current correction removes reliance on automatic pull-request creation and makes every activation outcome visible on the pre-created stable review branch. A failed activation does not authorize publication and must remain visible for correction.
+Daily acquisition was not the component that stopped between July 19 and August 8. The review queue continued receiving scheduled evidence, but no reviewed publication continuation was performed, so production remained at the August 17 horizon. PR #567 repairs the current horizon and adds a machine-readable publication-freshness signal so this state is visible on every daily activation without weakening the mandatory human publication boundary.

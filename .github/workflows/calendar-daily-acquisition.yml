@@ -108,8 +108,9 @@ jobs:
       - name: Exercise live-state, generated-plan, and dispatch boundaries
         shell: bash
         run: |
+          validation_as_of="$(node --input-type=module -e "import fs from 'node:fs'; const data = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')); if (!data.generated_at || Number.isNaN(Date.parse(data.generated_at))) throw new Error('public meeting list generated_at is missing or invalid'); process.stdout.write(data.generated_at);")"
           node scripts/timetable/build-calendar-live-planner-state.mjs \
-            --as-of=2026-07-19T15:00:00Z \
+            --as-of="$validation_as_of" \
             --output=.calendar-live-state.json
           node scripts/timetable/plan-calendar-due-jobs.mjs \
             --state=.calendar-live-state.json \
@@ -135,7 +136,7 @@ jobs:
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
-          if (matrix.include.length === 0) throw new Error('fixed daily validation requires a hosted Job');
+          if (!Array.isArray(matrix.include)) throw new Error('actions matrix include must be an array');
           if (!matrix.include.every((entry) => entry.collection_job?.job_id === entry.execution?.job_id)) {
             throw new Error('matrix Collection Job and execution identity differ');
           }
