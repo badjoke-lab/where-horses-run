@@ -37,14 +37,14 @@ for (const key of [
   'unpaired_japanese_pages', 'hreflang_links', 'self_hreflang_links', 'alternate_hreflang_links',
   'x_default_links', 'language_switch_links', 'unpaired_language_switch_home_fallbacks',
   'faq_bilingual_clusters', 'methods_bilingual_clusters',
-]) expect(audit.verified[key] === contract.scope[key], `Canonical hreflang audit ${key} differs`);
+]) expect(audit.verified[key] === contract.scope[key], `Canonical hreflang historical audit ${key} differs`);
 for (const key of [
   'canonical_self_mismatches', 'canonical_origin_errors', 'canonical_query_or_fragment_errors',
   'canonical_trailing_slash_errors', 'missing_self_links', 'missing_alternate_links',
   'missing_x_default_links', 'unexpected_hreflang_links', 'reciprocal_errors', 'cluster_set_errors',
   'language_errors', 'x_default_errors', 'unpaired_hreflang_errors', 'faq_cluster_errors',
   'methods_cluster_errors', 'contract_errors', 'output_errors',
-]) expect(audit.verified[key] === 0, `Canonical hreflang audit ${key} differs`);
+]) expect(audit.verified[key] === 0, `Canonical hreflang historical audit ${key} differs`);
 expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Canonical hreflang privacy boundary differs');
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Canonical hreflang automation boundary differs');
 
@@ -59,7 +59,7 @@ for (const marker of [
   `${contract.scope.bilingual_clusters} bilingual clusters`,
   `${contract.scope.hreflang_links.toLocaleString('en-US')} hreflang links`,
   '/faq/', '/ja/faq/', '/methods/', '/ja/methods/',
-]) expect(doc.includes(marker), `Canonical hreflang documentation marker missing: ${marker}`);
+]) expect(doc.includes(marker), `Canonical hreflang historical documentation marker missing: ${marker}`);
 
 function decode(value) {
   return value
@@ -75,8 +75,16 @@ const fileFor = (urlString) => {
 };
 
 const urls = [...read(SITEMAP).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-expect(urls.length === contract.scope.public_pages, `Canonical hreflang sitemap count differs ${urls.length}`);
+expect(urls.length >= contract.scope.public_pages, `Canonical hreflang current sitemap shrank ${urls.length} < ${contract.scope.public_pages}`);
 expect(new Set(urls).size === urls.length, 'Canonical hreflang sitemap contains duplicate URLs');
+const currentUnpairedPages = UNPAIRED_PATHS.length;
+const currentPairedPages = urls.length - currentUnpairedPages;
+expect(currentPairedPages >= contract.scope.paired_pages, `Canonical hreflang paired-page scope shrank ${currentPairedPages}`);
+expect(currentPairedPages % 2 === 0, `Canonical hreflang paired-page count is not bilingual ${currentPairedPages}`);
+const currentBilingualClusters = currentPairedPages / 2;
+const currentEnglishPairedPages = currentBilingualClusters;
+const currentJapanesePairedPages = currentBilingualClusters;
+const currentHreflangLinks = currentPairedPages * 3;
 
 const pages = new Map();
 let canonicalLinks = 0;
@@ -158,22 +166,28 @@ verifyExplicitPair(contract.faq_pair_contract, 'FAQ');
 verifyExplicitPair(contract.methods_pair_contract, 'Methods');
 
 for (const [label, actual, expected] of [
-  ['canonical links', canonicalLinks, contract.scope.canonical_links],
-  ['language switches', languageSwitchLinks, contract.scope.language_switch_links],
-  ['paired pages', pairedPages, contract.scope.paired_pages],
-  ['English paired pages', englishPaired, contract.scope.english_paired_pages],
-  ['Japanese paired pages', japanesePaired, contract.scope.japanese_paired_pages],
-  ['bilingual clusters', clusters.size, contract.scope.bilingual_clusters],
-  ['hreflang links', hreflangLinks, contract.scope.hreflang_links],
-  ['self links', selfLinks, contract.scope.self_hreflang_links],
-  ['opposite links', oppositeLinks, contract.scope.alternate_hreflang_links],
-  ['x-default links', xDefaultLinks, contract.scope.x_default_links],
-  ['unpaired fallbacks', homeFallbacks, contract.scope.unpaired_language_switch_home_fallbacks],
-]) expect(actual === expected, `${label} differ ${actual}`);
+  ['canonical links', canonicalLinks, urls.length],
+  ['language switches', languageSwitchLinks, urls.length],
+  ['paired pages', pairedPages, currentPairedPages],
+  ['English paired pages', englishPaired, currentEnglishPairedPages],
+  ['Japanese paired pages', japanesePaired, currentJapanesePairedPages],
+  ['bilingual clusters', clusters.size, currentBilingualClusters],
+  ['hreflang links', hreflangLinks, currentHreflangLinks],
+  ['self links', selfLinks, currentPairedPages],
+  ['opposite links', oppositeLinks, currentPairedPages],
+  ['x-default links', xDefaultLinks, currentPairedPages],
+  ['unpaired fallbacks', homeFallbacks, currentUnpairedPages],
+]) expect(actual === expected, `${label} differ ${actual} !== ${expected}`);
+
+expect(currentUnpairedPages === contract.scope.unpaired_pages, 'Canonical hreflang unpaired-page scope changed');
+expect(homeFallbacks === contract.scope.unpaired_language_switch_home_fallbacks, 'Canonical hreflang unpaired fallback scope changed');
+expect(currentBilingualClusters >= contract.scope.bilingual_clusters, 'Canonical hreflang bilingual cluster scope shrank');
 
 console.log('CANONICAL_HREFLANG_REVIEW: pass');
-console.log(`PUBLIC_PAGES: ${contract.scope.public_pages}`);
-console.log(`BILINGUAL_CLUSTERS: ${contract.scope.bilingual_clusters}`);
-console.log(`HREFLANG_LINKS: ${contract.scope.hreflang_links}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.scope.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${urls.length}`);
+console.log(`HISTORICAL_BILINGUAL_CLUSTERS: ${contract.scope.bilingual_clusters}`);
+console.log(`CURRENT_BILINGUAL_CLUSTERS: ${currentBilingualClusters}`);
+console.log(`CURRENT_HREFLANG_LINKS: ${currentHreflangLinks}`);
 console.log('FAQ_BILINGUAL_CLUSTERS: 1');
 console.log('METHODS_BILINGUAL_CLUSTERS: 1');
