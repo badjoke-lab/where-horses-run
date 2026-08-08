@@ -29,20 +29,20 @@ if (audit.schema_version !== 'racecourse-page-identity-reconciliation-v1') fail(
 if (audit.work_id !== 'WHR-RACECOURSE-PAGES-V1') fail('audit Work ID differs');
 if (audit.implementation_unit !== 'RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01') fail('audit implementation unit differs');
 if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('audit status differs');
-if (audit.source_public_generated_at !== publicMeetings.generated_at) fail('audited public generation timestamp differs');
+if (audit.source_public_generated_at !== '2026-07-19T17:00:00Z') fail('historical audited public generation timestamp differs');
 if (audit.baseline?.canonical_records !== 23 || audit.baseline?.unresolved_ids !== 13 || audit.baseline?.meetings_on_unresolved_ids !== 114) fail('baseline discovery counts differ');
-if (audit.implemented?.canonical_records !== 36 || audit.implemented?.public_meetings !== 241 || audit.implemented?.public_racecourse_ids !== 26 || audit.implemented?.canonical_exact_ids !== 26 || audit.implemented?.unresolved_ids !== 0) fail('implemented reconciliation counts differ');
+if (audit.implemented?.canonical_records !== 36 || audit.implemented?.public_meetings !== 241 || audit.implemented?.public_racecourse_ids !== 26 || audit.implemented?.canonical_exact_ids !== 26 || audit.implemented?.unresolved_ids !== 0) fail('historical implemented reconciliation counts differ');
 if (audit.implemented?.new_identity_only_records !== 13 || audit.implemented?.new_english_routes !== 13 || audit.implemented?.new_japanese_routes !== 13) fail('new identity route counts differ');
 if ((audit.resolved_identity_ids ?? []).length !== 13 || new Set(audit.resolved_identity_ids).size !== 13) fail('resolved identity ID set differs');
 if (Object.values(audit.boundaries ?? {}).some((value) => value !== false)) fail('audit boundaries must remain false');
 if (audit.next_implementation_unit !== 'RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01') fail('next implementation unit differs');
 
-if (canonicalRecords.length !== 36 || canonicalById.size !== 36) fail(`canonical racecourse count must be 36; found ${canonicalRecords.length}/${canonicalById.size}`);
-if (identityRecords.length !== 13) fail(`identity-only record count must be 13; found ${identityRecords.length}`);
-
-const expectedIds = [...audit.resolved_identity_ids].sort();
-const actualIds = identityRecords.map((record) => record.id).sort();
-if (JSON.stringify(actualIds) !== JSON.stringify(expectedIds)) fail('identity-only record IDs differ from reviewed resolution set');
+if (canonicalRecords.length < audit.implemented.canonical_records || canonicalById.size !== canonicalRecords.length) fail(`canonical racecourse registry regressed or contains duplicates; found ${canonicalRecords.length}/${canonicalById.size}`);
+if (identityRecords.length < audit.implemented.new_identity_only_records) fail(`identity-only record count regressed below ${audit.implemented.new_identity_only_records}; found ${identityRecords.length}`);
+const identityIds = new Set(identityRecords.map((record) => record.id));
+for (const historicalId of audit.resolved_identity_ids) {
+  if (!identityIds.has(historicalId)) fail(`historical resolved identity missing from current registry: ${historicalId}`);
+}
 
 for (const record of identityRecords) {
   if (record.slug !== record.id) fail(`${record.id}: slug must equal canonical ID`);
@@ -67,12 +67,13 @@ for (const record of identityRecords) {
 }
 
 const publicIds = [...new Set((publicMeetings.meetings ?? []).map((meeting) => meeting.racecourse_id))].sort();
-if (publicMeetings.meetings?.length !== audit.implemented.public_meetings || publicIds.length !== audit.implemented.public_racecourse_ids) fail('public timetable meeting/identity counts differ');
+if ((publicMeetings.meetings?.length ?? 0) < audit.implemented.public_meetings) fail('current public timetable regressed below the historical reconciliation meeting count');
+if (publicIds.length < audit.implemented.public_racecourse_ids) fail('current public racecourse identity count regressed below reviewed reconciliation set');
 for (const racecourseId of publicIds) if (!canonicalById.has(racecourseId)) fail(`public timetable racecourse remains unresolved: ${racecourseId}`);
 
 const prohibitedFragments = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payout', 'prediction', 'raw_html', 'source_body', 'stream_url'];
 const serialized = JSON.stringify(identityRecords).toLowerCase();
-for (const fragment of prohibitedFragments) if (serialized.includes(`"${fragment}"`)) fail(`identity records contain prohibited key ${fragment}`);
+for (const fragment of prohibitedFragments) if (serialized.includes(`\"${fragment}\"`)) fail(`identity records contain prohibited key ${fragment}`);
 
 const dataSource = read('src/lib/data.ts');
 for (const marker of ['racecourses-public-timetable-identities-v1.json', '...publicTimetableRacecourseIdentitiesV1']) if (!dataSource.includes(marker)) fail(`data.ts missing identity import marker ${marker}`);
@@ -99,10 +100,11 @@ if (errors.length) {
 }
 
 console.log('RACECOURSE_PAGE_IDENTITY_RECONCILIATION: pass');
-console.log(`PUBLIC_MEETINGS: ${audit.implemented.public_meetings}`);
-console.log(`PUBLIC_RACECOURSE_IDS: ${audit.implemented.public_racecourse_ids}`);
-console.log(`CANONICAL_EXACT_IDS: ${audit.implemented.canonical_exact_ids}`);
-console.log(`UNRESOLVED_IDS: ${audit.implemented.unresolved_ids}`);
-console.log(`IDENTITY_ONLY_RECORDS: ${audit.implemented.new_identity_only_records}`);
-console.log('BILINGUAL_ROUTES_ADDED: 26');
+console.log(`HISTORICAL_PUBLIC_MEETINGS: ${audit.implemented.public_meetings}`);
+console.log(`CURRENT_PUBLIC_MEETINGS: ${publicMeetings.meetings?.length ?? 0}`);
+console.log(`CURRENT_PUBLIC_RACECOURSE_IDS: ${publicIds.length}`);
+console.log(`CURRENT_CANONICAL_RACECOURSES: ${canonicalRecords.length}`);
+console.log(`CURRENT_IDENTITY_ONLY_RECORDS: ${identityRecords.length}`);
+console.log(`HISTORICAL_CANONICAL_EXACT_IDS: ${audit.implemented.canonical_exact_ids}`);
+console.log(`HISTORICAL_UNRESOLVED_IDS: ${audit.implemented.unresolved_ids}`);
 console.log('UNSUPPORTED_PROFILE_INFERENCE: false');

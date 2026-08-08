@@ -1,0 +1,45 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-08-08T14:10:18.273Z",
+  "adapter_id": "hkjc-september-2026-season-wakeup-reviewed-promotion-v1",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "source_id": "hkjc-fixture-list",
+  "candidate_window": {
+    "start_date": "2026-09-06",
+    "end_date_exclusive": "2026-09-07",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "records": [
+    {
+      "candidate_id": "approved-hkjc-sha-tin-racecourse-2026-09-06",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-09-06",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-09-06",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "hkjc-fixture-list",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "checked_at": "2026-08-08T14:10:18.273Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Official HKJC fixture confirms the September 6 Sha Tin meeting identity. Recovery is capped at Rank C; no race times or programme rows are claimed."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-08T14:15:00Z",
+    "reviewer": "badjoke-lab",
+    "summary": "Approved the September 6 Sha Tin season-opening meeting identity at Rank C from the official HKJC fixture.",
+    "promotion_target": "canonical-timetable-v0"
+  }
+}

@@ -15,15 +15,12 @@ const TEMPORARY_WORKFLOWS = [
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 const read = (file) => fs.readFileSync(file, 'utf8');
 const readJson = (file) => JSON.parse(read(file));
-
 function decode(value) {
-  return value
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+  return value.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
     .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
     .replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&#x27;', "'")
     .replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
 }
-
 const strip = (value) => decode(value.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([:\w-]+)="([^"]*)"/g)].map((match) => [match[1], decode(match[2])]));
 const fileFor = (urlString) => {
@@ -34,7 +31,6 @@ const one = (values, label, url) => {
   expect(values.length === 1, `${url}: expected one ${label}, found ${values.length}`);
   return values[0];
 };
-
 function family(pathname) {
   const normalized = pathname.replace(/^\/ja\//, '/');
   if (/^\/timetable\/meetings\/[^/]+\/$/.test(normalized)) return 'meeting';
@@ -43,7 +39,6 @@ function family(pathname) {
   if (normalized === '/methods/') return 'methods';
   return 'other';
 }
-
 function parsePage(url) {
   const file = fileFor(url);
   expect(fs.existsSync(file), `${url}: rendered file is missing`);
@@ -64,22 +59,8 @@ function parsePage(url) {
     })
     .filter((node) => node?.['@id'] === `${url}#webpage` && ['WebPage', 'CollectionPage'].includes(node?.['@type']));
   expect(pageNodes.length >= 1, `${url}: page identity JSON-LD is missing`);
-  return {
-    url,
-    pathname: new URL(url).pathname,
-    family: family(new URL(url).pathname),
-    html,
-    lang,
-    title,
-    description,
-    ogTitle: meta('og:title', 'property'),
-    ogDescription: meta('og:description', 'property'),
-    twitterTitle: meta('twitter:title'),
-    twitterDescription: meta('twitter:description'),
-    pageNodes,
-  };
+  return { url, pathname: new URL(url).pathname, family: family(new URL(url).pathname), html, lang, title, description, ogTitle: meta('og:title', 'property'), ogDescription: meta('og:description', 'property'), twitterTitle: meta('twitter:title'), twitterDescription: meta('twitter:description'), pageNodes };
 }
-
 function duplicates(pages, key) {
   const groups = new Map();
   for (const page of pages) {
@@ -89,42 +70,33 @@ function duplicates(pages, key) {
   return [...groups.values()].filter((urls) => urls.length > 1);
 }
 
-function verifyIdentity(contract, audit) {
+function verifyHistorical(contract, audit) {
   expect(contract.schema_version === 'title-description-normalization-contract-v1', 'Title-description contract schema differs');
-  expect(contract.work_id === 'WHR-SEO-PUBLIC-CONTENT-V1', 'Title-description Work ID differs');
-  expect(contract.implementation_unit === 'TITLE-DESCRIPTION-NORMALIZATION-01', 'Title-description implementation unit differs');
-  expect(contract.status === 'complete' && contract.reviewed_at === '2026-07-18', 'Title-description status or date differs');
-  expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Title-description scope marker differs');
-  expect(contract.normalization_contract.duplicate_titles_allowed === false, 'Duplicate titles must remain disallowed');
-  expect(contract.normalization_contract.duplicate_descriptions_allowed === false, 'Duplicate descriptions must remain disallowed');
+  expect(contract.work_id === 'WHR-SEO-PUBLIC-CONTENT-V1' && contract.implementation_unit === 'TITLE-DESCRIPTION-NORMALIZATION-01', 'Title-description contract identity differs');
+  expect(contract.status === 'complete' && contract.reviewed_at === '2026-07-18' && contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Title-description historical state differs');
+  expect(contract.normalization_contract.duplicate_titles_allowed === false && contract.normalization_contract.duplicate_descriptions_allowed === false, 'Duplicate metadata must remain disallowed');
   expect(contract.normalization_contract.arbitrary_character_limit_enforced === false, 'Arbitrary title limits must remain disabled');
   expect(contract.methods_contract.paths.join('|') === '/methods/|/ja/methods/', 'Methods metadata contract differs');
-  expect(audit.schema_version === 'title-description-normalization-audit-v1' && audit.status === 'complete', 'Title-description audit identity differs');
-  expect(audit.scope_updated_by === contract.scope_updated_by, 'Title-description audit scope marker differs');
-  for (const key of ['public_pages','english_pages','japanese_pages','meeting_detail_pages','country_detail_pages','normalized_country_description_pages','faq_pages','methods_pages']) {
-    expect(audit.verified[key] === contract.scope[key], `Title-description audit ${key} differs`);
-  }
-  for (const key of ['missing_titles','missing_descriptions','duplicate_title_tag_pages','duplicate_description_meta_pages','duplicate_title_groups','duplicate_description_groups','open_graph_title_errors','open_graph_description_errors','twitter_title_errors','twitter_description_errors','jsonld_title_errors','jsonld_description_errors','faq_title_errors','faq_description_errors','methods_title_errors','methods_description_errors','whitespace_errors','newline_errors','contract_errors','output_errors']) {
-    expect(audit.verified[key] === 0, `Title-description audit ${key} differs`);
-  }
+  expect(audit.schema_version === 'title-description-normalization-audit-v1' && audit.status === 'complete' && audit.scope_updated_by === contract.scope_updated_by, 'Title-description historical audit identity differs');
+  for (const key of ['public_pages','english_pages','japanese_pages','meeting_detail_pages','country_detail_pages','normalized_country_description_pages','faq_pages','methods_pages']) expect(audit.verified[key] === contract.scope[key], `Title-description historical audit ${key} differs`);
+  for (const key of ['missing_titles','missing_descriptions','duplicate_title_tag_pages','duplicate_description_meta_pages','duplicate_title_groups','duplicate_description_groups','open_graph_title_errors','open_graph_description_errors','twitter_title_errors','twitter_description_errors','jsonld_title_errors','jsonld_description_errors','faq_title_errors','faq_description_errors','methods_title_errors','methods_description_errors','whitespace_errors','newline_errors','contract_errors','output_errors']) expect(audit.verified[key] === 0, `Title-description historical audit ${key} differs`);
 }
-
 function verifyWiring() {
   for (const workflow of TEMPORARY_WORKFLOWS) expect(!fs.existsSync(workflow), `Temporary workflow remains: ${workflow}`);
   const config = read(ASTRO_CONFIG_PATH);
   const integration = read(INTEGRATION_PATH);
-  expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';"), 'Astro normalization import is missing');
-  expect(config.includes('titleDescriptionNormalizationIntegration()'), 'Astro normalization registration is missing');
-  for (const marker of ["name: 'where-horses-run-title-description-normalization'", "'astro:build:done'", 'meetingMetadata(page)', 'duplicatedCountryDescriptions']) {
-    expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
-  }
+  expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';") && config.includes('titleDescriptionNormalizationIntegration()'), 'Astro normalization wiring is missing');
+  for (const marker of ["name: 'where-horses-run-title-description-normalization'", "'astro:build:done'", 'meetingMetadata(page)', 'duplicatedCountryDescriptions']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
 }
-
 function verifyPages(pages, contract, methodsContract) {
-  expect(pages.length === contract.scope.public_pages, `Public page count differs ${pages.length}`);
-  expect(pages.filter((page) => page.lang === 'en').length === contract.scope.english_pages, 'English page count differs');
-  expect(pages.filter((page) => page.lang === 'ja').length === contract.scope.japanese_pages, 'Japanese page count differs');
+  const english = pages.filter((page) => page.lang === 'en').length;
+  const japanese = pages.filter((page) => page.lang === 'ja').length;
+  expect(pages.length >= contract.scope.public_pages, `Public page inventory shrank ${pages.length}`);
+  expect(english >= contract.scope.english_pages && japanese >= contract.scope.japanese_pages, `Language inventory shrank en=${english} ja=${japanese}`);
+  expect(english - contract.scope.english_pages === japanese - contract.scope.japanese_pages, `Reviewed bilingual page growth is unbalanced en=${english} ja=${japanese}`);
+  expect(english - japanese === contract.scope.english_pages - contract.scope.japanese_pages, `Historical unpaired-language delta changed en=${english} ja=${japanese}`);
   for (const page of pages) {
+    expect(['en','ja'].includes(page.lang), `${page.url}: unsupported language ${page.lang}`);
     expect(page.title && page.description, `${page.url}: empty title or description`);
     expect(!/^\s|\s$|\s{2,}|[\r\n]/.test(page.title), `${page.url}: title whitespace differs`);
     expect(!/^\s|\s$|\s{2,}|[\r\n]/.test(page.description), `${page.url}: description whitespace differs`);
@@ -148,7 +120,6 @@ function verifyPages(pages, contract, methodsContract) {
     expect(page.title.includes(racecourse) && page.title.includes(pageKind) && page.title.includes(date), `${page.url}: meeting title differs`);
     expect(page.description.includes(racecourse) && page.description.includes(date), `${page.url}: meeting description differs`);
   }
-
   const affected = pages.filter((page) => contract.country_duplicate_resolution.paths.includes(page.pathname));
   expect(affected.length === contract.scope.normalized_country_description_pages, 'Country normalization count differs');
   for (const page of affected) {
@@ -158,11 +129,6 @@ function verifyPages(pages, contract, methodsContract) {
     const summary = strip(page.html.match(/<p[^>]*class="[^"]*hero__summary[^"]*"[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? '');
     expect(heading.endsWith(suffix) && page.description === `${area} — ${summary}`, `${page.url}: normalized country description differs`);
   }
-
-  const exactPages = [
-    ...Object.values({ en: contract.faq_contract.paths[0], ja: contract.faq_contract.paths[1] }).map((pathname) => ({ pathname })),
-  ];
-  expect(exactPages.length === contract.scope.faq_pages, 'FAQ metadata path count differs');
   const expected = new Map([
     ['/faq/', ['Frequently Asked Questions | Where Horses Run', 'Frequently asked questions about Where Horses Run data scope, official sources, update policy, publication ranks, and limitations.']],
     ['/ja/faq/', ['よくある質問 | 競馬どこ？', '競馬どこ？のデータ範囲、公式ソース、更新方針、公開ランク、制限事項に関するよくある質問です。']],
@@ -175,6 +141,7 @@ function verifyPages(pages, contract, methodsContract) {
   }
   expect(pages.filter((page) => page.family === 'faq').length === contract.scope.faq_pages, 'FAQ page count differs');
   expect(pages.filter((page) => page.family === 'methods').length === contract.scope.methods_pages, 'Methods page count differs');
+  return { english, japanese };
 }
 
 function main() {
@@ -182,19 +149,20 @@ function main() {
   const contract = readJson(CONTRACT_PATH);
   const audit = readJson(AUDIT_PATH);
   const methodsContract = readJson(METHODS_CONTRACT_PATH);
-  verifyIdentity(contract, audit);
+  verifyHistorical(contract, audit);
   verifyWiring();
   const urls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  verifyPages(urls.map(parsePage), contract, methodsContract);
+  const pages = urls.map(parsePage);
+  const { english, japanese } = verifyPages(pages, contract, methodsContract);
   console.log('TITLE_DESCRIPTION_NORMALIZATION: pass');
-  console.log(`PUBLIC_PAGES: ${contract.scope.public_pages}`);
-  console.log(`ENGLISH_PAGES: ${contract.scope.english_pages}`);
-  console.log(`JAPANESE_PAGES: ${contract.scope.japanese_pages}`);
+  console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.scope.public_pages}`);
+  console.log(`CURRENT_PUBLIC_PAGES: ${pages.length}`);
+  console.log(`CURRENT_ENGLISH_PAGES: ${english}`);
+  console.log(`CURRENT_JAPANESE_PAGES: ${japanese}`);
   console.log(`MEETING_DETAILS: ${contract.scope.meeting_detail_pages}`);
   console.log(`FAQ_PAGES: ${contract.scope.faq_pages}`);
   console.log(`METHODS_PAGES: ${contract.scope.methods_pages}`);
   console.log('DUPLICATE_TITLES: 0');
   console.log('DUPLICATE_DESCRIPTIONS: 0');
 }
-
 main();

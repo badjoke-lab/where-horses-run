@@ -5,6 +5,7 @@ const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 const CONTRACT = 'data/static/structured-data-baseline-contract-v1.json';
 const AUDIT = 'data/audits/structured-data-baseline-v1.json';
+const SITEMAP_CONTRACT = 'data/static/sitemap-robots-contract-v1.json';
 const LAYOUT = 'src/layouts/BaseLayout.astro';
 const COMPONENT = 'src/components/StructuredDataBaseline.astro';
 const DOC = 'docs/seo/structured-data-baseline.md';
@@ -17,10 +18,11 @@ const json = (file) => JSON.parse(read(file));
 const exact = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
-for (const file of [CONTRACT, AUDIT, LAYOUT, COMPONENT, DOC, WORKFLOW, SITEMAP]) expect(fs.existsSync(file), `Missing ${file}`);
+for (const file of [CONTRACT, AUDIT, SITEMAP_CONTRACT, LAYOUT, COMPONENT, DOC, WORKFLOW, SITEMAP]) expect(fs.existsSync(file), `Missing ${file}`);
 expect(!fs.existsSync(TEMPORARY), 'Temporary structured-data discovery workflow remains');
 const contract = json(CONTRACT);
 const audit = json(AUDIT);
+const sitemapContract = json(SITEMAP_CONTRACT);
 expect(contract.schema_version === 'structured-data-baseline-contract-v1' && contract.status === 'complete', 'Structured-data contract identity differs');
 expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Structured-data scope marker differs');
 expect(audit.schema_version === 'structured-data-baseline-audit-v1' && audit.status === 'complete', 'Structured-data audit identity differs');
@@ -35,6 +37,7 @@ expect(audit.verified.methods_page_specific_scripts === contract.page_specific_s
 for (const key of ['missing_scripts','multiple_scripts','context_mismatches','website_id_mismatches','website_field_mismatches','webpage_id_mismatches','canonical_url_mismatches','title_mismatches','description_mismatches','language_mismatches','website_relation_mismatches','unexpected_baseline_types','unsafe_less_than_characters','contract_errors','rendered_marker_errors']) expect(audit.verified[key] === 0, `Structured-data audit ${key} differs`);
 expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Structured-data privacy boundary differs');
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Structured-data automation boundary differs');
+expect(sitemapContract.schema_version === 'sitemap-robots-contract-v1', 'Sitemap contract identity differs');
 
 const layout = read(LAYOUT);
 for (const marker of ["import StructuredDataBaseline from '../components/StructuredDataBaseline.astro'", '<StructuredDataBaseline', 'canonicalUrl={canonicalUrl}', 'siteUrl={siteUrl}']) expect(layout.includes(marker), `BaseLayout structured-data marker missing: ${marker}`);
@@ -59,7 +62,23 @@ const fileFor = (urlString) => {
 };
 
 const urls = [...read(SITEMAP).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-expect(urls.length === contract.scope.public_pages, `Structured-data public page count differs ${urls.length}`);
+const paths = urls.map((url) => new URL(url).pathname);
+const currentRacecourseDetails = paths.filter((pathname) => /^\/(?:ja\/)?tracks\/[^/]+\/$/.test(pathname)).length;
+const historicalRacecourseDetails = sitemapContract.detail_route_counts.racecourse_detail_routes;
+const racecourseDetailDelta = currentRacecourseDetails - historicalRacecourseDetails;
+expect(racecourseDetailDelta >= 0, `Structured-data racecourse route count regressed ${currentRacecourseDetails}`);
+expect(racecourseDetailDelta % 2 === 0, `Structured-data racecourse growth must be bilingual ${racecourseDetailDelta}`);
+const perLanguageDelta = racecourseDetailDelta / 2;
+const expectedCurrent = {
+  public_pages: contract.scope.public_pages + racecourseDetailDelta,
+  english_pages: contract.scope.english_pages + perLanguageDelta,
+  japanese_pages: contract.scope.japanese_pages + perLanguageDelta,
+  json_ld_scripts: contract.scope.json_ld_scripts + racecourseDetailDelta,
+  website_nodes: contract.scope.website_nodes + racecourseDetailDelta,
+  webpage_nodes: contract.scope.webpage_nodes + racecourseDetailDelta,
+};
+expect(urls.length === expectedCurrent.public_pages, `Structured-data public page count differs ${urls.length}`);
+
 let english = 0;
 let japanese = 0;
 let baselineScripts = 0;
@@ -113,18 +132,20 @@ for (const url of urls) {
     methodsSpecificScripts += scripts.length - baseline.length;
   }
 }
-expect(english === contract.scope.english_pages, `English page count differs ${english}`);
-expect(japanese === contract.scope.japanese_pages, `Japanese page count differs ${japanese}`);
-expect(baselineScripts === contract.scope.json_ld_scripts, `Baseline script total differs ${baselineScripts}`);
-expect(validScripts === contract.scope.json_ld_scripts, `Valid baseline script total differs ${validScripts}`);
-expect(websiteNodes === contract.scope.website_nodes, `WebSite node total differs ${websiteNodes}`);
-expect(webpageNodes === contract.scope.webpage_nodes, `WebPage node total differs ${webpageNodes}`);
+expect(english === expectedCurrent.english_pages, `English page count differs ${english}`);
+expect(japanese === expectedCurrent.japanese_pages, `Japanese page count differs ${japanese}`);
+expect(baselineScripts === expectedCurrent.json_ld_scripts, `Baseline script total differs ${baselineScripts}`);
+expect(validScripts === expectedCurrent.json_ld_scripts, `Valid baseline script total differs ${validScripts}`);
+expect(websiteNodes === expectedCurrent.website_nodes, `WebSite node total differs ${websiteNodes}`);
+expect(webpageNodes === expectedCurrent.webpage_nodes, `WebPage node total differs ${webpageNodes}`);
 expect(faqScripts === contract.page_specific_script_boundary.faq_page_scripts, `FAQ script total differs ${faqScripts}`);
 expect(faqQuestions === contract.page_specific_script_boundary.faq_question_nodes, `FAQ question total differs ${faqQuestions}`);
 expect(methodsSpecificScripts === contract.page_specific_script_boundary.methods_page_specific_scripts, `Methods page-specific script total differs ${methodsSpecificScripts}`);
 
 console.log('STRUCTURED_DATA_BASELINE: pass');
-console.log(`PUBLIC_PAGES: ${contract.scope.public_pages}`);
-console.log(`BASELINE_JSON_LD_SCRIPTS: ${contract.scope.json_ld_scripts}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.scope.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${expectedCurrent.public_pages}`);
+console.log(`CURRENT_BASELINE_JSON_LD_SCRIPTS: ${baselineScripts}`);
+console.log(`CURRENT_RACECOURSE_DETAIL_ROUTES: ${currentRacecourseDetails}`);
 console.log('FAQPAGE_SCRIPTS_OUTSIDE_BASELINE: 2');
 console.log('METHODS_PAGE_SPECIFIC_SCRIPTS: 0');

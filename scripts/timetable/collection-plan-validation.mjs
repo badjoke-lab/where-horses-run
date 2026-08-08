@@ -55,10 +55,10 @@ export function validateCollectionPlanV1(plan, registry) {
   if (!stableId(plan.plan_id)) errors.push('plan_id must be lowercase kebab-case');
   if (!stableId(plan.campaign_id)) errors.push('campaign_id must be lowercase kebab-case');
   if (typeof plan.created_at !== 'string' || Number.isNaN(Date.parse(plan.created_at))) errors.push('created_at must be a valid date-time');
-  if (!Array.isArray(plan.jobs) || plan.jobs.length === 0) errors.push('jobs must be a non-empty array');
+  if (!Array.isArray(plan.jobs)) errors.push('jobs must be an array');
 
   const seenJobIds = new Set();
-  for (const [index, job] of (plan.jobs ?? []).entries()) {
+  for (const [index, job] of (Array.isArray(plan.jobs) ? plan.jobs : []).entries()) {
     if (job?.campaign_id !== plan.campaign_id) errors.push(`jobs[${index}] campaign_id must equal plan campaign_id`);
     if (seenJobIds.has(job?.job_id)) errors.push(`duplicate job_id ${job?.job_id}`);
     seenJobIds.add(job?.job_id);

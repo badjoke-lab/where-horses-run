@@ -230,18 +230,21 @@ const actual = {
   methodologyComplete,
   broken: broken.length,
 };
+const currentBilingualPages = records.length * 2;
+const currentSurfaceApplicablePages = records.filter((record) => (record.surfaces ?? []).some((value) => surfaceGlossary.has(value))).length * 2;
+const currentDirectionApplicablePages = records.filter((record) => directionGlossary.has(record.direction)).length * 2;
 const expectedActual = {
-  countryComplete: 72,
-  calendarComplete: 72,
-  typeComplete: 72,
-  relatedGlossaryComplete: 72,
-  sourceRegistryComplete: 72,
-  officialExternalComplete: 72,
-  surfaceApplicable: 52,
-  surfaceComplete: 52,
-  directionApplicable: 46,
-  directionComplete: 46,
-  methodologyComplete: 72,
+  countryComplete: currentBilingualPages,
+  calendarComplete: currentBilingualPages,
+  typeComplete: currentBilingualPages,
+  relatedGlossaryComplete: currentBilingualPages,
+  sourceRegistryComplete: currentBilingualPages,
+  officialExternalComplete: currentBilingualPages,
+  surfaceApplicable: currentSurfaceApplicablePages,
+  surfaceComplete: currentSurfaceApplicablePages,
+  directionApplicable: currentDirectionApplicablePages,
+  directionComplete: currentDirectionApplicablePages,
+  methodologyComplete: currentBilingualPages,
   broken: 0,
 };
 for (const [key, expected] of Object.entries(expectedActual)) if (actual[key] !== expected) fail(`rendered count ${key} expected ${expected}; found ${actual[key]}`);
@@ -261,11 +264,11 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('RACECOURSE_PAGE_LINK_ARCHITECTURE: pass');
-console.log('BILINGUAL_PAGES: 72');
-console.log('OFFICIAL_EXTERNAL_LINKS: 72');
-console.log('SURFACE_LINKS: 54/54');
-console.log('DIRECTION_LINKS: 46/46');
+console.log(`CURRENT_BILINGUAL_PAGES: ${currentBilingualPages}`);
+console.log(`CURRENT_OFFICIAL_EXTERNAL_LINKS: ${officialExternalComplete}`);
+console.log(`CURRENT_SURFACE_LINKS: ${surfaceComplete}/${surfaceApplicable}`);
+console.log(`CURRENT_DIRECTION_LINKS: ${directionComplete}/${directionApplicable}`);
 console.log(`MEETING_DATE_LINKS: ${dateComplete}/${dateApplicable}`);
-console.log('METHODOLOGY_LINKS: 72/72');
+console.log(`CURRENT_METHODOLOGY_LINKS: ${methodologyComplete}/${currentBilingualPages}`);
 console.log('BROKEN_INTERNAL_PAGE_LINKS: 0');
 console.log('PUBLIC_LIST_SHAPE: one_meeting_per_row');

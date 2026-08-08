@@ -64,12 +64,10 @@ function validateSeasonState(value) {
   const errors = [];
   if (value?.schema_version !== 'calendar-system-season-state-v1') errors.push('season state schema_version differs');
   if (!Array.isArray(value?.records)) return [...errors, 'season state records must be an array'];
-  const seen = new Set();
+  const bySystem = new Map();
   for (const [index, record] of value.records.entries()) {
     const location = `season state records[${index}]`;
     if (typeof record?.system_id !== 'string' || record.system_id === '') errors.push(`${location}.system_id invalid`);
-    if (seen.has(record.system_id)) errors.push(`duplicate season state system ${record.system_id}`);
-    seen.add(record.system_id);
     if (!['active', 'offseason', 'unknown'].includes(record?.season_state)) errors.push(`${location}.season_state invalid`);
     if (!validDate(record?.effective_start_date)) errors.push(`${location}.effective_start_date invalid`);
     if (!validDate(record?.effective_end_date_exclusive)) errors.push(`${location}.effective_end_date_exclusive invalid`);
@@ -79,16 +77,36 @@ function validateSeasonState(value) {
     if (!validDate(record?.source_checked_date)) errors.push(`${location}.source_checked_date invalid`);
     if (typeof record?.official_source_url !== 'string' || !record.official_source_url.startsWith('https://')) errors.push(`${location}.official_source_url invalid`);
     if (typeof record?.review_note !== 'string' || record.review_note.trim() === '') errors.push(`${location}.review_note invalid`);
+    const list = bySystem.get(record.system_id) ?? [];
+    list.push(record);
+    bySystem.set(record.system_id, list);
+  }
+  for (const [systemId, records] of bySystem.entries()) {
+    const ordered = [...records].sort((left, right) => left.effective_start_date.localeCompare(right.effective_start_date));
+    for (let index = 1; index < ordered.length; index += 1) {
+      if (ordered[index - 1].effective_end_date_exclusive > ordered[index].effective_start_date) {
+        errors.push(`overlapping season state windows for ${systemId}`);
+      }
+    }
   }
   return errors;
 }
 
 function reviewedSeasonRecord(seasonState, systemId, planningDate) {
-  const record = seasonState.records.find((entry) => entry.system_id === systemId
+  const records = seasonState.records.filter((entry) => entry.system_id === systemId
     && entry.effective_start_date <= planningDate
     && planningDate < entry.effective_end_date_exclusive);
-  if (!record) throw new Error(`reviewed season state missing for ${systemId} on ${planningDate}`);
-  return record;
+  if (records.length !== 1) throw new Error(`reviewed season state must resolve exactly once for ${systemId} on ${planningDate}`);
+  return records[0];
+}
+
+function futureActiveSeasonRecord(seasonState, systemId, planningDate, windowEndExclusive) {
+  return seasonState.records
+    .filter((entry) => entry.system_id === systemId
+      && entry.season_state === 'active'
+      && planningDate < entry.effective_start_date
+      && entry.effective_start_date < windowEndExclusive)
+    .sort((left, right) => left.effective_start_date.localeCompare(right.effective_start_date))[0] ?? null;
 }
 
 const meetingList = readJson(meetingListPath);
@@ -115,6 +133,9 @@ for (const rule of policy.system_rules ?? []) {
   const profile = registry.records.find((record) => record.system_id === rule.system_id);
   if (!profile) throw new Error(`Acquisition Registry profile missing for ${rule.system_id}`);
   const reviewedSeason = reviewedSeasonRecord(seasonState, rule.system_id, planningDate);
+  const futureActiveSeason = reviewedSeason.season_state === 'offseason'
+    ? futureActiveSeasonRecord(seasonState, rule.system_id, planningDate, windowEndExclusive)
+    : null;
 
   const systemMeetings = meetings.filter((meeting) => meeting.authority_id === profile.authority_id);
   const dates = systemMeetings.map((meeting) => meeting.date).filter(Boolean);
@@ -123,25 +144,35 @@ for (const rule of policy.system_rules ?? []) {
   const latestMeetingDate = maxString(dates);
   const lastCheckedDate = maxString(checkedDates);
   const publicNextMeetingDate = minString(dates.filter((date) => date >= planningDate));
-  const nextMeetingDate = publicNextMeetingDate ?? reviewedSeason.next_known_meeting_date;
+  const nextMeetingDate = publicNextMeetingDate ?? reviewedSeason.next_known_meeting_date ?? futureActiveSeason?.next_known_meeting_date ?? null;
   const sourceVisibleHorizonEndExclusive = latestMeetingDate === null ? null : addDays(latestMeetingDate, 1);
 
   const gapStart = sourceVisibleHorizonEndExclusive === null || sourceVisibleHorizonEndExclusive < tomorrow
     ? tomorrow
     : sourceVisibleHorizonEndExclusive;
-  const coverageGaps = reviewedSeason.season_state === 'active' && gapStart < windowEndExclusive
-    ? [{ start_date: gapStart, end_date_exclusive: windowEndExclusive, timezone: systemMeetings[0]?.timezone ?? 'UTC' }]
-    : [];
+  let coverageGaps = [];
+  if (reviewedSeason.season_state === 'active' && gapStart < windowEndExclusive) {
+    coverageGaps = [{ start_date: gapStart, end_date_exclusive: windowEndExclusive, timezone: systemMeetings[0]?.timezone ?? 'UTC' }];
+  } else if (reviewedSeason.season_state === 'offseason' && futureActiveSeason !== null) {
+    const futureStart = gapStart > futureActiveSeason.effective_start_date ? gapStart : futureActiveSeason.effective_start_date;
+    const futureEnd = futureActiveSeason.effective_end_date_exclusive < windowEndExclusive
+      ? futureActiveSeason.effective_end_date_exclusive
+      : windowEndExclusive;
+    if (futureStart < futureEnd) {
+      coverageGaps = [{ start_date: futureStart, end_date_exclusive: futureEnd, timezone: systemMeetings[0]?.timezone ?? 'UTC' }];
+    }
+  }
 
   systemStates.push({
     system_id: rule.system_id,
     timezone: systemMeetings[0]?.timezone ?? 'UTC',
     season_state: reviewedSeason.season_state,
+    future_active_start_date: futureActiveSeason?.effective_start_date ?? null,
     source_health: sourceHealth(lastCheckedDate, statuses, planningDate),
     last_successful_collection_at: dateTimeFromDate(lastCheckedDate),
     last_source_revalidation_at: dateTimeFromDate(lastCheckedDate),
     source_visible_horizon_end_exclusive: sourceVisibleHorizonEndExclusive,
-    next_meeting_date: reviewedSeason.season_state === 'active' ? nextMeetingDate : reviewedSeason.next_known_meeting_date,
+    next_meeting_date: nextMeetingDate,
     coverage_gaps: coverageGaps,
   });
 }
@@ -163,5 +194,6 @@ console.log(JSON.stringify({
   system_count: systemStates.length,
   active_systems: systemStates.filter((entry) => entry.season_state === 'active').map((entry) => entry.system_id),
   offseason_systems: systemStates.filter((entry) => entry.season_state === 'offseason').map((entry) => entry.system_id),
+  future_wake_up_systems: systemStates.filter((entry) => entry.future_active_start_date !== null).map((entry) => entry.system_id),
   systems_with_coverage_gaps: systemStates.filter((entry) => entry.coverage_gaps.length > 0).map((entry) => entry.system_id),
 }));
