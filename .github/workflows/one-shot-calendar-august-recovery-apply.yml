@@ -1,0 +1,68 @@
+name: One-shot Calendar August recovery apply
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-shot-calendar-august-recovery-apply.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  apply:
+    if: github.event.pull_request.head.ref == 'agent/calendar-horizon-recovery-2026-08-08'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: calendar-august-2026-horizon-recovery-promotion-output-v2
+          path: /tmp/recovery-output
+          github-token: ${{ github.token }}
+          run-id: 31261766093
+      - name: Apply only validated recovery output
+        shell: bash
+        run: |
+          mkdir -p data/candidates data/generated/timetable
+          cp /tmp/recovery-output/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json data/candidates/
+          cp /tmp/recovery-output/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json data/candidates/
+          cp /tmp/recovery-output/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json data/candidates/
+          cp /tmp/recovery-output/candidates/hkjc-horizon-recovery-2026-09-06-approved.json data/candidates/
+          rm -rf data/generated/timetable/horizon-recovery-2026-08-08
+          cp -R /tmp/recovery-output/generated/timetable/horizon-recovery-2026-08-08 data/generated/timetable/
+          cp /tmp/recovery-output/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meetings.json
+          cp /tmp/recovery-output/generated/timetable/canonical/meeting-details.json data/generated/timetable/canonical/meeting-details.json
+          cp /tmp/recovery-output/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-list.json
+          cp /tmp/recovery-output/generated/timetable/public/meeting-details.json data/generated/timetable/public/meeting-details.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          if (publicList.meetings.length !== 337) throw new Error(`public meeting count differs ${publicList.meetings.length}`);
+          if (publicList.meetings.map((m) => m.date).sort().at(-1) !== '2026-09-06') throw new Error('public horizon does not end on September 6');
+          NODE
+          git diff --check
+      - name: Commit validated recovery output to Draft PR branch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json \
+            data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json \
+            data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json \
+            data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json \
+            data/generated/timetable/horizon-recovery-2026-08-08 \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo 'Validated output already applied.'
+            exit 0
+          fi
+          git commit -m '[CF-Pages-Skip] Apply reviewed Calendar recovery through September 6'
+          git push origin HEAD:${{ github.head_ref }}
