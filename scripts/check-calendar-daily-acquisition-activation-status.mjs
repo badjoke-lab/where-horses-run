@@ -25,6 +25,11 @@ for (const key of ['automatic_approval', 'canonical_written', 'public_projection
 }
 
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-daily-activation-status-'));
+const completeFixture = path.join(tempDir, 'complete-meetings.json');
+const staleFixture = path.join(tempDir, 'stale-meetings.json');
+fs.writeFileSync(completeFixture, `${JSON.stringify({ meetings: [{ date: '2026-09-06' }] }, null, 2)}\n`);
+fs.writeFileSync(staleFixture, `${JSON.stringify({ meetings: [{ date: '2026-08-17' }] }, null, 2)}\n`);
+
 const output = path.join(tempDir, 'status.json');
 const baseArgs = [
   'scripts/timetable/write-calendar-daily-acquisition-status.mjs',
@@ -36,12 +41,13 @@ const baseArgs = [
   '--plan-result=success',
   '--execute-result=failure',
   '--hosted-jobs=2',
-  '--plan-id=due-job-plan-2026-07-19',
+  '--plan-id=due-job-plan-2026-08-08',
   '--review-branch=automation/calendar-daily-acquisition-review',
 ];
 const run = spawnSync(process.execPath, [
   ...baseArgs,
-  '--generated-at=2026-07-19T15:30:00Z',
+  '--generated-at=2026-08-08T13:45:00Z',
+  `--meeting-list=${completeFixture}`,
   `--output=${output}`,
 ], { cwd: root, encoding: 'utf8' });
 if (run.status !== 0) fail(`activation status writer failed: ${run.stderr || run.stdout}`);
@@ -49,11 +55,11 @@ else {
   const status = JSON.parse(fs.readFileSync(output, 'utf8'));
   if (status.schema_version !== 'calendar-daily-acquisition-activation-status-v1') fail('written activation status schema differs');
   if (status.plan_result !== 'success' || status.execute_result !== 'failure') fail('written activation job results differ');
-  if (status.hosted_jobs !== 2 || status.plan_id !== 'due-job-plan-2026-07-19') fail('written activation plan identity differs');
+  if (status.hosted_jobs !== 2 || status.plan_id !== 'due-job-plan-2026-08-08') fail('written activation plan identity differs');
   if (status.review_branch !== 'automation/calendar-daily-acquisition-review') fail('written activation review branch differs');
-  if (status.publication_freshness?.public_horizon_end_date !== '2026-08-17') fail('July fixture public horizon differs');
-  if (status.publication_freshness?.required_horizon_end_date !== '2026-08-17') fail('July fixture required horizon differs');
-  if (status.publication_freshness?.publication_review_required !== false) fail('July fixture should be horizon-complete');
+  if (status.publication_freshness?.public_horizon_end_date !== '2026-09-06') fail('complete fixture public horizon differs');
+  if (status.publication_freshness?.required_horizon_end_date !== '2026-09-06') fail('complete fixture required horizon differs');
+  if (status.publication_freshness?.publication_review_required !== false) fail('complete fixture should not require publication review');
   if (Object.values(status.publication_boundary).some((value) => value !== false)) fail('written activation status enables a publication side effect');
 }
 
@@ -62,20 +68,21 @@ const staleRun = spawnSync(process.execPath, [
   ...baseArgs,
   '--generated-at=2026-08-08T13:45:00Z',
   '--run-id=29690000002',
+  `--meeting-list=${staleFixture}`,
   `--output=${staleOutput}`,
 ], { cwd: root, encoding: 'utf8' });
 if (staleRun.status !== 0) fail(`stale-horizon activation writer failed: ${staleRun.stderr || staleRun.stdout}`);
 else {
   const status = JSON.parse(fs.readFileSync(staleOutput, 'utf8'));
-  if (status.publication_freshness?.public_horizon_end_date !== '2026-08-17') fail('August stale fixture public horizon differs');
-  if (status.publication_freshness?.required_horizon_end_date !== '2026-09-06') fail('August required rolling horizon differs');
-  if (status.publication_freshness?.publication_review_required !== true) fail('August stale fixture must require publication review');
+  if (status.publication_freshness?.public_horizon_end_date !== '2026-08-17') fail('stale fixture public horizon differs');
+  if (status.publication_freshness?.required_horizon_end_date !== '2026-09-06') fail('stale fixture required rolling horizon differs');
+  if (status.publication_freshness?.publication_review_required !== true) fail('stale fixture must require publication review');
 }
 
 const noPlanOutput = path.join(tempDir, 'no-plan.json');
 const noPlanRun = spawnSync(process.execPath, [
   'scripts/timetable/write-calendar-daily-acquisition-status.mjs',
-  '--generated-at=2026-07-19T15:31:00Z',
+  '--generated-at=2026-08-08T13:46:00Z',
   '--run-id=29690000001',
   '--run-attempt=1',
   '--event-name=schedule',
@@ -86,6 +93,7 @@ const noPlanRun = spawnSync(process.execPath, [
   '--hosted-jobs=',
   '--plan-id=',
   '--review-branch=automation/calendar-daily-acquisition-review',
+  `--meeting-list=${completeFixture}`,
   `--output=${noPlanOutput}`,
 ], { cwd: root, encoding: 'utf8' });
 if (noPlanRun.status !== 0) fail(`activation status failure writer failed: ${noPlanRun.stderr || noPlanRun.stdout}`);
@@ -96,8 +104,9 @@ else {
 
 const badRun = spawnSync(process.execPath, [
   ...baseArgs.filter((entry) => !entry.startsWith('--execute-result=')),
-  '--generated-at=2026-07-19T15:30:00Z',
+  '--generated-at=2026-08-08T13:45:00Z',
   '--execute-result=unknown',
+  `--meeting-list=${completeFixture}`,
   `--output=${path.join(tempDir, 'invalid.json')}`,
 ], { cwd: root, encoding: 'utf8' });
 if (badRun.status === 0) fail('unsupported activation Job result was accepted');
@@ -134,7 +143,7 @@ console.log('CALENDAR_DAILY_ACQUISITION_ACTIVATION_STATUS: pass');
 console.log('STABLE_REVIEW_BRANCH: automation/calendar-daily-acquisition-review');
 console.log('PLAN_FAILURE_STATUS: retained');
 console.log('EXECUTION_FAILURE_STATUS: retained');
-console.log('PUBLICATION_FRESHNESS_SIGNAL: verified');
+console.log('PUBLICATION_FRESHNESS_SIGNAL: verified with isolated complete/stale fixtures');
 console.log('REVIEW_ARTIFACT_DELIVERY: verified');
 console.log('PR_CREATION_PERMISSION: not required');
 console.log('PUBLICATION_SIDE_EFFECTS: disabled');
