@@ -26,7 +26,7 @@ export function buildKraRankCCandidate(plan) {
       meeting_id: meetingId,
       country_id: plan.country_id,
       authority_id: plan.authority_id,
-      racing_system_id: 'south-korea-kra-system',
+      racing_system_id: 'kra-national-racing-system',
       racecourse_id: venue.racecourse_id,
       date,
       timezone: plan.candidate_window.timezone,
@@ -38,7 +38,7 @@ export function buildKraRankCCandidate(plan) {
         source_id: plan.source_id,
         official_url: plan.source_url,
         checked_at: plan.reviewed_at,
-        extraction_method: 'reviewed_calendar_plan'
+        extraction_method: 'reviewed_snapshot'
       },
       confidence: 'high',
       review_status: 'pending',

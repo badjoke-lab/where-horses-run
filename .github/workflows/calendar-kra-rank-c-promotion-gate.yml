@@ -1,0 +1,56 @@
+name: Calendar KRA Rank C promotion gate
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
+      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
+      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
+      - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
+      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
+      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
+      - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate deterministic KRA candidate adapter
+        run: node scripts/check-kra-calendar-plan-adapter.mjs
+      - name: Validate KRA promotion review gate
+        run: node scripts/check-kra-rank-c-promotion-gate.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

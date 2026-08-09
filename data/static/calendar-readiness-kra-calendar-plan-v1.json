@@ -1,0 +1,54 @@
+{
+  "schema_version": "calendar-readiness-kra-calendar-plan-v1",
+  "records": [
+    {
+      "readiness_id": "south-korea--kra-national-racing-system--kra-2026-racing-operation-overview",
+      "country_id": "south-korea",
+      "country_tracker_delivery_no": "02",
+      "system_id": "kra-national-racing-system",
+      "system_name_en": "Korea Racing Authority system",
+      "authority_source_key": "south-korea/korea-racing-authority/kra-2026-racing-operation-overview",
+      "racecourse_ids": [
+        "seoul-racecourse",
+        "busan-gyeongnam-racecourse",
+        "jeju-racecourse"
+      ],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "query_parameter",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "seasonal",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "fixture_validated",
+      "fallback": "official_link_only",
+      "source_status": "verified",
+      "checked_date": "2026-08-09",
+      "evidence_reviewed_at": "2026-08-09",
+      "revalidation_trigger": "Revalidate when KRA changes the 2026 operating overview, meet-code semantics, or the reviewed Seoul/Busan-Gyeongnam/Jeju date pattern no longer reproduces the bounded plan.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/02-south-korea/final-summary.json",
+      "limitations": [
+        "This source establishes reviewed meeting date and racecourse identity only.",
+        "Race times and race-level programme fields are excluded from this Rank C source profile.",
+        "Human review remains required before canonical promotion or public projection."
+      ],
+      "notes": "The reviewed 2026 plan yields exactly 32 Rank C meeting candidates from 2026-08-07 through 2026-09-06: Seoul 11, Busan-Gyeongnam 10, Jeju 11."
+    }
+  ]
+}

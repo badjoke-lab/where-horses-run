@@ -4,6 +4,11 @@ import path from 'node:path';
 const BASE_PATH = 'data/static/authority-source-inventory.json';
 const SUPPLEMENTS = Object.freeze([
   {
+    key: 'kra_calendar_plan',
+    path: 'data/static/authority-source-inventory-kra-calendar-plan-v1.json',
+    schemaVersion: 'authority-source-inventory-kra-calendar-plan-v1',
+  },
+  {
     key: 'nar_race_list',
     path: 'data/static/authority-source-inventory-nar-race-list-v1.json',
     schemaVersion: 'authority-source-inventory-nar-race-list-v1',
