@@ -1,24 +1,36 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-07-19
+Last reviewed: 2026-08-09
 
 ## Authority order
 
 When repository documents conflict, use this order:
 
 1. active contracts and machine-readable schemas;
-2. `docs/project-roadmap.md`;
-3. active programme roadmaps and adopted addenda;
+2. `docs/project-roadmap.md` together with the latest adopted `docs/project-roadmap-YYYY-MM-DD-addendum.md`; the latest adopted addendum controls current/next Work ID and current execution state when it explicitly updates an older roadmap snapshot;
+3. active programme roadmaps together with their latest adopted addenda;
 4. active operations policies;
 5. canonical trackers and registries;
 6. accepted decision records;
 7. active runbooks;
-8. reviewed research notes;
+8. reviewed research notes and source-test implementation-status records;
 9. PR plans;
 10. historical or superseded specifications.
 
 Conversation history and PR numbers do not replace canonical repository documents.
+
+The current adopted top-level execution addendum is:
+
+```text
+docs/project-roadmap-2026-08-09-addendum.md
+```
+
+The current adopted Calendar implementation addendum is:
+
+```text
+docs/calendar/implementation-roadmap-2026-08-09-addendum.md
+```
 
 ## Document classes
 
@@ -35,6 +47,7 @@ Conversation history and PR numbers do not replace canonical repository document
 Overall:
 
 - `docs/project-roadmap.md`
+- `docs/project-roadmap-2026-08-09-addendum.md`
 - this policy
 - `docs/operations/deployment-and-ci-policy.md`
 
@@ -55,6 +68,7 @@ Calendar human-readable contracts:
 - `docs/calendar/acquisition-control-plane-contract.md`
 - `docs/calendar/acquisition-control-plane-implementation-plan.md`
 - `docs/calendar/implementation-roadmap.md`
+- `docs/calendar/implementation-roadmap-2026-08-09-addendum.md`
 - `docs/calendar/daily-acquisition-contract.md`
 - `docs/calendar/daily-acquisition-implementation-schedule.md`
 - `docs/calendar/daily-acquisition-roadmap-addendum.md`
@@ -192,23 +206,27 @@ Calendar machine-readable contracts:
 - `scripts/check-authority-source-inventory-schema.mjs`
 - `.github/workflows/calendar-daily-acquisition.yml`
 
-The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are implemented canonical artifacts. `docs/calendar/acquisition-control-plane-contract.md`, its implementation plan, and the active daily-acquisition contract govern orchestration, scheduling, runner, review, and publication boundaries.
+The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are implemented canonical artifacts. `docs/calendar/acquisition-control-plane-contract.md`, its implementation plan, the active Calendar roadmap/addendum, and the active daily-acquisition contract govern orchestration, scheduling, runner, review, and publication boundaries.
 
 `docs/specs/where-horses-run-v0-spec.md` is the historical product baseline. Current contracts and schemas override it where they differ.
+
+Early `docs/specs/timetable-data-flow-and-display-contract.md`, `docs/specs/racecourse-page-spec.md`, and `docs/specs/page-link-architecture.md` are design foundations, not higher-authority current operating contracts when they conflict with the implemented canonical Calendar/racecourse documents listed above.
 
 ## Required PR discipline
 
 Before work begins:
 
 1. assign or confirm the stable Work ID;
-2. read the applicable canonical documents;
-3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, and the applicable machine-readable contract;
-4. confirm tracker or registry state;
+2. read the applicable canonical documents and the latest adopted roadmap addenda;
+3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, `docs/calendar/implementation-roadmap-2026-08-09-addendum.md`, and the applicable machine-readable contract;
+4. confirm tracker, Registry, source-test/readiness, and source implementation-status state;
 5. record whether Cloudflare is required.
 
 For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, reviewed season-state file, current-horizon audit, and daily execution policy before changing workflow, policy, season state, runner, draft-PR, or publication behavior.
 
-The same PR must update the relevant tracker, registry, roadmap, contract, runbook, schema, and validator when their state or rule changes.
+For source expansion, also read the current source-test summary/implementation status, Calendar Readiness record, Authority Source Inventory record, racecourse identity/public-timetable contracts, and public display boundary before creating or promoting candidates.
+
+The same PR must update the relevant tracker, Registry, active roadmap/addendum, contract, runbook, schema, source implementation status, and validator when their state or rule changes.
 
 Every substantive PR records:
 
@@ -232,8 +250,8 @@ The public repository may contain reviewed facts, schemas, code, hashes, and pub
 
 ## Maintenance
 
-- check active roadmaps after every merge;
-- update trackers and registries in every relevant PR;
+- check active roadmaps and their latest adopted addenda after every merge;
+- update trackers, Registry/source implementation state, and roadmaps in every relevant PR;
 - review canonical links regularly;
 - label historical and superseded documents clearly;
-- reverify external platform facts before changing operations because of them.
+- reverify external platform/source facts before changing operations because of them.
