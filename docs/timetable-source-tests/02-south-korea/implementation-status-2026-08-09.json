@@ -4,8 +4,8 @@
   "country_id": "south-korea",
   "authority_id": "korea-racing-authority",
   "source_test_summary": "docs/timetable-source-tests/02-south-korea/final-summary.json",
-  "implementation_unit": "kra-reviewed-calendar-plan-rank-c-candidate-generation",
-  "status": "candidate_generation_implemented",
+  "implementation_unit": "kra-public-identity-promotion-preparation",
+  "status": "public_identity_review_prepared",
   "candidate_scope": {
     "start_date": "2026-08-07",
     "end_date_exclusive": "2026-09-07",
@@ -17,6 +17,15 @@
     ],
     "capability_rank": "C"
   },
+  "identity_review": {
+    "artifact": "data/static/kra-2026-reviewed-public-timetable-identities-v1.json",
+    "status": "pending_human_review",
+    "existing_canonical_identity": "seoul-racecourse",
+    "prepared_identity_additions": [
+      "busan-gyeongnam-racecourse",
+      "jeju-racecourse"
+    ]
+  },
   "publication_boundary": {
     "canonical_written": false,
     "public_projection_written": false,
@@ -24,5 +33,5 @@
     "automatic_merge": false,
     "deployment_performed": false
   },
-  "next_gate": "Register and review public timetable identities for Busan-Gyeongnam and Jeju, then create a separate human-reviewed promotion unit."
+  "next_gate": "Human-review the KRA public identity artifact; only after approval add Busan-Gyeongnam and Jeju as identity-only public timetable records, then validate all 32 Rank C candidates in a separate promotion unit."
 }

@@ -1,0 +1,50 @@
+name: Calendar KRA public identities
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/static/country-page-racecourses-*.json'
+      - 'docs/timetable-source-tests/02-south-korea/**'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
+      - '.github/workflows/calendar-kra-public-identities.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/static/country-page-racecourses-*.json'
+      - 'docs/timetable-source-tests/02-south-korea/**'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
+      - '.github/workflows/calendar-kra-public-identities.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate KRA public timetable identity review boundary
+        run: node scripts/check-kra-public-timetable-identities.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
