@@ -49,4 +49,12 @@ Calendar:
 - [Global timetable architecture](specs/global-timetable-architecture.md)
 - [2026-06-28 architecture addendum](specs/global-timetable-architecture-2026-06-28-addendum.md)
 
+Racecourse pages:
+
+- [Identity reconciliation](racecourses/identity-reconciliation.md)
+- [Public timetable connection](racecourses/public-timetable-connection.md)
+- [Profile evidence](racecourses/profile-evidence.md)
+- [Page-link architecture](racecourses/page-link-architecture.md)
+- [2026-08-09 current-state addendum](racecourses/current-state-2026-08-09-addendum.md) — current 37/74 growth state and identity-only rules
+
 The v0 specification and early PR plans are historical product/planning baselines. Current active contracts, schemas, roadmaps, and adopted addenda override them when they differ.
