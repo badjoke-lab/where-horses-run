@@ -1,0 +1,73 @@
+{
+  "schema_version": "kra-reviewed-calendar-plan-v1",
+  "reviewed_at": "2026-08-09T02:21:00Z",
+  "country_id": "south-korea",
+  "authority_id": "korea-racing-authority",
+  "source_id": "kra-2026-racing-operation-overview",
+  "source_role": "primary_official",
+  "source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Act=13&Sub=1&meet=1",
+  "source_test_summary": "docs/timetable-source-tests/02-south-korea/final-summary.json",
+  "candidate_window": {
+    "start_date": "2026-08-07",
+    "end_date_exclusive": "2026-09-07",
+    "timezone": "Asia/Seoul"
+  },
+  "publication_ceiling": "C",
+  "venues": [
+    {
+      "racecourse_id": "seoul-racecourse",
+      "meet_code": "1",
+      "dates": [
+        "2026-08-08",
+        "2026-08-09",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-29",
+        "2026-08-30",
+        "2026-09-05",
+        "2026-09-06"
+      ]
+    },
+    {
+      "racecourse_id": "busan-gyeongnam-racecourse",
+      "meet_code": "3",
+      "dates": [
+        "2026-08-07",
+        "2026-08-09",
+        "2026-08-14",
+        "2026-08-16",
+        "2026-08-21",
+        "2026-08-23",
+        "2026-08-28",
+        "2026-08-30",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "racecourse_id": "jeju-racecourse",
+      "meet_code": "2",
+      "dates": [
+        "2026-08-07",
+        "2026-08-08",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-17",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-09-04",
+        "2026-09-05"
+      ]
+    }
+  ],
+  "review_notes": [
+    "The official 2026 operating overview defines the August 7 through September 6 autumn night-racing period and venue/day operation pattern.",
+    "August 17 is an official Monday holiday-racing date for Seoul and Jeju.",
+    "This reviewed plan intentionally produces meeting date and venue identity only. Race times and race-level rows are excluded from this implementation unit."
+  ]
+}

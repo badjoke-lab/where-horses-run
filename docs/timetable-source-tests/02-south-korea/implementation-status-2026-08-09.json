@@ -1,0 +1,28 @@
+{
+  "schema_version": "timetable-source-implementation-status-v1",
+  "recorded_at": "2026-08-09",
+  "country_id": "south-korea",
+  "authority_id": "korea-racing-authority",
+  "source_test_summary": "docs/timetable-source-tests/02-south-korea/final-summary.json",
+  "implementation_unit": "kra-reviewed-calendar-plan-rank-c-candidate-generation",
+  "status": "candidate_generation_implemented",
+  "candidate_scope": {
+    "start_date": "2026-08-07",
+    "end_date_exclusive": "2026-09-07",
+    "meeting_count": 32,
+    "racecourses": [
+      "seoul-racecourse",
+      "busan-gyeongnam-racecourse",
+      "jeju-racecourse"
+    ],
+    "capability_rank": "C"
+  },
+  "publication_boundary": {
+    "canonical_written": false,
+    "public_projection_written": false,
+    "automatic_approval": false,
+    "automatic_merge": false,
+    "deployment_performed": false
+  },
+  "next_gate": "Register and review public timetable identities for Busan-Gyeongnam and Jeju, then create a separate human-reviewed promotion unit."
+}
