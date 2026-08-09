@@ -7,6 +7,7 @@ assert.deepEqual(first, second, 'KRA candidate generation must be deterministic'
 assert.equal(first.schema_version, 'timetable-candidate-v1');
 assert.equal(first.country_id, 'south-korea');
 assert.equal(first.authority_id, 'korea-racing-authority');
+assert.equal(first.source_id, 'kra-2026-racing-operation-overview');
 assert.equal(first.candidate_window.start_date, '2026-08-07');
 assert.equal(first.candidate_window.end_date_exclusive, '2026-09-07');
 assert.equal(first.records.length, 32, 'expected 32 KRA meeting candidates');
@@ -37,6 +38,9 @@ for (const record of first.records) {
   seen.add(record.meeting_id);
   actualVenueCounts.set(record.racecourse_id, (actualVenueCounts.get(record.racecourse_id) ?? 0) + 1);
   assert.equal(record.capability_rank, 'C');
+  assert.equal(record.racing_system_id, 'kra-national-racing-system');
+  assert.equal(record.source.source_id, first.source_id);
+  assert.equal(record.source.extraction_method, 'reviewed_snapshot');
   assert.equal(record.first_race_time_local, null);
   assert.equal(record.last_race_time_local, null);
   assert.deepEqual(record.timetable_rows, []);
@@ -55,4 +59,5 @@ walkKeys(first);
 console.log('KRA_CALENDAR_PLAN_ADAPTER: pass');
 console.log(`CANDIDATE_MEETINGS: ${first.records.length}`);
 console.log('VENUES: seoul-racecourse=11 busan-gyeongnam-racecourse=10 jeju-racecourse=11');
+console.log('PROMOTION_CONTRACT_ALIGNMENT: kra-national-racing-system/reviewed_snapshot');
 console.log('PUBLICATION_EFFECT: none');
