@@ -3,8 +3,8 @@
 Status: active implementation schedule  
 Work ID: `WHR-CAL-DAILY-ACQUISITION`  
 Started: 2026-07-19  
-Last reviewed: 2026-08-08  
-Current stage: `DA-08` reviewed rolling-horizon recovery through 2026-09-06; final CI and production confirmation pending
+Last reviewed: 2026-08-09  
+Current stage: `DA-09` steady-state acceptance and publication-freshness operation; DA-08 recovery through 2026-09-06 complete
 
 ## Objective
 
@@ -22,6 +22,7 @@ committed public horizon
 -> Canonical/public projection
 -> rendered QA
 -> reviewed publication merge
+-> production freshness verification
 ```
 
 Automatic approval, Canonical promotion, public projection, merge, and deployment remain prohibited in the daily workflow.
@@ -34,7 +35,7 @@ The July audit proved the original five-system dispositions and the recovery req
 
 ## Stage DA-01 — canonical contract and documentation
 
-Status: complete; current operational wording updated in the August recovery PR.
+Status: complete; current operational wording aligned through the August recovery.
 
 Canonical documents:
 
@@ -88,6 +89,8 @@ Current boundary:
 - reviewed Banei selected-meeting rank retry remains eligible;
 - no execution policy grants approval or publication authority.
 
+South Korea KRA candidate generation introduced by PR #568 is not silently added to this daily execution policy. Any future KRA daily scheduling requires a separate reviewed policy/Registry decision after the public promotion unit.
+
 ## Stage DA-05 — scheduled hosted acquisition
 
 Status: complete and operating.
@@ -137,7 +140,7 @@ The freshness signal was added after the August 8 incident exposed a gap between
 
 ## Stage DA-07 — recovery candidates and source review
 
-Status: complete for the current 2026-08-08 through 2026-09-06 recovery window.
+Status: complete for the 2026-08-08 through 2026-09-06 recovery window.
 
 Reviewed new Rank C identities:
 
@@ -165,11 +168,9 @@ data/generated/timetable/horizon-recovery-2026-08-08/
 
 ## Stage DA-08 — reviewed Canonical and public recovery
 
-Status: in final PR validation.
+Status: complete in PR #567.
 
-Draft PR #567 contains the reviewed recovery output.
-
-Verified in read-only Promotion Validation before branch application:
+Verified and completed:
 
 ```text
 new approved identities: 96
@@ -178,24 +179,25 @@ public maximum meeting date: 2026-09-06
 new public rank: C only
 ```
 
-Remaining completion sequence:
+Completion sequence executed:
 
 ```text
 normal repository CI
 -> bilingual rendered QA
--> PR #567 Ready
--> reviewed merge
+-> reviewed PR #567 merge
 -> normal Cloudflare production deployment
--> one-shot production freshness verification
+-> production freshness verification
 ```
+
+PR #567 also added the reviewed Mizusawa public timetable identity and made current racecourse/page/SEO validation growth-aware while retaining historical v1 audit snapshots.
 
 ## Stage DA-09 — steady-state acceptance
 
-Status: not yet closed.
+Status: active operating acceptance; not closed as a reason to stop monitoring publication freshness.
 
 The August 8 incident established an additional acceptance requirement: a successful acquisition cycle is insufficient when the reviewed public horizon is stale.
 
-Steady-state acceptance requires:
+Steady-state acceptance requires and now operates with:
 
 - successful scheduled acquisition evidence;
 - failure/source-error evidence retained without cross-Job corruption;
@@ -209,7 +211,24 @@ Steady-state acceptance requires:
 - `publication_review_required=true` is treated as an operator action item, not a green steady state;
 - production freshness is confirmed after each reviewed horizon publication.
 
-Only after DA-09 may `WHR-CAL-DAILY-ACQUISITION` be marked fully accepted.
+DA-09 is the ongoing acceptance/operations stage. It does not block separately reviewed source expansion, but every new system must be explicitly added to Registry/execution policy before daily acquisition may schedule it.
+
+## Source expansion handoff
+
+The active Calendar expansion sequence is governed by:
+
+```text
+docs/project-roadmap-2026-08-09-addendum.md
+docs/calendar/implementation-roadmap-2026-08-09-addendum.md
+```
+
+Current source-expansion Work ID:
+
+```text
+WHR-CAL-SOUTH-KOREA-KRA
+```
+
+PR #568 completed KRA Rank C candidate generation for 32 meetings. Its next gate is public timetable identity review for Busan-Gyeongnam and Jeju followed by a separate human-reviewed promotion unit. KRA is not automatically enrolled into the daily scheduled-execution policy by that candidate-generation merge.
 
 ## PR history
 
@@ -223,9 +242,12 @@ PR #561 — plan/output diagnostics correction — merged
 PR #562 — explicit generated Collection Job dispatch — merged
 PR #563 — review-artifact delivery correction — merged
 PR #564 — reviewed public recovery through 2026-08-17 — merged
-PR #567 — current recovery through 2026-09-06 + future-season wake-up + stale-publication signal — Draft
+PR #567 — reviewed recovery through 2026-09-06 + future-season wake-up + stale-publication signal — merged
+PR #568 — South Korea KRA Rank C candidate generator — merged; separate from daily execution policy
 ```
 
 ## Current decision
 
-Daily acquisition was not the component that stopped between July 19 and August 8. The review queue continued receiving scheduled evidence, but no reviewed publication continuation was performed, so production remained at the August 17 horizon. PR #567 repairs the current horizon and adds a machine-readable publication-freshness signal so this state is visible on every daily activation without weakening the mandatory human publication boundary.
+Daily acquisition was not the component that stopped between July 19 and August 8. The review queue continued receiving scheduled evidence, but no reviewed publication continuation was performed, so production remained at the August 17 horizon. PR #567 restored the reviewed horizon through September 6 and made publication freshness visible on every daily activation without weakening the mandatory human publication boundary.
+
+From this point, daily acquisition remains an operating maintenance programme while source expansion proceeds through separate reviewed units. Any change to automatic approval, Canonical promotion, public projection, merge, deployment, or source enrollment requires an explicit contract/policy decision rather than being inferred from adapter capability.
