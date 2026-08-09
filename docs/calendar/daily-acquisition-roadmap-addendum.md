@@ -3,7 +3,7 @@
 Status: active adopted Calendar programme addendum  
 Work ID: `WHR-CAL-DAILY-ACQUISITION`  
 Adopted: 2026-07-19  
-Last reviewed: 2026-08-08
+Last reviewed: 2026-08-09
 
 ## Scope
 
@@ -56,9 +56,14 @@ JRA:
 UAE:
   reviewed season windows retained
   not in the current daily Due-job execution policy
+
+South Korea / KRA:
+  PR #568 candidate generation is implemented
+  not enrolled into the daily Due-job execution policy by that merge
+  future scheduled execution requires a separate Registry/policy decision after reviewed public promotion
 ```
 
-Executor capability alone does not activate ordinary scheduled refresh.
+Executor or adapter capability alone does not activate ordinary scheduled refresh.
 
 ## Programme sequence
 
@@ -79,24 +84,27 @@ accepted Calendar Public v1
 
 A successful acquisition run does **not** close the cycle if the public horizon is stale.
 
-## August 8 operational finding
+## August 8 operational finding and completed response
 
 The daily acquisition system continued running after the 2026-07-19 publication. Draft PR #559 accumulated scheduled evidence through 2026-08-08, but no reviewed publication continuation was performed. Production therefore remained on the public projection ending 2026-08-17.
 
-The response is not to enable automatic publication. Instead:
+The response did not enable automatic publication. Instead, PR #567:
 
-1. recover the current reviewed rolling window through 2026-09-06;
-2. add a machine-readable `publication_review_required` signal to every daily activation;
-3. treat that signal as an operator action item;
-4. preserve the existing mandatory human approval and publication boundary.
+1. recovered the reviewed rolling window through 2026-09-06;
+2. added/retained the machine-readable `publication_review_required` signal on daily activation;
+3. treated that signal as an operator action item;
+4. preserved mandatory human approval and publication boundaries;
+5. merged through normal review and completed production freshness verification.
+
+Historical July recovery audits remain historical evidence; they are not current horizon ceilings.
 
 ## Rolling season transitions
 
 A season boundary can fall inside the 30-day horizon while the planning date itself is offseason.
 
-The reviewed planner must therefore support non-overlapping future season windows. It suppresses offseason dates but may schedule the exact future active interval when that interval begins inside the rolling horizon.
+The reviewed planner supports non-overlapping future season windows. It suppresses offseason dates but may schedule the exact future active interval when that interval begins inside the rolling horizon.
 
-August 8 example:
+August 8 proof:
 
 ```text
 HKJC offseason through 2026-09-05
@@ -107,6 +115,8 @@ wake-up acquisition interval: 2026-09-06..2026-09-07 only
 ## Required documents and controls
 
 ```text
+docs/project-roadmap-2026-08-09-addendum.md
+docs/calendar/implementation-roadmap-2026-08-09-addendum.md
 docs/calendar/daily-acquisition-contract.md
 docs/calendar/daily-acquisition-implementation-schedule.md
 docs/calendar/daily-acquisition-operations.md
@@ -115,35 +125,42 @@ data/static/calendar-system-season-state-v1.json
 data/static/calendar-daily-acquisition-activation-status.schema.json
 ```
 
-## Completion state
+## Completion and ongoing acceptance state
 
-The Work ID is not complete merely because automation code is merged.
+The automation implementation and August recovery are complete, but DA-09 is intentionally an ongoing operating acceptance stage rather than a reason to stop checking freshness.
 
-Steady-state acceptance requires:
+Current acceptance requirements are:
 
-1. live-state and generated-plan paths are CI-validated;
-2. separate execution authorization is CI-validated;
+1. live-state and generated-plan paths remain CI-validated;
+2. separate execution authorization remains CI-validated;
 3. scheduled runs produce auditable review artifacts;
 4. Draft PR #559 receives repeated updates without publication side effects;
 5. successful and failed/partial outcomes remain auditable;
 6. JRA local-primary ownership remains explicit;
 7. Banei ordinary-refresh prohibition remains explicit;
-8. HKJC and UAE season transitions are represented by reviewed windows;
+8. HKJC and UAE season transitions remain represented by reviewed windows;
 9. every activation reports whether the public rolling horizon is complete;
-10. `publication_review_required=true` receives operator review rather than being treated as green completion;
+10. `publication_review_required=true` receives operator review rather than green completion;
 11. reviewed horizon publications receive bilingual QA and production freshness confirmation;
 12. no unattended publication permission is introduced.
 
-## Next decisions after acceptance
+## Source-expansion separation
+
+New systems are not automatically added to daily acquisition merely because a source test or candidate adapter succeeds.
+
+Current source-expansion work is `WHR-CAL-SOUTH-KOREA-KRA`, governed by the active 2026-08-09 project and Calendar roadmap addenda. South Korea must complete identity review and separate reviewed promotion before any later daily-scheduling decision.
+
+## Next decisions requiring separate review
 
 Any of the following requires a separate reviewed decision:
 
 - changing human review cadence;
 - adding automatic notification/escalation for persistent `publication_review_required=true`;
 - adding UAE to the daily Due-job execution policy;
+- adding KRA or another new system to daily Due-job execution policy;
 - activating Banei ordinary scheduled refresh;
 - moving JRA acquisition to a hosted runner;
-- expanding to another racing system;
-- changing the 30-day public horizon.
+- changing the 30-day public horizon;
+- changing automatic approval, promotion, merge, deployment, or publication permissions.
 
 None of these decisions is implied by this addendum.
