@@ -1,0 +1,39 @@
+{
+  "schema_version": "calendar-coverage-observation-v1",
+  "run_id": "due-job-plan-2026-08-10-due-japan-nar-coverage-gap-001-run-001",
+  "system_id": "japan-nar-system",
+  "source_id": "nar-schedule-detail-batch",
+  "checked_at": "2026-08-10T04:58:29.678Z",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-07",
+    "end_date_exclusive": "2026-09-09",
+    "timezone": "Asia/Tokyo"
+  },
+  "observed_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-07",
+    "end_date_exclusive": "2026-09-09",
+    "timezone": "Asia/Tokyo"
+  },
+  "collection_mode": "date_window",
+  "records_discovered": 8,
+  "records_updated": 8,
+  "unresolved_dates": [
+    "2026-09-07",
+    "2026-09-08"
+  ],
+  "unresolved_meeting_ids": [
+    "nar-kanazawa-racecourse-2026-09-08",
+    "nar-kasamatsu-racecourse-2026-09-08",
+    "nar-kawasaki-racecourse-2026-09-07",
+    "nar-kawasaki-racecourse-2026-09-08",
+    "nar-mizusawa-racecourse-2026-09-07",
+    "nar-mizusawa-racecourse-2026-09-08",
+    "nar-monbetsu-racecourse-2026-09-08",
+    "nar-nagoya-racecourse-2026-09-07"
+  ],
+  "source_errors": [],
+  "coverage_claim": "source_window_complete",
+  "completion_audit_ref": null
+}
