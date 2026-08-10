@@ -9,6 +9,8 @@ on:
       - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
       - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
+      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/check-kra-calendar-plan-adapter.mjs'
@@ -24,6 +26,8 @@ on:
       - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
       - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
+      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/check-kra-calendar-plan-adapter.mjs'
@@ -45,8 +49,16 @@ jobs:
           node-version: 22.12.0
       - name: Validate deterministic KRA candidate adapter
         run: node scripts/check-kra-calendar-plan-adapter.mjs
-      - name: Validate KRA promotion review gate
+      - name: Build approved KRA candidate from reviewed manifest
+        run: |
+          node scripts/timetable/build-kra-rank-c-approved-candidate.mjs
+          node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
+      - name: Exercise shared promotion core without writing canonical data
+        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --dry-run
+      - name: Validate approved KRA promotion gate
         run: node scripts/check-kra-rank-c-promotion-gate.mjs
+      - name: Remove ephemeral approved candidate
+        run: rm data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
