@@ -12,12 +12,20 @@
     {
       "source_id": "kra-major-facilities",
       "url": "https://www.kra.co.kr/co/fa/cofa01.do?menuId=skr06_skr066",
-      "supports": ["seoul-racecourse", "busan-gyeongnam-racecourse", "jeju-racecourse"]
+      "supports": [
+        "seoul-racecourse",
+        "busan-gyeongnam-racecourse",
+        "jeju-racecourse"
+      ]
     },
     {
       "source_id": "kra-racing-rss-service",
       "url": "https://race.kra.co.kr/raceguide/RaceRssServiceIntro.do",
-      "supports": ["seoul-racecourse", "busan-gyeongnam-racecourse", "jeju-racecourse"]
+      "supports": [
+        "seoul-racecourse",
+        "busan-gyeongnam-racecourse",
+        "jeju-racecourse"
+      ]
     }
   ],
   "records": [
@@ -65,8 +73,8 @@
     "promotion_target": "data/static/racecourses-public-timetable-identities-v1.json"
   },
   "publication_boundary": {
-    "canonical_written": false,
-    "public_projection_written": false,
+    "canonical_written": true,
+    "public_projection_written": true,
     "automatic_approval": false,
     "automatic_merge": false,
     "deployment_performed": false
