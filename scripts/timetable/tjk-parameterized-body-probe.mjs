@@ -6,6 +6,7 @@ import path from 'node:path';
 const REVALIDATION_PATH = 'docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json';
 const CURRENT_PAGE_PATH = '/TR/YarisSever/Info/Page/GunlukYarisProgrami';
 const CURRENT_DATA_PATH = '/TR/YarisSever/Info/Data/GunlukYarisProgrami';
+const VENUE_DETAIL_PATH = '/TR/YarisSever/Info/Sehir/GunlukYarisProgrami';
 const revalidation = JSON.parse(fs.readFileSync(REVALIDATION_PATH, 'utf8'));
 
 function parseArgs(argv) {
@@ -52,7 +53,7 @@ function detectRaceMarkers(body) {
 }
 
 function detectTimeTokens(body) {
-  return [...new Set([...body.matchAll(/\b(?:[01]\d|2[0-3]):[0-5]\d\b/g)].map((match) => match[0]))].sort();
+  return [...new Set([...body.matchAll(/\b(?:[01]\d|2[0-3])[:.]([0-5]\d)\b/g)].map((match) => match[0].replace('.', ':')))].sort();
 }
 
 function extractEndpointHints(html, pageUrl) {
@@ -65,7 +66,7 @@ function extractEndpointHints(html, pageUrl) {
   for (const expression of expressions) {
     for (const match of decoded.matchAll(expression)) {
       const raw = match[0].replace(/[),;]+$/g, '');
-      if (!/(Gunluk|YarisProgram|YarışProgram|Query\/Data|Info\/Data|Programi)/iu.test(raw)) continue;
+      if (!/(Gunluk|YarisProgram|YarışProgram|Query\/Data|Info\/Data|Info\/Sehir|Programi)/iu.test(raw)) continue;
       try {
         candidates.add(new URL(raw, pageUrl).toString());
       } catch {
@@ -73,7 +74,7 @@ function extractEndpointHints(html, pageUrl) {
       }
     }
   }
-  return [...candidates].sort().slice(0, 50);
+  return [...candidates].sort().slice(0, 100);
 }
 
 function withTargetParameters(baseUrl, target, extra = {}) {
@@ -85,15 +86,13 @@ function withTargetParameters(baseUrl, target, extra = {}) {
   return url;
 }
 
-async function fetchBody(url) {
-  const response = await fetch(url, {
-    redirect: 'follow',
-    headers: {
-      accept: 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
-      'user-agent': 'WhereHorsesRun-source-verification/1.0',
-      'x-requested-with': 'XMLHttpRequest',
-    },
-  });
+async function fetchBody(url, { xhr = false } = {}) {
+  const headers = {
+    accept: 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
+    'user-agent': 'WhereHorsesRun-source-verification/1.0',
+  };
+  if (xhr) headers['x-requested-with'] = 'XMLHttpRequest';
+  const response = await fetch(url, { redirect: 'follow', headers });
   const body = await response.text();
   return { response, body, finalUrl: new URL(response.url) };
 }
@@ -110,7 +109,7 @@ function safeResponseSummary({ response, body, finalUrl }, expectedPath, target)
   const checks = {
     http_ok: response.ok,
     official_host: finalUrl.hostname === 'www.tjk.org' || finalUrl.hostname === 'tjk.org',
-    expected_route: finalUrl.pathname === expectedPath,
+    expected_route: finalUrl.pathname.toLocaleLowerCase('tr-TR') === expectedPath.toLocaleLowerCase('tr-TR'),
     city_id_preserved: finalUrl.searchParams.get('SehirId') === String(target.city_id),
     venue_present: normalized.includes(requestedVenue),
     nonempty_body: Buffer.byteLength(body, 'utf8') > 500,
@@ -130,41 +129,74 @@ function safeResponseSummary({ response, body, finalUrl }, expectedPath, target)
   };
 }
 
+function findCurrentVenueDetailLink(endpointHints, target) {
+  const expectedDate = formatTjkDate(revalidation.current_observation.annual_observation_date);
+  const expectedVenue = target.racecourse.normalize('NFKC').toLocaleLowerCase('tr-TR');
+  return endpointHints.find((hint) => {
+    const url = new URL(hint);
+    return url.pathname.toLocaleLowerCase('tr-TR') === VENUE_DETAIL_PATH.toLocaleLowerCase('tr-TR')
+      && url.searchParams.get('SehirId') === String(target.city_id)
+      && url.searchParams.get('QueryParameter_Tarih') === expectedDate
+      && (url.searchParams.get('SehirAdi') ?? '').normalize('NFKC').toLocaleLowerCase('tr-TR') === expectedVenue;
+  }) ?? null;
+}
+
 async function probeTarget(pageBaseUrl, target) {
   const pageUrl = withTargetParameters(pageBaseUrl, target);
   const pageFetch = await fetchBody(pageUrl);
-  const pageNormalized = normalizeText(pageFetch.body);
   const pageSummary = safeResponseSummary(pageFetch, CURRENT_PAGE_PATH, target);
   pageSummary.requested_url = pageUrl.toString();
   pageSummary.date_present = pageFetch.body.includes(formatDotDate(revalidation.current_observation.annual_observation_date))
     || pageFetch.body.includes(formatTjkDate(revalidation.current_observation.annual_observation_date));
   pageSummary.programme_marker_present = /Yarış Programı|Yaris Programi/iu.test(pageFetch.body);
   pageSummary.endpoint_hints = extractEndpointHints(pageFetch.body, pageFetch.finalUrl);
-  pageSummary.data_endpoint_hint_present = pageSummary.endpoint_hints.some((hint) => new URL(hint).pathname === CURRENT_DATA_PATH);
+  pageSummary.data_endpoint_hint_present = pageSummary.endpoint_hints.some((hint) => new URL(hint).pathname.toLowerCase() === CURRENT_DATA_PATH.toLowerCase());
+  const venueDetailUrl = findCurrentVenueDetailLink(pageSummary.endpoint_hints, target);
+  pageSummary.current_venue_detail_link_present = venueDetailUrl !== null;
   pageSummary.shell_verified = pageSummary.route_verified
     && pageSummary.date_present
     && pageSummary.programme_marker_present
-    && pageSummary.data_endpoint_hint_present;
+    && pageSummary.data_endpoint_hint_present
+    && pageSummary.current_venue_detail_link_present;
 
   const dataBaseUrl = new URL(CURRENT_DATA_PATH, pageFetch.finalUrl.origin);
-  const variants = [
+  const dataVariants = [
     { id: 'same-parameters', extra: {} },
     { id: 'same-parameters-era-today', extra: { Era: 'today' } },
   ];
   const dataAttempts = [];
-  for (const variant of variants) {
+  for (const variant of dataVariants) {
     const dataUrl = withTargetParameters(dataBaseUrl, target, variant.extra);
-    const dataFetch = await fetchBody(dataUrl);
+    const dataFetch = await fetchBody(dataUrl, { xhr: true });
     const summary = safeResponseSummary(dataFetch, CURRENT_DATA_PATH, target);
     summary.requested_url = dataUrl.toString();
     summary.variant = variant.id;
     summary.date_present = dataFetch.body.includes(formatDotDate(revalidation.current_observation.annual_observation_date))
       || dataFetch.body.includes(formatTjkDate(revalidation.current_observation.annual_observation_date));
+    summary.endpoint_hints = extractEndpointHints(dataFetch.body, dataFetch.finalUrl);
     summary.programme_body_verified = summary.route_verified && summary.complete_race_1_n_verified;
     dataAttempts.push(summary);
   }
 
+  let venueDetail = null;
+  if (venueDetailUrl) {
+    const detailFetch = await fetchBody(new URL(venueDetailUrl));
+    venueDetail = safeResponseSummary(detailFetch, VENUE_DETAIL_PATH, target);
+    venueDetail.requested_url = venueDetailUrl;
+    venueDetail.date_present = detailFetch.body.includes(formatDotDate(revalidation.current_observation.annual_observation_date))
+      || detailFetch.body.includes(formatTjkDate(revalidation.current_observation.annual_observation_date));
+    venueDetail.era = new URL(detailFetch.response.url).searchParams.get('Era');
+    venueDetail.programme_body_verified = venueDetail.route_verified
+      && venueDetail.date_present
+      && venueDetail.complete_race_1_n_verified;
+  }
+
   const successfulDataAttempt = dataAttempts.find((attempt) => attempt.programme_body_verified) ?? null;
+  const programmeEvidenceRoute = venueDetail?.programme_body_verified
+    ? 'page-discovered-venue-detail'
+    : successfulDataAttempt
+      ? 'data-endpoint'
+      : null;
   return {
     racecourse: target.racecourse,
     city_id: String(target.city_id),
@@ -172,10 +204,11 @@ async function probeTarget(pageBaseUrl, target) {
     expected_annual_race_rows: target.race_rows,
     page: pageSummary,
     data_attempts: dataAttempts,
-    programme_data_verified: successfulDataAttempt !== null,
+    venue_detail: venueDetail,
+    programme_data_verified: programmeEvidenceRoute !== null,
+    programme_evidence_route: programmeEvidenceRoute,
     successful_data_variant: successfulDataAttempt?.variant ?? null,
-    verified: pageSummary.shell_verified && successfulDataAttempt !== null,
-    page_contains_requested_venue: pageNormalized.includes(target.racecourse.normalize('NFKC').toLocaleLowerCase('tr-TR')),
+    verified: pageSummary.shell_verified && programmeEvidenceRoute !== null,
   };
 }
 
@@ -203,13 +236,15 @@ for (const target of revalidation.current_observation.annual_meetings_observed) 
 }
 
 const summary = {
-  schema_version: 'tjk-parameterized-body-probe-v2',
+  schema_version: 'tjk-parameterized-body-probe-v3',
   source_revalidation: REVALIDATION_PATH,
   source_id: 'tjk-daily-programme',
   authority_id: 'turkiye-jokey-kulubu',
   observation_date: revalidation.current_observation.annual_observation_date,
+  official_page_path: CURRENT_PAGE_PATH,
   discovered_data_path: CURRENT_DATA_PATH,
-  probe_scope: 'parameterized-page-and-data-verification',
+  page_discovered_venue_detail_path: VENUE_DETAIL_PATH,
+  probe_scope: 'current-page-route-topology-and-programme-evidence',
   repository_write: false,
   canonical_write: false,
   public_projection_write: false,
@@ -224,6 +259,6 @@ fs.writeFileSync(output, `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));
 
 if (!summary.all_verified) {
-  console.error('TJK current page shell was verified, but complete Race 1-N programme data was not verified for every reviewed target.');
+  console.error('TJK current route topology or complete Race 1-N programme evidence was not verified for every reviewed target.');
   process.exit(1);
 }
