@@ -78,11 +78,12 @@
   },
   "evidence": {
     "workflow": "Calendar TJK parameterized body probe",
-    "probe_run_id": 31514464296,
-    "probe_head_sha": "a57e73763011d72db21cd6915131b4d71917506a",
-    "probe_artifact_id": 9110446503,
-    "probe_artifact_sha256": "403ad349e04fe87c22e98a0e0fff7bac2655118822ed78fccfc8abce303e9f6a",
-    "probe_result_note": "The run intentionally failed because it still compared the direct daily schedule against stale 7/8 annual-observation counts. Its safe artifact independently captured the exact 9-race schedules above and proved repository-read-only execution. A follow-up run must validate against this corrected evidence."
+    "probe_run_id": 31514800273,
+    "probe_head_sha": "0a6f499879353aea7c8d04957dc4dc5ae2d7edc8",
+    "probe_artifact_id": 9110592645,
+    "probe_artifact_sha256": "4d25e8d50c7c15a7c7daa0bc5d4996369d0b9226cbb68206c94aa20261bd754f",
+    "probe_result": "success",
+    "probe_result_note": "The read-only probe reproduced the current Info/Page landing, followed the same-day same-city venue-detail links emitted by that landing response, and matched both reviewed 9-race post-time schedules exactly. No raw body, Canonical data, or public projection was written."
   },
   "decision": {
     "source_status": "verified",
