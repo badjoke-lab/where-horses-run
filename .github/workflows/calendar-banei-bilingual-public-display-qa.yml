@@ -8,6 +8,7 @@ on:
       - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
       - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'src/components/TimetableMeetingList.astro'
+      # Use directory globs for Astro dynamic routes; literal bracketed route names make GitHub reject the workflow definition.
       - 'src/pages/timetable/meetings/**'
       - 'src/pages/ja/timetable/meetings/**'
       - 'src/data/publicationDisplayPolicies.json'
@@ -22,6 +23,7 @@ on:
       - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
       - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'src/components/TimetableMeetingList.astro'
+      # Keep push coverage aligned with pull_request coverage.
       - 'src/pages/timetable/meetings/**'
       - 'src/pages/ja/timetable/meetings/**'
       - 'src/data/publicationDisplayPolicies.json'
