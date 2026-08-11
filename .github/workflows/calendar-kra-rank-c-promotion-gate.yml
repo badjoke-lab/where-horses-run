@@ -57,8 +57,27 @@ jobs:
         run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --dry-run
       - name: Validate approved KRA promotion gate
         run: node scripts/check-kra-rank-c-promotion-gate.mjs
-      - name: Remove ephemeral approved candidate
-        run: rm data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json
+      - name: Materialize reviewed KRA publication output
+        run: node scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs
+      - name: Upload reviewed KRA publication artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kra-rank-c-reviewed-publication
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json
+            data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json
+            data/static/kra-2026-reviewed-public-timetable-identities-v1.json
+            data/static/racecourses-public-timetable-identities-v1.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
+      - name: Restore checkout after artifact capture
+        run: |
+          git reset --hard HEAD
+          git clean -fd
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
