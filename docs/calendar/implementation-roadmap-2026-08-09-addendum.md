@@ -2,31 +2,31 @@
 
 Status: active canonical Calendar programme addendum  
 Adopted: 2026-08-09  
+Current execution state reviewed: 2026-08-11  
 Base roadmap: `docs/calendar/implementation-roadmap.md`  
-Current Work ID: `WHR-CAL-SOUTH-KOREA-KRA`
+Current Work ID: `WHR-CAL-TURKEY-TJK`
 
-This addendum updates the active Calendar execution state after the reviewed August rolling-horizon recovery and the first South Korea implementation unit. Historical stage text and release-gate markers in the base roadmap remain preserved as historical evidence.
+This addendum updates the active Calendar execution state after the reviewed KRA Rank C publication and the current TJK source revalidation. Historical stage text and release-gate markers in the base roadmap remain preserved as historical evidence.
 
 ## Current operational baseline
 
 PR #567 completed the reviewed rolling-horizon recovery through 2026-09-06 and restored the current public Calendar after publication review had fallen behind acquisition evidence.
 
-Accepted current state:
+PR #572 subsequently added the reviewed KRA Rank C publication unit. Accepted current state:
 
 ```text
 public horizon end: 2026-09-06
-reviewed recovery additions: 96 Rank C meetings
-JRA recovery: 18
-NAR recovery: 69
-Banei recovery: 8
-HKJC recovery/wake-up: 1 Sha Tin meeting on 2026-09-06
+public meetings: 369
+KRA reviewed publication: 32 Rank C meetings
+KRA race-detail rows: 0
+KRA identity-only additions: Busan-Gyeongnam, Jeju
 stable review queue: Draft PR #559
 unattended publication: disabled
 ```
 
-The daily planner now supports a future reviewed active season window beginning inside an otherwise offseason rolling horizon. This is required for the HKJC 2026-09-06 wake-up case.
+The daily planner continues to support a future reviewed active season window beginning inside an otherwise offseason rolling horizon, including the HKJC 2026-09-06 wake-up case.
 
-Mizusawa was added as a reviewed public timetable identity-only racecourse. Current racecourse growth must be treated as valid reviewed growth rather than as a violation of historical 36/72/771 v1 snapshots.
+Mizusawa, Busan-Gyeongnam, and Jeju are reviewed public timetable identity-only racecourse additions. Current racecourse growth must be treated as valid reviewed growth rather than as a violation of historical 36/72/771 v1 snapshots.
 
 ## Stage 13 — daily rolling-horizon recovery and acceptance
 
@@ -41,8 +41,8 @@ Completed evidence:
 - PR #567 merged through the normal reviewed path;
 - Canonical/public projection contains the reviewed recovery through 2026-09-06;
 - bilingual/rendered and repository validation passed;
-- normal production deployment completed;
-- production freshness was verified after merge;
+- normal production deployment completed for that recovery unit;
+- production freshness was verified after that recovery merge;
 - historical v1 audits remain historical snapshots while current route/racecourse counts may grow through reviewed additions.
 
 ### DA-09 — steady-state acceptance
@@ -61,7 +61,9 @@ Draft PR #559 remains the stable human-review queue. It is never a publication P
 
 ## Stage 14 — South Korea / KRA
 
-Current Work ID: `WHR-CAL-SOUTH-KOREA-KRA`
+Work ID: `WHR-CAL-SOUTH-KOREA-KRA`
+
+Status: complete for the reviewed 2026-08-07 through 2026-09-06 Rank C window.
 
 ### KRA-RANK-C-CANDIDATE-GENERATION-01
 
@@ -78,45 +80,76 @@ Implemented:
 - dedicated safety checker and CI gate;
 - no automatic approval, Canonical write, public projection, merge, or deployment.
 
-### KRA-PUBLIC-IDENTITY-PROMOTION-01
+### KRA-PUBLIC-IDENTITY-PROMOTION-01 / KRA-RANK-C-PROMOTION-REVIEW-01
 
-Status: current.
+Status: complete through PR #570 and PR #571 preparation, followed by reviewed publication in PR #572.
 
-Required order:
+Reviewed publication effect:
 
-1. review/register Busan-Gyeongnam public timetable identity;
-2. review/register Jeju public timetable identity;
-3. reconcile Seoul/Busan-Gyeongnam/Jeju against canonical racecourse identity and page-link requirements;
-4. validate all 32 candidate meeting identities;
-5. prepare a separate human-reviewed approved candidate/promotion unit;
-6. run Promotion Validation;
-7. apply Canonical/public projection only inside that reviewed unit;
-8. run current-horizon, racecourse-connection, bilingual rendered, SEO/metadata, and deployment gates;
-9. verify production freshness after reviewed merge.
+```text
+canonical meetings added: 32
+public meetings added: 32
+canonical/public detail rows added: 0
+identity-only racecourses added: 2
+public rank ceiling used: C
+```
 
-Public ceiling for this unit is intentionally Rank C even though the reviewed Authority Source Inventory records higher technical KRA capability. Capability does not authorize publication of unsupported or unreviewed detail.
+Busan-Gyeongnam and Jeju remain identity-only. Seoul reuses its existing canonical identity. No higher KRA technical capability was used to infer or publish race-time/race-level detail.
 
 ## Stage 15 — Turkey / TJK
 
-Next Work ID: `WHR-CAL-TURKEY-TJK`
+Current Work ID: `WHR-CAL-TURKEY-TJK`
 
-Current inventory state:
+Current reviewed state:
 
 ```text
 authority: Türkiye Jokey Kulübü
 source status: verified
 technical capability: A+
-adapter candidate status: candidate
-reviewed note public cap: A
+public ceiling: A
+source revalidation: complete
+current implementation unit: TJK-BOUNDED-ADAPTER-01
 ```
 
-Because the inventory observation predates this addendum, first revalidate the current official programme/source behavior under Source Test v2. Then define the smallest safe source-specific adapter/candidate unit under the shared Acquisition Control Plane.
+### TJK-SOURCE-REVALIDATION-01
+
+Status: complete in the source-revalidation unit adopted with this roadmap update.
+
+The 2026-08-11 source revalidation records a material route change before adapter implementation:
+
+- annual programme route remains current;
+- filtered annual-data route remains current;
+- daily programme is now `https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami`;
+- the historical `Info/Sehir/GunlukYarisProgrami` route is superseded;
+- `SehirId`, `QueryParameter_Tarih`, and `SehirAdi` remain the reviewed query parameters;
+- technical capability remains A+;
+- public ceiling remains A;
+- the current official annual programme resolves 2026-08-11 Ankara and Kocaeli links to the current `Info/Page` route;
+- the parameterized 2026-08-11 daily body was not directly captured, so no fresh current-day Race 1-N body claim is made.
+
+Evidence is recorded in `docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json` and synchronized to Authority Source Inventory / Calendar Readiness.
+
+### TJK-BOUNDED-ADAPTER-01
+
+Status: current next implementation unit; must be a separate PR after source revalidation is merged.
+
+Required boundaries:
+
+1. use the current `Info/Page/GunlukYarisProgrami` route;
+2. preserve `SehirId`, `QueryParameter_Tarih`, and `SehirAdi` exactly;
+3. use reviewed deterministic fixture evidence rather than inventing a fresh 2026-08-11 daily body;
+4. preserve technical A+ / public A separation;
+5. generate candidates only;
+6. validate deterministic output and prohibited-data boundary;
+7. do not write Canonical/public data;
+8. do not approve, merge, or deploy automatically;
+9. prepare any later promotion as a separate human-reviewed unit.
 
 No TJK source capability may bypass Batch Validation, human review, Promotion Validation, Public Ceiling, or the prohibited-data boundary.
 
 ## Stage 16 — Morocco / SOREC source revalidation
 
-Conditional Work ID: `WHR-CAL-MOROCCO-SOREC-REVALIDATION`
+Conditional next Work ID: `WHR-CAL-MOROCCO-SOREC-REVALIDATION`
 
 Current inventory state is blocked:
 
