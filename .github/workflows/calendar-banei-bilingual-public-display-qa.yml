@@ -56,6 +56,8 @@ jobs:
         run: node scripts/check-calendar-banei-bilingual-public-display-qa.mjs
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
+      - name: Build static site for rendered QA
+        run: npm run build
       - name: Validate rendered Banei bilingual fixture in temporary worktree
         run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
       - name: Validate existing public projection and runtime boundaries
