@@ -194,16 +194,18 @@
       "implementation_status": "not_started",
       "fallback": "downgrade_to_C",
       "source_status": "verified",
-      "checked_date": "2026-06-10",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when TJK changes annual-program or daily-program routes.",
+      "checked_date": "2026-08-11",
+      "evidence_reviewed_at": "2026-08-11",
+      "revalidation_trigger": "Revalidate when TJK changes the annual-programme, filtered-data, or current /TR/YarisSever/Info/Page/GunlukYarisProgrami route or its city/date query parameters.",
       "blocked_reason": null,
-      "source_test_ref": "docs/timetable-source-tests/03-turkey/final-summary.json",
+      "source_test_ref": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json",
       "limitations": [
         "Race names are not consistently present across all tested meetings.",
-        "Public output remains capped at A."
+        "Public output remains capped at A even though the reviewed technical source capability is A+.",
+        "The 2026-08-11 current-day parameterized daily body was not directly captured during revalidation; the official current link target was verified and recent Info/Page daily pages retain complete Race 1-N post-time evidence.",
+        "Automatic approval, Canonical promotion, public writing, unattended merge, and deployment remain disabled."
       ],
-      "notes": "Bounded prototype can use the reviewed annual and daily TJK routes while preserving city and date parameters."
+      "notes": "Bounded prototype work may use the revalidated annual and current Info/Page daily TJK routes while preserving SehirId, QueryParameter_Tarih, and SehirAdi. The former Info/Sehir route is superseded."
     },
     {
       "readiness_id": "morocco--sorec-racing-information-system--sorec-racing-and-racecourses",
