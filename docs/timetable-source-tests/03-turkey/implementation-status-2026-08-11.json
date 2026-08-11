@@ -1,0 +1,35 @@
+{
+  "schema_version": "timetable-source-implementation-status-v1",
+  "recorded_at": "2026-08-11",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "system_id": "tjk-national-racing-system",
+  "work_id": "WHR-CAL-TURKEY-TJK",
+  "source_test_summary": "docs/timetable-source-tests/03-turkey/final-summary.json",
+  "source_revalidation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json",
+  "completed_implementation_unit": "TJK-SOURCE-REVALIDATION-01",
+  "current_implementation_unit": "TJK-BOUNDED-ADAPTER-01",
+  "status": "source_revalidated_adapter_not_started",
+  "source_state": {
+    "source_status": "verified",
+    "technical_capability_rank": "A+",
+    "public_ceiling": "A",
+    "current_daily_route": "/TR/YarisSever/Info/Page/GunlukYarisProgrami",
+    "superseded_daily_route": "/TR/YarisSever/Info/Sehir/GunlukYarisProgrami",
+    "daily_parameters": [
+      "SehirId",
+      "QueryParameter_Tarih",
+      "SehirAdi"
+    ],
+    "current_day_daily_body_verified": false
+  },
+  "publication_boundary": {
+    "candidate_generated": false,
+    "canonical_written": false,
+    "public_projection_written": false,
+    "automatic_approval": false,
+    "automatic_merge": false,
+    "deployment_performed": false
+  },
+  "next_gate": "Implement TJK-BOUNDED-ADAPTER-01 in a separate PR using the current Info/Page daily route, reviewed deterministic fixture evidence, technical A+ / public A separation, and candidate-only output with deterministic and prohibited-data validation."
+}
