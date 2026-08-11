@@ -78,14 +78,20 @@ assert(JSON.stringify(state.confirmed_fields) === JSON.stringify({
   course: false
 }), 'TJK confirmed-field contract changed during route revalidation');
 
-for (const marker of [CURRENT_DAILY, SUPERSEDED_DAILY, 'Technical capability rank: A+', 'Public ceiling: A', 'current-day parameterized daily body was not directly captured']) {
+for (const marker of [
+  CURRENT_DAILY,
+  SUPERSEDED_DAILY,
+  'Technical capability rank: A+',
+  'Public ceiling: A',
+  'current-day parameterized daily body was not directly captured',
+  'Source revalidation does not approve Canonical writes, public projection, automatic approval, automatic merge, or deployment.'
+]) {
   assert(readme.includes(marker), `Turkey README missing revalidation marker: ${marker}`);
 }
-assert(!readme.includes('Source revalidation does not approve Canonical writes, public projection, automatic approval, automatic merge, or deployment.') === false || true, '');
 
 const prohibited = ['horse_name', 'jockey_name', 'trainer_name', 'odds', 'payouts', 'prediction', 'raw_html', 'stream_url'];
 const serialized = JSON.stringify(revalidation).toLowerCase();
-for (const key of prohibited) assert(!serialized.includes(`\"${key}\"`), `TJK revalidation artifact contains prohibited public key: ${key}`);
+for (const key of prohibited) assert(!serialized.includes(`"${key}"`), `TJK revalidation artifact contains prohibited public key: ${key}`);
 
 console.log('TJK_SOURCE_REVALIDATION: pass');
 console.log('CURRENT_DAILY_ROUTE: /TR/YarisSever/Info/Page/GunlukYarisProgrami');
