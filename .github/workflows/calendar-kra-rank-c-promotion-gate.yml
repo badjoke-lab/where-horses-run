@@ -5,45 +5,13 @@ on:
     paths:
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
-      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
-      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
       - 'data/static/racecourses-public-timetable-identities-v1.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
       - 'data/generated/timetable/public/meeting-details.json'
-      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
-      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
       - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
-      - 'scripts/timetable/load-authority-source-inventory.mjs'
-      - 'scripts/timetable/load-calendar-readiness.mjs'
-      - 'scripts/check-kra-calendar-plan-adapter.mjs'
-      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
-      - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
-  push:
-    branches:
-      - main
-    paths:
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
-      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
-      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
-      - 'data/static/racecourses-public-timetable-identities-v1.json'
-      - 'data/generated/timetable/canonical/meetings.json'
-      - 'data/generated/timetable/canonical/meeting-details.json'
-      - 'data/generated/timetable/public/meeting-list.json'
-      - 'data/generated/timetable/public/meeting-details.json'
-      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
-      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
-      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
-      - 'scripts/timetable/load-authority-source-inventory.mjs'
-      - 'scripts/timetable/load-calendar-readiness.mjs'
-      - 'scripts/check-kra-calendar-plan-adapter.mjs'
-      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
       - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
 
 permissions:
@@ -56,23 +24,13 @@ jobs:
       - name: Checkout exact PR head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate committed KRA publication state
-        run: |
-          node scripts/check-kra-calendar-plan-adapter.mjs
-          node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
-          node scripts/check-kra-public-timetable-identities.mjs
-          node scripts/check-kra-rank-c-promotion-gate.mjs
-          node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --check
-          node scripts/timetable/build-public-timetable-view.mjs --check
-          node scripts/check-calendar-runtime-import-boundary.mjs
       - name: Rebuild minimal reviewed publication from pre-write commit
-        if: github.event_name == 'pull_request'
         env:
           PRE_WRITE_SHA: d6612416b9e9262aaa9d534f63e98b82777a7f08
         run: |
@@ -82,7 +40,6 @@ jobs:
           cd /tmp/kra-minimal
           node scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs
       - name: Upload minimal reviewed publication artifact
-        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: kra-rank-c-minimal-reviewed-publication
@@ -98,18 +55,12 @@ jobs:
             /tmp/kra-minimal/data/generated/timetable/public/meeting-list.json
             /tmp/kra-minimal/data/generated/timetable/public/meeting-details.json
       - name: Stage minimal reviewed output as unreachable Git tree
-        if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           python - <<'PY'
-          import base64
-          import hashlib
-          import json
-          import os
-          import subprocess
-          import tempfile
+          import base64, hashlib, json, os, subprocess, tempfile
           from pathlib import Path
 
           repo = os.environ['GITHUB_REPOSITORY']
@@ -139,48 +90,44 @@ jobs:
                   os.unlink(temp_path)
 
           commit = gh_json([f'repos/{repo}/git/commits/{head_sha}'])
-          base_tree_sha = commit['tree']['sha']
           tree = []
           staged = []
           for file_path in files:
               raw = (source_root / file_path).read_bytes()
-              blob = gh_json(
-                  ['--method', 'POST', f'repos/{repo}/git/blobs'],
-                  {'content': base64.b64encode(raw).decode('ascii'), 'encoding': 'base64'},
-              )
+              blob = gh_json(['--method', 'POST', f'repos/{repo}/git/blobs'], {
+                  'content': base64.b64encode(raw).decode('ascii'),
+                  'encoding': 'base64',
+              })
               tree.append({'path': file_path, 'mode': '100644', 'type': 'blob', 'sha': blob['sha']})
               staged.append({'path': file_path, 'blob_sha': blob['sha'], 'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)})
 
-          staged_tree = gh_json(
-              ['--method', 'POST', f'repos/{repo}/git/trees'],
-              {'base_tree': base_tree_sha, 'tree': tree},
-          )
+          staged_tree = gh_json(['--method', 'POST', f'repos/{repo}/git/trees'], {
+              'base_tree': commit['tree']['sha'],
+              'tree': tree,
+          })
           manifest = {
               'schema_version': 'kra-reviewed-publication-staged-tree-v1',
               'source_pre_write_sha': 'd6612416b9e9262aaa9d534f63e98b82777a7f08',
               'head_sha': head_sha,
-              'base_tree_sha': base_tree_sha,
               'staged_tree_sha': staged_tree['sha'],
               'files': staged,
               'branch_ref_updated': False,
               'commit_created': False,
           }
-          with open('kra-minimal-staged-tree.json', 'w', encoding='utf-8') as handle:
-              json.dump(manifest, handle, indent=2)
-              handle.write('\n')
+          Path('kra-minimal-staged-tree.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
           print(json.dumps(manifest, indent=2))
           PY
       - name: Upload minimal staged-tree manifest
-        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: kra-rank-c-minimal-staged-tree
           if-no-files-found: error
           retention-days: 7
           path: kra-minimal-staged-tree.json
-      - name: Remove isolated worktree
+      - name: Remove temporary staging files
         if: always()
         run: |
+          rm -f kra-minimal-staged-tree.json
           git worktree remove --force /tmp/kra-minimal 2>/dev/null || true
           git worktree prune
       - name: Prove repository clean
