@@ -57,6 +57,20 @@ jobs:
         run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --dry-run
       - name: Validate approved KRA promotion gate
         run: node scripts/check-kra-rank-c-promotion-gate.mjs
+      - name: Upload pre-promotion baseline artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kra-rank-c-pre-promotion-baseline
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json
+            data/static/kra-2026-reviewed-public-timetable-identities-v1.json
+            data/static/racecourses-public-timetable-identities-v1.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
       - name: Materialize reviewed KRA publication output
         run: node scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs
       - name: Upload reviewed KRA publication artifact
