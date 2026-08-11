@@ -1,0 +1,97 @@
+name: Calendar TJK derived artifact staging
+
+on:
+  push:
+    branches:
+      - calendar/tjk-source-revalidation
+    paths:
+      - '.github/workflows/calendar-tjk-derived-stage.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Regenerate deterministic Calendar derivatives
+        run: |
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14
+          node scripts/timetable/build-operations-review-package.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14 --check
+          node scripts/timetable/build-operations-review-package.mjs --check
+      - name: Stage exact derivative output as unreachable Git tree
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import base64, json, os, subprocess, tempfile
+          from pathlib import Path
+
+          repo = os.environ['GITHUB_REPOSITORY']
+          head = os.environ['HEAD_SHA']
+          files = [
+              'data/generated/timetable/operations-status.json',
+              'data/generated/timetable/operations-review-package.json',
+          ]
+
+          def gh(args, payload=None):
+              cmd = ['gh', 'api', *args]
+              if payload is None:
+                  return json.loads(subprocess.check_output(cmd, text=True))
+              with tempfile.NamedTemporaryFile('w', delete=False, encoding='utf-8') as handle:
+                  json.dump(payload, handle)
+                  temp_path = handle.name
+              try:
+                  return json.loads(subprocess.check_output(cmd + ['--input', temp_path], text=True))
+              finally:
+                  os.unlink(temp_path)
+
+          commit = gh([f'repos/{repo}/git/commits/{head}'])
+          tree = []
+          staged = []
+          for file_path in files:
+              raw = Path(file_path).read_bytes()
+              blob = gh(['--method', 'POST', f'repos/{repo}/git/blobs'], {
+                  'content': base64.b64encode(raw).decode('ascii'),
+                  'encoding': 'base64',
+              })
+              tree.append({'path': file_path, 'mode': '100644', 'type': 'blob', 'sha': blob['sha']})
+              staged.append({'path': file_path, 'blob_sha': blob['sha'], 'bytes': len(raw)})
+
+          staged_tree = gh(['--method', 'POST', f'repos/{repo}/git/trees'], {
+              'base_tree': commit['tree']['sha'],
+              'tree': tree,
+          })
+          manifest = {
+              'schema_version': 'tjk-derived-stage-v1',
+              'head_sha': head,
+              'staged_tree_sha': staged_tree['sha'],
+              'files': staged,
+              'branch_ref_updated': False,
+              'commit_created': False,
+          }
+          Path('tjk-derived-stage.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(manifest, indent=2))
+          PY
+      - name: Upload staged-tree manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: tjk-derived-stage
+          if-no-files-found: error
+          retention-days: 7
+          path: tjk-derived-stage.json
+      - name: Cleanup and prove source clean
+        run: |
+          rm -f tjk-derived-stage.json
+          git checkout -- data/generated/timetable/operations-status.json data/generated/timetable/operations-review-package.json
+          test -z "$(git status --porcelain --untracked-files=all)"
