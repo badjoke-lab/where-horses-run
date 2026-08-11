@@ -10,6 +10,7 @@ const parse = (file) => JSON.parse(read(file));
 const audit = parse('data/audits/racecourse-page-identity-reconciliation-v1.json');
 const identityRecords = parse('data/static/racecourses-public-timetable-identities-v1.json');
 const publicMeetings = parse('data/generated/timetable/public/meeting-list.json');
+const kraIdentityIds = new Set(['busan-gyeongnam-racecourse', 'jeju-racecourse']);
 const canonicalFiles = [
   'data/static/racecourses.json',
   'data/static/racecourses-extensions.json',
@@ -43,10 +44,16 @@ const identityIds = new Set(identityRecords.map((record) => record.id));
 for (const historicalId of audit.resolved_identity_ids) {
   if (!identityIds.has(historicalId)) fail(`historical resolved identity missing from current registry: ${historicalId}`);
 }
+for (const kraId of kraIdentityIds) {
+  if (!identityIds.has(kraId)) fail(`reviewed KRA identity missing from current registry: ${kraId}`);
+}
 
 for (const record of identityRecords) {
   if (record.slug !== record.id) fail(`${record.id}: slug must equal canonical ID`);
-  if (record.country_id !== 'japan' || record.timezone !== 'Asia/Tokyo') fail(`${record.id}: country/timezone identity differs`);
+  const isKra = kraIdentityIds.has(record.id);
+  const expectedCountry = isKra ? 'south-korea' : 'japan';
+  const expectedTimezone = isKra ? 'Asia/Seoul' : 'Asia/Tokyo';
+  if (record.country_id !== expectedCountry || record.timezone !== expectedTimezone) fail(`${record.id}: country/timezone identity differs`);
   if (record.status !== 'active') fail(`${record.id}: active status must follow current reviewed public meetings`);
   if (record.identity_status !== 'verified_from_reviewed_public_timetable' || record.profile_status !== 'identity_only') fail(`${record.id}: identity-only status differs`);
   if (record.city !== null || record.region !== null) fail(`${record.id}: location must remain unknown`);
@@ -60,8 +67,11 @@ for (const record of identityRecords) {
   if (record.schedule_summary?.status !== 'official-link-only' || record.schedule_summary?.next_meeting_date !== null || record.schedule_summary?.upcoming_meetings?.length !== 0) fail(`${record.id}: schedule summary boundary differs`);
   if (record.notable_races?.length !== 0) fail(`${record.id}: notable races must remain empty`);
   if (!Array.isArray(record.official_links) || record.official_links.length < 2) fail(`${record.id}: official source routes missing`);
+  const allowedSourceIds = isKra
+    ? new Set(['kra-major-facilities', 'kra-racing-rss-service'])
+    : new Set(['japan-nar-racecourse-guide', 'japan-nar-home', 'japan-jairs-racecourses', 'japan-jra-home']);
   for (const link of record.official_links ?? []) {
-    if (!['japan-nar-racecourse-guide', 'japan-nar-home', 'japan-jairs-racecourses', 'japan-jra-home'].includes(link.source_id)) fail(`${record.id}: unreviewed source ID ${link.source_id}`);
+    if (!allowedSourceIds.has(link.source_id)) fail(`${record.id}: unreviewed source ID ${link.source_id}`);
     if (!/^https:\/\//.test(link.url)) fail(`${record.id}: official link must use HTTPS`);
   }
 }
