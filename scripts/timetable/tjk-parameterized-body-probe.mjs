@@ -41,11 +41,46 @@ function detectRaceMarkers(html) {
   const expressions = [
     /(?:^|[>\s])([1-9]|1\d|2\d)\.\s*Koşu/giu,
     /(?:^|[>\s])([1-9]|1\d|2\d)\.\s*Kosu/giu,
+    /(?:^|[>\s])([1-9]|1\d|2\d)\.\s*KOŞU/giu,
   ];
   for (const expression of expressions) {
     for (const match of html.matchAll(expression)) markers.add(Number(match[1]));
   }
   return [...markers].sort((a, b) => a - b);
+}
+
+function extractScriptSources(html, pageUrl) {
+  const sources = new Set();
+  const expression = /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu;
+  for (const match of html.matchAll(expression)) {
+    try {
+      sources.add(new URL(match[1].replace(/&amp;/g, '&'), pageUrl).toString());
+    } catch {
+      // Ignore malformed script references; they are not programme evidence.
+    }
+  }
+  return [...sources].sort();
+}
+
+function extractEndpointHints(html, pageUrl) {
+  const decoded = html.replace(/&amp;/gi, '&').replace(/\\\//g, '/');
+  const candidates = new Set();
+  const expressions = [
+    /https?:\/\/[^"'<>\s]+/giu,
+    /\/TR\/YarisSever\/[^"'<>\s]+/giu,
+  ];
+  for (const expression of expressions) {
+    for (const match of decoded.matchAll(expression)) {
+      const raw = match[0].replace(/[),;]+$/g, '');
+      if (!/(Gunluk|YarisProgram|YarışProgram|Query\/Data|Info\/Data|Programi)/iu.test(raw)) continue;
+      try {
+        candidates.add(new URL(raw, pageUrl).toString());
+      } catch {
+        // Ignore malformed hints.
+      }
+    }
+  }
+  return [...candidates].sort().slice(0, 50);
 }
 
 async function probeTarget(baseUrl, target) {
@@ -69,8 +104,10 @@ async function probeTarget(baseUrl, target) {
   const slashDate = formatTjkDate(revalidation.current_observation.annual_observation_date);
   const contentType = response.headers.get('content-type') ?? '';
   const raceMarkers = detectRaceMarkers(body);
+  const scriptSources = extractScriptSources(body, finalUrl);
+  const endpointHints = extractEndpointHints(body, finalUrl);
 
-  const checks = {
+  const shellChecks = {
     http_ok: response.ok,
     html_response: contentType.toLowerCase().includes('text/html'),
     official_host: finalUrl.hostname === 'www.tjk.org' || finalUrl.hostname === 'tjk.org',
@@ -81,6 +118,9 @@ async function probeTarget(baseUrl, target) {
     programme_marker_present: /Yarış Programı|Yaris Programi/iu.test(body),
     nontrivial_body: Buffer.byteLength(body, 'utf8') > 10_000,
   };
+  const routeShellVerified = Object.values(shellChecks).every(Boolean);
+  const programmeRowsVerified = raceMarkers.length === target.race_rows
+    && raceMarkers.every((raceNumber, index) => raceNumber === index + 1);
 
   return {
     racecourse: target.racecourse,
@@ -94,8 +134,12 @@ async function probeTarget(baseUrl, target) {
     response_bytes: Buffer.byteLength(body, 'utf8'),
     body_sha256: crypto.createHash('sha256').update(body).digest('hex'),
     race_markers_detected: raceMarkers,
-    checks,
-    verified: Object.values(checks).every(Boolean),
+    script_sources: scriptSources,
+    endpoint_hints: endpointHints,
+    shell_checks: shellChecks,
+    route_shell_verified: routeShellVerified,
+    programme_rows_verified: programmeRowsVerified,
+    verified: routeShellVerified && programmeRowsVerified,
   };
 }
 
@@ -129,12 +173,14 @@ const summary = {
   source_id: 'tjk-daily-programme',
   authority_id: 'turkiye-jokey-kulubu',
   observation_date: revalidation.current_observation.annual_observation_date,
-  probe_scope: 'parameterized-body-verification-only',
+  probe_scope: 'parameterized-programme-body-verification',
   repository_write: false,
   canonical_write: false,
   public_projection_write: false,
   raw_body_retained: false,
   results,
+  all_route_shells_verified: results.every((result) => result.route_shell_verified),
+  all_programme_bodies_verified: results.every((result) => result.programme_rows_verified),
   all_verified: results.every((result) => result.verified),
 };
 
@@ -142,6 +188,6 @@ fs.writeFileSync(output, `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));
 
 if (!summary.all_verified) {
-  console.error('TJK parameterized body verification did not pass for every reviewed target.');
+  console.error('TJK parameterized route shells were reachable, but complete programme rows were not verified for every reviewed target.');
   process.exit(1);
 }
