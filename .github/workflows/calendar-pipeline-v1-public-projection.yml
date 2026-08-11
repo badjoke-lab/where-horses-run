@@ -19,7 +19,7 @@ on:
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
       - 'src/components/TimetableMeetingList.astro'
-      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/**'
       - 'src/data/publicationDisplayPolicies.json'
       - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
   push:
@@ -42,7 +42,7 @@ on:
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
       - 'src/components/TimetableMeetingList.astro'
-      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/**'
       - 'src/data/publicationDisplayPolicies.json'
       - '.github/workflows/calendar-pipeline-v1-public-projection.yml'
 
