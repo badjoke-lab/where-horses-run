@@ -7,6 +7,7 @@ on:
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-tjk-source-revalidation.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
       - '.github/workflows/calendar-tjk-source-revalidation.yml'
   push:
     branches:
@@ -16,6 +17,7 @@ on:
       - 'data/static/authority-source-inventory.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-tjk-source-revalidation.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
       - '.github/workflows/calendar-tjk-source-revalidation.yml'
 
 permissions:
@@ -37,6 +39,8 @@ jobs:
           node-version: 22.12.0
       - name: Validate TJK source revalidation
         run: node scripts/check-tjk-source-revalidation.mjs
+      - name: Validate TJK implementation handoff
+        run: node scripts/check-tjk-implementation-status.mjs
       - name: Validate shared source inventory
         run: node scripts/check-authority-source-inventory-schema.mjs
       - name: Validate Calendar contracts
