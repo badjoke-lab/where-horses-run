@@ -1,0 +1,61 @@
+name: Calendar TJK bounded adapter
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/tjk-bounded-reviewed-fixture-v1.json'
+      - 'docs/timetable-source-tests/03-turkey/**'
+      - 'scripts/timetable/tjk-bounded-adapter.mjs'
+      - 'scripts/check-tjk-bounded-adapter.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
+      - '.github/workflows/calendar-tjk-bounded-adapter.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/tjk-bounded-reviewed-fixture-v1.json'
+      - 'docs/timetable-source-tests/03-turkey/**'
+      - 'scripts/timetable/tjk-bounded-adapter.mjs'
+      - 'scripts/check-tjk-bounded-adapter.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
+      - '.github/workflows/calendar-tjk-bounded-adapter.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Preserve source revalidation contract
+        run: node scripts/check-tjk-source-revalidation.mjs
+      - name: Validate TJK bounded adapter status
+        run: node scripts/check-tjk-implementation-status.mjs
+      - name: Validate deterministic and prohibited-data boundary
+        run: node scripts/check-tjk-bounded-adapter.mjs
+      - name: Validate committed candidate determinism
+        run: node scripts/timetable/tjk-bounded-adapter.mjs --check
+      - name: Prove candidate-only PR boundary
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed="$(git diff --name-only "$BASE_SHA"...HEAD)"
+          echo "$changed"
+          if echo "$changed" | grep -E '^data/generated/timetable/(canonical|public)/'; then
+            echo 'TJK bounded adapter PR must not write Canonical/public timetable data.' >&2
+            exit 1
+          fi
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            echo "$changes" >&2
+            exit 1
+          fi
