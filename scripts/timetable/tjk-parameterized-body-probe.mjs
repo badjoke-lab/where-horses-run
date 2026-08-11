@@ -39,6 +39,19 @@ function normalizeText(value) {
     .toLocaleLowerCase('tr-TR');
 }
 
+function visibleText(html) {
+  return html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/giu, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/giu, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&#(?:x27|39);/gi, "'")
+    .replace(/&#(?:x22|34);/gi, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function detectRaceMarkers(body) {
   const markers = new Set();
   const expressions = [
@@ -50,6 +63,26 @@ function detectRaceMarkers(body) {
     for (const match of body.matchAll(expression)) markers.add(Number(match[1]));
   }
   return [...markers].sort((a, b) => a - b);
+}
+
+function detectRaceSchedule(body) {
+  const text = visibleText(body);
+  const byRace = new Map();
+  const expression = /(?:^|\s)0*([1-9]|1\d|2\d)\s*\.\s*(?:Koşu|Kosu|KOŞU)\s*:?[\s-]*([01]?\d|2[0-3])[.:]([0-5]\d)\b/giu;
+  for (const match of text.matchAll(expression)) {
+    const raceNumber = Number(match[1]);
+    const time = `${String(Number(match[2])).padStart(2, '0')}:${match[3]}`;
+    if (!byRace.has(raceNumber)) byRace.set(raceNumber, new Set());
+    byRace.get(raceNumber).add(time);
+  }
+  const rows = [...byRace.entries()]
+    .sort(([left], [right]) => left - right)
+    .map(([race_number, times]) => ({ race_number, times: [...times].sort() }));
+  return {
+    rows,
+    conflicts: rows.filter((row) => row.times.length !== 1).map((row) => row.race_number),
+    unique_rows: rows.filter((row) => row.times.length === 1).map((row) => ({ race_number: row.race_number, post_time_local: row.times[0] })),
+  };
 }
 
 function detectTimeTokens(body) {
@@ -99,13 +132,15 @@ async function fetchBody(url, { xhr = false } = {}) {
 
 function safeResponseSummary({ response, body, finalUrl }, expectedPath, target) {
   const raceMarkers = detectRaceMarkers(body);
+  const raceSchedule = detectRaceSchedule(body);
   const timeTokens = detectTimeTokens(body);
   const contentType = response.headers.get('content-type') ?? '';
   const normalized = normalizeText(body);
   const requestedVenue = target.racecourse.normalize('NFKC').toLocaleLowerCase('tr-TR');
   const expectedRaceMarkers = Array.from({ length: target.race_rows }, (_, index) => index + 1);
-  const contiguousExpectedRaces = raceMarkers.length === expectedRaceMarkers.length
-    && raceMarkers.every((raceNumber, index) => raceNumber === expectedRaceMarkers[index]);
+  const completeRaceSchedule = raceSchedule.conflicts.length === 0
+    && raceSchedule.unique_rows.length === expectedRaceMarkers.length
+    && raceSchedule.unique_rows.every((row, index) => row.race_number === expectedRaceMarkers[index]);
   const checks = {
     http_ok: response.ok,
     official_host: finalUrl.hostname === 'www.tjk.org' || finalUrl.hostname === 'tjk.org',
@@ -122,10 +157,12 @@ function safeResponseSummary({ response, body, finalUrl }, expectedPath, target)
     response_bytes: Buffer.byteLength(body, 'utf8'),
     body_sha256: crypto.createHash('sha256').update(body).digest('hex'),
     race_markers_detected: raceMarkers,
+    race_schedule: raceSchedule.unique_rows,
+    race_schedule_conflicts: raceSchedule.conflicts,
     time_tokens_detected: timeTokens,
     checks,
     route_verified: Object.values(checks).every(Boolean),
-    complete_race_1_n_verified: contiguousExpectedRaces,
+    complete_race_1_n_verified: completeRaceSchedule,
   };
 }
 
@@ -236,7 +273,7 @@ for (const target of revalidation.current_observation.annual_meetings_observed) 
 }
 
 const summary = {
-  schema_version: 'tjk-parameterized-body-probe-v3',
+  schema_version: 'tjk-parameterized-body-probe-v4',
   source_revalidation: REVALIDATION_PATH,
   source_id: 'tjk-daily-programme',
   authority_id: 'turkiye-jokey-kulubu',
@@ -244,7 +281,7 @@ const summary = {
   official_page_path: CURRENT_PAGE_PATH,
   discovered_data_path: CURRENT_DATA_PATH,
   page_discovered_venue_detail_path: VENUE_DETAIL_PATH,
-  probe_scope: 'current-page-route-topology-and-programme-evidence',
+  probe_scope: 'current-page-route-topology-and-race-schedule-evidence',
   repository_write: false,
   canonical_write: false,
   public_projection_write: false,
@@ -259,6 +296,6 @@ fs.writeFileSync(output, `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));
 
 if (!summary.all_verified) {
-  console.error('TJK current route topology or complete Race 1-N programme evidence was not verified for every reviewed target.');
+  console.error('TJK current route topology or complete Race 1-N schedule evidence was not verified for every reviewed target.');
   process.exit(1);
 }
