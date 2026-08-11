@@ -11,14 +11,39 @@ const approvedCandidatePath = 'data/candidates/kra-2026-08-07-through-2026-09-06
 function fail(message) {
   throw new Error(`[KRA reviewed promotion] ${message}`);
 }
-function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
+function absolute(relativePath) {
+  return path.join(root, relativePath);
 }
-function writeJson(relativePath, value) {
-  const absolutePath = path.join(root, relativePath);
-  const temporaryPath = `${absolutePath}.kra-reviewed-promotion.tmp`;
-  fs.writeFileSync(temporaryPath, `${JSON.stringify(value, null, 2)}\n`);
-  fs.renameSync(temporaryPath, absolutePath);
+function readJson(relativePath) {
+  return JSON.parse(fs.readFileSync(absolute(relativePath), 'utf8'));
+}
+function writeTextAtomic(relativePath, content) {
+  const target = absolute(relativePath);
+  const temporaryPath = `${target}.kra-reviewed-promotion.tmp`;
+  fs.writeFileSync(temporaryPath, content);
+  fs.renameSync(temporaryPath, target);
+}
+function appendJsonArrayRecordsPreservingExisting(relativePath, records) {
+  if (!records.length) return;
+  const raw = fs.readFileSync(absolute(relativePath), 'utf8');
+  const trimmed = raw.trimEnd();
+  if (!trimmed.endsWith(']')) fail(`${relativePath} must be a JSON array`);
+  const prefix = trimmed.slice(0, -1).trimEnd();
+  const separator = prefix.endsWith('[') ? '\n' : ',\n';
+  const rendered = records.map((record) => JSON.stringify(record, null, 2)).join(',\n');
+  writeTextAtomic(relativePath, `${prefix}${separator}${rendered}\n]\n`);
+}
+function markPublicationBoundaryWritten(relativePath) {
+  let raw = fs.readFileSync(absolute(relativePath), 'utf8');
+  for (const field of ['canonical_written', 'public_projection_written']) {
+    const from = `"${field}": false`;
+    const to = `"${field}": true`;
+    const occurrences = raw.split(from).length - 1;
+    if (occurrences === 0 && raw.includes(to)) continue;
+    if (occurrences !== 1) fail(`${relativePath} must contain exactly one pending ${field} flag`);
+    raw = raw.replace(from, to);
+  }
+  writeTextAtomic(relativePath, raw);
 }
 function run(script, args = []) {
   console.log(`$ node ${script} ${args.join(' ')}`.trim());
@@ -111,8 +136,7 @@ if (targetRecords.length !== 2) fail('identity review must contain Busan-Gyeongn
 const existing = targetRecords.map((record) => registry.some((row) => row.id === record.racecourse_id));
 if (existing[0] !== existing[1]) fail('refusing partial KRA identity publication state');
 if (!existing[0]) {
-  for (const record of targetRecords) registry.push(makeIdentity(record, identityReview));
-  writeJson(registryPath, registry);
+  appendJsonArrayRecordsPreservingExisting(registryPath, targetRecords.map((record) => makeIdentity(record, identityReview)));
 }
 
 run('scripts/check-kra-public-timetable-identities.mjs');
@@ -121,18 +145,7 @@ run('scripts/timetable/build-kra-rank-c-approved-candidate.mjs', ['--check']);
 run('scripts/timetable/promote-approved-candidate-v1.mjs', ['--input', approvedCandidatePath]);
 run('scripts/timetable/build-public-timetable-view.mjs');
 
-for (const reviewPath of [identityReviewPath, promotionReviewPath]) {
-  const review = readJson(reviewPath);
-  review.publication_boundary = {
-    ...review.publication_boundary,
-    canonical_written: true,
-    public_projection_written: true,
-    automatic_approval: false,
-    automatic_merge: false,
-    deployment_performed: false
-  };
-  writeJson(reviewPath, review);
-}
+for (const reviewPath of [identityReviewPath, promotionReviewPath]) markPublicationBoundaryWritten(reviewPath);
 
 run('scripts/check-kra-public-timetable-identities.mjs');
 run('scripts/check-kra-rank-c-promotion-gate.mjs');
