@@ -117,7 +117,13 @@ If the current landing cannot expose a same-day, same-city venue-detail link, or
 
 ## Historical route note
 
-The 2026-08-11 revalidation correctly identified `Info/Page` as the current landing route but treated `Info/Sehir` as fully superseded. Direct 2026-08-12 evidence refines that conclusion: `Info/Sehir` remains an active venue-detail route when the current `Info/Page` landing itself supplies the exact same-day, same-city link.
+The 2026-08-11 revalidation correctly identified `Info/Page` as the current landing route but treated `Info/Sehir` as fully superseded. The historical route recorded by that review was:
+
+https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami
+
+Historical 2026-08-11 statement: the current-day parameterized daily body was not directly captured during that revalidation.
+
+Direct 2026-08-12 evidence refines that conclusion: `Info/Sehir` remains an active venue-detail route when the current `Info/Page` landing itself supplies the exact same-day, same-city link.
 
 This does **not** authorize hard-coding old `Info/Sehir` URLs. Current discovery must start from `Info/Page`.
 
@@ -137,4 +143,6 @@ Do not publish or retain in public output:
 - raw HTML or raw source bodies
 - direct stream URLs
 
-Current programme verification does not approve Canonical writes, public projection, automatic approval, automatic merge, or deployment.
+Source revalidation does not approve Canonical writes, public projection, automatic approval, automatic merge, or deployment.
+
+Current programme verification also does not approve Canonical writes, public projection, automatic approval, automatic merge, or deployment.
