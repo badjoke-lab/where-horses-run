@@ -104,8 +104,48 @@ for (const inputPath of inputPaths) {
 
 const committedMeetings = readJson(meetingsPath);
 const committedDetails = readJson(detailsPath);
-if (!exact(meetingsDataset, committedMeetings)) throw new Error('cumulative reviewed promotion output differs from committed canonical meetings');
-if (!exact(detailsDataset, committedDetails)) throw new Error('cumulative reviewed promotion output differs from committed canonical details');
+if (committedMeetings.schema_version !== meetingsDataset.schema_version) throw new Error('canonical meeting schema differs from cumulative reviewed promotion output');
+if (committedDetails.schema_version !== detailsDataset.schema_version) throw new Error('canonical detail schema differs from cumulative reviewed promotion output');
+
+const committedMeetingById = new Map(committedMeetings.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+const expectedMeetingIds = new Set(meetingsDataset.meetings.map((meeting) => meeting.meeting_id));
+for (const expectedMeeting of meetingsDataset.meetings) {
+  if (!exact(committedMeetingById.get(expectedMeeting.meeting_id), expectedMeeting)) {
+    throw new Error(`cumulative reviewed promotion meeting differs from committed canonical row: ${expectedMeeting.meeting_id}`);
+  }
+}
+const committedDetailById = new Map(committedDetails.details.map((detail) => [detail.meeting_id, detail]));
+const expectedDetailIds = new Set(detailsDataset.details.map((detail) => detail.meeting_id));
+for (const expectedDetail of detailsDataset.details) {
+  if (!exact(committedDetailById.get(expectedDetail.meeting_id), expectedDetail)) {
+    throw new Error(`cumulative reviewed promotion detail differs from committed canonical row: ${expectedDetail.meeting_id}`);
+  }
+}
+
+const expectedInputSources = meetingsDataset.input_sources ?? [];
+const expectedInputSourceSet = new Set(expectedInputSources);
+const committedExpectedInputSources = (committedMeetings.input_sources ?? []).filter((inputPath) => expectedInputSourceSet.has(inputPath));
+if (!exact(committedExpectedInputSources, expectedInputSources)) {
+  throw new Error('cumulative reviewed promotion input-source order differs from committed canonical meetings');
+}
+
+const scopedAuthorityIds = new Set(
+  orderedCandidatePaths.flatMap((inputPath) => (readJson(inputPath).records ?? []).map((record) => record.authority_id)).filter(Boolean),
+);
+const unrelatedMeetingAdditions = committedMeetings.meetings.filter((meeting) => !expectedMeetingIds.has(meeting.meeting_id));
+for (const meeting of unrelatedMeetingAdditions) {
+  if (scopedAuthorityIds.has(meeting.authority_id)) {
+    throw new Error(`unreviewed in-scope canonical meeting addition bypasses cumulative promotion replay: ${meeting.meeting_id}`);
+  }
+}
+const unrelatedDetailAdditions = committedDetails.details.filter((detail) => !expectedDetailIds.has(detail.meeting_id));
+for (const detail of unrelatedDetailAdditions) {
+  const meeting = committedMeetingById.get(detail.meeting_id);
+  if (!meeting) throw new Error(`canonical detail has no committed meeting: ${detail.meeting_id}`);
+  if (scopedAuthorityIds.has(meeting.authority_id)) {
+    throw new Error(`unreviewed in-scope canonical detail addition bypasses cumulative promotion replay: ${detail.meeting_id}`);
+  }
+}
 
 const expectedCounts = new Map([
   [augustJraRecoveryPath, [18, 0]],
@@ -147,3 +187,5 @@ console.log(`BASE_INPUT_SOURCE_COUNT: ${baseInputSources.size}`);
 console.log(`HISTORICAL_BASE_CANDIDATES: ${JSON.stringify(historicalCandidatePaths)}`);
 console.log(`AUGUST_BASE_CANDIDATES: ${JSON.stringify(augustRecoveryPaths.filter((inputPath) => baseInputSources.has(inputPath)))}`);
 console.log(`APPLIED_CANDIDATES: ${JSON.stringify(applied)}`);
+console.log(`UNRELATED_MEETING_ADDITIONS: ${unrelatedMeetingAdditions.length}`);
+console.log(`UNRELATED_DETAIL_ADDITIONS: ${unrelatedDetailAdditions.length}`);
