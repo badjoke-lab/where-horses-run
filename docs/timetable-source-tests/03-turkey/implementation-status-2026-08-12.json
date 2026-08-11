@@ -1,0 +1,73 @@
+{
+  "schema_version": "timetable-source-implementation-status-v1",
+  "recorded_at": "2026-08-12",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "system_id": "tjk-national-racing-system",
+  "work_id": "WHR-CAL-TURKEY-TJK",
+  "source_test_summary": "docs/timetable-source-tests/03-turkey/final-summary.json",
+  "source_revalidation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-12.json",
+  "completed_implementation_units": [
+    "TJK-SOURCE-REVALIDATION-01",
+    "TJK-BOUNDED-ADAPTER-01",
+    "TJK-CURRENT-PROGRAMME-EVIDENCE-01"
+  ],
+  "current_implementation_unit": "TJK-CURRENT-BOUNDED-ADAPTER-01",
+  "status": "current_bounded_adapter_ready_for_implementation",
+  "source_state": {
+    "source_status": "verified",
+    "technical_capability_rank": "A+",
+    "public_ceiling": "A",
+    "daily_landing_route": "/TR/YarisSever/Info/Page/GunlukYarisProgrami",
+    "page_discovered_venue_detail_route": "/TR/YarisSever/Info/Sehir/GunlukYarisProgrami",
+    "daily_parameters": [
+      "SehirId",
+      "QueryParameter_Tarih",
+      "SehirAdi",
+      "Era"
+    ],
+    "current_programme_body_verified": true,
+    "current_programme_date": "2026-08-11",
+    "verified_meetings": 2,
+    "verified_races": 18
+  },
+  "historical_adapter_state": {
+    "adapter_id": "tjk-bounded-reviewed-fixture-v1",
+    "candidate_path": "data/candidates/tjk-bounded-reviewed-fixture-v1.json",
+    "fixture_meetings": 3,
+    "fixture_races": 23,
+    "review_status": "pending",
+    "publication_effect": "none",
+    "current_coverage_eligible": false
+  },
+  "current_evidence_state": {
+    "meetings": [
+      {
+        "racecourse": "Ankara",
+        "city_id": "5",
+        "race_count": 9,
+        "first_post_time_local": "14:00",
+        "last_post_time_local": "18:00"
+      },
+      {
+        "racecourse": "Kocaeli",
+        "city_id": "9",
+        "race_count": 9,
+        "first_post_time_local": "17:15",
+        "last_post_time_local": "21:30"
+      }
+    ],
+    "probe_run_id": 31514800273,
+    "probe_artifact_id": 9110592645,
+    "probe_artifact_sha256": "4d25e8d50c7c15a7c7daa0bc5d4996369d0b9226cbb68206c94aa20261bd754f"
+  },
+  "publication_boundary": {
+    "current_candidate_generated": false,
+    "canonical_written": false,
+    "public_projection_written": false,
+    "automatic_approval": false,
+    "automatic_merge": false,
+    "deployment_performed": false
+  },
+  "next_gate": "Implement a candidate-only current bounded adapter that starts from the verified Info/Page landing, follows only same-day same-city venue-detail links discovered there, emits A-ceiling meeting/race schedule fields only, and writes neither Canonical nor public projection data."
+}
