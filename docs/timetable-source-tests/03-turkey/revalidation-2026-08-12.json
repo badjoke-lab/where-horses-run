@@ -1,0 +1,105 @@
+{
+  "schema_version": "tjk-source-revalidation-v2",
+  "work_id": "WHR-CAL-TURKEY-TJK",
+  "implementation_unit": "TJK-CURRENT-PROGRAMME-EVIDENCE-01",
+  "checked_date": "2026-08-12",
+  "authority_id": "turkiye-jokey-kulubu",
+  "system_id": "tjk-national-racing-system",
+  "status": "verified_with_page_discovered_venue_detail",
+  "technical_capability_rank": "A+",
+  "public_ceiling": "A",
+  "supersedes_for_current_implementation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json",
+  "official_sources": {
+    "annual_programme": "https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu",
+    "annual_filtered_data": "https://www.tjk.org/TR/YarisSever/Query/Data/YillikYarisProgramiCoklu",
+    "daily_programme_landing": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami",
+    "daily_programme_data_hint": "https://www.tjk.org/TR/YarisSever/Info/Data/GunlukYarisProgrami",
+    "venue_detail_path": "/TR/YarisSever/Info/Sehir/GunlukYarisProgrami"
+  },
+  "route_topology": {
+    "landing_route": "/TR/YarisSever/Info/Page/GunlukYarisProgrami",
+    "landing_route_verified": true,
+    "landing_exposes_current_venue_detail_links": true,
+    "venue_detail_route_source": "discovered_from_current_landing_body",
+    "venue_detail_route": "/TR/YarisSever/Info/Sehir/GunlukYarisProgrami",
+    "data_route": "/TR/YarisSever/Info/Data/GunlukYarisProgrami",
+    "data_route_returns_complete_race_schedule": false,
+    "daily_parameters": [
+      "SehirId",
+      "QueryParameter_Tarih",
+      "SehirAdi",
+      "Era"
+    ],
+    "implementation_rule": "Start from the current Info/Page landing route. Follow only same-day, same-city venue-detail links that are emitted by that verified landing response. Do not seed a new adapter from a stale hard-coded Info/Sehir URL."
+  },
+  "current_observation": {
+    "programme_date": "2026-08-11",
+    "parameterized_daily_body_verified": true,
+    "meetings": [
+      {
+        "racecourse": "Ankara",
+        "city_id": "5",
+        "race_count": 9,
+        "first_post_time_local": "14:00",
+        "last_post_time_local": "18:00",
+        "race_schedule": [
+          { "race_number": 1, "post_time_local": "14:00" },
+          { "race_number": 2, "post_time_local": "14:30" },
+          { "race_number": 3, "post_time_local": "15:00" },
+          { "race_number": 4, "post_time_local": "15:30" },
+          { "race_number": 5, "post_time_local": "16:00" },
+          { "race_number": 6, "post_time_local": "16:30" },
+          { "race_number": 7, "post_time_local": "17:00" },
+          { "race_number": 8, "post_time_local": "17:30" },
+          { "race_number": 9, "post_time_local": "18:00" }
+        ]
+      },
+      {
+        "racecourse": "Kocaeli",
+        "city_id": "9",
+        "race_count": 9,
+        "first_post_time_local": "17:15",
+        "last_post_time_local": "21:30",
+        "race_schedule": [
+          { "race_number": 1, "post_time_local": "17:15" },
+          { "race_number": 2, "post_time_local": "17:45" },
+          { "race_number": 3, "post_time_local": "18:30" },
+          { "race_number": 4, "post_time_local": "19:00" },
+          { "race_number": 5, "post_time_local": "19:30" },
+          { "race_number": 6, "post_time_local": "20:00" },
+          { "race_number": 7, "post_time_local": "20:30" },
+          { "race_number": 8, "post_time_local": "21:00" },
+          { "race_number": 9, "post_time_local": "21:30" }
+        ]
+      }
+    ],
+    "correction_to_2026_08_11_revalidation": "The prior annual-observation race_rows values of 7 for Ankara and 8 for Kocaeli are not valid current daily-programme race counts. Direct venue-detail capture proves nine scheduled races for each meeting.",
+    "raw_body_retained": false
+  },
+  "evidence": {
+    "workflow": "Calendar TJK parameterized body probe",
+    "probe_run_id": 31514464296,
+    "probe_head_sha": "a57e73763011d72db21cd6915131b4d71917506a",
+    "probe_artifact_id": 9110446503,
+    "probe_artifact_sha256": "403ad349e04fe87c22e98a0e0fff7bac2655118822ed78fccfc8abce303e9f6a",
+    "probe_result_note": "The run intentionally failed because it still compared the direct daily schedule against stale 7/8 annual-observation counts. Its safe artifact independently captured the exact 9-race schedules above and proved repository-read-only execution. A follow-up run must validate against this corrected evidence."
+  },
+  "decision": {
+    "source_status": "verified",
+    "technical_capability_rank": "A+",
+    "public_ceiling": "A",
+    "current_schedule_capture_status": "verified",
+    "adapter_status": "current_bounded_adapter_ready_for_implementation",
+    "automatic_approval": false,
+    "canonical_write": false,
+    "public_projection_write": false,
+    "deployment": false
+  },
+  "limitations": [
+    "This revalidation verifies current A-level Race 1-N post-time schedules for the two reviewed 2026-08-11 meetings; it is not a nationwide current-window publication approval.",
+    "The historical 2024 fixed-three fixture remains adapter-test evidence only and must not be presented as current Turkey coverage.",
+    "The Info/Sehir venue-detail route may be used only when discovered from the current verified Info/Page landing response for the same city and date; do not hard-code the historical route as the adapter entrypoint.",
+    "A+ remains a technical capability classification. Public output remains capped at A.",
+    "Participant, betting, result, payout, full-racecard, raw-source, and direct-stream fields remain prohibited public outputs."
+  ]
+}
