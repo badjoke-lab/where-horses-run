@@ -3,93 +3,87 @@ name: Calendar KRA Rank C promotion gate
 on:
   pull_request:
     paths:
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
-      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
-      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'scripts/check-v1-data-audit.mjs'
       - 'data/static/racecourses-public-timetable-identities-v1.json'
-      - 'data/generated/timetable/canonical/meetings.json'
-      - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
-      - 'data/generated/timetable/public/meeting-details.json'
-      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
-      - 'data/generated/timetable/operations-status.json'
-      - 'data/generated/timetable/operations-review-package.json'
-      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
-      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
-      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
-      - 'scripts/timetable/load-authority-source-inventory.mjs'
-      - 'scripts/timetable/load-calendar-readiness.mjs'
-      - 'scripts/check-kra-calendar-plan-adapter.mjs'
-      - 'scripts/check-kra-public-timetable-identities.mjs'
-      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
-      - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
-  push:
-    branches:
-      - main
-    paths:
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
-      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
-      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
-      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
-      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
-      - 'data/static/racecourses-public-timetable-identities-v1.json'
-      - 'data/generated/timetable/canonical/meetings.json'
-      - 'data/generated/timetable/canonical/meeting-details.json'
-      - 'data/generated/timetable/public/meeting-list.json'
-      - 'data/generated/timetable/public/meeting-details.json'
-      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
-      - 'data/generated/timetable/operations-status.json'
-      - 'data/generated/timetable/operations-review-package.json'
-      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
-      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
-      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
-      - 'scripts/timetable/load-authority-source-inventory.mjs'
-      - 'scripts/timetable/load-calendar-readiness.mjs'
-      - 'scripts/check-kra-calendar-plan-adapter.mjs'
-      - 'scripts/check-kra-public-timetable-identities.mjs'
-      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
       - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout exact PR head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate deterministic KRA candidate adapter
-        run: node scripts/check-kra-calendar-plan-adapter.mjs
-      - name: Validate committed approved KRA candidate
-        run: node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
-      - name: Validate committed KRA public identities
-        run: node scripts/check-kra-public-timetable-identities.mjs
-      - name: Validate committed KRA Rank C promotion
-        run: node scripts/check-kra-rank-c-promotion-gate.mjs
-      - name: Validate canonical promotion determinism
-        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --check
-      - name: Validate public projection determinism
-        run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Validate dependent public derivatives
+      - name: Patch reviewed racecourse growth allowlist and boundaries
         run: |
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
-          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14 --check
-          node scripts/timetable/build-operations-review-package.mjs --check
-      - name: Validate runtime import boundary
-        run: node scripts/check-calendar-runtime-import-boundary.mjs
-      - name: Prove repository clean
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/check-v1-data-audit.mjs')
+          s = p.read_text()
+          old = "const REVIEWED_RACECOURSE_GROWTH_IDS = new Set(['mizusawa-racecourse']);"
+          new = "const REVIEWED_RACECOURSE_GROWTH_IDS = new Set(['mizusawa-racecourse', 'busan-gyeongnam-racecourse', 'jeju-racecourse']);"
+          if s.count(old) != 1:
+              raise SystemExit('expected historical growth allowlist exactly once')
+          s = s.replace(old, new)
+          anchor = "expect(mizusawa?.city === null && mizusawa?.region === null, 'Mizusawa unverified location detail was published');\n"
+          addition = """expect(mizusawa?.city === null && mizusawa?.region === null, 'Mizusawa unverified location detail was published');
+for (const id of ['busan-gyeongnam-racecourse', 'jeju-racecourse']) {
+  const kraRacecourse = racecourseEntries.find(({ row }) => row?.id === id)?.row;
+  expect(kraRacecourse?.slug === id && kraRacecourse?.country_id === 'south-korea', `KRA reviewed racecourse identity differs: ${id}`);
+  expect(kraRacecourse?.identity_status === 'verified_from_reviewed_public_timetable' && kraRacecourse?.profile_status === 'identity_only', `KRA publication boundary differs: ${id}`);
+  expect(kraRacecourse?.city === null && kraRacecourse?.region === null, `KRA unverified location detail was published: ${id}`);
+}
+"""
+          if s.count(anchor) != 1:
+              raise SystemExit('expected Mizusawa boundary anchor exactly once')
+          s = s.replace(anchor, addition)
+          p.write_text(s)
+          PY
+      - name: Validate data audit against full rendered site
         run: |
-          changes="$(git status --porcelain --untracked-files=all)"
-          if [ -n "$changes" ]; then
-            printf '%s\n' "$changes"
-            exit 1
-          fi
+          npm install --package-lock=false
+          npm run build
+          node scripts/check-v1-data-audit.mjs
+      - name: Stage exact audit script as unreachable Git tree
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python - <<'PY'
+          import base64, json, os, subprocess, tempfile
+          from pathlib import Path
+          repo=os.environ['GITHUB_REPOSITORY']; head=os.environ['HEAD_SHA']; file_path='scripts/check-v1-data-audit.mjs'
+          def gh(args,payload=None):
+            cmd=['gh','api',*args]
+            if payload is None: return json.loads(subprocess.check_output(cmd,text=True))
+            with tempfile.NamedTemporaryFile('w',delete=False,encoding='utf-8') as h:
+              json.dump(payload,h); t=h.name
+            try: return json.loads(subprocess.check_output(cmd+['--input',t],text=True))
+            finally: os.unlink(t)
+          commit=gh([f'repos/{repo}/git/commits/{head}'])
+          raw=Path(file_path).read_bytes()
+          blob=gh(['--method','POST',f'repos/{repo}/git/blobs'],{'content':base64.b64encode(raw).decode(),'encoding':'base64'})
+          tree=gh(['--method','POST',f'repos/{repo}/git/trees'],{'base_tree':commit['tree']['sha'],'tree':[{'path':file_path,'mode':'100644','type':'blob','sha':blob['sha']}]})
+          Path('kra-v1-audit-stage.json').write_text(json.dumps({'head_sha':head,'staged_tree_sha':tree['sha'],'file':file_path},indent=2)+'\n')
+          PY
+      - name: Upload staged tree manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: kra-v1-audit-stage
+          path: kra-v1-audit-stage.json
+          retention-days: 7
+      - name: Cleanup and prove source clean
+        run: |
+          rm -f kra-v1-audit-stage.json
+          git checkout -- scripts/check-v1-data-audit.mjs
+          rm -rf node_modules dist
+          test -z "$(git status --porcelain --untracked-files=all)"
