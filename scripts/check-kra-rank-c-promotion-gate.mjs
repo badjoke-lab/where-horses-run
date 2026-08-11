@@ -1,3 +1,4 @@
+// CI retrigger for reviewed KRA v1 growth audit staging.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { loadKraRankCCandidate } from './timetable/kra-calendar-plan-adapter.mjs';
