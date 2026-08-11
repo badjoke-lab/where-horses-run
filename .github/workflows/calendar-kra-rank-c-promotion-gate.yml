@@ -5,131 +5,76 @@ on:
     paths:
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
+      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
+      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
       - 'data/static/racecourses-public-timetable-identities-v1.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/canonical/meeting-details.json'
       - 'data/generated/timetable/public/meeting-list.json'
       - 'data/generated/timetable/public/meeting-details.json'
+      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
       - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
+      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
+      - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
+      - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
+      - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
+      - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
+      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
+      - 'scripts/check-kra-rank-c-promotion-gate.mjs'
       - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact PR head
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Rebuild minimal reviewed publication from pre-write commit
-        env:
-          PRE_WRITE_SHA: d6612416b9e9262aaa9d534f63e98b82777a7f08
-        run: |
-          rm -rf /tmp/kra-minimal
-          git worktree add --detach /tmp/kra-minimal "$PRE_WRITE_SHA"
-          cp scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs /tmp/kra-minimal/scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs
-          cd /tmp/kra-minimal
-          node scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs
-      - name: Upload minimal reviewed publication artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: kra-rank-c-minimal-reviewed-publication
-          if-no-files-found: error
-          retention-days: 7
-          path: |
-            /tmp/kra-minimal/data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json
-            /tmp/kra-minimal/data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json
-            /tmp/kra-minimal/data/static/kra-2026-reviewed-public-timetable-identities-v1.json
-            /tmp/kra-minimal/data/static/racecourses-public-timetable-identities-v1.json
-            /tmp/kra-minimal/data/generated/timetable/canonical/meetings.json
-            /tmp/kra-minimal/data/generated/timetable/canonical/meeting-details.json
-            /tmp/kra-minimal/data/generated/timetable/public/meeting-list.json
-            /tmp/kra-minimal/data/generated/timetable/public/meeting-details.json
-      - name: Stage minimal reviewed output as unreachable Git tree
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          python - <<'PY'
-          import base64, hashlib, json, os, subprocess, tempfile
-          from pathlib import Path
-
-          repo = os.environ['GITHUB_REPOSITORY']
-          head_sha = os.environ['HEAD_SHA']
-          source_root = Path('/tmp/kra-minimal')
-          files = [
-              'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json',
-              'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json',
-              'data/static/kra-2026-reviewed-public-timetable-identities-v1.json',
-              'data/static/racecourses-public-timetable-identities-v1.json',
-              'data/generated/timetable/canonical/meetings.json',
-              'data/generated/timetable/canonical/meeting-details.json',
-              'data/generated/timetable/public/meeting-list.json',
-              'data/generated/timetable/public/meeting-details.json',
-          ]
-
-          def gh_json(args, payload=None):
-              cmd = ['gh', 'api', *args]
-              if payload is None:
-                  return json.loads(subprocess.check_output(cmd, text=True))
-              with tempfile.NamedTemporaryFile('w', delete=False, encoding='utf-8') as handle:
-                  json.dump(payload, handle)
-                  temp_path = handle.name
-              try:
-                  return json.loads(subprocess.check_output(cmd + ['--input', temp_path], text=True))
-              finally:
-                  os.unlink(temp_path)
-
-          commit = gh_json([f'repos/{repo}/git/commits/{head_sha}'])
-          tree = []
-          staged = []
-          for file_path in files:
-              raw = (source_root / file_path).read_bytes()
-              blob = gh_json(['--method', 'POST', f'repos/{repo}/git/blobs'], {
-                  'content': base64.b64encode(raw).decode('ascii'),
-                  'encoding': 'base64',
-              })
-              tree.append({'path': file_path, 'mode': '100644', 'type': 'blob', 'sha': blob['sha']})
-              staged.append({'path': file_path, 'blob_sha': blob['sha'], 'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)})
-
-          staged_tree = gh_json(['--method', 'POST', f'repos/{repo}/git/trees'], {
-              'base_tree': commit['tree']['sha'],
-              'tree': tree,
-          })
-          manifest = {
-              'schema_version': 'kra-reviewed-publication-staged-tree-v1',
-              'source_pre_write_sha': 'd6612416b9e9262aaa9d534f63e98b82777a7f08',
-              'head_sha': head_sha,
-              'staged_tree_sha': staged_tree['sha'],
-              'files': staged,
-              'branch_ref_updated': False,
-              'commit_created': False,
-          }
-          Path('kra-minimal-staged-tree.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-          print(json.dumps(manifest, indent=2))
-          PY
-      - name: Upload minimal staged-tree manifest
-        uses: actions/upload-artifact@v4
-        with:
-          name: kra-rank-c-minimal-staged-tree
-          if-no-files-found: error
-          retention-days: 7
-          path: kra-minimal-staged-tree.json
-      - name: Remove temporary staging files
-        if: always()
-        run: |
-          rm -f kra-minimal-staged-tree.json
-          git worktree remove --force /tmp/kra-minimal 2>/dev/null || true
-          git worktree prune
+      - name: Validate deterministic KRA candidate adapter
+        run: node scripts/check-kra-calendar-plan-adapter.mjs
+      - name: Validate committed approved KRA candidate
+        run: node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
+      - name: Validate committed KRA public identities
+        run: node scripts/check-kra-public-timetable-identities.mjs
+      - name: Validate committed KRA Rank C promotion
+        run: node scripts/check-kra-rank-c-promotion-gate.mjs
+      - name: Validate canonical promotion determinism
+        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --check
+      - name: Validate public projection determinism
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"
