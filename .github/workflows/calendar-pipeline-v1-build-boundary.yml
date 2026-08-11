@@ -14,7 +14,7 @@ on:
       - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/timetable/**'
       - 'src/components/TimetableMeetingList.astro'
-      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/**'
       - 'src/lib/timetable/publicTimetableViewModel.ts'
       - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
   push:
@@ -28,11 +28,10 @@ on:
       - 'docs/calendar/pipeline-v1-build-boundary.md'
       - 'docs/calendar/banei-bilingual-public-display-qa.md'
       - 'scripts/check-calendar-build-boundary.mjs'
-      - 'scripts/check-calendar-banei-bilingual-public-display-qa.mjs'
       - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/timetable/**'
       - 'src/components/TimetableMeetingList.astro'
-      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/**'
       - 'src/lib/timetable/publicTimetableViewModel.ts'
       - '.github/workflows/calendar-pipeline-v1-build-boundary.yml'
 
