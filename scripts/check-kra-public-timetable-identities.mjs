@@ -25,21 +25,17 @@ assert.equal(review.implementation_unit, 'KRA-PUBLIC-IDENTITY-PROMOTION-01');
 assert.equal(review.country_id, 'south-korea');
 assert.equal(review.authority_id, 'korea-racing-authority');
 assert.equal(review.candidate_rank, 'C');
-assert.equal(review.review.status, 'pending_human_review');
-assert.equal(review.review.reviewed_at, null);
-assert.equal(review.review.reviewer, null);
-assert.deepEqual(review.publication_boundary, {
-  canonical_written: false,
-  public_projection_written: false,
-  automatic_approval: false,
-  automatic_merge: false,
-  deployment_performed: false
-});
+assert.equal(review.review.status, 'approved');
+assert.ok(review.review.reviewer);
+assert.ok(!Number.isNaN(Date.parse(review.review.reviewed_at)));
+assert.equal(review.review.promotion_target, 'data/static/racecourses-public-timetable-identities-v1.json');
+assert.equal(review.publication_boundary.automatic_approval, false);
+assert.equal(review.publication_boundary.automatic_merge, false);
+assert.equal(review.publication_boundary.deployment_performed, false);
 
 const expectedIds = ['seoul-racecourse', 'busan-gyeongnam-racecourse', 'jeju-racecourse'];
 assert.deepEqual(review.records.map((record) => record.racecourse_id), expectedIds);
 assert.deepEqual(plan.venues.map((venue) => venue.racecourse_id), expectedIds);
-
 for (const record of review.records) {
   assert.equal(record.slug, record.racecourse_id);
   assert.equal(record.timezone, 'Asia/Seoul');
@@ -47,10 +43,6 @@ for (const record of review.records) {
   assert.ok(record.name_en && record.name_ja && record.name_local);
 }
 
-const seoul = review.records[0];
-assert.equal(seoul.registration_state, 'existing_canonical');
-assert.equal(seoul.canonical_registry, 'data/static/racecourses.json');
-assert.equal(seoul.promotion_action, 'reuse_existing_identity');
 const seoulMatches = rows.filter(({ row }) => row?.id === 'seoul-racecourse');
 assert.equal(seoulMatches.length, 1, 'Seoul canonical identity must exist exactly once');
 assert.equal(seoulMatches[0].file, 'data/static/racecourses.json');
@@ -58,11 +50,28 @@ assert.equal(seoulMatches[0].row.country_id, 'south-korea');
 assert.equal(seoulMatches[0].row.timezone, 'Asia/Seoul');
 assert.equal(seoulMatches[0].row.name_local, '서울경마공원');
 
-for (const record of review.records.slice(1)) {
-  assert.equal(record.registration_state, 'prepared_for_human_review');
-  assert.equal(record.canonical_registry, 'data/static/racecourses-public-timetable-identities-v1.json');
-  assert.equal(record.promotion_action, 'add_identity_only_after_human_review');
-  assert.equal(rows.filter(({ row }) => row?.id === record.racecourse_id).length, 0, `${record.racecourse_id} must not be written before human review`);
+const targets = review.records.slice(1);
+const targetMatches = targets.map((record) => rows.filter(({ row }) => row?.id === record.racecourse_id));
+const presentCount = targetMatches.filter((matches) => matches.length === 1).length;
+assert.ok(presentCount === 0 || presentCount === 2, 'Busan-Gyeongnam and Jeju identities must be either both pending or both published');
+
+if (presentCount === 0) {
+  for (const matches of targetMatches) assert.equal(matches.length, 0);
+} else {
+  for (const [index, matches] of targetMatches.entries()) {
+    assert.equal(matches.length, 1, `${targets[index].racecourse_id} must exist exactly once after publication`);
+    assert.equal(matches[0].file, 'data/static/racecourses-public-timetable-identities-v1.json');
+    const row = matches[0].row;
+    const expected = targets[index];
+    assert.equal(row.slug, expected.slug);
+    assert.equal(row.country_id, 'south-korea');
+    assert.equal(row.name_en, expected.name_en);
+    assert.equal(row.name_ja, expected.name_ja);
+    assert.equal(row.name_local, expected.name_local);
+    assert.equal(row.timezone, 'Asia/Seoul');
+    assert.equal(row.identity_status, 'verified_from_reviewed_public_timetable');
+    assert.equal(row.profile_status, 'identity_only');
+  }
 }
 
 assert.equal(review.records[1].name_local, '부산경남경마공원');
@@ -71,6 +80,6 @@ assert.ok(review.official_identity_evidence.every((source) => source.url.startsW
 assert.ok(review.official_identity_evidence.every((source) => expectedIds.every((id) => source.supports.includes(id))));
 
 console.log('KRA_PUBLIC_TIMETABLE_IDENTITIES: pass');
-console.log('IDENTITIES: seoul-racecourse=existing busan-gyeongnam-racecourse=pending jeju-racecourse=pending');
-console.log('PUBLICATION_EFFECT: none');
-console.log('HUMAN_REVIEW_REQUIRED: true');
+console.log(`PUBLICATION_STATE: ${presentCount === 2 ? 'published_identity_only' : 'approved_not_written'}`);
+console.log('AUTOMATIC_APPROVAL: false');
+console.log('AUTOMATIC_MERGE: false');
