@@ -1,0 +1,54 @@
+name: Calendar TJK source revalidation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/timetable-source-tests/03-turkey/**'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'scripts/check-tjk-source-revalidation.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
+      - '.github/workflows/calendar-tjk-source-revalidation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/timetable-source-tests/03-turkey/**'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'scripts/check-tjk-source-revalidation.mjs'
+      - 'scripts/check-tjk-implementation-status.mjs'
+      - '.github/workflows/calendar-tjk-source-revalidation.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate TJK source revalidation
+        run: node scripts/check-tjk-source-revalidation.mjs
+      - name: Validate TJK implementation handoff
+        run: node scripts/check-tjk-implementation-status.mjs
+      - name: Validate shared source inventory
+        run: node scripts/check-authority-source-inventory-schema.mjs
+      - name: Validate Calendar contracts
+        run: node scripts/check-calendar-contracts.mjs
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
