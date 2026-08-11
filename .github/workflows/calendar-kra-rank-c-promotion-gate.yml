@@ -3,31 +3,57 @@ name: Calendar KRA Rank C promotion gate
 on:
   pull_request:
     paths:
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
       - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
       - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
       - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
+      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
       - 'scripts/check-kra-rank-c-promotion-gate.mjs'
+      - 'scripts/check-v1-data-audit.mjs'
       - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
   push:
     branches:
       - main
     paths:
+      - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
       - 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-review-v1.json'
       - 'data/static/authority-source-inventory-kra-calendar-plan-v1.json'
       - 'data/static/calendar-readiness-kra-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-calendar-plan-v1.json'
       - 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
       - 'scripts/timetable/kra-calendar-plan-adapter.mjs'
+      - 'scripts/timetable/build-kra-rank-c-approved-candidate.mjs'
+      - 'scripts/timetable/manual-promote-reviewed-kra-rank-c.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/load-calendar-readiness.mjs'
       - 'scripts/check-kra-calendar-plan-adapter.mjs'
+      - 'scripts/check-kra-public-timetable-identities.mjs'
       - 'scripts/check-kra-rank-c-promotion-gate.mjs'
+      - 'scripts/check-v1-data-audit.mjs'
       - '.github/workflows/calendar-kra-rank-c-promotion-gate.yml'
 
 permissions:
@@ -45,8 +71,23 @@ jobs:
           node-version: 22.12.0
       - name: Validate deterministic KRA candidate adapter
         run: node scripts/check-kra-calendar-plan-adapter.mjs
-      - name: Validate KRA promotion review gate
+      - name: Validate committed approved KRA candidate
+        run: node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
+      - name: Validate committed KRA public identities
+        run: node scripts/check-kra-public-timetable-identities.mjs
+      - name: Validate committed KRA Rank C promotion
         run: node scripts/check-kra-rank-c-promotion-gate.mjs
+      - name: Validate canonical promotion determinism
+        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --check
+      - name: Validate public projection determinism
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Validate dependent public derivatives
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14 --check
+          node scripts/timetable/build-operations-review-package.mjs --check
+      - name: Validate runtime import boundary
+        run: node scripts/check-calendar-runtime-import-boundary.mjs
       - name: Prove repository clean
         run: |
           changes="$(git status --porcelain --untracked-files=all)"

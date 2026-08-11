@@ -9,7 +9,7 @@ const SEO_RELEASE_PATH = 'data/static/seo-qa-release-v1.json';
 const DATA_MODULE_PATH = 'src/lib/data.ts';
 const RECONCILIATION_PATH = 'data/static/country-page-id-inventory-01-12-reconciliation-v1.json';
 const SITEMAP_PATH = 'dist/sitemap.xml';
-const REVIEWED_RACECOURSE_GROWTH_IDS = new Set(['mizusawa-racecourse']);
+const REVIEWED_RACECOURSE_GROWTH_IDS = new Set(['mizusawa-racecourse', 'busan-gyeongnam-racecourse', 'jeju-racecourse']);
 const TEMPORARY_FILES = [
   '.github/workflows/temporary-v1-data-audit-discovery.yml',
   'scripts/temporary-discover-v1-data-audit.mjs',
@@ -210,6 +210,12 @@ const mizusawa = racecourseEntries.find(({ row }) => row?.id === 'mizusawa-racec
 expect(mizusawa?.slug === 'mizusawa-racecourse' && mizusawa?.country_id === 'japan', 'Mizusawa racecourse identity differs');
 expect(mizusawa?.identity_status === 'verified_from_reviewed_public_timetable' && mizusawa?.profile_status === 'identity_only', 'Mizusawa publication boundary differs');
 expect(mizusawa?.city === null && mizusawa?.region === null, 'Mizusawa unverified location detail was published');
+for (const id of ['busan-gyeongnam-racecourse', 'jeju-racecourse']) {
+  const kraRacecourse = racecourseEntries.find(({ row }) => row?.id === id)?.row;
+  expect(kraRacecourse?.slug === id && kraRacecourse?.country_id === 'south-korea', `KRA reviewed racecourse identity differs: ${id}`);
+  expect(kraRacecourse?.identity_status === 'verified_from_reviewed_public_timetable' && kraRacecourse?.profile_status === 'identity_only', `KRA publication boundary differs: ${id}`);
+  expect(kraRacecourse?.city === null && kraRacecourse?.region === null, `KRA unverified location detail was published: ${id}`);
+}
 
 for (const [name, collection] of Object.entries(merged)) {
   expect(collection.identifiers === collection.records, `${name} identifier count differs`);
