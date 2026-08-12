@@ -11,6 +11,7 @@ const checkOnly = process.argv.includes('--check');
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function readJson(relativePath) { return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8')); }
 function serialize(value) { return `${JSON.stringify(value, null, 2)}\n`; }
+function normalizeDateTime(value) { return /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00Z` : value; }
 
 const pending = loadTjkCurrentBoundedCandidate();
 const review = readJson(reviewPath);
@@ -53,14 +54,11 @@ const records = pending.records.map((record) => {
     capability_rank: 'A',
     first_race_time_local: record.first_race_time_local,
     last_race_time_local: record.last_race_time_local,
-    timetable_rows: record.timetable_rows.map((row) => ({
-      label: `Race ${row.race_number}`,
-      post_time_local: row.post_time_local,
-    })),
+    timetable_rows: record.timetable_rows.map((row) => ({ label: `Race ${row.race_number}`, post_time_local: row.post_time_local })),
     source: {
       source_id: record.source.source_id,
       official_url: record.source.landing_url,
-      checked_at: record.source.checked_at,
+      checked_at: normalizeDateTime(record.source.checked_at),
       extraction_method: 'adapter_candidate',
     },
     confidence: record.confidence,
@@ -80,12 +78,7 @@ const output = {
   publication_ceiling: 'A',
   candidate_window: pending.candidate_window,
   records,
-  review: {
-    status: 'approved',
-    reviewed_at: review.review.reviewed_at,
-    reviewer: review.review.reviewer,
-    promotion_target: 'canonical-timetable-v0',
-  },
+  review: { status: 'approved', reviewed_at: review.review.reviewed_at, reviewer: review.review.reviewer, promotion_target: 'canonical-timetable-v0' },
   publication_effect: 'reviewed-promotion-unit',
 };
 
