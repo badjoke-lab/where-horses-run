@@ -57,7 +57,10 @@ for (const marker of [
 
 for (const marker of [
   'group.records.map((record) => (',
-  '<li class="meeting-card">',
+  '<li class="meeting-row">',
+  'meeting-row__identity',
+  'meeting-row__meta',
+  'meeting-row__links',
   "const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';",
   "record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+'",
   'record.source_status',
