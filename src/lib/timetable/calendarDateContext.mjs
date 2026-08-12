@@ -129,7 +129,7 @@ export function evaluateCalendarDataState({ records, generatedAt, context }) {
   const dates = records.map((record) => assertDateText(record.date, `record ${record.meeting_id ?? 'unknown'} date`)).sort();
   const earliestRecordDate = dates[0] ?? null;
   const latestRecordDate = dates.at(-1) ?? null;
-  const generatedDate = new Date(generatedTimestamp).toISOString().slice(0, 10);
+  const generatedDate = dateInTimeZone(new Date(generatedTimestamp), context.timeZone);
   const windowRecords = filterRecordsForWindow(records, context.windowStart, context.windowEndExclusive);
 
   let status = 'current_window_available';
