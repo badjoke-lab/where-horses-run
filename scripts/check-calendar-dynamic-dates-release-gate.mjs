@@ -24,9 +24,12 @@ if (manifest) {
   if (manifest.work_id !== 'WHR-CAL-DYNAMIC-DATES' || manifest.status !== 'complete') fail('Dynamic Dates manifest must be complete.');
   if (manifest.next_work_id !== 'WHR-CAL-OPS-V1') fail('next_work_id must be WHR-CAL-OPS-V1.');
   if (manifest.following_work_id !== 'WHR-CAL-JAPAN-JRA') fail('following_work_id must be WHR-CAL-JAPAN-JRA.');
-  if (manifest.date_contract?.default_timezone !== 'UTC') fail('default timezone must be UTC.');
+  if (manifest.date_contract?.default_timezone !== 'Asia/Tokyo') fail('default timezone must be Asia/Tokyo.');
   if (manifest.date_contract?.window_days !== 30) fail('window_days must be 30.');
   if (manifest.date_contract?.fixed_historical_fallback !== false) fail('fixed historical fallback must remain disabled.');
+  if (manifest.window_start_inclusive === false || manifest.window_end_exclusive === false) {
+    fail('window boundary semantics are incorrect.');
+  }
   if (manifest.date_contract?.window_start_inclusive !== true || manifest.date_contract?.window_end_exclusive !== true) {
     fail('window boundary semantics are incorrect.');
   }
@@ -94,6 +97,7 @@ if (errors.length) {
 
 console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
+console.log('DEFAULT_TIMEZONE: Asia/Tokyo');
 console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
 console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
