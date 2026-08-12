@@ -10,6 +10,7 @@ const manifestPath = 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-r
 const identityReviewPath = 'data/static/kra-2026-reviewed-public-timetable-identities-v1.json';
 const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json';
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
+const publishedNote = 'Human-approved KRA Rank C meeting identity. Publication remains limited to meeting date, racecourse identity, and reviewed official source trace.';
 
 const manifest = readJson(manifestPath);
 const identityReview = readJson(identityReviewPath);
@@ -89,6 +90,7 @@ for (const record of currentTargets) {
   assert.equal(record.capability_rank, 'C');
   assert.equal(record.first_race_time_local, null);
   assert.equal(record.last_race_time_local, null);
+  assert.equal(record.notes, publishedNote, 'published KRA approval note must remain exact');
 }
 assert.equal(canonicalDetails.details.filter((record) => targetIds.has(record.meeting_id)).length, 0, 'Rank C KRA meetings must never create canonical race-detail rows');
 
@@ -100,7 +102,17 @@ assert.ok(promotedTargets.every((record) => record.capability_rank === 'C'));
 assert.ok(promotedTargets.every((record) => record.first_race_time_local === null && record.last_race_time_local === null));
 assert.deepEqual(promotedNonTargets, currentNonTargets, 'KRA promotion must preserve separately reviewed non-KRA meetings exactly');
 assert.deepEqual(promotedNonTargetDetails, currentNonTargetDetails, 'KRA promotion must preserve separately reviewed non-KRA detail rows exactly');
-if (currentTargets.length === 32) assert.deepEqual(promotedTargets, currentTargets, 'already-published KRA target rows must remain deterministic');
+if (currentTargets.length === 32) {
+  const withoutPublicationNote = (record) => {
+    const { notes, ...rest } = record;
+    return rest;
+  };
+  assert.deepEqual(
+    promotedTargets.map(withoutPublicationNote),
+    currentTargets.map(withoutPublicationNote),
+    'already-published KRA target fields other than the human-approved publication note must remain deterministic'
+  );
+}
 
 assert.equal(identityReview.review.status, 'approved');
 assert.equal(identityReview.review.reviewer, manifest.review.reviewer);
@@ -114,5 +126,6 @@ console.log('CANDIDATE_MEETINGS: 32');
 console.log('APPROVAL_BINDING: pass');
 console.log('PROMOTION_CORE_DRY_RUN: pass');
 console.log('NON_KRA_PRESERVATION: pass');
+console.log('PUBLISHED_KRA_APPROVAL_NOTE: preserved');
 console.log(`CANONICAL_STATE: ${currentTargets.length === 32 ? 'published_rank_c' : 'approved_not_written'}`);
 console.log('PUBLIC_RANK_CEILING: C');
