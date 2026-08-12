@@ -4,6 +4,7 @@ import path from 'node:path';
 const CONTRACT_PATH = 'data/static/title-description-normalization-contract-v1.json';
 const AUDIT_PATH = 'data/audits/title-description-normalization-v1.json';
 const METHODS_CONTRACT_PATH = 'data/static/methods-data-policy-contract-v1.json';
+const PUBLIC_DETAILS_PATH = 'data/generated/timetable/public/meeting-details.json';
 const INTEGRATION_PATH = 'scripts/title-description-normalization-integration.mjs';
 const ASTRO_CONFIG_PATH = 'astro.config.mjs';
 const SITEMAP_PATH = 'dist/sitemap.xml';
@@ -88,7 +89,7 @@ function verifyWiring() {
   expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';") && config.includes('titleDescriptionNormalizationIntegration()'), 'Astro normalization wiring is missing');
   for (const marker of ["name: 'where-horses-run-title-description-normalization'", "'astro:build:done'", 'meetingMetadata(page)', 'duplicatedCountryDescriptions']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
 }
-function verifyPages(pages, contract, methodsContract) {
+function verifyPages(pages, contract, methodsContract, publicDetails) {
   const english = pages.filter((page) => page.lang === 'en').length;
   const japanese = pages.filter((page) => page.lang === 'ja').length;
   expect(pages.length >= contract.scope.public_pages, `Public page inventory shrank ${pages.length}`);
@@ -110,8 +111,20 @@ function verifyPages(pages, contract, methodsContract) {
   expect(duplicates(pages, 'title').length === 0, 'Duplicate title groups remain');
   expect(duplicates(pages, 'description').length === 0, 'Duplicate description groups remain');
 
+  expect(publicDetails.schema_version === 'public-timetable-meeting-details-v0', 'Current public meeting-detail schema differs');
+  expect(Array.isArray(publicDetails.details), 'Current public meeting-detail inventory is missing');
   const meetings = pages.filter((page) => page.family === 'meeting');
-  expect(meetings.length === contract.scope.meeting_detail_pages, `Meeting page count differs ${meetings.length}`);
+  const expectedMeetingPages = publicDetails.details.length * 2;
+  expect(meetings.length === expectedMeetingPages, `Meeting page count differs ${meetings.length}; current public detail inventory requires ${expectedMeetingPages}`);
+  const meetingPaths = new Set(meetings.map((page) => page.pathname));
+  for (const detail of publicDetails.details) {
+    for (const expectedPath of [
+      `/timetable/meetings/${detail.meeting_id}/`,
+      `/ja/timetable/meetings/${detail.meeting_id}/`,
+    ]) {
+      expect(meetingPaths.has(expectedPath), `Current public meeting route is missing: ${expectedPath}`);
+    }
+  }
   for (const page of meetings) {
     const racecourse = strip(page.html.match(/<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '');
     const pageKind = strip(page.html.match(/<p[^>]*class="[^"]*eyebrow[^"]*"[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? '');
@@ -141,25 +154,28 @@ function verifyPages(pages, contract, methodsContract) {
   }
   expect(pages.filter((page) => page.family === 'faq').length === contract.scope.faq_pages, 'FAQ page count differs');
   expect(pages.filter((page) => page.family === 'methods').length === contract.scope.methods_pages, 'Methods page count differs');
-  return { english, japanese };
+  return { english, japanese, meetingPages: meetings.length, meetingDetails: publicDetails.details.length };
 }
 
 function main() {
-  for (const file of [CONTRACT_PATH, AUDIT_PATH, METHODS_CONTRACT_PATH, INTEGRATION_PATH, ASTRO_CONFIG_PATH, SITEMAP_PATH]) expect(fs.existsSync(file), `Missing ${file}`);
+  for (const file of [CONTRACT_PATH, AUDIT_PATH, METHODS_CONTRACT_PATH, PUBLIC_DETAILS_PATH, INTEGRATION_PATH, ASTRO_CONFIG_PATH, SITEMAP_PATH]) expect(fs.existsSync(file), `Missing ${file}`);
   const contract = readJson(CONTRACT_PATH);
   const audit = readJson(AUDIT_PATH);
   const methodsContract = readJson(METHODS_CONTRACT_PATH);
+  const publicDetails = readJson(PUBLIC_DETAILS_PATH);
   verifyHistorical(contract, audit);
   verifyWiring();
   const urls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   const pages = urls.map(parsePage);
-  const { english, japanese } = verifyPages(pages, contract, methodsContract);
+  const { english, japanese, meetingPages, meetingDetails } = verifyPages(pages, contract, methodsContract, publicDetails);
   console.log('TITLE_DESCRIPTION_NORMALIZATION: pass');
   console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.scope.public_pages}`);
   console.log(`CURRENT_PUBLIC_PAGES: ${pages.length}`);
   console.log(`CURRENT_ENGLISH_PAGES: ${english}`);
   console.log(`CURRENT_JAPANESE_PAGES: ${japanese}`);
-  console.log(`MEETING_DETAILS: ${contract.scope.meeting_detail_pages}`);
+  console.log(`HISTORICAL_MEETING_DETAIL_PAGES: ${contract.scope.meeting_detail_pages}`);
+  console.log(`CURRENT_MEETING_DETAILS: ${meetingDetails}`);
+  console.log(`CURRENT_MEETING_DETAIL_PAGES: ${meetingPages}`);
   console.log(`FAQ_PAGES: ${contract.scope.faq_pages}`);
   console.log(`METHODS_PAGES: ${contract.scope.methods_pages}`);
   console.log('DUPLICATE_TITLES: 0');
