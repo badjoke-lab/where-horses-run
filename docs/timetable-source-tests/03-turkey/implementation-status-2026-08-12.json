@@ -11,22 +11,18 @@
     "TJK-SOURCE-REVALIDATION-01",
     "TJK-BOUNDED-ADAPTER-01",
     "TJK-CURRENT-PROGRAMME-EVIDENCE-01",
-    "TJK-CURRENT-BOUNDED-ADAPTER-01"
+    "TJK-CURRENT-BOUNDED-ADAPTER-01",
+    "TJK-CURRENT-PROMOTION-REVIEW-01"
   ],
-  "current_implementation_unit": "TJK-CURRENT-PROMOTION-REVIEW-01",
-  "status": "current_promotion_review_packet_pending_human_review",
+  "current_implementation_unit": "TJK-CURRENT-IDENTITY-AND-TIMETABLE-PROMOTION-01",
+  "status": "current_review_approved_promotion_ready",
   "source_state": {
     "source_status": "verified",
     "technical_capability_rank": "A+",
     "public_ceiling": "A",
     "daily_landing_route": "/TR/YarisSever/Info/Page/GunlukYarisProgrami",
     "page_discovered_venue_detail_route": "/TR/YarisSever/Info/Sehir/GunlukYarisProgrami",
-    "daily_parameters": [
-      "SehirId",
-      "QueryParameter_Tarih",
-      "SehirAdi",
-      "Era"
-    ],
+    "daily_parameters": ["SehirId", "QueryParameter_Tarih", "SehirAdi", "Era"],
     "current_programme_body_verified": true,
     "current_programme_date": "2026-08-11",
     "verified_meetings": 2,
@@ -43,20 +39,8 @@
   },
   "current_evidence_state": {
     "meetings": [
-      {
-        "racecourse": "Ankara",
-        "city_id": "5",
-        "race_count": 9,
-        "first_post_time_local": "14:00",
-        "last_post_time_local": "18:00"
-      },
-      {
-        "racecourse": "Kocaeli",
-        "city_id": "9",
-        "race_count": 9,
-        "first_post_time_local": "17:15",
-        "last_post_time_local": "21:30"
-      }
+      { "racecourse": "Ankara", "city_id": "5", "race_count": 9, "first_post_time_local": "14:00", "last_post_time_local": "18:00" },
+      { "racecourse": "Kocaeli", "city_id": "9", "race_count": 9, "first_post_time_local": "17:15", "last_post_time_local": "21:30" }
     ],
     "probe_run_id": 31514800273,
     "probe_artifact_id": 9110592645,
@@ -77,18 +61,25 @@
   },
   "current_review_state": {
     "review_path": "data/candidates/tjk-current-2026-08-11-promotion-review-v1.json",
-    "review_status": "pending_human_review",
-    "reviewer": null,
-    "reviewed_at": null,
+    "review_status": "approved",
+    "reviewer": "badjoke-lab",
+    "reviewed_at": "2026-08-12T06:29:00Z",
     "candidate_meetings": 2,
     "candidate_races": 18,
     "existing_public_identity_found": false,
     "identity_registration_required_for_promotion": true,
     "identity_targets": [
-      { "source_venue_id": "5", "source_venue_label": "Ankara" },
-      { "source_venue_id": "9", "source_venue_label": "Kocaeli" }
+      { "source_venue_id": "5", "source_venue_label": "Ankara", "public_racecourse_id": "ankara-racecourse" },
+      { "source_venue_id": "9", "source_venue_label": "Kocaeli", "public_racecourse_id": "kocaeli-racecourse" }
     ],
-    "approval_effect": "none_until_explicit_human_approval"
+    "approval_effect": "authorizes_separate_reviewed_identity_and_timetable_promotion_unit"
+  },
+  "current_promotion_state": {
+    "identity_review_path": "data/static/tjk-2026-08-11-reviewed-public-timetable-identities-v1.json",
+    "approved_candidate_path": "data/candidates/tjk-current-2026-08-11-approved.json",
+    "canonical_meeting_ids": ["tjk-ankara-racecourse-2026-08-11", "tjk-kocaeli-racecourse-2026-08-11"],
+    "public_racecourse_ids": ["ankara-racecourse", "kocaeli-racecourse"],
+    "state": "approved_inputs_ready_for_generation"
   },
   "publication_boundary": {
     "current_candidate_generated": true,
@@ -99,5 +90,5 @@
     "automatic_merge": false,
     "deployment_performed": false
   },
-  "next_gate": "Explicit human review of the exact 2026-08-11 Ankara/Kocaeli 2-meeting / 18-race candidate and explicit approval before any separate Ankara/Kocaeli racecourse identity registration or Canonical/public timetable promotion unit is created."
+  "next_gate": "Generate the explicitly approved Ankara/Kocaeli identity-only registry additions and A-level 2-meeting / 18-race Canonical/public timetable outputs, validate exact deterministic output, then merge only after exact-head CI passes."
 }
