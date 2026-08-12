@@ -3,10 +3,12 @@
   "work_id": "WHR-CAL-DYNAMIC-DATES",
   "status": "complete",
   "completed_at": "2026-07-01",
+  "amended_at": "2026-08-13",
+  "amendment": "Use Asia/Tokyo as the deterministic default reference timezone for global Today, Tomorrow, and Calendar pages while preserving explicit timezone overrides.",
   "next_work_id": "WHR-CAL-OPS-V1",
   "following_work_id": "WHR-CAL-JAPAN-JRA",
   "date_contract": {
-    "default_timezone": "UTC",
+    "default_timezone": "Asia/Tokyo",
     "reference_precedence": [
       "WHR_CALENDAR_REFERENCE_DATE",
       "SOURCE_DATE_EPOCH",
