@@ -52,6 +52,8 @@ const performance = json(files.performance);
 const sourcePolicy = json(files.sourcePolicy);
 const limitations = json(files.limitations);
 const performanceReport = json(files.performanceReport);
+const sitemap = read(files.sitemap);
+const currentPublicPages = count(sitemap, /<loc>/g);
 
 if (contract.schema_version !== 'v1-release-decision-v1') fail('release-decision contract schema differs');
 if (contract.release_id !== 'WHR-V1' || contract.preparation_release_id !== 'WHR-V1-PREPARATION-V1' || contract.work_id !== 'WHR-V1-RELEASE') fail('release-decision identity differs');
@@ -63,6 +65,7 @@ if (contract.previous_implementation_unit !== 'V1-RELEASE-READINESS-01' || contr
 if (readiness.release_id !== contract.preparation_release_id || readiness.implementation_unit !== 'V1-RELEASE-READINESS-01' || readiness.status !== 'release_candidate_ready') fail('release-readiness baseline is incomplete');
 if (readiness.release_decision.readiness_decision !== 'ready_for_v1_release_decision' || readiness.release_decision.final_release_decision_complete !== false) fail('release-readiness handoff differs');
 
+// The accepted v1 baseline is immutable historical evidence.
 const expectedBaseline = {
   release_readiness_unit: 'V1-RELEASE-READINESS-01',
   release_readiness_status: 'release_candidate_ready',
@@ -92,12 +95,12 @@ for (const [baseline, unit] of baselineUnits) {
   if (baseline.release_id !== contract.preparation_release_id || baseline.implementation_unit !== unit || baseline.status !== 'complete') fail(`release-decision baseline incomplete: ${unit}`);
 }
 
-if (scope.baseline_inventory.public_pages !== 771 || scope.baseline_inventory.english_pages !== 387 || scope.baseline_inventory.japanese_pages !== 384 || scope.baseline_inventory.route_families !== 17) fail('release-decision scope inventory differs');
-if (dataAudit.input_inventory.audited_json_files !== 154 || dataAudit.input_inventory.top_level_rows !== 462) fail('release-decision data inventory differs');
-if (dataAudit.merged_collections.sources.records !== 171 || dataAudit.merged_collections.racecourses.records !== 36) fail('release-decision merged collections differ');
-if (mobile.browser_audit.page_viewport_checks !== 2313 || Object.values(mobile.required_results).some((value) => value !== 0)) fail('release-decision mobile acceptance differs');
-if (accessibility.browser_audit.page_checks !== 771 || Object.values(accessibility.required_results).some((value) => value !== 0)) fail('release-decision accessibility acceptance differs');
-if (performance.baseline_inventory.measured_pages !== 771 || performance.baseline_inventory.javascript_files !== 0) fail('release-decision performance inventory differs');
+if (scope.baseline_inventory.public_pages !== 771 || scope.baseline_inventory.english_pages !== 387 || scope.baseline_inventory.japanese_pages !== 384 || scope.baseline_inventory.route_families !== 17) fail('release-decision historical scope inventory differs');
+if (dataAudit.input_inventory.audited_json_files !== 154 || dataAudit.input_inventory.top_level_rows !== 462) fail('release-decision historical data inventory differs');
+if (dataAudit.merged_collections.sources.records !== 171 || dataAudit.merged_collections.racecourses.records !== 36) fail('release-decision historical merged collections differ');
+if (mobile.browser_audit.page_viewport_checks !== 2313 || Object.values(mobile.required_results).some((value) => value !== 0)) fail('release-decision historical mobile acceptance differs');
+if (accessibility.browser_audit.page_checks !== 771 || Object.values(accessibility.required_results).some((value) => value !== 0)) fail('release-decision historical accessibility acceptance differs');
+if (performance.baseline_inventory.measured_pages !== 771 || performance.baseline_inventory.javascript_files !== 0) fail('release-decision historical performance inventory differs');
 if (sourcePolicy.registry_inventory.source_records !== 171 || sourcePolicy.registry_inventory.countries_with_sources !== 98 || sourcePolicy.registry_inventory.invalid_urls !== 0 || sourcePolicy.registry_inventory.non_https_urls !== 0 || sourcePolicy.registry_inventory.missing_public_notes !== 0) fail('release-decision source policy differs');
 if (limitations.public_audit.limitation_categories !== 12 || limitations.public_audit.new_public_routes !== 0 || limitations.public_audit.new_public_data_classes !== 0) fail('release-decision limitation inventory differs');
 
@@ -159,12 +162,13 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
   }
 }
 
+// Current reviewed maintenance must satisfy the same static-first quality contract,
+// while approved existing-route growth is allowed after the accepted v1 baseline.
+if (currentPublicPages < contract.candidate_baseline.public_pages) fail('release-decision current public inventory shrank below accepted v1');
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-decision performance report schema differs');
-if (performanceReport.publicPages !== 771 || performanceReport.measuredPages !== 771 || (performanceReport.typeTotals?.javascript?.files ?? 0) !== 0) fail('release-decision performance report inventory differs');
-if (performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-decision static-first performance result differs');
+if (performanceReport.publicPages !== currentPublicPages || performanceReport.measuredPages !== currentPublicPages || (performanceReport.typeTotals?.javascript?.files ?? 0) !== 0) fail('release-decision current performance report inventory differs');
+if (performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-decision current static-first performance result differs');
 
-const sitemap = read(files.sitemap);
-if (count(sitemap, /<loc>/g) !== 771) fail('release-decision sitemap route count differs');
 for (const route of ['/calendar/', '/ja/calendar/', '/today/', '/ja/today/', '/tomorrow/', '/ja/tomorrow/', '/faq/', '/ja/faq/', '/methods/', '/ja/methods/', '/sources/', '/ja/sources/']) {
   if (!sitemap.includes(`<loc>https://whr.badjoke-lab.com${route}</loc>`)) fail(`release-decision required route missing: ${route}`);
 }
@@ -225,7 +229,8 @@ if (errors.length) {
 
 console.log('V1_RELEASE_DECISION: pass');
 console.log('RELEASE_ID: WHR-V1');
-console.log('PUBLIC_PAGES: 771');
+console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.candidate_baseline.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${currentPublicPages}`);
 console.log('DECISION: accepted_for_reviewed_static_public_release');
 console.log('FINAL_RELEASE_DECISION_COMPLETE: true');
 console.log('PRODUCTION_DEPLOYMENT_AUTHORIZED: true');
