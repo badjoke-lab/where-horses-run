@@ -22,8 +22,8 @@ const implementationRoadmap = read('docs/calendar/implementation-roadmap.md');
 if (manifest) {
   if (manifest.schema_version !== 'calendar-dynamic-dates-release-gate-v1') fail('unexpected Dynamic Dates release schema.');
   if (manifest.work_id !== 'WHR-CAL-DYNAMIC-DATES' || manifest.status !== 'complete') fail('Dynamic Dates manifest must be complete.');
-  if (manifest.next_work_id !== 'WHR-CAL-OPS-V1') fail('next_work_id must be WHR-CAL-OPS-V1.');
-  if (manifest.following_work_id !== 'WHR-CAL-JAPAN-JRA') fail('following_work_id must be WHR-CAL-JAPAN-JRA.');
+  if (manifest.next_work_id !== 'WHR-CAL-OPS-V1') fail('next_work_id must remain the historical WHR-CAL-OPS-V1 handoff.');
+  if (manifest.following_work_id !== 'WHR-CAL-JAPAN-JRA') fail('following_work_id must remain the historical WHR-CAL-JAPAN-JRA handoff.');
   if (manifest.date_contract?.default_timezone !== 'Asia/Tokyo') fail('default timezone must be Asia/Tokyo.');
   if (manifest.date_contract?.window_days !== 30) fail('window_days must be 30.');
   if (manifest.date_contract?.projection_freshness_grace_days !== 1) fail('projection freshness grace must be one calendar day.');
@@ -44,7 +44,7 @@ if (manifest) {
   ];
   if (JSON.stringify(manifest.data_states) !== JSON.stringify(expectedStates)) fail('Dynamic Dates data-state list is incorrect.');
   for (const key of ['canonical_data_changed','public_projection_changed','publication_rank_changed','scheduled_refresh_active','unattended_publication_active']) {
-    if (manifest.boundaries?.[key] !== false) fail(`boundaries.${key} must be false.`);
+    if (manifest.boundaries?.[key] !== false) fail(`historical boundaries.${key} must remain false.`);
   }
   for (const key of ['one_meeting_per_list_row','meeting_details_outside_window_retained']) {
     if (manifest.boundaries?.[key] !== true) fail(`boundaries.${key} must be true.`);
@@ -79,12 +79,35 @@ if (!scheduledWorkflow.includes('workflow_dispatch:') || !scheduledWorkflow.incl
   fail('manual refresh review must default live_fetch to false.');
 }
 
+// Dynamic Dates is a completed foundation. Later reviewed maintenance is expected to
+// advance the repository's current Work ID, so closure must validate durable completion
+// markers instead of requiring the whole repository to remain frozen at a historical
+// "Current Work ID" value.
 for (const [file, text, markers] of [
-  ['START-HERE.md', startHere, ['Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`', 'WHR-CAL-JAPAN-NAR', 'WHR-CAL-JAPAN-BANEI', 'WHR-CAL-ACQUISITION-CONTROL-PLANE', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'docs/calendar/incremental-coverage-contract.md']],
-  ['docs/project-roadmap.md', roadmap, ['Completed Work ID: `WHR-CAL-OPS-V1`', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'Incremental maintenance is normal']],
-  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, ['Dynamic Dates status: complete', 'Operations v1 status: complete', 'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`', 'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`', 'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`', 'Current Work ID: `WHR-CAL-PUBLIC-V1`', 'Coverage Observation']]
+  ['START-HERE.md', startHere, [
+    'docs/calendar/incremental-coverage-contract.md',
+    'docs/calendar/dynamic-dates-release-gate.md',
+    'docs/calendar/operations-v1-release-gate.md',
+    'docs/calendar/public-v1-release-decision.md',
+    'unattended publication remains disabled'
+  ]],
+  ['docs/project-roadmap.md', roadmap, [
+    'Completed Calendar foundations:',
+    '`WHR-CAL-DYNAMIC-DATES`',
+    '`WHR-CAL-OPS-V1`',
+    'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
+    'Incremental maintenance is normal.',
+    'unattended publication remains disabled'
+  ]],
+  ['docs/calendar/implementation-roadmap.md', implementationRoadmap, [
+    'Dynamic Dates status: complete',
+    'Operations v1 status: complete',
+    'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
+    'Coverage Observation',
+    'Scheduled and unattended publication remain disabled'
+  ]]
 ]) {
-  for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include ${marker}.`);
+  for (const marker of markers) if (!text.includes(marker)) fail(`${file} must include durable completion marker: ${marker}.`);
 }
 
 if (errors.length) {
@@ -97,6 +120,6 @@ console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
 console.log('DEFAULT_TIMEZONE: Asia/Tokyo');
 console.log('PROJECTION_FRESHNESS_GRACE_DAYS: 1');
-console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
+console.log('HISTORICAL_NEXT_WORK_ID: WHR-CAL-OPS-V1');
+console.log('CURRENT_REPOSITORY_WORK_ID: allowed_to_advance');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
