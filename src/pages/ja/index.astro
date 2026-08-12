@@ -2,19 +2,22 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../../lib/data';
 import { getRacingTypes } from '../../lib/racingTypes';
-import { getTimetableDateContext, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
+import { getTimetableDateContext, getTimetableMeetingRowsForDate, type TimetableMeetingRow } from '../../data/timetableMeetingRows';
 
 const countries = getActiveCountries().slice(0, 6);
-const racecourses = getRacecourses().slice(0, 6);
+const allRacecourses = getRacecourses();
+const racecourses = allRacecourses.slice(0, 6);
+const racecourseNameJaById = new Map(allRacecourses.map((track) => [track.id, track.name_ja ?? track.name_en]));
 const racingTypes = getRacingTypes().slice(0, 8);
 const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
 const sourceCount = siteData.sources.length;
 const calendarContext = getTimetableDateContext();
 const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
-const timeRange = (meeting) => {
+const timeRange = (meeting: TimetableMeetingRow) => {
   if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
   return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
 };
+const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJaById.get(meeting.racecourse_id) ?? meeting.racecourse_name;
 ---
 
 <BaseLayout
@@ -41,7 +44,7 @@ const timeRange = (meeting) => {
         <ul>
           {todayPreview.map((meeting) => (
             <li>
-              <strong>{meeting.racecourse_name}</strong> — 公開ランク {meeting.capability_rank}
+              <strong>{meetingRacecourseName(meeting)}</strong> — 公開ランク {meeting.capability_rank}
               {timeRange(meeting) ? ` · ${timeRange(meeting)}` : ''}
             </li>
           ))}
