@@ -9,6 +9,7 @@ const WORKFLOW_PATH = '.github/workflows/v1-performance-qa.yml';
 const REPORT_PATH = 'v1-performance-qa-report.json';
 const RUNNER_PATH = 'scripts/run-v1-performance-qa.mjs';
 const LEGACY_SOURCE_PATH = 'src/pages/major-countries/timetable.astro';
+const SITEMAP_PATH = 'dist/sitemap.xml';
 const BASELINES = {
   scope: 'data/static/v1-scope-freeze-v1.json',
   data: 'data/static/v1-data-audit-v1.json',
@@ -30,7 +31,7 @@ const json = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const gzipBytes = (buffer) => zlib.gzipSync(buffer, { level: 9 }).length;
 
-for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH, LEGACY_SOURCE_PATH, ...Object.values(BASELINES)]) {
+for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH, LEGACY_SOURCE_PATH, SITEMAP_PATH, ...Object.values(BASELINES)]) {
   expect(fs.existsSync(file), `Required v1 performance QA file is missing: ${file}`);
 }
 for (const file of TEMPORARY_PATHS) expect(!fs.existsSync(file), `Temporary performance QA file remains: ${file}`);
@@ -73,9 +74,10 @@ expect(exact(audit.automation_boundary, contract.automation_boundary), 'v1 perfo
 expect(Object.values(audit.behavior).every((value) => value === true), 'v1 performance audit behavior differs');
 
 // The contract and audit retain the 2026-07-18 measurement as historical evidence.
-// Current builds can legitimately shrink or vary as date-dependent static pages rotate.
-// Release gating therefore uses stable inventory requirements and regression budgets,
-// not byte-for-byte equality with the historical snapshot.
+// Current builds may contain additional human-reviewed routes inside the frozen v1
+// route families and public data classes. Keep that historical evidence exact,
+// derive current inventory from the rendered sitemap, and retain the same fixed
+// performance budgets for the complete current build.
 const baseline = contract.baseline_inventory;
 const historicalAuditMap = {
   public_pages: 'public_pages',
@@ -99,13 +101,20 @@ const historicalAuditMap = {
 for (const [baselineKey, auditKey] of Object.entries(historicalAuditMap)) {
   expect(audit.verified[auditKey] === baseline[baselineKey], `historical performance audit differs: ${auditKey}`);
 }
+expect(scope.baseline_inventory.public_pages === baseline.public_pages, 'historical v1 performance/scope page baseline differs');
+expect(contract.static_first_results.pages_with_inline_scripts === baseline.public_pages, 'historical inline-script page baseline differs');
+
+const sitemapUrls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const currentPublicPages = sitemapUrls.length;
+const baselineNonHtmlFiles = baseline.dist_files - baseline.html_files;
+expect(currentPublicPages >= baseline.public_pages, `current performance inventory regressed ${currentPublicPages}`);
 
 expect(report.schemaVersion === 'v1-performance-qa-discovery-v1', 'v1 performance report schema differs');
-expect(report.publicPages === baseline.public_pages, 'v1 performance public-page count differs');
-expect(report.renderedHtmlPages === baseline.rendered_html_pages, 'v1 performance rendered-page count differs');
-expect(report.measuredPages === baseline.measured_pages, 'v1 performance measured-page count differs');
-expect(report.distFiles === baseline.dist_files, 'v1 performance distribution file count differs');
-expect(report.typeTotals.html.files === baseline.html_files, 'v1 performance HTML file count differs');
+expect(report.publicPages === currentPublicPages, `v1 performance public-page count differs (${report.publicPages} !== ${currentPublicPages})`);
+expect(report.renderedHtmlPages === currentPublicPages, `v1 performance rendered-page count differs (${report.renderedHtmlPages} !== ${currentPublicPages})`);
+expect(report.measuredPages === currentPublicPages, `v1 performance measured-page count differs (${report.measuredPages} !== ${currentPublicPages})`);
+expect(report.distFiles === currentPublicPages + baselineNonHtmlFiles, `v1 performance distribution file count differs (${report.distFiles} !== ${currentPublicPages + baselineNonHtmlFiles})`);
+expect(report.typeTotals.html.files === currentPublicPages, `v1 performance HTML file count differs (${report.typeTotals.html.files} !== ${currentPublicPages})`);
 expect(report.typeTotals.css.files === baseline.css_files, 'v1 performance CSS file count differs');
 expect((report.typeTotals.javascript?.files ?? 0) === baseline.javascript_files, 'v1 performance JavaScript file count differs');
 expect(report.typeTotals.image.files === baseline.image_files, 'v1 performance image file count differs');
@@ -145,7 +154,7 @@ expect(report.pagesWithExternalRuntimeReferences === 0, 'pages with external run
 expect(report.externalRuntimeReferenceInstances === 0 && report.externalRuntimeReferences.length === 0, 'external runtime references remain');
 expect(report.missingLocalReferenceInstances === 0 && report.missingLocalReferences.length === 0, 'missing local references remain');
 expect(report.pagesWithScriptReferences === 0, 'script src references remain');
-expect(report.pagesWithInlineScripts === contract.static_first_results.pages_with_inline_scripts, 'inline-script page count differs');
+expect(report.pagesWithInlineScripts === currentPublicPages, `inline-script page count differs (${report.pagesWithInlineScripts} !== ${currentPublicPages})`);
 expect(report.pagesWithImages === 0 && report.pagesWithPreloads === 0, 'image or preload page count differs');
 
 function measureKeyPage(item) {
@@ -227,7 +236,8 @@ for (const forbidden of ['schedule:', 'cron:', 'contents: write', 'pull-requests
 
 expect(audit.verified.performance_budget_errors === 0, 'performance budget audit errors differ');
 console.log('V1_PERFORMANCE_QA: pass');
-console.log(`PUBLIC_PAGES: ${report.publicPages}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${baseline.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${report.publicPages}`);
 console.log(`DIST_BYTES: ${report.distBytes}`);
 console.log(`DIST_GZIP_BYTES: ${report.distGzipBytes}`);
 console.log(`LARGEST_HTML_BYTES: ${report.pageDistributions.htmlBytes.max}`);
