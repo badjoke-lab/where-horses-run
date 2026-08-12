@@ -9,6 +9,7 @@ on:
       - 'docs/calendar/implementation-roadmap-2026-08-12-addendum.md'
       - 'scripts/timetable/tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-bounded-adapter.mjs'
+      - 'scripts/check-tjk-current-adapter-status.mjs'
       - 'scripts/check-tjk-current-programme-evidence.mjs'
       - '.github/workflows/calendar-tjk-current-bounded-adapter.yml'
   push:
@@ -21,6 +22,7 @@ on:
       - 'docs/calendar/implementation-roadmap-2026-08-12-addendum.md'
       - 'scripts/timetable/tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-bounded-adapter.mjs'
+      - 'scripts/check-tjk-current-adapter-status.mjs'
       - 'scripts/check-tjk-current-programme-evidence.mjs'
       - '.github/workflows/calendar-tjk-current-bounded-adapter.yml'
 
@@ -41,6 +43,8 @@ jobs:
         run: node scripts/check-tjk-current-programme-evidence.mjs
       - name: Validate deterministic current TJK bounded candidate
         run: node scripts/check-tjk-current-bounded-adapter.mjs
+      - name: Validate current TJK adapter implementation status
+        run: node scripts/check-tjk-current-adapter-status.mjs
       - name: Validate committed candidate determinism
         run: node scripts/timetable/tjk-current-bounded-adapter.mjs --check
       - name: Prove candidate-only PR boundary
