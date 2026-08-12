@@ -121,7 +121,6 @@ const existing = targetRecords.map((record) => registry.some((row) => row.id ===
 if (existing.some(Boolean) && !existing.every(Boolean)) fail('refusing partial TJK identity publication state');
 if (!existing[0]) appendJsonArrayRecordsPreservingExisting(registryPath, targetRecords.map((record) => makeIdentity(record, identityReview)));
 
-run('scripts/check-tjk-public-timetable-identities.mjs');
 run('scripts/timetable/build-tjk-current-approved-candidate.mjs');
 run('scripts/timetable/build-tjk-current-approved-candidate.mjs', ['--check']);
 run('scripts/timetable/promote-approved-candidate-v1.mjs', ['--input', approvedCandidatePath]);
@@ -134,6 +133,7 @@ run('scripts/check-tjk-current-promotion-review.mjs');
 run('scripts/timetable/build-tjk-current-approved-candidate.mjs', ['--check']);
 run('scripts/timetable/promote-approved-candidate-v1.mjs', ['--input', approvedCandidatePath, '--check']);
 run('scripts/timetable/build-public-timetable-view.mjs', ['--check']);
+run('scripts/check-tjk-current-reviewed-promotion.mjs');
 run('scripts/check-calendar-runtime-import-boundary.mjs');
 
 console.log('[TJK reviewed promotion] complete');
