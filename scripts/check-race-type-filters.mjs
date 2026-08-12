@@ -15,25 +15,27 @@ const recordCount = (html) => [...html.matchAll(/\sdata-racecourse-record(?=[\s>
 
 const contractPath = 'data/static/race-type-filter-contract-v1.json';
 const auditPath = 'data/audits/race-type-filters-v1.json';
+const racecoursesPath = 'data/static/racecourses.json';
 const dataPath = 'src/lib/racecourse-filter-data.ts';
 const componentPath = 'src/components/RacecourseDirectoryPage.astro';
 const docPath = 'docs/search/race-type-filters.md';
 const workflowPath = '.github/workflows/race-type-filters.yml';
 const pagePaths = ['src/pages/tracks/index.astro', 'src/pages/ja/tracks/index.astro'];
 
-for (const requiredPath of [contractPath, auditPath, dataPath, componentPath, docPath, workflowPath, ...pagePaths]) {
+for (const requiredPath of [contractPath, auditPath, racecoursesPath, dataPath, componentPath, docPath, workflowPath, ...pagePaths]) {
   if (!fs.existsSync(filePath(requiredPath))) fail(`required file missing: ${requiredPath}`);
 }
 
 const contract = parse(contractPath);
 const audit = parse(auditPath);
+const racecourses = parse(racecoursesPath);
 
 if (contract.schema_version !== 'race-type-filter-contract-v1') fail('race type filter contract schema differs');
 if (contract.work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('race type filter Work ID differs');
 if (contract.implementation_unit !== 'RACE-TYPE-FILTERS-01') fail('race type filter implementation unit differs');
 if (!['implemented_for_review', 'complete'].includes(contract.status)) fail('race type filter contract status differs');
 if (contract.reviewed_at !== '2026-07-16') fail('race type filter review date differs');
-if (!exact(contract.scope, {
+const historicalScope = {
   racecourse_records: 36,
   locales: 2,
   directory_routes: 2,
@@ -41,7 +43,8 @@ if (!exact(contract.scope, {
   filter_controls: 4,
   url_parameters: 4,
   no_javascript_fallback_records_per_locale: 36,
-})) fail('race type filter scope differs');
+};
+if (!exact(contract.scope, historicalScope)) fail('race type filter historical scope differs');
 if (!exact(contract.filter_contract, {
   keyword_parameter: 'q',
   country_parameter: 'country',
@@ -78,7 +81,7 @@ if (contract.next_implementation_unit !== 'REGION-FILTERS-01') fail('next race t
 if (audit.schema_version !== 'race-type-filters-audit-v1') fail('race type filter audit schema differs');
 if (audit.work_id !== contract.work_id || audit.implementation_unit !== contract.implementation_unit || audit.reviewed_at !== contract.reviewed_at) fail('race type filter audit identity differs');
 if (!['implemented_for_review', 'complete'].includes(audit.status)) fail('race type filter audit status differs');
-if (!exact(audit.verified, {
+for (const [key, expected] of Object.entries({
   racecourse_records: 36,
   english_rendered_records: 36,
   japanese_rendered_records: 36,
@@ -86,22 +89,23 @@ if (!exact(audit.verified, {
   bilingual_detail_routes: 72,
   filter_controls: 4,
   url_parameters: 4,
-  duplicate_racecourse_ids: 0,
-  missing_search_text: 0,
-  missing_filter_attributes: 0,
-  unknown_country_options: 0,
-  unknown_racing_type_options: 0,
-  unknown_surface_options: 0,
-  broken_racecourse_links: 0,
-  broken_country_links: 0,
-  broken_racing_type_links: 0,
-  no_javascript_missing_records: 0,
-  contract_errors: 0,
-  rendered_marker_errors: 0,
-})) fail('race type filter audit measurements differ');
+})) if (audit.verified?.[key] !== expected) fail(`race type filter historical audit ${key} differs`);
+for (const key of [
+  'duplicate_racecourse_ids', 'missing_search_text', 'missing_filter_attributes',
+  'unknown_country_options', 'unknown_racing_type_options', 'unknown_surface_options',
+  'broken_racecourse_links', 'broken_country_links', 'broken_racing_type_links',
+  'no_javascript_missing_records', 'contract_errors', 'rendered_marker_errors',
+]) if (audit.verified?.[key] !== 0) fail(`race type filter historical audit ${key} differs`);
 for (const value of Object.values(audit.behavior ?? {})) if (value !== true) fail('race type filter audit behavior differs');
 if (!exact(audit.privacy_boundary, contract.privacy_boundary) || !exact(audit.automation_boundary, contract.automation_boundary)) fail('race type filter audit boundaries differ');
 if (audit.previous_implementation_unit !== contract.previous_implementation_unit || audit.next_implementation_unit !== contract.next_implementation_unit) fail('race type filter audit roadmap differs');
+
+if (!Array.isArray(racecourses)) fail('current racecourse inventory is not an array');
+const currentRacecourseCount = Array.isArray(racecourses) ? racecourses.length : 0;
+if (currentRacecourseCount < historicalScope.racecourse_records) fail(`current racecourse inventory shrank ${currentRacecourseCount} < ${historicalScope.racecourse_records}`);
+const currentIds = racecourses.map((racecourse) => racecourse.id);
+if (new Set(currentIds).size !== currentRacecourseCount) fail('current racecourse inventory contains duplicate IDs');
+if (racecourses.some((racecourse) => !racecourse.id || !racecourse.slug || !racecourse.country_id || !racecourse.name_en || !racecourse.name_ja)) fail('current racecourse inventory contains incomplete public identity');
 
 const dataSource = read(dataPath);
 for (const marker of [
@@ -198,8 +202,9 @@ function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typeP
     searchTexts: searchTexts.length,
     cards: cards.length,
   };
-  if (Object.values(measurements).some((value) => value !== 36)) fail(`${file}: rendered racecourse counts differ ${JSON.stringify(measurements)}`);
-  if (new Set(ids).size !== 36) fail(`${file}: duplicate racecourse IDs detected`);
+  if (Object.values(measurements).some((value) => value !== currentRacecourseCount)) fail(`${file}: rendered racecourse counts differ ${JSON.stringify(measurements)} expected=${currentRacecourseCount}`);
+  if (new Set(ids).size !== currentRacecourseCount) fail(`${file}: duplicate or missing racecourse IDs detected`);
+  if (!sameSet(ids, currentIds)) fail(`${file}: rendered racecourse ID set differs from current inventory`);
   if (searchTexts.some((value) => !value.trim())) fail(`${file}: empty racecourse search text detected`);
 
   const expectedCountries = uniqueSorted(countries);
@@ -229,7 +234,7 @@ function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typeP
   if (brokenRacingTypeLinks !== 0) fail(`${file}: broken racing-type links ${brokenRacingTypeLinks}`);
 
   for (const marker of [
-    'data-racecourse-records="36"', 'data-racecourse-filter-query',
+    `data-racecourse-records="${currentRacecourseCount}"`, 'data-racecourse-filter-query',
     'data-racecourse-filter-country', 'data-racecourse-filter-racing-type',
     'data-racecourse-filter-surface', 'data-racecourse-filter-reset',
     'data-racecourse-filter-count', 'data-racecourse-filter-empty', '<noscript>',
@@ -238,6 +243,11 @@ function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typeP
 }
 
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
+for (const racecourse of racecourses) {
+  for (const href of [`/tracks/${racecourse.slug}/`, `/ja/tracks/${racecourse.slug}/`]) {
+    if (!builtTargetExists(href)) fail(`current racecourse detail route missing: ${href}`);
+  }
+}
 verifyRenderedDirectory({
   file: 'dist/tracks/index.html',
   lang: 'en',
@@ -260,9 +270,10 @@ if (errors.length) {
 }
 
 console.log('RACE_TYPE_FILTERS: pass');
-console.log('RACECOURSE_RECORDS: 36');
+console.log(`HISTORICAL_RACECOURSE_RECORDS: ${historicalScope.racecourse_records}`);
+console.log(`CURRENT_RACECOURSE_RECORDS: ${currentRacecourseCount}`);
+console.log(`CURRENT_BILINGUAL_DETAIL_ROUTES: ${currentRacecourseCount * 2}`);
 console.log('DIRECTORY_ROUTES: 2');
-console.log('BILINGUAL_DETAIL_ROUTES: 72');
 console.log('FILTER_CONTROLS: 4');
 console.log('URL_PARAMETERS: 4');
 console.log('NO_JAVASCRIPT_FALLBACK: complete');
