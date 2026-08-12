@@ -159,11 +159,27 @@ const socialImageAlt = isJapanese
       >
         <div class="site-header__inner">
           <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
-          <details class="site-navigation">
+
+          <nav class="site-nav site-nav--desktop" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+            <ul class="site-nav__list">
+              {navigationItems.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li class="site-nav__language">
+                <a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a>
+              </li>
+            </ul>
+          </nav>
+
+          <details class="site-navigation site-navigation--mobile">
             <summary class="site-navigation__summary">
               <span>{isJapanese ? 'メニュー' : 'Menu'}</span>
             </summary>
-            <nav class="site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
+            <nav class="site-nav site-nav--mobile" aria-label={isJapanese ? 'モバイル主要ナビゲーション' : 'Mobile main navigation'}>
               <ul class="site-nav__list">
                 {navigationItems.map((item) => (
                   <li>
