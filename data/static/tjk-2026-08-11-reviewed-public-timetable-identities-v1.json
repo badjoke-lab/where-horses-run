@@ -1,0 +1,71 @@
+{
+  "schema_version": "tjk-reviewed-public-timetable-identities-v1",
+  "work_id": "WHR-CAL-TURKEY-TJK",
+  "implementation_unit": "TJK-CURRENT-IDENTITY-PROMOTION-01",
+  "recorded_at": "2026-08-12",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "candidate_rank": "A",
+  "source_revalidation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-12.json",
+  "promotion_review": "data/candidates/tjk-current-2026-08-11-promotion-review-v1.json",
+  "official_identity_evidence": [
+    {
+      "source_id": "tjk-daily-programme",
+      "url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Ankara&SehirId=5",
+      "supports": ["ankara-racecourse"],
+      "source_venue_id": "5",
+      "source_venue_label": "Ankara"
+    },
+    {
+      "source_id": "tjk-daily-programme",
+      "url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Kocaeli&SehirId=9",
+      "supports": ["kocaeli-racecourse"],
+      "source_venue_id": "9",
+      "source_venue_label": "Kocaeli"
+    }
+  ],
+  "records": [
+    {
+      "racecourse_id": "ankara-racecourse",
+      "slug": "ankara-racecourse",
+      "name_en": "Ankara Racecourse",
+      "name_ja": "アンカラ競馬場",
+      "name_local": "Ankara",
+      "source_venue_id": "5",
+      "source_venue_label": "Ankara",
+      "timezone": "Europe/Istanbul",
+      "registration_state": "approved_for_identity_only_registration",
+      "canonical_registry": "data/static/racecourses-public-timetable-identities-v1.json",
+      "promotion_action": "add_identity_only_after_human_review",
+      "public_profile": "identity_only"
+    },
+    {
+      "racecourse_id": "kocaeli-racecourse",
+      "slug": "kocaeli-racecourse",
+      "name_en": "Kocaeli Racecourse",
+      "name_ja": "コジャエリ競馬場",
+      "name_local": "Kocaeli",
+      "source_venue_id": "9",
+      "source_venue_label": "Kocaeli",
+      "timezone": "Europe/Istanbul",
+      "registration_state": "approved_for_identity_only_registration",
+      "canonical_registry": "data/static/racecourses-public-timetable-identities-v1.json",
+      "promotion_action": "add_identity_only_after_human_review",
+      "public_profile": "identity_only"
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-12T06:29:00Z",
+    "reviewer": "badjoke-lab",
+    "promotion_target": "data/static/racecourses-public-timetable-identities-v1.json"
+  },
+  "publication_boundary": {
+    "canonical_written": false,
+    "public_projection_written": false,
+    "public_racecourse_identity_written": false,
+    "automatic_approval": false,
+    "automatic_merge": false,
+    "deployment_performed": false
+  }
+}
