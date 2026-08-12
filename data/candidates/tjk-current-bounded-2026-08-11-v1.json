@@ -1,0 +1,111 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-08-12T00:00:00Z",
+  "adapter_id": "tjk-current-bounded-2026-08-11-v1",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "source_id": "tjk-daily-programme",
+  "technical_capability_rank": "A+",
+  "candidate_rank": "A",
+  "publication_ceiling": "A",
+  "candidate_window": {
+    "start_date": "2026-08-11",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Europe/Istanbul"
+  },
+  "reviewed_evidence": {
+    "source_revalidation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-12.json",
+    "probe_run_id": 31514800273,
+    "probe_artifact_id": 9110592645,
+    "probe_artifact_sha256": "4d25e8d50c7c15a7c7daa0bc5d4996369d0b9226cbb68206c94aa20261bd754f",
+    "meeting_count": 2,
+    "race_count": 18,
+    "raw_body_retained": false
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-tjk-source-venue-5-2026-08-11",
+      "meeting_id": "tjk-source-venue-5-2026-08-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "source_venue_id": "5",
+      "source_venue_label": "Ankara",
+      "public_racecourse_identity_status": "unregistered-not-authorized-by-evidence-unit",
+      "date": "2026-08-11",
+      "timezone": "Europe/Istanbul",
+      "candidate_rank": "A",
+      "technical_capability_rank": "A+",
+      "publication_ceiling": "A",
+      "first_race_time_local": "14:00",
+      "last_race_time_local": "18:00",
+      "timetable_rows": [
+        { "race_number": 1, "post_time_local": "14:00" },
+        { "race_number": 2, "post_time_local": "14:30" },
+        { "race_number": 3, "post_time_local": "15:00" },
+        { "race_number": 4, "post_time_local": "15:30" },
+        { "race_number": 5, "post_time_local": "16:00" },
+        { "race_number": 6, "post_time_local": "16:30" },
+        { "race_number": 7, "post_time_local": "17:00" },
+        { "race_number": 8, "post_time_local": "17:30" },
+        { "race_number": 9, "post_time_local": "18:00" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "landing_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Ankara&SehirId=5",
+        "checked_at": "2026-08-12",
+        "extraction_method": "reviewed_current_programme_evidence",
+        "venue_detail_discovery_rule": "same-date same-city Info/Sehir link emitted by the verified current Info/Page landing response"
+      },
+      "confidence": "high",
+      "review_status": "pending",
+      "notes": "Current reviewed TJK schedule candidate. Source authority venue identity is preserved; no WHR public racecourse identity is created or authorized by this unit."
+    },
+    {
+      "candidate_id": "candidate-tjk-source-venue-9-2026-08-11",
+      "meeting_id": "tjk-source-venue-9-2026-08-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "source_venue_id": "9",
+      "source_venue_label": "Kocaeli",
+      "public_racecourse_identity_status": "unregistered-not-authorized-by-evidence-unit",
+      "date": "2026-08-11",
+      "timezone": "Europe/Istanbul",
+      "candidate_rank": "A",
+      "technical_capability_rank": "A+",
+      "publication_ceiling": "A",
+      "first_race_time_local": "17:15",
+      "last_race_time_local": "21:30",
+      "timetable_rows": [
+        { "race_number": 1, "post_time_local": "17:15" },
+        { "race_number": 2, "post_time_local": "17:45" },
+        { "race_number": 3, "post_time_local": "18:30" },
+        { "race_number": 4, "post_time_local": "19:00" },
+        { "race_number": 5, "post_time_local": "19:30" },
+        { "race_number": 6, "post_time_local": "20:00" },
+        { "race_number": 7, "post_time_local": "20:30" },
+        { "race_number": 8, "post_time_local": "21:00" },
+        { "race_number": 9, "post_time_local": "21:30" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "landing_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Kocaeli&SehirId=9",
+        "checked_at": "2026-08-12",
+        "extraction_method": "reviewed_current_programme_evidence",
+        "venue_detail_discovery_rule": "same-date same-city Info/Sehir link emitted by the verified current Info/Page landing response"
+      },
+      "confidence": "high",
+      "review_status": "pending",
+      "notes": "Current reviewed TJK schedule candidate. Source authority venue identity is preserved; no WHR public racecourse identity is created or authorized by this unit."
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Candidate-only current TJK bounded adapter output from reviewed 2026-08-11 programme evidence. No Canonical/public write is authorized.",
+    "promotion_target": "separate-human-reviewed-current-promotion-unit"
+  },
+  "publication_effect": "none"
+}
