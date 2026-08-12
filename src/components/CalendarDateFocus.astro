@@ -1,0 +1,76 @@
+---
+type Props = {
+  lang?: 'en' | 'ja';
+};
+
+const { lang = 'en' } = Astro.props as Props;
+const isJapanese = lang === 'ja';
+---
+
+<div
+  class="calendar-date-focus"
+  data-calendar-date-focus
+  data-label-active={isJapanese ? '指定日の開催だけを表示しています' : 'Showing meetings for the requested date only'}
+  data-label-missing={isJapanese ? '指定日は現在の30日表示範囲にありません' : 'The requested date is outside the current 30-day display window'}
+  hidden
+>
+  <p data-calendar-date-focus-message></p>
+  <a data-calendar-date-focus-clear href={isJapanese ? '/ja/calendar/' : '/calendar/'}>
+    {isJapanese ? '30日表示に戻す' : 'Show all 30 days'}
+  </a>
+</div>
+
+<script is:inline>
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedDate = params.get('date');
+    if (!requestedDate || !/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) return;
+
+    const control = document.querySelector('[data-calendar-date-focus]');
+    const message = control?.querySelector('[data-calendar-date-focus-message]');
+    const groups = [...document.querySelectorAll('[data-calendar-date-group]')];
+    if (!control || !message || groups.length === 0) return;
+
+    const match = groups.find((group) => group.dataset.calendarDateGroup === requestedDate);
+    control.hidden = false;
+
+    if (!match) {
+      message.textContent = `${control.dataset.labelMissing}: ${requestedDate}.`;
+      return;
+    }
+
+    for (const group of groups) {
+      const isMatch = group === match;
+      group.hidden = !isMatch;
+      if (isMatch) group.dataset.queryFocused = 'true';
+      else delete group.dataset.queryFocused;
+    }
+
+    message.textContent = `${control.dataset.labelActive}: ${requestedDate}.`;
+    const heading = match.querySelector('h2');
+    if (heading instanceof HTMLElement) {
+      heading.focus({ preventScroll: true });
+      heading.scrollIntoView({ block: 'start' });
+    }
+  })();
+</script>
+
+<style>
+  .calendar-date-focus {
+    align-items: baseline;
+    border-block: 1px solid var(--whr-color-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+    margin-block: 1rem;
+    padding-block: 0.55rem;
+  }
+
+  .calendar-date-focus[hidden] {
+    display: none;
+  }
+
+  .calendar-date-focus p {
+    margin: 0;
+  }
+</style>
