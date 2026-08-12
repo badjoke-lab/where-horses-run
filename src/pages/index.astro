@@ -2,14 +2,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../lib/data';
 import { getRacingTypes } from '../lib/racingTypes';
+import { getTimetableDateContext, getTimetableMeetingRowsForDate } from '../data/timetableMeetingRows';
 
 const countries = getActiveCountries().slice(0, 6);
 const racecourses = getRacecourses().slice(0, 6);
 const racingTypes = getRacingTypes().slice(0, 8);
 const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
 const sourceCount = siteData.sources.length;
-const todayRecords = (siteData.generated.today.meetings ?? []).filter((meeting) => meeting.status !== 'placeholder');
-const upcomingPreview = todayRecords.slice(0, 4);
+const calendarContext = getTimetableDateContext();
+const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
+const timeRange = (meeting) => {
+  if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
+  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
+};
 ---
 
 <BaseLayout
@@ -30,15 +35,18 @@ const upcomingPreview = todayRecords.slice(0, 4);
   <section class="section-grid" aria-label="Primary discovery paths">
     <article class="card">
       <h2><a href="/today/">Today’s Racing</a></h2>
-      <p>Use verified timetable records when available, then follow racecourse and official-source links.</p>
-      {upcomingPreview.length > 0 ? (
+      <p>Reviewed public timetable for {calendarContext.today} ({calendarContext.timeZone}).</p>
+      {todayPreview.length > 0 ? (
         <ul>
-          {upcomingPreview.map((meeting) => (
-            <li><strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}</li>
+          {todayPreview.map((meeting) => (
+            <li>
+              <strong>{meeting.racecourse_name}</strong> — Rank {meeting.capability_rank}
+              {timeRange(meeting) ? ` · ${timeRange(meeting)}` : ''}
+            </li>
           ))}
         </ul>
       ) : (
-        <p>Verified timetable records are being prepared. Use country and source pages for official confirmation.</p>
+        <p>No reviewed public meetings are listed for today. Use country and official-source pages for final confirmation.</p>
       )}
     </article>
 
