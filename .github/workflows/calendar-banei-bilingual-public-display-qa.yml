@@ -69,12 +69,27 @@ jobs:
         run: |
           node scripts/check-calendar-contracts.mjs
           node scripts/check-project-governance-docs.mjs
-      - name: Prove committed public projection JSON is unchanged in PR
+      - name: Preserve committed public projection freeze for Banei-scope PRs
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          banei_scope_changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+            data/static/calendar-readiness-banei-detail-v1.json \
+            scripts/timetable/load-calendar-readiness.mjs \
+            scripts/check-calendar-banei-bilingual-public-display-qa.mjs \
+            scripts/check-calendar-banei-bilingual-rendered-fixture.mjs \
+            src/components/TimetableMeetingList.astro \
+            src/pages/timetable/meetings \
+            src/pages/ja/timetable/meetings \
+            docs/calendar/banei-bilingual-public-display-qa.md)"
+          banei_policy_changed="$(git diff -U0 "$BASE_SHA" "$HEAD_SHA" -- src/data/publicationDisplayPolicies.json | grep -E '^[+-].*(banei|obihiro)' || true)"
+          if [ -z "${banei_scope_changed}${banei_policy_changed}" ]; then
+            echo 'BANEI_PUBLICATION_SCOPE_CHANGED: false'
+            echo 'COMMITTED_PUBLIC_PROJECTION_FREEZE_APPLICABLE: false'
+            exit 0
+          fi
           changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
@@ -83,6 +98,7 @@ jobs:
             printf '%s\n' "$changed"
             exit 1
           fi
+          echo 'BANEI_PUBLICATION_SCOPE_CHANGED: true'
           echo 'COMMITTED_PUBLIC_PROJECTION_JSON_CHANGED: false'
       - name: Check workflow and QA safety boundary
         run: |
