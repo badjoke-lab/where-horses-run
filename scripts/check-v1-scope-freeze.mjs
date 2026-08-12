@@ -231,7 +231,7 @@ for (const [label, actual, expected] of [
   ['rendered glossary relationships', count(/^\/(?:ja\/)?glossary\/relationships\/$/), baseline.glossary_relationship_routes],
   ['rendered racing-type details', count(/^\/(?:ja\/)?types\/[^/]+\/$/), baseline.racing_type_detail_routes],
   ['rendered FAQ routes', count(/^\/(?:ja\/)?faq\/$/), baseline.faq_content_routes],
-  ['rendered Methods routes', count(/^\/(?:ja\/)?methods\/\/$/), baseline.methods_content_routes],
+  ['rendered Methods routes', count(/^\/(?:ja\/)?methods\/$/), baseline.methods_content_routes],
 ]) expect(actual === expected, `v1 rendered inventory differs: ${label} (${actual} !== ${expected})`);
 expect(currentRacecourseDetails === baseline.racecourse_detail_routes + racecourseDetailDelta, 'v1 current racecourse detail inventory differs');
 expect(currentMeetingDetails === baseline.meeting_detail_routes + meetingDetailDelta, 'v1 current meeting detail inventory differs');
