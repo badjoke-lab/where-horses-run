@@ -69,23 +69,24 @@ jobs:
         run: |
           node scripts/check-calendar-contracts.mjs
           node scripts/check-project-governance-docs.mjs
-      - name: Preserve committed public projection freeze for Banei-scope PRs
+      - name: Preserve committed public projection freeze for Banei-publication PRs
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          banei_scope_changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+          # Shared list/detail UI changes still run the full Banei rendered QA above,
+          # but they are not Banei publication-data changes. Apply the historical
+          # committed-public-projection freeze only when Banei-specific readiness,
+          # loader/checker/docs or Banei/Obihiro policy content changes.
+          banei_publication_changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
             data/static/calendar-readiness-banei-detail-v1.json \
             scripts/timetable/load-calendar-readiness.mjs \
             scripts/check-calendar-banei-bilingual-public-display-qa.mjs \
             scripts/check-calendar-banei-bilingual-rendered-fixture.mjs \
-            src/components/TimetableMeetingList.astro \
-            src/pages/timetable/meetings \
-            src/pages/ja/timetable/meetings \
             docs/calendar/banei-bilingual-public-display-qa.md)"
           banei_policy_changed="$(git diff -U0 "$BASE_SHA" "$HEAD_SHA" -- src/data/publicationDisplayPolicies.json | grep -E '^[+-].*(banei|obihiro)' || true)"
-          if [ -z "${banei_scope_changed}${banei_policy_changed}" ]; then
+          if [ -z "${banei_publication_changed}${banei_policy_changed}" ]; then
             echo 'BANEI_PUBLICATION_SCOPE_CHANGED: false'
             echo 'COMMITTED_PUBLIC_PROJECTION_FREEZE_APPLICABLE: false'
             exit 0
