@@ -6,9 +6,12 @@ on:
       - 'data/candidates/tjk-current-2026-08-11-promotion-review-v1.json'
       - 'data/candidates/tjk-current-bounded-2026-08-11-v1.json'
       - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json'
+      - 'docs/calendar/implementation-roadmap-2026-08-12-addendum.md'
       - 'scripts/timetable/tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-promotion-review.mjs'
+      - 'scripts/check-tjk-current-promotion-review-status.mjs'
       - '.github/workflows/calendar-tjk-current-promotion-review.yml'
   push:
     branches:
@@ -17,9 +20,12 @@ on:
       - 'data/candidates/tjk-current-2026-08-11-promotion-review-v1.json'
       - 'data/candidates/tjk-current-bounded-2026-08-11-v1.json'
       - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json'
+      - 'docs/calendar/implementation-roadmap-2026-08-12-addendum.md'
       - 'scripts/timetable/tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-bounded-adapter.mjs'
       - 'scripts/check-tjk-current-promotion-review.mjs'
+      - 'scripts/check-tjk-current-promotion-review-status.mjs'
       - '.github/workflows/calendar-tjk-current-promotion-review.yml'
 
 permissions:
@@ -39,6 +45,8 @@ jobs:
         run: node scripts/check-tjk-current-bounded-adapter.mjs
       - name: Validate pending human-review packet binding
         run: node scripts/check-tjk-current-promotion-review.mjs
+      - name: Validate pending promotion-review implementation status
+        run: node scripts/check-tjk-current-promotion-review-status.mjs
       - name: Prove review-only PR boundary
         if: github.event_name == 'pull_request'
         env:
