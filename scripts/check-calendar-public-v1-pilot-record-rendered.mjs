@@ -30,26 +30,34 @@ for (const [label, html] of [
   ['English Calendar', englishCalendar],
   ['English Today', englishToday],
 ]) {
-  requireIncludes(html, 'Reviewed coverage', label);
-  requireIncludes(html, 'Additional detail', label);
-  requireIncludes(html, 'Meeting date and racecourse only', label);
-  requireIncludes(html, 'More detail not reviewed', label);
-  requireIncludes(html, 'Source status', label);
-  requireIncludes(html, 'Last checked', label);
-  requireIncludes(html, 'Official source', label);
+  for (const marker of ['Public rank:', 'Authority:', 'Country:', 'Source:', 'Checked:', '>Official<']) {
+    requireIncludes(html, marker, label);
+  }
+  for (const verboseLegacyMarker of [
+    'Reviewed coverage',
+    'Additional detail',
+    'Meeting date and racecourse only',
+    'More detail not reviewed',
+  ]) {
+    if (html.includes(verboseLegacyMarker)) fail(`${label} restored oversized legacy meeting-card copy: ${verboseLegacyMarker}`);
+  }
 }
 
 for (const [label, html] of [
   ['Japanese Calendar', japaneseCalendar],
   ['Japanese Today', japaneseToday],
 ]) {
-  requireIncludes(html, '確認済み範囲', label);
-  requireIncludes(html, '追加詳細', label);
-  requireIncludes(html, '開催日・競馬場のみ', label);
-  requireIncludes(html, '追加詳細は未確認', label);
-  requireIncludes(html, 'ソース状態', label);
-  requireIncludes(html, '最終確認', label);
-  requireIncludes(html, '公式ソース', label);
+  for (const marker of ['公開ランク:', '主催:', '国:', 'ソース:', '確認:', '>公式<']) {
+    requireIncludes(html, marker, label);
+  }
+  for (const verboseLegacyMarker of [
+    '確認済み範囲',
+    '追加詳細',
+    '開催日・競馬場のみ',
+    '追加詳細は未確認',
+  ]) {
+    if (html.includes(verboseLegacyMarker)) fail(`${label} restored oversized legacy meeting-card copy: ${verboseLegacyMarker}`);
+  }
 }
 
 for (const [label, html] of [
@@ -58,6 +66,7 @@ for (const [label, html] of [
   ['English Today', englishToday],
   ['Japanese Today', japaneseToday],
 ]) {
+  requireIncludes(html, 'class="meeting-row"', label);
   for (const forbidden of [
     'retry_queue',
     'operator_notes',
@@ -80,5 +89,6 @@ if (errors.length) {
 console.log('CALENDAR_PUBLIC_V1_PILOT_RECORD_RENDERED: pass');
 console.log(`REFERENCE_DATE: ${expectedReferenceDate}`);
 console.log(`TIMEZONE: ${expectedTimezone}`);
-console.log('BILINGUAL_COVERAGE_LABELS: pass');
+console.log('COMPACT_MEETING_ROWS: pass');
+console.log('LEGACY_VERBOSE_MEETING_CARDS: absent');
 console.log('INTERNAL_QUEUE_FIELDS_EXPOSED: false');
