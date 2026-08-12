@@ -31,21 +31,25 @@ const groups: TimetableMeetingDayGroup[] = 'groups' in props
 const text = lang === 'ja'
   ? {
       authority: '主催・体系',
+      checked: '確認',
       country: '国・地域',
       detail: '開催詳細',
       first: '第1レース',
       last: '最終レース',
       official: '公式ソース',
       rank: '公開ランク',
+      source: 'ソース状態',
     }
   : {
       authority: 'Authority / system',
+      checked: 'Checked',
       country: 'Country',
       detail: 'Meeting detail',
       first: 'First race',
       last: 'Last race',
       official: 'Official source',
       rank: 'Public rank',
+      source: 'Source',
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
@@ -95,6 +99,8 @@ const displayCountry = (record: TimetableMeetingRow) =>
               <p class="meeting-row__meta">
                 <span>{text.authority}: {displayAuthority(record)}</span>
                 <span>{text.country}: {displayCountry(record)}</span>
+                <span>{text.source}: {record.source_status}</span>
+                <span>{text.checked}: {record.last_checked_date}</span>
                 {shouldShowFirst(record) && record.first_race_time_local && (
                   <span>{text.first}: {record.first_race_time_local}</span>
                 )}
