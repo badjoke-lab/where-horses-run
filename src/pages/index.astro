@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../lib/data';
 import { getRacingTypes } from '../lib/racingTypes';
-import { getTimetableDateContext, getTimetableMeetingRowsForDate } from '../data/timetableMeetingRows';
+import { getTimetableDateContext, getTimetableMeetingRowsForDate, type TimetableMeetingRow } from '../data/timetableMeetingRows';
 
 const countries = getActiveCountries().slice(0, 6);
 const racecourses = getRacecourses().slice(0, 6);
@@ -11,7 +11,7 @@ const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'trac
 const sourceCount = siteData.sources.length;
 const calendarContext = getTimetableDateContext();
 const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
-const timeRange = (meeting) => {
+const timeRange = (meeting: TimetableMeetingRow) => {
   if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
   return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
 };
