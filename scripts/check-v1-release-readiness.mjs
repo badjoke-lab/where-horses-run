@@ -50,6 +50,8 @@ const performance = json(files.performance);
 const sourcePolicy = json(files.sourcePolicy);
 const limitations = json(files.limitations);
 const performanceReport = json(files.performanceReport);
+const sitemap = read(files.sitemap);
+const currentPublicPages = count(sitemap, /<loc>/g);
 
 if (contract.schema_version !== 'v1-release-readiness-v1') fail('release-readiness contract schema differs');
 if (contract.release_id !== 'WHR-V1-PREPARATION-V1' || contract.work_id !== contract.release_id) fail('release-readiness identity differs');
@@ -75,6 +77,7 @@ for (let index = 0; index < baselineContracts.length; index += 1) {
   if (baseline.implementation_unit !== expectedUnits[index] || baseline.status !== 'complete') fail(`release-readiness baseline incomplete: ${expectedUnits[index]}`);
 }
 
+// Accepted-v1 inventory is immutable historical evidence.
 const expectedInventory = {
   locales: 2,
   public_pages: 771,
@@ -93,14 +96,13 @@ const expectedInventory = {
   new_public_routes: 0,
   new_public_data_classes: 0,
 };
-if (!exact(contract.candidate_inventory, expectedInventory)) fail('release-readiness candidate inventory differs');
-
-if (scope.baseline_inventory.public_pages !== 771 || scope.baseline_inventory.route_families !== 17) fail('release-readiness scope inventory differs');
-if (dataAudit.input_inventory.audited_json_files !== 154 || dataAudit.input_inventory.top_level_rows !== 462) fail('release-readiness data inventory differs');
-if (dataAudit.merged_collections.sources.records !== 171 || dataAudit.merged_collections.racecourses.records !== 36) fail('release-readiness merged collection inventory differs');
-if (mobile.browser_audit.page_viewport_checks !== 2313 || Object.values(mobile.required_results).some((value) => value !== 0)) fail('release-readiness mobile acceptance differs');
-if (accessibility.browser_audit.page_checks !== 771 || Object.values(accessibility.required_results).some((value) => value !== 0)) fail('release-readiness accessibility acceptance differs');
-if (performance.baseline_inventory.measured_pages !== 771 || performance.baseline_inventory.javascript_files !== 0) fail('release-readiness performance inventory differs');
+if (!exact(contract.candidate_inventory, expectedInventory)) fail('release-readiness historical candidate inventory differs');
+if (scope.baseline_inventory.public_pages !== 771 || scope.baseline_inventory.route_families !== 17) fail('release-readiness historical scope inventory differs');
+if (dataAudit.input_inventory.audited_json_files !== 154 || dataAudit.input_inventory.top_level_rows !== 462) fail('release-readiness historical data inventory differs');
+if (dataAudit.merged_collections.sources.records !== 171 || dataAudit.merged_collections.racecourses.records !== 36) fail('release-readiness historical merged collection inventory differs');
+if (mobile.browser_audit.page_viewport_checks !== 2313 || Object.values(mobile.required_results).some((value) => value !== 0)) fail('release-readiness historical mobile acceptance differs');
+if (accessibility.browser_audit.page_checks !== 771 || Object.values(accessibility.required_results).some((value) => value !== 0)) fail('release-readiness historical accessibility acceptance differs');
+if (performance.baseline_inventory.measured_pages !== 771 || performance.baseline_inventory.javascript_files !== 0) fail('release-readiness historical performance inventory differs');
 if (sourcePolicy.registry_inventory.source_records !== 171 || sourcePolicy.registry_inventory.countries_with_sources !== 98) fail('release-readiness source inventory differs');
 if (sourcePolicy.registry_inventory.invalid_urls !== 0 || sourcePolicy.registry_inventory.non_https_urls !== 0 || sourcePolicy.registry_inventory.missing_public_notes !== 0) fail('release-readiness source quality differs');
 if (limitations.public_audit.limitation_categories !== 12 || limitations.public_audit.new_public_routes !== 0 || limitations.public_audit.new_public_data_classes !== 0) fail('release-readiness known-limitations inventory differs');
@@ -139,12 +141,13 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
   }
 }
 
+// Current maintenance state must still satisfy the static-first performance contract,
+// but current approved route growth is not required to equal the historical 771-page snapshot.
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-readiness performance report schema differs');
-if (performanceReport.publicPages !== 771 || performanceReport.measuredPages !== 771) fail('release-readiness performance report page count differs');
-if ((performanceReport.typeTotals?.javascript?.files ?? 0) !== 0 || performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-readiness static-first performance result differs');
+if (currentPublicPages < contract.candidate_inventory.public_pages) fail('release-readiness current public inventory shrank below accepted v1');
+if (performanceReport.publicPages !== currentPublicPages || performanceReport.measuredPages !== currentPublicPages) fail('release-readiness current performance report page count differs from sitemap');
+if ((performanceReport.typeTotals?.javascript?.files ?? 0) !== 0 || performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-readiness current static-first performance result differs');
 
-const sitemap = read(files.sitemap);
-if (count(sitemap, /<loc>/g) !== 771) fail('release-readiness sitemap route count differs');
 for (const route of ['/faq/', '/ja/faq/', '/methods/', '/ja/methods/', '/sources/', '/ja/sources/']) {
   if (!sitemap.includes(`<loc>https://whr.badjoke-lab.com${route}</loc>`)) fail(`release-readiness required route missing: ${route}`);
 }
@@ -185,7 +188,8 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('V1_RELEASE_READINESS: pass');
-console.log('PUBLIC_PAGES: 771');
+console.log(`HISTORICAL_PUBLIC_PAGES: ${contract.candidate_inventory.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${currentPublicPages}`);
 console.log('COMPLETED_PREPARATION_UNITS: 7');
 console.log('READINESS: ready_for_v1_release_decision');
 console.log('FINAL_RELEASE_DECISION_COMPLETE: false');
