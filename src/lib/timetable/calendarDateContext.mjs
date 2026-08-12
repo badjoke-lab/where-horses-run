@@ -1,5 +1,5 @@
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const DEFAULT_TIMEZONE = 'UTC';
+const DEFAULT_TIMEZONE = 'Asia/Tokyo';
 const DEFAULT_WINDOW_DAYS = 30;
 
 function assertDateText(value, label) {
