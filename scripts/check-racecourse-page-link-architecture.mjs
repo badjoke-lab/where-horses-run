@@ -73,7 +73,13 @@ const directionGlossary = new Map([
   ['both-directions', 'both-directions-course'],
   ['straight', 'straight-course'],
 ]);
-const hrefs = (html) => [...html.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
+const decodeHrefEntities = (value) => value
+  .replaceAll('&amp;', '&')
+  .replaceAll('&quot;', '"')
+  .replaceAll('&#39;', "'")
+  .replaceAll('&lt;', '<')
+  .replaceAll('&gt;', '>');
+const hrefs = (html) => [...html.matchAll(/href="([^"]+)"/g)].map((match) => decodeHrefEntities(match[1]));
 const hasHref = (html, href) => hrefs(html).includes(href);
 const isAssetHref = (href) => href.startsWith('/_astro/') || /\.(?:css|js|png|jpe?g|gif|svg|webp|ico|woff2?)(?:\?|$)/i.test(href);
 const internalTarget = (href) => {
