@@ -14,6 +14,7 @@ const UNPAIRED_PATHS = [
   '/major-countries/source-health/',
   '/major-countries/timetable/',
 ];
+const CURRENT_LANGUAGE_SWITCHES_PER_PAGE = 2;
 
 const read = (file) => fs.readFileSync(file, 'utf8');
 const json = (file) => JSON.parse(read(file));
@@ -49,9 +50,11 @@ expect(Object.values(contract.privacy_boundary).every((value) => value === false
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Canonical hreflang automation boundary differs');
 
 const layout = read(LAYOUT);
-for (const marker of ['metadataAlternateHref', 'languageSwitchHref', 'explicitAlternateHref', 'hreflang="x-default"', 'alternatePath', 'site-nav__language']) {
-  expect(layout.includes(marker), `BaseLayout canonical/hreflang marker missing: ${marker}`);
-}
+for (const marker of [
+  'metadataAlternateHref', 'languageSwitchHref', 'explicitAlternateHref',
+  'hreflang="x-default"', 'alternatePath', 'site-nav__language',
+  'desktop-site-nav', 'site-navigation',
+]) expect(layout.includes(marker), `BaseLayout canonical/hreflang marker missing: ${marker}`);
 const doc = read(DOC);
 for (const marker of [
   'CANONICAL-HREFLANG-REVIEW-01',
@@ -82,13 +85,11 @@ const currentPairedPages = urls.length - currentUnpairedPages;
 expect(currentPairedPages >= contract.scope.paired_pages, `Canonical hreflang paired-page scope shrank ${currentPairedPages}`);
 expect(currentPairedPages % 2 === 0, `Canonical hreflang paired-page count is not bilingual ${currentPairedPages}`);
 const currentBilingualClusters = currentPairedPages / 2;
-const currentEnglishPairedPages = currentBilingualClusters;
-const currentJapanesePairedPages = currentBilingualClusters;
 const currentHreflangLinks = currentPairedPages * 3;
 
 const pages = new Map();
 let canonicalLinks = 0;
-let languageSwitchLinks = 0;
+let languageSwitchControls = 0;
 for (const url of urls) {
   const file = fileFor(url);
   expect(fs.existsSync(file), `${url}: rendered file is missing`);
@@ -104,12 +105,17 @@ for (const url of urls) {
   expect(canonical.pathname === '/' || canonical.pathname.endsWith('/'), `${url}: canonical trailing slash differs`);
   const alternates = links.filter((link) => link.rel === 'alternate' && link.hreflang);
   const languageItems = [...html.matchAll(/<li\s+[^>]*class="[^"]*site-nav__language[^"]*"[^>]*>([\s\S]*?)<\/li>/g)];
-  expect(languageItems.length === 1, `${url}: language-switch item count differs ${languageItems.length}`);
-  const anchor = languageItems[0][1].match(/<a\s+[^>]*>/)?.[0];
-  const languageSwitch = anchor ? attrs(anchor) : {};
-  expect(languageSwitch.href && languageSwitch.hreflang, `${url}: language-switch link is incomplete`);
-  languageSwitchLinks += 1;
-  pages.set(url, { url, pathname: canonical.pathname, lang, alternates, languageSwitch });
+  expect(languageItems.length === CURRENT_LANGUAGE_SWITCHES_PER_PAGE, `${url}: language-switch control count differs ${languageItems.length}`);
+  const languageSwitches = languageItems.map((item) => {
+    const anchor = item[1].match(/<a\s+[^>]*>/)?.[0];
+    return anchor ? attrs(anchor) : {};
+  });
+  for (const languageSwitch of languageSwitches) {
+    expect(languageSwitch.href && languageSwitch.hreflang, `${url}: language-switch link is incomplete`);
+  }
+  expect(languageSwitches.every((item) => item.href === languageSwitches[0].href && item.hreflang === languageSwitches[0].hreflang), `${url}: mobile/desktop language switches disagree`);
+  languageSwitchControls += languageSwitches.length;
+  pages.set(url, { url, pathname: canonical.pathname, lang, alternates, languageSwitches });
 }
 
 let pairedPages = 0;
@@ -122,10 +128,11 @@ let xDefaultLinks = 0;
 let homeFallbacks = 0;
 const clusters = new Set();
 for (const page of pages.values()) {
+  const languageSwitch = page.languageSwitches[0];
   if (UNPAIRED_PATHS.includes(page.pathname)) {
     expect(page.alternates.length === 0, `${page.url}: unpaired page emits hreflang`);
     expect(page.lang === 'en', `${page.url}: unpaired page language differs`);
-    expect(page.languageSwitch.href === '/ja/' && page.languageSwitch.hreflang === 'ja', `${page.url}: unpaired language fallback differs`);
+    expect(languageSwitch.href === '/ja/' && languageSwitch.hreflang === 'ja', `${page.url}: unpaired language fallback differs`);
     homeFallbacks += 1;
     continue;
   }
@@ -143,7 +150,7 @@ for (const page of pages.values()) {
   oppositeLinks += 1;
   expect(byLang.get('x-default') === byLang.get('en'), `${page.url}: x-default differs`);
   xDefaultLinks += 1;
-  expect(page.languageSwitch.href === new URL(oppositeTarget).pathname && page.languageSwitch.hreflang === oppositeLang, `${page.url}: language switch differs`);
+  expect(languageSwitch.href === new URL(oppositeTarget).pathname && languageSwitch.hreflang === oppositeLang, `${page.url}: language switch differs`);
   const oppositePage = pages.get(oppositeTarget);
   const oppositeSet = new Map(oppositePage.alternates.map((link) => [link.hreflang, link.href]));
   expect(exact([...byLang.entries()].sort(), [...oppositeSet.entries()].sort()), `${page.url}: reciprocal cluster set differs`);
@@ -167,10 +174,10 @@ verifyExplicitPair(contract.methods_pair_contract, 'Methods');
 
 for (const [label, actual, expected] of [
   ['canonical links', canonicalLinks, urls.length],
-  ['language switches', languageSwitchLinks, urls.length],
+  ['language-switch controls', languageSwitchControls, urls.length * CURRENT_LANGUAGE_SWITCHES_PER_PAGE],
   ['paired pages', pairedPages, currentPairedPages],
-  ['English paired pages', englishPaired, currentEnglishPairedPages],
-  ['Japanese paired pages', japanesePaired, currentJapanesePairedPages],
+  ['English paired pages', englishPaired, currentBilingualClusters],
+  ['Japanese paired pages', japanesePaired, currentBilingualClusters],
   ['bilingual clusters', clusters.size, currentBilingualClusters],
   ['hreflang links', hreflangLinks, currentHreflangLinks],
   ['self links', selfLinks, currentPairedPages],
@@ -189,5 +196,6 @@ console.log(`CURRENT_PUBLIC_PAGES: ${urls.length}`);
 console.log(`HISTORICAL_BILINGUAL_CLUSTERS: ${contract.scope.bilingual_clusters}`);
 console.log(`CURRENT_BILINGUAL_CLUSTERS: ${currentBilingualClusters}`);
 console.log(`CURRENT_HREFLANG_LINKS: ${currentHreflangLinks}`);
+console.log(`CURRENT_LANGUAGE_SWITCH_CONTROLS: ${languageSwitchControls}`);
 console.log('FAQ_BILINGUAL_CLUSTERS: 1');
 console.log('METHODS_BILINGUAL_CLUSTERS: 1');
