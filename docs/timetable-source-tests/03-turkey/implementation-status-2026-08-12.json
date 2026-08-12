@@ -10,10 +10,11 @@
   "completed_implementation_units": [
     "TJK-SOURCE-REVALIDATION-01",
     "TJK-BOUNDED-ADAPTER-01",
-    "TJK-CURRENT-PROGRAMME-EVIDENCE-01"
+    "TJK-CURRENT-PROGRAMME-EVIDENCE-01",
+    "TJK-CURRENT-BOUNDED-ADAPTER-01"
   ],
   "current_implementation_unit": "TJK-CURRENT-BOUNDED-ADAPTER-01",
-  "status": "current_bounded_adapter_ready_for_implementation",
+  "status": "current_bounded_adapter_candidate_ready_for_human_review",
   "source_state": {
     "source_status": "verified",
     "technical_capability_rank": "A+",
@@ -61,13 +62,27 @@
     "probe_artifact_id": 9110592645,
     "probe_artifact_sha256": "4d25e8d50c7c15a7c7daa0bc5d4996369d0b9226cbb68206c94aa20261bd754f"
   },
+  "current_adapter_state": {
+    "adapter_id": "tjk-current-bounded-2026-08-11-v1",
+    "candidate_path": "data/candidates/tjk-current-bounded-2026-08-11-v1.json",
+    "candidate_meetings": 2,
+    "candidate_races": 18,
+    "candidate_rank": "A",
+    "technical_capability_rank": "A+",
+    "public_ceiling": "A",
+    "identity_mode": "source-authority-venue-only",
+    "public_racecourse_identity_created": false,
+    "review_status": "pending",
+    "publication_effect": "none"
+  },
   "publication_boundary": {
-    "current_candidate_generated": false,
+    "current_candidate_generated": true,
     "canonical_written": false,
     "public_projection_written": false,
+    "public_racecourse_identity_written": false,
     "automatic_approval": false,
     "automatic_merge": false,
     "deployment_performed": false
   },
-  "next_gate": "Implement a candidate-only current bounded adapter that starts from the verified Info/Page landing, follows only same-day same-city venue-detail links discovered there, emits A-ceiling meeting/race schedule fields only, and writes neither Canonical nor public projection data."
+  "next_gate": "Human review of the deterministic 2026-08-11 Ankara/Kocaeli current TJK candidate. Any racecourse identity registration or Canonical/public promotion must be a separate reviewed unit."
 }
