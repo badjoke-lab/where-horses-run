@@ -11,8 +11,8 @@ assert.equal(status.system_id, 'tjk-national-racing-system');
 assert.equal(status.work_id, 'WHR-CAL-TURKEY-TJK');
 assert.ok(status.completed_implementation_units.includes('TJK-CURRENT-PROGRAMME-EVIDENCE-01'));
 assert.ok(status.completed_implementation_units.includes('TJK-CURRENT-BOUNDED-ADAPTER-01'));
-assert.equal(status.current_implementation_unit, 'TJK-CURRENT-BOUNDED-ADAPTER-01');
-assert.equal(status.status, 'current_bounded_adapter_candidate_ready_for_human_review');
+assert.equal(status.current_implementation_unit, 'TJK-CURRENT-PROMOTION-REVIEW-01');
+assert.equal(status.status, 'current_promotion_review_packet_pending_human_review');
 
 assert.equal(status.source_state.source_status, 'verified');
 assert.equal(status.source_state.technical_capability_rank, 'A+');
@@ -34,6 +34,12 @@ assert.equal(status.current_adapter_state.public_racecourse_identity_created, fa
 assert.equal(status.current_adapter_state.review_status, 'pending');
 assert.equal(status.current_adapter_state.publication_effect, 'none');
 
+assert.equal(status.current_review_state.review_status, 'pending_human_review');
+assert.equal(status.current_review_state.reviewer, null);
+assert.equal(status.current_review_state.reviewed_at, null);
+assert.equal(status.current_review_state.identity_registration_required_for_promotion, true);
+assert.equal(status.current_review_state.existing_public_identity_found, false);
+
 for (const key of [
   'canonical_written',
   'public_projection_written',
@@ -45,12 +51,13 @@ for (const key of [
   assert.equal(status.publication_boundary[key], false, `TJK current adapter publication boundary differs: ${key}`);
 }
 assert.equal(status.publication_boundary.current_candidate_generated, true);
-assert.match(status.next_gate, /^Human review /);
-assert.match(status.next_gate, /separate reviewed unit/);
+assert.match(status.next_gate, /^Explicit human review/);
+assert.match(status.next_gate, /explicit approval/);
 
 console.log('TJK_CURRENT_ADAPTER_STATUS: pass');
 console.log('COMPLETED_UNIT: TJK-CURRENT-BOUNDED-ADAPTER-01');
+console.log('CURRENT_UNIT: TJK-CURRENT-PROMOTION-REVIEW-01');
 console.log('CANDIDATE_MEETINGS: 2');
 console.log('CANDIDATE_RACES: 18');
-console.log('NEXT_GATE: human review');
+console.log('NEXT_GATE: explicit human review');
 console.log('PUBLICATION_EFFECT: none');
