@@ -26,10 +26,8 @@ if (manifest) {
   if (manifest.following_work_id !== 'WHR-CAL-JAPAN-JRA') fail('following_work_id must be WHR-CAL-JAPAN-JRA.');
   if (manifest.date_contract?.default_timezone !== 'Asia/Tokyo') fail('default timezone must be Asia/Tokyo.');
   if (manifest.date_contract?.window_days !== 30) fail('window_days must be 30.');
+  if (manifest.date_contract?.projection_freshness_grace_days !== 1) fail('projection freshness grace must be one calendar day.');
   if (manifest.date_contract?.fixed_historical_fallback !== false) fail('fixed historical fallback must remain disabled.');
-  if (manifest.window_start_inclusive === false || manifest.window_end_exclusive === false) {
-    fail('window boundary semantics are incorrect.');
-  }
   if (manifest.date_contract?.window_start_inclusive !== true || manifest.date_contract?.window_end_exclusive !== true) {
     fail('window boundary semantics are incorrect.');
   }
@@ -98,6 +96,7 @@ if (errors.length) {
 console.log('CALENDAR_DYNAMIC_DATES_RELEASE_GATE: pass');
 console.log('COMPLETED_WORK_ID: WHR-CAL-DYNAMIC-DATES');
 console.log('DEFAULT_TIMEZONE: Asia/Tokyo');
+console.log('PROJECTION_FRESHNESS_GRACE_DAYS: 1');
 console.log('COMPLETED_SOURCE_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
 console.log('CURRENT_WORK_ID: WHR-CAL-PUBLIC-V1');
 console.log('SCHEDULED_REFRESH_ACTIVE: false');
