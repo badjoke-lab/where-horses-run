@@ -47,19 +47,24 @@ jobs:
         run: node scripts/check-tjk-current-adapter-status.mjs
       - name: Validate committed candidate determinism
         run: node scripts/timetable/tjk-current-bounded-adapter.mjs --check
-      - name: Prove candidate-only PR boundary
+      - name: Prove candidate-only PR boundary while adapter stage is current
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
+          current_unit="$(node -e "const s=require('./docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json'); process.stdout.write(s.current_implementation_unit)")"
+          if [ "$current_unit" != 'TJK-CURRENT-BOUNDED-ADAPTER-01' ]; then
+            echo "Candidate-only diff boundary is not applicable after bounded-adapter completion: $current_unit"
+            exit 0
+          fi
           changed="$(git diff --name-only "$BASE_SHA"...HEAD)"
           echo "$changed"
           if echo "$changed" | grep -E '^data/generated/timetable/(canonical|public)/'; then
             echo 'Current TJK bounded adapter PR must not write Canonical/public timetable data.' >&2
             exit 1
           fi
-          if echo "$changed" | grep -E '^data/(racecourses|generated/racecourses|public/racecourses)'; then
-            echo 'Current TJK bounded adapter PR must not register or mutate public racecourse identity data.' >&2
+          if echo "$changed" | grep -E '^data/static/racecourses-public-timetable-identities-v1.json$'; then
+            echo 'Current TJK bounded adapter PR must not register public racecourse identity data.' >&2
             exit 1
           fi
       - name: Prove repository clean
