@@ -6,7 +6,7 @@ Supersedes for current execution state: `docs/calendar/implementation-roadmap-20
 Base roadmap: `docs/calendar/implementation-roadmap.md`  
 Current Work ID: `WHR-CAL-TURKEY-TJK`
 
-This addendum records the current execution position after direct TJK current-programme verification and deterministic current bounded-adapter implementation. Historical stage text, KRA publication evidence, daily acquisition contracts, release snapshots, and the 2024 TJK fixed-three adapter fixture remain unchanged unless explicitly superseded below.
+This addendum records the current execution position after direct TJK current-programme verification, deterministic current bounded-adapter implementation, and preparation of the explicit human-review packet. Historical stage text, KRA publication evidence, daily acquisition contracts, release snapshots, and the 2024 TJK fixed-three adapter fixture remain unchanged unless explicitly superseded below.
 
 ## Current execution state
 
@@ -20,8 +20,9 @@ TJK current route topology: verified
 TJK current direct programme evidence: 2 meetings / 18 races on 2026-08-11
 TJK current bounded adapter: implemented
 TJK current deterministic candidates: 2 meetings / 18 races
-TJK current candidate review status: pending human review
+TJK current promotion review packet: prepared; pending explicit human review
 TJK current candidate identity mode: TJK source-authority venue identity only; no WHR public racecourse identity created
+TJK Ankara/Kocaeli public identity registry state: not registered; separate identity review required before promotion
 TJK technical capability: A+
 TJK candidate/public ceiling: A
 TJK Canonical writes: 0
@@ -89,7 +90,7 @@ No raw programme body was retained or committed. No Canonical/public projection 
 
 ### TJK-CURRENT-BOUNDED-ADAPTER-01
 
-Status: implemented; candidate is pending human review.
+Status: complete in PR #577; deterministic current candidate is pending human review.
 
 The current bounded adapter:
 
@@ -106,11 +107,28 @@ The current bounded adapter:
 
 Current candidate artifact: `data/candidates/tjk-current-bounded-2026-08-11-v1.json`.
 
-Current implementation status: `docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json`.
+### TJK-CURRENT-PROMOTION-REVIEW-01
+
+Status: review packet prepared; explicit human review pending.
+
+Review artifact: `data/candidates/tjk-current-2026-08-11-promotion-review-v1.json`.
+
+The review packet is bound exactly to the deterministic 2-meeting / 18-race candidate and records the public identity prerequisite separately:
+
+- Ankara: `SehirId=5`, 9 races, 14:00–18:00;
+- Kocaeli: `SehirId=9`, 9 races, 17:15–21:30;
+- candidate/public ceiling: A;
+- source technical capability: A+;
+- current public identity registry match for Ankara/Kocaeli: none;
+- identity registration required before promotion: yes;
+- review status: `pending_human_review`;
+- review approval effect: none until explicit human approval.
+
+The pending-review gate re-checks that the review packet exactly matches the deterministic candidate and fails if Ankara/Kocaeli already appear in the public identity registry, forcing the identity assumption to be reviewed again rather than silently reused.
 
 ### Current TJK gate — HUMAN REVIEW REQUIRED
 
-The current operation is **human review of the deterministic 2026-08-11 Ankara/Kocaeli candidate**, not publication and not racecourse identity creation.
+The current operation is **explicit human review of the deterministic 2026-08-11 Ankara/Kocaeli candidate and its identity-registration prerequisite**, not publication and not racecourse identity creation.
 
 ```text
 historical fixed-three adapter — complete; retained as test evidence
@@ -119,22 +137,25 @@ historical fixed-three adapter — complete; retained as test evidence
 -> current bounded adapter — complete
 -> deterministic current candidate output — complete
 -> prohibited-data / candidate-only validation — complete
+-> human-review packet preparation — complete
 -> HUMAN REVIEW REQUIRED — current
--> separate racecourse identity + promotion design/review unit, if approved
+-> separate Ankara/Kocaeli racecourse identity + timetable promotion unit, only if explicitly approved
 -> Promotion Validation
 -> Canonical/public projection
 -> bilingual/rendered QA
 ```
 
-Human review must verify the 2 meetings / 18 races against the reviewed evidence and confirm that source-authority venue identity (`SehirId=5` Ankara, `SehirId=9` Kocaeli) is sufficient for the candidate stage. It must not infer or invent WHR public racecourse IDs.
+Human review must verify the exact 2 meetings / 18 races against the reviewed evidence and explicitly decide whether to proceed to a separate unit that registers Ankara/Kocaeli public racecourse identities and promotes the A-level timetable candidate. Source-authority venue IDs must not be silently converted into WHR public racecourse IDs.
 
-No TJK Canonical meeting, public meeting, racecourse identity, or public timetable detail is authorized by this adapter unit.
+No TJK Canonical meeting, public meeting, racecourse identity, or public timetable detail is authorized by the pending review packet itself.
 
 Any later TJK racecourse identity registration and promotion must be a separate reviewed PR. Public output must remain at or below A even where current source evidence demonstrates A+ technical capability.
 
+Current implementation status: `docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json`.
+
 ## Conditional next source-expansion work
 
-`WHR-CAL-MOROCCO-SOREC-REVALIDATION` remains conditional after the current TJK bounded-adapter/review decision. SOREC remains blocked until a stable official public meeting/timetable route is verified. No Morocco adapter or publication may be inferred from the existing blocked inventory state.
+`WHR-CAL-MOROCCO-SOREC-REVALIDATION` remains conditional after the current TJK review decision. SOREC remains blocked until a stable official public meeting/timetable route is verified. No Morocco adapter or publication may be inferred from the existing blocked inventory state.
 
 ## Authority rule
 
