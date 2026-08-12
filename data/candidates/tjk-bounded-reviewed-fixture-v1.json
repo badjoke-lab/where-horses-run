@@ -1,0 +1,136 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-08-11T00:00:00Z",
+  "adapter_id": "tjk-bounded-reviewed-fixture-v1",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "source_id": "tjk-daily-programme",
+  "technical_capability_rank": "A+",
+  "publication_ceiling": "A",
+  "candidate_window": {
+    "start_date": "2024-12-17",
+    "end_date_exclusive": "2024-12-20",
+    "timezone": "Europe/Istanbul"
+  },
+  "fixture_evidence": {
+    "meeting_summary": "docs/timetable-source-tests/03-turkey/turkey-fixed-three-meeting-summary.tsv",
+    "race_evidence": "docs/timetable-source-tests/03-turkey/turkey-fixed-three-race-evidence.tsv",
+    "source_revalidation": "docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json",
+    "meeting_count": 3,
+    "race_count": 23
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-tjk-adana-racecourse-2024-12-17",
+      "meeting_id": "tjk-adana-racecourse-2024-12-17",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "adana-racecourse",
+      "racecourse_label": "Adana",
+      "source_venue_id": "1",
+      "date": "2024-12-17",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A+",
+      "publication_ceiling": "A",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "18:00",
+      "timetable_rows": [
+        { "race_number": 1, "post_time_local": "15:00", "distance_m": 1200, "surface": "Kum" },
+        { "race_number": 2, "post_time_local": "15:30", "distance_m": 2200, "surface": "Kum" },
+        { "race_number": 3, "post_time_local": "16:00", "distance_m": 1200, "surface": "Kum" },
+        { "race_number": 4, "post_time_local": "16:30", "distance_m": 1300, "surface": "Kum" },
+        { "race_number": 5, "post_time_local": "17:00", "distance_m": 1400, "surface": "Kum" },
+        { "race_number": 6, "post_time_local": "17:30", "distance_m": 1200, "surface": "Kum" },
+        { "race_number": 7, "post_time_local": "18:00", "distance_m": 1400, "surface": "Kum" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=17%2F12%2F2024&SehirAdi=Adana&SehirId=1",
+        "checked_at": "2026-08-11",
+        "extraction_method": "reviewed_deterministic_fixture"
+      },
+      "confidence": "high",
+      "review_status": "pending",
+      "notes": "Reviewed deterministic TJK fixture projected onto the revalidated Info/Page daily route. Technical capability is evidence-derived; any public output remains capped at A and requires separate human review."
+    },
+    {
+      "candidate_id": "candidate-tjk-antalya-racecourse-2024-12-17",
+      "meeting_id": "tjk-antalya-racecourse-2024-12-17",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "antalya-racecourse",
+      "racecourse_label": "Antalya",
+      "source_venue_id": "10",
+      "date": "2024-12-17",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A+",
+      "publication_ceiling": "A",
+      "first_race_time_local": "17:15",
+      "last_race_time_local": "21:30",
+      "timetable_rows": [
+        { "race_number": 1, "post_time_local": "17:15", "distance_m": 1500, "surface": "Sentetik" },
+        { "race_number": 2, "post_time_local": "17:45", "distance_m": 2000, "surface": "Kum" },
+        { "race_number": 3, "post_time_local": "18:30", "distance_m": 1400, "surface": "Kum" },
+        { "race_number": 4, "post_time_local": "19:00", "distance_m": 1500, "surface": "Sentetik" },
+        { "race_number": 5, "post_time_local": "19:30", "distance_m": 1300, "surface": "Kum" },
+        { "race_number": 6, "post_time_local": "20:00", "distance_m": 2100, "surface": "Sentetik" },
+        { "race_number": 7, "post_time_local": "20:30", "distance_m": 1600, "surface": "Sentetik" },
+        { "race_number": 8, "post_time_local": "21:00", "distance_m": 1500, "surface": "Sentetik" },
+        { "race_number": 9, "post_time_local": "21:30", "distance_m": 1700, "surface": "Sentetik" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=17%2F12%2F2024&SehirAdi=Antalya&SehirId=10",
+        "checked_at": "2026-08-11",
+        "extraction_method": "reviewed_deterministic_fixture"
+      },
+      "confidence": "high",
+      "review_status": "pending",
+      "notes": "Reviewed deterministic TJK fixture projected onto the revalidated Info/Page daily route. Technical capability is evidence-derived; any public output remains capped at A and requires separate human review."
+    },
+    {
+      "candidate_id": "candidate-tjk-izmir-racecourse-2024-12-19",
+      "meeting_id": "tjk-izmir-racecourse-2024-12-19",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "izmir-racecourse",
+      "racecourse_label": "İzmir",
+      "source_venue_id": "2",
+      "date": "2024-12-19",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A+",
+      "publication_ceiling": "A",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "18:00",
+      "timetable_rows": [
+        { "race_number": 1, "post_time_local": "15:00", "distance_m": 2100, "surface": "Kum" },
+        { "race_number": 2, "post_time_local": "15:30", "distance_m": 1200, "surface": "Kum" },
+        { "race_number": 3, "post_time_local": "16:00", "distance_m": 1200, "surface": "Kum" },
+        { "race_number": 4, "post_time_local": "16:30", "distance_m": 1400, "surface": "Kum" },
+        { "race_number": 5, "post_time_local": "17:00", "distance_m": 2000, "surface": "Kum" },
+        { "race_number": 6, "post_time_local": "17:30", "distance_m": 1600, "surface": "Kum" },
+        { "race_number": 7, "post_time_local": "18:00", "distance_m": 1200, "surface": "Kum" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=19%2F12%2F2024&SehirAdi=%C4%B0zmir&SehirId=2",
+        "checked_at": "2026-08-11",
+        "extraction_method": "reviewed_deterministic_fixture"
+      },
+      "confidence": "high",
+      "review_status": "pending",
+      "notes": "Reviewed deterministic TJK fixture projected onto the revalidated Info/Page daily route. Technical capability is evidence-derived; any public output remains capped at A and requires separate human review."
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "Candidate-only TJK bounded adapter output from reviewed deterministic fixture evidence. No Canonical/public write is authorized.",
+    "promotion_target": "separate-human-reviewed-unit"
+  },
+  "publication_effect": "none"
+}

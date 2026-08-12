@@ -1,0 +1,56 @@
+name: Calendar TJK parameterized body probe
+
+on:
+  pull_request:
+    paths:
+      - 'docs/timetable-source-tests/03-turkey/revalidation-2026-08-11.json'
+      - 'docs/timetable-source-tests/03-turkey/revalidation-2026-08-12.json'
+      - 'scripts/check-tjk-current-programme-evidence.mjs'
+      - 'scripts/timetable/tjk-parameterized-body-probe.mjs'
+      - '.github/workflows/calendar-tjk-parameterized-body-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Preserve historical TJK source revalidation contract
+        run: node scripts/check-tjk-source-revalidation.mjs
+      - name: Validate current TJK programme evidence contract
+        run: node scripts/check-tjk-current-programme-evidence.mjs
+      - name: Check probe syntax
+        run: node --check scripts/timetable/tjk-parameterized-body-probe.mjs
+      - name: Probe reviewed TJK parameterized daily bodies
+        run: |
+          mkdir -p /tmp/tjk-parameterized-body-probe
+          node scripts/timetable/tjk-parameterized-body-probe.mjs \
+            --output /tmp/tjk-parameterized-body-probe/summary.json
+      - name: Upload safe probe summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tjk-parameterized-body-probe-${{ github.run_id }}
+          path: /tmp/tjk-parameterized-body-probe/summary.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Prove probe is repository-read-only
+        if: always()
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo 'TJK parameterized body probe modified repository files.' >&2
+            exit 1
+          fi
