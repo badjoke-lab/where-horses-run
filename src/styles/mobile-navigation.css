@@ -1,4 +1,8 @@
-.site-navigation {
+.site-nav--desktop {
+  display: none;
+}
+
+.site-navigation--mobile {
   margin-inline-start: auto;
 }
 
@@ -25,7 +29,7 @@
   text-align: center;
 }
 
-.site-navigation[open] > .site-navigation__summary::after {
+.site-navigation--mobile[open] > .site-navigation__summary::after {
   content: "−";
 }
 
@@ -64,12 +68,14 @@
 }
 
 @media (min-width: 721px) {
-  .site-navigation__summary {
+  .site-navigation--mobile {
     display: none;
   }
 
-  .site-navigation:not([open]) > .site-nav {
+  .site-nav--desktop {
     display: block;
+    min-width: 0;
+    width: 100%;
   }
 }
 
@@ -85,52 +91,60 @@
     min-width: 0;
   }
 
-  .site-navigation {
+  .site-nav--desktop {
+    display: none;
+  }
+
+  .site-navigation--mobile {
     grid-column: 2;
     justify-self: end;
     margin-inline-start: 0;
   }
 
-  .site-navigation[open] {
+  .site-navigation--mobile[open] {
     grid-column: 1 / -1;
     width: 100%;
     justify-self: stretch;
   }
 
-  .site-navigation[open] > .site-navigation__summary {
+  .site-navigation--mobile[open] > .site-navigation__summary {
     width: 100%;
   }
 
-  .site-nav {
+  .site-nav--mobile {
     width: 100%;
     margin-block-start: var(--whr-space-2);
     border: 1px solid var(--whr-color-border);
   }
 
-  .site-nav__list {
+  .site-navigation--mobile:not([open]) > .site-nav--mobile {
+    display: none;
+  }
+
+  .site-nav--mobile .site-nav__list {
     display: grid;
     gap: 0;
   }
 
-  .site-nav__list li + li {
+  .site-nav--mobile .site-nav__list li + li {
     border-block-start: 1px solid var(--whr-color-border);
   }
 
-  .site-nav a {
+  .site-nav--mobile a {
     width: 100%;
     min-height: 2.75rem;
     padding: 0.7rem 0.8rem;
     text-decoration: none;
   }
 
-  .site-nav a:hover,
-  .site-nav a:focus-visible,
-  .site-nav a[aria-current="page"] {
+  .site-nav--mobile a:hover,
+  .site-nav--mobile a:focus-visible,
+  .site-nav--mobile a[aria-current="page"] {
     text-decoration: underline;
     text-underline-offset: 0.22em;
   }
 
-  .site-nav__language {
+  .site-nav--mobile .site-nav__language {
     padding-inline-start: 0;
     border-inline-start: 0;
   }
