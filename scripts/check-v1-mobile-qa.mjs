@@ -68,6 +68,8 @@ expect(Object.values(contract.required_results).every((value) => value === 0), '
 expect(Object.values(contract.quality_contract).every((value) => value === true || value === false), 'v1 mobile quality contract values differ');
 expect(contract.quality_contract.page_level_horizontal_scrolling_allowed === false, 'v1 mobile horizontal-scroll boundary differs');
 expect(contract.quality_contract.explicit_local_table_scrolling_allowed === true, 'v1 mobile local-table boundary differs');
+expect(contract.diagnostic_inventory?.internal_table_overflow_is_allowed_inside_explicit_scroll_or_mobile_table_presentation === true, 'v1 mobile local-table diagnostic boundary differs');
+expect(contract.diagnostic_inventory?.diagnostics_do_not_override_page_level_failure_rules === true, 'v1 mobile diagnostic precedence differs');
 
 expect(audit.schema_version === 'v1-mobile-qa-audit-v1', 'v1 mobile audit schema differs');
 expect(audit.release_id === contract.release_id && audit.work_id === contract.work_id, 'v1 mobile audit identity differs');
@@ -94,6 +96,9 @@ expect(report.publicPages === currentPublicUrls.length, `current v1 mobile repor
 expect(exact(report.viewports, browser.viewports_css_px), 'current v1 mobile report viewports differ');
 expect(report.pageViewportChecks === currentPublicUrls.length * browser.viewports_css_px.length, 'current v1 mobile report check count differs');
 
+// Only contract-required failure measurements must be zero. Table-width and nowrap
+// values below are diagnostics: local table scrolling is explicitly allowed as long as
+// it does not create page-level horizontal overflow.
 const currentZeroResults = {
   failedPageLoads: 'failed page loads',
   horizontalOverflowChecks: 'page-level horizontal overflow checks',
@@ -101,8 +106,6 @@ const currentZeroResults = {
   smallTargetInstances: 'small target instances',
   viewportMetaErrors: 'viewport meta errors',
   oversizedImageChecks: 'oversized image checks',
-  overflowingTableChecks: 'overflowing table checks',
-  uncontainedScrollChecks: 'uncontained nowrap diagnostics',
 };
 for (const [reportKey, label] of Object.entries(currentZeroResults)) {
   expect(report[reportKey] === 0, `current browser QA found ${label}: ${report[reportKey]}`);
@@ -113,10 +116,17 @@ for (const [key, label] of [
   ['smallTargets', 'small-target details'],
   ['viewportMetaErrorsDetail', 'viewport-meta details'],
   ['oversizedImages', 'oversized-image details'],
-  ['overflowingTables', 'overflowing-table details'],
-  ['uncontainedScroll', 'uncontained-scroll details'],
 ]) {
   expect(Array.isArray(report[key]) && report[key].length === 0, `current v1 mobile ${label} remain`);
+}
+for (const [countKey, detailKey, label] of [
+  ['overflowingTableChecks', 'overflowingTables', 'local-table overflow diagnostics'],
+  ['uncontainedScrollChecks', 'uncontainedScroll', 'nowrap diagnostics'],
+]) {
+  expect(Number.isInteger(report[countKey]) && report[countKey] >= 0, `current v1 mobile ${label} count is invalid`);
+  expect(Array.isArray(report[detailKey]), `current v1 mobile ${label} details are missing`);
+  expect(report[detailKey].length === Math.min(report[countKey], 100), `current v1 mobile ${label} count/detail mismatch`);
+  expect(report[countKey] <= report.pageViewportChecks, `current v1 mobile ${label} exceeds page-view checks`);
 }
 for (const key of ['pagesContainingTables','pagesContainingPre','pagesContainingCode','pagesContainingForms']) {
   expect(Number.isInteger(report[key]) && report[key] >= 0, `current v1 mobile diagnostic must be non-negative: ${key}`);
@@ -187,4 +197,6 @@ console.log('PAGE_LEVEL_HORIZONTAL_OVERFLOW_CHECKS: 0');
 console.log('SMALL_TARGET_INSTANCES: 0');
 console.log('VIEWPORT_META_ERRORS: 0');
 console.log('OVERSIZED_IMAGE_CHECKS: 0');
+console.log(`LOCAL_TABLE_OVERFLOW_DIAGNOSTICS: ${report.overflowingTableChecks}`);
+console.log(`UNCONTAINED_NOWRAP_DIAGNOSTICS: ${report.uncontainedScrollChecks}`);
 console.log('NEXT_IMPLEMENTATION_UNIT: V1-ACCESSIBILITY-QA-01');
