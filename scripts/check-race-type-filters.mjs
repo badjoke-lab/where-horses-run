@@ -28,7 +28,7 @@ for (const requiredPath of [contractPath, auditPath, racecoursesPath, dataPath, 
 
 const contract = parse(contractPath);
 const audit = parse(auditPath);
-const racecourses = parse(racecoursesPath);
+const baseRacecourses = parse(racecoursesPath);
 
 if (contract.schema_version !== 'race-type-filter-contract-v1') fail('race type filter contract schema differs');
 if (contract.work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('race type filter Work ID differs');
@@ -100,12 +100,10 @@ for (const value of Object.values(audit.behavior ?? {})) if (value !== true) fai
 if (!exact(audit.privacy_boundary, contract.privacy_boundary) || !exact(audit.automation_boundary, contract.automation_boundary)) fail('race type filter audit boundaries differ');
 if (audit.previous_implementation_unit !== contract.previous_implementation_unit || audit.next_implementation_unit !== contract.next_implementation_unit) fail('race type filter audit roadmap differs');
 
-if (!Array.isArray(racecourses)) fail('current racecourse inventory is not an array');
-const currentRacecourseCount = Array.isArray(racecourses) ? racecourses.length : 0;
-if (currentRacecourseCount < historicalScope.racecourse_records) fail(`current racecourse inventory shrank ${currentRacecourseCount} < ${historicalScope.racecourse_records}`);
-const currentIds = racecourses.map((racecourse) => racecourse.id);
-if (new Set(currentIds).size !== currentRacecourseCount) fail('current racecourse inventory contains duplicate IDs');
-if (racecourses.some((racecourse) => !racecourse.id || !racecourse.slug || !racecourse.country_id || !racecourse.name_en || !racecourse.name_ja)) fail('current racecourse inventory contains incomplete public identity');
+if (!Array.isArray(baseRacecourses) || baseRacecourses.length === 0) fail('base racecourse inventory is not a non-empty array');
+const baseIds = Array.isArray(baseRacecourses) ? baseRacecourses.map((racecourse) => racecourse.id) : [];
+if (new Set(baseIds).size !== baseIds.length) fail('base racecourse inventory contains duplicate IDs');
+if (Array.isArray(baseRacecourses) && baseRacecourses.some((racecourse) => !racecourse.id || !racecourse.slug || !racecourse.country_id || !racecourse.name_en || !racecourse.name_ja)) fail('base racecourse inventory contains incomplete public identity');
 
 const dataSource = read(dataPath);
 for (const marker of [
@@ -178,6 +176,16 @@ function builtTargetExists(href) {
   return fs.existsSync(filePath(`dist${href}index.html`));
 }
 
+function renderedIds(file) {
+  if (!fs.existsSync(filePath(file))) return [];
+  const html = read(file);
+  const cards = [...html.matchAll(/<article[^>]*data-racecourse-record(?=[\s>])[\s\S]*?<\/article>/g)].map((match) => match[0]);
+  return cards.flatMap((card) => attributeValues(card, 'data-racecourse-id'));
+}
+
+let currentIds = [];
+let currentRacecourseCount = 0;
+
 function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typePrefix }) {
   if (!fs.existsSync(filePath(file))) {
     fail(`rendered racecourse directory missing: ${file}`);
@@ -242,12 +250,16 @@ function verifyRenderedDirectory({ file, lang, routePrefix, countryPrefix, typeP
   if (!html.includes(`<html lang="${lang}"`)) fail(`${file}: rendered locale differs`);
 }
 
-if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
-for (const racecourse of racecourses) {
-  for (const href of [`/tracks/${racecourse.slug}/`, `/ja/tracks/${racecourse.slug}/`]) {
-    if (!builtTargetExists(href)) fail(`current racecourse detail route missing: ${href}`);
-  }
+if (!fs.existsSync(filePath('dist'))) {
+  fail('dist is missing; run npm run build first');
+} else {
+  currentIds = renderedIds('dist/tracks/index.html');
+  currentRacecourseCount = currentIds.length;
+  if (currentRacecourseCount < historicalScope.racecourse_records) fail(`current rendered racecourse inventory shrank ${currentRacecourseCount} < ${historicalScope.racecourse_records}`);
+  if (new Set(currentIds).size !== currentRacecourseCount) fail('current rendered racecourse inventory contains duplicate IDs');
+  if (currentIds.some((id) => !id)) fail('current rendered racecourse inventory contains empty IDs');
 }
+
 verifyRenderedDirectory({
   file: 'dist/tracks/index.html',
   lang: 'en',
