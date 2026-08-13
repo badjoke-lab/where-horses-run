@@ -179,23 +179,37 @@ if (uaeHandoff?.handoff_claims?.automatic_publication_claimed !== false || uaeHa
   fail('UAE handoff must retain no automatic publication/public write boundary.');
 }
 
+// Coverage/gap semantics stay in the view model and audits, but the dense public list
+// no longer repeats those explanatory fields inside every meeting row.
 for (const marker of [
   'derivePublicCoverageState',
   'coverage_status: PublicCoverageStatus',
   'public_gap_status: PublicGapStatus',
 ]) requireIncludes(meetingRowsSource, marker, 'timetableMeetingRows.ts');
 for (const marker of [
+  'class="meeting-row"',
+  'class="meeting-row__identity"',
+  'class="meeting-row__meta"',
+  'class="meeting-row__links"',
+  "rank: 'Public rank:'",
+  "rank: '公開ランク:'",
+  "source: 'Source'",
+  "source: 'ソース'",
+  "checked: 'Checked'",
+  "checked: '確認'",
+  'record.source_status',
+  'record.last_checked_date',
+  'record.official_source_url',
+]) requireIncludes(meetingListSource, marker, 'TimetableMeetingList.astro');
+for (const forbiddenMarker of [
   "coverage: 'Reviewed coverage'",
-  "coverage: '確認済み範囲'",
   "detailState: 'Additional detail'",
-  "detailState: '追加詳細'",
   'coverageLabel[record.coverage_status]',
   'gapLabel[record.public_gap_status]',
-  'More detail not reviewed',
-  'Public ceiling applied',
-  '追加詳細は未確認',
-  '公開上限を適用',
-]) requireIncludes(meetingListSource, marker, 'TimetableMeetingList.astro');
+  'meeting-card__note',
+]) {
+  if (meetingListSource.includes(forbiddenMarker)) fail(`TimetableMeetingList.astro must keep compact-row presentation; found ${forbiddenMarker}`);
+}
 for (const marker of [
   'PUBLIC_COVERAGE_STATUSES',
   'PUBLIC_GAP_STATUSES',
@@ -242,4 +256,5 @@ for (const [state, count] of [...stateCounts.entries()].sort()) {
   console.log(`PUBLIC_STATE_COUNT: ${state}=${count}`);
 }
 console.log(`BANEI_PUBLIC_ROWS: ${baneiRows.length}`);
+console.log('COMPACT_MEETING_LIST: true');
 console.log('UNATTENDED_PUBLICATION: false');

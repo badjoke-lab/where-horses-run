@@ -42,6 +42,7 @@ for (const file of [
 const contract = json(files.contract);
 const audit = json(files.audit);
 const routes = ['/faq/', '/ja/faq/', '/methods/', '/ja/methods/'];
+const historicalPublicPages = 771;
 
 if (contract.schema_version !== 'v1-known-limitations-v1') fail('known-limitations contract schema differs');
 if (contract.release_id !== 'WHR-V1-PREPARATION-V1' || contract.work_id !== contract.release_id) fail('known-limitations release identity differs');
@@ -63,7 +64,7 @@ if (!exact(contract.baseline_units, expectedBaselines)) fail('known-limitations 
 
 const publicAudit = contract.public_audit ?? {};
 for (const [key, value] of Object.entries({
-  public_pages_total: 771,
+  public_pages_total: historicalPublicPages,
   locales: 2,
   route_pairs: 2,
   faq_questions_per_locale: 12,
@@ -72,7 +73,7 @@ for (const [key, value] of Object.entries({
   new_public_routes: 0,
   new_public_data_classes: 0,
 })) {
-  if (publicAudit[key] !== value) fail(`known-limitations public audit differs: ${key}`);
+  if (publicAudit[key] !== value) fail(`known-limitations historical public audit differs: ${key}`);
 }
 if (publicAudit.public_content_rewrite_required !== false || !exact(publicAudit.routes, routes)) fail('known-limitations public route boundary differs');
 
@@ -118,7 +119,7 @@ for (const key of ['scope_boundary', 'publication_boundary', 'privacy_boundary',
 }
 for (const value of Object.values(audit.behavior ?? {})) if (value !== true) fail('known-limitations behavior audit differs');
 for (const [key, value] of Object.entries({
-  public_pages_total: 771,
+  public_pages_total: historicalPublicPages,
   audited_routes: 4,
   route_pairs: 2,
   locales: 2,
@@ -133,7 +134,7 @@ for (const [key, value] of Object.entries({
   contract_errors: 0,
   output_errors: 0,
 })) {
-  if (audit.verified?.[key] !== value) fail(`known-limitations audit measurement differs: ${key}`);
+  if (audit.verified?.[key] !== value) fail(`known-limitations historical audit measurement differs: ${key}`);
 }
 
 for (const [file, unit] of baselines) {
@@ -221,7 +222,8 @@ if (count(read(files.methodsEn), /class="card methods-section"/g) !== 9) fail('E
 if (count(read(files.methodsJa), /class="card methods-section"/g) !== 9) fail('Japanese Methods section count differs');
 
 const sitemap = read(files.sitemap);
-if (count(sitemap, /<loc>/g) !== 771) fail('known-limitations sitemap route count differs');
+const currentPublicPages = count(sitemap, /<loc>/g);
+if (currentPublicPages < historicalPublicPages) fail(`known-limitations current sitemap shrank ${currentPublicPages} < ${historicalPublicPages}`);
 for (const route of routes) {
   if (!sitemap.includes(`<loc>https://whr.badjoke-lab.com${route}</loc>`)) fail(`known-limitations sitemap route missing: ${route}`);
 }
@@ -249,8 +251,10 @@ if (errors.length) {
   process.exit(1);
 }
 console.log('V1_KNOWN_LIMITATIONS: pass');
-console.log('PUBLIC_PAGES: 771');
+console.log(`HISTORICAL_PUBLIC_PAGES: ${historicalPublicPages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${currentPublicPages}`);
 console.log('AUDITED_ROUTES: 4');
 console.log('LIMITATION_CATEGORIES: 12');
-console.log('NEW_PUBLIC_ROUTES: 0');
+console.log('NEW_ROUTE_FAMILIES: 0');
+console.log('NEW_PUBLIC_DATA_CLASSES: 0');
 console.log('NEXT_IMPLEMENTATION_UNIT: V1-RELEASE-READINESS-01');

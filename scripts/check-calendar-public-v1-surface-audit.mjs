@@ -140,17 +140,23 @@ for (const name of ['tomorrowEn', 'tomorrowJa']) {
   requireIncludes(surfaces[name], 'date={context.tomorrow}', name);
 }
 
+// Current list pages intentionally use a compact one-meeting-per-row shape. Keep
+// the rank-boundary, identity, timing, detail and official-source affordances
+// exact without reintroducing the pre-performance repeated metadata blocks.
 for (const marker of [
   'group.records.map((record) => (',
-  '<li class="meeting-card">',
+  '<li class="meeting-row">',
+  'meeting-row__identity',
+  'meeting-row__meta',
+  'meeting-row__links',
   "const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';",
   "record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+'",
-  'record.source_status',
-  'record.last_checked_date',
   'record.detail_path',
   'record.official_source_url',
-  'Use the official source for final confirmation.',
-  '最終確認は公式ソースで行ってください。',
+  'displayRacecourse(record)',
+  'displayAuthority(record)',
+  'displayCountry(record)',
+  'record.capability_rank',
 ]) requireIncludes(meetingList, marker, 'TimetableMeetingList');
 
 if ((meetingList.match(/group\.records\.map\(\(record\) => \(/g) ?? []).length !== 1) {

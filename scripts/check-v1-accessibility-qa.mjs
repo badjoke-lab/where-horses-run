@@ -6,6 +6,7 @@ const DOC_PATH = 'docs/release/v1-accessibility-qa.md';
 const WORKFLOW_PATH = '.github/workflows/v1-accessibility-qa.yml';
 const REPORT_PATH = 'v1-accessibility-qa-report.json';
 const RUNNER_PATH = 'scripts/run-v1-accessibility-qa-browser.mjs';
+const SITEMAP_PATH = 'dist/sitemap.xml';
 const SCOPE_PATH = 'data/static/v1-scope-freeze-v1.json';
 const DATA_AUDIT_PATH = 'data/static/v1-data-audit-v1.json';
 const MOBILE_QA_PATH = 'data/static/v1-mobile-qa-v1.json';
@@ -23,7 +24,7 @@ const json = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 for (const file of [
-  CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH,
+  CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH, SITEMAP_PATH,
   SCOPE_PATH, DATA_AUDIT_PATH, MOBILE_QA_PATH, SEO_RELEASE_PATH,
 ]) expect(fs.existsSync(file), `Required v1 accessibility QA file is missing: ${file}`);
 for (const file of TEMPORARY_PATHS) expect(!fs.existsSync(file), `Temporary accessibility QA file remains: ${file}`);
@@ -35,6 +36,7 @@ const scope = json(SCOPE_PATH);
 const dataAudit = json(DATA_AUDIT_PATH);
 const mobile = json(MOBILE_QA_PATH);
 const seo = json(SEO_RELEASE_PATH);
+const currentPublicUrls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 
 expect(contract.schema_version === 'v1-accessibility-qa-v1', 'v1 accessibility contract schema differs');
 expect(contract.release_id === 'WHR-V1-PREPARATION-V1', 'v1 accessibility release ID differs');
@@ -56,10 +58,11 @@ expect(seo.release_id === contract.baseline_release_id && seo.status === 'releas
 expect(scope.baseline_inventory.public_pages === contract.browser_audit.public_pages, 'v1 scope page count differs');
 expect(mobile.browser_audit.public_pages === contract.browser_audit.public_pages, 'v1 mobile page count differs');
 
+// Historical accepted-v1 browser evidence remains immutable.
 const browser = contract.browser_audit;
 expect(browser.engine === 'Chrome DevTools Protocol', 'v1 accessibility browser engine differs');
 expect(browser.browser_mode === 'headless-new', 'v1 accessibility browser mode differs');
-expect(browser.public_pages === 771 && browser.page_checks === 771, 'v1 accessibility page counts differ');
+expect(browser.public_pages === 771 && browser.page_checks === 771, 'historical v1 accessibility page counts differ');
 expect(browser.viewport_width_css_px === 1280 && browser.viewport_height_css_px === 900, 'v1 accessibility viewport differs');
 expect(browser.device_scale_factor === 1, 'v1 accessibility device scale differs');
 expect(browser.local_static_server_only === true && browser.external_network_required === false, 'v1 accessibility server boundary differs');
@@ -90,10 +93,20 @@ expect(exact(audit.automation_boundary, contract.automation_boundary), 'v1 acces
 expect(audit.previous_implementation_unit === contract.previous_implementation_unit, 'v1 accessibility audit previous unit differs');
 expect(audit.next_implementation_unit === contract.next_implementation_unit, 'v1 accessibility audit next unit differs');
 expect(Object.values(audit.behavior).every((value) => value === true), 'v1 accessibility audit behavior differs');
+expect(audit.verified.public_pages === browser.public_pages, 'historical v1 accessibility audit public-page count differs');
+expect(audit.verified.page_checks === browser.page_checks, 'historical v1 accessibility audit check count differs');
+for (const [contractKey, expected] of Object.entries(contract.required_results)) {
+  expect(audit.verified[contractKey] === expected, `historical v1 accessibility audit differs: ${contractKey}`);
+}
+for (const [contractKey, expected] of Object.entries(contract.semantic_inventory)) {
+  expect(audit.verified[contractKey] === expected, `historical v1 accessibility semantic inventory differs: ${contractKey}`);
+}
 
+// Current QA must cover every current public URL and preserve the zero-error quality contract.
+expect(currentPublicUrls.length >= browser.public_pages, 'current public sitemap unexpectedly shrank below accepted v1 inventory');
 expect(report.schemaVersion === 'v1-accessibility-qa-discovery-v1', 'v1 accessibility report schema differs');
-expect(report.publicPages === browser.public_pages, 'v1 accessibility report page inventory differs');
-expect(report.pageChecks === browser.page_checks, 'v1 accessibility report check count differs');
+expect(report.publicPages === currentPublicUrls.length, `current accessibility report must cover all sitemap pages: report=${report.publicPages} sitemap=${currentPublicUrls.length}`);
+expect(report.pageChecks === currentPublicUrls.length, 'current accessibility report check count differs');
 const resultMap = {
   failed_page_loads: 'failedPageLoads',
   pages_with_errors: 'pagesWithErrors',
@@ -115,25 +128,14 @@ const resultMap = {
   nested_interactive_instances: 'nestedInteractiveInstances',
 };
 for (const [contractKey, reportKey] of Object.entries(resultMap)) {
-  expect(report[reportKey] === contract.required_results[contractKey], `v1 accessibility report differs: ${reportKey}`);
-  expect(audit.verified[contractKey] === contract.required_results[contractKey], `v1 accessibility audit differs: ${contractKey}`);
+  expect(contract.required_results[contractKey] === 0, `current accessibility budget must remain zero: ${contractKey}`);
+  expect(report[reportKey] === 0, `current accessibility report found ${reportKey}: ${report[reportKey]}`);
 }
-expect(Array.isArray(report.failures) && report.failures.length === 0, 'v1 accessibility page-load failures remain');
-expect(Array.isArray(report.pageErrors) && report.pageErrors.length === 0, 'v1 accessibility page errors remain');
-
-const inventoryMap = {
-  images: 'images',
-  form_controls: 'formControls',
-  details_elements: 'details',
-  tables: 'tables',
-  navigation_landmarks: 'navs',
-};
-for (const [contractKey, reportKey] of Object.entries(inventoryMap)) {
-  expect(report[reportKey] === contract.semantic_inventory[contractKey], `v1 accessibility inventory differs: ${reportKey}`);
-  expect(audit.verified[contractKey] === contract.semantic_inventory[contractKey], `v1 accessibility audit inventory differs: ${contractKey}`);
+expect(Array.isArray(report.failures) && report.failures.length === 0, 'current v1 accessibility page-load failures remain');
+expect(Array.isArray(report.pageErrors) && report.pageErrors.length === 0, 'current v1 accessibility page errors remain');
+for (const key of ['images', 'formControls', 'details', 'tables', 'navs']) {
+  expect(Number.isInteger(report[key]) && report[key] >= 0, `current v1 accessibility semantic diagnostic must be non-negative: ${key}`);
 }
-expect(audit.verified.public_pages === browser.public_pages, 'v1 accessibility audit public-page count differs');
-expect(audit.verified.page_checks === browser.page_checks, 'v1 accessibility audit check count differs');
 
 const runner = read(RUNNER_PATH);
 for (const marker of [
@@ -180,8 +182,9 @@ for (const forbidden of ['schedule:', 'cron:', 'contents: write', 'pull-requests
 }
 
 console.log('V1_ACCESSIBILITY_QA: pass');
-console.log(`PUBLIC_PAGES: ${browser.public_pages}`);
-console.log(`PAGE_CHECKS: ${browser.page_checks}`);
+console.log(`HISTORICAL_PUBLIC_PAGES: ${browser.public_pages}`);
+console.log(`CURRENT_PUBLIC_PAGES: ${currentPublicUrls.length}`);
+console.log(`CURRENT_PAGE_CHECKS: ${report.pageChecks}`);
 console.log('PAGES_WITH_ERRORS: 0');
 console.log('SKIP_LINK_ERRORS: 0');
 console.log('HEADING_JUMP_INSTANCES: 0');

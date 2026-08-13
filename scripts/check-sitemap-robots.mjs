@@ -11,6 +11,7 @@ const DOC = 'docs/seo/sitemap-robots.md';
 const WORKFLOW = '.github/workflows/sitemap-robots.yml';
 const TEMPORARY = '.github/workflows/temporary-sitemap-robots-discovery.yml';
 const DIST = 'dist';
+const PUBLIC_MEETING_DETAILS = 'data/generated/timetable/public/meeting-details.json';
 
 const at = (file) => path.join(ROOT, file);
 const read = (file) => fs.readFileSync(at(file), 'utf8');
@@ -18,12 +19,13 @@ const json = (file) => JSON.parse(read(file));
 const exact = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
-for (const file of [CONTRACT, AUDIT, CONFIG, INTEGRATION, DOC, WORKFLOW]) expect(fs.existsSync(at(file)), `Missing ${file}`);
+for (const file of [CONTRACT, AUDIT, CONFIG, INTEGRATION, DOC, WORKFLOW, PUBLIC_MEETING_DETAILS]) expect(fs.existsSync(at(file)), `Missing ${file}`);
 expect(!fs.existsSync(at(TEMPORARY)), 'Temporary sitemap discovery workflow remains');
 expect(!fs.existsSync(at('public/sitemap.xml')), 'Manual public sitemap remains');
 
 const contract = json(CONTRACT);
 const audit = json(AUDIT);
+const publicMeetingDetails = json(PUBLIC_MEETING_DETAILS);
 expect(contract.schema_version === 'sitemap-robots-contract-v1', 'Sitemap contract schema differs');
 expect(contract.status === 'complete', 'Sitemap contract is not complete');
 expect(contract.site_origin === SITE_ORIGIN, 'Sitemap site origin differs');
@@ -38,6 +40,7 @@ for (const key of ['duplicate_urls', 'non_https_urls', 'wrong_origin_urls', 'que
 }
 expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'Sitemap privacy boundary differs');
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Sitemap automation boundary differs');
+expect(Array.isArray(publicMeetingDetails.details), 'Public meeting-detail projection differs');
 
 const config = read(CONFIG);
 for (const marker of ["import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs'", "site: 'https://whr.badjoke-lab.com'", "trailingSlash: 'always'", 'integrations: [sitemapRobotsIntegration()]']) expect(config.includes(marker), `Astro sitemap marker missing: ${marker}`);
@@ -146,22 +149,30 @@ const actualDetails = {
 };
 
 // The reviewed July contract/audit remains the historical baseline. Current route
-// growth is allowed only when it is explained by additional bilingual racecourse
-// detail pages; every other route family must remain on the reviewed contract.
+// growth is allowed only inside already-reviewed bilingual racecourse-detail and
+// meeting-detail route families. Meeting-detail growth must be backed exactly by
+// the committed public meeting-detail projection; every other route count remains
+// on the reviewed contract.
 const racecourseDetailDelta = actualDetails.racecourse_detail_routes - contract.detail_route_counts.racecourse_detail_routes;
+const meetingDetailDelta = actualDetails.meeting_detail_routes - contract.detail_route_counts.meeting_detail_routes;
 expect(racecourseDetailDelta >= 0, `Racecourse detail route count regressed ${actualDetails.racecourse_detail_routes}`);
+expect(meetingDetailDelta >= 0, `Meeting detail route count regressed ${actualDetails.meeting_detail_routes}`);
 expect(racecourseDetailDelta % 2 === 0, `Racecourse detail route growth must be bilingual ${racecourseDetailDelta}`);
-const perLanguageRacecourseDelta = racecourseDetailDelta / 2;
+expect(meetingDetailDelta % 2 === 0, `Meeting detail route growth must be bilingual ${meetingDetailDelta}`);
+expect(actualDetails.meeting_detail_routes === publicMeetingDetails.details.length * 2, `Meeting detail routes are not backed by public projection ${actualDetails.meeting_detail_routes}`);
+const perLanguageDetailDelta = (racecourseDetailDelta + meetingDetailDelta) / 2;
 const expectedCurrentScope = {
   ...contract.scope,
-  sitemap_urls: contract.scope.sitemap_urls + racecourseDetailDelta,
-  english_urls: contract.scope.english_urls + perLanguageRacecourseDelta,
-  japanese_urls: contract.scope.japanese_urls + perLanguageRacecourseDelta,
+  sitemap_urls: contract.scope.sitemap_urls + racecourseDetailDelta + meetingDetailDelta,
+  english_urls: contract.scope.english_urls + perLanguageDetailDelta,
+  japanese_urls: contract.scope.japanese_urls + perLanguageDetailDelta,
   racecourse_routes: contract.scope.racecourse_routes + racecourseDetailDelta,
+  meeting_detail_routes: contract.scope.meeting_detail_routes + meetingDetailDelta,
 };
 const expectedCurrentDetails = {
   ...contract.detail_route_counts,
   racecourse_detail_routes: contract.detail_route_counts.racecourse_detail_routes + racecourseDetailDelta,
+  meeting_detail_routes: contract.detail_route_counts.meeting_detail_routes + meetingDetailDelta,
 };
 expect(exact(actualScope, expectedCurrentScope), `Rendered sitemap scope differs ${JSON.stringify(actualScope)}`);
 expect(exact(actualDetails, expectedCurrentDetails), `Rendered sitemap detail counts differ ${JSON.stringify(actualDetails)}`);
@@ -176,4 +187,5 @@ console.log(`CURRENT_SITEMAP_URLS: ${actualScope.sitemap_urls}`);
 console.log(`CURRENT_ENGLISH_URLS: ${actualScope.english_urls}`);
 console.log(`CURRENT_JAPANESE_URLS: ${actualScope.japanese_urls}`);
 console.log(`CURRENT_RACECOURSE_DETAIL_ROUTES: ${actualDetails.racecourse_detail_routes}`);
+console.log(`CURRENT_MEETING_DETAIL_ROUTES: ${actualDetails.meeting_detail_routes}`);
 console.log('METHODS_ROUTES: 2');

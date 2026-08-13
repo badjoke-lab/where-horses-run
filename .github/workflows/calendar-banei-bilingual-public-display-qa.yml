@@ -69,21 +69,57 @@ jobs:
         run: |
           node scripts/check-calendar-contracts.mjs
           node scripts/check-project-governance-docs.mjs
-      - name: Prove committed public projection JSON is unchanged in PR
+      - name: Preserve committed Banei public records for Banei-publication PRs
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/public/japan-a-plus-overrides.json)"
-          if [ -n "$changed" ]; then
-            printf '%s\n' "$changed"
-            exit 1
+          # Shared UI/checker changes can coexist with reviewed publication changes for
+          # other authorities. Freeze only Banei/Obihiro public records rather than
+          # rejecting unrelated changes to the shared public projection files.
+          banei_publication_changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+            data/static/calendar-readiness-banei-detail-v1.json \
+            scripts/timetable/load-calendar-readiness.mjs \
+            scripts/check-calendar-banei-bilingual-public-display-qa.mjs \
+            scripts/check-calendar-banei-bilingual-rendered-fixture.mjs \
+            docs/calendar/banei-bilingual-public-display-qa.md)"
+          banei_policy_changed="$(git diff -U0 "$BASE_SHA" "$HEAD_SHA" -- src/data/publicationDisplayPolicies.json | grep -E '^[+-].*(banei|obihiro)' || true)"
+          if [ -z "${banei_publication_changed}${banei_policy_changed}" ]; then
+            echo 'BANEI_PUBLICATION_SCOPE_CHANGED: false'
+            echo 'COMMITTED_BANEI_PUBLIC_RECORD_FREEZE_APPLICABLE: false'
+            exit 0
           fi
-          echo 'COMMITTED_PUBLIC_PROJECTION_JSON_CHANGED: false'
+          node - <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const baseSha = process.env.BASE_SHA;
+          const headSha = process.env.HEAD_SHA;
+          const files = [
+            ['data/generated/timetable/public/meeting-list.json', ['meetings']],
+            ['data/generated/timetable/public/meeting-details.json', ['details']],
+            ['data/generated/timetable/public/japan-a-plus-overrides.json', ['meeting_overrides', 'detail_overrides']],
+          ];
+          const loadAt = (sha, file) => JSON.parse(execFileSync('git', ['show', `${sha}:${file}`], { encoding: 'utf8' }));
+          const isBanei = (record) =>
+            record?.authority_id === 'banei-tokachi' ||
+            record?.racecourse_id === 'obihiro-racecourse' ||
+            String(record?.meeting_id ?? '').includes('obihiro-racecourse');
+          const select = (dataset, keys) => Object.fromEntries(
+            keys.map((key) => [key, (dataset[key] ?? []).filter(isBanei)]),
+          );
+          for (const [file, keys] of files) {
+            const before = select(loadAt(baseSha, file), keys);
+            const after = select(loadAt(headSha, file), keys);
+            if (JSON.stringify(before) !== JSON.stringify(after)) {
+              console.error(`Banei public records changed in ${file}`);
+              console.error(`base=${JSON.stringify(before)}`);
+              console.error(`head=${JSON.stringify(after)}`);
+              process.exit(1);
+            }
+          }
+          console.log('BANEI_PUBLICATION_SCOPE_CHANGED: true');
+          console.log('COMMITTED_BANEI_PUBLIC_RECORDS_CHANGED: false');
+          NODE
       - name: Check workflow and QA safety boundary
         run: |
           node - <<'NODE'

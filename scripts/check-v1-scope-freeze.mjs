@@ -9,6 +9,7 @@ const SEO_RELEASE_PATH = 'data/static/seo-qa-release-v1.json';
 const SEO_AUDIT_PATH = 'data/audits/seo-qa-release-v1.json';
 const SITEMAP_CONTRACT_PATH = 'data/static/sitemap-robots-contract-v1.json';
 const SITEMAP_PATH = 'dist/sitemap.xml';
+const PUBLIC_MEETING_DETAILS_PATH = 'data/generated/timetable/public/meeting-details.json';
 
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 const read = (file) => fs.readFileSync(file, 'utf8');
@@ -85,7 +86,7 @@ const excludedFeatures = [
   'ticketing_wagering_payment_or_other_transactional_features',
 ];
 
-for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SEO_RELEASE_PATH, SEO_AUDIT_PATH, SITEMAP_CONTRACT_PATH, SITEMAP_PATH]) {
+for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SEO_RELEASE_PATH, SEO_AUDIT_PATH, SITEMAP_CONTRACT_PATH, SITEMAP_PATH, PUBLIC_MEETING_DETAILS_PATH]) {
   expect(fs.existsSync(file), `Required v1 scope file is missing: ${file}`);
 }
 
@@ -94,6 +95,7 @@ const audit = json(AUDIT_PATH);
 const seoRelease = json(SEO_RELEASE_PATH);
 const seoAudit = json(SEO_AUDIT_PATH);
 const sitemapContract = json(SITEMAP_CONTRACT_PATH);
+const publicMeetingDetails = json(PUBLIC_MEETING_DETAILS_PATH);
 
 expect(contract.schema_version === 'v1-scope-freeze-v1', 'v1 scope schema differs');
 expect(contract.release_id === 'WHR-V1-PREPARATION-V1', 'v1 scope release ID differs');
@@ -165,6 +167,7 @@ expect(audit.next_implementation_unit === contract.next_implementation_unit, 'v1
 expect(seoRelease.release_id === contract.baseline_release_id, 'v1 scope baseline release differs');
 expect(seoRelease.implementation_unit === 'SEO-QA-RELEASE-01' && seoRelease.status === 'release_ready', 'v1 scope baseline release is not ready');
 expect(seoAudit.release_id === seoRelease.release_id && seoAudit.status === 'release_ready', 'v1 scope baseline audit differs');
+expect(Array.isArray(publicMeetingDetails.details), 'public meeting-detail collection differs');
 
 // These released documents are historical reference snapshots. Keep them exact.
 const baseline = contract.baseline_inventory;
@@ -190,9 +193,10 @@ for (const [label, actual, expected] of [
   ['Methods routes', detailScope.methods_content_routes, baseline.methods_content_routes],
 ]) expect(actual === expected, `v1 baseline contract differs: ${label} (${actual} !== ${expected})`);
 
-// The current rendered inventory may grow inside an already-reviewed public data
-// class. This check permits only bilingual racecourse-detail growth; it does not
-// permit a new route family, capability, public data class, or feature.
+// The current rendered inventory may grow inside already-reviewed public data
+// classes. Only bilingual racecourse-detail growth and bilingual meeting-detail
+// growth backed by the committed public meeting-detail projection are allowed;
+// no new route family, capability, public data class, or feature is permitted.
 const urls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 expect(urls.length >= baseline.public_pages, `v1 rendered sitemap count regressed ${urls.length}`);
 const paths = urls.map((url) => new URL(url).pathname);
@@ -205,20 +209,24 @@ expect(exact(renderedFamilies, [...routeFamilies].sort()), `v1 rendered route fa
 
 const count = (pattern) => paths.filter((pathname) => pattern.test(pathname)).length;
 const currentRacecourseDetails = count(/^\/(?:ja\/)?tracks\/[^/]+\/$/);
+const currentMeetingDetails = count(/^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/);
 const racecourseDetailDelta = currentRacecourseDetails - baseline.racecourse_detail_routes;
+const meetingDetailDelta = currentMeetingDetails - baseline.meeting_detail_routes;
 expect(racecourseDetailDelta >= 0, `v1 racecourse detail inventory regressed ${currentRacecourseDetails}`);
+expect(meetingDetailDelta >= 0, `v1 meeting detail inventory regressed ${currentMeetingDetails}`);
 expect(racecourseDetailDelta % 2 === 0, `v1 racecourse detail growth is not bilingual ${racecourseDetailDelta}`);
-const perLanguageDelta = racecourseDetailDelta / 2;
+expect(meetingDetailDelta % 2 === 0, `v1 meeting detail growth is not bilingual ${meetingDetailDelta}`);
+expect(currentMeetingDetails === publicMeetingDetails.details.length * 2, `v1 meeting detail growth is not backed by public projection ${currentMeetingDetails}`);
+const perLanguageDelta = (racecourseDetailDelta + meetingDetailDelta) / 2;
 const currentEnglishPages = paths.filter((pathname) => !pathname.startsWith('/ja/')).length;
 const currentJapanesePages = paths.filter((pathname) => pathname.startsWith('/ja/')).length;
-expect(urls.length === baseline.public_pages + racecourseDetailDelta, `v1 rendered sitemap growth is not explained by racecourse detail routes ${urls.length}`);
+expect(urls.length === baseline.public_pages + racecourseDetailDelta + meetingDetailDelta, `v1 rendered sitemap growth is not explained by reviewed detail routes ${urls.length}`);
 expect(currentEnglishPages === baseline.english_pages + perLanguageDelta, `v1 rendered English inventory differs ${currentEnglishPages}`);
 expect(currentJapanesePages === baseline.japanese_pages + perLanguageDelta, `v1 rendered Japanese inventory differs ${currentJapanesePages}`);
 
 for (const [label, actual, expected] of [
   ['rendered country details', count(/^\/(?:ja\/)?countries\/[^/]+\/$/), baseline.country_detail_routes],
   ['rendered source-country routes', count(/^\/(?:ja\/)?sources\/[^/]+\/$/), baseline.source_country_routes],
-  ['rendered meeting details', count(/^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/), baseline.meeting_detail_routes],
   ['rendered glossary terms', count(/^\/(?:ja\/)?glossary\/(?!relationships\/)[^/]+\/$/), baseline.glossary_term_routes],
   ['rendered glossary relationships', count(/^\/(?:ja\/)?glossary\/relationships\/$/), baseline.glossary_relationship_routes],
   ['rendered racing-type details', count(/^\/(?:ja\/)?types\/[^/]+\/$/), baseline.racing_type_detail_routes],
@@ -226,6 +234,7 @@ for (const [label, actual, expected] of [
   ['rendered Methods routes', count(/^\/(?:ja\/)?methods\/$/), baseline.methods_content_routes],
 ]) expect(actual === expected, `v1 rendered inventory differs: ${label} (${actual} !== ${expected})`);
 expect(currentRacecourseDetails === baseline.racecourse_detail_routes + racecourseDetailDelta, 'v1 current racecourse detail inventory differs');
+expect(currentMeetingDetails === baseline.meeting_detail_routes + meetingDetailDelta, 'v1 current meeting detail inventory differs');
 
 const doc = read(DOC_PATH);
 for (const marker of [
@@ -259,6 +268,7 @@ console.log(`RELEASE_ID: ${contract.release_id}`);
 console.log(`HISTORICAL_PUBLIC_PAGES: ${baseline.public_pages}`);
 console.log(`CURRENT_PUBLIC_PAGES: ${urls.length}`);
 console.log(`CURRENT_RACECOURSE_DETAIL_ROUTES: ${currentRacecourseDetails}`);
+console.log(`CURRENT_MEETING_DETAIL_ROUTES: ${currentMeetingDetails}`);
 console.log(`ROUTE_FAMILIES: ${baseline.route_families}`);
 console.log(`INCLUDED_CAPABILITIES: ${capabilities.length}`);
 console.log(`PUBLIC_DATA_CLASSES: ${publicDataClasses.length}`);

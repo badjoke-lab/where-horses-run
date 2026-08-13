@@ -128,6 +128,12 @@ function readHtml(relativePath) {
   return fs.readFileSync(file, 'utf8');
 }
 
+function meetingRowFor(html, meetingId) {
+  return [...html.matchAll(/<li[^>]*class="[^"]*meeting-row[^"]*"[^>]*>[\s\S]*?<\/li>/g)]
+    .map((match) => match[0])
+    .find((row) => row.includes(meetingId)) ?? '';
+}
+
 try {
   run('git', ['worktree', 'add', '--detach', worktree, 'HEAD']);
   fs.symlinkSync(path.join(root, 'node_modules'), path.join(worktree, 'node_modules'), 'dir');
@@ -156,15 +162,19 @@ try {
   const jaCountry = readHtml('ja/countries/japan');
   const enDetail = readHtml(`timetable/meetings/${meetingId}`);
   const jaDetail = readHtml(`ja/timetable/meetings/${meetingId}`);
+  const enMeetingRow = meetingRowFor(enCalendar, meetingId);
+  const jaMeetingRow = meetingRowFor(jaCalendar, meetingId);
 
-  for (const phrase of ['Obihiro Racecourse', 'Public rank: A+', `/timetable/meetings/${meetingId}/`]) {
-    if (!enCalendar.includes(phrase) && phrase !== 'Public rank: A+') fail(`English Calendar missing ${phrase}.`);
+  if (!enMeetingRow) fail('English Calendar missing Banei meeting row.');
+  for (const phrase of ['Obihiro Racecourse', 'Public rank:', 'A+', `/timetable/meetings/${meetingId}/`]) {
+    if (!enMeetingRow.includes(phrase)) fail(`English Calendar Banei row missing ${phrase}.`);
   }
-  if (!enCalendar.includes('Meeting detail')) fail('English Calendar missing Meeting detail label.');
+  if (!enMeetingRow.includes('Meeting detail')) fail('English Calendar missing Meeting detail label.');
   if (enCalendar.includes('Fixture Race One') || enCalendar.includes('Banei Straight Course')) fail('English Calendar leaked A+ row detail.');
 
-  for (const phrase of ['帯広競馬場', 'ばんえい十勝', '日本', '公開ランク: A+', '開催詳細', `/ja/timetable/meetings/${meetingId}/`]) {
-    if (!jaCalendar.includes(phrase)) fail(`Japanese Calendar missing ${phrase}.`);
+  if (!jaMeetingRow) fail('Japanese Calendar missing Banei meeting row.');
+  for (const phrase of ['帯広競馬場', 'ばんえい十勝', '日本', '公開ランク:', 'A+', '開催詳細', `/ja/timetable/meetings/${meetingId}/`]) {
+    if (!jaMeetingRow.includes(phrase)) fail(`Japanese Calendar Banei row missing ${phrase}.`);
   }
   if (jaCalendar.includes('Fixture Race One') || jaCalendar.includes('Banei Straight Course')) fail('Japanese Calendar leaked A+ row detail.');
 
