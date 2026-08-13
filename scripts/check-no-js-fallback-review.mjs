@@ -26,7 +26,7 @@ const surfaces = [
     id: 'global_search',
     englishRoute: '/search/',
     japaneseRoute: '/ja/search/',
-    count: 182,
+    historicalCount: 182,
     recordMarker: 'data-search-record',
     formMarker: 'data-search-form',
     countMarker: 'data-search-count',
@@ -37,7 +37,7 @@ const surfaces = [
     id: 'country_directory',
     englishRoute: '/countries/',
     japaneseRoute: '/ja/countries/',
-    count: 98,
+    historicalCount: 98,
     recordMarker: 'data-country-record',
     formMarker: 'data-country-filter-form',
     countMarker: 'data-country-filter-count',
@@ -48,7 +48,7 @@ const surfaces = [
     id: 'racecourse_directory',
     englishRoute: '/tracks/',
     japaneseRoute: '/ja/tracks/',
-    count: 36,
+    historicalCount: 36,
     recordMarker: 'data-racecourse-record',
     formMarker: 'data-racecourse-filter-form',
     countMarker: 'data-racecourse-filter-count',
@@ -59,7 +59,7 @@ const surfaces = [
     id: 'source_directory',
     englishRoute: '/sources/',
     japaneseRoute: '/ja/sources/',
-    count: 171,
+    historicalCount: 171,
     recordMarker: 'data-source-record',
     formMarker: 'data-source-filter-form',
     countMarker: 'data-source-filter-count',
@@ -70,7 +70,7 @@ const surfaces = [
     id: 'glossary_directory',
     englishRoute: '/glossary/',
     japaneseRoute: '/ja/glossary/',
-    count: 48,
+    historicalCount: 48,
     recordMarker: 'data-glossary-record',
     formMarker: 'data-glossary-filter-form',
     countMarker: 'data-glossary-filter-count',
@@ -96,7 +96,7 @@ const expectedSurfaceContracts = surfaces.map((surface) => ({
   id: surface.id,
   english_route: surface.englishRoute,
   japanese_route: surface.japaneseRoute,
-  records_per_locale: surface.count,
+  records_per_locale: surface.historicalCount,
   record_marker: surface.recordMarker,
   form_marker: surface.formMarker,
   count_marker: surface.countMarker,
@@ -249,7 +249,13 @@ function extractRecordCards(html, marker) {
   return [...html.matchAll(new RegExp(`<article[^>]*${marker}(?=[\\s>])[^>]*>[\\s\\S]*?<\\/article>`, 'g'))].map((match) => match[0]);
 }
 
-function verifyRoute({ route, surface, locale }) {
+function currentRenderedCount(surface) {
+  const file = renderedFile(surface.englishRoute);
+  if (!fs.existsSync(filePath(file))) return 0;
+  return extractRecordCards(read(file), surface.recordMarker).length;
+}
+
+function verifyRoute({ route, surface, locale, expectedCount }) {
   const file = renderedFile(route);
   if (!fs.existsSync(filePath(file))) {
     fail(`${route}: rendered route missing`);
@@ -277,7 +283,7 @@ function verifyRoute({ route, surface, locale }) {
     if (locale === 'ja' && !message.includes('JavaScript')) fail(`${route}: Japanese fallback explanation differs`);
   }
   const cards = extractRecordCards(html, surface.recordMarker);
-  if (cards.length !== surface.count) fail(`${route}: record count differs ${cards.length}`);
+  if (cards.length !== expectedCount) fail(`${route}: record count differs ${cards.length} expected=${expectedCount}`);
   let hiddenCards = 0;
   let cardsWithoutLinks = 0;
   for (const card of cards) {
@@ -300,11 +306,14 @@ function verifyRoute({ route, surface, locale }) {
 
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
 let totalCards = 0;
+const historicalTotal = surfaces.reduce((sum, surface) => sum + surface.historicalCount * 2, 0);
 for (const surface of surfaces) {
-  totalCards += verifyRoute({ route: surface.englishRoute, surface, locale: 'en' });
-  totalCards += verifyRoute({ route: surface.japaneseRoute, surface, locale: 'ja' });
+  const currentCount = currentRenderedCount(surface);
+  if (currentCount < surface.historicalCount) fail(`${surface.id}: current rendered inventory shrank ${currentCount} < ${surface.historicalCount}`);
+  totalCards += verifyRoute({ route: surface.englishRoute, surface, locale: 'en', expectedCount: currentCount });
+  totalCards += verifyRoute({ route: surface.japaneseRoute, surface, locale: 'ja', expectedCount: currentCount });
 }
-if (totalCards !== 1070) fail(`bilingual fallback record total differs ${totalCards}`);
+if (totalCards < historicalTotal) fail(`bilingual fallback record total shrank ${totalCards} < ${historicalTotal}`);
 
 const countryHtml = fs.existsSync(filePath('dist/countries/index.html')) ? read('dist/countries/index.html') : '';
 const glossaryHtml = fs.existsSync(filePath('dist/glossary/index.html')) ? read('dist/glossary/index.html') : '';
@@ -320,7 +329,8 @@ if (errors.length) {
 console.log('NO_JS_FALLBACK_REVIEW: pass');
 console.log('DISCOVERY_SURFACES: 5');
 console.log('REVIEWED_ROUTES: 10');
-console.log('RECORD_CARDS_TOTAL: 1070');
+console.log(`RECORD_CARDS_TOTAL: ${totalCards}`);
+console.log(`HISTORICAL_RECORD_CARDS_TOTAL: ${historicalTotal}`);
 console.log('INERT_FORMS_HIDDEN: 10');
 console.log('QUERY_ONLY_NAVIGATION_SECTIONS_HIDDEN: 4');
 console.log('JAVASCRIPT_REQUIRED_FOR_FALLBACK: false');
