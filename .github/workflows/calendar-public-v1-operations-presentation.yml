@@ -8,6 +8,8 @@ on:
       - 'docs/calendar/README.md'
       - 'docs/calendar/implementation-roadmap.md'
       - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/public/japan-a-plus-overrides.json'
       - 'src/lib/timetable/publicOperationsPresentation.mjs'
       - 'src/components/CalendarOperationsNotice.astro'
       - 'src/pages/calendar/**'
@@ -52,18 +54,26 @@ jobs:
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
-          const file = 'data/generated/timetable/public/meeting-list.json';
-          const projection = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const files = [
+            'data/generated/timetable/public/meeting-list.json',
+            'data/generated/timetable/public/meeting-details.json',
+            'data/generated/timetable/public/japan-a-plus-overrides.json',
+          ];
+          const datasets = new Map(files.map((file) => [file, JSON.parse(fs.readFileSync(file, 'utf8'))]));
+          const projection = datasets.get(files[0]);
           const dates = [...new Set((projection.meetings ?? []).map((meeting) => meeting.date).filter(Boolean))].sort();
           if (dates.length === 0) throw new Error('public meeting-list has no meeting dates for stale fixture');
           const referenceDate = dates.at(-1);
           const generated = new Date(`${referenceDate}T00:00:00.000Z`);
           generated.setUTCDate(generated.getUTCDate() - 10);
-          projection.generated_at = generated.toISOString();
-          fs.writeFileSync(file, `${JSON.stringify(projection, null, 2)}\n`);
+          const generatedAt = generated.toISOString();
+          for (const [file, dataset] of datasets) {
+            dataset.generated_at = generatedAt;
+            fs.writeFileSync(file, `${JSON.stringify(dataset, null, 2)}\n`);
+          }
           fs.appendFileSync(process.env.GITHUB_ENV, `WHR_CALENDAR_REFERENCE_DATE=${referenceDate}\n`);
           console.log(`STALE_FIXTURE_REFERENCE_DATE: ${referenceDate}`);
-          console.log(`STALE_FIXTURE_GENERATED_AT: ${projection.generated_at}`);
+          console.log(`STALE_FIXTURE_GENERATED_AT: ${generatedAt}`);
           NODE
       - name: Build stale-window fixture
         env:
@@ -76,7 +86,10 @@ jobs:
       - name: Restore committed projection after fixture
         if: always()
         run: |
-          git restore data/generated/timetable/public/meeting-list.json
+          git restore \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json
           rm -rf dist
       - name: Validate read-only boundary and diff hygiene
         run: |
