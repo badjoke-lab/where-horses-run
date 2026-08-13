@@ -26,39 +26,37 @@ const japaneseCalendar = read('dist/ja/calendar/index.html');
 const englishToday = read('dist/today/index.html');
 const japaneseToday = read('dist/ja/today/index.html');
 
-for (const [label, html] of [
-  ['English Calendar', englishCalendar],
-  ['English Today', englishToday],
-]) {
-  for (const marker of ['Public rank:', 'Authority:', 'Country:', 'Source:', 'Checked:', '>Official<']) {
-    requireIncludes(html, marker, label);
+const languageContracts = {
+  en: {
+    markers: ['Public rank:', 'Authority:', 'Country:', 'Source:', 'Checked:', '>Official<'],
+    verbose: ['Reviewed coverage', 'Additional detail', 'Meeting date and racecourse only', 'More detail not reviewed'],
+    empty: `No reviewed public meetings are listed for ${expectedReferenceDate}.`,
+  },
+  ja: {
+    markers: ['公開ランク:', '主催:', '国:', 'ソース:', '確認:', '>公式<'],
+    verbose: ['確認済み範囲', '追加詳細', '開催日・競馬場のみ', '追加詳細は未確認'],
+    empty: `${expectedReferenceDate}の確認済み公開開催はありません。`,
+  },
+};
+
+function validateMeetingRows(label, html, lang, { allowEmpty = false } = {}) {
+  const contract = languageContracts[lang];
+  const hasRows = html.includes('class="meeting-row"');
+  if (!hasRows) {
+    if (!allowEmpty) fail(`${label} missing class="meeting-row"`);
+    else requireIncludes(html, contract.empty, label);
+    return;
   }
-  for (const verboseLegacyMarker of [
-    'Reviewed coverage',
-    'Additional detail',
-    'Meeting date and racecourse only',
-    'More detail not reviewed',
-  ]) {
+  for (const marker of contract.markers) requireIncludes(html, marker, label);
+  for (const verboseLegacyMarker of contract.verbose) {
     if (html.includes(verboseLegacyMarker)) fail(`${label} restored oversized legacy meeting-card copy: ${verboseLegacyMarker}`);
   }
 }
 
-for (const [label, html] of [
-  ['Japanese Calendar', japaneseCalendar],
-  ['Japanese Today', japaneseToday],
-]) {
-  for (const marker of ['公開ランク:', '主催:', '国:', 'ソース:', '確認:', '>公式<']) {
-    requireIncludes(html, marker, label);
-  }
-  for (const verboseLegacyMarker of [
-    '確認済み範囲',
-    '追加詳細',
-    '開催日・競馬場のみ',
-    '追加詳細は未確認',
-  ]) {
-    if (html.includes(verboseLegacyMarker)) fail(`${label} restored oversized legacy meeting-card copy: ${verboseLegacyMarker}`);
-  }
-}
+validateMeetingRows('English Calendar', englishCalendar, 'en');
+validateMeetingRows('Japanese Calendar', japaneseCalendar, 'ja');
+validateMeetingRows('English Today', englishToday, 'en', { allowEmpty: true });
+validateMeetingRows('Japanese Today', japaneseToday, 'ja', { allowEmpty: true });
 
 for (const [label, html] of [
   ['English Calendar', englishCalendar],
@@ -66,7 +64,6 @@ for (const [label, html] of [
   ['English Today', englishToday],
   ['Japanese Today', japaneseToday],
 ]) {
-  requireIncludes(html, 'class="meeting-row"', label);
   for (const forbidden of [
     'retry_queue',
     'operator_notes',
@@ -89,6 +86,7 @@ if (errors.length) {
 console.log('CALENDAR_PUBLIC_V1_PILOT_RECORD_RENDERED: pass');
 console.log(`REFERENCE_DATE: ${expectedReferenceDate}`);
 console.log(`TIMEZONE: ${expectedTimezone}`);
-console.log('COMPACT_MEETING_ROWS: pass');
+console.log('COMPACT_MEETING_ROWS: pass_when_records_exist');
+console.log('EMPTY_TODAY_STATE: allowed_when_no_reviewed_records');
 console.log('LEGACY_VERBOSE_MEETING_CARDS: absent');
 console.log('INTERNAL_QUEUE_FIELDS_EXPOSED: false');
