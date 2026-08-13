@@ -60,15 +60,16 @@ for (const marker of [
 
 for (const marker of [
   'group.records.map((record) => (',
-  '<li class="meeting-card">',
+  '<li class="meeting-row">',
+  'meeting-row__identity',
+  'meeting-row__meta',
+  'meeting-row__links',
   "const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';",
   "record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+'",
   'record.source_status',
   'record.last_checked_date',
   'record.detail_path',
   'record.official_source_url',
-  'Use the official source for final confirmation.',
-  '最終確認は公式ソースで行ってください。',
 ]) requireIncludes(meetingList, marker, listPath);
 
 for (const marker of [

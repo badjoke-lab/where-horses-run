@@ -2,14 +2,22 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../../lib/data';
 import { getRacingTypes } from '../../lib/racingTypes';
+import { getTimetableDateContext, getTimetableMeetingRowsForDate, type TimetableMeetingRow } from '../../data/timetableMeetingRows';
 
 const countries = getActiveCountries().slice(0, 6);
-const racecourses = getRacecourses().slice(0, 6);
+const allRacecourses = getRacecourses();
+const racecourses = allRacecourses.slice(0, 6);
+const racecourseNameJaById = new Map(allRacecourses.map((track) => [track.id, track.name_ja ?? track.name_en]));
 const racingTypes = getRacingTypes().slice(0, 8);
 const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
 const sourceCount = siteData.sources.length;
-const todayRecords = (siteData.generated.today.meetings ?? []).filter((meeting) => meeting.status !== 'placeholder');
-const todayPreview = todayRecords.slice(0, 4);
+const calendarContext = getTimetableDateContext();
+const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
+const timeRange = (meeting: TimetableMeetingRow) => {
+  if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
+  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
+};
+const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJaById.get(meeting.racecourse_id) ?? meeting.racecourse_name;
 ---
 
 <BaseLayout
@@ -31,15 +39,18 @@ const todayPreview = todayRecords.slice(0, 4);
   <section class="section-grid" aria-label="主要な探し方">
     <article class="card">
       <h2><a href="/ja/today/">今日の開催</a></h2>
-      <p>確認済みの開催時刻レコードがある場合に表示し、競馬場ページや公式ソースへ案内します。</p>
+      <p>{calendarContext.today}（{calendarContext.timeZone}）の確認済み公開時刻表です。</p>
       {todayPreview.length > 0 ? (
         <ul>
           {todayPreview.map((meeting) => (
-            <li><strong>{meeting.track_name}</strong> — {meeting.local_date} / {meeting.status}</li>
+            <li>
+              <strong>{meetingRacecourseName(meeting)}</strong> — 公開ランク {meeting.capability_rank}
+              {timeRange(meeting) ? ` · ${timeRange(meeting)}` : ''}
+            </li>
           ))}
         </ul>
       ) : (
-        <p>確認済みの時刻表レコードを準備中です。国・地域ページや公式ソースで確認してください。</p>
+        <p>今日の確認済み公開開催はありません。国・地域ページや公式ソースで最終確認してください。</p>
       )}
     </article>
 

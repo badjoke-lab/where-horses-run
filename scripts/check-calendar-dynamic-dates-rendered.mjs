@@ -9,7 +9,7 @@ import {
 
 const root = process.cwd();
 const referenceDate = process.env.WHR_CALENDAR_REFERENCE_DATE;
-const timeZone = process.env.WHR_CALENDAR_TIMEZONE ?? 'UTC';
+const timeZone = process.env.WHR_CALENDAR_TIMEZONE ?? 'Asia/Tokyo';
 const errors = [];
 const fail = (message) => errors.push(message);
 
@@ -29,8 +29,8 @@ function readHtml(relativePath) {
   return html;
 }
 
-function countCards(html) {
-  return (html.match(/class="meeting-card"/g) ?? []).length;
+function countMeetingRows(html) {
+  return (html.match(/class="meeting-row"/g) ?? []).length;
 }
 
 const pages = {
@@ -78,17 +78,17 @@ for (const [name, html, expected] of [
   ['tomorrowEn', pages.tomorrowEn, tomorrowRecords.length],
   ['tomorrowJa', pages.tomorrowJa, tomorrowRecords.length],
 ]) {
-  const actual = countCards(html);
-  if (actual !== expected) fail(`${name} meeting-card count differs: expected ${expected}, got ${actual}.`);
+  const actual = countMeetingRows(html);
+  if (actual !== expected) fail(`${name} compact meeting-row count differs: expected ${expected}, got ${actual}.`);
 }
 
 const juneSixDetailLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
 if (referenceDate === '2026-06-06') {
   if (!pages.todayEn.includes('Tokyo Racecourse') || !pages.todayJa.includes('東京競馬場')) {
-    fail('Today pages do not render the known June 6 JRA Rank C meeting card.');
+    fail('Today pages do not render the known June 6 JRA Rank C meeting row.');
   }
   if (!pages.calendarEn.includes('Tokyo Racecourse') || !pages.calendarJa.includes('東京競馬場')) {
-    fail('Calendar pages do not render the known June 6 JRA Rank C meeting card.');
+    fail('Calendar pages do not render the known June 6 JRA Rank C meeting row.');
   }
   for (const [name, html] of [
     ['todayEn', pages.todayEn],
@@ -122,4 +122,5 @@ console.log(`WINDOW_MEETINGS: ${windowRecords.length}`);
 console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
 console.log(`TOMORROW_MEETINGS: ${tomorrowRecords.length}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
+console.log('COMPACT_MEETING_ROWS: pass');
 console.log('FIXED_JUNE_COPY: 0');

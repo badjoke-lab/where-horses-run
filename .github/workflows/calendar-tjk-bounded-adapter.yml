@@ -41,11 +41,16 @@ jobs:
         run: node scripts/check-tjk-bounded-adapter.mjs
       - name: Validate committed candidate determinism
         run: node scripts/timetable/tjk-bounded-adapter.mjs --check
-      - name: Prove candidate-only PR boundary
+      - name: Prove candidate-only PR boundary while historical adapter stage is current
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
+          current_unit="$(node -e "const s=require('./docs/timetable-source-tests/03-turkey/implementation-status-2026-08-12.json'); process.stdout.write(s.current_implementation_unit)")"
+          if [ "$current_unit" != 'TJK-BOUNDED-ADAPTER-01' ]; then
+            echo "Historical candidate-only diff boundary is not applicable after TJK-BOUNDED-ADAPTER-01 completion: $current_unit"
+            exit 0
+          fi
           changed="$(git diff --name-only "$BASE_SHA"...HEAD)"
           echo "$changed"
           if echo "$changed" | grep -E '^data/generated/timetable/(canonical|public)/'; then

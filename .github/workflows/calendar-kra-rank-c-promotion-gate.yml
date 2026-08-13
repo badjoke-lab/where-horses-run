@@ -75,16 +75,14 @@ jobs:
         run: node scripts/timetable/build-kra-rank-c-approved-candidate.mjs --check
       - name: Validate committed KRA public identities
         run: node scripts/check-kra-public-timetable-identities.mjs
-      - name: Validate committed KRA Rank C promotion
+      - name: Validate scoped KRA Rank C promotion determinism
         run: node scripts/check-kra-rank-c-promotion-gate.mjs
-      - name: Validate canonical promotion determinism
-        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json --check
       - name: Validate public projection determinism
         run: node scripts/timetable/build-public-timetable-view.mjs --check
       - name: Validate dependent public derivatives
         run: |
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
-          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-14 --check
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01 --check
           node scripts/timetable/build-operations-review-package.mjs --check
       - name: Validate runtime import boundary
         run: node scripts/check-calendar-runtime-import-boundary.mjs

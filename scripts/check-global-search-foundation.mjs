@@ -24,12 +24,13 @@ for (const requiredPath of [workflowPath, docPath, dataPath, componentPath, layo
   if (!fs.existsSync(filePath(requiredPath))) fail(`required file missing: ${requiredPath}`);
 }
 
+// Historical accepted search baseline remains immutable.
 if (contract.schema_version !== 'global-search-contract-v1') fail('search contract schema differs');
 if (contract.work_id !== 'WHR-SEARCH-FILTER-SEO-V1') fail('search contract Work ID differs');
 if (contract.implementation_unit !== 'GLOBAL-SEARCH-FOUNDATION-01') fail('search contract implementation unit differs');
 if (!['implemented_for_review', 'complete'].includes(contract.status)) fail('search contract status differs');
 if (contract.reviewed_at !== '2026-07-16') fail('search contract review date differs');
-if (!exact(contract.scope, {
+const historicalScope = {
   country_records: 98,
   racecourse_records: 36,
   glossary_records: 48,
@@ -38,7 +39,8 @@ if (!exact(contract.scope, {
   search_routes: 2,
   record_type_filters: 3,
   no_javascript_fallback_records_per_locale: 182,
-})) fail('search contract scope differs');
+};
+if (!exact(contract.scope, historicalScope)) fail('historical search contract scope differs');
 if (!exact(contract.record_types, ['country', 'racecourse', 'glossary'])) fail('search record types differ');
 if (!exact(contract.route_contract, {
   english_search: '/search/',
@@ -82,7 +84,7 @@ if (!exact(audit.verified, {
   missing_no_javascript_records: 0,
   search_contract_errors: 0,
   rendered_marker_errors: 0,
-})) fail('search audit measurements differ');
+})) fail('historical search audit measurements differ');
 for (const value of Object.values(audit.user_behavior ?? {})) if (value !== true) fail('search user behavior differs');
 if (!exact(audit.public_boundary, contract.public_boundary) || !exact(audit.automation_boundary, contract.automation_boundary)) fail('search audit boundary differs');
 if (audit.next_implementation_unit !== contract.next_implementation_unit) fail('search audit next unit differs');
@@ -141,19 +143,10 @@ if (fs.existsSync(filePath(workflowPath))) {
 
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
 const renderedPages = [
-  {
-    file: 'dist/search/index.html',
-    lang: 'en',
-    totals: { country: 98, racecourse: 36, glossary: 48, all: 182 },
-    requiredLinks: ['/countries/japan/', '/tracks/tokyo-racecourse/', '/glossary/post-time/'],
-  },
-  {
-    file: 'dist/ja/search/index.html',
-    lang: 'ja',
-    totals: { country: 98, racecourse: 36, glossary: 48, all: 182 },
-    requiredLinks: ['/ja/countries/japan/', '/ja/tracks/tokyo-racecourse/', '/ja/glossary/post-time/'],
-  },
+  { file: 'dist/search/index.html', lang: 'en', requiredLinks: ['/countries/japan/', '/tracks/tokyo-racecourse/', '/glossary/post-time/'] },
+  { file: 'dist/ja/search/index.html', lang: 'ja', requiredLinks: ['/ja/countries/japan/', '/ja/tracks/tokyo-racecourse/', '/ja/glossary/post-time/'] },
 ];
+const renderedMeasurements = [];
 let renderedMarkerErrors = 0;
 for (const page of renderedPages) {
   if (!fs.existsSync(filePath(page.file))) { fail(`rendered search route missing: ${page.file}`); renderedMarkerErrors += 1; continue; }
@@ -165,17 +158,29 @@ for (const page of renderedPages) {
     glossary: count(html, 'data-search-type="glossary"'),
     text: count(html, 'data-search-text='),
   };
-  if (measurements.all !== page.totals.all || measurements.country !== page.totals.country || measurements.racecourse !== page.totals.racecourse || measurements.glossary !== page.totals.glossary || measurements.text !== page.totals.all) {
-    fail(`${page.file}: rendered record counts differ ${JSON.stringify(measurements)}`);
+  renderedMeasurements.push(measurements);
+  if (measurements.country !== historicalScope.country_records || measurements.glossary !== historicalScope.glossary_records) {
+    fail(`${page.file}: stable country/glossary counts differ ${JSON.stringify(measurements)}`);
+    renderedMarkerErrors += 1;
+  }
+  if (measurements.racecourse < historicalScope.racecourse_records) {
+    fail(`${page.file}: racecourse search inventory shrank ${JSON.stringify(measurements)}`);
+    renderedMarkerErrors += 1;
+  }
+  if (measurements.all !== measurements.country + measurements.racecourse + measurements.glossary || measurements.text !== measurements.all) {
+    fail(`${page.file}: rendered record totals are inconsistent ${JSON.stringify(measurements)}`);
     renderedMarkerErrors += 1;
   }
   for (const marker of [
-    'data-search-records="182"', 'data-search-countries="98"',
-    'data-search-racecourses="36"', 'data-search-glossary="48"',
+    `data-search-records="${measurements.all}"`, `data-search-countries="${measurements.country}"`,
+    `data-search-racecourses="${measurements.racecourse}"`, `data-search-glossary="${measurements.glossary}"`,
     'data-search-empty', '<noscript>', 'data-search-query', 'data-search-type',
     ...page.requiredLinks,
   ]) if (!html.includes(marker)) { fail(`${page.file}: rendered search marker missing ${marker}`); renderedMarkerErrors += 1; }
   if (!html.includes(`<html lang="${page.lang}"`)) { fail(`${page.file}: rendered locale differs`); renderedMarkerErrors += 1; }
+}
+if (renderedMeasurements.length === 2 && !exact(renderedMeasurements[0], renderedMeasurements[1])) {
+  fail(`English/Japanese current search inventories differ: ${JSON.stringify(renderedMeasurements)}`);
 }
 if (renderedMarkerErrors !== 0) fail(`rendered search marker errors: ${renderedMarkerErrors}`);
 
@@ -184,11 +189,13 @@ if (errors.length) {
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
+const current = renderedMeasurements[0] ?? { country: 0, racecourse: 0, glossary: 0, all: 0 };
 console.log('GLOBAL_SEARCH_FOUNDATION: pass');
-console.log('COUNTRY_RECORDS: 98');
-console.log('RACECOURSE_RECORDS: 36');
-console.log('GLOSSARY_RECORDS: 48');
-console.log('TOTAL_RECORDS: 182');
+console.log(`HISTORICAL_RACECOURSE_RECORDS: ${historicalScope.racecourse_records}`);
+console.log(`CURRENT_COUNTRY_RECORDS: ${current.country}`);
+console.log(`CURRENT_RACECOURSE_RECORDS: ${current.racecourse}`);
+console.log(`CURRENT_GLOSSARY_RECORDS: ${current.glossary}`);
+console.log(`CURRENT_TOTAL_RECORDS: ${current.all}`);
 console.log('SEARCH_ROUTES: 2');
 console.log('NO_JAVASCRIPT_FALLBACK: complete');
 console.log('EXTERNAL_SEARCH_SERVICE: false');

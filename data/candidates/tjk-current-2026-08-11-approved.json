@@ -1,0 +1,144 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-08-12T00:00:00Z",
+  "adapter_id": "tjk-current-2026-08-11-approved-v1",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "source_id": "tjk-daily-programme",
+  "technical_capability_rank": "A+",
+  "publication_ceiling": "A",
+  "candidate_window": {
+    "start_date": "2026-08-11",
+    "end_date_exclusive": "2026-08-12",
+    "timezone": "Europe/Istanbul"
+  },
+  "records": [
+    {
+      "candidate_id": "candidate-tjk-ankara-racecourse-2026-08-11",
+      "meeting_id": "tjk-ankara-racecourse-2026-08-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "ankara-racecourse",
+      "date": "2026-08-11",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A",
+      "first_race_time_local": "14:00",
+      "last_race_time_local": "18:00",
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:00"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:30"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:00"
+        }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Ankara&SehirId=5",
+        "checked_at": "2026-08-12T00:00:00Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Human-approved current TJK Rank A timetable for Ankara. Public output is limited to meeting identity and Race 1-N post times; A+ technical source capability does not expand the public field set."
+    },
+    {
+      "candidate_id": "candidate-tjk-kocaeli-racecourse-2026-08-11",
+      "meeting_id": "tjk-kocaeli-racecourse-2026-08-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "kocaeli-racecourse",
+      "date": "2026-08-11",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A",
+      "first_race_time_local": "17:15",
+      "last_race_time_local": "21:30",
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "17:15"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "17:45"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "18:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "19:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "19:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "20:00"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "20:30"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "21:00"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "21:30"
+        }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=11%2F08%2F2026&SehirAdi=Kocaeli&SehirId=9",
+        "checked_at": "2026-08-12T00:00:00Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Human-approved current TJK Rank A timetable for Kocaeli. Public output is limited to meeting identity and Race 1-N post times; A+ technical source capability does not expand the public field set."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-12T06:29:00Z",
+    "reviewer": "badjoke-lab",
+    "promotion_target": "canonical-timetable-v0"
+  },
+  "publication_effect": "reviewed-promotion-unit"
+}

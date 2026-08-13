@@ -1,6 +1,7 @@
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const DEFAULT_TIMEZONE = 'UTC';
+const DEFAULT_TIMEZONE = 'Asia/Tokyo';
 const DEFAULT_WINDOW_DAYS = 30;
+const DEFAULT_FRESHNESS_GRACE_DAYS = 1;
 
 function assertDateText(value, label) {
   if (typeof value !== 'string' || !DATE_PATTERN.test(value)) {
@@ -129,19 +130,21 @@ export function evaluateCalendarDataState({ records, generatedAt, context }) {
   const dates = records.map((record) => assertDateText(record.date, `record ${record.meeting_id ?? 'unknown'} date`)).sort();
   const earliestRecordDate = dates[0] ?? null;
   const latestRecordDate = dates.at(-1) ?? null;
-  const generatedDate = new Date(generatedTimestamp).toISOString().slice(0, 10);
+  const generatedDate = dateInTimeZone(new Date(generatedTimestamp), context.timeZone);
+  const staleBeforeDate = addCalendarDays(context.today, -DEFAULT_FRESHNESS_GRACE_DAYS);
   const windowRecords = filterRecordsForWindow(records, context.windowStart, context.windowEndExclusive);
 
   let status = 'current_window_available';
   if (records.length === 0) status = 'no_public_records';
   else if (windowRecords.length === 0 && latestRecordDate < context.windowStart) status = 'records_before_window';
   else if (windowRecords.length === 0 && earliestRecordDate >= context.windowEndExclusive) status = 'records_after_window';
-  else if (generatedDate < context.windowStart) status = 'stale_generation_with_window_records';
+  else if (generatedDate < staleBeforeDate) status = 'stale_generation_with_window_records';
 
   return {
     status,
     generatedAt,
     generatedDate,
+    freshnessGraceDays: DEFAULT_FRESHNESS_GRACE_DAYS,
     earliestRecordDate,
     latestRecordDate,
     totalRecordCount: records.length,
@@ -151,5 +154,6 @@ export function evaluateCalendarDataState({ records, generatedAt, context }) {
 
 export const calendarDateDefaults = {
   timeZone: DEFAULT_TIMEZONE,
-  windowDays: DEFAULT_WINDOW_DAYS
+  windowDays: DEFAULT_WINDOW_DAYS,
+  freshnessGraceDays: DEFAULT_FRESHNESS_GRACE_DAYS
 };

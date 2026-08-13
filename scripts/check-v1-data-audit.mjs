@@ -9,7 +9,14 @@ const SEO_RELEASE_PATH = 'data/static/seo-qa-release-v1.json';
 const DATA_MODULE_PATH = 'src/lib/data.ts';
 const RECONCILIATION_PATH = 'data/static/country-page-id-inventory-01-12-reconciliation-v1.json';
 const SITEMAP_PATH = 'dist/sitemap.xml';
-const REVIEWED_RACECOURSE_GROWTH_IDS = new Set(['mizusawa-racecourse', 'busan-gyeongnam-racecourse', 'jeju-racecourse']);
+const PUBLIC_MEETING_DETAILS_PATH = 'data/generated/timetable/public/meeting-details.json';
+const REVIEWED_RACECOURSE_GROWTH_IDS = new Set([
+  'mizusawa-racecourse',
+  'busan-gyeongnam-racecourse',
+  'jeju-racecourse',
+  'ankara-racecourse',
+  'kocaeli-racecourse',
+]);
 const TEMPORARY_FILES = [
   '.github/workflows/temporary-v1-data-audit-discovery.yml',
   'scripts/temporary-discover-v1-data-audit.mjs',
@@ -125,7 +132,7 @@ function mergedSummary(entries, idKeys, slugKey = 'slug') {
   };
 }
 
-for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SCOPE_CONTRACT_PATH, SEO_RELEASE_PATH, DATA_MODULE_PATH, RECONCILIATION_PATH, SITEMAP_PATH]) {
+for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SCOPE_CONTRACT_PATH, SEO_RELEASE_PATH, DATA_MODULE_PATH, RECONCILIATION_PATH, SITEMAP_PATH, PUBLIC_MEETING_DETAILS_PATH]) {
   expect(fs.existsSync(file), `Required v1 data audit file is missing: ${file}`);
 }
 for (const file of TEMPORARY_FILES) expect(!fs.existsSync(file), `Temporary data audit file remains: ${file}`);
@@ -135,6 +142,7 @@ const audit = json(AUDIT_PATH);
 const scopeContract = json(SCOPE_CONTRACT_PATH);
 const seoRelease = json(SEO_RELEASE_PATH);
 const reconciliation = json(RECONCILIATION_PATH);
+const publicMeetingDetails = json(PUBLIC_MEETING_DETAILS_PATH);
 
 expect(contract.schema_version === 'v1-data-audit-v1', 'v1 data audit schema differs');
 expect(contract.release_id === 'WHR-V1-PREPARATION-V1' && contract.work_id === 'WHR-V1-PREPARATION-V1', 'v1 data audit release identity differs');
@@ -170,6 +178,7 @@ expect(scopeContract.implementation_unit === 'V1-SCOPE-FREEZE-01' && scopeContra
 expect(scopeContract.baseline_inventory.public_pages === contract.input_inventory.sitemap_urls, 'v1 scope historical public-page baseline differs');
 expect(seoRelease.release_id === contract.baseline_release_id && seoRelease.status === 'release_ready', 'Phase 11 historical baseline release differs');
 expect(seoRelease.scope.public_pages === contract.input_inventory.sitemap_urls, 'Phase 11 historical public-page baseline differs');
+expect(Array.isArray(publicMeetingDetails.details), 'public meeting-detail collection differs');
 
 const dataModule = read(DATA_MODULE_PATH);
 const importedFiles = [...dataModule.matchAll(/from ['"]\.\.\/\.\.\/(data\/(?:static|generated)\/[^'"]+\.json)['"]/g)].map((match) => match[1]);
@@ -216,6 +225,14 @@ for (const id of ['busan-gyeongnam-racecourse', 'jeju-racecourse']) {
   expect(kraRacecourse?.identity_status === 'verified_from_reviewed_public_timetable' && kraRacecourse?.profile_status === 'identity_only', `KRA publication boundary differs: ${id}`);
   expect(kraRacecourse?.city === null && kraRacecourse?.region === null, `KRA unverified location detail was published: ${id}`);
 }
+for (const id of ['ankara-racecourse', 'kocaeli-racecourse']) {
+  const tjkRacecourse = racecourseEntries.find(({ row }) => row?.id === id)?.row;
+  expect(tjkRacecourse?.slug === id && tjkRacecourse?.country_id === 'turkey', `TJK reviewed racecourse identity differs: ${id}`);
+  expect(tjkRacecourse?.timezone === 'Europe/Istanbul', `TJK reviewed timezone differs: ${id}`);
+  expect(tjkRacecourse?.identity_status === 'verified_from_reviewed_public_timetable' && tjkRacecourse?.profile_status === 'identity_only', `TJK publication boundary differs: ${id}`);
+  expect(tjkRacecourse?.city === null && tjkRacecourse?.region === null, `TJK unverified location detail was published: ${id}`);
+  expect((tjkRacecourse?.official_links ?? []).some((link) => link?.source_id === 'tjk-daily-programme' && link?.link_type === 'official'), `TJK official source trace differs: ${id}`);
+}
 
 for (const [name, collection] of Object.entries(merged)) {
   expect(collection.identifiers === collection.records, `${name} identifier count differs`);
@@ -225,8 +242,15 @@ for (const [name, collection] of Object.entries(merged)) {
 }
 
 const sitemapUrls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-const expectedCurrentSitemap = contract.input_inventory.sitemap_urls + (racecourseGrowth * 2);
-expect(sitemapUrls.length === expectedCurrentSitemap, `current sitemap growth is not explained by reviewed racecourse growth: ${sitemapUrls.length} !== ${expectedCurrentSitemap}`);
+const sitemapPaths = sitemapUrls.map((url) => new URL(url).pathname);
+const currentMeetingDetailRoutes = sitemapPaths.filter((pathname) => /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/.test(pathname)).length;
+const baselineMeetingDetailRoutes = scopeContract.baseline_inventory.meeting_detail_routes;
+expect(Number.isInteger(baselineMeetingDetailRoutes), 'v1 scope meeting-detail baseline is missing');
+expect(currentMeetingDetailRoutes >= baselineMeetingDetailRoutes, `current meeting-detail route inventory regressed ${currentMeetingDetailRoutes}`);
+expect(currentMeetingDetailRoutes === publicMeetingDetails.details.length * 2, `current meeting-detail routes are not backed by public projection: ${currentMeetingDetailRoutes}`);
+const meetingDetailGrowth = currentMeetingDetailRoutes - baselineMeetingDetailRoutes;
+const expectedCurrentSitemap = contract.input_inventory.sitemap_urls + (racecourseGrowth * 2) + meetingDetailGrowth;
+expect(sitemapUrls.length === expectedCurrentSitemap, `current sitemap growth is not explained by reviewed racecourse and meeting-detail growth: ${sitemapUrls.length} !== ${expectedCurrentSitemap}`);
 
 const metrics = {
   top_level_rows: scans.reduce((sum, scan) => sum + scan.rows, 0),
@@ -272,6 +296,7 @@ console.log(`HISTORICAL_SITEMAP_URLS: ${contract.input_inventory.sitemap_urls}`)
 console.log(`CURRENT_SITEMAP_URLS: ${sitemapUrls.length}`);
 console.log(`HISTORICAL_RACECOURSES: ${contract.merged_collections.racecourses.records}`);
 console.log(`CURRENT_RACECOURSES: ${merged.racecourses.records}`);
+console.log(`CURRENT_MEETING_DETAIL_ROUTES: ${currentMeetingDetailRoutes}`);
 console.log(`CURRENT_TOP_LEVEL_ROWS: ${metrics.top_level_rows}`);
 console.log(`CURRENT_URL_VALUES: ${metrics.url_values}`);
 console.log(`CURRENT_PLACEHOLDER_VALUES: ${metrics.placeholder_values}`);
