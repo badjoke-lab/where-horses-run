@@ -1,0 +1,41 @@
+name: Calendar TJK current/future candidates
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/tjk-current-future-candidates.mjs'
+      - 'scripts/check-tjk-current-future-candidates.mjs'
+      - 'tests/timetable/tjk-current-future-candidates.test.mjs'
+      - '.github/workflows/calendar-tjk-current-future-candidates.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 1 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node --test tests/timetable/tjk-current-future-candidates.test.mjs
+  live-read-only-collection:
+    if: github.event_name != 'pull_request'
+    needs: deterministic-validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: node scripts/timetable/tjk-current-future-candidates.mjs --output .artifacts/tjk-current-future-candidates.json
+      - run: node scripts/check-tjk-current-future-candidates.mjs .artifacts/tjk-current-future-candidates.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tjk-current-future-candidates
+          path: .artifacts/tjk-current-future-candidates.json
+          retention-days: 7
