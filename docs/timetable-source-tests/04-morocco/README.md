@@ -1,66 +1,62 @@
 # 04 - Morocco timetable source test
 
-Status: pending
-Checked date: 2026-06-10
-Authority: Société Royale d'Encouragement du Cheval
+Status: pending / blocked
+Checked date: 2026-08-14
+Authority: Société Royale d'Encouragement du Cheval (SOREC)
 Technical capability rank: Not confirmed
 Fallback rank: Not confirmed
 
 ## Current decision
 
-Morocco testing is paused.
+Morocco remains blocked for timetable candidate generation.
 
-Do not assign A+, A, B+, B or C yet.
+Do not assign A+, A, B+, B or C from this revalidation. The C value used by the shared authority-source inventory is a schema floor, not an active publication claim.
 
-Official racecourses and digital services were confirmed, but no stable
-official source has yet produced concrete meeting-date and racecourse
-pairings or complete Race 1-N timetable data.
+The current official SOREC racing page confirms the national racing context and racecourse set, but this pass did not verify a stable public official meeting-date or daily-programme URL that can support Calendar candidates.
 
-## Confirmed
+## Revalidated on 2026-08-14
 
 - SOREC official website is reachable.
-- SOREC WordPress REST API is reachable.
-- Seven SOREC racecourses are documented.
-- FARAS is a current official application.
-- FARAS includes race programme functionality.
-- FARAS Android package: com.sorec.apk
-- FARAS iOS bundle: ma.sorec.filiere.apk
-- FARAS iOS version checked: 2.1.3
-- FARAS iOS release date checked: 2026-06-03
-- SOREC TV Android package: ma.sorec.sorectv
+- Current official racing page: `https://www.sorec.ma/courses-hippiques/`.
+- The current official racing page states that SOREC organizes more than 3,000 races per year across seven racecourses, with seven meetings per week.
+- The same page identifies the seven racecourses used by this source test:
+  - Casablanca-Anfa
+  - Meknès
+  - Marrakech
+  - Rabat
+  - Settat
+  - El Jadida
+  - Khemisset
+- A stable public official meeting-date / daily-programme route was not verified in this pass.
+- No current or future meeting candidate is created from institutional or racecourse-directory content alone.
+
+## Historical evidence retained
+
+The 2026-06-10 source-test files remain useful as historical discovery evidence, including app/package and network observations. Those observations are not treated as newly revalidated by the 2026-08-14 pass.
 
 ## Unresolved
 
-- Stable public meeting source
+- Stable public official meeting source
 - Official meeting-date and racecourse pairings
 - Complete Race 1-N post times
 - Distance and surface coverage
-- Current FARAS backend host
-- Nationwide racecourse verification
+- A current public route suitable for a bounded SOREC timetable adapter
 
-## Network findings
+## Resume gate
 
-- e-sorec.ma resolves in DNS.
-- e-sorec.ma HTTP and HTTPS connections timed out.
-- SOREC streaming host resolves in DNS.
-- SOREC streaming HTTP and HTTPS connections timed out.
-- Public WordPress API exposed no confirmed race-programme endpoint.
-- Certificate history exposed no useful API subdomain.
-- Store pages exposed no confirmed backend host.
+Resume adapter work only after a public official source exposes at least concrete meeting-date + racecourse pairings.
 
-## Resume plan
+If such a route is verified:
 
-Resume from A+ investigation, not from C.
+1. record the exact official source and a bounded fixture,
+2. add a deterministic parser/validator,
+3. generate candidate-only output,
+4. require review before any Canonical or public projection change.
 
-1. Inspect the current FARAS application package or network traffic.
-2. Retry E-SOREC and streaming infrastructure.
-3. Search official programme PDFs and hidden endpoints.
-4. Verify all active racecourses.
-5. Assign the highest supported rank only after source verification.
+Until then, `adapter_status=blocked` and active-window candidate generation remains disabled.
 
 ## Public-safe boundary
 
-Do not commit raw HTML, APK files, runners, horses, jockeys, trainers,
-odds, results, payouts, predictions, tips or full racecard text.
+Do not commit raw HTML, application packages, runners, horses, jockeys, trainers, odds, results, payouts, predictions, tips or full racecard text.
 
-Raw investigation files remain under .whr-local-source-tests/.
+Source-test evidence in this directory must remain limited to public-safe summaries, URLs and bounded non-participant timetable facts.
