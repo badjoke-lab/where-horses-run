@@ -63,10 +63,10 @@ const copy = lang === 'ja'
     </div>
   </header>
 
-  <div class="coverage-dashboard__grid">
+  <div class="coverage-dashboard__grid section-grid">
     {countries.map((country) => (
       <article
-        class="coverage-card"
+        class="coverage-card card"
         data-coverage-country={country.country_id}
         data-source-status={country.source_status}
         data-public-meetings={country.public.meetings}
@@ -106,25 +106,3 @@ const copy = lang === 'ja'
 
   <p class="coverage-dashboard__note">{copy.note}</p>
 </section>
-
-<style>
-  .coverage-dashboard { margin-block: 2rem; }
-  .coverage-dashboard__header { max-width: 52rem; }
-  .coverage-dashboard__header h2 { margin-block: 0.25rem 0.6rem; }
-  .coverage-dashboard__header p { margin: 0; }
-  .coverage-dashboard__eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  .coverage-dashboard__grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); margin-top: 1.25rem; }
-  .coverage-card { border: 1px solid rgba(0, 0, 0, 0.14); border-radius: 0.9rem; padding: 1rem; min-width: 0; }
-  .coverage-card__title-row { align-items: flex-start; display: flex; gap: 0.75rem; justify-content: space-between; }
-  .coverage-card h3, .coverage-card h4 { margin: 0; }
-  .coverage-card h4 { font-size: 0.86rem; margin-top: 1rem; }
-  .coverage-status { border: 1px solid currentColor; border-radius: 999px; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.5rem; white-space: nowrap; }
-  .coverage-status--verified { opacity: 0.95; }
-  .coverage-status--limited { opacity: 0.75; }
-  .coverage-status--blocked { opacity: 0.58; }
-  .coverage-dimensions, .coverage-public-metrics { display: grid; gap: 0.35rem; margin: 0.55rem 0 0; }
-  .coverage-dimensions > div, .coverage-public-metrics > div { align-items: baseline; display: flex; gap: 0.75rem; justify-content: space-between; }
-  .coverage-dimensions dt, .coverage-public-metrics dt { min-width: 0; }
-  .coverage-dimensions dd, .coverage-public-metrics dd { font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
-  .coverage-dashboard__note { font-size: 0.88rem; margin-top: 1rem; max-width: 60rem; opacity: 0.8; }
-</style>
