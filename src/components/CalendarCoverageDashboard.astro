@@ -1,0 +1,130 @@
+---
+import {
+  coverageDashboardGeneratedAt,
+  getCoverageDashboardCountries,
+  type CoverageDimension,
+} from '../lib/timetable/coverageDashboard';
+
+type Props = { lang?: 'en' | 'ja' };
+const { lang = 'en' } = Astro.props as Props;
+const countries = getCoverageDashboardCountries();
+const dimensions: Array<{ key: CoverageDimension; en: string; ja: string }> = [
+  { key: 'racecourses', en: 'Racecourses', ja: '競馬場' },
+  { key: 'dates', en: 'Dates', ja: '開催日' },
+  { key: 'events', en: 'Events', ja: 'レース' },
+  { key: 'times', en: 'Times', ja: '時刻' },
+  { key: 'structures', en: 'Structures', ja: 'レース構造' },
+];
+const copy = lang === 'ja'
+  ? {
+      title: 'カレンダー Coverage',
+      intro: '公式ソースで確認できる能力と、Where Horses Runでレビュー後に公開済みの範囲を分けて表示します。確認できる能力があっても、未レビューの情報は公開件数には含めません。',
+      source: '公式ソースで確認済み',
+      public: 'レビュー済み公開データ',
+      verified: '確認済み',
+      limited: '一部確認',
+      blocked: '未確認',
+      yes: '有',
+      no: '—',
+      meetings: '開催',
+      publicDates: '日付',
+      publicRacecourses: '競馬場',
+      eventRows: 'レース行',
+      timeMeetings: '時刻あり開催',
+      structuredRows: '構造情報あり行',
+      note: '公開件数は現在コミットされているレビュー済み timetable 全体の集計です。最新開催の有無を保証するものではありません。',
+    }
+  : {
+      title: 'Calendar coverage',
+      intro: 'Source capability and reviewed Where Horses Run publication are shown separately. A field can be available from an official source without being counted as published until review is complete.',
+      source: 'Verified source capability',
+      public: 'Reviewed public dataset',
+      verified: 'Verified',
+      limited: 'Limited',
+      blocked: 'Not verified',
+      yes: 'Yes',
+      no: '—',
+      meetings: 'Meetings',
+      publicDates: 'Dates',
+      publicRacecourses: 'Racecourses',
+      eventRows: 'Race rows',
+      timeMeetings: 'Meetings with times',
+      structuredRows: 'Structured race rows',
+      note: 'Public counts summarize the currently committed reviewed timetable dataset. They are not a guarantee that a current meeting exists.',
+    };
+---
+
+<section class="coverage-dashboard" aria-labelledby="coverage-dashboard-title" data-calendar-coverage-dashboard data-generated-at={coverageDashboardGeneratedAt}>
+  <header class="coverage-dashboard__header">
+    <div>
+      <p class="coverage-dashboard__eyebrow">Coverage</p>
+      <h2 id="coverage-dashboard-title">{copy.title}</h2>
+      <p>{copy.intro}</p>
+    </div>
+  </header>
+
+  <div class="coverage-dashboard__grid">
+    {countries.map((country) => (
+      <article
+        class="coverage-card"
+        data-coverage-country={country.country_id}
+        data-source-status={country.source_status}
+        data-public-meetings={country.public.meetings}
+        data-public-dates={country.public.dates}
+        data-public-racecourses={country.public.racecourses}
+        data-public-event-rows={country.public.event_rows}
+      >
+        <div class="coverage-card__title-row">
+          <h3>{lang === 'ja' ? country.country_label_ja : country.country_label}</h3>
+          <span class={`coverage-status coverage-status--${country.source_status}`}>
+            {country.source_status === 'verified' ? copy.verified : country.source_status === 'limited' ? copy.limited : copy.blocked}
+          </span>
+        </div>
+
+        <h4>{copy.source}</h4>
+        <dl class="coverage-dimensions">
+          {dimensions.map((dimension) => (
+            <div data-coverage-dimension={dimension.key} data-confirmed={String(country.source_dimensions[dimension.key])}>
+              <dt>{lang === 'ja' ? dimension.ja : dimension.en}</dt>
+              <dd>{country.source_dimensions[dimension.key] ? copy.yes : copy.no}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h4>{copy.public}</h4>
+        <dl class="coverage-public-metrics">
+          <div><dt>{copy.meetings}</dt><dd>{country.public.meetings}</dd></div>
+          <div><dt>{copy.publicDates}</dt><dd>{country.public.dates}</dd></div>
+          <div><dt>{copy.publicRacecourses}</dt><dd>{country.public.racecourses}</dd></div>
+          <div><dt>{copy.eventRows}</dt><dd>{country.public.event_rows}</dd></div>
+          <div><dt>{copy.timeMeetings}</dt><dd>{country.public.meetings_with_times}</dd></div>
+          <div><dt>{copy.structuredRows}</dt><dd>{country.public.structured_event_rows}</dd></div>
+        </dl>
+      </article>
+    ))}
+  </div>
+
+  <p class="coverage-dashboard__note">{copy.note}</p>
+</section>
+
+<style>
+  .coverage-dashboard { margin-block: 2rem; }
+  .coverage-dashboard__header { max-width: 52rem; }
+  .coverage-dashboard__header h2 { margin-block: 0.25rem 0.6rem; }
+  .coverage-dashboard__header p { margin: 0; }
+  .coverage-dashboard__eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .coverage-dashboard__grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); margin-top: 1.25rem; }
+  .coverage-card { border: 1px solid rgba(0, 0, 0, 0.14); border-radius: 0.9rem; padding: 1rem; min-width: 0; }
+  .coverage-card__title-row { align-items: flex-start; display: flex; gap: 0.75rem; justify-content: space-between; }
+  .coverage-card h3, .coverage-card h4 { margin: 0; }
+  .coverage-card h4 { font-size: 0.86rem; margin-top: 1rem; }
+  .coverage-status { border: 1px solid currentColor; border-radius: 999px; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.5rem; white-space: nowrap; }
+  .coverage-status--verified { opacity: 0.95; }
+  .coverage-status--limited { opacity: 0.75; }
+  .coverage-status--blocked { opacity: 0.58; }
+  .coverage-dimensions, .coverage-public-metrics { display: grid; gap: 0.35rem; margin: 0.55rem 0 0; }
+  .coverage-dimensions > div, .coverage-public-metrics > div { align-items: baseline; display: flex; gap: 0.75rem; justify-content: space-between; }
+  .coverage-dimensions dt, .coverage-public-metrics dt { min-width: 0; }
+  .coverage-dimensions dd, .coverage-public-metrics dd { font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
+  .coverage-dashboard__note { font-size: 0.88rem; margin-top: 1rem; max-width: 60rem; opacity: 0.8; }
+</style>
