@@ -83,6 +83,10 @@ M4 does not introduce automatic public publication.
 
 The M4 coverage dashboard was merged in PR #583.
 
+Exact PR head:
+
+`6fafe7a51e6df51805d335ef5747d4acf3dd58a0`
+
 Merge commit:
 
 `f0fbd7c3ca80c8dcc2f8ea0f87916cb677cd0734`
@@ -97,6 +101,8 @@ The exact PR head passed all 27 triggered workflows, including:
 - Phase 11 SEO QA;
 - v1 release readiness;
 - v1 release decision.
+
+The merge commit then passed all 25 push-triggered `main` workflows.
 
 During review, an inline-style regression was caught by the v1 performance gate. The dashboard styles were moved into the existing shared CSS bundle without increasing the one-CSS-file budget, and the final exact head passed the preserved performance contract.
 
