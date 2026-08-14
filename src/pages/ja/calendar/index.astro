@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashboard.astro';
 import CalendarDateFocus from '../../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarOperationsNotice from '../../../components/CalendarOperationsNotice.astro';
@@ -29,6 +30,7 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
 
   <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
   <CalendarOperationsNotice records={windowRecords} dataState={dataState} lang="ja" />
+  <CalendarCoverageDashboard lang="ja" />
   <CalendarDateFocus lang="ja" />
 
   <section aria-label="30日間の開催一覧">
