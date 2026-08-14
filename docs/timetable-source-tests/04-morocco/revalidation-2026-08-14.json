@@ -1,0 +1,50 @@
+{
+  "schema_version": "sorec-source-revalidation-v1",
+  "work_id": "WHR-CAL-MOROCCO-SOREC",
+  "implementation_unit": "SOREC-SOURCE-REVALIDATION-01",
+  "checked_date": "2026-08-14",
+  "authority_id": "sorec",
+  "status": "blocked_no_public_timetable_source",
+  "technical_capability_rank": "not_confirmed",
+  "official_sources": {
+    "homepage": "https://www.sorec.ma/",
+    "current_racing_page": "https://www.sorec.ma/courses-hippiques/"
+  },
+  "current_observation": {
+    "racing_page_verified": true,
+    "annual_races_claim": "more_than_3000",
+    "meetings_per_week_claim": 7,
+    "racecourse_count": 7,
+    "racecourses": [
+      "Casablanca-Anfa",
+      "Meknès",
+      "Marrakech",
+      "Rabat",
+      "Settat",
+      "El Jadida",
+      "Khemisset"
+    ],
+    "public_meeting_programme_route_verified": false,
+    "meeting_date_racecourse_pairing_verified": false,
+    "complete_race_1_n_post_times_verified": false
+  },
+  "decision": {
+    "source_status": "institutional_only_for_calendar_purposes",
+    "adapter_status": "blocked",
+    "candidate_generation": false,
+    "automatic_approval": false,
+    "canonical_write": false,
+    "public_projection_write": false,
+    "rank_change": false
+  },
+  "resume_gate": {
+    "required": "public_official_meeting_date_and_racecourse_pairing",
+    "next_step_after_verification": "bounded_adapter_and_candidate_only_validation"
+  },
+  "limitations": [
+    "The current official racing page confirms racing activity and the seven-racecourse set but is not a meeting timetable source.",
+    "No stable public official daily or meeting-programme route was verified in this pass.",
+    "Historical app/package and network findings are retained separately and are not treated as current source verification.",
+    "Participant, betting, result, payout, prediction, tip, full-racecard and raw-source fields remain prohibited public outputs."
+  ]
+}
