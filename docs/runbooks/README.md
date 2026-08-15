@@ -6,6 +6,7 @@ Operational procedures live here.
 
 - [current-status.md](current-status.md)
 - [m4-country-expansion-release-note.md](m4-country-expansion-release-note.md)
+- [m5-scheduled-candidate-generation-design.md](m5-scheduled-candidate-generation-design.md)
 - [pr-102.md](pr-102.md)
 - [pr-103.md](pr-103.md)
 - [m3-v0-status-release-note.md](m3-v0-status-release-note.md)
