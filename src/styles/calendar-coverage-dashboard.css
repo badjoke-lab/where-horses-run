@@ -1,0 +1,84 @@
+.coverage-dashboard {
+  margin-block: 2rem;
+}
+
+.coverage-dashboard__header {
+  max-width: 52rem;
+}
+
+.coverage-dashboard__header h2 {
+  margin-block: 0.25rem 0.6rem;
+}
+
+.coverage-dashboard__header p {
+  margin: 0;
+}
+
+.coverage-dashboard__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.coverage-dashboard__grid {
+  margin-block-start: var(--whr-space-4);
+}
+
+.coverage-card__title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--whr-space-2);
+}
+
+.coverage-card h4 {
+  margin: var(--whr-space-3) 0 0;
+  font-size: 0.86rem;
+}
+
+.coverage-status {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.coverage-status--limited {
+  opacity: 0.75;
+}
+
+.coverage-status--blocked {
+  opacity: 0.58;
+}
+
+.coverage-dimensions,
+.coverage-public-metrics {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.55rem 0 0;
+}
+
+.coverage-dimensions > div,
+.coverage-public-metrics > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--whr-space-2);
+}
+
+.coverage-dimensions dd,
+.coverage-public-metrics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.coverage-dashboard__note {
+  max-width: 60rem;
+  margin-block-start: var(--whr-space-3);
+  font-size: 0.88rem;
+  opacity: 0.8;
+}

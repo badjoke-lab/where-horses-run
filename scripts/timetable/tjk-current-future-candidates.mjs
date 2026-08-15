@@ -3,7 +3,9 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const SCHEMA = 'tjk_current_future_candidate_batch.v1';
-export const ENTRY_URL = 'https://www.tjk.org/TR/Kurumsal/Info/Page/GunlukYarisProgrami';
+export const ENTRY_URL = 'https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami';
+export const CURRENT_PAGE_PATH = '/TR/YarisSever/Info/Page/GunlukYarisProgrami';
+export const VENUE_DETAIL_PATH = '/TR/YarisSever/Info/Sehir/GunlukYarisProgrami';
 export const TIMEZONE = 'Europe/Istanbul';
 const MAX_INDEX_PAGES = 14;
 
@@ -58,12 +60,16 @@ function isTjkHost(url) {
   return url.protocol === 'https:' && url.hostname.toLowerCase() === 'www.tjk.org';
 }
 
-export function isProgrammeCityUrl(url) {
-  return isTjkHost(url) && /\/Info\/Sehir\/GunlukYarisProgrami$/i.test(url.pathname);
+function hasExactPath(url, expected) {
+  return url.pathname.toLocaleLowerCase('tr-TR') === expected.toLocaleLowerCase('tr-TR');
 }
 
-function isProgrammeIndexUrl(url) {
-  return isTjkHost(url) && /\/Info\/Page\/GunlukYarisProgrami$/i.test(url.pathname);
+export function isProgrammeCityUrl(url) {
+  return isTjkHost(url) && hasExactPath(url, VENUE_DETAIL_PATH);
+}
+
+export function isProgrammeIndexUrl(url) {
+  return isTjkHost(url) && hasExactPath(url, CURRENT_PAGE_PATH);
 }
 
 function dateFromUrl(url) {
@@ -110,7 +116,7 @@ export function discoverFromIndexHtml(html, pageUrl, today) {
       provenance: {
         discovered_from: pageUrl,
         discovered_href: anchor.href,
-        discovery_method: 'official_programme_index_anchor',
+        discovery_method: 'official_page_discovered_venue_detail',
       },
     });
   }
@@ -122,14 +128,22 @@ async function fetchHtml(url, fetchImpl) {
   const response = await fetchImpl(url, {
     method: 'GET',
     redirect: 'follow',
-    headers: { accept: 'text/html,application/xhtml+xml' },
+    headers: {
+      accept: 'text/html,application/xhtml+xml',
+      'user-agent': 'WhereHorsesRun-source-verification/1.0',
+    },
     signal: AbortSignal.timeout(20_000),
   });
-  if (!response.ok) throw new Error(`TJK index fetch failed: HTTP ${response.status}`);
+  if (!response.ok) throw new Error(`TJK programme page fetch failed: HTTP ${response.status}`);
   return response.text();
 }
 
 export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(), entryUrl = ENTRY_URL } = {}) {
+  const parsedEntry = new URL(entryUrl);
+  if (!isProgrammeIndexUrl(parsedEntry) || parsedEntry.search) {
+    throw new Error('entryUrl must be the current TJK YarisSever programme landing without query parameters');
+  }
+
   const today = turkeyDate(now);
   const retrievedAt = now.toISOString();
   const queue = [entryUrl];
@@ -139,6 +153,8 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
   while (queue.length && visited.size < MAX_INDEX_PAGES) {
     const pageUrl = queue.shift();
     if (visited.has(pageUrl)) continue;
+    const parsedPage = new URL(pageUrl);
+    if (!isProgrammeIndexUrl(parsedPage)) continue;
     visited.add(pageUrl);
     const html = await fetchHtml(pageUrl, fetchImpl);
     const discovered = discoverFromIndexHtml(html, pageUrl, today);
@@ -170,7 +186,7 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
       public_write: false,
     },
     discovery: {
-      method: 'official_programme_index_anchors_only',
+      method: 'official_programme_page_anchors_only',
       index_pages_fetched: visited.size,
     },
     candidates,

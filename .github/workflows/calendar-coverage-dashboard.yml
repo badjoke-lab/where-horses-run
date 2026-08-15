@@ -1,0 +1,33 @@
+name: Calendar coverage dashboard
+
+on:
+  pull_request:
+    paths:
+      - 'src/lib/timetable/coverageDashboard.ts'
+      - 'src/components/CalendarCoverageDashboard.astro'
+      - 'src/styles/calendar-coverage-dashboard.css'
+      - 'src/styles/utilities.css'
+      - 'src/pages/calendar/index.astro'
+      - 'src/pages/ja/calendar/index.astro'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'scripts/check-calendar-coverage-dashboard.mjs'
+      - '.github/workflows/calendar-coverage-dashboard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rendered-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - run: node scripts/check-calendar-coverage-dashboard.mjs
+      - run: git diff --exit-code
