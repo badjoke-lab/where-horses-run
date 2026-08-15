@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { executeTjkScheduledDryRun } from './run-m5-tjk-scheduled-dry-run.mjs';
+import { buildTjkScheduledRankCCandidate } from './timetable/tjk-current-future-rank-c-adapter.mjs';
 
 const SUCCESS_DIR = 'artifacts/m5-scheduled/contract-success';
 const ERROR_DIR = 'artifacts/m5-scheduled/contract-error';
@@ -79,6 +80,11 @@ try {
   const sourceBatch = readJson(success.sourceBatchPath);
   assert.equal(sourceBatch.raw_body_retained, false);
   assert.equal(Object.hasOwn(sourceBatch, 'raw_body'), false);
+  assert.throws(
+    () => buildTjkScheduledRankCCandidate(sourceBatch, { today: '2026-08-15' }),
+    /effective_today must match the explicit Turkey run date/,
+  );
+
   const diffHtml = fs.readFileSync(path.resolve(success.diffPath), 'utf8');
   assert.match(diffHtml, /REVIEW ONLY — NOT PUBLICATION/);
   assert.match(diffHtml, /noindex,nofollow,noarchive/);
@@ -107,6 +113,7 @@ try {
   assert.doesNotMatch(workflow, /contents:\s*write/);
   assert.doesNotMatch(workflow, /pull-requests:\s*write/);
   assert.doesNotMatch(workflow, /promote:timetable|promote-timetable|public_projection_write:\s*true|canonical_write:\s*true/i);
+  assert.match(workflow, /live-read-only-collection:\s*\n\s*if: github\.event_name != 'pull_request'/);
   assert.match(workflow, /run-m5-tjk-scheduled-dry-run\.mjs/);
   assert.match(workflow, /actions\/upload-artifact@v4/);
   assert.match(workflow, /artifacts\/m5-scheduled/);
@@ -116,6 +123,7 @@ try {
   console.log('- success writes source batch + candidate + run log + review diff artifact only');
   console.log('- source failure writes run log only and retains no raw response body');
   console.log('- workflow is read-only and contains no promotion/publication/merge/deploy capability');
+  console.log('- relevant main pushes execute the same live read-only dry-run for post-merge verification');
 } finally {
   for (const dir of [SUCCESS_DIR, ERROR_DIR]) fs.rmSync(path.resolve(dir), { recursive: true, force: true });
 }
