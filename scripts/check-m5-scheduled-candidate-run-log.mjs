@@ -234,7 +234,7 @@ expectFailure(
     started_at: '2026-08-16T00:00:03Z',
     completed_at: '2026-08-16T00:00:02Z',
   }),
-  /started_at must be on or before completed_at/,
+  /execution\.started_at must be on or before execution\.completed_at/,
 );
 
 console.log('M5 scheduled candidate run-log check passed.');
