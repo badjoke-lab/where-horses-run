@@ -149,7 +149,7 @@ export async function executeTjkScheduledDryRun({
   let candidate;
   let diff;
   try {
-    candidate = buildTjkScheduledRankCCandidate(batch);
+    candidate = buildTjkScheduledRankCCandidate(batch, { today });
     validateTjkScheduledRankCCandidate(candidate);
     diff = buildCandidateDiff(candidate, readJson(baseline), readJson(baselineDetails));
     invariant(diff.review_only === true && diff.approval_effect === 'none' && diff.publication_effect === 'none', 'candidate diff must remain review-only');
