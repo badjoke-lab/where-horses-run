@@ -1,4 +1,5 @@
 const SCHEMA = 'scheduled-candidate-run-log-v1';
+const DRY_RUN_MODE = 'dry_run';
 
 export const SCHEDULED_CANDIDATE_RUN_LOG_SCHEMA = SCHEMA;
 
@@ -36,6 +37,32 @@ const ERROR_STATUSES = new Set([
 
 const EXECUTABLE_ELIGIBILITY = new Set(['eligible', 'reviewed_input_only']);
 
+const ALLOWED_INPUT_KEYS = new Set([
+  'country_id',
+  'authority_id',
+  'source_id',
+  'adapter_id',
+  'adapter_version',
+  'run_mode',
+  'window_start',
+  'window_end',
+  'timezone',
+  'run_at',
+  'source_reference',
+  'eligibility',
+  'status',
+  'run_id',
+  'attempt',
+  'started_at',
+  'completed_at',
+  'candidate_count',
+  'candidate_artifact_path',
+  'candidate_sha256',
+  'reason_code',
+  'error_code',
+  'error_message',
+]);
+
 const FORBIDDEN_KEYS = new Set([
   'html',
   'body',
@@ -70,6 +97,14 @@ const FORBIDDEN_KEYS = new Set([
   'tips',
   'stream_url',
   'stream_urls',
+  'password',
+  'secret',
+  'token',
+  'access_token',
+  'api_key',
+  'authorization',
+  'cookie',
+  'set_cookie',
 ]);
 
 const EFFECTS = Object.freeze({
@@ -145,6 +180,12 @@ function assertNoForbiddenKeys(value, path = 'input') {
   }
 }
 
+function assertAllowedInputKeys(input) {
+  for (const key of Object.keys(input)) {
+    invariant(ALLOWED_INPUT_KEYS.has(key), `input.${key} is not part of the scheduled dry-run log contract`);
+  }
+}
+
 function assertExactKeys(object, expectedKeys, field) {
   invariant(isPlainObject(object), `${field} must be an object`);
   const actual = Object.keys(object).sort();
@@ -157,6 +198,28 @@ function assertEffects(effects) {
   for (const [key, expected] of Object.entries(EFFECTS)) {
     invariant(effects[key] === expected, `effects.${key} must be ${expected}`);
   }
+}
+
+function assertSafeSourceReference(value) {
+  assertNonEmptyString(value, 'source_reference');
+  invariant(value.length <= 2048, 'source_reference must be <= 2048 characters');
+
+  if (/^https?:\/\//i.test(value)) {
+    const parsed = new URL(value);
+    invariant(!parsed.username && !parsed.password, 'source_reference must not contain URL credentials');
+    const sensitiveParams = /^(token|access_token|api_key|apikey|secret|password|credential|authorization)$/i;
+    for (const key of parsed.searchParams.keys()) {
+      invariant(!sensitiveParams.test(key), `source_reference must not contain sensitive query parameter: ${key}`);
+    }
+  }
+}
+
+function assertSafeErrorMessage(value) {
+  assertNullableString(value, 'disposition.error_message');
+  if (value === null) return;
+  invariant(value.length <= 240, 'disposition.error_message must be <= 240 characters');
+  invariant(!/[\r\n]/.test(value), 'disposition.error_message must be a single-line summary');
+  invariant(!/<\s*(?:!doctype|html|body)\b/i.test(value), 'disposition.error_message must not contain raw HTML/body content');
 }
 
 function validateStatusEligibility(status, eligibility) {
@@ -191,9 +254,11 @@ export function validateScheduledCandidateRunLog(log) {
   ], 'log');
 
   invariant(log.schema === SCHEMA, `schema must be ${SCHEMA}`);
-  for (const field of ['country_id', 'authority_id', 'source_id', 'adapter_id', 'adapter_version', 'run_mode', 'source_reference']) {
+  for (const field of ['country_id', 'authority_id', 'source_id', 'adapter_id', 'adapter_version']) {
     assertNonEmptyString(log[field], field);
   }
+  invariant(log.run_mode === DRY_RUN_MODE, `run_mode must be ${DRY_RUN_MODE}`);
+  assertSafeSourceReference(log.source_reference);
 
   assertExactKeys(log.window, ['start', 'end', 'timezone'], 'window');
   assertIsoDate(log.window.start, 'window.start');
@@ -235,7 +300,7 @@ export function validateScheduledCandidateRunLog(log) {
   assertExactKeys(log.disposition, ['reason_code', 'error_code', 'error_message'], 'disposition');
   assertNullableString(log.disposition.reason_code, 'disposition.reason_code');
   assertNullableString(log.disposition.error_code, 'disposition.error_code');
-  assertNullableString(log.disposition.error_message, 'disposition.error_message');
+  assertSafeErrorMessage(log.disposition.error_message);
 
   if (ERROR_STATUSES.has(log.status)) {
     assertNonEmptyString(log.disposition.error_code, 'disposition.error_code');
@@ -255,6 +320,8 @@ export function validateScheduledCandidateRunLog(log) {
 export function buildScheduledCandidateRunLog(input) {
   invariant(isPlainObject(input), 'input must be an object');
   assertNoForbiddenKeys(input);
+  assertAllowedInputKeys(input);
+  invariant(input.run_mode === undefined || input.run_mode === DRY_RUN_MODE, `input.run_mode must be ${DRY_RUN_MODE}`);
 
   const log = {
     schema: SCHEMA,
@@ -263,7 +330,7 @@ export function buildScheduledCandidateRunLog(input) {
     source_id: input.source_id,
     adapter_id: input.adapter_id,
     adapter_version: input.adapter_version,
-    run_mode: input.run_mode,
+    run_mode: DRY_RUN_MODE,
     window: {
       start: input.window_start,
       end: input.window_end,
