@@ -6,6 +6,24 @@ on:
       - 'scripts/timetable/tjk-current-future-candidates.mjs'
       - 'scripts/check-tjk-current-future-candidates.mjs'
       - 'tests/timetable/tjk-current-future-candidates.test.mjs'
+      - 'scripts/timetable/tjk-current-future-rank-c-adapter.mjs'
+      - 'scripts/run-m5-tjk-scheduled-dry-run.mjs'
+      - 'scripts/check-m5-github-actions-dry-run.mjs'
+      - 'scripts/timetable/scheduled-candidate-run-log.mjs'
+      - 'scripts/timetable/candidate-diff-page.mjs'
+      - '.github/workflows/calendar-tjk-current-future-candidates.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/tjk-current-future-candidates.mjs'
+      - 'scripts/check-tjk-current-future-candidates.mjs'
+      - 'tests/timetable/tjk-current-future-candidates.test.mjs'
+      - 'scripts/timetable/tjk-current-future-rank-c-adapter.mjs'
+      - 'scripts/run-m5-tjk-scheduled-dry-run.mjs'
+      - 'scripts/check-m5-github-actions-dry-run.mjs'
+      - 'scripts/timetable/scheduled-candidate-run-log.mjs'
+      - 'scripts/timetable/candidate-diff-page.mjs'
       - '.github/workflows/calendar-tjk-current-future-candidates.yml'
   workflow_dispatch:
   schedule:
@@ -13,6 +31,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: m5-tjk-scheduled-dry-run-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   deterministic-validation:
@@ -23,6 +45,9 @@ jobs:
         with:
           node-version: 22.12.0
       - run: node --test tests/timetable/tjk-current-future-candidates.test.mjs
+      - run: node scripts/check-m5-github-actions-dry-run.mjs
+      - run: git diff --exit-code
+
   live-read-only-collection:
     if: github.event_name != 'pull_request'
     needs: deterministic-validation
@@ -32,10 +57,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: node scripts/timetable/tjk-current-future-candidates.mjs --output .artifacts/tjk-current-future-candidates.json
-      - run: node scripts/check-tjk-current-future-candidates.mjs .artifacts/tjk-current-future-candidates.json
-      - uses: actions/upload-artifact@v4
+      - id: clock
+        name: Capture one run timestamp
+        shell: bash
+        run: echo "run_at=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+      - name: Generate review-only M5 TJK dry-run artifacts
+        run: >-
+          node scripts/run-m5-tjk-scheduled-dry-run.mjs
+          --run-at '${{ steps.clock.outputs.run_at }}'
+          --output-dir 'artifacts/m5-scheduled/turkey/${{ github.run_id }}-${{ github.run_attempt }}'
+      - name: Prove tracked repository state is unchanged
+        if: always()
+        run: git diff --exit-code
+      - name: Upload dry-run review artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: tjk-current-future-candidates
-          path: .artifacts/tjk-current-future-candidates.json
+          name: m5-tjk-scheduled-dry-run-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/m5-scheduled/turkey/${{ github.run_id }}-${{ github.run_attempt }}/
           retention-days: 7
+          if-no-files-found: error
