@@ -6,8 +6,8 @@ import { validateScheduledCandidateRunLog } from './timetable/scheduled-candidat
 import { buildHumanReviewDecision } from './timetable/human-review-decision.mjs';
 
 const EXPECTED_WORKFLOW = 'Calendar TJK current/future candidates';
-const BASELINE = 'data/generated/timetable/canonical/meetings.json';
-const BASELINE_DETAILS = 'data/generated/timetable/canonical/meeting-details.json';
+const DEFAULT_BASELINE = 'data/generated/timetable/canonical/meetings.json';
+const DEFAULT_BASELINE_DETAILS = 'data/generated/timetable/canonical/meeting-details.json';
 const DIFF_TITLE = 'M5 TJK scheduled candidate review diff';
 
 function invariant(condition, message) {
@@ -78,9 +78,9 @@ function assertRunLogSafe(runLog, candidate, actualCandidateSha, expectedCandida
   }
 }
 
-function verifyDiff(candidate, downloadedDiffPath) {
-  const baseline = readJson(BASELINE);
-  const details = readJson(BASELINE_DETAILS);
+function verifyDiff(candidate, downloadedDiffPath, baselinePath, baselineDetailsPath) {
+  const baseline = readJson(baselinePath);
+  const details = readJson(baselineDetailsPath);
   const diff = buildCandidateDiff(candidate, baseline, details);
   invariant(diff.review_only === true && diff.approval_effect === 'none' && diff.publication_effect === 'none', 'rebuilt diff must remain review-only');
   const rebuilt = renderCandidateDiffHtml(diff, { title: DIFF_TITLE });
@@ -99,6 +99,8 @@ const args = parseArgs(process.argv.slice(2));
 const sourceDir = assertRelativePath(required(args, 'source-dir'), 'source-dir', 'artifacts/review-source');
 const output = assertRelativePath(required(args, 'output'), 'output', 'artifacts/m5-human-review/');
 invariant(output.endsWith('.json'), 'output must be a JSON artifact');
+const baselinePath = assertRelativePath(args.get('baseline') ?? DEFAULT_BASELINE, 'baseline');
+const baselineDetailsPath = assertRelativePath(args.get('baseline-details') ?? DEFAULT_BASELINE_DETAILS, 'baseline-details');
 const sourceRunId = required(args, 'source-run-id');
 invariant(/^\d+$/.test(sourceRunId), 'source-run-id must be numeric');
 const sourceWorkflowName = required(args, 'source-workflow-name');
@@ -121,6 +123,7 @@ invariant(!Number.isNaN(Date.parse(reviewedAt)), 'reviewed-at must be an ISO tim
 const expectedCandidateSha = required(args, 'expected-candidate-sha256').toLowerCase();
 invariant(/^[a-f0-9]{64}$/.test(expectedCandidateSha), 'expected-candidate-sha256 must be a lowercase SHA-256 digest');
 
+for (const file of [baselinePath, baselineDetailsPath]) invariant(fs.existsSync(path.resolve(file)), `missing source-head baseline file: ${file}`);
 const candidateFile = `${sourceDir}/candidate.json`;
 const runLogFile = `${sourceDir}/run-log.json`;
 const diffFile = `${sourceDir}/candidate-diff.html`;
@@ -133,7 +136,7 @@ const actualCandidateSha = sha256(candidateBytes);
 
 assertCandidatePending(candidate);
 assertRunLogSafe(runLog, candidate, actualCandidateSha, expectedCandidateSha, sourceRunId);
-const diff = verifyDiff(candidate, diffFile);
+const diff = verifyDiff(candidate, diffFile, baselinePath, baselineDetailsPath);
 
 const decision = buildHumanReviewDecision({
   source_run_id: sourceRunId,
@@ -161,4 +164,5 @@ fs.writeFileSync(path.resolve(output), serialize(decision));
 console.log(`Wrote human review decision: ${output}`);
 console.log(`decision=${decision.review.decision}`);
 console.log(`candidate_sha256=${decision.candidate.sha256}`);
+console.log(`baseline_commit_sha=${decision.diff.baseline_commit_sha}`);
 console.log('candidate_mutated=false promotion_invoked=false canonical_write=false public_projection_write=false merge=false deploy=false');
