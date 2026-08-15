@@ -24,11 +24,13 @@ function safeUrl(value, field) {
   return url.toString();
 }
 
-export function buildTjkScheduledRankCCandidate(batch) {
-  validateArtifact(batch, { today: batch?.effective_today });
+export function buildTjkScheduledRankCCandidate(batch, { today } = {}) {
+  invariant(typeof today === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(today), 'explicit Turkey run date is required');
+  invariant(batch?.effective_today === today, 'source batch effective_today must match the explicit Turkey run date');
+  validateArtifact(batch, { today });
   const dates = batch.candidates.map((candidate) => candidate.date).sort();
-  const startDate = dates[0] ?? batch.effective_today;
-  const endDateExclusive = nextDay(dates.at(-1) ?? batch.effective_today);
+  const startDate = dates[0] ?? today;
+  const endDateExclusive = nextDay(dates.at(-1) ?? today);
 
   const records = batch.candidates.map((candidate) => {
     const sourceVenueId = String(candidate.racecourse_source_id);
