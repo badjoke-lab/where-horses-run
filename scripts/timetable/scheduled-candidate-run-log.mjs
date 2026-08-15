@@ -37,12 +37,16 @@ const ERROR_STATUSES = new Set([
 const EXECUTABLE_ELIGIBILITY = new Set(['eligible', 'reviewed_input_only']);
 
 const FORBIDDEN_KEYS = new Set([
+  'html',
+  'body',
   'raw_html',
   'raw_body',
   'response_body',
   'html_body',
   'racecard',
   'racecards',
+  'race_card',
+  'race_cards',
   'runner',
   'runners',
   'participant',
@@ -120,7 +124,11 @@ function assertSha256(value, field) {
 }
 
 function normalizeKey(key) {
-  return String(key).trim().toLowerCase().replace(/[ -]/g, '_');
+  return String(key)
+    .trim()
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .toLowerCase()
+    .replace(/[ -]/g, '_');
 }
 
 function assertNoForbiddenKeys(value, path = 'input') {
