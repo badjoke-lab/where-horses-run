@@ -37,17 +37,10 @@ const success = buildScheduledCandidateRunLog({
   candidate_count: 2,
   candidate_artifact_path: 'artifacts/turkey/2026-08-16_2026-08-22/candidate.json',
   candidate_sha256: sha,
-  effects: {
-    candidate_approved: true,
-    promotion_invoked: true,
-    canonical_write: true,
-    public_projection_write: true,
-    merge: true,
-    deploy: true,
-  },
 });
 
 assert.equal(success.schema, SCHEDULED_CANDIDATE_RUN_LOG_SCHEMA);
+assert.equal(success.run_mode, 'dry_run');
 assert.equal(success.status, 'success_candidate_generated');
 assert.equal(success.candidate.count, 2);
 assert.deepEqual(success.effects, {
@@ -195,6 +188,28 @@ expectFailure(
 );
 
 expectFailure(
+  'non-dry-run execution is rejected',
+  () => buildScheduledCandidateRunLog({
+    ...base,
+    run_mode: 'publish',
+    status: 'source_error',
+    error_code: 'unsafe-mode',
+  }),
+  /input\.run_mode must be dry_run/,
+);
+
+expectFailure(
+  'caller-controlled effects are rejected',
+  () => buildScheduledCandidateRunLog({
+    ...base,
+    status: 'source_error',
+    error_code: 'unsafe-effects',
+    effects: { public_projection_write: true },
+  }),
+  /input\.effects is not part of the scheduled dry-run log contract/,
+);
+
+expectFailure(
   'raw response data is forbidden',
   () => buildScheduledCandidateRunLog({
     ...base,
@@ -214,6 +229,39 @@ expectFailure(
     debug: { odds: ['2.4'], results: ['1'] },
   }),
   /prohibited from scheduled run logs/,
+);
+
+expectFailure(
+  'raw HTML cannot be hidden in an error summary',
+  () => buildScheduledCandidateRunLog({
+    ...base,
+    status: 'source_error',
+    error_code: 'http-500',
+    error_message: '<html>full response</html>',
+  }),
+  /must not contain raw HTML\/body content/,
+);
+
+expectFailure(
+  'multiline response text cannot be used as an error summary',
+  () => buildScheduledCandidateRunLog({
+    ...base,
+    status: 'source_error',
+    error_code: 'http-500',
+    error_message: 'line one\nline two',
+  }),
+  /must be a single-line summary/,
+);
+
+expectFailure(
+  'source references cannot carry credentials',
+  () => buildScheduledCandidateRunLog({
+    ...base,
+    source_reference: 'https://example.test/programme?access_token=secret',
+    status: 'source_error',
+    error_code: 'unsafe-source-reference',
+  }),
+  /must not contain sensitive query parameter/,
 );
 
 expectFailure(
@@ -241,5 +289,5 @@ console.log('M5 scheduled candidate run-log check passed.');
 console.log(`- schema: ${SCHEDULED_CANDIDATE_RUN_LOG_SCHEMA}`);
 console.log(`- statuses: ${RUN_LOG_STATUSES.length}`);
 console.log('- KRA reviewed-input-only, TJK eligible, SOREC blocked boundaries are representable');
-console.log('- generated candidates remain human-review-required with all publication effects disabled');
-console.log('- raw source, participant, betting, result, promotion and public-write leakage fail closed');
+console.log('- dry-run mode is fixed and all publication effects remain disabled');
+console.log('- raw source, credentials, participant, betting, result and public-write leakage fail closed');
