@@ -27,14 +27,14 @@ const content = isJa
           heading: '2. ソースの扱い',
           paragraphs: [
             '公式ソースは、開催日、競馬場、発走時刻、主催者情報などの現在情報を確認するために使用します。ページ内の公式リンクは、最新かつ完全な情報へ進むための導線です。',
-            '参考ソースは、用語、歴史的文脈、競馬体系、公式導線の発見など、限定した目的で使用する場合があります。参考ソースだけを根拠に現行開催を確定しません。',
+            '参考ソースは、用語、歴史的文脈、競馬体系、公式導線の発見など、限定した目的で使用する場合があります。参考ソースだけを根拠に現行開催を確定せず、公式ソースから確認できる能力とレビュー後に公開済みの範囲も分けて扱います。',
           ],
         },
         {
           heading: '3. レビューから公開まで',
           paragraphs: [
-            '候補情報は、対象、日付、場所、ソース、公開可能な項目を確認した後に、公開用データへ反映します。未確認の候補や内部作業状態をそのまま公開ページへ出しません。',
-            '同じ情報でも、確認できる粒度によって公開範囲が異なります。確認できない項目は推測で補わず、表示を薄くして公式ソースへ案内します。',
+            '更新候補は、公式ソースから生成された場合でも公開データとは別に扱います。候補、差分、実行記録はレビュー用であり、人が対象、日付、場所、ソース、公開可能な項目を確認したものだけを公開用データへ反映します。',
+            '自動処理は候補作成や検証を補助できますが、人のレビューを省略して公開へ進めません。同じ情報でも確認できる粒度によって公開範囲は異なり、確認できない項目を推測で補わず公式ソースへ案内します。',
           ],
         },
         {
@@ -48,7 +48,7 @@ const content = isJa
           heading: '5. Today・Tomorrow・カレンダー',
           paragraphs: [
             'Today、Tomorrow、カレンダー、現在のタイムテーブルは、コミット済みのレビュー済み公開データから生成します。表示される開催は、その時点で公開可能と判断された範囲です。',
-            '開催が表示されていないことは、その国・地域で競馬がないことを意味しません。確認済み公開レコードがない場合や、公式情報を再確認中の場合があります。',
+            '開催が表示されていないことは、その国・地域で競馬がないことを意味しません。確認済み公開レコードがない場合や公式情報を再確認中の場合があり、開催単位の古い確認には共通Calendar基準日からの鮮度警告を表示します。',
           ],
         },
         {
@@ -61,8 +61,8 @@ const content = isJa
         {
           heading: '7. 確認日と更新',
           paragraphs: [
-            '「最終確認」や確認日は、そのソースまたは項目を最後にレビューした日を示します。情報がその後変わっていないことや、次の開催まで有効であることを保証する表示ではありません。',
-            '更新は、確認可能な公式情報とレビュー済み証拠が揃ったときに行います。リアルタイム更新や、すべての変更の即時反映は保証しません。',
+            '「最終確認」や確認日は、そのソースまたは項目を最後にレビューした日を示します。国別のソース鮮度badgeは、集計に使うreadiness記録の最も古い確認日を使い、共通Calendar基準日の30日以内なら「30日以内」、30日を超えると「再確認推奨」、確認日が欠ける場合は「確認日不明」とします。',
+            'ソース鮮度と開催データの鮮度は別です。開催単位では最終確認日が共通Calendar基準日から1日を超えて古い場合にstale警告を出します。いずれも情報が変わっていないことを保証せず、リアルタイム更新やすべての変更の即時反映も保証しません。',
           ],
         },
         {
@@ -75,7 +75,7 @@ const content = isJa
         {
           heading: '9. 掲載しない情報と制限事項',
           paragraphs: [
-            '出走表、馬名、騎手名、調教師名、枠順、斤量、オッズ、結果、払戻、予想、買い目、完全なレースカード、公式本文の転載は扱いません。動画の埋め込み、直接ストリームURL、非公式ミラー、転載映像も扱いません。',
+            '出走表、馬名、騎手名、調教師名、枠順、斤量、オッズ、結果、払戻、予想、買い目、完全なレースカード、公式本文やraw HTMLの転載は扱いません。動画の埋め込み、直接ストリームURL、非公式ミラー、転載映像も扱いません。',
             '競馬どこ？は情報探索を助けるガイドであり、開催の実施、時刻の確定、情報の完全性、観戦可否を保証しません。最終判断には公式ソースを使用してください。',
           ],
         },
@@ -107,14 +107,14 @@ const content = isJa
           heading: '2. How sources are used',
           paragraphs: [
             'Official sources are used to confirm current facts such as meeting dates, racecourses, post times, and organizer information. Official links on public pages are routes to the latest and complete information.',
-            'Reference sources may be used for a limited purpose such as terminology, historical context, racing-system context, or discovery of an official route. A current meeting is not confirmed from a reference source alone.',
+            'Reference sources may be used for a limited purpose such as terminology, historical context, racing-system context, or discovery of an official route. A current meeting is not confirmed from a reference source alone, and source capability is kept separate from the reviewed scope already published.',
           ],
         },
         {
           heading: '3. Review before publication',
           paragraphs: [
-            'Candidate information is checked for subject, date, place, source, and publication-safe fields before it enters the public dataset. Unreviewed candidates and internal work states are not exposed as public records.',
-            'The same source can support different levels of public detail. Missing fields are not filled by inference. When a field cannot be confirmed, the page stays lighter and directs the reader to the official source.',
+            'Update candidates remain separate from public data even when generated from official sources. Candidates, diffs, and run records are review material; only records checked by a person for subject, date, place, source, and publication-safe fields may enter the public dataset.',
+            'Automated processing may assist candidate generation and validation, but it does not bypass human review or publish unreviewed data. Public detail still follows the verified field scope, and missing fields are not filled by inference.',
           ],
         },
         {
@@ -128,7 +128,7 @@ const content = isJa
           heading: '5. Today, Tomorrow, and calendar views',
           paragraphs: [
             'Today, Tomorrow, Calendar, and Current Timetable views are generated from committed, reviewed public data. Displayed meetings represent the scope approved for public display at that point.',
-            'An empty view does not prove that no racing exists in a country or region. It can mean that no reviewed public record is available or that official information still needs rechecking.',
+            'An empty view does not prove that no racing exists in a country or region. It can mean that no reviewed public record is available or official information still needs rechecking; meeting-level stale warnings use the shared Calendar reference date.',
           ],
         },
         {
@@ -141,8 +141,8 @@ const content = isJa
         {
           heading: '7. Last checked and updates',
           paragraphs: [
-            'A “Last checked” date records when a source or field was last reviewed. It does not guarantee that the information has not changed since then or remains valid for the next meeting.',
-            'Records are updated when reviewable official information and evidence are available. Real-time updates and immediate coverage of every change are not promised.',
+            'A “Last checked” date records when a source or field was last reviewed. Country source-freshness badges use the oldest checked date among readiness records contributing to the aggregate: Current through 30 days from the shared Calendar reference date, Review due after 30 days, and Unknown when a contributing check date is missing.',
+            'Source freshness and meeting-data freshness are separate. A meeting-level stale warning appears when its last check is more than one day older than the shared Calendar reference date. Neither status guarantees that information has not changed, and real-time or immediate coverage of every change is not promised.',
           ],
         },
         {
@@ -155,7 +155,7 @@ const content = isJa
         {
           heading: '9. Excluded information and limitations',
           paragraphs: [
-            'The site does not publish entries, horse names, jockey or trainer names, draws, weights, odds, results, payouts, predictions, betting picks, complete racecards, or copied official-source text. It also does not embed video or provide direct stream URLs, unofficial mirrors, or copied recordings.',
+            'The site does not publish entries, horse names, jockey or trainer names, draws, weights, odds, results, payouts, predictions, betting picks, complete racecards, copied official-source text, or raw HTML. It also does not embed video or provide direct stream URLs, unofficial mirrors, or copied recordings.',
             'Where Horses Run is an information-discovery guide. It does not guarantee that a meeting will take place, that a time is final, that coverage is complete, or that viewing access is available. Use the official source for final decisions.',
           ],
         },
