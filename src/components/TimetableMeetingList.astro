@@ -1,5 +1,7 @@
 ---
 import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/timetableMeetingRows';
+import { getTimetableDateContext } from '../data/timetableMeetingRows';
+import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
 
 type Props =
   | {
@@ -16,6 +18,7 @@ type Props =
 
 const props = Astro.props as Props;
 const lang = props.lang ?? 'en';
+const referenceDate = getTimetableDateContext().today;
 const emptyLabel = props.emptyLabel ?? (lang === 'ja'
   ? '開催情報はまだありません。最終確認には公式ソースを使用してください。'
   : 'No meetings are listed yet. Use official source links for final confirmation.');
@@ -39,6 +42,8 @@ const text = lang === 'ja'
       official: '公式',
       rank: '公開ランク:',
       source: 'ソース',
+      staleLegend: '古い確認を含みます。公式ソースで確認してください。',
+      unknownFreshness: '確認日不明',
     }
   : {
       authority: 'Authority',
@@ -50,6 +55,8 @@ const text = lang === 'ja'
       official: 'Official',
       rank: 'Public rank:',
       source: 'Source',
+      staleLegend: 'Some checks are stale. Confirm with official sources.',
+      unknownFreshness: 'Check date unknown',
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
@@ -86,10 +93,16 @@ const displayAuthority = (record: TimetableMeetingRow) =>
   lang === 'ja' ? jaAuthorityLabelById[record.authority_id] ?? record.authority_label : record.authority_label;
 const displayCountry = (record: TimetableMeetingRow) =>
   lang === 'ja' ? jaCountryLabelById[record.country_id] ?? record.country_label : record.country_label;
+const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
+  lastCheckedDate: record.last_checked_date ?? null,
+  referenceDate,
+});
+const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
 ---
 
 {groups.length > 0 ? (
   <div class="timetable-date-groups">
+    {hasStaleRecords && <p>{text.staleLegend}</p>}
     {groups.map((group) => (
       <section
         class="timetable-date-group"
@@ -114,7 +127,11 @@ const displayCountry = (record: TimetableMeetingRow) =>
                   <span>{text.last}: {record.last_race_time_local}</span>
                 )}
                 <span>{text.source}: {record.source_status}</span>
-                <span>{text.checked}: {record.last_checked_date}</span>
+                {freshnessFor(record).status === 'unknown' ? (
+                  <strong>{text.unknownFreshness}</strong>
+                ) : (
+                  <span>{text.checked}: {record.last_checked_date}</span>
+                )}
               </p>
               <div class="meeting-row__links">
                 {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
