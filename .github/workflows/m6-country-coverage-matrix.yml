@@ -12,6 +12,7 @@ on:
       - 'data/static/m6-country-coverage-route-addition-v1.json'
       - 'scripts/check-m6-country-coverage-matrix.mjs'
       - 'scripts/check-v1-scope-freeze.mjs'
+      - 'scripts/check-v1-data-audit.mjs'
       - 'scripts/check-sitemap-robots.mjs'
       - 'scripts/check-structured-data-baseline.mjs'
       - '.github/workflows/m6-country-coverage-matrix.yml'
@@ -33,4 +34,5 @@ jobs:
       - run: node scripts/check-sitemap-robots.mjs
       - run: node scripts/check-structured-data-baseline.mjs
       - run: node scripts/check-v1-scope-freeze.mjs
+      - run: node scripts/check-v1-data-audit.mjs
       - run: git diff --exit-code
