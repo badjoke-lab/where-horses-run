@@ -37,7 +37,9 @@ assert.throws(
 
 const list = fs.readFileSync('src/components/TimetableMeetingList.astro', 'utf8');
 assert.match(list, /evaluatePublicFreshness/);
-assert.match(list, /data-source-freshness=\{freshness\.status\}/);
+assert.match(list, /group\.records\.map\(\(record\) => \(/);
+assert.match(list, /<li class="meeting-row">/);
+assert.match(list, /freshnessFor\(record\)\.status === 'stale'/);
 assert.match(list, /stale: 'Stale'/);
 assert.match(list, /stale: '古い可能性あり'/);
 assert.match(list, /record\.official_source_url/);
@@ -61,5 +63,6 @@ assert.doesNotMatch(workflow, /deploy/i);
 console.log('M5 stale data warning check passed.');
 console.log('- source checks 0-1 day old remain current; 2+ days become stale');
 console.log('- missing check dates remain explicitly unknown');
+console.log('- existing single-row mapping/markup contract is preserved');
 console.log('- English/Japanese meeting rows expose freshness without adding timetable detail');
 console.log('- stale projection status is explicitly labeled and official-source confirmation remains visible');
