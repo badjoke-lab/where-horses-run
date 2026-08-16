@@ -1,5 +1,7 @@
 ---
 import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/timetableMeetingRows';
+import { getTimetableDateContext } from '../data/timetableMeetingRows';
+import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
 
 type Props =
   | {
@@ -16,6 +18,7 @@ type Props =
 
 const props = Astro.props as Props;
 const lang = props.lang ?? 'en';
+const referenceDate = getTimetableDateContext().today;
 const emptyLabel = props.emptyLabel ?? (lang === 'ja'
   ? '開催情報はまだありません。最終確認には公式ソースを使用してください。'
   : 'No meetings are listed yet. Use official source links for final confirmation.');
@@ -39,6 +42,8 @@ const text = lang === 'ja'
       official: '公式',
       rank: '公開ランク:',
       source: 'ソース',
+      stale: '古い可能性あり',
+      unknownFreshness: '確認日不明',
     }
   : {
       authority: 'Authority',
@@ -50,6 +55,8 @@ const text = lang === 'ja'
       official: 'Official',
       rank: 'Public rank:',
       source: 'Source',
+      stale: 'Stale',
+      unknownFreshness: 'Check date unknown',
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
@@ -86,6 +93,10 @@ const displayAuthority = (record: TimetableMeetingRow) =>
   lang === 'ja' ? jaAuthorityLabelById[record.authority_id] ?? record.authority_label : record.authority_label;
 const displayCountry = (record: TimetableMeetingRow) =>
   lang === 'ja' ? jaCountryLabelById[record.country_id] ?? record.country_label : record.country_label;
+const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
+  lastCheckedDate: record.last_checked_date ?? null,
+  referenceDate,
+});
 ---
 
 {groups.length > 0 ? (
@@ -98,30 +109,39 @@ const displayCountry = (record: TimetableMeetingRow) =>
       >
         {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}</h2>}
         <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
-          {group.records.map((record) => (
-            <li class="meeting-row">
-              <div class="meeting-row__identity">
-                <strong>{displayRacecourse(record)}</strong>
-                <span>{text.rank} {record.capability_rank}</span>
-              </div>
-              <p class="meeting-row__meta">
-                <span>{text.authority}: {displayAuthority(record)}</span>
-                <span>{text.country}: {displayCountry(record)}</span>
-                {shouldShowFirst(record) && record.first_race_time_local && (
-                  <span>{text.first}: {record.first_race_time_local}</span>
-                )}
-                {shouldShowLast(record) && record.last_race_time_local && (
-                  <span>{text.last}: {record.last_race_time_local}</span>
-                )}
-                <span>{text.source}: {record.source_status}</span>
-                <span>{text.checked}: {record.last_checked_date}</span>
-              </p>
-              <div class="meeting-row__links">
-                {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
-                <a href={record.official_source_url}>{text.official}</a>
-              </div>
-            </li>
-          ))}
+          {group.records.map((record) => {
+            const freshness = freshnessFor(record);
+            return (
+              <li class="meeting-row" data-source-freshness={freshness.status}>
+                <div class="meeting-row__identity">
+                  <strong>{displayRacecourse(record)}</strong>
+                  <span>{text.rank} {record.capability_rank}</span>
+                </div>
+                <p class="meeting-row__meta">
+                  <span>{text.authority}: {displayAuthority(record)}</span>
+                  <span>{text.country}: {displayCountry(record)}</span>
+                  {shouldShowFirst(record) && record.first_race_time_local && (
+                    <span>{text.first}: {record.first_race_time_local}</span>
+                  )}
+                  {shouldShowLast(record) && record.last_race_time_local && (
+                    <span>{text.last}: {record.last_race_time_local}</span>
+                  )}
+                  <span>{text.source}: {record.source_status}</span>
+                  {freshness.status === 'stale' ? (
+                    <strong>{text.stale} · {text.checked}: {record.last_checked_date}</strong>
+                  ) : freshness.status === 'unknown' ? (
+                    <strong>{text.unknownFreshness}</strong>
+                  ) : (
+                    <span>{text.checked}: {record.last_checked_date}</span>
+                  )}
+                </p>
+                <div class="meeting-row__links">
+                  {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
+                  <a href={record.official_source_url}>{text.official}</a>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </section>
     ))}
