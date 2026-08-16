@@ -1,0 +1,89 @@
+---
+import {
+  coverageDashboardGeneratedAt,
+  getCoverageDashboardCountries,
+  type CoverageDimension,
+} from '../lib/timetable/coverageDashboard';
+
+type Props = { lang?: 'en' | 'ja' };
+const { lang = 'en' } = Astro.props as Props;
+const countries = getCoverageDashboardCountries();
+const dimensions: Array<{ key: CoverageDimension; en: string; ja: string }> = [
+  { key: 'racecourses', en: 'Racecourses', ja: '競馬場' },
+  { key: 'dates', en: 'Dates', ja: '開催日' },
+  { key: 'events', en: 'Race rows', ja: 'レース行' },
+  { key: 'times', en: 'Times', ja: '時刻' },
+  { key: 'structures', en: 'Programme fields', ja: '番組概要項目' },
+];
+const copy = lang === 'ja'
+  ? {
+      country: '国',
+      sourceStatus: 'ソース状態',
+      verified: '確認済み',
+      limited: '一部確認',
+      blocked: '未確認',
+      yes: '有',
+      no: '—',
+      publicMeetings: '公開開催',
+      publicDates: '公開日付',
+      publicRacecourses: '公開競馬場',
+      publicTimes: '時刻あり開催',
+      sourceGroup: '公式ソースで確認できる範囲',
+      publicGroup: 'レビュー済み公開範囲',
+    }
+  : {
+      country: 'Country',
+      sourceStatus: 'Source status',
+      verified: 'Verified',
+      limited: 'Limited',
+      blocked: 'Not verified',
+      yes: 'Yes',
+      no: '—',
+      publicMeetings: 'Public meetings',
+      publicDates: 'Public dates',
+      publicRacecourses: 'Public racecourses',
+      publicTimes: 'Meetings with times',
+      sourceGroup: 'Verified source capability',
+      publicGroup: 'Reviewed public coverage',
+    };
+const statusLabel = (status: 'verified' | 'limited' | 'blocked') =>
+  status === 'verified' ? copy.verified : status === 'limited' ? copy.limited : copy.blocked;
+---
+
+<div class="country-table-wrap" data-country-coverage-matrix data-generated-at={coverageDashboardGeneratedAt}>
+  <table class="country-table">
+    <caption>{lang === 'ja' ? '6か国のソース能力とレビュー済み公開範囲の比較' : 'Six-country source capability and reviewed public coverage comparison'}</caption>
+    <thead>
+      <tr>
+        <th rowspan="2" scope="col">{copy.country}</th>
+        <th rowspan="2" scope="col">{copy.sourceStatus}</th>
+        <th colspan={dimensions.length} scope="colgroup">{copy.sourceGroup}</th>
+        <th colspan="4" scope="colgroup">{copy.publicGroup}</th>
+      </tr>
+      <tr>
+        {dimensions.map((dimension) => <th scope="col">{lang === 'ja' ? dimension.ja : dimension.en}</th>)}
+        <th scope="col">{copy.publicMeetings}</th>
+        <th scope="col">{copy.publicDates}</th>
+        <th scope="col">{copy.publicRacecourses}</th>
+        <th scope="col">{copy.publicTimes}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {countries.map((country) => (
+        <tr data-coverage-country={country.country_id} data-source-status={country.source_status}>
+          <th scope="row" data-label={copy.country}>{lang === 'ja' ? country.country_label_ja : country.country_label}</th>
+          <td data-label={copy.sourceStatus}>{statusLabel(country.source_status)}</td>
+          {dimensions.map((dimension) => (
+            <td data-label={lang === 'ja' ? dimension.ja : dimension.en} data-confirmed={String(country.source_dimensions[dimension.key])}>
+              {country.source_dimensions[dimension.key] ? copy.yes : copy.no}
+            </td>
+          ))}
+          <td data-label={copy.publicMeetings}>{country.public.meetings}</td>
+          <td data-label={copy.publicDates}>{country.public.dates}</td>
+          <td data-label={copy.publicRacecourses}>{country.public.racecourses}</td>
+          <td data-label={copy.publicTimes}>{country.public.meetings_with_times}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
