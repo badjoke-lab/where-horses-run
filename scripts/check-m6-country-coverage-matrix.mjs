@@ -7,6 +7,9 @@ const enPage = fs.readFileSync('src/pages/about/data-coverage.astro', 'utf8');
 const jaPage = fs.readFileSync('src/pages/ja/about/data-coverage.astro', 'utf8');
 const enAbout = fs.readFileSync('src/pages/about/index.astro', 'utf8');
 const jaAbout = fs.readFileSync('src/pages/ja/about/index.astro', 'utf8');
+const routeAddition = JSON.parse(fs.readFileSync('data/static/m6-country-coverage-route-addition-v1.json', 'utf8'));
+const scopeChecker = fs.readFileSync('scripts/check-v1-scope-freeze.mjs', 'utf8');
+const sitemapChecker = fs.readFileSync('scripts/check-sitemap-robots.mjs', 'utf8');
 const workflow = fs.readFileSync('.github/workflows/m6-country-coverage-matrix.yml', 'utf8');
 
 const countryIds = [
@@ -54,8 +57,37 @@ assert.match(jaPage, /取得できることと公開することは同じでは�
 assert.match(enAbout, /\/about\/data-coverage\//);
 assert.match(jaAbout, /\/ja\/about\/data-coverage\//);
 
+assert.equal(routeAddition.schema_version, 'm6-country-coverage-route-addition-v1');
+assert.equal(routeAddition.work_id, 'WHR-M6-COUNTRY-COVERAGE-MATRIX');
+assert.equal(routeAddition.implementation_unit, 'M6-COUNTRY-COVERAGE-MATRIX-01');
+assert.equal(routeAddition.status, 'reviewed_route_addition');
+assert.equal(routeAddition.route_family, 'about');
+assert.equal(routeAddition.new_route_family, false);
+assert.equal(routeAddition.new_public_data_class, false);
+assert.deepEqual(routeAddition.routes, [
+  { language: 'en', path: '/about/data-coverage/' },
+  { language: 'ja', path: '/ja/about/data-coverage/' },
+]);
+assert.deepEqual(routeAddition.inventory_delta, {
+  public_pages: 2,
+  english_pages: 1,
+  japanese_pages: 1,
+  route_families: 0,
+});
+assert.ok(Object.values(routeAddition.boundary).every((value) => value === true));
+
+for (const checker of [scopeChecker, sitemapChecker]) {
+  assert.match(checker, /m6-country-coverage-route-addition-v1\.json/);
+  assert.match(checker, /reviewedRouteAddition/);
+  assert.match(checker, /\/about\/data-coverage\//);
+  assert.match(checker, /\/ja\/about\/data-coverage\//);
+}
+
 assert.match(workflow, /npm run build/);
 assert.match(workflow, /check-m6-country-coverage-matrix\.mjs/);
+assert.match(workflow, /check-sitemap-robots\.mjs/);
+assert.match(workflow, /check-v1-scope-freeze\.mjs/);
+assert.match(workflow, /m6-country-coverage-route-addition-v1\.json/);
 assert.match(workflow, /contents: read/);
 assert.doesNotMatch(workflow, /contents:\s*write/);
 assert.doesNotMatch(workflow, /pull-requests:\s*write/);
@@ -65,4 +97,5 @@ console.log('M6 country coverage matrix check passed.');
 console.log('- six target countries remain explicit');
 console.log('- verified source capability is separated from reviewed public coverage');
 console.log('- English/Japanese /about/data-coverage routes use the same derived data model');
+console.log('- exact bilingual route additions are reviewed without changing the historical v1 baseline');
 console.log('- matrix reuses existing responsive table CSS and adds no new public timetable fields');
