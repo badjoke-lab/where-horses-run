@@ -9,6 +9,7 @@ Operational procedures live here.
 - [m5-scheduled-candidate-generation-design.md](m5-scheduled-candidate-generation-design.md)
 - [m5-auto-candidate-pr-generation.md](m5-auto-candidate-pr-generation.md)
 - [m5-human-review-workflow.md](m5-human-review-workflow.md)
+- [m5-release-note.md](m5-release-note.md)
 - [pr-102.md](pr-102.md)
 - [pr-103.md](pr-103.md)
 - [m3-v0-status-release-note.md](m3-v0-status-release-note.md)
