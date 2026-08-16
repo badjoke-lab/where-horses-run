@@ -109,39 +109,36 @@ const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
       >
         {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}</h2>}
         <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
-          {group.records.map((record) => {
-            const freshness = freshnessFor(record);
-            return (
-              <li class="meeting-row" data-source-freshness={freshness.status}>
-                <div class="meeting-row__identity">
-                  <strong>{displayRacecourse(record)}</strong>
-                  <span>{text.rank} {record.capability_rank}</span>
-                </div>
-                <p class="meeting-row__meta">
-                  <span>{text.authority}: {displayAuthority(record)}</span>
-                  <span>{text.country}: {displayCountry(record)}</span>
-                  {shouldShowFirst(record) && record.first_race_time_local && (
-                    <span>{text.first}: {record.first_race_time_local}</span>
-                  )}
-                  {shouldShowLast(record) && record.last_race_time_local && (
-                    <span>{text.last}: {record.last_race_time_local}</span>
-                  )}
-                  <span>{text.source}: {record.source_status}</span>
-                  {freshness.status === 'stale' ? (
-                    <strong>{text.stale} · {text.checked}: {record.last_checked_date}</strong>
-                  ) : freshness.status === 'unknown' ? (
-                    <strong>{text.unknownFreshness}</strong>
-                  ) : (
-                    <span>{text.checked}: {record.last_checked_date}</span>
-                  )}
-                </p>
-                <div class="meeting-row__links">
-                  {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
-                  <a href={record.official_source_url}>{text.official}</a>
-                </div>
-              </li>
-            );
-          })}
+          {group.records.map((record) => (
+            <li class="meeting-row">
+              <div class="meeting-row__identity">
+                <strong>{displayRacecourse(record)}</strong>
+                <span>{text.rank} {record.capability_rank}</span>
+              </div>
+              <p class="meeting-row__meta">
+                <span>{text.authority}: {displayAuthority(record)}</span>
+                <span>{text.country}: {displayCountry(record)}</span>
+                {shouldShowFirst(record) && record.first_race_time_local && (
+                  <span>{text.first}: {record.first_race_time_local}</span>
+                )}
+                {shouldShowLast(record) && record.last_race_time_local && (
+                  <span>{text.last}: {record.last_race_time_local}</span>
+                )}
+                <span>{text.source}: {record.source_status}</span>
+                {freshnessFor(record).status === 'stale' ? (
+                  <strong>{text.stale} · {text.checked}: {record.last_checked_date}</strong>
+                ) : freshnessFor(record).status === 'unknown' ? (
+                  <strong>{text.unknownFreshness}</strong>
+                ) : (
+                  <span>{text.checked}: {record.last_checked_date}</span>
+                )}
+              </p>
+              <div class="meeting-row__links">
+                {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
+                <a href={record.official_source_url}>{text.official}</a>
+              </div>
+            </li>
+          ))}
         </ul>
       </section>
     ))}
