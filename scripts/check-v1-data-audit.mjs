@@ -10,6 +10,7 @@ const DATA_MODULE_PATH = 'src/lib/data.ts';
 const RECONCILIATION_PATH = 'data/static/country-page-id-inventory-01-12-reconciliation-v1.json';
 const SITEMAP_PATH = 'dist/sitemap.xml';
 const PUBLIC_MEETING_DETAILS_PATH = 'data/generated/timetable/public/meeting-details.json';
+const REVIEWED_ROUTE_ADDITION_PATH = 'data/static/m6-country-coverage-route-addition-v1.json';
 const REVIEWED_RACECOURSE_GROWTH_IDS = new Set([
   'mizusawa-racecourse',
   'busan-gyeongnam-racecourse',
@@ -132,7 +133,7 @@ function mergedSummary(entries, idKeys, slugKey = 'slug') {
   };
 }
 
-for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SCOPE_CONTRACT_PATH, SEO_RELEASE_PATH, DATA_MODULE_PATH, RECONCILIATION_PATH, SITEMAP_PATH, PUBLIC_MEETING_DETAILS_PATH]) {
+for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, SCOPE_CONTRACT_PATH, SEO_RELEASE_PATH, DATA_MODULE_PATH, RECONCILIATION_PATH, SITEMAP_PATH, PUBLIC_MEETING_DETAILS_PATH, REVIEWED_ROUTE_ADDITION_PATH]) {
   expect(fs.existsSync(file), `Required v1 data audit file is missing: ${file}`);
 }
 for (const file of TEMPORARY_FILES) expect(!fs.existsSync(file), `Temporary data audit file remains: ${file}`);
@@ -143,6 +144,7 @@ const scopeContract = json(SCOPE_CONTRACT_PATH);
 const seoRelease = json(SEO_RELEASE_PATH);
 const reconciliation = json(RECONCILIATION_PATH);
 const publicMeetingDetails = json(PUBLIC_MEETING_DETAILS_PATH);
+const reviewedRouteAddition = json(REVIEWED_ROUTE_ADDITION_PATH);
 
 expect(contract.schema_version === 'v1-data-audit-v1', 'v1 data audit schema differs');
 expect(contract.release_id === 'WHR-V1-PREPARATION-V1' && contract.work_id === 'WHR-V1-PREPARATION-V1', 'v1 data audit release identity differs');
@@ -179,6 +181,21 @@ expect(scopeContract.baseline_inventory.public_pages === contract.input_inventor
 expect(seoRelease.release_id === contract.baseline_release_id && seoRelease.status === 'release_ready', 'Phase 11 historical baseline release differs');
 expect(seoRelease.scope.public_pages === contract.input_inventory.sitemap_urls, 'Phase 11 historical public-page baseline differs');
 expect(Array.isArray(publicMeetingDetails.details), 'public meeting-detail collection differs');
+expect(reviewedRouteAddition.schema_version === 'm6-country-coverage-route-addition-v1', 'M6 reviewed route-addition schema differs');
+expect(reviewedRouteAddition.status === 'reviewed_route_addition', 'M6 reviewed route-addition status differs');
+expect(reviewedRouteAddition.route_family === 'about' && reviewedRouteAddition.new_route_family === false, 'M6 route addition must stay inside the about route family');
+expect(reviewedRouteAddition.new_public_data_class === false, 'M6 route addition must not add a public data class');
+expect(exact(reviewedRouteAddition.routes, [
+  { language: 'en', path: '/about/data-coverage/' },
+  { language: 'ja', path: '/ja/about/data-coverage/' },
+]), 'M6 reviewed route list differs');
+expect(exact(reviewedRouteAddition.inventory_delta, {
+  public_pages: 2,
+  english_pages: 1,
+  japanese_pages: 1,
+  route_families: 0,
+}), 'M6 reviewed inventory delta differs');
+expect(Object.values(reviewedRouteAddition.boundary).every((value) => value === true), 'M6 reviewed route boundary differs');
 
 const dataModule = read(DATA_MODULE_PATH);
 const importedFiles = [...dataModule.matchAll(/from ['"]\.\.\/\.\.\/(data\/(?:static|generated)\/[^'"]+\.json)['"]/g)].map((match) => match[1]);
@@ -243,14 +260,16 @@ for (const [name, collection] of Object.entries(merged)) {
 
 const sitemapUrls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 const sitemapPaths = sitemapUrls.map((url) => new URL(url).pathname);
+const reviewedAddedPaths = reviewedRouteAddition.routes.map((route) => route.path);
+for (const reviewedPath of reviewedAddedPaths) expect(sitemapPaths.includes(reviewedPath), `Reviewed M6 route is missing from v1 data audit sitemap: ${reviewedPath}`);
 const currentMeetingDetailRoutes = sitemapPaths.filter((pathname) => /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/.test(pathname)).length;
 const baselineMeetingDetailRoutes = scopeContract.baseline_inventory.meeting_detail_routes;
 expect(Number.isInteger(baselineMeetingDetailRoutes), 'v1 scope meeting-detail baseline is missing');
 expect(currentMeetingDetailRoutes >= baselineMeetingDetailRoutes, `current meeting-detail route inventory regressed ${currentMeetingDetailRoutes}`);
 expect(currentMeetingDetailRoutes === publicMeetingDetails.details.length * 2, `current meeting-detail routes are not backed by public projection: ${currentMeetingDetailRoutes}`);
 const meetingDetailGrowth = currentMeetingDetailRoutes - baselineMeetingDetailRoutes;
-const expectedCurrentSitemap = contract.input_inventory.sitemap_urls + (racecourseGrowth * 2) + meetingDetailGrowth;
-expect(sitemapUrls.length === expectedCurrentSitemap, `current sitemap growth is not explained by reviewed racecourse and meeting-detail growth: ${sitemapUrls.length} !== ${expectedCurrentSitemap}`);
+const expectedCurrentSitemap = contract.input_inventory.sitemap_urls + (racecourseGrowth * 2) + meetingDetailGrowth + reviewedRouteAddition.inventory_delta.public_pages;
+expect(sitemapUrls.length === expectedCurrentSitemap, `current sitemap growth is not explained by reviewed racecourse, meeting-detail, and M6 route growth: ${sitemapUrls.length} !== ${expectedCurrentSitemap}`);
 
 const metrics = {
   top_level_rows: scans.reduce((sum, scan) => sum + scan.rows, 0),
@@ -297,6 +316,7 @@ console.log(`CURRENT_SITEMAP_URLS: ${sitemapUrls.length}`);
 console.log(`HISTORICAL_RACECOURSES: ${contract.merged_collections.racecourses.records}`);
 console.log(`CURRENT_RACECOURSES: ${merged.racecourses.records}`);
 console.log(`CURRENT_MEETING_DETAIL_ROUTES: ${currentMeetingDetailRoutes}`);
+console.log(`REVIEWED_M6_ROUTE_ADDITIONS: ${reviewedAddedPaths.length}`);
 console.log(`CURRENT_TOP_LEVEL_ROWS: ${metrics.top_level_rows}`);
 console.log(`CURRENT_URL_VALUES: ${metrics.url_values}`);
 console.log(`CURRENT_PLACEHOLDER_VALUES: ${metrics.placeholder_values}`);
