@@ -1,0 +1,50 @@
+{
+  "schema_version": "m6-methods-data-policy-final-v1",
+  "work_id": "WHR-M6-METHODS-DATA-POLICY-FINAL",
+  "implementation_unit": "M6-METHODS-DATA-POLICY-FINAL-01",
+  "status": "finalized",
+  "reviewed_at": "2026-08-16",
+  "baseline_contract": "data/static/methods-data-policy-contract-v1.json",
+  "structural_contract": {
+    "methods_pages": 2,
+    "languages": 2,
+    "sections_per_page": 9,
+    "paragraphs_per_section": 2,
+    "historical_titles_and_descriptions_preserved": true,
+    "historical_navigation_preserved": true
+  },
+  "final_topics": {
+    "candidate_diff_and_run_records_are_review_material": true,
+    "human_review_required_before_public_dataset": true,
+    "automatic_unreviewed_publication_disabled": true,
+    "source_capability_separate_from_publication": true,
+    "source_freshness_badge_policy_documented": true,
+    "meeting_stale_warning_policy_documented_separately": true,
+    "official_source_final_confirmation_required": true,
+    "publication_rank_boundary_preserved": true,
+    "excluded_information_boundary_preserved": true
+  },
+  "freshness_contract": {
+    "source_freshness_current_through_days": 30,
+    "source_freshness_review_due_after_days": 30,
+    "source_freshness_aggregate_date": "oldest checked date among readiness records contributing to the country coverage aggregate",
+    "source_freshness_missing_date": "unknown",
+    "meeting_stale_after_days": 1,
+    "source_and_meeting_freshness_are_distinct": true
+  },
+  "publication_boundary": {
+    "rank_c_meeting_date_and_racecourse_only": true,
+    "rank_a_race_label_or_number_and_post_time": true,
+    "rank_a_plus_lightweight_programme_summary_on_meeting_detail_only": true,
+    "complete_racecards_excluded": true,
+    "entries_participants_odds_results_payouts_predictions_excluded": true,
+    "copied_official_body_or_raw_html_excluded": true
+  },
+  "automation_boundary": {
+    "candidate_generation_may_be_automated": true,
+    "validation_may_be_automated": true,
+    "human_review_may_be_bypassed": false,
+    "automatic_publication_enabled": false,
+    "automatic_merge_or_deployment_enabled": false
+  }
+}
