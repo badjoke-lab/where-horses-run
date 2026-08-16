@@ -1,0 +1,43 @@
+---
+import { evaluateSourceFreshness } from '../lib/sourceFreshnessState.mjs';
+
+type Props = {
+  checkedDate?: string | null;
+  referenceDate: string;
+  lang?: 'en' | 'ja';
+};
+
+const { checkedDate = null, referenceDate, lang = 'en' } = Astro.props as Props;
+const freshness = evaluateSourceFreshness({ checkedDate, referenceDate });
+const label = lang === 'ja'
+  ? freshness.status === 'current'
+    ? `Current · ${checkedDate}`
+    : freshness.status === 'review_due'
+      ? `再確認推奨 · ${checkedDate}`
+      : '確認日不明'
+  : freshness.status === 'current'
+    ? `Current · ${checkedDate}`
+    : freshness.status === 'review_due'
+      ? `Review due · ${checkedDate}`
+      : 'Check date unknown';
+const modifier = freshness.status === 'current'
+  ? ''
+  : freshness.status === 'review_due'
+    ? ' coverage-status--limited'
+    : ' coverage-status--blocked';
+const title = lang === 'ja'
+  ? freshness.status === 'unknown'
+    ? 'ソース確認日がないため鮮度を判定できません。'
+    : `基準日 ${referenceDate}。確認から ${freshness.ageDays} 日。30日を超えると再確認推奨です。`
+  : freshness.status === 'unknown'
+    ? 'Source freshness cannot be evaluated because no checked date is available.'
+    : `Reference date ${referenceDate}. ${freshness.ageDays} days since check; review is due after 30 days.`;
+---
+
+<span
+  class={`coverage-status${modifier}`}
+  data-source-freshness={freshness.status}
+  data-source-checked-date={checkedDate ?? ''}
+  data-source-age-days={freshness.ageDays ?? ''}
+  title={title}
+>{label}</span>
