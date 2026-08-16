@@ -1,5 +1,8 @@
 ---
-import { evaluateSourceFreshness } from '../lib/sourceFreshnessState.mjs';
+import {
+  evaluateSourceFreshness,
+  SOURCE_REVIEW_DUE_AFTER_DAYS,
+} from '../lib/sourceFreshnessState.mjs';
 
 type Props = {
   checkedDate?: string | null;
@@ -11,7 +14,7 @@ const { checkedDate = null, referenceDate, lang = 'en' } = Astro.props as Props;
 const freshness = evaluateSourceFreshness({ checkedDate, referenceDate });
 const label = lang === 'ja'
   ? freshness.status === 'current'
-    ? `Current · ${checkedDate}`
+    ? `30日以内 · ${checkedDate}`
     : freshness.status === 'review_due'
       ? `再確認推奨 · ${checkedDate}`
       : '確認日不明'
@@ -28,10 +31,10 @@ const modifier = freshness.status === 'current'
 const title = lang === 'ja'
   ? freshness.status === 'unknown'
     ? 'ソース確認日がないため鮮度を判定できません。'
-    : `基準日 ${referenceDate}。確認から ${freshness.ageDays} 日。30日を超えると再確認推奨です。`
+    : `基準日 ${referenceDate}。確認から ${freshness.ageDays} 日。${SOURCE_REVIEW_DUE_AFTER_DAYS}日を超えると再確認推奨です。`
   : freshness.status === 'unknown'
     ? 'Source freshness cannot be evaluated because no checked date is available.'
-    : `Reference date ${referenceDate}. ${freshness.ageDays} days since check; review is due after 30 days.`;
+    : `Reference date ${referenceDate}. ${freshness.ageDays} days since check; review is due after ${SOURCE_REVIEW_DUE_AFTER_DAYS} days.`;
 ---
 
 <span
