@@ -6,7 +6,7 @@ import { coverageDashboardGeneratedAt } from '../../lib/timetable/coverageDashbo
 
 <BaseLayout
   title="Data Coverage | Where Horses Run"
-  description="Compare official-source capability and reviewed public timetable coverage for Japan, Hong Kong, UAE, South Korea, Turkey, and Morocco."
+  description="Compare official-source capability, source freshness, and reviewed public timetable coverage for Japan, Hong Kong, UAE, South Korea, Turkey, and Morocco."
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Data coverage</p>
@@ -33,8 +33,8 @@ import { coverageDashboardGeneratedAt } from '../../lib/timetable/coverageDashbo
       <p>Counts only data already admitted to the public timetable projection. It is deliberately separate from source capability.</p>
     </article>
     <article class="card">
-      <h2>Freshness</h2>
-      <p>Coverage and freshness are separate. Use meeting check dates and official source links for final confirmation.</p>
+      <h2>Source freshness</h2>
+      <p>The badge uses the oldest checked date among readiness records contributing to each country aggregate. Current means that date is no more than 30 days before the shared Calendar reference date; older checks are marked Review due. A missing contributing check date is shown as unknown.</p>
     </article>
   </section>
 
