@@ -42,8 +42,7 @@ const text = lang === 'ja'
       official: '公式',
       rank: '公開ランク:',
       source: 'ソース',
-      stale: '古い可能性あり',
-      staleLegend: '2日以上前の確認を含みます。公式ソースで最終確認してください。',
+      staleLegend: '古い確認を含みます。公式ソースで確認してください。',
       unknownFreshness: '確認日不明',
     }
   : {
@@ -56,8 +55,7 @@ const text = lang === 'ja'
       official: 'Official',
       rank: 'Public rank:',
       source: 'Source',
-      stale: 'Stale data',
-      staleLegend: 'Some checks are 2+ days old. Confirm with the official source.',
+      staleLegend: 'Some checks are stale. Confirm with official sources.',
       unknownFreshness: 'Check date unknown',
     };
 
@@ -104,7 +102,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
 
 {groups.length > 0 ? (
   <div class="timetable-date-groups">
-    {hasStaleRecords && <p><strong>{text.stale}:</strong> {text.staleLegend}</p>}
+    {hasStaleRecords && <p>{text.staleLegend}</p>}
     {groups.map((group) => (
       <section
         class="timetable-date-group"
