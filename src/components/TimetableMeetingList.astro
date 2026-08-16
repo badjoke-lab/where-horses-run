@@ -43,6 +43,7 @@ const text = lang === 'ja'
       rank: '公開ランク:',
       source: 'ソース',
       stale: '古い可能性あり',
+      staleLegend: '⚠ は古い可能性がある確認日です。公式ソースで最終確認してください。',
       unknownFreshness: '確認日不明',
     }
   : {
@@ -56,6 +57,7 @@ const text = lang === 'ja'
       rank: 'Public rank:',
       source: 'Source',
       stale: 'Stale',
+      staleLegend: '⚠ marks a stale source check. Use the official source for final confirmation.',
       unknownFreshness: 'Check date unknown',
     };
 
@@ -97,10 +99,12 @@ const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
   lastCheckedDate: record.last_checked_date ?? null,
   referenceDate,
 });
+const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
 ---
 
 {groups.length > 0 ? (
   <div class="timetable-date-groups">
+    {hasStaleRecords && <p>{text.stale}: {text.staleLegend}</p>}
     {groups.map((group) => (
       <section
         class="timetable-date-group"
@@ -126,7 +130,7 @@ const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
                 )}
                 <span>{text.source}: {record.source_status}</span>
                 {freshnessFor(record).status === 'stale' ? (
-                  <strong>{text.stale} · {text.checked}: {record.last_checked_date}</strong>
+                  <span>⚠ {text.checked}: {record.last_checked_date}</span>
                 ) : freshnessFor(record).status === 'unknown' ? (
                   <strong>{text.unknownFreshness}</strong>
                 ) : (
