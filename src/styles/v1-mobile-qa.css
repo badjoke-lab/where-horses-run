@@ -35,14 +35,11 @@ body {
   overflow-wrap: anywhere;
 }
 
-.country-jump-nav a {
-  min-width: 2.75rem;
-  justify-content: center;
-}
-
+.country-jump-nav a,
 .detail-nav a,
 .retired-preview__nav a,
-.browse-grid summary {
+.browse-grid summary,
+.meeting-row__links a {
   min-width: 2.75rem;
   min-height: 2.75rem;
   display: inline-flex;
@@ -60,33 +57,5 @@ body {
 
   .site-navigation:not([open]) > .site-nav {
     display: none;
-  }
-
-  .main-content .timetable-date-group .meeting-row__meta {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.3rem 0.75rem;
-  }
-
-  .main-content .timetable-date-group .meeting-row__links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  .main-content .timetable-date-group .meeting-row__links a {
-    min-height: 2.75rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 0.75rem;
-    white-space: normal;
-  }
-}
-
-@media (max-width: 420px) {
-  .main-content .timetable-date-group .meeting-row__meta {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
