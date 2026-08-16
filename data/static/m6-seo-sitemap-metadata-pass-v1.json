@@ -1,0 +1,43 @@
+{
+  "schema_version": "m6-seo-sitemap-metadata-pass-v1",
+  "work_id": "WHR-M6-SEO-SITEMAP-METADATA-PASS",
+  "implementation_unit": "M6-SEO-SITEMAP-METADATA-PASS-01",
+  "status": "release_candidate_ready",
+  "reviewed_at": "2026-08-16",
+  "historical_seo_baseline": "data/static/seo-qa-release-v1.json",
+  "current_inventory": {
+    "public_pages": 787,
+    "english_pages": 395,
+    "japanese_pages": 392,
+    "route_families": 17,
+    "noindex_pages": 0
+  },
+  "required_routes": [
+    "/about/data-coverage/",
+    "/ja/about/data-coverage/",
+    "/methods/",
+    "/ja/methods/"
+  ],
+  "metadata_contract": {
+    "sitemap_matches_rendered_canonical_set": true,
+    "canonical_exact_on_required_routes": true,
+    "bilingual_hreflang_exact_on_required_routes": true,
+    "x_default_points_to_english_route": true,
+    "title_present_on_required_routes": true,
+    "description_present_on_required_routes": true,
+    "baseline_website_webpage_json_ld_present": true,
+    "open_graph_metadata_present": true,
+    "robots_allows_public_crawl": true,
+    "single_sitemap_directive_present": true
+  },
+  "boundary": {
+    "new_route_family_added": false,
+    "new_public_data_class_added": false,
+    "external_seo_service_added": false,
+    "automatic_content_generation_added": false,
+    "automatic_translation_added": false,
+    "automatic_publication_added": false,
+    "deployment_added": false,
+    "historical_seo_baseline_rewritten": false
+  }
+}
