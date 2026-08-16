@@ -1,4 +1,6 @@
 ---
+import SourceFreshnessBadge from './SourceFreshnessBadge.astro';
+import { getTimetableDateContext } from '../data/timetableMeetingRows';
 import {
   coverageDashboardGeneratedAt,
   getCoverageDashboardCountries,
@@ -8,6 +10,7 @@ import {
 type Props = { lang?: 'en' | 'ja' };
 const { lang = 'en' } = Astro.props as Props;
 const countries = getCoverageDashboardCountries();
+const freshnessReferenceDate = getTimetableDateContext().today;
 const dimensions: Array<{ key: CoverageDimension; en: string; ja: string }> = [
   { key: 'racecourses', en: 'Racecourses', ja: '競馬場' },
   { key: 'dates', en: 'Dates', ja: '開催日' },
@@ -19,6 +22,7 @@ const copy = lang === 'ja'
   ? {
       country: '国',
       sourceStatus: 'ソース状態',
+      sourceFreshness: 'ソース鮮度',
       verified: '確認済み',
       limited: '一部確認',
       blocked: '未確認',
@@ -34,6 +38,7 @@ const copy = lang === 'ja'
   : {
       country: 'Country',
       sourceStatus: 'Source status',
+      sourceFreshness: 'Source freshness',
       verified: 'Verified',
       limited: 'Limited',
       blocked: 'Not verified',
@@ -50,13 +55,14 @@ const statusLabel = (status: 'verified' | 'limited' | 'blocked') =>
   status === 'verified' ? copy.verified : status === 'limited' ? copy.limited : copy.blocked;
 ---
 
-<div class="country-table-wrap" data-country-coverage-matrix data-generated-at={coverageDashboardGeneratedAt}>
+<div class="country-table-wrap" data-country-coverage-matrix data-generated-at={coverageDashboardGeneratedAt} data-freshness-reference-date={freshnessReferenceDate}>
   <table class="country-table">
-    <caption>{lang === 'ja' ? '6か国のソース能力とレビュー済み公開範囲の比較' : 'Six-country source capability and reviewed public coverage comparison'}</caption>
+    <caption>{lang === 'ja' ? '6か国のソース能力・鮮度とレビュー済み公開範囲の比較' : 'Six-country source capability, freshness, and reviewed public coverage comparison'}</caption>
     <thead>
       <tr>
         <th rowspan="2" scope="col">{copy.country}</th>
         <th rowspan="2" scope="col">{copy.sourceStatus}</th>
+        <th rowspan="2" scope="col">{copy.sourceFreshness}</th>
         <th colspan={dimensions.length} scope="colgroup">{copy.sourceGroup}</th>
         <th colspan="4" scope="colgroup">{copy.publicGroup}</th>
       </tr>
@@ -70,9 +76,10 @@ const statusLabel = (status: 'verified' | 'limited' | 'blocked') =>
     </thead>
     <tbody>
       {countries.map((country) => (
-        <tr data-coverage-country={country.country_id} data-source-status={country.source_status}>
+        <tr data-coverage-country={country.country_id} data-source-status={country.source_status} data-source-checked-date={country.source_checked_date ?? ''}>
           <th scope="row" data-label={copy.country}>{lang === 'ja' ? country.country_label_ja : country.country_label}</th>
           <td data-label={copy.sourceStatus}>{statusLabel(country.source_status)}</td>
+          <td data-label={copy.sourceFreshness}><SourceFreshnessBadge checkedDate={country.source_checked_date} referenceDate={freshnessReferenceDate} lang={lang} /></td>
           {dimensions.map((dimension) => (
             <td data-label={lang === 'ja' ? dimension.ja : dimension.en} data-confirmed={String(country.source_dimensions[dimension.key])}>
               {country.source_dimensions[dimension.key] ? copy.yes : copy.no}
