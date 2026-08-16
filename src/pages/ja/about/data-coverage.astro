@@ -6,7 +6,7 @@ import { coverageDashboardGeneratedAt } from '../../../lib/timetable/coverageDas
 
 <BaseLayout
   title="データカバー範囲 | 競馬どこ？"
-  description="日本、香港、UAE、韓国、トルコ、モロッコの公式ソース能力とレビュー済み公開タイムテーブル範囲を比較します。"
+  description="日本、香港、UAE、韓国、トルコ、モロッコの公式ソース能力、ソース鮮度、レビュー済み公開タイムテーブル範囲を比較します。"
   lang="ja"
 >
   <section class="hero" aria-labelledby="page-title">
@@ -34,8 +34,8 @@ import { coverageDashboardGeneratedAt } from '../../../lib/timetable/coverageDas
       <p>公開タイムテーブルへすでに反映されたデータだけを数えます。ソース能力とは意図的に分離しています。</p>
     </article>
     <article class="card">
-      <h2>鮮度</h2>
-      <p>カバー範囲と鮮度は別です。最終確認は各開催の確認日と公式ソースを使用してください。</p>
+      <h2>ソース鮮度</h2>
+      <p>国別集計に使うreadiness記録のうち、最も古い確認日をbadge判定に使います。その日が共通Calendar基準日の30日以内なら「30日以内」、30日を超えれば「再確認推奨」です。集計に使う記録の確認日が1件でも欠ける場合は「確認日不明」と表示します。</p>
     </article>
   </section>
 
