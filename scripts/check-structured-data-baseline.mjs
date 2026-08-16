@@ -7,6 +7,7 @@ const CONTRACT = 'data/static/structured-data-baseline-contract-v1.json';
 const AUDIT = 'data/audits/structured-data-baseline-v1.json';
 const SITEMAP_CONTRACT = 'data/static/sitemap-robots-contract-v1.json';
 const PUBLIC_MEETING_DETAILS = 'data/generated/timetable/public/meeting-details.json';
+const REVIEWED_ROUTE_ADDITION = 'data/static/m6-country-coverage-route-addition-v1.json';
 const LAYOUT = 'src/layouts/BaseLayout.astro';
 const COMPONENT = 'src/components/StructuredDataBaseline.astro';
 const DOC = 'docs/seo/structured-data-baseline.md';
@@ -19,12 +20,13 @@ const json = (file) => JSON.parse(read(file));
 const exact = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
-for (const file of [CONTRACT, AUDIT, SITEMAP_CONTRACT, PUBLIC_MEETING_DETAILS, LAYOUT, COMPONENT, DOC, WORKFLOW, SITEMAP]) expect(fs.existsSync(file), `Missing ${file}`);
+for (const file of [CONTRACT, AUDIT, SITEMAP_CONTRACT, PUBLIC_MEETING_DETAILS, REVIEWED_ROUTE_ADDITION, LAYOUT, COMPONENT, DOC, WORKFLOW, SITEMAP]) expect(fs.existsSync(file), `Missing ${file}`);
 expect(!fs.existsSync(TEMPORARY), 'Temporary structured-data discovery workflow remains');
 const contract = json(CONTRACT);
 const audit = json(AUDIT);
 const sitemapContract = json(SITEMAP_CONTRACT);
 const publicMeetingDetails = json(PUBLIC_MEETING_DETAILS);
+const reviewedRouteAddition = json(REVIEWED_ROUTE_ADDITION);
 expect(contract.schema_version === 'structured-data-baseline-contract-v1' && contract.status === 'complete', 'Structured-data contract identity differs');
 expect(contract.scope_updated_by === 'METHODS-DATA-POLICY-01', 'Structured-data scope marker differs');
 expect(audit.schema_version === 'structured-data-baseline-audit-v1' && audit.status === 'complete', 'Structured-data audit identity differs');
@@ -41,6 +43,22 @@ expect(Object.values(contract.privacy_boundary).every((value) => value === false
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'Structured-data automation boundary differs');
 expect(sitemapContract.schema_version === 'sitemap-robots-contract-v1', 'Sitemap contract identity differs');
 expect(Array.isArray(publicMeetingDetails.details), 'Public meeting-detail projection differs');
+
+expect(reviewedRouteAddition.schema_version === 'm6-country-coverage-route-addition-v1', 'M6 reviewed route-addition schema differs');
+expect(reviewedRouteAddition.status === 'reviewed_route_addition', 'M6 reviewed route-addition status differs');
+expect(reviewedRouteAddition.route_family === 'about' && reviewedRouteAddition.new_route_family === false, 'M6 route addition must stay inside the about route family');
+expect(reviewedRouteAddition.new_public_data_class === false, 'M6 route addition must not add a public data class');
+expect(exact(reviewedRouteAddition.routes, [
+  { language: 'en', path: '/about/data-coverage/' },
+  { language: 'ja', path: '/ja/about/data-coverage/' },
+]), 'M6 reviewed route list differs');
+expect(exact(reviewedRouteAddition.inventory_delta, {
+  public_pages: 2,
+  english_pages: 1,
+  japanese_pages: 1,
+  route_families: 0,
+}), 'M6 reviewed inventory delta differs');
+expect(Object.values(reviewedRouteAddition.boundary).every((value) => value === true), 'M6 reviewed route boundary differs');
 
 const layout = read(LAYOUT);
 for (const marker of ["import StructuredDataBaseline from '../components/StructuredDataBaseline.astro'", '<StructuredDataBaseline', 'canonicalUrl={canonicalUrl}', 'siteUrl={siteUrl}']) expect(layout.includes(marker), `BaseLayout structured-data marker missing: ${marker}`);
@@ -66,6 +84,8 @@ const fileFor = (urlString) => {
 
 const urls = [...read(SITEMAP).matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 const paths = urls.map((url) => new URL(url).pathname);
+const approvedAddedPaths = reviewedRouteAddition.routes.map((route) => route.path);
+for (const approvedPath of approvedAddedPaths) expect(paths.includes(approvedPath), `Reviewed M6 route is missing from structured-data inventory: ${approvedPath}`);
 const currentRacecourseDetails = paths.filter((pathname) => /^\/(?:ja\/)?tracks\/[^/]+\/$/.test(pathname)).length;
 const currentMeetingDetails = paths.filter((pathname) => /^\/(?:ja\/)?timetable\/meetings\/[^/]+\/$/.test(pathname)).length;
 const historicalRacecourseDetails = sitemapContract.detail_route_counts.racecourse_detail_routes;
@@ -79,13 +99,14 @@ expect(meetingDetailDelta % 2 === 0, `Structured-data meeting-detail growth must
 expect(currentMeetingDetails === publicMeetingDetails.details.length * 2, `Structured-data meeting-detail routes are not backed by public projection ${currentMeetingDetails}`);
 const perLanguageDelta = (racecourseDetailDelta + meetingDetailDelta) / 2;
 const totalDetailDelta = racecourseDetailDelta + meetingDetailDelta;
+const reviewedPublicDelta = reviewedRouteAddition.inventory_delta.public_pages;
 const expectedCurrent = {
-  public_pages: contract.scope.public_pages + totalDetailDelta,
-  english_pages: contract.scope.english_pages + perLanguageDelta,
-  japanese_pages: contract.scope.japanese_pages + perLanguageDelta,
-  json_ld_scripts: contract.scope.json_ld_scripts + totalDetailDelta,
-  website_nodes: contract.scope.website_nodes + totalDetailDelta,
-  webpage_nodes: contract.scope.webpage_nodes + totalDetailDelta,
+  public_pages: contract.scope.public_pages + totalDetailDelta + reviewedPublicDelta,
+  english_pages: contract.scope.english_pages + perLanguageDelta + reviewedRouteAddition.inventory_delta.english_pages,
+  japanese_pages: contract.scope.japanese_pages + perLanguageDelta + reviewedRouteAddition.inventory_delta.japanese_pages,
+  json_ld_scripts: contract.scope.json_ld_scripts + totalDetailDelta + reviewedPublicDelta,
+  website_nodes: contract.scope.website_nodes + totalDetailDelta + reviewedPublicDelta,
+  webpage_nodes: contract.scope.webpage_nodes + totalDetailDelta + reviewedPublicDelta,
 };
 expect(urls.length === expectedCurrent.public_pages, `Structured-data public page count differs ${urls.length}`);
 
@@ -158,5 +179,6 @@ console.log(`CURRENT_PUBLIC_PAGES: ${expectedCurrent.public_pages}`);
 console.log(`CURRENT_BASELINE_JSON_LD_SCRIPTS: ${baselineScripts}`);
 console.log(`CURRENT_RACECOURSE_DETAIL_ROUTES: ${currentRacecourseDetails}`);
 console.log(`CURRENT_MEETING_DETAIL_ROUTES: ${currentMeetingDetails}`);
+console.log(`REVIEWED_M6_ROUTE_ADDITIONS: ${approvedAddedPaths.length}`);
 console.log('FAQPAGE_SCRIPTS_OUTSIDE_BASELINE: 2');
 console.log('METHODS_PAGE_SPECIFIC_SCRIPTS: 0');
