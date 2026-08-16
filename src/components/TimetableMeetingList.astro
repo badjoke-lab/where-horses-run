@@ -43,7 +43,7 @@ const text = lang === 'ja'
       rank: '公開ランク:',
       source: 'ソース',
       stale: '古い可能性あり',
-      staleLegend: '⚠ は古い可能性がある確認日です。公式ソースで最終確認してください。',
+      staleLegend: '2日以上前の確認を含みます。公式ソースで最終確認してください。',
       unknownFreshness: '確認日不明',
     }
   : {
@@ -56,8 +56,8 @@ const text = lang === 'ja'
       official: 'Official',
       rank: 'Public rank:',
       source: 'Source',
-      stale: 'Stale',
-      staleLegend: '⚠ marks a stale source check. Use the official source for final confirmation.',
+      stale: 'Stale data',
+      staleLegend: 'Some checks are 2+ days old. Confirm with the official source.',
       unknownFreshness: 'Check date unknown',
     };
 
@@ -104,7 +104,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
 
 {groups.length > 0 ? (
   <div class="timetable-date-groups">
-    {hasStaleRecords && <p>{text.stale}: {text.staleLegend}</p>}
+    {hasStaleRecords && <p><strong>{text.stale}:</strong> {text.staleLegend}</p>}
     {groups.map((group) => (
       <section
         class="timetable-date-group"
@@ -129,9 +129,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                   <span>{text.last}: {record.last_race_time_local}</span>
                 )}
                 <span>{text.source}: {record.source_status}</span>
-                {freshnessFor(record).status === 'stale' ? (
-                  <span>⚠ {text.checked}: {record.last_checked_date}</span>
-                ) : freshnessFor(record).status === 'unknown' ? (
+                {freshnessFor(record).status === 'unknown' ? (
                   <strong>{text.unknownFreshness}</strong>
                 ) : (
                   <span>{text.checked}: {record.last_checked_date}</span>
