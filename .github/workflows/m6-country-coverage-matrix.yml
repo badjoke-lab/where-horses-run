@@ -1,0 +1,29 @@
+name: M6 country coverage matrix
+
+on:
+  pull_request:
+    paths:
+      - 'src/lib/timetable/coverageDashboard.ts'
+      - 'src/components/CountryCoverageMatrix.astro'
+      - 'src/pages/about/data-coverage.astro'
+      - 'src/pages/ja/about/data-coverage.astro'
+      - 'src/pages/about/index.astro'
+      - 'src/pages/ja/about/index.astro'
+      - 'scripts/check-m6-country-coverage-matrix.mjs'
+      - '.github/workflows/m6-country-coverage-matrix.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install --package-lock=false
+      - run: npm run build
+      - run: node scripts/check-m6-country-coverage-matrix.mjs
+      - run: git diff --exit-code
