@@ -1,0 +1,72 @@
+{
+  "schema_version": "m6-v1-release-v1",
+  "work_id": "WHR-M6-V1-RELEASE",
+  "implementation_unit": "M6-V1-RELEASE-01",
+  "status": "release_record",
+  "effective_when": "merged_to_main",
+  "reviewed_at": "2026-08-17",
+  "release_line": "v1.0",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "release_candidate": {
+    "contract": "data/static/m6-v1-release-candidate-v1.json",
+    "implementation_unit": "M6-V1-RELEASE-CANDIDATE-01",
+    "required_status": "release_candidate_ready",
+    "parent_main_commit": "caabc16098e8abb2dbb9d224adbaba5d31cdf3a0"
+  },
+  "target_countries": [
+    "japan",
+    "hong-kong",
+    "united-arab-emirates",
+    "south-korea",
+    "turkey",
+    "morocco"
+  ],
+  "release_action": {
+    "action": "merge_pr_102_to_main",
+    "merge_is_release_record_activation": true,
+    "release_commit_resolved_by_merge": true,
+    "deployment_performed_by_this_unit": false,
+    "github_release_created_by_this_unit": false
+  },
+  "version_tag_policy": {
+    "existing_tag": "v1.0.0",
+    "existing_tag_commit": "6d45895fb04ccbc3160e763c54438a4d51dff905",
+    "existing_tag_represents": "2026-07-19 historical WHR-V1 release decision",
+    "move_existing_tag": false,
+    "delete_existing_tag": false,
+    "create_replacement_semver_without_separate_version_decision": false,
+    "new_tag_created_by_this_unit": false
+  },
+  "final_quality_contract": {
+    "pr_101_release_candidate_contract_required": true,
+    "pr_101_full_rc_workflow_required_on_pr_102": true,
+    "complete_static_build_required": true,
+    "existing_v1_tag_identity_required": true,
+    "repository_clean_proof_required": true,
+    "read_only_permissions_required": true
+  },
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "reviewed_route_additions_only": true,
+    "existing_public_data_classes_only": true,
+    "rank_a_plus_programme_summary_meeting_detail_only": true,
+    "complete_racecards_allowed": false,
+    "entries_or_participants_allowed": false,
+    "odds_results_payouts_predictions_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "unreviewed_candidate_publication_allowed": false
+  },
+  "automation_boundary": {
+    "candidate_generation_may_be_automated": true,
+    "validation_may_be_automated": true,
+    "human_review_may_be_bypassed": false,
+    "automatic_publication_enabled": false,
+    "tag_mutation_enabled": false,
+    "deployment_enabled_by_gate": false
+  },
+  "completion": {
+    "m6_release_candidate_complete": true,
+    "m6_v1_release_complete_when_merged": true,
+    "next_stage": "reviewed_incremental_maintenance"
+  }
+}
