@@ -78,6 +78,14 @@ jobs:
           NODE
       - name: Verify deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Verify committed recovery outputs are current
+        run: |
+          git diff --exit-code -- \
+            data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
       - name: Check generated diff formatting
         run: git diff --check
       - name: Upload reviewed recovery output
