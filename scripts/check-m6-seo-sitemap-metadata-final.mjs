@@ -17,21 +17,15 @@ function expectEqual(actual, expected, label) {
   }
 }
 
-function run(label, script) {
+function run(label, command, args) {
   console.log(`[m6-seo-final] ${label}`);
-  const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-  const result = spawnSync(npm, ["run", script], { stdio: "inherit" });
+  const result = spawnSync(command, args, { stdio: "inherit" });
   if (result.error) {
     fail(`${label} could not start: ${result.error.message}`);
   }
   if (result.status !== 0) {
     fail(`${label} failed with exit code ${result.status ?? "unknown"}`);
   }
-}
-
-function normalizePathname(pathname) {
-  if (pathname === "/") return pathname;
-  return pathname.replace(/\/+$/, "");
 }
 
 if (!fs.existsSync(contractPath)) {
@@ -46,12 +40,23 @@ expectEqual(contract.work_item, "PR-100", "work_item");
 expectEqual(contract.site_origin, "https://whr.badjoke-lab.com", "site_origin");
 expectEqual(
   contract.required_public_routes,
-  ["/", "/about", "/methods", "/coverage", "/calendar", "/racecourses"],
+  ["/", "/about/", "/about/data-coverage/", "/methods/", "/calendar/", "/tracks/"],
   "required_public_routes",
 );
 expectEqual(
   contract.checks,
-  ["canonical", "sitemap", "robots", "opengraph", "twitter", "social_card"],
+  [
+    "sitemap",
+    "robots",
+    "structured_data",
+    "country_metadata",
+    "racecourse_metadata",
+    "glossary_metadata",
+    "canonical_hreflang",
+    "opengraph_twitter",
+    "title_description",
+    "seo_release",
+  ],
   "checks",
 );
 expectEqual(
@@ -66,10 +71,22 @@ expectEqual(
   "public_boundary.does_not_publish",
 );
 
-run("build", "build");
-run("page SEO", "check:seo");
-run("sitemap / robots", "check:sitemap");
-run("social card", "check:social");
+const npm = process.platform === "win32" ? "npm.cmd" : "npm";
+run("build", npm, ["run", "build"]);
+
+for (const [label, script] of [
+  ["sitemap / robots", "scripts/check-sitemap-robots.mjs"],
+  ["structured data", "scripts/check-structured-data-baseline.mjs"],
+  ["country metadata", "scripts/check-country-page-metadata.mjs"],
+  ["racecourse metadata", "scripts/check-racecourse-page-metadata.mjs"],
+  ["glossary metadata", "scripts/check-glossary-page-metadata.mjs"],
+  ["canonical / hreflang", "scripts/check-canonical-hreflang-review.mjs"],
+  ["Open Graph / Twitter", "scripts/check-open-graph-social-cards.mjs"],
+  ["title / description", "scripts/check-title-description-normalization.mjs"],
+  ["SEO aggregate release", "scripts/check-seo-qa-release.mjs"],
+]) {
+  run(label, process.execPath, [script]);
+}
 
 const sitemapPath = fileURLToPath(new URL("../dist/sitemap.xml", import.meta.url));
 if (!fs.existsSync(sitemapPath)) {
@@ -83,12 +100,12 @@ const sitemapPaths = new Set(
     if (url.origin !== contract.site_origin) {
       fail(`sitemap contains unexpected origin: ${url.origin}`);
     }
-    return normalizePathname(url.pathname);
+    return url.pathname;
   }),
 );
 
 for (const route of contract.required_public_routes) {
-  if (!sitemapPaths.has(normalizePathname(route))) {
+  if (!sitemapPaths.has(route)) {
     fail(`required public route missing from sitemap: ${route}`);
   }
 }
