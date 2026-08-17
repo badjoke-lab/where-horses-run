@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 22.12.0
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies without generating a lockfile
+        run: npm install --package-lock=false
 
       - name: Verify PR-100 SEO release gate
         run: node scripts/check-m6-seo-sitemap-metadata-final.mjs
