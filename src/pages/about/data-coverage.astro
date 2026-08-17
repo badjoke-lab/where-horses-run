@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CountryCoverageMatrix from '../../components/CountryCoverageMatrix.astro';
+import { coverageDashboardGeneratedAt } from '../../lib/timetable/coverageDashboard';
+---
+
+<BaseLayout
+  title="Data Coverage | Where Horses Run"
+  description="Compare official-source capability, source freshness, and reviewed public timetable coverage for Japan, Hong Kong, UAE, South Korea, Turkey, and Morocco."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Data coverage</p>
+    <h1 id="page-title">Country coverage matrix</h1>
+    <p class="hero__summary">
+      Compare what official sources can support with what Where Horses Run has actually reviewed and published. Source capability does not imply publication.
+    </p>
+  </section>
+
+  <section aria-labelledby="matrix-title">
+    <h2 id="matrix-title">Six-country coverage</h2>
+    <p>Current target countries: Japan, Hong Kong, United Arab Emirates, South Korea, Turkey, and Morocco.</p>
+    <CountryCoverageMatrix />
+    <p>Public counts summarize the committed reviewed timetable dataset generated at {coverageDashboardGeneratedAt}. They do not guarantee a current meeting.</p>
+  </section>
+
+  <section class="section-grid" aria-label="Coverage interpretation">
+    <article class="card">
+      <h2>Source capability</h2>
+      <p>Shows fields confirmed from official-source evidence. A confirmed field may still be held back from public display until review.</p>
+    </article>
+    <article class="card">
+      <h2>Reviewed publication</h2>
+      <p>Counts only data already admitted to the public timetable projection. It is deliberately separate from source capability.</p>
+    </article>
+    <article class="card">
+      <h2>Source freshness</h2>
+      <p>The badge uses the oldest checked date among readiness records contributing to each country aggregate. Current means that date is no more than 30 days before the shared Calendar reference date; older checks are marked Review due. A missing contributing check date is shown as unknown.</p>
+    </article>
+  </section>
+
+  <p><a href="/calendar/">Calendar</a> · <a href="/sources/">Sources</a> · <a href="/methods/">Methods and Data Policy</a></p>
+</BaseLayout>

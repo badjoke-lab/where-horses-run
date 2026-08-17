@@ -1,0 +1,34 @@
+{
+  "schema_version": "m6-country-coverage-route-addition-v1",
+  "work_id": "WHR-M6-COUNTRY-COVERAGE-MATRIX",
+  "implementation_unit": "M6-COUNTRY-COVERAGE-MATRIX-01",
+  "status": "reviewed_route_addition",
+  "route_family": "about",
+  "new_route_family": false,
+  "new_public_data_class": false,
+  "routes": [
+    {
+      "language": "en",
+      "path": "/about/data-coverage/"
+    },
+    {
+      "language": "ja",
+      "path": "/ja/about/data-coverage/"
+    }
+  ],
+  "inventory_delta": {
+    "public_pages": 2,
+    "english_pages": 1,
+    "japanese_pages": 1,
+    "route_families": 0
+  },
+  "boundary": {
+    "source_capability_separate_from_public_coverage": true,
+    "reviewed_public_counts_only": true,
+    "no_candidate_approval": true,
+    "no_canonical_write": true,
+    "no_public_projection_write": true,
+    "no_new_timetable_detail_fields": true,
+    "no_private_or_raw_source_content": true
+  }
+}

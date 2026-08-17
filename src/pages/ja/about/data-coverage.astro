@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CountryCoverageMatrix from '../../../components/CountryCoverageMatrix.astro';
+import { coverageDashboardGeneratedAt } from '../../../lib/timetable/coverageDashboard';
+---
+
+<BaseLayout
+  title="データカバー範囲 | 競馬どこ？"
+  description="日本、香港、UAE、韓国、トルコ、モロッコの公式ソース能力、ソース鮮度、レビュー済み公開タイムテーブル範囲を比較します。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Data coverage</p>
+    <h1 id="page-title">国別カバー範囲</h1>
+    <p class="hero__summary">
+      公式ソースから確認できる範囲と、Where Horses Runでレビュー後に公開済みの範囲を分けて比較します。取得できることと公開することは同じではありません。
+    </p>
+  </section>
+
+  <section aria-labelledby="matrix-title">
+    <h2 id="matrix-title">6か国の比較</h2>
+    <p>現在の対象は、日本、香港、アラブ首長国連邦、韓国、トルコ、モロッコです。</p>
+    <CountryCoverageMatrix lang="ja" />
+    <p>公開件数は {coverageDashboardGeneratedAt} に生成された、現在コミット済みのレビュー済みタイムテーブル全体の集計です。現在開催があることを保証するものではありません。</p>
+  </section>
+
+  <section class="section-grid" aria-label="カバー範囲の読み方">
+    <article class="card">
+      <h2>ソース能力</h2>
+      <p>公式ソースの証拠から確認済みの項目を示します。確認できても、レビュー前の情報をそのまま公開するとは限りません。</p>
+    </article>
+    <article class="card">
+      <h2>レビュー済み公開</h2>
+      <p>公開タイムテーブルへすでに反映されたデータだけを数えます。ソース能力とは意図的に分離しています。</p>
+    </article>
+    <article class="card">
+      <h2>ソース鮮度</h2>
+      <p>国別集計に使うreadiness記録のうち、最も古い確認日をbadge判定に使います。その日が共通Calendar基準日の30日以内なら「30日以内」、30日を超えれば「再確認推奨」です。集計に使う記録の確認日が1件でも欠ける場合は「確認日不明」と表示します。</p>
+    </article>
+  </section>
+
+  <p><a href="/ja/calendar/">カレンダー</a> · <a href="/ja/sources/">ソース</a> · <a href="/ja/methods/">データの方法と公開方針</a></p>
+</BaseLayout>

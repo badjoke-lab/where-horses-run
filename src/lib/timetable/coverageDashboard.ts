@@ -10,6 +10,7 @@ export type CoverageDashboardCountry = {
   country_label: string;
   country_label_ja: string;
   source_status: SourceCoverageStatus;
+  source_checked_date: string | null;
   source_dimensions: Record<CoverageDimension, boolean>;
   public: {
     meetings: number;
@@ -25,6 +26,7 @@ type ReadinessRecord = {
   country_id: string;
   readiness?: string;
   source_status?: string;
+  checked_date?: string;
   confirmed_fields?: {
     meeting_date?: boolean;
     racecourse?: boolean;
@@ -81,6 +83,11 @@ function sourceStatus(records: ReadinessRecord[]): SourceCoverageStatus {
   return 'limited';
 }
 
+function sourceCheckedDate(records: ReadinessRecord[]): string | null {
+  if (records.length === 0 || records.some((record) => !record.checked_date)) return null;
+  return records.map((record) => record.checked_date as string).sort()[0] ?? null;
+}
+
 function publicMetrics(countryId: string) {
   const meetings = publicMeetings.filter((meeting) => meeting.country_id === countryId);
   const meetingIds = new Set(meetings.map((meeting) => meeting.meeting_id));
@@ -114,6 +121,7 @@ export function getCoverageDashboardCountries(): CoverageDashboardCountry[] {
       country_label: country.en,
       country_label_ja: country.ja,
       source_status: sourceStatus(records),
+      source_checked_date: sourceCheckedDate(records),
       source_dimensions: {
         racecourses: anyConfirmed(records, 'racecourse'),
         dates: anyConfirmed(records, 'meeting_date'),

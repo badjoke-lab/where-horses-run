@@ -1,0 +1,32 @@
+{
+  "schema_version": "m6-source-freshness-badges-v1",
+  "work_id": "WHR-M6-SOURCE-FRESHNESS-BADGES",
+  "implementation_unit": "M6-SOURCE-FRESHNESS-BADGES-01",
+  "status": "implemented",
+  "source_of_checked_dates": "data/static/calendar-readiness-registry.json records[].checked_date",
+  "reference_date_source": "shared calendar date context",
+  "aggregation": {
+    "country_badge_checked_date": "oldest checked_date across readiness records used by the country coverage aggregate",
+    "missing_checked_date": "unknown",
+    "reason": "fail closed so one recent route cannot make older contributing source checks look current"
+  },
+  "freshness_policy": {
+    "current_through_days": 30,
+    "review_due_when_age_days_greater_than": 30,
+    "future_checked_date_age_floor_days": 0
+  },
+  "surfaces": [
+    "calendar_coverage_dashboard",
+    "country_coverage_matrix"
+  ],
+  "boundary": {
+    "uses_existing_review_metadata_only": true,
+    "changes_source_capability": false,
+    "changes_public_timetable_fields": false,
+    "changes_publication_rank": false,
+    "changes_candidate_or_promotion_behavior": false,
+    "adds_raw_source_content": false,
+    "adds_odds_results_payouts_or_participants": false,
+    "changes_historical_v1_baseline": false
+  }
+}
