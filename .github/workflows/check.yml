@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - post-v1-calendar-horizon-2026-09-15
 
 permissions:
   contents: read
@@ -30,7 +29,7 @@ jobs:
         run: npm run build
 
   apply-september-horizon-recovery:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/post-v1-calendar-horizon-2026-09-15'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'post-v1-calendar-horizon-2026-09-15'
     name: Apply September horizon recovery
     runs-on: ubuntu-latest
     timeout-minutes: 20
