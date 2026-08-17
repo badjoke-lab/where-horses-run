@@ -5,19 +5,23 @@
   "site_origin": "https://whr.badjoke-lab.com",
   "required_public_routes": [
     "/",
-    "/about",
-    "/methods",
-    "/coverage",
-    "/calendar",
-    "/racecourses"
+    "/about/",
+    "/about/data-coverage/",
+    "/methods/",
+    "/calendar/",
+    "/tracks/"
   ],
   "checks": [
-    "canonical",
     "sitemap",
     "robots",
-    "opengraph",
-    "twitter",
-    "social_card"
+    "structured_data",
+    "country_metadata",
+    "racecourse_metadata",
+    "glossary_metadata",
+    "canonical_hreflang",
+    "opengraph_twitter",
+    "title_description",
+    "seo_release"
   ],
   "social_card": {
     "path": "/social/whr-social-card-v1.png",
