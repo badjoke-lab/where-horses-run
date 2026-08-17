@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "release_stage": "M6",
+  "work_item": "PR-100",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "required_public_routes": [
+    "/",
+    "/about/",
+    "/about/data-coverage/",
+    "/methods/",
+    "/calendar/",
+    "/tracks/"
+  ],
+  "checks": [
+    "sitemap",
+    "robots",
+    "structured_data",
+    "country_metadata",
+    "racecourse_metadata",
+    "glossary_metadata",
+    "canonical_hreflang",
+    "opengraph_twitter",
+    "title_description",
+    "seo_release"
+  ],
+  "social_card": {
+    "path": "/social/whr-social-card-v1.png",
+    "width": 1200,
+    "height": 630
+  },
+  "public_boundary": {
+    "does_not_expand_routes": true,
+    "does_not_publish": [
+      "racecards",
+      "horses",
+      "jockeys",
+      "odds",
+      "results",
+      "payouts",
+      "raw_html",
+      "body_text"
+    ]
+  }
+}
