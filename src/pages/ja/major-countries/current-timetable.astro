@@ -1,31 +1,36 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
-import { getGroupedTimetableMeetingRows } from '../../../data/timetableMeetingRows';
+import {
+  getCurrentCalendarWindowGroups,
+  getTimetableDateContext,
+} from '../../../data/timetableMeetingRows';
 
-const groupedTimetableRecords = getGroupedTimetableMeetingRows();
+const dateContext = getTimetableDateContext();
+const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
+const windowLabel = `${dateContext.windowStart}〜${dateContext.windowEndInclusive}`;
 ---
 
 <BaseLayout
-  title="2026年6月タイムテーブル | 競馬どこ？"
-  description="開催日順に整理した2026年6月の開催一覧です。各開催に公式ソースを1件ずつ示し、レース別時刻を確認済みの開催だけ詳細ページへ案内します。"
+  title="現在のタイムテーブル | 競馬どこ？"
+  description={`${windowLabel}の30日間を開催日順に整理した開催一覧です。各開催に公式ソースを1件ずつ示し、レース別時刻を確認済みの開催だけ詳細ページへ案内します。`}
   lang="ja"
   canonicalPath="/ja/major-countries/current-timetable/"
   alternatePath="/major-countries/current-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">現在のタイムテーブル</p>
-    <h1 id="page-title">2026年6月タイムテーブル</h1>
+    <h1 id="page-title">現在の30日間タイムテーブル</h1>
     <p class="hero__summary">
-      開催日ごとに表示します。公開ランクに応じて表示する時刻情報の範囲を制御します。
+      {windowLabel}。開催日ごとに表示し、公開ランクに応じて表示する時刻情報の範囲を制御します。
     </p>
   </section>
 
-  <section aria-label="2026年6月の開催日別タイムテーブル">
+  <section aria-label={`${windowLabel}の開催日別タイムテーブル`}>
     <TimetableMeetingList
       groups={groupedTimetableRecords}
       lang="ja"
-      emptyLabel="2026年6月の開催情報はまだありません。最終確認には公式ソースを使用してください。"
+      emptyLabel="現在の30日間に公開済みの開催情報はありません。最終確認には公式ソースを使用してください。"
     />
   </section>
 </BaseLayout>
