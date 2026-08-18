@@ -1,13 +1,13 @@
 {
   "schema_version": "calendar-due-job-plan-v1",
   "policy_version": "calendar-due-job-policy-2026-07-19",
-  "generated_at": "2026-08-18T04:01:30Z",
+  "generated_at": "2026-08-18T17:03:25Z",
   "planning_date": "2026-08-18",
   "collection_plan": {
     "schema_version": "calendar-collection-plan-v1",
     "plan_id": "due-job-plan-2026-08-18",
     "campaign_id": "scheduled-planning-2026-08-18",
-    "created_at": "2026-08-18T04:01:30Z",
+    "created_at": "2026-08-18T17:03:25Z",
     "jobs": [
       {
         "schema_version": "calendar-collection-job-v1",
@@ -27,7 +27,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -47,7 +47,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -67,7 +67,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "regular_refresh",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -80,14 +80,14 @@
         },
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-09-07",
+          "start_date": "2026-09-16",
           "end_date_exclusive": "2026-09-17",
           "timezone": "Asia/Tokyo"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -107,7 +107,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "regular_refresh",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -127,7 +127,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
@@ -147,7 +147,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-18T04:01:30Z"
+        "requested_at": "2026-08-18T17:03:25Z"
       }
     ]
   },
@@ -171,21 +171,21 @@
       "trigger": "regular_refresh",
       "disposition": "job_planned",
       "job_id": "due-japan-jra-regular-refresh-001",
-      "detail": "Regular refresh due: stale=true, meeting_proximity_due=false, age_hours=244."
+      "detail": "Regular refresh due: stale=true, meeting_proximity_due=false, age_hours=257."
     },
     {
       "system_id": "japan-nar-system",
       "trigger": "coverage_gap",
       "disposition": "job_planned",
       "job_id": "due-japan-nar-coverage-gap-001",
-      "detail": "Explicit coverage gap 2026-09-07..2026-09-17 is due."
+      "detail": "Explicit coverage gap 2026-09-16..2026-09-17 is due."
     },
     {
       "system_id": "japan-nar-system",
       "trigger": "regular_refresh",
       "disposition": "job_planned",
       "job_id": "due-japan-nar-regular-refresh-001",
-      "detail": "Regular refresh due: stale=true, meeting_proximity_due=true, age_hours=244."
+      "detail": "Regular refresh due: stale=true, meeting_proximity_due=true, age_hours=41."
     },
     {
       "system_id": "hong-kong-hkjc-system",

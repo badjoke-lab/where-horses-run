@@ -1,7 +1,7 @@
 {
   "schema_version": "nar-incremental-batch-v2",
   "batch_id": "due-job-plan-2026-08-18-due-japan-nar-regular-refresh-001-run-001",
-  "generated_at": "2026-08-18T04:01:49.075Z",
+  "generated_at": "2026-08-18T17:04:35.781Z",
   "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
   "collection_mode": "date_window",
   "requested_scope": {
@@ -1138,6 +1138,259 @@
     },
     {
       "schema_version": "nar-incremental-detail-candidate-v2",
+      "candidate_id": "nar-kawasaki-racecourse-2026-08-21",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-08-21",
+      "timezone": "Asia/Tokyo",
+      "source": {
+        "source_id": "nar-official-race-list-and-deba-table",
+        "official_race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+        "list_http_status": 200,
+        "list_encoding": "utf-8",
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "meeting_completeness": {
+        "expected_race_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "expected_race_count": 12,
+        "observed_race_count": 12,
+        "continuous_race_numbers": true,
+        "all_a_plus_fields_complete": true
+      },
+      "timetable_rows": [
+        {
+          "race_number": 1,
+          "label": "Race 1",
+          "post_time_local": "15:00",
+          "race_name": "Ｃ３一 二 三",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=1",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 2,
+          "label": "Race 2",
+          "post_time_local": "15:30",
+          "race_name": "Ｃ３一 二 三",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=2",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 3,
+          "label": "Race 3",
+          "post_time_local": "16:00",
+          "race_name": "スパーキングデビュー新馬２歳７ロ",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=3",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 4,
+          "label": "Race 4",
+          "post_time_local": "16:30",
+          "race_name": "スパーキングデビュー新馬２歳６イ",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=4",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 5,
+          "label": "Race 5",
+          "post_time_local": "17:00",
+          "race_name": "Ｃ３一 二 三",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=5",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 6,
+          "label": "Race 6",
+          "post_time_local": "17:30",
+          "race_name": "ユニヴェール賞３歳未格付選定馬",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=6",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 7,
+          "label": "Race 7",
+          "post_time_local": "18:00",
+          "race_name": "３歳６",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=7",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 8,
+          "label": "Race 8",
+          "post_time_local": "18:30",
+          "race_name": "特別",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=8",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 9,
+          "label": "Race 9",
+          "post_time_local": "19:05",
+          "race_name": "特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=9",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 10,
+          "label": "Race 10",
+          "post_time_local": "19:40",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=10",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 11,
+          "label": "Race 11",
+          "post_time_local": "20:15",
+          "race_name": "神奈川の水がめ「やまなみ五湖」賞Ｂ１Ｂ２",
+          "distance_m": 900,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=11",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 12,
+          "label": "Race 12",
+          "post_time_local": "20:50",
+          "race_name": "鶺鴒賞３歳１",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Left",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=21&k_raceDate=2026%2F08%2F21&k_raceNo=12",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule-aware NAR detail candidate requires human review before canonical promotion."
+      },
+      "candidate_rank": "A+"
+    },
+    {
+      "schema_version": "nar-incremental-detail-candidate-v2",
       "candidate_id": "nar-monbetsu-racecourse-2026-08-19",
       "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
       "country_id": "japan",
@@ -2134,6 +2387,259 @@
           "source_trace": {
             "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F20",
             "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F20&k_raceNo=12",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        }
+      ],
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule-aware NAR detail candidate requires human review before canonical promotion."
+      },
+      "candidate_rank": "A+"
+    },
+    {
+      "schema_version": "nar-incremental-detail-candidate-v2",
+      "candidate_id": "nar-nagoya-racecourse-2026-08-21",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "nagoya-racecourse",
+      "racecourse_name_en": "Nagoya",
+      "racecourse_name_ja": "名古屋",
+      "venue_code": "24",
+      "date": "2026-08-21",
+      "timezone": "Asia/Tokyo",
+      "source": {
+        "source_id": "nar-official-race-list-and-deba-table",
+        "official_race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+        "list_http_status": 200,
+        "list_encoding": "utf-8",
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "meeting_completeness": {
+        "expected_race_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "expected_race_count": 12,
+        "observed_race_count": 12,
+        "continuous_race_numbers": true,
+        "all_a_plus_fields_complete": true
+      },
+      "timetable_rows": [
+        {
+          "race_number": 1,
+          "label": "Race 1",
+          "post_time_local": "14:35",
+          "race_name": "３歳１０組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=1",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 2,
+          "label": "Race 2",
+          "post_time_local": "15:10",
+          "race_name": "３歳９組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=2",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 3,
+          "label": "Race 3",
+          "post_time_local": "15:40",
+          "race_name": "３歳８組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=3",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 4,
+          "label": "Race 4",
+          "post_time_local": "16:15",
+          "race_name": "２歳２組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=4",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 5,
+          "label": "Race 5",
+          "post_time_local": "16:45",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=5",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 6,
+          "label": "Race 6",
+          "post_time_local": "17:15",
+          "race_name": "増田家結婚１周年記念Ｂ９",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=6",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 7,
+          "label": "Race 7",
+          "post_time_local": "17:45",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=7",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 8,
+          "label": "Race 8",
+          "post_time_local": "18:20",
+          "race_name": "連続開催！第３回中京競馬Ｂ８",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=8",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 9,
+          "label": "Race 9",
+          "post_time_local": "18:55",
+          "race_name": "特別",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=9",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 10,
+          "label": "Race 10",
+          "post_time_local": "19:30",
+          "race_name": "特別",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=10",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 11,
+          "label": "Race 11",
+          "post_time_local": "20:05",
+          "race_name": "特別",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=11",
+            "detail_http_status": 200,
+            "detail_encoding": "utf-8",
+            "detail_parsed": true,
+            "course_metadata_source": "deba_table"
+          }
+        },
+        {
+          "race_number": 12,
+          "label": "Race 12",
+          "post_time_local": "20:40",
+          "race_name": "金シャチ最終戦３歳",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "source_trace": {
+            "list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
+            "detail_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=24&k_raceDate=2026%2F08%2F21&k_raceNo=12",
             "detail_http_status": 200,
             "detail_encoding": "utf-8",
             "detail_parsed": true,
@@ -3345,37 +3851,6 @@
     },
     {
       "schema_version": "nar-schedule-meeting-candidate-v1",
-      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-08-21",
-      "meeting_id": "nar-kawasaki-racecourse-2026-08-21",
-      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racing_system_id": "japan-nar-system",
-      "racecourse_id": "kawasaki-racecourse",
-      "racecourse_name_en": "Kawasaki",
-      "racecourse_name_ja": "川崎",
-      "venue_code": "21",
-      "date": "2026-08-21",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "schedule_state": "scheduled_pending_details",
-      "detail_status": "parser_failure",
-      "source": {
-        "source_id": "nar-monthly-schedule-grid",
-        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=8&k_year=2026",
-        "schedule_marker": "☆",
-        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
-        "race_list_linked_from_schedule": false,
-        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
-      },
-      "review": {
-        "status": "needs_review",
-        "promotion_eligible": false,
-        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
-      }
-    },
-    {
-      "schema_version": "nar-schedule-meeting-candidate-v1",
       "candidate_id": "schedule-nar-monbetsu-racecourse-2026-08-25",
       "meeting_id": "nar-monbetsu-racecourse-2026-08-25",
       "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
@@ -3675,37 +4150,6 @@
         "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
         "schedule_marker": "Ｄ",
         "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F09%2F01",
-        "race_list_linked_from_schedule": false,
-        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
-      },
-      "review": {
-        "status": "needs_review",
-        "promotion_eligible": false,
-        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
-      }
-    },
-    {
-      "schema_version": "nar-schedule-meeting-candidate-v1",
-      "candidate_id": "schedule-nar-nagoya-racecourse-2026-08-21",
-      "meeting_id": "nar-nagoya-racecourse-2026-08-21",
-      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racing_system_id": "japan-nar-system",
-      "racecourse_id": "nagoya-racecourse",
-      "racecourse_name_en": "Nagoya",
-      "racecourse_name_ja": "名古屋",
-      "venue_code": "24",
-      "date": "2026-08-21",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "schedule_state": "scheduled_pending_details",
-      "detail_status": "parser_failure",
-      "source": {
-        "source_id": "nar-monthly-schedule-grid",
-        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=8&k_year=2026",
-        "schedule_marker": "☆",
-        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
         "race_list_linked_from_schedule": false,
         "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
       },
@@ -4255,20 +4699,6 @@
       "meeting_id": "nar-kasamatsu-racecourse-2026-08-28"
     },
     {
-      "venue_code": "21",
-      "racecourse_id": "kawasaki-racecourse",
-      "date": "2026-08-21",
-      "status": "parser_failure",
-      "blockers": [
-        {
-          "reason": "race_number_discovery_incomplete"
-        }
-      ],
-      "list_http_status": 200,
-      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F08%2F21",
-      "meeting_id": "nar-kawasaki-racecourse-2026-08-21"
-    },
-    {
       "venue_code": "36",
       "racecourse_id": "monbetsu-racecourse",
       "date": "2026-08-25",
@@ -4407,20 +4837,6 @@
       "list_http_status": 200,
       "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=10&k_raceDate=2026%2F09%2F01",
       "meeting_id": "nar-morioka-racecourse-2026-09-01"
-    },
-    {
-      "venue_code": "24",
-      "racecourse_id": "nagoya-racecourse",
-      "date": "2026-08-21",
-      "status": "parser_failure",
-      "blockers": [
-        {
-          "reason": "race_number_discovery_incomplete"
-        }
-      ],
-      "list_http_status": 200,
-      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F08%2F21",
-      "meeting_id": "nar-nagoya-racecourse-2026-08-21"
     },
     {
       "venue_code": "24",
