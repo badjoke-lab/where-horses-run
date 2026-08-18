@@ -25,7 +25,7 @@ on:
       - 'data/generated/timetable/operations-review-package.json'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: calendar-september-2026-horizon-recovery-${{ github.event.pull_request.number || github.ref }}
@@ -37,9 +37,6 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -95,29 +92,17 @@ jobs:
           NODE
       - name: Verify deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Verify committed core recovery outputs are current
+      - name: Verify committed recovery outputs are current
         run: |
           git diff --exit-code -- \
             data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-      - name: Apply exact coupled derivatives to PR branch
-        if: github.event_name == 'pull_request'
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add \
+            data/generated/timetable/public/meeting-details.json \
             data/generated/timetable/public/japan-a-plus-overrides.json \
             data/generated/timetable/operations-status.json \
             data/generated/timetable/operations-review-package.json
-          if git diff --cached --quiet; then
-            echo 'Coupled derivatives already current.'
-            exit 0
-          fi
-          git commit -m 'Refresh coupled September calendar derivatives'
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
       - name: Check generated diff formatting
         run: git diff --check
       - name: Upload reviewed recovery output
