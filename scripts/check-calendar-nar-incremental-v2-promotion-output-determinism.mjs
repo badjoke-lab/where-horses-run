@@ -21,6 +21,7 @@ const augustJraRecoveryPath = 'data/candidates/jra-horizon-recovery-2026-08-18-t
 const augustNarRecoveryPath = 'data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json';
 const augustBaneiRecoveryPath = 'data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json';
 const augustHkjcRecoveryPath = 'data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json';
+const septemberNarRecoveryPath = 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json';
 
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readBaseJson = (relativePath) => JSON.parse(execFileSync('git', ['show', `${baseSha}:${relativePath}`], { cwd: root, encoding: 'utf8' }));
@@ -39,13 +40,14 @@ const historicalCandidatePaths = [
   julyJraRecoveryPath,
   julyBaneiRecoveryPath,
 ];
-const augustRecoveryPaths = [
+const recoveryContinuationPaths = [
   augustJraRecoveryPath,
   augustNarRecoveryPath,
   augustBaneiRecoveryPath,
   augustHkjcRecoveryPath,
+  septemberNarRecoveryPath,
 ];
-const orderedCandidatePaths = [...historicalCandidatePaths, ...augustRecoveryPaths];
+const orderedCandidatePaths = [...historicalCandidatePaths, ...recoveryContinuationPaths];
 const availableCandidatePaths = orderedCandidatePaths.filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
 for (const requiredPath of orderedCandidatePaths) {
   if (!availableCandidatePaths.includes(requiredPath)) throw new Error(`required approved Candidate is missing: ${requiredPath}`);
@@ -56,26 +58,25 @@ for (const historicalPath of historicalCandidatePaths) {
   if (!baseInputSources.has(historicalPath)) throw new Error(`historical Candidate is not present in the PR base: ${historicalPath}`);
 }
 
-// The August recovery candidates were the continuation under test while PR #567
-// was open. After #567 merged, later PR bases legitimately contain those inputs.
-// Replay only candidates that are absent from the PR base; never reapply already
-// promoted inputs. If a base contains a later August input while an earlier one is
-// missing, fail rather than accepting a non-prefix promotion history.
-const firstMissingAugustIndex = augustRecoveryPaths.findIndex((inputPath) => !baseInputSources.has(inputPath));
-if (firstMissingAugustIndex >= 0) {
-  const presentAfterGap = augustRecoveryPaths
-    .slice(firstMissingAugustIndex + 1)
+// Recovery candidates form an ordered, append-only reviewed continuation.
+// Later PR bases may already contain an initial prefix of this sequence. Replay
+// only the missing suffix and fail closed if the base contains a later reviewed
+// input while an earlier continuation input is missing.
+const firstMissingRecoveryIndex = recoveryContinuationPaths.findIndex((inputPath) => !baseInputSources.has(inputPath));
+if (firstMissingRecoveryIndex >= 0) {
+  const presentAfterGap = recoveryContinuationPaths
+    .slice(firstMissingRecoveryIndex + 1)
     .filter((inputPath) => baseInputSources.has(inputPath));
   if (presentAfterGap.length > 0) {
-    throw new Error(`August recovery base history is non-prefix: ${JSON.stringify(presentAfterGap)}`);
+    throw new Error(`recovery continuation base history is non-prefix: ${JSON.stringify(presentAfterGap)}`);
   }
 }
 
-const expectedPendingAugustPaths = firstMissingAugustIndex < 0
+const expectedPendingRecoveryPaths = firstMissingRecoveryIndex < 0
   ? []
-  : augustRecoveryPaths.slice(firstMissingAugustIndex);
+  : recoveryContinuationPaths.slice(firstMissingRecoveryIndex);
 const inputPaths = orderedCandidatePaths.filter((inputPath) => !baseInputSources.has(inputPath));
-if (!exact(inputPaths, expectedPendingAugustPaths)) {
+if (!exact(inputPaths, expectedPendingRecoveryPaths)) {
   throw new Error(`unexpected promotion continuation order: ${JSON.stringify(inputPaths)}`);
 }
 
@@ -152,6 +153,7 @@ const expectedCounts = new Map([
   [augustNarRecoveryPath, [69, 0]],
   [augustBaneiRecoveryPath, [8, 0]],
   [augustHkjcRecoveryPath, [1, 0]],
+  [septemberNarRecoveryPath, [32, 0]],
 ]);
 for (const inputPath of inputPaths) {
   const [expectedMeetings, expectedDetails] = expectedCounts.get(inputPath) ?? [];
@@ -160,8 +162,8 @@ for (const inputPath of inputPaths) {
     throw new Error(`${inputPath} promotion count differs`);
   }
 }
-for (const inputPath of augustRecoveryPaths.filter((candidatePath) => baseInputSources.has(candidatePath))) {
-  if (!expectedCounts.has(inputPath)) throw new Error(`unexpected August recovery Candidate in PR base: ${inputPath}`);
+for (const inputPath of recoveryContinuationPaths.filter((candidatePath) => baseInputSources.has(candidatePath))) {
+  if (!expectedCounts.has(inputPath)) throw new Error(`unexpected recovery Candidate in PR base: ${inputPath}`);
 }
 
 const currentWindowCandidate = readJson(currentWindowAPlusPath);
@@ -185,7 +187,7 @@ console.log(`BASE_DETAILS: ${baseDetails.details.length}`);
 console.log(`HEAD_DETAILS: ${committedDetails.details.length}`);
 console.log(`BASE_INPUT_SOURCE_COUNT: ${baseInputSources.size}`);
 console.log(`HISTORICAL_BASE_CANDIDATES: ${JSON.stringify(historicalCandidatePaths)}`);
-console.log(`AUGUST_BASE_CANDIDATES: ${JSON.stringify(augustRecoveryPaths.filter((inputPath) => baseInputSources.has(inputPath)))}`);
+console.log(`RECOVERY_BASE_CANDIDATES: ${JSON.stringify(recoveryContinuationPaths.filter((inputPath) => baseInputSources.has(inputPath)))}`);
 console.log(`APPLIED_CANDIDATES: ${JSON.stringify(applied)}`);
 console.log(`UNRELATED_MEETING_ADDITIONS: ${unrelatedMeetingAdditions.length}`);
 console.log(`UNRELATED_DETAIL_ADDITIONS: ${unrelatedDetailAdditions.length}`);
