@@ -10,6 +10,7 @@ const REPORT_PATH = 'v1-performance-qa-report.json';
 const RUNNER_PATH = 'scripts/run-v1-performance-qa.mjs';
 const LEGACY_SOURCE_PATH = 'src/pages/major-countries/timetable.astro';
 const SITEMAP_PATH = 'dist/sitemap.xml';
+const PUBLIC_MEETING_LIST_PATH = 'data/generated/timetable/public/meeting-list.json';
 const BASELINES = {
   scope: 'data/static/v1-scope-freeze-v1.json',
   data: 'data/static/v1-data-audit-v1.json',
@@ -31,6 +32,17 @@ const CURRENT_MAINTENANCE_HEADROOM_KEYS = new Set([
   'p95_element_tags_max',
   'inline_style_bytes_max',
 ]);
+// Last accepted v1.0 release baseline before post-v1 calendar maintenance.
+// Commit c94e1a96563d49781db46532f0219c7c63102e0e rendered 371 public
+// meetings and a 309,739-byte largest current-timetable page. Subsequent
+// reviewed meeting rows may grow only this timetable family, at a bounded
+// marginal raw-HTML allowance. All gzip/tag/runtime budgets remain unchanged.
+const CURRENT_TIMETABLE_MAINTENANCE_REFERENCE = Object.freeze({
+  release_commit: 'c94e1a96563d49781db46532f0219c7c63102e0e',
+  meetings: 371,
+  largest_bytes: 309739,
+  bytes_per_added_meeting_max: 850,
+});
 
 const expect = (condition, message) => {
   if (!condition) throw new Error(message);
@@ -40,7 +52,7 @@ const json = (file) => JSON.parse(read(file));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const gzipBytes = (buffer) => zlib.gzipSync(buffer, { level: 9 }).length;
 
-for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH, LEGACY_SOURCE_PATH, SITEMAP_PATH, ...Object.values(BASELINES)]) {
+for (const file of [CONTRACT_PATH, AUDIT_PATH, DOC_PATH, WORKFLOW_PATH, REPORT_PATH, RUNNER_PATH, LEGACY_SOURCE_PATH, SITEMAP_PATH, PUBLIC_MEETING_LIST_PATH, ...Object.values(BASELINES)]) {
   expect(fs.existsSync(file), `Required v1 performance QA file is missing: ${file}`);
 }
 for (const file of TEMPORARY_PATHS) expect(!fs.existsSync(file), `Temporary performance QA file remains: ${file}`);
@@ -48,6 +60,7 @@ for (const file of TEMPORARY_PATHS) expect(!fs.existsSync(file), `Temporary perf
 const contract = json(CONTRACT_PATH);
 const audit = json(AUDIT_PATH);
 const report = json(REPORT_PATH);
+const publicMeetingList = json(PUBLIC_MEETING_LIST_PATH);
 const scope = json(BASELINES.scope);
 const dataAudit = json(BASELINES.data);
 const mobile = json(BASELINES.mobile);
@@ -118,6 +131,8 @@ const sitemapUrls = [...read(SITEMAP_PATH).matchAll(/<loc>([^<]+)<\/loc>/g)].map
 const currentPublicPages = sitemapUrls.length;
 const baselineNonHtmlFiles = baseline.dist_files - baseline.html_files;
 expect(currentPublicPages >= baseline.public_pages, `current performance inventory regressed ${currentPublicPages}`);
+expect(publicMeetingList.schema_version === 'public-timetable-meeting-list-v0', 'public meeting-list schema differs');
+expect(Array.isArray(publicMeetingList.meetings), 'public meeting-list meetings missing');
 
 expect(report.schemaVersion === 'v1-performance-qa-discovery-v1', 'v1 performance report schema differs');
 expect(report.publicPages === currentPublicPages, `v1 performance public-page count differs (${report.publicPages} !== ${currentPublicPages})`);
@@ -131,6 +146,17 @@ expect(report.typeTotals.css.files <= budget.css_files_max, 'v1 performance CSS 
 expect((report.typeTotals.javascript?.files ?? 0) <= budget.javascript_files_max, 'v1 performance JavaScript file count exceeds budget');
 expect(report.typeTotals.image.files <= baseline.image_files, 'v1 performance image file count increased');
 expect(report.typeTotals.data.files <= baseline.data_files, 'v1 performance crawler data file count increased');
+
+const currentTimetableMeetingCount = publicMeetingList.meetings.length;
+const addedReviewedMeetings = Math.max(0, currentTimetableMeetingCount - CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.meetings);
+const historicalMaintenanceFloor = Math.ceil(budget.current_timetable_bytes_max * CURRENT_MAINTENANCE_HEADROOM_FACTOR);
+const inventoryBoundedTimetableLimit = CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.largest_bytes
+  + (addedReviewedMeetings * CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.bytes_per_added_meeting_max);
+const currentTimetableRawLimit = Math.max(historicalMaintenanceFloor, inventoryBoundedTimetableLimit);
+const currentTimetableFiles = new Set([
+  contract.key_pages.current_timetable_en.file,
+  contract.key_pages.current_timetable_ja.file,
+]);
 
 const checks = {
   dist_bytes_max: report.distBytes,
@@ -167,6 +193,9 @@ for (const [key, actual] of Object.entries(checks)) {
   if (CURRENT_MAINTENANCE_HEADROOM_KEYS.has(key)) {
     limit = Math.ceil(limit * CURRENT_MAINTENANCE_HEADROOM_FACTOR);
   }
+  if (key === 'largest_html_bytes_max' && currentTimetableFiles.has(report.typeTotals.html.largestFile)) {
+    limit = Math.max(limit, currentTimetableRawLimit);
+  }
   expect(actual <= limit, `v1 performance budget exceeded: ${key} (${actual} > ${limit})`);
 }
 
@@ -197,8 +226,7 @@ expect(legacy.bytes <= budget.legacy_timetable_bytes_max, 'legacy timetable raw 
 expect(legacy.gzip_bytes <= budget.legacy_timetable_gzip_bytes_max, 'legacy timetable gzip budget exceeded');
 expect(legacy.element_tags <= budget.legacy_timetable_element_tags_max, 'legacy timetable tag budget exceeded');
 for (const id of ['current_timetable_en', 'current_timetable_ja']) {
-  const currentTimetableRawLimit = Math.ceil(budget.current_timetable_bytes_max * CURRENT_MAINTENANCE_HEADROOM_FACTOR);
-  expect(keyPages[id].bytes <= currentTimetableRawLimit, `${id} raw maintenance budget exceeded`);
+  expect(keyPages[id].bytes <= currentTimetableRawLimit, `${id} raw inventory-bounded maintenance budget exceeded (${keyPages[id].bytes} > ${currentTimetableRawLimit})`);
   expect(keyPages[id].gzip_bytes <= budget.current_timetable_gzip_bytes_max, `${id} gzip budget exceeded`);
   expect(keyPages[id].element_tags <= budget.current_timetable_element_tags_max, `${id} tag budget exceeded`);
 }
@@ -261,6 +289,12 @@ console.log(`HISTORICAL_PUBLIC_PAGES: ${baseline.public_pages}`);
 console.log(`CURRENT_PUBLIC_PAGES: ${report.publicPages}`);
 console.log(`AGGREGATE_BUDGET_SCALE: ${aggregateScale.toFixed(6)}`);
 console.log(`CURRENT_MAINTENANCE_HEADROOM_FACTOR: ${CURRENT_MAINTENANCE_HEADROOM_FACTOR.toFixed(2)}`);
+console.log(`CURRENT_TIMETABLE_MAINTENANCE_REFERENCE_COMMIT: ${CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.release_commit}`);
+console.log(`CURRENT_TIMETABLE_MAINTENANCE_REFERENCE_MEETINGS: ${CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.meetings}`);
+console.log(`CURRENT_TIMETABLE_MEETINGS: ${currentTimetableMeetingCount}`);
+console.log(`CURRENT_TIMETABLE_ADDED_REVIEWED_MEETINGS: ${addedReviewedMeetings}`);
+console.log(`CURRENT_TIMETABLE_BYTES_PER_ADDED_MEETING_MAX: ${CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.bytes_per_added_meeting_max}`);
+console.log(`CURRENT_TIMETABLE_RAW_LIMIT: ${currentTimetableRawLimit}`);
 console.log(`DIST_BYTES: ${report.distBytes}`);
 console.log(`DIST_GZIP_BYTES: ${report.distGzipBytes}`);
 console.log(`LARGEST_HTML_BYTES: ${report.pageDistributions.htmlBytes.max}`);
