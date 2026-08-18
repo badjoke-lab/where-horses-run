@@ -9,6 +9,8 @@ on:
       - 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
   push:
     branches:
       - main
@@ -19,6 +21,8 @@ on:
       - 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
 
 permissions:
   contents: read
@@ -44,8 +48,18 @@ jobs:
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json
       - name: Build deterministic public timetable projection
         run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Rebuild coupled public and operations derivatives
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
       - name: Validate generated repository data
         run: node scripts/validate-data.mjs
+      - name: Verify coupled public derivatives
+        run: |
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
       - name: Verify Rank C-only September recovery
         run: |
           node --input-type=module <<'NODE'
@@ -78,7 +92,7 @@ jobs:
           NODE
       - name: Verify deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Verify committed recovery outputs are current
+      - name: Verify committed core recovery outputs are current
         run: |
           git diff --exit-code -- \
             data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
@@ -101,3 +115,6 @@ jobs:
             data/generated/timetable/canonical/meeting-details.json
             data/generated/timetable/public/meeting-list.json
             data/generated/timetable/public/meeting-details.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
+            data/generated/timetable/operations-status.json
+            data/generated/timetable/operations-review-package.json
