@@ -1,0 +1,90 @@
+{
+  "schema_version": "m6-v1-release-candidate-v1",
+  "work_id": "WHR-M6-V1-RELEASE-CANDIDATE",
+  "implementation_unit": "M6-V1-RELEASE-CANDIDATE-01",
+  "status": "release_candidate_ready",
+  "reviewed_at": "2026-08-17",
+  "site_origin": "https://whr.badjoke-lab.com",
+  "historical_v1_baseline": {
+    "release_decision_contract": "data/static/v1-release-decision-v1.json",
+    "release_id": "WHR-V1",
+    "implementation_unit": "V1-RELEASE-DECISION-01",
+    "decision": "accepted_for_reviewed_static_public_release",
+    "baseline_commit": "57da4a73d0646603eb59e3f5faff9ceaf5a3213e",
+    "preserved_as_historical_evidence": true
+  },
+  "m6_completed_work": [
+    {
+      "work_item": "PR-096",
+      "implementation_unit": "M6-MOBILE-TIMETABLE-UX-01",
+      "checker": "scripts/check-m6-mobile-timetable-ux.mjs"
+    },
+    {
+      "work_item": "PR-097",
+      "implementation_unit": "M6-COUNTRY-COVERAGE-MATRIX-01",
+      "checker": "scripts/check-m6-country-coverage-matrix.mjs"
+    },
+    {
+      "work_item": "PR-098",
+      "implementation_unit": "M6-SOURCE-FRESHNESS-BADGES-01",
+      "checker": "scripts/check-m6-source-freshness-badges.mjs"
+    },
+    {
+      "work_item": "PR-099",
+      "implementation_unit": "M6-METHODS-DATA-POLICY-FINAL-01",
+      "checker": "scripts/check-m6-methods-data-policy-final.mjs"
+    },
+    {
+      "work_item": "PR-100",
+      "implementation_unit": "M6-SEO-SITEMAP-METADATA-FINAL-01",
+      "checker": "scripts/check-m6-seo-sitemap-metadata-final.mjs"
+    }
+  ],
+  "target_countries": [
+    "japan",
+    "hong-kong",
+    "united-arab-emirates",
+    "south-korea",
+    "turkey",
+    "morocco"
+  ],
+  "quality_contract": {
+    "all_m6_pr096_through_pr100_checkers_required": true,
+    "historical_v1_release_decision_required": true,
+    "current_full_mobile_sweep_required": true,
+    "current_full_accessibility_sweep_required": true,
+    "current_performance_sweep_required": true,
+    "current_seo_release_gate_required": true,
+    "complete_static_build_required": true,
+    "repository_clean_proof_required": true,
+    "read_only_permissions_required": true
+  },
+  "public_boundary": {
+    "existing_route_families_only": true,
+    "reviewed_route_additions_only": true,
+    "existing_public_data_classes_only": true,
+    "rank_a_plus_programme_summary_meeting_detail_only": true,
+    "complete_racecards_allowed": false,
+    "entries_or_participants_allowed": false,
+    "odds_results_payouts_predictions_allowed": false,
+    "raw_source_body_or_html_allowed": false,
+    "unreviewed_candidate_publication_allowed": false
+  },
+  "automation_boundary": {
+    "candidate_generation_may_be_automated": true,
+    "validation_may_be_automated": true,
+    "human_review_may_be_bypassed": false,
+    "automatic_publication_enabled": false,
+    "release_tag_creation_enabled_by_gate": false,
+    "deployment_enabled_by_gate": false
+  },
+  "release_actions": {
+    "m6_release_candidate_complete": true,
+    "m6_final_release_complete": false,
+    "release_tag_created_by_this_unit": false,
+    "github_release_created_by_this_unit": false,
+    "deployment_performed_by_this_unit": false,
+    "next_work_item": "PR-102",
+    "next_implementation_unit": "M6-V1-RELEASE-01"
+  }
+}
