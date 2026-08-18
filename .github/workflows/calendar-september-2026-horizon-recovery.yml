@@ -1,0 +1,123 @@
+name: Calendar September 2026 horizon recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-september-2026-horizon-recovery.yml'
+      - 'scripts/timetable/build-calendar-september-2026-horizon-recovery-approved-candidates.mjs'
+      - 'data/generated/timetable/horizon-recovery-2026-08-17/**'
+      - 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-september-2026-horizon-recovery.yml'
+      - 'scripts/timetable/build-calendar-september-2026-horizon-recovery-approved-candidates.mjs'
+      - 'data/generated/timetable/horizon-recovery-2026-08-17/**'
+      - 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-september-2026-horizon-recovery-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Build reviewed Rank C NAR candidate envelope
+        run: node scripts/timetable/build-calendar-september-2026-horizon-recovery-approved-candidates.mjs
+      - name: Dry-run Promotion Validation
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json --dry-run
+      - name: Promote reviewed candidates into canonical timetable data
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json
+      - name: Build deterministic public timetable projection
+        run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Rebuild coupled public and operations derivatives
+        run: |
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Validate generated repository data
+        run: node scripts/validate-data.mjs
+      - name: Verify coupled public derivatives
+        run: |
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+      - name: Verify Rank C-only September recovery
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidatePath = 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json';
+          const candidate = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
+          if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('approval envelope differs');
+          if (!candidate.records.length) throw new Error('approved recovery contains no records');
+          const ids = candidate.records.map((record) => record.meeting_id);
+          if (new Set(ids).size !== ids.length) throw new Error('recovery meeting IDs are not unique');
+          for (const record of candidate.records) {
+            if (record.date < '2026-09-07' || record.date > '2026-09-15') throw new Error(`${record.meeting_id}: date outside reviewed window`);
+            if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: public recovery exceeded Rank C`);
+          }
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          for (const id of ids) {
+            const meeting = canonicalById.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from canonical Rank C output`);
+          }
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+          for (const id of ids) {
+            const meeting = publicById.get(id);
+            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from public Rank C output`);
+          }
+          const dates = ids.map((id) => publicById.get(id).date).sort();
+          if (dates[0] !== '2026-09-07' || dates.at(-1) !== '2026-09-15') throw new Error('recovered public horizon date range differs');
+          console.log(JSON.stringify({ approved_records: ids.length, first_date: dates[0], last_date: dates.at(-1), max_rank: 'C' }));
+          NODE
+      - name: Verify deterministic public projection
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Verify committed recovery outputs are current
+        run: |
+          git diff --exit-code -- \
+            data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+      - name: Check generated diff formatting
+        run: git diff --check
+      - name: Upload reviewed recovery output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-september-2026-horizon-recovery-output
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            data/candidates/nar-horizon-recovery-2026-09-15-approved.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
+            data/generated/timetable/operations-status.json
+            data/generated/timetable/operations-review-package.json

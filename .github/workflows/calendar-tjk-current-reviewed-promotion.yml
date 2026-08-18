@@ -17,6 +17,7 @@ on:
       - 'scripts/timetable/manual-promote-reviewed-tjk-current.mjs'
       - 'scripts/check-tjk-public-timetable-identities.mjs'
       - 'scripts/check-tjk-current-reviewed-promotion.mjs'
+      - 'scripts/check-tjk-current-canonical-promotion-determinism.mjs'
       - '.github/workflows/calendar-tjk-current-reviewed-promotion.yml'
   push:
     branches:
@@ -36,6 +37,7 @@ on:
       - 'scripts/timetable/manual-promote-reviewed-tjk-current.mjs'
       - 'scripts/check-tjk-public-timetable-identities.mjs'
       - 'scripts/check-tjk-current-reviewed-promotion.mjs'
+      - 'scripts/check-tjk-current-canonical-promotion-determinism.mjs'
       - '.github/workflows/calendar-tjk-current-reviewed-promotion.yml'
 
 permissions:
@@ -58,7 +60,9 @@ jobs:
       - name: Validate approved candidate determinism
         run: node scripts/timetable/build-tjk-current-approved-candidate.mjs --check
       - name: Validate canonical promotion determinism
-        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/tjk-current-2026-08-11-approved.json --check
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/check-tjk-current-canonical-promotion-determinism.mjs
       - name: Validate public projection determinism
         run: node scripts/timetable/build-public-timetable-view.mjs --check
       - name: Validate exact reviewed TJK publication
