@@ -42,11 +42,11 @@ jobs:
           node-version: 22.12.0
       - name: Build reviewed Rank C NAR candidate envelope
         run: node scripts/timetable/build-calendar-september-2026-horizon-recovery-approved-candidates.mjs
+      - name: Verify historical recovery candidate remains deterministic
+        run: git diff --exit-code -- data/candidates/nar-horizon-recovery-2026-09-15-approved.json
       - name: Dry-run Promotion Validation
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json --dry-run
-      - name: Promote reviewed candidates into canonical timetable data
-        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json
-      - name: Build deterministic public timetable projection
+      - name: Build deterministic public timetable projection from current canonical state
         run: node scripts/timetable/build-public-timetable-view.mjs
       - name: Rebuild coupled public and operations derivatives
         run: |
@@ -60,39 +60,59 @@ jobs:
           node scripts/check-japan-a-plus-public-overrides.mjs
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
-      - name: Verify Rank C-only September recovery
+      - name: Verify September 15 recovery historical invariant
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const candidatePath = 'data/candidates/nar-horizon-recovery-2026-09-15-approved.json';
           const candidate = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
           if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('approval envelope differs');
-          if (!candidate.records.length) throw new Error('approved recovery contains no records');
+          if (candidate.records.length !== 32) throw new Error(`approved recovery record count differs: ${candidate.records.length}`);
           const ids = candidate.records.map((record) => record.meeting_id);
           if (new Set(ids).size !== ids.length) throw new Error('recovery meeting IDs are not unique');
           for (const record of candidate.records) {
             if (record.date < '2026-09-07' || record.date > '2026-09-15') throw new Error(`${record.meeting_id}: date outside reviewed window`);
-            if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: public recovery exceeded Rank C`);
+            if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: historical recovery envelope exceeded Rank C`);
           }
+          const candidateDates = candidate.records.map((record) => record.date).sort();
+          if (candidateDates[0] !== '2026-09-07' || candidateDates.at(-1) !== '2026-09-15') throw new Error('historical recovery candidate window differs');
+
+          const rankOrder = new Map([['C', 0], ['B', 1], ['B+', 2], ['A', 3], ['A+', 4]]);
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
-          const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) {
-            const meeting = canonicalById.get(id);
-            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from canonical Rank C output`);
-          }
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
           const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of ids) {
-            const meeting = publicById.get(id);
-            if (!meeting || meeting.capability_rank !== 'C') throw new Error(`${id}: missing from public Rank C output`);
+          const stableFields = ['country_id', 'authority_id', 'racing_system_id', 'racecourse_id', 'date', 'timezone'];
+
+          for (const record of candidate.records) {
+            const canonicalMeeting = canonicalById.get(record.meeting_id);
+            const publicMeeting = publicById.get(record.meeting_id);
+            if (!canonicalMeeting) throw new Error(`${record.meeting_id}: recovered meeting missing from canonical output`);
+            if (!publicMeeting) throw new Error(`${record.meeting_id}: recovered meeting missing from public output`);
+            for (const field of stableFields) {
+              if (canonicalMeeting[field] !== record[field]) throw new Error(`${record.meeting_id}: canonical ${field} drifted from reviewed recovery identity`);
+              if (publicMeeting[field] !== record[field]) throw new Error(`${record.meeting_id}: public ${field} drifted from reviewed recovery identity`);
+            }
+            const canonicalRank = rankOrder.get(canonicalMeeting.capability_rank);
+            const publicRank = rankOrder.get(publicMeeting.capability_rank);
+            if (canonicalRank === undefined || canonicalRank < rankOrder.get('C')) throw new Error(`${record.meeting_id}: canonical rank regressed below recovered baseline`);
+            if (publicRank === undefined || publicRank < rankOrder.get('C')) throw new Error(`${record.meeting_id}: public rank regressed below recovered baseline`);
           }
-          const dates = ids.map((id) => publicById.get(id).date).sort();
-          if (dates[0] !== '2026-09-07' || dates.at(-1) !== '2026-09-15') throw new Error('recovered public horizon date range differs');
-          console.log(JSON.stringify({ approved_records: ids.length, first_date: dates[0], last_date: dates.at(-1), max_rank: 'C' }));
+
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          if ((status.public_projection?.meeting_count ?? 0) < 403) throw new Error(`public meeting count regressed below September 15 recovery baseline: ${status.public_projection?.meeting_count}`);
+          if ((status.public_projection?.latest_meeting_date ?? '') < '2026-09-15') throw new Error(`public horizon regressed below September 15 recovery baseline: ${status.public_projection?.latest_meeting_date}`);
+          console.log(JSON.stringify({
+            historical_recovery_records: candidate.records.length,
+            historical_first_date: candidateDates[0],
+            historical_last_date: candidateDates.at(-1),
+            current_public_meetings: status.public_projection.meeting_count,
+            current_public_latest_date: status.public_projection.latest_meeting_date,
+          }));
           NODE
       - name: Verify deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Verify committed recovery outputs are current
+      - name: Verify committed current outputs are deterministic
         run: |
           git diff --exit-code -- \
             data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
