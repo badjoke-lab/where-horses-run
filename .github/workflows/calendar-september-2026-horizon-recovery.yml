@@ -48,14 +48,11 @@ jobs:
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-recovery-2026-09-15-approved.json --dry-run
       - name: Build deterministic public timetable projection from current canonical state
         run: node scripts/timetable/build-public-timetable-view.mjs
-      - name: Rebuild coupled public and operations derivatives
-        run: |
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
-          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
-          node scripts/timetable/build-operations-review-package.mjs
+      - name: Rebuild coupled public derivative
+        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs
       - name: Validate generated repository data
         run: node scripts/validate-data.mjs
-      - name: Verify coupled public derivatives
+      - name: Verify coupled public and committed operations derivatives
         run: |
           node scripts/check-japan-a-plus-public-overrides.mjs
           node scripts/check-calendar-operations-status.mjs
@@ -112,7 +109,7 @@ jobs:
           NODE
       - name: Verify deterministic public projection
         run: node scripts/timetable/build-public-timetable-view.mjs --check
-      - name: Verify committed current outputs are deterministic
+      - name: Verify committed timetable outputs are deterministic
         run: |
           git diff --exit-code -- \
             data/candidates/nar-horizon-recovery-2026-09-15-approved.json \
@@ -120,9 +117,7 @@ jobs:
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/public/japan-a-plus-overrides.json \
-            data/generated/timetable/operations-status.json \
-            data/generated/timetable/operations-review-package.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
       - name: Check generated diff formatting
         run: git diff --check
       - name: Upload reviewed recovery output
