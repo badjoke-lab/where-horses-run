@@ -1,0 +1,103 @@
+name: Calendar September 2026 horizon extension review
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-september-2026-horizon-extension-review.yml'
+      - 'scripts/timetable/build-calendar-september-2026-horizon-extension-approved-candidates.mjs'
+      - 'data/candidates/nar-horizon-extension-2026-09-17-approved.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-september-2026-horizon-extension-review.yml'
+      - 'scripts/timetable/build-calendar-september-2026-horizon-extension-approved-candidates.mjs'
+      - 'data/candidates/nar-horizon-extension-2026-09-17-approved.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-september-2026-horizon-extension-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+        with:
+          path: work
+
+      - name: Checkout exact daily-review source evidence
+        uses: actions/checkout@v4
+        with:
+          ref: 1124243b474615092a9ba85bc0eafa1c641c82f6
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-19-due-japan-nar-coverage-gap-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Rebuild approved Rank C candidate envelope from exact review evidence
+        working-directory: work
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-19-due-japan-nar-coverage-gap-001-run-001/batch.json
+        run: node scripts/timetable/build-calendar-september-2026-horizon-extension-approved-candidates.mjs
+
+      - name: Verify committed candidate is deterministic
+        working-directory: work
+        run: git diff --exit-code -- data/candidates/nar-horizon-extension-2026-09-17-approved.json
+
+      - name: Dry-run promotion validation
+        working-directory: work
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-extension-2026-09-17-approved.json --dry-run
+
+      - name: Validate repository data
+        working-directory: work
+        run: node scripts/validate-data.mjs
+
+      - name: Verify exact Rank C review boundary
+        working-directory: work
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-horizon-extension-2026-09-17-approved.json', 'utf8'));
+          const expectedIds = [
+            'nar-monbetsu-racecourse-2026-09-16',
+            'nar-nagoya-racecourse-2026-09-16',
+            'nar-oi-racecourse-2026-09-16',
+            'nar-sonoda-racecourse-2026-09-16',
+            'nar-monbetsu-racecourse-2026-09-17',
+            'nar-nagoya-racecourse-2026-09-17',
+            'nar-oi-racecourse-2026-09-17',
+            'nar-sonoda-racecourse-2026-09-17',
+          ];
+          if (candidate.review?.status !== 'approved') throw new Error('review status differs');
+          if (candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('promotion target differs');
+          if (JSON.stringify(candidate.records.map((record) => record.meeting_id)) !== JSON.stringify(expectedIds)) throw new Error('reviewed meeting identities differ');
+          for (const record of candidate.records) {
+            if (record.capability_rank !== 'C') throw new Error(`${record.meeting_id}: rank exceeds C`);
+            if (record.first_race_time_local !== null || record.last_race_time_local !== null) throw new Error(`${record.meeting_id}: race time leaked`);
+            if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: timetable rows leaked`);
+          }
+          console.log(JSON.stringify({ approved_records: candidate.records.length, first_date: candidate.records[0].date, last_date: candidate.records.at(-1).date, max_rank: 'C' }));
+          NODE
+
+      - name: Check formatting
+        working-directory: work
+        run: git diff --check
+
+      - name: Upload review candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-september-2026-horizon-extension-review
+          if-no-files-found: error
+          retention-days: 14
+          path: work/data/candidates/nar-horizon-extension-2026-09-17-approved.json
