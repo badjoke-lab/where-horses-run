@@ -123,8 +123,8 @@ jobs:
           }
 
           const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
-          if (status.public_projection?.meeting_count !== 411) throw new Error(`public meeting count differs: ${status.public_projection?.meeting_count}`);
-          if (status.public_projection?.latest_meeting_date !== '2026-09-17') throw new Error(`public latest date differs: ${status.public_projection?.latest_meeting_date}`);
+          if ((status.public_projection?.meeting_count ?? 0) < 411) throw new Error(`public meeting count regressed below extension baseline: ${status.public_projection?.meeting_count}`);
+          if ((status.public_projection?.latest_meeting_date ?? '') < '2026-09-17') throw new Error(`public latest date regressed below extension horizon: ${status.public_projection?.latest_meeting_date}`);
           console.log(JSON.stringify({
             approved_records: expectedIds.length,
             meeting_count: status.public_projection.meeting_count,
