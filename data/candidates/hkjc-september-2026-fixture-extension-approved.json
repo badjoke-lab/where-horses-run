@@ -1,0 +1,91 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-08-20T05:03:39.303Z",
+  "adapter_id": "hkjc-september-2026-reviewed-fixture-extension-v1",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "source_id": "hkjc-fixture-list",
+  "candidate_window": {
+    "start_date": "2026-09-09",
+    "end_date_exclusive": "2026-09-17",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "records": [
+    {
+      "candidate_id": "approved-hkjc-happy-valley-racecourse-2026-09-09",
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-09-09",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-09-09",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "hkjc-fixture-list",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "checked_at": "2026-08-20T05:03:24.099Z",
+        "extraction_method": "fixture_parser"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved from the official HKJC September 2026 fixture. Meeting identity only; race times and programme rows remain unclaimed."
+    },
+    {
+      "candidate_id": "approved-hkjc-sha-tin-racecourse-2026-09-13",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-09-13",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-09-13",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "hkjc-fixture-list",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "checked_at": "2026-08-20T05:03:24.099Z",
+        "extraction_method": "fixture_parser"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved from the official HKJC September 2026 fixture. Meeting identity only; race times and programme rows remain unclaimed."
+    },
+    {
+      "candidate_id": "approved-hkjc-happy-valley-racecourse-2026-09-16",
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-09-16",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-09-16",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "hkjc-fixture-list",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "checked_at": "2026-08-20T05:03:39.303Z",
+        "extraction_method": "fixture_parser"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved from the official HKJC September 2026 fixture. Meeting identity only; race times and programme rows remain unclaimed."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-08-20T05:10:00Z",
+    "reviewer": "badjoke-lab",
+    "summary": "Approved three HKJC September fixture meeting identities at Rank C from exact daily-acquisition review evidence; no race times or programme rows are claimed.",
+    "promotion_target": "canonical-timetable-v0"
+  }
+}
