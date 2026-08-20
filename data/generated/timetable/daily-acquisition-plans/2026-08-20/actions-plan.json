@@ -2,7 +2,7 @@
   "schema_version": "calendar-actions-multi-job-plan-v1",
   "plan_id": "due-job-plan-2026-08-20",
   "campaign_id": "scheduled-planning-2026-08-20",
-  "generated_at": "2026-08-20T04:02:43Z",
+  "generated_at": "2026-08-20T04:42:10Z",
   "jobs": [
     {
       "job_id": "due-japan-nar-coverage-gap-001",
@@ -18,14 +18,14 @@
         },
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-09-16",
+          "start_date": "2026-09-18",
           "end_date_exclusive": "2026-09-19",
           "timezone": "Asia/Tokyo"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-20T04:02:43Z"
+        "requested_at": "2026-08-20T04:42:10Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
@@ -39,7 +39,7 @@
         "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-09-16",
+          "start_date": "2026-09-18",
           "end_date_exclusive": "2026-09-19",
           "timezone": "Asia/Tokyo"
         },
@@ -92,7 +92,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "regular_refresh",
-        "requested_at": "2026-08-20T04:02:43Z"
+        "requested_at": "2026-08-20T04:42:10Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
@@ -159,7 +159,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-20T04:02:43Z"
+        "requested_at": "2026-08-20T04:42:10Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
@@ -225,7 +225,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-20T04:02:43Z"
+        "requested_at": "2026-08-20T04:42:10Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
