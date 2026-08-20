@@ -10,7 +10,7 @@ const REVIEWER = 'badjoke-lab';
 const PROMOTION_TARGET = 'canonical-timetable-v0';
 const OFFICIAL_URL = 'https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026';
 
-// The two daily-acquisition artifacts are intentionally frozen evidence inputs.
+// The exact two daily-acquisition artifacts are intentionally frozen evidence inputs.
 function readJson(file) {
   const fullPath = path.isAbsolute(file) ? file : path.join(root, file);
   return JSON.parse(fs.readFileSync(fullPath, 'utf8'));
