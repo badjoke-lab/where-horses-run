@@ -69,6 +69,10 @@ jobs:
         working-directory: work
         run: git diff --exit-code -- data/candidates/hkjc-september-2026-fixture-extension-approved.json
 
+      - name: Apply reviewed HKJC readiness scope
+        working-directory: work
+        run: node scripts/timetable/apply-hkjc-september-2026-readiness-review.mjs
+
       - name: Dry-run promotion validation
         working-directory: work
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/hkjc-september-2026-fixture-extension-approved.json --dry-run
@@ -115,6 +119,9 @@ jobs:
           for (const record of candidate.records) {
             if (record.capability_rank !== 'C' || record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: exceeds Rank C publication boundary`);
           }
+          const readiness = JSON.parse(fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8'));
+          const readinessRecord = readiness.records.find((record) => record.readiness_id === 'hong-kong--hong-kong-hkjc-system--hkjc-fixture-list');
+          if (JSON.stringify(readinessRecord?.racecourse_ids) !== JSON.stringify(['sha-tin-racecourse', 'happy-valley-racecourse'])) throw new Error('reviewed HKJC fixture racecourse scope differs');
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
@@ -146,6 +153,7 @@ jobs:
           git add \
             .github/workflows/check.yml \
             data/candidates/hkjc-september-2026-fixture-extension-approved.json \
+            data/static/calendar-readiness-registry.json \
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
