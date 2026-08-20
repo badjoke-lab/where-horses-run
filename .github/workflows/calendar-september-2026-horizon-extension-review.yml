@@ -39,7 +39,7 @@ jobs:
         with:
           path: work
 
-      - name: Checkout exact daily-review source evidence
+      - name: Checkout exact historical daily-review source evidence
         uses: actions/checkout@v4
         with:
           ref: 1124243b474615092a9ba85bc0eafa1c641c82f6
@@ -52,43 +52,40 @@ jobs:
         with:
           node-version: 22.12.0
 
-      - name: Rebuild approved Rank C candidate envelope from exact review evidence
+      - name: Rebuild historical approved Rank C candidate envelope from exact review evidence
         working-directory: work
         env:
           WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-19-due-japan-nar-coverage-gap-001-run-001/batch.json
         run: node scripts/timetable/build-calendar-september-2026-horizon-extension-approved-candidates.mjs
 
-      - name: Dry-run promotion validation
+      - name: Verify historical extension candidate remains deterministic
+        working-directory: work
+        run: git diff --exit-code -- data/candidates/nar-horizon-extension-2026-09-17-approved.json
+
+      - name: Dry-run historical promotion validation
         working-directory: work
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-extension-2026-09-17-approved.json --dry-run
 
-      - name: Replay reviewed candidates into canonical timetable
-        working-directory: work
-        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-extension-2026-09-17-approved.json
-
-      - name: Rebuild deterministic public timetable projection
+      - name: Build deterministic public timetable projection from current canonical state
         working-directory: work
         run: node scripts/timetable/build-public-timetable-view.mjs
 
-      - name: Rebuild coupled public and operations derivatives
+      - name: Rebuild coupled public derivative
         working-directory: work
-        run: |
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
-          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
-          node scripts/timetable/build-operations-review-package.mjs
+        run: node scripts/timetable/build-japan-a-plus-public-overrides.mjs
 
-      - name: Validate generated repository data
+      - name: Validate current generated repository data
         working-directory: work
         run: node scripts/validate-data.mjs
 
-      - name: Verify coupled public derivatives
+      - name: Verify coupled public and committed operations derivatives
         working-directory: work
         run: |
           node scripts/check-japan-a-plus-public-overrides.mjs
           node scripts/check-calendar-operations-status.mjs
           node scripts/check-calendar-operations-review-package.mjs
 
-      - name: Verify exact Rank C extension output
+      - name: Verify September 17 extension historical invariant
         working-directory: work
         run: |
           node --input-type=module <<'NODE'
@@ -104,32 +101,44 @@ jobs:
             'nar-oi-racecourse-2026-09-17',
             'nar-sonoda-racecourse-2026-09-17',
           ];
-          if (candidate.review?.status !== 'approved') throw new Error('review status differs');
-          if (candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('promotion target differs');
-          if (JSON.stringify(candidate.records.map((record) => record.meeting_id)) !== JSON.stringify(expectedIds)) throw new Error('reviewed meeting identities differ');
+          if (candidate.review?.status !== 'approved') throw new Error('historical review status differs');
+          if (candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('historical promotion target differs');
+          if (JSON.stringify(candidate.records.map((record) => record.meeting_id)) !== JSON.stringify(expectedIds)) throw new Error('historical reviewed meeting identities differ');
           for (const record of candidate.records) {
-            if (record.capability_rank !== 'C') throw new Error(`${record.meeting_id}: rank exceeds C`);
-            if (record.first_race_time_local !== null || record.last_race_time_local !== null) throw new Error(`${record.meeting_id}: race time leaked`);
-            if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: timetable rows leaked`);
+            if (record.capability_rank !== 'C') throw new Error(`${record.meeting_id}: historical candidate rank differs from C`);
+            if (record.first_race_time_local !== null || record.last_race_time_local !== null) throw new Error(`${record.meeting_id}: historical candidate contains race time`);
+            if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: historical candidate contains timetable rows`);
           }
 
+          const rankOrder = new Map([['C', 0], ['B', 1], ['B+', 2], ['A', 3], ['A+', 4]]);
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
           const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          for (const id of expectedIds) {
-            if (canonicalById.get(id)?.capability_rank !== 'C') throw new Error(`${id}: canonical Rank C output missing`);
-            if (publicById.get(id)?.capability_rank !== 'C') throw new Error(`${id}: public Rank C output missing`);
+          const stableFields = ['country_id', 'authority_id', 'racecourse_id', 'date', 'timezone'];
+
+          for (const record of candidate.records) {
+            const canonicalMeeting = canonicalById.get(record.meeting_id);
+            const publicMeeting = publicById.get(record.meeting_id);
+            if (!canonicalMeeting) throw new Error(`${record.meeting_id}: historical extension meeting missing from canonical output`);
+            if (!publicMeeting) throw new Error(`${record.meeting_id}: historical extension meeting missing from public output`);
+            for (const field of stableFields) {
+              if (canonicalMeeting[field] !== record[field]) throw new Error(`${record.meeting_id}: canonical ${field} drifted from reviewed extension identity`);
+              if (publicMeeting[field] !== record[field]) throw new Error(`${record.meeting_id}: public ${field} drifted from reviewed extension identity`);
+            }
+            const canonicalRank = rankOrder.get(canonicalMeeting.capability_rank);
+            const publicRank = rankOrder.get(publicMeeting.capability_rank);
+            if (canonicalRank === undefined || canonicalRank < rankOrder.get('C')) throw new Error(`${record.meeting_id}: canonical rank regressed below reviewed extension baseline`);
+            if (publicRank === undefined || publicRank < rankOrder.get('C')) throw new Error(`${record.meeting_id}: public rank regressed below reviewed extension baseline`);
           }
 
           const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
-          if ((status.public_projection?.meeting_count ?? 0) < 411) throw new Error(`public meeting count regressed below extension baseline: ${status.public_projection?.meeting_count}`);
-          if ((status.public_projection?.latest_meeting_date ?? '') < '2026-09-17') throw new Error(`public latest date regressed below extension horizon: ${status.public_projection?.latest_meeting_date}`);
+          if ((status.public_projection?.meeting_count ?? 0) < 411) throw new Error(`public meeting count regressed below September 17 extension baseline: ${status.public_projection?.meeting_count}`);
+          if ((status.public_projection?.latest_meeting_date ?? '') < '2026-09-17') throw new Error(`public horizon regressed below September 17 extension baseline: ${status.public_projection?.latest_meeting_date}`);
           console.log(JSON.stringify({
-            approved_records: expectedIds.length,
-            meeting_count: status.public_projection.meeting_count,
-            latest_meeting_date: status.public_projection.latest_meeting_date,
-            max_rank: 'C',
+            historical_extension_records: expectedIds.length,
+            current_public_meetings: status.public_projection.meeting_count,
+            current_public_latest_date: status.public_projection.latest_meeting_date,
           }));
           NODE
 
@@ -137,7 +146,7 @@ jobs:
         working-directory: work
         run: node scripts/timetable/build-public-timetable-view.mjs --check
 
-      - name: Verify committed extension outputs are current
+      - name: Verify committed timetable outputs are deterministic
         working-directory: work
         run: |
           git diff --exit-code -- \
@@ -146,15 +155,13 @@ jobs:
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/public/japan-a-plus-overrides.json \
-            data/generated/timetable/operations-status.json \
-            data/generated/timetable/operations-review-package.json
+            data/generated/timetable/public/japan-a-plus-overrides.json
 
-      - name: Check formatting
+      - name: Check generated diff formatting
         working-directory: work
         run: git diff --check
 
-      - name: Upload reviewed extension output
+      - name: Upload reviewed historical extension output
         if: always()
         uses: actions/upload-artifact@v4
         with:
