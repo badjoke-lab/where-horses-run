@@ -50,14 +50,29 @@ const emptyDetails = {
 };
 
 const approved = clone(sample);
+const hkjcAuthoritySource = authorityInventory.records.find((record) =>
+  record.country_id === 'hong-kong' && record.authority_id === 'hkjc' && record.official_source_id === 'hkjc-fixture-list'
+);
+const hkjcReadiness = readinessRegistry.records.find((record) =>
+  record.authority_source_key === 'hong-kong/hkjc/hkjc-fixture-list'
+);
+if (!hkjcAuthoritySource || !hkjcReadiness) throw new Error('HKJC promotion test fixtures require reviewed source records');
+const hkjcMinimumCheckedDate = [hkjcAuthoritySource.last_checked_date, hkjcReadiness.checked_date].sort().at(-1);
+const hkjcSourceCheckedAt = `${hkjcMinimumCheckedDate}T00:00:00.000Z`;
+const hkjcReviewAt = `${hkjcMinimumCheckedDate}T01:00:00.000Z`;
+
 approved.review = {
   status: 'approved',
-  reviewed_at: '2026-07-01T01:00:00.000Z',
+  reviewed_at: hkjcReviewAt,
   reviewer: 'pipeline-v1-test-reviewer',
   summary: 'Approved contract fixture for canonical promotion validation.',
   promotion_target: promotionTargetV1
 };
-approved.records = approved.records.map((record) => ({ ...record, review_status: 'approved' }));
+approved.records = approved.records.map((record) => ({
+  ...record,
+  review_status: 'approved',
+  source: { ...record.source, checked_at: hkjcSourceCheckedAt },
+}));
 
 const baseArgs = {
   candidate: approved,
@@ -104,8 +119,8 @@ if (first) {
   }
 
   const lowerRank = clone(approved);
-  lowerRank.generated_at = '2026-07-01T01:30:00.000Z';
-  lowerRank.review.reviewed_at = '2026-07-01T02:00:00.000Z';
+  lowerRank.generated_at = `${hkjcMinimumCheckedDate}T01:30:00.000Z`;
+  lowerRank.review.reviewed_at = `${hkjcMinimumCheckedDate}T02:00:00.000Z`;
   lowerRank.records[0].capability_rank = 'B';
   lowerRank.records[0].first_race_time_local = '12:45';
   lowerRank.records[0].last_race_time_local = null;
@@ -185,7 +200,13 @@ expectThrow('wrong racing system', () => promoteApprovedCandidateV1({ ...baseArg
 const wrongRacecourse = clone(approved);
 wrongRacecourse.records[0].racecourse_id = 'happy-valley-racecourse';
 wrongRacecourse.records[0].meeting_id = 'hkjc-happy-valley-racecourse-2026-06-07';
-expectThrow('outside readiness racecourse scope', () => promoteApprovedCandidateV1({ ...baseArgs, candidate: wrongRacecourse }), 'outside reviewed readiness scope');
+const shaTinOnlyReadiness = clone(readinessRegistry);
+shaTinOnlyReadiness.records.find((record) => record.authority_source_key === 'hong-kong/hkjc/hkjc-fixture-list').racecourse_ids = ['sha-tin-racecourse'];
+expectThrow('outside readiness racecourse scope', () => promoteApprovedCandidateV1({
+  ...baseArgs,
+  candidate: wrongRacecourse,
+  readinessRegistry: shaTinOnlyReadiness,
+}), 'outside reviewed readiness scope');
 
 const unconfirmedField = clone(approved);
 unconfirmedField.records[0].timetable_rows[0].surface = 'Turf';
