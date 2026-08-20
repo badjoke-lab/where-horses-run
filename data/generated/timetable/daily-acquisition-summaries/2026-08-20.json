@@ -2,8 +2,8 @@
   "schema_version": "calendar-actions-campaign-summary-v1",
   "plan_id": "due-job-plan-2026-08-20",
   "campaign_id": "scheduled-planning-2026-08-20",
-  "generated_at": "2026-08-20T04:42:10Z",
-  "hosted_job_count": 4,
+  "generated_at": "2026-08-20T05:00:53Z",
+  "hosted_job_count": 2,
   "excluded_job_count": 3,
   "results": [
     {
@@ -13,18 +13,10 @@
     {
       "job_id": "due-hong-kong-hkjc-season-wake-up-002",
       "status": "success"
-    },
-    {
-      "job_id": "due-japan-nar-coverage-gap-001",
-      "status": "success"
-    },
-    {
-      "job_id": "due-japan-nar-regular-refresh-001",
-      "status": "success"
     }
   ],
   "counts": {
-    "success": 4
+    "success": 2
   },
   "excluded": [
     {
@@ -60,26 +52,6 @@
       "job_id": "due-hong-kong-hkjc-season-wake-up-002",
       "batch_id": "due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001",
       "system_id": "hong-kong-hkjc-system",
-      "runner_used": "github_actions",
-      "status": "success",
-      "detail": null
-    },
-    {
-      "schema_version": "calendar-actions-job-status-v1",
-      "campaign_id": "scheduled-planning-2026-08-20",
-      "job_id": "due-japan-nar-coverage-gap-001",
-      "batch_id": "due-job-plan-2026-08-20-due-japan-nar-coverage-gap-001-run-001",
-      "system_id": "japan-nar-system",
-      "runner_used": "github_actions",
-      "status": "success",
-      "detail": null
-    },
-    {
-      "schema_version": "calendar-actions-job-status-v1",
-      "campaign_id": "scheduled-planning-2026-08-20",
-      "job_id": "due-japan-nar-regular-refresh-001",
-      "batch_id": "due-job-plan-2026-08-20-due-japan-nar-regular-refresh-001-run-001",
-      "system_id": "japan-nar-system",
       "runner_used": "github_actions",
       "status": "success",
       "detail": null
