@@ -1,0 +1,221 @@
+{
+  "schema_version": "calendar-due-job-plan-v1",
+  "policy_version": "calendar-due-job-policy-2026-07-19",
+  "generated_at": "2026-08-20T04:02:43Z",
+  "planning_date": "2026-08-20",
+  "collection_plan": {
+    "schema_version": "calendar-collection-plan-v1",
+    "plan_id": "due-job-plan-2026-08-20",
+    "campaign_id": "scheduled-planning-2026-08-20",
+    "created_at": "2026-08-20T04:02:43Z",
+    "jobs": [
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-jra-coverage-gap-001",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-07",
+          "end_date_exclusive": "2026-09-14",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-jra-coverage-gap-002",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-14",
+          "end_date_exclusive": "2026-09-19",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-jra-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-21",
+          "end_date_exclusive": "2026-08-28",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-nar-coverage-gap-001",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-16",
+          "end_date_exclusive": "2026-09-19",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-nar-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-21",
+          "end_date_exclusive": "2026-09-04",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "hong-kong-hkjc-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-07",
+          "end_date_exclusive": "2026-09-14",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-20T04:02:43Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-hong-kong-hkjc-season-wake-up-002",
+        "campaign_id": "scheduled-planning-2026-08-20",
+        "system_id": "hong-kong-hkjc-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-14",
+          "end_date_exclusive": "2026-09-19",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-20T04:02:43Z"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "system_id": "japan-jra-system",
+      "trigger": "coverage_gap",
+      "disposition": "job_planned",
+      "job_id": "due-japan-jra-coverage-gap-001",
+      "detail": "Explicit coverage gap 2026-09-07..2026-09-14 is due."
+    },
+    {
+      "system_id": "japan-jra-system",
+      "trigger": "coverage_gap",
+      "disposition": "job_planned",
+      "job_id": "due-japan-jra-coverage-gap-002",
+      "detail": "Explicit coverage gap 2026-09-14..2026-09-19 is due."
+    },
+    {
+      "system_id": "japan-jra-system",
+      "trigger": "regular_refresh",
+      "disposition": "job_planned",
+      "job_id": "due-japan-jra-regular-refresh-001",
+      "detail": "Regular refresh due: stale=true, meeting_proximity_due=true, age_hours=292."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "trigger": "coverage_gap",
+      "disposition": "job_planned",
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "detail": "Explicit coverage gap 2026-09-16..2026-09-19 is due."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "trigger": "regular_refresh",
+      "disposition": "job_planned",
+      "job_id": "due-japan-nar-regular-refresh-001",
+      "detail": "Regular refresh due: stale=true, meeting_proximity_due=true, age_hours=76."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "trigger": "season_wake_up",
+      "disposition": "job_planned",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+      "detail": "Reviewed future active window 2026-09-07..2026-09-14 is due without collecting offseason dates."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "trigger": "season_wake_up",
+      "disposition": "job_planned",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-002",
+      "detail": "Reviewed future active window 2026-09-14..2026-09-19 is due without collecting offseason dates."
+    },
+    {
+      "system_id": "japan-banei-system",
+      "trigger": "not_due",
+      "disposition": "not_due",
+      "job_id": null,
+      "detail": "No policy trigger is currently due."
+    }
+  ],
+  "scheduler_boundary": {
+    "cadence_hours": 24,
+    "artifact_only": true,
+    "jobs_executed": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "automatic_deployment": false
+  }
+}

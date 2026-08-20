@@ -1,0 +1,41 @@
+{
+  "schema_version": "calendar-hkjc-fixture-artifact-report-v1",
+  "work_id": "WHR-CAL-HONG-KONG-HKJC",
+  "implementation_unit": "HKJC-PILOT-02",
+  "batch_id": "due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001",
+  "system_id": "hong-kong-hkjc-system",
+  "generated_at": "2026-08-20T04:02:58.598Z",
+  "requested_scope": {
+    "start_date": "2026-09-14",
+    "end_date_exclusive": "2026-09-19",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "requested_months": [
+    "2026-09"
+  ],
+  "successful_month_count": 1,
+  "valid_empty_months": [],
+  "source_error_count": 0,
+  "records_discovered": 1,
+  "rank_counts": {
+    "C": 1,
+    "B": 0,
+    "B+": 0,
+    "A": 0,
+    "A+": 0
+  },
+  "coverage_claim": "source_window_complete",
+  "artifact_refs": {
+    "candidate_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001/candidates.json",
+    "coverage_observation_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001/coverage-observation.json",
+    "collection_report_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001/collection-report.json",
+    "result_manifest_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-20-due-hong-kong-hkjc-season-wake-up-002-run-001/result-manifest.json"
+  },
+  "artifact_transport": "external_directory_or_github_actions_upload_artifact_only",
+  "publication_effect": "none",
+  "canonical_write_enabled": false,
+  "public_write_enabled": false,
+  "automatic_approval_enabled": false,
+  "automatic_promotion_enabled": false,
+  "automatic_publication_enabled": false
+}
