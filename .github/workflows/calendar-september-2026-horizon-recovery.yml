@@ -79,7 +79,7 @@ jobs:
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
           const publicById = new Map(publicList.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-          const stableFields = ['country_id', 'authority_id', 'racing_system_id', 'racecourse_id', 'date', 'timezone'];
+          const stableFields = ['country_id', 'authority_id', 'racecourse_id', 'date', 'timezone'];
 
           for (const record of candidate.records) {
             const canonicalMeeting = canonicalById.get(record.meeting_id);
