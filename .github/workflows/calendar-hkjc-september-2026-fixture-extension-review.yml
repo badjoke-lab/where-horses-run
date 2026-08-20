@@ -5,7 +5,9 @@ on:
     paths:
       - '.github/workflows/calendar-hkjc-september-2026-fixture-extension-review.yml'
       - 'scripts/timetable/build-hkjc-september-2026-fixture-extension-approved-candidates.mjs'
+      - 'scripts/timetable/apply-hkjc-september-2026-readiness-review.mjs'
       - 'data/candidates/hkjc-september-2026-fixture-extension-approved.json'
+      - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
@@ -17,7 +19,9 @@ on:
     paths:
       - '.github/workflows/calendar-hkjc-september-2026-fixture-extension-review.yml'
       - 'scripts/timetable/build-hkjc-september-2026-fixture-extension-approved-candidates.mjs'
+      - 'scripts/timetable/apply-hkjc-september-2026-readiness-review.mjs'
       - 'data/candidates/hkjc-september-2026-fixture-extension-approved.json'
+      - 'data/static/calendar-readiness-registry.json'
       - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
       - 'data/generated/timetable/canonical/**'
       - 'data/generated/timetable/public/**'
@@ -65,6 +69,14 @@ jobs:
       - name: Verify reviewed candidate remains deterministic
         working-directory: work
         run: git diff --exit-code -- data/candidates/hkjc-september-2026-fixture-extension-approved.json
+
+      - name: Apply reviewed HKJC readiness scope
+        working-directory: work
+        run: node scripts/timetable/apply-hkjc-september-2026-readiness-review.mjs
+
+      - name: Verify reviewed readiness scope remains deterministic
+        working-directory: work
+        run: git diff --exit-code -- data/static/calendar-readiness-registry.json
 
       - name: Dry-run promotion validation
         working-directory: work
@@ -116,6 +128,10 @@ jobs:
             if (!Array.isArray(record.timetable_rows) || record.timetable_rows.length !== 0) throw new Error(`${record.meeting_id}: timetable rows leaked`);
           }
 
+          const readiness = JSON.parse(fs.readFileSync('data/static/calendar-readiness-registry.json', 'utf8'));
+          const readinessRecord = readiness.records.find((record) => record.readiness_id === 'hong-kong--hong-kong-hkjc-system--hkjc-fixture-list');
+          if (JSON.stringify(readinessRecord?.racecourse_ids) !== JSON.stringify(['sha-tin-racecourse', 'happy-valley-racecourse'])) throw new Error('reviewed HKJC fixture racecourse scope differs');
+
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const canonicalById = new Map(canonical.meetings.map((meeting) => [meeting.meeting_id, meeting]));
@@ -142,6 +158,7 @@ jobs:
         run: |
           git diff --exit-code -- \
             data/candidates/hkjc-september-2026-fixture-extension-approved.json \
+            data/static/calendar-readiness-registry.json \
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
@@ -163,6 +180,7 @@ jobs:
           retention-days: 14
           path: |
             work/data/candidates/hkjc-september-2026-fixture-extension-approved.json
+            work/data/static/calendar-readiness-registry.json
             work/data/generated/timetable/canonical/meetings.json
             work/data/generated/timetable/canonical/meeting-details.json
             work/data/generated/timetable/public/meeting-list.json
