@@ -13,23 +13,23 @@
     "pull_request_created": false
   },
   "input_digests": {
-    "operations_status_sha256": "d6f5fc712bff8ac8e61969514c77966f0779476514551eeb54a67d55e1000838",
+    "operations_status_sha256": "4272a622ad8ad020016035d19bb1b5be11adb85552f1093abca135e25bed97a2",
     "operations_control_sha256": "8e9430750a3c1fbfa8c7141c3b65ffa13dd5b916e232aa7e8418810e8f9d9bf7",
-    "readiness_registry_sha256": "1fe286ab0ac9bfacacf9a6cb74be9194a3c01c6da9c79272a3731aef550ef098",
+    "readiness_registry_sha256": "b97927a1ea5dafd769d4ca07d6f892a81d95a596731e851f04a9ad47ce352c5d",
     "authority_inventory_sha256": "21106802ddd2f53a8e63d637f8fbaf4c85b0f42503ccf66365defbbe2e81b1b9",
-    "public_meeting_list_sha256": "c19de6f5ec5624b658a87ece344a96ed98f40f29b52b834453446ed4597e21dd",
+    "public_meeting_list_sha256": "362449a2de54a02a2d078e9cc8ca2f5dceaab09727b5382d69fa556fe86c90d3",
     "jra_candidate_sha256": "38d464ec0f887afdef0d11c6653c8dac107a9d3aebdfa998839b0201c64939ca"
   },
   "summary": {
-    "operator_action_count": 62,
+    "operator_action_count": 61,
     "action_counts": {
       "source_unavailable_review": 1,
       "blocked_review": 18,
-      "source_revalidation_due": 25,
+      "source_revalidation_due": 24,
       "manual_revalidation_due": 17,
       "human_review_required": 1
     },
-    "revalidation_due_count": 42,
+    "revalidation_due_count": 41,
     "blocked_count": 18,
     "unavailable_count": 2,
     "current_window_meeting_count": 141,
@@ -257,14 +257,6 @@
       "key": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
       "country_id": "germany",
       "reason": "checked 11 days ago; threshold 2 days",
-      "priority": 4,
-      "required_decision": "review source evidence and prepare a bounded candidate or registry update"
-    },
-    {
-      "type": "source_revalidation_due",
-      "key": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
-      "country_id": "hong-kong",
-      "reason": "checked 14 days ago; threshold 2 days",
       "priority": 4,
       "required_decision": "review source evidence and prepare a bounded candidate or registry update"
     },
