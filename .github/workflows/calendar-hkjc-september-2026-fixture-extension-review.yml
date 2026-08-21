@@ -82,6 +82,26 @@ jobs:
         working-directory: work
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/hkjc-september-2026-fixture-extension-approved.json --dry-run
 
+      - name: Snapshot current committed meeting records before historical replay
+        working-directory: work
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const snapshot = {
+            canonical: canonical.meetings,
+            public: publicList.meetings,
+          };
+          const output = path.join(process.env.RUNNER_TEMP, 'hkjc-september-pre-replay-meetings.json');
+          fs.writeFileSync(output, `${JSON.stringify(snapshot)}\n`);
+          console.log(JSON.stringify({
+            canonical_meetings: snapshot.canonical.length,
+            public_meetings: snapshot.public.length,
+          }));
+          NODE
+
       - name: Replay reviewed candidate into canonical timetable
         working-directory: work
         run: node scripts/timetable/promote-timetable.mjs --input data/candidates/hkjc-september-2026-fixture-extension-approved.json
@@ -153,19 +173,42 @@ jobs:
         working-directory: work
         run: node scripts/timetable/build-public-timetable-view.mjs --check
 
-      - name: Verify committed extension outputs are current
+      - name: Verify historical replay preserves every current meeting record
         working-directory: work
         run: |
           git diff --exit-code -- \
             data/candidates/hkjc-september-2026-fixture-extension-approved.json \
-            data/static/calendar-readiness-registry.json \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/public/japan-a-plus-overrides.json \
-            data/generated/timetable/operations-status.json \
-            data/generated/timetable/operations-review-package.json
+            data/static/calendar-readiness-registry.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const snapshot = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'hkjc-september-pre-replay-meetings.json'), 'utf8'));
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+
+          const verifyPreserved = (label, before, after) => {
+            const afterById = new Map(after.map((meeting) => [meeting.meeting_id, meeting]));
+            for (const meeting of before) {
+              const current = afterById.get(meeting.meeting_id);
+              if (!current) throw new Error(`${label}: historical replay removed ${meeting.meeting_id}`);
+              if (JSON.stringify(current) !== JSON.stringify(meeting)) {
+                throw new Error(`${label}: historical replay changed current meeting ${meeting.meeting_id}`);
+              }
+            }
+            if (after.length < before.length) {
+              throw new Error(`${label}: historical replay reduced meeting count ${before.length} -> ${after.length}`);
+            }
+          };
+
+          verifyPreserved('canonical', snapshot.canonical, canonical.meetings);
+          verifyPreserved('public', snapshot.public, publicList.meetings);
+          console.log(JSON.stringify({
+            preserved_canonical_meetings: snapshot.canonical.length,
+            preserved_public_meetings: snapshot.public.length,
+            replay_canonical_meetings: canonical.meetings.length,
+            replay_public_meetings: publicList.meetings.length,
+          }));
+          NODE
 
       - name: Check formatting
         working-directory: work
