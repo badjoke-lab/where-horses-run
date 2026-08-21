@@ -1,0 +1,136 @@
+name: Calendar NAR August 21 A+ one-time apply
+
+on:
+  push:
+    branches:
+      - post-v1-calendar-nar-regular-refresh-2026-08-21-a-plus-review
+    paths:
+      - '.github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-nar-regular-refresh-2026-08-21-a-plus-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout exact daily-review source evidence
+        uses: actions/checkout@v4
+        with:
+          ref: a7593c76222f78495cb1a9ae1a1779f3fcd1a725
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Rebuild exact reviewed Candidate
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+        run: node scripts/timetable/build-nar-regular-refresh-2026-08-21-a-plus-approved-candidates.mjs
+
+      - name: Extend cumulative reviewed promotion sequence
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const declAnchor = "const septemberNarExtensionSeptember19Path = 'data/candidates/nar-horizon-extension-2026-09-19-approved.json';\n";
+          const newDecl = "const narRegularRefreshAugust21APlusPath = 'data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json';\n";
+          if (!text.includes(declAnchor)) throw new Error('determinism declaration anchor missing');
+          if (!text.includes(newDecl)) text = text.replace(declAnchor, declAnchor + newDecl);
+          const listAnchor = '  septemberNarExtensionSeptember19Path,\n];';
+          const listReplacement = '  septemberNarExtensionSeptember19Path,\n  narRegularRefreshAugust21APlusPath,\n];';
+          if (!text.includes('  narRegularRefreshAugust21APlusPath,\n];')) {
+            if (!text.includes(listAnchor)) throw new Error('determinism continuation anchor missing');
+            text = text.replace(listAnchor, listReplacement);
+          }
+          const countAnchor = '  [septemberNarExtensionSeptember19Path, [1, 0]],\n]);';
+          const countReplacement = '  [septemberNarExtensionSeptember19Path, [1, 0]],\n  [narRegularRefreshAugust21APlusPath, [6, 6]],\n]);';
+          if (!text.includes('[narRegularRefreshAugust21APlusPath, [6, 6]]')) {
+            if (!text.includes(countAnchor)) throw new Error('determinism expected-count anchor missing');
+            text = text.replace(countAnchor, countReplacement);
+          }
+          fs.writeFileSync(file, text);
+          NODE
+
+      - name: Dry-run then apply bounded reviewed promotion
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json
+
+      - name: Rebuild public and operations projections
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate bounded output
+        env:
+          BASE_SHA: 284da39cd2536a9082a5e3348da42112f4a14feb
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const meetings = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          const ids = [
+            'nar-kanazawa-racecourse-2026-08-23',
+            'nar-kanazawa-racecourse-2026-08-24',
+            'nar-kanazawa-racecourse-2026-08-25',
+            'nar-morioka-racecourse-2026-08-23',
+            'nar-saga-racecourse-2026-08-22',
+            'nar-saga-racecourse-2026-08-23',
+          ];
+          const meetingById = new Map(meetings.meetings.map((item) => [item.meeting_id, item]));
+          const detailById = new Map(details.details.map((item) => [item.meeting_id, item]));
+          if (meetings.meetings.length !== 418) throw new Error(`meeting count differs: ${meetings.meetings.length}`);
+          if (details.details.length !== 87) throw new Error(`detail count differs: ${details.details.length}`);
+          for (const id of ids) {
+            if (meetingById.get(id)?.capability_rank !== 'A+') throw new Error(`${id}: canonical meeting is not A+`);
+            if (detailById.get(id)?.capability_rank !== 'A+') throw new Error(`${id}: canonical detail is not A+`);
+          }
+          if ((status.public_projection?.meeting_count ?? 0) !== 418) throw new Error(`public meeting count differs: ${status.public_projection?.meeting_count}`);
+          if ((status.public_projection?.detail_count ?? 0) !== 87) throw new Error(`public detail count differs: ${status.public_projection?.detail_count}`);
+          if (status.public_projection?.latest_meeting_date !== '2026-09-19') throw new Error(`public horizon differs: ${status.public_projection?.latest_meeting_date}`);
+          console.log(JSON.stringify({ meetings: meetings.meetings.length, details: details.details.length, promoted_a_plus: ids.length, latest: status.public_projection.latest_meeting_date }));
+          NODE
+
+      - name: Commit generated reviewed output and remove one-time writer
+        run: |
+          git rm -- .github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-apply.yml
+          git add -- \
+            data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json \
+            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          git diff --cached --check
+          git status --short
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "Apply reviewed NAR August 21 A+ refresh"
+          git push origin HEAD:post-v1-calendar-nar-regular-refresh-2026-08-21-a-plus-review

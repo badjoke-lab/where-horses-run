@@ -1,0 +1,174 @@
+# Pinned review evidence is immutable; a later acquisition requires a new reviewed candidate.
+name: Calendar NAR August 21 A+ regular-refresh review
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-review.yml'
+      - 'data/reviews/nar-regular-refresh-2026-08-21-a-plus-review.json'
+      - 'scripts/timetable/build-nar-regular-refresh-2026-08-21-a-plus-approved-candidates.mjs'
+      - 'data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-review.yml'
+      - 'data/reviews/nar-regular-refresh-2026-08-21-a-plus-review.json'
+      - 'scripts/timetable/build-nar-regular-refresh-2026-08-21-a-plus-approved-candidates.mjs'
+      - 'data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-nar-regular-refresh-2026-08-21-a-plus-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+        with:
+          path: work
+          fetch-depth: 0
+
+      - name: Checkout exact daily-review source evidence
+        uses: actions/checkout@v4
+        with:
+          ref: a7593c76222f78495cb1a9ae1a1779f3fcd1a725
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Rebuild six reviewed A+ candidates from exact evidence
+        working-directory: work
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+        run: node scripts/timetable/build-nar-regular-refresh-2026-08-21-a-plus-approved-candidates.mjs
+
+      - name: Verify approved Candidate remains deterministic
+        working-directory: work
+        run: git diff --exit-code -- data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json
+
+      - name: Dry-run reviewed promotion
+        working-directory: work
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json --dry-run
+
+      - name: Rebuild deterministic public and operations projections
+        working-directory: work
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate generated repository data
+        working-directory: work
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Verify exact six-meeting A+ reviewed invariant
+        working-directory: work
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json', 'utf8'));
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const canonicalDetails = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8'));
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          const expectedIds = [
+            'nar-saga-racecourse-2026-08-22',
+            'nar-kanazawa-racecourse-2026-08-23',
+            'nar-morioka-racecourse-2026-08-23',
+            'nar-saga-racecourse-2026-08-23',
+            'nar-kanazawa-racecourse-2026-08-24',
+            'nar-kanazawa-racecourse-2026-08-25',
+          ];
+          const actualIds = candidate.records.map((record) => record.meeting_id);
+          if (JSON.stringify(actualIds) !== JSON.stringify(expectedIds)) throw new Error(`reviewed candidate identity/order differs: ${JSON.stringify(actualIds)}`);
+          if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('candidate review boundary differs');
+          const maps = {
+            canonical: new Map(canonical.meetings.map((item) => [item.meeting_id, item])),
+            canonicalDetails: new Map(canonicalDetails.details.map((item) => [item.meeting_id, item])),
+            public: new Map(publicList.meetings.map((item) => [item.meeting_id, item])),
+            publicDetails: new Map(publicDetails.details.map((item) => [item.meeting_id, item])),
+          };
+          const stableFields = ['country_id', 'authority_id', 'racecourse_id', 'date', 'timezone'];
+          const rowFields = ['label', 'post_time_local', 'race_name', 'distance_m', 'surface', 'course_label'];
+          for (const record of candidate.records) {
+            if (record.capability_rank !== 'A+') throw new Error(`${record.meeting_id}: candidate is not A+`);
+            const cm = maps.canonical.get(record.meeting_id);
+            const cd = maps.canonicalDetails.get(record.meeting_id);
+            const pm = maps.public.get(record.meeting_id);
+            const pd = maps.publicDetails.get(record.meeting_id);
+            if (!cm || !cd || !pm || !pd) throw new Error(`${record.meeting_id}: canonical/public projection incomplete`);
+            for (const field of stableFields) {
+              if (cm[field] !== record[field] || pm[field] !== record[field] || cd[field] !== record[field] || pd[field] !== record[field]) throw new Error(`${record.meeting_id}: ${field} drifted`);
+            }
+            for (const item of [cm, cd, pm, pd]) if (item.capability_rank !== 'A+') throw new Error(`${record.meeting_id}: A+ rank drifted`);
+            if (cm.first_race_time_local !== record.first_race_time_local || cm.last_race_time_local !== record.last_race_time_local) throw new Error(`${record.meeting_id}: canonical meeting times drifted`);
+            if (pm.first_race_time_local !== record.first_race_time_local || pm.last_race_time_local !== record.last_race_time_local) throw new Error(`${record.meeting_id}: public meeting times drifted`);
+            for (const detail of [cd, pd]) {
+              if ((detail.timetable_rows ?? []).length !== record.timetable_rows.length) throw new Error(`${record.meeting_id}: detail row count drifted`);
+              for (let index = 0; index < record.timetable_rows.length; index += 1) {
+                for (const field of rowFields) {
+                  if (detail.timetable_rows[index][field] !== record.timetable_rows[index][field]) throw new Error(`${record.meeting_id}: Race ${index + 1} ${field} drifted`);
+                }
+              }
+            }
+          }
+          if (canonical.meetings.length < 418) throw new Error(`canonical meeting count regressed: ${canonical.meetings.length}`);
+          if (canonicalDetails.details.length < 87) throw new Error(`canonical detail count regressed: ${canonicalDetails.details.length}`);
+          if ((status.public_projection?.meeting_count ?? 0) < 418) throw new Error(`public meeting count regressed: ${status.public_projection?.meeting_count}`);
+          if ((status.public_projection?.detail_count ?? 0) < 87) throw new Error(`public detail count regressed: ${status.public_projection?.detail_count}`);
+          if ((status.public_projection?.latest_meeting_date ?? '') < '2026-09-19') throw new Error(`public horizon regressed: ${status.public_projection?.latest_meeting_date}`);
+          console.log(JSON.stringify({ reviewed_a_plus: expectedIds.length, canonical_meetings: canonical.meetings.length, canonical_details: canonicalDetails.details.length, public_latest_date: status.public_projection.latest_meeting_date }));
+          NODE
+
+      - name: Verify cumulative reviewed promotion output
+        working-directory: work
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+
+      - name: Verify deterministic current outputs
+        working-directory: work
+        run: |
+          node scripts/timetable/build-nar-regular-refresh-2026-08-21-a-plus-approved-candidates.mjs --check
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          git diff --exit-code -- \
+            data/candidates/nar-regular-refresh-2026-08-21-a-plus-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+
+      - name: Check formatting
+        working-directory: work
+        run: git diff --check
