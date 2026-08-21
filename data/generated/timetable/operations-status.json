@@ -11,14 +11,14 @@
   },
   "source_summary": {
     "readiness_record_count": 117,
-    "revalidation_due_count": 42,
+    "revalidation_due_count": 41,
     "blocked_count": 18,
     "unavailable_count": 2,
     "action_counts": {
       "blocked_review": 18,
       "manual_revalidation_due": 17,
-      "none": 56,
-      "source_revalidation_due": 25,
+      "none": 57,
+      "source_revalidation_due": 24,
       "source_unavailable_review": 1
     }
   },
@@ -33,10 +33,10 @@
     "action": "human_review_required"
   },
   "public_projection": {
-    "generated_at": "2026-08-20T04:42:49Z",
+    "generated_at": "2026-08-20T05:10:00Z",
     "generated_date": "2026-08-20",
     "age_days": -50,
-    "meeting_count": 414,
+    "meeting_count": 417,
     "detail_count": 81,
     "earliest_meeting_date": "2026-04-01",
     "latest_meeting_date": "2026-09-18",
@@ -1044,6 +1044,26 @@
       "fallback": "official_link_only"
     },
     {
+      "readiness_id": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
+      "country_id": "hong-kong",
+      "authority_source_key": "hong-kong/hkjc/hkjc-fixture-list",
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "automation_mode": "semi_automatic",
+      "source_status": "verified",
+      "refresh_classes": [
+        "seasonal",
+        "weekly",
+        "near_meeting"
+      ],
+      "checked_date": "2026-08-20",
+      "age_days": -50,
+      "threshold_days": 2,
+      "revalidation_due": false,
+      "action": "none",
+      "fallback": "downgrade_to_C"
+    },
+    {
       "readiness_id": "india--india-madras-race-club--madras-home",
       "country_id": "india",
       "authority_source_key": "india/madras-race-club/madras-home",
@@ -1932,26 +1952,6 @@
       "fallback": "downgrade_to_C"
     },
     {
-      "readiness_id": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
-      "country_id": "hong-kong",
-      "authority_source_key": "hong-kong/hkjc/hkjc-fixture-list",
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "automation_mode": "semi_automatic",
-      "source_status": "verified",
-      "refresh_classes": [
-        "seasonal",
-        "weekly",
-        "near_meeting"
-      ],
-      "checked_date": "2026-06-17",
-      "age_days": 14,
-      "threshold_days": 2,
-      "revalidation_due": true,
-      "action": "source_revalidation_due",
-      "fallback": "downgrade_to_C"
-    },
-    {
       "readiness_id": "india--india-bangalore-turf-club--bangalore-fixtures",
       "country_id": "india",
       "authority_source_key": "india/bangalore-turf-club/bangalore-fixtures",
@@ -2562,12 +2562,6 @@
       "key": "germany--germany-deutscher-galopp-system--deutscher-galopp-calendar",
       "country_id": "germany",
       "reason": "checked 11 days ago; threshold 2 days"
-    },
-    {
-      "type": "source_revalidation_due",
-      "key": "hong-kong--hong-kong-hkjc-system--hkjc-fixture-list",
-      "country_id": "hong-kong",
-      "reason": "checked 14 days ago; threshold 2 days"
     },
     {
       "type": "source_revalidation_due",
