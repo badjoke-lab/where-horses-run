@@ -7,6 +7,11 @@ on:
       - post-v1-calendar-nar-regular-refresh-2026-08-21-a-plus-review
     paths:
       - '.github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-apply.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-nar-regular-refresh-2026-08-21-a-plus-apply.yml'
 
 permissions:
   contents: write
@@ -20,9 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout review branch
+      - name: Checkout exact review branch
         uses: actions/checkout@v4
         with:
+          ref: post-v1-calendar-nar-regular-refresh-2026-08-21-a-plus-review
           fetch-depth: 0
 
       - name: Checkout exact daily-review source evidence
