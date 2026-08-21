@@ -1,29 +1,184 @@
 name: Check
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - post-v1-calendar-nar-2026-08-22-through-25-a-plus
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  build:
-    name: Build
+  apply-reviewed-nar-a-plus:
+    name: Apply reviewed NAR Aug 22-25 A+
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - name: Checkout
+      - name: Checkout review branch
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout exact daily-review source evidence
+        uses: actions/checkout@v4
+        with:
+          ref: a7593c76222f78495cb1a9ae1a1779f3fcd1a725
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
 
-      - name: Install dependencies
-        run: npm install
+      - name: Verify exact evidence head and blob
+        run: |
+          test "$(git -C review-source rev-parse HEAD)" = "a7593c76222f78495cb1a9ae1a1779f3fcd1a725"
+          test "$(git -C review-source hash-object data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json)" = "89410debbd648e1264933df37b0ef246945a1873"
 
-      - name: Build
-        run: npm run build
+      - name: Rebuild reviewed A+ Candidate from exact evidence
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-21-due-japan-nar-regular-refresh-001-run-001/batch.json
+        run: node scripts/timetable/build-calendar-nar-2026-08-22-through-2026-08-25-a-plus-approved-candidates.mjs
+
+      - name: Extend cumulative reviewed promotion contract
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const constAnchor = "const septemberNarExtensionSeptember19Path = 'data/candidates/nar-horizon-extension-2026-09-19-approved.json';\n";
+          const newConst = "const narRegularRefreshAug22Through25APlusPath = 'data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json';\n";
+          if (!text.includes(newConst)) {
+            if (!text.includes(constAnchor)) throw new Error('determinism const anchor missing');
+            text = text.replace(constAnchor, `${constAnchor}${newConst}`);
+          }
+          const sequenceAnchor = '  septemberNarExtensionSeptember19Path,\n];';
+          const sequenceReplacement = '  septemberNarExtensionSeptember19Path,\n  narRegularRefreshAug22Through25APlusPath,\n];';
+          if (!text.includes('  narRegularRefreshAug22Through25APlusPath,\n];')) {
+            if (!text.includes(sequenceAnchor)) throw new Error('determinism continuation anchor missing');
+            text = text.replace(sequenceAnchor, sequenceReplacement);
+          }
+          const countAnchor = '  [septemberNarExtensionSeptember19Path, [1, 0]],\n]);';
+          const countReplacement = '  [septemberNarExtensionSeptember19Path, [1, 0]],\n  [narRegularRefreshAug22Through25APlusPath, [6, 6]],\n]);';
+          if (!text.includes('  [narRegularRefreshAug22Through25APlusPath, [6, 6]],')) {
+            if (!text.includes(countAnchor)) throw new Error('determinism count anchor missing');
+            text = text.replace(countAnchor, countReplacement);
+          }
+          fs.writeFileSync(file, text);
+          NODE
+
+      - name: Validate reviewed promotion before apply
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json --dry-run
+
+      - name: Apply reviewed Candidate to canonical timetable
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json
+
+      - name: Rebuild deterministic public and operations projections
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate applied repository state
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+          BASE_SHA=284da39cd2536a9082a5e3348da42112f4a14feb node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+
+      - name: Verify exact reviewed A+ publication boundary
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidatePath = 'data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json';
+          const candidate = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
+          const expectedIds = [
+            'nar-kanazawa-racecourse-2026-08-23',
+            'nar-kanazawa-racecourse-2026-08-24',
+            'nar-kanazawa-racecourse-2026-08-25',
+            'nar-morioka-racecourse-2026-08-23',
+            'nar-saga-racecourse-2026-08-22',
+            'nar-saga-racecourse-2026-08-23',
+          ].sort();
+          if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('review contract differs');
+          if (JSON.stringify(candidate.records.map((record) => record.meeting_id).sort()) !== JSON.stringify(expectedIds)) throw new Error('reviewed A+ identity set differs');
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const canonicalDetails = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8'));
+          const canonicalById = new Map(canonical.meetings.map((row) => [row.meeting_id, row]));
+          const canonicalDetailById = new Map(canonicalDetails.details.map((row) => [row.meeting_id, row]));
+          const publicById = new Map(publicList.meetings.map((row) => [row.meeting_id, row]));
+          const publicDetailById = new Map(publicDetails.details.map((row) => [row.meeting_id, row]));
+          const fields = ['label', 'post_time_local', 'race_name', 'distance_m', 'surface', 'course_label'];
+          for (const record of candidate.records) {
+            const c = canonicalById.get(record.meeting_id);
+            const cd = canonicalDetailById.get(record.meeting_id);
+            const p = publicById.get(record.meeting_id);
+            const pd = publicDetailById.get(record.meeting_id);
+            for (const [label, row] of [['canonical', c], ['canonical detail', cd], ['public', p], ['public detail', pd]]) {
+              if (!row) throw new Error(`${record.meeting_id}: ${label} missing`);
+              if (row.capability_rank !== 'A+') throw new Error(`${record.meeting_id}: ${label} rank differs`);
+            }
+            if (c.first_race_time_local !== record.first_race_time_local || c.last_race_time_local !== record.last_race_time_local) throw new Error(`${record.meeting_id}: canonical first/last time differs`);
+            if (p.first_race_time_local !== record.first_race_time_local || p.last_race_time_local !== record.last_race_time_local) throw new Error(`${record.meeting_id}: public first/last time differs`);
+            if (!p.detail_path) throw new Error(`${record.meeting_id}: public detail path missing`);
+            for (const [label, detail] of [['canonical', cd], ['public', pd]]) {
+              if (detail.timetable_rows.length !== record.timetable_rows.length) throw new Error(`${record.meeting_id}: ${label} row count differs`);
+              for (let index = 0; index < record.timetable_rows.length; index += 1) {
+                for (const field of fields) {
+                  if (detail.timetable_rows[index][field] !== record.timetable_rows[index][field]) throw new Error(`${record.meeting_id}: ${label} race ${index + 1} ${field} differs`);
+                }
+              }
+            }
+          }
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          if (status.public_projection?.meeting_count !== 418) throw new Error(`expected 418 meetings, got ${status.public_projection?.meeting_count}`);
+          if (status.public_projection?.detail_count !== 87) throw new Error(`expected 87 details, got ${status.public_projection?.detail_count}`);
+          if (status.public_projection?.latest_meeting_date !== '2026-09-19') throw new Error(`expected horizon 2026-09-19, got ${status.public_projection?.latest_meeting_date}`);
+          console.log(JSON.stringify({ reviewed_a_plus: candidate.records.length, meeting_count: 418, detail_count: 87, latest_meeting_date: '2026-09-19' }));
+          NODE
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      - name: Restore permanent read-only Check workflow
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+          git checkout origin/main -- .github/workflows/check.yml
+
+      - name: Reject unexpected generated changes
+        run: |
+          allowed='^(.github/workflows/check.yml|data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json|data/generated/timetable/operations-status.json|data/generated/timetable/operations-review-package.json|scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs)$'
+          unexpected="$(git status --short | sed -E 's/^.. //' | grep -Ev "$allowed" || true)"
+          if [ -n "$unexpected" ]; then
+            printf 'Unexpected changed paths:\n%s\n' "$unexpected"
+            exit 1
+          fi
+          git diff --check
+
+      - name: Commit bounded reviewed output
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- \
+            .github/workflows/check.yml \
+            data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json \
+            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          git diff --cached --check
+          git commit -m "Apply reviewed NAR Aug 22-25 A+ detail refresh"
+          git push origin HEAD:post-v1-calendar-nar-2026-08-22-through-25-a-plus
