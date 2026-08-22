@@ -1,0 +1,40 @@
+{
+  "schema_version": "calendar-coverage-observation-v1",
+  "run_id": "due-job-plan-2026-07-21-due-japan-nar-coverage-gap-001-run-001",
+  "system_id": "japan-nar-system",
+  "source_id": "nar-schedule-detail-batch",
+  "checked_at": "2026-07-21T06:08:40.646Z",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-08-18",
+    "end_date_exclusive": "2026-08-20",
+    "timezone": "Asia/Tokyo"
+  },
+  "observed_scope": {
+    "kind": "date_window",
+    "start_date": "2026-08-18",
+    "end_date_exclusive": "2026-08-20",
+    "timezone": "Asia/Tokyo"
+  },
+  "collection_mode": "date_window",
+  "records_discovered": 9,
+  "records_updated": 9,
+  "unresolved_dates": [
+    "2026-08-18",
+    "2026-08-19"
+  ],
+  "unresolved_meeting_ids": [
+    "nar-kanazawa-racecourse-2026-08-18",
+    "nar-kawasaki-racecourse-2026-08-18",
+    "nar-kawasaki-racecourse-2026-08-19",
+    "nar-monbetsu-racecourse-2026-08-18",
+    "nar-monbetsu-racecourse-2026-08-19",
+    "nar-morioka-racecourse-2026-08-18",
+    "nar-nagoya-racecourse-2026-08-18",
+    "nar-nagoya-racecourse-2026-08-19",
+    "nar-sonoda-racecourse-2026-08-19"
+  ],
+  "source_errors": [],
+  "coverage_claim": "source_window_complete",
+  "completion_audit_ref": null
+}

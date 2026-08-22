@@ -1,0 +1,69 @@
+{
+  "schema_version": "calendar-actions-campaign-summary-v1",
+  "plan_id": "due-job-plan-2026-08-12",
+  "campaign_id": "scheduled-planning-2026-08-12",
+  "generated_at": "2026-08-12T05:08:41Z",
+  "hosted_job_count": 3,
+  "excluded_job_count": 2,
+  "results": [
+    {
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+      "status": "success"
+    },
+    {
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "status": "success"
+    },
+    {
+      "job_id": "due-japan-nar-regular-refresh-001",
+      "status": "success"
+    }
+  ],
+  "counts": {
+    "success": 3
+  },
+  "excluded": [
+    {
+      "job_id": "due-japan-jra-coverage-gap-001",
+      "reason": "non_actions_runner",
+      "runner": "local"
+    },
+    {
+      "job_id": "due-japan-jra-regular-refresh-001",
+      "reason": "non_actions_runner",
+      "runner": "local"
+    }
+  ],
+  "status_records": [
+    {
+      "schema_version": "calendar-actions-job-status-v1",
+      "campaign_id": "scheduled-planning-2026-08-12",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+      "batch_id": "due-job-plan-2026-08-12-due-hong-kong-hkjc-season-wake-up-001-run-001",
+      "system_id": "hong-kong-hkjc-system",
+      "runner_used": "github_actions",
+      "status": "success",
+      "detail": null
+    },
+    {
+      "schema_version": "calendar-actions-job-status-v1",
+      "campaign_id": "scheduled-planning-2026-08-12",
+      "job_id": "due-japan-nar-coverage-gap-001",
+      "batch_id": "due-job-plan-2026-08-12-due-japan-nar-coverage-gap-001-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "status": "success",
+      "detail": null
+    },
+    {
+      "schema_version": "calendar-actions-job-status-v1",
+      "campaign_id": "scheduled-planning-2026-08-12",
+      "job_id": "due-japan-nar-regular-refresh-001",
+      "batch_id": "due-job-plan-2026-08-12-due-japan-nar-regular-refresh-001-run-001",
+      "system_id": "japan-nar-system",
+      "runner_used": "github_actions",
+      "status": "success",
+      "detail": null
+    }
+  ]
+}

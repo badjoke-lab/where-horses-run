@@ -1,0 +1,1141 @@
+{
+  "schema_version": "nar-incremental-batch-v2",
+  "batch_id": "due-job-plan-2026-08-13-due-japan-nar-coverage-gap-001-run-001",
+  "generated_at": "2026-08-13T05:11:56.957Z",
+  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+  "collection_mode": "date_window",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-07",
+    "end_date_exclusive": "2026-09-12",
+    "timezone": "Asia/Tokyo"
+  },
+  "schedule_source": {
+    "source_id": "nar-monthly-schedule-grid",
+    "official_schedule_urls": [
+      "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    ],
+    "matrix_path": "data/static/nar-flat-racecourse-compatibility-v1.json"
+  },
+  "detail_source": {
+    "source_id": "nar-race-list-deba-table",
+    "fixture_precondition": "data/fixtures/timetable/nar/complete-meetings"
+  },
+  "review": {
+    "status": "needs_review",
+    "promotion_eligible": false,
+    "canonical_write": "disabled",
+    "public_write": "disabled",
+    "raw_source_storage": "disabled"
+  },
+  "scheduled_meetings": [
+    {
+      "meeting_id": "nar-kanazawa-racecourse-2026-09-08",
+      "venue_code": "22",
+      "racecourse_id": "kanazawa-racecourse",
+      "racecourse_name_en": "Kanazawa",
+      "racecourse_name_ja": "金沢",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F09%2F08",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-08",
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F08",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-09",
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F09",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-10",
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F10",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-11",
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F11",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-07",
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F07",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-08",
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F08",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-09",
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F09",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-10",
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F10",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-11",
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F11",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-07",
+      "venue_code": "11",
+      "racecourse_id": "mizusawa-racecourse",
+      "racecourse_name_en": "Mizusawa",
+      "racecourse_name_ja": "水沢",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F07",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-08",
+      "venue_code": "11",
+      "racecourse_id": "mizusawa-racecourse",
+      "racecourse_name_en": "Mizusawa",
+      "racecourse_name_ja": "水沢",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F08",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-08",
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F08",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-09",
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F09",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-10",
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F10",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-nagoya-racecourse-2026-09-07",
+      "venue_code": "24",
+      "racecourse_id": "nagoya-racecourse",
+      "racecourse_name_en": "Nagoya",
+      "racecourse_name_ja": "名古屋",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F07",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-09-09",
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F09",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-09-10",
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "●",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F10",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-09-11",
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "schedule_marker": "☆",
+      "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F11",
+      "race_list_linked_from_schedule": false,
+      "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026"
+    }
+  ],
+  "detail_candidates": [],
+  "schedule_candidates": [
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kanazawa-racecourse-2026-09-08",
+      "meeting_id": "nar-kanazawa-racecourse-2026-09-08",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kanazawa-racecourse",
+      "racecourse_name_en": "Kanazawa",
+      "racecourse_name_ja": "金沢",
+      "venue_code": "22",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F09%2F08",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kasamatsu-racecourse-2026-09-08",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-08",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "venue_code": "23",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F08",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kasamatsu-racecourse-2026-09-09",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-09",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "venue_code": "23",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F09",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kasamatsu-racecourse-2026-09-10",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-10",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "venue_code": "23",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F10",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kasamatsu-racecourse-2026-09-11",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-11",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kasamatsu-racecourse",
+      "racecourse_name_en": "Kasamatsu",
+      "racecourse_name_ja": "笠松",
+      "venue_code": "23",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F11",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-09-07",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-07",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F07",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-09-08",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-08",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F08",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-09-09",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-09",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F09",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-09-10",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-10",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F10",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-kawasaki-racecourse-2026-09-11",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-11",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "racecourse_name_en": "Kawasaki",
+      "racecourse_name_ja": "川崎",
+      "venue_code": "21",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F11",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-mizusawa-racecourse-2026-09-07",
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-07",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "mizusawa-racecourse",
+      "racecourse_name_en": "Mizusawa",
+      "racecourse_name_ja": "水沢",
+      "venue_code": "11",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F07",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-mizusawa-racecourse-2026-09-08",
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-08",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "mizusawa-racecourse",
+      "racecourse_name_en": "Mizusawa",
+      "racecourse_name_ja": "水沢",
+      "venue_code": "11",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F08",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-monbetsu-racecourse-2026-09-08",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-08",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "venue_code": "36",
+      "date": "2026-09-08",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F08",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-monbetsu-racecourse-2026-09-09",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-09",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "venue_code": "36",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F09",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-monbetsu-racecourse-2026-09-10",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-10",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "venue_code": "36",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F10",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-nagoya-racecourse-2026-09-07",
+      "meeting_id": "nar-nagoya-racecourse-2026-09-07",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "nagoya-racecourse",
+      "racecourse_name_en": "Nagoya",
+      "racecourse_name_ja": "名古屋",
+      "venue_code": "24",
+      "date": "2026-09-07",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F07",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-sonoda-racecourse-2026-09-09",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-09",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "venue_code": "27",
+      "date": "2026-09-09",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F09",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-sonoda-racecourse-2026-09-10",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-10",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "venue_code": "27",
+      "date": "2026-09-10",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "●",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F10",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    },
+    {
+      "schema_version": "nar-schedule-meeting-candidate-v1",
+      "candidate_id": "schedule-nar-sonoda-racecourse-2026-09-11",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-11",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "sonoda-racecourse",
+      "racecourse_name_en": "Sonoda",
+      "racecourse_name_ja": "園田",
+      "venue_code": "27",
+      "date": "2026-09-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "schedule_state": "scheduled_pending_details",
+      "detail_status": "parser_failure",
+      "source": {
+        "source_id": "nar-monthly-schedule-grid",
+        "official_schedule_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "schedule_marker": "☆",
+        "race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F11",
+        "race_list_linked_from_schedule": false,
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "review": {
+        "status": "needs_review",
+        "promotion_eligible": false,
+        "reason": "Schedule evidence establishes meeting identity; detail remains pending or requires retry."
+      }
+    }
+  ],
+  "detail_blockers": [
+    {
+      "venue_code": "22",
+      "racecourse_id": "kanazawa-racecourse",
+      "date": "2026-09-08",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F09%2F08",
+      "meeting_id": "nar-kanazawa-racecourse-2026-09-08"
+    },
+    {
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-09-08",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F08",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-08"
+    },
+    {
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-09-09",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F09",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-09"
+    },
+    {
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-09-10",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F10",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-10"
+    },
+    {
+      "venue_code": "23",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-09-11",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F11",
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-11"
+    },
+    {
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-09-07",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F07",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-07"
+    },
+    {
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-09-08",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F08",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-08"
+    },
+    {
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-09-09",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F09",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-09"
+    },
+    {
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-09-10",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F10",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-10"
+    },
+    {
+      "venue_code": "21",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-09-11",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F09%2F11",
+      "meeting_id": "nar-kawasaki-racecourse-2026-09-11"
+    },
+    {
+      "venue_code": "11",
+      "racecourse_id": "mizusawa-racecourse",
+      "date": "2026-09-07",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F07",
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-07"
+    },
+    {
+      "venue_code": "11",
+      "racecourse_id": "mizusawa-racecourse",
+      "date": "2026-09-08",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F08",
+      "meeting_id": "nar-mizusawa-racecourse-2026-09-08"
+    },
+    {
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-09-08",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F08",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-08"
+    },
+    {
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-09-09",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F09",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-09"
+    },
+    {
+      "venue_code": "36",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-09-10",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F10",
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-10"
+    },
+    {
+      "venue_code": "24",
+      "racecourse_id": "nagoya-racecourse",
+      "date": "2026-09-07",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F07",
+      "meeting_id": "nar-nagoya-racecourse-2026-09-07"
+    },
+    {
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-09-09",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F09",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-09"
+    },
+    {
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-09-10",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F10",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-10"
+    },
+    {
+      "venue_code": "27",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-09-11",
+      "status": "parser_failure",
+      "blockers": [
+        {
+          "reason": "race_number_discovery_incomplete"
+        }
+      ],
+      "list_http_status": 200,
+      "list_final_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F09%2F11",
+      "meeting_id": "nar-sonoda-racecourse-2026-09-11"
+    }
+  ],
+  "schedule_errors": []
+}

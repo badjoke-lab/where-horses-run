@@ -1,0 +1,93 @@
+{
+  "schema_version": "calendar-due-job-plan-v1",
+  "policy_version": "calendar-due-job-policy-2026-07-19",
+  "generated_at": "2026-08-08T16:43:19Z",
+  "planning_date": "2026-08-08",
+  "collection_plan": {
+    "schema_version": "calendar-collection-plan-v1",
+    "plan_id": "due-job-plan-2026-08-08",
+    "campaign_id": "scheduled-planning-2026-08-08",
+    "created_at": "2026-08-08T16:43:19Z",
+    "jobs": [
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-jra-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-08",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-09",
+          "end_date_exclusive": "2026-08-16",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-08T16:43:19Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-nar-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-08",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-09",
+          "end_date_exclusive": "2026-08-23",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-08T16:43:19Z"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "system_id": "japan-jra-system",
+      "trigger": "regular_refresh",
+      "disposition": "job_planned",
+      "job_id": "due-japan-jra-regular-refresh-001",
+      "detail": "Regular refresh due: stale=false, meeting_proximity_due=true, age_hours=16."
+    },
+    {
+      "system_id": "japan-nar-system",
+      "trigger": "regular_refresh",
+      "disposition": "job_planned",
+      "job_id": "due-japan-nar-regular-refresh-001",
+      "detail": "Regular refresh due: stale=false, meeting_proximity_due=true, age_hours=16."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "trigger": "season_inactive",
+      "disposition": "not_due",
+      "job_id": null,
+      "detail": "Season state is offseason; regular due-job generation is suppressed."
+    },
+    {
+      "system_id": "japan-banei-system",
+      "trigger": "not_due",
+      "disposition": "not_due",
+      "job_id": null,
+      "detail": "No policy trigger is currently due."
+    }
+  ],
+  "scheduler_boundary": {
+    "cadence_hours": 24,
+    "artifact_only": true,
+    "jobs_executed": false,
+    "automatic_approval": false,
+    "automatic_promotion": false,
+    "automatic_publication": false,
+    "automatic_deployment": false
+  }
+}

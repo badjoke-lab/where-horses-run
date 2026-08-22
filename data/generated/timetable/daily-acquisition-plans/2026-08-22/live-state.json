@@ -1,0 +1,77 @@
+{
+  "schema_version": "calendar-due-job-planner-state-v1",
+  "as_of": "2026-08-22T17:13:25Z",
+  "system_states": [
+    {
+      "system_id": "japan-jra-system",
+      "timezone": "Asia/Tokyo",
+      "season_state": "active",
+      "future_active_start_date": null,
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-08-08T00:00:00Z",
+      "last_source_revalidation_at": "2026-08-08T00:00:00Z",
+      "source_visible_horizon_end_exclusive": "2026-09-07",
+      "next_meeting_date": "2026-08-22",
+      "coverage_gaps": [
+        {
+          "start_date": "2026-09-07",
+          "end_date_exclusive": "2026-09-21",
+          "timezone": "Asia/Tokyo"
+        }
+      ]
+    },
+    {
+      "system_id": "japan-nar-system",
+      "timezone": "Asia/Tokyo",
+      "season_state": "active",
+      "future_active_start_date": null,
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-08-22T00:00:00Z",
+      "last_source_revalidation_at": "2026-08-22T00:00:00Z",
+      "source_visible_horizon_end_exclusive": "2026-09-21",
+      "next_meeting_date": "2026-08-22",
+      "coverage_gaps": []
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "timezone": "Asia/Hong_Kong",
+      "season_state": "offseason",
+      "future_active_start_date": "2026-09-06",
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-08-20T00:00:00Z",
+      "last_source_revalidation_at": "2026-08-20T00:00:00Z",
+      "source_visible_horizon_end_exclusive": "2026-09-17",
+      "next_meeting_date": "2026-09-06",
+      "coverage_gaps": [
+        {
+          "start_date": "2026-09-17",
+          "end_date_exclusive": "2026-09-21",
+          "timezone": "Asia/Hong_Kong"
+        }
+      ]
+    },
+    {
+      "system_id": "japan-banei-system",
+      "timezone": "Asia/Tokyo",
+      "season_state": "active",
+      "future_active_start_date": null,
+      "source_health": "healthy",
+      "last_successful_collection_at": "2026-08-08T00:00:00Z",
+      "last_source_revalidation_at": "2026-08-08T00:00:00Z",
+      "source_visible_horizon_end_exclusive": "2026-09-07",
+      "next_meeting_date": "2026-08-22",
+      "coverage_gaps": [
+        {
+          "start_date": "2026-09-07",
+          "end_date_exclusive": "2026-09-21",
+          "timezone": "Asia/Tokyo"
+        }
+      ]
+    }
+  ],
+  "retry_queue": {
+    "schema_version": "calendar-rank-aware-retry-queue-v1",
+    "generated_at": "2026-08-22T17:13:25Z",
+    "entries": []
+  }
+}

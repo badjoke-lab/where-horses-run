@@ -1,0 +1,32 @@
+{
+  "schema_version": "calendar-coverage-observation-v1",
+  "run_id": "due-job-plan-2026-08-22-due-japan-nar-coverage-gap-001-run-001",
+  "system_id": "japan-nar-system",
+  "source_id": "nar-schedule-detail-batch",
+  "checked_at": "2026-08-22T15:58:09.771Z",
+  "requested_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-20",
+    "end_date_exclusive": "2026-09-21",
+    "timezone": "Asia/Tokyo"
+  },
+  "observed_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-20",
+    "end_date_exclusive": "2026-09-21",
+    "timezone": "Asia/Tokyo"
+  },
+  "collection_mode": "date_window",
+  "records_discovered": 2,
+  "records_updated": 2,
+  "unresolved_dates": [
+    "2026-09-20"
+  ],
+  "unresolved_meeting_ids": [
+    "nar-kochi-racecourse-2026-09-20",
+    "nar-saga-racecourse-2026-09-20"
+  ],
+  "source_errors": [],
+  "coverage_claim": "source_window_complete",
+  "completion_audit_ref": null
+}

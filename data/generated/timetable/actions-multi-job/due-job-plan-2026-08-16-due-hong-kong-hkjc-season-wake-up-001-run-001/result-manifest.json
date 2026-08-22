@@ -1,0 +1,37 @@
+{
+  "schema_version": "calendar-collection-result-manifest-v1",
+  "campaign_id": "scheduled-planning-2026-08-16",
+  "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+  "batch_id": "due-job-plan-2026-08-16-due-hong-kong-hkjc-season-wake-up-001-run-001",
+  "system_id": "hong-kong-hkjc-system",
+  "runner_used": "github_actions",
+  "requested_scope": {
+    "start_date": "2026-09-07",
+    "end_date_exclusive": "2026-09-14",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "observed_scope": {
+    "kind": "date_window",
+    "start_date": "2026-09-07",
+    "end_date_exclusive": "2026-09-14",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "coverage_claim": "source_window_complete",
+  "records_discovered": 2,
+  "records_updated": 2,
+  "rank_counts": {
+    "C": 2,
+    "B": 0,
+    "B+": 0,
+    "A": 0,
+    "A+": 0
+  },
+  "unresolved_dates": [],
+  "unresolved_meeting_ids": [],
+  "source_errors": [],
+  "artifact_refs": {
+    "candidate_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-16-due-hong-kong-hkjc-season-wake-up-001-run-001/candidates.json",
+    "coverage_observation_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-16-due-hong-kong-hkjc-season-wake-up-001-run-001/coverage-observation.json",
+    "collection_report_ref": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-16-due-hong-kong-hkjc-season-wake-up-001-run-001/collection-report.json"
+  }
+}
