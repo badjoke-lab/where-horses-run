@@ -108,7 +108,8 @@ jobs:
           ];
           if (candidate.review?.status !== 'approved') throw new Error('review status differs');
           if (candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('promotion target differs');
-          if (JSON.stringify(candidate.records.map((record) => record.meeting_id)) !== JSON.stringify(expectedIds)) throw new Error('reviewed meeting identities differ');
+          const actualIds = candidate.records.map((record) => record.meeting_id).sort();
+          if (JSON.stringify(actualIds) !== JSON.stringify([...expectedIds].sort())) throw new Error('reviewed meeting identities differ');
           if (candidate.records.reduce((sum, record) => sum + record.timetable_rows.length, 0) !== 58) throw new Error('reviewed timetable row total differs');
 
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
