@@ -34,8 +34,12 @@ const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const authorityInventory = loadAuthoritySourceInventoryV1(root);
 const readinessRegistry = loadCalendarReadinessV1(root);
-let meetingsDataset = readBaseJson(meetingsPath);
-let detailsDataset = readBaseJson(detailsPath);
+const baseMeetings = readBaseJson(meetingsPath);
+const baseDetails = readBaseJson(detailsPath);
+const baseMeetingById = new Map(baseMeetings.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+const baseDetailById = new Map(baseDetails.details.map((detail) => [detail.meeting_id, detail]));
+let meetingsDataset = baseMeetings;
+let detailsDataset = baseDetails;
 
 const historicalCandidatePaths = [
   historicalCPath,
@@ -145,6 +149,13 @@ const scopedAuthorityIds = new Set(
 );
 const unrelatedMeetingAdditions = committedMeetings.meetings.filter((meeting) => !expectedMeetingIds.has(meeting.meeting_id));
 for (const meeting of unrelatedMeetingAdditions) {
+  const baseMeeting = baseMeetingById.get(meeting.meeting_id);
+  if (baseMeeting) {
+    if (!exact(meeting, baseMeeting)) {
+      throw new Error(`unreviewed canonical meeting mutation bypasses cumulative promotion replay: ${meeting.meeting_id}`);
+    }
+    continue;
+  }
   if (scopedAuthorityIds.has(meeting.authority_id)) {
     throw new Error(`unreviewed in-scope canonical meeting addition bypasses cumulative promotion replay: ${meeting.meeting_id}`);
   }
@@ -153,8 +164,25 @@ const unrelatedDetailAdditions = committedDetails.details.filter((detail) => !ex
 for (const detail of unrelatedDetailAdditions) {
   const meeting = committedMeetingById.get(detail.meeting_id);
   if (!meeting) throw new Error(`canonical detail has no committed meeting: ${detail.meeting_id}`);
+  const baseDetail = baseDetailById.get(detail.meeting_id);
+  if (baseDetail) {
+    if (!exact(detail, baseDetail)) {
+      throw new Error(`unreviewed canonical detail mutation bypasses cumulative promotion replay: ${detail.meeting_id}`);
+    }
+    continue;
+  }
   if (scopedAuthorityIds.has(meeting.authority_id)) {
     throw new Error(`unreviewed in-scope canonical detail addition bypasses cumulative promotion replay: ${detail.meeting_id}`);
+  }
+}
+for (const baseDetail of baseDetails.details) {
+  if (expectedDetailIds.has(baseDetail.meeting_id)) continue;
+  const committedDetail = committedDetailById.get(baseDetail.meeting_id);
+  if (!committedDetail) {
+    throw new Error(`existing base canonical detail disappeared outside cumulative promotion replay: ${baseDetail.meeting_id}`);
+  }
+  if (!exact(committedDetail, baseDetail)) {
+    throw new Error(`existing base canonical detail changed outside cumulative promotion replay: ${baseDetail.meeting_id}`);
   }
 }
 
@@ -182,10 +210,6 @@ for (const inputPath of recoveryContinuationPaths.filter((candidatePath) => base
 }
 
 const currentWindowCandidate = readJson(currentWindowAPlusPath);
-const baseMeetings = readBaseJson(meetingsPath);
-const baseDetails = readBaseJson(detailsPath);
-const baseMeetingById = new Map(baseMeetings.meetings.map((meeting) => [meeting.meeting_id, meeting]));
-const baseDetailById = new Map(baseDetails.details.map((detail) => [detail.meeting_id, detail]));
 if (currentWindowCandidate.records.length !== 15 || !baseInputSources.has(currentWindowAPlusPath)) {
   throw new Error('current-window NAR A+ promotion is not present in the PR base');
 }
