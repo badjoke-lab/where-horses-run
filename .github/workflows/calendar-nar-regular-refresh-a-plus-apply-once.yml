@@ -1,9 +1,15 @@
+# One-time branch writer. It removes itself from the generated apply commit.
 name: Calendar NAR regular refresh A+ apply once
 
 on:
   push:
     branches:
       - post-v1-calendar-nar-a-plus-2026-08-22-25-review
+    paths:
+      - '.github/workflows/calendar-nar-regular-refresh-a-plus-apply-once.yml'
+  pull_request:
+    branches:
+      - main
     paths:
       - '.github/workflows/calendar-nar-regular-refresh-a-plus-apply-once.yml'
 
@@ -19,9 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout review branch
+      - name: Checkout exact review branch
         uses: actions/checkout@v4
         with:
+          ref: post-v1-calendar-nar-a-plus-2026-08-22-25-review
           fetch-depth: 0
 
       - name: Checkout exact daily-review source evidence
@@ -99,12 +106,11 @@ jobs:
 
       - name: Remove one-shot write workflow and commit bounded outputs
         run: |
-          rm .github/workflows/calendar-nar-regular-refresh-a-plus-apply-once.yml
+          git rm -- .github/workflows/calendar-nar-regular-refresh-a-plus-apply-once.yml
           git diff --check
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -- \
-            .github/workflows/calendar-nar-regular-refresh-a-plus-apply-once.yml \
             data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json \
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
@@ -113,5 +119,6 @@ jobs:
             data/generated/timetable/public/japan-a-plus-overrides.json \
             data/generated/timetable/operations-status.json \
             data/generated/timetable/operations-review-package.json
+          git diff --cached --check
           git commit -m 'Apply reviewed NAR August 22-25 A+ detail enrichment'
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git push origin HEAD:post-v1-calendar-nar-a-plus-2026-08-22-25-review
