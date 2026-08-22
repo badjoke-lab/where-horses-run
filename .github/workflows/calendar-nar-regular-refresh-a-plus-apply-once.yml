@@ -99,7 +99,7 @@ jobs:
             if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || publicDetail.timetable_rows?.length !== record.timetable_rows.length) throw new Error(`${record.meeting_id}: public detail differs`);
             if (meeting.first_race_time_local !== record.first_race_time_local || meeting.last_race_time_local !== record.last_race_time_local) throw new Error(`${record.meeting_id}: canonical meeting times differ`);
           }
-          if (canonical.meetings.length !== 418) throw new Error(`canonical meeting count changed: ${canonical.meetings.length}`);
+          if (canonical.meetings.length !== 431) throw new Error(`canonical meeting count changed: ${canonical.meetings.length}`);
           if (details.details.length !== 87) throw new Error(`canonical detail count differs: ${details.details.length}`);
           if (status.public_projection?.meeting_count !== 418) throw new Error(`public meeting count differs: ${status.public_projection?.meeting_count}`);
           if (status.public_projection?.detail_count !== 87) throw new Error(`public detail count differs: ${status.public_projection?.detail_count}`);
