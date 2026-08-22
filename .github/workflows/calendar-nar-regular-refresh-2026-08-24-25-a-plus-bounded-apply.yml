@@ -46,8 +46,8 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const path = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
-          let text = fs.readFileSync(path, 'utf8');
+          const file = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
+          let text = fs.readFileSync(file, 'utf8');
           const constAnchor = "const septemberNarExtensionSeptember20Path = 'data/candidates/nar-horizon-extension-2026-09-20-approved.json';\n";
           if (!text.includes("const augustNarRegularRefreshAPlusSecondPath =")) {
             if (!text.includes(constAnchor)) throw new Error('determinism const anchor missing');
@@ -63,14 +63,13 @@ jobs:
             if (!text.includes(countAnchor)) throw new Error('determinism count anchor missing');
             text = text.replace(countAnchor, '  [septemberNarExtensionSeptember20Path, [2, 0]],\n  [augustNarRegularRefreshAPlusSecondPath, [7, 7]],\n]);');
           }
-          fs.writeFileSync(path, text);
+          fs.writeFileSync(file, text);
           NODE
 
-      - name: Validate reviewed promotion before apply
-        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json --dry-run
-
-      - name: Apply reviewed Candidate to canonical timetable
-        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json
+      - name: Validate and apply reviewed promotion
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json
 
       - name: Rebuild deterministic public and operations projections
         run: |
@@ -101,10 +100,8 @@ jobs:
           ].sort();
           const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json', 'utf8'));
           if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('review contract differs');
-          const actualIds = candidate.records.map((record) => record.meeting_id).sort();
-          if (JSON.stringify(actualIds) !== JSON.stringify(ids)) throw new Error('reviewed A+ identities differ');
+          if (JSON.stringify(candidate.records.map((record) => record.meeting_id).sort()) !== JSON.stringify(ids)) throw new Error('reviewed A+ identities differ');
           if (candidate.records.reduce((sum, record) => sum + record.timetable_rows.length, 0) !== 82) throw new Error('reviewed timetable row total differs');
-
           const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
           const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
@@ -151,8 +148,7 @@ jobs:
             data/generated/timetable/public/japan-a-plus-overrides.json \
             data/generated/timetable/operations-status.json \
             data/generated/timetable/operations-review-package.json \
-            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs \
-            .github/workflows/calendar-nar-regular-refresh-2026-08-24-25-a-plus-bounded-apply.yml
+            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
           git diff --cached --check
           git commit -m "Apply next reviewed NAR A+ detail promotion"
           git push origin HEAD:post-v1-calendar-nar-a-plus-2026-08-24-25-review
