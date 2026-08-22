@@ -1,29 +1,144 @@
 name: Check
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - post-v1-calendar-horizon-2026-09-20-review
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  build:
-    name: Build
+  apply-reviewed-september-20:
+    name: Apply reviewed September 20 extension
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout review branch
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout exact review evidence
+        uses: actions/checkout@v4
+        with:
+          ref: 9806279dc43b51299124405fffb70d7010b258a9
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-22-due-japan-nar-coverage-gap-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
 
-      - name: Install dependencies
-        run: npm install
+      - name: Rebuild reviewed Candidate from exact evidence
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-22-due-japan-nar-coverage-gap-001-run-001/batch.json
+        run: node scripts/timetable/build-calendar-september-2026-horizon-extension-2026-09-20-approved-candidates.mjs
 
-      - name: Build
-        run: npm run build
+      - name: Verify reviewed Candidate remains deterministic
+        run: git diff --exit-code -- data/candidates/nar-horizon-extension-2026-09-20-approved.json
+
+      - name: Extend cumulative reviewed promotion contract
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const path = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
+          let text = fs.readFileSync(path, 'utf8');
+          const constAnchor = "const augustNarRegularRefreshAPlusPath = 'data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json';\n";
+          if (!text.includes("const septemberNarExtensionSeptember20Path =")) {
+            if (!text.includes(constAnchor)) throw new Error('determinism const anchor missing');
+            text = text.replace(constAnchor, `${constAnchor}const septemberNarExtensionSeptember20Path = 'data/candidates/nar-horizon-extension-2026-09-20-approved.json';\n`);
+          }
+          const sequenceAnchor = '  augustNarRegularRefreshAPlusPath,\n];';
+          if (!text.includes('  septemberNarExtensionSeptember20Path,\n];')) {
+            if (!text.includes(sequenceAnchor)) throw new Error('determinism continuation anchor missing');
+            text = text.replace(sequenceAnchor, '  augustNarRegularRefreshAPlusPath,\n  septemberNarExtensionSeptember20Path,\n];');
+          }
+          const countAnchor = '  [augustNarRegularRefreshAPlusPath, [6, 6]],\n]);';
+          if (!text.includes('  [septemberNarExtensionSeptember20Path, [2, 0]],')) {
+            if (!text.includes(countAnchor)) throw new Error('determinism count anchor missing');
+            text = text.replace(countAnchor, '  [augustNarRegularRefreshAPlusPath, [6, 6]],\n  [septemberNarExtensionSeptember20Path, [2, 0]],\n]);');
+          }
+          fs.writeFileSync(path, text);
+          NODE
+
+      - name: Validate reviewed promotion before apply
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-extension-2026-09-20-approved.json --dry-run
+
+      - name: Apply reviewed Candidate to canonical timetable
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-horizon-extension-2026-09-20-approved.json
+
+      - name: Rebuild deterministic public and operations projections
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate applied repository state
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Verify exact September 20 publication boundary
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const ids = [
+            'nar-kochi-racecourse-2026-09-20',
+            'nar-saga-racecourse-2026-09-20',
+          ];
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-horizon-extension-2026-09-20-approved.json', 'utf8'));
+          if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('review contract differs');
+          if (JSON.stringify(candidate.records.map((record) => record.meeting_id)) !== JSON.stringify(ids)) throw new Error('reviewed identities differ');
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8'));
+          for (const id of ids) {
+            const c = canonical.meetings.find((meeting) => meeting.meeting_id === id);
+            const p = publicList.meetings.find((meeting) => meeting.meeting_id === id);
+            for (const [label, row] of [['canonical', c], ['public', p]]) {
+              if (!row) throw new Error(`${id}: ${label} meeting missing`);
+              if (row.capability_rank !== 'C') throw new Error(`${id}: ${label} rank differs`);
+              if (row.first_race_time_local !== null || row.last_race_time_local !== null) throw new Error(`${id}: ${label} race time leaked`);
+            }
+            if (p.detail_path !== null) throw new Error(`${id}: public detail path must remain null`);
+            if (details.details.some((detail) => detail.meeting_id === id)) throw new Error(`${id}: canonical detail must remain absent`);
+            if (publicDetails.details.some((detail) => detail.meeting_id === id)) throw new Error(`${id}: public detail must remain absent`);
+          }
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          if (canonical.meetings.length !== 433) throw new Error(`expected 433 canonical meetings, got ${canonical.meetings.length}`);
+          if (details.details.length !== 87) throw new Error(`expected 87 canonical details, got ${details.details.length}`);
+          if (status.public_projection?.meeting_count !== 420) throw new Error(`expected 420 public meetings, got ${status.public_projection?.meeting_count}`);
+          if (status.public_projection?.detail_count !== 87) throw new Error(`expected 87 public details, got ${status.public_projection?.detail_count}`);
+          if (status.public_projection?.latest_meeting_date !== '2026-09-20') throw new Error(`expected horizon 2026-09-20, got ${status.public_projection?.latest_meeting_date}`);
+          console.log(JSON.stringify({ meeting_ids: ids, canonical_meetings: 433, public_meetings: 420, details: 87, latest_meeting_date: '2026-09-20', rank: 'C' }));
+          NODE
+
+      - name: Restore permanent read-only Check workflow
+        run: git checkout origin/main -- .github/workflows/check.yml
+
+      - name: Commit bounded reviewed output
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- \
+            .github/workflows/check.yml \
+            data/candidates/nar-horizon-extension-2026-09-20-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json \
+            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          git diff --cached --check
+          git commit -m "Apply reviewed NAR September 20 horizon extension"
+          git push origin HEAD:post-v1-calendar-horizon-2026-09-20-review
