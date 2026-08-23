@@ -2,7 +2,7 @@
   "schema_version": "calendar-actions-multi-job-plan-v1",
   "plan_id": "due-job-plan-2026-08-23",
   "campaign_id": "scheduled-planning-2026-08-23",
-  "generated_at": "2026-08-23T04:45:50Z",
+  "generated_at": "2026-08-23T05:29:24Z",
   "jobs": [
     {
       "job_id": "due-hong-kong-hkjc-season-wake-up-001",
@@ -25,7 +25,7 @@
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-23T04:45:50Z"
+        "requested_at": "2026-08-23T05:29:24Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
@@ -73,7 +73,7 @@
   ],
   "excluded": [
     {
-      "job_id": "due-japan-jra-source-revalidation-001",
+      "job_id": "due-japan-jra-regular-refresh-001",
       "reason": "non_actions_runner",
       "runner": "local"
     }
