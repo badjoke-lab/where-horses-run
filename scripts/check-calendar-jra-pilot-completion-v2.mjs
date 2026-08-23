@@ -38,7 +38,7 @@ const allJraDetails = detailData.details.filter((detail) => detail.country_id ==
 const julyRows = julyDetails.reduce((sum, detail) => sum + detail.timetable_rows.length, 0);
 const allRows = allJraDetails.reduce((sum, detail) => sum + detail.timetable_rows.length, 0);
 if (julyMeetings.length !== 24 || julyDetails.length !== 24 || julyRows !== 288) fail('July public baseline');
-if (allJraDetails.length !== 25 || allRows !== 300) fail('total JRA public baseline');
+if (allJraDetails.length < 25 || allRows < 300) fail('total JRA public baseline regressed');
 
 const aFields = new Set(['label', 'post_time_local']);
 const aPlusFields = new Set(audit.public_baseline.allowed_fields);

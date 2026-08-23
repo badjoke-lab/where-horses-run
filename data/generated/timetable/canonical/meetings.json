@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-08-23T04:45:00Z",
+  "generated_at": "2026-08-23T05:31:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -9,6 +9,7 @@
     "data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json",
     "data/candidates/hkjc-september-2026-09-20-fixture-approved.json",
     "data/candidates/hkjc-september-2026-fixture-extension-approved.json",
+    "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json",
     "data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json",
     "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json",
     "data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json",
@@ -9526,27 +9527,27 @@
       "racecourse_id": "chukyo-racecourse",
       "date": "2026-08-29",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:50",
+      "last_race_time_local": "18:15",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0829.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "jra-niigata-racecourse-2026-08-29",
@@ -9555,27 +9556,27 @@
       "racecourse_id": "niigata-racecourse",
       "date": "2026-08-29",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:40",
+      "last_race_time_local": "18:05",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0829.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-08-29",
@@ -9642,27 +9643,27 @@
       "racecourse_id": "sapporo-racecourse",
       "date": "2026-08-29",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "10:00",
+      "last_race_time_local": "16:00",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0829.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "kra-jeju-racecourse-2026-08-29",
@@ -9729,27 +9730,27 @@
       "racecourse_id": "chukyo-racecourse",
       "date": "2026-08-30",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:50",
+      "last_race_time_local": "18:15",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0830.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "nar-morioka-racecourse-2026-08-30",
@@ -9787,27 +9788,27 @@
       "racecourse_id": "niigata-racecourse",
       "date": "2026-08-30",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:40",
+      "last_race_time_local": "18:05",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0830.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-08-30",
@@ -9874,27 +9875,27 @@
       "racecourse_id": "sapporo-racecourse",
       "date": "2026-08-30",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "10:00",
+      "last_race_time_local": "16:00",
       "source_trace": {
         "source_id": "jra-programme",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/8/0830.html",
         "source_label": "Japan Racing Association",
-        "extraction_method": "snapshot",
+        "extraction_method": "manual_review",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:09:55.755Z",
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T05:30:00Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T05:31:00Z."
       },
-      "notes": "Official JRA programme confirms the meeting date and racecourse identity. Published recovery is intentionally capped at Rank C; collected race times and programme rows are not promoted by this envelope."
+      "notes": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
     },
     {
       "meeting_id": "kra-busan-gyeongnam-racecourse-2026-08-30",

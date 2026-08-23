@@ -41,11 +41,23 @@ try {
   const jra = state.system_states.find((entry) => entry.system_id === 'japan-jra-system');
   if (!jra) throw new Error('JRA planner state missing');
   if (jra.source_health !== 'healthy') throw new Error(`JRA source health should be healthy, got ${jra.source_health}`);
-  if (jra.last_successful_collection_at !== '2026-08-08T00:00:00Z') {
-    throw new Error(`JRA last successful collection must remain 2026-08-08, got ${jra.last_successful_collection_at}`);
+
+  const publicMeetings = readJson(path.join(root, 'data/generated/timetable/public/meeting-list.json'));
+  const latestJraCheckedDate = publicMeetings.meetings
+    .filter((meeting) => meeting.authority_id === 'jra')
+    .map((meeting) => meeting.last_checked_date)
+    .filter(Boolean)
+    .sort()
+    .at(-1) ?? null;
+  const expectedLastSuccessfulCollectionAt = latestJraCheckedDate === null ? null : `${latestJraCheckedDate}T00:00:00Z`;
+  if (jra.last_successful_collection_at !== expectedLastSuccessfulCollectionAt) {
+    throw new Error(`JRA last successful collection must follow latest public collection date ${expectedLastSuccessfulCollectionAt}, got ${jra.last_successful_collection_at}`);
   }
   if (jra.last_source_revalidation_at !== asOf) {
     throw new Error(`JRA source revalidation should use reviewed evidence time, got ${jra.last_source_revalidation_at}`);
+  }
+  if (jra.last_successful_collection_at === jra.last_source_revalidation_at) {
+    throw new Error('JRA successful collection and source revalidation timestamps must remain independently derived');
   }
   if (jra.coverage_gaps.length !== 0) {
     throw new Error(`JRA coverage gap must not extend beyond the reviewed season window: ${JSON.stringify(jra.coverage_gaps)}`);
@@ -73,16 +85,14 @@ try {
 
   const plan = readJson(planPath);
   const jraJobs = plan.collection_plan.jobs.filter((job) => job.system_id === 'japan-jra-system');
-  if (jraJobs.length !== 1) throw new Error(`expected one JRA Job after source revalidation, got ${jraJobs.length}`);
-  const job = jraJobs[0];
-  if (job.job_id !== 'due-japan-jra-regular-refresh-001') throw new Error(`unexpected JRA Job ${job.job_id}`);
-  if (job.reason !== 'regular_refresh') throw new Error(`JRA Job reason should be regular_refresh, got ${job.reason}`);
-  if (job.collection_mode !== 'date_window') throw new Error(`JRA Job mode should be date_window, got ${job.collection_mode}`);
-  if (job.requested_scope.start_date !== '2026-08-24' || job.requested_scope.end_date_exclusive !== '2026-08-31') {
-    throw new Error(`JRA regular refresh scope differs: ${JSON.stringify(job.requested_scope)}`);
+  if (jraJobs.length !== 0) {
+    throw new Error(`fresh reviewed JRA collection must not immediately schedule another Job: ${JSON.stringify(jraJobs)}`);
   }
-  if (job.runner_policy.mode !== 'registry_primary' || job.runner_policy.runner !== null) {
-    throw new Error('JRA regular refresh must retain Registry primary local routing');
+  const jraPlannedSourceRevalidation = plan.decisions?.some((decision) => decision.system_id === 'japan-jra-system'
+    && decision.disposition === 'job_planned'
+    && (decision.trigger === 'source_health' || decision.job_id?.includes('source-revalidation')));
+  if (jraPlannedSourceRevalidation) {
+    throw new Error('JRA must not regress immediately to source revalidation after reviewed healthy evidence and a fresh collection');
   }
   if (plan.scheduler_boundary.automatic_approval !== false
     || plan.scheduler_boundary.automatic_promotion !== false
@@ -95,8 +105,8 @@ try {
     jra_source_health: jra.source_health,
     last_successful_collection_at: jra.last_successful_collection_at,
     last_source_revalidation_at: jra.last_source_revalidation_at,
-    next_jra_job: job.job_id,
-    requested_scope: job.requested_scope,
+    next_jra_job: null,
+    requested_scope: null,
     jra_coverage_gap_count: jra.coverage_gaps.length,
   }));
 } finally {

@@ -230,9 +230,13 @@ try {
   }
 } finally {
   cdp.close();
-  chrome.kill('SIGKILL');
+  if (chrome.exitCode === null) {
+    const chromeClosed = new Promise((resolve) => chrome.once('close', resolve));
+    chrome.kill('SIGKILL');
+    await chromeClosed;
+  }
   await new Promise((resolve) => server.close(resolve));
-  fs.rmSync(profileDir, { recursive: true, force: true });
+  fs.rmSync(profileDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }
 
 const pageErrors = [];
