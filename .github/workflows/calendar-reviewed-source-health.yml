@@ -1,0 +1,56 @@
+name: Calendar reviewed source health
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-reviewed-source-health.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'scripts/check-calendar-reviewed-source-health.mjs'
+      - 'scripts/timetable/plan-calendar-due-jobs.mjs'
+      - 'data/static/calendar-reviewed-source-health-v1.json'
+      - 'data/static/calendar-system-season-state-v1.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'docs/calendar/reviewed-source-health.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-reviewed-source-health.yml'
+      - 'scripts/timetable/build-calendar-live-planner-state.mjs'
+      - 'scripts/check-calendar-reviewed-source-health.mjs'
+      - 'scripts/timetable/plan-calendar-due-jobs.mjs'
+      - 'data/static/calendar-reviewed-source-health-v1.json'
+      - 'data/static/calendar-system-season-state-v1.json'
+      - 'data/static/calendar-due-job-policy-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'docs/calendar/reviewed-source-health.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-reviewed-source-health-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check source health planner scripts
+        run: |
+          node --check scripts/timetable/build-calendar-live-planner-state.mjs
+          node --check scripts/check-calendar-reviewed-source-health.mjs
+      - name: Verify reviewed source health and season-bound planning
+        run: node scripts/check-calendar-reviewed-source-health.mjs
+      - name: Validate existing due-job planner contracts
+        run: node scripts/check-calendar-due-job-planner.mjs
+      - name: Check formatting
+        run: git diff --check
