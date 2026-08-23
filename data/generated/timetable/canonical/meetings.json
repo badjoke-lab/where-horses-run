@@ -1,12 +1,13 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-08-23T04:38:00Z",
+  "generated_at": "2026-08-23T04:45:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
     "data/candidates/banei-horizon-recovery-2026-08-15-through-2026-08-17-approved.json",
     "data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json",
     "data/candidates/hkjc-horizon-recovery-2026-09-06-approved.json",
+    "data/candidates/hkjc-september-2026-09-20-fixture-approved.json",
     "data/candidates/hkjc-september-2026-fixture-extension-approved.json",
     "data/candidates/jra-horizon-recovery-2026-08-01-through-2026-08-16-approved.json",
     "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json",
@@ -12533,6 +12534,35 @@
         "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-21T04:50:00Z."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending after detail parser failure."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-09-20",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-09-20",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "hkjc-fixture-list",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "source_label": "Hong Kong Jockey Club",
+        "extraction_method": "normalizer",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/hkjc-september-2026-09-20-fixture-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T04:04:59.500Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T04:45:00Z."
+      },
+      "notes": "Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed."
     },
     {
       "meeting_id": "nar-kochi-racecourse-2026-09-20",

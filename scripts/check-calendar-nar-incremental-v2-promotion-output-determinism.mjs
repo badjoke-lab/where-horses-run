@@ -31,6 +31,7 @@ const septemberNarExtensionSeptember20Path = 'data/candidates/nar-horizon-extens
 const augustNarRegularRefreshAPlusSecondPath = 'data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json';
 const septemberNarExtensionSeptember21Path = 'data/candidates/nar-horizon-extension-2026-09-21-approved.json';
 const augustNarRegularRefreshAPlusThirdPath = 'data/candidates/nar-regular-refresh-2026-08-26-a-plus-approved.json';
+const septemberHkjcFixtureSeptember20Path = 'data/candidates/hkjc-september-2026-09-20-fixture-approved.json';
 
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readBaseJson = (relativePath) => JSON.parse(execFileSync('git', ['show', `${baseSha}:${relativePath}`], { cwd: root, encoding: 'utf8' }));
@@ -68,6 +69,7 @@ const recoveryContinuationPaths = [
   augustNarRegularRefreshAPlusSecondPath,
   septemberNarExtensionSeptember21Path,
   augustNarRegularRefreshAPlusThirdPath,
+  septemberHkjcFixtureSeptember20Path,
 ];
 const orderedCandidatePaths = [...historicalCandidatePaths, ...recoveryContinuationPaths];
 const availableCandidatePaths = orderedCandidatePaths.filter((inputPath) => fs.existsSync(path.join(root, inputPath)));
@@ -209,6 +211,7 @@ const expectedCounts = new Map([
   [augustNarRegularRefreshAPlusSecondPath, [7, 7]],
   [septemberNarExtensionSeptember21Path, [3, 0]],
   [augustNarRegularRefreshAPlusThirdPath, [1, 1]],
+  [septemberHkjcFixtureSeptember20Path, [1, 0]],
 ]);
 for (const inputPath of inputPaths) {
   const [expectedMeetings, expectedDetails] = expectedCounts.get(inputPath) ?? [];
