@@ -11,6 +11,7 @@ const args = new Map(process.argv.slice(2).map((arg) => {
 const meetingListPath = args.get('--meeting-list') ?? 'data/generated/timetable/public/meeting-list.json';
 const policyPath = args.get('--policy') ?? 'data/static/calendar-due-job-policy-v1.json';
 const seasonStatePath = args.get('--season-state') ?? 'data/static/calendar-system-season-state-v1.json';
+const sourceHealthStatePath = args.get('--source-health-state') ?? 'data/static/calendar-reviewed-source-health-v1.json';
 const retryQueuePath = args.get('--retry-queue') ?? null;
 const outputPath = args.get('--output');
 const asOf = args.get('--as-of') ?? new Date().toISOString();
@@ -48,6 +49,10 @@ function validDate(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function validDateTime(value) {
+  return typeof value === 'string' && value.trim() !== '' && !Number.isNaN(Date.parse(value));
 }
 
 function sourceHealth(lastCheckedDate, statuses, planningDate) {
@@ -92,6 +97,31 @@ function validateSeasonState(value) {
   return errors;
 }
 
+function validateReviewedSourceHealth(value) {
+  const errors = [];
+  if (value?.schema_version !== 'calendar-reviewed-source-health-v1') errors.push('reviewed source health schema_version differs');
+  if (!validDateTime(value?.generated_at)) errors.push('reviewed source health generated_at invalid');
+  if (!Array.isArray(value?.records)) return [...errors, 'reviewed source health records must be an array'];
+  const identities = new Set();
+  for (const [index, record] of value.records.entries()) {
+    const location = `reviewed source health records[${index}]`;
+    if (typeof record?.system_id !== 'string' || record.system_id === '') errors.push(`${location}.system_id invalid`);
+    if (!validDateTime(record?.checked_at)) errors.push(`${location}.checked_at invalid`);
+    if (!['healthy', 'degraded', 'unavailable'].includes(record?.source_health)) errors.push(`${location}.source_health invalid`);
+    if (record?.review_state !== 'reviewed') errors.push(`${location}.review_state must be reviewed`);
+    if (typeof record?.reviewer !== 'string' || record.reviewer.trim() === '') errors.push(`${location}.reviewer invalid`);
+    if (!Array.isArray(record?.evidence_urls) || record.evidence_urls.length === 0
+      || record.evidence_urls.some((url) => typeof url !== 'string' || !url.startsWith('https://'))) {
+      errors.push(`${location}.evidence_urls invalid`);
+    }
+    if (typeof record?.evidence_note !== 'string' || record.evidence_note.trim() === '') errors.push(`${location}.evidence_note invalid`);
+    const identity = `${record?.system_id ?? ''}:${record?.checked_at ?? ''}`;
+    if (identities.has(identity)) errors.push(`duplicate reviewed source health identity ${identity}`);
+    identities.add(identity);
+  }
+  return errors;
+}
+
 function reviewedSeasonRecord(seasonState, systemId, planningDate) {
   const records = seasonState.records.filter((entry) => entry.system_id === systemId
     && entry.effective_start_date <= planningDate
@@ -109,12 +139,43 @@ function futureActiveSeasonRecord(seasonState, systemId, planningDate, windowEnd
     .sort((left, right) => left.effective_start_date.localeCompare(right.effective_start_date))[0] ?? null;
 }
 
+function latestReviewedSourceHealthRecord(sourceHealthState, systemId, cutoff) {
+  return sourceHealthState.records
+    .filter((entry) => entry.system_id === systemId && Date.parse(entry.checked_at) <= Date.parse(cutoff))
+    .sort((left, right) => left.checked_at.localeCompare(right.checked_at))
+    .at(-1) ?? null;
+}
+
+function resolveSourceHealth({ sourceHealthState, systemId, lastCheckedDate, statuses, planningDate, asOf }) {
+  const publicCheckedAt = dateTimeFromDate(lastCheckedDate);
+  const reviewed = latestReviewedSourceHealthRecord(sourceHealthState, systemId, asOf);
+  if (reviewed !== null && (publicCheckedAt === null || Date.parse(reviewed.checked_at) >= Date.parse(publicCheckedAt))) {
+    const ageDays = (Date.parse(asOf) - Date.parse(reviewed.checked_at)) / 86400000;
+    return {
+      source_health: ageDays > healthyAgeDays ? 'degraded' : reviewed.source_health,
+      last_source_revalidation_at: reviewed.checked_at,
+    };
+  }
+  return {
+    source_health: sourceHealth(lastCheckedDate, statuses, planningDate),
+    last_source_revalidation_at: publicCheckedAt,
+  };
+}
+
 const meetingList = readJson(meetingListPath);
 const policy = readJson(policyPath);
 const seasonState = readJson(seasonStatePath);
+const sourceHealthState = readJson(sourceHealthStatePath);
 const seasonErrors = validateSeasonState(seasonState);
 if (seasonErrors.length) throw new Error(`invalid reviewed season state: ${seasonErrors.join('; ')}`);
+const sourceHealthErrors = validateReviewedSourceHealth(sourceHealthState);
+if (sourceHealthErrors.length) throw new Error(`invalid reviewed source health state: ${sourceHealthErrors.join('; ')}`);
 const registry = loadCalendarAcquisitionRegistryV1(root);
+for (const record of sourceHealthState.records) {
+  if (!registry.records.some((entry) => entry.system_id === record.system_id)) {
+    throw new Error(`reviewed source health Registry profile missing for ${record.system_id}`);
+  }
+}
 const planningDate = asOf.slice(0, 10);
 const windowEndExclusive = addDays(planningDate, windowDays);
 const tomorrow = addDays(planningDate, 1);
@@ -146,13 +207,26 @@ for (const rule of policy.system_rules ?? []) {
   const publicNextMeetingDate = minString(dates.filter((date) => date >= planningDate));
   const nextMeetingDate = publicNextMeetingDate ?? reviewedSeason.next_known_meeting_date ?? futureActiveSeason?.next_known_meeting_date ?? null;
   const sourceVisibleHorizonEndExclusive = latestMeetingDate === null ? null : addDays(latestMeetingDate, 1);
+  const resolvedSourceHealth = resolveSourceHealth({
+    sourceHealthState,
+    systemId: rule.system_id,
+    lastCheckedDate,
+    statuses,
+    planningDate,
+    asOf,
+  });
 
   const gapStart = sourceVisibleHorizonEndExclusive === null || sourceVisibleHorizonEndExclusive < tomorrow
     ? tomorrow
     : sourceVisibleHorizonEndExclusive;
   let coverageGaps = [];
-  if (reviewedSeason.season_state === 'active' && gapStart < windowEndExclusive) {
-    coverageGaps = [{ start_date: gapStart, end_date_exclusive: windowEndExclusive, timezone: systemMeetings[0]?.timezone ?? 'UTC' }];
+  if (reviewedSeason.season_state === 'active') {
+    const activeEnd = reviewedSeason.effective_end_date_exclusive < windowEndExclusive
+      ? reviewedSeason.effective_end_date_exclusive
+      : windowEndExclusive;
+    if (gapStart < activeEnd) {
+      coverageGaps = [{ start_date: gapStart, end_date_exclusive: activeEnd, timezone: systemMeetings[0]?.timezone ?? 'UTC' }];
+    }
   } else if (reviewedSeason.season_state === 'offseason' && futureActiveSeason !== null) {
     const futureStart = gapStart > futureActiveSeason.effective_start_date ? gapStart : futureActiveSeason.effective_start_date;
     const futureEnd = futureActiveSeason.effective_end_date_exclusive < windowEndExclusive
@@ -168,9 +242,9 @@ for (const rule of policy.system_rules ?? []) {
     timezone: systemMeetings[0]?.timezone ?? 'UTC',
     season_state: reviewedSeason.season_state,
     future_active_start_date: futureActiveSeason?.effective_start_date ?? null,
-    source_health: sourceHealth(lastCheckedDate, statuses, planningDate),
+    source_health: resolvedSourceHealth.source_health,
     last_successful_collection_at: dateTimeFromDate(lastCheckedDate),
-    last_source_revalidation_at: dateTimeFromDate(lastCheckedDate),
+    last_source_revalidation_at: resolvedSourceHealth.last_source_revalidation_at,
     source_visible_horizon_end_exclusive: sourceVisibleHorizonEndExclusive,
     next_meeting_date: nextMeetingDate,
     coverage_gaps: coverageGaps,
