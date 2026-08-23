@@ -1,0 +1,137 @@
+name: Calendar JRA August 29-30 reviewed import bounded apply
+
+on:
+  push:
+    branches:
+      - post-v1-calendar-jra-reviewed-import-2026-08-29-30
+    paths:
+      - '.github/workflows/calendar-jra-2026-08-29-30-reviewed-import-bounded-apply.yml'
+      - 'scripts/timetable/build-calendar-jra-2026-08-29-30-reviewed-import-approved.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-jra-2026-08-29-30-reviewed-import-bounded-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Assert bounded branch and base ancestry
+        run: |
+          test "${GITHUB_REF_NAME}" = "post-v1-calendar-jra-reviewed-import-2026-08-29-30"
+          git merge-base --is-ancestor 7ff6559d4e79a778a2beaf11e2c958ce02c1358f HEAD
+
+      - name: Build exact reviewed-import Candidate
+        run: node scripts/timetable/build-calendar-jra-2026-08-29-30-reviewed-import-approved.mjs
+
+      - name: Verify pre-promotion state is exactly six existing Rank C identities
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json','utf8'));
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json','utf8'));
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json','utf8'));
+          if (candidate.records.length !== 6) throw new Error(`candidate count ${candidate.records.length}`);
+          if (candidate.records.reduce((sum,row)=>sum+row.timetable_rows.length,0) !== 72) throw new Error('candidate row count differs');
+          for (const record of candidate.records) {
+            const existing = canonical.meetings.find((row)=>row.meeting_id===record.meeting_id);
+            if (!existing) throw new Error(`missing canonical identity ${record.meeting_id}`);
+            if (existing.capability_rank !== 'C') throw new Error(`${record.meeting_id} pre-promotion rank ${existing.capability_rank} != C`);
+            if (details.details.some((row)=>row.meeting_id===record.meeting_id)) throw new Error(`${record.meeting_id} unexpectedly already has detail`);
+          }
+          if (canonical.meetings.length !== 437) throw new Error(`canonical meeting baseline ${canonical.meetings.length} != 437`);
+          if (details.details.length !== 95) throw new Error(`canonical detail baseline ${details.details.length} != 95`);
+          NODE
+
+      - name: Dry-run canonical promotion
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json --dry-run
+
+      - name: Apply bounded canonical promotion
+        run: node scripts/timetable/promote-timetable.mjs --input data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json
+
+      - name: Rebuild deterministic public and operations projections
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate generated repository data
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Verify exact JRA reviewed-import result
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json','utf8'));
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json','utf8'));
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json','utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json','utf8'));
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json','utf8'));
+          const ids = candidate.records.map((row)=>row.meeting_id).sort();
+          const expected = [
+            'jra-chukyo-racecourse-2026-08-29','jra-niigata-racecourse-2026-08-29','jra-sapporo-racecourse-2026-08-29',
+            'jra-chukyo-racecourse-2026-08-30','jra-niigata-racecourse-2026-08-30','jra-sapporo-racecourse-2026-08-30'
+          ].sort();
+          if (JSON.stringify(ids)!==JSON.stringify(expected)) throw new Error('reviewed identity set differs');
+          if (candidate.review?.status!=='approved' || candidate.review?.promotion_target!=='canonical-timetable-v0') throw new Error('review contract differs');
+          for (const record of candidate.records) {
+            if (record.capability_rank!=='A+' || record.timetable_rows.length!==12) throw new Error(`${record.meeting_id} candidate shape differs`);
+            const meeting = canonical.meetings.find((row)=>row.meeting_id===record.meeting_id);
+            const detail = details.details.find((row)=>row.meeting_id===record.meeting_id);
+            const pub = publicList.meetings.find((row)=>row.meeting_id===record.meeting_id);
+            const pubDetail = publicDetails.details.find((row)=>row.meeting_id===record.meeting_id);
+            if (meeting?.capability_rank!=='A+' || detail?.capability_rank!=='A+' || detail?.timetable_rows?.length!==12) throw new Error(`${record.meeting_id} canonical A+ result differs`);
+            if ((pub?.effective_public_rank ?? pub?.capability_rank)!=='A+' || (pubDetail?.effective_public_rank ?? pubDetail?.capability_rank)!=='A+' || pubDetail?.timetable_rows?.length!==12) throw new Error(`${record.meeting_id} public A+ result differs`);
+            if (meeting.first_race_time_local!==record.first_race_time_local || meeting.last_race_time_local!==record.last_race_time_local) throw new Error(`${record.meeting_id} meeting times differ`);
+            const serialized = JSON.stringify(record).toLowerCase();
+            for (const field of ['horse_name','jockey','trainer','odds','popularity','payout','result','prediction','raw_html','stream_url']) {
+              if (serialized.includes(field)) throw new Error(`${record.meeting_id} contains forbidden field ${field}`);
+            }
+          }
+          if (canonical.meetings.length!==437) throw new Error(`canonical meetings ${canonical.meetings.length} != 437`);
+          if (details.details.length!==101) throw new Error(`canonical details ${details.details.length} != 101`);
+          if (status.public_projection?.meeting_count!==424) throw new Error(`public meetings ${status.public_projection?.meeting_count} != 424`);
+          if (status.public_projection?.detail_count!==101) throw new Error(`public details ${status.public_projection?.detail_count} != 101`);
+          if (status.public_projection?.latest_meeting_date!=='2026-09-21') throw new Error(`public horizon ${status.public_projection?.latest_meeting_date} != 2026-09-21`);
+          NODE
+
+      - name: Verify deterministic current outputs
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          git diff --check
+
+      - name: Commit bounded outputs and remove one-shot workflow
+        env:
+          BRANCH: post-v1-calendar-jra-reviewed-import-2026-08-29-30
+        run: |
+          git rm .github/workflows/calendar-jra-2026-08-29-30-reviewed-import-bounded-apply.yml
+          git add -- \
+            data/candidates/jra-2026-08-29-30-reviewed-import-a-plus-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m 'Apply reviewed JRA August 29-30 A+ import'
+          git push origin HEAD:${BRANCH}
