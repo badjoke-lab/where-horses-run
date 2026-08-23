@@ -85,27 +85,14 @@ try {
 
   const plan = readJson(planPath);
   const jraJobs = plan.collection_plan.jobs.filter((job) => job.system_id === 'japan-jra-system');
-  if (jraJobs.length !== 1) throw new Error(`expected one JRA Job after source revalidation, got ${jraJobs.length}`);
-  const job = jraJobs[0];
-  const allowedFollowUpJobs = new Map([
-    ['due-japan-jra-regular-refresh-001', 'regular_refresh'],
-    ['due-japan-jra-source-refresh-001', 'source_refresh'],
-  ]);
-  if (!allowedFollowUpJobs.has(job.job_id)) {
-    throw new Error(`unexpected JRA Job after healthy source revalidation: ${job.job_id}`);
+  if (jraJobs.length !== 0) {
+    throw new Error(`fresh reviewed JRA collection must not immediately schedule another Job: ${JSON.stringify(jraJobs)}`);
   }
-  if (job.reason !== allowedFollowUpJobs.get(job.job_id)) {
-    throw new Error(`JRA Job reason does not match ${job.job_id}: ${job.reason}`);
-  }
-  if (job.job_id.includes('source-revalidation') || job.reason === 'source_revalidation') {
-    throw new Error('JRA must not regress immediately to source revalidation after reviewed healthy evidence');
-  }
-  if (job.collection_mode !== 'date_window') throw new Error(`JRA Job mode should be date_window, got ${job.collection_mode}`);
-  if (job.requested_scope.start_date !== '2026-08-24' || job.requested_scope.end_date_exclusive !== '2026-08-31') {
-    throw new Error(`JRA follow-up scope differs: ${JSON.stringify(job.requested_scope)}`);
-  }
-  if (job.runner_policy.mode !== 'registry_primary' || job.runner_policy.runner !== null) {
-    throw new Error('JRA follow-up must retain Registry primary local routing');
+  const jraPlannedSourceRevalidation = plan.decisions?.some((decision) => decision.system_id === 'japan-jra-system'
+    && decision.disposition === 'job_planned'
+    && (decision.trigger === 'source_health' || decision.job_id?.includes('source-revalidation')));
+  if (jraPlannedSourceRevalidation) {
+    throw new Error('JRA must not regress immediately to source revalidation after reviewed healthy evidence and a fresh collection');
   }
   if (plan.scheduler_boundary.automatic_approval !== false
     || plan.scheduler_boundary.automatic_promotion !== false
@@ -118,8 +105,8 @@ try {
     jra_source_health: jra.source_health,
     last_successful_collection_at: jra.last_successful_collection_at,
     last_source_revalidation_at: jra.last_source_revalidation_at,
-    next_jra_job: job.job_id,
-    requested_scope: job.requested_scope,
+    next_jra_job: null,
+    requested_scope: null,
     jra_coverage_gap_count: jra.coverage_gaps.length,
   }));
 } finally {
