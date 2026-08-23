@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-08-23T04:31:00Z",
+  "generated_at": "2026-08-23T04:38:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -26,6 +26,7 @@
     "data/candidates/nar-monthly-2026-07-through-2026-07-04-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-22-through-2026-08-25-a-plus-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json",
+    "data/candidates/nar-regular-refresh-2026-08-26-a-plus-approved.json",
     "data/candidates/tjk-current-2026-08-11-approved.json",
     "data/generated/timetable/hkjc-normalized-meeting-details.sample.json",
     "data/generated/timetable/jra-normalized-meeting-details.json",
@@ -13335,6 +13336,134 @@
         }
       ],
       "summary_note": "Approved from the pinned August 22 NAR regular-refresh complete detail candidate set. Only meeting identity and the six public-safe A+ timetable fields are promoted."
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-08-26",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-08-26",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F08%2F26",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-regular-refresh-2026-08-26-a-plus-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-08-23",
+        "generated_at": "2026-08-23T04:04:59.493Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-23T04:38:00Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:55",
+          "race_name": "Ｃ級未勝利Ｃ１３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:25",
+          "race_name": "あーちゃんハタチになりました杯３歳４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:55",
+          "race_name": "特別",
+          "distance_m": 1580,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:25",
+          "race_name": "美咲百花１ｓｔＡｎｎｉｖ．３歳３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:00",
+          "race_name": "瀬古順二お疲れチャン☆カップＢ６",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:30",
+          "race_name": "昇平・伽奈結婚おめでとう記念Ｂ５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:10",
+          "race_name": "Ｂ４組",
+          "distance_m": 1580,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:45",
+          "race_name": "特別",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:20",
+          "race_name": "特別",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:00",
+          "race_name": "Ｃ級サバイバル選抜",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the pinned August 23 NAR regular-refresh complete detail candidate set. Only meeting identity and the six public-safe A+ timetable fields are promoted."
     }
   ]
 }
