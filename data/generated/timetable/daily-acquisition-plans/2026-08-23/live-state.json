@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-due-job-planner-state-v1",
-  "as_of": "2026-08-23T04:29:39Z",
+  "as_of": "2026-08-23T04:36:10Z",
   "system_states": [
     {
       "system_id": "japan-jra-system",
@@ -26,17 +26,11 @@
       "season_state": "active",
       "future_active_start_date": null,
       "source_health": "healthy",
-      "last_successful_collection_at": "2026-08-22T00:00:00Z",
-      "last_source_revalidation_at": "2026-08-22T00:00:00Z",
-      "source_visible_horizon_end_exclusive": "2026-09-21",
+      "last_successful_collection_at": "2026-08-23T00:00:00Z",
+      "last_source_revalidation_at": "2026-08-23T00:00:00Z",
+      "source_visible_horizon_end_exclusive": "2026-09-22",
       "next_meeting_date": "2026-08-23",
-      "coverage_gaps": [
-        {
-          "start_date": "2026-09-21",
-          "end_date_exclusive": "2026-09-22",
-          "timezone": "Asia/Tokyo"
-        }
-      ]
+      "coverage_gaps": []
     },
     {
       "system_id": "hong-kong-hkjc-system",
@@ -77,7 +71,7 @@
   ],
   "retry_queue": {
     "schema_version": "calendar-rank-aware-retry-queue-v1",
-    "generated_at": "2026-08-23T04:29:39Z",
+    "generated_at": "2026-08-23T04:36:10Z",
     "entries": []
   }
 }
