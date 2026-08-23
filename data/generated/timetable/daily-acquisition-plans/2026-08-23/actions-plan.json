@@ -2,7 +2,7 @@
   "schema_version": "calendar-actions-multi-job-plan-v1",
   "plan_id": "due-job-plan-2026-08-23",
   "campaign_id": "scheduled-planning-2026-08-23",
-  "generated_at": "2026-08-23T04:40:11Z",
+  "generated_at": "2026-08-23T04:45:50Z",
   "jobs": [
     {
       "job_id": "due-hong-kong-hkjc-season-wake-up-001",
@@ -18,14 +18,14 @@
         },
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-09-17",
+          "start_date": "2026-09-21",
           "end_date_exclusive": "2026-09-22",
           "timezone": "Asia/Hong_Kong"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "coverage_gap",
-        "requested_at": "2026-08-23T04:40:11Z"
+        "requested_at": "2026-08-23T04:45:50Z"
       },
       "execution": {
         "schema_version": "calendar-runner-execution-v1",
@@ -39,7 +39,7 @@
         "entry_point": "scripts/timetable/run-hkjc-live-fixture-job.mjs",
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-09-17",
+          "start_date": "2026-09-21",
           "end_date_exclusive": "2026-09-22",
           "timezone": "Asia/Hong_Kong"
         },
