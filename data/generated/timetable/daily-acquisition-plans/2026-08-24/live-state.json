@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-due-job-planner-state-v1",
-  "as_of": "2026-08-24T03:57:05Z",
+  "as_of": "2026-08-24T04:06:08Z",
   "system_states": [
     {
       "system_id": "japan-jra-system",
@@ -34,15 +34,9 @@
       "source_health": "healthy",
       "last_successful_collection_at": "2026-08-23T00:00:00Z",
       "last_source_revalidation_at": "2026-08-23T00:00:00Z",
-      "source_visible_horizon_end_exclusive": "2026-09-22",
+      "source_visible_horizon_end_exclusive": "2026-09-23",
       "next_meeting_date": "2026-09-06",
-      "coverage_gaps": [
-        {
-          "start_date": "2026-09-22",
-          "end_date_exclusive": "2026-09-23",
-          "timezone": "Asia/Hong_Kong"
-        }
-      ]
+      "coverage_gaps": []
     },
     {
       "system_id": "japan-banei-system",
@@ -59,7 +53,7 @@
   ],
   "retry_queue": {
     "schema_version": "calendar-rank-aware-retry-queue-v1",
-    "generated_at": "2026-08-24T03:57:05Z",
+    "generated_at": "2026-08-24T04:06:08Z",
     "entries": []
   }
 }
