@@ -21,14 +21,15 @@ The stored schema can retain the discovered-record count, but **only reviewed co
 
 The live planner starts with the horizon implied by the latest public meeting. Reviewed empty windows may extend that horizon only when they overlap or begin exactly at the current horizon. This creates a contiguous proof chain and prevents a later reviewed window from bridging an unknown gap.
 
-Example:
+Current HKJC example:
 
 - latest public HKJC meeting: 2026-09-20
 - public horizon end-exclusive: 2026-09-21
 - reviewed empty source window: 2026-09-21..2026-09-22
-- resulting planner horizon end-exclusive: 2026-09-22
+- reviewed empty source window: 2026-09-22..2026-09-23
+- resulting planner horizon end-exclusive: 2026-09-23
 
-A reviewed 2026-09-22..2026-09-23 window by itself would **not** extend a 2026-09-21 horizon because 2026-09-21 would remain unknown.
+A reviewed 2026-09-22..2026-09-23 window by itself would **not** extend a 2026-09-21 horizon because 2026-09-21 would remain unknown. The two current HKJC records extend the horizon transitively only because both empty days have independent reviewed evidence.
 
 ## Publication boundary
 
@@ -43,6 +44,10 @@ Reviewed source coverage does not:
 
 It only prevents the due-job planner from treating a human-reviewed, proven-empty source day as unobserved.
 
-## Initial record
+## Initial reviewed records
 
-The initial record captures the HKJC 2026-09-21 source window from PR #559. The acquisition artifact reported zero discovered meetings, zero unresolved dates, zero unresolved meeting IDs, zero source errors, and `source_window_complete`. The official September 2026 HKJC fixture evidence shows no meeting on September 21; the next listed meeting is September 23 at Happy Valley.
+The first record captures the HKJC 2026-09-21 source window from PR #559. The acquisition artifact reported zero discovered meetings, zero unresolved dates, zero unresolved meeting IDs, zero source errors, and `source_window_complete`.
+
+The next daily acquisition run, `32677768701`, planned HKJC 2026-09-22..2026-09-23 after the September 21 empty window had been persisted. Its HKJC acquisition artifact again reported zero discovered meetings, zero unresolved dates, zero unresolved meeting IDs, zero source errors, and `source_window_complete`. That second observation is reviewed separately and extends the contiguous empty-source horizon through September 22 without creating a fake meeting.
+
+The official September 2026 HKJC fixture evidence lists the next meeting on September 23 at Happy Valley.
