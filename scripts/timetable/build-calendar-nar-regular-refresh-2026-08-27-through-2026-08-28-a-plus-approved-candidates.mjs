@@ -183,7 +183,7 @@ const records = APPROVED_IDS.map((id) => {
   const rows = publicRows(candidate);
   assert(rows.length === expected.rows, `${id} reviewed row count differs`);
   assert(rows[0].post_time_local === expected.first, `${id} reviewed first race time differs`);
-  assert(rows.at(-1].post_time_local === expected.last, `${id} reviewed last race time differs`);
+  assert(rows.at(-1).post_time_local === expected.last, `${id} reviewed last race time differs`);
   const currentMeeting = canonicalMeetingById.get(id);
   const currentDetail = canonicalDetailById.get(id);
   assert(currentMeeting?.capability_rank === 'C', `${id} must be an existing Rank C meeting before promotion`);
