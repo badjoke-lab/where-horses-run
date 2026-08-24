@@ -31,6 +31,14 @@ Current HKJC example:
 
 A reviewed 2026-09-22..2026-09-23 window by itself would **not** extend a 2026-09-21 horizon because 2026-09-21 would remain unknown. The two current HKJC records extend the horizon transitively only because both empty days have independent reviewed evidence.
 
+## Activation freshness signal
+
+The daily activation status keeps `public_horizon_end_date` as the raw maximum date present in the public meeting projection. That field must not be moved forward by inventing an empty meeting.
+
+`publication_review_required` is different: when the daily run has a valid live planner state, it follows reviewed calendar coverage rather than the raw public meeting maximum. A review is required when any system has a planner `coverage_gap` or a reviewed season state is `unknown`. If the planner state is unavailable because planning failed before it could be produced, the status writer falls back to the conservative raw public-horizon comparison.
+
+This distinction allows a date that is independently proven empty to count as reviewed coverage without pretending that a meeting exists. The planner state used for the decision is the same `.calendar-live-state.json` artifact produced by the canonical daily acquisition run; the status writer does not reimplement source-window planning.
+
 ## Publication boundary
 
 Reviewed source coverage does not:
@@ -49,5 +57,7 @@ It only prevents the due-job planner from treating a human-reviewed, proven-empt
 The first record captures the HKJC 2026-09-21 source window from PR #559. The acquisition artifact reported zero discovered meetings, zero unresolved dates, zero unresolved meeting IDs, zero source errors, and `source_window_complete`.
 
 The next daily acquisition run, `32677768701`, planned HKJC 2026-09-22..2026-09-23 after the September 21 empty window had been persisted. Its HKJC acquisition artifact again reported zero discovered meetings, zero unresolved dates, zero unresolved meeting IDs, zero source errors, and `source_window_complete`. That second observation is reviewed separately and extends the contiguous empty-source horizon through September 22 without creating a fake meeting.
+
+After both records were reviewed, canonical daily run `32688744520` produced no HKJC collection job. Its planner state showed `source_visible_horizon_end_exclusive: 2026-09-23` and zero coverage gaps for every system in the 30-day planning window.
 
 The official September 2026 HKJC fixture evidence lists the next meeting on September 23 at Happy Valley.
