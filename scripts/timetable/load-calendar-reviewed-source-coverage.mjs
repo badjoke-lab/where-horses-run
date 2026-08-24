@@ -83,7 +83,8 @@ export function reviewedCompleteCoverageWindowsForSystem(state, systemId, asOf) 
     .filter((record) => record.system_id === systemId
       && Date.parse(record.checked_at) <= cutoff
       && Date.parse(record.reviewed_at) <= cutoff
-      && record.coverage_claim === 'source_window_complete')
+      && record.coverage_claim === 'source_window_complete'
+      && record.records_discovered === 0)
     .map((record) => ({ ...record.observed_scope }))
     .sort((left, right) => `${left.start_date}:${left.end_date_exclusive}`.localeCompare(`${right.start_date}:${right.end_date_exclusive}`));
 }
