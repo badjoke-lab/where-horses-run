@@ -190,8 +190,13 @@ const records = APPROVED_IDS.map((id) => {
   assert(rows.at(-1).post_time_local === rule.last, `${id} reviewed last race time differs`);
   const currentMeeting = canonicalMeetingById.get(id);
   const currentDetail = canonicalDetailById.get(id);
-  assert(currentMeeting?.capability_rank === 'C', `${id} must be existing Rank C before promotion`);
-  assert(!currentDetail, `${id} unexpectedly already has canonical detail`);
+  const prePromotionState = currentMeeting?.capability_rank === 'C' && !currentDetail;
+  const postPromotionState = currentMeeting?.capability_rank === 'A+'
+    && currentDetail?.capability_rank === 'A+'
+    && currentMeeting.first_race_time_local === rule.first
+    && currentMeeting.last_race_time_local === rule.last
+    && JSON.stringify(canonicalPublicRows(currentDetail)) === JSON.stringify(rows);
+  assert(prePromotionState || postPromotionState, `${id} current canonical state is neither exact pre-promotion C nor exact promoted A+`);
 
   const record = {
     candidate_id: `approved-${candidate.candidate_id}`,
