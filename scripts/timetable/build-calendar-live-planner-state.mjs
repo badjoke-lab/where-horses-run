@@ -1,6 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
+import {
+  extendContiguousSourceHorizon,
+  loadCalendarReviewedSourceCoverageV1,
+  reviewedCompleteCoverageWindowsForSystem,
+} from './load-calendar-reviewed-source-coverage.mjs';
 
 const root = process.cwd();
 const args = new Map(process.argv.slice(2).map((arg) => {
@@ -12,6 +17,7 @@ const meetingListPath = args.get('--meeting-list') ?? 'data/generated/timetable/
 const policyPath = args.get('--policy') ?? 'data/static/calendar-due-job-policy-v1.json';
 const seasonStatePath = args.get('--season-state') ?? 'data/static/calendar-system-season-state-v1.json';
 const sourceHealthStatePath = args.get('--source-health-state') ?? 'data/static/calendar-reviewed-source-health-v1.json';
+const sourceCoverageStatePath = args.get('--source-coverage-state') ?? 'data/static/calendar-reviewed-source-coverage-v1.json';
 const retryQueuePath = args.get('--retry-queue') ?? null;
 const outputPath = args.get('--output');
 const asOf = args.get('--as-of') ?? new Date().toISOString();
@@ -166,6 +172,7 @@ const meetingList = readJson(meetingListPath);
 const policy = readJson(policyPath);
 const seasonState = readJson(seasonStatePath);
 const sourceHealthState = readJson(sourceHealthStatePath);
+const sourceCoverageState = loadCalendarReviewedSourceCoverageV1(root, sourceCoverageStatePath);
 const seasonErrors = validateSeasonState(seasonState);
 if (seasonErrors.length) throw new Error(`invalid reviewed season state: ${seasonErrors.join('; ')}`);
 const sourceHealthErrors = validateReviewedSourceHealth(sourceHealthState);
@@ -174,6 +181,13 @@ const registry = loadCalendarAcquisitionRegistryV1(root);
 for (const record of sourceHealthState.records) {
   if (!registry.records.some((entry) => entry.system_id === record.system_id)) {
     throw new Error(`reviewed source health Registry profile missing for ${record.system_id}`);
+  }
+}
+for (const record of sourceCoverageState.records) {
+  const profile = registry.records.find((entry) => entry.system_id === record.system_id);
+  if (!profile) throw new Error(`reviewed source coverage Registry profile missing for ${record.system_id}`);
+  if (record.source_id !== profile.schedule_source_id) {
+    throw new Error(`reviewed source coverage source_id differs from Registry schedule source for ${record.system_id}`);
   }
 }
 const planningDate = asOf.slice(0, 10);
@@ -206,7 +220,12 @@ for (const rule of policy.system_rules ?? []) {
   const lastCheckedDate = maxString(checkedDates);
   const publicNextMeetingDate = minString(dates.filter((date) => date >= planningDate));
   const nextMeetingDate = publicNextMeetingDate ?? reviewedSeason.next_known_meeting_date ?? futureActiveSeason?.next_known_meeting_date ?? null;
-  const sourceVisibleHorizonEndExclusive = latestMeetingDate === null ? null : addDays(latestMeetingDate, 1);
+  const publicSourceVisibleHorizonEndExclusive = latestMeetingDate === null ? null : addDays(latestMeetingDate, 1);
+  const reviewedCoverageWindows = reviewedCompleteCoverageWindowsForSystem(sourceCoverageState, rule.system_id, asOf);
+  const sourceVisibleHorizonEndExclusive = extendContiguousSourceHorizon(
+    publicSourceVisibleHorizonEndExclusive,
+    reviewedCoverageWindows,
+  );
   const resolvedSourceHealth = resolveSourceHealth({
     sourceHealthState,
     systemId: rule.system_id,
