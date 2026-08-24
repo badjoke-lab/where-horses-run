@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-reviewed-source-coverage-v1",
-  "generated_at": "2026-08-24T00:42:00Z",
+  "generated_at": "2026-08-24T03:58:05Z",
   "records": [
     {
       "system_id": "hong-kong-hkjc-system",
@@ -32,6 +32,37 @@
         "https://github.com/badjoke-lab/where-horses-run/blob/automation/calendar-daily-acquisition-review/data/generated/timetable/actions-multi-job/due-job-plan-2026-08-23-due-hong-kong-hkjc-season-wake-up-001-run-001/coverage-observation.json"
       ],
       "evidence_note": "Human-reviewed HKJC fixture acquisition completed the 2026-09-21 source window with zero discovered meetings, zero unresolved dates or meetings, and zero source errors. This record suppresses repeated acquisition of that empty window only; it does not create or approve a public meeting."
+    },
+    {
+      "system_id": "hong-kong-hkjc-system",
+      "source_id": "hkjc-fixture-list",
+      "checked_at": "2026-08-24T00:48:34.060Z",
+      "coverage_claim": "source_window_complete",
+      "observed_scope": {
+        "kind": "date_window",
+        "start_date": "2026-09-22",
+        "end_date_exclusive": "2026-09-23",
+        "timezone": "Asia/Hong_Kong"
+      },
+      "records_discovered": 0,
+      "unresolved_dates": [],
+      "unresolved_meeting_ids": [],
+      "source_errors": [],
+      "review_state": "reviewed",
+      "reviewer": "badjoke-lab",
+      "reviewed_at": "2026-08-24T03:58:05Z",
+      "source_observation": {
+        "run_id": "due-job-plan-2026-08-24-due-hong-kong-hkjc-season-wake-up-001-run-001",
+        "pr_number": 559,
+        "branch": "automation/calendar-daily-acquisition-review",
+        "path": "data/generated/timetable/actions-multi-job/due-job-plan-2026-08-24-due-hong-kong-hkjc-season-wake-up-001-run-001/coverage-observation.json",
+        "blob_sha": "c3625107fc6cfb601b7ddc2a18d1e961437d7fa5"
+      },
+      "evidence_urls": [
+        "https://racing.hkjc.com/en-us/local/information/fixture?calmonth=09&calyear=2026",
+        "https://github.com/badjoke-lab/where-horses-run/blob/automation/calendar-daily-acquisition-review/data/generated/timetable/actions-multi-job/due-job-plan-2026-08-24-due-hong-kong-hkjc-season-wake-up-001-run-001/coverage-observation.json"
+      ],
+      "evidence_note": "Human-reviewed HKJC fixture acquisition completed the 2026-09-22 source window with zero discovered meetings, zero unresolved dates or meetings, and zero source errors. This extends only the contiguous reviewed empty-source horizon and does not create or approve a public meeting."
     }
   ]
 }
