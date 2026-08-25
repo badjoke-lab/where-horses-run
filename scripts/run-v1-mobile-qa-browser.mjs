@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import http from 'node:http';
+import os from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 
@@ -58,76 +59,72 @@ function chromeExecutable() {
   throw new Error('No Chrome or Chromium executable found on the runner');
 }
 
-class CdpPipe {
-  constructor(executable) {
+async function waitForFile(file, timeoutMs = 30000) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (fs.existsSync(file)) return;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  throw new Error(`Timed out waiting for ${file}`);
+}
+
+class CdpSocket {
+  constructor(url) {
+    this.url = url;
     this.nextId = 1;
     this.pending = new Map();
     this.eventWaiters = [];
-    this.buffer = '';
-    this.child = spawn(executable, [
-      '--headless=new',
-      '--no-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--hide-scrollbars',
-      '--remote-debugging-pipe',
-      '--user-data-dir=/tmp/whr-v1-mobile-qa-chrome',
-      'about:blank',
-    ], { stdio: ['ignore', 'ignore', 'inherit', 'pipe', 'pipe'] });
-    this.writer = this.child.stdio[3];
-    this.reader = this.child.stdio[4];
-    this.reader.setEncoding('utf8');
-    this.reader.on('data', (chunk) => this.consume(chunk));
-    this.child.on('exit', (code, signal) => {
-      const error = new Error(`Chrome exited unexpectedly: code=${code} signal=${signal}`);
-      for (const { reject } of this.pending.values()) reject(error);
-      this.pending.clear();
+  }
+
+  async open(timeoutMs = 20000) {
+    this.ws = new WebSocket(this.url);
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(`CDP websocket open timed out after ${timeoutMs}ms`)), timeoutMs);
+      this.ws.addEventListener('open', () => {
+        clearTimeout(timer);
+        resolve();
+      }, { once: true });
+      this.ws.addEventListener('error', (event) => {
+        clearTimeout(timer);
+        reject(new Error(`CDP websocket error: ${event.message ?? 'unknown'}`));
+      }, { once: true });
+    });
+    this.ws.addEventListener('message', (event) => this.consume(JSON.parse(String(event.data))));
+  }
+
+  consume(message) {
+    if (message.id) {
+      const pending = this.pending.get(message.id);
+      if (!pending) return;
+      this.pending.delete(message.id);
+      clearTimeout(pending.timer);
+      if (message.error) pending.reject(new Error(`${pending.method}: ${message.error.message}`));
+      else pending.resolve(message.result ?? {});
+      return;
+    }
+    this.eventWaiters = this.eventWaiters.filter((waiter) => {
+      if (waiter.method !== message.method) return true;
+      clearTimeout(waiter.timer);
+      waiter.resolve(message.params ?? {});
+      return false;
     });
   }
 
-  consume(chunk) {
-    this.buffer += chunk;
-    while (this.buffer.includes('\0')) {
-      const index = this.buffer.indexOf('\0');
-      const raw = this.buffer.slice(0, index);
-      this.buffer = this.buffer.slice(index + 1);
-      if (!raw) continue;
-      const message = JSON.parse(raw);
-      if (message.id) {
-        const pending = this.pending.get(message.id);
-        if (!pending) continue;
-        this.pending.delete(message.id);
-        clearTimeout(pending.timer);
-        if (message.error) pending.reject(new Error(`${pending.method}: ${message.error.message}`));
-        else pending.resolve(message.result ?? {});
-        continue;
-      }
-      this.eventWaiters = this.eventWaiters.filter((waiter) => {
-        if (waiter.method !== message.method || (waiter.sessionId && waiter.sessionId !== message.sessionId)) return true;
-        clearTimeout(waiter.timer);
-        waiter.resolve(message.params ?? {});
-        return false;
-      });
-    }
-  }
-
-  send(method, params = {}, sessionId = undefined, timeoutMs = 15000) {
+  send(method, params = {}, timeoutMs = 20000) {
     const id = this.nextId++;
-    const payload = { id, method, params };
-    if (sessionId) payload.sessionId = sessionId;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error(`${method}: timed out after ${timeoutMs}ms`));
       }, timeoutMs);
       this.pending.set(id, { resolve, reject, timer, method });
-      this.writer.write(`${JSON.stringify(payload)}\0`);
+      this.ws.send(JSON.stringify({ id, method, params }));
     });
   }
 
-  waitEvent(method, sessionId, timeoutMs = 15000) {
+  waitEvent(method, timeoutMs = 20000) {
     return new Promise((resolve, reject) => {
-      const waiter = { method, sessionId, resolve, reject, timer: null };
+      const waiter = { method, resolve, reject, timer: null };
       waiter.timer = setTimeout(() => {
         this.eventWaiters = this.eventWaiters.filter((item) => item !== waiter);
         reject(new Error(`${method}: event timed out after ${timeoutMs}ms`));
@@ -136,19 +133,36 @@ class CdpPipe {
     });
   }
 
-  async close() {
-    try { await this.send('Browser.close', {}, undefined, 3000); } catch {}
-    if (!this.child.killed) this.child.kill('SIGKILL');
+  close() {
+    try { this.ws.close(); } catch {}
   }
 }
 
-const browser = new CdpPipe(chromeExecutable());
-const { targetId } = await browser.send('Target.createTarget', { url: 'about:blank' });
-const { sessionId } = await browser.send('Target.attachToTarget', { targetId, flatten: true });
-await browser.send('Page.enable', {}, sessionId);
-await browser.send('Runtime.enable', {}, sessionId);
-await browser.send('Network.enable', {}, sessionId);
-await browser.send('Network.setCacheDisabled', { cacheDisabled: true }, sessionId);
+const browserExecutable = chromeExecutable();
+const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-v1-mobile-qa-chrome-'));
+const chrome = spawn(browserExecutable, [
+  '--headless=new',
+  '--no-sandbox',
+  '--disable-dev-shm-usage',
+  '--disable-gpu',
+  '--hide-scrollbars',
+  '--remote-debugging-port=0',
+  `--user-data-dir=${profileDir}`,
+  'about:blank',
+], { stdio: ['ignore', 'ignore', 'inherit'] });
+
+const devtoolsFile = path.join(profileDir, 'DevToolsActivePort');
+await waitForFile(devtoolsFile);
+const [debugPort] = fs.readFileSync(devtoolsFile, 'utf8').trim().split(/\r?\n/);
+const targetResponse = await fetch(`http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent('about:blank')}`, { method: 'PUT' });
+if (!targetResponse.ok) throw new Error(`Cannot create Chrome target: ${targetResponse.status}`);
+const target = await targetResponse.json();
+const browser = new CdpSocket(target.webSocketDebuggerUrl);
+await browser.open();
+await browser.send('Page.enable');
+await browser.send('Runtime.enable');
+await browser.send('Network.enable');
+await browser.send('Network.setCacheDisabled', { cacheDisabled: true });
 
 const evaluation = String.raw`(() => {
   const root = document.documentElement;
@@ -239,19 +253,19 @@ try {
       positionX: 0,
       positionY: 0,
       dontSetVisibleSize: false,
-    }, sessionId);
+    });
     for (const [index, publicUrl] of publicUrls.entries()) {
       const pathname = new URL(publicUrl).pathname;
       const localUrl = `http://127.0.0.1:${port}${pathname}`;
       try {
-        const loaded = browser.waitEvent('Page.loadEventFired', sessionId, 20000);
-        await browser.send('Page.navigate', { url: localUrl }, sessionId, 20000);
+        const loaded = browser.waitEvent('Page.loadEventFired', 20000);
+        await browser.send('Page.navigate', { url: localUrl }, 20000);
         await loaded;
         const evaluated = await browser.send('Runtime.evaluate', {
           expression: evaluation,
           returnByValue: true,
           awaitPromise: true,
-        }, sessionId, 20000);
+        }, 20000);
         results.push({ publicUrl, pathname, width, ...evaluated.result.value });
       } catch (error) {
         failures.push({ publicUrl, pathname, width, error: error.message });
@@ -260,8 +274,14 @@ try {
     }
   }
 } finally {
-  await browser.close();
+  browser.close();
+  if (chrome.exitCode === null) {
+    const chromeClosed = new Promise((resolve) => chrome.once('close', resolve));
+    chrome.kill('SIGKILL');
+    await chromeClosed;
+  }
   await new Promise((resolve) => server.close(resolve));
+  fs.rmSync(profileDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }
 
 const overflowResults = results.filter((item) => item.horizontalOverflowPx > 1);
@@ -274,7 +294,7 @@ const uncontainedScrollResults = results.filter((item) => item.uncontainedScroll
 const report = {
   schemaVersion: 'v1-mobile-qa-discovery-v1',
   generatedAt: new Date().toISOString(),
-  browserExecutable: chromeExecutable(),
+  browserExecutable,
   publicPages: publicUrls.length,
   viewports,
   pageViewportChecks: results.length,
