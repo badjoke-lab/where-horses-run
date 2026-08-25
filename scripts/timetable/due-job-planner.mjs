@@ -73,12 +73,19 @@ function makeJob({ jobId, campaignId, systemId, mode, scope, rankStrategy, targe
   };
 }
 
-function splitDateWindow(gap, maxDays) {
+function nextMonthStart(date) {
+  const [year, month] = date.slice(0, 7).split('-').map(Number);
+  return new Date(Date.UTC(year, month, 1)).toISOString().slice(0, 10);
+}
+
+function splitDateWindow(gap, maxDays, allowCrossMonth = true) {
   const windows = [];
   let cursor = gap.start_date;
   while (cursor < gap.end_date_exclusive) {
     const proposed = addDays(cursor, maxDays);
-    const end = proposed < gap.end_date_exclusive ? proposed : gap.end_date_exclusive;
+    const boundedEnd = proposed < gap.end_date_exclusive ? proposed : gap.end_date_exclusive;
+    const monthBoundary = nextMonthStart(cursor);
+    const end = !allowCrossMonth && monthBoundary < boundedEnd ? monthBoundary : boundedEnd;
     windows.push({
       start_date: cursor,
       end_date_exclusive: end,
@@ -185,7 +192,7 @@ export function planDueJobsV1(policy, state, registry) {
       && profile.supports_date_window) {
       let gapIndex = 0;
       for (const gap of wakeUpGaps) {
-        for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days)) {
+        for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days, profile.supports_cross_month_window === true)) {
           gapIndex += 1;
           addJob(makeJob({
             jobId: `due-${token}-season-wake-up-${String(gapIndex).padStart(3, '0')}`,
@@ -212,17 +219,24 @@ export function planDueJobsV1(policy, state, registry) {
       const revalidationAge = hoursSince(state.as_of, systemState.last_source_revalidation_at);
       if (rule.source_revalidation.enabled && revalidationAge >= rule.source_revalidation.min_interval_hours && profile.supports_date_window) {
         const end = addDays(startDate, rule.source_revalidation.window_days);
-        addJob(makeJob({
-          jobId: `due-${token}-source-revalidation-001`,
-          campaignId,
-          systemId: systemState.system_id,
-          mode: 'date_window',
-          scope: { start_date: startDate, end_date_exclusive: end, timezone: systemState.timezone },
-          rankStrategy: 'best_available',
-          targetRank: null,
-          reason: 'source_revalidation',
-          requestedAt: state.as_of,
-        }), 'source_health', `Source health is ${systemState.source_health}; bounded revalidation interval is due.`);
+        const scopes = splitDateWindow(
+          { start_date: startDate, end_date_exclusive: end, timezone: systemState.timezone },
+          rule.source_revalidation.window_days,
+          profile.supports_cross_month_window === true,
+        );
+        for (const [index, scope] of scopes.entries()) {
+          addJob(makeJob({
+            jobId: `due-${token}-source-revalidation-${String(index + 1).padStart(3, '0')}`,
+            campaignId,
+            systemId: systemState.system_id,
+            mode: 'date_window',
+            scope,
+            rankStrategy: 'best_available',
+            targetRank: null,
+            reason: 'source_revalidation',
+            requestedAt: state.as_of,
+          }), 'source_health', `Source health is ${systemState.source_health}; bounded revalidation interval ${scope.start_date}..${scope.end_date_exclusive} is due.`);
+        }
       } else {
         decisions.push({ system_id: systemState.system_id, trigger: 'source_health', disposition: 'not_due', job_id: null, detail: `Source health is ${systemState.source_health}, but revalidation is not eligible yet or date-window capability is unavailable.` });
       }
@@ -232,7 +246,7 @@ export function planDueJobsV1(policy, state, registry) {
     if (rule.coverage_gap.enabled) {
       let gapIndex = 0;
       for (const gap of systemState.coverage_gaps ?? []) {
-        for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days)) {
+        for (const scope of splitDateWindow(gap, rule.coverage_gap.max_window_days, profile.supports_cross_month_window === true)) {
           gapIndex += 1;
           addJob(makeJob({
             jobId: `due-${token}-coverage-gap-${String(gapIndex).padStart(3, '0')}`,
@@ -306,17 +320,24 @@ export function planDueJobsV1(policy, state, registry) {
       && proximityDays <= rule.regular_refresh.meeting_proximity_days
       && freshnessAge >= rule.regular_refresh.proximity_min_age_hours;
     if (rule.regular_refresh.enabled && profile.supports_date_window && !horizonPlanned && (stale || proximityDue)) {
-      addJob(makeJob({
-        jobId: `due-${token}-regular-refresh-001`,
-        campaignId,
-        systemId: systemState.system_id,
-        mode: 'date_window',
-        scope: { start_date: startDate, end_date_exclusive: regularEnd, timezone: systemState.timezone },
-        rankStrategy: 'best_available',
-        targetRank: null,
-        reason: 'regular_refresh',
-        requestedAt: state.as_of,
-      }), 'regular_refresh', `Regular refresh due: stale=${stale}, meeting_proximity_due=${proximityDue}, age_hours=${Math.floor(freshnessAge)}.`);
+      const scopes = splitDateWindow(
+        { start_date: startDate, end_date_exclusive: regularEnd, timezone: systemState.timezone },
+        rule.regular_refresh.window_days,
+        profile.supports_cross_month_window === true,
+      );
+      for (const [index, scope] of scopes.entries()) {
+        addJob(makeJob({
+          jobId: `due-${token}-regular-refresh-${String(index + 1).padStart(3, '0')}`,
+          campaignId,
+          systemId: systemState.system_id,
+          mode: 'date_window',
+          scope,
+          rankStrategy: 'best_available',
+          targetRank: null,
+          reason: 'regular_refresh',
+          requestedAt: state.as_of,
+        }), 'regular_refresh', `Regular refresh ${scope.start_date}..${scope.end_date_exclusive} due: stale=${stale}, meeting_proximity_due=${proximityDue}, age_hours=${Math.floor(freshnessAge)}.`);
+      }
     }
 
     if (!decisions.some((decision) => decision.system_id === systemState.system_id)) {
