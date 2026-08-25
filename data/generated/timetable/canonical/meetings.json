@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-08-24T16:15:00Z",
+  "generated_at": "2026-08-25T01:45:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -30,6 +30,7 @@
     "data/candidates/nar-regular-refresh-2026-08-24-through-2026-08-25-a-plus-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-26-a-plus-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-26-through-2026-08-28-a-plus-approved.json",
+    "data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json",
     "data/candidates/tjk-current-2026-08-11-approved.json",
     "data/generated/japan-active-timetable-records.json",
     "data/generated/normalized-timetable.json",
@@ -9325,27 +9326,27 @@
       "racecourse_id": "monbetsu-racecourse",
       "date": "2026-08-27",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:20",
+      "last_race_time_local": "20:35",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=8&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F08%2F27",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:14.896Z",
+        "last_checked_date": "2026-08-25",
+        "generated_at": "2026-08-25T01:32:33.555Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-25T01:45:00Z."
       },
-      "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted."
+      "notes": "Approved from the pinned August 25 NAR regular-refresh rerun after exact current-canonical comparison. Thirteen complete-detail meetings are exact no-ops; only Monbetsu 2026-08-27 is a C-to-A+ delta. Only public-safe A+ timetable fields are promoted."
     },
     {
       "meeting_id": "nar-sonoda-racecourse-2026-08-27",
