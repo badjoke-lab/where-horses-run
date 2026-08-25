@@ -1,0 +1,81 @@
+name: Calendar Due-job month-boundary review
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-due-job-month-boundary-review.yml'
+      - 'scripts/timetable/due-job-planner.mjs'
+      - 'scripts/check-calendar-due-job-planner.mjs'
+      - '.github/workflows/calendar-daily-acquisition.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect month-boundary repair
+        id: repair
+        run: |
+          if grep -q 'profile.supports_cross_month_window === true' scripts/timetable/due-job-planner.mjs; then
+            echo 'applied=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'applied=false' >> "$GITHUB_OUTPUT"
+            echo 'One-shot repair has not committed yet.'
+          fi
+
+      - if: steps.repair.outputs.applied == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Validate planner and acquisition contracts
+        if: steps.repair.outputs.applied == 'true'
+        run: |
+          node --check scripts/timetable/due-job-planner.mjs
+          node --check scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-due-job-planner.mjs
+          node scripts/check-calendar-collection-job.mjs
+          node scripts/check-calendar-collection-plan.mjs
+          node scripts/check-calendar-actions-multi-job.mjs
+          node scripts/check-calendar-daily-acquisition-policy.mjs
+
+      - name: Reproduce August-to-September live planning boundary
+        if: steps.repair.outputs.applied == 'true'
+        run: |
+          node scripts/timetable/build-calendar-live-planner-state.mjs \
+            --as-of=2026-08-25T01:46:04Z \
+            --output=.calendar-live-state.json
+          node scripts/timetable/plan-calendar-due-jobs.mjs \
+            --state=.calendar-live-state.json \
+            --output=.calendar-due-job-plan.json
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-file=.calendar-due-job-plan.json \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+          node scripts/timetable/validate-daily-acquisition-plan.mjs \
+            --due-plan=.calendar-due-job-plan.json \
+            --actions-plan=.calendar-actions-plan.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const due = JSON.parse(fs.readFileSync('.calendar-due-job-plan.json', 'utf8'));
+          const jra = due.collection_plan.jobs.filter((job) => job.system_id === 'japan-jra-system' && job.reason === 'regular_refresh');
+          const scopes = jra.map((job) => job.requested_scope);
+          const expected = [
+            { start_date: '2026-08-26', end_date_exclusive: '2026-09-01', timezone: 'Asia/Tokyo' },
+            { start_date: '2026-09-01', end_date_exclusive: '2026-09-02', timezone: 'Asia/Tokyo' },
+          ];
+          if (JSON.stringify(scopes) !== JSON.stringify(expected)) throw new Error(`JRA month-boundary scopes differ: ${JSON.stringify(scopes)}`);
+          if (jra.some((job) => job.runner_policy.mode !== 'registry_primary' || job.runner_policy.runner !== null)) throw new Error('JRA planning runner policy changed');
+          const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
+          const hostedJra = (matrix.include ?? []).filter((entry) => entry.collection_job?.system_id === 'japan-jra-system');
+          if (hostedJra.length !== 0) throw new Error('JRA must remain excluded from hosted execution');
+          NODE
+
+      - name: Check diff formatting
+        if: steps.repair.outputs.applied == 'true'
+        run: git diff --check

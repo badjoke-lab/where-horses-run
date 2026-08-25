@@ -2,7 +2,7 @@
 
 Status: active reviewed operation  
 Work ID: `WHR-CAL-DAILY-ACQUISITION`  
-Last reviewed: 2026-08-08
+Last reviewed: 2026-08-25
 
 ## Canonical reading order
 
@@ -56,6 +56,8 @@ Current practical effect:
 - **UAE:** outside the daily Due-job policy; reviewed season windows remain explicit so the operator knows when a future wake-up decision becomes due.
 
 Executor capability alone never activates an otherwise prohibited source path.
+
+For any Registry profile with `supports_cross_month_window=false`, the Due-job Planner splits generated `date_window` work at calendar-month boundaries before Collection Plan validation. For example, a seven-day JRA regular-refresh request beginning 2026-08-26 is represented as `2026-08-26..2026-09-01` plus `2026-09-01..2026-09-02`; this does not widen JRA capability or make JRA eligible for hosted execution.
 
 ## Season-state handling
 
