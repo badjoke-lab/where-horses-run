@@ -108,6 +108,31 @@ if (plan) {
     fail(`cooldown scenario failed: ${error.message}`);
   }
 
+  const monthBoundaryState = structuredClone(fixtures.state);
+  monthBoundaryState.as_of = '2026-08-25T01:46:04Z';
+  monthBoundaryState.system_states = [structuredClone(fixtures.state.system_states.find((state) => state.system_id === 'japan-jra-system'))];
+  const monthBoundaryJra = monthBoundaryState.system_states[0];
+  monthBoundaryJra.season_state = 'active';
+  monthBoundaryJra.source_health = 'healthy';
+  monthBoundaryJra.last_successful_collection_at = '2026-08-24T00:00:00Z';
+  monthBoundaryJra.last_source_revalidation_at = '2026-08-24T00:00:00Z';
+  monthBoundaryJra.next_meeting_date = '2026-08-29';
+  monthBoundaryJra.coverage_gaps = [];
+  monthBoundaryState.retry_queue.entries = [];
+  try {
+    const monthBoundaryPlan = planDueJobsV1(policy, monthBoundaryState, registry);
+    const jraWindows = monthBoundaryPlan.collection_plan.jobs
+      .filter((job) => job.system_id === 'japan-jra-system' && job.reason === 'regular_refresh')
+      .map((job) => ({ job_id: job.job_id, ...job.requested_scope }));
+    const expectedJraWindows = [
+      { job_id: 'due-japan-jra-regular-refresh-001', start_date: '2026-08-26', end_date_exclusive: '2026-09-01', timezone: 'Asia/Tokyo' },
+      { job_id: 'due-japan-jra-regular-refresh-002', start_date: '2026-09-01', end_date_exclusive: '2026-09-02', timezone: 'Asia/Tokyo' },
+    ];
+    if (!exact(jraWindows, expectedJraWindows)) fail(`JRA month-boundary regular refresh split differs: ${JSON.stringify(jraWindows)}`);
+  } catch (error) {
+    fail(`JRA month-boundary scenario failed: ${error.message}`);
+  }
+
   const cappedPolicy = structuredClone(policy);
   cappedPolicy.scheduler.max_jobs_per_plan = 4;
   let capRejected = false;
