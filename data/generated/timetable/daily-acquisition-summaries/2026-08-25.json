@@ -1,13 +1,13 @@
 {
   "schema_version": "calendar-actions-campaign-summary-v1",
-  "plan_id": "due-job-plan-2026-08-24",
-  "campaign_id": "scheduled-planning-2026-08-24",
-  "generated_at": "2026-08-24T16:22:40Z",
+  "plan_id": "due-job-plan-2026-08-25",
+  "campaign_id": "scheduled-planning-2026-08-25",
+  "generated_at": "2026-08-25T04:40:01Z",
   "hosted_job_count": 1,
-  "excluded_job_count": 1,
+  "excluded_job_count": 2,
   "results": [
     {
-      "job_id": "due-japan-nar-regular-refresh-001",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
       "status": "success"
     }
   ],
@@ -19,15 +19,20 @@
       "job_id": "due-japan-jra-regular-refresh-001",
       "reason": "non_actions_runner",
       "runner": "local"
+    },
+    {
+      "job_id": "due-japan-jra-regular-refresh-002",
+      "reason": "non_actions_runner",
+      "runner": "local"
     }
   ],
   "status_records": [
     {
       "schema_version": "calendar-actions-job-status-v1",
-      "campaign_id": "scheduled-planning-2026-08-24",
-      "job_id": "due-japan-nar-regular-refresh-001",
-      "batch_id": "due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001",
-      "system_id": "japan-nar-system",
+      "campaign_id": "scheduled-planning-2026-08-25",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+      "batch_id": "due-job-plan-2026-08-25-due-hong-kong-hkjc-season-wake-up-001-run-001",
+      "system_id": "hong-kong-hkjc-system",
       "runner_used": "github_actions",
       "status": "success",
       "detail": null
