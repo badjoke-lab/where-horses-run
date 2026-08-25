@@ -1,0 +1,109 @@
+name: Calendar NAR Monbetsu August 27 A+ review
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nar-monbetsu-2026-08-27-a-plus-review.yml'
+      - 'scripts/timetable/build-calendar-nar-monbetsu-2026-08-27-a-plus-approved-candidate.mjs'
+      - 'data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json'
+      - 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs'
+      - 'data/generated/timetable/canonical/**'
+      - 'data/generated/timetable/public/**'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+        with:
+          path: work
+          fetch-depth: 0
+
+      - name: Detect applied candidate
+        id: candidate
+        working-directory: work
+        run: |
+          if test -f data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json; then
+            echo 'exists=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'exists=false' >> "$GITHUB_OUTPUT"
+            echo 'Bounded apply has not committed the reviewed candidate yet.'
+          fi
+
+      - name: Checkout exact daily-review source evidence
+        if: steps.candidate.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: 9256b6da8af910651bffcccdcc6b14fc462184a9
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
+
+      - if: steps.candidate.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Rebuild exact reviewed Candidate
+        if: steps.candidate.outputs.exists == 'true'
+        working-directory: work
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001/batch.json
+        run: node scripts/timetable/build-calendar-nar-monbetsu-2026-08-27-a-plus-approved-candidate.mjs
+
+      - name: Verify Candidate and repository state
+        if: steps.candidate.outputs.exists == 'true'
+        working-directory: work
+        run: |
+          git diff --exit-code -- data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json --dry-run
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Verify exact A+ target and publication boundary
+        if: steps.candidate.outputs.exists == 'true'
+        working-directory: work
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const id = 'nar-monbetsu-racecourse-2026-08-27';
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json', 'utf8'));
+          const meetings = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings;
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details;
+          const publicMeetings = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')).meetings;
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8')).details;
+          if (candidate.records.length !== 1 || candidate.records[0]?.meeting_id !== id) throw new Error('reviewed candidate identity differs');
+          const record = candidate.records[0];
+          if (record.capability_rank !== 'A+' || record.timetable_rows?.length !== 12 || record.first_race_time_local !== '14:20' || record.last_race_time_local !== '20:35') throw new Error('reviewed candidate content differs');
+          for (const field of ['horse_name','jockey','trainer','odds','payout','result','prediction','raw_html','stream_url']) {
+            if (JSON.stringify(record).toLowerCase().includes(field)) throw new Error(`forbidden field ${field}`);
+          }
+          const meeting = meetings.find((row) => row.meeting_id === id);
+          const detail = details.find((row) => row.meeting_id === id);
+          const publicMeeting = publicMeetings.find((row) => row.meeting_id === id);
+          const publicDetail = publicDetails.find((row) => row.meeting_id === id);
+          if (meeting?.capability_rank !== 'A+' || meeting.first_race_time_local !== '14:20' || meeting.last_race_time_local !== '20:35') throw new Error('canonical target differs');
+          if (detail?.capability_rank !== 'A+' || detail.timetable_rows?.length !== 12) throw new Error('canonical detail differs');
+          if ((publicMeeting?.effective_public_rank ?? publicMeeting?.capability_rank) !== 'A+') throw new Error('public target rank differs');
+          if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || publicDetail.timetable_rows?.length !== 12) throw new Error('public detail differs');
+          NODE
+
+      - name: Verify cumulative determinism and clean output
+        if: steps.candidate.outputs.exists == 'true'
+        working-directory: work
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          git diff --check
