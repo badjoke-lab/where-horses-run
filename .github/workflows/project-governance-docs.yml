@@ -4,24 +4,30 @@ on:
   pull_request:
     paths:
       - 'START-HERE.md'
+      - 'docs/README.md'
       - 'docs/project-roadmap.md'
+      - 'docs/project-roadmap-*-addendum.md'
       - 'docs/governance/**'
       - 'docs/calendar/**'
       - 'docs/country-pages/**'
       - 'docs/specs/**'
       - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-post-v1-maintenance-governance.mjs'
       - '.github/workflows/project-governance-docs.yml'
   push:
     branches:
       - main
     paths:
       - 'START-HERE.md'
+      - 'docs/README.md'
       - 'docs/project-roadmap.md'
+      - 'docs/project-roadmap-*-addendum.md'
       - 'docs/governance/**'
       - 'docs/calendar/**'
       - 'docs/country-pages/**'
       - 'docs/specs/**'
       - 'scripts/check-project-governance-docs.mjs'
+      - 'scripts/check-post-v1-maintenance-governance.mjs'
       - '.github/workflows/project-governance-docs.yml'
 
 concurrency:
@@ -37,4 +43,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate project governance documents
-        run: node scripts/check-project-governance-docs.mjs
+        run: |
+          node scripts/check-project-governance-docs.mjs
+          node scripts/check-post-v1-maintenance-governance.mjs

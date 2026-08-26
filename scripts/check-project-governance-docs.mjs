@@ -4,6 +4,8 @@ const errors = [];
 const requiredFiles = [
   'START-HERE.md',
   'docs/project-roadmap.md',
+  'docs/project-roadmap-2026-08-25-addendum.md',
+  'docs/README.md',
   'docs/governance/document-authority.md',
   'docs/calendar/README.md',
   'docs/calendar/machine-readable-contracts.md',
@@ -111,13 +113,14 @@ requirePhrases(start, 'START-HERE', [
   'primary runner: github_actions',
   'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
   'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
-  'Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
+  'Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
+  'Current stage: `reviewed_incremental_maintenance`',
   'Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
-  'Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`'
+  'Completed implementation unit: `GLOSSARY-QA-RELEASE-01`'
 ]);
 
 requirePhrases(roadmap, 'project roadmap', [
@@ -129,12 +132,13 @@ requirePhrases(roadmap, 'project roadmap', [
   'Completed Work ID: `WHR-CAL-UAE-ERA`',
   'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
   'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
-  'Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
+  'Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
+  'Current stage: `reviewed_incremental_maintenance`',
   'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
   'Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
-  'Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`',
+  'Completed implementation unit: `GLOSSARY-QA-RELEASE-01`',
   'Calendar Public v1 release decision accepted',
   'schedule-confirmed meetings: 82',
   'A+ detail records:            11',
