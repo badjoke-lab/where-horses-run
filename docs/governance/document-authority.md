@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-08-09
+Last reviewed: 2026-08-25
 
 ## Authority order
 
@@ -23,7 +23,7 @@ Conversation history and PR numbers do not replace canonical repository document
 The current adopted top-level execution addendum is:
 
 ```text
-docs/project-roadmap-2026-08-09-addendum.md
+docs/project-roadmap-2026-08-25-addendum.md
 ```
 
 The current adopted Calendar implementation addendum is:
@@ -47,7 +47,7 @@ docs/calendar/implementation-roadmap-2026-08-09-addendum.md
 Overall:
 
 - `docs/project-roadmap.md`
-- `docs/project-roadmap-2026-08-09-addendum.md`
+- `docs/project-roadmap-2026-08-25-addendum.md`
 - this policy
 - `docs/operations/deployment-and-ci-policy.md`
 

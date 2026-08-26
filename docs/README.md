@@ -6,7 +6,7 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 
 1. [Documentation authority](governance/document-authority.md)
 2. [Project roadmap](project-roadmap.md)
-3. [2026-08-09 active project-roadmap addendum](project-roadmap-2026-08-09-addendum.md)
+3. [2026-08-25 active project-roadmap addendum](project-roadmap-2026-08-25-addendum.md)
 4. [Deployment and CI policy](operations/deployment-and-ci-policy.md)
 
 ## Programme sections
@@ -25,7 +25,7 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 Overall:
 
 - [Project roadmap](project-roadmap.md)
-- [2026-08-09 active project-roadmap addendum](project-roadmap-2026-08-09-addendum.md) — current Work ID and execution order after PR #567/#568
+- [2026-08-25 active project-roadmap addendum](project-roadmap-2026-08-25-addendum.md) — post-v1 reviewed incremental maintenance state after the M6 v1.0 release
 - [Documentation authority](governance/document-authority.md)
 - [Internal source handling boundary](governance/internal-source-handling.md)
 - [Deployment and CI policy](operations/deployment-and-ci-policy.md)

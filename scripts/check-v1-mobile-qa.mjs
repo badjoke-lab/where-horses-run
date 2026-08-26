@@ -149,11 +149,15 @@ const runner = read(RUNNER_PATH);
 for (const marker of [
   "const viewports = [320, 375, 720]",
   "'--headless=new'",
-  "'--remote-debugging-pipe'",
+  "'--remote-debugging-port=0'",
+  "DevToolsActivePort",
+  "webSocketDebuggerUrl",
+  "fs.mkdtempSync",
   "horizontalOverflowPx",
   "item.width < 44 || item.height < 44",
   "v1-mobile-qa-discovery.json",
 ]) expect(runner.includes(marker), `v1 mobile browser runner marker is missing: ${marker}`);
+expect(!runner.includes("'--remote-debugging-pipe'"), 'v1 mobile browser runner must not regress to the startup-racy debugging pipe bootstrap');
 
 const doc = read(DOC_PATH);
 for (const marker of [

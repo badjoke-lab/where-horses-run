@@ -8,7 +8,7 @@ Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
 Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
 Completed Work ID: `WHR-CAL-UAE-ERA`
 Completed Work ID: `WHR-CAL-PUBLIC-V1`
-Current Work ID: `WHR-RACECOURSE-PAGES-V1`
+Historical base-roadmap entry point: `WHR-RACECOURSE-PAGES-V1`
 Last reviewed: 2026-07-14
 
 ## Purpose
@@ -513,13 +513,16 @@ Scheduled acquisition execution and unattended publication remain disabled.
 ## Product follow-up phases
 
 Completed Work ID: `WHR-RACECOURSE-PAGES-V1`
-Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
+Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
 Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
 Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
 Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
 Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
-Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
+Completed implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
+Completed implementation unit: `GLOSSARY-QA-RELEASE-01`
+Current stage: `reviewed_incremental_maintenance`
+Current state authority: `docs/project-roadmap-2026-08-25-addendum.md`
 
 Racecourse-page release decision: accepted for reviewed static public operation. All 36 canonical identities and 72 bilingual pages satisfy identity, public-timetable, profile-evidence, page-link, metadata, responsive, accessibility, language-parity, and public-boundary gates.
 
