@@ -1,18 +1,18 @@
 {
   "schema_version": "calendar-due-job-plan-v1",
   "policy_version": "calendar-due-job-policy-2026-07-19",
-  "generated_at": "2026-08-24T16:22:40Z",
-  "planning_date": "2026-08-24",
+  "generated_at": "2026-08-26T04:06:12Z",
+  "planning_date": "2026-08-26",
   "collection_plan": {
     "schema_version": "calendar-collection-plan-v1",
-    "plan_id": "due-job-plan-2026-08-24",
-    "campaign_id": "scheduled-planning-2026-08-24",
-    "created_at": "2026-08-24T16:22:40Z",
+    "plan_id": "due-job-plan-2026-08-26",
+    "campaign_id": "scheduled-planning-2026-08-26",
+    "created_at": "2026-08-26T04:06:12Z",
     "jobs": [
       {
         "schema_version": "calendar-collection-job-v1",
         "job_id": "due-japan-jra-regular-refresh-001",
-        "campaign_id": "scheduled-planning-2026-08-24",
+        "campaign_id": "scheduled-planning-2026-08-26",
         "system_id": "japan-jra-system",
         "runner_policy": {
           "mode": "registry_primary",
@@ -20,19 +20,39 @@
         },
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-08-25",
+          "start_date": "2026-08-27",
           "end_date_exclusive": "2026-09-01",
           "timezone": "Asia/Tokyo"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "regular_refresh",
-        "requested_at": "2026-08-24T16:22:40Z"
+        "requested_at": "2026-08-26T04:06:12Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-jra-regular-refresh-002",
+        "campaign_id": "scheduled-planning-2026-08-26",
+        "system_id": "japan-jra-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-01",
+          "end_date_exclusive": "2026-09-03",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-26T04:06:12Z"
       },
       {
         "schema_version": "calendar-collection-job-v1",
         "job_id": "due-japan-nar-regular-refresh-001",
-        "campaign_id": "scheduled-planning-2026-08-24",
+        "campaign_id": "scheduled-planning-2026-08-26",
         "system_id": "japan-nar-system",
         "runner_policy": {
           "mode": "registry_primary",
@@ -40,14 +60,34 @@
         },
         "collection_mode": "date_window",
         "requested_scope": {
-          "start_date": "2026-08-25",
-          "end_date_exclusive": "2026-09-08",
+          "start_date": "2026-08-27",
+          "end_date_exclusive": "2026-09-10",
           "timezone": "Asia/Tokyo"
         },
         "rank_strategy": "best_available",
         "target_rank": null,
         "reason": "regular_refresh",
-        "requested_at": "2026-08-24T16:22:40Z"
+        "requested_at": "2026-08-26T04:06:12Z"
+      },
+      {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+        "campaign_id": "scheduled-planning-2026-08-26",
+        "system_id": "hong-kong-hkjc-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-09-23",
+          "end_date_exclusive": "2026-09-25",
+          "timezone": "Asia/Hong_Kong"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "coverage_gap",
+        "requested_at": "2026-08-26T04:06:12Z"
       }
     ]
   },
@@ -57,21 +97,28 @@
       "trigger": "regular_refresh",
       "disposition": "job_planned",
       "job_id": "due-japan-jra-regular-refresh-001",
-      "detail": "Regular refresh due: stale=true, meeting_proximity_due=false, age_hours=40."
+      "detail": "Regular refresh 2026-08-27..2026-09-01 due: stale=true, meeting_proximity_due=true, age_hours=76."
+    },
+    {
+      "system_id": "japan-jra-system",
+      "trigger": "regular_refresh",
+      "disposition": "job_planned",
+      "job_id": "due-japan-jra-regular-refresh-002",
+      "detail": "Regular refresh 2026-09-01..2026-09-03 due: stale=true, meeting_proximity_due=true, age_hours=76."
     },
     {
       "system_id": "japan-nar-system",
       "trigger": "regular_refresh",
       "disposition": "job_planned",
       "job_id": "due-japan-nar-regular-refresh-001",
-      "detail": "Regular refresh due: stale=false, meeting_proximity_due=true, age_hours=16."
+      "detail": "Regular refresh 2026-08-27..2026-09-10 due: stale=true, meeting_proximity_due=true, age_hours=28."
     },
     {
       "system_id": "hong-kong-hkjc-system",
-      "trigger": "season_inactive",
-      "disposition": "not_due",
-      "job_id": null,
-      "detail": "Season state is offseason; regular due-job generation is suppressed."
+      "trigger": "season_wake_up",
+      "disposition": "job_planned",
+      "job_id": "due-hong-kong-hkjc-season-wake-up-001",
+      "detail": "Reviewed future active window 2026-09-23..2026-09-25 is due without collecting offseason dates."
     },
     {
       "system_id": "japan-banei-system",
