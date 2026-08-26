@@ -1,0 +1,82 @@
+{
+  "schema_version": "calendar-actions-multi-job-plan-v1",
+  "plan_id": "due-job-plan-2026-08-24",
+  "campaign_id": "scheduled-planning-2026-08-24",
+  "generated_at": "2026-08-24T16:22:40Z",
+  "jobs": [
+    {
+      "job_id": "due-japan-nar-regular-refresh-001",
+      "batch_id": "due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001",
+      "collection_job": {
+        "schema_version": "calendar-collection-job-v1",
+        "job_id": "due-japan-nar-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-24",
+        "system_id": "japan-nar-system",
+        "runner_policy": {
+          "mode": "registry_primary",
+          "runner": null
+        },
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-25",
+          "end_date_exclusive": "2026-09-08",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "requested_at": "2026-08-24T16:22:40Z"
+      },
+      "execution": {
+        "schema_version": "calendar-runner-execution-v1",
+        "job_id": "due-japan-nar-regular-refresh-001",
+        "campaign_id": "scheduled-planning-2026-08-24",
+        "batch_id": "due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001",
+        "system_id": "japan-nar-system",
+        "runner_used": "github_actions",
+        "executor_id": "nar-incremental-v2-actions",
+        "invocation_kind": "node",
+        "entry_point": "scripts/timetable/run-nar-incremental-v2-actions.mjs",
+        "collection_mode": "date_window",
+        "requested_scope": {
+          "start_date": "2026-08-25",
+          "end_date_exclusive": "2026-09-08",
+          "timezone": "Asia/Tokyo"
+        },
+        "rank_strategy": "best_available",
+        "target_rank": null,
+        "reason": "regular_refresh",
+        "source_route": {
+          "schedule_source_id": "nar-monthly-schedule-grid",
+          "detail_source_id": "nar-race-list-deba-table",
+          "schedule_adapter_id": "nar-schedule-aware-month-v1",
+          "detail_adapter_id": "nar-monthly-detail-candidate-v1"
+        },
+        "result_contract": "calendar-collection-result-manifest-v1",
+        "coverage_contract": "calendar-coverage-observation-v1",
+        "review_required": true,
+        "side_effect_boundary": {
+          "approval": false,
+          "promotion": false,
+          "canonical_write": false,
+          "public_write": false,
+          "publication": false,
+          "deployment": false
+        }
+      },
+      "status_artifact_path": "data/generated/timetable/actions-multi-job-status/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001.json",
+      "artifact_paths": [
+        "data/generated/timetable/actions-multi-job-status/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001.json",
+        "data/generated/timetable/nar-incremental-batches/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001",
+        "data/candidates/nar-incremental-batches/due-job-plan-2026-08-24-due-japan-nar-regular-refresh-001-run-001"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "job_id": "due-japan-jra-regular-refresh-001",
+      "reason": "non_actions_runner",
+      "runner": "local"
+    }
+  ]
+}
