@@ -51,10 +51,13 @@ function atomicWrite(relativePath, content) {
 }
 
 try {
+  const candidate = readJson(normalizedInput);
+  const currentMeetingsDataset = readJson(canonicalMeetingsPath);
+  const currentDetailsDataset = readJson(canonicalDetailsPath);
   const result = promoteApprovedCandidateV1({
-    candidate: readJson(normalizedInput),
-    meetingsDataset: readJson(canonicalMeetingsPath),
-    detailsDataset: readJson(canonicalDetailsPath),
+    candidate,
+    meetingsDataset: currentMeetingsDataset,
+    detailsDataset: currentDetailsDataset,
     authorityInventory: loadAuthoritySourceInventoryV1(root),
     readinessRegistry: loadCalendarReadinessV1(root),
     inputPath: normalizedInput
@@ -70,12 +73,27 @@ try {
   }
 
   if (flags.has('check')) {
-    const currentMeetings = readFileSync(path.join(root, canonicalMeetingsPath), 'utf8');
-    const currentDetails = readFileSync(path.join(root, canonicalDetailsPath), 'utf8');
-    if (currentMeetings !== meetingsContent || currentDetails !== detailsContent) {
+    // An older approved candidate may remain fully applied after later reviewed
+    // promotions advance the dataset-level generated_at timestamp. Preserve the
+    // current top-level timestamps for semantic comparison; every canonical
+    // record, detail, input source and ordering must still match exactly.
+    const expectedMeetingsDataset = {
+      ...result.meetingsDataset,
+      generated_at: currentMeetingsDataset.generated_at,
+    };
+    const expectedDetailsDataset = {
+      ...result.detailsDataset,
+      generated_at: currentDetailsDataset.generated_at,
+    };
+    const currentMeetings = serialize(currentMeetingsDataset);
+    const currentDetails = serialize(currentDetailsDataset);
+    const expectedMeetings = serialize(expectedMeetingsDataset);
+    const expectedDetails = serialize(expectedDetailsDataset);
+    if (currentMeetings !== expectedMeetings || currentDetails !== expectedDetails) {
       throw new Error('canonical promotion output is stale for the approved candidate');
     }
     console.log(JSON.stringify(result.summary, null, 2));
+    console.log('PROMOTION_CHECK_TIMESTAMP_MODE: preserve-current-generated-at');
     console.log('PROMOTION_WRITE_MODE: check');
     process.exit(0);
   }
