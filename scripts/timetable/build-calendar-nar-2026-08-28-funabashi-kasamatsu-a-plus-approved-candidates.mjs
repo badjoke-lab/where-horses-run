@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
+// Permanent PR review gates pin the source batch and rebuild this output deterministically.
 const root = process.cwd();
 const INPUT = process.env.WHR_NAR_REVIEW_BATCH;
 const OUTPUT = 'data/candidates/nar-regular-refresh-2026-08-28-funabashi-kasamatsu-a-plus-approved.json';
