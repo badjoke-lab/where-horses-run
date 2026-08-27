@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-08-26T08:23:00Z",
+  "generated_at": "2026-08-27T06:31:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -33,6 +33,7 @@
     "data/candidates/nar-regular-refresh-2026-08-26-through-2026-08-28-a-plus-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-27-monbetsu-a-plus-approved.json",
     "data/candidates/nar-regular-refresh-2026-08-28-funabashi-kasamatsu-a-plus-approved.json",
+    "data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json",
     "data/candidates/tjk-current-2026-08-11-approved.json",
     "data/generated/timetable/hkjc-normalized-meeting-details.sample.json",
     "data/generated/timetable/jra-normalized-meeting-details.json",
@@ -15246,6 +15247,124 @@
         }
       ],
       "summary_note": "Approved through the registered JRA reviewed_import single-date fallback from the official scheduled programme. Only public-safe A+ timetable fields are retained; the programme remains subject to official change."
+    },
+    {
+      "meeting_id": "nar-saga-racecourse-2026-08-29",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "saga-racecourse",
+      "date": "2026-08-29",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-race-list-deba-table",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F08%2F29",
+        "source_label": "National Association of Racing / local government racing",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-08-27",
+        "generated_at": "2026-08-27T06:29:43.009Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-27T06:31:00Z."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "16:30",
+          "race_name": "パッカルくんのおとしもの賞２歳－３組",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "17:05",
+          "race_name": "Ｃ２－２９組",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "17:40",
+          "race_name": "Ｃ１－３組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "18:10",
+          "race_name": "Ｂ－３組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "18:40",
+          "race_name": "サルスベリ賞Ａ２・Ｂ",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "19:15",
+          "race_name": "準重賞",
+          "distance_m": 1750,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "19:50",
+          "race_name": "長崎街道中原宿特選Ｃ１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "20:20",
+          "race_name": "ＳＡＧＡリベンジャーズドリームＣ２－３１",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "20:50",
+          "race_name": "一発逆転ファイナルレース×ＳＡＧＡリベン",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Course / Right",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Approved from the exact pinned August 27 NAR regular-refresh rerun after current-canonical comparison. Only public-safe A+ timetable fields are promoted."
     },
     {
       "meeting_id": "jra-sapporo-racecourse-2026-08-29",
