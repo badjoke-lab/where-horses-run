@@ -13,6 +13,7 @@ const GENERATED_AT = '2026-08-26T08:16:14.292Z';
 const CANDIDATES_BLOB_SHA = 'c957541f5682224d9c840f9285b567b5ae55cc1e';
 const REPORT_BLOB_SHA = '63a866b17a7af602ba7be3ca3b3b8ed1c83af860';
 const MEETING_ID = 'hkjc-happy-valley-racecourse-2026-09-23';
+const FORBIDDEN_KEYS = new Set(['horse_name','jockey','trainer','odds','payout','result','prediction','raw_html','stream_url']);
 
 function assert(condition, message) { if (!condition) throw new Error(message); }
 function readText(inputPath) {
@@ -27,6 +28,17 @@ function writeJson(relativePath, value) {
   const full = path.join(root, relativePath);
   fs.mkdirSync(path.dirname(full), { recursive: true });
   fs.writeFileSync(full, `${JSON.stringify(value, null, 2)}\n`);
+}
+function assertNoForbiddenKeys(value, pathLabel = 'record') {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertNoForbiddenKeys(item, `${pathLabel}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, child] of Object.entries(value)) {
+    assert(!FORBIDDEN_KEYS.has(key.toLowerCase()), `HKJC approved record contains forbidden field key ${pathLabel}.${key}`);
+    assertNoForbiddenKeys(child, `${pathLabel}.${key}`);
+  }
 }
 
 assert(CANDIDATES_INPUT, 'WHR_HKJC_REVIEW_CANDIDATES is required');
@@ -85,10 +97,7 @@ const record = {
   review_status: 'approved',
   notes: 'Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed.',
 };
-const serialized = JSON.stringify(record).toLowerCase();
-for (const forbidden of ['horse_name','jockey','trainer','odds','payout','result','prediction','raw_html','stream_url']) {
-  assert(!serialized.includes(forbidden), `HKJC approved record contains forbidden field ${forbidden}`);
-}
+assertNoForbiddenKeys(record);
 
 const output = {
   schema_version: 'timetable-candidate-v1',
