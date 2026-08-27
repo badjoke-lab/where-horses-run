@@ -1,0 +1,171 @@
+name: Calendar NAR August 29 Saga A+ bounded apply
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nar-2026-08-29-saga-a-plus-bounded-apply.yml'
+      - 'scripts/timetable/build-calendar-nar-2026-08-29-saga-a-plus-approved-candidates.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-nar-august-29-saga-a-plus-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact review head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Checkout exact daily-review source evidence
+        uses: actions/checkout@v4
+        with:
+          ref: d0521542429ad44da61b3b13fbcf5c0cf49abfa7
+          path: review-source
+          sparse-checkout: |
+            data/candidates/nar-incremental-batches/due-job-plan-2026-08-27-due-japan-nar-regular-refresh-001-run-001/batch.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Build exactly one newly reviewed A+ candidate
+        env:
+          WHR_NAR_REVIEW_BATCH: ${{ github.workspace }}/review-source/data/candidates/nar-incremental-batches/due-job-plan-2026-08-27-due-japan-nar-regular-refresh-001-run-001/batch.json
+        run: node scripts/timetable/build-calendar-nar-2026-08-29-saga-a-plus-approved-candidates.mjs
+
+      - name: Extend cumulative reviewed promotion contract
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file = 'scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs';
+          let text = fs.readFileSync(file, 'utf8');
+          const constAnchor = "const septemberHkjcFixtureSeptember23Path = 'data/candidates/hkjc-september-2026-09-23-fixture-approved.json';\n";
+          if (!text.includes('const augustNarRegularRefreshAPlusSeventhPath =')) {
+            if (!text.includes(constAnchor)) throw new Error('determinism const anchor missing');
+            text = text.replace(constAnchor, `${constAnchor}const augustNarRegularRefreshAPlusSeventhPath = 'data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json';\n`);
+          }
+          const sequenceAnchor = '  septemberHkjcFixtureSeptember23Path,\n];';
+          if (!text.includes('  augustNarRegularRefreshAPlusSeventhPath,\n];')) {
+            if (!text.includes(sequenceAnchor)) throw new Error('determinism continuation anchor missing');
+            text = text.replace(sequenceAnchor, '  septemberHkjcFixtureSeptember23Path,\n  augustNarRegularRefreshAPlusSeventhPath,\n];');
+          }
+          const countAnchor = '  [septemberHkjcFixtureSeptember23Path, [1, 0]],\n]);';
+          if (!text.includes('  [augustNarRegularRefreshAPlusSeventhPath, [1, 1]],')) {
+            if (!text.includes(countAnchor)) throw new Error('determinism count anchor missing');
+            text = text.replace(countAnchor, '  [septemberHkjcFixtureSeptember23Path, [1, 0]],\n  [augustNarRegularRefreshAPlusSeventhPath, [1, 1]],\n]);');
+          }
+          fs.writeFileSync(file, text);
+          NODE
+
+      - name: Validate and apply reviewed promotion
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json --dry-run
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json
+
+      - name: Rebuild deterministic public and operations projections
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+
+      - name: Validate applied repository state
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/check-japan-a-plus-public-overrides.mjs
+          node scripts/check-calendar-operations-status.mjs
+          node scripts/check-calendar-operations-review-package.mjs
+
+      - name: Verify exact one-record A+ publication boundary
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const baseSha = process.env.BASE_SHA;
+          const id = 'nar-saga-racecourse-2026-08-29';
+          const expected = { rows: 9, first: '16:30', last: '20:50' };
+          const forbidden = new Set(['horse_name','jockey','trainer','odds','payout','result','prediction','raw_html','stream_url']);
+          const assertNoForbiddenKeys = (value, location = 'record') => {
+            if (Array.isArray(value)) return value.forEach((item, index) => assertNoForbiddenKeys(item, `${location}[${index}]`));
+            if (!value || typeof value !== 'object') return;
+            for (const [key, child] of Object.entries(value)) {
+              if (forbidden.has(key.toLowerCase())) throw new Error(`${location} contains forbidden key ${key}`);
+              assertNoForbiddenKeys(child, `${location}.${key}`);
+            }
+          };
+          const readBase = (file) => JSON.parse(execFileSync('git', ['show', `${baseSha}:${file}`], { encoding: 'utf8' }));
+          const candidate = JSON.parse(fs.readFileSync('data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json', 'utf8'));
+          if (candidate.review?.status !== 'approved' || candidate.review?.promotion_target !== 'canonical-timetable-v0') throw new Error('review contract differs');
+          if (candidate.records.length !== 1 || candidate.records[0].meeting_id !== id) throw new Error('reviewed identity set differs');
+          const record = candidate.records[0];
+          if (record.capability_rank !== 'A+' || record.timetable_rows?.length !== expected.rows) throw new Error('reviewed record differs');
+          if (record.first_race_time_local !== expected.first || record.last_race_time_local !== expected.last) throw new Error('reviewed first/last time differs');
+          assertNoForbiddenKeys(record);
+
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8'));
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8'));
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json', 'utf8'));
+          const baseCanonical = readBase('data/generated/timetable/canonical/meetings.json');
+          const baseDetails = readBase('data/generated/timetable/canonical/meeting-details.json');
+          const basePublicList = readBase('data/generated/timetable/public/meeting-list.json');
+          const basePublicDetails = readBase('data/generated/timetable/public/meeting-details.json');
+          const baseStatus = readBase('data/generated/timetable/operations-status.json');
+
+          const baseMeeting = baseCanonical.meetings.find((row) => row.meeting_id === id);
+          const baseDetail = baseDetails.details.find((row) => row.meeting_id === id);
+          if (baseMeeting?.capability_rank !== 'C' || baseMeeting.first_race_time_local !== null || baseMeeting.last_race_time_local !== null || baseDetail) throw new Error('PR base is not exact C/no-detail prestate');
+
+          const meeting = canonical.meetings.find((row) => row.meeting_id === id);
+          const detail = details.details.find((row) => row.meeting_id === id);
+          const publicMeeting = publicList.meetings.find((row) => row.meeting_id === id);
+          const publicDetail = publicDetails.details.find((row) => row.meeting_id === id);
+          if (meeting?.capability_rank !== 'A+' || meeting.first_race_time_local !== expected.first || meeting.last_race_time_local !== expected.last) throw new Error('canonical meeting differs');
+          if (detail?.capability_rank !== 'A+' || detail.timetable_rows?.length !== expected.rows) throw new Error('canonical detail differs');
+          if ((publicMeeting?.effective_public_rank ?? publicMeeting?.capability_rank) !== 'A+' || publicMeeting.detail_path === null) throw new Error('public meeting differs');
+          if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || publicDetail.timetable_rows?.length !== expected.rows) throw new Error('public detail differs');
+
+          if (canonical.meetings.length !== baseCanonical.meetings.length) throw new Error('canonical meeting count changed for C-to-A+ upgrade');
+          if (details.details.length !== baseDetails.details.length + 1) throw new Error('canonical detail delta differs');
+          if (publicList.meetings.length !== basePublicList.meetings.length) throw new Error('public meeting count changed for existing meeting');
+          if (publicDetails.details.length !== basePublicDetails.details.length + 1) throw new Error('public detail delta differs');
+          const status = JSON.parse(fs.readFileSync('data/generated/timetable/operations-status.json', 'utf8'));
+          if (status.public_projection?.meeting_count !== baseStatus.public_projection?.meeting_count) throw new Error('operations public meeting count changed');
+          if (status.public_projection?.detail_count !== baseStatus.public_projection?.detail_count + 1) throw new Error('operations public detail delta differs');
+          if (status.public_projection?.latest_meeting_date !== baseStatus.public_projection?.latest_meeting_date) throw new Error('public horizon changed unexpectedly');
+          NODE
+
+      - name: Verify cumulative NAR promotion determinism
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+
+      - name: Remove one-shot workflow and commit bounded output
+        run: |
+          git rm .github/workflows/calendar-nar-2026-08-29-saga-a-plus-bounded-apply.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- \
+            data/candidates/nar-regular-refresh-2026-08-29-saga-a-plus-approved.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json \
+            scripts/check-calendar-nar-incremental-v2-promotion-output-determinism.mjs
+          git diff --cached --check
+          git commit -m 'Apply reviewed NAR August 29 Saga A+ promotion'
+          git push origin HEAD:${{ github.head_ref }}
