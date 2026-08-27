@@ -115,8 +115,8 @@ try {
   const state = readJson(statePath);
   const hkjc = state.system_states.find((entry) => entry.system_id === 'hong-kong-hkjc-system');
   if (!hkjc) throw new Error('HKJC planner state missing');
-  if (hkjc.source_visible_horizon_end_exclusive !== '2026-09-23') {
-    throw new Error(`HKJC planner horizon should include reviewed empty September 21/22 coverage, got ${hkjc.source_visible_horizon_end_exclusive}`);
+  if (hkjc.source_visible_horizon_end_exclusive !== '2026-09-24') {
+    throw new Error(`HKJC planner horizon should include reviewed September 21/22 empty coverage and September 23 fixture, got ${hkjc.source_visible_horizon_end_exclusive}`);
   }
   if (hkjc.coverage_gaps.length !== 0) {
     throw new Error(`HKJC 30-day planning window should be fully covered after reviewed empty September 21/22: ${JSON.stringify(hkjc.coverage_gaps)}`);
