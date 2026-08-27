@@ -161,7 +161,7 @@ else {
   const reviewSignals = planner.system_states.filter((system) => system.season_state === 'unknown' || system.coverage_gaps.length > 0);
   if (reviewSignals.length !== 0) fail(`current reviewed 30-day planner should have zero coverage review signals: ${JSON.stringify(reviewSignals)}`);
   const hkjc = planner.system_states.find((system) => system.system_id === 'hong-kong-hkjc-system');
-  if (hkjc?.source_visible_horizon_end_exclusive !== '2026-09-23') fail('current HKJC reviewed source horizon must extend through September 22');
+  if (hkjc?.source_visible_horizon_end_exclusive !== '2026-09-24') fail('current HKJC reviewed source horizon must extend through September 23');
 
   const currentOutput = path.join(tempDir, 'current.json');
   const currentRun = runWriter([
