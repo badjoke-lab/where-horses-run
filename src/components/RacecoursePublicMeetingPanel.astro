@@ -23,6 +23,27 @@ const formatTimeRange = (meeting: PublicTimetableMeetingRow) => {
   }
   return meeting.first_race_time_local ?? meeting.last_race_time_local;
 };
+const sourceStatusLabel = (status: string) => {
+  const en: Record<string, string> = {
+    verified: 'Checked',
+    partial: 'Partly checked',
+    secondary: 'Secondary source',
+    stale: 'Needs recheck',
+    failed: 'Unavailable',
+    'official-link-only': 'Official link only',
+    link_first: 'Link-first',
+  };
+  const ja: Record<string, string> = {
+    verified: '確認済み',
+    partial: '一部確認',
+    secondary: '二次ソース',
+    stale: '再確認が必要',
+    failed: '取得不可',
+    'official-link-only': '公式リンクのみ',
+    link_first: 'リンク優先',
+  };
+  return (isJapanese ? ja : en)[status] ?? status;
+};
 const upcomingPreview = state.upcoming_meetings.slice(0, 8);
 const generatedDate = state.generated_at.slice(0, 10);
 ---
@@ -60,8 +81,14 @@ const generatedDate = state.generated_at.slice(0, 10);
                 <strong><a href={calendarDateHref(meeting.date)}>{meeting.date}</a></strong>
                 {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
                 {timeRange ? ` · ${timeRange}` : ''}
+                {` · ${meeting.timezone}`}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
                 {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
+                <span class="meeting-meta">
+                  {isJapanese
+                    ? `ソース状態: ${sourceStatusLabel(meeting.source_status)} / 最終確認: ${meeting.last_checked_date}`
+                    : `Source status: ${sourceStatusLabel(meeting.source_status)} / last checked: ${meeting.last_checked_date}`}
+                </span>
               </li>
             );
           })}
@@ -83,8 +110,14 @@ const generatedDate = state.generated_at.slice(0, 10);
                 <strong><a href={calendarDateHref(meeting.date)}>{meeting.date}</a></strong>
                 {' · '}{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
                 {timeRange ? ` · ${timeRange}` : ''}
+                {` · ${meeting.timezone}`}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
                 {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
+                <span class="meeting-meta">
+                  {isJapanese
+                    ? `ソース状態: ${sourceStatusLabel(meeting.source_status)} / 最終確認: ${meeting.last_checked_date}`
+                    : `Source status: ${sourceStatusLabel(meeting.source_status)} / last checked: ${meeting.last_checked_date}`}
+                </span>
               </li>
             );
           })}
@@ -101,10 +134,17 @@ const generatedDate = state.generated_at.slice(0, 10);
       <ul class="racecourse-meeting-panel__upcoming">
         {upcomingPreview.map((meeting) => {
           const detailPath = localizedDetailPath(meeting);
+          const timeRange = formatTimeRange(meeting);
           return (
             <li>
               <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
-              <span>{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}</span>
+              <span class="meeting-meta">
+                {isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
+                {timeRange ? ` · ${timeRange}` : ''}
+                {` · ${meeting.timezone}`}
+                {' · '}{sourceStatusLabel(meeting.source_status)}
+                {' · '}{isJapanese ? `最終確認 ${meeting.last_checked_date}` : `checked ${meeting.last_checked_date}`}
+              </span>
               {detailPath ? <a href={detailPath}>{isJapanese ? '詳細' : 'Detail'}</a> : <a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>}
             </li>
           );
@@ -141,9 +181,15 @@ const generatedDate = state.generated_at.slice(0, 10);
 
   .racecourse-meeting-panel__eyebrow,
   .racecourse-meeting-panel__meta,
-  .racecourse-meeting-panel__boundary {
+  .racecourse-meeting-panel__boundary,
+  .meeting-meta {
     color: var(--whr-color-text-muted);
     font-size: 0.9rem;
+  }
+
+  .racecourse-meeting-panel__grid .meeting-meta {
+    display: block;
+    margin-block-start: 0.25rem;
   }
 
   .racecourse-meeting-panel__grid {

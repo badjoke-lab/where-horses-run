@@ -1,0 +1,29 @@
+{
+  "schema_version": "racecourse-current-state-v1",
+  "work_id": "WHR-RACECOURSE-PAGES-V1",
+  "state_id": "RACECOURSE-CURRENT-STATE-2026-08-28",
+  "status": "active_reviewed_current_state",
+  "reviewed_at": "2026-08-28",
+  "counts": {
+    "racecourses": 41,
+    "english_detail_routes": 41,
+    "japanese_detail_routes": 41,
+    "bilingual_detail_routes": 82
+  },
+  "derivation": {
+    "source_of_truth": "scripts/check-racecourse-page-bilingual-qa-rendered.mjs sourceFiles",
+    "count_rule": "flatten current canonical racecourse source arrays and count rendered bilingual route pairs",
+    "historical_v1_release_racecourses": 36,
+    "historical_v1_release_bilingual_detail_routes": 72
+  },
+  "boundaries": {
+    "canonical_data_write": false,
+    "public_timetable_write": false,
+    "publication": false,
+    "deployment": false,
+    "participant_data_display": false,
+    "betting_data_display": false,
+    "result_or_payout_display": false,
+    "prediction_display": false
+  }
+}
