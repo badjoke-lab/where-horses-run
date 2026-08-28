@@ -65,12 +65,15 @@ jobs:
         run: |
           node --check scripts/check-racecourse-page-bilingual-qa.mjs
           node --check scripts/check-racecourse-page-bilingual-qa-rendered.mjs
+          node --check scripts/check-racecourse-page-current-state.mjs
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
       - name: Build deterministic bilingual site
         run: npm run build
       - name: Validate bilingual release readiness
         run: node scripts/check-racecourse-page-bilingual-qa.mjs
+      - name: Validate current racecourse growth state
+        run: node scripts/check-racecourse-page-current-state.mjs
       - name: Validate inherited racecourse release chain
         run: |
           node scripts/check-racecourse-page-identity-reconciliation.mjs
