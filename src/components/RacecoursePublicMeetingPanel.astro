@@ -84,7 +84,7 @@ const generatedDate = state.generated_at.slice(0, 10);
                 {` · ${meeting.timezone}`}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
                 {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
-                <span class="racecourse-meeting-panel__meeting-meta">
+                <span class="meeting-meta">
                   {isJapanese
                     ? `ソース状態: ${sourceStatusLabel(meeting.source_status)} / 最終確認: ${meeting.last_checked_date}`
                     : `Source status: ${sourceStatusLabel(meeting.source_status)} / last checked: ${meeting.last_checked_date}`}
@@ -113,7 +113,7 @@ const generatedDate = state.generated_at.slice(0, 10);
                 {` · ${meeting.timezone}`}
                 {detailPath ? <><span>{' · '}</span><a href={detailPath}>{isJapanese ? '開催詳細' : 'Meeting detail'}</a></> : null}
                 {' · '}<a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>
-                <span class="racecourse-meeting-panel__meeting-meta">
+                <span class="meeting-meta">
                   {isJapanese
                     ? `ソース状態: ${sourceStatusLabel(meeting.source_status)} / 最終確認: ${meeting.last_checked_date}`
                     : `Source status: ${sourceStatusLabel(meeting.source_status)} / last checked: ${meeting.last_checked_date}`}
@@ -139,13 +139,13 @@ const generatedDate = state.generated_at.slice(0, 10);
             <li>
               <div>
                 <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
-                <span class="racecourse-meeting-panel__meeting-meta">
+                <span class="meeting-meta">
                   {timeRange ? `${timeRange} · ` : ''}{meeting.timezone}
                 </span>
               </div>
               <div>
                 <span>{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}</span>
-                <span class="racecourse-meeting-panel__meeting-meta">
+                <span class="meeting-meta">
                   {isJapanese
                     ? `${sourceStatusLabel(meeting.source_status)} / 最終確認 ${meeting.last_checked_date}`
                     : `${sourceStatusLabel(meeting.source_status)} / checked ${meeting.last_checked_date}`}
@@ -188,12 +188,12 @@ const generatedDate = state.generated_at.slice(0, 10);
   .racecourse-meeting-panel__eyebrow,
   .racecourse-meeting-panel__meta,
   .racecourse-meeting-panel__boundary,
-  .racecourse-meeting-panel__meeting-meta {
+  .meeting-meta {
     color: var(--whr-color-text-muted);
     font-size: 0.9rem;
   }
 
-  .racecourse-meeting-panel__meeting-meta {
+  .meeting-meta {
     display: block;
     margin-block-start: 0.25rem;
   }
