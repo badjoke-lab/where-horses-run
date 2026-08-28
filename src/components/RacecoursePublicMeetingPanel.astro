@@ -137,20 +137,14 @@ const generatedDate = state.generated_at.slice(0, 10);
           const timeRange = formatTimeRange(meeting);
           return (
             <li>
-              <div>
-                <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
-                <span class="meeting-meta">
-                  {timeRange ? `${timeRange} · ` : ''}{meeting.timezone}
-                </span>
-              </div>
-              <div>
-                <span>{isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}</span>
-                <span class="meeting-meta">
-                  {isJapanese
-                    ? `${sourceStatusLabel(meeting.source_status)} / 最終確認 ${meeting.last_checked_date}`
-                    : `${sourceStatusLabel(meeting.source_status)} / checked ${meeting.last_checked_date}`}
-                </span>
-              </div>
+              <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
+              <span class="meeting-meta">
+                {isJapanese ? `公開ランク ${meeting.effective_public_rank}` : `Public rank ${meeting.effective_public_rank}`}
+                {timeRange ? ` · ${timeRange}` : ''}
+                {` · ${meeting.timezone}`}
+                {' · '}{sourceStatusLabel(meeting.source_status)}
+                {' · '}{isJapanese ? `最終確認 ${meeting.last_checked_date}` : `checked ${meeting.last_checked_date}`}
+              </span>
               {detailPath ? <a href={detailPath}>{isJapanese ? '詳細' : 'Detail'}</a> : <a href={meeting.official_source_url}>{isJapanese ? '公式ソース' : 'Official source'}</a>}
             </li>
           );
@@ -193,7 +187,7 @@ const generatedDate = state.generated_at.slice(0, 10);
     font-size: 0.9rem;
   }
 
-  .meeting-meta {
+  .racecourse-meeting-panel__grid .meeting-meta {
     display: block;
     margin-block-start: 0.25rem;
   }
@@ -215,8 +209,8 @@ const generatedDate = state.generated_at.slice(0, 10);
   .racecourse-meeting-panel__upcoming li {
     align-items: center;
     display: grid;
-    gap: 0.75rem;
-    grid-template-columns: minmax(11rem, 1.25fr) minmax(12rem, 1fr) auto;
+    gap: 0.5rem;
+    grid-template-columns: minmax(7rem, auto) 1fr auto;
   }
 
   @media (max-width: 40rem) {
