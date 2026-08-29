@@ -27,6 +27,11 @@ const racecourses = [...new Map(rawRacecourses.map((racecourse) => [racecourse.s
 const racecoursesById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
 const sources = getSourcesByCountryId(country.id);
 const sourcesById = new Map(sources.map((source) => [source.id, source]));
+const glossaryById = new Map(siteData.glossary.map((entry) => [entry.id, entry]));
+const relatedGlossaryEntries = profile?.related_glossary_ids.flatMap((entryId) => {
+  const entry = glossaryById.get(entryId);
+  return entry ? [entry] : [];
+}) ?? [];
 
 const getGridClass = (count: number) => {
   if (count <= 1) return 'country-grid country-grid--1';
@@ -294,6 +299,9 @@ const pageDescription = isJa
   ? profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja
   : profile?.hero_summary_en ?? profile?.overview_en ?? country.summary_en;
 const racecoursePathPrefix = isJa ? '/ja/tracks/' : '/tracks/';
+const racingTypePathPrefix = isJa ? '/ja/types/' : '/types/';
+const glossaryPathPrefix = isJa ? '/ja/glossary/' : '/glossary/';
+const sourceRegistryPath = isJa ? `/ja/sources/${country.slug}/` : `/sources/${country.slug}/`;
 const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
 const canonicalPath = isJa ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`;
 const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${country.slug}/`;
@@ -357,12 +365,23 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
           <div class={getGridClass(profile.racing_types.length)}>
             {profile.racing_types.map((type) => (
               <article class="card country-card">
-                <h3>{pick(type.name_en, type.name_ja)}</h3>
+                <h3><a href={`${racingTypePathPrefix}${type.id}/`}>{pick(type.name_en, type.name_ja)}</a></h3>
                 <p>{pick(type.summary_en, type.summary_ja)}</p>
               </article>
             ))}
           </div>
         </section>
+
+        {relatedGlossaryEntries.length > 0 && (
+          <section class="country-section" aria-labelledby="related-glossary-heading">
+            <h2 class="country-section__title" id="related-glossary-heading">{pick('Related glossary terms', '関連用語')}</h2>
+            <ul>
+              {relatedGlossaryEntries.map((entry) => (
+                <li><a href={`${glossaryPathPrefix}${entry.slug}/`}>{pick(entry.term_en, entry.term_ja)}</a></li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section class="country-section" aria-labelledby="meeting-pattern-heading">
           <h2 class="country-section__title" id="meeting-pattern-heading">{pick('Meeting patterns', '開催の特徴')}</h2>
@@ -519,6 +538,7 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
         'Use these official landing pages for final confirmation. Where Horses Run does not replace official calendars or racecards.',
         '最終確認には以下の公式ページを使用してください。競馬どこ？は公式カレンダーやレースカードの代替ではありません。'
       )}</p>
+      <p><a href={sourceRegistryPath}>{pick(`Browse the ${country.name_en} source registry`, `${country.name_ja}のソース一覧を見る`)}</a></p>
       {officialSourceGroups.length > 0 ? (
         <div class={getGridClass(officialSourceGroups.length)}>
           {officialSourceGroups.map((group) => (
