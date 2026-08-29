@@ -7,7 +7,7 @@ import {
   getRacingTypeRelatedGlossaryEntries,
   getRacingTypes
 } from '../../lib/racingTypes';
-import { getCountries } from '../../lib/data';
+import { getCountries, siteData } from '../../lib/data';
 
 export function getStaticPaths() {
   return getRacingTypes().map((type) => ({ params: { slug: type.slug } }));
@@ -27,6 +27,12 @@ const countryIds = [...new Set(tracks.map((track) => track.country_id))];
 const glossaryEntry = getRacingTypeGlossaryEntry(type);
 const relatedTerms = getRacingTypeRelatedGlossaryEntries(type);
 const surfaces = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))].sort();
+const relatedSourceIds = [...new Set(tracks.flatMap((track) => track.related_sources ?? []))];
+const sourceById = new Map(siteData.sources.map((source) => [source.id, source]));
+const sourceExamples = relatedSourceIds
+  .map((sourceId) => sourceById.get(sourceId))
+  .filter((source): source is (typeof siteData.sources)[number] => Boolean(source))
+  .slice(0, 12);
 ---
 
 <BaseLayout title={`${type.name_en} | Racing Types`} description={type.summary_en}>
@@ -103,7 +109,22 @@ const surfaces = [...new Set(tracks.flatMap((track) => track.surfaces ?? []))].s
     </article>
 
     <article class="card">
-      <h2>Source boundary</h2>
+      <h2>Official source examples</h2>
+      {sourceExamples.length ? (
+        <ul>
+          {sourceExamples.map((source) => {
+            const country = countryById.get(source.country_id);
+            return (
+              <li>
+                <a href={source.url}>{source.id}</a>
+                {country && <> — <a href={`/sources/${country.slug}/`}>{country.name_en} source registry</a></>}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p>No official source examples are linked from the currently listed racecourses.</p>
+      )}
       <p>Use official or licensed source pages for entries, odds, results, payouts, tips, and full racecards.</p>
     </article>
   </section>
