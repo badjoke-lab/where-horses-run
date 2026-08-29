@@ -7,6 +7,7 @@ import {
   siteData,
   type Country
 } from '../lib/data';
+import { getRacingTypeById } from '../lib/racingTypes';
 import { getPublicTimetableMeetingRowsByCountry } from '../lib/timetable/publicTimetableViewModel';
 import { createCalendarDateContext, filterRecordsForWindow } from '../lib/timetable/calendarDateContext.mjs';
 
@@ -32,6 +33,10 @@ const relatedGlossaryEntries = profile?.related_glossary_ids.flatMap((entryId) =
   const entry = glossaryById.get(entryId);
   return entry ? [entry] : [];
 }) ?? [];
+const countryRacingTypes = profile?.racing_types.map((type) => ({
+  type,
+  registeredType: getRacingTypeById(type.id)
+})) ?? [];
 
 const getGridClass = (count: number) => {
   if (count <= 1) return 'country-grid country-grid--1';
@@ -362,10 +367,10 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
 
         <section class="country-section" aria-labelledby="racing-types-heading">
           <h2 class="country-section__title" id="racing-types-heading">{pick('What types of horse racing are held here?', 'この国で行われている競馬種別')}</h2>
-          <div class={getGridClass(profile.racing_types.length)}>
-            {profile.racing_types.map((type) => (
+          <div class={getGridClass(countryRacingTypes.length)}>
+            {countryRacingTypes.map(({ type, registeredType }) => (
               <article class="card country-card">
-                <h3><a href={`${racingTypePathPrefix}${type.id}/`}>{pick(type.name_en, type.name_ja)}</a></h3>
+                <h3>{registeredType ? <a href={`${racingTypePathPrefix}${registeredType.slug}/`}>{pick(type.name_en, type.name_ja)}</a> : pick(type.name_en, type.name_ja)}</h3>
                 <p>{pick(type.summary_en, type.summary_ja)}</p>
               </article>
             ))}
