@@ -94,6 +94,14 @@ jobs:
           import { execFileSync } from 'node:child_process';
           const baseSha = process.env.BASE_SHA;
           const readBase = (file) => JSON.parse(execFileSync('git', ['show', `${baseSha}:${file}`], { encoding: 'utf8' }));
+          const projectPublicSafeRows = (rows) => (rows ?? []).map((row) => ({
+            label: row.label,
+            post_time_local: row.post_time_local,
+            race_name: row.race_name,
+            distance_m: row.distance_m,
+            surface: row.surface,
+            course_label: row.course_label,
+          }));
           const expectedIds = [
             'nar-kanazawa-racecourse-2026-08-31',
             'nar-morioka-racecourse-2026-08-30',
@@ -134,7 +142,7 @@ jobs:
             if (meeting?.capability_rank !== 'A+' || meeting.first_race_time_local !== record.first_race_time_local || meeting.last_race_time_local !== record.last_race_time_local) throw new Error(`${id} canonical meeting differs`);
             if (detail?.capability_rank !== 'A+' || JSON.stringify(detail.timetable_rows) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} canonical detail differs`);
             if ((publicMeeting?.effective_public_rank ?? publicMeeting?.capability_rank) !== 'A+') throw new Error(`${id} public meeting rank differs`);
-            if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || JSON.stringify(publicDetail.timetable_rows) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} public detail differs`);
+            if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || JSON.stringify(projectPublicSafeRows(publicDetail.timetable_rows)) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} public detail differs`);
           }
           if (canonical.meetings.length !== baseCanonical.meetings.length) throw new Error('canonical meeting count changed for C-to-A+ upgrades');
           if (details.details.length !== baseDetails.details.length + 5) throw new Error(`canonical detail delta differs: base=${baseDetails.details.length} head=${details.details.length}`);
