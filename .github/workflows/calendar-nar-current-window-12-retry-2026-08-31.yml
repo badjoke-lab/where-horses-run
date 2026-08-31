@@ -1,0 +1,81 @@
+name: Calendar NAR current-window 12 retry 2026-08-31
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nar-current-window-12-retry-2026-08-31.yml'
+      - 'data/fixtures/calendar-nar-current-window-12-retry-2026-08-31.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-nar-current-window-12-retry-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Compile exactly one bounded selected-meeting job
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-file=data/fixtures/calendar-nar-current-window-12-retry-2026-08-31.json \
+            --output=.calendar-actions-plan.json \
+            --matrix-output=.calendar-actions-matrix.json
+
+      - id: spec
+        name: Materialize immutable job and execution specifications
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
+          if (!Array.isArray(matrix.include) || matrix.include.length !== 1) {
+            throw new Error(`expected exactly one hosted job, got ${matrix.include?.length ?? 'invalid'}`);
+          }
+          const entry = matrix.include[0];
+          if (entry.collection_job?.collection_mode !== 'selected_meetings') throw new Error('job is not selected_meetings');
+          if (entry.collection_job?.requested_scope?.meeting_ids?.length !== 12) throw new Error('job is not bounded to 12 meetings');
+          if (entry.execution?.executor_id !== 'nar-incremental-v2-actions') throw new Error('unexpected executor');
+          fs.writeFileSync('.calendar-collection-job.json', `${JSON.stringify(entry.collection_job, null, 2)}\n`);
+          fs.writeFileSync('.calendar-execution.json', `${JSON.stringify(entry.execution, null, 2)}\n`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `batch_id=${entry.execution.batch_id}\n`);
+          NODE
+
+      - name: Run NAR selected-meeting acquisition only
+        run: |
+          node scripts/timetable/run-calendar-actions-job.mjs \
+            --job=.calendar-collection-job.json \
+            --execution=.calendar-execution.json
+
+      - name: Validate immutable NAR batch output
+        run: node scripts/check-calendar-nar-incremental-v2.mjs --batch-id='${{ steps.spec.outputs.batch_id }}'
+
+      - name: Verify publication boundary stayed untouched
+        run: |
+          git diff --exit-code -- \
+            data/generated/timetable/canonical \
+            data/generated/timetable/public
+
+      - name: Upload bounded acquisition evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-current-window-12-retry-2026-08-31
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: true
+          path: |
+            .calendar-actions-plan.json
+            .calendar-actions-matrix.json
+            .calendar-collection-job.json
+            .calendar-execution.json
+            data/generated/timetable/actions-multi-job-status/${{ steps.spec.outputs.batch_id }}.json
+            data/generated/timetable/nar-incremental-batches/${{ steps.spec.outputs.batch_id }}/
+            data/candidates/nar-incremental-batches/${{ steps.spec.outputs.batch_id }}/
