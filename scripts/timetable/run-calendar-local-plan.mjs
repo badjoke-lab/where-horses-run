@@ -25,6 +25,12 @@ function readJson(relativePath) {
 function findPlan() {
   if (planFile) {
     const value = readJson(planFile);
+    if (value.schema_version === 'calendar-due-job-plan-v1') {
+      if (value.collection_plan?.schema_version === 'calendar-collection-plan-v1') {
+        return value.collection_plan;
+      }
+      throw new Error(`due Job Plan in ${planFile} must contain a calendar-collection-plan-v1 collection_plan`);
+    }
     if (value.schema_version === 'calendar-collection-plan-v1') return value;
     if (Array.isArray(value.plans)) {
       const selected = value.plans.find((entry) => entry.plan_id === planId);

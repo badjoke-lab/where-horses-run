@@ -84,13 +84,6 @@ export function writeCommandReport(commandName, sources) {
     },
     queued_groups: [...new Set(report.sources_checked.map((source) => `${source.country_id}/${source.group_id}`))]
   });
-  writeJson('data/generated/timetable/current.json', {
-    schema_version: 'current-timetable-v0',
-    generated_at: report.generated_at,
-    mode: 'skeleton_no_live_fetch',
-    records: [],
-    note: 'Current timetable generation will be populated by future parser-backed refresh PRs.'
-  });
   return report;
 }
 
