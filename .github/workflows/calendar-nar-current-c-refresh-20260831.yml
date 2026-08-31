@@ -1,6 +1,9 @@
 name: Calendar NAR current C refresh 2026-08-31
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nar-current-c-refresh-20260831.yml'
   push:
     branches:
       - acquisition/nar-current-c-refresh-20260831
@@ -11,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: calendar-nar-current-c-refresh-20260831
+  group: calendar-nar-current-c-refresh-20260831-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
 env:
