@@ -64,7 +64,11 @@ for (const file of [
   'scripts/timetable/archive-completed.mjs',
   'scripts/timetable/refresh-all.mjs',
   'scripts/timetable/build-current-timetable.mjs',
-  'scripts/timetable/generate-update-report.mjs'
+  'scripts/timetable/generate-update-report.mjs',
+  'scripts/timetable/run-calendar-local-plan.mjs',
+  'scripts/timetable/plan-actions-multi-job.mjs',
+  'scripts/timetable/run-calendar-actions-job.mjs',
+  'scripts/timetable/refresh-core.test.mjs'
 ]) {
   assertFile(file);
 }
@@ -76,7 +80,7 @@ const commands = [
   ['node', ['scripts/timetable/archive-completed.mjs']],
   ['node', ['scripts/timetable/build-current-timetable.mjs']],
   ['node', ['scripts/timetable/generate-update-report.mjs']],
-  ['node', ['scripts/timetable/refresh-all.mjs']]
+  ['node', ['--test', 'scripts/timetable/refresh-core.test.mjs']]
 ];
 
 for (const [cmd, args] of commands) {
@@ -86,6 +90,33 @@ for (const [cmd, args] of commands) {
     console.error(result.stderr);
     fail(`Command failed: ${cmd} ${args.join(' ')}`);
   }
+}
+
+const refreshEntrypoint = readText('scripts/timetable/refresh-all.mjs');
+for (const marker of [
+  'run-calendar-local-plan.mjs',
+  'plan-actions-multi-job.mjs',
+  'run-calendar-actions-job.mjs',
+  "review_promotion: 'not_performed'"
+]) {
+  if (!refreshEntrypoint.includes(marker)) fail(`Calendar refresh entrypoint must include: ${marker}`);
+}
+for (const forbidden of [
+  'writeCommandReport',
+  "promote:timetable",
+  "promote-timetable.mjs"
+]) {
+  if (refreshEntrypoint.includes(forbidden)) fail(`Calendar refresh entrypoint must not include: ${forbidden}`);
+}
+
+const refreshWithoutPlan = spawnSync('node', ['scripts/timetable/refresh-all.mjs'], {
+  cwd: root,
+  encoding: 'utf8'
+});
+const refreshDiagnostic = `${refreshWithoutPlan.stdout}\n${refreshWithoutPlan.stderr}`;
+if (refreshWithoutPlan.status === 0) fail('Calendar refresh must reject execution without an explicit Collection Plan.');
+if (!refreshDiagnostic.includes('provide exactly one of --plan-id=<id> or --plan-file=<path>')) {
+  fail('Calendar refresh without a plan must explain the Collection Plan contract.');
 }
 
 const promoteEntrypoint = readText('scripts/timetable/promote-timetable.mjs');
@@ -112,8 +143,8 @@ if (current.schema_version !== 'current-timetable-v0') fail('current.json schema
 if (report.schema_version !== 'timetable-update-report-v0') fail('update-report.json schema mismatch.');
 if (health.schema_version !== 'timetable-source-health-v0') fail('source-health.json schema mismatch.');
 if (promotion.schema_version !== 'timetable-promotion-status-v0') fail('promotion-status.json schema mismatch.');
-if (report.mode !== 'skeleton_no_live_fetch') fail('PR-109 must remain skeleton_no_live_fetch.');
-if (current.mode !== 'skeleton_no_live_fetch') fail('current.json must remain skeleton_no_live_fetch.');
+if (report.mode !== 'skeleton_no_live_fetch') fail('Legacy report commands must remain explicitly marked skeleton_no_live_fetch.');
 
 console.log(`[timetable-refresh-skeleton] PASS: ${countries.size} countries, ${activeGroups.size} active groups, ${legacyGroups.size} legacy group, ${registry.sources.length} source rows.`);
+console.log('[timetable-refresh-skeleton] CONTROL_PLANE_ENTRYPOINT: pass');
 console.log('[timetable-refresh-skeleton] PROMOTION_INPUT_GATE: pass');
