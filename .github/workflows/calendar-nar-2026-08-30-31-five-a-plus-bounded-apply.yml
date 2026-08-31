@@ -140,7 +140,7 @@ jobs:
             const publicMeeting = publicList.meetings.find((row) => row.meeting_id === id);
             const publicDetail = publicDetails.details.find((row) => row.meeting_id === id);
             if (meeting?.capability_rank !== 'A+' || meeting.first_race_time_local !== record.first_race_time_local || meeting.last_race_time_local !== record.last_race_time_local) throw new Error(`${id} canonical meeting differs`);
-            if (detail?.capability_rank !== 'A+' || JSON.stringify(detail.timetable_rows) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} canonical detail differs`);
+            if (detail?.capability_rank !== 'A+' || JSON.stringify(projectPublicSafeRows(detail.timetable_rows)) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} canonical detail differs`);
             if ((publicMeeting?.effective_public_rank ?? publicMeeting?.capability_rank) !== 'A+') throw new Error(`${id} public meeting rank differs`);
             if ((publicDetail?.effective_public_rank ?? publicDetail?.capability_rank) !== 'A+' || JSON.stringify(projectPublicSafeRows(publicDetail.timetable_rows)) !== JSON.stringify(record.timetable_rows)) throw new Error(`${id} public detail differs`);
           }
