@@ -109,6 +109,11 @@ for (const forbidden of [
   if (refreshEntrypoint.includes(forbidden)) fail(`Calendar refresh entrypoint must not include: ${forbidden}`);
 }
 
+const localPlanRunner = readText('scripts/timetable/run-calendar-local-plan.mjs');
+for (const marker of ['calendar-due-job-plan-v1', 'value.collection_plan']) {
+  if (!localPlanRunner.includes(marker)) fail(`Local Calendar runner must support due Job Plans via: ${marker}`);
+}
+
 const refreshWithoutPlan = spawnSync('node', ['scripts/timetable/refresh-all.mjs'], {
   cwd: root,
   encoding: 'utf8'
