@@ -54,7 +54,8 @@ export function createBaseReport(commandName, sources) {
     stale_records: 0,
     parser_errors: [],
     warnings: [
-      'PR-109 defines command structure only; live fetch and source-specific parser implementations are intentionally out of scope.'
+      'PR-109 defines command structure only; live fetch and source-specific parser implementations are intentionally out of scope.',
+      'Skeleton refresh reporting never writes data/generated/timetable/current.json.'
     ]
   };
 }
@@ -83,13 +84,6 @@ export function writeCommandReport(commandName, sources) {
       A: 'skip promotion, but refresh until archived when meeting is complete'
     },
     queued_groups: [...new Set(report.sources_checked.map((source) => `${source.country_id}/${source.group_id}`))]
-  });
-  writeJson('data/generated/timetable/current.json', {
-    schema_version: 'current-timetable-v0',
-    generated_at: report.generated_at,
-    mode: 'skeleton_no_live_fetch',
-    records: [],
-    note: 'Current timetable generation will be populated by future parser-backed refresh PRs.'
   });
   return report;
 }
