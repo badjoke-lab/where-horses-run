@@ -5,18 +5,18 @@ on:
     branches:
       - main
     paths:
-      - 'data/operations/calendar-refresh-plans/calendar-production-refresh-2026-09-01-001.json'
+      - 'data/operations/calendar-refresh-plans/calendar-production-banei-retry-2026-09-01-002.json'
       - '.github/workflows/calendar-production-refresh-request.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: calendar-production-refresh-2026-09-01-001
+  group: calendar-production-banei-retry-2026-09-01-002
   cancel-in-progress: false
 
 env:
-  PLAN_FILE: data/operations/calendar-refresh-plans/calendar-production-refresh-2026-09-01-001.json
+  PLAN_FILE: data/operations/calendar-refresh-plans/calendar-production-banei-retry-2026-09-01-002.json
 
 jobs:
   prepare:
@@ -37,11 +37,11 @@ jobs:
             --plan-file="$PLAN_FILE" \
             --output=.calendar-production-actions-plan.json \
             --matrix-output=.calendar-production-actions-matrix.json
-          node --input-type=module -e "import fs from 'node:fs'; const plan=JSON.parse(fs.readFileSync('.calendar-production-actions-plan.json','utf8')); if (plan.excluded.length) { console.error(JSON.stringify(plan.excluded)); process.exit(1); } if (!plan.jobs.length) { console.error('production refresh planned zero hosted jobs'); process.exit(1); }"
+          node --input-type=module -e "import fs from 'node:fs'; const plan=JSON.parse(fs.readFileSync('.calendar-production-actions-plan.json','utf8')); if (plan.excluded.length) { console.error(JSON.stringify(plan.excluded)); process.exit(1); } if (plan.jobs.length !== 1) { console.error('Banei retry must plan exactly one hosted job'); process.exit(1); }"
           echo "matrix=$(cat .calendar-production-actions-matrix.json)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: calendar-production-actions-plan-2026-09-01-001
+          name: calendar-production-actions-plan-banei-retry-2026-09-01-002
           path: .calendar-production-actions-plan.json
           retention-days: 14
 
@@ -79,8 +79,6 @@ jobs:
           retention-days: 14
           path: |
             data/generated/timetable/actions-multi-job-status/${{ matrix.batch_id }}.json
-            data/generated/timetable/nar-incremental-batches/${{ matrix.batch_id }}/
-            data/candidates/nar-incremental-batches/${{ matrix.batch_id }}/
             data/generated/timetable/actions-multi-job/${{ matrix.batch_id }}/
 
   collect:
@@ -121,18 +119,18 @@ jobs:
           statuses.sort((a, b) => a.job_id.localeCompare(b.job_id));
           const summary = {
             schema_version: 'calendar-production-refresh-summary-v1',
-            plan_id: 'calendar-production-refresh-2026-09-01-001',
+            plan_id: 'calendar-production-banei-retry-2026-09-01-002',
             statuses,
             counts: Object.fromEntries(['success', 'partial', 'source_error'].map((status) => [status, statuses.filter((item) => item.status === status).length])),
           };
-          fs.writeFileSync('.calendar-production-refresh-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          fs.writeFileSync('calendar-production-refresh-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
           console.log(JSON.stringify(summary));
-          if (statuses.length !== 3) process.exit(1);
+          if (statuses.length !== 1) process.exit(1);
           if (statuses.some((item) => item.status === 'source_error')) process.exit(1);
           NODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: calendar-production-refresh-summary-2026-09-01-001
-          path: .calendar-production-refresh-summary.json
+          name: calendar-production-refresh-summary-banei-retry-2026-09-01-002
+          path: calendar-production-refresh-summary.json
           retention-days: 14
