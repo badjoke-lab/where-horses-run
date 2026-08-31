@@ -54,8 +54,7 @@ export function createBaseReport(commandName, sources) {
     stale_records: 0,
     parser_errors: [],
     warnings: [
-      'PR-109 defines command structure only; live fetch and source-specific parser implementations are intentionally out of scope.',
-      'Skeleton refresh reporting never writes data/generated/timetable/current.json.'
+      'PR-109 defines command structure only; live fetch and source-specific parser implementations are intentionally out of scope.'
     ]
   };
 }
