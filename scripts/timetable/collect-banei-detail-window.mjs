@@ -146,6 +146,12 @@ async function collectMeeting(meeting, checkedAt, delayMs) {
   }
   const expected = discoverBaneiRaceNumbers(listResponse.body);
   const rows = parseBaneiRaceList(listResponse.body, meeting.date);
+  if (expected.length === 0 && rows.length === 0) {
+    return {
+      candidate: null,
+      blocker: blocker(meeting, 'scheduled_pending_details', 'race_details_not_published', listResponse.status),
+    };
+  }
   if (!continuousRaceNumbers(expected)) {
     return { candidate: null, blocker: blocker(meeting, 'parser_failure', 'race_number_discovery_incomplete', listResponse.status) };
   }
@@ -217,6 +223,7 @@ for (const meeting of targets) {
   if (result.blocker) blockers.push(result.blocker);
 }
 
+const sourceErrorBlockers = blockers.filter((item) => item.status !== 'scheduled_pending_details');
 const scope = requestedScope(args);
 const coverage = {
   schema_version: 'calendar-coverage-observation-v1',
@@ -231,7 +238,7 @@ const coverage = {
   records_updated: candidates.length,
   unresolved_dates: [...new Set(blockers.map((item) => item.date))].sort(),
   unresolved_meeting_ids: blockers.map((item) => item.meeting_id).sort(),
-  source_errors: blockers.map((item) => ({
+  source_errors: sourceErrorBlockers.map((item) => ({
     code: item.status === 'source_unavailable'
       ? 'source_unavailable'
       : item.status === 'parser_failure'
@@ -240,7 +247,7 @@ const coverage = {
     scope_ref: item.meeting_id,
     message: `Banei detail collection ${item.status}: ${item.reason}`.slice(0, 500),
   })),
-  coverage_claim: blockers.length === 0 ? 'source_window_complete' : 'partial',
+  coverage_claim: sourceErrorBlockers.length === 0 ? 'source_window_complete' : 'partial',
   completion_audit_ref: null,
 };
 const coverageValidation = validateCoverageObservation(coverage);
