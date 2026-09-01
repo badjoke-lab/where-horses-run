@@ -2,17 +2,24 @@ import baselineGlossary from '../../data/static/glossary.json';
 import roleGlossaryOverlay from '../../data/static/glossary-entries-role-v1.json';
 import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetable-v1.json';
 import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
+import coreRacingGlossaryOverlay from '../../data/static/glossary-entries-core-racing-v1.json';
 import multilingualFieldPatches from '../../data/static/glossary-fields-multilingual-v1.json';
 import beginnerExplanationPatches from '../../data/static/glossary-fields-beginner-v1.json';
 import relationshipGraphPatches from '../../data/static/glossary-relationships-graph-v1.json';
 import categoryLabelRegistry from '../../data/static/glossary-category-labels-v1.json';
 
-const overlays = [roleGlossaryOverlay, timetableGlossaryOverlay, officialSourceGlossaryOverlay] as const;
+const overlays = [
+  roleGlossaryOverlay,
+  timetableGlossaryOverlay,
+  officialSourceGlossaryOverlay,
+  coreRacingGlossaryOverlay,
+] as const;
 type GlossaryRecord =
   | (typeof baselineGlossary)[number]
   | (typeof roleGlossaryOverlay)[number]
   | (typeof timetableGlossaryOverlay)[number]
-  | (typeof officialSourceGlossaryOverlay)[number];
+  | (typeof officialSourceGlossaryOverlay)[number]
+  | (typeof coreRacingGlossaryOverlay)[number];
 
 const hiddenPublicGlossaryIds = new Set([
   'fixture',
