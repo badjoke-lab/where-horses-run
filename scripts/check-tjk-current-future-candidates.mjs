@@ -11,6 +11,8 @@ import {
 } from './timetable/tjk-current-future-candidates.mjs';
 
 const FORBIDDEN_PAYLOAD_KEYS = new Set(['raw_html', 'html', 'raw_body', 'body', 'racecard', 'racecards', 'odds', 'results', 'payouts', 'tips']);
+const ALLOWED_RANKS = new Set(['C', 'A']);
+const DETAIL_STATUSES = new Set(['available', 'not_published', 'conflict', 'source_error']);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -28,6 +30,10 @@ function scanForbiddenPayload(value, path = '$') {
   }
 }
 
+function validTime(value) {
+  return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value);
+}
+
 export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
   assert(artifact && typeof artifact === 'object' && !Array.isArray(artifact), 'artifact must be an object');
   assert(artifact.schema === SCHEMA, `unsupported schema: ${artifact.schema ?? '<missing>'}`);
@@ -36,17 +42,22 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
   assert(artifact.timezone === TIMEZONE, `timezone must be ${TIMEZONE}`);
   assert(artifact.entry_url === ENTRY_URL, 'entry_url must be the current TJK YarisSever programme landing');
   assert(artifact.effective_today === today, 'effective_today must match the validated Turkey date');
+  assert(artifact.technical_capability_rank === 'A+', 'technical_capability_rank must remain A+');
+  assert(artifact.publication_ceiling === 'A', 'publication_ceiling must remain A');
+  assert(artifact.collection_target_rank === 'best_available', 'collection_target_rank must be best_available');
   assert(artifact.raw_body_retained === false, 'raw_body_retained must be false');
   assert(artifact.disposition?.target === 'candidate_only', 'target must be candidate_only');
   assert(artifact.disposition?.requires_review === true, 'requires_review must be true');
   assert(artifact.disposition?.canonical_write === false, 'canonical_write must be false');
   assert(artifact.disposition?.public_write === false, 'public_write must be false');
-  assert(artifact.discovery?.method === 'official_programme_page_anchors_only', 'discovery.method invalid');
+  assert(artifact.discovery?.method === 'official_programme_page_anchors_plus_page_discovered_detail', 'discovery.method invalid');
   assert(Array.isArray(artifact.candidates), 'candidates must be an array');
   scanForbiddenPayload(artifact);
 
   const ids = new Set();
   const urls = new Set();
+  let rankC = 0;
+  let rankA = 0;
   for (const [index, candidate] of artifact.candidates.entries()) {
     const prefix = `candidates[${index}]`;
     assert(candidate.source === 'tjk', `${prefix}.source must be tjk`);
@@ -59,6 +70,28 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
     assert(candidate.date >= today, `${prefix}.date is in the past`);
     assert(typeof candidate.racecourse === 'string' && candidate.racecourse.length > 0, `${prefix}.racecourse missing`);
     assert(typeof candidate.racecourse_source_id === 'string' && /^\d+$/.test(candidate.racecourse_source_id), `${prefix}.racecourse_source_id invalid`);
+    assert(ALLOWED_RANKS.has(candidate.capability_rank), `${prefix}.capability_rank must be C or A`);
+    assert(candidate.publication_ceiling === 'A', `${prefix}.publication_ceiling must be A`);
+    assert(Array.isArray(candidate.timetable_rows), `${prefix}.timetable_rows must be an array`);
+    assert(DETAIL_STATUSES.has(candidate.detail_observation?.status), `${prefix}.detail_observation.status invalid`);
+
+    if (candidate.capability_rank === 'A') {
+      rankA += 1;
+      assert(candidate.detail_observation.status === 'available', `${prefix} A requires available detail`);
+      assert(candidate.timetable_rows.length > 0, `${prefix} A requires timetable rows`);
+      assert(validTime(candidate.first_race_time_local) && validTime(candidate.last_race_time_local), `${prefix} A requires first/last times`);
+      assert(candidate.first_race_time_local === candidate.timetable_rows[0].post_time_local, `${prefix}.first_race_time_local differs`);
+      assert(candidate.last_race_time_local === candidate.timetable_rows.at(-1).post_time_local, `${prefix}.last_race_time_local differs`);
+      candidate.timetable_rows.forEach((row, rowIndex) => {
+        assert(row.race_number === rowIndex + 1, `${prefix}.timetable_rows must be contiguous Race 1-N`);
+        assert(validTime(row.post_time_local), `${prefix}.timetable_rows[${rowIndex}].post_time_local invalid`);
+      });
+    } else {
+      rankC += 1;
+      assert(candidate.first_race_time_local === null && candidate.last_race_time_local === null, `${prefix} C must not expose race times`);
+      assert(candidate.timetable_rows.length === 0, `${prefix} C must not expose timetable rows`);
+      assert(candidate.detail_observation.status !== 'available', `${prefix} C cannot claim available detail`);
+    }
 
     let sourceUrl;
     let discoveredFrom;
@@ -85,7 +118,10 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
     urls.add(sourceUrl.href);
   }
 
-  return { ok: true, candidates: artifact.candidates.length, today };
+  assert(artifact.discovery?.detail_pages_attempted === artifact.candidates.length, 'detail_pages_attempted must equal candidate count');
+  assert(artifact.discovery?.rank_counts?.C === rankC, 'discovery rank_counts.C differs');
+  assert(artifact.discovery?.rank_counts?.A === rankA, 'discovery rank_counts.A differs');
+  return { ok: true, candidates: artifact.candidates.length, rank_counts: { C: rankC, A: rankA }, today };
 }
 
 function main() {
