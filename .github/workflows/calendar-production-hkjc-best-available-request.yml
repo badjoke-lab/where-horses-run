@@ -1,0 +1,175 @@
+name: Calendar production HKJC best-available request
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-004.json'
+      - '.github/workflows/calendar-production-hkjc-best-available-request.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-production-hkjc-best-available-2026-09-01-004
+  cancel-in-progress: false
+
+env:
+  PLAN_FILE: data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-004.json
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - id: plan
+        name: Compile HKJC hosted Job
+        shell: bash
+        run: |
+          node scripts/timetable/plan-actions-multi-job.mjs \
+            --plan-file="$PLAN_FILE" \
+            --output=.calendar-production-actions-plan.json \
+            --matrix-output=.calendar-production-actions-matrix.json
+          node --input-type=module -e "import fs from 'node:fs'; const plan=JSON.parse(fs.readFileSync('.calendar-production-actions-plan.json','utf8')); if (plan.excluded.length) { console.error(JSON.stringify(plan.excluded)); process.exit(1); } if (plan.jobs.length !== 1) { console.error('HKJC refresh must plan exactly one hosted job'); process.exit(1); }"
+          echo "matrix=$(cat .calendar-production-actions-matrix.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: calendar-production-actions-plan-hkjc-best-available-2026-09-01-004
+          path: .calendar-production-actions-plan.json
+          retention-days: 14
+
+  execute:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Write immutable Job and execution specifications
+        env:
+          COLLECTION_JOB_JSON: ${{ toJson(matrix.collection_job) }}
+          EXECUTION_JSON: ${{ toJson(matrix.execution) }}
+        shell: bash
+        run: |
+          printf '%s\n' "$COLLECTION_JOB_JSON" > .calendar-collection-job.json
+          printf '%s\n' "$EXECUTION_JSON" > .calendar-execution.json
+      - name: Run production HKJC acquisition Job
+        run: |
+          node scripts/timetable/run-calendar-actions-job.mjs \
+            --job=.calendar-collection-job.json \
+            --execution=.calendar-execution.json
+      - name: Summarize observed ranks
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const execution = JSON.parse(fs.readFileSync('.calendar-execution.json', 'utf8'));
+          const base = path.join('data/generated/timetable/actions-multi-job', execution.batch_id);
+          if (!fs.existsSync(base)) process.exit(0);
+          const candidate = JSON.parse(fs.readFileSync(path.join(base, 'candidates.json'), 'utf8'));
+          const coverage = JSON.parse(fs.readFileSync(path.join(base, 'coverage-observation.json'), 'utf8'));
+          const report = JSON.parse(fs.readFileSync(path.join(base, 'collection-report.json'), 'utf8'));
+          console.log(JSON.stringify({
+            batch_id: execution.batch_id,
+            records_discovered: candidate.records.length,
+            rank_counts: Object.fromEntries(['C','B','B+','A','A+'].map((rank) => [rank, candidate.records.filter((record) => record.capability_rank === rank).length])),
+            source_error_count: coverage.source_errors.length,
+            coverage_claim: coverage.coverage_claim,
+            live_racecard_route_invoked: report.live_racecard_route_invoked,
+            schedule_only_execution: report.schedule_only_execution,
+          }));
+          NODE
+      - name: Upload HKJC Job artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-production-job-${{ matrix.job_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            data/generated/timetable/actions-multi-job-status/${{ matrix.batch_id }}.json
+            data/generated/timetable/actions-multi-job/${{ matrix.batch_id }}/
+
+  collect:
+    if: always()
+    needs:
+      - prepare
+      - execute
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: calendar-production-job-*
+          merge-multiple: true
+          path: .calendar-production-artifacts
+      - name: Collect HKJC acquisition status and rank counts
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const root = '.calendar-production-artifacts';
+          let status = null;
+          let candidate = null;
+          let coverage = null;
+          let report = null;
+          function walk(dir) {
+            if (!fs.existsSync(dir)) return;
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) walk(full);
+              else if (entry.name.endsWith('.json')) {
+                try {
+                  const value = JSON.parse(fs.readFileSync(full, 'utf8'));
+                  if (value?.schema_version === 'calendar-actions-job-status-v1') status = value;
+                  if (value?.schema_version === 'timetable-candidate-v1') candidate = value;
+                  if (value?.schema_version === 'calendar-coverage-observation-v1') coverage = value;
+                  if (value?.schema_version === 'calendar-hkjc-live-best-available-report-v1') report = value;
+                } catch {}
+              }
+            }
+          }
+          walk(root);
+          if (!status || !candidate || !coverage || !report) throw new Error('HKJC production artifacts incomplete');
+          const rankCounts = Object.fromEntries(['C','B','B+','A','A+'].map((rank) => [rank, candidate.records.filter((record) => record.capability_rank === rank).length]));
+          const summary = {
+            schema_version: 'calendar-production-hkjc-best-available-summary-v1',
+            plan_id: 'calendar-production-hkjc-best-available-2026-09-01-004',
+            status: status.status,
+            records_discovered: candidate.records.length,
+            rank_counts: rankCounts,
+            source_error_count: coverage.source_errors.length,
+            coverage_claim: coverage.coverage_claim,
+            live_racecard_route_invoked: report.live_racecard_route_invoked,
+            schedule_only_execution: report.schedule_only_execution,
+            publication_effect: report.publication_effect,
+            canonical_write_enabled: report.canonical_write_enabled,
+            public_write_enabled: report.public_write_enabled,
+          };
+          fs.writeFileSync('calendar-production-hkjc-best-available-summary.json', `${JSON.stringify(summary, null, 2)}\n`);
+          console.log(JSON.stringify(summary));
+          if (status.status === 'source_error') process.exit(1);
+          if (coverage.source_errors.length) process.exit(1);
+          if (report.live_racecard_route_invoked !== true || report.schedule_only_execution !== false) process.exit(1);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: calendar-production-hkjc-best-available-summary-2026-09-01-004
+          path: calendar-production-hkjc-best-available-summary.json
+          retention-days: 14

@@ -1,0 +1,33 @@
+name: Full Calendar rank gap audit
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit-top-tier-calendar-ranks.mjs'
+      - '.github/workflows/top-tier-rank-gap-audit.yml'
+      - 'data/generated/timetable/public/meeting-list.json'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Audit every published Calendar meeting
+        run: |
+          mkdir -p artifacts
+          node scripts/audit-top-tier-calendar-ranks.mjs \
+            --output artifacts/calendar-rank-audit-all.json
+      - name: Audit current 30-day Calendar window
+        run: |
+          node scripts/audit-top-tier-calendar-ranks.mjs \
+            --start 2026-08-31 \
+            --end 2026-10-01 \
+            --output artifacts/calendar-rank-audit-2026-08-31-through-2026-09-30.json
+      - name: Upload rank-gap audits
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-calendar-rank-audits
+          path: artifacts/calendar-rank-audit-*.json
