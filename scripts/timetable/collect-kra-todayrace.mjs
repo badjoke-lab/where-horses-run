@@ -7,7 +7,7 @@ const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
 
 const RACECOURSES = Object.freeze({
   'seoul-racecourse': { meet_code: '1', label: 'Seoul', weekly_column: 1 },
-  'jeju-racecourse': { meet_code: '2', label: 'Jeju', weekly_column: 3 },
+  'jeju-racecourse': { meet_code: '2', label: 'Jeju', weekly_column: 4 },
   'busan-gyeongnam-racecourse': { meet_code: '3', label: 'Busan-Gyeongnam', weekly_column: 2 },
 });
 const WEEKDAY_BLOCK_INDEX = Object.freeze({
@@ -137,19 +137,6 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   }));
 }
 
-function weeklyParserDiagnostics(html, date) {
-  const block = targetWeeklyBlock(html, date);
-  if (!block) return { block_found: false };
-  return {
-    block_found: true,
-    rows: block.slice(0, 8).map(({ hour, cells }) => ({
-      hour,
-      cell_count: cells.length,
-      cells: cells.map((cell) => cell.slice(0, 80)),
-    })),
-  };
-}
-
 function mergeRows(baseRows, supplementalRows) {
   const merged = new Map(baseRows.map((row) => [row.race_number, structuredClone(row)]));
   for (const row of supplementalRows) {
@@ -275,8 +262,5 @@ if (!successfulPages.length) {
   observation.source.official_url = weeklyPage
     ? 'https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do'
     : observation.source.official_url;
-  if (weeklyPage && args['racecourse-id'] === 'jeju-racecourse') {
-    observation.weekly_parser_diagnostics = weeklyParserDiagnostics(weeklyPage.html, args.date);
-  }
   console.log(JSON.stringify(observation, null, 2));
 }
