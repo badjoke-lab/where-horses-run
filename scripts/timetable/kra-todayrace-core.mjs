@@ -30,9 +30,11 @@ function normalizeDistance(value) {
 }
 
 function normalizeTime(value) {
-  const match = String(value ?? '').match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
-  if (!match) return null;
-  return `${match[1].padStart(2, '0')}:${match[2]}`;
+  const colon = String(value ?? '').match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
+  if (colon) return `${colon[1].padStart(2, '0')}:${colon[2]}`;
+  const korean = String(value ?? '').match(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/);
+  if (korean) return `${korean[1].padStart(2, '0')}:${korean[2]}`;
+  return null;
 }
 
 function raceNumberFromBlock(raw, text) {
@@ -117,6 +119,26 @@ function sequentialTimeRows(html, sourceLabel) {
   return rows;
 }
 
+function orderedVisibleTimeRows(html, blockRows, sourceLabel) {
+  const raceNumbers = [...blockRows.keys()].sort((a, b) => a - b);
+  if (raceNumbers.length < 2 || !raceNumbers.every((value, index) => value === index + 1)) return new Map();
+
+  const text = textFromHtml(html);
+  let times = [...text.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g)]
+    .map((match) => `${match[1].padStart(2, '0')}:${match[2]}`);
+  if (times.length !== raceNumbers.length) {
+    times = [...text.matchAll(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/g)]
+      .map((match) => `${match[1].padStart(2, '0')}:${match[2]}`);
+  }
+  if (times.length !== raceNumbers.length) return new Map();
+
+  return new Map(raceNumbers.map((raceNumber, index) => [raceNumber, {
+    race_number: raceNumber,
+    post_time_local: times[index],
+    sources: [sourceLabel],
+  }]));
+}
+
 function mergeRows(target, incoming) {
   for (const [raceNumber, row] of incoming) {
     const prior = target.get(raceNumber) ?? { race_number: raceNumber, sources: [] };
@@ -136,8 +158,10 @@ function contiguous(rows) {
 export function parseKraTodayRacePages(pages) {
   const merged = new Map();
   for (const page of pages) {
-    mergeRows(merged, extractRowsFromBlocks(page.html, page.source));
+    const blockRows = extractRowsFromBlocks(page.html, page.source);
+    mergeRows(merged, blockRows);
     mergeRows(merged, sequentialTimeRows(page.html, page.source));
+    mergeRows(merged, orderedVisibleTimeRows(page.html, blockRows, page.source));
   }
   const rows = [...merged.values()].sort((a, b) => a.race_number - b.race_number);
   return rows;
@@ -197,7 +221,7 @@ export function buildKraMeetingObservation({ meetingId, date, racecourseId, meet
       source_id: 'kra-today-race',
       official_url: 'https://todayrace.kra.co.kr/main.do',
       checked_at: checkedAt,
-      extraction_method: 'live_post_public_safe',
+      extraction_method: 'live_public_safe',
     },
     raw_html_stored: false,
   };
