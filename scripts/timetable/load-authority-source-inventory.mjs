@@ -9,6 +9,11 @@ const SUPPLEMENTS = Object.freeze([
     schemaVersion: 'authority-source-inventory-kra-calendar-plan-v1',
   },
   {
+    key: 'kra_live_detail',
+    path: 'data/static/authority-source-inventory-kra-live-detail-v1.json',
+    schemaVersion: 'authority-source-inventory-kra-live-detail-v1',
+  },
+  {
     key: 'nar_race_list',
     path: 'data/static/authority-source-inventory-nar-race-list-v1.json',
     schemaVersion: 'authority-source-inventory-nar-race-list-v1',
