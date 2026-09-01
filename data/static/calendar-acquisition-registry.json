@@ -117,6 +117,29 @@
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
       "operator_notes": "Active evidence-backed UAE profile. GitHub Actions supports the ERA source-visible season-calendar C path and explicit selected-meeting C-to-A detail retry through the official racecard route. Live detail run 29199123357 proved 10 Al Ain races from 17:00 through 21:30. Selected-meeting Retry Queue and Review Queue artifacts are review-only; fallback execution, automatic approval, Canonical/public writes, and unattended publication remain disabled."
+    },
+    {
+      "system_id": "kra-national-racing-system",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "kra-today-race",
+      "detail_source_id": "kra-today-race",
+      "schedule_adapter_id": "kra-today-race-live-v1",
+      "detail_adapter_id": "kra-today-race-live-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A+",
+      "supported_observation_ranks": ["C", "B", "B+", "A", "A+"],
+      "supports_date_window": false,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": true,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": ["fallback_runner", "schedule_discovery_route"],
+      "operator_notes": "Active evidence-backed KRA detail profile. GitHub Actions may collect explicitly selected known meetings from official KRA todayrace pages and classify C/B/B+/A/A+ best-available observations. Historical live proof reproduces A+ while future meetings may remain C until official post times are published. Date-window discovery, fallback execution, automatic approval, promotion, Canonical/public writes, and unattended publication remain disabled."
     }
   ]
 }
