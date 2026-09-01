@@ -11,6 +11,7 @@ const identityReviewPath = 'data/static/kra-2026-reviewed-public-timetable-ident
 const canonicalMeetingsPath = 'data/generated/timetable/canonical/meetings.json';
 const canonicalDetailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publishedNote = 'Human-approved KRA Rank C meeting identity. Publication remains limited to meeting date, racecourse identity, and reviewed official source trace.';
+const rankOrder = new Map([['D', 0], ['C', 1], ['B', 2], ['B+', 3], ['A', 4], ['A+', 5]]);
 
 const manifest = readJson(manifestPath);
 const identityReview = readJson(identityReviewPath);
@@ -68,16 +69,24 @@ const targetIds = new Set(manifest.records.map((record) => record.meeting_id));
 const currentTargets = canonicalMeetings.meetings.filter((record) => targetIds.has(record.meeting_id));
 const currentNonTargets = canonicalMeetings.meetings.filter((record) => !targetIds.has(record.meeting_id));
 const currentNonTargetDetails = canonicalDetails.details.filter((record) => !targetIds.has(record.meeting_id));
+const currentTargetById = new Map(currentTargets.map((record) => [record.meeting_id, record]));
+const supersededIds = new Set(currentTargets
+  .filter((record) => (rankOrder.get(record.capability_rank) ?? -1) > rankOrder.get('C'))
+  .map((record) => record.meeting_id));
+const legacyCandidate = {
+  ...approvedCandidate,
+  records: approvedCandidate.records.filter((record) => !supersededIds.has(record.meeting_id))
+};
 
 const promotion = promoteApprovedCandidateV1({
-  candidate: approvedCandidate,
+  candidate: legacyCandidate,
   meetingsDataset: canonicalMeetings,
   detailsDataset: canonicalDetails,
   authorityInventory: inventory,
   readinessRegistry,
   inputPath: 'data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json'
 });
-assert.equal(promotion.summary.promoted_meeting_ids.length, 32);
+assert.equal(promotion.summary.promoted_meeting_ids.length, legacyCandidate.records.length);
 assert.equal(promotion.summary.promoted_detail_ids.length, 0);
 assert.equal(promotion.summary.removed_detail_ids.length, 0);
 assert.equal(promotion.summary.downgraded_meeting_ids.length, 0);
@@ -87,32 +96,41 @@ assert.ok(currentTargets.length === 0 || currentTargets.length === 32, 'KRA cano
 for (const record of currentTargets) {
   assert.equal(record.country_id, 'south-korea');
   assert.equal(record.authority_id, 'korea-racing-authority');
-  assert.equal(record.capability_rank, 'C');
-  assert.equal(record.first_race_time_local, null);
-  assert.equal(record.last_race_time_local, null);
-  assert.equal(record.notes, publishedNote, 'published KRA approval note must remain exact');
+  assert.ok((rankOrder.get(record.capability_rank) ?? -1) >= rankOrder.get('C'), `${record.meeting_id} must not regress below reviewed Rank C`);
+  if (record.capability_rank === 'C') {
+    assert.equal(record.first_race_time_local, null);
+    assert.equal(record.last_race_time_local, null);
+    assert.equal(record.notes, publishedNote, 'unsuperseded Rank C KRA approval note must remain exact');
+  } else {
+    assert.ok(record.first_race_time_local, `${record.meeting_id} superseding rank must retain first race time`);
+    assert.ok(record.last_race_time_local, `${record.meeting_id} superseding rank must retain last race time`);
+  }
 }
-assert.equal(canonicalDetails.details.filter((record) => targetIds.has(record.meeting_id)).length, 0, 'Rank C KRA meetings must never create canonical race-detail rows');
+
+const currentTargetDetails = canonicalDetails.details.filter((record) => targetIds.has(record.meeting_id));
+for (const detail of currentTargetDetails) {
+  assert.ok(supersededIds.has(detail.meeting_id), `${detail.meeting_id} Rank C target must not gain details unless superseded by a higher reviewed rank`);
+  assert.ok((rankOrder.get(detail.capability_rank) ?? -1) > rankOrder.get('C'), `${detail.meeting_id} detail must belong to a higher reviewed rank`);
+}
+for (const id of supersededIds) {
+  assert.ok(currentTargetDetails.some((detail) => detail.meeting_id === id), `${id} superseding rank must have canonical detail`);
+}
 
 const promotedTargets = promotion.meetingsDataset.meetings.filter((record) => targetIds.has(record.meeting_id));
 const promotedNonTargets = promotion.meetingsDataset.meetings.filter((record) => !targetIds.has(record.meeting_id));
 const promotedNonTargetDetails = promotion.detailsDataset.details.filter((record) => !targetIds.has(record.meeting_id));
 assert.equal(promotedTargets.length, 32);
-assert.ok(promotedTargets.every((record) => record.capability_rank === 'C'));
-assert.ok(promotedTargets.every((record) => record.first_race_time_local === null && record.last_race_time_local === null));
+for (const record of promotedTargets) {
+  if (supersededIds.has(record.meeting_id)) {
+    assert.deepEqual(record, currentTargetById.get(record.meeting_id), `${record.meeting_id} higher reviewed rank must be preserved exactly`);
+  } else {
+    assert.equal(record.capability_rank, 'C');
+    assert.equal(record.first_race_time_local, null);
+    assert.equal(record.last_race_time_local, null);
+  }
+}
 assert.deepEqual(promotedNonTargets, currentNonTargets, 'KRA promotion must preserve separately reviewed non-KRA meetings exactly');
 assert.deepEqual(promotedNonTargetDetails, currentNonTargetDetails, 'KRA promotion must preserve separately reviewed non-KRA detail rows exactly');
-if (currentTargets.length === 32) {
-  const withoutPublicationNote = (record) => {
-    const { notes, ...rest } = record;
-    return rest;
-  };
-  assert.deepEqual(
-    promotedTargets.map(withoutPublicationNote),
-    currentTargets.map(withoutPublicationNote),
-    'already-published KRA target fields other than the human-approved publication note must remain deterministic'
-  );
-}
 
 assert.equal(identityReview.review.status, 'approved');
 assert.equal(identityReview.review.reviewer, manifest.review.reviewer);
@@ -123,9 +141,11 @@ assert.equal(identityReview.publication_boundary.deployment_performed, false);
 
 console.log('KRA_RANK_C_PROMOTION_GATE: pass');
 console.log('CANDIDATE_MEETINGS: 32');
+console.log(`LEGACY_RANK_C_TARGETS: ${legacyCandidate.records.length}`);
+console.log(`SUPERSEDED_BY_HIGHER_REVIEWED_RANK: ${supersededIds.size}`);
 console.log('APPROVAL_BINDING: pass');
 console.log('PROMOTION_CORE_DRY_RUN: pass');
 console.log('NON_KRA_PRESERVATION: pass');
-console.log('PUBLISHED_KRA_APPROVAL_NOTE: preserved');
-console.log(`CANONICAL_STATE: ${currentTargets.length === 32 ? 'published_rank_c' : 'approved_not_written'}`);
-console.log('PUBLIC_RANK_CEILING: C');
+console.log('HIGHER_RANK_SUPERSESSION: preserved');
+console.log(`CANONICAL_STATE: ${currentTargets.length === 32 ? 'published_rank_c_or_higher' : 'approved_not_written'}`);
+console.log('LEGACY_PUBLIC_RANK_FLOOR: C');
