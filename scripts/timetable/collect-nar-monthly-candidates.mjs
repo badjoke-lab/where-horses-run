@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { normalizeNarRaceName } from './nar-race-name-quality.mjs';
 
 const root = process.cwd();
 const matrixPath = 'data/static/nar-flat-racecourse-compatibility-v1.json';
@@ -163,7 +164,7 @@ function detailUrl(venueCode, date, raceNumber) {
 
 function raceName(block, raceNumber) {
   for (const match of block.matchAll(/<a\b[^>]*href=["'][^"']*(?:D[ea]baTable|S_DebaTable)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)) {
-    const value = compact(match[1]);
+    const value = normalizeNarRaceName(compact(match[1]));
     if (value && !/(出馬表|詳細|オッズ|結果)/.test(value)) return value;
   }
   const lines = text(block)
@@ -173,7 +174,9 @@ function raceName(block, raceNumber) {
     .filter((line) => !new RegExp(`^${raceNumber}\s*R$`, 'i').test(line))
     .filter((line) => !/^\d{1,2}:\d{2}$/.test(line))
     .filter((line) => !/^(?:ダート|芝)?\s*[右左]\s*\d{3,4}\s*[mｍＭ]$/.test(line))
-    .filter((line) => !/(出馬表|オッズ|結果|払戻|映像|予想|投票|変更情報|頭数)/.test(line));
+    .filter((line) => !/(出馬表|オッズ|結果|払戻|映像|予想|投票|変更情報|頭数)/.test(line))
+    .map((line) => normalizeNarRaceName(line))
+    .filter(Boolean);
   return lines.find((line) => line.length >= 2 && line.length <= 120) ?? null;
 }
 
