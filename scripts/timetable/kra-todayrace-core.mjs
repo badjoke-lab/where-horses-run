@@ -139,6 +139,42 @@ function orderedVisibleTimeRows(html, blockRows, sourceLabel) {
   }]));
 }
 
+function orderedCrossPageTimeRows(pages, rows) {
+  if (rows.length < 2 || !contiguous(rows)) return new Map();
+
+  let entries = [];
+  for (const page of pages) {
+    const text = textFromHtml(page.html);
+    for (const match of text.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g)) {
+      entries.push({
+        time: `${match[1].padStart(2, '0')}:${match[2]}`,
+        source: page.source,
+      });
+    }
+  }
+
+  if (entries.length !== rows.length) {
+    entries = [];
+    for (const page of pages) {
+      const text = textFromHtml(page.html);
+      for (const match of text.matchAll(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/g)) {
+        entries.push({
+          time: `${match[1].padStart(2, '0')}:${match[2]}`,
+          source: page.source,
+        });
+      }
+    }
+  }
+
+  if (entries.length !== rows.length) return new Map();
+
+  return new Map(rows.map((row, index) => [row.race_number, {
+    race_number: row.race_number,
+    post_time_local: entries[index].time,
+    sources: [entries[index].source],
+  }]));
+}
+
 function mergeRows(target, incoming) {
   for (const [raceNumber, row] of incoming) {
     const prior = target.get(raceNumber) ?? { race_number: raceNumber, sources: [] };
@@ -163,7 +199,12 @@ export function parseKraTodayRacePages(pages) {
     mergeRows(merged, sequentialTimeRows(page.html, page.source));
     mergeRows(merged, orderedVisibleTimeRows(page.html, blockRows, page.source));
   }
-  const rows = [...merged.values()].sort((a, b) => a.race_number - b.race_number);
+
+  let rows = [...merged.values()].sort((a, b) => a.race_number - b.race_number);
+  if (!rows.some((row) => row.post_time_local)) {
+    mergeRows(merged, orderedCrossPageTimeRows(pages, rows));
+    rows = [...merged.values()].sort((a, b) => a.race_number - b.race_number);
+  }
   return rows;
 }
 
