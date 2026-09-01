@@ -1,0 +1,38 @@
+name: Audit current 30d rank gap 20260901 once
+
+on:
+  push:
+    branches:
+      - audit/current-30d-rank-gap-20260901
+    paths:
+      - '.github/workflows/audit-current-30d-rank-gap-20260901-once.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Audit public rank distribution and C identities
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const start='2026-09-01', end='2026-10-01';
+          const data=JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8'));
+          const rows=(data.meetings ?? []).filter(x=>x.date>=start && x.date<end);
+          const ranks=['C','B','B+','A','A+'];
+          const grouped=new Map();
+          for(const x of rows){
+            const key=`${x.country_id} | ${x.authority_id}`;
+            if(!grouped.has(key)) grouped.set(key,{total:0,C:0,B:0,'B+':0,A:0,'A+':0,c_ids:[]});
+            const g=grouped.get(key); g.total++; if(ranks.includes(x.effective_rank)) g[x.effective_rank]++; else if(ranks.includes(x.capability_rank)) g[x.capability_rank]++;
+            const rank=x.effective_rank ?? x.capability_rank;
+            if(rank==='C') g.c_ids.push(x.meeting_id);
+          }
+          console.log(JSON.stringify({window:{start,end},total:rows.length,authorities:Object.fromEntries([...grouped.entries()].sort())},null,2));
+          NODE
