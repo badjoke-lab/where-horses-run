@@ -19,30 +19,36 @@ const racecourse = RACECOURSES[args['racecourse-id']];
 const meetingId = `kra-${args['racecourse-id']}-${args.date}`;
 const checkedAt = new Date().toISOString();
 const endpoints = [
-  { source: 'main-post', url: 'https://todayrace.kra.co.kr/main.do' },
-  { source: 'simple-post', url: 'https://todayrace.kra.co.kr/racing/info/selectSimpleInfoList.do' },
-  { source: 'info-post', url: 'https://todayrace.kra.co.kr/racing/info/selectInfoList.do' },
+  { source: 'main-post', method: 'POST', url: 'https://todayrace.kra.co.kr/main.do' },
+  { source: 'simple-post', method: 'POST', url: 'https://todayrace.kra.co.kr/racing/info/selectSimpleInfoList.do' },
+  { source: 'info-post', method: 'POST', url: 'https://todayrace.kra.co.kr/racing/info/selectInfoList.do' },
+];
+const detailEndpoints = [
+  { source: 'info-get', method: 'GET', url: 'https://todayrace.kra.co.kr/racing/info/selectInfoList.do' },
+  { source: 'simple-get', method: 'GET', url: 'https://todayrace.kra.co.kr/racing/info/selectSimpleInfoList.do' },
+  ...endpoints.slice().reverse(),
 ];
 
 async function fetchPage(endpoint, raceNumber = null) {
-  const bodyValues = { rcDate: dateCompact, meets: racecourse.meet_code, meet: racecourse.meet_code };
-  if (raceNumber != null) bodyValues.rcNo = String(raceNumber);
-  const body = new URLSearchParams(bodyValues);
+  const values = { rcDate: dateCompact, meets: racecourse.meet_code, meet: racecourse.meet_code };
+  if (raceNumber != null) values.rcNo = String(raceNumber);
+  const params = new URLSearchParams(values);
   const source = raceNumber == null ? endpoint.source : `${endpoint.source}:rcNo=${raceNumber}`;
   const statuses = [];
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
     try {
-      const response = await fetch(endpoint.url, {
-        method: 'POST',
+      const requestUrl = endpoint.method === 'GET' ? `${endpoint.url}?${params.toString()}` : endpoint.url;
+      const response = await fetch(requestUrl, {
+        method: endpoint.method,
         headers: {
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          ...(endpoint.method === 'POST' ? { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' } : {}),
           'user-agent': 'WhereHorsesRun/1.0 (+https://wherehorsesrun.com; public timetable acquisition)',
           accept: 'text/html,application/xhtml+xml',
           'accept-language': 'ko-KR,ko;q=0.9,en;q=0.6',
         },
-        body,
+        ...(endpoint.method === 'POST' ? { body: params } : {}),
         redirect: 'follow',
         signal: controller.signal,
       });
@@ -92,19 +98,14 @@ if (!baseSuccessfulPages.length) {
     .sort((a, b) => a - b);
 
   for (const raceNumber of raceNumbers) {
-    let capturedTime = false;
-    for (const endpoint of [endpoints[2], endpoints[1], endpoints[0]]) {
+    for (const endpoint of detailEndpoints) {
       const detail = await fetchPage(endpoint, raceNumber);
       fetched.push(detail);
       if (detail.status.status !== 'success') continue;
       const parsed = parseKraTodayRacePages([detail]);
       const matching = parsed.find((row) => row.race_number === raceNumber);
-      if (matching?.post_time_local) {
-        capturedTime = true;
-        break;
-      }
+      if (matching?.post_time_local) break;
     }
-    if (!capturedTime) continue;
   }
 
   const successfulPages = fetched.filter((entry) => entry.status.status === 'success');
