@@ -37,6 +37,7 @@ const text = lang === 'ja'
       checked: '確認',
       country: '国',
       detail: '開催詳細',
+      displayTimeZone: '表示タイムゾーン',
       first: '第1R',
       last: '最終R',
       official: '公式',
@@ -44,12 +45,14 @@ const text = lang === 'ja'
       source: 'ソース',
       staleLegend: '古い確認を含みます。公式ソースで確認してください。',
       unknownFreshness: '確認日不明',
+      venueTimeZone: '開催地TZ',
     }
   : {
       authority: 'Authority',
       checked: 'Checked',
       country: 'Country',
       detail: 'Meeting detail',
+      displayTimeZone: 'Display timezone',
       first: 'First',
       last: 'Last',
       official: 'Official',
@@ -57,6 +60,7 @@ const text = lang === 'ja'
       source: 'Source',
       staleLegend: 'Some checks are stale. Confirm with official sources.',
       unknownFreshness: 'Check date unknown',
+      venueTimeZone: 'Venue TZ',
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
@@ -100,54 +104,289 @@ const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
 const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
 ---
 
-{groups.length > 0 ? (
-  <div class="timetable-date-groups">
-    {hasStaleRecords && <p>{text.staleLegend}</p>}
-    {groups.map((group) => (
-      <section
-        class="timetable-date-group"
-        aria-labelledby={`date-${group.date}`}
-        data-calendar-date-group={group.date}
-      >
-        {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}</h2>}
-        <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
-          {group.records.map((record) => (
-            <li class="meeting-row">
-              <div class="meeting-row__identity">
-                <strong>{displayRacecourse(record)}</strong>
-                <span>{text.rank} {record.capability_rank}</span>
-              </div>
-              <p class="meeting-row__meta">
-                <span>{text.authority}: {displayAuthority(record)}</span>
-                <span>{text.country}: {displayCountry(record)}</span>
-                {shouldShowFirst(record) && record.first_race_time_local && (
-                  <span>{text.first}: {record.first_race_time_local}</span>
-                )}
-                {shouldShowLast(record) && record.last_race_time_local && (
-                  <span>{text.last}: {record.last_race_time_local}</span>
-                )}
-                <span>{text.source}: {record.source_status}</span>
-                {freshnessFor(record).status === 'unknown' ? (
-                  <strong>{text.unknownFreshness}</strong>
-                ) : (
-                  <span>{text.checked}: {record.last_checked_date}</span>
-                )}
-              </p>
-              <div class="meeting-row__links">
-                {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
-                <a href={record.official_source_url}>{text.official}</a>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))}
+<div class="timetable-timezone-projection" data-display-timezone-root data-lang={lang}>
+  <div class="timezone-control">
+    <label>
+      <span>{text.displayTimeZone}</span>
+      <select data-display-timezone-select aria-label={text.displayTimeZone}>
+        <option value="Asia/Tokyo">Asia/Tokyo</option>
+        <option value="UTC">UTC</option>
+      </select>
+    </label>
+    <output data-display-timezone-status>Asia/Tokyo</output>
   </div>
-) : (
-  <p>{emptyLabel}</p>
-)}
+
+  {groups.length > 0 ? (
+    <div class="timetable-date-groups" data-timetable-date-groups>
+      {hasStaleRecords && <p>{text.staleLegend}</p>}
+      {groups.map((group) => (
+        <section
+          class="timetable-date-group"
+          aria-labelledby={`date-${group.date}`}
+          data-calendar-date-group={group.date}
+        >
+          {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}</h2>}
+          <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
+            {group.records.map((record) => (
+              <li
+                class="meeting-row"
+                data-meeting-id={record.meeting_id}
+                data-source-date={record.date}
+                data-source-timezone={record.timezone}
+                data-first-race-time={record.first_race_time_local ?? ''}
+                data-last-race-time={record.last_race_time_local ?? ''}
+              >
+                <div class="meeting-row__identity">
+                  <strong>{displayRacecourse(record)}</strong>
+                  <span>{text.rank} {record.capability_rank}</span>
+                </div>
+                <p class="meeting-row__meta">
+                  <span>{text.authority}: {displayAuthority(record)}</span>
+                  <span>{text.country}: {displayCountry(record)}</span>
+                  {shouldShowFirst(record) && record.first_race_time_local && (
+                    <span>{text.first}: <time data-race-time="first">{record.first_race_time_local}</time></span>
+                  )}
+                  {shouldShowLast(record) && record.last_race_time_local && (
+                    <span>{text.last}: <time data-race-time="last">{record.last_race_time_local}</time></span>
+                  )}
+                  <span>{text.venueTimeZone}: {record.timezone}</span>
+                  <span>{text.source}: {record.source_status}</span>
+                  {freshnessFor(record).status === 'unknown' ? (
+                    <strong>{text.unknownFreshness}</strong>
+                  ) : (
+                    <span>{text.checked}: {record.last_checked_date}</span>
+                  )}
+                </p>
+                <div class="meeting-row__links">
+                  {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
+                  <a href={record.official_source_url}>{text.official}</a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  ) : (
+    <p>{emptyLabel}</p>
+  )}
+</div>
+
+<script>
+  const isTimeZoneSupported = (timeZone) => {
+    if (!timeZone) return false;
+    try {
+      new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const dateParts = (instant, timeZone) => {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(instant);
+    return Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  };
+
+  const localDateTimeToInstant = (dateText, timeText, timeZone) => {
+    const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText);
+    const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText);
+    if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
+
+    const targetUtc = Date.UTC(
+      Number(dateMatch[1]),
+      Number(dateMatch[2]) - 1,
+      Number(dateMatch[3]),
+      Number(timeMatch[1]),
+      Number(timeMatch[2]),
+      Number(timeMatch[3] ?? '0'),
+    );
+    let guess = targetUtc;
+    for (let pass = 0; pass < 3; pass += 1) {
+      const parts = dateParts(new Date(guess), timeZone);
+      const representedUtc = Date.UTC(
+        Number(parts.year),
+        Number(parts.month) - 1,
+        Number(parts.day),
+        Number(parts.hour),
+        Number(parts.minute),
+        Number(parts.second),
+      );
+      const correction = targetUtc - representedUtc;
+      guess += correction;
+      if (correction === 0) break;
+    }
+    return new Date(guess);
+  };
+
+  const formatProjectedDate = (instant, timeZone) => {
+    const parts = dateParts(instant, timeZone);
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  };
+
+  const formatProjectedTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(instant);
+
+  const populateTimeZones = (select) => {
+    const supportedValuesOf = Intl.supportedValuesOf;
+    const zones = typeof supportedValuesOf === 'function'
+      ? supportedValuesOf.call(Intl, 'timeZone')
+      : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/London', 'Europe/Paris', 'America/New_York', 'America/Los_Angeles', 'Australia/Sydney'];
+    const values = Array.from(new Set(['UTC', ...zones]));
+    select.replaceChildren(...values.map((zone) => {
+      const option = document.createElement('option');
+      option.value = zone;
+      option.textContent = zone;
+      return option;
+    }));
+  };
+
+  const propagateTimeZoneToLinks = (root, timeZone) => {
+    root.querySelectorAll('a[href]').forEach((anchor) => {
+      const rawHref = anchor.getAttribute('href');
+      if (!rawHref || rawHref.startsWith('#') || rawHref.startsWith('mailto:')) return;
+      const url = new URL(rawHref, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      url.searchParams.set('tz', timeZone);
+      anchor.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+    });
+  };
+
+  const projectRoot = (root, timeZone) => {
+    const rows = Array.from(root.querySelectorAll('.meeting-row'));
+    rows.forEach((row) => {
+      const sourceDate = row.dataset.sourceDate;
+      const sourceTimeZone = row.dataset.sourceTimezone;
+      const firstTime = row.dataset.firstRaceTime;
+      const lastTime = row.dataset.lastRaceTime;
+      if (!sourceDate || !sourceTimeZone) return;
+
+      let projectedDate = sourceDate;
+      if (firstTime) {
+        const instant = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
+        if (instant) projectedDate = formatProjectedDate(instant, timeZone);
+      }
+      row.dataset.displayDate = projectedDate;
+
+      const firstElement = row.querySelector('[data-race-time="first"]');
+      if (firstElement && firstTime) {
+        const instant = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
+        if (instant) {
+          firstElement.textContent = formatProjectedTime(instant, timeZone);
+          firstElement.setAttribute('datetime', instant.toISOString());
+        }
+      }
+
+      const lastElement = row.querySelector('[data-race-time="last"]');
+      if (lastElement && lastTime) {
+        const instant = localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone);
+        if (instant) {
+          lastElement.textContent = formatProjectedTime(instant, timeZone);
+          lastElement.setAttribute('datetime', instant.toISOString());
+        }
+      }
+    });
+
+    const groupsContainer = root.querySelector('[data-timetable-date-groups]');
+    if (groupsContainer && rows.length > 0) {
+      groupsContainer.querySelectorAll('.timetable-date-group').forEach((section) => section.remove());
+      const grouped = new Map();
+      rows.forEach((row) => {
+        const date = row.dataset.displayDate || row.dataset.sourceDate || '';
+        if (!grouped.has(date)) grouped.set(date, []);
+        grouped.get(date).push(row);
+      });
+      Array.from(grouped.keys()).sort().forEach((date) => {
+        const section = document.createElement('section');
+        section.className = 'timetable-date-group';
+        section.dataset.calendarDateGroup = date;
+        section.setAttribute('aria-labelledby', `date-${date}`);
+        const heading = document.createElement('h2');
+        heading.id = `date-${date}`;
+        heading.tabIndex = -1;
+        heading.textContent = date;
+        const list = document.createElement('ul');
+        list.className = 'meeting-list';
+        list.setAttribute('aria-label', `${date} meetings`);
+        grouped.get(date).forEach((row) => list.append(row));
+        section.append(heading, list);
+        groupsContainer.append(section);
+      });
+    }
+
+    const status = root.querySelector('[data-display-timezone-status]');
+    if (status) status.textContent = timeZone;
+    propagateTimeZoneToLinks(root, timeZone);
+  };
+
+  document.querySelectorAll('[data-display-timezone-root]').forEach((root) => {
+    const select = root.querySelector('[data-display-timezone-select]');
+    if (!(select instanceof HTMLSelectElement)) return;
+    populateTimeZones(select);
+
+    const queryTimeZone = new URL(window.location.href).searchParams.get('tz');
+    const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const initialTimeZone = isTimeZoneSupported(queryTimeZone)
+      ? queryTimeZone
+      : isTimeZoneSupported(browserTimeZone)
+        ? browserTimeZone
+        : 'Asia/Tokyo';
+    select.value = initialTimeZone;
+    projectRoot(root, initialTimeZone);
+
+    select.addEventListener('change', () => {
+      const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+      const url = new URL(window.location.href);
+      url.searchParams.set('tz', selected);
+      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+      projectRoot(root, selected);
+      window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: { timeZone: selected } }));
+    });
+  });
+</script>
 
 <style>
+  .timetable-timezone-projection {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .timezone-control {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+  }
+
+  .timezone-control label {
+    display: grid;
+    font-size: 0.82rem;
+    gap: 0.2rem;
+  }
+
+  .timezone-control select {
+    max-width: min(24rem, 80vw);
+    padding: 0.38rem 0.5rem;
+  }
+
+  .timezone-control output {
+    font-size: 0.82rem;
+    opacity: 0.72;
+  }
+
   .timetable-date-groups {
     display: grid;
     gap: 1.35rem;
