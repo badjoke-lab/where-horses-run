@@ -93,7 +93,7 @@ function extractOverviewRows(text, meeting) {
     const raceClass = normalize(match[1]);
     const distance = Number(match[2]);
     const section = Number(match[3]);
-    let raceName = normalize(match[4])
+    const raceName = normalize(match[4])
       .replace(/\s*\(Ratings\s+[^)]+\)\s*$/i, '')
       .replace(/^[-–—•‣\s]+/, '')
       .trim();
@@ -139,7 +139,7 @@ const out = {
   programme_rows: rows,
 };
 
-const outputPath = path.join(root, args.output);
+const outputPath = path.isAbsolute(args.output) ? args.output : path.join(root, args.output);
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, `${JSON.stringify(out, null, 2)}\n`);
 console.log(`HKJC_ENTRIES_PROGRAMME: date=${args.date} racecourse=${args.racecourse} rows=${rows.length} output=${args.output}`);
