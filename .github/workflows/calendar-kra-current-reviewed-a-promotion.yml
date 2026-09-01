@@ -1,0 +1,164 @@
+name: Calendar KRA current reviewed A promotion
+
+on:
+  push:
+    branches:
+      - fix/kra-current-reviewed-a-promotion-20260901
+    paths:
+      - 'data/candidates/kra-current-2026-09-04-through-2026-09-06-promotion-request.json'
+  pull_request:
+    paths:
+      - 'data/candidates/kra-current-2026-09-04-through-2026-09-06-promotion-request.json'
+      - 'data/candidates/kra-current-2026-09-04-through-2026-09-06-approved.json'
+      - 'data/static/authority-source-inventory-kra-live-detail-v1.json'
+      - 'data/static/calendar-readiness-kra-live-detail-v1.json'
+      - 'scripts/timetable/build-reviewed-kra-current-a-candidate.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'data/generated/timetable/canonical/meetings.json'
+      - 'data/generated/timetable/canonical/meeting-details.json'
+      - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
+      - 'data/generated/timetable/operations-status.json'
+      - 'data/generated/timetable/operations-review-package.json'
+      - '.github/workflows/calendar-kra-current-reviewed-a-promotion.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: calendar-kra-current-reviewed-a-promotion-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CANDIDATE: data/candidates/kra-current-2026-09-04-through-2026-09-06-approved.json
+  PROOF_RUN_ID: '33517131024'
+  PROOF_ARTIFACT: kra-live-best-available-proof-33517131024
+
+jobs:
+  promote-on-request:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/kra-current-reviewed-a-promotion-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Download exact reviewed KRA live proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$PROOF_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$PROOF_ARTIFACT" --dir /tmp/kra-proof
+      - name: Build exact six-meeting reviewed Rank A candidate
+        run: node scripts/timetable/build-reviewed-kra-current-a-candidate.mjs --artifact-dir /tmp/kra-proof --output "$CANDIDATE"
+      - name: Promote reviewed KRA candidate to canonical
+        run: node scripts/timetable/promote-approved-candidate-v1.mjs --input "$CANDIDATE"
+      - name: Rebuild public projection and dependent operations outputs
+        run: |
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01
+          node scripts/timetable/build-operations-review-package.mjs
+      - name: Verify exact KRA publication unit
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const expected = new Map([
+            ['kra-busan-gyeongnam-racecourse-2026-09-04', 8],
+            ['kra-jeju-racecourse-2026-09-04', 8],
+            ['kra-jeju-racecourse-2026-09-05', 7],
+            ['kra-seoul-racecourse-2026-09-05', 10],
+            ['kra-busan-gyeongnam-racecourse-2026-09-06', 7],
+            ['kra-seoul-racecourse-2026-09-06', 10],
+          ]);
+          const candidate = JSON.parse(fs.readFileSync(process.env.CANDIDATE, 'utf8'));
+          const meetings = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings;
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details;
+          if (candidate.records.length !== 6 || candidate.records.some((row) => row.capability_rank !== 'A')) throw new Error('candidate is not exact six-meeting Rank A unit');
+          for (const [id, count] of expected) {
+            const meeting = meetings.find((row) => row.meeting_id === id);
+            const detail = details.find((row) => row.meeting_id === id);
+            if (!meeting || meeting.capability_rank !== 'A') throw new Error(`${id} canonical meeting is not A`);
+            if (!detail || detail.capability_rank !== 'A' || detail.timetable_rows.length !== count) throw new Error(`${id} canonical detail differs`);
+            if (detail.timetable_rows.some((row) => row.race_name != null || row.distance_m != null || row.surface != null || row.course_label != null)) throw new Error(`${id} crossed Rank A public field boundary`);
+          }
+          console.log('KRA_CURRENT_REVIEWED_A: pass');
+          console.log('PROMOTED_MEETINGS: 6');
+          console.log('PUBLIC_RANK: A');
+          console.log('SOURCE_A_PLUS_BOUNDED_TO_A: pass');
+          NODE
+      - name: Validate deterministic outputs
+        run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs --input "$CANDIDATE" --check
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01 --check
+          node scripts/timetable/build-operations-review-package.mjs --check
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Commit reviewed branch-only publication outputs
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$CANDIDATE" \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/operations-status.json \
+            data/generated/timetable/operations-review-package.json
+          if git diff --cached --quiet; then
+            echo 'No promotion diff generated' >&2
+            exit 1
+          fi
+          git commit -m 'Promote reviewed KRA current meetings to Rank A'
+          git push origin HEAD:fix/kra-current-reviewed-a-promotion-20260901
+
+  validate-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Validate committed KRA reviewed promotion
+        run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs --input "$CANDIDATE" --check
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+          node scripts/timetable/build-operations-status.mjs --reference-date 2026-07-01 --check
+          node scripts/timetable/build-operations-review-package.mjs --check
+          node scripts/check-calendar-runtime-import-boundary.mjs
+      - name: Verify exact six-meeting Rank A result
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const expected = new Map([
+            ['kra-busan-gyeongnam-racecourse-2026-09-04', 8],
+            ['kra-jeju-racecourse-2026-09-04', 8],
+            ['kra-jeju-racecourse-2026-09-05', 7],
+            ['kra-seoul-racecourse-2026-09-05', 10],
+            ['kra-busan-gyeongnam-racecourse-2026-09-06', 7],
+            ['kra-seoul-racecourse-2026-09-06', 10],
+          ]);
+          const meetings = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings;
+          const details = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meeting-details.json', 'utf8')).details;
+          for (const [id, count] of expected) {
+            const meeting = meetings.find((row) => row.meeting_id === id);
+            const detail = details.find((row) => row.meeting_id === id);
+            if (!meeting || meeting.capability_rank !== 'A') throw new Error(`${id} canonical meeting is not A`);
+            if (!detail || detail.capability_rank !== 'A' || detail.timetable_rows.length !== count) throw new Error(`${id} detail differs`);
+          }
+          console.log('KRA_CURRENT_REVIEWED_A_PR_CHECK: pass');
+          NODE
+      - name: Prove repository clean
+        run: |
+          changes="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
