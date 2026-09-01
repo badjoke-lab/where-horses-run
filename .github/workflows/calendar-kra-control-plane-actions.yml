@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  live-control-plane-proof:
+  current-september-best-available:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'
-      - name: Compile KRA selected-meeting execution
+      - name: Compile current KRA selected-meeting execution
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -32,36 +32,44 @@ jobs:
           import { loadCalendarAcquisitionRegistryV1 } from './scripts/timetable/load-calendar-acquisition-registry.mjs';
           import { compileRunnerExecutionV1 } from './scripts/timetable/runner-compatibility.mjs';
 
+          const meetingIds = [
+            'kra-busan-gyeongnam-racecourse-2026-09-04',
+            'kra-jeju-racecourse-2026-09-04',
+            'kra-jeju-racecourse-2026-09-05',
+            'kra-seoul-racecourse-2026-09-05',
+            'kra-busan-gyeongnam-racecourse-2026-09-06',
+            'kra-seoul-racecourse-2026-09-06',
+          ];
           const job = {
             schema_version: 'calendar-collection-job-v1',
-            job_id: 'kra-control-plane-live-proof-job',
-            campaign_id: 'kra-control-plane-live-proof',
+            job_id: 'kra-september-current-best-available-job',
+            campaign_id: 'kra-september-current-best-available',
             system_id: 'kra-national-racing-system',
             runner_policy: { mode: 'exact', runner: 'github_actions' },
             collection_mode: 'selected_meetings',
-            requested_scope: { meeting_ids: ['kra-seoul-racecourse-2026-06-06'] },
+            requested_scope: { meeting_ids: meetingIds },
             rank_strategy: 'best_available',
             target_rank: null,
-            reason: 'source_revalidation',
+            reason: 'rank_upgrade',
             requested_at: '2026-09-01T00:00:00Z',
           };
           const registry = loadCalendarAcquisitionRegistryV1(process.cwd());
           const contract = JSON.parse(fs.readFileSync('data/static/calendar-runner-compatibility-contract-v1.json', 'utf8'));
-          const execution = compileRunnerExecutionV1(job, { batch_id: 'kra-control-plane-live-proof-batch' }, registry, contract);
-          fs.writeFileSync('/tmp/kra-control-plane-job.json', `${JSON.stringify(job, null, 2)}\n`);
-          fs.writeFileSync('/tmp/kra-control-plane-execution.json', `${JSON.stringify(execution, null, 2)}\n`);
+          const execution = compileRunnerExecutionV1(job, { batch_id: 'kra-september-current-best-available-batch' }, registry, contract);
+          fs.writeFileSync('/tmp/kra-current-job.json', `${JSON.stringify(job, null, 2)}\n`);
+          fs.writeFileSync('/tmp/kra-current-execution.json', `${JSON.stringify(execution, null, 2)}\n`);
           NODE
-      - name: Run KRA through shared Actions dispatcher
+      - name: Run current KRA meetings through shared Actions dispatcher
         shell: bash
         run: |
           before="$(sha256sum data/generated/timetable/canonical/meetings.json)"
           node scripts/timetable/run-calendar-actions-job.mjs \
-            --execution=/tmp/kra-control-plane-execution.json \
-            --job=/tmp/kra-control-plane-job.json \
-            --status-output=/tmp/kra-control-plane-status.json
+            --execution=/tmp/kra-current-execution.json \
+            --job=/tmp/kra-current-job.json \
+            --status-output=/tmp/kra-current-status.json
           after="$(sha256sum data/generated/timetable/canonical/meetings.json)"
           test "$before" = "$after"
-      - name: Validate review-only A+ proof artifacts
+      - name: Validate six review-only best-available observations
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -69,26 +77,29 @@ jobs:
           import { validateCoverageObservation } from './scripts/timetable/coverage-observation-validation.mjs';
           import { validateCollectionResultManifestV1 } from './scripts/timetable/collection-result-manifest-validation.mjs';
 
-          const base = 'data/generated/timetable/actions-multi-job/kra-control-plane-live-proof-batch';
+          const base = 'data/generated/timetable/actions-multi-job/kra-september-current-best-available-batch';
           const candidate = JSON.parse(fs.readFileSync(`${base}/candidates.json`, 'utf8'));
           const coverage = JSON.parse(fs.readFileSync(`${base}/coverage-observation.json`, 'utf8'));
           const manifest = JSON.parse(fs.readFileSync(`${base}/result-manifest.json`, 'utf8'));
-          const status = JSON.parse(fs.readFileSync('/tmp/kra-control-plane-status.json', 'utf8'));
+          const status = JSON.parse(fs.readFileSync('/tmp/kra-current-status.json', 'utf8'));
           const coverageValidation = validateCoverageObservation(coverage);
           if (!coverageValidation.valid) throw new Error(coverageValidation.errors.join('; '));
           const manifestErrors = validateCollectionResultManifestV1(manifest);
           if (manifestErrors.length) throw new Error(manifestErrors.join('; '));
-          if (candidate.review?.status !== 'needs_review') throw new Error('KRA candidate escaped review boundary');
-          if (candidate.records?.length !== 1) throw new Error('KRA proof expected exactly one candidate');
-          if (candidate.records[0].capability_rank !== 'A+') throw new Error(`KRA historical proof rank ${candidate.records[0].capability_rank}`);
-          if (manifest.rank_counts['A+'] !== 1) throw new Error('KRA manifest A+ accounting differs');
+          if (candidate.review?.status !== 'needs_review') throw new Error('KRA current batch escaped review boundary');
+          if (candidate.records?.length !== 6) throw new Error(`KRA current batch expected 6 candidates, got ${candidate.records?.length}`);
+          const ranks = ['C', 'B', 'B+', 'A', 'A+'];
+          if (candidate.records.some((record) => !ranks.includes(record.capability_rank))) throw new Error('KRA current batch contains invalid rank');
+          const counted = Object.values(manifest.rank_counts).reduce((sum, value) => sum + value, 0);
+          if (counted !== 6) throw new Error(`KRA manifest rank accounting ${counted}`);
           if (status.status !== 'success') throw new Error(`shared dispatcher status ${status.status}`);
           if (JSON.stringify(candidate).includes('raw_html')) throw new Error('raw HTML marker leaked into KRA candidate');
           console.log(JSON.stringify({
             control_plane_status: status.status,
+            records: candidate.records.map((record) => ({ meeting_id: record.meeting_id, capability_rank: record.capability_rank, first_race_time_local: record.first_race_time_local, last_race_time_local: record.last_race_time_local, timetable_rows: record.timetable_rows?.length ?? 0 })),
             rank_counts: manifest.rank_counts,
             review_status: candidate.review.status,
             canonical_write: false,
             public_write: false,
-          }));
+          }, null, 2));
           NODE
