@@ -1,0 +1,21 @@
+{
+  "schema_version": "authority-source-inventory-kra-live-detail-v1",
+  "records": [
+    {
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "authority_name_en": "Korea Racing Authority",
+      "authority_name_local": "한국마사회",
+      "authority_type": "national",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "kra-weekly-start-times",
+      "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
+      "source_kind": "programme",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-01",
+      "capability_rank": "A",
+      "adapter_candidate_status": "candidate",
+      "notes": "Reviewed KRA weekly start-time route for Seoul, Busan-Gyeongnam, and Jeju. Live proof run 33517131024 / artifact 9804098883 reproduced six 2026-09-04 through 2026-09-06 meetings with complete Race 1-N post-time sequences and zero Rank C observations after the EUC-KR and Jeju-column fixes. This source identity is intentionally limited to public-safe Rank A race labels and post times; A+ observations from the collector do not expand the public field set."
+    }
+  ]
+}
