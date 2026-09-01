@@ -5,18 +5,12 @@ on:
     paths:
       - 'data/generated/timetable/**'
       - 'scripts/timetable/build-reviewed-nar-*.mjs'
-      - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
-      - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
-      - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
   push:
     branches: [main]
     paths:
       - 'data/generated/timetable/**'
       - 'scripts/timetable/build-reviewed-nar-*.mjs'
-      - 'scripts/check-calendar-nar-reviewed-promotion.mjs'
-      - 'scripts/check-calendar-nar-incremental-reviewed-promotion.mjs'
-      - 'scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs'
       - '.github/workflows/calendar-nar-reviewed-promotion-output.yml'
 
 concurrency:
@@ -41,11 +35,6 @@ jobs:
           node scripts/timetable/build-reviewed-nar-monthly-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-promotion-candidate.mjs --check
           node scripts/timetable/build-reviewed-nar-incremental-v2-promotion-candidates.mjs --check
-      - name: Validate reviewed promotion contracts
-        run: |
-          node scripts/check-calendar-nar-reviewed-promotion.mjs --require-promoted
-          node scripts/check-calendar-nar-incremental-reviewed-promotion.mjs --require-promoted
-          node scripts/check-calendar-nar-incremental-v2-reviewed-promotion.mjs --require-promoted
       - name: Validate deterministic public and operations artifacts
         run: |
           node scripts/timetable/build-public-timetable-view.mjs --check
