@@ -2,32 +2,35 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
-  getCurrentCalendarWindowGroups,
   getTimetableDateContext,
+  getTimetableProjectionCandidateGroups,
 } from '../../data/timetableMeetingRows';
 
 const dateContext = getTimetableDateContext();
-const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
-const windowLabel = `${dateContext.windowStart}–${dateContext.windowEndInclusive}`;
+const groupedTimetableRecords = getTimetableProjectionCandidateGroups(
+  dateContext.windowStart,
+  dateContext.windowEndExclusive,
+);
 ---
 
 <BaseLayout
   title="Current Timetable | Where Horses Run"
-  description={`A date-first 30-day meeting list for ${windowLabel}, with one official source link per meeting and race timetable links only where race-by-race times are available.`}
+  description="A date-first 30-day meeting list projected into the visitor-selected display timezone, with official source links and race timetable links where available."
   canonicalPath="/major-countries/current-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Current timetable</p>
     <h1 id="page-title">Current 30-day timetable</h1>
     <p class="hero__summary">
-      {windowLabel}. Meetings are grouped by date. Rank controls how much timing detail is shown.
+      Select a display timezone below. The 30-day window, meeting dates and available race times are projected into that timezone.
     </p>
   </section>
 
-  <section aria-label={`Current timetable by date for ${windowLabel}`}>
+  <section aria-label="Current timetable by selected timezone">
     <TimetableMeetingList
       groups={groupedTimetableRecords}
-      emptyLabel="No timetable meetings are listed in the current 30-day window. Use official source links for final confirmation."
+      viewMode="window30"
+      emptyLabel="No timetable meetings are listed in the current 30-day window for the selected timezone. Use official source links for final confirmation."
     />
   </section>
 </BaseLayout>
