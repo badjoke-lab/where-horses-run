@@ -3,6 +3,7 @@ import roleGlossaryOverlay from '../../data/static/glossary-entries-role-v1.json
 import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetable-v1.json';
 import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
 import coreRacingGlossaryOverlay from '../../data/static/glossary-entries-core-racing-v1.json';
+import publicCopyPatches from '../../data/static/glossary-public-copy-v1.json';
 import multilingualFieldPatches from '../../data/static/glossary-fields-multilingual-v1.json';
 import beginnerExplanationPatches from '../../data/static/glossary-fields-beginner-v1.json';
 import relationshipGraphPatches from '../../data/static/glossary-relationships-graph-v1.json';
@@ -23,10 +24,14 @@ type GlossaryRecord =
 
 const hiddenPublicGlossaryIds = new Set([
   'fixture',
+  'official-source',
   'official-calendar',
   'official-racecard',
   'link-first-source',
   'source-status',
+  'governing-body',
+  'racing-authority',
+  'racecourse-operator',
 ]);
 
 const order = baselineGlossary.map((entry) => entry.id);
@@ -65,6 +70,12 @@ for (const patch of relationshipGraphPatches) {
     patch.id,
     { ...current, related_term_ids: relatedTermIds } as GlossaryRecord,
   );
+}
+
+for (const patch of publicCopyPatches) {
+  const current = byId.get(patch.id);
+  if (!current) throw new Error(`Unknown public glossary copy-patch ID: ${patch.id}`);
+  byId.set(patch.id, { ...current, ...patch } as GlossaryRecord);
 }
 
 const glossary = order.map((id) => byId.get(id)!);
