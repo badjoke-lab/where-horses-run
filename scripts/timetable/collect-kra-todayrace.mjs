@@ -80,14 +80,20 @@ function parseCells(rowHtml) {
     .map((match) => stripHtml(match[1]));
 }
 
+function parseHourCell(value) {
+  const normalized = String(value ?? '').replace(/\s+/g, ' ').trim();
+  const match = normalized.match(/(?:^|\s)([01]?\d|2[0-3])\s*(?:시)?(?:\s|$)/);
+  return match ? Number(match[1]) : null;
+}
+
 function weeklyHourBlocks(html) {
   const blocks = [];
   let current = [];
   for (const match of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
     const cells = parseCells(match[1]);
-    const isHourRow = cells.length >= 4 && /^\d{1,2}\s*시$/.test(cells[0]);
-    if (isHourRow) {
-      current.push(cells);
+    const hour = cells.length >= 2 ? parseHourCell(cells[0]) : null;
+    if (hour != null) {
+      current.push({ cells, hour });
     } else if (current.length) {
       blocks.push(current);
       current = [];
@@ -107,10 +113,7 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
 
   const explicitRows = [];
   const sequentialTimes = [];
-  for (const cells of block) {
-    const hourMatch = cells[0].match(/(\d{1,2})\s*시/);
-    if (!hourMatch) continue;
-    const hour = Number(hourMatch[1]);
+  for (const { cells, hour } of block) {
     const cell = cells[weeklyColumn] ?? '';
     for (const token of cell.matchAll(/([0-5]?\d)\s*분\s*([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭])?/g)) {
       const postTime = `${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`;
