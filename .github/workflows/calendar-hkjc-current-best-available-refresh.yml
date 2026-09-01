@@ -9,6 +9,7 @@ on:
       - main
       - fix/hkjc-kra-current-best-available-refresh
       - fix/hkjc-entries-programme-layer-20260902
+      - fix/hkjc-programme-pending-status-20260902
     paths:
       - '.github/workflows/calendar-hkjc-current-best-available-refresh.yml'
       - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
@@ -66,6 +67,11 @@ jobs:
           if (summary.automatic_approval !== false || summary.automatic_promotion !== false) throw new Error('HKJC refresh crossed review boundary');
           if ('public_ceiling' in summary) throw new Error('stale public ceiling metadata remains');
           if (summary.source_error_count !== 0) throw new Error(`HKJC source errors: ${summary.source_error_count}`);
+          if (summary.programme_error_count !== 0) throw new Error(`HKJC programme errors: ${summary.programme_error_count}`);
+          const classifiedProgrammeMeetings = summary.programme_observation_count + summary.programme_pending_count + summary.programme_error_count;
+          if (classifiedProgrammeMeetings !== summary.selected_lower_rank_meeting_count) {
+            throw new Error(`HKJC programme classification incomplete: ${classifiedProgrammeMeetings}/${summary.selected_lower_rank_meeting_count}`);
+          }
           console.log(JSON.stringify({
             selected_lower_rank_meeting_count: summary.selected_lower_rank_meeting_count,
             observed_rank_counts: summary.observed_rank_counts,
@@ -73,6 +79,8 @@ jobs:
             upgrade_candidates: summary.upgrade_candidates,
             programme_observation_count: summary.programme_observation_count,
             programme_observations: summary.programme_observations,
+            programme_pending_count: summary.programme_pending_count,
+            programme_pending: summary.programme_pending,
             programme_error_count: summary.programme_error_count,
             canonical_write: summary.canonical_write,
             public_write: summary.public_write,
