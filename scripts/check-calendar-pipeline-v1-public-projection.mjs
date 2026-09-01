@@ -12,7 +12,6 @@ const parse = (file) => JSON.parse(read(file));
 const clone = (value) => structuredClone(value);
 const stable = (value) => JSON.stringify(value);
 const hash = (file) => createHash('sha256').update(read(file)).digest('hex');
-const rankIndex = (rank) => publicProjectionRanksV1.indexOf(rank);
 
 const paths = {
   canonicalMeetings: 'data/generated/timetable/canonical/meetings.json',
@@ -72,15 +71,21 @@ if (first) {
   if (first.meetingListDataset.generated_at !== first.meetingDetailsDataset.generated_at) fail('public datasets must share one deterministic generated_at');
 
   const decisionById = new Map(first.audit.decisions.map((decision) => [decision.meeting_id, decision]));
+  const canonicalById = new Map(canonicalMeetings.meetings.map((meeting) => [meeting.meeting_id, meeting]));
   const meetingById = new Map(first.meetingListDataset.meetings.map((meeting) => [meeting.meeting_id, meeting]));
   const detailById = new Map(first.meetingDetailsDataset.details.map((detail) => [detail.meeting_id, detail]));
 
   for (const decision of first.audit.decisions) {
-    if (rankIndex(decision.max_public_rank) > rankIndex(decision.readiness_public_ceiling)) {
-      fail(`${decision.meeting_id} exceeds Calendar Readiness Public Ceiling`);
+    const canonical = canonicalById.get(decision.meeting_id);
+    if (!canonical) {
+      fail(`${decision.meeting_id} has no canonical meeting`);
+      continue;
     }
-    if (rankIndex(decision.effective_public_rank) > rankIndex(decision.max_public_rank)) {
-      fail(`${decision.meeting_id} effective rank exceeds maximum public rank`);
+    if (decision.effective_public_rank !== canonical.capability_rank) {
+      fail(`${decision.meeting_id} public rank differs from canonical capability rank`);
+    }
+    if (decision.max_public_rank !== canonical.capability_rank) {
+      fail(`${decision.meeting_id} projected rank metadata differs from canonical capability rank`);
     }
   }
 
@@ -118,7 +123,6 @@ if (first) {
   if (!jraDecision) fail('missing current JRA A+ audit decision fixture');
   else {
     if (jraDecision.policy_max_public_rank !== 'A+') fail('JRA policy fixture must remain A+');
-    if (jraDecision.readiness_public_ceiling !== 'A+') fail('JRA readiness fixture must permit A+ public output');
     if (jraDecision.max_public_rank !== 'A+' || jraDecision.effective_public_rank !== 'A+') fail('JRA A+ canonical record must project at A+');
   }
   if (!jraDetail) fail('JRA A+ projection must retain timetable detail');
@@ -139,17 +143,18 @@ if (first) {
   if (!hkjcDecision) fail('missing HKJC audit decision fixture');
   else {
     if (hkjcDecision.canonical_source_id !== 'hkjc-fixture-list') fail('HKJC legacy source alias did not resolve');
-    if (hkjcDecision.readiness_public_ceiling !== 'A') fail('HKJC readiness fixture must cap public output at A');
-    if (hkjcDecision.effective_public_rank !== 'A') fail('HKJC A+ canonical record must project at A');
+    if (hkjcDecision.effective_public_rank !== 'A+') fail('HKJC A+ canonical record must remain A+ regardless of readiness ceiling metadata');
   }
   if (!hkjcDetail) fail('HKJC authority-wide projection must retain Happy Valley detail');
-  else if (hkjcDetail.timetable_rows.some((row) => Object.keys(row).some((key) => !['label', 'post_time_local'].includes(key)))) {
-    fail('HKJC A projection must strip all A+ programme-summary fields');
+  else {
+    if (!hkjcDetail.show_race_name || !hkjcDetail.show_distance) fail('HKJC confirmed A+ programme fields must remain visible');
+    if (hkjcDetail.show_surface || hkjcDetail.show_course) fail('HKJC unconfirmed A+ fields must remain hidden');
+    if (hkjcDetail.timetable_rows.some((row) => 'surface' in row || 'course_label' in row)) fail('HKJC unconfirmed A+ fields leaked into rows');
   }
 
   const uaeDecision = decisionById.get('era-meydan-racecourse-2026-04-01');
   if (!uaeDecision || uaeDecision.max_public_rank !== 'C' || uaeDecision.effective_public_rank !== 'C') {
-    fail('UAE legacy source must project at reviewed C ceiling');
+    fail('UAE canonical C source must remain public C');
   }
 
   const kasamatsuId = 'nar-kasamatsu-racecourse-2026-05-30';
@@ -177,23 +182,23 @@ if (first) {
     if (baneiReadiness.readiness !== 'prototype_ready' || baneiReadiness.automation_mode !== 'semi_automatic') {
       fail('Banei reviewed schedule Readiness must be prototype_ready / semi_automatic');
     }
-    if (baneiReadiness.technical_rank !== 'C' || baneiReadiness.public_ceiling !== 'C') {
-      fail('Banei reviewed schedule Readiness must remain limited to Rank C');
+    if (baneiReadiness.technical_rank !== 'C') {
+      fail('Banei reviewed schedule technical rank fixture must remain C');
     }
 
     const legacyBaneiId = 'banei-obihiro-racecourse-2026-05-30';
     const legacyDecision = decisionById.get(legacyBaneiId);
     const legacyMeeting = meetingById.get(legacyBaneiId);
-    if (!legacyDecision || !legacyDecision.include_in_public_list || legacyDecision.effective_public_rank !== 'C') {
-      fail(`${legacyBaneiId} must project as reviewed Rank C after schedule Readiness activation`);
+    const legacyCanonical = canonicalById.get(legacyBaneiId);
+    if (!legacyDecision || !legacyCanonical || legacyDecision.effective_public_rank !== legacyCanonical.capability_rank) {
+      fail(`${legacyBaneiId} must preserve canonical capability rank after Readiness activation`);
     }
-    if (!legacyMeeting || legacyMeeting.effective_public_rank !== 'C' || legacyMeeting.detail_path !== null) {
-      fail(`${legacyBaneiId} public Rank C row differs after Readiness activation`);
+    if (!legacyMeeting || legacyMeeting.effective_public_rank !== legacyCanonical?.capability_rank) {
+      fail(`${legacyBaneiId} public row differs from canonical capability rank`);
     }
-    if (legacyMeeting && (legacyMeeting.first_race_time_local !== null || legacyMeeting.last_race_time_local !== null)) {
-      fail(`${legacyBaneiId} Rank C row must not expose race times`);
+    if (legacyMeeting && legacyMeeting.first_race_time_local !== legacyCanonical?.first_race_time_local) {
+      fail(`${legacyBaneiId} public first race time differs from canonical`);
     }
-    if (detailById.has(legacyBaneiId)) fail(`${legacyBaneiId} Rank C row must not expose detail`);
 
     const aPlusIds = [...(baneiCurrentWindowResult.a_plus_meeting_ids ?? [])].sort();
     const cIds = [...(baneiCurrentWindowResult.lower_rank_meeting_ids ?? [])].sort();
@@ -242,7 +247,7 @@ if (first) {
     const raised = buildPublicProjectionV1({ canonicalMeetings, canonicalDetails, policyData, readinessRegistry: raisedReadiness, sourceAliases });
     const raisedDecision = raised.audit.decisions.find((decision) => decision.meeting_id === hkjcId);
     const raisedDetail = raised.meetingDetailsDataset.details.find((detail) => detail.meeting_id === hkjcId);
-    if (raisedDecision?.effective_public_rank !== 'A+') fail('raised HKJC ceiling fixture did not reach A+');
+    if (raisedDecision?.effective_public_rank !== hkjcDecision?.effective_public_rank) fail('changing HKJC readiness ceiling metadata changed public rank');
     if (!raisedDetail?.show_race_name || !raisedDetail?.show_distance) fail('confirmed HKJC A+ race name and distance were not enabled');
     if (raisedDetail?.show_surface || raisedDetail?.show_course) fail('unconfirmed HKJC surface/course fields were enabled');
     if (raisedDetail?.timetable_rows.some((row) => 'surface' in row || 'course_label' in row)) fail('unconfirmed HKJC A+ fields leaked into rows');
@@ -290,6 +295,6 @@ if (errors.length) {
 
 console.log(`CALENDAR_PIPELINE_V1_PUBLIC_PROJECTION: pass public_meetings=${first.meetingListDataset.meetings.length} public_details=${first.meetingDetailsDataset.details.length}`);
 console.log(`DETERMINISTIC_GENERATED_AT: ${first.meetingListDataset.generated_at}`);
-console.log('PUBLIC_CEILING_ENFORCED: true');
+console.log('CANONICAL_PUBLIC_RANK_PARITY_ENFORCED: true');
 console.log('BANEI_READINESS_STATE_AWARE: true');
 console.log('COMMITTED_PUBLIC_JSON_MODIFIED: false');
