@@ -153,8 +153,8 @@ function orderedCrossPageTimeRows(pages, rows) {
 
   let entries = [];
   for (const page of uniquePages) {
-    const text = textFromHtml(page.html);
-    for (const match of text.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g)) {
+    const html = String(page.html ?? '');
+    for (const match of html.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g)) {
       entries.push({
         time: `${match[1].padStart(2, '0')}:${match[2]}`,
         source: page.source,
@@ -165,8 +165,8 @@ function orderedCrossPageTimeRows(pages, rows) {
   if (entries.length !== rows.length) {
     entries = [];
     for (const page of uniquePages) {
-      const text = textFromHtml(page.html);
-      for (const match of text.matchAll(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/g)) {
+      const html = String(page.html ?? '');
+      for (const match of html.matchAll(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/g)) {
         entries.push({
           time: `${match[1].padStart(2, '0')}:${match[2]}`,
           source: page.source,
