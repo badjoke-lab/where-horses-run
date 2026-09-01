@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/fixtures/calendar-hkjc-fixture-artifact-bridge-fixtures-v1.json'
       - 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs'
+      - 'scripts/timetable/hkjc-live-best-available-core.mjs'
       - 'scripts/timetable/collect-hkjc-fixture-artifacts.mjs'
       - 'scripts/timetable/run-hkjc-live-fixture-job.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
@@ -31,6 +32,7 @@ jobs:
       - name: Validate PILOT-04 parser resilience boundary
         run: |
           node --check scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs
+          node --check scripts/timetable/hkjc-live-best-available-core.mjs
           node scripts/check-calendar-hkjc-fixture-artifact-bridge.mjs
           node scripts/check-calendar-actions-multi-job.mjs
           node scripts/check-calendar-runner-compatibility.mjs
@@ -98,19 +100,25 @@ jobs:
           const candidate = JSON.parse(fs.readFileSync(path.join(base, 'candidates.json'), 'utf8'));
           const report = JSON.parse(fs.readFileSync(path.join(base, 'collection-report.json'), 'utf8'));
           const status = JSON.parse(fs.readFileSync(path.join('data/generated/timetable/actions-multi-job-status', `${execution.batch_id}.json`), 'utf8'));
+          const ranks = ['C', 'B', 'B+', 'A', 'A+'];
 
-          if (coverage.coverage_claim !== 'source_window_complete') throw new Error(`expected source_window_complete, got ${coverage.coverage_claim}`);
-          if (coverage.records_discovered !== 0 || coverage.records_updated !== 0) throw new Error('expected zero records for bounded August empty window');
+          if (!['source_window_complete', 'partial'].includes(coverage.coverage_claim)) throw new Error(`unexpected coverage claim ${coverage.coverage_claim}`);
+          if (coverage.records_discovered !== candidate.records.length) throw new Error('coverage/candidate record count differs');
+          if (coverage.records_updated !== candidate.records.filter((record) => record.capability_rank !== 'C').length) throw new Error('updated count differs from non-C observations');
           if (coverage.source_errors.length !== 0) throw new Error(`expected zero source errors, got ${coverage.source_errors.length}`);
-          if (JSON.stringify(report.valid_empty_months) !== JSON.stringify(['2026-08'])) throw new Error(`valid empty months differ: ${JSON.stringify(report.valid_empty_months)}`);
+          if (Object.values(manifest.rank_counts).reduce((sum, value) => sum + value, 0) !== candidate.records.length) throw new Error('rank counts do not sum to candidate count');
+          if (candidate.records.some((record) => !ranks.includes(record.capability_rank))) throw new Error('candidate contains invalid observation rank');
           if (status.status !== 'success') throw new Error(`expected success Job status, got ${status.status}`);
           if (candidate.review.status !== 'needs_review') throw new Error('candidate envelope review state differs');
+          if (report.schedule_only_execution !== false || report.live_racecard_route_invoked !== true) throw new Error('live best-available route was not invoked');
+          if (report.current_observation_ranks_preserved !== true) throw new Error('current observation-rank contract missing');
           if (report.publication_effect !== 'none') throw new Error('publication effect differs');
+          if (report.canonical_write_enabled !== false || report.public_write_enabled !== false) throw new Error('canonical/public write boundary differs');
 
           const summary = {
-            schema_version: 'calendar-hkjc-pilot-04-live-evidence-summary-v1',
+            schema_version: 'calendar-hkjc-pilot-04-live-evidence-summary-v2',
             work_id: 'WHR-CAL-HONG-KONG-HKJC',
-            implementation_unit: 'HKJC-PILOT-04',
+            implementation_unit: 'HKJC-LIVE-BEST-AVAILABLE-01',
             batch_id: execution.batch_id,
             requested_scope: execution.requested_scope,
             coverage_claim: coverage.coverage_claim,
@@ -118,9 +126,10 @@ jobs:
             records_updated: coverage.records_updated,
             source_error_count: coverage.source_errors.length,
             rank_counts: manifest.rank_counts,
-            valid_empty_months: report.valid_empty_months,
             job_status: status.status,
             candidate_review_state: candidate.review.status,
+            schedule_only_execution: report.schedule_only_execution,
+            live_racecard_route_invoked: report.live_racecard_route_invoked,
             publication_effect: report.publication_effect,
             canonical_write_enabled: report.canonical_write_enabled,
             public_write_enabled: report.public_write_enabled,
