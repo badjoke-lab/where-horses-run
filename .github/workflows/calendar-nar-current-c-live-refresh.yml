@@ -90,18 +90,22 @@ jobs:
           const coverage = JSON.parse(fs.readFileSync(`${generatedRoot}/coverage-observation.json`, 'utf8'));
           const selected = fs.readFileSync('/tmp/nar-current-c-ids.txt', 'utf8').trim().split(/\r?\n/).filter(Boolean);
           const detail = candidates.detail_candidates ?? [];
+          const rankA = detail.filter((row) => row.candidate_rank === 'A');
+          const rankAPlus = detail.filter((row) => row.candidate_rank === 'A+');
           const schedule = candidates.schedule_candidates ?? [];
           const unresolved = coverage.unresolved_meeting_ids ?? [];
+          if (rankA.length + rankAPlus.length !== detail.length) throw new Error('detail candidate rank partition differs');
           if (detail.length + schedule.length !== selected.length) throw new Error(`candidate closure differs: selected=${selected.length} detail=${detail.length} schedule=${schedule.length}`);
           if (candidates.review?.status !== 'needs_review' || candidates.review?.promotion_eligible !== false) throw new Error('review boundary differs');
           if (candidates.review?.canonical_write !== 'disabled' || candidates.review?.public_write !== 'disabled') throw new Error('write boundary differs');
           if (report.publication_effect !== 'none') throw new Error('publication effect differs');
           const summary = {
-            schema_version: 'calendar-nar-current-c-live-refresh-result-v1',
+            schema_version: 'calendar-nar-current-c-live-refresh-result-v2',
             generated_at: coverage.checked_at,
             batch_id: batchId,
             selected_meeting_count: selected.length,
-            a_plus_candidate_count: detail.length,
+            rank_a_candidate_count: rankA.length,
+            rank_a_plus_candidate_count: rankAPlus.length,
             schedule_c_candidate_count: schedule.length,
             unresolved_meeting_count: unresolved.length,
             source_error_count: (coverage.source_errors ?? []).length,
@@ -109,7 +113,8 @@ jobs:
             canonical_write: candidates.review.canonical_write,
             public_write: candidates.review.public_write,
             publication_effect: report.publication_effect,
-            a_plus_meeting_ids: detail.map((row) => row.meeting_id).sort(),
+            rank_a_meeting_ids: rankA.map((row) => row.candidate_id).sort(),
+            rank_a_plus_meeting_ids: rankAPlus.map((row) => row.candidate_id).sort(),
           };
           fs.writeFileSync('/tmp/nar-current-c-result.json', `${JSON.stringify(summary, null, 2)}\n`);
           console.log(JSON.stringify(summary, null, 2));
