@@ -9,17 +9,19 @@ import {
   getCurrentCalendarWindowGroups,
   getTimetableDataState,
   getTimetableDateContext,
+  getTimetableProjectionCandidateGroups,
 } from '../../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const groups = getCurrentCalendarWindowGroups(context);
+const projectionGroups = getTimetableProjectionCandidateGroups(context.windowStart, context.windowEndExclusive);
 const windowRecords = groups.flatMap((group) => group.records);
 ---
 
 <BaseLayout
-  title={`30-day racing calendar | Where Horses Run`}
-  description={`Reviewed public meetings from ${context.windowStart} through ${context.windowEndInclusive}.`}
+  title="30-day racing calendar | Where Horses Run"
+  description="Reviewed public meetings for the current 30-day window in the visitor-selected display timezone."
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
@@ -27,7 +29,7 @@ const windowRecords = groups.flatMap((group) => group.records);
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">30-day racing calendar</h1>
     <p class="hero__summary">
-      Reviewed meetings from {context.windowStart} through {context.windowEndInclusive}, using {context.timeZone} as the reference timezone.
+      Select a display timezone below. The 30-day window, meeting dates and available race times are projected into that timezone.
     </p>
   </section>
 
@@ -38,8 +40,9 @@ const windowRecords = groups.flatMap((group) => group.records);
 
   <section aria-label="Rolling 30-day meeting list">
     <TimetableMeetingList
-      groups={groups}
-      emptyLabel={`No reviewed public meetings fall between ${context.windowStart} and ${context.windowEndInclusive}. Check official sources for current information.`}
+      groups={projectionGroups}
+      viewMode="window30"
+      emptyLabel="No reviewed public meetings fall in the current 30-day window for the selected timezone. Check official sources for current information."
     />
   </section>
 </BaseLayout>
