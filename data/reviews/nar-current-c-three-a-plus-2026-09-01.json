@@ -1,0 +1,102 @@
+{
+  "schema_version": "nar-current-c-three-a-plus-review-evidence-v1",
+  "source_run_id": 33483978767,
+  "source_head_sha": "b14e43430c6242bcdaf00f4087067fec5c2bfb80",
+  "source_artifact_id": 9791050073,
+  "source_artifact_digest": "sha256:083a302a213a4287751fcf7ac056d284d00a0abe21f306b67b593d4d866cfd6c",
+  "source_batch_id": "nar-current-c-live-refresh-2026-09-01-batch-002",
+  "source_generated_at": "2026-09-01T07:49:42Z",
+  "candidate_count": 3,
+  "candidates": [
+    {
+      "schema_version": "nar-incremental-detail-candidate-v2",
+      "candidate_id": "nar-monbetsu-racecourse-2026-09-03",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "monbetsu-racecourse",
+      "racecourse_name_en": "Monbetsu",
+      "racecourse_name_ja": "門別",
+      "venue_code": "36",
+      "date": "2026-09-03",
+      "timezone": "Asia/Tokyo",
+      "candidate_rank": "A+",
+      "source": {
+        "source_id": "nar-official-race-list-and-deba-table",
+        "official_race_list_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F03",
+        "list_http_status": 200,
+        "list_encoding": "Shift_JIS",
+        "storage_policy": "public_safe_extracted_fields_only_no_raw_html"
+      },
+      "meeting_completeness": {
+        "expected_race_numbers": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "expected_race_count": 12,
+        "observed_race_count": 12,
+        "continuous_race_numbers": true,
+        "all_a_fields_complete": true,
+        "all_a_plus_fields_complete": true
+      },
+      "timetable_rows": [
+        {"race_number":1,"label":"Race 1","post_time_local":"14:15","race_name":"２歳 未勝利","distance_m":1000,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":2,"label":"Race 2","post_time_local":"14:50","race_name":"２歳 未勝利","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":3,"label":"Race 3","post_time_local":"15:25","race_name":"２歳 未勝利","distance_m":1700,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":4,"label":"Race 4","post_time_local":"16:00","race_name":"２歳 ３組","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":5,"label":"Race 5","post_time_local":"16:35","race_name":"２歳 新馬","distance_m":1100,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":6,"label":"Race 6","post_time_local":"17:10","race_name":"びらとり和牛・トマトまつり賞Ｃ４－２","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":7,"label":"Race 7","post_time_local":"17:45","race_name":"日高町水道協会賞Ｃ４－２","distance_m":1000,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":8,"label":"Race 8","post_time_local":"18:20","race_name":"グランシャリオドリーム４２Ｃ３－２Ｃ４－１","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":9,"label":"Race 9","post_time_local":"18:55","race_name":"グランシャリオドリーム４３Ｃ３－２Ｃ４－１","distance_m":1000,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":10,"label":"Race 10","post_time_local":"19:30","race_name":"グランシャリオドリーム４４Ｃ１－２Ｃ２－１","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":11,"label":"Race 11","post_time_local":"20:05","race_name":"グランシャリオドリーム４５Ｂ４－２～Ｃ２－１","distance_m":1200,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"},
+        {"race_number":12,"label":"Race 12","post_time_local":"20:40","race_name":"ドレフォン・プレミアムＢ３Ｂ４－１","distance_m":1700,"surface":"Dirt","course_label":"Dirt Course / Outer / Right"}
+      ],
+      "review": {"status":"needs_review","promotion_eligible":false,"reason":"Schedule-aware NAR A+ candidate requires human review before canonical promotion."}
+    },
+    {
+      "schema_version": "nar-incremental-detail-candidate-v2",
+      "candidate_id": "nar-oi-racecourse-2026-09-04",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "oi-racecourse",
+      "racecourse_name_en": "Oi",
+      "racecourse_name_ja": "大井",
+      "venue_code": "20",
+      "date": "2026-09-04",
+      "timezone": "Asia/Tokyo",
+      "candidate_rank": "A+",
+      "source": {"source_id":"nar-official-race-list-and-deba-table","official_race_list_url":"https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F04","list_http_status":200,"list_encoding":"Shift_JIS","storage_policy":"public_safe_extracted_fields_only_no_raw_html"},
+      "meeting_completeness": {"expected_race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"expected_race_count":12,"observed_race_count":12,"continuous_race_numbers":true,"all_a_fields_complete":true,"all_a_plus_fields_complete":true},
+      "timetable_rows": [],
+      "review": {"status":"needs_review","promotion_eligible":false,"reason":"Schedule-aware NAR A+ candidate requires human review before canonical promotion."}
+    },
+    {
+      "schema_version": "nar-incremental-detail-candidate-v2",
+      "candidate_id": "nar-saga-racecourse-2026-09-03",
+      "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "saga-racecourse",
+      "racecourse_name_en": "Saga",
+      "racecourse_name_ja": "佐賀",
+      "venue_code": "32",
+      "date": "2026-09-03",
+      "timezone": "Asia/Tokyo",
+      "candidate_rank": "A+",
+      "source": {"source_id":"nar-official-race-list-and-deba-table","official_race_list_url":"https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F03","list_http_status":200,"list_encoding":"Shift_JIS","storage_policy":"public_safe_extracted_fields_only_no_raw_html"},
+      "meeting_completeness": {"expected_race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"expected_race_count":12,"observed_race_count":12,"continuous_race_numbers":true,"all_a_fields_complete":true,"all_a_plus_fields_complete":true},
+      "timetable_rows": [],
+      "review": {"status":"needs_review","promotion_eligible":false,"reason":"Schedule-aware NAR A+ candidate requires human review before canonical promotion."}
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewer": null,
+    "reviewed_at": null,
+    "promotion_target": "canonical-timetable-v0",
+    "approval_effect": "none_until_explicit_human_review"
+  }
+}
