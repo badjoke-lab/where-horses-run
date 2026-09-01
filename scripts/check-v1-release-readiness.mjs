@@ -142,11 +142,23 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
 }
 
 // Current maintenance state must still satisfy the static-first performance contract,
-// but current approved route growth is not required to equal the historical 771-page snapshot.
+// but the approved GA4 tag is the sole bounded external-runtime exception.
+const analytics = performance.current_maintenance_exceptions?.google_analytics;
+const expectedAnalyticsRuntimeReferences = currentPublicPages * (analytics?.external_runtime_references_per_page ?? 0);
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-readiness performance report schema differs');
 if (currentPublicPages < contract.candidate_inventory.public_pages) fail('release-readiness current public inventory shrank below accepted v1');
 if (performanceReport.publicPages !== currentPublicPages || performanceReport.measuredPages !== currentPublicPages) fail('release-readiness current performance report page count differs from sitemap');
-if ((performanceReport.typeTotals?.javascript?.files ?? 0) !== 0 || performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-readiness current static-first performance result differs');
+if (
+  (performanceReport.typeTotals?.javascript?.files ?? 0) !== 0 ||
+  performanceReport.missingLocalReferenceInstances !== 0 ||
+  analytics?.status !== 'approved' ||
+  analytics.measurement_id !== 'G-79W3MF08Y9' ||
+  analytics.external_runtime_references_per_page !== 1 ||
+  analytics.script_src_references_per_page !== 1 ||
+  performanceReport.pagesWithExternalRuntimeReferences !== currentPublicPages ||
+  performanceReport.externalRuntimeReferenceInstances !== expectedAnalyticsRuntimeReferences ||
+  performanceReport.pagesWithScriptReferences !== currentPublicPages
+) fail('release-readiness current bounded-runtime performance result differs');
 
 for (const route of ['/faq/', '/ja/faq/', '/methods/', '/ja/methods/', '/sources/', '/ja/sources/']) {
   if (!sitemap.includes(`<loc>https://whr.badjoke-lab.com${route}</loc>`)) fail(`release-readiness required route missing: ${route}`);

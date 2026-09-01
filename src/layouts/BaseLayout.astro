@@ -1,4 +1,5 @@
 ---
+import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import StructuredDataBaseline from '../components/StructuredDataBaseline.astro';
 import '../styles/theme.css';
 import '../styles/base.css';
@@ -81,6 +82,8 @@ const socialImageAlt = isJapanese
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+
+    <GoogleAnalytics />
 
     <link rel="canonical" href={canonicalUrl} />
     {alternateUrl && xDefaultUrl && (

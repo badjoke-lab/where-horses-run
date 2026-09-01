@@ -36,7 +36,8 @@ const CURRENT_MAINTENANCE_HEADROOM_KEYS = new Set([
 // Commit c94e1a96563d49781db46532f0219c7c63102e0e rendered 371 public
 // meetings and a 309,739-byte largest current-timetable page. Subsequent
 // reviewed meeting rows may grow only this timetable family, at a bounded
-// marginal raw-HTML allowance. All gzip/tag/runtime budgets remain unchanged.
+// marginal raw-HTML allowance. Runtime changes require a separate, explicit
+// current-maintenance exception and do not alter the historical v1 baseline.
 const CURRENT_TIMETABLE_MAINTENANCE_REFERENCE = Object.freeze({
   release_commit: 'c94e1a96563d49781db46532f0219c7c63102e0e',
   meetings: 371,
@@ -79,12 +80,24 @@ expect(mobile.implementation_unit === contract.mobile_qa_contract_id && mobile.s
 expect(accessibility.implementation_unit === contract.accessibility_qa_contract_id && accessibility.status === 'complete', 'v1 accessibility baseline is incomplete');
 expect(seo.release_id === contract.baseline_release_id && seo.status === 'release_ready', 'Phase 11 SEO baseline is incomplete');
 
-expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'v1 performance privacy boundary differs');
+expect(Object.values(contract.privacy_boundary).every((value) => value === false), 'historical v1 performance privacy boundary differs');
 expect(Object.values(contract.automation_boundary).every((value) => value === false), 'v1 performance automation boundary differs');
 for (const [key, value] of Object.entries(contract.public_boundary)) {
   const allowed = ['existing_route_families_only', 'existing_public_data_classes_only', 'performance_reduction_and_legacy_retirement_allowed'].includes(key);
   expect(value === allowed, `v1 performance public boundary differs: ${key}`);
 }
+
+const analytics = contract.current_maintenance_exceptions?.google_analytics;
+expect(analytics?.status === 'approved', 'current Google Analytics maintenance exception is not approved');
+expect(analytics.approved_at === '2026-09-02', 'current Google Analytics approval date differs');
+expect(analytics.measurement_id === 'G-79W3MF08Y9', 'current Google Analytics measurement ID differs');
+expect(analytics.script_url === 'https://www.googletagmanager.com/gtag/js?id=G-79W3MF08Y9', 'current Google Analytics script URL differs');
+expect(analytics.required_on_all_public_pages === true, 'Google Analytics must remain present on all public pages');
+expect(analytics.external_runtime_references_per_page === 1, 'Google Analytics runtime-reference allowance differs');
+expect(analytics.script_src_references_per_page === 1, 'Google Analytics script-src allowance differs');
+expect(Number.isInteger(analytics.aggregate_gzip_bytes_per_page_max) && analytics.aggregate_gzip_bytes_per_page_max === 100, 'Google Analytics gzip allowance differs');
+expect(Number.isInteger(analytics.additional_inline_script_bytes_per_page_max) && analytics.additional_inline_script_bytes_per_page_max === 160, 'Google Analytics inline-script allowance differs');
+expect(analytics.other_external_runtime_references_allowed === false, 'other external runtime references must remain forbidden');
 
 expect(audit.schema_version === 'v1-performance-qa-audit-v1', 'v1 performance audit schema differs');
 expect(audit.release_id === contract.release_id && audit.work_id === contract.work_id, 'v1 performance audit identity differs');
@@ -101,6 +114,8 @@ expect(Object.values(audit.behavior).every((value) => value === true), 'v1 perfo
 // derive current inventory from the rendered sitemap, scale aggregate ceilings for
 // reviewed page-count growth, and allow only a narrow five-percent maintenance
 // headroom for raw HTML shell metrics affected by persistent bilingual navigation.
+// The separately approved Google Analytics exception is bounded to one exact tag
+// on every public page and a fixed per-page gzip/inline allowance.
 const baseline = contract.baseline_inventory;
 const historicalAuditMap = {
   public_pages: 'public_pages',
@@ -187,11 +202,32 @@ const aggregateBudgetKeys = new Set([
   'html_bytes_total_max',
   'html_gzip_bytes_total_max',
 ]);
+const analyticsAggregateGzipBudgetKeys = new Set([
+  'dist_gzip_bytes_max',
+  'html_gzip_bytes_total_max',
+]);
+const analyticsInlineBudgetKeys = new Set([
+  'inline_script_bytes_max',
+  'p95_inline_script_bytes_max',
+]);
 const aggregateScale = currentPublicPages / baseline.public_pages;
+const analyticsAggregateGzipAllowance = currentPublicPages * analytics.aggregate_gzip_bytes_per_page_max;
 for (const [key, actual] of Object.entries(checks)) {
   let limit = aggregateBudgetKeys.has(key) ? Math.ceil(budget[key] * aggregateScale) : budget[key];
   if (CURRENT_MAINTENANCE_HEADROOM_KEYS.has(key)) {
     limit = Math.ceil(limit * CURRENT_MAINTENANCE_HEADROOM_FACTOR);
+  }
+  if (analyticsAggregateGzipBudgetKeys.has(key)) {
+    limit += analyticsAggregateGzipAllowance;
+  }
+  if (analyticsInlineBudgetKeys.has(key)) {
+    limit += analytics.additional_inline_script_bytes_per_page_max;
+  }
+  if (key === 'pages_with_script_references_max') {
+    limit = currentPublicPages * analytics.script_src_references_per_page;
+  }
+  if (key === 'external_runtime_reference_instances_max') {
+    limit = currentPublicPages * analytics.external_runtime_references_per_page;
   }
   if (key === 'largest_html_bytes_max' && currentTimetableFiles.has(report.typeTotals.html.largestFile)) {
     limit = Math.max(limit, currentTimetableRawLimit);
@@ -199,10 +235,14 @@ for (const [key, actual] of Object.entries(checks)) {
   expect(actual <= limit, `v1 performance budget exceeded: ${key} (${actual} > ${limit})`);
 }
 
-expect(report.pagesWithExternalRuntimeReferences === 0, 'pages with external runtime references remain');
-expect(report.externalRuntimeReferenceInstances === 0 && report.externalRuntimeReferences.length === 0, 'external runtime references remain');
+const expectedAnalyticsReferenceInstances = currentPublicPages * analytics.external_runtime_references_per_page;
+expect(report.pagesWithExternalRuntimeReferences === currentPublicPages, `Google Analytics external-runtime page count differs (${report.pagesWithExternalRuntimeReferences} !== ${currentPublicPages})`);
+expect(report.externalRuntimeReferenceInstances === expectedAnalyticsReferenceInstances, `Google Analytics external-runtime reference count differs (${report.externalRuntimeReferenceInstances} !== ${expectedAnalyticsReferenceInstances})`);
+expect(report.externalRuntimeReferences.length === expectedAnalyticsReferenceInstances, 'Google Analytics external-runtime reference inventory differs');
+expect(report.externalRuntimeReferences.every((item) => item.ref === analytics.script_url && item.origin === 'https://www.googletagmanager.com'), 'unapproved external runtime reference remains');
+expect(new Set(report.externalRuntimeReferences.map((item) => item.route)).size === currentPublicPages, 'Google Analytics runtime reference does not cover every public route exactly once');
 expect(report.missingLocalReferenceInstances === 0 && report.missingLocalReferences.length === 0, 'missing local references remain');
-expect(report.pagesWithScriptReferences === 0, 'script src references remain');
+expect(report.pagesWithScriptReferences === currentPublicPages, `Google Analytics script-src page count differs (${report.pagesWithScriptReferences} !== ${currentPublicPages})`);
 expect(report.pagesWithInlineScripts === currentPublicPages, `inline-script page count differs (${report.pagesWithInlineScripts} !== ${currentPublicPages})`);
 expect(report.pagesWithImages === 0 && report.pagesWithPreloads === 0, 'image or preload page count differs');
 
@@ -227,16 +267,16 @@ expect(legacy.gzip_bytes <= budget.legacy_timetable_gzip_bytes_max, 'legacy time
 expect(legacy.element_tags <= budget.legacy_timetable_element_tags_max, 'legacy timetable tag budget exceeded');
 for (const id of ['current_timetable_en', 'current_timetable_ja']) {
   expect(keyPages[id].bytes <= currentTimetableRawLimit, `${id} raw inventory-bounded maintenance budget exceeded (${keyPages[id].bytes} > ${currentTimetableRawLimit})`);
-  expect(keyPages[id].gzip_bytes <= budget.current_timetable_gzip_bytes_max, `${id} gzip budget exceeded`);
+  expect(keyPages[id].gzip_bytes <= budget.current_timetable_gzip_bytes_max + analytics.aggregate_gzip_bytes_per_page_max, `${id} gzip budget exceeded`);
   expect(keyPages[id].element_tags <= budget.current_timetable_element_tags_max, `${id} tag budget exceeded`);
 }
 for (const id of ['search_en', 'search_ja']) {
   expect(keyPages[id].bytes <= budget.search_page_bytes_max, `${id} raw budget exceeded`);
-  expect(keyPages[id].gzip_bytes <= budget.search_page_gzip_bytes_max, `${id} gzip budget exceeded`);
+  expect(keyPages[id].gzip_bytes <= budget.search_page_gzip_bytes_max + analytics.aggregate_gzip_bytes_per_page_max, `${id} gzip budget exceeded`);
 }
 for (const id of ['sources_en', 'sources_ja']) {
   expect(keyPages[id].bytes <= budget.sources_page_bytes_max, `${id} raw budget exceeded`);
-  expect(keyPages[id].gzip_bytes <= budget.sources_page_gzip_bytes_max, `${id} gzip budget exceeded`);
+  expect(keyPages[id].gzip_bytes <= budget.sources_page_gzip_bytes_max + analytics.aggregate_gzip_bytes_per_page_max, `${id} gzip budget exceeded`);
 }
 
 const legacySource = read(LEGACY_SOURCE_PATH);
@@ -266,6 +306,7 @@ for (const marker of [
   'V1-PERFORMANCE-QA-01', 'Public pages: 771', 'Distribution bytes: 10,572,496',
   'HTML bytes before: 496,330', 'HTML bytes after: 8,213', 'HTML bytes reduced: 488,117',
   'External runtime references: 0', 'HTML bytes max: 291,083',
+  'Google Analytics maintenance exception', 'G-79W3MF08Y9',
   'scripts/run-v1-performance-qa.mjs', 'scripts/check-v1-performance-qa.mjs',
   '.github/workflows/v1-performance-qa.yml', 'V1-SOURCE-POLICY-REVIEW-01',
 ]) expect(doc.includes(marker), `v1 performance documentation marker is missing: ${marker}`);
@@ -295,11 +336,13 @@ console.log(`CURRENT_TIMETABLE_MEETINGS: ${currentTimetableMeetingCount}`);
 console.log(`CURRENT_TIMETABLE_ADDED_REVIEWED_MEETINGS: ${addedReviewedMeetings}`);
 console.log(`CURRENT_TIMETABLE_BYTES_PER_ADDED_MEETING_MAX: ${CURRENT_TIMETABLE_MAINTENANCE_REFERENCE.bytes_per_added_meeting_max}`);
 console.log(`CURRENT_TIMETABLE_RAW_LIMIT: ${currentTimetableRawLimit}`);
+console.log(`GA4_MEASUREMENT_ID: ${analytics.measurement_id}`);
+console.log(`GA4_EXTERNAL_RUNTIME_REFERENCE_INSTANCES: ${report.externalRuntimeReferenceInstances}`);
+console.log(`GA4_AGGREGATE_GZIP_ALLOWANCE: ${analyticsAggregateGzipAllowance}`);
 console.log(`DIST_BYTES: ${report.distBytes}`);
 console.log(`DIST_GZIP_BYTES: ${report.distGzipBytes}`);
 console.log(`LARGEST_HTML_BYTES: ${report.pageDistributions.htmlBytes.max}`);
 console.log(`P95_HTML_BYTES: ${report.pageDistributions.htmlBytes.p95}`);
-console.log('EXTERNAL_RUNTIME_REFERENCE_INSTANCES: 0');
 console.log('MISSING_LOCAL_REFERENCE_INSTANCES: 0');
 console.log(`LEGACY_TIMETABLE_BYTES: ${legacy.bytes}`);
 console.log('NEXT_IMPLEMENTATION_UNIT: V1-SOURCE-POLICY-REVIEW-01');

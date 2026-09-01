@@ -24,6 +24,8 @@ The audit preserves the frozen v1 route and data scope. The current measurement 
 
 ## Static-first result
 
+The following figures are the historical 2026-07-18 v1 baseline:
+
 ```text
 External runtime references: 0
 Missing local references: 0
@@ -34,7 +36,24 @@ CSS bytes: 14,111
 CSS gzip bytes: 2,875
 ```
 
-Every page references the same generated CSS asset. Client-side discovery behavior remains inline and no third-party runtime is required.
+Every page references the same generated CSS asset. At the historical v1 baseline, client-side discovery behavior remained inline and no third-party runtime was required.
+
+## Google Analytics maintenance exception
+
+On 2026-09-02, a bounded post-v1 maintenance exception was approved for site-usage measurement with Google Analytics 4.
+
+```text
+Measurement ID: G-79W3MF08Y9
+Allowed external script: https://www.googletagmanager.com/gtag/js?id=G-79W3MF08Y9
+Required coverage: every public page
+Allowed external runtime references: exactly 1 per public page
+Allowed script-src references: exactly 1 per public page
+Additional aggregate gzip allowance: at most 100 bytes per public page
+Additional inline bootstrap allowance: at most 160 bytes per public page
+Other external runtime references: forbidden
+```
+
+This exception does not replace the historical v1 performance baseline. The permanent gate still rejects any other external runtime origin or URL, missing local asset, generated local JavaScript file, or unbounded analytics overhead. The GA4 bootstrap is kept intentionally small, and the existing page-size, CSS, element-count, and route-specific budgets continue to apply.
 
 ## Page distributions
 
@@ -55,7 +74,7 @@ Element tags p99: 1,555
 Element tags max: 5,187
 ```
 
-The largest retained pages are the bilingual Current Timetable pages. They preserve the complete reviewed public list and remain below 300,000 raw bytes, 9,000 gzip bytes, and 5,300 element tags.
+The largest retained pages are the bilingual Current Timetable pages. They preserve the complete reviewed public list and remain below 300,000 raw bytes, 9,000 gzip bytes, and 5,300 element tags before any explicitly bounded current-maintenance allowance.
 
 ## Legacy timetable retirement
 
@@ -106,19 +125,20 @@ Legacy timetable notice: 8,213 bytes / 2,245 gzip / 93 tags
 
 ## Regression budgets
 
-The permanent gate enforces:
+The historical v1 budgets remain the base of the permanent gate:
 
-- total distribution no larger than 11,000,000 raw bytes or 2,500,000 gzip bytes;
-- total HTML no larger than 10,900,000 raw bytes or 2,500,000 gzip bytes;
-- no page larger than 300,000 raw bytes, 35,000 gzip bytes, or 5,300 element tags;
+- total distribution no larger than 11,000,000 raw bytes or 2,500,000 gzip bytes before page-count scaling and explicit maintenance allowances;
+- total HTML no larger than 10,900,000 raw bytes or 2,500,000 gzip bytes before page-count scaling and explicit maintenance allowances;
+- no page larger than 300,000 raw bytes, 35,000 gzip bytes, or 5,300 element tags, except the separately inventory-bounded Current Timetable raw-size maintenance rule;
 - p95 page HTML no larger than 17,000 raw bytes, 4,500 gzip bytes, or 250 element tags;
 - one CSS file no larger than 16,000 raw bytes or 3,200 gzip bytes;
-- no external JavaScript file or script-src reference;
-- no external runtime dependency or missing local asset;
+- no generated local JavaScript file;
+- exactly one approved GA4 script-src/external-runtime reference per public page and no other external runtime dependency;
+- no missing local asset;
 - no more than one local asset reference per page;
-- inline script maximum 6,000 bytes and p95 2,300 bytes;
+- inline script maximum 6,000 bytes and p95 2,300 bytes, plus only the bounded GA4 bootstrap allowance;
 - inline style maximum 2,700 bytes;
-- route-specific limits for the retired timetable, Current Timetable, Search, and Sources pages.
+- route-specific limits for the retired timetable, Current Timetable, Search, and Sources pages, plus only the bounded GA4 gzip allowance.
 
 ## Permanent verification
 
@@ -140,11 +160,11 @@ Read-only Actions gate:
 .github/workflows/v1-performance-qa.yml
 ```
 
-The gate builds the complete site, preserves Phase 10 UX, Phase 11 SEO, v1 Scope Freeze, v1 Data Audit, v1 Mobile QA, and v1 Accessibility QA contracts, measures the complete distribution, validates all budgets, uploads diagnostics, removes generated files, and proves the repository remains clean.
+The gate builds the complete site, preserves Phase 10 UX, Phase 11 SEO, v1 Scope Freeze, v1 Data Audit, v1 Mobile QA, and v1 Accessibility QA contracts, measures the complete distribution, validates all budgets and the exact GA4 exception, uploads diagnostics, removes generated files, and proves the repository remains clean.
 
 ## Boundaries
 
-This unit adds no route family or public data class. It adds no participant data, complete racecard, odds, results, payouts, predictions, betting advice, raw source body, analytics, cookies, client storage, automatic reduction, automatic translation, automatic publication, or deployment action.
+The 2026-07-18 v1 performance unit itself added no route family or public data class and added no participant data, complete racecard, odds, results, payouts, predictions, betting advice, raw source body, analytics, cookies, client storage, automatic reduction, automatic translation, automatic publication, or deployment action. The GA4 instrumentation documented above is a later, explicit current-maintenance exception and does not rewrite that historical audit evidence.
 
 ## Next implementation unit
 
