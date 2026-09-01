@@ -76,5 +76,7 @@ jobs:
         if: always()
         with:
           name: hkjc-current-best-available-${{ github.run_id }}
-          path: /tmp/hkjc-current-best-available
+          path: |
+            /tmp/hkjc-current-best-available
+            data/generated/timetable/actions-multi-job/
           retention-days: 14
