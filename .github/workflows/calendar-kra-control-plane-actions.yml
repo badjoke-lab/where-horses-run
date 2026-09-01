@@ -50,7 +50,7 @@ jobs:
             requested_scope: { meeting_ids: meetingIds },
             rank_strategy: 'best_available',
             target_rank: null,
-            reason: 'rank_upgrade',
+            reason: 'coverage_gap',
             requested_at: '2026-09-01T00:00:00Z',
           };
           const registry = loadCalendarAcquisitionRegistryV1(process.cwd());
