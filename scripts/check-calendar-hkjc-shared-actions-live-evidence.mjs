@@ -94,6 +94,7 @@ else {
     const output = JSON.parse(lines.at(-1));
     if (output.execution_mode !== 'fixture_check_only') fail(`${fixtureId} execution mode differs.`);
     if (output.coverage_claim !== expected.claim || output.records_discovered !== expected.records || output.source_error_count !== expected.errors) fail(`${fixtureId} result summary differs.`);
+    if (output.schedule_only_execution !== true || output.live_racecard_route_invoked !== false) fail(`${fixtureId} fixture-only boundary differs.`);
     if (output.repository_write !== false || output.canonical_write !== false || output.public_write !== false) fail(`${fixtureId} side-effect report differs.`);
   }
 
@@ -108,10 +109,12 @@ const executorSource = readText('scripts/timetable/run-hkjc-live-fixture-job.mjs
 for (const forbiddenWriter of ['build-canonical-timetable.mjs','merge-hkjc-normalized-into-canonical.mjs','build-public-timetable-view.mjs','data/generated/timetable/canonical/meetings.json','data/generated/timetable/public/meeting-list.json']) {
   if (executorSource.includes(forbiddenWriter)) fail(`HKJC schedule executor references forbidden writer/target ${forbiddenWriter}.`);
 }
-if (!executorSource.includes('collect-hkjc-fixture-artifacts.mjs')) fail('HKJC shared executor must reuse the external collector boundary.');
-if (!executorSource.includes('needs_review')) fail('HKJC schedule executor review-state guard missing.');
-if (!executorSource.includes("record.capability_rank !== 'C'")) fail('HKJC schedule executor C-only guard missing.');
-if (executorSource.includes('build-hkjc-detail-reviewed-import-package.mjs')) fail('HKJC schedule executor must not invoke the operator-only detail route.');
+if (!executorSource.includes('collect-hkjc-fixture-artifacts.mjs')) fail('HKJC shared executor must reuse the external fixture collector boundary.');
+if (!executorSource.includes('fetch-hkjc-racecards.mjs') || !executorSource.includes('normalize-hkjc-racecards.mjs')) fail('HKJC live executor must invoke the official racecard best-available path.');
+if (!executorSource.includes('buildHkjcLiveBestAvailableArtifacts')) fail('HKJC live executor best-available artifact merge missing.');
+if (!executorSource.includes('needs_review')) fail('HKJC executor review-state guard missing.');
+if (!executorSource.includes("new Set(['C', 'B', 'B+', 'A', 'A+'])")) fail('HKJC live executor five-rank observation guard missing.');
+if (executorSource.includes('build-hkjc-detail-reviewed-import-package.mjs')) fail('HKJC live executor must not invoke the operator-only reviewed-import route.');
 
 const workflow = readText('.github/workflows/calendar-actions-multi-job.yml');
 for (const phrase of ['nar-hkjc-actions-window-001','run-calendar-actions-job.mjs','run-hkjc-live-fixture-job.mjs','fail-fast: false','actions/upload-artifact@v4','contents: read']) {
@@ -137,7 +140,7 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_HKJC_SHARED_ACTIONS_LIVE_EVIDENCE: pass');
-console.log('SCHEDULE_EXECUTOR: hkjc-live-fixture-actions / C-only');
-console.log('OPERATOR_DETAIL_SOURCE_ADAPTER: active but not invoked by schedule executor');
-console.log('SELECTED_MEETING_RANK_RETRY: pending');
+console.log('FIXTURE_CHECK_MODE: C-only schedule evidence preserved');
+console.log('LIVE_EXECUTOR: fixture + official racecard best-available C/B/B+/A/A+');
+console.log('OPERATOR_REVIEWED_IMPORT: remains separate and is not invoked by live executor');
 console.log('CANONICAL_PUBLIC_WRITE: false');
