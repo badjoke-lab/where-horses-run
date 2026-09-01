@@ -131,15 +131,15 @@
       "detail_adapter_id": "kra-today-race-live-v1",
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
-      "public_ceiling": "A+",
+      "public_ceiling": "A",
       "supported_observation_ranks": ["C", "B", "B+", "A", "A+"],
       "supports_date_window": false,
       "supports_cross_month_window": false,
       "supports_selected_meetings": true,
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": ["fallback_runner", "schedule_discovery_route"],
-      "operator_notes": "Active evidence-backed KRA detail profile. GitHub Actions may collect explicitly selected known meetings from official KRA todayrace pages and classify C/B/B+/A/A+ best-available observations. Historical live proof reproduces A+ while future meetings may remain C until official post times are published. Date-window discovery, fallback execution, automatic approval, promotion, Canonical/public writes, and unattended publication remain disabled."
+      "pending_fields": [],
+      "operator_notes": "Active evidence-backed KRA detail profile. GitHub Actions may collect explicitly selected known meetings from official KRA todayrace pages and classify C/B/B+/A/A+ best-available observations. Historical live proof reproduces A+ while future meetings may remain C until official post times are published. Public output remains capped at A by reviewed readiness. Date-window discovery, fallback execution, automatic approval, promotion, Canonical/public writes, and unattended publication remain disabled."
     }
   ]
 }
