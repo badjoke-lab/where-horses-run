@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - '.github/workflows/calendar-nar-current-c-live-refresh.yml'
+      - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/nar-race-name-quality.mjs'
 
 permissions:
   contents: read
@@ -15,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  WHR_BATCH_ID: nar-current-c-live-refresh-2026-09-01-batch-001
+  WHR_BATCH_ID: nar-current-c-live-refresh-2026-09-01-batch-002
   WHR_MODE: selected_meetings
   WHR_START_DATE: ''
   WHR_END_DATE_EXCLUSIVE: ''
