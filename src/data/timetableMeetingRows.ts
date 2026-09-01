@@ -26,6 +26,7 @@ export type PublicGapStatus =
 export type TimetableMeetingRow = {
   meeting_id: string;
   date: string;
+  timezone: string;
   country_id: string;
   country_label: string;
   authority_id: string;
@@ -111,6 +112,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
   return {
     meeting_id: record.meeting_id,
     date: record.date,
+    timezone: record.timezone,
     country_id: record.country_id,
     country_label: displayCountry(record.country_id),
     authority_id: record.authority_id,
