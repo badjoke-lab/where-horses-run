@@ -2,8 +2,7 @@ name: Publish TJK 2026-09-01 two Rank A meetings once
 
 on:
   push:
-    branches:
-      - publish/tjk-2026-09-01-two-a
+    branches: [publish/tjk-2026-09-01-two-a]
     paths:
       - '.github/workflows/publish-tjk-2026-09-01-two-a-once.yml'
       - 'data/candidates/tjk-2026-09-01-two-a-automated-approved.json'
@@ -22,13 +21,11 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
-        with:
-          node-version: '22.12.0'
+        with: { node-version: '22.12.0' }
 
-      - name: Verify exact pinned TJK evidence
+      - name: Verify exact pinned evidence and candidate
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -36,157 +33,110 @@ jobs:
           set -euo pipefail
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const review = JSON.parse(fs.readFileSync('data/candidates/tjk-current-2026-09-01-promotion-review-v1.json', 'utf8'));
-          const candidate = JSON.parse(fs.readFileSync('data/candidates/tjk-2026-09-01-two-a-automated-approved.json', 'utf8'));
-          const expectedIds = ['tjk-ankara-racecourse-2026-09-01','tjk-kocaeli-racecourse-2026-09-01'];
-          const expectedSchedules = new Map([
-            ['tjk-ankara-racecourse-2026-09-01', ['14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00']],
-            ['tjk-kocaeli-racecourse-2026-09-01', ['17:45','18:30','19:00','19:30','20:00','20:30','21:00','21:30']]
-          ]);
-          const fail = (m) => { throw new Error(m); };
-          if (review.source_run?.run_id !== 33471775307) fail('review source run differs');
-          if (review.source_run?.head_sha !== 'bdf32f1a408844ecef67e55cea7fcce5e14a8e68') fail('review source head differs');
-          if (review.source_run?.artifact_id !== 9786772486) fail('review artifact differs');
-          if (review.source_run?.artifact_digest !== 'sha256:990b0265c6b9b97876113e9a1e380d0da27ca08b44eb977a27683b7350433792') fail('review artifact digest differs');
-          if (review.source_run?.candidate_sha256 !== '69bee8a5469979c6a3e1d5dc5a90bce2b8e4935a9124f39d7e82c7f15e6ab5c6') fail('review candidate digest differs');
-          if (review.meeting_count !== 2 || review.race_count !== 16 || review.candidate_rank !== 'A' || review.public_ceiling !== 'A') fail('review scope/rank differs');
-          if (candidate.review?.status !== 'approved' || candidate.review?.reviewer !== 'automated-publication-gate') fail('automated publication review differs');
-          if (candidate.review?.promotion_target !== 'canonical-timetable-v0') fail('promotion target differs');
-          if (candidate.publication_ceiling !== 'A' || candidate.technical_capability_rank !== 'A+') fail('candidate rank boundary differs');
-          if (candidate.provenance?.source_run_id !== 33471775307 || candidate.provenance?.source_artifact_id !== 9786772486) fail('candidate provenance differs');
-          const records = candidate.records ?? [];
-          if (JSON.stringify(records.map(r => r.meeting_id).sort()) !== JSON.stringify([...expectedIds].sort())) fail('candidate identity set differs');
-          for (const r of records) {
-            if (r.capability_rank !== 'A' || r.review_status !== 'approved') fail(`${r.meeting_id} is not approved Rank A`);
-            if ((r.timetable_rows ?? []).length !== 8) fail(`${r.meeting_id} row count differs`);
-            const times = r.timetable_rows.map((row, i) => {
-              if (row.label !== `Race ${i + 1}`) fail(`${r.meeting_id} race labels are not contiguous`);
-              const keys = Object.keys(row).sort();
-              if (JSON.stringify(keys) !== JSON.stringify(['label','post_time_local'])) fail(`${r.meeting_id} contains fields outside Rank A public boundary`);
-              return row.post_time_local;
-            });
-            if (JSON.stringify(times) !== JSON.stringify(expectedSchedules.get(r.meeting_id))) fail(`${r.meeting_id} schedule differs`);
+          const r=JSON.parse(fs.readFileSync('data/candidates/tjk-current-2026-09-01-promotion-review-v1.json','utf8'));
+          const c=JSON.parse(fs.readFileSync('data/candidates/tjk-2026-09-01-two-a-automated-approved.json','utf8'));
+          const ids=['tjk-ankara-racecourse-2026-09-01','tjk-kocaeli-racecourse-2026-09-01'];
+          const schedules={
+            'tjk-ankara-racecourse-2026-09-01':['14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'],
+            'tjk-kocaeli-racecourse-2026-09-01':['17:45','18:30','19:00','19:30','20:00','20:30','21:00','21:30']
+          };
+          const fail=m=>{throw new Error(m)};
+          if(r.source_run?.run_id!==33471775307||r.source_run?.head_sha!=='bdf32f1a408844ecef67e55cea7fcce5e14a8e68'||r.source_run?.artifact_id!==9786772486) fail('pinned source identity differs');
+          if(r.source_run?.artifact_digest!=='sha256:990b0265c6b9b97876113e9a1e380d0da27ca08b44eb977a27683b7350433792'||r.source_run?.candidate_sha256!=='69bee8a5469979c6a3e1d5dc5a90bce2b8e4935a9124f39d7e82c7f15e6ab5c6') fail('pinned source digest differs');
+          if(r.meeting_count!==2||r.race_count!==16||r.candidate_rank!=='A'||r.public_ceiling!=='A') fail('review scope differs');
+          if(c.review?.status!=='approved'||c.review?.reviewer!=='automated-publication-gate'||c.review?.promotion_target!=='canonical-timetable-v0') fail('automated publication gate differs');
+          if(c.publication_ceiling!=='A'||c.technical_capability_rank!=='A+') fail('rank boundary differs');
+          if(JSON.stringify(c.records.map(x=>x.meeting_id).sort())!==JSON.stringify(ids.sort())) fail('candidate identities differ');
+          for(const x of c.records){
+            if(x.capability_rank!=='A'||x.review_status!=='approved'||x.timetable_rows?.length!==8) fail(`${x.meeting_id} rank/rows differ`);
+            const times=x.timetable_rows.map((row,i)=>{if(row.label!==`Race ${i+1}`||JSON.stringify(Object.keys(row).sort())!==JSON.stringify(['label','post_time_local'])) fail(`${x.meeting_id} row boundary differs`); return row.post_time_local;});
+            if(JSON.stringify(times)!==JSON.stringify(schedules[x.meeting_id])) fail(`${x.meeting_id} times differ`);
           }
           NODE
           gh api repos/badjoke-lab/where-horses-run/actions/artifacts/9786772486/zip > /tmp/tjk-source.zip
           echo '990b0265c6b9b97876113e9a1e380d0da27ca08b44eb977a27683b7350433792  /tmp/tjk-source.zip' | sha256sum -c -
-          rm -rf /tmp/tjk-source && mkdir -p /tmp/tjk-source
-          unzip -q /tmp/tjk-source.zip -d /tmp/tjk-source
-          found=0
-          while IFS= read -r -d '' f; do
-            if [ "$(sha256sum "$f" | cut -d' ' -f1)" = '69bee8a5469979c6a3e1d5dc5a90bce2b8e4935a9124f39d7e82c7f15e6ab5c6' ]; then
-              found=1
-              break
-            fi
-          done < <(find /tmp/tjk-source -type f -print0)
-          test "$found" -eq 1
+          rm -rf /tmp/tjk-source && mkdir /tmp/tjk-source && unzip -q /tmp/tjk-source.zip -d /tmp/tjk-source
+          find /tmp/tjk-source -type f -print0 | while IFS= read -r -d '' f; do sha256sum "$f"; done | grep -q '^69bee8a5469979c6a3e1d5dc5a90bce2b8e4935a9124f39d7e82c7f15e6ab5c6 '
 
-      - name: Snapshot and validate exact canonical prestate
+      - name: Snapshot and validate exact no-collision prestate
         shell: bash
         run: |
           set -euo pipefail
-          cp data/generated/timetable/canonical/meetings.json /tmp/tjk-before-canonical-meetings.json
-          cp data/generated/timetable/canonical/meeting-details.json /tmp/tjk-before-canonical-details.json
-          cp data/generated/timetable/public/meeting-list.json /tmp/tjk-before-public-meetings.json
-          cp data/generated/timetable/public/meeting-details.json /tmp/tjk-before-public-details.json
+          cp data/generated/timetable/canonical/meetings.json /tmp/bcm.json
+          cp data/generated/timetable/canonical/meeting-details.json /tmp/bcd.json
+          cp data/generated/timetable/public/meeting-list.json /tmp/bpm.json
+          cp data/generated/timetable/public/meeting-details.json /tmp/bpd.json
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const ids = new Set(['tjk-ankara-racecourse-2026-09-01','tjk-kocaeli-racecourse-2026-09-01']);
-          const c = JSON.parse(fs.readFileSync('/tmp/tjk-before-canonical-meetings.json','utf8'));
-          const d = JSON.parse(fs.readFileSync('/tmp/tjk-before-canonical-details.json','utf8'));
-          const meetings = c.meetings ?? [];
-          const details = d.details ?? [];
-          for (const id of ids) {
-            const m = meetings.find(x => x.meeting_id === id);
-            if (!m) throw new Error(`missing canonical prestate ${id}`);
-            const detail = details.find(x => x.meeting_id === id);
-            if (m.capability_rank === 'C') {
-              if (detail) throw new Error(`${id} C prestate unexpectedly has detail`);
-            } else if (m.capability_rank === 'A') {
-              if (!detail || (detail.timetable_rows ?? detail.rows ?? []).length !== 8) throw new Error(`${id} A prestate is not exact idempotent state`);
-            } else {
-              throw new Error(`${id} unexpected prestate rank ${m.capability_rank}`);
+          const cand=JSON.parse(fs.readFileSync('data/candidates/tjk-2026-09-01-two-a-automated-approved.json','utf8'));
+          const cm=JSON.parse(fs.readFileSync('/tmp/bcm.json','utf8')).meetings;
+          const cd=JSON.parse(fs.readFileSync('/tmp/bcd.json','utf8')).details;
+          const pm=JSON.parse(fs.readFileSync('/tmp/bpm.json','utf8')).meetings;
+          const pd=JSON.parse(fs.readFileSync('/tmp/bpd.json','utf8')).details;
+          let missing=0;
+          for(const x of cand.records){
+            const sameIdentity=arr=>arr.filter(v=>v.racecourse_id===x.racecourse_id&&v.date===x.date);
+            const m=cm.find(v=>v.meeting_id===x.meeting_id);
+            if(!m){
+              missing++;
+              if(sameIdentity(cm).length||sameIdentity(pm).length||cd.some(v=>v.meeting_id===x.meeting_id)||pd.some(v=>v.meeting_id===x.meeting_id)) throw new Error(`${x.meeting_id} missing target has identity collision`);
+              continue;
             }
+            if(m.country_id!==x.country_id||m.authority_id!==x.authority_id||m.racecourse_id!==x.racecourse_id||m.date!==x.date) throw new Error(`${x.meeting_id} identity differs`);
+            if(m.capability_rank==='C') { if(cd.some(v=>v.meeting_id===x.meeting_id)) throw new Error(`${x.meeting_id} C has detail`); continue; }
+            if(m.capability_rank==='A') { const d=cd.find(v=>v.meeting_id===x.meeting_id); if(!d||d.timetable_rows?.length!==8) throw new Error(`${x.meeting_id} A is not idempotent`); continue; }
+            throw new Error(`${x.meeting_id} unexpected prestate ${m.capability_rank}`);
           }
+          fs.writeFileSync('/tmp/missing-count',String(missing));
+          console.log(JSON.stringify({missing_target_meetings:missing},null,2));
           NODE
 
-      - name: Dry-run exact promotion
-        run: node scripts/timetable/promote-approved-candidate-v1.mjs --candidate=data/candidates/tjk-2026-09-01-two-a-automated-approved.json
-
-      - name: Apply exact promotion and rebuild public projection
+      - name: Dry-run and apply exact Rank A candidate
         run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs --candidate=data/candidates/tjk-2026-09-01-two-a-automated-approved.json
           node scripts/timetable/promote-approved-candidate-v1.mjs --candidate=data/candidates/tjk-2026-09-01-two-a-automated-approved.json --apply
           node scripts/timetable/build-public-timetable-view.mjs
 
-      - name: Prove bounded two-meeting mutation
+      - name: Prove exact two-target mutation only
         shell: bash
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const ids = new Set(['tjk-ankara-racecourse-2026-09-01','tjk-kocaeli-racecourse-2026-09-01']);
-          const expected = new Map([
-            ['tjk-ankara-racecourse-2026-09-01', ['14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00']],
-            ['tjk-kocaeli-racecourse-2026-09-01', ['17:45','18:30','19:00','19:30','20:00','20:30','21:00','21:30']]
-          ]);
-          const load = p => JSON.parse(fs.readFileSync(p,'utf8'));
-          const beforeCM = load('/tmp/tjk-before-canonical-meetings.json');
-          const beforeCD = load('/tmp/tjk-before-canonical-details.json');
-          const beforePM = load('/tmp/tjk-before-public-meetings.json');
-          const beforePD = load('/tmp/tjk-before-public-details.json');
-          const afterCM = load('data/generated/timetable/canonical/meetings.json');
-          const afterCD = load('data/generated/timetable/canonical/meeting-details.json');
-          const afterPM = load('data/generated/timetable/public/meeting-list.json');
-          const afterPD = load('data/generated/timetable/public/meeting-details.json');
-          const rowsOf = x => x?.timetable_rows ?? x?.rows ?? [];
-          const mapById = arr => new Map(arr.map(x => [x.meeting_id,x]));
-          const semanticNonTargets = (arr) => arr.filter(x => !ids.has(x.meeting_id));
-          if (JSON.stringify(semanticNonTargets(beforeCM.meetings ?? [])) !== JSON.stringify(semanticNonTargets(afterCM.meetings ?? []))) throw new Error('non-target canonical meetings changed');
-          if (JSON.stringify(semanticNonTargets(beforeCD.details ?? [])) !== JSON.stringify(semanticNonTargets(afterCD.details ?? []))) throw new Error('non-target canonical details changed');
-          if (JSON.stringify(semanticNonTargets(beforePM.meetings ?? beforePM.records ?? [])) !== JSON.stringify(semanticNonTargets(afterPM.meetings ?? afterPM.records ?? []))) throw new Error('non-target public meetings changed');
-          if (JSON.stringify(semanticNonTargets(beforePD.details ?? beforePD.records ?? [])) !== JSON.stringify(semanticNonTargets(afterPD.details ?? afterPD.records ?? []))) throw new Error('non-target public details changed');
-          if ((beforeCM.meetings ?? []).length !== (afterCM.meetings ?? []).length) throw new Error('canonical meeting count changed');
-          if ((beforePM.meetings ?? beforePM.records ?? []).length !== (afterPM.meetings ?? afterPM.records ?? []).length) throw new Error('public meeting count changed');
-          const cm = mapById(afterCM.meetings ?? []);
-          const cd = mapById(afterCD.details ?? []);
-          const pm = mapById(afterPM.meetings ?? afterPM.records ?? []);
-          const pd = mapById(afterPD.details ?? afterPD.records ?? []);
-          for (const id of ids) {
-            if (cm.get(id)?.capability_rank !== 'A') throw new Error(`${id} canonical rank is not A`);
-            const publicRank = pm.get(id)?.effective_rank ?? pm.get(id)?.capability_rank ?? pm.get(id)?.rank;
-            if (publicRank !== 'A') throw new Error(`${id} public rank is not A: ${publicRank}`);
-            for (const detail of [cd.get(id), pd.get(id)]) {
-              if (!detail) throw new Error(`${id} detail missing after promotion`);
-              const rows = rowsOf(detail);
-              if (rows.length !== 8) throw new Error(`${id} detail row count differs`);
-              const times = rows.map((row,i) => {
-                const label = row.label ?? row.race_label;
-                if (label !== `Race ${i+1}`) throw new Error(`${id} detail labels differ`);
-                for (const forbidden of ['race_name','distance_m','surface','course_label','horse','jockey','trainer','odds','result','payout']) {
-                  if (row[forbidden] !== undefined && row[forbidden] !== null) throw new Error(`${id} public-boundary field ${forbidden} present`);
-                }
-                return row.post_time_local;
-              });
-              if (JSON.stringify(times) !== JSON.stringify(expected.get(id))) throw new Error(`${id} detail schedule differs`);
+          const ids=new Set(['tjk-ankara-racecourse-2026-09-01','tjk-kocaeli-racecourse-2026-09-01']);
+          const exp={
+            'tjk-ankara-racecourse-2026-09-01':['14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'],
+            'tjk-kocaeli-racecourse-2026-09-01':['17:45','18:30','19:00','19:30','20:00','20:30','21:00','21:30']
+          };
+          const load=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+          const before=[load('/tmp/bcm.json').meetings,load('/tmp/bcd.json').details,load('/tmp/bpm.json').meetings,load('/tmp/bpd.json').details];
+          const after=[load('data/generated/timetable/canonical/meetings.json').meetings,load('data/generated/timetable/canonical/meeting-details.json').details,load('data/generated/timetable/public/meeting-list.json').meetings,load('data/generated/timetable/public/meeting-details.json').details];
+          const non=a=>a.filter(x=>!ids.has(x.meeting_id));
+          for(let i=0;i<4;i++) if(JSON.stringify(non(before[i]))!==JSON.stringify(non(after[i]))) throw new Error(`non-target dataset ${i} changed`);
+          const missing=Number(fs.readFileSync('/tmp/missing-count','utf8'));
+          if(after[0].length-before[0].length!==missing||after[2].length-before[2].length!==missing) throw new Error('meeting count delta differs from exact missing target count');
+          const maps=after.map(a=>new Map(a.map(x=>[x.meeting_id,x])));
+          for(const id of ids){
+            if(maps[0].get(id)?.capability_rank!=='A'||maps[2].get(id)?.effective_public_rank!=='A') throw new Error(`${id} is not public Rank A`);
+            for(const d of [maps[1].get(id),maps[3].get(id)]){
+              if(!d||d.timetable_rows?.length!==8) throw new Error(`${id} detail missing`);
+              const times=d.timetable_rows.map((r,i)=>{if(r.label!==`Race ${i+1}`) throw new Error(`${id} labels differ`); for(const k of ['race_name','distance_m','surface','course_label','horse','jockey','trainer','odds','result','payout']) if(r[k]!=null) throw new Error(`${id} forbidden ${k}`); return r.post_time_local;});
+              if(JSON.stringify(times)!==JSON.stringify(exp[id])) throw new Error(`${id} times differ`);
             }
           }
-          console.log(JSON.stringify({ promoted_meeting_ids:[...ids].sort(), target_rank:'A', non_target_changes:0 }, null, 2));
+          console.log(JSON.stringify({target_ids:[...ids].sort(),rank:'A',new_meeting_count:missing,non_target_changes:0},null,2));
           NODE
+          node scripts/timetable/build-public-timetable-view.mjs --check
           git diff --check
 
-      - name: Retire one-shot workflow and commit bounded output
+      - name: Retire one-shot and commit bounded publication
         shell: bash
         run: |
           set -euo pipefail
           rm .github/workflows/publish-tjk-2026-09-01-two-a-once.yml
-          git config user.name 'badjoke-lab'
-          git config user.email 'badjoke.lab@gmail.com'
-          git add data/candidates/tjk-2026-09-01-two-a-automated-approved.json \
-                  data/generated/timetable/canonical/meetings.json \
-                  data/generated/timetable/canonical/meeting-details.json \
-                  data/generated/timetable/public/meeting-list.json \
-                  data/generated/timetable/public/meeting-details.json \
-                  .github/workflows/publish-tjk-2026-09-01-two-a-once.yml
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git add data/candidates/tjk-2026-09-01-two-a-automated-approved.json data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json .github/workflows/publish-tjk-2026-09-01-two-a-once.yml
           git diff --cached --check
           git commit -m 'Publish Ankara and Kocaeli 2026-09-01 as Rank A'
           git push origin HEAD:publish/tjk-2026-09-01-two-a
