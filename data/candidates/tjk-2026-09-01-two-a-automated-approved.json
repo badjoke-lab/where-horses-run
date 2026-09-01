@@ -1,0 +1,95 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-09-01T04:58:13Z",
+  "adapter_id": "tjk-2026-09-01-two-a-automated-publication-v1",
+  "country_id": "turkey",
+  "authority_id": "turkiye-jokey-kulubu",
+  "source_id": "tjk-daily-programme",
+  "technical_capability_rank": "A+",
+  "publication_ceiling": "A",
+  "candidate_window": {
+    "start_date": "2026-09-01",
+    "end_date_exclusive": "2026-09-02",
+    "timezone": "Europe/Istanbul"
+  },
+  "records": [
+    {
+      "candidate_id": "approved-tjk-ankara-racecourse-2026-09-01",
+      "meeting_id": "tjk-ankara-racecourse-2026-09-01",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "ankara-racecourse",
+      "date": "2026-09-01",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A",
+      "first_race_time_local": "14:30",
+      "last_race_time_local": "18:00",
+      "timetable_rows": [
+        { "label": "Race 1", "post_time_local": "14:30" },
+        { "label": "Race 2", "post_time_local": "15:00" },
+        { "label": "Race 3", "post_time_local": "15:30" },
+        { "label": "Race 4", "post_time_local": "16:00" },
+        { "label": "Race 5", "post_time_local": "16:30" },
+        { "label": "Race 6", "post_time_local": "17:00" },
+        { "label": "Race 7", "post_time_local": "17:30" },
+        { "label": "Race 8", "post_time_local": "18:00" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=01%2F09%2F2026&SehirAdi=Ankara&Era=today",
+        "checked_at": "2026-09-01T04:58:13Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved by automated publication gate from exact pinned official TJK evidence; public output is limited to Race 1-N post times at Rank A."
+    },
+    {
+      "candidate_id": "approved-tjk-kocaeli-racecourse-2026-09-01",
+      "meeting_id": "tjk-kocaeli-racecourse-2026-09-01",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "racecourse_id": "kocaeli-racecourse",
+      "date": "2026-09-01",
+      "timezone": "Europe/Istanbul",
+      "capability_rank": "A",
+      "first_race_time_local": "17:45",
+      "last_race_time_local": "21:30",
+      "timetable_rows": [
+        { "label": "Race 1", "post_time_local": "17:45" },
+        { "label": "Race 2", "post_time_local": "18:30" },
+        { "label": "Race 3", "post_time_local": "19:00" },
+        { "label": "Race 4", "post_time_local": "19:30" },
+        { "label": "Race 5", "post_time_local": "20:00" },
+        { "label": "Race 6", "post_time_local": "20:30" },
+        { "label": "Race 7", "post_time_local": "21:00" },
+        { "label": "Race 8", "post_time_local": "21:30" }
+      ],
+      "source": {
+        "source_id": "tjk-daily-programme",
+        "official_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=9&QueryParameter_Tarih=01%2F09%2F2026&SehirAdi=Kocaeli&Era=today",
+        "checked_at": "2026-09-01T04:58:13Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved by automated publication gate from exact pinned official TJK evidence; public output is limited to Race 1-N post times at Rank A."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-09-01T10:45:00Z",
+    "reviewer": "automated-publication-gate",
+    "promotion_target": "canonical-timetable-v0"
+  },
+  "provenance": {
+    "source_run_id": 33471775307,
+    "source_head_sha": "bdf32f1a408844ecef67e55cea7fcce5e14a8e68",
+    "source_artifact_id": 9786772486,
+    "source_artifact_digest": "sha256:990b0265c6b9b97876113e9a1e380d0da27ca08b44eb977a27683b7350433792",
+    "source_candidate_sha256": "69bee8a5469979c6a3e1d5dc5a90bce2b8e4935a9124f39d7e82c7f15e6ab5c6",
+    "review_evidence_path": "data/candidates/tjk-current-2026-09-01-promotion-review-v1.json"
+  }
+}
