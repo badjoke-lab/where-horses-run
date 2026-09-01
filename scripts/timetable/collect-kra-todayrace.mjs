@@ -10,15 +10,10 @@ const RACECOURSES = Object.freeze({
   'jeju-racecourse': { meet_code: '2', label: 'Jeju', weekly_column: 3 },
   'busan-gyeongnam-racecourse': { meet_code: '3', label: 'Busan-Gyeongnam', weekly_column: 2 },
 });
-const WEEKDAY_LABEL = Object.freeze({
-  5: '금요일',
-  6: '토요일',
-  0: '일요일',
-});
-const NEXT_WEEKDAY_LABEL = Object.freeze({
-  5: '토요일',
-  6: '일요일',
-  0: '수상내역',
+const WEEKDAY_BLOCK_INDEX = Object.freeze({
+  5: 0,
+  6: 1,
+  0: 2,
 });
 const CIRCLED_RACE_NUMBER = new Map([
   ['①', 1], ['②', 2], ['③', 3], ['④', 4], ['⑤', 5], ['⑥', 6], ['⑦', 7],
@@ -85,35 +80,34 @@ function parseCells(rowHtml) {
     .map((match) => stripHtml(match[1]));
 }
 
-function weeklyDaySection(html, date) {
-  const day = targetWeekday(date);
-  const label = WEEKDAY_LABEL[day];
-  const nextLabel = NEXT_WEEKDAY_LABEL[day];
-  if (!label || !nextLabel) return '';
-
-  const source = String(html);
-  const captionNeedle = `${label} 판매공원별 출발시간`;
-  let start = source.indexOf(captionNeedle);
-  if (start < 0) start = source.indexOf(label);
-  if (start < 0) return '';
-
-  const nextCaptionNeedle = nextLabel === '수상내역' ? nextLabel : `${nextLabel} 판매공원별 출발시간`;
-  let end = source.indexOf(nextCaptionNeedle, start + captionNeedle.length);
-  if (end < 0 && nextLabel !== '수상내역') end = source.indexOf(nextLabel, start + label.length);
-  return source.slice(start, end < 0 ? undefined : end);
+function weeklyHourBlocks(html) {
+  const blocks = [];
+  let current = [];
+  for (const match of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = parseCells(match[1]);
+    const isHourRow = cells.length >= 4 && /^\d{1,2}\s*시$/.test(cells[0]);
+    if (isHourRow) {
+      current.push(cells);
+    } else if (current.length) {
+      blocks.push(current);
+      current = [];
+    }
+  }
+  if (current.length) blocks.push(current);
+  return blocks.filter((block) => block.length >= 2);
 }
 
 function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   const { monday, sunday } = currentSeoulWeekBounds();
   if (date < monday || date > sunday) return [];
-  const section = weeklyDaySection(html, date);
-  if (!section) return [];
+  const blockIndex = WEEKDAY_BLOCK_INDEX[targetWeekday(date)];
+  if (blockIndex == null) return [];
+  const block = weeklyHourBlocks(html)[blockIndex];
+  if (!block) return [];
 
-  const rows = [];
+  const explicitRows = [];
   const sequentialTimes = [];
-  for (const match of section.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
-    const cells = parseCells(match[1]);
-    if (cells.length < 4) continue;
+  for (const cells of block) {
     const hourMatch = cells[0].match(/(\d{1,2})\s*시/);
     if (!hourMatch) continue;
     const hour = Number(hourMatch[1]);
@@ -122,14 +116,14 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
       const postTime = `${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`;
       const explicitRaceNumber = token[2] ? CIRCLED_RACE_NUMBER.get(token[2]) : null;
       if (explicitRaceNumber) {
-        rows.push({ race_number: explicitRaceNumber, post_time_local: postTime, sources: ['weekly-start-times'] });
+        explicitRows.push({ race_number: explicitRaceNumber, post_time_local: postTime, sources: ['weekly-start-times'] });
       } else {
         sequentialTimes.push(postTime);
       }
     }
   }
 
-  if (rows.length) return rows.sort((left, right) => left.race_number - right.race_number);
+  if (explicitRows.length) return explicitRows.sort((left, right) => left.race_number - right.race_number);
   return sequentialTimes.map((postTime, index) => ({
     race_number: index + 1,
     post_time_local: postTime,
