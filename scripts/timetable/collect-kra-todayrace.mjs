@@ -15,10 +15,6 @@ const WEEKDAY_TABLE_INDEX = Object.freeze({
   6: 1,
   0: 2,
 });
-const CIRCLED_RACE_NUMBER = new Map([
-  ['①', 1], ['②', 2], ['③', 3], ['④', 4], ['⑤', 5], ['⑥', 6], ['⑦', 7],
-  ['⑧', 8], ['⑨', 9], ['⑩', 10], ['⑪', 11], ['⑫', 12], ['⑬', 13], ['⑭', 14],
-]);
 
 if (!args.date || !/^\d{4}-\d{2}-\d{2}$/.test(args.date)) throw new Error('--date=YYYY-MM-DD is required');
 if (!args['racecourse-id'] || !RACECOURSES[args['racecourse-id']]) throw new Error('--racecourse-id=<known KRA racecourse> is required');
@@ -98,7 +94,7 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   const table = tables[tableIndex];
   if (!table) return [];
 
-  const rows = [];
+  const postTimes = [];
   for (const match of table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
     const cells = parseCells(match[1]);
     if (cells.length < 4) continue;
@@ -106,17 +102,16 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
     if (!hourMatch) continue;
     const hour = Number(hourMatch[1]);
     const cell = cells[weeklyColumn] ?? '';
-    for (const token of cell.matchAll(/([0-5]?\d)\s*분\s*([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭])/g)) {
-      const raceNumber = CIRCLED_RACE_NUMBER.get(token[2]);
-      if (!raceNumber) continue;
-      rows.push({
-        race_number: raceNumber,
-        post_time_local: `${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`,
-        sources: ['weekly-start-times'],
-      });
+    for (const token of cell.matchAll(/([0-5]?\d)\s*분/g)) {
+      postTimes.push(`${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`);
     }
   }
-  return rows.sort((left, right) => left.race_number - right.race_number);
+
+  return [...new Set(postTimes)].map((postTime, index) => ({
+    race_number: index + 1,
+    post_time_local: postTime,
+    sources: ['weekly-start-times'],
+  }));
 }
 
 function mergeRows(baseRows, supplementalRows) {
