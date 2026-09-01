@@ -142,8 +142,17 @@ function orderedVisibleTimeRows(html, blockRows, sourceLabel) {
 function orderedCrossPageTimeRows(pages, rows) {
   if (rows.length < 2 || !contiguous(rows)) return new Map();
 
-  let entries = [];
+  const seenHtml = new Set();
+  const uniquePages = [];
   for (const page of pages) {
+    const html = String(page.html ?? '');
+    if (!html || seenHtml.has(html)) continue;
+    seenHtml.add(html);
+    uniquePages.push(page);
+  }
+
+  let entries = [];
+  for (const page of uniquePages) {
     const text = textFromHtml(page.html);
     for (const match of text.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g)) {
       entries.push({
@@ -155,7 +164,7 @@ function orderedCrossPageTimeRows(pages, rows) {
 
   if (entries.length !== rows.length) {
     entries = [];
-    for (const page of pages) {
+    for (const page of uniquePages) {
       const text = textFromHtml(page.html);
       for (const match of text.matchAll(/\b([01]?\d|2[0-3])\s*시\s*([0-5]\d)\s*분\b/g)) {
         entries.push({
