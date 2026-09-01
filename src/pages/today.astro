@@ -7,16 +7,18 @@ import {
   getTimetableDataState,
   getTimetableDateContext,
   getTimetableMeetingRowsForDate,
+  getTimetableProjectionCandidateRows,
 } from '../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const todayRecords = getTimetableMeetingRowsForDate(context.today);
+const projectionCandidates = getTimetableProjectionCandidateRows(context.today, context.tomorrow);
 ---
 
 <BaseLayout
   title={`Today's timetable — ${context.today} | Where Horses Run`}
-  description={`Reviewed public meeting information for ${context.today}, resolved in ${context.timeZone}. Official sources remain the final confirmation point.`}
+  description={`Reviewed public meeting information for today. Display dates and times follow the visitor-selected timezone; official sources remain the final confirmation point.`}
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
@@ -24,7 +26,7 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
     <p class="hero__eyebrow">Today</p>
     <h1 id="page-title">Today's timetable</h1>
     <p class="hero__summary">
-      Meetings for {context.today} in the {context.timeZone} reference timezone. Rank controls how much timing detail is shown.
+      Select a display timezone below. Meeting membership, dates and available race times are projected into that timezone.
     </p>
   </section>
 
@@ -33,9 +35,10 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
-      records={todayRecords}
+      records={projectionCandidates}
       date={context.today}
-      emptyLabel={`No reviewed public meetings are listed for ${context.today}. Check official sources for current information.`}
+      viewMode="today"
+      emptyLabel="No reviewed public meetings are listed for today in the selected timezone. Check official sources for current information."
     />
   </section>
 </BaseLayout>
