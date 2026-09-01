@@ -1,0 +1,70 @@
+name: Apply NAR generic race-name repair once
+
+on:
+  push:
+    branches:
+      - fix/nar-published-race-name-repair
+    paths:
+      - '.github/workflows/apply-nar-generic-race-name-repair-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/nar-published-race-name-repair
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Repair canonical NAR records and rebuild public projection
+        env:
+          WHR_REPAIR_AT: '2026-09-01T07:16:00Z'
+        run: |
+          node scripts/timetable/repair-nar-generic-race-name-publication.mjs
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Verify bounded public result
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const generic = new Set(['特別','重賞','準重賞','一般','新馬','未勝利']);
+          const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8'));
+          const publicDetails = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json','utf8'));
+          const repaired = publicDetails.details.filter((d) => d.authority_id === 'nar-local-government-racing' && d.capability_rank === 'A');
+          const bad = publicDetails.details
+            .filter((d) => d.authority_id === 'nar-local-government-racing')
+            .flatMap((d) => (d.timetable_rows ?? []).map((r) => ({meeting_id:d.meeting_id,row:r})))
+            .filter(({row}) => generic.has(String(row.race_name ?? '').trim()));
+          const aFailures = repaired.flatMap((d) => (d.timetable_rows ?? []).filter((r) => !String(r.label ?? '').trim() || !/^\d{2}:\d{2}$/.test(String(r.post_time_local ?? ''))));
+          const leakedAPlusFields = repaired.flatMap((d) => (d.timetable_rows ?? []).filter((r) => 'race_name' in r || 'distance_m' in r || 'surface' in r || 'course_label' in r));
+          const listA = publicList.meetings.filter((m) => m.authority_id === 'nar-local-government-racing' && m.capability_rank === 'A');
+          console.log(JSON.stringify({
+            repaired_public_detail_count: repaired.length,
+            repaired_public_list_count: listA.length,
+            generic_public_race_name_count: bad.length,
+            a_field_failure_count: aFailures.length,
+            a_plus_field_leak_count_on_repaired_a: leakedAPlusFields.length,
+          }, null, 2));
+          if (repaired.length !== 95) throw new Error(`expected 95 repaired public details, got ${repaired.length}`);
+          if (listA.length !== 95) throw new Error(`expected 95 repaired public list rows, got ${listA.length}`);
+          if (bad.length !== 0) throw new Error(`generic NAR public race names remain: ${bad.length}`);
+          if (aFailures.length !== 0) throw new Error(`Rank A fields missing after repair: ${aFailures.length}`);
+          if (leakedAPlusFields.length !== 0) throw new Error(`A+ fields leaked into repaired Rank A public rows: ${leakedAPlusFields.length}`);
+          NODE
+      - name: Commit bounded repair outputs
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          git diff --cached --stat
+          git commit -m 'FIX: downgrade invalid NAR A+ records to valid Rank A'
+          git push origin HEAD:fix/nar-published-race-name-repair
