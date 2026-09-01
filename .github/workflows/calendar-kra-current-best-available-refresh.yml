@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - fix/hkjc-kra-current-best-available-refresh
+      - fix/kra-transient-source-resilience
     paths:
       - '.github/workflows/calendar-kra-current-best-available-refresh.yml'
       - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
@@ -34,7 +35,9 @@ jobs:
         with:
           node-version: '22.12.0'
       - name: Validate KRA current best-available orchestrator
-        run: node --check scripts/timetable/run-current-lower-rank-best-available.mjs
+        run: |
+          node --check scripts/timetable/run-current-lower-rank-best-available.mjs
+          node --check scripts/timetable/collect-kra-todayrace.mjs
       - name: Record protected timetable hashes
         shell: bash
         run: |
@@ -76,5 +79,7 @@ jobs:
         if: always()
         with:
           name: kra-current-best-available-${{ github.run_id }}
-          path: /tmp/kra-current-best-available
+          path: |
+            /tmp/kra-current-best-available
+            data/generated/timetable/actions-multi-job/
           retention-days: 14
