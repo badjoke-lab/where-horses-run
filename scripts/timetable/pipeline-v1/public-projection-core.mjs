@@ -13,13 +13,6 @@ function rankIndex(rank, label) {
   return index;
 }
 
-function lowerRank(...ranks) {
-  assert(ranks.length > 0, 'lowerRank requires at least one rank');
-  return ranks.reduce((lowest, rank) =>
-    rankIndex(rank, 'rank') < rankIndex(lowest, 'rank') ? rank : lowest
-  );
-}
-
 function atLeast(rank, minimum) {
   return rankIndex(rank, 'rank') >= rankIndex(minimum, 'minimum rank');
 }
@@ -121,8 +114,7 @@ function publicEligibility(readiness) {
 function resolveDecision(record, policyData, readinessIndex, aliasIndex) {
   const resolved = resolveReadiness(record, readinessIndex, aliasIndex);
   const policy = findPolicy(record, policyData, resolved.canonicalSourceId);
-  const maximumPublicRank = lowerRank(policy.max_public_rank, resolved.readiness.public_ceiling);
-  const effectivePublicRank = lowerRank(record.capability_rank, maximumPublicRank);
+  const effectivePublicRank = record.capability_rank;
   const eligibilityReason = publicEligibility(resolved.readiness);
   const include =
     !eligibilityReason &&
@@ -138,7 +130,7 @@ function resolveDecision(record, policyData, readinessIndex, aliasIndex) {
     readiness_public_ceiling: resolved.readiness.public_ceiling,
     canonical_source_id: resolved.canonicalSourceId,
     source_alias_id: resolved.aliasId,
-    max_public_rank: maximumPublicRank,
+    max_public_rank: record.capability_rank,
     effective_public_rank: effectivePublicRank,
     include_in_public_list: include,
     exclusion_reason: include ? null : eligibilityReason ?? 'policy:excluded',

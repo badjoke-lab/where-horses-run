@@ -1,0 +1,75 @@
+name: Calendar remove public rank caps
+
+on:
+  push:
+    branches:
+      - fix/remove-public-rank-caps-20260902
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-remove-public-rank-caps-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apply-and-rebuild:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remove-public-rank-caps-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Remove public rank demotion logic
+        run: node scripts/timetable/remove-public-rank-caps.mjs
+      - name: Rebuild public projection
+        run: node scripts/timetable/build-public-timetable-view.mjs
+      - name: Verify public rank equals canonical rank
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const canonical = JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json', 'utf8')).meetings;
+          const publicRows = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8')).meetings;
+          const canonicalById = new Map(canonical.map((row) => [row.meeting_id, row]));
+          for (const row of publicRows) {
+            const source = canonicalById.get(row.meeting_id);
+            if (!source) throw new Error(`${row.meeting_id} missing canonical row`);
+            if (row.effective_public_rank !== source.capability_rank) {
+              throw new Error(`${row.meeting_id} rank demoted ${source.capability_rank} -> ${row.effective_public_rank}`);
+            }
+          }
+          const kraIds = [
+            'kra-busan-gyeongnam-racecourse-2026-09-04',
+            'kra-jeju-racecourse-2026-09-04',
+            'kra-jeju-racecourse-2026-09-05',
+            'kra-seoul-racecourse-2026-09-05',
+            'kra-busan-gyeongnam-racecourse-2026-09-06',
+            'kra-seoul-racecourse-2026-09-06'
+          ];
+          for (const id of kraIds) {
+            const row = publicRows.find((item) => item.meeting_id === id);
+            if (!row || row.effective_public_rank !== 'A') throw new Error(`${id} is not public A`);
+            if (!row.first_race_time_local || !row.last_race_time_local) throw new Error(`${id} lost race times`);
+          }
+          console.log('PUBLIC_CANONICAL_RANK_PARITY: pass');
+          console.log('KRA_CURRENT_PUBLIC_A: 6');
+          NODE
+      - name: Check deterministic projection
+        run: node scripts/timetable/build-public-timetable-view.mjs --check
+      - name: Commit root fix and regenerated public output
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/timetable/pipeline-v1/public-projection-core.mjs \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo 'No rank-cap removal diff generated' >&2
+            exit 1
+          fi
+          git commit -m 'FIX: preserve canonical rank in public Calendar projection'
+          git push origin HEAD:fix/remove-public-rank-caps-20260902
