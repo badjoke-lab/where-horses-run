@@ -18,7 +18,7 @@ const implementationPlanPath = 'docs/calendar/acquisition-control-plane-implemen
 const machineContractPath = 'docs/calendar/machine-readable-contracts.md';
 const errors = [];
 const rankOrder = new Map(['C', 'B', 'B+', 'A', 'A+'].map((rank, index) => [rank, index]));
-const requiredProfiles = ['japan-jra-system', 'japan-nar-system', 'japan-banei-system', 'hong-kong-hkjc-system', 'uae-national-racing-system'];
+const requiredProfiles = ['japan-jra-system', 'japan-nar-system', 'japan-banei-system', 'hong-kong-hkjc-system', 'uae-national-racing-system', 'kra-national-racing-system'];
 const pendingCapableFields = new Set(['fallback_runner', 'schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']);
 const prohibitedKeyFragments = [
   'odds', 'payout', 'prediction', 'tip', 'entries', 'result', 'runner_name', 'horse_name', 'jockey', 'trainer',
@@ -114,6 +114,7 @@ const adapterEvidence = new Map([
   ['hkjc-detail-reviewed-import-v1', { path: 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs', marker: "adapter_id: 'hkjc-detail-reviewed-import-v1'" }],
   ['uae-era-pdf-grid-actions-v1', { path: 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs', marker: "const ADAPTER_ID = 'uae-era-pdf-grid-actions-v1'" }],
   ['uae-era-racecard-detail-artifact-v1', { path: 'scripts/timetable/uae-era-detail-artifact-core.mjs', marker: "const ADAPTER_ID = 'uae-era-racecard-detail-artifact-v1'" }],
+  ['kra-today-race-live-v1', { path: 'scripts/timetable/run-kra-todayrace-actions-job.mjs', marker: "const ADAPTER_ID = 'kra-today-race-live-v1'" }],
 ]);
 
 function approvedCeilingFor(record) {
@@ -191,6 +192,12 @@ function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
       if (!executor.includes("execution.collection_mode !== 'selected_meetings'")
         || !core.includes("collection_mode === 'selected_meetings'")
         || !proof.includes('"observed_rank": "A"') && !proof.includes('"rank": "A"')) push('UAE selected-meeting C-to-A evidence is missing');
+    } else if (record.system_id === 'kra-national-racing-system') {
+      const executor = readText('scripts/timetable/run-kra-todayrace-actions-job.mjs');
+      const collector = readText('scripts/timetable/collect-kra-todayrace.mjs');
+      if (!executor.includes("execution.collection_mode !== 'selected_meetings'")
+        || !executor.includes("execution.rank_strategy !== 'best_available'")
+        || !collector.includes('--racecourse-id=')) push('KRA selected-meeting best-available evidence is missing');
     } else push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
   }
   return localErrors;
@@ -256,6 +263,23 @@ if (uaeProfile?.supports_source_visible_horizon !== true
   || uaeProfile?.supports_cross_month_window !== false
   || uaeProfile?.supports_selected_meetings !== true
   || uaeProfile?.supports_rank_upgrade_retry !== true) fail('UAE source-visible schedule plus selected-meeting rank-retry boundary differs.');
+const kraProfile = profiles.get('kra-national-racing-system');
+if (kraProfile?.profile_status !== 'active'
+  || kraProfile?.primary_runner !== 'github_actions'
+  || kraProfile?.fallback_runner !== null
+  || kraProfile?.schedule_source_id !== 'kra-today-race'
+  || kraProfile?.detail_source_id !== 'kra-today-race'
+  || kraProfile?.schedule_adapter_id !== 'kra-today-race-live-v1'
+  || kraProfile?.detail_adapter_id !== 'kra-today-race-live-v1'
+  || kraProfile?.technical_capability_rank !== 'A+'
+  || kraProfile?.collection_target_rank !== 'best_available'
+  || !exact(kraProfile?.supported_observation_ranks, ['C', 'B', 'B+', 'A', 'A+'])
+  || kraProfile?.supports_selected_meetings !== true
+  || kraProfile?.supports_date_window !== false
+  || kraProfile?.supports_cross_month_window !== false
+  || kraProfile?.supports_source_visible_horizon !== false
+  || kraProfile?.supports_rank_upgrade_retry !== false
+  || !exact(kraProfile?.pending_fields, [])) fail('KRA active best-available selected-meeting profile differs.');
 
 const negativeBase = structuredClone(narProfile);
 for (const [name, profile, options] of [
@@ -276,8 +300,9 @@ console.log('CALENDAR_ACQUISITION_REGISTRY: pass');
 console.log(`PROFILES: ${registry.records.length}`);
 console.log(`ACTIVE_PROFILES: ${registry.records.filter((record) => record.profile_status === 'active').length}`);
 console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.profile_status === 'provisional').length}`);
-console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system');
+console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system,kra-national-racing-system');
 console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
 console.log('HKJC_PROFILE: provisional / github_actions schedule primary / operator-reviewed detail active / fallback and rank-retry pending');
 console.log('UAE_PROFILE: active / source-visible C schedule + selected-meeting A detail / github_actions / rank-retry enabled');
 console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
+console.log('KRA_PROFILE: active / selected-meeting best-available C-B-B+-A-A+ / github_actions / review-only');
