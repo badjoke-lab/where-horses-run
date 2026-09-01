@@ -10,11 +10,20 @@ const RACECOURSES = Object.freeze({
   'jeju-racecourse': { meet_code: '2', label: 'Jeju', weekly_column: 3 },
   'busan-gyeongnam-racecourse': { meet_code: '3', label: 'Busan-Gyeongnam', weekly_column: 2 },
 });
-const WEEKDAY_TABLE_INDEX = Object.freeze({
-  5: 0,
-  6: 1,
-  0: 2,
+const WEEKDAY_LABEL = Object.freeze({
+  5: '금요일',
+  6: '토요일',
+  0: '일요일',
 });
+const NEXT_WEEKDAY_LABEL = Object.freeze({
+  5: '토요일',
+  6: '일요일',
+  0: '수상내역',
+});
+const CIRCLED_RACE_NUMBER = new Map([
+  ['①', 1], ['②', 2], ['③', 3], ['④', 4], ['⑤', 5], ['⑥', 6], ['⑦', 7],
+  ['⑧', 8], ['⑨', 9], ['⑩', 10], ['⑪', 11], ['⑫', 12], ['⑬', 13], ['⑭', 14],
+]);
 
 if (!args.date || !/^\d{4}-\d{2}-\d{2}$/.test(args.date)) throw new Error('--date=YYYY-MM-DD is required');
 if (!args['racecourse-id'] || !RACECOURSES[args['racecourse-id']]) throw new Error('--racecourse-id=<known KRA racecourse> is required');
@@ -76,38 +85,52 @@ function parseCells(rowHtml) {
     .map((match) => stripHtml(match[1]));
 }
 
-function weeklyScheduleTables(html) {
-  return [...String(html).matchAll(/<table\b[^>]*>[\s\S]*?<\/table>/gi)]
-    .map((match) => match[0])
-    .filter((table) => {
-      const text = stripHtml(table);
-      return /시간/.test(text) && /서울/.test(text) && /(부경|부산경남)/.test(text) && /제주/.test(text);
-    });
+function weeklyDaySection(html, date) {
+  const day = targetWeekday(date);
+  const label = WEEKDAY_LABEL[day];
+  const nextLabel = NEXT_WEEKDAY_LABEL[day];
+  if (!label || !nextLabel) return '';
+
+  const source = String(html);
+  const captionNeedle = `${label} 판매공원별 출발시간`;
+  let start = source.indexOf(captionNeedle);
+  if (start < 0) start = source.indexOf(label);
+  if (start < 0) return '';
+
+  const nextCaptionNeedle = nextLabel === '수상내역' ? nextLabel : `${nextLabel} 판매공원별 출발시간`;
+  let end = source.indexOf(nextCaptionNeedle, start + captionNeedle.length);
+  if (end < 0 && nextLabel !== '수상내역') end = source.indexOf(nextLabel, start + label.length);
+  return source.slice(start, end < 0 ? undefined : end);
 }
 
 function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   const { monday, sunday } = currentSeoulWeekBounds();
   if (date < monday || date > sunday) return [];
-  const tableIndex = WEEKDAY_TABLE_INDEX[targetWeekday(date)];
-  if (tableIndex == null) return [];
-  const tables = weeklyScheduleTables(html);
-  const table = tables[tableIndex];
-  if (!table) return [];
+  const section = weeklyDaySection(html, date);
+  if (!section) return [];
 
-  const postTimes = [];
-  for (const match of table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+  const rows = [];
+  const sequentialTimes = [];
+  for (const match of section.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
     const cells = parseCells(match[1]);
     if (cells.length < 4) continue;
     const hourMatch = cells[0].match(/(\d{1,2})\s*시/);
     if (!hourMatch) continue;
     const hour = Number(hourMatch[1]);
     const cell = cells[weeklyColumn] ?? '';
-    for (const token of cell.matchAll(/([0-5]?\d)\s*분/g)) {
-      postTimes.push(`${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`);
+    for (const token of cell.matchAll(/([0-5]?\d)\s*분\s*([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭])?/g)) {
+      const postTime = `${String(hour).padStart(2, '0')}:${String(Number(token[1])).padStart(2, '0')}`;
+      const explicitRaceNumber = token[2] ? CIRCLED_RACE_NUMBER.get(token[2]) : null;
+      if (explicitRaceNumber) {
+        rows.push({ race_number: explicitRaceNumber, post_time_local: postTime, sources: ['weekly-start-times'] });
+      } else {
+        sequentialTimes.push(postTime);
+      }
     }
   }
 
-  return [...new Set(postTimes)].map((postTime, index) => ({
+  if (rows.length) return rows.sort((left, right) => left.race_number - right.race_number);
+  return sequentialTimes.map((postTime, index) => ({
     race_number: index + 1,
     post_time_local: postTime,
     sources: ['weekly-start-times'],
