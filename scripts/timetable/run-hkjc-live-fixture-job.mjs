@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { buildHkjcFixtureArtifacts } from './hkjc-fixture-artifact-bridge-core.mjs';
+import { buildHkjcLiveBestAvailableArtifacts } from './hkjc-live-best-available-core.mjs';
 import { validateCoverageObservation } from './coverage-observation-validation.mjs';
 import { validateCollectionResultManifestV1 } from './collection-result-manifest-validation.mjs';
 
@@ -12,6 +13,15 @@ if (!executionArg) throw new Error('--execution=<path> is required');
 const fixtureArg = process.argv.find((arg) => arg.startsWith('--check-only-fixture='));
 const executionPath = path.resolve(root, executionArg.slice('--execution='.length));
 const execution = JSON.parse(fs.readFileSync(executionPath, 'utf8'));
+const allowedRanks = new Set(['C', 'B', 'B+', 'A', 'A+']);
+
+const protectedPaths = [
+  'data/sources/timetable/hkjc-racecard-route.json',
+  'data/generated/timetable/hkjc-racecard-source-snapshot.json',
+  'data/generated/timetable/hkjc-refresh-report.json',
+  'data/generated/timetable/hkjc-normalized-timetable.sample.json',
+  'data/generated/timetable/hkjc-normalized-meeting-details.sample.json',
+];
 
 function assertExecution(value) {
   if (value.schema_version !== 'calendar-runner-execution-v1') throw new Error('execution schema mismatch');
@@ -32,6 +42,23 @@ function assertExecution(value) {
   }
 }
 
+function validateRankShape(record) {
+  if (!allowedRanks.has(record.capability_rank)) throw new Error(`HKJC live candidate rank invalid: ${record.capability_rank}`);
+  const rows = record.timetable_rows ?? [];
+  if (record.capability_rank === 'C' && (record.first_race_time_local !== null || record.last_race_time_local !== null || rows.length)) {
+    throw new Error(`HKJC C candidate leaked timetable detail: ${record.meeting_id}`);
+  }
+  if (record.capability_rank === 'B' && (!record.first_race_time_local || record.last_race_time_local !== null || rows.length)) {
+    throw new Error(`HKJC B candidate shape differs: ${record.meeting_id}`);
+  }
+  if (record.capability_rank === 'B+' && (!record.first_race_time_local || !record.last_race_time_local || rows.length)) {
+    throw new Error(`HKJC B+ candidate shape differs: ${record.meeting_id}`);
+  }
+  if (['A', 'A+'].includes(record.capability_rank) && (!record.first_race_time_local || !record.last_race_time_local || rows.length < 2)) {
+    throw new Error(`HKJC ${record.capability_rank} candidate shape differs: ${record.meeting_id}`);
+  }
+}
+
 function validateArtifacts(artifacts) {
   const coverageValidation = validateCoverageObservation(artifacts.coverage);
   if (!coverageValidation.valid) throw new Error(`HKJC live fixture Coverage invalid: ${coverageValidation.errors.join('; ')}`);
@@ -39,10 +66,7 @@ function validateArtifacts(artifacts) {
   if (manifestErrors.length) throw new Error(`HKJC live fixture Manifest invalid: ${manifestErrors.join('; ')}`);
   if (artifacts.candidate.schema_version !== 'timetable-candidate-v1') throw new Error('HKJC live fixture candidate schema mismatch');
   if (artifacts.candidate.review?.status !== 'needs_review') throw new Error('HKJC live fixture candidate must remain needs_review');
-  if ((artifacts.candidate.records ?? []).some((record) => record.capability_rank !== 'C')) throw new Error('HKJC fixture executor may emit C candidates only');
-  if ((artifacts.candidate.records ?? []).some((record) => record.first_race_time_local !== null || record.last_race_time_local !== null || record.timetable_rows?.length)) {
-    throw new Error('HKJC C fixture candidate leaked race-time or timetable-row detail');
-  }
+  for (const record of artifacts.candidate.records ?? []) validateRankShape(record);
 }
 
 function readFixtureArtifacts(fixtureId) {
@@ -83,6 +107,18 @@ function readArtifactsFromDirectory(directory) {
   return artifacts;
 }
 
+function writeArtifacts(directory, artifacts) {
+  const names = {
+    candidate: 'candidates.json',
+    coverage: 'coverage-observation.json',
+    manifest: 'result-manifest.json',
+    report: 'collection-report.json',
+  };
+  for (const [key, filename] of Object.entries(names)) {
+    fs.writeFileSync(path.join(directory, filename), `${JSON.stringify(artifacts[key], null, 2)}\n`);
+  }
+}
+
 function copyReviewArtifacts(sourceDirectory, targetDirectory) {
   fs.mkdirSync(targetDirectory, { recursive: true });
   for (const filename of ['candidates.json', 'coverage-observation.json', 'result-manifest.json', 'collection-report.json']) {
@@ -90,26 +126,69 @@ function copyReviewArtifacts(sourceDirectory, targetDirectory) {
   }
 }
 
+function runNode(script, args = []) {
+  const result = spawnSync(process.execPath, [script, ...args], {
+    cwd: root,
+    encoding: 'utf8',
+    maxBuffer: 20 * 1024 * 1024,
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`${script} failed: ${(result.stderr || result.stdout || '').slice(0, 4000)}`);
+  return result;
+}
+
 function runLiveCollector(tempDirectory) {
   const scope = execution.requested_scope;
-  const result = spawnSync(process.execPath, [
-    'scripts/timetable/collect-hkjc-fixture-artifacts.mjs',
+  return runNode('scripts/timetable/collect-hkjc-fixture-artifacts.mjs', [
     `--from=${scope.start_date}`,
     `--to-exclusive=${scope.end_date_exclusive}`,
     `--output-dir=${tempDirectory}`,
     `--batch-id=${execution.batch_id}`,
     `--campaign-id=${execution.campaign_id}`,
     `--job-id=${execution.job_id}`,
-  ], {
-    cwd: root,
-    encoding: 'utf8',
-    maxBuffer: 10 * 1024 * 1024,
-  });
-  if (result.error) throw result.error;
-  if (result.status !== 0) {
-    throw new Error(`HKJC live fixture collector failed: ${(result.stderr || result.stdout || '').slice(0, 2000)}`);
+  ]);
+}
+
+function inclusiveEndDate(endDateExclusive) {
+  const date = new Date(`${endDateExclusive}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() - 1);
+  return date.toISOString().slice(0, 10);
+}
+
+function snapshotProtectedFiles() {
+  return new Map(protectedPaths.map((relativePath) => {
+    const absolute = path.join(root, relativePath);
+    return [relativePath, fs.existsSync(absolute) ? fs.readFileSync(absolute) : null];
+  }));
+}
+
+function restoreProtectedFiles(snapshot) {
+  for (const [relativePath, bytes] of snapshot.entries()) {
+    const absolute = path.join(root, relativePath);
+    if (bytes === null) fs.rmSync(absolute, { force: true });
+    else {
+      fs.mkdirSync(path.dirname(absolute), { recursive: true });
+      fs.writeFileSync(absolute, bytes);
+    }
   }
-  return result;
+}
+
+function runBestAvailableEnrichment(scheduleArtifacts) {
+  const scope = execution.requested_scope;
+  const protectedSnapshot = snapshotProtectedFiles();
+  try {
+    runNode('scripts/timetable/fetch-hkjc-racecards.mjs', [
+      `--from=${scope.start_date}`,
+      `--to=${inclusiveEndDate(scope.end_date_exclusive)}`,
+    ]);
+    runNode('scripts/timetable/normalize-hkjc-racecards.mjs');
+    const normalized = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/hkjc-normalized-timetable.sample.json'), 'utf8'));
+    const details = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/hkjc-normalized-meeting-details.sample.json'), 'utf8'));
+    const refreshReport = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/hkjc-refresh-report.json'), 'utf8'));
+    return buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normalized, details, refreshReport });
+  } finally {
+    restoreProtectedFiles(protectedSnapshot);
+  }
 }
 
 assertExecution(execution);
@@ -128,7 +207,7 @@ if (fixtureArg) {
     expected_coverage_claim: scenario.expected.coverage_claim,
     expected_records_discovered: scenario.expected.records_discovered,
     schedule_only_execution: true,
-    operator_detail_route_invoked: false,
+    live_racecard_route_invoked: false,
     repository_write: false,
     canonical_write: false,
     public_write: false,
@@ -142,19 +221,25 @@ const tempOutput = path.join(tempRoot, 'artifacts');
 const sharedOutput = path.join(root, `data/generated/timetable/actions-multi-job/${execution.batch_id}`);
 
 try {
+  fs.mkdirSync(tempOutput, { recursive: true });
   runLiveCollector(tempOutput);
-  const artifacts = readArtifactsFromDirectory(tempOutput);
+  const scheduleArtifacts = readArtifactsFromDirectory(tempOutput);
+  const artifacts = runBestAvailableEnrichment(scheduleArtifacts);
+  validateArtifacts(artifacts);
+  writeArtifacts(tempOutput, artifacts);
   copyReviewArtifacts(tempOutput, sharedOutput);
   console.log(JSON.stringify({
-    implementation_unit: 'HKJC-PILOT-03',
+    implementation_unit: 'HKJC-LIVE-BEST-AVAILABLE-01',
     execution_mode: 'live_shared_actions_job',
     batch_id: execution.batch_id,
     coverage_claim: artifacts.coverage.coverage_claim,
     records_discovered: artifacts.coverage.records_discovered,
+    records_updated: artifacts.coverage.records_updated,
+    rank_counts: artifacts.manifest.rank_counts,
     source_error_count: artifacts.coverage.source_errors.length,
     output_dir: path.relative(root, sharedOutput),
-    schedule_only_execution: true,
-    operator_detail_route_invoked: false,
+    schedule_only_execution: false,
+    live_racecard_route_invoked: true,
     publication_effect: 'none',
     canonical_write: false,
     public_write: false,
