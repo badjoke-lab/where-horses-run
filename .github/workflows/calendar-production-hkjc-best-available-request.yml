@@ -5,18 +5,18 @@ on:
     branches:
       - main
     paths:
-      - 'data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-003.json'
+      - 'data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-004.json'
       - '.github/workflows/calendar-production-hkjc-best-available-request.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: calendar-production-hkjc-best-available-2026-09-01-003
+  group: calendar-production-hkjc-best-available-2026-09-01-004
   cancel-in-progress: false
 
 env:
-  PLAN_FILE: data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-003.json
+  PLAN_FILE: data/operations/calendar-refresh-plans/calendar-production-hkjc-best-available-2026-09-01-004.json
 
 jobs:
   prepare:
@@ -41,7 +41,7 @@ jobs:
           echo "matrix=$(cat .calendar-production-actions-matrix.json)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: calendar-production-actions-plan-hkjc-best-available-2026-09-01-003
+          name: calendar-production-actions-plan-hkjc-best-available-2026-09-01-004
           path: .calendar-production-actions-plan.json
           retention-days: 14
 
@@ -149,7 +149,7 @@ jobs:
           const rankCounts = Object.fromEntries(['C','B','B+','A','A+'].map((rank) => [rank, candidate.records.filter((record) => record.capability_rank === rank).length]));
           const summary = {
             schema_version: 'calendar-production-hkjc-best-available-summary-v1',
-            plan_id: 'calendar-production-hkjc-best-available-2026-09-01-003',
+            plan_id: 'calendar-production-hkjc-best-available-2026-09-01-004',
             status: status.status,
             records_discovered: candidate.records.length,
             rank_counts: rankCounts,
@@ -170,6 +170,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: calendar-production-hkjc-best-available-summary-2026-09-01-003
+          name: calendar-production-hkjc-best-available-summary-2026-09-01-004
           path: calendar-production-hkjc-best-available-summary.json
           retention-days: 14
