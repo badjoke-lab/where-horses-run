@@ -149,12 +149,6 @@ function runLiveCollector(tempDirectory) {
   ]);
 }
 
-function inclusiveEndDate(endDateExclusive) {
-  const date = new Date(`${endDateExclusive}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() - 1);
-  return date.toISOString().slice(0, 10);
-}
-
 function snapshotProtectedFiles() {
   return new Map(protectedPaths.map((relativePath) => {
     const absolute = path.join(root, relativePath);
@@ -173,14 +167,39 @@ function restoreProtectedFiles(snapshot) {
   }
 }
 
+function racecourseCodeForId(racecourseId) {
+  if (racecourseId === 'happy-valley-racecourse') return 'HV';
+  if (racecourseId === 'sha-tin-racecourse') return 'ST';
+  throw new Error(`Unsupported HKJC racecourse id from schedule artifact: ${racecourseId}`);
+}
+
+function stageAcquiredFixturesForDetailFetch(scheduleArtifacts) {
+  const configPath = path.join(root, 'data/sources/timetable/hkjc-racecard-route.json');
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const meetings = (scheduleArtifacts.candidate.records ?? []).map((record) => {
+    const code = racecourseCodeForId(record.racecourse_id);
+    return {
+      meeting_date: record.date,
+      racecourse_id: record.racecourse_id,
+      racecourse_name: code === 'HV' ? 'Happy Valley' : 'Sha Tin',
+      racecourse_code: code,
+      fixture_code: code,
+      session_type: 'unknown',
+      official_fixture_url: record.source?.official_url ?? config.official_sources?.fixture_source_url ?? null,
+    };
+  });
+  fs.writeFileSync(configPath, `${JSON.stringify({ ...config, meetings }, null, 2)}\n`);
+  return meetings.length;
+}
+
 function runBestAvailableEnrichment(scheduleArtifacts) {
-  const scope = execution.requested_scope;
   const protectedSnapshot = snapshotProtectedFiles();
   try {
-    runNode('scripts/timetable/fetch-hkjc-racecards.mjs', [
-      `--from=${scope.start_date}`,
-      `--to=${inclusiveEndDate(scope.end_date_exclusive)}`,
-    ]);
+    const stagedMeetingCount = stageAcquiredFixturesForDetailFetch(scheduleArtifacts);
+    if (stagedMeetingCount !== (scheduleArtifacts.candidate.records ?? []).length) {
+      throw new Error('HKJC acquired fixture staging count differs from schedule candidate count');
+    }
+    runNode('scripts/timetable/fetch-hkjc-racecards.mjs');
     runNode('scripts/timetable/normalize-hkjc-racecards.mjs');
     const normalized = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/hkjc-normalized-timetable.sample.json'), 'utf8'));
     const details = JSON.parse(fs.readFileSync(path.join(root, 'data/generated/timetable/hkjc-normalized-meeting-details.sample.json'), 'utf8'));
