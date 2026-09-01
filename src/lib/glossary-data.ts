@@ -14,6 +14,14 @@ type GlossaryRecord =
   | (typeof timetableGlossaryOverlay)[number]
   | (typeof officialSourceGlossaryOverlay)[number];
 
+const hiddenPublicGlossaryIds = new Set([
+  'fixture',
+  'official-calendar',
+  'official-racecard',
+  'link-first-source',
+  'source-status',
+]);
+
 const order = baselineGlossary.map((entry) => entry.id);
 const byId = new Map<string, GlossaryRecord>(
   baselineGlossary.map((entry) => [entry.id, entry] as const),
@@ -53,6 +61,7 @@ for (const patch of relationshipGraphPatches) {
 }
 
 const glossary = order.map((id) => byId.get(id)!);
+const publicGlossary = glossary.filter((entry) => !hiddenPublicGlossaryIds.has(entry.id));
 
 export type GlossaryEntry = (typeof glossary)[number];
 export type GlossaryLocale = 'en' | 'ja';
@@ -67,11 +76,11 @@ const categoryLabels = categoryLabelRegistry.labels as Record<
 >;
 
 export function getGlossaryEntries(): GlossaryEntry[] {
-  return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
+  return [...publicGlossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
 }
 
 export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
-  return glossary.find((entry) => entry.slug === slug);
+  return publicGlossary.find((entry) => entry.slug === slug);
 }
 
 export function getMergedGlossary(): GlossaryEntry[] {
@@ -89,8 +98,9 @@ export function getGlossaryRelationshipEdges(): GlossaryRelationshipEdge[] {
   const seen = new Set<string>();
   const edges: GlossaryRelationshipEdge[] = [];
 
-  for (const entry of glossary) {
+  for (const entry of publicGlossary) {
     for (const relatedId of entry.related_term_ids) {
+      if (hiddenPublicGlossaryIds.has(relatedId)) continue;
       const [sourceId, targetId] = [entry.id, relatedId].sort();
       const key = `${sourceId}::${targetId}`;
       if (seen.has(key)) continue;
