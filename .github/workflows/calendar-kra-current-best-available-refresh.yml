@@ -9,6 +9,7 @@ on:
       - main
       - fix/hkjc-kra-current-best-available-refresh
       - fix/kra-transient-source-resilience
+      - fix/kra-remove-stale-public-ceiling-check-20260902
     paths:
       - '.github/workflows/calendar-kra-current-best-available-refresh.yml'
       - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
@@ -63,14 +64,13 @@ jobs:
           if (summary.system_id !== 'kra-national-racing-system') throw new Error('KRA summary system differs');
           if (summary.canonical_write !== false || summary.public_write !== false) throw new Error('KRA refresh crossed publication boundary');
           if (summary.automatic_approval !== false || summary.automatic_promotion !== false) throw new Error('KRA refresh crossed review boundary');
-          if (summary.public_ceiling !== 'A') throw new Error('KRA public ceiling differs');
+          if ('public_ceiling' in summary) throw new Error('stale public ceiling metadata remains');
           if (summary.source_error_count !== 0) throw new Error(`KRA source errors: ${summary.source_error_count}`);
           console.log(JSON.stringify({
             selected_lower_rank_meeting_count: summary.selected_lower_rank_meeting_count,
             observed_rank_counts: summary.observed_rank_counts,
             upgrade_candidate_count: summary.upgrade_candidate_count,
             upgrade_candidates: summary.upgrade_candidates,
-            public_ceiling: summary.public_ceiling,
             canonical_write: summary.canonical_write,
             public_write: summary.public_write,
           }, null, 2));
