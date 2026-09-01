@@ -3,16 +3,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarOperationsNotice from '../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import { getTimetableDataState, getTimetableDateContext, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
+import {
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableMeetingRowsForDate,
+  getTimetableProjectionCandidateRows,
+} from '../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
+const projectionCandidates = getTimetableProjectionCandidateRows(
+  context.tomorrow,
+  addCalendarDays(context.tomorrow, 1),
+);
 ---
 
 <BaseLayout
   title={`明日の開催時刻表 — ${context.tomorrow} | 競馬どこ？`}
-  description={`${context.timeZone}の基準日${context.today}から算出した${context.tomorrow}の確認済み公開開催情報です。最終確認は公式ソースで行ってください。`}
+  description="選択した表示タイムゾーンで明日に該当する確認済み公開開催情報です。最終確認は公式ソースで行ってください。"
   lang="ja"
   canonicalPath="/ja/tomorrow/"
   alternatePath="/tomorrow/"
@@ -21,7 +31,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
     <p class="hero__eyebrow">Tomorrow</p>
     <h1 id="page-title">明日の開催時刻表</h1>
     <p class="hero__summary">
-      {context.timeZone}の基準日{context.today}の翌日、{context.tomorrow}の開催情報です。表示ランクに応じて時刻情報を出し分けます。
+      下の表示タイムゾーンを選択すると、開催日の所属と表示日時をそのタイムゾーンへ変換します。
     </p>
   </section>
 
@@ -30,10 +40,11 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 
   <section aria-label="明日の開催一覧">
     <TimetableMeetingList
-      records={tomorrowRecords}
+      records={projectionCandidates}
       date={context.tomorrow}
       lang="ja"
-      emptyLabel="明日の確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
+      viewMode="tomorrow"
+      emptyLabel="選択したタイムゾーンで明日に該当する確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
     />
   </section>
 </BaseLayout>
