@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-01T07:16:00Z",
+  "generated_at": "2026-09-01T08:18:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -15,6 +15,7 @@
     "data/candidates/jra-horizon-recovery-2026-08-18-through-2026-09-06-approved.json",
     "data/candidates/kra-2026-08-07-through-2026-09-06-rank-c-approved.json",
     "data/candidates/nar-august-2026-horizon-recovery-c-approved.json",
+    "data/candidates/nar-current-three-a-plus-approved-2026-09-01.json",
     "data/candidates/nar-current-window-a-plus-approved.json",
     "data/candidates/nar-horizon-extension-2026-09-17-approved.json",
     "data/candidates/nar-horizon-extension-2026-09-18-approved.json",
@@ -10346,27 +10347,27 @@
       "racecourse_id": "monbetsu-racecourse",
       "date": "2026-09-03",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:15",
+      "last_race_time_local": "20:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F03",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-three-a-plus-approved-2026-09-01.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:14.896Z",
+        "last_checked_date": "2026-09-01",
+        "generated_at": "2026-09-01T07:49:42Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-09-01T08:18:00Z."
       },
-      "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted."
+      "notes": "Approved from exact pinned current-C live acquisition artifact after automated public-boundary and current-prestate validation."
     },
     {
       "meeting_id": "nar-nagoya-racecourse-2026-09-03",
@@ -10433,27 +10434,27 @@
       "racecourse_id": "saga-racecourse",
       "date": "2026-09-03",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:05",
+      "last_race_time_local": "20:40",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F03",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-three-a-plus-approved-2026-09-01.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:14.896Z",
+        "last_checked_date": "2026-09-01",
+        "generated_at": "2026-09-01T07:49:42Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-09-01T08:18:00Z."
       },
-      "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted."
+      "notes": "Approved from exact pinned current-C live acquisition artifact after automated public-boundary and current-prestate validation."
     },
     {
       "meeting_id": "nar-sonoda-racecourse-2026-09-03",
@@ -10520,27 +10521,27 @@
       "racecourse_id": "oi-racecourse",
       "date": "2026-09-04",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:50",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-race-list-deba-table",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F04",
         "source_label": "National Association of Racing / local government racing",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "data/candidates/nar-current-three-a-plus-approved-2026-09-01.json"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:14.896Z",
+        "last_checked_date": "2026-09-01",
+        "generated_at": "2026-09-01T07:49:42Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-09-01T08:18:00Z."
       },
-      "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted."
+      "notes": "Approved from exact pinned current-C live acquisition artifact after automated public-boundary and current-prestate validation."
     },
     {
       "meeting_id": "nar-sonoda-racecourse-2026-09-04",
