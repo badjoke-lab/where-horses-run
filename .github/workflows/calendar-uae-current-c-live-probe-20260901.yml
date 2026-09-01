@@ -1,4 +1,4 @@
-name: Calendar UAE current C live probe 2026-09-01
+name: Calendar UAE all public C live probe 2026-09-01
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Probe every current/future public UAE Rank C meeting
+      - name: Probe every public UAE Rank C meeting
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
@@ -28,8 +28,7 @@ jobs:
           const publicList = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json', 'utf8'));
           const rows = (publicList.meetings ?? []).filter((row) =>
             row.country_id === 'united-arab-emirates' &&
-            (row.effective_public_rank ?? row.capability_rank) === 'C' &&
-            row.date >= '2026-09-01'
+            (row.effective_public_rank ?? row.capability_rank) === 'C'
           );
           const results = [];
           for (const row of rows) {
@@ -39,14 +38,7 @@ jobs:
               `--racecourse-id=${row.racecourse_id}`,
             ], { encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
             if (proc.status !== 0) {
-              results.push({
-                meeting_id: row.meeting_id,
-                date: row.date,
-                racecourse_id: row.racecourse_id,
-                current_rank: 'C',
-                probe_status: 'unavailable',
-                error: String(proc.stderr || proc.stdout || '').trim().slice(0, 1000),
-              });
+              results.push({ meeting_id: row.meeting_id, date: row.date, racecourse_id: row.racecourse_id, current_rank: 'C', probe_status: 'unavailable', error: String(proc.stderr || proc.stdout || '').trim().slice(0, 1000) });
               continue;
             }
             const evidence = JSON.parse(proc.stdout);
@@ -59,27 +51,24 @@ jobs:
               classification: evidence.classification,
               race_count: evidence.meeting?.race_count ?? 0,
               source_error_count: evidence.source_errors?.length ?? 0,
-              observations: (evidence.observations ?? []).map((race) => ({
-                race_number: race.race_number,
-                post_time_local: race.post_time_local,
-                missing_fields: race.missing_fields,
-              })),
+              observations: (evidence.observations ?? []).map((race) => ({ race_number: race.race_number, post_time_local: race.post_time_local, missing_fields: race.missing_fields })),
             });
           }
           const summary = {
             generated_at: new Date().toISOString(),
-            current_future_uae_c_count: rows.length,
+            public_uae_c_count: rows.length,
+            date_span: rows.length ? [rows.map(r => r.date).sort()[0], rows.map(r => r.date).sort().at(-1)] : null,
             successful_probe_count: results.filter((r) => r.probe_status === 'success').length,
             unavailable_probe_count: results.filter((r) => r.probe_status === 'unavailable').length,
             results,
             canonical_write: false,
             public_write: false,
           };
-          fs.writeFileSync('/tmp/uae-current-c-live-probe.json', JSON.stringify(summary, null, 2) + '\n');
+          fs.writeFileSync('/tmp/uae-all-public-c-live-probe.json', JSON.stringify(summary, null, 2) + '\n');
           console.log(JSON.stringify(summary, null, 2));
           NODE
       - uses: actions/upload-artifact@v4
         with:
-          name: uae-current-c-live-probe-20260901
-          path: /tmp/uae-current-c-live-probe.json
+          name: uae-all-public-c-live-probe-20260901
+          path: /tmp/uae-all-public-c-live-probe.json
           retention-days: 7
