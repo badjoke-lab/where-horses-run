@@ -2,18 +2,20 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import {
-  getCurrentCalendarWindowGroups,
   getTimetableDateContext,
+  getTimetableProjectionCandidateGroups,
 } from '../../../data/timetableMeetingRows';
 
 const dateContext = getTimetableDateContext();
-const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
-const windowLabel = `${dateContext.windowStart}〜${dateContext.windowEndInclusive}`;
+const groupedTimetableRecords = getTimetableProjectionCandidateGroups(
+  dateContext.windowStart,
+  dateContext.windowEndExclusive,
+);
 ---
 
 <BaseLayout
   title="現在のタイムテーブル | 競馬どこ？"
-  description={`${windowLabel}の30日間を開催日順に整理した開催一覧です。各開催に公式ソースを1件ずつ示し、レース別時刻を確認済みの開催だけ詳細ページへ案内します。`}
+  description="選択した表示タイムゾーンを基準にした現在30日間の開催一覧です。"
   lang="ja"
   canonicalPath="/ja/major-countries/current-timetable/"
   alternatePath="/major-countries/current-timetable/"
@@ -22,15 +24,16 @@ const windowLabel = `${dateContext.windowStart}〜${dateContext.windowEndInclusi
     <p class="hero__eyebrow">現在のタイムテーブル</p>
     <h1 id="page-title">現在の30日間タイムテーブル</h1>
     <p class="hero__summary">
-      {windowLabel}。開催日ごとに表示し、公開ランクに応じて表示する時刻情報の範囲を制御します。
+      下の表示タイムゾーンを選択すると、30日間の範囲、開催日、表示時刻をそのタイムゾーンへ変換します。
     </p>
   </section>
 
-  <section aria-label={`${windowLabel}の開催日別タイムテーブル`}>
+  <section aria-label="選択したタイムゾーンでの現在のタイムテーブル">
     <TimetableMeetingList
       groups={groupedTimetableRecords}
       lang="ja"
-      emptyLabel="現在の30日間に公開済みの開催情報はありません。最終確認には公式ソースを使用してください。"
+      viewMode="window30"
+      emptyLabel="選択したタイムゾーンの現在30日間に公開済みの開催情報はありません。最終確認には公式ソースを使用してください。"
     />
   </section>
 </BaseLayout>
