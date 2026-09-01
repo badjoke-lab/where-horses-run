@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DisplayTimeZoneSelector from '../../../components/DisplayTimeZoneSelector.astro';
 import {
   getPublicTimetableMeetingDetail,
   getPublicTimetableMeetingRows,
@@ -63,6 +64,7 @@ const hasRaceName = detail.show_race_name && detail.timetable_rows.some((row) =>
 const hasDistance = detail.show_distance && detail.timetable_rows.some((row) => row.distance_m !== undefined);
 const hasSurface = detail.show_surface && detail.timetable_rows.some((row) => row.surface);
 const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.course_label);
+const firstPublishedPostTime = detail.timetable_rows[0]?.post_time_local ?? meeting.first_race_time_local ?? '';
 
 const timeCoverageNoteByRank: Record<string, string> = {
   A: 'This public detail page shows race labels and post times only.',
@@ -82,12 +84,19 @@ const timeCoverageNoteByRank: Record<string, string> = {
     <a href="/major-countries/current-timetable/">← Current Timetable</a>
   </nav>
 
+  <DisplayTimeZoneSelector />
+
   <section aria-labelledby="page-title">
     <p class="eyebrow">{pageKind}</p>
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-    <p>{meeting.date}</p>
+    <p
+      data-whr-zoned-date
+      data-source-date={meeting.date}
+      data-source-time={firstPublishedPostTime}
+      data-source-timezone={detail.timezone}
+    >{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Timezone: {detail.timezone}</p>
+    <p>Venue timezone: {detail.timezone}</p>
     <p>Capability rank: {detail.capability_rank}</p>
     <p>Public rank: {detail.effective_public_rank}</p>
     <p>Publication policy: {detail.policy_id}</p>
@@ -97,6 +106,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
   <section aria-labelledby="coverage-title">
     <h2 id="coverage-title">Time coverage</h2>
     <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
+    <p>Displayed dates and post times use the selected display timezone. Venue timezone remains shown as source context.</p>
     <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
   </section>
 
@@ -120,7 +130,12 @@ const timeCoverageNoteByRank: Record<string, string> = {
             {detail.timetable_rows.map((row) => (
               <tr>
                 <td>{row.label}</td>
-                <td>{row.post_time_local}</td>
+                <td><time
+                  data-whr-zoned-datetime
+                  data-source-date={meeting.date}
+                  data-source-time={row.post_time_local}
+                  data-source-timezone={detail.timezone}
+                >{row.post_time_local}</time></td>
                 {hasRaceName && <td>{displayValue(row.race_name)}</td>}
                 {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
                 {hasSurface && <td>{displayValue(row.surface)}</td>}
