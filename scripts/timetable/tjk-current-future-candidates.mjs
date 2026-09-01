@@ -33,6 +33,38 @@ export function extractAnchors(html) {
   return anchors;
 }
 
+function visibleText(html) {
+  return decodeHtml(html)
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/giu, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/giu, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function detectRaceSchedule(html) {
+  const text = visibleText(html);
+  const byRace = new Map();
+  const pattern = /(?:^|\s)0*([1-9]|1\d|2\d)\s*\.\s*(?:Koşu|Kosu|KOŞU)\s*:?[\s-]*([01]?\d|2[0-3])[.:]([0-5]\d)\b/giu;
+  for (const match of text.matchAll(pattern)) {
+    const raceNumber = Number(match[1]);
+    const time = `${String(Number(match[2])).padStart(2, '0')}:${match[3]}`;
+    if (!byRace.has(raceNumber)) byRace.set(raceNumber, new Set());
+    byRace.get(raceNumber).add(time);
+  }
+  const conflicts = [];
+  const schedule = [];
+  for (const [raceNumber, times] of [...byRace.entries()].sort(([a], [b]) => a - b)) {
+    if (times.size !== 1) {
+      conflicts.push(raceNumber);
+      continue;
+    }
+    schedule.push({ race_number: raceNumber, post_time_local: [...times][0] });
+  }
+  const contiguous = schedule.every((row, index) => row.race_number === index + 1);
+  return { schedule: conflicts.length === 0 && contiguous ? schedule : [], conflicts, contiguous };
+}
+
 export function turkeyDate(value = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: TIMEZONE,
@@ -113,6 +145,12 @@ export function discoverFromIndexHtml(html, pageUrl, today) {
       racecourse,
       racecourse_source_id: racecourseId,
       source_url: url.href,
+      capability_rank: 'C',
+      publication_ceiling: 'A',
+      first_race_time_local: null,
+      last_race_time_local: null,
+      timetable_rows: [],
+      detail_observation: { status: 'not_checked', race_count: 0, conflicts: [] },
       provenance: {
         discovered_from: pageUrl,
         discovered_href: anchor.href,
@@ -136,6 +174,36 @@ async function fetchHtml(url, fetchImpl) {
   });
   if (!response.ok) throw new Error(`TJK programme page fetch failed: HTTP ${response.status}`);
   return response.text();
+}
+
+async function enrichBestAvailable(candidate, fetchImpl) {
+  try {
+    const html = await fetchHtml(candidate.source_url, fetchImpl);
+    const detected = detectRaceSchedule(html);
+    if (detected.schedule.length === 0) {
+      return {
+        ...candidate,
+        detail_observation: {
+          status: detected.conflicts.length ? 'conflict' : 'not_published',
+          race_count: 0,
+          conflicts: detected.conflicts,
+        },
+      };
+    }
+    return {
+      ...candidate,
+      capability_rank: 'A',
+      first_race_time_local: detected.schedule[0].post_time_local,
+      last_race_time_local: detected.schedule.at(-1).post_time_local,
+      timetable_rows: detected.schedule,
+      detail_observation: { status: 'available', race_count: detected.schedule.length, conflicts: [] },
+    };
+  } catch {
+    return {
+      ...candidate,
+      detail_observation: { status: 'source_error', race_count: 0, conflicts: [] },
+    };
+  }
 }
 
 export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(), entryUrl = ENTRY_URL } = {}) {
@@ -169,7 +237,10 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
     if (!byId.has(record.candidate_id)) byId.set(record.candidate_id, record);
   }
 
-  const candidates = [...byId.values()].sort((a, b) => a.date.localeCompare(b.date) || a.racecourse.localeCompare(b.racecourse, 'tr'));
+  const discoveredCandidates = [...byId.values()].sort((a, b) => a.date.localeCompare(b.date) || a.racecourse.localeCompare(b.racecourse, 'tr'));
+  const candidates = [];
+  for (const candidate of discoveredCandidates) candidates.push(await enrichBestAvailable(candidate, fetchImpl));
+
   return {
     schema: SCHEMA,
     source: 'tjk',
@@ -178,6 +249,9 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
     entry_url: entryUrl,
     retrieved_at: retrievedAt,
     effective_today: today,
+    technical_capability_rank: 'A+',
+    publication_ceiling: 'A',
+    collection_target_rank: 'best_available',
     raw_body_retained: false,
     disposition: {
       target: 'candidate_only',
@@ -186,8 +260,13 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
       public_write: false,
     },
     discovery: {
-      method: 'official_programme_page_anchors_only',
+      method: 'official_programme_page_anchors_plus_page_discovered_detail',
       index_pages_fetched: visited.size,
+      detail_pages_attempted: candidates.length,
+      rank_counts: {
+        C: candidates.filter((candidate) => candidate.capability_rank === 'C').length,
+        A: candidates.filter((candidate) => candidate.capability_rank === 'A').length,
+      },
     },
     candidates,
   };
@@ -207,7 +286,12 @@ async function main() {
   const absolute = path.resolve(output);
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
   fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
-  console.log(JSON.stringify({ output, candidates: artifact.candidates.length, effective_today: artifact.effective_today }, null, 2));
+  console.log(JSON.stringify({
+    output,
+    candidates: artifact.candidates.length,
+    rank_counts: artifact.discovery.rank_counts,
+    effective_today: artifact.effective_today,
+  }, null, 2));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
