@@ -38,6 +38,11 @@ s = s.replace(
 );
 
 s = s.replace(
+`    const legacyBaneiId = 'banei-obihiro-racecourse-2026-05-30';\n    const legacyDecision = decisionById.get(legacyBaneiId);\n    const legacyMeeting = meetingById.get(legacyBaneiId);\n    if (!legacyDecision || !legacyDecision.include_in_public_list || legacyDecision.effective_public_rank !== 'C') {\n      fail(\`${'${legacyBaneiId}'} must project as reviewed Rank C after schedule Readiness activation\`);\n    }\n    if (!legacyMeeting || legacyMeeting.effective_public_rank !== 'C' || legacyMeeting.detail_path !== null) {\n      fail(\`${'${legacyBaneiId}'} public Rank C row differs after Readiness activation\`);\n    }\n    if (legacyMeeting && (legacyMeeting.first_race_time_local !== null || legacyMeeting.last_race_time_local !== null)) {\n      fail(\`${'${legacyBaneiId}'} Rank C row must not expose race times\`);\n    }\n    if (detailById.has(legacyBaneiId)) fail(\`${'${legacyBaneiId}'} Rank C row must not expose detail\`);`,
+`    const legacyBaneiId = 'banei-obihiro-racecourse-2026-05-30';\n    const legacyDecision = decisionById.get(legacyBaneiId);\n    const legacyMeeting = meetingById.get(legacyBaneiId);\n    const legacyCanonical = canonicalById.get(legacyBaneiId);\n    if (!legacyDecision || !legacyCanonical || legacyDecision.effective_public_rank !== legacyCanonical.capability_rank) {\n      fail(\`${'${legacyBaneiId}'} must preserve canonical capability rank after Readiness activation\`);\n    }\n    if (!legacyMeeting || legacyMeeting.effective_public_rank !== legacyCanonical?.capability_rank) {\n      fail(\`${'${legacyBaneiId}'} public row differs from canonical capability rank\`);\n    }\n    if (legacyMeeting && legacyMeeting.first_race_time_local !== legacyCanonical?.first_race_time_local) {\n      fail(\`${'${legacyBaneiId}'} public first race time differs from canonical\`);\n    }`
+);
+
+s = s.replace(
 `    if (raisedDecision?.effective_public_rank !== 'A+') fail('raised HKJC ceiling fixture did not reach A+');`,
 `    if (raisedDecision?.effective_public_rank !== hkjcDecision?.effective_public_rank) fail('changing HKJC readiness ceiling metadata changed public rank');`
 );
@@ -47,7 +52,12 @@ s = s.replace(
 `console.log('CANONICAL_PUBLIC_RANK_PARITY_ENFORCED: true');`
 );
 
-if (s.includes('effective rank exceeds maximum public rank') || s.includes('HKJC A+ canonical record must project at A') || s.includes('PUBLIC_CEILING_ENFORCED: true')) {
+if (
+  s.includes('effective rank exceeds maximum public rank')
+  || s.includes('HKJC A+ canonical record must project at A')
+  || s.includes('must project as reviewed Rank C after schedule Readiness activation')
+  || s.includes('PUBLIC_CEILING_ENFORCED: true')
+) {
   throw new Error('stale public-rank ceiling assertions remain');
 }
 
