@@ -9,6 +9,8 @@ const ERROR_DIR = 'artifacts/m5-scheduled/contract-error';
 const RUN_AT = '2026-08-16T02:00:00Z';
 const ENTRY_URL = 'https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami';
 const FUTURE_URL = 'https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=17%2F08%2F2026';
+const ANKARA_DETAIL = 'https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=16%2F08%2F2026&SehirAdi=Ankara&SehirId=5';
+const ISTANBUL_DETAIL = 'https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=17%2F08%2F2026&SehirAdi=%C4%B0stanbul&SehirId=3';
 
 const entryHtml = `
 <a href="/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=16%2F08%2F2026&amp;SehirAdi=Ankara&amp;SehirId=5">Ankara (50. Y.G.)</a>
@@ -16,9 +18,15 @@ const entryHtml = `
 <a href="https://evil.example/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=16%2F08%2F2026&amp;SehirAdi=Fake&amp;SehirId=99">Fake</a>`;
 const futureHtml = `
 <a href="/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?QueryParameter_Tarih=17%2F08%2F2026&amp;SehirAdi=%C4%B0stanbul&amp;SehirId=3">İstanbul (50. Y.G.)</a>`;
+const ankaraDetailHtml = '<main>1. Koşu: 14:00 2. Koşu: 14:30 3. Koşu: 15:00</main>';
+const istanbulDetailHtml = '<main>Programme listed; post times pending.</main>';
 
 function okFetch(url) {
-  const body = url === ENTRY_URL ? entryHtml : url === FUTURE_URL ? futureHtml : null;
+  const body = url === ENTRY_URL ? entryHtml
+    : url === FUTURE_URL ? futureHtml
+      : url === ANKARA_DETAIL ? ankaraDetailHtml
+        : url === ISTANBUL_DETAIL ? istanbulDetailHtml
+          : null;
   assert.notEqual(body, null, `unexpected fixture fetch: ${url}`);
   return Promise.resolve({ ok: true, status: 200, text: async () => body });
 }
@@ -46,25 +54,33 @@ try {
 
   const candidate = readJson(success.candidatePath);
   assert.equal(candidate.schema_version, 'timetable-candidate-v1');
-  assert.equal(candidate.adapter_id, 'tjk-scheduled-current-future-rank-c-v1');
-  assert.equal(candidate.candidate_rank, 'C');
-  assert.equal(candidate.publication_ceiling, 'C');
+  assert.equal(candidate.adapter_id, 'tjk-scheduled-current-future-best-available-v1');
+  assert.equal(candidate.candidate_rank, 'A');
+  assert.equal(candidate.publication_ceiling, 'A');
+  assert.equal(candidate.collection_target_rank, 'best_available');
   assert.equal(candidate.technical_capability_rank, 'A+');
+  assert.deepEqual(candidate.rank_counts, { C: 1, A: 1 });
   assert.equal(candidate.review.status, 'pending');
   assert.equal(candidate.publication_effect, 'none');
-  assert.deepEqual(candidate.records.map((record) => [record.date, record.source_venue_label]), [
-    ['2026-08-16', 'Ankara'],
-    ['2026-08-17', 'İstanbul'],
+  assert.deepEqual(candidate.records.map((record) => [record.date, record.source_venue_label, record.candidate_rank]), [
+    ['2026-08-16', 'Ankara', 'A'],
+    ['2026-08-17', 'İstanbul', 'C'],
   ]);
-  for (const record of candidate.records) {
-    assert.equal(record.candidate_rank, 'C');
-    assert.equal(record.publication_ceiling, 'C');
-    assert.equal(record.first_race_time_local, null);
-    assert.equal(record.last_race_time_local, null);
-    assert.deepEqual(record.timetable_rows, []);
-    assert.equal(record.review_status, 'pending');
-    assert.equal(record.public_racecourse_identity_status, 'unregistered-not-authorized-by-scheduled-discovery');
-  }
+
+  const ankara = candidate.records[0];
+  assert.equal(ankara.publication_ceiling, 'A');
+  assert.equal(ankara.first_race_time_local, '14:00');
+  assert.equal(ankara.last_race_time_local, '15:00');
+  assert.equal(ankara.timetable_rows.length, 3);
+  assert.equal(ankara.review_status, 'pending');
+  assert.equal(ankara.public_racecourse_identity_status, 'unregistered-not-authorized-by-scheduled-discovery');
+
+  const istanbul = candidate.records[1];
+  assert.equal(istanbul.publication_ceiling, 'A');
+  assert.equal(istanbul.first_race_time_local, null);
+  assert.equal(istanbul.last_race_time_local, null);
+  assert.deepEqual(istanbul.timetable_rows, []);
+  assert.equal(istanbul.review_status, 'pending');
 
   const runLog = readJson(success.runLogPath);
   assert.equal(runLog.schema, 'scheduled-candidate-run-log-v1');
@@ -80,6 +96,7 @@ try {
   const sourceBatch = readJson(success.sourceBatchPath);
   assert.equal(sourceBatch.raw_body_retained, false);
   assert.equal(Object.hasOwn(sourceBatch, 'raw_body'), false);
+  assert.deepEqual(sourceBatch.discovery.rank_counts, { C: 1, A: 1 });
   assert.throws(
     () => buildTjkScheduledRankCCandidate(sourceBatch, { today: '2026-08-15' }),
     /effective_today must match the explicit Turkey run date/,
@@ -119,11 +136,11 @@ try {
   assert.match(workflow, /artifacts\/m5-scheduled/);
 
   console.log('M5 GitHub Actions dry-run check passed.');
-  console.log('- scheduled TJK live discovery is reduced to Rank C review candidates');
+  console.log('- scheduled TJK live discovery preserves C/A best-available detail observations');
+  console.log('- A is emitted only for complete contiguous Race 1-N post-time rows; detail-unavailable meetings remain C');
   console.log('- success writes source batch + candidate + run log + review diff artifact only');
   console.log('- source failure writes run log only and retains no raw response body');
   console.log('- workflow is read-only and contains no promotion/publication/merge/deploy capability');
-  console.log('- relevant main pushes execute the same live read-only dry-run for post-merge verification');
 } finally {
   for (const dir of [SUCCESS_DIR, ERROR_DIR]) fs.rmSync(path.resolve(dir), { recursive: true, force: true });
 }
