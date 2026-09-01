@@ -123,8 +123,7 @@ if (!baseSuccessfulPages.length) {
     }
   }
 
-  const successfulPages = fetched.filter((entry) => entry.status.status === 'success');
-  const rows = parseKraTodayRacePages(successfulPages);
+  const rows = baseRows;
   const observation = buildKraMeetingObservation({
     meetingId,
     date: args.date,
