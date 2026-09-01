@@ -4,9 +4,4 @@ const analyticsScriptUrl = `https://www.googletagmanager.com/gtag/js?id=${measur
 ---
 
 <script async src={analyticsScriptUrl}></script>
-<script is:inline define:vars={{ measurementId }}>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', measurementId);
-</script>
+<script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date);gtag('config','G-79W3MF08Y9');</script>
