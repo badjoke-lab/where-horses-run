@@ -24,8 +24,11 @@ const endpoints = [
   { source: 'info-post', url: 'https://todayrace.kra.co.kr/racing/info/selectInfoList.do' },
 ];
 
-async function fetchPage(endpoint) {
-  const body = new URLSearchParams({ rcDate: dateCompact, meets: racecourse.meet_code, meet: racecourse.meet_code });
+async function fetchPage(endpoint, raceNumber = null) {
+  const bodyValues = { rcDate: dateCompact, meets: racecourse.meet_code, meet: racecourse.meet_code };
+  if (raceNumber != null) bodyValues.rcNo = String(raceNumber);
+  const body = new URLSearchParams(bodyValues);
+  const source = raceNumber == null ? endpoint.source : `${endpoint.source}:rcNo=${raceNumber}`;
   const statuses = [];
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const controller = new AbortController();
@@ -45,31 +48,31 @@ async function fetchPage(endpoint) {
       });
       const html = await response.text();
       if (!response.ok) {
-        statuses.push({ source: endpoint.source, attempt, status: 'http_error', http_status: response.status, body_size: html.length });
+        statuses.push({ source, attempt, status: 'http_error', http_status: response.status, body_size: html.length });
         if (response.status >= 500 && attempt < 2) continue;
-        return { source: endpoint.source, html: '', status: statuses.at(-1) };
+        return { source, html: '', status: statuses.at(-1) };
       }
       if (html.length < 500) {
-        statuses.push({ source: endpoint.source, attempt, status: 'short_response', http_status: response.status, body_size: html.length });
+        statuses.push({ source, attempt, status: 'short_response', http_status: response.status, body_size: html.length });
         if (attempt < 2) continue;
       } else {
-        const status = { source: endpoint.source, attempt, status: 'success', http_status: response.status, body_size: html.length };
-        return { source: endpoint.source, html, status };
+        const status = { source, attempt, status: 'success', http_status: response.status, body_size: html.length };
+        return { source, html, status };
       }
     } catch (error) {
-      statuses.push({ source: endpoint.source, attempt, status: error?.name === 'AbortError' ? 'timeout' : 'network_error', message: String(error?.message ?? error).slice(0, 300) });
+      statuses.push({ source, attempt, status: error?.name === 'AbortError' ? 'timeout' : 'network_error', message: String(error?.message ?? error).slice(0, 300) });
       if (attempt < 2) continue;
     } finally {
       clearTimeout(timeout);
     }
   }
-  return { source: endpoint.source, html: '', status: statuses.at(-1) ?? { source: endpoint.source, status: 'network_error' } };
+  return { source, html: '', status: statuses.at(-1) ?? { source, status: 'network_error' } };
 }
 
 const fetched = [];
 for (const endpoint of endpoints) fetched.push(await fetchPage(endpoint));
-const successfulPages = fetched.filter((entry) => entry.status.status === 'success');
-if (!successfulPages.length) {
+const baseSuccessfulPages = fetched.filter((entry) => entry.status.status === 'success');
+if (!baseSuccessfulPages.length) {
   console.log(JSON.stringify({
     schema_version: 'kra-today-race-collection-v1',
     meeting_id: meetingId,
@@ -82,6 +85,29 @@ if (!successfulPages.length) {
   }, null, 2));
   process.exitCode = 2;
 } else {
+  const baseRows = parseKraTodayRacePages(baseSuccessfulPages);
+  const raceNumbers = baseRows
+    .map((row) => row.race_number)
+    .filter((value) => Number.isInteger(value) && value >= 1 && value <= 30)
+    .sort((a, b) => a - b);
+
+  for (const raceNumber of raceNumbers) {
+    let capturedTime = false;
+    for (const endpoint of [endpoints[2], endpoints[1], endpoints[0]]) {
+      const detail = await fetchPage(endpoint, raceNumber);
+      fetched.push(detail);
+      if (detail.status.status !== 'success') continue;
+      const parsed = parseKraTodayRacePages([detail]);
+      const matching = parsed.find((row) => row.race_number === raceNumber);
+      if (matching?.post_time_local) {
+        capturedTime = true;
+        break;
+      }
+    }
+    if (!capturedTime) continue;
+  }
+
+  const successfulPages = fetched.filter((entry) => entry.status.status === 'success');
   const rows = parseKraTodayRacePages(successfulPages);
   const observation = buildKraMeetingObservation({
     meetingId,
