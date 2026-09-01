@@ -162,12 +162,23 @@ for (const [key, value] of Object.entries(audit.verified ?? {})) {
   }
 }
 
-// Current reviewed maintenance must satisfy the same static-first quality contract,
-// while approved existing-route growth is allowed after the accepted v1 baseline.
+// Current reviewed maintenance must satisfy the same quality contract, with
+// the approved GA4 tag as the sole bounded external-runtime exception.
+const analytics = performance.current_maintenance_exceptions?.google_analytics;
+const expectedAnalyticsRuntimeReferences = currentPublicPages * (analytics?.external_runtime_references_per_page ?? 0);
 if (currentPublicPages < contract.candidate_baseline.public_pages) fail('release-decision current public inventory shrank below accepted v1');
 if (performanceReport.schemaVersion !== 'v1-performance-qa-discovery-v1') fail('release-decision performance report schema differs');
 if (performanceReport.publicPages !== currentPublicPages || performanceReport.measuredPages !== currentPublicPages || (performanceReport.typeTotals?.javascript?.files ?? 0) !== 0) fail('release-decision current performance report inventory differs');
-if (performanceReport.externalRuntimeReferenceInstances !== 0 || performanceReport.missingLocalReferenceInstances !== 0) fail('release-decision current static-first performance result differs');
+if (
+  performanceReport.missingLocalReferenceInstances !== 0 ||
+  analytics?.status !== 'approved' ||
+  analytics.measurement_id !== 'G-79W3MF08Y9' ||
+  analytics.external_runtime_references_per_page !== 1 ||
+  analytics.script_src_references_per_page !== 1 ||
+  performanceReport.pagesWithExternalRuntimeReferences !== currentPublicPages ||
+  performanceReport.externalRuntimeReferenceInstances !== expectedAnalyticsRuntimeReferences ||
+  performanceReport.pagesWithScriptReferences !== currentPublicPages
+) fail('release-decision current bounded-runtime performance result differs');
 
 for (const route of ['/calendar/', '/ja/calendar/', '/today/', '/ja/today/', '/tomorrow/', '/ja/tomorrow/', '/faq/', '/ja/faq/', '/methods/', '/ja/methods/', '/sources/', '/ja/sources/']) {
   if (!sitemap.includes(`<loc>https://whr.badjoke-lab.com${route}</loc>`)) fail(`release-decision required route missing: ${route}`);
