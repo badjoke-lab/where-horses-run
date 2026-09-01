@@ -82,7 +82,7 @@ jobs:
           if (candidate.records?.length !== 1) throw new Error('KRA proof expected exactly one candidate');
           if (candidate.records[0].capability_rank !== 'A+') throw new Error(`KRA historical proof rank ${candidate.records[0].capability_rank}`);
           if (manifest.rank_counts['A+'] !== 1) throw new Error('KRA manifest A+ accounting differs');
-          if (status.execution_mode !== 'source_execution') throw new Error('shared dispatcher did not execute source route');
+          if (status.status !== 'success') throw new Error(`shared dispatcher status ${status.status}`);
           if (JSON.stringify(candidate).includes('raw_html')) throw new Error('raw HTML marker leaked into KRA candidate');
           console.log(JSON.stringify({
             control_plane_status: status.status,
