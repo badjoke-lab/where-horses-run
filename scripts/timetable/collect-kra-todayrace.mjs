@@ -24,6 +24,8 @@ const endpoints = [
   { source: 'info-post', url: 'https://todayrace.kra.co.kr/racing/info/selectInfoList.do' },
 ];
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function fetchPage(endpoint) {
   const params = new URLSearchParams({
     rcDate: dateCompact,
@@ -31,7 +33,9 @@ async function fetchPage(endpoint) {
     meet: racecourse.meet_code,
   });
   const statuses = [];
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  const maxAttempts = 3;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    if (attempt > 1) await sleep(750 * (attempt - 1));
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
     try {
@@ -50,19 +54,19 @@ async function fetchPage(endpoint) {
       const html = await response.text();
       if (!response.ok) {
         statuses.push({ source: endpoint.source, attempt, status: 'http_error', http_status: response.status, body_size: html.length });
-        if (response.status >= 500 && attempt < 2) continue;
+        if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts) continue;
         return { source: endpoint.source, html: '', status: statuses.at(-1) };
       }
       if (html.length < 500) {
         statuses.push({ source: endpoint.source, attempt, status: 'short_response', http_status: response.status, body_size: html.length });
-        if (attempt < 2) continue;
+        if (attempt < maxAttempts) continue;
       } else {
         const status = { source: endpoint.source, attempt, status: 'success', http_status: response.status, body_size: html.length };
         return { source: endpoint.source, html, status };
       }
     } catch (error) {
       statuses.push({ source: endpoint.source, attempt, status: error?.name === 'AbortError' ? 'timeout' : 'network_error', message: String(error?.message ?? error).slice(0, 300) });
-      if (attempt < 2) continue;
+      if (attempt < maxAttempts) continue;
     } finally {
       clearTimeout(timeout);
     }
