@@ -103,12 +103,15 @@ function weeklyHourBlocks(html) {
   return blocks.filter((block) => block.length >= 2);
 }
 
+function targetWeeklyBlock(html, date) {
+  const blockIndex = WEEKDAY_BLOCK_INDEX[targetWeekday(date)];
+  return blockIndex == null ? null : (weeklyHourBlocks(html)[blockIndex] ?? null);
+}
+
 function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   const { monday, sunday } = currentSeoulWeekBounds();
   if (date < monday || date > sunday) return [];
-  const blockIndex = WEEKDAY_BLOCK_INDEX[targetWeekday(date)];
-  if (blockIndex == null) return [];
-  const block = weeklyHourBlocks(html)[blockIndex];
+  const block = targetWeeklyBlock(html, date);
   if (!block) return [];
 
   const explicitRows = [];
@@ -132,6 +135,19 @@ function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
     post_time_local: postTime,
     sources: ['weekly-start-times'],
   }));
+}
+
+function weeklyParserDiagnostics(html, date) {
+  const block = targetWeeklyBlock(html, date);
+  if (!block) return { block_found: false };
+  return {
+    block_found: true,
+    rows: block.slice(0, 8).map(({ hour, cells }) => ({
+      hour,
+      cell_count: cells.length,
+      cells: cells.map((cell) => cell.slice(0, 80)),
+    })),
+  };
 }
 
 function mergeRows(baseRows, supplementalRows) {
@@ -259,5 +275,8 @@ if (!successfulPages.length) {
   observation.source.official_url = weeklyPage
     ? 'https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do'
     : observation.source.official_url;
+  if (weeklyPage && args['racecourse-id'] === 'jeju-racecourse') {
+    observation.weekly_parser_diagnostics = weeklyParserDiagnostics(weeklyPage.html, args.date);
+  }
   console.log(JSON.stringify(observation, null, 2));
 }
