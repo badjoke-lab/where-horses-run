@@ -1,0 +1,34 @@
+name: Calendar TJK 2026-09-01 promotion review
+
+on:
+  pull_request:
+    paths:
+      - 'data/candidates/tjk-current-2026-09-01-promotion-review-v1.json'
+      - 'scripts/check-tjk-2026-09-01-promotion-review.mjs'
+      - 'scripts/timetable/build-tjk-2026-09-01-approved-candidate.mjs'
+      - '.github/workflows/calendar-tjk-2026-09-01-promotion-review.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate exact pending review unit
+        run: node scripts/check-tjk-2026-09-01-promotion-review.mjs
+      - name: Prove approved builder fails closed before human approval
+        shell: bash
+        run: |
+          if node scripts/timetable/build-tjk-2026-09-01-approved-candidate.mjs; then
+            echo 'approved builder unexpectedly succeeded while review is pending' >&2
+            exit 1
+          fi
+      - name: Prove no approved candidate was created
+        run: test ! -e data/candidates/tjk-current-2026-09-01-approved.json
+      - name: Prove tracked repository state is unchanged
+        run: git diff --exit-code

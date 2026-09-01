@@ -1,0 +1,85 @@
+name: Calendar KRA current best-available refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 1,7,13,19 * * *'
+  push:
+    branches:
+      - main
+      - fix/hkjc-kra-current-best-available-refresh
+      - fix/kra-transient-source-resilience
+    paths:
+      - '.github/workflows/calendar-kra-current-best-available-refresh.yml'
+      - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
+      - 'scripts/timetable/run-kra-todayrace-actions-job.mjs'
+      - 'scripts/timetable/collect-kra-todayrace.mjs'
+      - 'scripts/timetable/kra-todayrace-core.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-kra-current-best-available-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Validate KRA current best-available orchestrator
+        run: |
+          node --check scripts/timetable/run-current-lower-rank-best-available.mjs
+          node --check scripts/timetable/collect-kra-todayrace.mjs
+      - name: Record protected timetable hashes
+        shell: bash
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/kra-current-best-available-before.sha256
+      - name: Acquire KRA current lower-rank meetings at best available rank
+        run: |
+          node scripts/timetable/run-current-lower-rank-best-available.mjs \
+            --system=kra \
+            --days=30 \
+            --output-dir=/tmp/kra-current-best-available
+      - name: Prove KRA review-only publication boundary
+        shell: bash
+        run: |
+          sha256sum -c /tmp/kra-current-best-available-before.sha256
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const summary = JSON.parse(fs.readFileSync('/tmp/kra-current-best-available/summary.json', 'utf8'));
+          if (summary.system_id !== 'kra-national-racing-system') throw new Error('KRA summary system differs');
+          if (summary.canonical_write !== false || summary.public_write !== false) throw new Error('KRA refresh crossed publication boundary');
+          if (summary.automatic_approval !== false || summary.automatic_promotion !== false) throw new Error('KRA refresh crossed review boundary');
+          if (summary.public_ceiling !== 'A') throw new Error('KRA public ceiling differs');
+          if (summary.source_error_count !== 0) throw new Error(`KRA source errors: ${summary.source_error_count}`);
+          console.log(JSON.stringify({
+            selected_lower_rank_meeting_count: summary.selected_lower_rank_meeting_count,
+            observed_rank_counts: summary.observed_rank_counts,
+            upgrade_candidate_count: summary.upgrade_candidate_count,
+            upgrade_candidates: summary.upgrade_candidates,
+            public_ceiling: summary.public_ceiling,
+            canonical_write: summary.canonical_write,
+            public_write: summary.public_write,
+          }, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kra-current-best-available-${{ github.run_id }}
+          path: |
+            /tmp/kra-current-best-available
+            data/generated/timetable/actions-multi-job/
+          retention-days: 14
