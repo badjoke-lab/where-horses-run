@@ -5,17 +5,23 @@ import CalendarDateFocus from '../../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarOperationsNotice from '../../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
-import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
+import {
+  getCurrentCalendarWindowGroups,
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableProjectionCandidateGroups,
+} from '../../../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
+const projectionGroups = getTimetableProjectionCandidateGroups(context.windowStart, context.windowEndExclusive);
 const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
 ---
 
 <BaseLayout
   title="30日間の開催カレンダー | 競馬どこ？"
-  description="基準日から30日間の確認済み公開開催情報を日付別に案内します。"
+  description="選択した表示タイムゾーンを基準にした30日間の確認済み公開開催情報です。"
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
@@ -24,7 +30,7 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
     <p class="hero__eyebrow">Calendar</p>
     <h1 id="page-title">30日間の開催カレンダー</h1>
     <p class="hero__summary">
-      {context.windowStart}から{context.windowEndInclusive}までの確認済み開催を表示します。基準タイムゾーンは{context.timeZone}です。
+      下の表示タイムゾーンを選択すると、30日間の範囲、開催日、表示時刻をそのタイムゾーンへ変換します。
     </p>
   </section>
 
@@ -35,9 +41,10 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
 
   <section aria-label="30日間の開催一覧">
     <TimetableMeetingList
-      groups={groupedCalendarRecords}
+      groups={projectionGroups}
       lang="ja"
-      emptyLabel="この30日間に確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
+      viewMode="window30"
+      emptyLabel="選択したタイムゾーンの現在30日間に確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
     />
   </section>
 </BaseLayout>
