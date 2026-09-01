@@ -1,0 +1,45 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-09-01T04:29:36.125Z",
+  "adapter_id": "hkjc-live-best-available-v1",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "source_id": "hkjc-fixture-list",
+  "candidate_window": {
+    "start_date": "2026-09-24",
+    "end_date_exclusive": "2026-10-01",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "records": [
+    {
+      "candidate_id": "hkjc-sha-tin-racecourse-2026-09-27-fixture-candidate",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-09-27",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-09-27",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "hkjc-fixture-list",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "checked_at": "2026-09-01T04:29:36.125Z",
+        "extraction_method": "fixture_parser"
+      },
+      "confidence": "high",
+      "review_status": "needs_review",
+      "notes": "Official HKJC fixture page confirms meeting identity at Sha Tin; race times and programme rows are not claimed by this fixture-only bridge."
+    }
+  ],
+  "review": {
+    "status": "needs_review",
+    "reviewed_at": null,
+    "reviewer": null,
+    "summary": "HKJC best-available live acquisition: official fixture identity plus official racecard enrichment. C/B/B+/A/A+ are observation states, not publication requirements; review remains required.",
+    "promotion_target": null
+  }
+}
