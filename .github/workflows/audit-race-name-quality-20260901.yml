@@ -23,36 +23,24 @@ jobs:
           import fs from 'node:fs';
           const data = JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-details.json','utf8'));
           const details = Array.isArray(data.details) ? data.details : [];
+          const generic = new Set(['特別','重賞','準重賞','一般','新馬','未勝利']);
           const by = new Map();
-          const suspiciousRows = [];
-          const narSamples = [];
-          const normalize = (v) => typeof v === 'string' ? v.trim() : '';
-          const suspicious = (name,label) => {
-            const n = normalize(name);
-            if (!n) return 'missing';
-            if (/^(race|r)\s*\d+$/i.test(n)) return 'race_number_only';
-            if (/^\d+\s*r$/i.test(n)) return 'race_number_only';
-            if (normalize(label).toLowerCase() === n.toLowerCase()) return 'same_as_label';
-            if (/^(芝|ダート|dirt|turf|障害)\s*\d{3,4}/i.test(n)) return 'surface_distance_prefix';
-            if (/^\d{3,4}\s*m\b/i.test(n)) return 'distance_only';
-            return null;
-          };
+          const genericExamples=[];
           for (const d of details) {
-            const rank = d.effective_public_rank ?? d.capability_rank;
+            const rank=d.effective_public_rank ?? d.capability_rank;
             if (rank !== 'A+' || !d.show_race_name) continue;
-            const key = `${d.country_id}\t${d.authority_id}`;
-            if (!by.has(key)) by.set(key,{country_id:d.country_id,authority_id:d.authority_id,meetings:0,rows:0,missing:0,suspicious:0,examples:[]});
-            const x = by.get(key); x.meetings++;
+            const key=`${d.country_id}\t${d.authority_id}`;
+            if (!by.has(key)) by.set(key,{country_id:d.country_id,authority_id:d.authority_id,meetings:0,rows:0,missing:0,generic_label_only:0});
+            const x=by.get(key); x.meetings++;
             for (const row of d.timetable_rows ?? []) {
               x.rows++;
-              const reason = suspicious(row.race_name,row.label);
-              if (reason === 'missing') x.missing++;
-              if (reason && reason !== 'missing') x.suspicious++;
-              if (reason && x.examples.length < 12) x.examples.push({meeting_id:d.meeting_id,label:row.label,race_name:row.race_name,reason});
-              if (reason) suspiciousRows.push({authority_id:d.authority_id,meeting_id:d.meeting_id,label:row.label,race_name:row.race_name,reason});
-              if (d.authority_id === 'nar-local-government-racing' && narSamples.length < 80) narSamples.push({meeting_id:d.meeting_id,label:row.label,race_name:row.race_name,distance_m:row.distance_m,surface:row.surface,course_label:row.course_label});
+              const name=typeof row.race_name==='string'?row.race_name.trim():'';
+              if (!name) x.missing++;
+              if (generic.has(name)) {
+                x.generic_label_only++;
+                if (genericExamples.length<100) genericExamples.push({authority_id:d.authority_id,meeting_id:d.meeting_id,label:row.label,race_name:name});
+              }
             }
           }
-          const out={generated_at:data.generated_at,summary:[...by.values()],suspicious_rows:suspiciousRows,nar_samples:narSamples};
-          console.log(JSON.stringify(out,null,2));
+          console.log(JSON.stringify({generated_at:data.generated_at,summary:[...by.values()],generic_examples:genericExamples},null,2));
           NODE
