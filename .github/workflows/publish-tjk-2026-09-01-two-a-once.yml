@@ -93,8 +93,8 @@ jobs:
 
       - name: Dry-run and apply exact Rank A candidate
         run: |
-          node scripts/timetable/promote-approved-candidate-v1.mjs --candidate=data/candidates/tjk-2026-09-01-two-a-automated-approved.json
-          node scripts/timetable/promote-approved-candidate-v1.mjs --candidate=data/candidates/tjk-2026-09-01-two-a-automated-approved.json --apply
+          node scripts/timetable/promote-approved-candidate-v1.mjs --candidate data/candidates/tjk-2026-09-01-two-a-automated-approved.json
+          node scripts/timetable/promote-approved-candidate-v1.mjs --candidate data/candidates/tjk-2026-09-01-two-a-automated-approved.json --apply
           node scripts/timetable/build-public-timetable-view.mjs
 
       - name: Prove exact two-target mutation only
