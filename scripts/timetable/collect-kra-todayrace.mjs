@@ -147,6 +147,36 @@ function mergeRows(baseRows, supplementalRows) {
   return [...merged.values()].sort((left, right) => left.race_number - right.race_number);
 }
 
+function normalizeCharset(label) {
+  const value = String(label ?? '').trim().toLowerCase().replace(/["']/g, '');
+  if (!value) return null;
+  if (['euc-kr', 'euckr', 'ks_c_5601-1987', 'ks-c-5601-1987', 'cp949', 'ms949', 'windows-949'].includes(value)) return 'euc-kr';
+  if (['utf8', 'utf-8'].includes(value)) return 'utf-8';
+  return value;
+}
+
+function detectCharset(response, bytes, endpoint) {
+  const header = response.headers.get('content-type') ?? '';
+  const headerMatch = header.match(/charset\s*=\s*([^;\s]+)/i);
+  if (headerMatch) return normalizeCharset(headerMatch[1]);
+
+  const asciiProbe = new TextDecoder('windows-1252').decode(bytes.slice(0, Math.min(bytes.length, 8192)));
+  const metaMatch = asciiProbe.match(/charset\s*=\s*["']?([^"'\s;/>]+)/i);
+  if (metaMatch) return normalizeCharset(metaMatch[1]);
+
+  if (endpoint.source === 'weekly-start-times') return 'euc-kr';
+  return 'utf-8';
+}
+
+function decodeResponseBody(response, bytes, endpoint) {
+  const charset = detectCharset(response, bytes, endpoint) ?? 'utf-8';
+  try {
+    return { html: new TextDecoder(charset).decode(bytes), charset };
+  } catch {
+    return { html: new TextDecoder('utf-8').decode(bytes), charset: 'utf-8-fallback' };
+  }
+}
+
 async function fetchPage(endpoint) {
   const params = new URLSearchParams({
     rcDate: dateCompact,
@@ -172,17 +202,19 @@ async function fetchPage(endpoint) {
         redirect: 'follow',
         signal: controller.signal,
       });
-      const html = await response.text();
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      const decoded = decodeResponseBody(response, bytes, endpoint);
+      const html = decoded.html;
       if (!response.ok) {
-        statuses.push({ source: endpoint.source, attempt, status: 'http_error', http_status: response.status, body_size: html.length });
+        statuses.push({ source: endpoint.source, attempt, status: 'http_error', http_status: response.status, body_size: bytes.length, charset: decoded.charset });
         if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts) continue;
         return { source: endpoint.source, html: '', status: statuses.at(-1) };
       }
-      if (html.length < 500) {
-        statuses.push({ source: endpoint.source, attempt, status: 'short_response', http_status: response.status, body_size: html.length });
+      if (bytes.length < 500) {
+        statuses.push({ source: endpoint.source, attempt, status: 'short_response', http_status: response.status, body_size: bytes.length, charset: decoded.charset });
         if (attempt < maxAttempts) continue;
       } else {
-        const status = { source: endpoint.source, attempt, status: 'success', http_status: response.status, body_size: html.length };
+        const status = { source: endpoint.source, attempt, status: 'success', http_status: response.status, body_size: bytes.length, charset: decoded.charset };
         return { source: endpoint.source, html, status };
       }
     } catch (error) {
