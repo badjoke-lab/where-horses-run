@@ -93,6 +93,7 @@ for (let index = 0; index < jobs.length; index += 1) {
 }
 
 const programmeObservations = [];
+const programmePending = [];
 const programmeErrors = [];
 if (systemKey === 'hkjc') {
   const programmeDir = path.join(outputDir, 'entries-programme');
@@ -106,7 +107,12 @@ if (systemKey === 'hkjc') {
       const data = JSON.parse(fs.readFileSync(output, 'utf8'));
       programmeObservations.push({ meeting_id: meeting.meeting_id, meeting_date: meeting.date, racecourse_id: meeting.racecourse_id, programme_row_count: data.programme_rows.length, official_source_url: data.official_source_url, publication_state: data.publication_state });
     } else {
-      programmeErrors.push({ meeting_id: meeting.meeting_id, meeting_date: meeting.date, racecourse_id: meeting.racecourse_id, error: (result.stderr || result.error || 'HKJC Entries unavailable').slice(0, 1000) });
+      const diagnostic = result.stderr || result.stdout || result.error || 'HKJC Entries unavailable';
+      if (diagnostic.includes('No HKJC Entries programme rows extracted') || diagnostic.includes('HKJC Entries are not published for this meeting')) {
+        programmePending.push({ meeting_id: meeting.meeting_id, meeting_date: meeting.date, racecourse_id: meeting.racecourse_id, status: 'entries_not_yet_published' });
+      } else {
+        programmeErrors.push({ meeting_id: meeting.meeting_id, meeting_date: meeting.date, racecourse_id: meeting.racecourse_id, error: diagnostic.slice(0, 1000) });
+      }
     }
   }
 }
@@ -120,12 +126,14 @@ const upgradeCandidates = selected.flatMap((meeting) => {
 });
 
 const summary = {
-  schema_version: 'calendar-current-lower-rank-best-available-summary-v2', generated_at: generatedAt, system_key: systemKey, system_id: config.system_id, authority_id: config.authority_id, timezone: config.timezone, as_of_date: asOfDate, end_date_exclusive: endDateExclusive,
+  schema_version: 'calendar-current-lower-rank-best-available-summary-v3', generated_at: generatedAt, system_key: systemKey, system_id: config.system_id, authority_id: config.authority_id, timezone: config.timezone, as_of_date: asOfDate, end_date_exclusive: endDateExclusive,
   selected_lower_rank_meeting_count: selected.length, selected_meeting_ids: selected.map((meeting) => meeting.meeting_id), batch_count: batches.length, batches,
   observed_selected_meeting_count: observations.length, observed_rank_counts: observedRankCounts, upgrade_candidate_count: upgradeCandidates.length, upgrade_candidates: upgradeCandidates,
-  programme_observation_count: programmeObservations.length, programme_observations: programmeObservations, programme_error_count: programmeErrors.length, programme_errors: programmeErrors,
+  programme_observation_count: programmeObservations.length, programme_observations: programmeObservations,
+  programme_pending_count: programmePending.length, programme_pending: programmePending,
+  programme_error_count: programmeErrors.length, programme_errors: programmeErrors,
   source_error_count: sourceErrors.length, source_errors: sourceErrors, review_status: 'needs_review', canonical_write: false, public_write: false, automatic_approval: false, automatic_promotion: false,
 };
 fs.writeFileSync(path.join(outputDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
 console.log(JSON.stringify(summary, null, 2));
-if (sourceErrors.length) process.exitCode = 1;
+if (sourceErrors.length || programmeErrors.length) process.exitCode = 1;
