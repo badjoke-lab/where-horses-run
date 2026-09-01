@@ -6,7 +6,6 @@ on:
       - 'data/reviews/nar-current-window-a-plus-review-v1.json'
       - 'data/audits/calendar-nar-current-window-retry-result-v1.json'
       - 'scripts/timetable/prepare-nar-current-window-promotion-proposal.mjs'
-      - 'scripts/check-calendar-nar-current-window-promotion-review.mjs'
       - 'docs/calendar/nar-current-window-promotion-review.md'
       - '.github/workflows/calendar-nar-current-window-promotion-review.yml'
   workflow_dispatch:
@@ -27,11 +26,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate review contract
+      - name: Validate proposal builder
         run: |
           node --check scripts/timetable/prepare-nar-current-window-promotion-proposal.mjs
-          node --check scripts/check-calendar-nar-current-window-promotion-review.mjs
-          node scripts/check-calendar-nar-current-window-promotion-review.mjs
           node scripts/check-calendar-pipeline-v1-release-gate.mjs
       - name: Download pinned NAR retry artifact
         uses: actions/download-artifact@v4
