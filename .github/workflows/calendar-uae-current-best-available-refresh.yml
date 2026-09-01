@@ -1,0 +1,69 @@
+name: Calendar UAE current best-available refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 2,8,14,20 * * *'
+  push:
+    branches:
+      - main
+      - fix/uae-current-best-available-refresh
+    paths:
+      - '.github/workflows/calendar-uae-current-best-available-refresh.yml'
+      - 'scripts/timetable/run-uae-era-current-best-available.mjs'
+      - 'scripts/timetable/collect-uae-era-detail-artifacts.mjs'
+      - 'scripts/timetable/uae-era-detail-artifact-core.mjs'
+      - 'scripts/timetable/uae-era-rank-upgrade-core.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate UAE best-available implementation
+        run: |
+          node --check scripts/timetable/run-uae-era-current-best-available.mjs
+          node --check scripts/timetable/collect-uae-era-detail-artifacts.mjs
+          node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
+      - name: Record protected timetable hashes
+        run: |
+          sha256sum \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            > /tmp/uae-best-available-before.sha256
+      - name: Acquire current and future UAE best-available detail
+        run: |
+          node scripts/timetable/run-uae-era-current-best-available.mjs \
+            --output-dir=/tmp/uae-current-best-available
+      - name: Prove review-only publication boundary
+        run: |
+          sha256sum -c /tmp/uae-best-available-before.sha256
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const summary = JSON.parse(fs.readFileSync('/tmp/uae-current-best-available/summary.json', 'utf8'));
+          if (summary.canonical_write !== false || summary.public_write !== false) throw new Error('UAE refresh crossed publication boundary');
+          if (summary.automatic_approval !== false || summary.automatic_promotion !== false) throw new Error('UAE refresh crossed review boundary');
+          if (summary.rank_a_candidate_count !== summary.rank_a_candidate_ids.length) throw new Error('UAE Rank A candidate accounting differs');
+          console.log(JSON.stringify({
+            selected_lower_rank_meeting_count: summary.selected_lower_rank_meeting_count,
+            observed_rank_counts: summary.observed_rank_counts,
+            rank_a_candidate_count: summary.rank_a_candidate_count,
+            rank_a_candidate_ids: summary.rank_a_candidate_ids,
+            canonical_write: summary.canonical_write,
+            public_write: summary.public_write,
+          }, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uae-current-best-available-${{ github.run_id }}
+          path: /tmp/uae-current-best-available
+          retention-days: 14
