@@ -1,0 +1,54 @@
+name: Patch NAR best-available Rank A once
+on:
+  push:
+    branches: [fix/nar-best-available-rank-a]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/nar-best-available-rank-a
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch collector and incremental aggregation
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const collectorPath='scripts/timetable/collect-nar-monthly-candidates.mjs';
+          let s=fs.readFileSync(collectorPath,'utf8');
+          s=s.replace("    const name = raceName(block, raceNumber);\n    if (!name) continue;\n    rows.set(raceNumber, {", "    const name = raceName(block, raceNumber);\n    rows.set(raceNumber, {");
+          s=s.replace("function missingFields(row) {\n  return [!row.label && 'label', !row.post_time_local && 'post_time_local', !row.race_name && 'race_name', !Number.isInteger(row.distance_m) && 'distance_m', !row.surface && 'surface', !row.course_label && 'course_label'].filter(Boolean);\n}", "function missingAFields(row) {\n  return [!row.label && 'label', !row.post_time_local && 'post_time_local'].filter(Boolean);\n}\nfunction missingAPlusFields(row) {\n  return [...missingAFields(row), !row.race_name && 'race_name', !Number.isInteger(row.distance_m) && 'distance_m', !row.surface && 'surface', !row.course_label && 'course_label'].filter(Boolean);\n}");
+          s=s.replace("  const incomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingFields(row) })).filter((row) => row.missing_fields.length);\n  if (incomplete.length) return { status: 'meeting_incomplete', record, meeting, list, expected, rows, blockers: incomplete };\n  return { status: 'meeting_complete', record, meeting, list, expected, rows };", "  const aIncomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingAFields(row) })).filter((row) => row.missing_fields.length);\n  if (aIncomplete.length) return { status: 'meeting_incomplete', record, meeting, list, expected, rows, blockers: aIncomplete };\n  const aPlusIncomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingAPlusFields(row) })).filter((row) => row.missing_fields.length);\n  return { status: aPlusIncomplete.length ? 'meeting_rank_a' : 'meeting_complete', candidate_rank: aPlusIncomplete.length ? 'A' : 'A+', record, meeting, list, expected, rows, blockers: aPlusIncomplete };" );
+          s=s.replace("    if (result.status === 'meeting_complete') {", "    if (['meeting_complete', 'meeting_rank_a'].includes(result.status)) {");
+          s=s.replace("        meeting_completeness: { expected_race_numbers: result.expected, expected_race_count: result.expected.length, observed_race_count: result.rows.length, continuous_race_numbers: true, all_a_plus_fields_complete: true },", "        candidate_rank: result.candidate_rank ?? 'A+',\n        meeting_completeness: { expected_race_numbers: result.expected, expected_race_count: result.expected.length, observed_race_count: result.rows.length, continuous_race_numbers: true, all_a_fields_complete: true, all_a_plus_fields_complete: (result.candidate_rank ?? 'A+') === 'A+' },");
+          s=s.replace("  complete_meeting_candidates: meetings.length,", "  complete_meeting_candidates: meetings.length,\n  rank_a_candidates: meetings.filter((meeting) => meeting.candidate_rank === 'A').length,\n  rank_a_plus_candidates: meetings.filter((meeting) => meeting.candidate_rank === 'A+').length,");
+          fs.writeFileSync(collectorPath,s);
+
+          const corePath='scripts/timetable/nar-incremental-v2-core.mjs';
+          let c=fs.readFileSync(corePath,'utf8');
+          c=c.replace("    candidate_rank: 'A+',", "    candidate_rank: meeting.candidate_rank ?? 'A+',");
+          c=c.replace("      reason: 'Schedule-aware NAR detail candidate requires human review before canonical promotion.',", "      reason: `Schedule-aware NAR ${meeting.candidate_rank ?? 'A+'} candidate requires human review before canonical promotion.`,");
+          fs.writeFileSync(corePath,c);
+
+          const checkPath='scripts/check-calendar-nar-incremental-v2.mjs';
+          let k=fs.readFileSync(checkPath,'utf8');
+          k=k.replace("    if (candidate.candidate_rank !== 'A+') fail(`detail candidate rank differs: ${candidate.candidate_id}.`);\n    if (candidate.meeting_completeness?.all_a_plus_fields_complete !== true) fail(`detail candidate is not A+ complete: ${candidate.candidate_id}.`);", "    if (!['A','A+'].includes(candidate.candidate_rank)) fail(`detail candidate rank differs: ${candidate.candidate_id}.`);\n    if (candidate.meeting_completeness?.all_a_fields_complete !== true) fail(`detail candidate is not Rank A complete: ${candidate.candidate_id}.`);\n    if (candidate.candidate_rank === 'A+' && candidate.meeting_completeness?.all_a_plus_fields_complete !== true) fail(`A+ detail candidate is not A+ complete: ${candidate.candidate_id}.`);\n    if (candidate.candidate_rank === 'A' && candidate.meeting_completeness?.all_a_plus_fields_complete === true) fail(`Rank A candidate unexpectedly claims A+ completeness: ${candidate.candidate_id}.`);");
+          k=k.replace("console.log('DETAIL_CANDIDATE_RANK: A+');", "console.log('DETAIL_CANDIDATE_RANK: best_available_A_or_A+');");
+          fs.writeFileSync(checkPath,k);
+          NODE
+          node --check scripts/timetable/collect-nar-monthly-candidates.mjs
+          node --check scripts/timetable/nar-incremental-v2-core.mjs
+          node --check scripts/check-calendar-nar-incremental-v2.mjs
+          git diff --check
+      - name: Commit patch
+        run: |
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git add scripts/timetable/collect-nar-monthly-candidates.mjs scripts/timetable/nar-incremental-v2-core.mjs scripts/check-calendar-nar-incremental-v2.mjs
+          git commit -m "FIX: preserve NAR best-available Rank A candidates"
+          git push origin HEAD:fix/nar-best-available-rank-a
