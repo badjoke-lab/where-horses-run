@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const timeoutMs = 15000;
+const timeoutMs = 45000;
+const maxAttempts = 3;
 
 function parseArgs(argv) {
   const args = Object.fromEntries(argv.map((arg) => {
@@ -49,7 +50,7 @@ function entriesUrl(date, racecourse) {
   return `https://racing.hkjc.com/en-us/local/information/entries?Racecourse=${racecourse}&View=All&racedate=${encodeURIComponent(date.replaceAll('-', '/'))}`;
 }
 
-async function fetchHtml(url) {
+async function fetchHtmlOnce(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -70,6 +71,19 @@ async function fetchHtml(url) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function fetchHtml(url) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await fetchHtmlOnce(url);
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxAttempts) await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+    }
+  }
+  throw lastError;
 }
 
 function extractMeetingMetadata(text) {
