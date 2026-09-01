@@ -66,6 +66,15 @@
       "entry_point": "scripts/timetable/run-uae-era-actions-job.mjs",
       "output_model": "uae-era-schedule-detail-artifact-batch",
       "supported_collection_modes": ["source_visible_horizon", "selected_meetings"]
+    },
+    {
+      "system_id": "kra-national-racing-system",
+      "runner": "github_actions",
+      "executor_id": "kra-todayrace-actions",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-kra-todayrace-actions-job.mjs",
+      "output_model": "kra-todayrace-selected-meeting-artifact-batch",
+      "supported_collection_modes": ["selected_meetings"]
     }
   ],
   "side_effect_boundary": {
