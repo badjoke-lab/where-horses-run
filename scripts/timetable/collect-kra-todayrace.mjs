@@ -10,10 +10,10 @@ const RACECOURSES = Object.freeze({
   'jeju-racecourse': { meet_code: '2', label: 'Jeju', weekly_column: 3 },
   'busan-gyeongnam-racecourse': { meet_code: '3', label: 'Busan-Gyeongnam', weekly_column: 2 },
 });
-const WEEKDAY_HEADING = Object.freeze({
-  5: '금요일',
-  6: '토요일',
-  0: '일요일',
+const WEEKDAY_TABLE_INDEX = Object.freeze({
+  5: 0,
+  6: 1,
+  0: 2,
 });
 const CIRCLED_RACE_NUMBER = new Map([
   ['①', 1], ['②', 2], ['③', 3], ['④', 4], ['⑤', 5], ['⑥', 6], ['⑦', 7],
@@ -72,17 +72,26 @@ function parseCells(rowHtml) {
     .map((match) => stripHtml(match[1]));
 }
 
+function weeklyScheduleTables(html) {
+  return [...String(html).matchAll(/<table\b[^>]*>[\s\S]*?<\/table>/gi)]
+    .map((match) => match[0])
+    .filter((table) => {
+      const text = stripHtml(table);
+      return /시간/.test(text) && /서울/.test(text) && /(부경|부산경남)/.test(text) && /제주/.test(text);
+    });
+}
+
 function parseWeeklyStartTimeRows(html, date, weeklyColumn) {
   const { monday, sunday } = currentSeoulWeekBounds();
   if (date < monday || date > sunday) return [];
-  const heading = WEEKDAY_HEADING[targetWeekday(date)];
-  if (!heading) return [];
-  const nextHeadings = Object.values(WEEKDAY_HEADING).filter((value) => value !== heading).join('|');
-  const sectionMatch = String(html).match(new RegExp(`${heading}[\\s\\S]*?(?=${nextHeadings}|수상내역|$)`, 'i'));
-  if (!sectionMatch) return [];
+  const tableIndex = WEEKDAY_TABLE_INDEX[targetWeekday(date)];
+  if (tableIndex == null) return [];
+  const tables = weeklyScheduleTables(html);
+  const table = tables[tableIndex];
+  if (!table) return [];
 
   const rows = [];
-  for (const match of sectionMatch[0].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+  for (const match of table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
     const cells = parseCells(match[1]);
     if (cells.length < 4) continue;
     const hourMatch = cells[0].match(/(\d{1,2})\s*시/);
