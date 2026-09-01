@@ -1,18 +1,12 @@
 ---
-const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
-const analyticsScriptUrl = measurementId
-  ? `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`
-  : null;
+const measurementId = 'G-79W3MF08Y9';
+const analyticsScriptUrl = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
 ---
 
-{measurementId && analyticsScriptUrl && (
-  <>
-    <script async src={analyticsScriptUrl}></script>
-    <script is:inline define:vars={{ measurementId }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', measurementId);
-    </script>
-  </>
-)}
+<script async src={analyticsScriptUrl}></script>
+<script is:inline define:vars={{ measurementId }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', measurementId);
+</script>
