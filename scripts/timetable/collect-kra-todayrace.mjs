@@ -29,6 +29,21 @@ const detailEndpoints = [
   ...endpoints.slice().reverse(),
 ];
 
+function countMatches(value, pattern) {
+  return [...String(value ?? '').matchAll(pattern)].length;
+}
+
+function safeParserDiagnostics(pages) {
+  const html = pages.map((page) => page.html).join('\n');
+  return {
+    colon_time_tokens: countMatches(html, /\b(?:[01]?\d|2[0-3]):[0-5]\d\b/g),
+    korean_time_tokens: countMatches(html, /(?:[01]?\d|2[0-3])\s*시\s*[0-5]\d\s*분/g),
+    dot_time_tokens: countMatches(html, /\b(?:[01]?\d|2[0-3])[.]([0-5]\d)\b/g),
+    compact_time_tokens: countMatches(html, /\b(?:0\d|1\d|2[0-3])[0-5]\d\b/g),
+    race_time_label_tokens: countMatches(html, /(?:stTime|startTime|raceTime|rcTime|출발시각|출발시간|발주시각|경주시각|경주시간)/gi),
+  };
+}
+
 async function fetchPage(endpoint, raceNumber = null) {
   const values = { rcDate: dateCompact, meets: racecourse.meet_code, meet: racecourse.meet_code };
   if (raceNumber != null) values.rcNo = String(raceNumber);
@@ -119,5 +134,6 @@ if (!baseSuccessfulPages.length) {
     checkedAt,
     sourceStatuses: fetched.map((entry) => entry.status),
   });
+  observation.parser_diagnostics = safeParserDiagnostics(baseSuccessfulPages);
   console.log(JSON.stringify(observation, null, 2));
 }
