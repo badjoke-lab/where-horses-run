@@ -66,11 +66,11 @@ function normalizeDetailCandidate(meeting) {
   return {
     ...meeting,
     schema_version: 'nar-incremental-detail-candidate-v2',
-    candidate_rank: 'A+',
+    candidate_rank: meeting.candidate_rank ?? 'A+',
     review: {
       status: 'needs_review',
       promotion_eligible: false,
-      reason: 'Schedule-aware NAR detail candidate requires human review before canonical promotion.',
+      reason: `Schedule-aware NAR ${meeting.candidate_rank ?? 'A+'} candidate requires human review before canonical promotion.`,
     },
   };
 }
