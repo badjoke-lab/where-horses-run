@@ -74,8 +74,10 @@ if (existing.length === files.length) {
 
   for (const candidate of candidates.detail_candidates ?? []) {
     if (candidate.schema_version !== 'nar-incremental-detail-candidate-v2') fail(`detail candidate schema differs: ${candidate.candidate_id}.`);
-    if (candidate.candidate_rank !== 'A+') fail(`detail candidate rank differs: ${candidate.candidate_id}.`);
-    if (candidate.meeting_completeness?.all_a_plus_fields_complete !== true) fail(`detail candidate is not A+ complete: ${candidate.candidate_id}.`);
+    if (!['A','A+'].includes(candidate.candidate_rank)) fail(`detail candidate rank differs: ${candidate.candidate_id}.`);
+    if (candidate.meeting_completeness?.all_a_fields_complete !== true) fail(`detail candidate is not Rank A complete: ${candidate.candidate_id}.`);
+    if (candidate.candidate_rank === 'A+' && candidate.meeting_completeness?.all_a_plus_fields_complete !== true) fail(`A+ detail candidate is not A+ complete: ${candidate.candidate_id}.`);
+    if (candidate.candidate_rank === 'A' && candidate.meeting_completeness?.all_a_plus_fields_complete === true) fail(`Rank A candidate unexpectedly claims A+ completeness: ${candidate.candidate_id}.`);
     if (candidate.review?.status !== 'needs_review' || candidate.review?.promotion_eligible !== false) fail(`detail candidate review boundary differs: ${candidate.candidate_id}.`);
   }
 
@@ -116,6 +118,6 @@ console.log('CALENDAR_NAR_INCREMENTAL_V2: pass');
 console.log(`BATCH_ID: ${batchId}`);
 console.log('IMMUTABLE_BATCH_OUTPUTS: enforced');
 console.log('SCHEDULE_CANDIDATE_RANK: C');
-console.log('DETAIL_CANDIDATE_RANK: A+');
+console.log('DETAIL_CANDIDATE_RANK: best_available_A_or_A+');
 console.log('CANONICAL_WRITE: disabled');
 console.log('PUBLIC_WRITE: disabled');

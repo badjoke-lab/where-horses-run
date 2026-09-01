@@ -194,7 +194,6 @@ function parseListRows(html, record, date) {
     const distance = Number(courseMatch[3]);
     if (raceNumber < 1 || raceNumber > 30 || distance < 600 || distance > 6000) continue;
     const name = raceName(block, raceNumber);
-    if (!name) continue;
     rows.set(raceNumber, {
       race_number: raceNumber,
       label: `Race ${raceNumber}`,
@@ -267,8 +266,11 @@ function parseDetail(html) {
   return { surface, distance_m: distance, course_label: [...new Set(labels)].join(' / '), source: 'deba_table' };
 }
 
-function missingFields(row) {
-  return [!row.label && 'label', !row.post_time_local && 'post_time_local', !row.race_name && 'race_name', !Number.isInteger(row.distance_m) && 'distance_m', !row.surface && 'surface', !row.course_label && 'course_label'].filter(Boolean);
+function missingAFields(row) {
+  return [!row.label && 'label', !row.post_time_local && 'post_time_local'].filter(Boolean);
+}
+function missingAPlusFields(row) {
+  return [...missingAFields(row), !row.race_name && 'race_name', !Number.isInteger(row.distance_m) && 'distance_m', !row.surface && 'surface', !row.course_label && 'course_label'].filter(Boolean);
 }
 
 async function collectMeeting(record, meeting) {
@@ -303,9 +305,10 @@ async function collectMeeting(record, meeting) {
       },
     });
   }
-  const incomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingFields(row) })).filter((row) => row.missing_fields.length);
-  if (incomplete.length) return { status: 'meeting_incomplete', record, meeting, list, expected, rows, blockers: incomplete };
-  return { status: 'meeting_complete', record, meeting, list, expected, rows };
+  const aIncomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingAFields(row) })).filter((row) => row.missing_fields.length);
+  if (aIncomplete.length) return { status: 'meeting_incomplete', record, meeting, list, expected, rows, blockers: aIncomplete };
+  const aPlusIncomplete = rows.map((row) => ({ race_number: row.race_number, missing_fields: missingAPlusFields(row) })).filter((row) => row.missing_fields.length);
+  return { status: aPlusIncomplete.length ? 'meeting_rank_a' : 'meeting_complete', candidate_rank: aPlusIncomplete.length ? 'A' : 'A+', record, meeting, list, expected, rows, blockers: aPlusIncomplete };
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -333,7 +336,7 @@ for (const record of matrix.records) {
   for (const meeting of venueMeetings) {
     console.log(`[nar-monthly] ${record.name_en} ${meeting.date}`);
     const result = await collectMeeting(record, meeting);
-    if (result.status === 'meeting_complete') {
+    if (['meeting_complete', 'meeting_rank_a'].includes(result.status)) {
       meetings.push({
         schema_version: 'nar-monthly-meeting-candidate-v1',
         candidate_id: `nar-${record.racecourse_id}-${meeting.date}`,
@@ -348,7 +351,8 @@ for (const record of matrix.records) {
         date: meeting.date,
         timezone: 'Asia/Tokyo',
         source: { source_id: 'nar-official-race-list-and-deba-table', official_race_list_url: meeting.race_list_url, list_http_status: result.list.status, list_encoding: result.list.encoding, storage_policy: 'public_safe_extracted_fields_only_no_raw_html' },
-        meeting_completeness: { expected_race_numbers: result.expected, expected_race_count: result.expected.length, observed_race_count: result.rows.length, continuous_race_numbers: true, all_a_plus_fields_complete: true },
+        candidate_rank: result.candidate_rank ?? 'A+',
+        meeting_completeness: { expected_race_numbers: result.expected, expected_race_count: result.expected.length, observed_race_count: result.rows.length, continuous_race_numbers: true, all_a_fields_complete: true, all_a_plus_fields_complete: (result.candidate_rank ?? 'A+') === 'A+' },
         timetable_rows: result.rows,
         review: { status: 'needs_review', promotion_eligible: false, reason: 'Monthly NAR candidate requires human review before canonical promotion.' },
       });
@@ -370,6 +374,8 @@ const report = {
   racecourses_without_meetings: venue_statuses.filter((row) => row.status === 'no_meeting_in_target_month').length,
   meetings_discovered: allLinks.length,
   complete_meeting_candidates: meetings.length,
+  rank_a_candidates: meetings.filter((meeting) => meeting.candidate_rank === 'A').length,
+  rank_a_plus_candidates: meetings.filter((meeting) => meeting.candidate_rank === 'A+').length,
   blocked_meetings: blockers.length,
   candidate_path: candidatePath,
   promotion_eligible_candidates: 0,
