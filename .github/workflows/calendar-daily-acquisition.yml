@@ -9,6 +9,7 @@ on:
       - '.github/workflows/calendar-daily-acquisition.yml'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-calendar-due-jobs.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
@@ -16,6 +17,7 @@ on:
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/public/meeting-list.json'
   push:
     branches:
@@ -24,6 +26,7 @@ on:
       - '.github/workflows/calendar-daily-acquisition.yml'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
+      - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-calendar-due-jobs.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
@@ -31,6 +34,7 @@ on:
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/public/meeting-list.json'
 
 permissions:
@@ -54,6 +58,7 @@ jobs:
         run: |
           node --check scripts/timetable/actions-multi-job-core.mjs
           node --check scripts/timetable/run-calendar-actions-job.mjs
+          node --check scripts/timetable/build-calendar-live-retry-queue.mjs
           node --check scripts/timetable/build-calendar-live-planner-state.mjs
           node --check scripts/timetable/plan-calendar-due-jobs.mjs
           node --check scripts/timetable/plan-actions-multi-job.mjs
@@ -62,11 +67,15 @@ jobs:
         shell: bash
         run: |
           as_of="$(node --input-type=module -e "import fs from 'node:fs'; const data=JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8')); if (!data.generated_at || Number.isNaN(Date.parse(data.generated_at))) throw new Error('invalid meeting-list generated_at'); process.stdout.write(data.generated_at);")"
-          node scripts/timetable/build-calendar-live-planner-state.mjs --as-of="$as_of" --output=.calendar-live-state.json
+          node scripts/timetable/build-calendar-live-retry-queue.mjs --as-of="$as_of" --output=.calendar-live-retry-queue.json
+          node scripts/timetable/build-calendar-live-planner-state.mjs --as-of="$as_of" --retry-queue=.calendar-live-retry-queue.json --output=.calendar-live-state.json
           node scripts/timetable/plan-calendar-due-jobs.mjs --state=.calendar-live-state.json --output=.calendar-due-job-plan.json
           node scripts/timetable/plan-actions-multi-job.mjs --plan-file=.calendar-due-job-plan.json --output=.calendar-actions-plan.json --matrix-output=.calendar-actions-matrix.json
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
+          const queue = JSON.parse(fs.readFileSync('.calendar-live-retry-queue.json', 'utf8'));
+          if (!Array.isArray(queue.entries)) throw new Error('live retry queue entries must be an array');
+          if (queue.entries.some((entry) => entry.system_id !== 'japan-nar-system')) throw new Error('live retry queue contains non-NAR entry');
           const matrix = JSON.parse(fs.readFileSync('.calendar-actions-matrix.json', 'utf8'));
           if (!Array.isArray(matrix.include)) throw new Error('actions matrix include must be an array');
           for (const entry of matrix.include) {
@@ -93,8 +102,10 @@ jobs:
         name: Resolve planning time
         shell: bash
         run: echo "as_of=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - name: Build current live retry queue
+        run: node scripts/timetable/build-calendar-live-retry-queue.mjs --as-of="${{ steps.clock.outputs.as_of }}" --output=.calendar-live-retry-queue.json
       - name: Build current planner state
-        run: node scripts/timetable/build-calendar-live-planner-state.mjs --as-of="${{ steps.clock.outputs.as_of }}" --output=.calendar-live-state.json
+        run: node scripts/timetable/build-calendar-live-planner-state.mjs --as-of="${{ steps.clock.outputs.as_of }}" --retry-queue=.calendar-live-retry-queue.json --output=.calendar-live-state.json
       - name: Plan due acquisition jobs
         run: node scripts/timetable/plan-calendar-due-jobs.mjs --state=.calendar-live-state.json --output=.calendar-due-job-plan.json
       - name: Compile hosted jobs
@@ -110,6 +121,7 @@ jobs:
           include-hidden-files: true
           retention-days: 14
           path: |
+            .calendar-live-retry-queue.json
             .calendar-live-state.json
             .calendar-due-job-plan.json
             .calendar-collection-plan.json
