@@ -95,7 +95,8 @@ for (const testCase of invalidFixtures.policy_cases ?? []) {
 
 const workflow = readText('.github/workflows/calendar-daily-acquisition.yml');
 for (const marker of [
-  "cron: '17 3 * * *'",
+  'schedule:',
+  'workflow_dispatch:',
   'build-calendar-live-retry-queue.mjs',
   'build-calendar-live-planner-state.mjs',
   'plan-calendar-due-jobs.mjs',
@@ -105,6 +106,7 @@ for (const marker of [
 ]) {
   if (!workflow.includes(marker)) fail(`Current daily acquisition workflow missing ${marker}.`);
 }
+if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"]\s*$/m.test(workflow)) fail('Current daily acquisition workflow must define a cron schedule.');
 if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) fail('Daily acquisition workflow must not write repository contents or PRs.');
 
 if (errors.length) {
@@ -118,3 +120,4 @@ console.log(`JOBS: ${plan?.collection_plan.jobs.length ?? 0}`);
 console.log('POLICY_VALIDATION: pass');
 console.log('INVALID_CASES: rejected');
 console.log('CURRENT_DAILY_ACQUISITION_WIRING: pass');
+console.log('CRON_CLOCK_TIME_FIXED_BY_VALIDATOR: false');

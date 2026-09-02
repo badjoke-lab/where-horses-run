@@ -12,11 +12,16 @@ on:
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-calendar-due-jobs.mjs'
+      - 'scripts/timetable/due-job-planner.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
+      - 'scripts/check-calendar-due-job-planner.mjs'
+      - 'data/static/calendar-due-job-plan.schema.json'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/fixtures/calendar-due-job-planner-fixtures-v1.json'
+      - 'data/fixtures/calendar-due-job-planner-invalid-cases-v1.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/public/meeting-list.json'
   push:
@@ -29,11 +34,16 @@ on:
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
       - 'scripts/timetable/build-calendar-live-planner-state.mjs'
       - 'scripts/timetable/plan-calendar-due-jobs.mjs'
+      - 'scripts/timetable/due-job-planner.mjs'
       - 'scripts/timetable/plan-actions-multi-job.mjs'
       - 'scripts/timetable/write-calendar-daily-plan-outputs.mjs'
+      - 'scripts/check-calendar-due-job-planner.mjs'
+      - 'data/static/calendar-due-job-plan.schema.json'
       - 'data/static/calendar-due-job-policy-v1.json'
       - 'data/static/calendar-system-season-state-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/fixtures/calendar-due-job-planner-fixtures-v1.json'
+      - 'data/fixtures/calendar-due-job-planner-invalid-cases-v1.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/public/meeting-list.json'
 
@@ -61,8 +71,12 @@ jobs:
           node --check scripts/timetable/build-calendar-live-retry-queue.mjs
           node --check scripts/timetable/build-calendar-live-planner-state.mjs
           node --check scripts/timetable/plan-calendar-due-jobs.mjs
+          node --check scripts/timetable/due-job-planner.mjs
           node --check scripts/timetable/plan-actions-multi-job.mjs
           node --check scripts/timetable/write-calendar-daily-plan-outputs.mjs
+          node --check scripts/check-calendar-due-job-planner.mjs
+      - name: Validate Due-job Planner contract
+        run: node scripts/check-calendar-due-job-planner.mjs
       - name: Exercise planner on committed public state
         shell: bash
         run: |
