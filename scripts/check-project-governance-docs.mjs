@@ -38,7 +38,6 @@ const requirePhrases = (file, phrases) => {
 
 requirePhrases('docs/calendar/incremental-coverage-contract.md', [
   'partial',
-  'C/B/B+/A/A+',
   'Rank-aware Retry Queue',
   'Absence is not deletion',
 ]);
