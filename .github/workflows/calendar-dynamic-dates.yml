@@ -18,6 +18,7 @@ on:
       - 'scripts/check-calendar-30d-timetable-ui.mjs'
       - 'scripts/check-calendar-dynamic-dates.mjs'
       - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - '.github/workflows/calendar-dynamic-dates.yml'
   push:
     branches:
@@ -38,6 +39,7 @@ on:
       - 'scripts/check-calendar-30d-timetable-ui.mjs'
       - 'scripts/check-calendar-dynamic-dates.mjs'
       - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - '.github/workflows/calendar-dynamic-dates.yml'
 
 concurrency:
