@@ -3,8 +3,12 @@ name: Calendar dynamic dates
 on:
   pull_request:
     paths:
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-source-aliases-v1.json'
       - 'src/lib/timetable/calendarDateContext.mjs'
       - 'src/data/timetableMeetingRows.ts'
+      - 'src/data/publicationDisplayPolicies.json'
       - 'src/components/CalendarDateStatus.astro'
       - 'src/components/TimetableMeetingList.astro'
       - 'src/components/CountryDetailPage.astro'
@@ -15,7 +19,10 @@ on:
       - 'src/pages/ja/today.astro'
       - 'src/pages/ja/tomorrow.astro'
       - 'docs/calendar/dynamic-dates-contract.md'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
       - 'scripts/check-calendar-30d-timetable-ui.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/check-calendar-dynamic-dates.mjs'
       - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
       - 'scripts/check-calendar-runtime-import-boundary.mjs'
@@ -24,8 +31,12 @@ on:
     branches:
       - main
     paths:
+      - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/timetable-source-aliases-v1.json'
       - 'src/lib/timetable/calendarDateContext.mjs'
       - 'src/data/timetableMeetingRows.ts'
+      - 'src/data/publicationDisplayPolicies.json'
       - 'src/components/CalendarDateStatus.astro'
       - 'src/components/TimetableMeetingList.astro'
       - 'src/components/CountryDetailPage.astro'
@@ -36,7 +47,10 @@ on:
       - 'src/pages/ja/today.astro'
       - 'src/pages/ja/tomorrow.astro'
       - 'docs/calendar/dynamic-dates-contract.md'
+      - 'scripts/timetable/load-calendar-readiness.mjs'
+      - 'scripts/timetable/pipeline-v1/public-projection-core.mjs'
       - 'scripts/check-calendar-30d-timetable-ui.mjs'
+      - 'scripts/check-calendar-banei-bilingual-rendered-fixture.mjs'
       - 'scripts/check-calendar-dynamic-dates.mjs'
       - 'scripts/check-calendar-dynamic-dates-rendered.mjs'
       - 'scripts/check-calendar-runtime-import-boundary.mjs'
@@ -65,6 +79,8 @@ jobs:
         run: node scripts/check-calendar-runtime-import-boundary.mjs
       - name: Install dependencies without lockfile mutation
         run: npm install --package-lock=false
+      - name: Validate rendered Banei bilingual fixture
+        run: node scripts/check-calendar-banei-bilingual-rendered-fixture.mjs
       - name: Build current site
         run: npm run build
       - name: Validate rendered dynamic dates
