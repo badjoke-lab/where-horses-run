@@ -140,6 +140,29 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions supports explicitly selected known KRA meetings at best available rank. Public output remains capped at A; date-window discovery, fallback execution, automatic approval, promotion, canonical/public writes, and unattended publication remain disabled."
+    },
+    {
+      "system_id": "tjk-national-racing-system",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "tjk-daily-programme",
+      "detail_source_id": "tjk-daily-programme",
+      "schedule_adapter_id": "tjk-scheduled-current-future-best-available-v1",
+      "detail_adapter_id": "tjk-scheduled-current-future-best-available-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": ["C", "A"],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions follows the official TJK current/future programme-page chain for a bounded 30-day window and enriches each discovered domestic meeting to best available C or A. Publication remains review-only; automatic approval, canonical/public writes, unattended merge, and deployment remain disabled."
     }
   ]
 }
