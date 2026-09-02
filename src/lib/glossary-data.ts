@@ -4,7 +4,7 @@ import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetab
 import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
 import coreRacingGlossaryOverlay from '../../data/static/glossary-entries-core-racing-v1.json';
 import coreRacingExtraGlossaryOverlay from '../../data/static/glossary-entries-core-racing-extra-v1.json';
-import coreRacingMoreGlossaryOverlay from '../../data/static/glossary-entries-core-racing-more-v1.json';
+import coreRacingMoreGlossaryOverlay from '../../data/static/glossary-entries-race-structure-v1.json';
 import publicCopyPatches from '../../data/static/glossary-public-copy-v1.json';
 import multilingualFieldPatches from '../../data/static/glossary-fields-multilingual-v1.json';
 import beginnerExplanationPatches from '../../data/static/glossary-fields-beginner-v1.json';
