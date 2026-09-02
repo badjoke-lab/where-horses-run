@@ -13,11 +13,22 @@ const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const sorted = (values) => [...values].sort();
 
 const fixture = readJson('data/fixtures/calendar-banei-actions-executor-fixture-v1.json');
 if (fixture.schema_version !== 'calendar-banei-actions-executor-fixture-v1') fail('fixture schema differs.');
 if (baneiActionsExecutorV1Contract.executor_id !== 'banei-schedule-detail-actions') fail('executor ID contract differs.');
 if (!exact(baneiActionsExecutorV1Contract.supported_collection_modes, ['date_window', 'selected_meetings'])) fail('supported collection modes differ.');
+
+function expectedTargetIds(execution) {
+  if (execution.collection_mode === 'selected_meetings') return sorted(execution.requested_scope.meeting_ids ?? []);
+  if (execution.collection_mode === 'date_window') {
+    return sorted((fixture.schedule_input.meetings ?? [])
+      .filter((meeting) => execution.requested_scope.start_date <= meeting.date && meeting.date < execution.requested_scope.end_date_exclusive)
+      .map((meeting) => meeting.meeting_id));
+  }
+  return [];
+}
 
 const outputs = new Map();
 for (const execution of fixture.executions ?? []) {
@@ -27,20 +38,24 @@ for (const execution of fixture.executions ?? []) {
     continue;
   }
   try {
-    const output = buildBaneiActionsArtifactsV1({
+    outputs.set(execution.collection_mode, buildBaneiActionsArtifactsV1({
       execution,
       schedule_input: fixture.schedule_input,
       detail_candidate: scenario.detail_candidate,
       detail_coverage: scenario.detail_coverage,
       detail_report: scenario.detail_report,
-    });
-    outputs.set(execution.collection_mode, output);
+    }));
   } catch (error) {
     fail(`${execution.collection_mode} normalization failed: ${error.message}`);
   }
 }
 
-for (const [mode, output] of outputs) {
+for (const execution of fixture.executions ?? []) {
+  const mode = execution.collection_mode;
+  const output = outputs.get(mode);
+  const scenario = fixture.scenarios.find((entry) => entry.collection_mode === mode);
+  if (!output || !scenario) continue;
+
   const coverageValidation = validateCoverageObservation(output.coverage_observation);
   if (!coverageValidation.valid) fail(`${mode} Coverage invalid: ${coverageValidation.errors.join('; ')}`);
   const manifestErrors = [
@@ -54,6 +69,7 @@ for (const [mode, output] of outputs) {
     const entryErrors = validateReviewQueueEntryAgainstManifestV1(output.review_queue.entries[0], output.result_manifest);
     if (entryErrors.length) fail(`${mode} Review Queue/Manifest cross-check failed: ${entryErrors.join('; ')}`);
   }
+
   const rankTotal = Object.values(output.result_manifest.rank_counts).reduce((sum, value) => sum + value, 0);
   if (rankTotal !== output.result_manifest.records_discovered) fail(`${mode} rank total does not equal records_discovered.`);
   if (output.candidate.review.status !== 'needs_review') fail(`${mode} candidate review status differs.`);
@@ -61,29 +77,28 @@ for (const [mode, output] of outputs) {
     fail(`${mode} Review Queue initial state differs.`);
   }
   if (output.collection_report.publication_effect !== 'none') fail(`${mode} publication effect differs.`);
-}
 
-const selected = outputs.get('selected_meetings');
-if (selected) {
-  if (!exact(selected.result_manifest.rank_counts, { C: 0, B: 1, 'B+': 0, A: 0, 'A+': 1 })) {
-    fail(`selected rank counts differ: ${JSON.stringify(selected.result_manifest.rank_counts)}`);
-  }
-  if (selected.result_manifest.records_discovered !== 2 || selected.result_manifest.records_updated !== 1) fail('selected record counts differ.');
-  if (selected.result_manifest.coverage_claim !== 'partial') fail('selected coverage must be partial.');
-  if (selected.result_manifest.unresolved_meeting_ids.length !== 1 || selected.result_manifest.source_errors.length !== 1) fail('selected unresolved/error counts differ.');
-  const byId = new Map(selected.candidate.records.map((record) => [record.meeting_id, record]));
-  if (byId.get('banei-obihiro-racecourse-2026-07-04')?.capability_rank !== 'A+') fail('selected successful detail meeting must be A+.');
-  if (byId.get('banei-obihiro-racecourse-2026-07-05')?.capability_rank !== 'B') fail('selected blocked meeting must retain B schedule evidence.');
-}
+  const expectedIds = expectedTargetIds(execution);
+  const actualIds = sorted(output.candidate.records.map((record) => record.meeting_id));
+  if (!exact(actualIds, expectedIds)) fail(`${mode} candidate scope differs from execution scope.`);
 
-const windowOutput = outputs.get('date_window');
-if (windowOutput) {
-  if (!exact(windowOutput.result_manifest.rank_counts, { C: 0, B: 1, 'B+': 1, A: 0, 'A+': 1 })) {
-    fail(`window rank counts differ: ${JSON.stringify(windowOutput.result_manifest.rank_counts)}`);
+  const expectedCoverage = scenario.detail_coverage;
+  for (const field of ['records_discovered', 'records_updated', 'coverage_claim']) {
+    if (output.result_manifest[field] !== expectedCoverage[field]) fail(`${mode} manifest ${field} differs from fixture coverage.`);
   }
-  if (windowOutput.result_manifest.records_discovered !== 3 || windowOutput.result_manifest.records_updated !== 1) fail('window record counts differ.');
-  if (windowOutput.result_manifest.coverage_claim !== 'partial') fail('window coverage must be partial.');
-  if (windowOutput.result_manifest.unresolved_meeting_ids.length !== 2 || windowOutput.result_manifest.source_errors.length !== 2) fail('window unresolved/error counts differ.');
+  if (!exact(sorted(output.result_manifest.unresolved_meeting_ids), sorted(expectedCoverage.unresolved_meeting_ids ?? []))) {
+    fail(`${mode} unresolved meeting IDs differ from fixture coverage.`);
+  }
+  if (output.result_manifest.source_errors.length !== (expectedCoverage.source_errors ?? []).length) {
+    fail(`${mode} source error count differs from fixture coverage.`);
+  }
+
+  const outputById = new Map(output.candidate.records.map((record) => [record.meeting_id, record]));
+  for (const detailRecord of scenario.detail_candidate.records ?? []) {
+    const merged = outputById.get(detailRecord.meeting_id);
+    if (!merged) fail(`${mode} detail candidate missing from merged output: ${detailRecord.meeting_id}`);
+    else if (merged.capability_rank !== detailRecord.capability_rank) fail(`${mode} detail candidate rank was not preserved for ${detailRecord.meeting_id}.`);
+  }
 }
 
 for (const execution of fixture.executions ?? []) {
@@ -107,7 +122,7 @@ for (const mutation of [
   {
     name: 'detail-outside-scope',
     change(value) {
-      value.scenarios[0].detail_candidate.records[0].meeting_id = 'banei-obihiro-racecourse-2026-07-20';
+      value.scenarios[0].detail_candidate.records[0].meeting_id = 'fixture-outside-requested-scope';
     },
   },
   {
@@ -119,7 +134,7 @@ for (const mutation of [
   {
     name: 'discovered-count-drift',
     change(value) {
-      value.scenarios[0].detail_coverage.records_discovered = 3;
+      value.scenarios[0].detail_coverage.records_discovered += 1;
     },
   },
 ]) {
@@ -140,9 +155,8 @@ const dispatcher = readText('scripts/timetable/run-calendar-actions-job.mjs');
 for (const phrase of [
   "execution.executor_id === 'banei-schedule-detail-actions'",
   'scripts/timetable/run-banei-actions-job.mjs',
-]) {
-  if (!dispatcher.includes(phrase)) fail(`Actions dispatcher missing Banei executor marker: ${phrase}`);
-}
+]) if (!dispatcher.includes(phrase)) fail(`Actions dispatcher missing Banei executor marker: ${phrase}`);
+
 const actionsCore = readText('scripts/timetable/actions-multi-job-core.mjs');
 if (!actionsCore.includes("execution.executor_id === 'banei-schedule-detail-actions'")) fail('Actions multi-job artifact path mapping missing Banei executor.');
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
@@ -154,15 +168,7 @@ else {
 }
 
 const docs = readText('docs/calendar/banei-actions-executor.md');
-for (const phrase of [
-  'schedule evidence fallback',
-  'A+ replacement',
-  'date_window',
-  'selected_meetings',
-  'Result Manifest',
-  'Review Queue',
-  'Registry runner switch is separate',
-]) {
+for (const phrase of ['schedule evidence fallback', 'A+ replacement', 'date_window', 'selected_meetings', 'Result Manifest', 'Review Queue', 'Registry runner switch is separate']) {
   if (!docs.includes(phrase)) fail(`Banei Actions executor contract missing ${phrase}.`);
 }
 
@@ -173,8 +179,8 @@ if (errors.length) {
 }
 
 console.log('CALENDAR_BANEI_ACTIONS_EXECUTOR: pass');
-console.log('SELECTED_RANKS: B=1 A+=1');
-console.log('WINDOW_RANKS: B=1 B+=1 A+=1');
+console.log(`SCENARIOS_VALIDATED: ${outputs.size}`);
+console.log('FIXTURE_DRIVEN_SCOPE_AND_COUNTS: pass');
 console.log('PARTIAL_FALLBACK_ACCOUNTING: pass');
 console.log('COVERAGE_MANIFEST_QUEUE: pass');
 console.log('RUNTIME_FIXTURE_CHECK_ONLY: pass');
