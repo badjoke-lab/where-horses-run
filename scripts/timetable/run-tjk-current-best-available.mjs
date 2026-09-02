@@ -9,6 +9,13 @@ import {
   turkeyDate,
 } from './tjk-current-future-candidates.mjs';
 
+// TJK SehirId 1-10 are the reviewed domestic Turkish racecourse identities.
+// Higher IDs on the same programme pages are foreign simulcast venues and must
+// never be emitted as Turkey/TJK meetings.
+const DOMESTIC_TJK_VENUE_SOURCE_IDS = new Set(
+  Array.from({ length: 10 }, (_, index) => String(index + 1)),
+);
+
 function addDays(iso, days) {
   const date = new Date(`${iso}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
@@ -92,6 +99,7 @@ const endDateExclusive = addDays(startDate, days);
 const retrievedAt = now.toISOString();
 const discoveredRecords = [];
 let indexPagesFetched = 0;
+let foreignSimulcastsExcluded = 0;
 
 for (let offset = 0; offset < days; offset += 1) {
   const date = addDays(startDate, offset);
@@ -99,7 +107,10 @@ for (let offset = 0; offset < days; offset += 1) {
   const html = await fetchHtml(pageUrl);
   indexPagesFetched += 1;
   const discovered = discoverFromIndexHtml(html, pageUrl, startDate);
-  discoveredRecords.push(...discovered.candidates.filter((record) => record.date === date));
+  const sameDate = discovered.candidates.filter((record) => record.date === date);
+  const domestic = sameDate.filter((record) => DOMESTIC_TJK_VENUE_SOURCE_IDS.has(record.racecourse_source_id));
+  foreignSimulcastsExcluded += sameDate.length - domestic.length;
+  discoveredRecords.push(...domestic);
 }
 
 const byId = new Map();
@@ -138,6 +149,8 @@ const artifact = {
   discovery: {
     method: 'official_programme_page_anchors_plus_page_discovered_detail',
     window_method: 'explicit_parameterized_daily_index_pages',
+    domestic_venue_source_ids: [...DOMESTIC_TJK_VENUE_SOURCE_IDS],
+    foreign_simulcasts_excluded: foreignSimulcastsExcluded,
     index_pages_fetched: indexPagesFetched,
     detail_pages_attempted: candidates.length,
     discovered_before_window_filter: discoveredRecords.length,
@@ -155,6 +168,7 @@ console.log(JSON.stringify({
   start_date: startDate,
   end_date_exclusive: endDateExclusive,
   index_pages_fetched: indexPagesFetched,
+  foreign_simulcasts_excluded: foreignSimulcastsExcluded,
   candidates: candidates.length,
   rank_counts: rankCounts,
 }, null, 2));
