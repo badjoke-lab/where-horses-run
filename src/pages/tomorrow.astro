@@ -7,16 +7,22 @@ import {
   getTimetableDataState,
   getTimetableDateContext,
   getTimetableMeetingRowsForDate,
+  getTimetableProjectionCandidateRows,
 } from '../data/timetableMeetingRows';
+import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
 const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
+const projectionCandidates = getTimetableProjectionCandidateRows(
+  context.tomorrow,
+  addCalendarDays(context.tomorrow, 1),
+);
 ---
 
 <BaseLayout
   title={`Tomorrow's timetable — ${context.tomorrow} | Where Horses Run`}
-  description={`Reviewed public meeting information for ${context.tomorrow}, resolved from the ${context.timeZone} reference date.`}
+  description="Reviewed public meeting information for tomorrow in the visitor-selected display timezone."
   canonicalPath="/tomorrow/"
   alternatePath="/ja/tomorrow/"
 >
@@ -24,7 +30,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
     <p class="hero__eyebrow">Tomorrow</p>
     <h1 id="page-title">Tomorrow's timetable</h1>
     <p class="hero__summary">
-      Meetings for {context.tomorrow}, the day after the {context.today} reference date in {context.timeZone}.
+      Select a display timezone below. Meeting membership, dates and available race times are projected into that timezone.
     </p>
   </section>
 
@@ -33,9 +39,10 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 
   <section aria-label="Tomorrow meeting list">
     <TimetableMeetingList
-      records={tomorrowRecords}
+      records={projectionCandidates}
       date={context.tomorrow}
-      emptyLabel={`No reviewed public meetings are listed for ${context.tomorrow}. Check official sources for current information.`}
+      viewMode="tomorrow"
+      emptyLabel="No reviewed public meetings are listed for tomorrow in the selected timezone. Check official sources for current information."
     />
   </section>
 </BaseLayout>
