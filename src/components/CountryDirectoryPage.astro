@@ -59,7 +59,7 @@ function humanize(value: string): string {
 }
 
 function racingTypeLabel(value: string): string {
-  return isJapanese ? racingTypeLabelsJa[value] ?? humanize(value) : humanize(value);
+  return isJapanese ? racingTypeLabelsJa[value] ?? 'その他' : humanize(value);
 }
 
 function regionLabel(value: string): string {
@@ -69,26 +69,13 @@ function regionLabel(value: string): string {
     .map((part) => regionLabelsJa[part] ?? part)
     .join(' / ');
 }
-
-function statusLabel(value: string): string {
-  if (!isJapanese) return humanize(value);
-  const labels: Record<string, string> = {
-    active: '公開中',
-    limited: '限定公開',
-    inactive: '非公開',
-    planned: '準備中',
-    archived: 'アーカイブ',
-    unknown: '不明',
-  };
-  return labels[value] ?? value;
-}
 ---
 
 <BaseLayout
-  title={isJapanese ? '国・地域 | 競馬どこ？' : 'Countries | Where Horses Run'}
+  title={isJapanese ? '国・地域から探す | 競馬どこ？' : 'Countries and Regions | Where Horses Run'}
   description={isJapanese
-    ? '世界98か国・地域を、地域、競馬種別、状態、カバーレベルで絞り込めます。'
-    : 'Browse and filter 98 horse racing countries and regions by region, racing type, status, and coverage level.'}
+    ? '世界の競馬開催国・地域を、名称、地域、競馬種別から探せます。'
+    : 'Find horse racing countries and regions by name, region, or racing type.'}
   lang={locale}
   canonicalPath={directoryPath}
   alternatePath={isJapanese ? '/countries/' : '/ja/countries/'}
@@ -98,28 +85,17 @@ function statusLabel(value: string): string {
     data-country-records={records.length}
     data-country-regions={options.regions.length}
     data-country-racing-types={options.racingTypes.length}
-    data-country-statuses={options.statuses.length}
-    data-country-coverage-levels={options.coverageLevels.length}
   >
     <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">Countries & regions</p>
-      <h1 id="page-title">{isJapanese ? '国・地域' : 'Countries'}</h1>
+      <p class="hero__eyebrow">{isJapanese ? '世界の競馬' : 'Horse racing worldwide'}</p>
+      <h1 id="page-title">{isJapanese ? '国・地域から探す' : 'Countries and Regions'}</h1>
       <p class="hero__summary">
         {isJapanese
-          ? '競馬開催国・地域を、名称、地域、競馬種別、公開状態、カバーレベルから探せます。'
-          : 'Find racing jurisdictions by name, region, racing type, publication status, and coverage level.'}
+          ? '名称、地域、競馬種別から開催国・地域を探し、各地域の競馬情報へ進めます。'
+          : 'Browse racing jurisdictions by name, region, or racing type, then open each country or region for more information.'}
       </p>
-      <p>{isJapanese ? `${records.length}か国・地域を公開中です。` : `${records.length} countries and regions are listed.`}</p>
+      <p>{isJapanese ? `${records.length}か国・地域を掲載しています。` : `${records.length} countries and regions are listed.`}</p>
     </section>
-
-    {!isJapanese && (
-      <section class="section-grid" aria-label="Major country preview links">
-        <article class="card">
-          <h2><a href="/major-countries/preview-timetable/">Major Country Timetable Preview</a></h2>
-          <p>View the first static manual timetable samples for major-country source groups. This is not live coverage.</p>
-        </article>
-      </section>
-    )}
 
     <section aria-labelledby="region-navigation-heading" data-region-filter-navigation>
       <h2 id="region-navigation-heading">{isJapanese ? '地域から探す' : 'Browse by region'}</h2>
@@ -142,7 +118,7 @@ function statusLabel(value: string): string {
     </section>
 
     <section class="card" aria-labelledby="country-filter-heading">
-      <h2 id="country-filter-heading">{isJapanese ? '絞り込み条件' : 'Filter countries and regions'}</h2>
+      <h2 id="country-filter-heading">{isJapanese ? '国・地域を絞り込む' : 'Filter countries and regions'}</h2>
       <form data-country-filter-form role="search">
         <p>
           <label for="country-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
@@ -172,20 +148,6 @@ function statusLabel(value: string): string {
           </select>
         </p>
         <p>
-          <label for="country-filter-status"><strong>{isJapanese ? '公開状態' : 'Publication status'}</strong></label><br />
-          <select id="country-filter-status" name="status" data-country-filter-status>
-            <option value="all">{isJapanese ? 'すべての状態' : 'All statuses'}</option>
-            {options.statuses.map((status) => <option value={status}>{statusLabel(status)}</option>)}
-          </select>
-        </p>
-        <p>
-          <label for="country-filter-coverage"><strong>{isJapanese ? 'カバーレベル' : 'Coverage level'}</strong></label><br />
-          <select id="country-filter-coverage" name="coverage" data-country-filter-coverage>
-            <option value="all">{isJapanese ? 'すべてのレベル' : 'All coverage levels'}</option>
-            {options.coverageLevels.map((level) => <option value={String(level)}>Level {level}</option>)}
-          </select>
-        </p>
-        <p>
           <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
           <button type="button" data-country-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
         </p>
@@ -195,8 +157,8 @@ function statusLabel(value: string): string {
       </p>
       <noscript>
         <p>{isJapanese
-          ? 'JavaScriptが無効な場合は、下の98件の一覧から選べます。地域リンクを開いても完全な一覧は維持されます。'
-          : 'With JavaScript disabled, use the complete list of 98 linked records below. Region links preserve the complete fallback list.'}</p>
+          ? 'JavaScriptが無効な場合も、下の一覧から国・地域を選べます。'
+          : 'With JavaScript disabled, the complete country and region list remains available below.'}</p>
       </noscript>
     </section>
 
@@ -209,18 +171,18 @@ function statusLabel(value: string): string {
           data-country-region={record.region}
           data-country-regions={record.regions.join('|')}
           data-country-racing-types={record.racingTypes.join('|')}
-          data-country-status={record.status}
-          data-country-coverage={String(record.coverageLevel)}
           data-country-search-text={record.searchText}
         >
           <h2><a href={record.href}>{record.name}</a></h2>
-          {record.alternateName && record.alternateName !== record.name && <p>{record.alternateName}</p>}
-          {record.localName && ![record.name, record.alternateName].includes(record.localName) && <p>{record.localName}</p>}
+          {record.alternateName && record.alternateName !== record.name && (
+            <p><strong>{isJapanese ? '別名' : 'Alternate name'}:</strong> {record.alternateName}</p>
+          )}
+          {record.localName && ![record.name, record.alternateName].includes(record.localName) && (
+            <p><strong>{isJapanese ? '現地表記' : 'Local name'}:</strong> {record.localName}</p>
+          )}
           <p>{record.summary}</p>
           <p><strong>{isJapanese ? '地域' : 'Region'}:</strong> {regionLabel(record.region)}</p>
           <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong> {record.racingTypes.length ? record.racingTypes.map(racingTypeLabel).join(' · ') : (isJapanese ? '未分類' : 'Not classified')}</p>
-          <p><strong>{isJapanese ? '状態' : 'Status'}:</strong> {statusLabel(record.status)}</p>
-          <p><strong>{isJapanese ? 'カバー' : 'Coverage'}:</strong> Level {record.coverageLevel} / Auto {record.autoLevel}</p>
         </article>
       ))}
     </section>
@@ -228,8 +190,8 @@ function statusLabel(value: string): string {
     <section class="card" data-country-filter-empty hidden>
       <h2>{isJapanese ? '該当する国・地域がありません' : 'No matching countries or regions'}</h2>
       <p>{isJapanese
-        ? 'キーワードを短くするか、いずれかの条件を「すべて」に戻してください。'
-        : 'Try a shorter keyword or reset one or more filters to All.'}</p>
+        ? 'キーワードを短くするか、地域または競馬種別を「すべて」に戻してください。'
+        : 'Try a shorter keyword or reset the region or racing type filter to All.'}</p>
     </section>
   </div>
 
@@ -242,8 +204,6 @@ function statusLabel(value: string): string {
       const queryInput = root.querySelector('[data-country-filter-query]');
       const regionSelect = root.querySelector('[data-country-filter-region]');
       const racingTypeSelect = root.querySelector('[data-country-filter-racing-type]');
-      const statusSelect = root.querySelector('[data-country-filter-status]');
-      const coverageSelect = root.querySelector('[data-country-filter-coverage]');
       const resetButton = root.querySelector('[data-country-filter-reset]');
       const count = root.querySelector('[data-country-filter-count]');
       const empty = root.querySelector('[data-country-filter-empty]');
@@ -251,7 +211,7 @@ function statusLabel(value: string): string {
       const regionLinks = [...root.querySelectorAll('[data-region-filter-link]')];
       const isJapanese = document.documentElement.lang === 'ja';
 
-      if (!form || !queryInput || !regionSelect || !racingTypeSelect || !statusSelect || !coverageSelect || !resetButton || !count || !empty) return;
+      if (!form || !queryInput || !regionSelect || !racingTypeSelect || !resetButton || !count || !empty) return;
 
       const normalize = (value) => value
         .normalize('NFKC')
@@ -268,15 +228,11 @@ function statusLabel(value: string): string {
       };
       restoreSelect(regionSelect, 'region');
       restoreSelect(racingTypeSelect, 'racing_type');
-      restoreSelect(statusSelect, 'status');
-      restoreSelect(coverageSelect, 'coverage');
 
       const apply = () => {
         const query = normalize(queryInput.value);
         const region = regionSelect.value;
         const racingType = racingTypeSelect.value;
-        const status = statusSelect.value;
-        const coverage = coverageSelect.value;
         let visible = 0;
 
         for (const record of records) {
@@ -285,9 +241,7 @@ function statusLabel(value: string): string {
           const show =
             (!query || (record.dataset.countrySearchText ?? '').includes(query)) &&
             (region === 'all' || regions.includes(region)) &&
-            (racingType === 'all' || racingTypes.includes(racingType)) &&
-            (status === 'all' || record.dataset.countryStatus === status) &&
-            (coverage === 'all' || record.dataset.countryCoverage === coverage);
+            (racingType === 'all' || racingTypes.includes(racingType));
           record.hidden = !show;
           if (show) visible += 1;
         }
@@ -304,8 +258,6 @@ function statusLabel(value: string): string {
         if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
         if (region !== 'all') next.set('region', region);
         if (racingType !== 'all') next.set('racing_type', racingType);
-        if (status !== 'all') next.set('status', status);
-        if (coverage !== 'all') next.set('coverage', coverage);
         const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
         window.history.replaceState(null, '', nextUrl);
       };
@@ -317,14 +269,10 @@ function statusLabel(value: string): string {
       queryInput.addEventListener('input', apply);
       regionSelect.addEventListener('change', apply);
       racingTypeSelect.addEventListener('change', apply);
-      statusSelect.addEventListener('change', apply);
-      coverageSelect.addEventListener('change', apply);
       resetButton.addEventListener('click', () => {
         queryInput.value = '';
         regionSelect.value = 'all';
         racingTypeSelect.value = 'all';
-        statusSelect.value = 'all';
-        coverageSelect.value = 'all';
         apply();
         queryInput.focus();
       });
