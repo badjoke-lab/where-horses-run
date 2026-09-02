@@ -54,10 +54,13 @@ async function fetchMonthRacingDates(year, month) {
   const html = await response.text();
   const mm = String(month).padStart(2, '0');
   const dates = new Set();
-  for (const match of html.matchAll(/href=["'][^"']*?(\d{4})\/(\d{1,2})\/(\d{4})\.html[^"']*["']/gi)) {
-    if (Number(match[1]) !== year || Number(match[2]) !== month || !match[3].startsWith(mm)) continue;
-    const day = match[3].slice(2);
-    dates.add(`${year}-${mm}-${day}`);
+  for (const match of html.matchAll(/(\d{4})\.html/gi)) {
+    const mmdd = match[1];
+    if (!mmdd.startsWith(mm)) continue;
+    const day = mmdd.slice(2);
+    const candidate = `${year}-${mm}-${day}`;
+    const parsed = new Date(`${candidate}T00:00:00Z`);
+    if (!Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === candidate) dates.add(candidate);
   }
   return { url, dates: [...dates].sort() };
 }
@@ -141,6 +144,7 @@ const scope = execution.requested_scope;
 const protectedSnapshot = snapshotProtectedFiles();
 try {
   const discovery = await discoverRacingDates(scope);
+  assert(discovery.dates.length > 0, `JRA monthly schedule exposed no racing dates in ${scope.start_date}..${scope.end_date_exclusive}`);
   const allRecords = [];
   const allDetails = [];
   const statuses = [];
