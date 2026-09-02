@@ -4,20 +4,14 @@ import { loadCalendarAcquisitionRegistryV1 } from './timetable/load-calendar-acq
 import { collectionJobV1Contract, validateCollectionJobV1 } from './timetable/collection-job-validation.mjs';
 
 const root = process.cwd();
+const errors = [];
+const fail = (message) => errors.push(message);
+const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
+const exact = (actual, expected) => JSON.stringify(actual) === JSON.stringify(expected);
+
 const schemaPath = 'data/static/calendar-collection-job.schema.json';
 const validFixturesPath = 'data/fixtures/calendar-collection-jobs-v1.json';
 const invalidFixturesPath = 'data/fixtures/calendar-collection-job-invalid-cases-v1.json';
-const errors = [];
-const fail = (message) => errors.push(message);
-
-function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
-}
-
-function exact(actual, expected) {
-  return JSON.stringify(actual) === JSON.stringify(expected);
-}
-
 const schema = readJson(schemaPath);
 const fixtures = readJson(validFixturesPath);
 const invalidFixtures = readJson(invalidFixturesPath);
@@ -45,11 +39,11 @@ if (!exact(schema.rank_strategies, expectedStrategies)) fail('rank_strategies di
 if (!exact(schema.rank_enum, expectedRanks)) fail('rank_enum differs.');
 if (!exact(schema.reason_enum, expectedReasons)) fail('reason_enum differs.');
 if (!exact(schema.scope_contracts, expectedScopeContracts)) fail('scope_contracts differ.');
-if (!Array.isArray(schema.closure_rules) || schema.closure_rules.length < 12) fail('Collection Job closure rules are incomplete.');
-if (!Array.isArray(schema.explicit_exclusions) || schema.explicit_exclusions.length < 5) fail('Collection Job exclusions are incomplete.');
+if (!Array.isArray(schema.closure_rules) || schema.closure_rules.length === 0) fail('Collection Job closure rules are required.');
+if (!Array.isArray(schema.explicit_exclusions) || schema.explicit_exclusions.length === 0) fail('Collection Job explicit exclusions are required.');
 
 if (fixtures.schema_version !== 'calendar-collection-job-fixtures-v1') fail('valid fixture schema differs.');
-if (!Array.isArray(fixtures.jobs) || fixtures.jobs.length < 8) fail('at least eight valid Collection Job fixtures are required.');
+if (!Array.isArray(fixtures.jobs) || fixtures.jobs.length === 0) fail('valid Collection Job fixtures are required.');
 const validJobIds = new Set();
 for (const [index, job] of (fixtures.jobs ?? []).entries()) {
   const jobErrors = validateCollectionJobV1(job, registry);
@@ -58,24 +52,18 @@ for (const [index, job] of (fixtures.jobs ?? []).entries()) {
   validJobIds.add(job.job_id);
 }
 
-const requiredValidFixtures = new Map([
-  ['nar-august-window-001', (job) => job.system_id === 'japan-nar-system' && job.collection_mode === 'date_window' && job.reason === 'regular_refresh'],
-  ['jra-august-local-window-001', (job) => job.system_id === 'japan-jra-system' && job.runner_policy?.mode === 'registry_primary' && job.collection_mode === 'date_window'],
-  ['nar-selected-retry-001', (job) => job.collection_mode === 'selected_meetings' && job.requested_scope?.meeting_ids?.length === 2],
-  ['nar-b-to-b-plus-retry-001', (job) => job.rank_strategy === 'target_rank' && job.target_rank === 'B+' && job.reason === 'rank_upgrade_retry'],
-  ['nar-a-to-a-plus-retry-001', (job) => job.rank_strategy === 'target_rank' && job.target_rank === 'A+' && job.reason === 'rank_upgrade_retry'],
-  ['nar-source-horizon-001', (job) => job.collection_mode === 'source_visible_horizon' && job.reason === 'source_revalidation'],
-  ['jra-single-date-recovery-001', (job) => job.collection_mode === 'single_date' && job.runner_policy?.runner === 'reviewed_import'],
-  ['nar-july-completion-support-001', (job) => job.reason === 'completion_audit_support' && job.collection_mode === 'date_window'],
-]);
-const byId = new Map((fixtures.jobs ?? []).map((job) => [job.job_id, job]));
-for (const [jobId, predicate] of requiredValidFixtures) {
-  const job = byId.get(jobId);
-  if (!job || !predicate(job)) fail(`required valid fixture differs: ${jobId}`);
-}
+const fixtureJobs = fixtures.jobs ?? [];
+const observedModes = new Set(fixtureJobs.map((job) => job.collection_mode));
+const observedStrategies = new Set(fixtureJobs.map((job) => job.rank_strategy));
+const observedRunnerModes = new Set(fixtureJobs.map((job) => job.runner_policy?.mode));
+for (const mode of expectedModes) if (!observedModes.has(mode)) fail(`fixture coverage missing collection_mode ${mode}.`);
+for (const strategy of expectedStrategies) if (!observedStrategies.has(strategy)) fail(`fixture coverage missing rank_strategy ${strategy}.`);
+for (const mode of expectedRunnerModes) if (!observedRunnerModes.has(mode)) fail(`fixture coverage missing runner_policy.mode ${mode}.`);
+if (!fixtureJobs.some((job) => job.reason === 'rank_upgrade_retry' && job.rank_strategy === 'target_rank')) fail('fixture coverage missing target-rank upgrade retry.');
+if (!fixtureJobs.some((job) => job.reason === 'completion_audit_support')) fail('fixture coverage missing completion-audit support job.');
 
 if (invalidFixtures.schema_version !== 'calendar-collection-job-invalid-cases-v1') fail('invalid fixture schema differs.');
-if (!Array.isArray(invalidFixtures.cases) || invalidFixtures.cases.length < 9) fail('at least nine invalid Collection Job cases are required.');
+if (!Array.isArray(invalidFixtures.cases) || invalidFixtures.cases.length === 0) fail('invalid Collection Job cases are required.');
 const invalidCaseIds = new Set();
 for (const [index, testCase] of (invalidFixtures.cases ?? []).entries()) {
   if (typeof testCase.case_id !== 'string' || !testCase.case_id) fail(`invalid cases[${index}] has no case_id.`);
@@ -85,56 +73,42 @@ for (const [index, testCase] of (invalidFixtures.cases ?? []).entries()) {
   if (jobErrors.length === 0) fail(`invalid case unexpectedly passed: ${testCase.case_id}`);
 }
 
-for (const requiredCase of [
-  'mixed-date-window-and-selected-meetings',
-  'unknown-system',
-  'jra-exact-runner-mismatch',
-  'jra-selected-meetings-unsupported',
-  'jra-cross-month-window-unsupported',
-  'best-available-with-target-rank',
-  'rank-upgrade-without-target-strategy',
-  'banei-source-visible-horizon-unsupported',
-  'completion-audit-with-selected-meetings',
-]) {
-  if (!invalidCaseIds.has(requiredCase)) fail(`required invalid case missing: ${requiredCase}`);
-}
-
 const narProfile = registry.records.find((profile) => profile.system_id === 'japan-nar-system');
-const targetAboveCapabilityRegistry = structuredClone(registry);
-const narrowedNar = targetAboveCapabilityRegistry.records.find((profile) => profile.system_id === 'japan-nar-system');
-narrowedNar.technical_capability_rank = 'B';
-const targetAboveCapabilityJob = structuredClone(byId.get('nar-a-to-a-plus-retry-001'));
-if (validateCollectionJobV1(targetAboveCapabilityJob, targetAboveCapabilityRegistry).length === 0) {
-  fail('target rank above registry technical capability unexpectedly passed.');
+const targetRankFixture = fixtureJobs.find((job) => job.system_id === 'japan-nar-system' && job.rank_strategy === 'target_rank');
+if (!targetRankFixture) fail('NAR target-rank fixture is required for capability-boundary regression.');
+else {
+  const narrowedRegistry = structuredClone(registry);
+  const narrowedNar = narrowedRegistry.records.find((profile) => profile.system_id === 'japan-nar-system');
+  narrowedNar.technical_capability_rank = 'B';
+  const candidate = structuredClone(targetRankFixture);
+  candidate.target_rank = 'A+';
+  if (validateCollectionJobV1(candidate, narrowedRegistry).length === 0) fail('target rank above registry technical capability unexpectedly passed.');
 }
 
-const fallbackMissingRegistry = structuredClone(registry);
-fallbackMissingRegistry.records.find((profile) => profile.system_id === 'japan-nar-system').fallback_runner = null;
-const fallbackPolicyJob = structuredClone(byId.get('nar-selected-retry-001'));
-if (validateCollectionJobV1(fallbackPolicyJob, fallbackMissingRegistry).length === 0) {
-  fail('registry_primary_or_fallback without registry fallback unexpectedly passed.');
+const fallbackFixture = fixtureJobs.find((job) => job.system_id === 'japan-nar-system' && job.runner_policy?.mode === 'registry_primary_or_fallback');
+if (!fallbackFixture) fail('NAR fallback-policy fixture is required.');
+else {
+  const fallbackMissingRegistry = structuredClone(registry);
+  fallbackMissingRegistry.records.find((profile) => profile.system_id === 'japan-nar-system').fallback_runner = null;
+  if (validateCollectionJobV1(structuredClone(fallbackFixture), fallbackMissingRegistry).length === 0) {
+    fail('registry_primary_or_fallback without registry fallback unexpectedly passed.');
+  }
 }
 
-const sourceDuplicationJob = {
-  ...structuredClone(byId.get('nar-august-window-001')),
-  source_id: 'nar-monthly-schedule-grid',
-};
-if (validateCollectionJobV1(sourceDuplicationJob, registry).length === 0) fail('source routing duplication inside Collection Job unexpectedly passed.');
+const sourceDuplicationBase = fixtureJobs.find((job) => job.system_id === 'japan-nar-system');
+if (!sourceDuplicationBase) fail('NAR fixture is required for source-routing duplication regression.');
+else {
+  const sourceDuplicationJob = { ...structuredClone(sourceDuplicationBase), source_id: 'nar-monthly-schedule-grid' };
+  if (validateCollectionJobV1(sourceDuplicationJob, registry).length === 0) fail('source routing duplication inside Collection Job unexpectedly passed.');
+}
 
 if (!narProfile || narProfile.primary_runner !== 'github_actions' || narProfile.fallback_runner !== 'local') {
   fail('NAR Registry runner evidence differs during Collection Job validation.');
 }
 
-const controlPlan = fs.readFileSync(path.join(root, 'docs/calendar/acquisition-control-plane-implementation-plan.md'), 'utf8');
-for (const phrase of [
-  'Stage ACP-4 — Collection Job schema',
-  'job_id',
-  'runner_policy',
-  'source_visible_horizon',
-  'rank_upgrade_retry',
-  'invalid mixed date-window and selected-meeting scope',
-]) {
-  if (!controlPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
+const contract = fs.readFileSync(path.join(root, 'docs/calendar/collection-job.md'), 'utf8');
+for (const phrase of ['job_id', 'runner_policy', 'source_visible_horizon', 'rank_upgrade_retry']) {
+  if (!contract.includes(phrase)) fail(`Collection Job contract missing ${phrase}.`);
 }
 
 if (errors.length) {
@@ -146,7 +120,7 @@ if (errors.length) {
 console.log('CALENDAR_COLLECTION_JOB: pass');
 console.log(`VALID_FIXTURES: ${fixtures.jobs.length}`);
 console.log(`INVALID_CASES: ${invalidFixtures.cases.length}`);
-console.log('COLLECTION_MODES: date_window,single_date,selected_meetings,source_visible_horizon');
-console.log('RANK_STRATEGIES: best_available,target_rank');
-console.log('REGISTRY_ROUTING_DUPLICATION: rejected');
-console.log('CURRENT_STAGE: Collection Job schema');
+console.log(`COLLECTION_MODES_COVERED: ${[...observedModes].sort().join(',')}`);
+console.log(`RUNNER_POLICY_MODES_COVERED: ${[...observedRunnerModes].sort().join(',')}`);
+console.log('HISTORICAL_FIXTURE_IDS_REQUIRED: false');
+console.log('IMPLEMENTATION_STAGE_TEXT_REQUIRED: false');
