@@ -28,18 +28,6 @@ type GlossaryRecord =
   | (typeof coreRacingExtraGlossaryOverlay)[number]
   | (typeof coreRacingMoreGlossaryOverlay)[number];
 
-const hiddenPublicGlossaryIds = new Set([
-  'fixture',
-  'official-source',
-  'official-calendar',
-  'official-racecard',
-  'link-first-source',
-  'source-status',
-  'governing-body',
-  'racing-authority',
-  'racecourse-operator',
-]);
-
 const publicCopyLegacyIdMap: Record<string, string> = {
   'all-weather-course': 'all-weather',
   'course-using-both-directions': 'both-directions-course',
@@ -92,7 +80,6 @@ for (const patch of publicCopyPatches) {
 }
 
 const glossary = order.map((id) => byId.get(id)!);
-const publicGlossary = glossary.filter((entry) => !hiddenPublicGlossaryIds.has(entry.id));
 
 export type GlossaryEntry = (typeof glossary)[number];
 export type GlossaryLocale = 'en' | 'ja';
@@ -107,11 +94,11 @@ const categoryLabels = categoryLabelRegistry.labels as Record<
 >;
 
 export function getGlossaryEntries(): GlossaryEntry[] {
-  return [...publicGlossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
+  return [...glossary].sort((a, b) => a.term_en.localeCompare(b.term_en));
 }
 
 export function getGlossaryEntryBySlug(slug: string): GlossaryEntry | undefined {
-  return publicGlossary.find((entry) => entry.slug === slug);
+  return glossary.find((entry) => entry.slug === slug);
 }
 
 export function getMergedGlossary(): GlossaryEntry[] {
@@ -129,9 +116,8 @@ export function getGlossaryRelationshipEdges(): GlossaryRelationshipEdge[] {
   const seen = new Set<string>();
   const edges: GlossaryRelationshipEdge[] = [];
 
-  for (const entry of publicGlossary) {
+  for (const entry of glossary) {
     for (const relatedId of entry.related_term_ids) {
-      if (hiddenPublicGlossaryIds.has(relatedId)) continue;
       const [sourceId, targetId] = [entry.id, relatedId].sort();
       const key = `${sourceId}::${targetId}`;
       if (seen.has(key)) continue;
