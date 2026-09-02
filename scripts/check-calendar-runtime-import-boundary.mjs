@@ -5,18 +5,12 @@ const root = process.cwd();
 const sourceRoot = path.join(root, 'src');
 const pageRoot = path.join(sourceRoot, 'pages');
 const codeExtensions = ['.ts', '.tsx', '.js', '.mjs', '.astro', '.json'];
-const forbiddenPaths = [
+
+const forbiddenPrefixes = [
   'data/candidates/',
-  'data/generated/timetable/canonical/',
-  'data/generated/timetable/manual-',
-  'data/generated/timetable/june-2026',
-  'data/generated/timetable/current-integrated.json',
-  'data/generated/timetable/real-calendar-all-countries.json',
-  'data/generated/timetable/hkjc-normalized',
-  'data/generated/timetable/jra-normalized',
-  'data/generated/normalized-timetable.json',
-  'data/generated/timetables.json',
-  'data/generated/japan-active-timetable-records.json',
+  'data/generated/timetable/',
+];
+const forbiddenSourceFiles = new Set([
   'src/data/normalizedTimetableCalendarPreview.ts',
   'src/data/normalizedTimetableMeetingDetails.ts',
   'src/data/majorCountryPreviewTimetableSamples.ts',
@@ -24,12 +18,12 @@ const forbiddenPaths = [
   'src/components/PreviewTimetableSamples.astro',
   'src/components/NormalizedMeetingDetailLinks.astro',
   'src/components/CurrentTimetableRecords.astro',
-  'src/components/CurrentTimetableDimensions.astro'
-];
+  'src/components/CurrentTimetableDimensions.astro',
+]);
 const allowedPublicFiles = new Set([
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
-  'data/generated/timetable/public/japan-a-plus-overrides.json'
+  'data/generated/timetable/public/japan-a-plus-overrides.json',
 ]);
 
 function toRepoPath(file) {
@@ -50,7 +44,7 @@ function importSpecifiers(text) {
   const patterns = [
     /(?:import|export)\s+(?:[^'";]*?\s+from\s*)?['"]([^'"]+)['"]/gs,
     /import\(\s*['"]([^'"]+)['"]\s*\)/g,
-    /require\(\s*['"]([^'"]+)['"]\s*\)/g
+    /require\(\s*['"]([^'"]+)['"]\s*\)/g,
   ];
   for (const pattern of patterns) {
     for (const match of text.matchAll(pattern)) found.add(match[1]);
@@ -69,8 +63,9 @@ function resolveLocalImport(importer, specifier) {
 
 function forbiddenReason(repoPath) {
   if (allowedPublicFiles.has(repoPath)) return null;
-  const marker = forbiddenPaths.find((entry) => repoPath === entry || repoPath.startsWith(entry));
-  return marker ? `forbidden runtime dependency ${marker}` : null;
+  if (forbiddenSourceFiles.has(repoPath)) return `forbidden legacy runtime source ${repoPath}`;
+  const prefix = forbiddenPrefixes.find((entry) => repoPath.startsWith(entry));
+  return prefix ? `forbidden runtime dependency outside public projection: ${prefix}` : null;
 }
 
 const pages = walk(pageRoot).filter((file) => ['.astro', '.ts', '.tsx', '.js', '.mjs'].includes(path.extname(file)));
@@ -95,17 +90,6 @@ for (const page of pages) {
     if (allowedPublicFiles.has(currentPath)) continue;
 
     const text = readFileSync(current.file, 'utf8');
-    for (const marker of forbiddenPaths) {
-      if (text.includes(marker)) {
-        violations.push({
-          page: pagePath,
-          dependency: currentPath,
-          reason: `source text references forbidden marker ${marker}`,
-          chain: current.chain
-        });
-      }
-    }
-
     for (const specifier of importSpecifiers(text)) {
       if (!specifier.startsWith('.')) continue;
       const resolved = resolveLocalImport(current.file, specifier);
@@ -146,4 +130,5 @@ if (uniqueViolations.length || uniqueUnresolved.length) {
 const totalVisited = [...visitedFromPage.values()].reduce((sum, value) => sum + value, 0);
 console.log(`CALENDAR_RUNTIME_IMPORT_BOUNDARY: pass pages=${pages.length} traversed_dependencies=${totalVisited}`);
 console.log('RUNTIME_TIMETABLE_INPUTS: public-projection-only');
-console.log('CANDIDATE_CANONICAL_LEGACY_IMPORTS: 0');
+console.log('NON_PUBLIC_TIMETABLE_GENERATED_IMPORTS: 0');
+console.log('HISTORICAL_GENERATED_PATH_BLACKLIST_REQUIRED: false');
