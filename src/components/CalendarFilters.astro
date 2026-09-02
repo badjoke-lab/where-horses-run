@@ -47,6 +47,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       <strong>{isJa ? 'ライブ' : 'Live'}</strong><br />
       <select data-filter-live>
         <option value="">{isJa ? 'すべて' : 'All'}</option>
+        <option value="now" data-live-now-option hidden disabled>{isJa ? 'ライブ中' : 'Live now'}</option>
         <option value="available">{isJa ? '公式ライブ導線あり' : 'Official live link available'}</option>
         <option value="youtube">YouTube</option>
       </select>
@@ -74,6 +75,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       const authority = root.querySelector('[data-filter-authority]');
       const rank = root.querySelector('[data-filter-rank]');
       const live = root.querySelector('[data-filter-live]');
+      const liveNowOption = root.querySelector('[data-live-now-option]');
       const date = root.querySelector('[data-filter-date]');
       const reset = root.querySelector('[data-filter-reset]');
       const result = root.querySelector('[data-filter-result]');
@@ -83,10 +85,18 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
       if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) ||
           !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement) ||
-          !(live instanceof HTMLSelectElement) || !(date instanceof HTMLSelectElement) ||
-          !(reset instanceof HTMLButtonElement)) return;
+          !(live instanceof HTMLSelectElement) || !(liveNowOption instanceof HTMLOptionElement) ||
+          !(date instanceof HTMLSelectElement) || !(reset instanceof HTMLButtonElement)) return;
 
       root.dataset.filterReady = 'true';
+      let currentVideoId = null;
+      let refreshTimer = null;
+
+      const setLiveFeatureAvailable = (available) => {
+        liveNowOption.hidden = !available;
+        liveNowOption.disabled = !available;
+        if (!available && live.value === 'now') live.value = '';
+      };
 
       const normalize = (value) => value.trim().toLocaleLowerCase();
       const apply = () => {
@@ -100,6 +110,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             (!rank.value || row.dataset.rank === rank.value) &&
             (!date.value || row.dataset.date === date.value) &&
             (!live.value ||
+              (live.value === 'now' && row.dataset.liveState === 'live') ||
               (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
               (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
           row.hidden = !matches;
@@ -113,6 +124,62 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         }
 
         if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
+      };
+
+      const applyLiveStatuses = (payload) => {
+        const statuses = Array.isArray(payload?.statuses) ? payload.statuses : [];
+        const byMediaId = new Map(statuses
+          .filter((entry) => entry && typeof entry.media_id === 'string')
+          .map((entry) => [entry.media_id, entry]));
+        let observedState = 'unknown';
+        currentVideoId = null;
+
+        for (const row of rows) {
+          if (!(row instanceof HTMLElement)) continue;
+          const mediaId = row.dataset.mediaId || '';
+          const entry = byMediaId.get(mediaId);
+          const state = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
+            ? entry.status
+            : 'unknown';
+          row.dataset.liveState = state;
+          if (state !== 'unknown') observedState = state;
+          if (typeof entry?.video_id === 'string') currentVideoId = entry.video_id;
+
+          const link = row.querySelector('[data-live-link]');
+          if (link instanceof HTMLAnchorElement) {
+            const idleLabel = row.dataset.livePlatform === 'youtube'
+              ? 'YouTube ↗'
+              : (isJa ? 'ライブ ↗' : 'Live stream ↗');
+            link.textContent = state === 'live' ? '● LIVE ↗' : idleLabel;
+          }
+        }
+        apply();
+        return observedState;
+      };
+
+      const scheduleRefresh = (delay) => {
+        if (refreshTimer !== null) window.clearTimeout(refreshTimer);
+        refreshTimer = window.setTimeout(refreshLiveStatus, delay);
+      };
+
+      const refreshLiveStatus = async () => {
+        try {
+          const endpoint = new URL('/api/live-status', location.origin);
+          if (currentVideoId) endpoint.searchParams.set('video_id', currentVideoId);
+          const response = await fetch(endpoint, { headers: { accept: 'application/json' }, cache: 'no-store' });
+          if (!response.ok) throw new Error(`live status ${response.status}`);
+          const payload = await response.json();
+          if (payload?.configured !== true) throw new Error('live status not configured');
+          setLiveFeatureAvailable(true);
+          const state = applyLiveStatuses(payload);
+          scheduleRefresh(state === 'live' || state === 'upcoming' ? 60_000 : 900_000);
+        } catch {
+          currentVideoId = null;
+          setLiveFeatureAvailable(false);
+          // Fail closed: lack of a verified status feed must never create LIVE state.
+          applyLiveStatuses({ statuses: [] });
+          scheduleRefresh(300_000);
+        }
       };
 
       for (const control of [search, country, authority, rank, live, date]) {
@@ -145,7 +212,9 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
       const requestedDate = new URLSearchParams(location.search).get('date');
       if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
+      setLiveFeatureAvailable(false);
       apply();
+      refreshLiveStatus();
     };
 
     if (document.readyState === 'loading') {
