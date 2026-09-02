@@ -12,6 +12,7 @@ on:
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/check-calendar-collection-job.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/collection-job.md'
       - 'docs/calendar/acquisition-control-plane-contract.md'
@@ -31,6 +32,7 @@ on:
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/check-calendar-collection-job.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-contracts.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/collection-job.md'
       - 'docs/calendar/acquisition-control-plane-contract.md'
@@ -59,6 +61,7 @@ jobs:
         run: |
           node --check scripts/timetable/collection-job-validation.mjs
           node --check scripts/check-calendar-collection-job.mjs
+          node --check scripts/check-calendar-contracts.mjs
 
       - name: Validate Collection Job contract and fixtures
         run: node scripts/check-calendar-collection-job.mjs
