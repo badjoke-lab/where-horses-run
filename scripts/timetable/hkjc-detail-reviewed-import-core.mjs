@@ -63,8 +63,8 @@ export function validateHkjcDetailReviewedImportInput(input) {
   const errors = [];
   keysExactly(input, ALLOWED_TOP_FIELDS, 'input', errors);
   if (input?.schema_version !== IMPORT_SCHEMA) errors.push(`schema_version must be ${IMPORT_SCHEMA}`);
-  if (input?.work_id !== 'WHR-CAL-HONG-KONG-HKJC') errors.push('work_id differs');
-  if (input?.implementation_unit !== 'HKJC-PILOT-06') errors.push('implementation_unit differs');
+  if (!ID_PATTERN.test(String(input?.work_id ?? ''))) errors.push('work_id must be a stable kebab-case ID');
+  if (!ID_PATTERN.test(String(input?.implementation_unit ?? ''))) errors.push('implementation_unit must be a stable kebab-case ID');
   if (!validDateTime(input?.generated_at)) errors.push('generated_at invalid');
 
   keysExactly(input?.source_evidence, ALLOWED_SOURCE_FIELDS, 'source_evidence', errors);
@@ -234,8 +234,8 @@ function buildReviewedArtifacts(input, { batchId, campaignId, jobId }) {
   };
   const report = {
     schema_version: 'calendar-hkjc-detail-reviewed-import-report-v1',
-    work_id: 'WHR-CAL-HONG-KONG-HKJC',
-    implementation_unit: 'HKJC-PILOT-06',
+    work_id: input.work_id,
+    implementation_unit: input.implementation_unit,
     batch_id: batchId,
     records_discovered: records.length,
     records_updated: coverage.records_updated,
@@ -268,8 +268,8 @@ export function buildHkjcDetailReviewedImportPackage({ input, inputFileName, inp
     : null;
   return {
     schema_version: PACKAGE_SCHEMA,
-    work_id: 'WHR-CAL-HONG-KONG-HKJC',
-    implementation_unit: 'HKJC-PILOT-06',
+    work_id: input.work_id,
+    implementation_unit: input.implementation_unit,
     generated_at: input.generated_at,
     input_evidence: {
       filename: inputFileName,
