@@ -1,0 +1,58 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-09-02T05:48:11.684Z",
+  "adapter_id": "hkjc-current-best-available-2026-09-06-sha-tin-a-plus-reviewed-promotion-v1",
+  "country_id": "hong-kong",
+  "authority_id": "hkjc",
+  "source_id": "hkjc-detail-reviewed-import",
+  "candidate_window": {
+    "start_date": "2026-09-06",
+    "end_date_exclusive": "2026-09-07",
+    "timezone": "Asia/Hong_Kong"
+  },
+  "records": [
+    {
+      "candidate_id": "approved-hkjc-sha-tin-racecourse-2026-09-06",
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-09-06",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-09-06",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "A+",
+      "first_race_time_local": "12:30",
+      "last_race_time_local": "17:55",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"12:30","race_name":"GLENEALY HANDICAP","distance_m":1200,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 2","post_time_local":"13:00","race_name":"DUDDELL HANDICAP","distance_m":1000,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 3","post_time_local":"13:30","race_name":"THE HKSAR CHIEF EXECUTIVE'S CUP (HANDICAP)","distance_m":1200,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 4","post_time_local":"14:05","race_name":"HARCOURT HANDICAP","distance_m":1600,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 5","post_time_local":"14:55","race_name":"EDINBURGH HANDICAP","distance_m":1200,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 6","post_time_local":"15:45","race_name":"EDINBURGH HANDICAP","distance_m":1200,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 7","post_time_local":"16:15","race_name":"ALBERT HANDICAP","distance_m":1400,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 8","post_time_local":"16:45","race_name":"FENWICK HANDICAP","distance_m":1400,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 9","post_time_local":"17:20","race_name":"COTTON TREE HANDICAP","distance_m":1400,"surface":"Turf","course_label":"A Course"},
+        {"label":"Race 10","post_time_local":"17:55","race_name":"BATTERY HANDICAP","distance_m":1200,"surface":"Turf","course_label":"A Course"}
+      ],
+      "source": {
+        "source_id": "hkjc-detail-reviewed-import",
+        "official_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/09/06&Racecourse=ST&RaceNo=1",
+        "checked_at": "2026-09-02T05:48:34.612Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved from run 33596141329 artifact 9833462820 after current-canonical delta comparison. Acquisition emitted hkjc-racecard-public-timetable/live_racecard_adapter; promotion provenance is normalized to the verified inventory identity hkjc-detail-reviewed-import and the canonical adapter_candidate method. Only public-safe A+ timetable fields are promoted."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-09-02T11:58:00Z",
+    "reviewer": "badjoke-lab",
+    "promotion_target": "canonical-timetable-v0",
+    "source_run_id": 33596141329,
+    "source_artifact_id": 9833462820,
+    "source_batch_id": "hkjc-current-best-available-20260902054811-01"
+  }
+}
