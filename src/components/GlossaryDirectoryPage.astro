@@ -31,13 +31,7 @@ const basePath = isJapanese ? '/ja/glossary/' : '/glossary/';
     data-glossary-records={records.length}
     data-glossary-categories={categories.length}
   >
-    <section
-      class="hero"
-      aria-labelledby="page-title"
-      data-glossary-release="WHR-GLOSSARY-V1"
-      data-glossary-concepts="48"
-      data-glossary-relationships="57"
-    >
+    <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">{isJapanese ? '競馬の用語' : 'Racing terms'}</p>
       <h1 id="page-title">{isJapanese ? '用語集' : 'Glossary'}</h1>
       <p class="hero__summary">
@@ -46,8 +40,18 @@ const basePath = isJapanese ? '/ja/glossary/' : '/glossary/';
           : 'Short, plain-language explanations of terms used across racing calendars, meeting pages, racecourse profiles, and official sources.'}
       </p>
       <p>{isJapanese
-        ? '用語名、読み方、別名、説明文から探せます。'
-        : 'Search by term, reading, alias, or explanation.'}</p>
+        ? 'まず全用語を一覧で確認できます。詳しい説明は各用語を開いてください。'
+        : 'Start with the complete term index below, then open any term for its full explanation.'}</p>
+    </section>
+
+    <section class="card" aria-labelledby="all-glossary-terms-heading">
+      <h2 id="all-glossary-terms-heading">{isJapanese ? '全用語' : 'All terms'}</h2>
+      <p>{isJapanese ? `${records.length}件の掲載用語` : `${records.length} terms listed`}</p>
+      <ul>
+        {records.map((record) => (
+          <li><a href={record.href}>{record.term}</a></li>
+        ))}
+      </ul>
     </section>
 
     <section class="card" aria-labelledby="glossary-filter-heading">
@@ -115,7 +119,9 @@ const basePath = isJapanese ? '/ja/glossary/' : '/glossary/';
           data-glossary-search-text={record.searchText}
         >
           <h2><a href={record.href}>{record.term}</a></h2>
-          <p><small>{record.secondaryTerm}</small></p>
+          {record.secondaryTerm && (
+            <p><strong>{isJapanese ? '英語' : 'Japanese'}:</strong> {record.secondaryTerm}</p>
+          )}
           {isJapanese && record.reading && <p><strong>読み:</strong> {record.reading}</p>}
           <p>{record.summary}</p>
           {record.aliases.length > 0 && (
