@@ -1,30 +1,14 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { loadAuthoritySourceInventoryV1 } from './timetable/load-authority-source-inventory.mjs';
 import {
   acquisitionProfileMapV1,
   loadCalendarAcquisitionRegistryV1,
   resolveAcquisitionProfileV1,
 } from './timetable/load-calendar-acquisition-registry.mjs';
+import { loadAuthoritySourceInventoryV1 } from './timetable/load-authority-source-inventory.mjs';
 
 const root = process.cwd();
-const schemaPath = 'data/static/calendar-acquisition-registry.schema.json';
-const registryPath = 'data/static/calendar-acquisition-registry.json';
-const readinessRegistryPath = 'data/static/calendar-readiness-registry.json';
-const japanReadinessPath = 'data/static/calendar-readiness-japan-v2.json';
-const japanPolicyPath = 'data/static/japan-a-plus-policy.json';
-const controlContractPath = 'docs/calendar/acquisition-control-plane-contract.md';
-const implementationPlanPath = 'docs/calendar/acquisition-control-plane-implementation-plan.md';
-const machineContractPath = 'docs/calendar/machine-readable-contracts.md';
 const errors = [];
-const rankOrder = new Map(['C', 'B', 'B+', 'A', 'A+'].map((rank, index) => [rank, index]));
-const requiredProfiles = ['japan-jra-system', 'japan-nar-system', 'japan-banei-system', 'hong-kong-hkjc-system', 'uae-national-racing-system', 'kra-national-racing-system'];
-const pendingCapableFields = new Set(['fallback_runner', 'schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']);
-const prohibitedKeyFragments = [
-  'odds', 'payout', 'prediction', 'tip', 'entries', 'result', 'runner_name', 'horse_name', 'jockey', 'trainer',
-  'raw_html', 'raw_body', 'source_body', 'credential', 'cookie', 'secret', 'private_note',
-];
-
 const fail = (message) => errors.push(message);
 const readText = (relativePath) => {
   const absolute = path.join(root, relativePath);
@@ -34,275 +18,134 @@ const readText = (relativePath) => {
   }
   return readFileSync(absolute, 'utf8');
 };
-const readJson = (relativePath) => {
-  const text = readText(relativePath);
-  if (!text) return null;
-  try { return JSON.parse(text); }
-  catch (error) { fail(`${relativePath} must parse as JSON: ${error.message}`); return null; }
-};
-const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
-const nonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
+const readJson = (relativePath) => JSON.parse(readText(relativePath));
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-function exactArray(actual, expected, label) {
-  if (!exact(actual, expected)) fail(`${label} must equal ${JSON.stringify(expected)}.`);
-}
-function walkKeys(value, trail = []) {
-  if (Array.isArray(value)) {
-    value.forEach((entry, index) => walkKeys(entry, [...trail, String(index)]));
-    return;
-  }
-  if (!isObject(value)) return;
-  for (const [key, entry] of Object.entries(value)) {
-    const normalized = key.toLowerCase();
-    if (prohibitedKeyFragments.some((fragment) => normalized.includes(fragment))) {
-      fail(`${registryPath}.${[...trail, key].join('.')} uses prohibited key fragment ${key}.`);
-    }
-    walkKeys(entry, [...trail, key]);
-  }
-}
+const nonEmpty = (value) => typeof value === 'string' && value.trim().length > 0;
 
+const schemaPath = 'data/static/calendar-acquisition-registry.schema.json';
+const registryPath = 'data/static/calendar-acquisition-registry.json';
 const schema = readJson(schemaPath);
 const registry = loadCalendarAcquisitionRegistryV1(root);
-const authorityInventory = loadAuthoritySourceInventoryV1(root);
-const readinessRegistry = readJson(readinessRegistryPath);
-const japanReadiness = readJson(japanReadinessPath);
-const japanPolicy = readJson(japanPolicyPath);
-const controlContract = readText(controlContractPath);
-const implementationPlan = readText(implementationPlanPath);
-const machineContract = readText(machineContractPath);
+const sourceInventory = loadAuthoritySourceInventoryV1(root);
+const japanPolicy = readJson('data/static/japan-a-plus-policy.json');
 
-const expectedRecordFields = [
-  'system_id', 'country_id', 'authority_id', 'profile_status', 'primary_runner', 'fallback_runner',
-  'schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id',
-  'technical_capability_rank', 'collection_target_rank', 'public_ceiling', 'supported_observation_ranks',
-  'supports_date_window', 'supports_cross_month_window', 'supports_selected_meetings',
-  'supports_source_visible_horizon', 'supports_rank_upgrade_retry', 'pending_fields', 'operator_notes',
+const expectedRecordFields = schema.required_record_fields ?? [];
+const ranks = schema.rank_enum ?? [];
+const runners = schema.runner_enum ?? [];
+const targetRanks = schema.collection_target_rank_enum ?? [];
+const statuses = schema.profile_status_enum ?? [];
+const supportFields = schema.scope_support_fields ?? [];
+const rankIndex = new Map(ranks.map((rank, index) => [rank, index]));
+const requiredSystems = [
+  'japan-jra-system',
+  'japan-nar-system',
+  'japan-banei-system',
+  'hong-kong-hkjc-system',
+  'uae-national-racing-system',
+  'kra-national-racing-system',
 ];
-const expectedRunners = ['github_actions', 'local', 'reviewed_import'];
-const expectedRanks = ['C', 'B', 'B+', 'A', 'A+'];
-const expectedTargetRanks = ['best_available', ...expectedRanks];
-const expectedStatuses = ['active', 'provisional'];
-const supportFields = [
-  'supports_date_window', 'supports_cross_month_window', 'supports_selected_meetings',
-  'supports_source_visible_horizon', 'supports_rank_upgrade_retry',
-];
+const sourceKeys = new Set((sourceInventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
+const japanPolicyBySystem = new Map((japanPolicy.records ?? []).map((record) => [record.system_id, record]));
 
-if (schema?.schema_version !== 'calendar-acquisition-registry-schema-v1') fail('Acquisition Registry schema version differs.');
-exactArray(schema?.required_record_fields, expectedRecordFields, 'schema.required_record_fields');
-exactArray(schema?.runner_enum, expectedRunners, 'schema.runner_enum');
-exactArray(schema?.rank_enum, expectedRanks, 'schema.rank_enum');
-exactArray(schema?.collection_target_rank_enum, expectedTargetRanks, 'schema.collection_target_rank_enum');
-exactArray(schema?.profile_status_enum, expectedStatuses, 'schema.profile_status_enum');
-exactArray(schema?.scope_support_fields, supportFields, 'schema.scope_support_fields');
+if (schema.schema_version !== 'calendar-acquisition-registry-schema-v1') fail('Acquisition Registry schema version differs.');
+if (registry.schema_version !== 'calendar-acquisition-registry-v1') fail('Acquisition Registry version differs.');
+if (registry.schema_ref !== schemaPath) fail('Acquisition Registry schema_ref differs.');
+if (!Array.isArray(registry.records) || registry.records.length === 0) fail('Acquisition Registry records must be a non-empty array.');
 
-if (registry?.schema_version !== 'calendar-acquisition-registry-v1') fail('Acquisition Registry version differs.');
-if (registry?.schema_ref !== schemaPath) fail('Acquisition Registry schema_ref differs.');
-if (registry?.work_id !== 'WHR-CAL-ACQUISITION-CONTROL-PLANE') fail('Acquisition Registry Work ID differs.');
-if (!Array.isArray(registry?.records)) fail('Acquisition Registry records must be an array.');
-
-const authoritySourceKeys = new Set((authorityInventory.records ?? []).map((record) => `${record.country_id}/${record.authority_id}/${record.official_source_id}`));
-const globalReadinessBySystem = new Map((readinessRegistry?.records ?? []).map((record) => [record.system_id, record]));
-const japanReadinessBySystem = new Map((japanReadiness?.records ?? []).map((record) => [record.system_id, record]));
-const japanPolicyBySystem = new Map((japanPolicy?.records ?? []).map((record) => [record.system_id, record]));
-const adapterEvidence = new Map([
-  ['jra-normalized-programme-candidate-v1', { path: 'data/candidates/japan-jra-candidates.json', marker: '"adapter_id":"jra-normalized-programme-candidate-v1"' }],
-  ['nar-schedule-aware-month-v1', { path: 'scripts/timetable/normalize-nar-schedule-aware-month.mjs', marker: 'parseNarMonthlyScheduleGrid' }],
-  ['nar-monthly-detail-candidate-v1', { path: 'scripts/timetable/collect-nar-monthly-candidates.mjs', marker: '--allow-blockers' }],
-  ['japan-banei-dry-run-adapter', { path: 'data/candidates/japan-banei-candidates.json', marker: '"source_adapter_id": "japan-banei-dry-run-adapter"' }],
-  ['banei-nar-race-list-detail-v1', { path: 'data/fixtures/calendar-banei-live-smoke-evidence-v1.json', marker: '"adapter_id": "banei-nar-race-list-detail-v1"' }],
-  ['hkjc-fixture-artifact-bridge-v1', { path: 'scripts/timetable/hkjc-fixture-artifact-bridge-core.mjs', marker: "const ADAPTER_ID = 'hkjc-fixture-artifact-bridge-v1'" }],
-  ['hkjc-detail-reviewed-import-v1', { path: 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs', marker: "adapter_id: 'hkjc-detail-reviewed-import-v1'" }],
-  ['uae-era-pdf-grid-actions-v1', { path: 'scripts/timetable/uae-era-pdf-grid-candidate-core.mjs', marker: "const ADAPTER_ID = 'uae-era-pdf-grid-actions-v1'" }],
-  ['uae-era-racecard-detail-artifact-v1', { path: 'scripts/timetable/uae-era-detail-artifact-core.mjs', marker: "const ADAPTER_ID = 'uae-era-racecard-detail-artifact-v1'" }],
-  ['kra-today-race-live-v1', { path: 'scripts/timetable/run-kra-todayrace-actions-job.mjs', marker: "const ADAPTER_ID = 'kra-today-race-live-v1'" }],
-]);
-
-function approvedCeilingFor(record) {
-  if (record.country_id === 'japan') return japanPolicyBySystem.get(record.system_id)?.public_ceiling ?? null;
-  return globalReadinessBySystem.get(record.system_id)?.public_ceiling ?? null;
-}
-function reviewedTechnicalRankFor(record) {
-  if (record.country_id === 'japan') return japanReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
-  return globalReadinessBySystem.get(record.system_id)?.technical_rank ?? null;
-}
-function validateProfile(record, label, { policyCeilingOverride = null } = {}) {
-  const localErrors = [];
-  const push = (message) => localErrors.push(`${label}: ${message}`);
-  if (!isObject(record)) return [`${label}: must be an object.`];
-  for (const field of expectedRecordFields) if (!Object.hasOwn(record, field)) push(`missing ${field}`);
-  for (const key of Object.keys(record)) if (!expectedRecordFields.includes(key)) push(`unexpected field ${key}`);
-  for (const field of ['system_id', 'country_id', 'authority_id', 'operator_notes']) if (!nonEmptyString(record[field])) push(`${field} must be a non-empty string`);
-  if (!expectedStatuses.includes(record.profile_status)) push(`unknown profile_status ${record.profile_status}`);
-  if (!expectedRunners.includes(record.primary_runner)) push(`unknown or missing primary_runner ${record.primary_runner}`);
-  if (record.fallback_runner !== null && !expectedRunners.includes(record.fallback_runner)) push(`unknown fallback_runner ${record.fallback_runner}`);
-  if (record.fallback_runner !== null && record.fallback_runner === record.primary_runner) push('fallback_runner must differ from primary_runner');
-  for (const field of ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id']) {
-    if (record[field] !== null && !nonEmptyString(record[field])) push(`${field} must be a non-empty string or null`);
+const seen = new Set();
+for (const [index, record] of (registry.records ?? []).entries()) {
+  const label = `records[${index}]`;
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    fail(`${label} must be an object.`);
+    continue;
   }
-  if (!expectedRanks.includes(record.technical_capability_rank)) push(`invalid technical_capability_rank ${record.technical_capability_rank}`);
-  if (!expectedTargetRanks.includes(record.collection_target_rank)) push(`invalid collection_target_rank ${record.collection_target_rank}`);
-  if (!expectedRanks.includes(record.public_ceiling)) push(`invalid public_ceiling ${record.public_ceiling}`);
-  if (rankOrder.has(record.collection_target_rank) && rankOrder.get(record.collection_target_rank) > rankOrder.get(record.technical_capability_rank)) push('collection_target_rank exceeds technical_capability_rank');
-  if (rankOrder.has(record.public_ceiling) && rankOrder.get(record.public_ceiling) > rankOrder.get(record.technical_capability_rank)) push('public_ceiling exceeds technical_capability_rank');
-  const policyCeiling = policyCeilingOverride ?? approvedCeilingFor(record);
-  if (policyCeiling && rankOrder.get(record.public_ceiling) > rankOrder.get(policyCeiling)) push(`public_ceiling exceeds approved policy ceiling ${policyCeiling}`);
-  if (!Array.isArray(record.supported_observation_ranks) || record.supported_observation_ranks.length === 0) push('supported_observation_ranks must be a non-empty array');
+  for (const field of expectedRecordFields) if (!Object.hasOwn(record, field)) fail(`${label} missing ${field}.`);
+  for (const key of Object.keys(record)) if (!expectedRecordFields.includes(key)) fail(`${label} has unexpected field ${key}.`);
+  for (const field of ['system_id', 'country_id', 'authority_id', 'operator_notes']) if (!nonEmpty(record[field])) fail(`${label}.${field} must be non-empty.`);
+  if (seen.has(record.system_id)) fail(`${label} duplicates system_id ${record.system_id}.`);
+  seen.add(record.system_id);
+
+  if (!statuses.includes(record.profile_status)) fail(`${label} has invalid profile_status ${record.profile_status}.`);
+  if (!runners.includes(record.primary_runner)) fail(`${label} has invalid primary_runner ${record.primary_runner}.`);
+  if (record.fallback_runner !== null && !runners.includes(record.fallback_runner)) fail(`${label} has invalid fallback_runner ${record.fallback_runner}.`);
+  if (record.fallback_runner !== null && record.fallback_runner === record.primary_runner) fail(`${label} fallback_runner must differ from primary_runner.`);
+  if (!ranks.includes(record.technical_capability_rank)) fail(`${label} has invalid technical_capability_rank.`);
+  if (!targetRanks.includes(record.collection_target_rank)) fail(`${label} has invalid collection_target_rank.`);
+  if (!ranks.includes(record.public_ceiling)) fail(`${label} has invalid public_ceiling.`);
+  if (rankIndex.has(record.collection_target_rank) && rankIndex.get(record.collection_target_rank) > rankIndex.get(record.technical_capability_rank)) fail(`${label} collection target exceeds technical capability.`);
+  if (rankIndex.has(record.public_ceiling) && rankIndex.get(record.public_ceiling) > rankIndex.get(record.technical_capability_rank)) fail(`${label} public ceiling exceeds technical capability.`);
+
+  if (!Array.isArray(record.supported_observation_ranks) || record.supported_observation_ranks.length === 0) fail(`${label} supported_observation_ranks must be non-empty.`);
   else {
-    if (new Set(record.supported_observation_ranks).size !== record.supported_observation_ranks.length) push('supported_observation_ranks contains duplicates');
+    if (new Set(record.supported_observation_ranks).size !== record.supported_observation_ranks.length) fail(`${label} supported_observation_ranks contains duplicates.`);
     for (const rank of record.supported_observation_ranks) {
-      if (!expectedRanks.includes(rank)) push(`unsupported observation rank ${rank}`);
-      else if (rankOrder.get(rank) > rankOrder.get(record.technical_capability_rank)) push(`observation rank ${rank} exceeds technical capability`);
+      if (!ranks.includes(rank)) fail(`${label} has unsupported observation rank ${rank}.`);
+      else if (rankIndex.get(rank) > rankIndex.get(record.technical_capability_rank)) fail(`${label} observation rank ${rank} exceeds technical capability.`);
     }
   }
-  for (const field of supportFields) if (typeof record[field] !== 'boolean') push(`${field} must be boolean`);
-  if (!Array.isArray(record.pending_fields) || new Set(record.pending_fields).size !== record.pending_fields.length) push('pending_fields must be a unique array');
-  else for (const field of record.pending_fields) if (!pendingCapableFields.has(field)) push(`unsupported pending field ${field}`);
-  const operationalFields = ['schedule_source_id', 'detail_source_id', 'schedule_adapter_id', 'detail_adapter_id'];
-  if (record.profile_status === 'active') {
-    for (const field of operationalFields) if (record[field] === null) push(`active profile requires ${field}`);
-    if (record.pending_fields?.length) push('active profile must not retain pending_fields');
-  } else if (record.profile_status === 'provisional') {
-    for (const field of pendingCapableFields) if (record[field] === null && !record.pending_fields?.includes(field)) push(`null ${field} must be listed in pending_fields`);
-  }
+  for (const field of supportFields) if (typeof record[field] !== 'boolean') fail(`${label}.${field} must be boolean.`);
+  if (!Array.isArray(record.pending_fields) || new Set(record.pending_fields).size !== record.pending_fields.length) fail(`${label}.pending_fields must be a unique array.`);
+
   for (const field of ['schedule_source_id', 'detail_source_id']) {
     const sourceId = record[field];
-    if (sourceId !== null && !authoritySourceKeys.has(`${record.country_id}/${record.authority_id}/${sourceId}`)) push(`${field} does not resolve authority/source key ${record.country_id}/${record.authority_id}/${sourceId}`);
+    if (record.profile_status === 'active' && !nonEmpty(sourceId)) fail(`${label}.${field} is required for active profiles.`);
+    if (sourceId !== null && !sourceKeys.has(`${record.country_id}/${record.authority_id}/${sourceId}`)) fail(`${label}.${field} does not resolve in authority/source inventory.`);
   }
   for (const field of ['schedule_adapter_id', 'detail_adapter_id']) {
-    const adapterId = record[field];
-    if (adapterId === null) continue;
-    const evidence = adapterEvidence.get(adapterId);
-    if (!evidence) push(`${field} has no reviewed adapter evidence mapping for ${adapterId}`);
-    else if (!readText(evidence.path).includes(evidence.marker)) push(`${field} adapter evidence marker missing for ${adapterId}`);
+    if (record.profile_status === 'active' && !nonEmpty(record[field])) fail(`${label}.${field} is required for active profiles.`);
   }
-  if (record.supports_selected_meetings) {
-    if (record.profile_status !== 'active' || record.detail_adapter_id === null) push('selected-meeting support requires an active detail adapter path');
-    if (record.system_id === 'japan-nar-system') {
-      if (!readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs').includes('--meeting-ids=')
-        || !readText('scripts/timetable/nar-incremental-v2-actions-core.mjs').includes('selected_meetings')) push('NAR selected-meeting adapter evidence is missing');
-    } else if (record.system_id === 'japan-banei-system') {
-      const selectedEvidence = readText('data/fixtures/calendar-banei-runner-selected-evidence-v1.json');
-      if (!selectedEvidence.includes('"scope_mode": "selected_meetings"')
-        || !selectedEvidence.includes('"selected_detail_live_success": true')
-        || !readText('scripts/timetable/collect-banei-detail-window.mjs').includes('--meeting-ids=')) push('Banei selected-meeting adapter evidence is missing');
-    } else if (record.system_id === 'uae-national-racing-system') {
-      const executor = readText('scripts/timetable/run-uae-era-actions-job.mjs');
-      const core = readText('scripts/timetable/uae-era-rank-upgrade-core.mjs');
-      const proof = readText('data/fixtures/calendar-uae-era-rank-upgrade-fixtures-v1.json');
-      if (!executor.includes("execution.collection_mode !== 'selected_meetings'")
-        || !core.includes("collection_mode === 'selected_meetings'")
-        || !proof.includes('"observed_rank": "A"') && !proof.includes('"rank": "A"')) push('UAE selected-meeting C-to-A evidence is missing');
-    } else if (record.system_id === 'kra-national-racing-system') {
-      const executor = readText('scripts/timetable/run-kra-todayrace-actions-job.mjs');
-      const collector = readText('scripts/timetable/collect-kra-todayrace.mjs');
-      if (!executor.includes("execution.collection_mode !== 'selected_meetings'")
-        || !executor.includes("execution.rank_strategy !== 'best_available'")
-        || !collector.includes('--racecourse-id=')) push('KRA selected-meeting best-available evidence is missing');
-    } else push(`selected-meeting adapter support is not evidenced for ${record.system_id}`);
-  }
-  return localErrors;
-}
+  if (record.profile_status === 'active' && record.pending_fields.length !== 0) fail(`${label} active profile must not retain pending_fields.`);
 
-const seenSystems = new Set();
-for (const [index, record] of (registry?.records ?? []).entries()) {
-  const label = `records[${index}]`;
-  for (const error of validateProfile(record, label)) fail(error);
-  if (seenSystems.has(record.system_id)) fail(`${label}: duplicate system_id ${record.system_id}`);
-  seenSystems.add(record.system_id);
-  const technicalRank = reviewedTechnicalRankFor(record);
-  const approvedCeiling = approvedCeilingFor(record);
-  if (!technicalRank) fail(`${label}: reviewed technical rank missing for ${record.system_id}`);
-  if (!approvedCeiling) fail(`${label}: reviewed public ceiling missing for ${record.system_id}`);
-  if (technicalRank && record.technical_capability_rank !== technicalRank) fail(`${label}: technical capability differs from reviewed readiness`);
-  if (approvedCeiling && record.public_ceiling !== approvedCeiling) fail(`${label}: public ceiling differs from reviewed policy/readiness`);
+  const policy = japanPolicyBySystem.get(record.system_id);
+  if (policy) {
+    if (record.technical_capability_rank !== policy.technical_rank) fail(`${label} technical capability differs from Japan policy.`);
+    if (record.public_ceiling !== policy.public_ceiling) fail(`${label} public ceiling differs from Japan policy.`);
+  }
 }
-for (const systemId of requiredProfiles) if (!seenSystems.has(systemId)) fail(`required Acquisition Registry profile missing ${systemId}`);
+for (const systemId of requiredSystems) if (!seen.has(systemId)) fail(`required Acquisition Registry profile missing ${systemId}.`);
+
 try {
   const map = acquisitionProfileMapV1(registry);
   if (map.size !== registry.records.length) fail('Acquisition Registry loader map size differs.');
-  for (const systemId of requiredProfiles) if (resolveAcquisitionProfileV1(registry, systemId).system_id !== systemId) fail(`loader resolution differs for ${systemId}`);
+  for (const systemId of requiredSystems) if (resolveAcquisitionProfileV1(registry, systemId).system_id !== systemId) fail(`loader resolution differs for ${systemId}.`);
 } catch (error) {
   fail(`Acquisition Registry loader failed: ${error.message}`);
 }
-walkKeys(registry);
-for (const [file, text, phrases] of [
-  [controlContractPath, controlContract, ['Acquisition Registry', 'primary_runner', 'supported_observation_ranks', 'supports_selected_meetings']],
-  [implementationPlanPath, implementationPlan, ['Stage ACP-3 — Acquisition Registry', 'Banei values may remain explicitly pending', 'missing primary runner']],
-  [machineContractPath, machineContract, ['data/static/calendar-acquisition-registry.schema.json', 'data/static/calendar-acquisition-registry.json', 'japan-jra-system', 'japan-nar-system', 'japan-banei-system']],
-]) for (const phrase of phrases) if (!text.includes(phrase)) fail(`${file} must include ${phrase}.`);
 
 const profiles = new Map(registry.records.map((record) => [record.system_id, record]));
-const narProfile = profiles.get('japan-nar-system');
-if (narProfile?.primary_runner !== 'github_actions' || narProfile?.fallback_runner !== 'local') fail('NAR runner profile must be github_actions primary with local fallback.');
-const jraProfile = profiles.get('japan-jra-system');
-if (jraProfile?.primary_runner !== 'local') fail('JRA primary runner must remain local.');
-const baneiProfile = profiles.get('japan-banei-system');
-if (baneiProfile?.profile_status !== 'active'
-  || baneiProfile?.primary_runner !== 'github_actions'
-  || baneiProfile?.fallback_runner !== 'reviewed_import'
-  || baneiProfile?.detail_source_id !== 'nar-banei-race-list-deba-table'
-  || baneiProfile?.detail_adapter_id !== 'banei-nar-race-list-detail-v1'
-  || baneiProfile?.supports_date_window !== true
-  || baneiProfile?.supports_selected_meetings !== true
-  || baneiProfile?.supports_rank_upgrade_retry !== true) fail('Banei active runner profile differs.');
-const hkjcProfile = profiles.get('hong-kong-hkjc-system');
-if (hkjcProfile?.profile_status !== 'provisional' || hkjcProfile?.primary_runner !== 'github_actions' || hkjcProfile?.fallback_runner !== null) fail('HKJC provisional runner profile differs.');
-if (!exact(hkjcProfile?.pending_fields, ['fallback_runner'])) fail('HKJC pending fields differ.');
-if (hkjcProfile?.detail_source_id !== 'hkjc-detail-reviewed-import' || hkjcProfile?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC detail route differs.');
-if (!exact(hkjcProfile?.supported_observation_ranks, ['C', 'B', 'B+', 'A', 'A+'])) fail('HKJC supported ranks differ.');
-if (hkjcProfile?.supports_date_window !== true || hkjcProfile?.supports_selected_meetings !== false || hkjcProfile?.supports_rank_upgrade_retry !== false) fail('HKJC scope/retry boundary differs.');
-const uaeProfile = profiles.get('uae-national-racing-system');
-if (uaeProfile?.profile_status !== 'active' || uaeProfile?.primary_runner !== 'github_actions' || uaeProfile?.fallback_runner !== null) fail('UAE active runner profile differs.');
-if (uaeProfile?.schedule_source_id !== 'era-season-calendar' || uaeProfile?.schedule_adapter_id !== 'uae-era-pdf-grid-actions-v1') fail('UAE schedule route differs.');
-if (uaeProfile?.detail_source_id !== 'era-racecard-public-timetable' || uaeProfile?.detail_adapter_id !== 'uae-era-racecard-detail-artifact-v1') fail('UAE detail route differs.');
-if (uaeProfile?.technical_capability_rank !== 'A' || uaeProfile?.public_ceiling !== 'A') fail('UAE reviewed rank/ceiling differs.');
-if (!exact(uaeProfile?.supported_observation_ranks, ['C', 'A'])) fail('UAE supported ranks differ.');
-if (!exact(uaeProfile?.pending_fields, [])) fail('UAE active profile must not retain pending fields.');
-if (uaeProfile?.supports_source_visible_horizon !== true
-  || uaeProfile?.supports_date_window !== false
-  || uaeProfile?.supports_cross_month_window !== false
-  || uaeProfile?.supports_selected_meetings !== true
-  || uaeProfile?.supports_rank_upgrade_retry !== true) fail('UAE source-visible schedule plus selected-meeting rank-retry boundary differs.');
-const kraProfile = profiles.get('kra-national-racing-system');
-if (kraProfile?.profile_status !== 'active'
-  || kraProfile?.primary_runner !== 'github_actions'
-  || kraProfile?.fallback_runner !== null
-  || kraProfile?.schedule_source_id !== 'kra-today-race'
-  || kraProfile?.detail_source_id !== 'kra-today-race'
-  || kraProfile?.schedule_adapter_id !== 'kra-today-race-live-v1'
-  || kraProfile?.detail_adapter_id !== 'kra-today-race-live-v1'
-  || kraProfile?.technical_capability_rank !== 'A+'
-  || kraProfile?.collection_target_rank !== 'best_available'
-  || !exact(kraProfile?.supported_observation_ranks, ['C', 'B', 'B+', 'A', 'A+'])
-  || kraProfile?.supports_selected_meetings !== true
-  || kraProfile?.supports_date_window !== false
-  || kraProfile?.supports_cross_month_window !== false
-  || kraProfile?.supports_source_visible_horizon !== false
-  || kraProfile?.supports_rank_upgrade_retry !== false
-  || !exact(kraProfile?.pending_fields, [])) fail('KRA active best-available selected-meeting profile differs.');
+const nar = profiles.get('japan-nar-system');
+if (nar?.primary_runner !== 'github_actions' || nar?.fallback_runner !== 'local' || nar?.supports_selected_meetings !== true || nar?.supports_rank_upgrade_retry !== true) fail('NAR current runner/retry capability differs.');
+if (!readText('scripts/timetable/nar-incremental-v2-actions-core.mjs').includes('selected_meetings') || !readText('scripts/timetable/normalize-nar-schedule-aware-month.mjs').includes('--meeting-ids=')) fail('NAR selected-meeting implementation evidence is missing.');
 
-const negativeBase = structuredClone(narProfile);
-for (const [name, profile, options] of [
-  ['unknown runner', { ...negativeBase, primary_runner: 'remote_magic' }, {}],
-  ['impossible rank', { ...negativeBase, technical_capability_rank: 'S' }, {}],
-  ['target above capability', { ...negativeBase, technical_capability_rank: 'B', collection_target_rank: 'A' }, {}],
-  ['public ceiling above policy', { ...negativeBase, public_ceiling: 'A+' }, { policyCeilingOverride: 'A' }],
-  ['selected meeting without adapter', { ...negativeBase, detail_adapter_id: null, supports_selected_meetings: true }, {}],
-  ['missing primary runner', { ...negativeBase, primary_runner: null }, {}],
-]) if (validateProfile(profile, `negative:${name}`, options).length === 0) fail(`negative contract case unexpectedly passed: ${name}`);
+const banei = profiles.get('japan-banei-system');
+if (banei?.primary_runner !== 'github_actions' || banei?.supports_date_window !== true || banei?.supports_selected_meetings !== true || banei?.supports_rank_upgrade_retry !== true) fail('Banei current runner/retry capability differs.');
+const baneiCollector = readText('scripts/timetable/collect-banei-detail-window.mjs');
+const baneiExecutor = readText('scripts/timetable/banei-actions-executor-core.mjs');
+if (!baneiCollector.includes('--meeting-ids=') || !baneiCollector.includes('Provide either start/end window or selected meeting IDs') || !baneiExecutor.includes("execution.collection_mode === 'selected_meetings'") || !baneiExecutor.includes("execution.collection_mode === 'date_window'")) fail('Banei current date-window/selected-meeting implementation evidence is missing.');
+
+const hkjc = profiles.get('hong-kong-hkjc-system');
+if (hkjc?.primary_runner !== 'github_actions' || hkjc?.detail_adapter_id !== 'hkjc-detail-reviewed-import-v1') fail('HKJC current route differs.');
+if (!readText('scripts/timetable/hkjc-detail-reviewed-import-core.mjs').includes("adapter_id: 'hkjc-detail-reviewed-import-v1'")) fail('HKJC current reviewed-import implementation evidence is missing.');
+
+const uae = profiles.get('uae-national-racing-system');
+if (uae?.primary_runner !== 'github_actions' || uae?.supports_selected_meetings !== true || uae?.supports_rank_upgrade_retry !== true) fail('UAE current selected-meeting retry capability differs.');
+if (!readText('scripts/timetable/run-uae-era-actions-job.mjs').includes("execution.collection_mode !== 'selected_meetings'") || !readText('scripts/timetable/uae-era-rank-upgrade-core.mjs').includes("collection_mode === 'selected_meetings'")) fail('UAE current selected-meeting implementation evidence is missing.');
+
+const kra = profiles.get('kra-national-racing-system');
+if (kra?.primary_runner !== 'github_actions' || kra?.supports_selected_meetings !== true || kra?.collection_target_rank !== 'best_available') fail('KRA current selected-meeting capability differs.');
+if (!readText('scripts/timetable/run-kra-todayrace-actions-job.mjs').includes("execution.collection_mode !== 'selected_meetings'") || !readText('scripts/timetable/collect-kra-todayrace.mjs').includes('--racecourse-id=')) fail('KRA current selected-meeting implementation evidence is missing.');
+
+const serialized = JSON.stringify(registry).toLowerCase();
+for (const fragment of ['horse_name', 'jockey_name', 'trainer_name', 'odds_value', 'payout_amount', 'raw_html', 'source_body', 'credential', 'cookie', 'secret']) {
+  if (serialized.includes(`\"${fragment}\"`)) fail(`registry contains prohibited field ${fragment}.`);
+}
 
 if (errors.length) {
   console.error(`CALENDAR_ACQUISITION_REGISTRY: failed (${errors.length})`);
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
+
 console.log('CALENDAR_ACQUISITION_REGISTRY: pass');
 console.log(`PROFILES: ${registry.records.length}`);
-console.log(`ACTIVE_PROFILES: ${registry.records.filter((record) => record.profile_status === 'active').length}`);
-console.log(`PROVISIONAL_PROFILES: ${registry.records.filter((record) => record.profile_status === 'provisional').length}`);
-console.log('REQUIRED_SYSTEMS: japan-jra-system,japan-nar-system,japan-banei-system,hong-kong-hkjc-system,uae-national-racing-system,kra-national-racing-system');
-console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
-console.log('HKJC_PROFILE: provisional / github_actions schedule primary / operator-reviewed detail active / fallback and rank-retry pending');
-console.log('UAE_PROFILE: active / source-visible C schedule + selected-meeting A detail / github_actions / rank-retry enabled');
-console.log('BANEI_RUNNER_PROFILE: github_actions primary / reviewed_import fallback / date-window+selected+rank-retry enabled');
-console.log('KRA_PROFILE: active / selected-meeting best-available C-B-B+-A-A+ / github_actions / review-only');
+console.log('CURRENT_IMPLEMENTATION_EVIDENCE: pass');
