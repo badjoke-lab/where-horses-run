@@ -24,7 +24,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "JRA remains local-primary because final-program intake and human confirmation are bounded review steps. Reviewed import is the compatible fallback. Current evidence-backed candidate output is A+ and no broader scope-mode capability is claimed here."
+      "operator_notes": "JRA remains local-primary because final-program intake and human confirmation are bounded review steps. Reviewed import is the compatible fallback. Current candidate output supports A+ within the registered date-window route."
     },
     {
       "system_id": "japan-nar-system",
@@ -47,7 +47,7 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
-      "operator_notes": "Formal workflow_dispatch acquisition is the primary path and the local v2 runner is the fallback. Current reviewed v2 source behavior produces C schedule identities or complete A+ detail; this source-specific observation set does not narrow the shared five-rank model."
+      "operator_notes": "GitHub Actions is the primary NAR acquisition path with the local v2 runner as fallback. The registered route supports date windows, cross-month windows, selected meetings, source-visible horizons, and rank-upgrade retry while publication remains separately reviewed."
     },
     {
       "system_id": "japan-banei-system",
@@ -70,7 +70,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
-      "operator_notes": "Active evidence-backed Banei profile. GitHub Actions is primary with reviewed-import fallback. Bounded live evidence proves July full-month schedule acquisition plus date-window and selected-meeting A+ detail acquisition. Retry execution proof validates due/deferred selection, selected-meeting Job compilation, success removal, failure retention, attempt accounting, 6h then 12h exponential backoff, max-attempt suppression, Result Manifest, and Review Queue behavior. Date-window, selected-meeting, and rank-upgrade retry are enabled; cross-month and source-visible-horizon remain disabled."
+      "operator_notes": "GitHub Actions is the primary Banei path with reviewed-import fallback. Current execution supports bounded date-window and selected-meeting detail acquisition plus rank-upgrade retry; cross-month and source-visible-horizon modes remain disabled."
     },
     {
       "system_id": "hong-kong-hkjc-system",
@@ -93,7 +93,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": ["fallback_runner"],
-      "operator_notes": "Provisional HKJC operating profile with two evidence-backed routes. GitHub Actions remains primary for the C-level schedule date-window path. Explicit operator-reviewed import is the registered detail source/adapter path and can classify reviewed public-safe B, B+, A, or A+ observations; public output remains capped at A. The detail route is not selectable by generic Collection Jobs or the Due-job Planner. Fallback execution, selected-meeting retry ownership, automatic import, approval, promotion, canonical/public writes, and unattended publication remain pending or disabled."
+      "operator_notes": "HKJC remains provisional. GitHub Actions handles the schedule date-window route and explicit operator-reviewed import handles public-safe detail observations. Public output remains capped at A; fallback execution, generic selected-meeting retry, automatic approval, promotion, and publication remain disabled."
     },
     {
       "system_id": "uae-national-racing-system",
@@ -116,7 +116,7 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
-      "operator_notes": "Active evidence-backed UAE profile. GitHub Actions supports the ERA source-visible season-calendar C path and explicit selected-meeting C-to-A detail retry through the official racecard route. Live detail run 29199123357 proved 10 Al Ain races from 17:00 through 21:30. Selected-meeting Retry Queue and Review Queue artifacts are review-only; fallback execution, automatic approval, Canonical/public writes, and unattended publication remain disabled."
+      "operator_notes": "GitHub Actions supports the ERA source-visible schedule route and selected-meeting best-available detail acquisition up to A. Retry and review artifacts remain review-only; automatic approval, canonical/public writes, and unattended publication remain disabled."
     },
     {
       "system_id": "kra-national-racing-system",
@@ -139,7 +139,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "Active evidence-backed KRA detail profile. GitHub Actions may collect explicitly selected known meetings from official KRA todayrace pages and classify C/B/B+/A/A+ best-available observations. Historical live proof reproduces A+ while future meetings may remain C until official post times are published. Public output remains capped at A by reviewed readiness. Date-window discovery, fallback execution, automatic approval, promotion, Canonical/public writes, and unattended publication remain disabled."
+      "operator_notes": "GitHub Actions supports explicitly selected known KRA meetings at best available rank. Public output remains capped at A; date-window discovery, fallback execution, automatic approval, promotion, canonical/public writes, and unattended publication remain disabled."
     }
   ]
 }
