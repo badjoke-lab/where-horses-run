@@ -1,12 +1,13 @@
 const YOUTUBE_API = 'https://www.googleapis.com/youtube/v3';
 const JAPAN_TIME_ZONE = 'Asia/Tokyo';
-const CHANNEL_CACHE_SECONDS = 7 * 24 * 60 * 60;
-const KNOWN_VIDEO_CACHE_SECONDS = 6 * 60 * 60;
+const DISCOVERY_CACHE_SECONDS = 15 * 60;
+const IDLE_STATUS_CACHE_SECONDS = 5 * 60;
+const ACTIVE_STATUS_CACHE_SECONDS = 60;
+const PLAYLIST_CONCURRENCY = 3;
+const RECENT_VIDEO_LIMIT = 10;
 
-// Runtime detectors are deliberately separate from public media links. The
-// Calendar continues to open only reviewed official landing pages. These
-// sources are used only to determine whether an official race broadcast is
-// actually live/upcoming/offline.
+// Runtime detectors are separate from public media links. Calendar links stay
+// on reviewed official landing pages; these sources only determine live state.
 const YOUTUBE_LIVE_DETECTORS = [
   { id: 'jra-youtube-live-2026', channel_id: 'UCj6AKkCWS6FJqf0o5wP45eQ' },
   { id: 'banei-youtube-live-2026', channel_id: 'UCyjlxPcoYAbpwlr5wjUA_5g' },
@@ -36,11 +37,21 @@ const json = (body, status = 200, cacheSeconds = 0) => new Response(JSON.stringi
   },
 });
 
+const endpointName = (url) => new URL(url).pathname.split('/').filter(Boolean).at(-1) || 'youtube';
+
 async function fetchJson(url) {
   const response = await fetch(url, { headers: { accept: 'application/json' } });
-  if (!response.ok) throw new Error(`YouTube API ${response.status}`);
+  if (!response.ok) throw new Error(`youtube_${endpointName(url)}_${response.status}`);
   return response.json();
 }
+
+const failureCode = (error) => {
+  const message = error instanceof Error ? error.message : String(error ?? 'unknown');
+  if (/^youtube_[a-zA-Z]+_\d{3}$/.test(message)) return message;
+  if (message === 'uploads_playlist_unavailable') return message;
+  if (message === 'video_batch_unavailable') return message;
+  return 'detector_unavailable';
+};
 
 const statusFromVideo = (video) => {
   const content = video?.snippet?.liveBroadcastContent;
@@ -68,38 +79,22 @@ const japanDateFor = (isoValue) => {
 };
 
 const normalizedStatus = (detector, video = null) => {
-  const state = video ? statusFromVideo(video) : 'offline';
   const scheduledStart = video?.liveStreamingDetails?.scheduledStartTime ?? null;
   const actualStart = video?.liveStreamingDetails?.actualStartTime ?? null;
-  const eventInstant = actualStart ?? scheduledStart;
   return {
     detector_id: detector.id,
-    // Retained for compatibility with the original single-source response.
     media_id: detector.id,
-    status: state,
+    status: video ? statusFromVideo(video) : 'offline',
     video_id: safeVideoId(video?.id),
-    event_date: japanDateFor(eventInstant),
+    event_date: japanDateFor(actualStart ?? scheduledStart),
     scheduled_start_at: scheduledStart,
     checked_at: new Date().toISOString(),
   };
 };
 
-const refreshSecondsFor = (status) => {
-  if (status.status === 'live') return 60;
-  if (status.status !== 'upcoming') return status.status === 'ended' ? 300 : 900;
-
-  const scheduled = Date.parse(status.scheduled_start_at ?? '');
-  if (!Number.isFinite(scheduled)) return 300;
-  const untilStart = Math.max(0, scheduled - Date.now());
-  if (untilStart > 24 * 60 * 60 * 1000) return 3600;
-  if (untilStart > 6 * 60 * 60 * 1000) return 1800;
-  if (untilStart > 60 * 60 * 1000) return 300;
-  return 60;
-};
-
-const internalCacheKey = (request, namespace, detectorId) => {
+const internalCacheKey = (request, namespace) => {
   const origin = new URL(request.url).origin;
-  return new Request(`${origin}/api/live-status/__cache/${namespace}/${encodeURIComponent(detectorId)}`, { method: 'GET' });
+  return new Request(`${origin}/api/live-status/__cache/${namespace}/v3`, { method: 'GET' });
 };
 
 async function readCachedJson(cache, key) {
@@ -125,117 +120,217 @@ function storeCachedJson(cache, key, value, ttl, waitUntil) {
   return undefined;
 }
 
-async function resolveUploadsPlaylistId({ request, apiKey, detector, cache, waitUntil }) {
-  const key = internalCacheKey(request, 'channel', detector.id);
-  const cached = await readCachedJson(cache, key);
-  if (typeof cached?.uploads_playlist_id === 'string') return cached.uploads_playlist_id;
+const chunks = (items, size) => {
+  const result = [];
+  for (let index = 0; index < items.length; index += size) result.push(items.slice(index, index + size));
+  return result;
+};
 
-  const url = new URL(`${YOUTUBE_API}/channels`);
-  url.searchParams.set('part', 'contentDetails');
-  if (detector.channel_id) url.searchParams.set('id', detector.channel_id);
-  else url.searchParams.set('forHandle', detector.handle);
-  url.searchParams.set('key', apiKey);
-  const payload = await fetchJson(url);
-  const uploadsPlaylistId = payload?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-  if (!uploadsPlaylistId) throw new Error(`YouTube uploads playlist unavailable for ${detector.id}`);
-
-  storeCachedJson(cache, key, { uploads_playlist_id: uploadsPlaylistId }, CHANNEL_CACHE_SECONDS, waitUntil);
-  return uploadsPlaylistId;
+async function mapWithConcurrency(items, limit, mapper) {
+  const results = new Array(items.length);
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const index = cursor++;
+      try {
+        results[index] = { status: 'fulfilled', value: await mapper(items[index], index) };
+      } catch (reason) {
+        results[index] = { status: 'rejected', reason };
+      }
+    }
+  });
+  await Promise.all(workers);
+  return results;
 }
 
-async function inspectVideo(apiKey, videoId) {
+async function resolveUploadsPlaylists(apiKey) {
+  const playlistByDetector = new Map();
+  const failures = new Map();
+  const fixed = YOUTUBE_LIVE_DETECTORS.filter((detector) => detector.channel_id);
+  const handles = YOUTUBE_LIVE_DETECTORS.filter((detector) => detector.handle);
+
+  if (fixed.length) {
+    try {
+      const url = new URL(`${YOUTUBE_API}/channels`);
+      url.searchParams.set('part', 'contentDetails');
+      url.searchParams.set('id', fixed.map((detector) => detector.channel_id).join(','));
+      url.searchParams.set('key', apiKey);
+      const payload = await fetchJson(url);
+      const byChannelId = new Map((Array.isArray(payload?.items) ? payload.items : []).map((item) => [item?.id, item]));
+      for (const detector of fixed) {
+        const uploads = byChannelId.get(detector.channel_id)?.contentDetails?.relatedPlaylists?.uploads;
+        if (typeof uploads === 'string') playlistByDetector.set(detector.id, uploads);
+        else failures.set(detector.id, 'uploads_playlist_unavailable');
+      }
+    } catch (error) {
+      const code = failureCode(error);
+      for (const detector of fixed) failures.set(detector.id, code);
+    }
+  }
+
+  for (const detector of handles) {
+    try {
+      const url = new URL(`${YOUTUBE_API}/channels`);
+      url.searchParams.set('part', 'contentDetails');
+      url.searchParams.set('forHandle', detector.handle);
+      url.searchParams.set('key', apiKey);
+      const payload = await fetchJson(url);
+      const uploads = payload?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+      if (typeof uploads !== 'string') throw new Error('uploads_playlist_unavailable');
+      playlistByDetector.set(detector.id, uploads);
+    } catch (error) {
+      failures.set(detector.id, failureCode(error));
+    }
+  }
+
+  return { playlistByDetector, failures };
+}
+
+async function discoverSnapshot(apiKey) {
+  const { playlistByDetector, failures } = await resolveUploadsPlaylists(apiKey);
+  const playableDetectors = YOUTUBE_LIVE_DETECTORS.filter((detector) => playlistByDetector.has(detector.id));
+  const playlistResults = await mapWithConcurrency(playableDetectors, PLAYLIST_CONCURRENCY, async (detector) => {
+    const url = new URL(`${YOUTUBE_API}/playlistItems`);
+    url.searchParams.set('part', 'contentDetails');
+    url.searchParams.set('playlistId', playlistByDetector.get(detector.id));
+    url.searchParams.set('maxResults', String(RECENT_VIDEO_LIMIT));
+    url.searchParams.set('key', apiKey);
+    const payload = await fetchJson(url);
+    return (Array.isArray(payload?.items) ? payload.items : [])
+      .map((item) => safeVideoId(item?.contentDetails?.videoId))
+      .filter(Boolean);
+  });
+
+  const videoIdsByDetector = new Map();
+  for (let index = 0; index < playableDetectors.length; index += 1) {
+    const detector = playableDetectors[index];
+    const result = playlistResults[index];
+    if (result?.status === 'fulfilled') videoIdsByDetector.set(detector.id, result.value);
+    else failures.set(detector.id, failureCode(result?.reason));
+  }
+
+  const allVideoIds = [...new Set([...videoIdsByDetector.values()].flat())];
+  const videoById = new Map();
+  for (const batch of chunks(allVideoIds, 50)) {
+    if (!batch.length) continue;
+    const url = new URL(`${YOUTUBE_API}/videos`);
+    url.searchParams.set('part', 'snippet,liveStreamingDetails');
+    url.searchParams.set('id', batch.join(','));
+    url.searchParams.set('key', apiKey);
+    try {
+      const payload = await fetchJson(url);
+      for (const video of Array.isArray(payload?.items) ? payload.items : []) {
+        if (safeVideoId(video?.id)) videoById.set(video.id, video);
+      }
+    } catch {
+      for (const [detectorId, ids] of videoIdsByDetector) {
+        if (ids.some((id) => batch.includes(id))) failures.set(detectorId, 'video_batch_unavailable');
+      }
+    }
+  }
+
+  const statuses = [];
+  const activeByDetector = {};
+  for (const detector of YOUTUBE_LIVE_DETECTORS) {
+    if (failures.has(detector.id)) continue;
+    const ids = videoIdsByDetector.get(detector.id) ?? [];
+    const videos = ids.map((id) => videoById.get(id)).filter(Boolean);
+    const active = videos.find((video) => video?.snippet?.liveBroadcastContent === 'live')
+      ?? videos.find((video) => video?.snippet?.liveBroadcastContent === 'upcoming')
+      ?? null;
+    const status = normalizedStatus(detector, active);
+    statuses.push(status);
+    if (status.video_id) activeByDetector[detector.id] = status.video_id;
+  }
+
+  return {
+    statuses,
+    active_by_detector: activeByDetector,
+    failures: Object.fromEntries(failures),
+    discovered_at: new Date().toISOString(),
+  };
+}
+
+async function refreshActiveStatuses(apiKey, snapshot) {
+  const activeEntries = Object.entries(snapshot?.active_by_detector ?? {})
+    .filter(([, videoId]) => safeVideoId(videoId));
+  if (!activeEntries.length) return snapshot.statuses ?? [];
+
   const url = new URL(`${YOUTUBE_API}/videos`);
   url.searchParams.set('part', 'snippet,liveStreamingDetails');
-  url.searchParams.set('id', videoId);
+  url.searchParams.set('id', activeEntries.map(([, videoId]) => videoId).join(','));
   url.searchParams.set('key', apiKey);
   const payload = await fetchJson(url);
-  return payload?.items?.[0] ?? null;
+  const videoById = new Map((Array.isArray(payload?.items) ? payload.items : []).map((video) => [video?.id, video]));
+  const activeMap = new Map(activeEntries);
+  const detectorById = new Map(YOUTUBE_LIVE_DETECTORS.map((detector) => [detector.id, detector]));
+
+  return (snapshot.statuses ?? []).map((previous) => {
+    const detector = detectorById.get(previous.detector_id);
+    const videoId = activeMap.get(previous.detector_id);
+    if (!detector || !videoId) return previous;
+    const video = videoById.get(videoId);
+    return normalizedStatus(detector, video ?? null);
+  });
 }
 
-async function discoverActiveVideo({ request, apiKey, detector, cache, waitUntil }) {
-  const uploadsPlaylistId = await resolveUploadsPlaylistId({ request, apiKey, detector, cache, waitUntil });
-  const playlistUrl = new URL(`${YOUTUBE_API}/playlistItems`);
-  playlistUrl.searchParams.set('part', 'contentDetails');
-  playlistUrl.searchParams.set('playlistId', uploadsPlaylistId);
-  playlistUrl.searchParams.set('maxResults', '25');
-  playlistUrl.searchParams.set('key', apiKey);
-  const playlistPayload = await fetchJson(playlistUrl);
-  const ids = (Array.isArray(playlistPayload?.items) ? playlistPayload.items : [])
-    .map((item) => safeVideoId(item?.contentDetails?.videoId))
-    .filter(Boolean);
-  if (!ids.length) return null;
-
-  const videosUrl = new URL(`${YOUTUBE_API}/videos`);
-  videosUrl.searchParams.set('part', 'snippet,liveStreamingDetails');
-  videosUrl.searchParams.set('id', ids.join(','));
-  videosUrl.searchParams.set('key', apiKey);
-  const videosPayload = await fetchJson(videosUrl);
-  const videos = Array.isArray(videosPayload?.items) ? videosPayload.items : [];
-  return videos.find((video) => video?.snippet?.liveBroadcastContent === 'live')
-    ?? videos.find((video) => video?.snippet?.liveBroadcastContent === 'upcoming')
-    ?? null;
-}
-
-async function detectorStatus({ request, apiKey, detector, cache, waitUntil }) {
-  const statusKey = internalCacheKey(request, 'status', detector.id);
-  const cachedStatus = await readCachedJson(cache, statusKey);
-  if (cachedStatus?.detector_id === detector.id) return cachedStatus;
-
-  const videoKey = internalCacheKey(request, 'video', detector.id);
-  const cachedVideo = await readCachedJson(cache, videoKey);
-  const knownVideoId = safeVideoId(cachedVideo?.video_id);
-  if (knownVideoId) {
-    const video = await inspectVideo(apiKey, knownVideoId);
-    const knownStatus = video ? normalizedStatus(detector, video) : null;
-    if (knownStatus?.status === 'live' || knownStatus?.status === 'upcoming') {
-      const ttl = refreshSecondsFor(knownStatus);
-      storeCachedJson(cache, statusKey, knownStatus, ttl, waitUntil);
-      storeCachedJson(cache, videoKey, { video_id: knownVideoId }, KNOWN_VIDEO_CACHE_SECONDS, waitUntil);
-      return knownStatus;
-    }
-    await cache.delete(videoKey);
-  }
-
-  const activeVideo = await discoverActiveVideo({ request, apiKey, detector, cache, waitUntil });
-  const status = normalizedStatus(detector, activeVideo);
-  const ttl = refreshSecondsFor(status);
-  storeCachedJson(cache, statusKey, status, ttl, waitUntil);
-  if (status.video_id) {
-    storeCachedJson(cache, videoKey, { video_id: status.video_id }, KNOWN_VIDEO_CACHE_SECONDS, waitUntil);
-  }
-  return status;
-}
+const responseTtlFor = (statuses) => statuses.some((status) => status.status === 'live' || status.status === 'upcoming')
+  ? ACTIVE_STATUS_CACHE_SECONDS
+  : IDLE_STATUS_CACHE_SECONDS;
 
 export async function onRequestGet({ request, env, waitUntil }) {
   const apiKey = env?.YOUTUBE_DATA_API_KEY;
-  if (!apiKey) {
-    return json({ configured: false, statuses: [], error: 'live_status_unavailable' }, 503);
-  }
+  if (!apiKey) return json({ configured: false, statuses: [], error: 'live_status_unavailable' }, 503);
 
   const cache = caches.default;
-  const settled = await Promise.allSettled(YOUTUBE_LIVE_DETECTORS.map((detector) => detectorStatus({
-    request,
-    apiKey,
-    detector,
-    cache,
-    waitUntil,
-  })));
-  const statuses = settled
-    .filter((result) => result.status === 'fulfilled')
-    .map((result) => result.value);
-  const failedDetectorIds = settled
-    .map((result, index) => result.status === 'rejected' ? YOUTUBE_LIVE_DETECTORS[index].id : null)
-    .filter(Boolean);
-
-  if (!statuses.length) {
-    return json({ configured: false, statuses: [], error: 'live_status_unavailable' }, 503);
+  const statusKey = internalCacheKey(request, 'aggregate-status');
+  const cachedStatus = await readCachedJson(cache, statusKey);
+  if (cachedStatus?.configured === true && Array.isArray(cachedStatus.statuses)) {
+    return json(cachedStatus, 200, responseTtlFor(cachedStatus.statuses));
   }
 
-  const refreshAfterSeconds = Math.min(...statuses.map(refreshSecondsFor));
-  return json({
+  const discoveryKey = internalCacheKey(request, 'aggregate-discovery');
+  let snapshot = await readCachedJson(cache, discoveryKey);
+  if (!snapshot?.statuses) {
+    try {
+      snapshot = await discoverSnapshot(apiKey);
+      storeCachedJson(cache, discoveryKey, snapshot, DISCOVERY_CACHE_SECONDS, waitUntil);
+    } catch (error) {
+      return json({
+        configured: false,
+        statuses: [],
+        error: 'live_status_unavailable',
+        failure_code: failureCode(error),
+      }, 503);
+    }
+  }
+
+  let statuses;
+  try {
+    statuses = await refreshActiveStatuses(apiKey, snapshot);
+  } catch (error) {
+    statuses = snapshot.statuses ?? [];
+    snapshot.failures = { ...(snapshot.failures ?? {}), active_refresh: failureCode(error) };
+  }
+
+  if (!statuses.length) {
+    return json({
+      configured: false,
+      statuses: [],
+      error: 'live_status_unavailable',
+      failed_detector_ids: Object.keys(snapshot.failures ?? {}),
+      failure_codes: snapshot.failures ?? {},
+    }, 503);
+  }
+
+  const ttl = responseTtlFor(statuses);
+  const body = {
     configured: true,
     statuses,
-    refresh_after_seconds: refreshAfterSeconds,
-    failed_detector_ids: failedDetectorIds,
-  }, 200, Math.min(refreshAfterSeconds, 300));
+    refresh_after_seconds: ttl,
+    failed_detector_ids: Object.keys(snapshot.failures ?? {}),
+    failure_codes: snapshot.failures ?? {},
+  };
+  storeCachedJson(cache, statusKey, body, ttl, waitUntil);
+  return json(body, 200, ttl);
 }
