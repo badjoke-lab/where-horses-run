@@ -18,11 +18,20 @@ function isoFromEraDate(day, month, year) {
   return `${year}-${month}-${day}`;
 }
 
+function visibleText(html) {
+  return String(html)
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/\s+/g, ' ');
+}
+
 export function parseUaeEraCurrentSeasonFixtures(html, { startDate, endDateExclusive }) {
   const fixtures = [];
   const seen = new Set();
   const pattern = /\b(MEY|JEB|AEC|ABU|SHJ)\s+(\d{2})-(\d{2})-(\d{4})\b/g;
-  for (const match of String(html).matchAll(pattern)) {
+  for (const match of visibleText(html).matchAll(pattern)) {
     const [, code, day, month, year] = match;
     const date = isoFromEraDate(day, month, year);
     if (date < startDate || date >= endDateExclusive) continue;
