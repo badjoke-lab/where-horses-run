@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalendarCoverageDashboard from '../../components/CalendarCoverageDashboard.astro';
 import CalendarDateFocus from '../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
+import CalendarFilters from '../../components/CalendarFilters.astro';
 import CalendarOperationsNotice from '../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
@@ -35,6 +36,7 @@ const windowRecords = groups.flatMap((group) => group.records);
   <CalendarOperationsNotice records={windowRecords} dataState={dataState} />
   <CalendarCoverageDashboard />
   <CalendarDateFocus />
+  <CalendarFilters records={windowRecords} />
 
   <section aria-label="Rolling 30-day meeting list">
     <TimetableMeetingList

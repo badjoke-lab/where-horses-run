@@ -1,0 +1,147 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+type Props = {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+};
+
+const { records, lang = 'en' } = Astro.props as Props;
+const isJa = lang === 'ja';
+const unique = (values: string[]) => [...new Set(values)].sort((a, b) => a.localeCompare(b));
+const countries = unique(records.map((record) => record.country_label));
+const authorities = unique(records.map((record) => record.authority_label));
+const dates = unique(records.map((record) => record.date));
+const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record) => record.capability_rank === rank));
+---
+
+<section class="calendar-filters card flow" data-calendar-filters aria-label={isJa ? 'カレンダー絞り込み' : 'Calendar filters'}>
+  <h2>{isJa ? '開催を絞り込む' : 'Filter meetings'}</h2>
+  <div class="section-grid">
+    <label>
+      <strong>{isJa ? '競馬場' : 'Racecourse'}</strong><br />
+      <input type="search" data-filter-search placeholder={isJa ? '競馬場を検索…' : 'Search racecourse…'} />
+    </label>
+    <label>
+      <strong>{isJa ? '国' : 'Country'}</strong><br />
+      <select data-filter-country>
+        <option value="">{isJa ? 'すべて' : 'All'}</option>
+        {countries.map((country) => <option value={country}>{country}</option>)}
+      </select>
+    </label>
+    <label>
+      <strong>{isJa ? '主催' : 'Authority'}</strong><br />
+      <select data-filter-authority>
+        <option value="">{isJa ? 'すべて' : 'All'}</option>
+        {authorities.map((authority) => <option value={authority}>{authority}</option>)}
+      </select>
+    </label>
+    <label>
+      <strong>{isJa ? '公開ランク' : 'Rank'}</strong><br />
+      <select data-filter-rank>
+        <option value="">{isJa ? 'すべて' : 'All'}</option>
+        {ranks.map((rank) => <option value={rank}>{rank}</option>)}
+      </select>
+    </label>
+    <label>
+      <strong>{isJa ? 'ライブ' : 'Live'}</strong><br />
+      <select data-filter-live>
+        <option value="">{isJa ? 'すべて' : 'All'}</option>
+        <option value="available">{isJa ? '公式ライブ導線あり' : 'Official live link available'}</option>
+        <option value="youtube">YouTube</option>
+      </select>
+    </label>
+    <label>
+      <strong>{isJa ? '日付' : 'Date'}</strong><br />
+      <select data-filter-date>
+        <option value="">{isJa ? '30日すべて' : 'All 30 days'}</option>
+        {dates.map((date) => <option value={date}>{date}</option>)}
+      </select>
+    </label>
+  </div>
+  <p><button type="button" data-filter-reset>{isJa ? 'リセット' : 'Reset'}</button></p>
+  <p aria-live="polite" data-filter-result></p>
+</section>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-calendar-filters]');
+    if (!root) return;
+
+    const search = root.querySelector('[data-filter-search]');
+    const country = root.querySelector('[data-filter-country]');
+    const authority = root.querySelector('[data-filter-authority]');
+    const rank = root.querySelector('[data-filter-rank]');
+    const live = root.querySelector('[data-filter-live]');
+    const date = root.querySelector('[data-filter-date]');
+    const reset = root.querySelector('[data-filter-reset]');
+    const result = root.querySelector('[data-filter-result]');
+    const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')];
+    const groups = [...document.querySelectorAll('[data-calendar-date-group]')];
+    const isJa = document.documentElement.lang === 'ja';
+
+    if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) ||
+        !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement) ||
+        !(live instanceof HTMLSelectElement) || !(date instanceof HTMLSelectElement) ||
+        !(reset instanceof HTMLButtonElement)) return;
+
+    const normalize = (value) => value.trim().toLocaleLowerCase();
+    const apply = () => {
+      const query = normalize(search.value);
+      let visible = 0;
+      for (const row of rows) {
+        if (!(row instanceof HTMLElement)) continue;
+        const matches = (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
+          (!country.value || row.dataset.country === country.value) &&
+          (!authority.value || row.dataset.authority === authority.value) &&
+          (!rank.value || row.dataset.rank === rank.value) &&
+          (!date.value || row.dataset.date === date.value) &&
+          (!live.value ||
+            (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
+            (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
+        row.hidden = !matches;
+        if (matches) visible += 1;
+      }
+
+      for (const group of groups) {
+        if (!(group instanceof HTMLElement)) continue;
+        group.hidden = ![...group.querySelectorAll('[data-calendar-meeting-row]')]
+          .some((row) => row instanceof HTMLElement && !row.hidden);
+      }
+
+      if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
+    };
+
+    for (const control of [search, country, authority, rank, live, date]) {
+      control.addEventListener('input', apply);
+      control.addEventListener('change', apply);
+    }
+
+    reset.addEventListener('click', () => {
+      search.value = '';
+      country.value = '';
+      authority.value = '';
+      rank.value = '';
+      live.value = '';
+      date.value = '';
+      history.replaceState(null, '', location.pathname);
+      apply();
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const countryTrigger = target.closest('[data-coverage-filter-country]');
+      if (countryTrigger instanceof HTMLElement) {
+        country.value = countryTrigger.dataset.coverageFilterCountry || '';
+        if (countryTrigger.dataset.coverageFilterLive) live.value = countryTrigger.dataset.coverageFilterLive;
+        apply();
+        root.scrollIntoView({ block: 'center' });
+      }
+    });
+
+    const requestedDate = new URLSearchParams(location.search).get('date');
+    if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
+    apply();
+  })();
+</script>

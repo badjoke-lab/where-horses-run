@@ -10,6 +10,10 @@ import {
   filterRecordsForDate,
   filterRecordsForWindow,
 } from '../lib/timetable/calendarDateContext.mjs';
+import {
+  getVerifiedLiveMediaForMeeting,
+  type RacingMediaLink,
+} from './racingMediaLinks';
 
 export type CalendarRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 export type PublicCoverageStatus =
@@ -43,6 +47,7 @@ export type TimetableMeetingRow = {
   public_gap_status: PublicGapStatus;
   source_status?: string;
   last_checked_date?: string | null;
+  live_media: RacingMediaLink | null;
 };
 
 export type TimetableMeetingDayGroup = {
@@ -107,6 +112,10 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     coverage_status: PublicCoverageStatus;
     public_gap_status: PublicGapStatus;
   };
+  const liveMedia = getVerifiedLiveMediaForMeeting({
+    authority_id: record.authority_id,
+    racecourse_id: record.racecourse_id,
+  });
 
   return {
     meeting_id: record.meeting_id,
@@ -128,6 +137,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     public_gap_status: coverageState.public_gap_status,
     source_status: record.source_status,
     last_checked_date: record.last_checked_date,
+    live_media: liveMedia,
   };
 }
 

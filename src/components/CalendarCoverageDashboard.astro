@@ -1,6 +1,6 @@
 ---
 import SourceFreshnessBadge from './SourceFreshnessBadge.astro';
-import { getTimetableDateContext } from '../data/timetableMeetingRows';
+import { getTimetableDateContext, getTimetableMeetingRows } from '../data/timetableMeetingRows';
 import {
   coverageDashboardGeneratedAt,
   getCoverageDashboardCountries,
@@ -10,6 +10,7 @@ import {
 type Props = { lang?: 'en' | 'ja' };
 const { lang = 'en' } = Astro.props as Props;
 const countries = getCoverageDashboardCountries();
+const timetableRows = getTimetableMeetingRows();
 const freshnessReferenceDate = getTimetableDateContext().today;
 const dimensions: Array<{ key: CoverageDimension; en: string; ja: string }> = [
   { key: 'racecourses', en: 'Racecourses', ja: '競馬場' },
@@ -18,101 +19,40 @@ const dimensions: Array<{ key: CoverageDimension; en: string; ja: string }> = [
   { key: 'times', en: 'Times', ja: '時刻' },
   { key: 'structures', en: 'Structures', ja: 'レース構造' },
 ];
+const mediaSummaryFor = (countryId: string) => {
+  const media = timetableRows
+    .filter((record) => record.country_id === countryId && record.live_media)
+    .map((record) => record.live_media!);
+  return {
+    hasLive: media.length > 0,
+    hasYouTube: media.some((record) => record.platform === 'youtube'),
+  };
+};
 const copy = lang === 'ja'
   ? {
-      title: 'カレンダー Coverage',
-      intro: '公式ソースで確認できる能力と、Where Horses Runでレビュー後に公開済みの範囲を分けて表示します。確認できる能力があっても、未レビューの情報は公開件数には含めません。',
-      source: '公式ソースで確認済み',
-      freshness: 'ソース鮮度',
-      public: 'レビュー済み公開データ',
-      verified: '確認済み',
-      limited: '一部確認',
-      blocked: '未確認',
-      yes: '有',
-      no: '—',
-      meetings: '開催',
-      publicDates: '日付',
-      publicRacecourses: '競馬場',
-      eventRows: 'レース行',
-      timeMeetings: '時刻あり開催',
-      structuredRows: '構造情報あり行',
-      note: 'ソース鮮度は国別集計に使う確認記録の最古の確認日で判定し、30日を超えると再確認推奨です。公開件数は現在コミットされているレビュー済み timetable 全体の集計で、最新開催の有無を保証しません。',
+      title: 'カレンダー Coverage', intro: '公式ソースで確認できる能力と、Where Horses Runでレビュー後に公開済みの範囲を分けて表示します。確認できる能力があっても、未レビューの情報は公開件数には含めません。', source: '公式ソースで確認済み', freshness: 'ソース鮮度', public: 'レビュー済み公開データ', verified: '確認済み', limited: '一部確認', blocked: '未確認', yes: '有', no: '—', meetings: '開催', publicDates: '日付', publicRacecourses: '競馬場', eventRows: 'レース行', timeMeetings: '時刻あり開催', structuredRows: '構造情報あり行', liveAvailable: '公式ライブ導線あり', note: 'ソース鮮度は国別集計に使う確認記録の最古の確認日で判定し、30日を超えると再確認推奨です。公開件数は現在コミットされているレビュー済み timetable 全体の集計で、最新開催の有無を保証しません。',
     }
   : {
-      title: 'Calendar coverage',
-      intro: 'Source capability and reviewed Where Horses Run publication are shown separately. A field can be available from an official source without being counted as published until review is complete.',
-      source: 'Verified source capability',
-      freshness: 'Source freshness',
-      public: 'Reviewed public dataset',
-      verified: 'Verified',
-      limited: 'Limited',
-      blocked: 'Not verified',
-      yes: 'Yes',
-      no: '—',
-      meetings: 'Meetings',
-      publicDates: 'Dates',
-      publicRacecourses: 'Racecourses',
-      eventRows: 'Race rows',
-      timeMeetings: 'Meetings with times',
-      structuredRows: 'Structured race rows',
-      note: 'Source freshness uses the oldest check date among readiness records contributing to each country aggregate; review is due after 30 days. Public counts summarize the committed reviewed timetable dataset and do not guarantee a current meeting.',
+      title: 'Calendar coverage', intro: 'Source capability and reviewed Where Horses Run publication are shown separately. A field can be available from an official source without being counted as published until review is complete.', source: 'Verified source capability', freshness: 'Source freshness', public: 'Reviewed public dataset', verified: 'Verified', limited: 'Limited', blocked: 'Not verified', yes: 'Yes', no: '—', meetings: 'Meetings', publicDates: 'Dates', publicRacecourses: 'Racecourses', eventRows: 'Race rows', timeMeetings: 'Meetings with times', structuredRows: 'Structured race rows', liveAvailable: 'Official live link available', note: 'Source freshness uses the oldest check date among readiness records contributing to each country aggregate; review is due after 30 days. Public counts summarize the committed reviewed timetable dataset and do not guarantee a current meeting.',
     };
 ---
 
 <section class="coverage-dashboard" aria-labelledby="coverage-dashboard-title" data-calendar-coverage-dashboard data-generated-at={coverageDashboardGeneratedAt} data-freshness-reference-date={freshnessReferenceDate}>
-  <header class="coverage-dashboard__header">
-    <div>
-      <p class="coverage-dashboard__eyebrow">Coverage</p>
-      <h2 id="coverage-dashboard-title">{copy.title}</h2>
-      <p>{copy.intro}</p>
-    </div>
-  </header>
-
+  <header class="coverage-dashboard__header"><div><p class="coverage-dashboard__eyebrow">Coverage</p><h2 id="coverage-dashboard-title">{copy.title}</h2><p>{copy.intro}</p></div></header>
   <div class="coverage-dashboard__grid section-grid">
-    {countries.map((country) => (
-      <article
-        class="coverage-card card"
-        data-coverage-country={country.country_id}
-        data-source-status={country.source_status}
-        data-source-checked-date={country.source_checked_date ?? ''}
-        data-public-meetings={country.public.meetings}
-        data-public-dates={country.public.dates}
-        data-public-racecourses={country.public.racecourses}
-        data-public-event-rows={country.public.event_rows}
-      >
-        <div class="coverage-card__title-row">
-          <h3>{lang === 'ja' ? country.country_label_ja : country.country_label}</h3>
-          <span class={`coverage-status coverage-status--${country.source_status}`}>
-            {country.source_status === 'verified' ? copy.verified : country.source_status === 'limited' ? copy.limited : copy.blocked}
-          </span>
-        </div>
-
-        <h4>{copy.source}</h4>
-        <dl class="coverage-dimensions">
-          <div data-coverage-dimension="freshness">
-            <dt>{copy.freshness}</dt>
-            <dd><SourceFreshnessBadge checkedDate={country.source_checked_date} referenceDate={freshnessReferenceDate} lang={lang} /></dd>
-          </div>
-          {dimensions.map((dimension) => (
-            <div data-coverage-dimension={dimension.key} data-confirmed={String(country.source_dimensions[dimension.key])}>
-              <dt>{lang === 'ja' ? dimension.ja : dimension.en}</dt>
-              <dd>{country.source_dimensions[dimension.key] ? copy.yes : copy.no}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <h4>{copy.public}</h4>
-        <dl class="coverage-public-metrics">
-          <div><dt>{copy.meetings}</dt><dd>{country.public.meetings}</dd></div>
-          <div><dt>{copy.publicDates}</dt><dd>{country.public.dates}</dd></div>
-          <div><dt>{copy.publicRacecourses}</dt><dd>{country.public.racecourses}</dd></div>
-          <div><dt>{copy.eventRows}</dt><dd>{country.public.event_rows}</dd></div>
-          <div><dt>{copy.timeMeetings}</dt><dd>{country.public.meetings_with_times}</dd></div>
-          <div><dt>{copy.structuredRows}</dt><dd>{country.public.structured_event_rows}</dd></div>
-        </dl>
-      </article>
-    ))}
+    {countries.map((country) => {
+      const media = mediaSummaryFor(country.country_id);
+      return (
+        <article class="coverage-card card" data-coverage-country={country.country_id} data-source-status={country.source_status} data-source-checked-date={country.source_checked_date ?? ''} data-public-meetings={country.public.meetings} data-public-dates={country.public.dates} data-public-racecourses={country.public.racecourses} data-public-event-rows={country.public.event_rows}>
+          <div class="coverage-card__title-row"><h3>{lang === 'ja' ? country.country_label_ja : country.country_label}</h3><span class={`coverage-status coverage-status--${country.source_status}`}>{country.source_status === 'verified' ? copy.verified : country.source_status === 'limited' ? copy.limited : copy.blocked}</span></div>
+          {media.hasLive && <p><button type="button" data-coverage-filter-country={country.country_label} data-coverage-filter-live={media.hasYouTube ? 'youtube' : 'available'}>▶ {media.hasYouTube ? 'YouTube' : copy.liveAvailable}</button></p>}
+          <h4>{copy.source}</h4>
+          <dl class="coverage-dimensions"><div data-coverage-dimension="freshness"><dt>{copy.freshness}</dt><dd><SourceFreshnessBadge checkedDate={country.source_checked_date} referenceDate={freshnessReferenceDate} lang={lang} /></dd></div>{dimensions.map((dimension) => <div data-coverage-dimension={dimension.key} data-confirmed={String(country.source_dimensions[dimension.key])}><dt>{lang === 'ja' ? dimension.ja : dimension.en}</dt><dd>{country.source_dimensions[dimension.key] ? copy.yes : copy.no}</dd></div>)}</dl>
+          <h4>{copy.public}</h4>
+          <dl class="coverage-public-metrics"><div><dt>{copy.meetings}</dt><dd>{country.public.meetings}</dd></div><div><dt>{copy.publicDates}</dt><dd>{country.public.dates}</dd></div><div><dt>{copy.publicRacecourses}</dt><dd>{country.public.racecourses}</dd></div><div><dt>{copy.eventRows}</dt><dd>{country.public.event_rows}</dd></div><div><dt>{copy.timeMeetings}</dt><dd>{country.public.meetings_with_times}</dd></div><div><dt>{copy.structuredRows}</dt><dd>{country.public.structured_event_rows}</dd></div></dl>
+        </article>
+      );
+    })}
   </div>
-
   <p class="coverage-dashboard__note">{copy.note}</p>
 </section>
