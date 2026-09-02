@@ -70,7 +70,7 @@ async function discoverCurrentOrUpcoming(apiKey) {
 export async function onRequestGet({ request, env }) {
   const apiKey = env?.YOUTUBE_DATA_API_KEY;
   if (!apiKey) {
-    return json({ statuses: [], error: 'live_status_unavailable' }, 503);
+    return json({ configured: false, statuses: [], error: 'live_status_unavailable' }, 503);
   }
 
   try {
@@ -79,8 +79,8 @@ export async function onRequestGet({ request, env }) {
     const status = videoId
       ? await inspectKnownVideo(apiKey, videoId) ?? await discoverCurrentOrUpcoming(apiKey)
       : await discoverCurrentOrUpcoming(apiKey);
-    return json({ statuses: [status] });
+    return json({ configured: true, statuses: [status] });
   } catch {
-    return json({ statuses: [], error: 'live_status_unavailable' }, 503);
+    return json({ configured: false, statuses: [], error: 'live_status_unavailable' }, 503);
   }
 }
