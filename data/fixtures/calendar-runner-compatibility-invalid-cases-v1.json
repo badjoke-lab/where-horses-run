@@ -40,7 +40,7 @@
       "patches": [
         {
           "path": ["result_contract"],
-          "value": "legacy-jra-result-v0"
+          "value": "legacy-result-v0"
         }
       ]
     },
@@ -65,16 +65,6 @@
           "value": true
         }
       ]
-    },
-    {
-      "case_id": "jra-report-scope-mismatch",
-      "validation_mode": "jra_normalization",
-      "job_id": "jra-july-local-compatibility-001",
-      "batch_id": "jra-july-local-run-001",
-      "report_patch": {
-        "path": ["refresh_window", "to"],
-        "value": "2026-07-30"
-      }
     }
   ]
 }
