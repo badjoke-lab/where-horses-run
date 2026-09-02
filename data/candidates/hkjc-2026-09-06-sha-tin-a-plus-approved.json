@@ -4,7 +4,7 @@
   "adapter_id": "hkjc-current-best-available-2026-09-06-sha-tin-a-plus-reviewed-promotion-v1",
   "country_id": "hong-kong",
   "authority_id": "hkjc",
-  "source_id": "hkjc-racecard-public-timetable",
+  "source_id": "hkjc-detail-reviewed-import",
   "candidate_window": {
     "start_date": "2026-09-06",
     "end_date_exclusive": "2026-09-07",
@@ -36,14 +36,14 @@
         {"label":"Race 10","post_time_local":"17:55","race_name":"BATTERY HANDICAP","distance_m":1200,"surface":"Turf","course_label":"A Course"}
       ],
       "source": {
-        "source_id": "hkjc-racecard-public-timetable",
+        "source_id": "hkjc-detail-reviewed-import",
         "official_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/09/06&Racecourse=ST&RaceNo=1",
         "checked_at": "2026-09-02T05:48:34.612Z",
         "extraction_method": "live_racecard_adapter"
       },
       "confidence": "high",
       "review_status": "approved",
-      "notes": "Approved from run 33596141329 artifact 9833462820 after current-canonical delta comparison. Only public-safe A+ timetable fields are promoted."
+      "notes": "Approved from run 33596141329 artifact 9833462820 after current-canonical delta comparison. Acquisition emitted hkjc-racecard-public-timetable; promotion source identity is normalized to the verified inventory record hkjc-detail-reviewed-import. Only public-safe A+ timetable fields are promoted."
     }
   ],
   "review": {
