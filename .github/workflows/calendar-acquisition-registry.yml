@@ -10,12 +10,20 @@ on:
       - 'data/static/authority-source-inventory*.json'
       - 'data/candidates/japan-jra-candidates.json'
       - 'data/candidates/japan-banei-candidates.json'
+      - 'data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json'
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/normalize-nar-schedule-aware-month.mjs'
       - 'scripts/timetable/collect-nar-monthly-candidates.mjs'
+      - 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs'
+      - 'scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs'
+      - 'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs'
+      - 'scripts/check-authority-source-inventory-schema.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-hkjc-detail-reviewed-import.mjs'
+      - 'scripts/check-calendar-route-runner-policy.mjs'
       - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/acquisition-control-plane-contract.md'
       - 'docs/calendar/acquisition-registry.md'
@@ -28,9 +36,19 @@ on:
     paths:
       - 'data/static/calendar-acquisition-registry.schema.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory*.json'
+      - 'data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json'
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - 'scripts/timetable/hkjc-detail-reviewed-import-core.mjs'
+      - 'scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs'
+      - 'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs'
+      - 'scripts/check-authority-source-inventory-schema.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-hkjc-detail-reviewed-import.mjs'
+      - 'scripts/check-calendar-route-runner-policy.mjs'
       - 'scripts/check-calendar-contracts.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/acquisition-control-plane-contract.md'
       - 'docs/calendar/acquisition-registry.md'
@@ -58,7 +76,11 @@ jobs:
       - name: Check Node syntax
         run: |
           node --check scripts/timetable/load-calendar-acquisition-registry.mjs
+          node --check scripts/timetable/hkjc-detail-reviewed-import-core.mjs
+          node --check scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs
+          node --check scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs
           node --check scripts/check-calendar-acquisition-registry.mjs
+          node --check scripts/check-calendar-hkjc-detail-reviewed-import.mjs
           node --check scripts/check-calendar-contracts.mjs
 
       - name: Validate Acquisition Registry contract and current profiles
@@ -66,6 +88,11 @@ jobs:
 
       - name: Validate authority/source compatibility
         run: node scripts/check-authority-source-inventory-schema.mjs
+
+      - name: Validate HKJC reviewed-import contract
+        run: |
+          node scripts/check-calendar-hkjc-detail-reviewed-import.mjs
+          node scripts/check-calendar-route-runner-policy.mjs
 
       - name: Validate Calendar contracts and governance
         run: |
