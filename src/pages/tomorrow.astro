@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../components/CalendarDateStatus.astro';
-import CalendarOperationsNotice from '../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
@@ -15,27 +14,26 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 ---
 
 <BaseLayout
-  title={`Tomorrow's timetable — ${context.tomorrow} | Where Horses Run`}
-  description={`Reviewed public meeting information for ${context.tomorrow}, resolved from the ${context.timeZone} reference date.`}
+  title={`Tomorrow's racing — ${context.tomorrow} | Where Horses Run`}
+  description={`See racing listed for ${context.tomorrow}, including available race times and links to official sources.`}
   canonicalPath="/tomorrow/"
   alternatePath="/ja/tomorrow/"
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Tomorrow</p>
-    <h1 id="page-title">Tomorrow's timetable</h1>
+    <p class="hero__eyebrow">Tomorrow’s racing</p>
+    <h1 id="page-title">Tomorrow’s racing</h1>
     <p class="hero__summary">
-      Meetings for {context.tomorrow}, the day after the {context.today} reference date in {context.timeZone}.
+      Meetings listed for {context.tomorrow}. Available race times are shown where confirmed.
     </p>
   </section>
 
-  <CalendarDateStatus context={context} dataState={dataState} />
-  <CalendarOperationsNotice records={tomorrowRecords} dataState={dataState} />
+  <CalendarDateStatus context={context} dataState={dataState} displayDate={context.tomorrow} />
 
   <section aria-label="Tomorrow meeting list">
     <TimetableMeetingList
       records={tomorrowRecords}
       date={context.tomorrow}
-      emptyLabel={`No reviewed public meetings are listed for ${context.tomorrow}. Check official sources for current information.`}
+      emptyLabel={`No meetings are currently listed for ${context.tomorrow}. Check official sources for the latest information.`}
     />
   </section>
 </BaseLayout>

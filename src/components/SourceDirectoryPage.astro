@@ -17,10 +17,10 @@ const isJapanese = locale === 'ja';
 ---
 
 <BaseLayout
-  title={isJapanese ? 'ソース | 競馬どこ？' : 'Sources | Where Horses Run'}
+  title={isJapanese ? '公式情報源 | 競馬どこ？' : 'Official Sources | Where Horses Run'}
   description={isJapanese
-    ? '競馬の開催日程、競馬場、国・地域情報の確認に使う公式ソースを、キーワードまたは国・地域から探せます。'
-    : 'Find official sources used to confirm racing calendars, racecourses, countries, and public timetable coverage by keyword or country.'}
+    ? '競馬の日程、競馬場、開催情報を確認できる公式サイトを、名称や国・地域から探せます。'
+    : 'Find official websites for checking racing schedules, racecourses, and meeting information by name or country.'}
   lang={locale}
   canonicalPath={isJapanese ? '/ja/sources/' : '/sources/'}
   alternatePath={isJapanese ? '/sources/' : '/ja/sources/'}
@@ -33,27 +33,26 @@ const isJapanese = locale === 'ja';
     data-source-url-parameters="2"
   >
     <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">Sources</p>
-      <h1 id="page-title">{isJapanese ? 'ソース' : 'Sources'}</h1>
+      <p class="hero__eyebrow">{isJapanese ? '公式サイト' : 'Official websites'}</p>
+      <h1 id="page-title">{isJapanese ? '公式情報源' : 'Official Sources'}</h1>
       <p class="hero__summary">
         {isJapanese
-          ? '開催日程、競馬場、国・地域情報の確認に使う公式ページへの案内です。掲載範囲が限定される場合は、各公式ページで最終確認してください。'
-          : 'Official pages used to confirm calendars, racecourses, countries, and public timetable coverage. Use the linked official page for final confirmation when coverage is limited.'}
+          ? '競馬の日程や競馬場、開催内容を確認できる公式サイトをまとめています。'
+          : 'Official websites where you can check racing schedules, racecourses, and meeting details.'}
       </p>
-      <p>{isJapanese ? `${records.length}件の公式ソースを掲載しています。` : `${records.length} official source records are listed.`}</p>
     </section>
 
     <section class="card" aria-labelledby="source-filter-heading">
-      <h2 id="source-filter-heading">{isJapanese ? 'ソースを探す' : 'Find a source'}</h2>
+      <h2 id="source-filter-heading">{isJapanese ? '公式サイトを探す' : 'Find an official source'}</h2>
       <form data-source-filter-form role="search">
         <p>
-          <label for="source-filter-query"><strong>{isJapanese ? '名称・URL・キーワード' : 'Name, URL, or keyword'}</strong></label><br />
+          <label for="source-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
           <input
             id="source-filter-query"
             name="q"
             type="search"
             autocomplete="off"
-            placeholder={isJapanese ? '例：JRA、calendar、racecourse' : 'Example: JRA, calendar, racecourse'}
+            placeholder={isJapanese ? '例：JRA、開催日程、競馬場' : 'Example: JRA, calendar, racecourse'}
             data-source-filter-query
           />
         </p>
@@ -74,12 +73,12 @@ const isJapanese = locale === 'ja';
       </p>
       <noscript>
         <p>{isJapanese
-          ? 'JavaScriptが無効な場合も、下の全ソース一覧を利用できます。'
-          : 'With JavaScript disabled, the complete linked source list remains available below.'}</p>
+          ? 'JavaScriptが無効な場合も、下の一覧から公式サイトを選べます。'
+          : 'With JavaScript disabled, the complete list of official sources remains available below.'}</p>
       </noscript>
     </section>
 
-    <section class="section-grid" aria-label={isJapanese ? '公式ソース一覧' : 'Official source list'} data-source-filter-results>
+    <section class="section-grid" aria-label={isJapanese ? '公式情報源一覧' : 'Official source list'} data-source-filter-results>
       {records.map((record) => (
         <article
           class="card"
@@ -93,15 +92,13 @@ const isJapanese = locale === 'ja';
             <strong>{isJapanese ? '国・地域' : 'Country or region'}:</strong>{' '}
             {record.countryHref ? <a href={record.countryHref}>{record.countryName}</a> : record.countryName}
           </p>
-          <p><strong>{isJapanese ? 'ソース' : 'Source'}:</strong> {isJapanese ? '公式' : 'Official'}</p>
-          <p><strong>{isJapanese ? '公開上の用途' : 'Public use'}:</strong> {isJapanese ? '公式情報の確認リンク' : 'Link for official confirmation'}</p>
           <p>{record.notes}</p>
         </article>
       ))}
     </section>
 
     <section class="card" data-source-filter-empty hidden>
-      <h2>{isJapanese ? '該当するソースがありません' : 'No matching sources'}</h2>
+      <h2>{isJapanese ? '該当する公式サイトがありません' : 'No matching official sources'}</h2>
       <p>{isJapanese
         ? 'キーワードを短くするか、国・地域を「すべて」に戻してください。'
         : 'Try a shorter keyword or reset the country filter to All.'}</p>

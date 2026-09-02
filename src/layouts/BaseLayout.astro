@@ -56,8 +56,8 @@ const navigationItems = [
   { href: isJapanese ? '/ja/countries/' : '/countries/', label: isJapanese ? '国・地域' : 'Countries' },
   { href: isJapanese ? '/ja/tracks/' : '/tracks/', label: isJapanese ? '競馬場' : 'Racecourses' },
   { href: isJapanese ? '/ja/types/' : '/types/', label: isJapanese ? '競馬種別' : 'Racing Types' },
-  { href: isJapanese ? '/ja/glossary/' : '/glossary/', label: isJapanese ? '用語' : 'Glossary' },
-  { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? 'ソース' : 'Sources' },
+  { href: isJapanese ? '/ja/glossary/' : '/glossary/', label: isJapanese ? '用語集' : 'Glossary' },
+  { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? '公式情報源' : 'Sources' },
 ];
 const isCurrentNavigationItem = (href: string) =>
   canonicalPathname === href || canonicalPathname.startsWith(href);
@@ -72,7 +72,7 @@ const ogLocale = isJapanese ? 'ja_JP' : 'en_US';
 const alternateOgLocale = isJapanese ? 'en_US' : 'ja_JP';
 const socialImageUrl = `${siteUrl}/social/whr-social-card-v1.png`;
 const socialImageAlt = isJapanese
-  ? 'Where Horses Run / 競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。'
+  ? '競馬どこ？ のソーシャルカード。競馬場の楕円コースを図案化した画像。'
   : 'Where Horses Run social card with a stylized racecourse oval.';
 ---
 
@@ -206,7 +206,7 @@ const socialImageAlt = isJapanese
 
       <footer class="site-footer">
         <div class="site-footer__inner">
-          <p>{isJapanese ? 'Where Horses Run / 競馬どこ？ は公式ソースへの案内を重視する静的中心サイトです。' : 'Where Horses Run is a static-first guide to official horse racing calendars, timetables, racecourses, racing types, and sources.'}</p>
+          <p>{isJapanese ? '競馬の開催情報、競馬場、競馬種別、公式情報を探せます。' : 'Find racing calendars, meetings, racecourses, racing types, and official sources.'}</p>
         </div>
       </footer>
     </div>

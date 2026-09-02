@@ -23,51 +23,42 @@ type Props = {
   context: CalendarContext;
   dataState: CalendarDataState;
   lang?: 'en' | 'ja';
+  displayDate?: string;
 };
 
-const { context, dataState, lang = 'en' } = Astro.props as Props;
-const sourceLabel = lang === 'ja'
-  ? context.referenceSource === 'reference_date_override'
-    ? '指定基準日'
-    : context.referenceSource === 'source_date_epoch'
-      ? '再現可能ビルド時刻'
-      : 'ビルド時刻'
-  : context.referenceSource === 'reference_date_override'
-    ? 'explicit reference date'
-    : context.referenceSource === 'source_date_epoch'
-      ? 'reproducible build timestamp'
-      : 'build clock';
-
+const { context, dataState, lang = 'en', displayDate } = Astro.props as Props;
 const isStaleGeneration = dataState.status === 'stale_generation_with_window_records';
-const staleLabel = lang === 'ja' ? 'データ鮮度警告' : 'Stale data warning';
 const statusText = lang === 'ja'
   ? dataState.status === 'records_before_window'
-    ? `現在の公開データは表示期間より前のものです。最新の掲載開催日は ${dataState.latestRecordDate ?? '未掲載'}、公開データ生成日は ${dataState.generatedDate} です。最新情報は公式ソースで確認してください。`
+    ? `掲載中の開催情報は現在の表示期間より前のものです。最新の掲載日は ${dataState.latestRecordDate ?? '未掲載'} です。最新情報は公式情報源で確認してください。`
     : dataState.status === 'records_after_window'
-      ? `公開データには表示期間より後の開催のみがあります。最初の掲載開催日は ${dataState.earliestRecordDate ?? '未掲載'} です。`
+      ? `掲載中の開催情報は現在の表示期間より後のものです。最初の掲載日は ${dataState.earliestRecordDate ?? '未掲載'} です。`
       : dataState.status === 'no_public_records'
-        ? '現在、確認済みの公開開催データはありません。最新情報は公式ソースで確認してください。'
+        ? '現在、この期間の開催情報は掲載されていません。最新情報は公式情報源で確認してください。'
         : dataState.status === 'stale_generation_with_window_records'
-          ? `表示期間内の開催がありますが、公開データ生成日は ${dataState.generatedDate} です。最終確認は各開催の公式ソースで行ってください。`
-          : `表示期間内に ${dataState.windowRecordCount} 件の確認済み開催があります。公開データ生成日は ${dataState.generatedDate} です。`
+          ? `掲載情報の更新日は ${dataState.generatedDate} です。最新情報は各開催の公式情報源で確認してください。`
+          : `掲載情報の更新日: ${dataState.generatedDate}`
   : dataState.status === 'records_before_window'
-    ? `The current public data is older than this display window. The latest listed meeting date is ${dataState.latestRecordDate ?? 'not listed'}, and the public projection was generated on ${dataState.generatedDate}. Check official sources for current information.`
+    ? `The listed meetings are older than the current display window. The latest listed date is ${dataState.latestRecordDate ?? 'not listed'}. Check official sources for current information.`
     : dataState.status === 'records_after_window'
-      ? `The public data contains meetings only after this display window. The earliest listed meeting date is ${dataState.earliestRecordDate ?? 'not listed'}.`
+      ? `The listed meetings are later than the current display window. The earliest listed date is ${dataState.earliestRecordDate ?? 'not listed'}.`
       : dataState.status === 'no_public_records'
-        ? 'No reviewed public meeting data is currently available. Check official sources for current information.'
+        ? 'No meetings are currently listed for this period. Check official sources for current information.'
         : dataState.status === 'stale_generation_with_window_records'
-          ? `Meetings fall inside the display window, but the public projection was generated on ${dataState.generatedDate}. Use each meeting's official source for final confirmation.`
-          : `${dataState.windowRecordCount} reviewed meetings fall inside the display window. The public projection was generated on ${dataState.generatedDate}.`;
+          ? `This information was last updated on ${dataState.generatedDate}. Check each meeting's official source for the latest information.`
+          : `Last updated: ${dataState.generatedDate}`;
 ---
 
 <aside class="calendar-date-status" data-calendar-data-status={dataState.status}>
   <p>
-    {lang === 'ja' ? '基準日' : 'Reference date'}: <strong>{context.today}</strong>
-    · {lang === 'ja' ? '基準タイムゾーン' : 'Reference timezone'}: <strong>{context.timeZone}</strong>
-    · {lang === 'ja' ? '決定方法' : 'Resolved from'}: {sourceLabel}
+    {displayDate ? (
+      <>{lang === 'ja' ? '対象日' : 'Date'}: <strong>{displayDate}</strong></>
+    ) : (
+      <>{lang === 'ja' ? '表示期間' : 'Display period'}: <strong>{context.windowStart}</strong>–<strong>{context.windowEndInclusive}</strong></>
+    )}
+    {' '}· {lang === 'ja' ? '時刻基準' : 'Timezone'}: <strong>{context.timeZone}</strong>
   </p>
-  <p>{isStaleGeneration && <strong>{staleLabel}: </strong>}{statusText}</p>
+  <p>{isStaleGeneration && <strong>{lang === 'ja' ? '更新情報: ' : 'Update notice: '}</strong>}{statusText}</p>
 </aside>
 
 <style>

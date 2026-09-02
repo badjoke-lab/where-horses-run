@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../components/CalendarDateStatus.astro';
-import CalendarOperationsNotice from '../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
@@ -15,27 +14,26 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
 ---
 
 <BaseLayout
-  title={`Today's timetable — ${context.today} | Where Horses Run`}
-  description={`Reviewed public meeting information for ${context.today}, resolved in ${context.timeZone}. Official sources remain the final confirmation point.`}
+  title={`Today's racing — ${context.today} | Where Horses Run`}
+  description={`See racing listed for ${context.today}, including available race times and links to official sources.`}
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Today</p>
-    <h1 id="page-title">Today's timetable</h1>
+    <p class="hero__eyebrow">Today’s racing</p>
+    <h1 id="page-title">Today’s racing</h1>
     <p class="hero__summary">
-      Meetings for {context.today} in the {context.timeZone} reference timezone. Rank controls how much timing detail is shown.
+      Meetings listed for {context.today}. Available race times are shown where confirmed.
     </p>
   </section>
 
-  <CalendarDateStatus context={context} dataState={dataState} />
-  <CalendarOperationsNotice records={todayRecords} dataState={dataState} />
+  <CalendarDateStatus context={context} dataState={dataState} displayDate={context.today} />
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
       records={todayRecords}
       date={context.today}
-      emptyLabel={`No reviewed public meetings are listed for ${context.today}. Check official sources for current information.`}
+      emptyLabel={`No meetings are currently listed for ${context.today}. Check official sources for the latest information.`}
     />
   </section>
 </BaseLayout>
