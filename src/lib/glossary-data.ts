@@ -37,6 +37,11 @@ const hiddenPublicGlossaryIds = new Set([
   'racecourse-operator',
 ]);
 
+const publicCopyPatchIdAliases = new Map<string, string>([
+  ['all-weather-course', 'all-weather'],
+  ['course-using-both-directions', 'both-directions-course'],
+]);
+
 const order = baselineGlossary.map((entry) => entry.id);
 const byId = new Map<string, GlossaryRecord>(
   baselineGlossary.map((entry) => [entry.id, entry] as const),
@@ -76,9 +81,11 @@ for (const patch of relationshipGraphPatches) {
 }
 
 for (const patch of publicCopyPatches) {
-  const current = byId.get(patch.id);
+  const targetId = publicCopyPatchIdAliases.get(patch.id) ?? patch.id;
+  const current = byId.get(targetId);
   if (!current) throw new Error(`Unknown public glossary copy-patch ID: ${patch.id}`);
-  byId.set(patch.id, { ...current, ...patch } as GlossaryRecord);
+  const { id: _patchId, ...copyFields } = patch;
+  byId.set(targetId, { ...current, ...copyFields } as GlossaryRecord);
 }
 
 const glossary = order.map((id) => byId.get(id)!);
