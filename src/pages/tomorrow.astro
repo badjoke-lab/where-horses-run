@@ -27,7 +27,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
     </p>
   </section>
 
-  <CalendarDateStatus context={context} dataState={dataState} />
+  <CalendarDateStatus context={context} dataState={dataState} displayDate={context.tomorrow} />
 
   <section aria-label="Tomorrow meeting list">
     <TimetableMeetingList
