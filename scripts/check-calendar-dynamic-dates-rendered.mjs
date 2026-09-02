@@ -47,14 +47,18 @@ const state = evaluateCalendarDataState({ records, generatedAt: publicData.gener
 const windowRecords = filterRecordsForWindow(records, context.windowStart, context.windowEndExclusive);
 const todayRecords = filterRecordsForDate(records, context.today);
 const tomorrowRecords = filterRecordsForDate(records, context.tomorrow);
+const fixedCalendarHeadings = [
+  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
+  /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
+];
 
 for (const [name, html] of Object.entries(pages)) {
   if (!html.includes(timeZone)) fail(`${name} does not show reference timezone ${timeZone}.`);
   if (!html.includes(`data-calendar-data-status="${state.status}"`)) {
     fail(`${name} must report ${state.status}.`);
   }
-  if (html.includes('June 2026 Calendar') || html.includes('2026年6月 開催カレンダー')) {
-    fail(`${name} retains fixed June Calendar copy.`);
+  for (const pattern of fixedCalendarHeadings) {
+    if (pattern.test(html)) fail(`${name} retains fixed month/year Calendar copy.`);
   }
 }
 
@@ -100,4 +104,4 @@ console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
 console.log(`TOMORROW_MEETINGS: ${tomorrowRecords.length}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
 console.log('COMPACT_MEETING_ROWS: pass');
-console.log('FIXED_JUNE_COPY: 0');
+console.log('FIXED_MONTH_YEAR_COPY: 0');
