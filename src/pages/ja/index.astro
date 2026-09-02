@@ -69,7 +69,7 @@ const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJa
     <article class="card">
       <h2><a href="/ja/tracks/">競馬場から探す</a></h2>
       <p>競馬場ごとの場所、開催情報、コース情報、公式サイトを確認できます。</p>
-      <ul>{racecourses.map((track) => <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city}</li>)}</ul>
+      <ul>{racecourses.map((track) => <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
