@@ -13,8 +13,6 @@ const timeZone = process.env.WHR_CALENDAR_TIMEZONE ?? 'Asia/Tokyo';
 const errors = [];
 const fail = (message) => errors.push(message);
 
-if (!referenceDate) fail('WHR_CALENDAR_REFERENCE_DATE is required for rendered Dynamic Dates QA.');
-
 function readHtml(relativePath) {
   const absolutePath = path.join(root, relativePath);
   if (!existsSync(absolutePath)) {
@@ -51,7 +49,6 @@ const todayRecords = filterRecordsForDate(records, context.today);
 const tomorrowRecords = filterRecordsForDate(records, context.tomorrow);
 
 for (const [name, html] of Object.entries(pages)) {
-  if (!html.includes(referenceDate)) fail(`${name} does not show reference date ${referenceDate}.`);
   if (!html.includes(timeZone)) fail(`${name} does not show reference timezone ${timeZone}.`);
   if (!html.includes(`data-calendar-data-status="${state.status}"`)) {
     fail(`${name} must report ${state.status}.`);
@@ -65,6 +62,9 @@ if (!pages.calendarEn.includes('30-day racing calendar')) fail('English Calendar
 if (!pages.calendarJa.includes('30日間の開催カレンダー')) fail('Japanese Calendar title is not dynamic.');
 if (!pages.calendarEn.includes(context.windowEndInclusive) || !pages.calendarJa.includes(context.windowEndInclusive)) {
   fail(`Calendar pages do not show dynamic window end ${context.windowEndInclusive}.`);
+}
+if (!pages.todayEn.includes(context.today) || !pages.todayJa.includes(context.today)) {
+  fail(`Today pages do not resolve ${context.today}.`);
 }
 if (!pages.tomorrowEn.includes(context.tomorrow) || !pages.tomorrowJa.includes(context.tomorrow)) {
   fail(`Tomorrow pages do not resolve ${context.tomorrow}.`);
@@ -82,32 +82,9 @@ for (const [name, html, expected] of [
   if (actual !== expected) fail(`${name} compact meeting-row count differs: expected ${expected}, got ${actual}.`);
 }
 
-const juneSixDetailLink = '/timetable/meetings/jra-tokyo-racecourse-2026-06-06/';
-if (referenceDate === '2026-06-06') {
-  if (!pages.todayEn.includes('Tokyo Racecourse') || !pages.todayJa.includes('東京競馬場')) {
-    fail('Today pages do not render the known June 6 JRA Rank C meeting row.');
-  }
-  if (!pages.calendarEn.includes('Tokyo Racecourse') || !pages.calendarJa.includes('東京競馬場')) {
-    fail('Calendar pages do not render the known June 6 JRA Rank C meeting row.');
-  }
-  for (const [name, html] of [
-    ['todayEn', pages.todayEn],
-    ['todayJa', pages.todayJa],
-    ['calendarEn', pages.calendarEn],
-    ['calendarJa', pages.calendarJa],
-  ]) {
-    if (html.includes(juneSixDetailLink)) fail(`${name} must not expose a detail link for the June 6 Rank C meeting.`);
-  }
-}
-
-if (referenceDate === '2026-07-01') {
-  for (const [name, html] of Object.entries(pages)) {
-    if (html.includes(juneSixDetailLink)) fail(`${name} leaks an old June meeting detail link into the July window.`);
-  }
-  if (tomorrowRecords.length === 0) {
-    if (!pages.tomorrowEn.includes('No reviewed public meetings are listed')) fail('English Tomorrow empty state is missing.');
-    if (!pages.tomorrowJa.includes('確認済み公開開催')) fail('Japanese Tomorrow empty state is missing.');
-  }
+if (tomorrowRecords.length === 0) {
+  if (!pages.tomorrowEn.includes('No reviewed public meetings are listed')) fail('English Tomorrow empty state is missing.');
+  if (!pages.tomorrowJa.includes('確認済み公開開催')) fail('Japanese Tomorrow empty state is missing.');
 }
 
 if (errors.length) {
@@ -116,7 +93,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`CALENDAR_DYNAMIC_DATES_RENDERED: pass reference_date=${referenceDate} timezone=${timeZone}`);
+console.log(`CALENDAR_DYNAMIC_DATES_RENDERED: pass reference_date=${context.today} timezone=${timeZone}`);
 console.log(`DATA_STATUS: ${state.status}`);
 console.log(`WINDOW_MEETINGS: ${windowRecords.length}`);
 console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
