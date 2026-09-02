@@ -65,83 +65,93 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
 <script is:inline>
   (() => {
-    const root = document.querySelector('[data-calendar-filters]');
-    if (!root) return;
+    const init = () => {
+      const root = document.querySelector('[data-calendar-filters]');
+      if (!root || root.dataset.filterReady === 'true') return;
 
-    const search = root.querySelector('[data-filter-search]');
-    const country = root.querySelector('[data-filter-country]');
-    const authority = root.querySelector('[data-filter-authority]');
-    const rank = root.querySelector('[data-filter-rank]');
-    const live = root.querySelector('[data-filter-live]');
-    const date = root.querySelector('[data-filter-date]');
-    const reset = root.querySelector('[data-filter-reset]');
-    const result = root.querySelector('[data-filter-result]');
-    const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')];
-    const groups = [...document.querySelectorAll('[data-calendar-date-group]')];
-    const isJa = document.documentElement.lang === 'ja';
+      const search = root.querySelector('[data-filter-search]');
+      const country = root.querySelector('[data-filter-country]');
+      const authority = root.querySelector('[data-filter-authority]');
+      const rank = root.querySelector('[data-filter-rank]');
+      const live = root.querySelector('[data-filter-live]');
+      const date = root.querySelector('[data-filter-date]');
+      const reset = root.querySelector('[data-filter-reset]');
+      const result = root.querySelector('[data-filter-result]');
+      const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')];
+      const groups = [...document.querySelectorAll('[data-calendar-date-group]')];
+      const isJa = document.documentElement.lang === 'ja';
 
-    if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) ||
-        !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement) ||
-        !(live instanceof HTMLSelectElement) || !(date instanceof HTMLSelectElement) ||
-        !(reset instanceof HTMLButtonElement)) return;
+      if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) ||
+          !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement) ||
+          !(live instanceof HTMLSelectElement) || !(date instanceof HTMLSelectElement) ||
+          !(reset instanceof HTMLButtonElement)) return;
 
-    const normalize = (value) => value.trim().toLocaleLowerCase();
-    const apply = () => {
-      const query = normalize(search.value);
-      let visible = 0;
-      for (const row of rows) {
-        if (!(row instanceof HTMLElement)) continue;
-        const matches = (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
-          (!country.value || row.dataset.country === country.value) &&
-          (!authority.value || row.dataset.authority === authority.value) &&
-          (!rank.value || row.dataset.rank === rank.value) &&
-          (!date.value || row.dataset.date === date.value) &&
-          (!live.value ||
-            (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
-            (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
-        row.hidden = !matches;
-        if (matches) visible += 1;
+      root.dataset.filterReady = 'true';
+
+      const normalize = (value) => value.trim().toLocaleLowerCase();
+      const apply = () => {
+        const query = normalize(search.value);
+        let visible = 0;
+        for (const row of rows) {
+          if (!(row instanceof HTMLElement)) continue;
+          const matches = (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
+            (!country.value || row.dataset.country === country.value) &&
+            (!authority.value || row.dataset.authority === authority.value) &&
+            (!rank.value || row.dataset.rank === rank.value) &&
+            (!date.value || row.dataset.date === date.value) &&
+            (!live.value ||
+              (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
+              (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
+          row.hidden = !matches;
+          if (matches) visible += 1;
+        }
+
+        for (const group of groups) {
+          if (!(group instanceof HTMLElement)) continue;
+          group.hidden = ![...group.querySelectorAll('[data-calendar-meeting-row]')]
+            .some((row) => row instanceof HTMLElement && !row.hidden);
+        }
+
+        if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
+      };
+
+      for (const control of [search, country, authority, rank, live, date]) {
+        control.addEventListener('input', apply);
+        control.addEventListener('change', apply);
       }
 
-      for (const group of groups) {
-        if (!(group instanceof HTMLElement)) continue;
-        group.hidden = ![...group.querySelectorAll('[data-calendar-meeting-row]')]
-          .some((row) => row instanceof HTMLElement && !row.hidden);
-      }
+      reset.addEventListener('click', () => {
+        search.value = '';
+        country.value = '';
+        authority.value = '';
+        rank.value = '';
+        live.value = '';
+        date.value = '';
+        history.replaceState(null, '', location.pathname);
+        apply();
+      });
 
-      if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const countryTrigger = target.closest('[data-coverage-filter-country]');
+        if (countryTrigger instanceof HTMLElement) {
+          country.value = countryTrigger.dataset.coverageFilterCountry || '';
+          if (countryTrigger.dataset.coverageFilterLive) live.value = countryTrigger.dataset.coverageFilterLive;
+          apply();
+          root.scrollIntoView({ block: 'center' });
+        }
+      });
+
+      const requestedDate = new URLSearchParams(location.search).get('date');
+      if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
+      apply();
     };
 
-    for (const control of [search, country, authority, rank, live, date]) {
-      control.addEventListener('input', apply);
-      control.addEventListener('change', apply);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
     }
-
-    reset.addEventListener('click', () => {
-      search.value = '';
-      country.value = '';
-      authority.value = '';
-      rank.value = '';
-      live.value = '';
-      date.value = '';
-      history.replaceState(null, '', location.pathname);
-      apply();
-    });
-
-    document.addEventListener('click', (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const countryTrigger = target.closest('[data-coverage-filter-country]');
-      if (countryTrigger instanceof HTMLElement) {
-        country.value = countryTrigger.dataset.coverageFilterCountry || '';
-        if (countryTrigger.dataset.coverageFilterLive) live.value = countryTrigger.dataset.coverageFilterLive;
-        apply();
-        root.scrollIntoView({ block: 'center' });
-      }
-    });
-
-    const requestedDate = new URLSearchParams(location.search).get('date');
-    if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
-    apply();
   })();
 </script>
