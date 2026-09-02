@@ -44,7 +44,7 @@ function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null) 
   return url.href;
 }
 
-async function fetchHtml(url, fetchImpl) {
+async function fetchHtml(url, fetchImpl, { allowNotFound = false } = {}) {
   const response = await fetchImpl(url, {
     method: 'GET',
     redirect: 'follow',
@@ -54,6 +54,7 @@ async function fetchHtml(url, fetchImpl) {
     },
     signal: AbortSignal.timeout(20_000),
   });
+  if (allowNotFound && response.status === 404) return null;
   if (!response.ok) throw new Error(`TJK annual programme fetch failed: HTTP ${response.status} ${url}`);
   return response.text();
 }
@@ -115,14 +116,18 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
 
   const firstUrl = buildQueryUrl(ANNUAL_DATA_URL, startDate, endDateInclusive);
   const firstHtml = await fetchHtml(firstUrl, fetchImpl);
-  pages.push({ page_number: 0, url: firstUrl });
+  pages.push({ page_number: 0, url: firstUrl, status: 'ok' });
   for (const fixture of extractAnnualFixtures(firstHtml, { startDate, endDateExclusive })) all.set(fixture.candidate_id, fixture);
 
   for (let pageNumber = 1; pageNumber <= maxPages; pageNumber += 1) {
     const pageUrl = buildQueryUrl(ANNUAL_ROWS_URL, startDate, endDateInclusive, pageNumber);
-    const html = await fetchHtml(pageUrl, fetchImpl);
+    const html = await fetchHtml(pageUrl, fetchImpl, { allowNotFound: true });
+    if (html === null) {
+      pages.push({ page_number: pageNumber, url: pageUrl, status: 'not_found_end' });
+      break;
+    }
     const pageFixtures = extractAnnualFixtures(html, { startDate, endDateExclusive });
-    pages.push({ page_number: pageNumber, url: pageUrl });
+    pages.push({ page_number: pageNumber, url: pageUrl, status: 'ok' });
     let added = 0;
     for (const fixture of pageFixtures) {
       if (!all.has(fixture.candidate_id)) added += 1;
