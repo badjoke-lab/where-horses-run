@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-02T11:58:00Z",
+  "generated_at": "2026-09-02T13:12:00Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -43,6 +43,7 @@
     "data/candidates/tjk-2026-09-01-two-a-automated-approved.json",
     "data/candidates/tjk-current-2026-08-11-approved.json",
     "data/candidates/uae-four-rank-a-automated-approved-20260901.json",
+    "data/candidates/uae-meydan-2026-09-30-c-approved.json",
     "data/generated/japan-active-timetable-records.json",
     "data/generated/normalized-timetable.json",
     "data/generated/timetable/hkjc-normalized-timetable.sample.json",
@@ -12809,6 +12810,35 @@
         "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-26T08:23:00Z."
       },
       "notes": "Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed."
+    },
+    {
+      "meeting_id": "era-meydan-racecourse-2026-09-30",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "meydan-racecourse",
+      "date": "2026-09-30",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "era-season-calendar",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://emiratesracing.com/season-calendar/current-season",
+        "source_label": "Emirates Racing Authority",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "data/candidates/uae-meydan-2026-09-30-c-approved.json"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-02",
+        "generated_at": "2026-09-02T13:08:57.935Z",
+        "stale_after_date": null,
+        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-09-02T13:12:00Z."
+      },
+      "notes": "Approved from exact ERA current-season discovery run. Official fixture is published for Meydan on 2026-09-30; race-level detail is not yet available, so publication remains Rank C. Acquisition source id normalized from the operational era-current-season-calendar label to the verified inventory id era-season-calendar."
     }
   ]
 }
