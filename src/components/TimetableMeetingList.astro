@@ -73,6 +73,34 @@ const jaCountryLabelById: Record<string, string> = {
   turkey: 'トルコ',
 };
 
+const narLiveDetectorByRacecourseId: Record<string, string> = {
+  'monbetsu-racecourse': 'nar-monbetsu-youtube-live-2026',
+  'morioka-racecourse': 'nar-iwate-youtube-live-2026',
+  'mizusawa-racecourse': 'nar-iwate-youtube-live-2026',
+  'urawa-racecourse': 'nar-urawa-youtube-live-2026',
+  'funabashi-racecourse': 'nar-funabashi-youtube-live-2026',
+  'oi-racecourse': 'nar-oi-youtube-live-2026',
+  'kawasaki-racecourse': 'nar-kawasaki-youtube-live-2026',
+  'kanazawa-racecourse': 'nar-kanazawa-youtube-live-2026',
+  'kasamatsu-racecourse': 'nar-kasamatsu-youtube-live-2026',
+  'nagoya-racecourse': 'nar-nagoya-youtube-live-2026',
+  'sonoda-racecourse': 'nar-hyogo-youtube-live-2026',
+  'himeji-racecourse': 'nar-hyogo-youtube-live-2026',
+  'kochi-racecourse': 'nar-kochi-youtube-live-2026',
+  'saga-racecourse': 'nar-saga-youtube-live-2026',
+};
+
+const liveDetectorIdFor = (record: TimetableMeetingRow) => {
+  if (record.authority_id === 'jra') return 'jra-youtube-live-2026';
+  if (record.authority_id === 'banei-tokachi' && record.racecourse_id === 'obihiro-racecourse') {
+    return 'banei-youtube-live-2026';
+  }
+  if (record.authority_id === 'nar-local-government-racing') {
+    return narLiveDetectorByRacecourseId[record.racecourse_id] ?? '';
+  }
+  return '';
+};
+
 const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detailPath}` : detailPath;
 const displayRacecourse = (record: TimetableMeetingRow) =>
   lang === 'ja' ? jaRacecourseLabelById[record.racecourse_id] ?? record.racecourse_name : record.racecourse_name;
@@ -119,6 +147,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
             const country = displayCountry(record);
             const authority = displayAuthority(record);
             const mediaLabel = record.live_media?.platform === 'youtube' ? text.youtube : text.liveStream;
+            const liveDetectorId = liveDetectorIdFor(record);
             return (
               <li
                 class="meeting-row"
@@ -132,6 +161,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                 data-live-available={String(record.live_media !== null)}
                 data-live-platform={record.live_media?.platform ?? ''}
                 data-media-id={record.live_media?.id ?? ''}
+                data-live-detector-id={liveDetectorId}
               >
                 <div class="meeting-row__identity">
                   <strong>{racecourse}</strong>
