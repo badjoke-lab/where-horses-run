@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-due-job-policy-v1",
-  "policy_version": "calendar-due-job-policy-2026-07-19",
+  "policy_version": "calendar-due-job-policy-2026-09-02",
   "scheduler": {
     "cadence_hours": 24,
     "max_jobs_per_plan": 64,
@@ -45,24 +45,24 @@
       "regular_refresh": {
         "enabled": true,
         "freshness_threshold_hours": 24,
-        "meeting_proximity_days": 2,
+        "meeting_proximity_days": 3,
         "proximity_min_age_hours": 12,
-        "window_days": 14,
+        "window_days": 30,
         "horizon_buffer_days": 3
       },
       "coverage_gap": {
         "enabled": true,
-        "max_window_days": 14
+        "max_window_days": 30
       },
       "source_revalidation": {
         "enabled": true,
         "min_interval_hours": 12,
-        "window_days": 14
+        "window_days": 30
       },
       "rank_retry": {
         "enabled": true,
-        "max_selected_meetings_per_job": 25,
-        "max_attempt_count": 4
+        "max_selected_meetings_per_job": 50,
+        "max_attempt_count": 12
       }
     },
     {
