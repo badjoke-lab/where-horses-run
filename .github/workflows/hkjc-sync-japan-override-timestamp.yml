@@ -26,7 +26,7 @@ jobs:
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const publicPath = 'data/generated/timetable/public/meeting-list.json';
-          const overridePath = 'src/data/japan-a-plus-overrides.json';
+          const overridePath = 'data/generated/timetable/public/japan-a-plus-overrides.json';
           const publicData = JSON.parse(fs.readFileSync(publicPath, 'utf8'));
           const overrides = JSON.parse(fs.readFileSync(overridePath, 'utf8'));
           overrides.generated_at = publicData.generated_at;
@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/data/japan-a-plus-overrides.json
+          git add data/generated/timetable/public/japan-a-plus-overrides.json
           git diff --cached --check
           git diff --cached --quiet && { echo 'No timestamp delta'; exit 1; }
           git commit -m 'Sync Japan override generation timestamp'
