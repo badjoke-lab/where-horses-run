@@ -4,7 +4,7 @@ import timetableGlossaryOverlay from '../../data/static/glossary-entries-timetab
 import officialSourceGlossaryOverlay from '../../data/static/glossary-entries-official-source-v1.json';
 import coreRacingGlossaryOverlay from '../../data/static/glossary-entries-core-racing-v1.json';
 import coreRacingExtraGlossaryOverlay from '../../data/static/glossary-entries-core-racing-extra-v1.json';
-import raceStructureGlossaryOverlay from '../../data/static/glossary-entries-race-structure-v1.json';
+import coreRacingMoreGlossaryOverlay from '../../data/static/glossary-entries-core-racing-more-v1.json';
 import publicCopyPatches from '../../data/static/glossary-public-copy-v1.json';
 import multilingualFieldPatches from '../../data/static/glossary-fields-multilingual-v1.json';
 import beginnerExplanationPatches from '../../data/static/glossary-fields-beginner-v1.json';
@@ -17,7 +17,7 @@ const overlays = [
   officialSourceGlossaryOverlay,
   coreRacingGlossaryOverlay,
   coreRacingExtraGlossaryOverlay,
-  raceStructureGlossaryOverlay,
+  coreRacingMoreGlossaryOverlay,
 ] as const;
 type GlossaryRecord =
   | (typeof baselineGlossary)[number]
@@ -26,7 +26,7 @@ type GlossaryRecord =
   | (typeof officialSourceGlossaryOverlay)[number]
   | (typeof coreRacingGlossaryOverlay)[number]
   | (typeof coreRacingExtraGlossaryOverlay)[number]
-  | (typeof raceStructureGlossaryOverlay)[number];
+  | (typeof coreRacingMoreGlossaryOverlay)[number];
 
 const hiddenPublicGlossaryIds = new Set([
   'fixture',
@@ -40,10 +40,11 @@ const hiddenPublicGlossaryIds = new Set([
   'racecourse-operator',
 ]);
 
-const publicCopyPatchIdAliases = new Map<string, string>([
-  ['all-weather-course', 'all-weather'],
-  ['course-using-both-directions', 'both-directions-course'],
-]);
+const publicCopyLegacyIdMap: Record<string, string> = {
+  'all-weather-course': 'all-weather',
+  'course-using-both-directions': 'both-directions-course',
+  'clerk-of-the-scales': 'clerk-of-scales',
+};
 
 const order = baselineGlossary.map((entry) => entry.id);
 const byId = new Map<string, GlossaryRecord>(
@@ -84,11 +85,10 @@ for (const patch of relationshipGraphPatches) {
 }
 
 for (const patch of publicCopyPatches) {
-  const targetId = publicCopyPatchIdAliases.get(patch.id) ?? patch.id;
+  const targetId = publicCopyLegacyIdMap[patch.id] ?? patch.id;
   const current = byId.get(targetId);
   if (!current) throw new Error(`Unknown public glossary copy-patch ID: ${patch.id}`);
-  const { id: _patchId, ...copyFields } = patch;
-  byId.set(targetId, { ...current, ...copyFields } as GlossaryRecord);
+  byId.set(targetId, { ...current, ...patch, id: targetId } as GlossaryRecord);
 }
 
 const glossary = order.map((id) => byId.get(id)!);
