@@ -8,30 +8,12 @@ import {
   discoverFromIndexHtml,
   turkeyDate,
 } from './tjk-current-future-candidates.mjs';
-
-// TJK SehirId 1-10 are the reviewed domestic Turkish racecourse identities.
-// Higher IDs on the same programme pages are foreign simulcast venues and must
-// never be emitted as Turkey/TJK meetings.
-const DOMESTIC_TJK_VENUE_SOURCE_IDS = new Set(
-  Array.from({ length: 10 }, (_, index) => String(index + 1)),
-);
+import { discoverAnnualFixtures } from './tjk-annual-fixture-discovery.mjs';
 
 function addDays(iso, days) {
   const date = new Date(`${iso}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
-}
-
-function tjkDate(iso) {
-  const [year, month, day] = iso.split('-');
-  return `${day}/${month}/${year}`;
-}
-
-function dailyIndexUrl(iso) {
-  const url = new URL(ENTRY_URL);
-  url.searchParams.set('QueryParameter_Tarih', tjkDate(iso));
-  url.searchParams.set('SehirAdi', 'Karma');
-  return url.href;
 }
 
 async function fetchHtml(url) {
@@ -48,13 +30,32 @@ async function fetchHtml(url) {
   return response.text();
 }
 
-async function enrichBestAvailable(candidate) {
+async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
   try {
-    const html = await fetchHtml(candidate.source_url);
-    const detected = detectRaceSchedule(html);
+    const indexHtml = await fetchHtml(fixture.source_url);
+    const discovered = discoverFromIndexHtml(indexHtml, fixture.source_url, startDate);
+    const detail = discovered.candidates.find((candidate) =>
+      candidate.date === fixture.date && candidate.racecourse_source_id === fixture.racecourse_source_id,
+    );
+    if (!detail) {
+      return {
+        ...fixture,
+        detail_observation: { status: 'not_published', race_count: 0, conflicts: [] },
+      };
+    }
+
+    const detailHtml = await fetchHtml(detail.source_url);
+    const detected = detectRaceSchedule(detailHtml);
     if (detected.schedule.length === 0) {
       return {
-        ...candidate,
+        ...fixture,
+        source_url: detail.source_url,
+        provenance: {
+          ...fixture.provenance,
+          detail_discovered_from: fixture.source_url,
+          detail_discovered_href: detail.provenance.discovered_href,
+          detail_discovery_method: 'official_page_discovered_venue_detail',
+        },
         detail_observation: {
           status: detected.conflicts.length ? 'conflict' : 'not_published',
           race_count: 0,
@@ -62,17 +63,25 @@ async function enrichBestAvailable(candidate) {
         },
       };
     }
+
     return {
-      ...candidate,
+      ...fixture,
+      source_url: detail.source_url,
       capability_rank: 'A',
       first_race_time_local: detected.schedule[0].post_time_local,
       last_race_time_local: detected.schedule.at(-1).post_time_local,
       timetable_rows: detected.schedule,
+      provenance: {
+        ...fixture.provenance,
+        detail_discovered_from: fixture.source_url,
+        detail_discovered_href: detail.provenance.discovered_href,
+        detail_discovery_method: 'official_page_discovered_venue_detail',
+      },
       detail_observation: { status: 'available', race_count: detected.schedule.length, conflicts: [] },
     };
   } catch {
     return {
-      ...candidate,
+      ...fixture,
       detail_observation: { status: 'source_error', race_count: 0, conflicts: [] },
     };
   }
@@ -97,37 +106,24 @@ const now = new Date();
 const startDate = turkeyDate(now);
 const endDateExclusive = addDays(startDate, days);
 const retrievedAt = now.toISOString();
-const discoveredRecords = [];
-let indexPagesFetched = 0;
-let foreignSimulcastsExcluded = 0;
 
-for (let offset = 0; offset < days; offset += 1) {
-  const date = addDays(startDate, offset);
-  const pageUrl = dailyIndexUrl(date);
-  const html = await fetchHtml(pageUrl);
-  indexPagesFetched += 1;
-  const discovered = discoverFromIndexHtml(html, pageUrl, startDate);
-  const sameDate = discovered.candidates.filter((record) => record.date === date);
-  const domestic = sameDate.filter((record) => DOMESTIC_TJK_VENUE_SOURCE_IDS.has(record.racecourse_source_id));
-  foreignSimulcastsExcluded += sameDate.length - domestic.length;
-  discoveredRecords.push(...domestic);
-}
-
-const byId = new Map();
-for (const record of discoveredRecords) {
-  if (!byId.has(record.candidate_id)) byId.set(record.candidate_id, record);
-}
-const discoveredCandidates = [...byId.values()]
-  .filter((record) => record.date >= startDate && record.date < endDateExclusive)
-  .sort((a, b) => a.date.localeCompare(b.date) || a.racecourse.localeCompare(b.racecourse, 'tr'));
-
+const annual = await discoverAnnualFixtures({ startDate, endDateExclusive });
 const candidates = [];
-for (const candidate of discoveredCandidates) candidates.push(await enrichBestAvailable(candidate));
+for (const fixture of annual.fixtures) {
+  candidates.push(await enrichBestAvailableFromAnnualFixture(fixture, startDate));
+}
 
 const rankCounts = {
   C: candidates.filter((record) => record.capability_rank === 'C').length,
   A: candidates.filter((record) => record.capability_rank === 'A').length,
 };
+const detailStatusCounts = Object.fromEntries(
+  ['available', 'not_published', 'conflict', 'source_error'].map((status) => [
+    status,
+    candidates.filter((record) => record.detail_observation?.status === status).length,
+  ]),
+);
+
 const artifact = {
   schema: SCHEMA,
   source: 'tjk',
@@ -147,14 +143,14 @@ const artifact = {
     public_write: false,
   },
   discovery: {
-    method: 'official_programme_page_anchors_plus_page_discovered_detail',
-    window_method: 'explicit_parameterized_daily_index_pages',
-    domestic_venue_source_ids: [...DOMESTIC_TJK_VENUE_SOURCE_IDS],
-    foreign_simulcasts_excluded: foreignSimulcastsExcluded,
-    index_pages_fetched: indexPagesFetched,
+    method: 'official_annual_programme_fixture_union_daily_detail',
+    schedule_source_id: annual.schedule_source_id,
+    schedule_source_url: annual.source_url,
+    annual_pages_fetched: annual.pages.length,
+    official_fixture_count: annual.fixtures.length,
     detail_pages_attempted: candidates.length,
-    discovered_before_window_filter: discoveredRecords.length,
     rank_counts: rankCounts,
+    detail_status_counts: detailStatusCounts,
   },
   candidates,
   window: { start_date: startDate, end_date_exclusive: endDateExclusive, days },
@@ -167,8 +163,8 @@ console.log(JSON.stringify({
   output,
   start_date: startDate,
   end_date_exclusive: endDateExclusive,
-  index_pages_fetched: indexPagesFetched,
-  foreign_simulcasts_excluded: foreignSimulcastsExcluded,
+  official_fixture_count: annual.fixtures.length,
   candidates: candidates.length,
   rank_counts: rankCounts,
+  detail_status_counts: detailStatusCounts,
 }, null, 2));

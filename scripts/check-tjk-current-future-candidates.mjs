@@ -9,10 +9,15 @@ import {
   parseTjkDate,
   turkeyDate,
 } from './timetable/tjk-current-future-candidates.mjs';
+import { ANNUAL_PAGE_URL, DOMESTIC_TJK_VENUES } from './timetable/tjk-annual-fixture-discovery.mjs';
 
 const FORBIDDEN_PAYLOAD_KEYS = new Set(['raw_html', 'html', 'raw_body', 'body', 'racecard', 'racecards', 'odds', 'results', 'payouts', 'tips']);
 const ALLOWED_RANKS = new Set(['C', 'A']);
 const DETAIL_STATUSES = new Set(['available', 'not_published', 'conflict', 'source_error']);
+const DISCOVERY_METHODS = new Set([
+  'official_programme_page_anchors_plus_page_discovered_detail',
+  'official_annual_programme_fixture_union_daily_detail',
+]);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -34,6 +39,39 @@ function validTime(value) {
   return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
 
+function validateLegacyProvenance(candidate, sourceUrl, prefix) {
+  let discoveredFrom;
+  try {
+    discoveredFrom = new URL(candidate.provenance?.discovered_from);
+  } catch {
+    throw new Error(`${prefix} has invalid legacy discovery URL`);
+  }
+  assert(isProgrammeCityUrl(sourceUrl), `${prefix}.source_url must be a TJK venue-detail URL`);
+  assert(isProgrammeIndexUrl(discoveredFrom), `${prefix}.provenance.discovered_from must be a TJK programme page`);
+  assert(candidate.provenance?.discovery_method === 'official_page_discovered_venue_detail', `${prefix}.provenance.discovery_method invalid`);
+  const resolved = new URL(candidate.provenance.discovered_href, candidate.provenance.discovered_from);
+  assert(resolved.href === sourceUrl.href, `${prefix}.source_url was not resolved from discovered_href`);
+}
+
+function validateAnnualProvenance(candidate, sourceUrl, prefix) {
+  assert(candidate.provenance?.discovery_method === 'official_annual_programme_fixture', `${prefix}.annual discovery method invalid`);
+  assert(candidate.provenance?.discovered_from === ANNUAL_PAGE_URL, `${prefix}.annual discovered_from invalid`);
+  assert(typeof candidate.provenance?.discovered_href === 'string' && candidate.provenance.discovered_href.length > 0, `${prefix}.annual discovered_href missing`);
+  const annualFixtureUrl = new URL(candidate.provenance.discovered_href, ANNUAL_PAGE_URL);
+  assert(isProgrammeIndexUrl(annualFixtureUrl), `${prefix}.annual fixture must resolve to TJK daily programme page`);
+  assert(annualFixtureUrl.searchParams.get('SehirId') === candidate.racecourse_source_id, `${prefix}.annual fixture SehirId differs`);
+  assert(parseTjkDate(annualFixtureUrl.searchParams.get('QueryParameter_Tarih')) === candidate.date, `${prefix}.annual fixture date differs`);
+
+  if (candidate.provenance?.detail_discovered_href) {
+    assert(candidate.provenance.detail_discovery_method === 'official_page_discovered_venue_detail', `${prefix}.detail discovery method invalid`);
+    const detailUrl = new URL(candidate.provenance.detail_discovered_href, candidate.provenance.detail_discovered_from);
+    assert(detailUrl.href === sourceUrl.href, `${prefix}.detail source_url differs from discovered detail href`);
+    assert(isProgrammeCityUrl(sourceUrl), `${prefix}.discovered detail must be TJK venue-detail URL`);
+  } else {
+    assert(sourceUrl.href === annualFixtureUrl.href, `${prefix}.schedule-only source_url must remain annual fixture daily URL`);
+  }
+}
+
 export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
   assert(artifact && typeof artifact === 'object' && !Array.isArray(artifact), 'artifact must be an object');
   assert(artifact.schema === SCHEMA, `unsupported schema: ${artifact.schema ?? '<missing>'}`);
@@ -50,7 +88,7 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
   assert(artifact.disposition?.requires_review === true, 'requires_review must be true');
   assert(artifact.disposition?.canonical_write === false, 'canonical_write must be false');
   assert(artifact.disposition?.public_write === false, 'public_write must be false');
-  assert(artifact.discovery?.method === 'official_programme_page_anchors_plus_page_discovered_detail', 'discovery.method invalid');
+  assert(DISCOVERY_METHODS.has(artifact.discovery?.method), 'discovery.method invalid');
   assert(Array.isArray(artifact.candidates), 'candidates must be an array');
   scanForbiddenPayload(artifact);
 
@@ -69,7 +107,7 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
     assert(parseTjkDate(candidate.date?.split('-').reverse().join('/')) === candidate.date, `${prefix}.date invalid`);
     assert(candidate.date >= today, `${prefix}.date is in the past`);
     assert(typeof candidate.racecourse === 'string' && candidate.racecourse.length > 0, `${prefix}.racecourse missing`);
-    assert(typeof candidate.racecourse_source_id === 'string' && /^\d+$/.test(candidate.racecourse_source_id), `${prefix}.racecourse_source_id invalid`);
+    assert(typeof candidate.racecourse_source_id === 'string' && DOMESTIC_TJK_VENUES.has(candidate.racecourse_source_id), `${prefix}.racecourse_source_id must be a reviewed domestic TJK venue`);
     assert(ALLOWED_RANKS.has(candidate.capability_rank), `${prefix}.capability_rank must be C or A`);
     assert(candidate.publication_ceiling === 'A', `${prefix}.publication_ceiling must be A`);
     assert(Array.isArray(candidate.timetable_rows), `${prefix}.timetable_rows must be an array`);
@@ -94,26 +132,20 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
     }
 
     let sourceUrl;
-    let discoveredFrom;
     try {
       sourceUrl = new URL(candidate.source_url);
-      discoveredFrom = new URL(candidate.provenance?.discovered_from);
     } catch {
-      throw new Error(`${prefix} has invalid provenance/source URL`);
+      throw new Error(`${prefix} has invalid source URL`);
     }
-    assert(isProgrammeCityUrl(sourceUrl), `${prefix}.source_url must be a current TJK YarisSever venue-detail URL`);
-    assert(isProgrammeIndexUrl(discoveredFrom), `${prefix}.provenance.discovered_from must be a current TJK YarisSever programme page`);
-    assert(typeof candidate.provenance?.discovered_href === 'string' && candidate.provenance.discovered_href.length > 0, `${prefix}.provenance.discovered_href missing`);
-    assert(candidate.provenance?.discovery_method === 'official_page_discovered_venue_detail', `${prefix}.provenance.discovery_method invalid`);
-
-    const resolved = new URL(candidate.provenance.discovered_href, candidate.provenance.discovered_from);
-    assert(resolved.href === sourceUrl.href, `${prefix}.source_url was not resolved from discovered_href`);
+    if (candidate.provenance?.discovery_method === 'official_annual_programme_fixture') {
+      validateAnnualProvenance(candidate, sourceUrl, prefix);
+    } else {
+      validateLegacyProvenance(candidate, sourceUrl, prefix);
+    }
     assert(sourceUrl.searchParams.get('SehirAdi') === candidate.racecourse, `${prefix}.racecourse does not match source URL`);
     assert(sourceUrl.searchParams.get('SehirId') === candidate.racecourse_source_id, `${prefix}.racecourse_source_id does not match source URL`);
     const sourceDate = parseTjkDate(sourceUrl.searchParams.get('QueryParameter_Tarih'));
     assert(sourceDate === candidate.date, `${prefix}.date does not match source URL`);
-    const landingDate = parseTjkDate(discoveredFrom.searchParams.get('QueryParameter_Tarih'));
-    if (landingDate !== null) assert(landingDate === candidate.date, `${prefix}.date does not match discovery page`);
     assert(!urls.has(sourceUrl.href), `${prefix} duplicate source_url`);
     urls.add(sourceUrl.href);
   }
@@ -121,6 +153,11 @@ export function validateArtifact(artifact, { today = turkeyDate() } = {}) {
   assert(artifact.discovery?.detail_pages_attempted === artifact.candidates.length, 'detail_pages_attempted must equal candidate count');
   assert(artifact.discovery?.rank_counts?.C === rankC, 'discovery rank_counts.C differs');
   assert(artifact.discovery?.rank_counts?.A === rankA, 'discovery rank_counts.A differs');
+  if (artifact.discovery?.method === 'official_annual_programme_fixture_union_daily_detail') {
+    assert(artifact.discovery.official_fixture_count === artifact.candidates.length, 'official_fixture_count must equal candidate count');
+    assert(artifact.discovery.schedule_source_id === 'tjk-annual-programme', 'schedule_source_id invalid');
+    assert(artifact.discovery.schedule_source_url === ANNUAL_PAGE_URL, 'schedule_source_url invalid');
+  }
   return { ok: true, candidates: artifact.candidates.length, rank_counts: { C: rankC, A: rankA }, today };
 }
 
