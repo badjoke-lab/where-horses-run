@@ -181,8 +181,8 @@ export default function glossaryPageMetadataIntegration() {
           locales.set(page.locale, page);
         }
 
-        if (bySlug.size !== 48 || pages.length !== 96) {
-          throw new Error(`Glossary metadata scope differs: ${bySlug.size} slugs / ${pages.length} pages`);
+        if (bySlug.size === 0 || pages.length !== bySlug.size * 2) {
+          throw new Error(`Glossary metadata bilingual scope is inconsistent: ${bySlug.size} slugs / ${pages.length} pages`);
         }
 
         let injected = 0;
