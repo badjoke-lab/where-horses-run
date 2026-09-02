@@ -24,6 +24,15 @@
     },
     {
       "system_id": "japan-jra-system",
+      "runner": "github_actions",
+      "executor_id": "jra-programme-actions",
+      "invocation_kind": "node",
+      "entry_point": "scripts/timetable/run-jra-actions-job.mjs",
+      "output_model": "jra-programme-review-artifact-batch",
+      "supported_collection_modes": ["date_window"]
+    },
+    {
+      "system_id": "japan-jra-system",
       "runner": "local",
       "executor_id": "jra-refresh-local",
       "invocation_kind": "node",
