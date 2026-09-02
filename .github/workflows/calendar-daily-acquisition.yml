@@ -7,6 +7,11 @@ on:
   pull_request:
     paths:
       - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'package.json'
+      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
+      - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/check-japan-zero-based-30d.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
@@ -29,6 +34,11 @@ on:
       - main
     paths:
       - '.github/workflows/calendar-daily-acquisition.yml'
+      - 'package.json'
+      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
+      - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/check-japan-zero-based-30d.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
@@ -48,7 +58,7 @@ on:
       - 'data/generated/timetable/public/meeting-list.json'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: calendar-daily-acquisition-${{ github.ref }}
@@ -64,9 +74,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Resolve Japan execution date
+        id: japan-clock
+        shell: bash
+        run: echo "execution_date=$(TZ=Asia/Tokyo date +%F)" >> "$GITHUB_OUTPUT"
       - name: Rebuild and reconcile the Japan official 30-day mother set
-        run: node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date="$(date -u +%F)"
+        run: node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date="${{ steps.japan-clock.outputs.execution_date }}"
+      - name: Validate Japan reconciliation invariants
+        run: node scripts/check-japan-zero-based-30d.mjs
+      - name: Validate generated site state
+        run: |
+          npm ci
+          npm run build
+      - name: Persist deterministic canonical and public Japan state
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/japan-zero-based-30d-reconciliation.json
+          if git diff --cached --quiet; then
+            echo "No Japan timetable changes to persist."
+            exit 0
+          fi
+          git commit -m "data: refresh Japan official 30-day timetable"
+          git push origin HEAD:main
       - name: Upload complete Japan reconciliation
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: japan-zero-based-30d-reconciliation
@@ -89,6 +127,10 @@ jobs:
           node-version: 22.12.0
       - name: Check acquisition runtime syntax
         run: |
+          node --check scripts/timetable/japan-zero-based-30d-core.mjs
+          node --check scripts/timetable/japan-official-30d-adapters.mjs
+          node --check scripts/timetable/run-japan-zero-based-30d.mjs
+          node --check scripts/check-japan-zero-based-30d.mjs
           node --check scripts/timetable/actions-multi-job-core.mjs
           node --check scripts/timetable/run-calendar-actions-job.mjs
           node --check scripts/timetable/build-calendar-live-retry-queue.mjs
@@ -172,7 +214,8 @@ jobs:
     needs: plan
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.matrix).include }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
