@@ -107,7 +107,18 @@ for (const marker of [
   if (!workflow.includes(marker)) fail(`Current daily acquisition workflow missing ${marker}.`);
 }
 if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"]\s*$/m.test(workflow)) fail('Current daily acquisition workflow must define a cron schedule.');
-if (/contents:\s*write/.test(workflow) || /pull-requests:\s*write/.test(workflow)) fail('Daily acquisition workflow must not write repository contents or PRs.');
+if (/pull-requests:\s*write/.test(workflow)) fail('Daily acquisition workflow must not write pull requests.');
+if (/contents:\s*write/.test(workflow)) {
+  for (const marker of [
+    'japan-zero-based-30d:',
+    'Persist deterministic canonical and public Japan state',
+    'data/generated/timetable/canonical/meetings.json',
+    'data/generated/timetable/canonical/meeting-details.json',
+    'data/generated/timetable/public/meeting-list.json',
+  ]) {
+    if (!workflow.includes(marker)) fail(`Repository write permission lacks deterministic Japan publication marker ${marker}.`);
+  }
+}
 
 if (errors.length) {
   console.error(`CALENDAR_DUE_JOB_PLANNER: failed (${errors.length})`);
