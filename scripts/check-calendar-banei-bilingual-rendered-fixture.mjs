@@ -166,14 +166,14 @@ try {
   const jaMeetingRow = meetingRowFor(jaCalendar, meetingId);
 
   if (!enMeetingRow) fail('English Calendar missing Banei meeting row.');
-  for (const phrase of ['Obihiro Racecourse', 'Public rank:', 'A+', `/timetable/meetings/${meetingId}/`]) {
+  for (const phrase of ['Obihiro Racecourse', 'Public rank A+', `/timetable/meetings/${meetingId}/`]) {
     if (!enMeetingRow.includes(phrase)) fail(`English Calendar Banei row missing ${phrase}.`);
   }
-  if (!enMeetingRow.includes('Meeting detail')) fail('English Calendar missing Meeting detail label.');
+  if (!enMeetingRow.includes('Details')) fail('English Calendar missing Details label.');
   if (enCalendar.includes('Fixture Race One') || enCalendar.includes('Banei Straight Course')) fail('English Calendar leaked A+ row detail.');
 
   if (!jaMeetingRow) fail('Japanese Calendar missing Banei meeting row.');
-  for (const phrase of ['帯広競馬場', 'ばんえい十勝', '日本', '公開ランク:', 'A+', '開催詳細', `/ja/timetable/meetings/${meetingId}/`]) {
+  for (const phrase of ['帯広競馬場', 'ばんえい十勝', '日本', '公開ランク A+', '詳細', `/ja/timetable/meetings/${meetingId}/`]) {
     if (!jaMeetingRow.includes(phrase)) fail(`Japanese Calendar Banei row missing ${phrase}.`);
   }
   if (jaCalendar.includes('Fixture Race One') || jaCalendar.includes('Banei Straight Course')) fail('Japanese Calendar leaked A+ row detail.');
