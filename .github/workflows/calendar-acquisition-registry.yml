@@ -17,13 +17,9 @@ on:
       - 'scripts/check-calendar-acquisition-registry.mjs'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/acquisition-control-plane-contract.md'
-      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
       - 'docs/calendar/acquisition-registry.md'
       - 'docs/calendar/machine-readable-contracts.md'
       - 'docs/calendar/README.md'
-      - 'docs/calendar/implementation-roadmap.md'
-      - 'docs/project-roadmap.md'
-      - 'START-HERE.md'
       - '.github/workflows/calendar-acquisition-registry.yml'
   push:
     branches:
@@ -34,13 +30,10 @@ on:
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
       - 'scripts/check-project-governance-docs.mjs'
-      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
+      - 'docs/calendar/acquisition-control-plane-contract.md'
       - 'docs/calendar/acquisition-registry.md'
       - 'docs/calendar/machine-readable-contracts.md'
       - 'docs/calendar/README.md'
-      - 'docs/calendar/implementation-roadmap.md'
-      - 'docs/project-roadmap.md'
-      - 'START-HERE.md'
       - '.github/workflows/calendar-acquisition-registry.yml'
 
 permissions:
@@ -65,7 +58,7 @@ jobs:
           node --check scripts/timetable/load-calendar-acquisition-registry.mjs
           node --check scripts/check-calendar-acquisition-registry.mjs
 
-      - name: Validate Acquisition Registry contract and initial profiles
+      - name: Validate Acquisition Registry contract and current profiles
         run: node scripts/check-calendar-acquisition-registry.mjs
 
       - name: Validate authority/source compatibility

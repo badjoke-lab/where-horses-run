@@ -13,19 +13,17 @@ on:
       - 'scripts/timetable/run-jra-local-review-job.mjs'
       - 'scripts/timetable/run-calendar-local-plan.mjs'
       - 'scripts/check-calendar-local-multi-job.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/local-multi-job-runner.md'
-      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
-      - 'docs/calendar/implementation-roadmap.md'
-      - 'docs/project-roadmap.md'
       - 'docs/calendar/README.md'
       - 'docs/calendar/machine-readable-contracts.md'
-      - 'START-HERE.md'
       - '.github/workflows/calendar-local-multi-job.yml'
   push:
     branches:
       - main
     paths:
       - 'data/fixtures/calendar-local-multi-job-fixtures-v1.json'
+      - 'data/fixtures/calendar-collection-plans-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
       - 'data/generated/timetable/jra-refresh-report.json'
@@ -34,13 +32,10 @@ on:
       - 'scripts/timetable/run-jra-local-review-job.mjs'
       - 'scripts/timetable/run-calendar-local-plan.mjs'
       - 'scripts/check-calendar-local-multi-job.mjs'
+      - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/local-multi-job-runner.md'
-      - 'docs/calendar/acquisition-control-plane-implementation-plan.md'
-      - 'docs/calendar/implementation-roadmap.md'
-      - 'docs/project-roadmap.md'
       - 'docs/calendar/README.md'
       - 'docs/calendar/machine-readable-contracts.md'
-      - 'START-HERE.md'
       - '.github/workflows/calendar-local-multi-job.yml'
 
 permissions:
