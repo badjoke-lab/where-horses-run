@@ -57,8 +57,8 @@ fs.writeFileSync(outputPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
 console.log(JSON.stringify({
   schema_version: 'calendar-hkjc-detail-reviewed-import-cli-summary-v1',
-  work_id: 'WHR-CAL-HONG-KONG-HKJC',
-  implementation_unit: 'HKJC-PILOT-06',
+  work_id: pkg.work_id,
+  implementation_unit: pkg.implementation_unit,
   review_state: pkg.review_state,
   normalized_artifacts_present: pkg.normalized_artifacts !== null,
   input_sha256: inputSha256,
