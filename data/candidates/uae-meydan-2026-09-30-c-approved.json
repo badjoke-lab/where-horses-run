@@ -1,0 +1,52 @@
+{
+  "schema_version": "timetable-candidate-v1",
+  "generated_at": "2026-09-02T13:08:57.935Z",
+  "adapter_id": "uae-era-current-season-discovery-v1",
+  "country_id": "united-arab-emirates",
+  "authority_id": "emirates-racing-authority",
+  "source_id": "era-season-calendar",
+  "candidate_window": {
+    "start_date": "2026-09-02",
+    "end_date_exclusive": "2026-10-02",
+    "timezone": "Asia/Dubai"
+  },
+  "records": [
+    {
+      "candidate_id": "approved-era-meydan-racecourse-2026-09-30",
+      "meeting_id": "era-meydan-racecourse-2026-09-30",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racing_system_id": "uae-national-racing-system",
+      "racecourse_id": "meydan-racecourse",
+      "date": "2026-09-30",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "timetable_rows": [],
+      "source": {
+        "source_id": "era-season-calendar",
+        "official_url": "https://emiratesracing.com/season-calendar/current-season",
+        "checked_at": "2026-09-02T13:08:57.935Z",
+        "extraction_method": "adapter_candidate"
+      },
+      "confidence": "high",
+      "review_status": "approved",
+      "notes": "Approved from exact ERA current-season discovery run. Official fixture is published for Meydan on 2026-09-30; race-level detail is not yet available, so publication remains Rank C. Acquisition source id normalized from the operational era-current-season-calendar label to the verified inventory id era-season-calendar."
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "reviewed_at": "2026-09-02T13:12:00Z",
+    "reviewer": "badjoke-lab",
+    "summary": "Bounded approval of the single newly discovered official ERA fixture in the 2026-09-02 through 2026-10-02 window.",
+    "promotion_target": "canonical-timetable-v0"
+  },
+  "provenance": {
+    "source_run_id": 33633979654,
+    "source_head_sha": "82db189d6bd954a6971a272e8fe79c34ec0eb88d",
+    "source_artifact_id": 9847970453,
+    "source_artifact_digest": "sha256:4edc78679dd38fa3bbea1e2e4a2805c52e61eb8671434748e691127dfdbfa40e",
+    "source_candidate_path": "discovered-fixture-candidates.json"
+  }
+}
