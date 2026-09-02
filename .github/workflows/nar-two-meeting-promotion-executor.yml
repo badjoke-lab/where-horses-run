@@ -1,0 +1,44 @@
+name: NAR two-meeting promotion executor
+
+on:
+  push:
+    branches:
+      - promote/nar-2026-09-04-nagoya-sonoda-a-plus
+    paths:
+      - '.github/workflows/nar-two-meeting-promotion-executor.yml'
+      - 'data/candidates/nar-source-horizon-2026-09-04-nagoya-sonoda-a-plus-approved.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: promote/nar-2026-09-04-nagoya-sonoda-a-plus
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Promote exact reviewed candidate
+        run: |
+          node scripts/timetable/promote-timetable.mjs --input data/candidates/nar-source-horizon-2026-09-04-nagoya-sonoda-a-plus-approved.json
+          node scripts/timetable/build-public-timetable-view.mjs
+      - name: Commit only generated timetable outputs
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'No promotion delta produced'; exit 1; }
+          git commit -m 'Promote NAR Nagoya and Sonoda 2026-09-04 to A+'
+          git push origin HEAD:promote/nar-2026-09-04-nagoya-sonoda-a-plus
