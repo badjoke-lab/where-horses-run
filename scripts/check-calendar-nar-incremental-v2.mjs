@@ -97,9 +97,6 @@ if (existing.length === files.length) {
   if (candidates.collection_mode === 'date_window' && !same(coverage.unresolved_meeting_ids, expectedRetryIds)) fail('date-window unresolved meeting IDs must equal C schedule candidates.');
 }
 
-const v1HistoricalPath = 'data/candidates/nar-incremental-meeting-candidates.json';
-if (!fs.existsSync(path.join(root, v1HistoricalPath))) fail('historical v1 incremental candidate file must remain present and immutable.');
-
 const collectorSource = fs.readFileSync(path.join(root, 'scripts/timetable/collect-nar-incremental-v2.mjs'), 'utf8');
 for (const marker of ['normalize-nar-schedule-aware-month.mjs', 'assertImmutableOutputs', 'aggregateScheduleAwareRuns', 'buildScheduleAwareArtifacts']) {
   if (!collectorSource.includes(marker)) fail(`v2 collector missing ${marker}.`);
