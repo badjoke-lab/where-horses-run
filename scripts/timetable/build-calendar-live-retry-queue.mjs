@@ -49,35 +49,39 @@ function addDays(date, days) {
   return value.toISOString().slice(0, 10);
 }
 
+function tokyoStartIso(date) {
+  return new Date(`${date}T00:00:00+09:00`).toISOString();
+}
+
 const planningDate = tokyoDate(asOf);
 const oldestEligibleDate = addDays(planningDate, -(rule.rank_retry.max_attempt_count - 1));
 const canonicalMeetings = Array.isArray(canonical.meetings) ? canonical.meetings : [];
 const canonicalById = new Map(canonicalMeetings.map((meeting) => [meeting.meeting_id, meeting]));
-
-const entries = canonicalMeetings
+const narCMeetings = canonicalMeetings
   .filter((meeting) => meeting.authority_id === profile.authority_id)
   .filter((meeting) => meeting.capability_rank === 'C')
-  .filter((meeting) => typeof meeting.date === 'string' && oldestEligibleDate <= meeting.date && meeting.date <= planningDate)
-  .sort((left, right) => left.meeting_id.localeCompare(right.meeting_id))
-  .map((meeting) => ({
-    meeting_id: meeting.meeting_id,
-    system_id: profile.system_id,
-    current_reviewed_rank: meeting.capability_rank,
-    latest_observed_rank: meeting.capability_rank,
-    collection_target_rank: profile.collection_target_rank,
-    missing_fields: ['first_race_time_local', 'last_race_time_local', 'timetable_rows'],
-    retry_reason: 'rank_upgrade_retry',
-    retry_scope: {
-      mode: 'selected_meetings',
-      meeting_ids: [meeting.meeting_id],
-    },
-    primary_runner: profile.primary_runner,
-    fallback_runner: profile.fallback_runner,
-    adapter_id: profile.detail_adapter_id,
-    next_eligible_retry_at: null,
-    attempt_count: 0,
-    last_attempt_at: null,
-  }));
+  .filter((meeting) => typeof meeting.date === 'string' && oldestEligibleDate <= meeting.date)
+  .sort((left, right) => left.meeting_id.localeCompare(right.meeting_id));
+
+const entries = narCMeetings.map((meeting) => ({
+  meeting_id: meeting.meeting_id,
+  system_id: profile.system_id,
+  current_reviewed_rank: meeting.capability_rank,
+  latest_observed_rank: meeting.capability_rank,
+  collection_target_rank: profile.collection_target_rank,
+  missing_fields: ['first_race_time_local', 'last_race_time_local', 'timetable_rows'],
+  retry_reason: meeting.date > planningDate ? 'scheduled_pending_details' : 'rank_upgrade_retry',
+  retry_scope: {
+    mode: 'selected_meetings',
+    meeting_ids: [meeting.meeting_id],
+  },
+  primary_runner: profile.primary_runner,
+  fallback_runner: profile.fallback_runner,
+  adapter_id: profile.detail_adapter_id,
+  next_eligible_retry_at: meeting.date > planningDate ? tokyoStartIso(meeting.date) : null,
+  attempt_count: 0,
+  last_attempt_at: null,
+}));
 
 const queue = {
   schema_version: 'calendar-rank-aware-retry-queue-v1',
@@ -101,6 +105,8 @@ console.log(JSON.stringify({
   planning_date: planningDate,
   oldest_eligible_date: oldestEligibleDate,
   entry_count: entries.length,
+  due_now_count: entries.filter((entry) => entry.next_eligible_retry_at === null || Date.parse(entry.next_eligible_retry_at) <= Date.parse(asOf)).length,
+  deferred_future_count: entries.filter((entry) => entry.next_eligible_retry_at !== null && Date.parse(entry.next_eligible_retry_at) > Date.parse(asOf)).length,
   meeting_ids: entries.map((entry) => entry.meeting_id),
   source: 'canonical_dynamic_no_fixed_meeting_ids',
 }));
