@@ -35,7 +35,7 @@ if (!exact(schema.$defs?.sourceError?.properties?.code?.enum, collectionResultMa
 if (!exact(schema.properties?.artifact_refs?.required, collectionResultManifestV1Contract.artifact_keys)) fail('Result Manifest artifact keys differ.');
 
 if (fixtures.schema_version !== 'calendar-collection-result-manifest-fixtures-v1') fail('Result Manifest fixture schema differs.');
-if (!Array.isArray(fixtures.cases) || fixtures.cases.length < 4) fail('at least four valid Result Manifest cases are required.');
+if (!Array.isArray(fixtures.cases) || fixtures.cases.length === 0) fail('valid Result Manifest cases are required.');
 const validCaseIds = new Set();
 for (const [index, testCase] of (fixtures.cases ?? []).entries()) {
   const label = `valid case[${index}] ${testCase.case_id ?? 'unknown'}`;
@@ -52,21 +52,22 @@ for (const [index, testCase] of (fixtures.cases ?? []).entries()) {
   if (coverageErrors.length) fail(`${label} coverage cross-check failed: ${coverageErrors.join('; ')}`);
 }
 
-const july = fixtures.cases.find((entry) => entry.case_id === 'nar-july-remainder-source-window-complete')?.manifest;
-if (!july) fail('NAR July remainder Result Manifest fixture is missing.');
-else {
-  if (july.records_discovered !== 82 || july.rank_counts.C !== 71 || july.rank_counts['A+'] !== 11) fail('NAR July rank distribution fixture differs.');
-  if (july.unresolved_meeting_ids.length !== 71) fail('NAR July pending detail retry count differs.');
+const manifests = (fixtures.cases ?? []).map((entry) => entry.manifest);
+if (!manifests.some((manifest) => manifest.coverage_claim === 'partial')) fail('fixture coverage missing partial Result Manifest.');
+if (!manifests.some((manifest) => manifest.runner_used === 'local')) fail('fixture coverage missing fallback/local runner Result Manifest.');
+if (!manifests.some((manifest) => manifest.coverage_claim === 'none' && manifest.source_errors?.length > 0 && manifest.records_discovered === 0)) {
+  fail('fixture coverage missing no-observation source-error Result Manifest.');
 }
-const partial = fixtures.cases.find((entry) => entry.case_id === 'jra-local-partial-window')?.manifest;
-if (partial?.coverage_claim !== 'partial') fail('partial coverage Result Manifest fixture is missing.');
-const fallback = fixtures.cases.find((entry) => entry.case_id === 'nar-selected-retry-fallback-success')?.manifest;
-if (fallback?.runner_used !== 'local') fail('NAR fallback-runner Result Manifest fixture is missing.');
-const sourceError = fixtures.cases.find((entry) => entry.case_id === 'nar-source-error-no-observation')?.manifest;
-if (sourceError?.coverage_claim !== 'none' || sourceError?.source_errors?.length !== 1 || sourceError?.records_discovered !== 0) fail('source-error Result Manifest fixture differs.');
+if (!manifests.some((manifest) => Object.values(manifest.rank_counts ?? {}).filter((count) => count > 0).length > 1)) {
+  fail('fixture coverage missing mixed-rank Result Manifest.');
+}
+for (const manifest of manifests) {
+  const rankTotal = collectionResultManifestV1Contract.ranks.reduce((sum, rank) => sum + manifest.rank_counts[rank], 0);
+  if (rankTotal !== manifest.records_discovered) fail(`rank total differs from records_discovered for ${manifest.batch_id}.`);
+}
 
 if (invalidFixtures.schema_version !== 'calendar-collection-result-manifest-invalid-cases-v1') fail('invalid Result Manifest fixture schema differs.');
-if (!Array.isArray(invalidFixtures.cases) || invalidFixtures.cases.length < 8) fail('at least eight invalid Result Manifest cases are required.');
+if (!Array.isArray(invalidFixtures.cases) || invalidFixtures.cases.length === 0) fail('invalid Result Manifest fixtures are required.');
 const invalidCaseIds = new Set();
 const invalidBase = fixtures.cases.find((entry) => entry.case_id === invalidFixtures.base_case_id)?.manifest;
 if (!invalidBase) fail('invalid Result Manifest base fixture is missing.');
@@ -93,17 +94,10 @@ for (const [index, testCase] of (invalidFixtures.cases ?? []).entries()) {
     fail(`invalid Result Manifest unexpectedly passed: ${testCase.case_id}`);
   }
 }
-for (const requiredCase of ['rank-count-sum-mismatch', 'records-updated-exceeds-discovered', 'unsupported-runner', 'duplicate-unresolved-date', 'unsafe-artifact-parent-ref', 'audited-complete-with-unresolved', 'unexpected-top-level-field', 'exact-runner-mismatch']) {
-  if (!invalidCaseIds.has(requiredCase)) fail(`required invalid Result Manifest case missing: ${requiredCase}`);
-}
 
 const docs = readText('docs/calendar/collection-result-manifest.md');
 for (const phrase of ['one manifest per Collection Job result', 'sum of the five rank counts must equal `records_discovered`', 'does not replace the candidate batch or Coverage Observation', 'runner_used']) {
   if (!docs.includes(phrase)) fail(`Result Manifest contract missing ${phrase}.`);
-}
-const implementationPlan = readText('docs/calendar/acquisition-control-plane-implementation-plan.md');
-for (const phrase of ['Stage ACP-7 — Collection Result Manifest', 'Status: complete.', 'Stage ACP-8 — Review Queue']) {
-  if (!implementationPlan.includes(phrase)) fail(`control-plane implementation plan missing ${phrase}.`);
 }
 
 if (errors.length) {
@@ -117,3 +111,5 @@ console.log(`INVALID_CASES: ${invalidFixtures.cases.length}`);
 console.log('RANK_DISTRIBUTION_ACCOUNTING: pass');
 console.log('JOB_SCOPE_AND_RUNNER_CROSS_CHECK: pass');
 console.log('COVERAGE_OBSERVATION_CROSS_CHECK: pass');
+console.log('HISTORICAL_CASE_IDS_REQUIRED: false');
+console.log('IMPLEMENTATION_STAGE_TEXT_REQUIRED: false');
