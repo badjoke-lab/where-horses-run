@@ -49,7 +49,7 @@ export function parseUaeEraCurrentSeasonFixtures(html, { startDate, endDateExclu
       timezone: 'Asia/Dubai',
       capability_rank: 'C',
       source: {
-        source_id: 'era-current-season-calendar',
+        source_id: 'era-season-calendar',
         official_url: OFFICIAL_URL,
         extraction_method: 'adapter_candidate',
       },

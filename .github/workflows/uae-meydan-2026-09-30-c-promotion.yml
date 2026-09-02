@@ -1,0 +1,55 @@
+name: One-shot UAE Meydan 2026-09-30 C promotion
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/candidates/uae-meydan-2026-09-30-c-approved.json'
+      - '.github/workflows/uae-meydan-2026-09-30-c-promotion.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shot-uae-meydan-2026-09-30-c-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Promote exact reviewed candidate
+        run: |
+          node scripts/timetable/promote-timetable.mjs \
+            --input data/candidates/uae-meydan-2026-09-30-c-approved.json
+          node scripts/timetable/build-public-timetable-view.mjs
+      - name: Keep Japan override generation timestamp aligned
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const listPath = 'data/generated/timetable/public/meeting-list.json';
+          const overridePath = 'data/generated/timetable/public/japan-a-plus-overrides.json';
+          const list = JSON.parse(fs.readFileSync(listPath, 'utf8'));
+          const overrides = JSON.parse(fs.readFileSync(overridePath, 'utf8'));
+          overrides.generated_at = list.generated_at;
+          fs.writeFileSync(overridePath, `${JSON.stringify(overrides, null, 2)}\n`);
+          NODE
+      - name: Commit generated timetable outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json
+          git diff --cached --quiet && { echo 'No generated timetable diff'; exit 1; }
+          git commit -m 'Calendar: publish UAE Meydan 2026-09-30 fixture'
+          git push origin HEAD:main
