@@ -47,6 +47,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       <strong>{isJa ? 'ライブ' : 'Live'}</strong><br />
       <select data-filter-live>
         <option value="">{isJa ? 'すべて' : 'All'}</option>
+        <option value="now">{isJa ? 'ライブ中' : 'Live now'}</option>
         <option value="available">{isJa ? '公式ライブ導線あり' : 'Official live link available'}</option>
         <option value="youtube">YouTube</option>
       </select>
@@ -100,6 +101,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             (!rank.value || row.dataset.rank === rank.value) &&
             (!date.value || row.dataset.date === date.value) &&
             (!live.value ||
+              (live.value === 'now' && row.dataset.liveState === 'live') ||
               (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
               (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
           row.hidden = !matches;
@@ -113,6 +115,43 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         }
 
         if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
+      };
+
+      const applyLiveStatuses = (payload) => {
+        const statuses = Array.isArray(payload?.statuses) ? payload.statuses : [];
+        const byMediaId = new Map(statuses
+          .filter((entry) => entry && typeof entry.media_id === 'string')
+          .map((entry) => [entry.media_id, entry]));
+
+        for (const row of rows) {
+          if (!(row instanceof HTMLElement)) continue;
+          const mediaId = row.dataset.mediaId || '';
+          const entry = byMediaId.get(mediaId);
+          const state = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
+            ? entry.status
+            : 'unknown';
+          row.dataset.liveState = state;
+
+          const link = row.querySelector('[data-live-link]');
+          if (link instanceof HTMLAnchorElement) {
+            const idleLabel = row.dataset.livePlatform === 'youtube'
+              ? (isJa ? 'YouTube ↗' : 'YouTube ↗')
+              : (isJa ? 'ライブ ↗' : 'Live stream ↗');
+            link.textContent = state === 'live' ? '● LIVE ↗' : idleLabel;
+          }
+        }
+        apply();
+      };
+
+      const refreshLiveStatus = async () => {
+        try {
+          const response = await fetch('/api/live-status', { headers: { accept: 'application/json' }, cache: 'no-store' });
+          if (!response.ok) throw new Error(`live status ${response.status}`);
+          applyLiveStatuses(await response.json());
+        } catch {
+          // Fail closed: lack of a verified status feed must never create LIVE state.
+          applyLiveStatuses({ statuses: [] });
+        }
       };
 
       for (const control of [search, country, authority, rank, live, date]) {
@@ -146,6 +185,8 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       const requestedDate = new URLSearchParams(location.search).get('date');
       if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
       apply();
+      refreshLiveStatus();
+      window.setInterval(refreshLiveStatus, 60_000);
     };
 
     if (document.readyState === 'loading') {
