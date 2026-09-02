@@ -7,9 +7,11 @@ on:
   push:
     branches:
       - main
+      - fix/uae-era-current-season-discovery
     paths:
       - '.github/workflows/calendar-uae-current-best-available-refresh.yml'
       - 'scripts/timetable/run-uae-era-current-best-available.mjs'
+      - 'scripts/timetable/uae-era-current-season-discovery.mjs'
       - 'scripts/timetable/collect-uae-era-detail-artifacts.mjs'
       - 'scripts/timetable/uae-era-detail-artifact-core.mjs'
       - 'scripts/timetable/uae-era-rank-upgrade-core.mjs'
@@ -33,6 +35,7 @@ jobs:
       - name: Validate UAE best-available implementation
         run: |
           node --check scripts/timetable/run-uae-era-current-best-available.mjs
+          node --check scripts/timetable/uae-era-current-season-discovery.mjs
           node --check scripts/timetable/collect-uae-era-detail-artifacts.mjs
           node --check scripts/timetable/uae-era-rank-upgrade-core.mjs
       - name: Record protected timetable hashes
@@ -57,6 +60,9 @@ jobs:
           if (summary.automatic_approval !== false || summary.automatic_promotion !== false) throw new Error('UAE refresh crossed review boundary');
           if (summary.rank_a_candidate_count !== summary.rank_a_candidate_ids.length) throw new Error('UAE Rank A candidate accounting differs');
           console.log(JSON.stringify({
+            official_discovered_meeting_count: summary.official_discovered_meeting_count,
+            discovered_new_meeting_count: summary.discovered_new_meeting_count,
+            discovered_new_meeting_ids: summary.discovered_new_meeting_ids,
             selected_lower_rank_meeting_count: summary.selected_lower_rank_meeting_count,
             observed_rank_counts: summary.observed_rank_counts,
             rank_a_candidate_count: summary.rank_a_candidate_count,
