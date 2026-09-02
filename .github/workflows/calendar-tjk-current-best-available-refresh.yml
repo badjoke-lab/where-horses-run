@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'scripts/timetable/tjk-current-future-candidates.mjs'
+      - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
       - 'scripts/check-tjk-current-future-candidates.mjs'
       - 'data/static/calendar-acquisition-registry.json'
@@ -35,6 +36,7 @@ jobs:
       - name: Validate TJK acquisition code
         run: |
           node --check scripts/timetable/tjk-current-future-candidates.mjs
+          node --check scripts/timetable/tjk-annual-fixture-discovery.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
           node --check scripts/check-tjk-current-future-candidates.mjs
 
@@ -57,8 +59,12 @@ jobs:
           const summary = {
             generated_at: a.retrieved_at,
             window: a.window,
+            official_fixture_count: a.discovery.official_fixture_count,
             candidate_count: a.candidates.length,
             rank_counts: a.discovery.rank_counts,
+            detail_status_counts: a.discovery.detail_status_counts,
+            schedule_source_id: a.discovery.schedule_source_id,
+            schedule_source_url: a.discovery.schedule_source_url,
             meetings: a.candidates.map((x) => ({
               candidate_id: x.candidate_id,
               date: x.date,
