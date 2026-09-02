@@ -35,7 +35,8 @@
     "validate:major-country-sample-extraction-audit-matrix": "node scripts/check-major-country-sample-extraction-audit-matrix.mjs",
     "validate:authority-source-inventory-schema": "node scripts/check-authority-source-inventory-schema.mjs",
     "validate:timetable-acquisition-route-schema": "node scripts/check-timetable-acquisition-route-schema.mjs",
-    "validate:normalized-timetable-output-schema": "node scripts/check-normalized-timetable-output-schema.mjs"
+    "validate:normalized-timetable-output-schema": "node scripts/check-normalized-timetable-output-schema.mjs",
+    "validate:japan-zero-based-30d": "node scripts/check-japan-zero-based-30d.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"

@@ -55,6 +55,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  japan-zero-based-30d:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Rebuild and reconcile the Japan official 30-day mother set
+        run: node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date="$(date -u +%F)"
+      - name: Upload complete Japan reconciliation
+        uses: actions/upload-artifact@v4
+        with:
+          name: japan-zero-based-30d-reconciliation
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            data/generated/timetable/japan-zero-based-30d-reconciliation.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+
   smoke:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -77,6 +100,8 @@ jobs:
           node --check scripts/check-calendar-due-job-planner.mjs
       - name: Validate Due-job Planner contract
         run: node scripts/check-calendar-due-job-planner.mjs
+      - name: Validate Japan zero-based 30-day reconciliation
+        run: node scripts/check-japan-zero-based-30d.mjs
       - name: Exercise planner on committed public state
         shell: bash
         run: |
