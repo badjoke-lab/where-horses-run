@@ -15,14 +15,23 @@ const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const addDay = (date) => new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10).replace(/^(.+)$/, (value) => {
+  const d = new Date(`${value}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+});
 
 const baseFixtures = readJson('data/fixtures/calendar-collection-plans-v1.json');
 const localFixtures = readJson('data/fixtures/calendar-local-multi-job-fixtures-v1.json');
+const jraReport = readJson('data/generated/timetable/jra-refresh-report.json');
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
 const plans = [...(baseFixtures.plans ?? []), ...(localFixtures.plans ?? [])];
+const reportStart = jraReport.refresh_window?.from ?? null;
+const reportEndExclusive = jraReport.refresh_window?.to ? addDay(jraReport.refresh_window.to) : null;
 
 if (plans.length === 0) fail('Local multi-job fixtures must contain at least one Plan.');
+if (!reportStart || !reportEndExclusive) fail('Committed JRA refresh report must expose a valid refresh window.');
 
 let localJobCount = 0;
 let checkOnlyCandidate = null;
@@ -45,7 +54,14 @@ for (const plan of plans) {
     if (item.execution?.runner_used !== 'local') fail(`${plan.plan_id}/${item.job_id}: local execution must resolve to local runner.`);
     if (batchIds.has(item.batch_id)) fail(`${plan.plan_id}: duplicate local batch ID ${item.batch_id}.`);
     batchIds.add(item.batch_id);
-    if (!checkOnlyCandidate && item.execution?.executor_id === 'jra-refresh-local' && sourceJob) checkOnlyCandidate = { item, sourceJob };
+    const scope = item.execution?.requested_scope;
+    if (!checkOnlyCandidate
+      && item.execution?.executor_id === 'jra-refresh-local'
+      && sourceJob
+      && scope?.start_date === reportStart
+      && scope?.end_date_exclusive === reportEndExclusive) {
+      checkOnlyCandidate = { item, sourceJob };
+    }
   }
 
   if (localPlan.jobs.length > 0) {
@@ -63,7 +79,7 @@ for (const plan of plans) {
 }
 
 if (localJobCount === 0) fail('Fixture matrix must exercise at least one local Job.');
-if (!checkOnlyCandidate) fail('Fixture matrix must exercise the JRA local review executor.');
+if (!checkOnlyCandidate) fail('Fixture matrix must contain a JRA local Job matching the committed refresh-report window.');
 else {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-local-check-'));
   const executionPath = path.join(tempDir, 'execution.json');
@@ -107,4 +123,5 @@ console.log('CALENDAR_LOCAL_MULTI_JOB: pass');
 console.log(`PLANS_EXERCISED: ${plans.length}`);
 console.log(`LOCAL_JOBS_EXERCISED: ${localJobCount}`);
 console.log('FIXED_DATE_ASSERTIONS: 0');
+console.log('CHECK_ONLY_SCOPE: derived from committed JRA refresh report');
 console.log('CHECK_ONLY_WRITE_ISOLATION: pass');
