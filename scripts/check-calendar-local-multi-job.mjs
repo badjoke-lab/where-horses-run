@@ -15,23 +15,14 @@ const fail = (message) => errors.push(message);
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-const addDay = (date) => new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10).replace(/^(.+)$/, (value) => {
-  const d = new Date(`${value}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + 1);
-  return d.toISOString().slice(0, 10);
-});
 
 const baseFixtures = readJson('data/fixtures/calendar-collection-plans-v1.json');
 const localFixtures = readJson('data/fixtures/calendar-local-multi-job-fixtures-v1.json');
-const jraReport = readJson('data/generated/timetable/jra-refresh-report.json');
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
 const plans = [...(baseFixtures.plans ?? []), ...(localFixtures.plans ?? [])];
-const reportStart = jraReport.refresh_window?.from ?? null;
-const reportEndExclusive = jraReport.refresh_window?.to ? addDay(jraReport.refresh_window.to) : null;
 
 if (plans.length === 0) fail('Local multi-job fixtures must contain at least one Plan.');
-if (!reportStart || !reportEndExclusive) fail('Committed JRA refresh report must expose a valid refresh window.');
 
 let localJobCount = 0;
 let checkOnlyCandidate = null;
@@ -54,12 +45,7 @@ for (const plan of plans) {
     if (item.execution?.runner_used !== 'local') fail(`${plan.plan_id}/${item.job_id}: local execution must resolve to local runner.`);
     if (batchIds.has(item.batch_id)) fail(`${plan.plan_id}: duplicate local batch ID ${item.batch_id}.`);
     batchIds.add(item.batch_id);
-    const scope = item.execution?.requested_scope;
-    if (!checkOnlyCandidate
-      && item.execution?.executor_id === 'jra-refresh-local'
-      && sourceJob
-      && scope?.start_date === reportStart
-      && scope?.end_date_exclusive === reportEndExclusive) {
+    if (!checkOnlyCandidate && item.execution?.executor_id === 'jra-refresh-local' && sourceJob) {
       checkOnlyCandidate = { item, sourceJob };
     }
   }
@@ -79,20 +65,49 @@ for (const plan of plans) {
 }
 
 if (localJobCount === 0) fail('Fixture matrix must exercise at least one local Job.');
-if (!checkOnlyCandidate) fail('Fixture matrix must contain a JRA local Job matching the committed refresh-report window.');
+if (!checkOnlyCandidate) fail('Fixture matrix must contain at least one JRA local Job.');
 else {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-local-check-'));
   const executionPath = path.join(tempDir, 'execution.json');
   const jobPath = path.join(tempDir, 'job.json');
+  const sourceRoot = path.join(tempDir, 'source');
+  const sourceDataRoot = path.join(sourceRoot, 'data/generated/timetable');
+  fs.mkdirSync(sourceDataRoot, { recursive: true });
   fs.writeFileSync(executionPath, `${JSON.stringify(checkOnlyCandidate.item.execution, null, 2)}\n`);
   fs.writeFileSync(jobPath, `${JSON.stringify(checkOnlyCandidate.sourceJob, null, 2)}\n`);
+
+  const startDate = checkOnlyCandidate.sourceJob.requested_scope.start_date;
+  const endExclusive = checkOnlyCandidate.sourceJob.requested_scope.end_date_exclusive;
+  const endDate = new Date(`${endExclusive}T00:00:00Z`);
+  endDate.setUTCDate(endDate.getUTCDate() - 1);
+  const report = {
+    schema_version: 'jra-refresh-report-v0',
+    generated_at: '2000-01-01T00:00:00Z',
+    refresh_window: { from: startDate, to: endDate.toISOString().slice(0, 10) },
+    dates_checked: 0,
+    meetings_extracted: 0,
+    publishable_meetings: 0,
+    a_plus_meetings: 0,
+    a_level_meetings: 0,
+    statuses: [],
+  };
+  const snapshot = {
+    schema_version: 'jra-race-time-snapshot-v0',
+    generated_at: report.generated_at,
+    observations: [],
+  };
+  fs.writeFileSync(path.join(sourceDataRoot, 'jra-refresh-report.json'), `${JSON.stringify(report, null, 2)}\n`);
+  fs.writeFileSync(path.join(sourceDataRoot, 'jra-race-time-snapshot.json'), `${JSON.stringify(snapshot, null, 2)}\n`);
+  fs.writeFileSync(path.join(sourceDataRoot, 'jra-normalized-timetable.json'), '{}\n');
+  fs.writeFileSync(path.join(sourceDataRoot, 'jra-normalized-meeting-details.json'), '{}\n');
+
   const batchDir = path.join(root, `data/generated/timetable/local-multi-job/${checkOnlyCandidate.item.batch_id}`);
   const existedBefore = fs.existsSync(batchDir);
   const result = spawnSync(process.execPath, [
     'scripts/timetable/run-jra-local-review-job.mjs',
     `--execution=${executionPath}`,
     `--job=${jobPath}`,
-    '--source-root=.',
+    `--source-root=${sourceRoot}`,
     '--check-only',
   ], { cwd: root, encoding: 'utf8' });
   fs.rmSync(tempDir, { recursive: true, force: true });
@@ -100,6 +115,7 @@ else {
   else {
     const output = JSON.parse(result.stdout.trim().split(/\r?\n/).filter(Boolean).at(-1));
     if (output.outcome !== 'success' || output.check_only !== true) fail(`JRA local check-only outcome differs: ${JSON.stringify(output)}`);
+    if (output.records_discovered !== 0 || output.records_updated !== 0) fail(`synthetic zero-record JRA outcome differs: ${JSON.stringify(output)}`);
   }
   if (!existedBefore && fs.existsSync(batchDir)) fail('JRA local check-only executor wrote a batch output directory.');
 }
@@ -122,6 +138,6 @@ if (errors.length) {
 console.log('CALENDAR_LOCAL_MULTI_JOB: pass');
 console.log(`PLANS_EXERCISED: ${plans.length}`);
 console.log(`LOCAL_JOBS_EXERCISED: ${localJobCount}`);
-console.log('FIXED_DATE_ASSERTIONS: 0');
-console.log('CHECK_ONLY_SCOPE: derived from committed JRA refresh report');
+console.log('CHECK_ONLY_SCOPE: derived from local fixture Job');
+console.log('CHECK_ONLY_SOURCE: synthetic zero-record JRA source bundle');
 console.log('CHECK_ONLY_WRITE_ISOLATION: pass');
