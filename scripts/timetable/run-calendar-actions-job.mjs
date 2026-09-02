@@ -29,33 +29,21 @@ function resolveCollectionJob() {
     const jobPath = path.resolve(root, jobArg.slice('--job='.length));
     return JSON.parse(fs.readFileSync(jobPath, 'utf8'));
   }
-
   const planFixtures = JSON.parse(fs.readFileSync(path.join(root, 'data/fixtures/calendar-collection-plans-v1.json'), 'utf8'));
   const matchingJobs = planFixtures.plans.flatMap((plan) => plan.jobs).filter((job) => job.job_id === execution.job_id);
-  if (matchingJobs.length !== 1) {
-    throw new Error(`generated or non-fixture execution requires --job=<path>; fixture lookup found ${matchingJobs.length} Job(s) for ${execution.job_id}`);
-  }
+  if (matchingJobs.length !== 1) throw new Error(`generated or non-fixture execution requires --job=<path>; fixture lookup found ${matchingJobs.length} Job(s) for ${execution.job_id}`);
   return matchingJobs[0];
 }
 
 function runNode(script, args = [], env = process.env) {
-  const result = spawnSync(process.execPath, [script, ...args], {
-    cwd: root,
-    env,
-    stdio: 'inherit',
-  });
+  const result = spawnSync(process.execPath, [script, ...args], { cwd: root, env, stdio: 'inherit' });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${script} exited with status ${result.status}`);
 }
 
 function coveragePathForExecution(value) {
-  if (value.executor_id === 'nar-incremental-v2-actions') {
-    return path.join(root, `data/generated/timetable/nar-incremental-batches/${value.batch_id}/coverage-observation.json`);
-  }
-  if (value.executor_id === 'hkjc-live-fixture-actions'
-    || value.executor_id === 'banei-schedule-detail-actions'
-    || value.executor_id === 'uae-era-actions'
-    || value.executor_id === 'kra-todayrace-actions') {
+  if (value.executor_id === 'nar-incremental-v2-actions') return path.join(root, `data/generated/timetable/nar-incremental-batches/${value.batch_id}/coverage-observation.json`);
+  if (value.executor_id === 'hkjc-live-fixture-actions' || value.executor_id === 'banei-schedule-detail-actions' || value.executor_id === 'uae-era-actions' || value.executor_id === 'kra-todayrace-actions') {
     return path.join(root, `data/generated/timetable/actions-multi-job/${value.batch_id}/coverage-observation.json`);
   }
   throw new Error(`unsupported Actions executor ${value.executor_id}`);
@@ -79,16 +67,17 @@ try {
     statusRecord = makeActionsJobStatusV1(execution, 'success', 'validation_only_no_source_execution');
   } else {
     if (execution.executor_id === 'nar-incremental-v2-actions') {
-      if (!['date_window', 'selected_meetings'].includes(execution.collection_mode)) {
+      if (!['date_window', 'source_visible_horizon', 'selected_meetings'].includes(execution.collection_mode)) {
         throw new Error(`NAR Actions executor does not support ${execution.collection_mode}`);
       }
       const scope = execution.requested_scope;
+      const dateScoped = execution.collection_mode === 'date_window' || execution.collection_mode === 'source_visible_horizon';
       const env = {
         ...process.env,
         WHR_BATCH_ID: execution.batch_id,
         WHR_MODE: execution.collection_mode,
-        WHR_START_DATE: execution.collection_mode === 'date_window' ? scope.start_date : '',
-        WHR_END_DATE_EXCLUSIVE: execution.collection_mode === 'date_window' ? scope.end_date_exclusive : '',
+        WHR_START_DATE: dateScoped ? scope.start_date : '',
+        WHR_END_DATE_EXCLUSIVE: dateScoped ? scope.end_date_exclusive : '',
         WHR_MEETING_IDS: execution.collection_mode === 'selected_meetings' ? scope.meeting_ids.join(',') : '',
       };
       runNode('scripts/timetable/run-nar-incremental-v2-actions.mjs', [], env);
@@ -115,9 +104,5 @@ try {
 }
 
 fs.writeFileSync(statusPath, `${JSON.stringify(statusRecord, null, 2)}\n`);
-console.log(JSON.stringify({
-  status_path: path.relative(root, statusPath),
-  status: statusRecord.status,
-  execution_mode: validateOnly ? 'validation_only' : 'source_execution',
-}));
+console.log(JSON.stringify({ status_path: path.relative(root, statusPath), status: statusRecord.status, execution_mode: validateOnly ? 'validation_only' : 'source_execution' }));
 if (failed) process.exitCode = 1;
