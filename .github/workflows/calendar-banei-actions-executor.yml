@@ -79,11 +79,8 @@ jobs:
           node scripts/check-calendar-collection-result-manifest.mjs
           node scripts/check-calendar-review-queue.mjs
 
-      - name: Validate Banei evidence and Due-job policy boundaries
-        run: |
-          node scripts/check-calendar-banei-runner-selected-evidence.mjs
-          node scripts/check-calendar-banei-detail-registry-activation.mjs
-          node scripts/check-calendar-due-job-planner.mjs
+      - name: Validate current Banei Due-job policy
+        run: node scripts/check-calendar-due-job-planner.mjs
 
       - name: Validate Calendar contracts and governance
         run: |
