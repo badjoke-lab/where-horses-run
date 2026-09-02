@@ -7,9 +7,6 @@ on:
   push:
     branches:
       - main
-      - fix/hkjc-kra-current-best-available-refresh
-      - fix/hkjc-entries-programme-layer-20260902
-      - fix/hkjc-programme-pending-status-20260902
     paths:
       - '.github/workflows/calendar-hkjc-current-best-available-refresh.yml'
       - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
