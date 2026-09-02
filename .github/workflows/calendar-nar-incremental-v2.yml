@@ -12,7 +12,13 @@ on:
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
       - 'scripts/check-project-governance-docs.mjs'
-      - 'docs/calendar/**'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/incremental-coverage-contract.md'
+      - 'docs/calendar/coverage-observation-schema.md'
+      - 'docs/calendar/validation-responsibility-contract.md'
+      - 'docs/calendar/acquisition-control-plane-contract.md'
+      - 'docs/calendar/acquisition-registry.md'
       - '.github/workflows/calendar-nar-incremental-v2.yml'
   push:
     branches:
@@ -27,7 +33,13 @@ on:
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
       - 'scripts/check-project-governance-docs.mjs'
-      - 'docs/calendar/**'
+      - 'docs/calendar/README.md'
+      - 'docs/calendar/machine-readable-contracts.md'
+      - 'docs/calendar/incremental-coverage-contract.md'
+      - 'docs/calendar/coverage-observation-schema.md'
+      - 'docs/calendar/validation-responsibility-contract.md'
+      - 'docs/calendar/acquisition-control-plane-contract.md'
+      - 'docs/calendar/acquisition-registry.md'
       - '.github/workflows/calendar-nar-incremental-v2.yml'
 
 concurrency:
