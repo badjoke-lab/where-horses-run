@@ -111,7 +111,6 @@ const forbidden = [
 
 const audit = {
   schema_version: 'calendar-public-projection-release-audit-v1',
-  work_id: 'WHR-CAL-PIPELINE-V1',
   projection_generated_at: afterList.generated_at,
   before: {
     meeting_generated_at: beforeList.generated_at,
