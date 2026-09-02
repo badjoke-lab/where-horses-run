@@ -89,7 +89,6 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           !(date instanceof HTMLSelectElement) || !(reset instanceof HTMLButtonElement)) return;
 
       root.dataset.filterReady = 'true';
-      let currentVideoId = null;
       let refreshTimer = null;
 
       const setLiveFeatureAvailable = (available) => {
@@ -128,22 +127,23 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
       const applyLiveStatuses = (payload) => {
         const statuses = Array.isArray(payload?.statuses) ? payload.statuses : [];
-        const byMediaId = new Map(statuses
-          .filter((entry) => entry && typeof entry.media_id === 'string')
-          .map((entry) => [entry.media_id, entry]));
-        let observedState = 'unknown';
-        currentVideoId = null;
+        const byDetectorId = new Map(statuses
+          .filter((entry) => entry && typeof entry.detector_id === 'string')
+          .map((entry) => [entry.detector_id, entry]));
+        let hasDetectorState = false;
 
         for (const row of rows) {
           if (!(row instanceof HTMLElement)) continue;
-          const mediaId = row.dataset.mediaId || '';
-          const entry = byMediaId.get(mediaId);
-          const state = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
+          const detectorId = row.dataset.liveDetectorId || '';
+          const entry = byDetectorId.get(detectorId);
+          const rawState = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
             ? entry.status
             : 'unknown';
+          const eventState = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
+          const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === row.dataset.date;
+          const state = eventState && !dateMatches ? 'unknown' : rawState;
           row.dataset.liveState = state;
-          if (state !== 'unknown') observedState = state;
-          if (typeof entry?.video_id === 'string') currentVideoId = entry.video_id;
+          if (detectorId && rawState !== 'unknown') hasDetectorState = true;
 
           const link = row.querySelector('[data-live-link]');
           if (link instanceof HTMLAnchorElement) {
@@ -154,7 +154,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           }
         }
         apply();
-        return observedState;
+        return hasDetectorState;
       };
 
       const scheduleRefresh = (delay) => {
@@ -165,16 +165,18 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       const refreshLiveStatus = async () => {
         try {
           const endpoint = new URL('/api/live-status', location.origin);
-          if (currentVideoId) endpoint.searchParams.set('video_id', currentVideoId);
           const response = await fetch(endpoint, { headers: { accept: 'application/json' }, cache: 'no-store' });
           if (!response.ok) throw new Error(`live status ${response.status}`);
           const payload = await response.json();
           if (payload?.configured !== true) throw new Error('live status not configured');
-          setLiveFeatureAvailable(true);
-          const state = applyLiveStatuses(payload);
-          scheduleRefresh(state === 'live' || state === 'upcoming' ? 60_000 : 900_000);
+          const hasDetectorState = applyLiveStatuses(payload);
+          setLiveFeatureAvailable(hasDetectorState);
+          const requestedRefresh = Number(payload?.refresh_after_seconds);
+          const refreshSeconds = Number.isFinite(requestedRefresh)
+            ? Math.min(3600, Math.max(60, requestedRefresh))
+            : 900;
+          scheduleRefresh(refreshSeconds * 1000);
         } catch {
-          currentVideoId = null;
           setLiveFeatureAvailable(false);
           // Fail closed: lack of a verified status feed must never create LIVE state.
           applyLiveStatuses({ statuses: [] });
