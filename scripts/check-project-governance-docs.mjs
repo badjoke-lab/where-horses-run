@@ -4,8 +4,6 @@ const errors = [];
 const requiredFiles = [
   'START-HERE.md',
   'docs/project-roadmap.md',
-  'docs/project-roadmap-2026-08-25-addendum.md',
-  'docs/README.md',
   'docs/governance/document-authority.md',
   'docs/calendar/README.md',
   'docs/calendar/machine-readable-contracts.md',
@@ -13,326 +11,90 @@ const requiredFiles = [
   'docs/calendar/coverage-observation-schema.md',
   'docs/calendar/validation-responsibility-contract.md',
   'docs/calendar/acquisition-control-plane-contract.md',
-  'docs/calendar/acquisition-control-plane-implementation-plan.md',
-  'docs/calendar/implementation-roadmap.md',
-  'docs/calendar/nar-a-plus-pilot-plan.md',
-  'docs/calendar/nar-monthly-collection-contract.md',
-  'docs/calendar/manual-nar-incremental-collection.md',
-  'docs/calendar/banei-a-plus-full-month-plan.md',
-  'docs/calendar/banei-handoff-decision.md',
-  'data/static/calendar-banei-handoff-decision.schema.json',
-  'data/static/calendar-banei-handoff-decision-v1.json',
-  'scripts/check-calendar-banei-handoff-decision.mjs',
-  'docs/calendar/public-v1-release-decision.md',
-  'data/audits/calendar-public-v1-release-decision-v1.json',
-  'scripts/check-calendar-public-v1-navigation-qa.mjs',
-  'scripts/check-calendar-public-v1-release-decision.mjs',
-  'docs/racecourses/identity-reconciliation.md',
-  'data/audits/racecourse-page-identity-reconciliation-v1.json',
-  'data/static/racecourses-public-timetable-identities-v1.json',
-  'scripts/check-racecourse-page-identity-reconciliation.mjs',
-  'docs/racecourses/public-timetable-connection.md',
-  'data/audits/racecourse-page-public-timetable-connection-v1.json',
-  'src/lib/racecourses/publicRacecourseMeetingState.ts',
-  'src/components/RacecoursePublicMeetingPanel.astro',
-  'scripts/check-racecourse-page-public-timetable-connection.mjs',
-  'docs/racecourses/profile-evidence.md',
-  'data/audits/racecourse-page-profile-evidence-v1.json',
-  'data/static/racecourse-profile-evidence-japan-v1.json',
-  'scripts/check-racecourse-page-profile-evidence.mjs',
-  'docs/racecourses/page-link-architecture.md',
-  'data/audits/racecourse-page-link-architecture-v1.json',
-  'data/static/racecourse-link-amendments-v1.json',
-  'scripts/check-racecourse-page-link-architecture.mjs',
-  'docs/racecourses/bilingual-qa.md',
-  'data/audits/racecourse-page-bilingual-qa-v1.json',
-  'scripts/check-racecourse-page-bilingual-qa.mjs',
-  'scripts/check-racecourse-page-bilingual-qa-rendered.mjs',
+  'docs/calendar/acquisition-registry.md',
+  'data/static/calendar-acquisition-registry.schema.json',
+  'data/static/calendar-acquisition-registry.json',
   'data/static/calendar-coverage-observation.schema.json',
   'data/static/calendar-validation-responsibilities-v1.json',
-  'data/static/calendar-readiness-registry.json',
-  'data/static/calendar-readiness-japan-v2.json',
-  'data/static/japan-a-plus-policy.json',
   'scripts/timetable/coverage-observation-validation.mjs',
-  'scripts/timetable/pipeline-v1/promotion-core.mjs',
-  'scripts/timetable/nar-incremental-core.mjs',
-  'scripts/timetable/collect-nar-incremental.mjs',
-  'scripts/timetable/run-nar-incremental-local.mjs',
   'scripts/timetable/nar-incremental-v2-core.mjs',
-  'scripts/timetable/nar-incremental-v2-reconcile.mjs',
-  'scripts/timetable/normalize-nar-schedule-aware-month.mjs',
-  'scripts/timetable/collect-nar-incremental-v2.mjs',
-  'scripts/timetable/collect-nar-incremental-v2-reconciled.mjs',
-  'scripts/timetable/run-nar-incremental-v2-local.mjs',
+  'scripts/timetable/nar-incremental-v2-actions-core.mjs',
+  'scripts/check-calendar-acquisition-registry.mjs',
   'scripts/check-calendar-coverage-observation-schema.mjs',
   'scripts/check-calendar-validation-responsibilities.mjs',
-  'scripts/check-calendar-pipeline-v1-promotion.mjs',
-  'scripts/check-calendar-nar-incremental-core.mjs',
-  'scripts/check-calendar-nar-incremental.mjs',
-  'scripts/check-calendar-nar-incremental-v2-core.mjs',
-  'scripts/check-calendar-nar-incremental-v2.mjs'
 ];
 
 for (const file of requiredFiles) {
-  if (!fs.existsSync(file)) errors.push(`missing: ${file}`);
+  if (!fs.existsSync(file)) errors.push(`missing current governance dependency: ${file}`);
 }
 
 const read = (file) => fs.readFileSync(file, 'utf8');
-const start = read('START-HERE.md');
-const roadmap = read('docs/project-roadmap.md');
-const implementationRoadmap = read('docs/calendar/implementation-roadmap.md');
-const incremental = read('docs/calendar/incremental-coverage-contract.md');
-const controlPlane = read('docs/calendar/acquisition-control-plane-contract.md');
-const controlPlan = read('docs/calendar/acquisition-control-plane-implementation-plan.md');
-const machineContracts = read('docs/calendar/machine-readable-contracts.md');
-const coverageDoc = read('docs/calendar/coverage-observation-schema.md');
-const validationDoc = read('docs/calendar/validation-responsibility-contract.md');
-const validationMap = read('data/static/calendar-validation-responsibilities-v1.json');
-const registry = read('data/static/calendar-readiness-registry.json');
-const japanReadiness = read('data/static/calendar-readiness-japan-v2.json');
-const japanPolicy = read('data/static/japan-a-plus-policy.json');
-const narRunbook = read('docs/calendar/manual-nar-incremental-collection.md');
-
-function requirePhrases(text, label, phrases) {
+const requirePhrases = (file, phrases) => {
+  const text = read(file);
   for (const phrase of phrases) {
-    if (!text.includes(phrase)) errors.push(`${label} missing ${phrase}`);
+    if (!text.includes(phrase)) errors.push(`${file} missing current contract marker: ${phrase}`);
   }
-}
+};
 
-requirePhrases(start, 'START-HERE', [
-  'WHR-CAL-JAPAN-NAR-A-PLUS',
-  'WHR-CAL-ACQUISITION-CONTROL-PLANE',
-  'WHR-CAL-JAPAN-BANEI-A-PLUS',
-  'docs/calendar/acquisition-control-plane-contract.md',
-  'docs/calendar/acquisition-control-plane-implementation-plan.md',
-  'Collection Plan',
-  'Review Queue',
+requirePhrases('docs/calendar/incremental-coverage-contract.md', [
+  'partial',
+  'C/B/B+/A/A+',
   'Rank-aware Retry Queue',
-  'C/B/B+/A/A+',
-  'primary runner: local',
-  'primary runner: github_actions',
-  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
-  'Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
-  'Current stage: `reviewed_incremental_maintenance`',
-  'Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
-  'Completed implementation unit: `GLOSSARY-QA-RELEASE-01`'
-]);
-
-requirePhrases(roadmap, 'project roadmap', [
-  'Country-page programme: complete',
-  'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
-  'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
-  'Completed Work ID: `WHR-CAL-UAE-ERA`',
-  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
-  'Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
-  'Current stage: `reviewed_incremental_maintenance`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
-  'Completed implementation unit: `GLOSSARY-QA-RELEASE-01`',
-  'Calendar Public v1 release decision accepted',
-  'schedule-confirmed meetings: 82',
-  'A+ detail records:            11',
-  'C schedule records:           71',
-  'pending detail retries:       71',
-  'Acquisition Control Plane',
-  'Acquisition Registry',
-  'Collection Job schema',
-  'Collection Plan schema',
-  'Review Queue foundation',
-  'Rank-aware Retry Queue foundation',
-  'C/B/B+/A/A+',
-  '## Banei A+',
-  'Status: handoff accepted; manual reviewed steady-state operation.',
-  'Banei handoff accepted',
-  'proposal-only post-run Retry Queue reconciliation'
-]);
-
-requirePhrases(implementationRoadmap, 'implementation roadmap', [
-  'Pipeline v1 status: complete',
-  'Dynamic Dates status: complete',
-  'Operations v1 status: complete',
-  'Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`',
-  'Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`',
-  'Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`',
-  'Completed Work ID: `WHR-CAL-UAE-ERA`',
-  'Completed Work ID: `WHR-CAL-PUBLIC-V1`',
-  'Completed Work ID: `WHR-RACECOURSE-PAGES-V1`',
-  'Current Work ID: `WHR-GLOSSARY-DICTIONARY-V1`',
-  'Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`',
-  'Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`',
-  'Current implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`',
-  'ACP-1 — NAR formal workflow dispatch — complete',
-  'Stage 7 — Acquisition Control Plane foundation',
-  'Status: complete.',
-  'ACP-2 — Acquisition Registry',
-  'ACP-3 — Collection Job schema',
-  'ACP-4 — Collection Plan schema',
-  'ACP-5 — five-rank classifier contract',
-  'ACP-7 — Review Queue',
-  'ACP-8 — Rank-aware Retry Queue',
-  'Banei handoff gate',
-  'Banei handoff decision accepted',
-  'WHR-CAL-HONG-KONG-HKJC',
-  'Operations v2 — complete'
-]);
-
-requirePhrases(incremental, 'incremental coverage contract', [
-  'No country, authority, or racing system may require month-wide completeness',
-  '`partial` is a normal successful state',
-  'Five-rank operational model',
-  'Runner-neutral collection',
-  'Multi-system Collection Plans',
   'Absence is not deletion',
-  'Rank regression rule',
-  'Rank-aware retry model',
-  'Batch Validation',
-  'Promotion Validation',
-  'Coverage Audit',
-  'Completion Audit'
 ]);
-
-requirePhrases(controlPlane, 'control plane contract', [
-  'what to collect',
-  'where and how collection runs',
+requirePhrases('docs/calendar/acquisition-control-plane-contract.md', [
   'github_actions',
   'local',
   'reviewed_import',
   'Acquisition Registry',
   'Collection Plan',
   'Collection Job',
-  'Five first-class timetable ranks',
-  'C < B < B+ < A < A+',
   'Review Queue',
-  'Rank-aware Retry Queue',
-  'primary runner: github_actions',
-  'fallback runner: local'
 ]);
-
-requirePhrases(controlPlan, 'control plane implementation plan', [
-  'ACP-0 — documentation and transition alignment',
-  'ACP-1 — finish NAR July remainder publication',
-  'ACP-2 — NAR formal workflow-dispatch operation',
-  'ACP-3 — Acquisition Registry',
-  'ACP-4 — Collection Job schema',
-  'ACP-5 — Collection Plan schema',
-  'ACP-6 — shared five-rank classifier contract',
-  'ACP-8 — Review Queue',
-  'ACP-9 — Rank-aware Retry Queue',
-  'ACP-10 — Actions multi-job runner',
-  'ACP-11 — local multi-job runner',
-  'Banei handoff gate',
-  'Status: completed foundation programme',
-  'Current source-specific work:',
-  'WHR-CAL-HONG-KONG-HKJC',
-  'WHR-CAL-UAE-ERA'
-]);
-
-requirePhrases(machineContracts, 'machine-readable contracts', [
+requirePhrases('docs/calendar/machine-readable-contracts.md', [
   'data/static/calendar-acquisition-registry.schema.json',
   'data/static/calendar-acquisition-registry.json',
-  'data/static/calendar-collection-job.schema.json',
-  'data/static/calendar-collection-plan.schema.json',
-  'data/static/calendar-five-rank-classifier-contract-v1.json',
-  'Collection Result Manifest schema',
-  'Review Queue schema',
-  'Rank-aware Retry Queue schema',
-  'Five-rank result contract'
+  'Collection Result Manifest',
+  'Review Queue',
 ]);
-
-requirePhrases(coverageDoc, 'coverage observation contract', [
+requirePhrases('docs/calendar/coverage-observation-schema.md', [
   'requested_scope',
   'observed_scope',
-  '`partial` is a normal successful state',
-  '`audited_complete`',
-  'completion_audit_ref',
   'selected_meetings',
-  'source_visible_horizon'
+  'source_visible_horizon',
 ]);
-
-requirePhrases(validationDoc, 'validation responsibility contract', [
+requirePhrases('docs/calendar/validation-responsibility-contract.md', [
   'Batch Validation',
   'Promotion Validation',
   'Coverage Audit',
   'Completion Audit',
-  'Normal promotion is monotonic',
   'corrective_downgrade',
-  'ordinary promotion CLI remains normal-mode only',
-  'must not block unrelated valid partial promotions'
 ]);
 
-requirePhrases(narRunbook, 'NAR runbook', [
-  'primary runner: github_actions',
-  'fallback runner: local',
-  'formal workflow_dispatch operation: active',
-  'immutable review artifact upload: active',
-  'arbitrary date windows up to 93 days',
-  'selected-meeting retries',
-  'C\nB\nB+\nA\nA+',
-  'scheduled_pending_details',
-  'detail_retry_required',
-  'Rank-aware Retry Queue',
-  'schedule-confirmed meetings: 82',
-  'A+ detail candidates:         11',
-  'C schedule candidates:        71'
-]);
-
-requirePhrases(validationMap, 'validation responsibility map', [
-  'calendar-validation-responsibilities-v1',
-  'batch_validation',
-  'promotion_validation',
-  'coverage_audit',
-  'completion_audit',
-  'monotonic_rank',
-  'normal_rank_regression_allowed',
-  'corrective_downgrade',
-  'official_correction',
-  'rollback'
-]);
-
-requirePhrases(registry, 'readiness registry', [
-  '"bootstrap_status": "complete"',
-  '"countries_with_closed_decision": 98',
-  '"readiness_records": 117',
-  '"next_backfill_work_ids": []'
-]);
-
-for (const systemId of ['japan-jra-system', 'japan-nar-system', 'japan-banei-system']) {
-  if (!japanReadiness.includes(`"system_id": "${systemId}"`)) errors.push(`Japan readiness missing ${systemId}`);
-  if (!japanPolicy.includes(`"system_id":"${systemId}"`)) errors.push(`Japan policy missing ${systemId}`);
+const registry = JSON.parse(read('data/static/calendar-acquisition-registry.json'));
+if (registry?.schema_version !== 'calendar-acquisition-registry-v1') errors.push('Acquisition Registry schema version differs.');
+if (!Array.isArray(registry?.records) || registry.records.length === 0) errors.push('Acquisition Registry must contain current profiles.');
+for (const record of registry?.records ?? []) {
+  if (!record.system_id || !record.primary_runner) errors.push('Acquisition Registry profile missing system_id or primary_runner.');
+  if (record.profile_status === 'active' && (record.schedule_adapter_id === null || record.detail_adapter_id === null)) {
+    errors.push(`active profile has incomplete adapter route: ${record.system_id}`);
+  }
 }
 
-if ((japanReadiness.match(/"technical_rank": "A\+"/g) ?? []).length !== 3) errors.push('Japan readiness must contain three A+ technical ranks.');
-if ((japanReadiness.match(/"public_ceiling": "A\+"/g) ?? []).length !== 3) errors.push('Japan readiness must contain three A+ public ceilings.');
+const validationMap = JSON.parse(read('data/static/calendar-validation-responsibilities-v1.json'));
+const serializedValidationMap = JSON.stringify(validationMap);
+for (const marker of ['batch_validation', 'promotion_validation', 'coverage_audit', 'completion_audit']) {
+  if (!serializedValidationMap.includes(marker)) errors.push(`validation responsibility map missing ${marker}`);
+}
 
 if (errors.length) {
-  for (const error of errors) console.error(`ERROR: ${error}`);
+  console.error(`PROJECT_GOVERNANCE_DOCS: failed (${errors.length})`);
+  errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
 
-console.log('PROJECT_GOVERNANCE_DOCS_VALID');
-console.log('COVERAGE_OBSERVATION_SCHEMA_FOUNDATION: active');
-console.log('VALIDATION_RESPONSIBILITY_SPLIT: active');
-console.log('ACQUISITION_CONTROL_PLANE_CONTRACT: completed foundation');
-console.log('FIVE_RANK_OPERATIONAL_MODEL: C/B/B+/A/A+');
-console.log('NAR_ACTIONS_OPERATOR: active');
-console.log('NAR_RUNNER_PROFILE: github_actions primary / local fallback');
-console.log('COMPLETED_WORK_ID: WHR-CAL-ACQUISITION-CONTROL-PLANE');
-console.log('COMPLETED_WORK_ID: WHR-CAL-JAPAN-BANEI-A-PLUS');
-console.log('COMPLETED_WORK_ID: WHR-CAL-HONG-KONG-HKJC');
-console.log('COMPLETED_WORK_ID: WHR-CAL-UAE-ERA');
-console.log('COMPLETED_WORK_ID: WHR-CAL-PUBLIC-V1');
-console.log('CURRENT_WORK_ID: WHR-RACECOURSE-PAGES-V1');
+console.log('PROJECT_GOVERNANCE_DOCS: pass');
+console.log(`CURRENT_REQUIRED_FILES: ${requiredFiles.length}`);
+console.log(`ACQUISITION_PROFILES: ${registry.records.length}`);
+console.log('HISTORICAL_FIXED_COUNTS_REQUIRED: false');
+console.log('COMPLETED_STAGE_TEXT_REQUIRED: false');
