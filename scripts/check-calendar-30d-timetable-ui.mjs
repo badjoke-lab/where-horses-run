@@ -43,7 +43,7 @@ for (const marker of [
   'groups={groups}',
   'canonicalPath="/calendar/"',
   'alternatePath="/ja/calendar/"',
-  'No reviewed public meetings fall between',
+  'No meetings are currently listed between',
 ]) requireIncludes(englishPage, marker, englishPath);
 
 for (const marker of [
@@ -52,24 +52,27 @@ for (const marker of [
   'lang="ja"',
   'canonicalPath="/ja/calendar/"',
   'alternatePath="/calendar/"',
-  'この30日間に確認済み公開開催はありません',
+  'この30日間の開催情報は掲載されていません',
 ]) requireIncludes(japanesePage, marker, japanesePath);
 
 for (const marker of [
-  'group.records.map((record) => (',
-  '<li class="meeting-row">',
+  'groups.map((group) => (',
+  'group.records.map((record) => {',
+  'class="meeting-row"',
+  'data-calendar-meeting-row',
   'meeting-row__identity',
-  'meeting-row__meta',
+  'meeting-row__system',
+  'meeting-row__time',
+  'meeting-row__rank',
   'meeting-row__links',
-  "const shouldShowFirst = (record: TimetableMeetingRow) => record.capability_rank !== 'C';",
-  "record.capability_rank === 'B+' || record.capability_rank === 'A' || record.capability_rank === 'A+'",
-  'record.source_status',
-  'record.last_checked_date',
+  'raceTime(record)',
+  'record.capability_rank',
   'record.detail_path',
   'record.official_source_url',
+  'record.live_media',
 ]) requireIncludes(meetingList, marker, listPath);
 
-if ((meetingList.match(/group\.records\.map\(\(record\) => \(/g) ?? []).length !== 1) {
+if ((meetingList.match(/group\.records\.map\(\(record\) => \{/g) ?? []).length !== 1) {
   fail(`${listPath}: each meeting row must be mapped exactly once`);
 }
 if (meetingList.includes('<table')) fail(`${listPath}: list pages must not render a full table`);
@@ -79,7 +82,8 @@ if (/record\.(?:races|race_rows|programme)\.map/.test(meetingList)) {
 
 for (const marker of [
   'data-calendar-data-status={dataState.status}',
-  'context.today',
+  'context.windowStart',
+  'context.windowEndInclusive',
   'context.timeZone',
   'stale_generation_with_window_records',
   'no_public_records',
@@ -105,3 +109,4 @@ if (errors.length) {
 console.log('Calendar 30-day timetable UI check passed.');
 console.log('ONE_MEETING_PER_LIST_ROW: pass');
 console.log('DYNAMIC_CALENDAR_COPY: pass');
+console.log('CURRENT_MEETING_ROW_CONTRACT: pass');
