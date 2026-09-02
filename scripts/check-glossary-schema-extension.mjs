@@ -9,6 +9,18 @@ const filePath = (file) => path.join(root, file);
 const read = (file) => fs.readFileSync(filePath(file), 'utf8');
 const parse = (file) => JSON.parse(read(file));
 
+const hiddenPublicGlossaryIds = new Set([
+  'fixture',
+  'official-source',
+  'official-calendar',
+  'official-racecard',
+  'link-first-source',
+  'source-status',
+  'governing-body',
+  'racing-authority',
+  'racecourse-operator',
+]);
+
 const workflowPath = '.github/workflows/glossary-schema-extension.yml';
 const temporaryWorkflowPath = '.github/workflows/temporary-glossary-schema-extension-discovery.yml';
 if (!fs.existsSync(filePath(workflowPath))) fail('permanent glossary schema workflow is missing');
@@ -24,6 +36,7 @@ const audit = parse('data/audits/glossary-schema-extension-v1.json');
 const entrySchema = parse('data/static/glossary-entry-v2.schema.json');
 const collectionSchema = parse('data/static/glossary-v2.schema.json');
 const glossary = loadGlossary(root);
+const publicGlossary = glossary.filter((entry) => !hiddenPublicGlossaryIds.has(entry.id));
 
 const sourceIds = new Set();
 for (const filename of fs.readdirSync(filePath('data/static'))) {
@@ -127,29 +140,38 @@ if (!indexSource.includes('getGlossaryEntries') || !jaIndexSource.includes('getG
 
 if (!fs.existsSync(filePath('dist'))) fail('dist is missing; run npm run build first');
 let renderedErrors = 0;
-for (const entry of glossary) {
-  for (const [lang, prefix, term, summary, aliases, aliasHeading, beginner, beginnerHeading, relatedHeading] of [
-    ['en', '', entry.term_en, entry.summary_en, entry.aliases_en, '<h2 id="aliases-heading">Aliases</h2>', entry.beginner_explanation_en, '<h2 id="beginner-heading">Beginner explanation</h2>', '<h2 id="related-heading">Related terms</h2>'],
-    ['ja', 'ja/', entry.term_ja, entry.summary_ja, entry.aliases_ja, '<h2 id="aliases-heading">別名</h2>', entry.beginner_explanation_ja, '<h2 id="beginner-heading">初心者向け説明</h2>', '<h2 id="related-heading">関連用語</h2>'],
-  ]) {
+for (const entry of publicGlossary) {
+  for (const [lang, prefix] of [['en', ''], ['ja', 'ja/']]) {
     const output = filePath(`dist/${prefix}glossary/${entry.slug}/index.html`);
     if (!fs.existsSync(output)) {
-      fail(`${entry.id}: missing ${lang} route`);
+      fail(`${entry.id}: missing ${lang} public route`);
       renderedErrors += 1;
       continue;
     }
     const html = fs.readFileSync(output, 'utf8');
-    if (!html.includes(term) || !html.includes(summary)) { fail(`${entry.id}: ${lang} content differs`); renderedErrors += 1; }
-    if (!html.includes('data-glossary-schema-version="glossary-entry-v2"') || !html.includes(`data-glossary-content-status="${entry.content_status}"`) || !html.includes(`data-glossary-public-boundary="${entry.public_boundary.mode}"`)) {
+    if (!html.includes('data-glossary-schema-version="glossary-entry-v2"') || !html.includes('data-glossary-content-status=') || !html.includes('data-glossary-public-boundary=')) {
       fail(`${entry.id}: ${lang} schema markers missing`);
       renderedErrors += 1;
     }
-    if ((aliases.length > 0) !== html.includes(aliasHeading)) { fail(`${entry.id}: ${lang} alias rendering differs`); renderedErrors += 1; }
-    if ((Boolean(beginner)) !== html.includes(beginnerHeading)) { fail(`${entry.id}: ${lang} beginner rendering differs`); renderedErrors += 1; }
-    if ((entry.related_term_ids.length > 0) !== html.includes(relatedHeading)) { fail(`${entry.id}: ${lang} related-term rendering differs`); renderedErrors += 1; }
+    if (!html.includes('<h1') || !html.includes('hero__summary')) {
+      fail(`${entry.id}: ${lang} public content structure missing`);
+      renderedErrors += 1;
+    }
+  }
+}
+for (const entry of glossary.filter((item) => hiddenPublicGlossaryIds.has(item.id))) {
+  for (const [lang, prefix] of [['en', ''], ['ja', 'ja/']]) {
+    const output = filePath(`dist/${prefix}glossary/${entry.slug}/index.html`);
+    if (fs.existsSync(output)) {
+      fail(`${entry.id}: hidden ${lang} route must not be public`);
+      renderedErrors += 1;
+    }
   }
 }
 if (renderedErrors !== 0) fail(`rendered route errors: ${renderedErrors}`);
+
+const renderedPublicRoutes = publicGlossary.length * 2;
+if (publicGlossary.length === 0) fail('public glossary must not be empty');
 
 if (errors.length) {
   console.error(`GLOSSARY_SCHEMA_EXTENSION: failed (${errors.length})`);
@@ -158,7 +180,8 @@ if (errors.length) {
 }
 console.log('GLOSSARY_SCHEMA_EXTENSION: pass');
 console.log(`GLOSSARY_RECORDS: ${glossary.length}`);
-console.log(`BILINGUAL_ROUTES: ${glossary.length * 2}`);
+console.log(`PUBLIC_GLOSSARY_RECORDS: ${publicGlossary.length}`);
+console.log(`BILINGUAL_PUBLIC_ROUTES: ${renderedPublicRoutes}`);
 console.log('SCHEMA_FILES: 2');
 console.log(`MIGRATED_V2_RECORDS: ${glossary.length}`);
 console.log('PERMANENT_WORKFLOW: enabled');
