@@ -1,0 +1,166 @@
+name: TJK current-window promotion one-shot
+
+on:
+  push:
+    branches:
+      - promote/tjk-current-window-2026-09-02
+    paths:
+      - '.github/workflows/tjk-current-window-promotion-one-shot.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: promote/tjk-current-window-2026-09-02
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Download exact pinned acquisition artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .tjk-promotion/source
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -o .tjk-promotion/source.zip \
+            https://api.github.com/repos/badjoke-lab/where-horses-run/actions/artifacts/9853039531/zip
+          unzip -q .tjk-promotion/source.zip -d .tjk-promotion/source
+          echo "8ab1b868aba0909c50416e4cc1152ba76955bf135566bc9eb0646491c29036d4  .tjk-promotion/source/candidates.json" | sha256sum -c -
+      - name: Build exact approved envelope and missing TJK identities
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const source = JSON.parse(fs.readFileSync('.tjk-promotion/source/candidates.json', 'utf8'));
+          if (source.candidates.length !== 63) throw new Error(`expected 63 source candidates, got ${source.candidates.length}`);
+          const counts = Object.fromEntries(['A','C'].map(rank => [rank, source.candidates.filter(x => x.capability_rank === rank).length]));
+          if (counts.A !== 6 || counts.C !== 57) throw new Error(`unexpected source rank counts ${JSON.stringify(counts)}`);
+          if (source.candidates.some(x => !x.meeting_id || !x.racecourse_id)) throw new Error('source candidate missing stable identity');
+
+          const approvedPath = 'data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json';
+          const approved = {
+            schema_version: 'timetable-candidate-v1',
+            generated_at: source.retrieved_at,
+            adapter_id: 'tjk-2026-09-02-through-2026-10-01-current-window-publication-v1',
+            country_id: 'turkey',
+            authority_id: 'turkiye-jokey-kulubu',
+            source_id: 'tjk-daily-programme',
+            technical_capability_rank: 'A+',
+            publication_ceiling: 'A',
+            candidate_window: { start_date: '2026-09-02', end_date_exclusive: '2026-10-02', timezone: 'Europe/Istanbul' },
+            records: source.candidates.map(x => ({
+              candidate_id: `approved-${x.meeting_id}`,
+              meeting_id: x.meeting_id,
+              country_id: 'turkey',
+              authority_id: 'turkiye-jokey-kulubu',
+              racing_system_id: 'tjk-national-racing-system',
+              racecourse_id: x.racecourse_id,
+              date: x.date,
+              timezone: 'Europe/Istanbul',
+              capability_rank: x.capability_rank,
+              first_race_time_local: x.first_race_time_local,
+              last_race_time_local: x.last_race_time_local,
+              timetable_rows: (x.timetable_rows ?? []).map(row => ({ label: `Race ${row.race_number}`, post_time_local: row.post_time_local })),
+              source: {
+                source_id: 'tjk-daily-programme',
+                official_url: x.source_url,
+                checked_at: source.retrieved_at,
+                extraction_method: 'adapter_candidate'
+              },
+              confidence: 'high',
+              review_status: 'approved',
+              notes: 'Approved from exact pinned TJK current-window acquisition evidence; public output is bounded to meeting identity and Rank A Race 1-N post times only.'
+            })),
+            review: {
+              status: 'approved',
+              reviewed_at: '2026-09-02T15:12:00Z',
+              reviewer: 'automated-publication-gate',
+              promotion_target: 'canonical-timetable-v0'
+            },
+            provenance: {
+              source_run_id: 33646564935,
+              source_head_sha: '1dc17f504aaf6cb84a4233e95666014b39131d9f',
+              source_artifact_id: 9853039531,
+              source_artifact_digest: 'sha256:3ba84098ad46a551f96789b5e7d8c5ccf6582b6263ceb9363b14f490b05e4005',
+              source_candidate_sha256: '8ab1b868aba0909c50416e4cc1152ba76955bf135566bc9eb0646491c29036d4'
+            }
+          };
+          fs.writeFileSync(approvedPath, `${JSON.stringify(approved, null, 2)}\n`);
+
+          const identityPath = 'data/static/racecourses-public-timetable-identities-v1.json';
+          const registry = JSON.parse(fs.readFileSync(identityPath, 'utf8'));
+          const existing = new Set(registry.map(x => x.id));
+          const unique = new Map();
+          for (const x of source.candidates) if (!unique.has(x.racecourse_id)) unique.set(x.racecourse_id, x);
+          const missing = [...unique.values()].filter(x => !existing.has(x.racecourse_id));
+          const expectedMissing = new Set(['adana-racecourse','izmir-racecourse','istanbul-racecourse','bursa-racecourse','sanliurfa-racecourse','elazig-racecourse','diyarbakir-racecourse']);
+          if (missing.length !== 7 || missing.some(x => !expectedMissing.has(x.racecourse_id))) {
+            throw new Error(`unexpected missing TJK identity set: ${missing.map(x => x.racecourse_id).join(',')}`);
+          }
+          const emptyCourse = () => ({ turf_circumference_m:null, dirt_circumference_m:null, home_straight_m:null, has_inner_outer_courses:null, has_lighting:null, elevation_notes_en:null, elevation_notes_ja:null, course_notes_en:null, course_notes_ja:null });
+          const emptyDistance = () => ({ min_m:null, max_m:null, known_distances_m:[] });
+          for (const x of missing) {
+            registry.push({
+              id:x.racecourse_id, slug:x.racecourse_id, country_id:'turkey', name_en:x.racecourse_name_en, name_ja:x.racecourse_name_ja, name_local:x.racecourse,
+              city:null, region:null, timezone:'Europe/Istanbul', racing_types:[], status:'active', surfaces:[], direction:'unknown',
+              course_profile:emptyCourse(),
+              distance_profile:{ turf:emptyDistance(), dirt:emptyDistance(), all_weather:emptyDistance(), jump:emptyDistance(), harness:emptyDistance(), upcoming_conditions:[] },
+              schedule_summary:{ today_status:'unknown', next_meeting_date:null, upcoming_meetings:[], status:'official-link-only', last_checked:null },
+              notable_races:[],
+              seasonality:{ summary_en:'Meeting dates must be confirmed through the reviewed public Calendar and official TJK sources.', summary_ja:'開催日は、確認済み公開カレンダーおよびTJK公式ソースで確認する必要がある。', status:'unverified' },
+              official_links:[{ label_en:'TJK daily programme', label_ja:'TJK公式競走プログラム', source_id:'tjk-daily-programme', url:x.source_url, link_type:'official' }],
+              related_terms:['racecourse','meeting','fixture','post-time'], related_sources:['tjk-daily-programme'],
+              data_status:{ course_profile:'unverified', schedule:'official-link-only', source_status:'link_first', last_checked:'2026-09-02' },
+              identity_status:'verified_from_reviewed_public_timetable', profile_status:'identity_only', image_status:'planned', image_path:null,
+              image_alt_en:`Planned illustrative image for ${x.racecourse_name_en}.`, image_alt_ja:`${x.racecourse_name_ja}の説明用イメージ画像予定地。`, course_diagram_status:'pending',
+              image:{ src:'', alt_en:`Planned illustrative image for ${x.racecourse_name_en}.`, alt_ja:`${x.racecourse_name_ja}の説明用イメージ画像予定地。`, image_type:'placeholder', is_official_photo:false, note_en:'Illustrative image. Not an official venue photo.', note_ja:'説明用のイメージ画像です。公式写真ではありません。', status:'planned' }
+            });
+          }
+          fs.writeFileSync(identityPath, `${JSON.stringify(registry, null, 2)}\n`);
+          console.log(JSON.stringify({ approved_records: approved.records.length, rank_counts: counts, identities_added: missing.map(x => x.racecourse_id) }, null, 2));
+          NODE
+      - name: Apply bounded promotion and rebuild public projection
+        run: |
+          node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json --dry-run
+          node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/timetable/promote-approved-candidate-v1.mjs --input data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json --check
+          node scripts/timetable/build-public-timetable-view.mjs --check
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs --check
+      - name: Prove exact bounded mutation and commit
+        run: |
+          python - <<'PY'
+          import json
+          m=json.load(open('data/generated/timetable/public/meeting-list.json'))['meetings']
+          target=[x for x in m if x.get('country_id')=='turkey' and '2026-09-02' <= x.get('date','') < '2026-10-02']
+          assert len(target)==63, len(target)
+          assert sum(x.get('effective_public_rank')=='A' for x in target)==6
+          assert sum(x.get('effective_public_rank')=='C' for x in target)==57
+          ids=[x['meeting_id'] for x in target]
+          assert len(ids)==len(set(ids))
+          print({'public_tjk_window':len(target),'A':6,'C':57})
+          PY
+          allowed='^(data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json|data/static/racecourses-public-timetable-identities-v1.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/public/meeting-list.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/japan-a-plus-overrides.json)$'
+          unexpected="$(git status --short | awk '{print $2}' | grep -Ev "$allowed" || true)"
+          if [ -n "$unexpected" ]; then echo "$unexpected"; exit 1; fi
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git add \
+            data/candidates/tjk-current-window-2026-09-02-through-2026-10-01-approved.json \
+            data/static/racecourses-public-timetable-identities-v1.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json
+          git diff --cached --check
+          git commit -m 'Publish TJK current 30-day window'
+          git push origin HEAD:promote/tjk-current-window-2026-09-02
