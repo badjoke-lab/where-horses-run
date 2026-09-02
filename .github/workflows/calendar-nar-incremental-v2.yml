@@ -11,6 +11,8 @@ on:
       - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'scripts/check-calendar-validation-responsibilities.mjs'
+      - 'data/static/calendar-validation-responsibilities-v1.json'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/README.md'
       - 'docs/calendar/machine-readable-contracts.md'
@@ -32,6 +34,8 @@ on:
       - 'scripts/timetable/run-nar-incremental-v2-local.mjs'
       - 'scripts/check-calendar-nar-incremental-v2-core.mjs'
       - 'scripts/check-calendar-nar-incremental-v2.mjs'
+      - 'scripts/check-calendar-validation-responsibilities.mjs'
+      - 'data/static/calendar-validation-responsibilities-v1.json'
       - 'scripts/check-project-governance-docs.mjs'
       - 'docs/calendar/README.md'
       - 'docs/calendar/machine-readable-contracts.md'
@@ -67,6 +71,7 @@ jobs:
           node --check scripts/timetable/run-nar-incremental-v2-local.mjs
           node --check scripts/check-calendar-nar-incremental-v2-core.mjs
           node --check scripts/check-calendar-nar-incremental-v2.mjs
+          node --check scripts/check-calendar-validation-responsibilities.mjs
           node --check scripts/check-project-governance-docs.mjs
       - name: Validate v2 core semantics
         run: node scripts/check-calendar-nar-incremental-v2-core.mjs
