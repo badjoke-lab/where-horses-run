@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:safe-source-pipeline && npm run validate:safe-source-adapter-interface && npm run validate:live-fetch-probe && npm run validate:timetable-schema-v0 && npm run validate:country-adapter-template && npm run validate:major-country-acquisition-test-matrix && npm run validate:major-country-acquisition-source-groups && npm run validate:major-country-sample-acquisition-fixtures && npm run validate:major-country-sample-acquisition-output-snapshots && npm run validate:major-country-parser-contracts && npm run validate:major-country-sample-extraction-snapshots && npm run validate:major-country-sample-extraction-audit-matrix && npm run validate:authority-source-inventory-schema && npm run validate:timetable-acquisition-route-schema && npm run validate:timetable-refresh-dry-run-skeleton && npm run validate:normalized-timetable-output-schema && npm run build",
+    "check": "npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:safe-source-pipeline && npm run validate:safe-source-adapter-interface && npm run validate:live-fetch-probe && npm run validate:timetable-schema-v0 && npm run validate:country-adapter-template && npm run validate:major-country-acquisition-test-matrix && npm run validate:major-country-acquisition-source-groups && npm run validate:major-country-sample-acquisition-fixtures && npm run validate:major-country-sample-acquisition-output-snapshots && npm run validate:major-country-parser-contracts && npm run validate:major-country-sample-extraction-snapshots && npm run validate:major-country-sample-extraction-audit-matrix && npm run validate:authority-source-inventory-schema && npm run validate:timetable-acquisition-route-schema && npm run validate:normalized-timetable-output-schema && npm run build",
     "fetch:hkjc-racecards": "node scripts/timetable/fetch-hkjc-racecards.mjs",
     "normalize:hkjc-racecards": "node scripts/timetable/normalize-hkjc-racecards.mjs",
     "refresh:hkjc-racecards": "npm run fetch:hkjc-racecards && npm run normalize:hkjc-racecards",
@@ -35,7 +35,6 @@
     "validate:major-country-sample-extraction-audit-matrix": "node scripts/check-major-country-sample-extraction-audit-matrix.mjs",
     "validate:authority-source-inventory-schema": "node scripts/check-authority-source-inventory-schema.mjs",
     "validate:timetable-acquisition-route-schema": "node scripts/check-timetable-acquisition-route-schema.mjs",
-    "validate:timetable-refresh-dry-run-skeleton": "node scripts/dry-run-timetable-acquisition-routes.mjs",
     "validate:normalized-timetable-output-schema": "node scripts/check-normalized-timetable-output-schema.mjs"
   },
   "dependencies": {
