@@ -1,8 +1,11 @@
 const YOUTUBE_API = 'https://www.googleapis.com/youtube/v3';
 const JAPAN_TIME_ZONE = 'Asia/Tokyo';
 const DISCOVERY_CACHE_SECONDS = 15 * 60;
-const IDLE_STATUS_CACHE_SECONDS = 5 * 60;
-const ACTIVE_STATUS_CACHE_SECONDS = 60;
+const IDLE_STATUS_CACHE_SECONDS = 15 * 60;
+const LIVE_STATUS_REFRESH_SECONDS = 60;
+const UPCOMING_NEAR_REFRESH_SECONDS = 5 * 60;
+const UPCOMING_DAY_REFRESH_SECONDS = 30 * 60;
+const UPCOMING_FAR_REFRESH_SECONDS = 60 * 60;
 const PLAYLIST_CONCURRENCY = 3;
 const RECENT_VIDEO_LIMIT = 10;
 
@@ -274,9 +277,28 @@ async function refreshActiveStatuses(apiKey, snapshot) {
   });
 }
 
-const responseTtlFor = (statuses) => statuses.some((status) => status.status === 'live' || status.status === 'upcoming')
-  ? ACTIVE_STATUS_CACHE_SECONDS
-  : IDLE_STATUS_CACHE_SECONDS;
+const refreshSecondsForStatus = (status, now = Date.now()) => {
+  if (status.status === 'live') return LIVE_STATUS_REFRESH_SECONDS;
+  if (status.status !== 'upcoming') return null;
+
+  const scheduledStart = Date.parse(status.scheduled_start_at ?? '');
+  if (!Number.isFinite(scheduledStart)) return UPCOMING_NEAR_REFRESH_SECONDS;
+  const untilStart = scheduledStart - now;
+  if (untilStart <= 60 * 60 * 1000) return LIVE_STATUS_REFRESH_SECONDS;
+  if (untilStart <= 6 * 60 * 60 * 1000) return UPCOMING_NEAR_REFRESH_SECONDS;
+  if (untilStart <= 24 * 60 * 60 * 1000) return UPCOMING_DAY_REFRESH_SECONDS;
+  return UPCOMING_FAR_REFRESH_SECONDS;
+};
+
+const responseRefreshSecondsFor = (statuses) => {
+  const now = Date.now();
+  const activeRefreshes = statuses
+    .map((status) => refreshSecondsForStatus(status, now))
+    .filter((seconds) => Number.isFinite(seconds));
+  return activeRefreshes.length ? Math.min(...activeRefreshes) : IDLE_STATUS_CACHE_SECONDS;
+};
+
+const edgeCacheSecondsFor = (refreshSeconds) => Math.min(refreshSeconds, DISCOVERY_CACHE_SECONDS);
 
 export async function onRequestGet({ request, env, waitUntil }) {
   const apiKey = env?.YOUTUBE_DATA_API_KEY;
@@ -286,7 +308,8 @@ export async function onRequestGet({ request, env, waitUntil }) {
   const statusKey = internalCacheKey(request, 'aggregate-status');
   const cachedStatus = await readCachedJson(cache, statusKey);
   if (cachedStatus?.configured === true && Array.isArray(cachedStatus.statuses)) {
-    return json(cachedStatus, 200, responseTtlFor(cachedStatus.statuses));
+    const refreshSeconds = responseRefreshSecondsFor(cachedStatus.statuses);
+    return json(cachedStatus, 200, edgeCacheSecondsFor(refreshSeconds));
   }
 
   const discoveryKey = internalCacheKey(request, 'aggregate-discovery');
@@ -323,14 +346,15 @@ export async function onRequestGet({ request, env, waitUntil }) {
     }, 503);
   }
 
-  const ttl = responseTtlFor(statuses);
+  const refreshSeconds = responseRefreshSecondsFor(statuses);
+  const edgeCacheSeconds = edgeCacheSecondsFor(refreshSeconds);
   const body = {
     configured: true,
     statuses,
-    refresh_after_seconds: ttl,
+    refresh_after_seconds: refreshSeconds,
     failed_detector_ids: Object.keys(snapshot.failures ?? {}),
     failure_codes: snapshot.failures ?? {},
   };
-  storeCachedJson(cache, statusKey, body, ttl, waitUntil);
-  return json(body, 200, ttl);
+  storeCachedJson(cache, statusKey, body, edgeCacheSeconds, waitUntil);
+  return json(body, 200, edgeCacheSeconds);
 }
