@@ -7,9 +7,6 @@ on:
   push:
     branches:
       - main
-      - fix/hkjc-kra-current-best-available-refresh
-      - fix/kra-transient-source-resilience
-      - fix/kra-remove-stale-public-ceiling-check-20260902
     paths:
       - '.github/workflows/calendar-kra-current-best-available-refresh.yml'
       - 'scripts/timetable/run-current-lower-rank-best-available.mjs'
