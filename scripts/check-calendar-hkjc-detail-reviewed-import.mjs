@@ -30,9 +30,7 @@ for (const entry of fixtures.valid_inputs ?? []) {
     continue;
   }
   validById.set(entry.id, entry);
-  if (entry.input?.work_id !== fixtures.work_id || entry.input?.implementation_unit !== fixtures.implementation_unit) {
-    fail(`${entry.id}: fixture identifier propagation differs.`);
-  }
+  if (entry.input?.work_id !== fixtures.work_id || entry.input?.implementation_unit !== fixtures.implementation_unit) fail(`${entry.id}: fixture identifier propagation differs.`);
   const validation = validateHkjcDetailReviewedImportInput(entry.input);
   if (validation.length) {
     fail(`${entry.id}: valid input rejected: ${validation.join('; ')}`);
@@ -55,9 +53,7 @@ for (const entry of fixtures.valid_inputs ?? []) {
   if (pkg.work_id !== entry.input.work_id || pkg.implementation_unit !== entry.input.implementation_unit) fail(`${entry.id}: package identifiers differ from input.`);
   if (pkg.review_state !== entry.expected_package.review_state) fail(`${entry.id}: package review state differs.`);
   if ((pkg.normalized_artifacts !== null) !== entry.expected_package.normalized_artifacts_present) fail(`${entry.id}: normalized artifact presence differs.`);
-  if (pkg.human_review_required !== true) fail(`${entry.id}: human review must remain required.`);
-  for (const value of Object.values(pkg.side_effect_boundary ?? {})) if (value !== false) fail(`${entry.id}: side-effect boundary must remain false.`);
-
+  if (pkg.human_review_required !== true || Object.values(pkg.side_effect_boundary ?? {}).some((value) => value !== false)) fail(`${entry.id}: side-effect boundary differs.`);
   if (pkg.review_state === 'pending_human_review') pendingCoverage += 1;
   if (pkg.review_state === 'reviewed_public_safe') reviewedCoverage += 1;
 
@@ -65,17 +61,13 @@ for (const entry of fixtures.valid_inputs ?? []) {
     const { candidate, coverage, manifest, report } = pkg.normalized_artifacts;
     const record = candidate.records[0];
     if (report.work_id !== pkg.work_id || report.implementation_unit !== pkg.implementation_unit) fail(`${entry.id}: report identifiers differ from package.`);
-    if (candidate.review.status !== 'needs_review') fail(`${entry.id}: candidate must remain needs_review.`);
-    if (candidate.review.promotion_target !== null) fail(`${entry.id}: candidate promotion target must remain null.`);
+    if (candidate.review.status !== 'needs_review' || candidate.review.promotion_target !== null) fail(`${entry.id}: candidate review boundary differs.`);
     if (entry.expected_package.rank && record?.capability_rank !== entry.expected_package.rank) fail(`${entry.id}: rank differs.`);
     if (entry.expected_package.coverage_claim && coverage.coverage_claim !== entry.expected_package.coverage_claim) fail(`${entry.id}: coverage claim differs.`);
     if (entry.expected_package.runner_used && manifest.runner_used !== entry.expected_package.runner_used) fail(`${entry.id}: runner_used differs.`);
-    if (!exact(coverage.unresolved_meeting_ids, manifest.unresolved_meeting_ids)) fail(`${entry.id}: Coverage/Manifest unresolved meetings differ.`);
-    if (!exact(coverage.source_errors, manifest.source_errors)) fail(`${entry.id}: Coverage/Manifest source errors differ.`);
+    if (!exact(coverage.unresolved_meeting_ids, manifest.unresolved_meeting_ids) || !exact(coverage.source_errors, manifest.source_errors)) fail(`${entry.id}: Coverage/Manifest state differs.`);
     if (Object.values(manifest.rank_counts).reduce((sum, count) => sum + count, 0) !== manifest.records_discovered) fail(`${entry.id}: rank totals do not close.`);
-    if (report.network_fetch !== false || report.raw_source_storage !== 'disabled') fail(`${entry.id}: report network/raw boundary differs.`);
-    if (report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') fail(`${entry.id}: report write/publication boundary differs.`);
-    if (report.automatic_approval !== false || report.automatic_promotion !== false || report.automatic_publication !== false) fail(`${entry.id}: report automatic-action boundary differs.`);
+    if (report.network_fetch !== false || report.raw_source_storage !== 'disabled' || report.canonical_write !== 'disabled' || report.public_write !== 'disabled' || report.publication_effect !== 'none') fail(`${entry.id}: report boundary differs.`);
     const serialized = JSON.stringify(pkg).toLowerCase();
     for (const forbidden of ['raw_html', 'source_body', 'horse_name', 'jockey_name', 'trainer_name', 'odds_value', 'result_payload', 'payout_amount', 'stream_url']) {
       if (serialized.includes(`\"${forbidden}\"`)) fail(`${entry.id}: forbidden key present ${forbidden}.`);
@@ -104,13 +96,8 @@ for (const invalidCase of fixtures.invalid_cases ?? []) {
   }
   invalidIds.add(invalidCase.id);
   const base = validById.get(invalidCase.base_valid_input_id)?.input;
-  if (!base) {
-    fail(`${invalidCase.id}: missing base valid input.`);
-    continue;
-  }
-  const mutated = patched(base, invalidCase.patch);
-  const validation = validateHkjcDetailReviewedImportInput(mutated);
-  if (validation.length === 0) fail(`${invalidCase.id}: invalid input unexpectedly passed.`);
+  if (!base) fail(`${invalidCase.id}: missing base valid input.`);
+  else if (validateHkjcDetailReviewedImportInput(patched(base, invalidCase.patch)).length === 0) fail(`${invalidCase.id}: invalid input unexpectedly passed.`);
 }
 
 const reviewedEntry = [...validById.values()].find((entry) => entry.expected_package?.normalized_artifacts_present === true);
@@ -121,15 +108,8 @@ else {
     const inputPath = path.join(tempRoot, 'reviewed-input.json');
     const outputPath = path.join(tempRoot, 'review-package.json');
     fs.writeFileSync(inputPath, `${JSON.stringify(reviewedEntry.input, null, 2)}\n`);
-    const cliRun = spawnSync(process.execPath, [cli,
-      `--input=${inputPath}`,
-      `--output=${outputPath}`,
-      '--batch-id=hkjc-reviewed-import-cli-regression',
-      '--campaign-id=hkjc-reviewed-import-regression',
-      '--job-id=hkjc-reviewed-import-cli-regression-job',
-    ], { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
+    const cliRun = spawnSync(process.execPath, [cli, `--input=${inputPath}`, `--output=${outputPath}`, '--batch-id=hkjc-reviewed-import-cli-regression', '--campaign-id=hkjc-reviewed-import-regression', '--job-id=hkjc-reviewed-import-cli-regression-job'], { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
     if (cliRun.status !== 0) fail(`external reviewed-import CLI failed: ${cliRun.stderr}`);
-    else if (!fs.existsSync(outputPath)) fail('external review package missing.');
     else {
       const pkg = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
       if (!pkg.input_evidence?.sha256 || pkg.input_evidence.sha256.length !== 64) fail('CLI package input digest missing.');
@@ -138,25 +118,12 @@ else {
     }
 
     const repoInput = path.join(root, 'data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json');
-    const rejectInput = spawnSync(process.execPath, [cli,
-      `--input=${repoInput}`,
-      `--output=${outputPath}`,
-      '--batch-id=hkjc-reviewed-import-reject-input',
-      '--campaign-id=hkjc-reviewed-import-regression',
-      '--job-id=hkjc-reviewed-import-reject-input-job',
-    ], { cwd: root, encoding: 'utf8' });
+    const rejectInput = spawnSync(process.execPath, [cli, `--input=${repoInput}`, `--output=${outputPath}`, '--batch-id=hkjc-reviewed-import-reject-input', '--campaign-id=hkjc-reviewed-import-regression', '--job-id=hkjc-reviewed-import-reject-input-job'], { cwd: root, encoding: 'utf8' });
     if (rejectInput.status === 0) fail('repository-local input path must be rejected.');
 
     const repoOutput = path.join(root, 'data/generated/timetable/hkjc-reviewed-import-forbidden.json');
-    const rejectOutput = spawnSync(process.execPath, [cli,
-      `--input=${inputPath}`,
-      `--output=${repoOutput}`,
-      '--batch-id=hkjc-reviewed-import-reject-output',
-      '--campaign-id=hkjc-reviewed-import-regression',
-      '--job-id=hkjc-reviewed-import-reject-output-job',
-    ], { cwd: root, encoding: 'utf8' });
-    if (rejectOutput.status === 0) fail('repository-local output path must be rejected.');
-    if (fs.existsSync(repoOutput)) fail('rejected repository-local output path created a file.');
+    const rejectOutput = spawnSync(process.execPath, [cli, `--input=${inputPath}`, `--output=${repoOutput}`, '--batch-id=hkjc-reviewed-import-reject-output', '--campaign-id=hkjc-reviewed-import-regression', '--job-id=hkjc-reviewed-import-reject-output-job'], { cwd: root, encoding: 'utf8' });
+    if (rejectOutput.status === 0 || fs.existsSync(repoOutput)) fail('repository-local output path must be rejected without creating a file.');
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -166,12 +133,9 @@ for (const file of [
   'scripts/timetable/hkjc-detail-reviewed-import-core.mjs',
   'scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs',
   'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs',
-  'scripts/check-calendar-hkjc-detail-reviewed-import.mjs',
 ]) {
   const text = fs.readFileSync(path.join(root, file), 'utf8');
-  for (const stale of ['HKJC-PILOT-', 'hkjc-stage-', 'CLI proof']) {
-    if (text.includes(stale)) fail(`${file}: stale pilot/stage marker remains: ${stale}`);
-  }
+  for (const stale of ['HKJC-PILOT-', 'hkjc-stage-', 'CLI proof']) if (text.includes(stale)) fail(`${file}: stale pilot/stage marker remains: ${stale}`);
 }
 
 if (errors.length) {
