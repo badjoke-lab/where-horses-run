@@ -6,18 +6,30 @@ on:
       - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
       - 'data/fixtures/calendar-collection-plans-v1.json'
       - 'data/fixtures/calendar-collection-job-invalid-cases-v1.json'
+      - 'data/fixtures/calendar-collection-result-manifests-v1.json'
+      - 'data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json'
+      - 'data/fixtures/calendar-review-queue-v1.json'
+      - 'data/fixtures/calendar-review-queue-invalid-cases-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/static/calendar-collection-result-manifest.schema.json'
+      - 'data/static/calendar-review-queue.schema.json'
       - 'scripts/timetable/banei-actions-executor-core.mjs'
       - 'scripts/timetable/run-banei-actions-job.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/collection-result-manifest-validation.mjs'
+      - 'scripts/timetable/review-queue-validation.mjs'
       - 'scripts/check-calendar-banei-actions-executor.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'scripts/check-calendar-runner-compatibility.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
       - 'scripts/check-calendar-collection-job.mjs'
+      - 'scripts/check-calendar-collection-result-manifest.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
       - 'docs/calendar/banei-actions-executor.md'
+      - 'docs/calendar/collection-result-manifest.md'
+      - 'docs/calendar/review-queue.md'
       - '.github/workflows/calendar-banei-actions-executor.yml'
   push:
     branches:
@@ -26,18 +38,30 @@ on:
       - 'data/fixtures/calendar-banei-actions-executor-fixture-v1.json'
       - 'data/fixtures/calendar-collection-plans-v1.json'
       - 'data/fixtures/calendar-collection-job-invalid-cases-v1.json'
+      - 'data/fixtures/calendar-collection-result-manifests-v1.json'
+      - 'data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json'
+      - 'data/fixtures/calendar-review-queue-v1.json'
+      - 'data/fixtures/calendar-review-queue-invalid-cases-v1.json'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-runner-compatibility-contract-v1.json'
+      - 'data/static/calendar-collection-result-manifest.schema.json'
+      - 'data/static/calendar-review-queue.schema.json'
       - 'scripts/timetable/banei-actions-executor-core.mjs'
       - 'scripts/timetable/run-banei-actions-job.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
+      - 'scripts/timetable/collection-result-manifest-validation.mjs'
+      - 'scripts/timetable/review-queue-validation.mjs'
       - 'scripts/check-calendar-banei-actions-executor.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
       - 'scripts/check-calendar-runner-compatibility.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
       - 'scripts/check-calendar-collection-job.mjs'
+      - 'scripts/check-calendar-collection-result-manifest.mjs'
+      - 'scripts/check-calendar-review-queue.mjs'
       - 'docs/calendar/banei-actions-executor.md'
+      - 'docs/calendar/collection-result-manifest.md'
+      - 'docs/calendar/review-queue.md'
       - '.github/workflows/calendar-banei-actions-executor.yml'
 
 permissions:
@@ -60,6 +84,8 @@ jobs:
           node --check scripts/timetable/run-banei-actions-job.mjs
           node --check scripts/timetable/run-calendar-actions-job.mjs
           node --check scripts/check-calendar-banei-actions-executor.mjs
+          node --check scripts/check-calendar-collection-result-manifest.mjs
+          node --check scripts/check-calendar-review-queue.mjs
 
       - name: Validate Banei Actions executor normalization and runtime fixture path
         run: node scripts/check-calendar-banei-actions-executor.mjs
