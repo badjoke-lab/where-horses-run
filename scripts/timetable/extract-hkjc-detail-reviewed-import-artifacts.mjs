@@ -46,6 +46,7 @@ assert(candidate?.schema_version === 'timetable-candidate-v1', 'candidate schema
 assert(coverage?.schema_version === 'calendar-coverage-observation-v1', 'coverage schema differs');
 assert(manifest?.schema_version === 'calendar-collection-result-manifest-v1', 'manifest schema differs');
 assert(report?.schema_version === 'calendar-hkjc-detail-reviewed-import-report-v1', 'report schema differs');
+assert(report.work_id === pkg.work_id && report.implementation_unit === pkg.implementation_unit, 'report identifier propagation differs');
 assert(candidate.review?.status === 'needs_review', 'candidate must remain needs_review');
 assert(candidate.review?.promotion_target === null, 'candidate promotion target must remain null');
 assert(manifest.runner_used === 'reviewed_import', 'manifest runner must be reviewed_import');
@@ -67,8 +68,8 @@ for (const [name, value] of Object.entries(files)) {
 
 console.log(JSON.stringify({
   schema_version: 'calendar-hkjc-detail-reviewed-import-extract-summary-v1',
-  work_id: 'WHR-CAL-HKJC-DETAIL-RECOVERY',
-  implementation_unit: 'HKJC-DETAIL-RECOVERY-01',
+  work_id: pkg.work_id,
+  implementation_unit: pkg.implementation_unit,
   batch_id: manifest.batch_id,
   records_discovered: manifest.records_discovered,
   records_updated: manifest.records_updated,
