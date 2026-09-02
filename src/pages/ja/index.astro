@@ -23,13 +23,13 @@ const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJa
 <BaseLayout
   lang="ja"
   title="競馬どこ？ | 世界の競馬開催カレンダー・レース時刻表"
-  description="世界の競馬開催日、レース時刻表、競馬場、競馬種別、公式ソースへのリンクを探すための静的中心サイト。"
+  description="世界の競馬開催日、レース時刻、競馬場、競馬種別、公式情報源を探せます。"
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">世界の競馬開催カレンダー・レース時刻表</p>
+    <p class="hero__eyebrow">世界の競馬開催カレンダー</p>
     <h1 id="page-title">競馬どこ？</h1>
     <p class="hero__summary">
-      世界中の競馬開催日、レース時刻、競馬場、競馬種別、公式ソース、用語理解へ進むための静的中心ガイドです。
+      今日・明日の開催から、国・地域、競馬場、競馬種別、公式情報源までまとめて探せます。
     </p>
     <p>
       <a href="/ja/today/">今日の競馬を見る</a> · <a href="/ja/countries/">国・地域から探す</a> · <a href="/ja/tracks/">競馬場から探す</a>
@@ -39,60 +39,60 @@ const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJa
   <section class="section-grid" aria-label="主要な探し方">
     <article class="card">
       <h2><a href="/ja/today/">今日の開催</a></h2>
-      <p>{calendarContext.today}（{calendarContext.timeZone}）の確認済み公開時刻表です。</p>
+      <p>{calendarContext.today}（{calendarContext.timeZone}）の開催情報です。</p>
       {todayPreview.length > 0 ? (
         <ul>
           {todayPreview.map((meeting) => (
             <li>
-              <strong>{meetingRacecourseName(meeting)}</strong> — 公開ランク {meeting.capability_rank}
+              <strong>{meetingRacecourseName(meeting)}</strong>
               {timeRange(meeting) ? ` · ${timeRange(meeting)}` : ''}
             </li>
           ))}
         </ul>
       ) : (
-        <p>今日の確認済み公開開催はありません。国・地域ページや公式ソースで最終確認してください。</p>
+        <p>今日の開催情報は掲載されていません。国・地域や公式情報源から確認できます。</p>
       )}
     </article>
 
     <article class="card">
-      <h2><a href="/ja/calendar/">カレンダー</a></h2>
-      <p>日付別の時刻表ページと生成データ状態を確認します。</p>
-      <p><a href="/ja/tomorrow/">明日</a> · <a href="/ja/calendar/">カレンダー概要</a></p>
+      <h2><a href="/ja/calendar/">開催カレンダー</a></h2>
+      <p>日付を選んで、各地の開催予定とレース時刻を確認できます。</p>
+      <p><a href="/ja/tomorrow/">明日の開催</a> · <a href="/ja/calendar/">カレンダーを見る</a></p>
     </article>
 
     <article class="card">
       <h2><a href="/ja/countries/">国・地域から探す</a></h2>
-      <p>競馬開催国、カバー範囲、公式ソース、登録競馬場を確認します。</p>
+      <p>国・地域ごとに開催情報、競馬場、公式情報源を確認できます。</p>
       <ul>{countries.map((country) => <li><a href={`/ja/countries/${country.slug}/`}>{country.name_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
       <h2><a href="/ja/tracks/">競馬場から探す</a></h2>
-      <p>開催予定状況、コース特徴、公式リンク、関連用語を持つ競馬場ページへ進みます。</p>
+      <p>競馬場ごとの場所、開催情報、コース情報、公式サイトを確認できます。</p>
       <ul>{racecourses.map((track) => <li><a href={`/ja/tracks/${track.slug}/`}>{track.name_ja}</a> — {track.city}</li>)}</ul>
     </article>
 
     <article class="card">
       <h2><a href="/ja/types/">競馬種別から探す</a></h2>
-      <p>競馬形式ごとに、関連競馬場、関連国、用語説明へ移動します。</p>
+      <p>平地、障害、繋駕などの競馬種別から関連する国・地域や競馬場を探せます。</p>
       <ul>{racingTypes.map((type) => <li><a href={`/ja/types/${type.slug}/`}>{type.name_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/glossary/">用語辞書</a></h2>
-      <p>公式ソースを見る前に、開催・レースカード・発走時刻・役割などの用語を確認します。</p>
+      <h2><a href="/ja/glossary/">用語集</a></h2>
+      <p>開催情報や競馬場ページで使われる競馬用語を確認できます。</p>
       <ul>{glossaryTerms.map((term) => <li><a href={`/ja/glossary/${term.slug}/`}>{term.term_ja}</a></li>)}</ul>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/sources/">公式ソース</a></h2>
-      <p>{sourceCount}件の公式・参考ソースを確認できます。</p>
-      <p>出走表・オッズ・結果・払戻・予想・全文レースカードは、公式またはライセンスされたソースで確認してください。</p>
+      <h2><a href="/ja/sources/">公式情報源</a></h2>
+      <p>{sourceCount}件の公式サイト・情報源を掲載しています。</p>
+      <p>出走表、オッズ、結果、払戻などは各公式サイトで確認してください。</p>
     </article>
 
     <article class="card">
-      <h2><a href="/ja/about/">概要・データ範囲</a></h2>
-      <p>サイトの範囲、掲載境界、公式ソース優先方針、免責を確認します。</p>
+      <h2><a href="/ja/about/">このサイトについて</a></h2>
+      <p>掲載している情報、情報源、更新方法について説明しています。</p>
       <p><a href="/ja/faq/">よくある質問</a> · <a href="/ja/disclaimer/">免責事項</a></p>
     </article>
   </section>

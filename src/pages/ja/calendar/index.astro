@@ -4,7 +4,6 @@ import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashb
 import CalendarDateFocus from '../../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
-import CalendarOperationsNotice from '../../../components/CalendarOperationsNotice.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
 
@@ -16,21 +15,20 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
 
 <BaseLayout
   title="30日間の開催カレンダー | 競馬どこ？"
-  description="基準日から30日間の確認済み公開開催情報を日付別に案内します。"
+  description={`${context.windowStart}から${context.windowEndInclusive}までの競馬開催情報を日付別に確認できます。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
 >
   <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Calendar</p>
+    <p class="hero__eyebrow">開催カレンダー</p>
     <h1 id="page-title">30日間の開催カレンダー</h1>
     <p class="hero__summary">
-      {context.windowStart}から{context.windowEndInclusive}までの確認済み開催を表示します。基準タイムゾーンは{context.timeZone}です。
+      {context.windowStart}から{context.windowEndInclusive}までの開催を日付別に確認できます。時刻は{context.timeZone}を基準に表示します。
     </p>
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
-  <CalendarOperationsNotice records={windowRecords} dataState={dataState} lang="ja" />
   <CalendarCoverageDashboard lang="ja" />
   <CalendarDateFocus lang="ja" />
   <CalendarFilters records={windowRecords} lang="ja" />
@@ -39,7 +37,7 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
     <TimetableMeetingList
       groups={groupedCalendarRecords}
       lang="ja"
-      emptyLabel="この30日間に確認済み公開開催はありません。最新情報は公式ソースで確認してください。"
+      emptyLabel="この30日間の開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
     />
   </section>
 </BaseLayout>
