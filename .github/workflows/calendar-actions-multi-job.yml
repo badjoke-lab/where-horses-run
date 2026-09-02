@@ -17,6 +17,8 @@ on:
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
+      - 'scripts/check-calendar-runner-compatibility.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - '.github/workflows/calendar-actions-multi-job.yml'
   push:
     branches:
@@ -30,6 +32,8 @@ on:
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/summarize-actions-multi-job.mjs'
       - 'scripts/check-calendar-actions-multi-job.mjs'
+      - 'scripts/check-calendar-runner-compatibility.mjs'
+      - 'scripts/check-calendar-runtime-import-boundary.mjs'
       - '.github/workflows/calendar-actions-multi-job.yml'
 
 permissions:
