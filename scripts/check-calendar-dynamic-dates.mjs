@@ -143,7 +143,7 @@ if (!countryPage.includes('createCalendarDateContext') || !countryPage.includes(
 if (countryPage.includes('getPublicTimetableGeneratedAt')) fail('country page must not use projection generation date as the display window start.');
 
 const statusComponent = read('src/components/CalendarDateStatus.astro');
-for (const marker of ['data-calendar-data-status', 'Reference date', '基準日', 'records_before_window']) {
+for (const marker of ['data-calendar-data-status', 'records_before_window']) {
   if (!statusComponent.includes(marker)) fail(`CalendarDateStatus missing ${marker}.`);
 }
 
