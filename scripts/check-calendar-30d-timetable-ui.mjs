@@ -90,8 +90,12 @@ for (const marker of [
 ]) requireIncludes(dateStatus, marker, statusPath);
 
 const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}`;
-for (const fixedCopy of ['June 2026 Calendar', '2026年6月 開催カレンダー']) {
-  if (combined.includes(fixedCopy)) fail(`Calendar retains fixed historical copy: ${fixedCopy}`);
+const fixedCalendarHeadings = [
+  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
+  /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
+];
+for (const pattern of fixedCalendarHeadings) {
+  if (pattern.test(combined)) fail(`Calendar retains fixed month/year copy: ${pattern}`);
 }
 for (const forbidden of [
   /record\.(?:racecard|card_body|entries?|horses?|jockeys?|trainers?|odds?|results?|payouts?|dividends?|predictions?|tips?|raw_html|stream_url)\b/i,

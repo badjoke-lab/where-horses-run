@@ -106,12 +106,11 @@ const noRecordsState = evaluateCalendarDataState({
 if (noRecordsState.status !== 'no_public_records') fail('empty public state is incorrect.');
 
 const timetableHelper = read('src/data/timetableMeetingRows.ts');
-for (const forbidden of [
-  "buildDate.startsWith('2026-06-')",
-  "'2026-06-07'",
-  'getPublicTimetableGeneratedAt().slice(0, 10)',
-]) {
-  if (timetableHelper.includes(forbidden)) fail(`timetable helper contains fixed-date marker: ${forbidden}`);
+if (/['"]20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])['"]/.test(timetableHelper)) {
+  fail('timetable helper contains a hard-coded calendar date literal.');
+}
+if (timetableHelper.includes('getPublicTimetableGeneratedAt().slice(0, 10)')) {
+  fail('timetable helper uses projection generation date as the display window start.');
 }
 for (const required of [
   'createCalendarDateContext',
@@ -122,6 +121,10 @@ for (const required of [
   if (!timetableHelper.includes(required)) fail(`timetable helper missing Dynamic Dates marker: ${required}`);
 }
 
+const fixedCalendarHeadings = [
+  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
+  /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
+];
 const pageChecks = [
   ['src/pages/today.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.today']],
   ['src/pages/tomorrow.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.tomorrow']],
@@ -133,7 +136,9 @@ const pageChecks = [
 for (const [file, markers] of pageChecks) {
   const content = read(file);
   for (const marker of markers) if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
-  if (content.includes('2026年6月') || content.includes('June 2026 Calendar')) fail(`${file} retains fixed June copy.`);
+  for (const pattern of fixedCalendarHeadings) {
+    if (pattern.test(content)) fail(`${file} retains fixed month/year Calendar copy.`);
+  }
 }
 
 const countryPage = read('src/components/CountryDetailPage.astro');
@@ -158,4 +163,4 @@ console.log('REFERENCE_DATE_OVERRIDE: pass');
 console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
-console.log('FIXED_JUNE_FALLBACKS: 0');
+console.log('FIXED_MONTH_YEAR_COPY: 0');
