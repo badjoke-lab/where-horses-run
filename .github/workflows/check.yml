@@ -1,4 +1,4 @@
-name: Check
+name: Race Acquisition Check
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
+  acquisition:
+    name: Acquisition contracts and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,5 +25,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build
+      - name: Check race acquisition
+        run: npm run check
