@@ -25,48 +25,31 @@ type Props = {
   lang?: 'en' | 'ja';
 };
 
-const { context, dataState, lang = 'en' } = Astro.props as Props;
-const sourceLabel = lang === 'ja'
-  ? context.referenceSource === 'reference_date_override'
-    ? '指定基準日'
-    : context.referenceSource === 'source_date_epoch'
-      ? '再現可能ビルド時刻'
-      : 'ビルド時刻'
-  : context.referenceSource === 'reference_date_override'
-    ? 'explicit reference date'
-    : context.referenceSource === 'source_date_epoch'
-      ? 'reproducible build timestamp'
-      : 'build clock';
-
+const { dataState, lang = 'en' } = Astro.props as Props;
 const isStaleGeneration = dataState.status === 'stale_generation_with_window_records';
 const staleLabel = lang === 'ja' ? 'データ鮮度警告' : 'Stale data warning';
 const statusText = lang === 'ja'
   ? dataState.status === 'records_before_window'
-    ? `現在の公開データは表示期間より前のものです。最新の掲載開催日は ${dataState.latestRecordDate ?? '未掲載'}、公開データ生成日は ${dataState.generatedDate} です。最新情報は公式ソースで確認してください。`
+    ? '現在の公開データは表示対象より前のものです。最新情報は公式ソースで確認してください。'
     : dataState.status === 'records_after_window'
-      ? `公開データには表示期間より後の開催のみがあります。最初の掲載開催日は ${dataState.earliestRecordDate ?? '未掲載'} です。`
+      ? '公開データには現在の表示対象より後の開催のみがあります。'
       : dataState.status === 'no_public_records'
         ? '現在、確認済みの公開開催データはありません。最新情報は公式ソースで確認してください。'
         : dataState.status === 'stale_generation_with_window_records'
-          ? `表示期間内の開催がありますが、公開データ生成日は ${dataState.generatedDate} です。最終確認は各開催の公式ソースで行ってください。`
-          : `表示期間内に ${dataState.windowRecordCount} 件の確認済み開催があります。公開データ生成日は ${dataState.generatedDate} です。`
+          ? '表示対象の開催がありますが、公開データの生成が古い可能性があります。最終確認は各開催の公式ソースで行ってください。'
+          : '確認済みの公開開催があります。表示タイムゾーンを変更すると、開催日の所属と表示日時もそのタイムゾーンへ切り替わります。'
   : dataState.status === 'records_before_window'
-    ? `The current public data is older than this display window. The latest listed meeting date is ${dataState.latestRecordDate ?? 'not listed'}, and the public projection was generated on ${dataState.generatedDate}. Check official sources for current information.`
+    ? 'The current public data is older than the active display range. Check official sources for current information.'
     : dataState.status === 'records_after_window'
-      ? `The public data contains meetings only after this display window. The earliest listed meeting date is ${dataState.earliestRecordDate ?? 'not listed'}.`
+      ? 'The public data contains meetings only after the active display range.'
       : dataState.status === 'no_public_records'
         ? 'No reviewed public meeting data is currently available. Check official sources for current information.'
         : dataState.status === 'stale_generation_with_window_records'
-          ? `Meetings fall inside the display window, but the public projection was generated on ${dataState.generatedDate}. Use each meeting's official source for final confirmation.`
-          : `${dataState.windowRecordCount} reviewed meetings fall inside the display window. The public projection was generated on ${dataState.generatedDate}.`;
+          ? 'Meetings are available, but the public projection may be stale. Use each meeting’s official source for final confirmation.'
+          : 'Reviewed public meetings are available. Changing the display timezone also changes date membership and displayed date/time values.';
 ---
 
 <aside class="calendar-date-status" data-calendar-data-status={dataState.status}>
-  <p>
-    {lang === 'ja' ? '基準日' : 'Reference date'}: <strong>{context.today}</strong>
-    · {lang === 'ja' ? '基準タイムゾーン' : 'Reference timezone'}: <strong>{context.timeZone}</strong>
-    · {lang === 'ja' ? '決定方法' : 'Resolved from'}: {sourceLabel}
-  </p>
   <p>{isStaleGeneration && <strong>{staleLabel}: </strong>}{statusText}</p>
 </aside>
 
@@ -80,7 +63,5 @@ const statusText = lang === 'ja'
     padding: 0.85rem;
   }
 
-  .calendar-date-status p {
-    margin: 0;
-  }
+  .calendar-date-status p { margin: 0; }
 </style>
