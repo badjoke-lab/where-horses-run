@@ -1,8 +1,8 @@
 {
   "schema_version": "calendar-validation-responsibilities-v1",
   "status": "active",
-  "work_id": "WHR-CAL-JAPAN-NAR-A-PLUS",
-  "checked_at": "2026-07-06",
+  "work_id": "WHR-CAL-VALIDATION-RESPONSIBILITIES",
+  "checked_at": "2026-09-02",
   "roles": [
     {
       "role": "batch_validation",
@@ -48,9 +48,7 @@
       "may_require_declared_scope_completeness": true,
       "may_write_canonical": false,
       "may_write_public": false,
-      "canonical_validators": [
-        "scripts/check-calendar-nar-full-month-candidate-set.mjs"
-      ]
+      "canonical_validators": []
     }
   ],
   "promotion_policy": {
