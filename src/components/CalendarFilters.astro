@@ -88,6 +88,8 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           !(reset instanceof HTMLButtonElement)) return;
 
       root.dataset.filterReady = 'true';
+      let currentVideoId = null;
+      let refreshTimer = null;
 
       const normalize = (value) => value.trim().toLocaleLowerCase();
       const apply = () => {
@@ -122,6 +124,8 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         const byMediaId = new Map(statuses
           .filter((entry) => entry && typeof entry.media_id === 'string')
           .map((entry) => [entry.media_id, entry]));
+        let observedState = 'unknown';
+        currentVideoId = null;
 
         for (const row of rows) {
           if (!(row instanceof HTMLElement)) continue;
@@ -131,26 +135,39 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             ? entry.status
             : 'unknown';
           row.dataset.liveState = state;
+          if (state !== 'unknown') observedState = state;
+          if (typeof entry?.video_id === 'string') currentVideoId = entry.video_id;
 
           const link = row.querySelector('[data-live-link]');
           if (link instanceof HTMLAnchorElement) {
             const idleLabel = row.dataset.livePlatform === 'youtube'
-              ? (isJa ? 'YouTube ↗' : 'YouTube ↗')
+              ? 'YouTube ↗'
               : (isJa ? 'ライブ ↗' : 'Live stream ↗');
             link.textContent = state === 'live' ? '● LIVE ↗' : idleLabel;
           }
         }
         apply();
+        return observedState;
+      };
+
+      const scheduleRefresh = (delay) => {
+        if (refreshTimer !== null) window.clearTimeout(refreshTimer);
+        refreshTimer = window.setTimeout(refreshLiveStatus, delay);
       };
 
       const refreshLiveStatus = async () => {
         try {
-          const response = await fetch('/api/live-status', { headers: { accept: 'application/json' }, cache: 'no-store' });
+          const endpoint = new URL('/api/live-status', location.origin);
+          if (currentVideoId) endpoint.searchParams.set('video_id', currentVideoId);
+          const response = await fetch(endpoint, { headers: { accept: 'application/json' }, cache: 'no-store' });
           if (!response.ok) throw new Error(`live status ${response.status}`);
-          applyLiveStatuses(await response.json());
+          const state = applyLiveStatuses(await response.json());
+          scheduleRefresh(state === 'live' || state === 'upcoming' ? 60_000 : 900_000);
         } catch {
+          currentVideoId = null;
           // Fail closed: lack of a verified status feed must never create LIVE state.
           applyLiveStatuses({ statuses: [] });
+          scheduleRefresh(300_000);
         }
       };
 
@@ -186,7 +203,6 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
       apply();
       refreshLiveStatus();
-      window.setInterval(refreshLiveStatus, 60_000);
     };
 
     if (document.readyState === 'loading') {
