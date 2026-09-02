@@ -5,6 +5,7 @@ import {
 } from '../lib/timetable/publicTimetableViewModel';
 import { derivePublicCoverageState } from '../lib/timetable/publicCoverageState.mjs';
 import {
+  addCalendarDays,
   createCalendarDateContext,
   evaluateCalendarDataState,
   filterRecordsForDate,
@@ -30,6 +31,7 @@ export type PublicGapStatus =
 export type TimetableMeetingRow = {
   meeting_id: string;
   date: string;
+  timezone: string;
   country_id: string;
   country_label: string;
   authority_id: string;
@@ -120,6 +122,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
   return {
     meeting_id: record.meeting_id,
     date: record.date,
+    timezone: record.timezone,
     country_id: record.country_id,
     country_label: displayCountry(record.country_id),
     authority_id: record.authority_id,
@@ -157,6 +160,23 @@ export function getTimetableMeetingRowsForDate(date: string): TimetableMeetingRo
 
 export function getTimetableMeetingRowsForWindow(startDate: string, endDateExclusive: string): TimetableMeetingRow[] {
   return filterRecordsForWindow(getTimetableMeetingRows(), startDate, endDateExclusive) as TimetableMeetingRow[];
+}
+
+export function getTimetableProjectionCandidateRows(
+  startDate: string,
+  endDateExclusive: string,
+): TimetableMeetingRow[] {
+  return getTimetableMeetingRowsForWindow(
+    addCalendarDays(startDate, -1),
+    addCalendarDays(endDateExclusive, 1),
+  );
+}
+
+export function getTimetableProjectionCandidateGroups(
+  startDate: string,
+  endDateExclusive: string,
+): TimetableMeetingDayGroup[] {
+  return getGroupedTimetableMeetingRows(getTimetableProjectionCandidateRows(startDate, endDateExclusive));
 }
 
 export function getTimetableDateContext() {
