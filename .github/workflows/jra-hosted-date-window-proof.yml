@@ -1,0 +1,72 @@
+name: JRA hosted date-window proof
+
+on:
+  push:
+    branches:
+      - fix/jra-hosted-date-window-acquisition
+    paths:
+      - '.github/workflows/jra-hosted-date-window-proof.yml'
+      - 'scripts/timetable/run-jra-actions-job.mjs'
+      - 'data/static/calendar-runner-compatibility-contract-v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Write bounded JRA execution
+        shell: bash
+        run: |
+          cat > .jra-execution.json <<'JSON'
+          {
+            "schema_version": "calendar-runner-execution-v1",
+            "job_id": "jra-hosted-proof-2026-09-02",
+            "batch_id": "jra-hosted-proof-2026-09-02",
+            "campaign_id": "jra-hosted-date-window-proof",
+            "system_id": "japan-jra-system",
+            "runner_used": "github_actions",
+            "executor_id": "jra-programme-actions",
+            "collection_mode": "date_window",
+            "requested_scope": {
+              "kind": "date_window",
+              "start_date": "2026-09-05",
+              "end_date_exclusive": "2026-09-27",
+              "timezone": "Asia/Tokyo"
+            },
+            "source_route": {
+              "schedule_source_id": "jra-programme",
+              "detail_source_id": "jra-programme",
+              "schedule_adapter_id": "jra-normalized-programme-candidate-v1",
+              "detail_adapter_id": "jra-normalized-programme-candidate-v1"
+            },
+            "review_required": true,
+            "side_effect_boundary": {
+              "approval": false,
+              "promotion": false,
+              "canonical_write": false,
+              "public_write": false,
+              "publication": false,
+              "deployment": false
+            }
+          }
+          JSON
+      - name: Run hosted JRA acquisition
+        run: node scripts/timetable/run-jra-actions-job.mjs --execution=.jra-execution.json
+      - name: Prove canonical and public outputs remained unchanged
+        shell: bash
+        run: git diff --exit-code -- data/generated/timetable/canonical data/generated/timetable/public
+      - name: Upload JRA review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-hosted-date-window-proof
+          if-no-files-found: error
+          retention-days: 14
+          path: data/generated/timetable/actions-multi-job/jra-hosted-proof-2026-09-02/
