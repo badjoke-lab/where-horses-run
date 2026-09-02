@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-route-runner-policy-v1",
-  "policy_version": "calendar-route-runner-policy-2026-07-13",
+  "policy_version": "calendar-route-runner-policy-v1-current",
   "registry_compatibility": {
     "system_level_fields_remain_authoritative_for_legacy_jobs": true,
     "route_policy_is_additive": true,
@@ -27,7 +27,7 @@
       "automatic_execution_allowed": false,
       "human_review_required": true,
       "registry_activation": false,
-      "evidence_ref": "data/audits/calendar-hkjc-pilot-04-live-evidence-v1.json"
+      "evidence_ref": ".github/workflows/calendar-hkjc-current-best-available-refresh.yml"
     },
     {
       "system_id": "hong-kong-hkjc-system",
@@ -50,7 +50,7 @@
       "automatic_execution_allowed": false,
       "human_review_required": true,
       "registry_activation": false,
-      "evidence_ref": "data/audits/calendar-hkjc-detail-operator-activation-v1.json"
+      "evidence_ref": ".github/workflows/calendar-hkjc-detail-operator.yml"
     }
   ],
   "side_effect_boundary": {
