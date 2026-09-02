@@ -31,14 +31,6 @@ const directionLabelsJa: Record<string, string> = {
   unknown: '未確認',
 };
 
-const statusLabelsJa: Record<string, string> = {
-  active: '公開中',
-  limited: '限定公開',
-  inactive: '非公開',
-  planned: '準備中',
-  unknown: '不明',
-};
-
 function humanize(value: string): string {
   return value
     .split('-')
@@ -47,23 +39,19 @@ function humanize(value: string): string {
 }
 
 function surfaceLabel(value: string): string {
-  return isJapanese ? surfaceLabelsJa[value] ?? humanize(value) : humanize(value);
+  return isJapanese ? surfaceLabelsJa[value] ?? 'その他' : humanize(value);
 }
 
 function directionLabel(value: string): string {
-  return isJapanese ? directionLabelsJa[value] ?? humanize(value) : humanize(value);
-}
-
-function statusLabel(value: string): string {
-  return isJapanese ? statusLabelsJa[value] ?? humanize(value) : humanize(value);
+  return isJapanese ? directionLabelsJa[value] ?? '未確認' : humanize(value);
 }
 ---
 
 <BaseLayout
-  title={isJapanese ? '競馬場 | 競馬どこ？' : 'Racecourses | Where Horses Run'}
+  title={isJapanese ? '競馬場から探す | 競馬どこ？' : 'Racecourses | Where Horses Run'}
   description={isJapanese
-    ? '36競馬場を名称、国・地域、競馬種別、馬場から絞り込めます。'
-    : 'Search and filter 36 racecourses by name, country or region, racing type, and surface.'}
+    ? '競馬場を名称、国・地域、競馬種別、馬場から探せます。'
+    : 'Find racecourses by name, country or region, racing type, and surface.'}
   lang={locale}
   canonicalPath={isJapanese ? '/ja/tracks/' : '/tracks/'}
   alternatePath={isJapanese ? '/tracks/' : '/ja/tracks/'}
@@ -76,18 +64,18 @@ function statusLabel(value: string): string {
     data-racecourse-surface-options={options.surfaces.length}
   >
     <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">Racecourses</p>
-      <h1 id="page-title">{isJapanese ? '競馬場' : 'Racecourses'}</h1>
+      <p class="hero__eyebrow">{isJapanese ? '世界の競馬場' : 'Racecourses worldwide'}</p>
+      <h1 id="page-title">{isJapanese ? '競馬場から探す' : 'Racecourses'}</h1>
       <p class="hero__summary">
         {isJapanese
-          ? '登録済みの競馬場を、名称、国・地域、競馬種別、馬場から探せます。'
-          : 'Find listed racecourses by name, country or region, racing type, and surface.'}
+          ? '名称、国・地域、競馬種別、馬場から競馬場を探し、各競馬場の情報へ進めます。'
+          : 'Browse racecourses by name, country or region, racing type, and surface, then open a racecourse for more information.'}
       </p>
       <p>{isJapanese ? `${records.length}競馬場を掲載しています。` : `${records.length} racecourses are listed.`}</p>
     </section>
 
     <section class="card" aria-labelledby="racecourse-filter-heading">
-      <h2 id="racecourse-filter-heading">{isJapanese ? '競馬場の絞り込み' : 'Filter racecourses'}</h2>
+      <h2 id="racecourse-filter-heading">{isJapanese ? '競馬場を絞り込む' : 'Filter racecourses'}</h2>
       <form data-racecourse-filter-form role="search">
         <p>
           <label for="racecourse-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
@@ -131,8 +119,8 @@ function statusLabel(value: string): string {
       </p>
       <noscript>
         <p>{isJapanese
-          ? 'JavaScriptが無効な場合は、下の36件の一覧から選べます。'
-          : 'With JavaScript disabled, use the complete list of 36 linked records below.'}</p>
+          ? 'JavaScriptが無効な場合も、下の一覧から競馬場を選べます。'
+          : 'With JavaScript disabled, the complete racecourse list remains available below.'}</p>
       </noscript>
     </section>
 
@@ -148,13 +136,17 @@ function statusLabel(value: string): string {
           data-racecourse-search-text={record.searchText}
         >
           <h2><a href={record.href}>{record.name}</a></h2>
-          {record.alternateName && record.alternateName !== record.name && <p>{record.alternateName}</p>}
-          {record.localName && ![record.name, record.alternateName].includes(record.localName) && <p>{record.localName}</p>}
+          {record.alternateName && record.alternateName !== record.name && (
+            <p><strong>{isJapanese ? '別名' : 'Alternate name'}:</strong> {record.alternateName}</p>
+          )}
+          {record.localName && ![record.name, record.alternateName].includes(record.localName) && (
+            <p><strong>{isJapanese ? '現地表記' : 'Local name'}:</strong> {record.localName}</p>
+          )}
           <p>
             <strong>{isJapanese ? '国・地域' : 'Country or region'}:</strong>{' '}
             {record.countryHref ? <a href={record.countryHref}>{record.countryName}</a> : record.countryName}
           </p>
-          <p><strong>{isJapanese ? '都市・地域' : 'City and region'}:</strong> {[record.city, record.region].filter(Boolean).join(' / ') || (isJapanese ? '未確認' : 'Not confirmed')}</p>
+          <p><strong>{isJapanese ? '所在地' : 'Location'}:</strong> {[record.city, record.region].filter(Boolean).join(' / ') || (isJapanese ? '未確認' : 'Not confirmed')}</p>
           <p><strong>{isJapanese ? '馬場' : 'Surfaces'}:</strong> {record.surfaces.length ? record.surfaces.map(surfaceLabel).join(' · ') : (isJapanese ? '未確認' : 'Not confirmed')}</p>
           <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong></p>
           {record.racingTypes.length ? (
@@ -165,9 +157,6 @@ function statusLabel(value: string): string {
             </ul>
           ) : <p>{isJapanese ? '未分類' : 'Not classified'}</p>}
           <p><strong>{isJapanese ? '回り方向' : 'Direction'}:</strong> {directionLabel(record.direction)}</p>
-          <p><strong>{isJapanese ? '状態' : 'Status'}:</strong> {statusLabel(record.status)}</p>
-          <p><strong>{isJapanese ? '開催予定' : 'Schedule'}:</strong> {humanize(record.scheduleStatus)}</p>
-          <p><strong>{isJapanese ? 'コース情報' : 'Course profile'}:</strong> {humanize(record.courseProfileStatus)}</p>
         </article>
       ))}
     </section>
