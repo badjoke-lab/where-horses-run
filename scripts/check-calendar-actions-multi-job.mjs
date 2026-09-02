@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadCalendarAcquisitionRegistryV1 } from './timetable/load-calendar-acquisition-registry.mjs';
+import { validateCollectionPlanV1, summarizeCollectionPlanOutcomesV1 } from './timetable/collection-plan-validation.mjs';
 import {
   makeActionsJobStatusV1,
   matrixFromActionsMultiJobPlanV1,
@@ -17,13 +18,28 @@ const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath)
 const exact = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 const fixtures = readJson('data/fixtures/calendar-collection-plans-v1.json');
+const invalidFixtures = readJson('data/fixtures/calendar-collection-plan-invalid-cases-v1.json');
 const registry = loadCalendarAcquisitionRegistryV1(root);
 const compatibility = readJson('data/static/calendar-runner-compatibility-contract-v1.json');
 
 if (!Array.isArray(fixtures.plans) || fixtures.plans.length === 0) fail('Collection Plan fixtures must contain at least one Plan.');
-
+const seenPlanIds = new Set();
 let hostedPlanCount = 0;
-for (const plan of fixtures.plans ?? []) {
+let multiJobPlanCount = 0;
+let mixedRunnerPlanCount = 0;
+for (const [index, plan] of (fixtures.plans ?? []).entries()) {
+  if (seenPlanIds.has(plan.plan_id)) fail(`duplicate Collection Plan fixture plan_id ${plan.plan_id}`);
+  seenPlanIds.add(plan.plan_id);
+  const before = structuredClone(plan);
+  const planErrors = validateCollectionPlanV1(plan, registry);
+  if (planErrors.length) {
+    fail(`valid plan[${index}] ${plan.plan_id ?? 'unknown'} failed: ${planErrors.join('; ')}`);
+    continue;
+  }
+  if (!exact(before, plan)) fail(`${plan.plan_id}: Collection Plan validation mutated input.`);
+  if ((plan.jobs ?? []).length > 1) multiJobPlanCount += 1;
+  if (new Set((plan.jobs ?? []).map((job) => job.runner_policy?.runner).filter(Boolean)).size > 1) mixedRunnerPlanCount += 1;
+
   let actionsPlan;
   try {
     actionsPlan = planActionsMultiJobV1(plan, registry, compatibility);
@@ -62,9 +78,42 @@ for (const plan of fixtures.plans ?? []) {
       }
     }
   }
+
+  if ((plan.jobs ?? []).length >= 2) {
+    const outcomes = summarizeCollectionPlanOutcomesV1(plan, [
+      { job_id: plan.jobs[0].job_id, status: 'source_error' },
+      { job_id: plan.jobs[1].job_id, status: 'success' },
+    ]);
+    if (outcomes.results.find((item) => item.job_id === plan.jobs[0].job_id)?.status !== 'source_error') fail(`${plan.plan_id}: source-error outcome changed.`);
+    if (outcomes.results.find((item) => item.job_id === plan.jobs[1].job_id)?.status !== 'success') fail(`${plan.plan_id}: unrelated success outcome changed.`);
+  }
+}
+
+const zeroJobPlan = {
+  schema_version: 'calendar-collection-plan-v1',
+  plan_id: 'zero-job-regression',
+  campaign_id: 'zero-job-regression',
+  created_at: '2030-01-01T00:00:00Z',
+  jobs: [],
+};
+const zeroErrors = validateCollectionPlanV1(zeroJobPlan, registry);
+if (zeroErrors.length) fail(`zero-job steady-state plan failed: ${zeroErrors.join('; ')}`);
+const zeroOutcomes = summarizeCollectionPlanOutcomesV1(zeroJobPlan, []);
+if (zeroOutcomes.results.length !== 0 || Object.keys(zeroOutcomes.counts).length !== 0) fail('zero-job outcome summary differs.');
+
+if (invalidFixtures.schema_version !== 'calendar-collection-plan-invalid-cases-v1') fail('invalid Collection Plan fixture schema differs.');
+if (!Array.isArray(invalidFixtures.cases) || invalidFixtures.cases.length === 0) fail('invalid Collection Plan fixtures must contain cases.');
+const invalidIds = new Set();
+for (const [index, testCase] of (invalidFixtures.cases ?? []).entries()) {
+  if (typeof testCase.case_id !== 'string' || !testCase.case_id) fail(`invalid plan case[${index}] has no case_id.`);
+  if (invalidIds.has(testCase.case_id)) fail(`duplicate invalid plan case_id ${testCase.case_id}`);
+  invalidIds.add(testCase.case_id);
+  if (validateCollectionPlanV1(testCase.plan, registry).length === 0) fail(`invalid plan unexpectedly passed: ${testCase.case_id}`);
 }
 
 if (hostedPlanCount === 0) fail('Fixture matrix must exercise at least one hosted Actions Job.');
+if (multiJobPlanCount === 0) fail('Fixture matrix must exercise at least one multi-Job Plan.');
+if (mixedRunnerPlanCount === 0) fail('Fixture matrix must exercise at least one mixed-runner Plan.');
 
 const workflow = readText('.github/workflows/calendar-actions-multi-job.yml');
 for (const phrase of [
@@ -96,6 +145,10 @@ if (errors.length) {
 
 console.log('CALENDAR_ACTIONS_MULTI_JOB: pass');
 console.log(`FIXTURE_PLANS: ${fixtures.plans.length}`);
+console.log(`INVALID_PLAN_CASES: ${invalidFixtures.cases.length}`);
 console.log(`HOSTED_JOBS_EXERCISED: ${hostedPlanCount}`);
+console.log(`MULTI_JOB_PLANS: ${multiJobPlanCount}`);
+console.log('ZERO_JOB_STEADY_STATE: pass');
+console.log('OUTCOME_ISOLATION: pass');
 console.log('FIXED_OPERATOR_PLAN_CHOICES: 0');
 console.log('DAILY_GENERATED_JOB_DISPATCH: pass');
