@@ -1,0 +1,171 @@
+<section
+  class="calendar-live-players card flow"
+  data-calendar-live-players
+  aria-live="polite"
+  hidden
+>
+  <h2 data-calendar-live-heading>Live now</h2>
+  <div class="calendar-live-players__grid" data-calendar-live-player-grid></div>
+</section>
+
+<script is:inline>
+  (() => {
+    const SAFE_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+    const PAYLOAD_TTL_MS = 15 * 60 * 1000;
+
+    const init = () => {
+      const root = document.querySelector('[data-calendar-live-players]');
+      const grid = root?.querySelector('[data-calendar-live-player-grid]');
+      const heading = root?.querySelector('[data-calendar-live-heading]');
+      if (!(root instanceof HTMLElement) || !(grid instanceof HTMLElement)) return;
+
+      const isJa = document.documentElement.lang === 'ja';
+      if (heading) heading.textContent = isJa ? 'ライブ中' : 'Live now';
+
+      let payload = null;
+      let payloadAt = 0;
+      let pending = null;
+
+      const liveRows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+        .filter((row) => row instanceof HTMLElement && !row.hidden && row.dataset.liveState === 'live');
+
+      const setHidden = (hidden) => {
+        if (root.hidden !== hidden) root.hidden = hidden;
+      };
+
+      const clear = () => {
+        if (grid.childElementCount > 0) grid.replaceChildren();
+        setHidden(true);
+      };
+
+      const fetchPayload = async () => {
+        if (payload && Date.now() - payloadAt < PAYLOAD_TTL_MS) return payload;
+        if (pending) return pending;
+        pending = (async () => {
+          const response = await fetch(new URL('/api/live-status', location.origin), {
+            headers: { accept: 'application/json' },
+            cache: 'no-store',
+          });
+          if (!response.ok) throw new Error(`live status ${response.status}`);
+          const value = await response.json();
+          if (value?.configured !== true || !Array.isArray(value?.statuses)) {
+            throw new Error('live status not configured');
+          }
+          payload = value;
+          payloadAt = Date.now();
+          return value;
+        })().finally(() => {
+          pending = null;
+        });
+        return pending;
+      };
+
+      const playerCard = ({ videoId, racecourse, date }) => {
+        const article = document.createElement('article');
+        article.className = 'calendar-live-player';
+
+        const title = document.createElement('h3');
+        title.textContent = `${racecourse} · ${date}`;
+
+        const frameWrap = document.createElement('div');
+        frameWrap.className = 'calendar-live-player__frame';
+
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+        iframe.title = isJa ? `${racecourse} 公式ライブ配信` : `${racecourse} official live stream`;
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+
+        frameWrap.append(iframe);
+        article.append(title, frameWrap);
+        return article;
+      };
+
+      const render = async () => {
+        const rows = liveRows();
+        if (!rows.length) {
+          payload = null;
+          payloadAt = 0;
+          clear();
+          return;
+        }
+
+        let current;
+        try {
+          current = await fetchPayload();
+        } catch {
+          clear();
+          return;
+        }
+
+        const statuses = new Map(current.statuses
+          .filter((entry) => entry && typeof entry.detector_id === 'string')
+          .map((entry) => [entry.detector_id, entry]));
+        const seen = new Set();
+        const cards = [];
+
+        for (const row of rows) {
+          const detectorId = row.dataset.liveDetectorId || '';
+          const date = row.dataset.date || '';
+          const entry = statuses.get(detectorId);
+          if (!entry || entry.status !== 'live' || entry.event_date !== date || !SAFE_VIDEO_ID.test(entry.video_id || '')) continue;
+
+          const key = `${detectorId}:${date}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          cards.push(playerCard({
+            videoId: entry.video_id,
+            racecourse: row.dataset.racecourse || detectorId,
+            date,
+          }));
+        }
+
+        grid.replaceChildren(...cards);
+        setHidden(cards.length === 0);
+      };
+
+      let scheduled = false;
+      const scheduleRender = () => {
+        if (scheduled) return;
+        scheduled = true;
+        queueMicrotask(() => {
+          scheduled = false;
+          render();
+        });
+      };
+
+      const observer = new MutationObserver((mutations) => {
+        if (mutations.some((mutation) =>
+          mutation.type === 'attributes' &&
+          mutation.target instanceof HTMLElement &&
+          mutation.target.matches('[data-calendar-meeting-row]')
+        )) scheduleRender();
+      });
+      observer.observe(document.body, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['data-live-state', 'hidden'],
+      });
+
+      render();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>
+
+<style>
+  .calendar-live-players { margin-block: 1rem 1.35rem; }
+  .calendar-live-players[hidden] { display: none; }
+  .calendar-live-players__grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
+  .calendar-live-player { min-width: 0; }
+  .calendar-live-player h3 { font-size: 0.95rem; margin-block: 0 0.45rem; }
+  .calendar-live-player__frame { aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+  .calendar-live-player__frame iframe { border: 0; display: block; height: 100%; width: 100%; }
+</style>
