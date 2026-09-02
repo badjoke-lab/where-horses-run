@@ -10,10 +10,35 @@ import {
 } from './tjk-current-future-candidates.mjs';
 import { discoverAnnualFixtures } from './tjk-annual-fixture-discovery.mjs';
 
+const TJK_RACECOURSE_IDENTITIES = new Map([
+  ['1', { racecourse_id: 'adana-racecourse', name_en: 'Adana Racecourse', name_ja: 'アダナ競馬場' }],
+  ['2', { racecourse_id: 'izmir-racecourse', name_en: 'Izmir Racecourse', name_ja: 'イズミル競馬場' }],
+  ['3', { racecourse_id: 'istanbul-racecourse', name_en: 'Istanbul Racecourse', name_ja: 'イスタンブール競馬場' }],
+  ['4', { racecourse_id: 'bursa-racecourse', name_en: 'Bursa Racecourse', name_ja: 'ブルサ競馬場' }],
+  ['5', { racecourse_id: 'ankara-racecourse', name_en: 'Ankara Racecourse', name_ja: 'アンカラ競馬場' }],
+  ['6', { racecourse_id: 'sanliurfa-racecourse', name_en: 'Sanliurfa Racecourse', name_ja: 'シャンルウルファ競馬場' }],
+  ['7', { racecourse_id: 'elazig-racecourse', name_en: 'Elazig Racecourse', name_ja: 'エラズー競馬場' }],
+  ['8', { racecourse_id: 'diyarbakir-racecourse', name_en: 'Diyarbakir Racecourse', name_ja: 'ディヤルバクル競馬場' }],
+  ['9', { racecourse_id: 'kocaeli-racecourse', name_en: 'Kocaeli Racecourse', name_ja: 'コジャエリ競馬場' }],
+]);
+
 function addDays(iso, days) {
   const date = new Date(`${iso}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
+}
+
+function bindRacecourseIdentity(candidate) {
+  const identity = TJK_RACECOURSE_IDENTITIES.get(String(candidate.racecourse_source_id));
+  if (!identity) throw new Error(`Unknown TJK domestic racecourse source id: ${candidate.racecourse_source_id}`);
+  return {
+    ...candidate,
+    meeting_id: `tjk-${identity.racecourse_id}-${candidate.date}`,
+    racecourse_id: identity.racecourse_id,
+    racecourse_name_en: identity.name_en,
+    racecourse_name_ja: identity.name_ja,
+    timezone: TIMEZONE,
+  };
 }
 
 async function fetchHtml(url) {
@@ -38,16 +63,16 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
       candidate.date === fixture.date && candidate.racecourse_source_id === fixture.racecourse_source_id,
     );
     if (!detail) {
-      return {
+      return bindRacecourseIdentity({
         ...fixture,
         detail_observation: { status: 'not_published', race_count: 0, conflicts: [] },
-      };
+      });
     }
 
     const detailHtml = await fetchHtml(detail.source_url);
     const detected = detectRaceSchedule(detailHtml);
     if (detected.schedule.length === 0) {
-      return {
+      return bindRacecourseIdentity({
         ...fixture,
         source_url: detail.source_url,
         provenance: {
@@ -61,10 +86,10 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
           race_count: 0,
           conflicts: detected.conflicts,
         },
-      };
+      });
     }
 
-    return {
+    return bindRacecourseIdentity({
       ...fixture,
       source_url: detail.source_url,
       capability_rank: 'A',
@@ -78,12 +103,13 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
         detail_discovery_method: 'official_page_discovered_venue_detail',
       },
       detail_observation: { status: 'available', race_count: detected.schedule.length, conflicts: [] },
-    };
-  } catch {
-    return {
+    });
+  } catch (error) {
+    if (String(error?.message ?? '').startsWith('Unknown TJK domestic racecourse source id:')) throw error;
+    return bindRacecourseIdentity({
       ...fixture,
       detail_observation: { status: 'source_error', race_count: 0, conflicts: [] },
-    };
+    });
   }
 }
 
