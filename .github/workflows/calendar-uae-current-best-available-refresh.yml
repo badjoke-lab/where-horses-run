@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - fix/uae-era-current-season-discovery
     paths:
       - '.github/workflows/calendar-uae-current-best-available-refresh.yml'
       - 'scripts/timetable/run-uae-era-current-best-available.mjs'
