@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-03T17:32:32.931Z",
+  "generated_at": "2026-09-03T18:08:41.993Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -10838,7 +10838,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -10868,7 +10868,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -10898,7 +10898,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -10928,7 +10928,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11002,25 +11002,25 @@
       "racecourse_id": "kochi-racecourse",
       "date": "2026-09-05",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "15:25",
       "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "reviewed-public:data/static/japan-2026-09-05-reviewed-a-plus-v1.json",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F05",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted.",
       "racing_system_id": "japan-nar-system"
@@ -11032,25 +11032,25 @@
       "racecourse_id": "saga-racecourse",
       "date": "2026-09-05",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "15:55",
       "last_race_time_local": "20:40",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "reviewed-public:data/static/japan-2026-09-05-reviewed-a-plus-v1.json",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F05",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted.",
       "racing_system_id": "japan-nar-system"
@@ -11120,25 +11120,25 @@
       "racecourse_id": "obihiro-racecourse",
       "date": "2026-09-06",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "14:35",
+      "last_race_time_local": "20:30",
       "source_trace": {
-        "source_id": "banei-official-schedule",
+        "source_id": "reviewed-public:data/static/banei-2026-09-06-public-detail-v1.json",
         "route_id": null,
-        "source_status": "partial",
-        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1788188400",
-        "source_label": "Banei Tokachi",
-        "extraction_method": "adapter",
+        "source_status": "verified",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_program_detail.php?d=2026&n=11",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/banei-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:18.237Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved official Banei monthly-schedule meeting identity. No race times or programme rows are claimed; ordinary automated Banei refresh remains disabled."
     },
@@ -11195,7 +11195,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11225,7 +11225,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11255,7 +11255,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11345,7 +11345,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11359,25 +11359,25 @@
       "racecourse_id": "kochi-racecourse",
       "date": "2026-09-06",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "14:50",
       "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "reviewed-public:data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json",
         "route_id": null,
         "source_status": "verified",
         "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F06",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted.",
       "racing_system_id": "japan-nar-system"
@@ -11389,25 +11389,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-06",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "12:00",
+      "last_race_time_local": "18:00",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-08-18-through-2026-09-06-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-08",
-        "generated_at": "2026-08-08T14:10:14.896Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-08T14:15:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR August/September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail are not promoted."
     },
@@ -11434,7 +11434,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T17:32:32.931Z",
+        "generated_at": "2026-09-03T18:06:12.272Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -11507,25 +11507,25 @@
       "racecourse_id": "obihiro-racecourse",
       "date": "2026-09-07",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "14:25",
+      "last_race_time_local": "20:30",
       "source_trace": {
-        "source_id": "banei-official-monthly-schedule-nar-detail",
+        "source_id": "reviewed-public:data/static/banei-2026-09-07-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1788188400",
-        "source_label": "ばんえい十勝",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
         "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source."
     },
@@ -11536,25 +11536,25 @@
       "racecourse_id": "kawasaki-racecourse",
       "date": "2026-09-07",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.nankankeiba.com/program/20260907210701.do",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -11565,25 +11565,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-07",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:45",
+      "last_race_time_local": "18:15",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -11740,25 +11740,25 @@
       "racecourse_id": "kawasaki-racecourse",
       "date": "2026-09-08",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.nankankeiba.com/program/20260908210702.do",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -11769,25 +11769,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-08",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:45",
+      "last_race_time_local": "18:15",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -11944,25 +11944,25 @@
       "racecourse_id": "kawasaki-racecourse",
       "date": "2026-09-09",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.nankankeiba.com/program/20260909210703.do",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -12118,25 +12118,25 @@
       "racecourse_id": "kawasaki-racecourse",
       "date": "2026-09-10",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.nankankeiba.com/program/20260910210704.do",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -12350,25 +12350,25 @@
       "racecourse_id": "kawasaki-racecourse",
       "date": "2026-09-11",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.nankankeiba.com/program/20260911210705.do",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -12996,25 +12996,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-13",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:30",
+      "last_race_time_local": "18:05",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -13113,25 +13113,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-14",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:40",
+      "last_race_time_local": "18:05",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
@@ -13287,25 +13287,25 @@
       "racecourse_id": "mizusawa-racecourse",
       "date": "2026-09-15",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "B+",
+      "display_status": "displayable",
+      "first_race_time_local": "11:30",
+      "last_race_time_local": "18:00",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "reviewed-public:data/static/calendar-reviewed-public-observations.json",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
-        "extraction_method": "adapter",
+        "official_source_url": "https://www.iwatekeiba.or.jp/",
+        "source_label": "Human-reviewed official timetable observation",
+        "extraction_method": "human_reviewed",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-recovery-2026-09-15-approved.json"
+        "normalized_from_path": "scripts/timetable/apply-reviewed-calendar-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-08-17",
-        "generated_at": "2026-08-17T04:06:26.186Z",
+        "last_checked_date": "2026-09-03",
+        "generated_at": "2026-09-03T18:08:41.993Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-17T16:10:00Z."
+        "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending."
     },
