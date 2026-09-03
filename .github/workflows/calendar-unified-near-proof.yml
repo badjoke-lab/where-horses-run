@@ -31,6 +31,7 @@ jobs:
       - name: Validate production refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
+          node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
@@ -62,6 +63,8 @@ jobs:
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-unified/uae.json --country-id=united-arab-emirates --authority-id=emirates-racing-authority --racing-system-id=uae-national-racing-system --timezone=Asia/Dubai
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-unified/kra.json --country-id=south-korea --authority-id=korea-racing-authority --racing-system-id=kra-national-racing-system --timezone=Asia/Seoul
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-unified/tjk.json --country-id=turkey --authority-id=turkiye-jokey-kulubu --racing-system-id=tjk-national-racing-system --timezone=Europe/Istanbul
+      - name: Re-apply frozen reviewed Calendar observations
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
         run: |
           npm install --no-package-lock --no-audit --no-fund
