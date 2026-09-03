@@ -2,6 +2,11 @@ import meetingListData from '../../../data/generated/timetable/public/meeting-li
 import meetingDetailsData from '../../../data/generated/timetable/public/meeting-details.json';
 import japanAPlusOverridesData from '../../../data/generated/timetable/public/japan-a-plus-overrides.json';
 import type { CapabilityRank } from './canonicalTypes.ts';
+import {
+  isTjkSupplementWindowMeeting,
+  tjkPublicMeetingDetails,
+  tjkPublicMeetingRows,
+} from './tjkPublicSupplement.ts';
 
 export type PublicTimetableMeetingRow = {
   readonly meeting_id: string;
@@ -307,6 +312,7 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
 
 const generatedPublicMeetingRows = meetingListDataset.meetings
   .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
+  .filter((meeting) => !isTjkSupplementWindowMeeting(meeting))
   .map((meeting) => {
     const override = meetingOverrideIndex.get(meeting.meeting_id);
     const withRankOverride =
@@ -322,17 +328,25 @@ const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => 
 const publicMeetingRows: readonly PublicTimetableMeetingRow[] = [
   ...generatedPublicMeetingRows,
   ...reviewedPublicSupplements.filter((meeting) => !generatedMeetingIds.has(meeting.meeting_id)),
+  ...(tjkPublicMeetingRows as readonly PublicTimetableMeetingRow[]),
 ];
 
-const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
-  meetingDetailsDataset.details.map((detail) => {
-    const override = detailOverrideIndex.get(detail.meeting_id);
-    const withRankOverride = override && canApplyReviewedOverride(detail.last_checked_date)
-      ? { ...detail, ...override }
-      : detail;
-    const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
-    return correction ? { ...withRankOverride, ...correction } : withRankOverride;
-  });
+const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
+  meetingDetailsDataset.details
+    .filter((detail) => !isTjkSupplementWindowMeeting(detail))
+    .map((detail) => {
+      const override = detailOverrideIndex.get(detail.meeting_id);
+      const withRankOverride = override && canApplyReviewedOverride(detail.last_checked_date)
+        ? { ...detail, ...override }
+        : detail;
+      const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
+      return correction ? { ...withRankOverride, ...correction } : withRankOverride;
+    });
+
+const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] = [
+  ...generatedPublicMeetingDetails,
+  ...(tjkPublicMeetingDetails as readonly PublicTimetableMeetingDetail[]),
+];
 
 export function getPublicTimetableGeneratedAt(): string {
   return meetingListDataset.generated_at;
