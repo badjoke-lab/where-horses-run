@@ -5,6 +5,7 @@ import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30d } from './jra-official-30d-discovery.mjs';
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
+import { withNankanOfficialProgrammeFallback } from './nankan-official-programme-fallback.mjs';
 
 function japanToday(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -43,6 +44,7 @@ const publicPath = 'data/generated/timetable/public/meeting-list.json';
 const publicDetailsPath = 'data/generated/timetable/public/meeting-details.json';
 const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
 const narStandardAdapter = japanOfficial30dAdapters['nar-standard'];
+const narInspect = withNankanOfficialProgrammeFallback(withSagaOfficialStartFallback(narStandardAdapter.inspect));
 const adapters = {
   ...japanOfficial30dAdapters,
   jra: {
@@ -52,7 +54,7 @@ const adapters = {
   'nar-standard': {
     ...narStandardAdapter,
     discover: async (context) => (await narStandardAdapter.discover(context)).map(normalizeNarMeetingId),
-    inspect: withSagaOfficialStartFallback(narStandardAdapter.inspect),
+    inspect: narInspect,
   },
   banei: {
     ...japanOfficial30dAdapters.banei,
