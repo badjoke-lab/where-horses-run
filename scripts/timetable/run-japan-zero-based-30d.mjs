@@ -22,6 +22,7 @@ const output = args.get('--output') ?? 'data/generated/timetable/japan-zero-base
 const canonicalPath = 'data/generated/timetable/canonical/meetings.json';
 const detailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publicPath = 'data/generated/timetable/public/meeting-list.json';
+const publicDetailsPath = 'data/generated/timetable/public/meeting-details.json';
 const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
 const adapters = {
   ...japanOfficial30dAdapters,
@@ -41,6 +42,7 @@ const result = await runJapanZeroBased30d({
     canonical: read(canonicalPath).meetings,
     details: read(detailsPath).details,
     public: read(publicPath).meetings,
+    publicDetails: read(publicDetailsPath).details,
   }),
 });
 const write = (file, value) => {
@@ -50,7 +52,8 @@ const write = (file, value) => {
 write(canonicalPath, { ...read(canonicalPath), generated_at: result.checked_at, meetings: result.canonical });
 write(detailsPath, { ...read(detailsPath), generated_at: result.checked_at, details: result.details });
 write(publicPath, { ...read(publicPath), generated_at: result.checked_at, meetings: result.public });
-write(output, { ...result, canonical: undefined, public: undefined, details: undefined });
+write(publicDetailsPath, { ...read(publicDetailsPath), generated_at: result.checked_at, details: result.publicDetails });
+write(output, { ...result, canonical: undefined, public: undefined, details: undefined, publicDetails: undefined });
 const outcomes = Object.fromEntries(result.reconciliations.map((row) => row.outcome).reduce((map, outcome) => map.set(outcome, (map.get(outcome) ?? 0) + 1), new Map()));
 console.log(JSON.stringify({
   range: result.range,
