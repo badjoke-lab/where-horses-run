@@ -210,5 +210,52 @@ const socialImageAlt = isJapanese
         </div>
       </footer>
     </div>
+
+    <script is:inline>
+      (() => {
+        const isTimeZoneSupported = (timeZone) => {
+          if (!timeZone) return false;
+          try {
+            new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
+            return true;
+          } catch {
+            return false;
+          }
+        };
+        const propagateTimeZone = (timeZone) => {
+          if (!isTimeZoneSupported(timeZone)) return;
+          document.querySelectorAll('a[href]').forEach((anchor) => {
+            if (!(anchor instanceof HTMLAnchorElement)) return;
+            const rawHref = anchor.getAttribute('href');
+            if (!rawHref || rawHref.startsWith('#') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) return;
+            const url = new URL(rawHref, window.location.href);
+            if (url.origin !== window.location.origin) return;
+            url.searchParams.set('tz', timeZone);
+            anchor.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+          });
+          document.querySelectorAll('[data-timezone-label]').forEach((node) => {
+            node.textContent = timeZone;
+          });
+        };
+        const applyProjectionMetadata = (detail) => {
+          if (!detail || typeof detail !== 'object') return;
+          if (typeof detail.timeZone === 'string') propagateTimeZone(detail.timeZone);
+          if (typeof detail.targetDate === 'string') {
+            document.querySelectorAll('[data-timezone-target-date]').forEach((node) => { node.textContent = detail.targetDate; });
+          }
+          if (typeof detail.windowStart === 'string') {
+            document.querySelectorAll('[data-timezone-window-start]').forEach((node) => { node.textContent = detail.windowStart; });
+          }
+          if (typeof detail.windowEndInclusive === 'string') {
+            document.querySelectorAll('[data-timezone-window-end]').forEach((node) => { node.textContent = detail.windowEndInclusive; });
+          }
+        };
+        const requested = new URL(window.location.href).searchParams.get('tz');
+        if (isTimeZoneSupported(requested)) propagateTimeZone(requested);
+        window.addEventListener('whr:timezonechange', (event) => {
+          applyProjectionMetadata(event.detail);
+        });
+      })();
+    </script>
   </body>
 </html>
