@@ -44,19 +44,38 @@ function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null) 
   return url.href;
 }
 
-async function fetchHtml(url, fetchImpl, { allowNotFound = false } = {}) {
-  const response = await fetchImpl(url, {
-    method: 'GET',
-    redirect: 'follow',
-    headers: {
-      accept: 'text/html,application/xhtml+xml',
-      'user-agent': 'WhereHorsesRun-source-verification/1.0',
-    },
-    signal: AbortSignal.timeout(20_000),
-  });
-  if (allowNotFound && response.status === 404) return null;
-  if (!response.ok) throw new Error(`TJK annual programme fetch failed: HTTP ${response.status} ${url}`);
-  return response.text();
+function retryDelay(attempt) {
+  return new Promise((resolve) => setTimeout(resolve, attempt * 1_500));
+}
+
+async function fetchHtml(url, fetchImpl, { allowNotFound = false, attempts = 3 } = {}) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetchImpl(url, {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+          accept: 'text/html,application/xhtml+xml',
+          'user-agent': 'WhereHorsesRun-source-verification/1.0',
+        },
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (allowNotFound && response.status === 404) return null;
+      if (response.ok) return response.text();
+      const retryableStatus = response.status === 429 || response.status >= 500;
+      if (!retryableStatus || attempt === attempts) {
+        throw new Error(`TJK annual programme fetch failed: HTTP ${response.status} ${url}`);
+      }
+      lastError = new Error(`TJK annual programme transient HTTP ${response.status} ${url}`);
+    } catch (error) {
+      lastError = error;
+      const retryableError = error?.name === 'TimeoutError' || error?.name === 'AbortError' || error instanceof TypeError;
+      if (!retryableError || attempt === attempts) throw error;
+    }
+    await retryDelay(attempt);
+  }
+  throw lastError ?? new Error(`TJK annual programme fetch failed without response: ${url}`);
 }
 
 export function extractAnnualFixtures(html, { startDate, endDateExclusive } = {}) {
