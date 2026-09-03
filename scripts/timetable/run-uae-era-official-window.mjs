@@ -39,6 +39,7 @@ for (const fixture of discovery.fixtures) {
   const classification = detail?.classification ?? null;
   const usableDetail = detail && (detail.source_errors ?? []).length === 0 && ['B', 'B+', 'A', 'A+'].includes(classification?.rank);
   const capabilityRank = usableDetail ? classification.rank : 'C';
+  const scheduleUrl = fixture.source?.official_url ?? discovery.official_url;
   records.push({
     ...fixture,
     country_id: 'united-arab-emirates',
@@ -50,10 +51,10 @@ for (const fixture of discovery.fixtures) {
     last_race_time_local: usableDetail ? classification.last_race_time_local ?? null : null,
     timetable_rows: usableDetail ? classification.timetable_rows ?? [] : [],
     source: {
-      source_id: usableDetail ? detail.source?.source_id ?? 'era-racecard-public-timetable' : discovery.schedule_source_id ?? 'era-season-calendar',
+      source_id: usableDetail ? detail.source?.source_id ?? 'era-racecard-public-timetable' : 'era-season-calendar',
       official_url: usableDetail
-        ? detail.observations?.[0]?.source_url ?? fixture.official_source_url ?? discovery.source_url
-        : fixture.official_source_url ?? discovery.source_url,
+        ? detail.observations?.[0]?.source_url ?? scheduleUrl
+        : scheduleUrl,
     },
     detail_observation: {
       status: usableDetail ? 'available' : detail ? 'source_error' : 'not_published',
@@ -71,8 +72,8 @@ const artifact = {
   timezone: 'Asia/Dubai',
   discovery: {
     method: 'official_current_season_calendar_plus_racecards',
-    schedule_source_id: discovery.schedule_source_id ?? 'era-season-calendar',
-    schedule_source_url: discovery.source_url,
+    schedule_source_id: 'era-season-calendar',
+    schedule_source_url: discovery.official_url,
     official_fixture_count: discovery.fixtures.length,
   },
   window: { start_date: asOf, end_date_exclusive: discovery.end_date_exclusive, days },
