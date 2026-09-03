@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-09-03T05:06:34.884Z",
+  "checked_at": "2026-09-03T05:19:53.410Z",
   "range": {
     "start": "2026-09-03",
     "end_exclusive": "2026-10-03",
@@ -907,18 +907,16 @@
     {
       "meeting_id": "nar-saga-racecourse-2026-09-06",
       "acquisition_group": "nar-standard",
-      "outcome": "acquisition_failed",
-      "reason": "race_number_discovery_incomplete",
-      "official_rank": "C",
-      "public_rank": "C"
+      "outcome": "update",
+      "official_rank": "A",
+      "public_rank": "A"
     },
     {
       "meeting_id": "nar-saga-racecourse-2026-09-12",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C"
+      "outcome": "update",
+      "official_rank": "A",
+      "public_rank": "A"
     },
     {
       "meeting_id": "nar-saga-racecourse-2026-09-19",
@@ -1120,103 +1118,9 @@
       "public_rank": "C"
     }
   ],
-  "stale_audit": [
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-03",
-      "date": "2026-09-03",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-08",
-      "date": "2026-09-08",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-09",
-      "date": "2026-09-09",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-10",
-      "date": "2026-09-10",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-15",
-      "date": "2026-09-15",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-16",
-      "date": "2026-09-16",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-17",
-      "date": "2026-09-17",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-22",
-      "date": "2026-09-22",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-23",
-      "date": "2026-09-23",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-24",
-      "date": "2026-09-24",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-29",
-      "date": "2026-09-29",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-09-30",
-      "date": "2026-09-30",
-      "audit": "canonical_only_public_removed"
-    },
-    {
-      "meeting_id": "nar-mombetsu-racecourse-2026-10-01",
-      "date": "2026-10-01",
-      "audit": "canonical_only_public_removed"
-    }
-  ],
+  "stale_audit": [],
   "complete": true,
   "public_rank_lower_than_official": 0,
-  "removed_invalid_aliases": [
-    "nar-mombetsu-racecourse-2026-09-03",
-    "nar-mombetsu-racecourse-2026-09-08",
-    "nar-mombetsu-racecourse-2026-09-09",
-    "nar-mombetsu-racecourse-2026-09-10",
-    "nar-mombetsu-racecourse-2026-09-15",
-    "nar-mombetsu-racecourse-2026-09-16",
-    "nar-mombetsu-racecourse-2026-09-17",
-    "nar-mombetsu-racecourse-2026-09-22",
-    "nar-mombetsu-racecourse-2026-09-23",
-    "nar-mombetsu-racecourse-2026-09-24",
-    "nar-mombetsu-racecourse-2026-09-29",
-    "nar-mombetsu-racecourse-2026-09-30",
-    "nar-mombetsu-racecourse-2026-10-01"
-  ],
-  "removed_stale_public": [
-    "nar-mombetsu-racecourse-2026-09-03",
-    "nar-mombetsu-racecourse-2026-09-08",
-    "nar-mombetsu-racecourse-2026-09-09",
-    "nar-mombetsu-racecourse-2026-09-10",
-    "nar-mombetsu-racecourse-2026-09-15",
-    "nar-mombetsu-racecourse-2026-09-16",
-    "nar-mombetsu-racecourse-2026-09-17",
-    "nar-mombetsu-racecourse-2026-09-22",
-    "nar-mombetsu-racecourse-2026-09-23",
-    "nar-mombetsu-racecourse-2026-09-24",
-    "nar-mombetsu-racecourse-2026-09-29",
-    "nar-mombetsu-racecourse-2026-09-30",
-    "nar-mombetsu-racecourse-2026-10-01"
-  ]
+  "removed_invalid_aliases": [],
+  "removed_stale_public": []
 }
