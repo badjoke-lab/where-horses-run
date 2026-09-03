@@ -67,7 +67,8 @@ const narLiveDetectorByRacecourseId: Record<string, string> = {
   'oi-racecourse': 'nar-oi-youtube-live-2026',
   'kawasaki-racecourse': 'nar-kawasaki-youtube-live-2026',
   'kanazawa-racecourse': 'nar-kanazawa-youtube-live-2026',
-  'kasamatsu-racecourse': 'nar-kasamatsu-youtube-live-2026',
+  'kasamatsu-racecourse': 'nar-kas
+amatsu-youtube-live-2026',
   'nagoya-racecourse': 'nar-nagoya-youtube-live-2026',
   'sonoda-racecourse': 'nar-hyogo-youtube-live-2026',
   'himeji-racecourse': 'nar-hyogo-youtube-live-2026',
@@ -373,7 +374,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   .meeting-row__meeting-badge--ended { background: #666; color: #fff; }
   .meeting-row__stream-live-badge { background: #c40000; color: #fff; letter-spacing: .02em; }
   .meeting-row__meeting-badge[hidden], .meeting-row__stream-live-badge[hidden] { display: none; }
-  .meeting-row[data-live-available='true'][data-stream-state='unknown'] [data-live-link] { background: #fff0b3; border-radius: 999px; color: #7a4f00; font-weight: 800; padding: .08rem .38rem; text-decoration-thickness: 2px; }
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='running'] [data-live-link],
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='upcoming'][data-meeting-day-state='today'] [data-live-link],
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='unknown'][data-meeting-day-state='today'] [data-live-link] { background: #fff0b3; border-radius: 999px; color: #7a4f00; font-weight: 800; padding: .08rem .38rem; text-decoration-thickness: 2px; }
   .meeting-row[data-stream-state='live'] [data-live-link] { color: #a40000; font-weight: 800; text-decoration-thickness: 2px; }
   @media (max-width: 760px) {
     .meeting-row { align-items: start; grid-template-columns: 1fr auto; padding: .62rem .35rem; }
