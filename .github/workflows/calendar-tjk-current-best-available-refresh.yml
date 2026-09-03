@@ -12,6 +12,7 @@ on:
       - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
       - 'scripts/timetable/apply-tjk-zero-based-30d.mjs'
+      - 'scripts/timetable/project-tjk-zero-based-public.mjs'
       - 'scripts/check-tjk-current-future-candidates.mjs'
       - 'scripts/check-tjk-zero-based-30d.mjs'
       - 'data/static/calendar-acquisition-registry.json'
@@ -22,6 +23,7 @@ on:
       - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
       - 'scripts/timetable/apply-tjk-zero-based-30d.mjs'
+      - 'scripts/timetable/project-tjk-zero-based-public.mjs'
       - 'scripts/check-tjk-current-future-candidates.mjs'
       - 'scripts/check-tjk-zero-based-30d.mjs'
       - '.github/workflows/calendar-tjk-current-best-available-refresh.yml'
@@ -50,6 +52,7 @@ jobs:
           node --check scripts/timetable/tjk-annual-fixture-discovery.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
           node --check scripts/timetable/apply-tjk-zero-based-30d.mjs
+          node --check scripts/timetable/project-tjk-zero-based-public.mjs
           node --check scripts/check-tjk-current-future-candidates.mjs
           node --check scripts/check-tjk-zero-based-30d.mjs
 
@@ -68,7 +71,7 @@ jobs:
           node scripts/timetable/apply-tjk-zero-based-30d.mjs \
             --input=artifacts/tjk-current-best-available/candidates.json \
             --output=data/generated/timetable/tjk-zero-based-30d-reconciliation.json
-          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/project-tjk-zero-based-public.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
           node scripts/timetable/build-japan-a-plus-public-overrides.mjs
           node scripts/check-tjk-zero-based-30d.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
 
