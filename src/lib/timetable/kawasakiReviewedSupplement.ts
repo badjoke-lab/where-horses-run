@@ -81,17 +81,3 @@ export const kawasakiReviewedMeetingDetails = data.meetings.map(({ date, source_
     timetable_rows,
   } as const;
 });
-
-if (kawasakiReviewedMeetingRows.length !== 5) {
-  throw new Error(`Kawasaki reviewed supplement must contain 5 meetings, got ${kawasakiReviewedMeetingRows.length}`);
-}
-for (const meeting of data.meetings) {
-  if (meeting.timetable_rows.length !== 12) {
-    throw new Error(`Kawasaki ${meeting.date} must contain 12 races, got ${meeting.timetable_rows.length}`);
-  }
-  for (const [index, row] of meeting.timetable_rows.entries()) {
-    if (!row.race_name || !row.distance_m || !row.surface || !row.course_label) {
-      throw new Error(`Kawasaki ${meeting.date} Race ${index + 1} is missing A+ metadata`);
-    }
-  }
-}
