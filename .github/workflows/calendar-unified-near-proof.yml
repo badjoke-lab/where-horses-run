@@ -23,6 +23,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Run proof from current main
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout -B calendar-near-proof-run origin/main
       - name: Validate production refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
@@ -64,20 +69,6 @@ jobs:
       - name: Publish only verified near data diff to main
         shell: bash
         run: |
-          git diff --binary -- \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json \
-            data/generated/timetable/japan-zero-based-3d-reconciliation.json \
-            > /tmp/calendar-near-proof.patch
-          if [[ ! -s /tmp/calendar-near-proof.patch ]]; then
-            echo "No verified near-window change to persist."
-            exit 0
-          fi
-          git fetch origin main
-          git checkout -B calendar-near-proof-publish origin/main
-          git apply /tmp/calendar-near-proof.patch
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
@@ -86,6 +77,10 @@ jobs:
             data/generated/timetable/public/meeting-list.json \
             data/generated/timetable/public/meeting-details.json
           git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No verified near-window change to persist."
+            exit 0
+          fi
           git commit -m "data: prove unified official near refresh"
           git push origin HEAD:main
       - uses: actions/upload-artifact@v4
