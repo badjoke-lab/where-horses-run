@@ -125,3 +125,8 @@ assert.throws(() => assertJapanCompleteness([{ meeting_id: 'duplicate' }], [{ me
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'public-missing' }], [{ meeting_id: 'public-missing', outcome: 'details_pending', official_rank: 'C' }], []), /public completeness failed/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'lower' }], [{ meeting_id: 'lower', outcome: 'update', official_rank: 'A+' }], [{ meeting_id: 'lower', capability_rank: 'C' }]), /rank completeness failed/);
 console.log('JAPAN_ZERO_BASED_30D: pass');
+
+if (process.env.CI) {
+  const { probeJraActionsAccess } = await import('./timetable/probe-jra-actions-access.mjs');
+  await probeJraActionsAccess();
+}
