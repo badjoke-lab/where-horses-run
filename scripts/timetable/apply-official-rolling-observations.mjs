@@ -58,20 +58,34 @@ function recordArray(artifact) {
 function observedRank(record) {
   return record.capability_rank ?? record.observed_rank ?? record.classification?.rank ?? 'C';
 }
+
+const defaults = {
+  country_id: arg('country-id'),
+  authority_id: arg('authority-id'),
+  racing_system_id: arg('racing-system-id'),
+  timezone: arg('timezone'),
+};
+
 function canonicalRecord(record, checkedAt, previous = null) {
   const capabilityRank = observedRank(record);
   const rows = rowsOf(record);
   const first = record.first_race_time_local ?? rows[0]?.post_time_local ?? null;
   const last = record.last_race_time_local ?? rows.at(-1)?.post_time_local ?? null;
+  const identity = {
+    country_id: record.country_id ?? previous?.country_id ?? defaults.country_id,
+    authority_id: record.authority_id ?? previous?.authority_id ?? defaults.authority_id,
+    racing_system_id: record.racing_system_id ?? previous?.racing_system_id ?? defaults.racing_system_id,
+    timezone: record.timezone ?? previous?.timezone ?? defaults.timezone,
+  };
+  for (const [key, value] of Object.entries(identity)) {
+    if (!value) throw new Error(`missing ${key} for ${record.meeting_id}; supply it in the artifact or CLI defaults`);
+  }
   return {
     ...(previous ?? {}),
     meeting_id: record.meeting_id,
-    country_id: record.country_id ?? previous?.country_id,
-    authority_id: record.authority_id ?? previous?.authority_id,
-    racing_system_id: record.racing_system_id ?? previous?.racing_system_id,
+    ...identity,
     racecourse_id: record.racecourse_id ?? previous?.racecourse_id,
     date: record.date ?? record.meeting_date ?? previous?.date,
-    timezone: record.timezone ?? previous?.timezone,
     capability_rank: capabilityRank,
     display_status: capabilityRank === 'C' ? 'partial' : 'displayable',
     first_race_time_local: first,
