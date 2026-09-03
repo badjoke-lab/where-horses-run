@@ -7,6 +7,11 @@ import {
   tjkPublicMeetingDetails,
   tjkPublicMeetingRows,
 } from './tjkPublicSupplement.ts';
+import {
+  baneiReviewedMeetingDetail,
+  baneiReviewedMeetingId,
+  baneiReviewedMeetingRow,
+} from './baneiReviewedSupplement.ts';
 
 export type PublicTimetableMeetingRow = {
   readonly meeting_id: string;
@@ -313,6 +318,7 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
 const generatedPublicMeetingRows = meetingListDataset.meetings
   .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
   .filter((meeting) => !isTjkSupplementWindowMeeting(meeting))
+  .filter((meeting) => meeting.meeting_id !== baneiReviewedMeetingId)
   .map((meeting) => {
     const override = meetingOverrideIndex.get(meeting.meeting_id);
     const withRankOverride =
@@ -328,12 +334,14 @@ const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => 
 const publicMeetingRows: readonly PublicTimetableMeetingRow[] = [
   ...generatedPublicMeetingRows,
   ...reviewedPublicSupplements.filter((meeting) => !generatedMeetingIds.has(meeting.meeting_id)),
+  baneiReviewedMeetingRow as PublicTimetableMeetingRow,
   ...(tjkPublicMeetingRows as readonly PublicTimetableMeetingRow[]),
 ];
 
 const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
   meetingDetailsDataset.details
     .filter((detail) => !isTjkSupplementWindowMeeting(detail))
+    .filter((detail) => detail.meeting_id !== baneiReviewedMeetingId)
     .map((detail) => {
       const override = detailOverrideIndex.get(detail.meeting_id);
       const withRankOverride = override && canApplyReviewedOverride(detail.last_checked_date)
@@ -345,6 +353,7 @@ const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
 
 const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] = [
   ...generatedPublicMeetingDetails,
+  baneiReviewedMeetingDetail as PublicTimetableMeetingDetail,
   ...(tjkPublicMeetingDetails as readonly PublicTimetableMeetingDetail[]),
 ];
 
