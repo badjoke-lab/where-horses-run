@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { assertJapanCompleteness, japan30DayRange, runJapanZeroBased30d } from './timetable/japan-zero-based-30d-core.mjs';
 import { parseJraProgrammePage, parseNarMonthlySchedule, parseNarRaceListPage } from './timetable/japan-official-30d-adapters.mjs';
+import { discoverJraOfficial30d, jraProgrammeUrl } from './timetable/jra-official-30d-discovery.mjs';
 
 const range = japan30DayRange('2026-09-04');
 assert.equal(range.dates.length, 30);
@@ -20,6 +21,26 @@ assert.deepEqual(jraParsed.map((row) => row.meeting_id), ['jra-nakayama-racecour
 assert.equal(jraParsed[0].programme_rows[0].race_name, '2歳未勝利');
 assert.equal(jraParsed[0].programme_rows[0].distance_m, 1600);
 assert.equal(jraParsed[0].programme_rows[0].surface, 'Turf');
+assert.equal(jraProgrammeUrl('2026-09-05'), 'https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html');
+
+const jraDiscovery = await discoverJraOfficial30d({
+  dates: ['2026-09-04', '2026-09-05', '2026-09-06'],
+  delayMs: 0,
+  fetchImpl: async (url) => {
+    if (url.endsWith('/0904.html')) return new Response('', { status: 403 });
+    if (url.endsWith('/0905.html')) return new Response(jraFixture, { status: 200 });
+    return new Response('', { status: 404 });
+  },
+});
+assert.deepEqual(jraDiscovery.map((row) => row.meeting_id), ['jra-nakayama-racecourse-2026-09-05', 'jra-hanshin-racecourse-2026-09-05']);
+await assert.rejects(
+  () => discoverJraOfficial30d({ dates: ['2026-09-04'], delayMs: 0, fetchImpl: async () => new Response('', { status: 403 }) }),
+  /found no programme days/,
+);
+await assert.rejects(
+  () => discoverJraOfficial30d({ dates: ['2026-09-05'], delayMs: 0, fetchImpl: async () => new Response('', { status: 500 }) }),
+  /HTTP 500/,
+);
 
 const monthlyCells = Array.from({ length: 30 }, (_, index) => `<td>${index === 3 ? '☆' : ''}</td>`).join('');
 const narMonthlyFixture = `<table><tr><td>名古屋</td>${monthlyCells}<td>名古屋</td></tr><tr><td>帯広ば</td>${monthlyCells}<td>帯広ば</td></tr></table>`;
@@ -125,8 +146,3 @@ assert.throws(() => assertJapanCompleteness([{ meeting_id: 'duplicate' }], [{ me
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'public-missing' }], [{ meeting_id: 'public-missing', outcome: 'details_pending', official_rank: 'C' }], []), /public completeness failed/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'lower' }], [{ meeting_id: 'lower', outcome: 'update', official_rank: 'A+' }], [{ meeting_id: 'lower', capability_rank: 'C' }]), /rank completeness failed/);
 console.log('JAPAN_ZERO_BASED_30D: pass');
-
-if (process.env.CI) {
-  const { probeJraActionsAccess } = await import('./timetable/probe-jra-actions-access.mjs');
-  await probeJraActionsAccess();
-}
