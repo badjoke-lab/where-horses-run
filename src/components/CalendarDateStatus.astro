@@ -28,6 +28,7 @@ type Props = {
 
 const { context, dataState, lang = 'en', displayDate } = Astro.props as Props;
 const isStaleGeneration = dataState.status === 'stale_generation_with_window_records';
+const mode = displayDate === context.today ? 'today' : displayDate === context.tomorrow ? 'tomorrow' : 'window30';
 const statusText = lang === 'ja'
   ? dataState.status === 'records_before_window'
     ? `掲載中の開催情報は現在の表示期間より前のものです。最新の掲載日は ${dataState.latestRecordDate ?? '未掲載'} です。最新情報は公式情報源で確認してください。`
@@ -49,17 +50,57 @@ const statusText = lang === 'ja'
           : `Last updated: ${dataState.generatedDate}`;
 ---
 
-<aside class="calendar-date-status" data-calendar-data-status={dataState.status}>
+<aside
+  class="calendar-date-status"
+  data-calendar-data-status={dataState.status}
+  data-calendar-date-status-root
+  data-status-mode={mode}
+  data-lang={lang}
+>
   <p>
     {displayDate ? (
-      <>{lang === 'ja' ? '対象日' : 'Date'}: <strong>{displayDate}</strong></>
+      <>{lang === 'ja' ? '対象日' : 'Date'}: <strong data-calendar-display-start>{displayDate}</strong></>
     ) : (
-      <>{lang === 'ja' ? '表示期間' : 'Display period'}: <strong>{context.windowStart}</strong>–<strong>{context.windowEndInclusive}</strong></>
+      <>{lang === 'ja' ? '表示期間' : 'Display period'}: <strong data-calendar-display-start>{context.windowStart}</strong>–<strong data-calendar-display-end>{context.windowEndInclusive}</strong></>
     )}
-    {' '}· {lang === 'ja' ? '時刻基準' : 'Timezone'}: <strong>{context.timeZone}</strong>
+    {' '}· {lang === 'ja' ? '表示タイムゾーン' : 'Display timezone'}: <strong data-calendar-display-timezone>{context.timeZone}</strong>
   </p>
   <p>{isStaleGeneration && <strong>{lang === 'ja' ? '更新情報: ' : 'Update notice: '}</strong>}{statusText}</p>
 </aside>
+
+<script>
+  const dateInZone = (instant, timeZone) => {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(instant)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]));
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  };
+  const addDays = (dateText, days) => {
+    const date = new Date(`${dateText}T00:00:00.000Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  };
+  const updateStatus = (timeZone) => {
+    document.querySelectorAll('[data-calendar-date-status-root]').forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
+      const mode = root.dataset.statusMode || 'window30';
+      const today = dateInZone(new Date(), timeZone);
+      const start = root.querySelector('[data-calendar-display-start]');
+      const end = root.querySelector('[data-calendar-display-end]');
+      const zone = root.querySelector('[data-calendar-display-timezone]');
+      if (start) start.textContent = mode === 'tomorrow' ? addDays(today, 1) : today;
+      if (end) end.textContent = addDays(today, 29);
+      if (zone) zone.textContent = timeZone;
+    });
+  };
+  window.addEventListener('whr:timezonechange', (event) => {
+    const timeZone = event.detail?.timeZone;
+    if (typeof timeZone === 'string') updateStatus(timeZone);
+  });
+</script>
 
 <style>
   .calendar-date-status {
@@ -70,8 +111,5 @@ const statusText = lang === 'ja'
     margin-block: 1.25rem;
     padding: 0.85rem;
   }
-
-  .calendar-date-status p {
-    margin: 0;
-  }
+  .calendar-date-status p { margin: 0; }
 </style>
