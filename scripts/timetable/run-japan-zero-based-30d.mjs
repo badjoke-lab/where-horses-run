@@ -34,10 +34,6 @@ function keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates) {
   return !(row?.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id));
 }
 
-function boundedDiscovery(discover, allowedDates) {
-  return async (context) => (await discover(context)).filter((row) => allowedDates.has(row.date));
-}
-
 function dateRange(start, days) {
   const cursor = new Date(`${start}T00:00:00Z`);
   return Array.from({ length: days }, () => {
@@ -47,12 +43,34 @@ function dateRange(start, days) {
   });
 }
 
+function exclusiveEnd(dates) {
+  const cursor = new Date(`${dates.at(-1)}T00:00:00Z`);
+  cursor.setUTCDate(cursor.getUTCDate() + 1);
+  return cursor.toISOString().slice(0, 10);
+}
+
+function boundedDiscovery(discover, allowedDates) {
+  const dates = [...allowedDates].sort();
+  const boundedContext = {
+    start: dates[0],
+    end_exclusive: exclusiveEnd(dates),
+    dates,
+  };
+  return async (context) => (await discover({ ...context, ...boundedContext })).filter((row) => allowedDates.has(row.date));
+}
+
 const args = new Map(process.argv.slice(2).map((value) => value.split(/=(.*)/s).slice(0, 2)));
 const executionDate = args.get('--execution-date') ?? japanToday();
 const scope = args.get('--scope') ?? 'full';
 if (!['full', 'near'].includes(scope)) throw new Error(`unsupported Japan refresh scope: ${scope}`);
 const requestedDays = scope === 'near' ? 3 : 30;
-const selectedDates = new Set(dateRange(executionDate, requestedDays));
+const selectedDateList = dateRange(executionDate, requestedDays);
+const selectedDates = new Set(selectedDateList);
+const selectedRange = {
+  start: selectedDateList[0],
+  end_exclusive: exclusiveEnd(selectedDateList),
+  dates: selectedDateList,
+};
 const output = args.get('--output') ?? `data/generated/timetable/japan-zero-based-${scope === 'near' ? '3d' : '30d'}-reconciliation.json`;
 const canonicalPath = 'data/generated/timetable/canonical/meetings.json';
 const detailsPath = 'data/generated/timetable/canonical/meeting-details.json';
@@ -112,6 +130,7 @@ const removedInvalidAliases = result.canonical.filter(isInvalidMombetsuAlias).ma
 const removedStalePublic = result.public
   .filter((row) => row.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id))
   .map((row) => row.meeting_id);
+const visibleStaleAudit = result.stale_audit.filter((row) => rangeDates.has(row.date));
 
 const write = (file, value) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -125,12 +144,13 @@ write(output, {
   ...result,
   scope,
   requested_days: requestedDays,
-  selected_dates: [...selectedDates],
+  range: scope === 'near' ? selectedRange : result.range,
+  selected_dates: selectedDateList,
   canonical: undefined,
   public: undefined,
   details: undefined,
   publicDetails: undefined,
-  stale_audit: result.stale_audit.map((row) => ({
+  stale_audit: visibleStaleAudit.map((row) => ({
     ...row,
     audit: removedStalePublic.includes(row.meeting_id) ? 'canonical_only_public_removed' : row.audit,
   })),
@@ -141,7 +161,7 @@ const outcomes = Object.fromEntries(result.reconciliations.map((row) => row.outc
 console.log(JSON.stringify({
   scope,
   requested_days: requestedDays,
-  range: result.range,
+  range: scope === 'near' ? selectedRange : result.range,
   official_counts: result.official_counts,
   official_meeting_count: result.official_meeting_count,
   outcomes,
