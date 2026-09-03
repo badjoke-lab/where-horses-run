@@ -357,10 +357,8 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   .meeting-list { display: grid; list-style: none; margin: 0; padding: 0; }
   .meeting-row { align-items: center; background: #fff; border-block-end: 1px solid rgba(0,0,0,.12); display: grid; gap: .35rem .7rem; grid-template-columns: minmax(12rem,1.45fr) minmax(10rem,1fr) minmax(7rem,.65fr) 3rem minmax(13rem,auto); padding: .48rem .55rem; transition: background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease; }
   .meeting-row[data-meeting-state='running'] { background: #fff0ef; box-shadow: inset .25rem 0 0 #c40000; }
-  .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='today'] { background: #fff3c4; box-shadow: inset .25rem 0 0 #d18a00; }
+  .meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today'], .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='today'] { background: #fff3c4; box-shadow: inset .25rem 0 0 #d18a00; }
   .meeting-row[data-meeting-state='ended'], .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='past'] { background: #f3f3f3; opacity: .58; }
-  .meeting-row[data-stream-state='live'] { box-shadow: inset .25rem 0 0 #c40000; }
-  .meeting-row[data-stream-state='live'][data-meeting-state='ended'] { opacity: .82; }
   .meeting-row[hidden], .timetable-date-group[hidden] { display: none; }
   .meeting-row__identity, .meeting-row__system, .meeting-row__time { min-width: 0; }
   .meeting-row[data-meeting-state='running'] .meeting-row__identity strong { color: #a40000; }
@@ -373,7 +371,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   .meeting-row__meeting-badge--ended { background: #666; color: #fff; }
   .meeting-row__stream-live-badge { background: #c40000; color: #fff; letter-spacing: .02em; }
   .meeting-row__meeting-badge[hidden], .meeting-row__stream-live-badge[hidden] { display: none; }
-  .meeting-row[data-live-available='true'][data-stream-state='unknown'] [data-live-link] { background: #fff0b3; border-radius: 999px; color: #7a4f00; font-weight: 800; padding: .08rem .38rem; text-decoration-thickness: 2px; }
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='running'] [data-live-link],
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='upcoming'][data-meeting-day-state='today'] [data-live-link],
+  .meeting-row[data-live-available='true'][data-stream-state='unknown'][data-meeting-state='unknown'][data-meeting-day-state='today'] [data-live-link] { background: #fff0b3; border-radius: 999px; color: #7a4f00; font-weight: 800; padding: .08rem .38rem; text-decoration-thickness: 2px; }
   .meeting-row[data-stream-state='live'] [data-live-link] { color: #a40000; font-weight: 800; text-decoration-thickness: 2px; }
   @media (max-width: 760px) {
     .meeting-row { align-items: start; grid-template-columns: 1fr auto; padding: .62rem .35rem; }
