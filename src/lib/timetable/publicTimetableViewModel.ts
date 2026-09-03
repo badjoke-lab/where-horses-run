@@ -96,11 +96,14 @@ const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
 const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;
 
-if (
-  japanAPlusOverrides.generated_at !== meetingListDataset.generated_at ||
-  japanAPlusOverrides.generated_at !== meetingDetailsDataset.generated_at
-) {
-  throw new Error('Japan A+ public overrides do not match the public timetable generation timestamp.');
+// The daily zero-based acquisition refreshes the public meeting list independently.
+// Reviewed Japan A+ detail overrides remain pinned to the reviewed detail bundle until
+// that bundle is regenerated. Require those two reviewed artifacts to stay coherent,
+// but do not require the independently refreshed list to share their timestamp.
+if (japanAPlusOverrides.generated_at !== meetingDetailsDataset.generated_at) {
+  throw new Error(
+    'Japan A+ public overrides do not match the reviewed public meeting details generation timestamp.',
+  );
 }
 
 const meetingOverrideIndex = new Map(
