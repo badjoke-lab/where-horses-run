@@ -63,13 +63,10 @@
       const playerCard = ({ videoId, racecourse, date }) => {
         const article = document.createElement('article');
         article.className = 'calendar-live-player';
-
         const title = document.createElement('h3');
         title.textContent = `${racecourse} · ${date}`;
-
         const frameWrap = document.createElement('div');
         frameWrap.className = 'calendar-live-player__frame';
-
         const iframe = document.createElement('iframe');
         iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?rel=0`;
         iframe.title = isJa ? `${racecourse} 公式ライブ配信` : `${racecourse} official live stream`;
@@ -77,7 +74,6 @@
         iframe.referrerPolicy = 'strict-origin-when-cross-origin';
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         iframe.allowFullscreen = true;
-
         frameWrap.append(iframe);
         article.append(title, frameWrap);
         return article;
@@ -108,17 +104,18 @@
 
         for (const row of rows) {
           const detectorId = row.dataset.liveDetectorId || '';
-          const date = row.dataset.date || '';
+          const sourceDate = row.dataset.sourceDate || '';
+          const displayDate = row.dataset.date || sourceDate;
           const entry = statuses.get(detectorId);
-          if (!entry || entry.status !== 'live' || entry.event_date !== date || !SAFE_VIDEO_ID.test(entry.video_id || '')) continue;
+          if (!entry || entry.status !== 'live' || entry.event_date !== sourceDate || !SAFE_VIDEO_ID.test(entry.video_id || '')) continue;
 
-          const key = `${detectorId}:${date}`;
+          const key = `${detectorId}:${sourceDate}`;
           if (seen.has(key)) continue;
           seen.add(key);
           cards.push(playerCard({
             videoId: entry.video_id,
             racecourse: row.dataset.racecourse || detectorId,
-            date,
+            date: displayDate,
           }));
         }
 
@@ -146,7 +143,7 @@
       observer.observe(document.body, {
         subtree: true,
         attributes: true,
-        attributeFilter: ['data-live-state', 'hidden'],
+        attributeFilter: ['data-live-state', 'data-date', 'hidden'],
       });
 
       render();
