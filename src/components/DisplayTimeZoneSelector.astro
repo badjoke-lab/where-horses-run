@@ -1,0 +1,143 @@
+---
+interface Props {
+  lang?: 'en' | 'ja';
+}
+const { lang = 'en' } = Astro.props;
+const label = lang === 'ja' ? '表示タイムゾーン' : 'Display timezone';
+---
+
+<div class="display-timezone-control" data-whr-timezone-control>
+  <label>
+    <span>{label}</span>
+    <select data-whr-timezone-select aria-label={label}>
+      <option value="Asia/Tokyo">Asia/Tokyo</option>
+      <option value="UTC">UTC</option>
+    </select>
+  </label>
+  <output data-whr-timezone-status>Asia/Tokyo</output>
+</div>
+
+<script>
+  const supported = (zone) => {
+    if (!zone) return false;
+    try {
+      new Intl.DateTimeFormat('en', { timeZone: zone }).format(new Date(0));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const partsInZone = (instant, zone) => Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: zone,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+    }).formatToParts(instant)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  );
+
+  const localToInstant = (dateText, timeText, sourceZone) => {
+    const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText ?? '');
+    const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText ?? '');
+    if (!dateMatch || !timeMatch || !supported(sourceZone)) return null;
+    const targetUtc = Date.UTC(
+      Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]),
+      Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0'),
+    );
+    let guess = targetUtc;
+    for (let pass = 0; pass < 4; pass += 1) {
+      const parts = partsInZone(new Date(guess), sourceZone);
+      const representedUtc = Date.UTC(
+        Number(parts.year), Number(parts.month) - 1, Number(parts.day),
+        Number(parts.hour), Number(parts.minute), Number(parts.second),
+      );
+      const correction = targetUtc - representedUtc;
+      guess += correction;
+      if (correction === 0) break;
+    }
+    return new Date(guess);
+  };
+
+  const displayDate = (instant, zone) => {
+    const parts = partsInZone(instant, zone);
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  };
+  const displayTime = (instant, zone) => new Intl.DateTimeFormat('en-GB', {
+    timeZone: zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).format(instant);
+
+  const project = (zone) => {
+    document.querySelectorAll('[data-whr-zoned-datetime]').forEach((element) => {
+      if (!(element instanceof HTMLElement)) return;
+      const instant = localToInstant(
+        element.dataset.sourceDate,
+        element.dataset.sourceTime,
+        element.dataset.sourceTimezone,
+      );
+      if (!instant) return;
+      element.textContent = displayTime(instant, zone);
+      if (element instanceof HTMLTimeElement) element.dateTime = instant.toISOString();
+    });
+
+    document.querySelectorAll('[data-whr-zoned-date]').forEach((element) => {
+      if (!(element instanceof HTMLElement)) return;
+      const sourceDate = element.dataset.sourceDate;
+      const sourceTime = element.dataset.sourceTime;
+      const sourceZone = element.dataset.sourceTimezone;
+      const instant = sourceTime ? localToInstant(sourceDate, sourceTime, sourceZone) : null;
+      element.textContent = instant ? displayDate(instant, zone) : sourceDate ?? '';
+    });
+
+    document.querySelectorAll('[data-whr-timezone-status]').forEach((output) => {
+      output.textContent = zone;
+    });
+
+    document.querySelectorAll('a[href]').forEach((anchor) => {
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:')) return;
+      const url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      url.searchParams.set('tz', zone);
+      anchor.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+    });
+  };
+
+  document.querySelectorAll('[data-whr-timezone-control]').forEach((control) => {
+    const select = control.querySelector('[data-whr-timezone-select]');
+    if (!(select instanceof HTMLSelectElement)) return;
+    const zones = typeof Intl.supportedValuesOf === 'function'
+      ? Intl.supportedValuesOf('timeZone')
+      : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'America/Los_Angeles', 'Pacific/Auckland'];
+    const values = Array.from(new Set(['UTC', ...zones]));
+    select.replaceChildren(...values.map((zone) => {
+      const option = document.createElement('option');
+      option.value = zone;
+      option.textContent = zone;
+      return option;
+    }));
+    const requested = new URL(window.location.href).searchParams.get('tz');
+    const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const initial = supported(requested) ? requested : supported(browser) ? browser : 'Asia/Tokyo';
+    select.value = initial;
+    project(initial);
+    window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: { timeZone: initial } }));
+    select.addEventListener('change', () => {
+      const zone = supported(select.value) ? select.value : 'Asia/Tokyo';
+      const url = new URL(window.location.href);
+      url.searchParams.set('tz', zone);
+      history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+      project(zone);
+      window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: { timeZone: zone } }));
+    });
+  });
+</script>
+
+<style>
+  .display-timezone-control { align-items: end; display: flex; flex-wrap: wrap; gap: 0.5rem 0.8rem; margin-block: 1rem; }
+  .display-timezone-control label { display: grid; font-size: 0.85rem; gap: 0.2rem; }
+  .display-timezone-control select { max-width: min(24rem, 80vw); padding: 0.38rem 0.5rem; }
+  .display-timezone-control output { font-size: 0.82rem; opacity: 0.72; }
+</style>
