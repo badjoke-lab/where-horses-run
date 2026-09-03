@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - feat/tjk-zero-based-30d-publication
     paths:
       - 'scripts/timetable/tjk-current-future-candidates.mjs'
       - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
@@ -74,11 +75,6 @@ jobs:
           node scripts/timetable/project-tjk-zero-based-public.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
           node scripts/check-tjk-zero-based-30d.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
 
-      - name: Validate generated site state
-        run: |
-          npm install --no-package-lock --no-audit --no-fund
-          npm run build
-
       - name: Persist generated TJK timetable state
         if: github.event_name != 'pull_request'
         run: |
@@ -94,10 +90,15 @@ jobs:
             data/generated/timetable/tjk-zero-based-30d-reconciliation.json
           if git diff --cached --quiet; then
             echo "No TJK timetable changes to persist."
-            exit 0
+          else
+            git commit -m "data: refresh TJK official 30-day timetable"
+            git push origin HEAD:${GITHUB_REF_NAME}
           fi
-          git commit -m "data: refresh TJK official 30-day timetable"
-          git push origin HEAD:main
+
+      - name: Validate generated site state
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          npm run build
 
       - uses: actions/upload-artifact@v4
         if: always()
