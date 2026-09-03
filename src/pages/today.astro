@@ -5,12 +5,15 @@ import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
   getTimetableDateContext,
-  getTimetableMeetingRowsForDate,
+  getTimetableMeetingRowsForWindow,
 } from '../data/timetableMeetingRows';
+import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const todayRecords = getTimetableMeetingRowsForDate(context.today);
+const candidateStart = addCalendarDays(context.today, -2);
+const candidateEndExclusive = addCalendarDays(context.today, 4);
+const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
 ---
 
 <BaseLayout
@@ -23,7 +26,7 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
     <p class="hero__eyebrow">Today’s racing</p>
     <h1 id="page-title">Today’s racing</h1>
     <p class="hero__summary">
-      Meetings listed for {context.today}. Available race times are shown where confirmed.
+      Meetings listed for <span data-timezone-target-date>{context.today}</span> in <span data-timezone-label>{context.timeZone}</span>. Available race times are converted to the selected display timezone.
     </p>
   </section>
 
@@ -31,9 +34,10 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
-      records={todayRecords}
+      records={todayCandidates}
       date={context.today}
-      emptyLabel={`No meetings are currently listed for ${context.today}. Check official sources for the latest information.`}
+      scope="today"
+      emptyLabel="No meetings are currently listed for today in the selected display timezone. Check official sources for the latest information."
     />
   </section>
 </BaseLayout>
