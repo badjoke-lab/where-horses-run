@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-due-job-policy-v1",
-  "policy_version": "calendar-due-job-policy-2026-09-02",
+  "policy_version": "calendar-due-job-policy-2026-09-03",
   "scheduler": {
     "cadence_hours": 24,
     "max_jobs_per_plan": 64,
@@ -15,7 +15,7 @@
   "system_rules": [
     {
       "system_id": "japan-jra-system",
-      "enabled": true,
+      "enabled": false,
       "regular_refresh": {
         "enabled": true,
         "freshness_threshold_hours": 24,
@@ -41,7 +41,7 @@
     },
     {
       "system_id": "japan-nar-system",
-      "enabled": true,
+      "enabled": false,
       "regular_refresh": {
         "enabled": true,
         "freshness_threshold_hours": 24,
@@ -93,7 +93,7 @@
     },
     {
       "system_id": "japan-banei-system",
-      "enabled": true,
+      "enabled": false,
       "regular_refresh": {
         "enabled": false,
         "freshness_threshold_hours": 168,
