@@ -52,11 +52,11 @@ const statusText = lang === 'ja'
 <aside class="calendar-date-status" data-calendar-data-status={dataState.status}>
   <p>
     {displayDate ? (
-      <>{lang === 'ja' ? '対象日' : 'Date'}: <strong>{displayDate}</strong></>
+      <>{lang === 'ja' ? '対象日' : 'Date'}: <strong data-timezone-target-date>{displayDate}</strong></>
     ) : (
-      <>{lang === 'ja' ? '表示期間' : 'Display period'}: <strong>{context.windowStart}</strong>–<strong>{context.windowEndInclusive}</strong></>
+      <>{lang === 'ja' ? '表示期間' : 'Display period'}: <strong data-timezone-window-start>{context.windowStart}</strong>–<strong data-timezone-window-end>{context.windowEndInclusive}</strong></>
     )}
-    {' '}· {lang === 'ja' ? '時刻基準' : 'Timezone'}: <strong>{context.timeZone}</strong>
+    {' '}· {lang === 'ja' ? '表示タイムゾーン' : 'Display timezone'}: <strong data-timezone-label>{context.timeZone}</strong>
   </p>
   <p>{isStaleGeneration && <strong>{lang === 'ja' ? '更新情報: ' : 'Update notice: '}</strong>}{statusText}</p>
 </aside>
