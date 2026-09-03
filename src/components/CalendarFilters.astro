@@ -67,6 +67,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')];
       const groups = () => [...document.querySelectorAll('[data-calendar-date-group]')];
       const normalize = (value) => value.trim().toLocaleLowerCase();
+      const isWithinTimezoneScope = (row) => row instanceof HTMLElement && row.dataset.timezoneScopeHidden !== 'true';
 
       const setStreamFeedAvailable = (available) => {
         streamLiveOption.hidden = !available;
@@ -75,19 +76,21 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       };
       const syncDateOptions = () => {
         const current = date.value;
-        const values = [...new Set(rows().filter((row) => row instanceof HTMLElement).map((row) => row.dataset.date || '').filter(Boolean))].sort();
+        const values = [...new Set(rows().filter(isWithinTimezoneScope).map((row) => row.dataset.date || '').filter(Boolean))].sort();
         const all = document.createElement('option');
         all.value = '';
         all.textContent = isJa ? '30日すべて' : 'All 30 days';
         date.replaceChildren(all, ...values.map((value) => { const option = document.createElement('option'); option.value = value; option.textContent = value; return option; }));
         if (current && values.includes(current)) date.value = current;
+        else if (current) date.value = '';
       };
       const apply = () => {
         const query = normalize(search.value);
         let visible = 0;
         for (const row of rows()) {
           if (!(row instanceof HTMLElement)) continue;
-          const matches = (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
+          const matches = isWithinTimezoneScope(row) &&
+            (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
             (!country.value || row.dataset.country === country.value) &&
             (!authority.value || row.dataset.authority === authority.value) &&
             (!rank.value || row.dataset.rank === rank.value) &&
