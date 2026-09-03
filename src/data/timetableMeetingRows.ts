@@ -167,8 +167,8 @@ export function getTimetableProjectionCandidateRows(
   endDateExclusive: string,
 ): TimetableMeetingRow[] {
   return getTimetableMeetingRowsForWindow(
-    addCalendarDays(startDate, -1),
-    addCalendarDays(endDateExclusive, 1),
+    addCalendarDays(startDate, -2),
+    addCalendarDays(endDateExclusive, 2),
   );
 }
 
