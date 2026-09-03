@@ -2,32 +2,36 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
-  getCurrentCalendarWindowGroups,
+  getTimetableProjectionCandidateGroups,
   getTimetableDateContext,
 } from '../../data/timetableMeetingRows';
 
 const dateContext = getTimetableDateContext();
-const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
+const groupedTimetableRecords = getTimetableProjectionCandidateGroups(
+  dateContext.windowStart,
+  dateContext.windowEndExclusive,
+);
 const windowLabel = `${dateContext.windowStart}–${dateContext.windowEndInclusive}`;
 ---
 
 <BaseLayout
   title="Current Timetable | Where Horses Run"
-  description={`A date-first 30-day meeting list for ${windowLabel}, with one official source link per meeting and race timetable links only where race-by-race times are available.`}
+  description={`A 30-day racing timetable with dates and available race times projected into the visitor-selected timezone.`}
   canonicalPath="/major-countries/current-timetable/"
 >
   <section class="hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Current timetable</p>
     <h1 id="page-title">Current 30-day timetable</h1>
     <p class="hero__summary">
-      {windowLabel}. Meetings are grouped by date. Rank controls how much timing detail is shown.
+      The server window starts from {windowLabel}. Choose a display timezone below; meeting dates, available race times and 30-day membership follow that selection.
     </p>
   </section>
 
   <section aria-label={`Current timetable by date for ${windowLabel}`}>
     <TimetableMeetingList
       groups={groupedTimetableRecords}
-      emptyLabel="No timetable meetings are listed in the current 30-day window. Use official source links for final confirmation."
+      viewMode="window30"
+      emptyLabel="No timetable meetings are listed in the selected timezone's current 30-day window. Use official source links for final confirmation."
     />
   </section>
 </BaseLayout>
