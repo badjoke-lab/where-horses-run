@@ -29,12 +29,13 @@ for (const [label, page] of [[englishPath, englishPage], [japanesePath, japanese
   for (const marker of [
     'CalendarDateStatus',
     'TimetableMeetingList',
-    'getCurrentCalendarWindowGroups',
+    'getTimetableMeetingRowsForWindow',
     'getTimetableDataState',
     'getTimetableDateContext',
+    'addCalendarDays',
     'context.windowStart',
     'context.windowEndInclusive',
-    'context.timeZone',
+    'scope="rolling-30"',
   ]) requireIncludes(page, marker, label);
 }
 
@@ -43,7 +44,9 @@ for (const marker of [
   'groups={groups}',
   'canonicalPath="/calendar/"',
   'alternatePath="/ja/calendar/"',
-  'No meetings are currently listed between',
+  'selected 30-day display window',
+  'data-timezone-window-start',
+  'data-timezone-window-end',
 ]) requireIncludes(englishPage, marker, englishPath);
 
 for (const marker of [
@@ -52,7 +55,9 @@ for (const marker of [
   'lang="ja"',
   'canonicalPath="/ja/calendar/"',
   'alternatePath="/calendar/"',
-  'この30日間の開催情報は掲載されていません',
+  '選択した表示タイムゾーンの30日間',
+  'data-timezone-window-start',
+  'data-timezone-window-end',
 ]) requireIncludes(japanesePage, marker, japanesePath);
 
 for (const marker of [
@@ -60,6 +65,8 @@ for (const marker of [
   'group.records.map((record) => {',
   'class="meeting-row"',
   'data-calendar-meeting-row',
+  'data-projection-scope',
+  'data-timezone-scope-hidden',
   'meeting-row__identity',
   'meeting-row__system',
   'meeting-row__time',
@@ -70,6 +77,7 @@ for (const marker of [
   'record.detail_path',
   'record.official_source_url',
   'record.live_media',
+  "scope === 'rolling-30'",
 ]) requireIncludes(meetingList, marker, listPath);
 
 if ((meetingList.match(/group\.records\.map\(\(record\) => \{/g) ?? []).length !== 1) {
@@ -82,9 +90,9 @@ if (/record\.(?:races|race_rows|programme)\.map/.test(meetingList)) {
 
 for (const marker of [
   'data-calendar-data-status={dataState.status}',
-  'context.windowStart',
-  'context.windowEndInclusive',
-  'context.timeZone',
+  'data-timezone-window-start',
+  'data-timezone-window-end',
+  'data-timezone-label',
   'stale_generation_with_window_records',
   'no_public_records',
 ]) requireIncludes(dateStatus, marker, statusPath);
@@ -112,5 +120,6 @@ if (errors.length) {
 
 console.log('Calendar 30-day timetable UI check passed.');
 console.log('ONE_MEETING_PER_LIST_ROW: pass');
+console.log('TIMEZONE_PROJECTED_WINDOW: pass');
 console.log('DYNAMIC_CALENDAR_COPY: pass');
 console.log('CURRENT_MEETING_ROW_CONTRACT: pass');
