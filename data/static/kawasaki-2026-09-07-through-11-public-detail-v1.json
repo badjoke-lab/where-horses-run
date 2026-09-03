@@ -1,13 +1,97 @@
 {
-  "schema_version": "reviewed-public-timetable-detail-supplement-v1",
+  "schema_version": "reviewed-public-timetable-detail-supplement-v2",
   "last_checked_date": "2026-09-03",
   "source": "https://www.nankankeiba.com/bangumi/20262107.do",
   "meetings": [
-    {"date":"2026-09-07","source_url":"https://www.nankankeiba.com/program/20260907210701.do"},
-    {"date":"2026-09-08","source_url":"https://www.nankankeiba.com/program/20260908210702.do"},
-    {"date":"2026-09-09","source_url":"https://www.nankankeiba.com/program/20260909210703.do"},
-    {"date":"2026-09-10","source_url":"https://www.nankankeiba.com/program/20260910210704.do"},
-    {"date":"2026-09-11","source_url":"https://www.nankankeiba.com/program/20260911210705.do"}
-  ],
-  "post_times": ["15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:05","19:40","20:15","20:50"]
+    {
+      "date": "2026-09-07",
+      "source_url": "https://www.nankankeiba.com/program/20260907210701.do",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"15:00","race_name":"Ｃ３(五)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 2","post_time_local":"15:30","race_name":"２歳(六)(ロ)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 3","post_time_local":"16:00","race_name":"川崎スプリントシリーズ のぞみ賞 ２歳 未格付選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 4","post_time_local":"16:30","race_name":"２歳(五)(イ)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 5","post_time_local":"17:00","race_name":"Ｃ２(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 6","post_time_local":"17:30","race_name":"Ｃ２(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 7","post_time_local":"18:00","race_name":"啄木鳥（きつつき）賞 ３歳(一)","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 8","post_time_local":"18:30","race_name":"尾花（すすき）賞 Ｃ１(五)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 9","post_time_local":"19:05","race_name":"川崎スプリントシリーズ 剛勇（ごうゆう）賞 Ｃ１ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 10","post_time_local":"19:40","race_name":"川崎ヴィーナスシリーズ ルドベキア特別 Ｂ３ 下３歳選定牝馬","distance_m":1600,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 11","post_time_local":"20:15","race_name":"日高軽種馬農業協同組合特別 Ｂ１(二)Ｂ２(一)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 12","post_time_local":"20:50","race_name":"特選 川崎スプリントシリーズ 花鳥風月（かちょうふうげつ）賞 Ｂ３ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"}
+      ]
+    },
+    {
+      "date": "2026-09-08",
+      "source_url": "https://www.nankankeiba.com/program/20260908210702.do",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"15:00","race_name":"キリギリス賞 ２歳(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 2","post_time_local":"15:30","race_name":"マツムシ賞 ２歳(三)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 3","post_time_local":"16:00","race_name":"川崎スプリントシリーズ ワラビー賞 Ｃ３ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 4","post_time_local":"16:30","race_name":"Ｃ２(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 5","post_time_local":"17:00","race_name":"Ｃ２(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 6","post_time_local":"17:30","race_name":"川崎スプリントシリーズ 斬撃（ざんげき）賞 Ｃ１ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 7","post_time_local":"18:00","race_name":"ＪＲＡ交流 サファイアフラワー賞 ３歳Ｃ１(下) 選定牝馬ＪＲＡ選定牝馬","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 8","post_time_local":"18:30","race_name":"ＪＲＡ交流 セプテンバーフラワー賞 ３歳Ｃ１(下) 選定馬ＪＲＡ選定馬","distance_m":1600,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 9","post_time_local":"19:05","race_name":"特選 川崎スプリントシリーズ 山紫水明（さんしすいめい）賞 Ｂ２ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 10","post_time_local":"19:40","race_name":"第４１回津久井やまびこ祭り祈願特別 Ｂ３(一)(二)(三)","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 11","post_time_local":"20:15","race_name":"多摩（たま）オープン ３歳(上)","distance_m":1600,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 12","post_time_local":"20:50","race_name":"川崎２０００シリーズ ステンノー賞 Ｃ１ 選定馬","distance_m":2000,"surface":"dirt","course_label":"left-handed"}
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "source_url": "https://www.nankankeiba.com/program/20260909210703.do",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"15:00","race_name":"梟（ふくろう）賞 ３歳(二)","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 2","post_time_local":"15:30","race_name":"川崎ヴィーナスシリーズ 花朝月夕（かちょうげっせき）賞 ２歳 未格付選定牝馬","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 3","post_time_local":"16:00","race_name":"川崎スプリントシリーズ 激雷（げきらい）賞 Ｃ２ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 4","post_time_local":"16:30","race_name":"川崎２０００シリーズ ペルセポネ賞 Ｃ２Ｃ３ 選定馬","distance_m":2000,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 5","post_time_local":"17:00","race_name":"川崎スプリントシリーズ 裂空（れっくう）賞 Ｃ１ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 6","post_time_local":"17:30","race_name":"木槿（むくげ）賞 Ｃ１(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 7","post_time_local":"18:00","race_name":"竜胆（りんどう）賞 Ｃ１(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 8","post_time_local":"18:30","race_name":"川崎ジャンプアップシリーズ 軍配（ぐんばい）賞 Ｃ１ 選定馬","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 9","post_time_local":"19:05","race_name":"日和風（ひよりかぜ）特別 Ｂ３(一)(二)(三)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 10","post_time_local":"19:40","race_name":"涼秋（りょうしゅう）特別 Ｂ２(二)","distance_m":1600,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 11","post_time_local":"20:15","race_name":"第５５回 サンケイスポーツ盃 戸塚記念（ＳI） ３歳オープン","distance_m":2100,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 12","post_time_local":"20:50","race_name":"特選 ２０２６川崎ジョッキーズカップ第４戦 Ｃ２ 選定馬","distance_m":1500,"surface":"dirt","course_label":"left-handed"}
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "source_url": "https://www.nankankeiba.com/program/20260910210704.do",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"15:00","race_name":"Ｃ３(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 2","post_time_local":"15:30","race_name":"Ｃ３(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 3","post_time_local":"16:00","race_name":"川崎スプリントシリーズ エトワール賞 ３歳 未格付選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 4","post_time_local":"16:30","race_name":"スズムシ賞 ２歳(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 5","post_time_local":"17:00","race_name":"３歳(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 6","post_time_local":"17:30","race_name":"川崎スプリントシリーズ 雷閃（らいせん）賞 Ｃ２ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 7","post_time_local":"18:00","race_name":"ステッラ賞 ３歳(三)","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 8","post_time_local":"18:30","race_name":"女郎花（おみなえし）賞 Ｃ１(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 9","post_time_local":"19:05","race_name":"秋桜（こすもす）賞 Ｃ１(一)(二)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 10","post_time_local":"19:40","race_name":"川崎２０００シリーズ ポルックス賞 Ｂ１Ｂ２ 選定馬","distance_m":2000,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 11","post_time_local":"20:15","race_name":"第４回 スポーツニッポン杯 若武者（わかむしゃ）賞（ＳIII）（鎌倉記念ＴＲ） ２歳オープン","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 12","post_time_local":"20:50","race_name":"夕月夜（ゆうづきよ）特別 Ｂ３(一)(二)(三)","distance_m":1600,"surface":"dirt","course_label":"left-handed"}
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "source_url": "https://www.nankankeiba.com/program/20260911210705.do",
+      "timetable_rows": [
+        {"label":"Race 1","post_time_local":"15:00","race_name":"Ｃ３(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 2","post_time_local":"15:30","race_name":"３歳(六)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 3","post_time_local":"16:00","race_name":"スパーキングデビュー新馬 ２歳(九)(ハ)","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 4","post_time_local":"16:30","race_name":"スパーキングデビュー新馬 ２歳(八)(ロ)","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 5","post_time_local":"17:00","race_name":"スパーキングデビュー新馬 ２歳(七)(イ)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 6","post_time_local":"17:30","race_name":"３歳(五)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 7","post_time_local":"18:00","race_name":"ＪＲＡ認定 シャイニングトレジャー賞 ２歳(一)","distance_m":1500,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 8","post_time_local":"18:30","race_name":"川崎スプリントシリーズ スピア賞 ３歳 未格付選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 9","post_time_local":"19:05","race_name":"ちくさんフードフェア２０２６記念杯 Ｃ３(三)(四)","distance_m":1400,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 10","post_time_local":"19:40","race_name":"川崎ジャンプアップシリーズ 旗印（はたじるし）賞 Ｃ１ 選定馬","distance_m":1600,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 11","post_time_local":"20:15","race_name":"川崎スプリントシリーズ 明鏡止水（めいきょうしすい）賞 Ａ２Ｂ１ 選定馬","distance_m":900,"surface":"dirt","course_label":"left-handed"},
+        {"label":"Race 12","post_time_local":"20:50","race_name":"川崎２０００シリーズ アクルックス賞 Ｂ３ 選定馬","distance_m":2000,"surface":"dirt","course_label":"left-handed"}
+      ]
+    }
+  ]
 }
