@@ -72,7 +72,6 @@ jobs:
             --input=artifacts/tjk-current-best-available/candidates.json \
             --output=data/generated/timetable/tjk-zero-based-30d-reconciliation.json
           node scripts/timetable/project-tjk-zero-based-public.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
-          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
           node scripts/check-tjk-zero-based-30d.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
 
       - name: Validate generated site state
