@@ -20,8 +20,10 @@ export function assertJapanCompleteness(official, reconciliations, resultingPubl
   if (unexpected.length) throw new Error(`Japan reconciliation contains non-official meetings: ${unexpected.map((row) => row.meeting_id).join(', ')}`);
 
   const publicById = new Map(resultingPublic.map((row) => [row.meeting_id, row]));
+  const missingPublic = official.filter((row) => !publicById.has(row.meeting_id));
+  if (missingPublic.length) throw new Error(`Japan public completeness failed: ${missingPublic.map((row) => row.meeting_id).join(', ')}`);
   const lower = reconciliations.filter((row) => {
-    if (!['add', 'update', 'no_op'].includes(row.outcome) || !row.official_rank) return false;
+    if (!row.official_rank) return false;
     const publicRank = publicById.get(row.meeting_id)?.capability_rank ?? row.public_rank;
     return rank(publicRank) < rank(row.official_rank);
   });
@@ -150,6 +152,33 @@ async function inspectWithRetry(adapter, meeting, attempts, retryDelayMs) {
   return { outcome: null, meeting: result.meeting };
 }
 
+function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap }) {
+  const previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
+  if (previousCanonical) {
+    if (!publicMap.has(officialMeeting.meeting_id)) {
+      publicMap.set(officialMeeting.meeting_id, {
+        ...previousCanonical,
+        effective_public_rank: previousCanonical.capability_rank,
+        max_public_rank: previousCanonical.capability_rank,
+      });
+    }
+    return publicMap.get(officialMeeting.meeting_id)?.capability_rank ?? previousCanonical.capability_rank;
+  }
+
+  const scheduleOnly = safeMeeting({
+    ...officialMeeting,
+    capability_rank: 'C',
+    timetable_rows: [],
+  }, checkedAt);
+  canonicalMap.set(scheduleOnly.meeting_id, scheduleOnly);
+  publicMap.set(scheduleOnly.meeting_id, {
+    ...scheduleOnly,
+    effective_public_rank: 'C',
+    max_public_rank: 'C',
+  });
+  return 'C';
+}
+
 /** Official discovery completes before canonical/public state is read or consulted. */
 export async function runJapanZeroBased30d({ executionDate, adapters, loadExisting = () => ({ canonical: [], public: [] }), attempts = 3, retryDelayMs = 250, checkedAt = new Date().toISOString() }) {
   const range = japan30DayRange(executionDate);
@@ -181,26 +210,32 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
   const reconciliations = [];
 
   for (const officialMeeting of official) {
+    const previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
+    const previousDetail = details.get(officialMeeting.meeting_id);
     const inspected = await inspectWithRetry(adapters[officialMeeting.acquisition_group], officialMeeting, attempts, retryDelayMs);
     if (inspected.outcome) {
+      const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
       reconciliations.push({
         meeting_id: officialMeeting.meeting_id,
         acquisition_group: officialMeeting.acquisition_group,
         outcome: inspected.outcome,
         reason: inspected.reason,
+        official_rank: 'C',
+        public_rank: publicRank,
       });
       continue;
     }
 
-    const previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
-    const previousDetail = details.get(officialMeeting.meeting_id);
     const normalized = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
     if (previousCanonical && rank(previousCanonical.capability_rank) > rank(normalized.capability_rank)) {
+      const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
       reconciliations.push({
         meeting_id: normalized.meeting_id,
         acquisition_group: officialMeeting.acquisition_group,
         outcome: 'conflict',
         reason: 'official_rank_regression',
+        official_rank: 'C',
+        public_rank: publicRank,
       });
       continue;
     }
