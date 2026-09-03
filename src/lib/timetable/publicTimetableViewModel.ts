@@ -107,14 +107,42 @@ const detailOverrideIndex = new Map(
   japanAPlusOverrides.detail_overrides.map((override) => [override.meeting_id, override]),
 );
 
-const publicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings.map(
-  (meeting) => {
-    const override = meetingOverrideIndex.get(meeting.meeting_id);
-    return override && canApplyReviewedOverride(meeting.last_checked_date)
-      ? { ...meeting, ...override }
-      : meeting;
+const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
+  {
+    meeting_id: 'hkjc-sha-tin-racecourse-2026-09-27',
+    country_id: 'hong-kong',
+    authority_id: 'hkjc',
+    racecourse_id: 'sha-tin-racecourse',
+    date: '2026-09-27',
+    timezone: 'Asia/Hong_Kong',
+    capability_rank: 'C',
+    max_public_rank: 'C',
+    effective_public_rank: 'C',
+    first_race_time_local: null,
+    last_race_time_local: null,
+    policy_id: 'hkjc-reviewed-a-plus',
+    source_status: 'verified',
+    official_source_url: 'https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026',
+    last_checked_date: '2026-09-03',
+    detail_path: null,
+    show_live_label: false,
+    show_replay_label: false,
   },
-);
+];
+
+const generatedPublicMeetingRows = meetingListDataset.meetings.map((meeting) => {
+  const override = meetingOverrideIndex.get(meeting.meeting_id);
+  return override && canApplyReviewedOverride(meeting.last_checked_date)
+    ? { ...meeting, ...override }
+    : meeting;
+});
+
+const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => meeting.meeting_id));
+
+const publicMeetingRows: readonly PublicTimetableMeetingRow[] = [
+  ...generatedPublicMeetingRows,
+  ...reviewedPublicSupplements.filter((meeting) => !generatedMeetingIds.has(meeting.meeting_id)),
+];
 
 const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
   meetingDetailsDataset.details.map((detail) => {
