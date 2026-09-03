@@ -119,6 +119,10 @@ const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeeting
   ],
 ]);
 
+const reviewedPublicExcludedMeetingIds = new Set<string>([
+  'era-meydan-racecourse-2026-09-30',
+]);
+
 const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
   {
     meeting_id: 'hkjc-sha-tin-racecourse-2026-09-27',
@@ -282,15 +286,17 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
   },
 ];
 
-const generatedPublicMeetingRows = meetingListDataset.meetings.map((meeting) => {
-  const override = meetingOverrideIndex.get(meeting.meeting_id);
-  const withRankOverride =
-    override && canApplyReviewedOverride(meeting.last_checked_date)
-      ? { ...meeting, ...override }
-      : meeting;
-  const correction = reviewedPublicCorrections.get(meeting.meeting_id);
-  return correction ? { ...withRankOverride, ...correction } : withRankOverride;
-});
+const generatedPublicMeetingRows = meetingListDataset.meetings
+  .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
+  .map((meeting) => {
+    const override = meetingOverrideIndex.get(meeting.meeting_id);
+    const withRankOverride =
+      override && canApplyReviewedOverride(meeting.last_checked_date)
+        ? { ...meeting, ...override }
+        : meeting;
+    const correction = reviewedPublicCorrections.get(meeting.meeting_id);
+    return correction ? { ...withRankOverride, ...correction } : withRankOverride;
+  });
 
 const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => meeting.meeting_id));
 
