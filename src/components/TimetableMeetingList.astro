@@ -3,12 +3,16 @@ import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/time
 import { getTimetableDateContext } from '../data/timetableMeetingRows';
 import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
 
-type Props =
-  | { groups: TimetableMeetingDayGroup[]; emptyLabel?: string; lang?: 'en' | 'ja' }
-  | { records: TimetableMeetingRow[]; date?: string; emptyLabel?: string; lang?: 'en' | 'ja' };
+type ProjectionScope = 'all' | 'today' | 'tomorrow' | 'rolling-30';
+type CommonProps = { emptyLabel?: string; lang?: 'en' | 'ja'; scope?: ProjectionScope };
+type Props = CommonProps & (
+  | { groups: TimetableMeetingDayGroup[] }
+  | { records: TimetableMeetingRow[]; date?: string }
+);
 
 const props = Astro.props as Props;
 const lang = props.lang ?? 'en';
+const projectionScope = props.scope ?? 'all';
 const referenceDate = getTimetableDateContext().today;
 const emptyLabel = props.emptyLabel ?? (lang === 'ja'
   ? '開催情報はまだありません。最終確認には公式ソースを使用してください。'
@@ -102,7 +106,7 @@ const isMeetingStateEligible = (record: TimetableMeetingRow) =>
 const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
 ---
 
-<div class="timetable-timezone-projection" data-display-timezone-root data-lang={lang}>
+<div class="timetable-timezone-projection" data-display-timezone-root data-lang={lang} data-projection-scope={projectionScope}>
   <div class="timezone-control">
     <label>
       <span>{text.displayTimeZone}</span>
@@ -114,64 +118,64 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     <output data-display-timezone-status>Asia/Tokyo</output>
   </div>
 
-  {groups.length > 0 ? (
-    <div class="timetable-date-groups" data-timetable-date-groups>
-      {hasStaleRecords && <p class="meeting-list__stale">{text.staleLegend}</p>}
-      {groups.map((group) => (
-        <section class="timetable-date-group" aria-labelledby={`date-${group.date}`} data-calendar-date-group={group.date}>
-          {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}<small> · {group.records.length} {text.meetings}</small></h2>}
-          <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
-            {group.records.map((record) => {
-              const racecourse = displayRacecourse(record);
-              const liveDetectorId = liveDetectorIdFor(record);
-              return (
-                <li
-                  class="meeting-row"
-                  data-calendar-meeting-row
-                  data-meeting-id={record.meeting_id}
-                  data-date={record.date}
-                  data-source-date={record.date}
-                  data-source-timezone={record.timezone}
-                  data-first-race-time={record.first_race_time_local ?? ''}
-                  data-last-race-time={record.last_race_time_local ?? ''}
-                  data-racecourse={racecourse}
-                  data-country={record.country_label}
-                  data-authority={record.authority_label}
-                  data-rank={record.capability_rank}
-                  data-live-available={String(record.live_media !== null)}
-                  data-live-platform={record.live_media?.platform ?? ''}
-                  data-media-id={record.live_media?.id ?? ''}
-                  data-live-detector-id={liveDetectorId}
-                  data-meeting-state-eligible={String(isMeetingStateEligible(record))}
-                  data-meeting-state="unknown"
-                  data-meeting-day-state="unknown"
-                  data-stream-state="unknown"
-                >
-                  <div class="meeting-row__identity"><strong>{racecourse}</strong></div>
-                  <p class="meeting-row__system">{displayCountry(record)} · {displayAuthority(record)}</p>
-                  <p class="meeting-row__time" title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`} data-source-time-label={raceTime(record)}>
-                    {record.first_race_time_local ? <><time data-race-time="first">{record.first_race_time_local}</time>{record.last_race_time_local && <>–<time data-race-time="last">{record.last_race_time_local}</time></>}</> : '—'}
-                  </p>
-                  <span class={`meeting-row__rank meeting-row__rank--${record.capability_rank.replace('+', 'plus')}`} title={`${lang === 'ja' ? '公開ランク' : 'Public rank'} ${record.capability_rank}`}>{record.capability_rank}</span>
-                  <div class="meeting-row__links">
-                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--upcoming" data-meeting-upcoming-badge hidden>{text.meetingUpcoming}</span>
-                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--running" data-meeting-running-badge hidden>{text.meetingRunning}</span>
-                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--ended" data-meeting-ended-badge hidden>{text.meetingEnded}</span>
-                    {record.live_media && <>
-                      <span class="meeting-row__stream-live-badge" data-stream-live-badge hidden>{text.streamLive}</span>
-                      <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialLive}</a>
-                    </>}
-                    {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
-                    <a href={record.official_source_url} target="_blank" rel="noopener noreferrer">{text.official}</a>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
-    </div>
-  ) : <p>{emptyLabel}</p>}
+  <div class="timetable-date-groups" data-timetable-date-groups>
+    {hasStaleRecords && <p class="meeting-list__stale">{text.staleLegend}</p>}
+    {groups.map((group) => (
+      <section class="timetable-date-group" aria-labelledby={`date-${group.date}`} data-calendar-date-group={group.date}>
+        {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}<small> · {group.records.length} {text.meetings}</small></h2>}
+        <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
+          {group.records.map((record) => {
+            const racecourse = displayRacecourse(record);
+            const liveDetectorId = liveDetectorIdFor(record);
+            return (
+              <li
+                class="meeting-row"
+                data-calendar-meeting-row
+                data-meeting-id={record.meeting_id}
+                data-date={record.date}
+                data-source-date={record.date}
+                data-source-timezone={record.timezone}
+                data-first-race-time={record.first_race_time_local ?? ''}
+                data-last-race-time={record.last_race_time_local ?? ''}
+                data-racecourse={racecourse}
+                data-country={record.country_label}
+                data-authority={record.authority_label}
+                data-rank={record.capability_rank}
+                data-live-available={String(record.live_media !== null)}
+                data-live-platform={record.live_media?.platform ?? ''}
+                data-media-id={record.live_media?.id ?? ''}
+                data-live-detector-id={liveDetectorId}
+                data-meeting-state-eligible={String(isMeetingStateEligible(record))}
+                data-meeting-state="unknown"
+                data-meeting-day-state="unknown"
+                data-stream-state="unknown"
+                data-timezone-scope-hidden="false"
+              >
+                <div class="meeting-row__identity"><strong>{racecourse}</strong></div>
+                <p class="meeting-row__system">{displayCountry(record)} · {displayAuthority(record)}</p>
+                <p class="meeting-row__time" title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`} data-source-time-label={raceTime(record)}>
+                  {record.first_race_time_local ? <><time data-race-time="first">{record.first_race_time_local}</time>{record.last_race_time_local && <>–<time data-race-time="last">{record.last_race_time_local}</time></>}</> : '—'}
+                </p>
+                <span class={`meeting-row__rank meeting-row__rank--${record.capability_rank.replace('+', 'plus')}`} title={`${lang === 'ja' ? '公開ランク' : 'Public rank'} ${record.capability_rank}`}>{record.capability_rank}</span>
+                <div class="meeting-row__links">
+                  <span class="meeting-row__meeting-badge meeting-row__meeting-badge--upcoming" data-meeting-upcoming-badge hidden>{text.meetingUpcoming}</span>
+                  <span class="meeting-row__meeting-badge meeting-row__meeting-badge--running" data-meeting-running-badge hidden>{text.meetingRunning}</span>
+                  <span class="meeting-row__meeting-badge meeting-row__meeting-badge--ended" data-meeting-ended-badge hidden>{text.meetingEnded}</span>
+                  {record.live_media && <>
+                    <span class="meeting-row__stream-live-badge" data-stream-live-badge hidden>{text.streamLive}</span>
+                    <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialLive}</a>
+                  </>}
+                  {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
+                  <a href={record.official_source_url} target="_blank" rel="noopener noreferrer">{text.official}</a>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+  <p data-timezone-scope-empty hidden={groups.length > 0}>{emptyLabel}</p>
 </div>
 
 <script>
@@ -202,6 +206,24 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     return `${parts.year}-${parts.month}-${parts.day}`;
   };
   const formatProjectedTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(instant);
+  const addDateDays = (dateText, days) => {
+    const date = new Date(`${dateText}T00:00:00.000Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  };
+  const scopeWindowFor = (scope, timeZone) => {
+    const today = formatProjectedDate(new Date(), timeZone);
+    if (scope === 'today') return { start: today, endExclusive: addDateDays(today, 1), targetDate: today, windowStart: null, windowEndInclusive: null };
+    if (scope === 'tomorrow') {
+      const tomorrow = addDateDays(today, 1);
+      return { start: tomorrow, endExclusive: addDateDays(tomorrow, 1), targetDate: tomorrow, windowStart: null, windowEndInclusive: null };
+    }
+    if (scope === 'rolling-30') {
+      const endExclusive = addDateDays(today, 30);
+      return { start: today, endExclusive, targetDate: null, windowStart: today, windowEndInclusive: addDateDays(endExclusive, -1) };
+    }
+    return { start: null, endExclusive: null, targetDate: null, windowStart: null, windowEndInclusive: null };
+  };
   const populateTimeZones = (select) => {
     const zones = typeof Intl.supportedValuesOf === 'function'
       ? Intl.supportedValuesOf('timeZone')
@@ -267,6 +289,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   const projectRoot = (root, timeZone) => {
     const rows = Array.from(root.querySelectorAll('[data-calendar-meeting-row]'));
     const uiLang = root.dataset.lang === 'ja' ? 'ja' : 'en';
+    const scope = root.dataset.projectionScope || 'all';
+    const scopeWindow = scopeWindowFor(scope, timeZone);
+    let scopeVisibleCount = 0;
     rows.forEach((row) => {
       if (!(row instanceof HTMLElement)) return;
       const sourceDate = row.dataset.sourceDate || '';
@@ -282,6 +307,10 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       if (firstElement && firstInstant) { firstElement.textContent = formatProjectedTime(firstInstant, timeZone); firstElement.setAttribute('datetime', firstInstant.toISOString()); }
       const lastElement = row.querySelector('[data-race-time="last"]');
       if (lastElement && lastInstant) { lastElement.textContent = formatProjectedTime(lastInstant, timeZone); lastElement.setAttribute('datetime', lastInstant.toISOString()); }
+      const visibleByScope = !scopeWindow.start || !scopeWindow.endExclusive || (row.dataset.date >= scopeWindow.start && row.dataset.date < scopeWindow.endExclusive);
+      row.dataset.timezoneScopeHidden = visibleByScope ? 'false' : 'true';
+      row.hidden = !visibleByScope;
+      if (visibleByScope) scopeVisibleCount += 1;
       setMeetingState(row);
     });
     const groupsContainer = root.querySelector('[data-timetable-date-groups]');
@@ -296,16 +325,18 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       });
       Array.from(grouped.keys()).sort().forEach((date) => {
         const dayRows = grouped.get(date).sort(rowSort);
+        const visibleRows = dayRows.filter((row) => row.dataset.timezoneScopeHidden !== 'true');
         const section = document.createElement('section');
         section.className = 'timetable-date-group';
         section.dataset.calendarDateGroup = date;
+        section.hidden = visibleRows.length === 0;
         section.setAttribute('aria-labelledby', `date-${date}`);
         const heading = document.createElement('h2');
         heading.id = `date-${date}`;
         heading.tabIndex = -1;
         heading.append(document.createTextNode(date));
         const small = document.createElement('small');
-        small.textContent = ` · ${dayRows.length} ${uiLang === 'ja' ? '開催' : 'meetings'}`;
+        small.textContent = ` · ${visibleRows.length} ${uiLang === 'ja' ? '開催' : 'meetings'}`;
         heading.append(small);
         const list = document.createElement('ul');
         list.className = 'meeting-list';
@@ -315,11 +346,19 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         groupsContainer.append(section);
       });
     }
+    const empty = root.querySelector('[data-timezone-scope-empty]');
+    if (empty instanceof HTMLElement) empty.hidden = scopeVisibleCount !== 0;
     const status = root.querySelector('[data-display-timezone-status]');
     if (status) status.textContent = timeZone;
     propagateTimeZoneToLinks(root, timeZone);
     window.dispatchEvent(new CustomEvent('whr:meetingstatechange'));
-    window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: { timeZone } }));
+    window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: {
+      timeZone,
+      scope,
+      targetDate: scopeWindow.targetDate,
+      windowStart: scopeWindow.windowStart,
+      windowEndInclusive: scopeWindow.windowEndInclusive,
+    } }));
   };
   document.querySelectorAll('[data-display-timezone-root]').forEach((root) => {
     const select = root.querySelector('[data-display-timezone-select]');
@@ -329,6 +368,11 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const initial = isTimeZoneSupported(requested) ? requested : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
     select.value = initial;
+    const initialUrl = new URL(window.location.href);
+    if (initialUrl.searchParams.get('tz') !== initial) {
+      initialUrl.searchParams.set('tz', initial);
+      window.history.replaceState({}, '', `${initialUrl.pathname}${initialUrl.search}${initialUrl.hash}`);
+    }
     projectRoot(root, initial);
     select.addEventListener('change', () => {
       const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
@@ -338,8 +382,8 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       projectRoot(root, selected);
     });
     window.setInterval(() => {
-      root.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => setMeetingState(row));
-      window.dispatchEvent(new CustomEvent('whr:meetingstatechange'));
+      const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+      projectRoot(root, selected);
     }, 60_000);
   });
 </script>

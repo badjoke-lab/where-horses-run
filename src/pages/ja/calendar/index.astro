@@ -6,12 +6,20 @@ import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
 import CalendarLivePlayers from '../../../components/CalendarLivePlayers.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
-import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
+import {
+  getGroupedTimetableMeetingRows,
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableMeetingRowsForWindow,
+} from '../../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
-const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
+const candidateStart = addCalendarDays(context.windowStart, -2);
+const candidateEndExclusive = addCalendarDays(context.windowEndExclusive, 2);
+const candidateRecords = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
@@ -25,21 +33,22 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
     <p class="hero__eyebrow">開催カレンダー</p>
     <h1 id="page-title">30日間の開催カレンダー</h1>
     <p class="hero__summary">
-      {context.windowStart}から{context.windowEndInclusive}までの開催を日付別に確認できます。時刻は{context.timeZone}を基準に表示します。
+      <span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>までの開催を日付別に確認できます。時刻と日付グループは<span data-timezone-label>{context.timeZone}</span>を基準に表示します。
     </p>
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
   <CalendarCoverageDashboard lang="ja" />
   <CalendarDateFocus lang="ja" />
-  <CalendarFilters records={windowRecords} lang="ja" />
+  <CalendarFilters records={candidateRecords} lang="ja" />
   <CalendarLivePlayers />
 
   <section aria-label="30日間の開催一覧">
     <TimetableMeetingList
       groups={groupedCalendarRecords}
+      scope="rolling-30"
       lang="ja"
-      emptyLabel="この30日間の開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
+      emptyLabel="選択した表示タイムゾーンの30日間に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
     />
   </section>
 </BaseLayout>

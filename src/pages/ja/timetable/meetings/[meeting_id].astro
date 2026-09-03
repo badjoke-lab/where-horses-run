@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import MeetingTimezoneProjection from '../../../../components/MeetingTimezoneProjection.astro';
 import {
   getPublicTimetableMeetingDetail,
   getPublicTimetableMeetingRows,
@@ -86,13 +87,15 @@ const timeCoverageNoteByRank: Record<string, string> = {
   <section aria-labelledby="page-title">
     <p class="eyebrow">{pageKind}</p>
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-    <p>{meeting.date}</p>
+    <p><span data-meeting-projected-date>{meeting.date}</span></p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>タイムゾーン: {detail.timezone}</p>
+    <p>開催地タイムゾーン: {detail.timezone}</p>
+    <p>表示タイムゾーン: <strong data-timezone-label>{detail.timezone}</strong></p>
     <p>取得ランク: {detail.capability_rank}</p>
     <p>公開ランク: {detail.effective_public_rank}</p>
     <p>公開ポリシー: {detail.policy_id}</p>
     <p>ソース状態: {detail.source_status}</p>
+    <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} lang="ja" />
   </section>
 
   <section aria-labelledby="coverage-title">
@@ -110,7 +113,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
           <thead>
             <tr>
               <th>レース</th>
-              <th>発走時刻</th>
+              <th>発走日時</th>
               {hasRaceName && <th>レース名</th>}
               {hasDistance && <th>距離</th>}
               {hasSurface && <th>馬場</th>}
@@ -121,7 +124,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
             {detail.timetable_rows.map((row) => (
               <tr>
                 <td>{row.label}</td>
-                <td>{row.post_time_local}</td>
+                <td><time data-meeting-source-time={row.post_time_local}>{meeting.date} {row.post_time_local}</time></td>
                 {hasRaceName && <td>{displayValue(row.race_name)}</td>}
                 {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : '非表示'}</td>}
                 {hasSurface && <td>{displayValue(row.surface)}</td>}

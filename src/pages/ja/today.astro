@@ -5,12 +5,15 @@ import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
   getTimetableDateContext,
-  getTimetableMeetingRowsForDate,
+  getTimetableMeetingRowsForWindow,
 } from '../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const todayRecords = getTimetableMeetingRowsForDate(context.today);
+const candidateStart = addCalendarDays(context.today, -2);
+const candidateEndExclusive = addCalendarDays(context.today, 4);
+const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
 ---
 
 <BaseLayout
@@ -24,7 +27,7 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
     <p class="hero__eyebrow">今日の競馬</p>
     <h1 id="page-title">今日の開催</h1>
     <p class="hero__summary">
-      {context.today}の開催情報です。掲載されている開催では、確認できた範囲のレース時刻も表示します。
+      <span data-timezone-label>{context.timeZone}</span>での<span data-timezone-target-date>{context.today}</span>の開催情報です。確認できたレース時刻は選択した表示タイムゾーンへ変換します。
     </p>
   </section>
 
@@ -32,10 +35,11 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
 
   <section aria-label="今日の開催一覧">
     <TimetableMeetingList
-      records={todayRecords}
+      records={todayCandidates}
       date={context.today}
+      scope="today"
       lang="ja"
-      emptyLabel={`${context.today}の開催情報は掲載されていません。最新情報は公式情報源で確認してください。`}
+      emptyLabel="選択した表示タイムゾーンの今日に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
     />
   </section>
 </BaseLayout>
