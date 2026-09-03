@@ -274,11 +274,7 @@ export function getVerifiedLiveMediaForMeeting(input: {
   racecourse_id: string;
 }): RacingMediaLink | null {
   return reviewedRacingMediaLinks.find((record) => {
-    if (
-      record.kind !== 'live' ||
-      record.platform !== 'youtube' ||
-      record.authority_id !== input.authority_id
-    ) {
+    if (record.kind !== 'live' || record.authority_id !== input.authority_id) {
       return false;
     }
 
