@@ -1,4 +1,4 @@
-name: Calendar TJK current best-available refresh
+name: Calendar TJK zero-based 30-day refresh
 
 on:
   workflow_dispatch:
@@ -11,21 +11,32 @@ on:
       - 'scripts/timetable/tjk-current-future-candidates.mjs'
       - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/timetable/apply-tjk-zero-based-30d.mjs'
       - 'scripts/check-tjk-current-future-candidates.mjs'
+      - 'scripts/check-tjk-zero-based-30d.mjs'
       - 'data/static/calendar-acquisition-registry.json'
+      - '.github/workflows/calendar-tjk-current-best-available-refresh.yml'
+  pull_request:
+    paths:
+      - 'scripts/timetable/tjk-current-future-candidates.mjs'
+      - 'scripts/timetable/tjk-annual-fixture-discovery.mjs'
+      - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/timetable/apply-tjk-zero-based-30d.mjs'
+      - 'scripts/check-tjk-current-future-candidates.mjs'
+      - 'scripts/check-tjk-zero-based-30d.mjs'
       - '.github/workflows/calendar-tjk-current-best-available-refresh.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: calendar-tjk-current-best-available-refresh
+  group: calendar-tjk-zero-based-30d-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  acquire:
+  acquire-and-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -33,58 +44,67 @@ jobs:
         with:
           node-version: 22.12.0
 
-      - name: Validate TJK acquisition code
+      - name: Validate TJK acquisition and publication code
         run: |
           node --check scripts/timetable/tjk-current-future-candidates.mjs
           node --check scripts/timetable/tjk-annual-fixture-discovery.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
+          node --check scripts/timetable/apply-tjk-zero-based-30d.mjs
           node --check scripts/check-tjk-current-future-candidates.mjs
+          node --check scripts/check-tjk-zero-based-30d.mjs
 
-      - name: Acquire current 30-day TJK best available candidates
+      - name: Acquire official TJK 30-day mother set
         run: |
           rm -rf artifacts/tjk-current-best-available
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days=30 \
             --output=artifacts/tjk-current-best-available/candidates.json
 
-      - name: Validate candidate boundary
+      - name: Validate official candidate boundary
         run: node scripts/check-tjk-current-future-candidates.mjs artifacts/tjk-current-best-available/candidates.json
 
-      - name: Write review-only summary
+      - name: Apply zero-based TJK 30-day mother set
         run: |
-          node - <<'NODE'
-          const fs = require('node:fs');
-          const p = 'artifacts/tjk-current-best-available/candidates.json';
-          const a = JSON.parse(fs.readFileSync(p, 'utf8'));
-          const summary = {
-            generated_at: a.retrieved_at,
-            window: a.window,
-            official_fixture_count: a.discovery.official_fixture_count,
-            candidate_count: a.candidates.length,
-            rank_counts: a.discovery.rank_counts,
-            detail_status_counts: a.discovery.detail_status_counts,
-            schedule_source_id: a.discovery.schedule_source_id,
-            schedule_source_url: a.discovery.schedule_source_url,
-            meetings: a.candidates.map((x) => ({
-              candidate_id: x.candidate_id,
-              date: x.date,
-              racecourse: x.racecourse,
-              racecourse_source_id: x.racecourse_source_id,
-              capability_rank: x.capability_rank,
-              first_race_time_local: x.first_race_time_local,
-              last_race_time_local: x.last_race_time_local,
-              detail_status: x.detail_observation.status,
-              source_url: x.source_url,
-            })),
-            publication_effect: 'none',
-            requires_review: true,
-          };
-          fs.writeFileSync('artifacts/tjk-current-best-available/summary.json', JSON.stringify(summary, null, 2) + '\n');
-          console.log(JSON.stringify(summary, null, 2));
-          NODE
+          node scripts/timetable/apply-tjk-zero-based-30d.mjs \
+            --input=artifacts/tjk-current-best-available/candidates.json \
+            --output=data/generated/timetable/tjk-zero-based-30d-reconciliation.json
+          node scripts/timetable/build-public-timetable-view.mjs
+          node scripts/timetable/build-japan-a-plus-public-overrides.mjs
+          node scripts/check-tjk-zero-based-30d.mjs data/generated/timetable/tjk-zero-based-30d-reconciliation.json
+
+      - name: Validate generated site state
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          npm run build
+
+      - name: Persist generated TJK timetable state
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/static/racecourses-public-timetable-identities-v1.json \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            data/generated/timetable/tjk-zero-based-30d-reconciliation.json
+          if git diff --cached --quiet; then
+            echo "No TJK timetable changes to persist."
+            exit 0
+          fi
+          git commit -m "data: refresh TJK official 30-day timetable"
+          git push origin HEAD:main
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tjk-current-best-available-${{ github.run_id }}
-          path: artifacts/tjk-current-best-available
+          name: tjk-zero-based-30d-${{ github.run_id }}
+          path: |
+            artifacts/tjk-current-best-available/candidates.json
+            data/generated/timetable/tjk-zero-based-30d-reconciliation.json
+            data/generated/timetable/canonical/meetings.json
+            data/generated/timetable/canonical/meeting-details.json
+            data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
           retention-days: 7
