@@ -106,7 +106,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       const syncDateOptions = () => {
         const current = date.value;
         const values = [...new Set(rows()
-          .filter((row) => row instanceof HTMLElement)
+          .filter((row) => row instanceof HTMLElement && row.dataset.viewVisible !== 'false')
           .map((row) => row.dataset.date || '')
           .filter(Boolean))].sort();
         const all = document.createElement('option');
@@ -119,6 +119,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           return option;
         }));
         if (current && values.includes(current)) date.value = current;
+        else if (current) date.value = '';
       };
 
       const apply = () => {
@@ -126,7 +127,8 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         let visible = 0;
         for (const row of rows()) {
           if (!(row instanceof HTMLElement)) continue;
-          const matches = (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
+          const matches = row.dataset.viewVisible !== 'false' &&
+            (!query || normalize(row.dataset.racecourse || '').includes(query)) &&
             (!country.value || row.dataset.country === country.value) &&
             (!authority.value || row.dataset.authority === authority.value) &&
             (!rank.value || row.dataset.rank === rank.value) &&
@@ -210,7 +212,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         const byDetectorId = new Map(statuses
           .filter((entry) => entry && typeof entry.detector_id === 'string')
           .map((entry) => [entry.detector_id, entry]));
-        let hasDetectorState = false;
+        let hasVerifiedLive = false;
         let hasLikelyState = false;
 
         for (const row of rows()) {
@@ -226,7 +228,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           const verifiedState = eventState && !dateMatches ? 'unknown' : rawState;
           const state = verifiedState === 'unknown' && isLikelyLiveBySchedule(row) ? 'likely' : verifiedState;
           row.dataset.liveState = state;
-          if (detectorId && rawState !== 'unknown') hasDetectorState = true;
+          if (state === 'live') hasVerifiedLive = true;
           if (state === 'likely') hasLikelyState = true;
 
           const badge = row.querySelector('[data-live-badge]');
@@ -245,10 +247,9 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             link.textContent = isJa ? '公式ライブ ↗' : 'Official live ↗';
           }
         }
-        setOptionAvailable(liveNowOption, hasDetectorState, 'now');
+        setOptionAvailable(liveNowOption, hasVerifiedLive, 'now');
         setOptionAvailable(liveLikelyOption, hasLikelyState, 'likely');
         apply();
-        return hasDetectorState;
       };
 
       const scheduleRefresh = (delay) => {
