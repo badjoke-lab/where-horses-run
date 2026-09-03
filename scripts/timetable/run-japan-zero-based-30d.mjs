@@ -34,16 +34,33 @@ function keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates) {
   return !(row?.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id));
 }
 
+function boundedDiscovery(discover, allowedDates) {
+  return async (context) => (await discover(context)).filter((row) => allowedDates.has(row.date));
+}
+
+function dateRange(start, days) {
+  const cursor = new Date(`${start}T00:00:00Z`);
+  return Array.from({ length: days }, () => {
+    const value = cursor.toISOString().slice(0, 10);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+    return value;
+  });
+}
+
 const args = new Map(process.argv.slice(2).map((value) => value.split(/=(.*)/s).slice(0, 2)));
 const executionDate = args.get('--execution-date') ?? japanToday();
-const output = args.get('--output') ?? 'data/generated/timetable/japan-zero-based-30d-reconciliation.json';
+const scope = args.get('--scope') ?? 'full';
+if (!['full', 'near'].includes(scope)) throw new Error(`unsupported Japan refresh scope: ${scope}`);
+const requestedDays = scope === 'near' ? 3 : 30;
+const selectedDates = new Set(dateRange(executionDate, requestedDays));
+const output = args.get('--output') ?? `data/generated/timetable/japan-zero-based-${scope === 'near' ? '3d' : '30d'}-reconciliation.json`;
 const canonicalPath = 'data/generated/timetable/canonical/meetings.json';
 const detailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publicPath = 'data/generated/timetable/public/meeting-list.json';
 const publicDetailsPath = 'data/generated/timetable/public/meeting-details.json';
 const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
 const narStandardAdapter = japanOfficial30dAdapters['nar-standard'];
-const adapters = {
+const baseAdapters = {
   ...japanOfficial30dAdapters,
   jra: {
     ...japanOfficial30dAdapters.jra,
@@ -59,6 +76,13 @@ const adapters = {
     discover: discoverBaneiOfficial30d,
   },
 };
+const adapters = scope === 'full'
+  ? baseAdapters
+  : Object.fromEntries(Object.entries(baseAdapters).map(([group, adapter]) => [group, {
+      ...adapter,
+      discover: boundedDiscovery(adapter.discover, selectedDates),
+    }]));
+
 const result = await runJapanZeroBased30d({
   executionDate,
   adapters,
@@ -71,14 +95,16 @@ const result = await runJapanZeroBased30d({
 });
 
 const officialIds = new Set(result.reconciliations.map((row) => row.meeting_id));
-const rangeDates = new Set(result.range.dates);
+// In near mode only the bounded three-day official mother set may remove stale rows;
+// days 4-30 stay untouched until the daily full refresh.
+const rangeDates = scope === 'near' ? selectedDates : new Set(result.range.dates);
 const canonical = result.canonical.filter((row) => !isInvalidMombetsuAlias(row));
 const details = result.details.filter((row) => !isInvalidMombetsuAlias(row));
 const publicMeetings = result.public.filter((row) => !isInvalidMombetsuAlias(row) && keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates));
 const publicDetails = result.publicDetails.filter((row) => !isInvalidMombetsuAlias(row) && keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates));
 const remainingUnexpectedPublic = publicMeetings.filter((row) => row.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id));
 if (remainingUnexpectedPublic.length) {
-  throw new Error(`Japan public mother set contains non-official current-window meetings: ${remainingUnexpectedPublic.map((row) => row.meeting_id).join(', ')}`);
+  throw new Error(`Japan public mother set contains non-official ${scope} meetings: ${remainingUnexpectedPublic.map((row) => row.meeting_id).join(', ')}`);
 }
 const missingOfficialPublic = [...officialIds].filter((meetingId) => !publicMeetings.some((row) => row.meeting_id === meetingId));
 if (missingOfficialPublic.length) {
@@ -99,6 +125,9 @@ write(publicPath, { ...read(publicPath), generated_at: result.checked_at, meetin
 write(publicDetailsPath, { ...read(publicDetailsPath), generated_at: result.checked_at, details: publicDetails });
 write(output, {
   ...result,
+  scope,
+  requested_days: requestedDays,
+  selected_dates: [...selectedDates],
   canonical: undefined,
   public: undefined,
   details: undefined,
@@ -112,6 +141,8 @@ write(output, {
 });
 const outcomes = Object.fromEntries(result.reconciliations.map((row) => row.outcome).reduce((map, outcome) => map.set(outcome, (map.get(outcome) ?? 0) + 1), new Map()));
 console.log(JSON.stringify({
+  scope,
+  requested_days: requestedDays,
   range: result.range,
   official_counts: result.official_counts,
   official_meeting_count: result.official_meeting_count,
