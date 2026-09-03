@@ -4,17 +4,8 @@ import { getTimetableDateContext } from '../data/timetableMeetingRows';
 import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
 
 type Props =
-  | {
-      groups: TimetableMeetingDayGroup[];
-      emptyLabel?: string;
-      lang?: 'en' | 'ja';
-    }
-  | {
-      records: TimetableMeetingRow[];
-      date?: string;
-      emptyLabel?: string;
-      lang?: 'en' | 'ja';
-    };
+  | { groups: TimetableMeetingDayGroup[]; emptyLabel?: string; lang?: 'en' | 'ja' }
+  | { records: TimetableMeetingRow[]; date?: string; emptyLabel?: string; lang?: 'en' | 'ja' };
 
 const props = Astro.props as Props;
 const lang = props.lang ?? 'en';
@@ -24,18 +15,16 @@ const emptyLabel = props.emptyLabel ?? (lang === 'ja'
   : 'No meetings are listed yet. Use official source links for final confirmation.');
 const groups: TimetableMeetingDayGroup[] = 'groups' in props
   ? props.groups
-  : [
-      {
-        date: props.date ?? props.records[0]?.date ?? '',
-        records: props.records,
-      },
-    ].filter((group) => group.records.length > 0);
+  : [{ date: props.date ?? props.records[0]?.date ?? '', records: props.records }]
+      .filter((group) => group.records.length > 0);
 
 const text = lang === 'ja'
   ? {
       detail: '詳細',
-      liveBadge: '● LIVE',
-      likelyLiveBadge: '◐ LIVEの可能性',
+      meetingUpcoming: '開催前',
+      meetingRunning: '開催中',
+      meetingEnded: '終了',
+      streamLive: '● 公式配信中',
       officialLive: '公式ライブ ↗',
       meetings: '開催',
       official: '公式 ↗',
@@ -44,8 +33,10 @@ const text = lang === 'ja'
     }
   : {
       detail: 'Details',
-      liveBadge: '● LIVE',
-      likelyLiveBadge: '◐ Likely live',
+      meetingUpcoming: 'Upcoming',
+      meetingRunning: 'Racing now',
+      meetingEnded: 'Finished',
+      streamLive: '● Official stream live',
       officialLive: 'Official live ↗',
       meetings: 'meetings',
       official: 'Official ↗',
@@ -54,29 +45,19 @@ const text = lang === 'ja'
     };
 
 const jaRacecourseLabelById: Record<string, string> = {
-  'tokyo-racecourse': '東京競馬場',
-  'obihiro-racecourse': '帯広競馬場',
-  'sha-tin-racecourse': '沙田競馬場',
-  'happy-valley-racecourse': 'ハッピーバレー競馬場',
-  'meydan-racecourse': 'メイダン競馬場',
-  'ankara-racecourse': 'アンカラ競馬場',
+  'tokyo-racecourse': '東京競馬場', 'obihiro-racecourse': '帯広競馬場',
+  'sha-tin-racecourse': '沙田競馬場', 'happy-valley-racecourse': 'ハッピーバレー競馬場',
+  'meydan-racecourse': 'メイダン競馬場', 'ankara-racecourse': 'アンカラ競馬場',
   'kocaeli-racecourse': 'コジャエリ競馬場',
 };
 const jaAuthorityLabelById: Record<string, string> = {
-  jra: 'JRA',
-  hkjc: 'HKJC',
-  'nar-local-government-racing': 'NAR',
-  'banei-tokachi': 'ばんえい十勝',
-  'emirates-racing-authority': 'ERA',
+  jra: 'JRA', hkjc: 'HKJC', 'nar-local-government-racing': 'NAR',
+  'banei-tokachi': 'ばんえい十勝', 'emirates-racing-authority': 'ERA',
   'turkiye-jokey-kulubu': 'TJK',
 };
 const jaCountryLabelById: Record<string, string> = {
-  japan: '日本',
-  'hong-kong': '香港',
-  'united-arab-emirates': 'アラブ首長国連邦',
-  turkey: 'トルコ',
+  japan: '日本', 'hong-kong': '香港', 'united-arab-emirates': 'アラブ首長国連邦', turkey: 'トルコ',
 };
-
 const narLiveDetectorByRacecourseId: Record<string, string> = {
   'monbetsu-racecourse': 'nar-monbetsu-youtube-live-2026',
   'morioka-racecourse': 'nar-iwate-youtube-live-2026',
@@ -93,29 +74,17 @@ const narLiveDetectorByRacecourseId: Record<string, string> = {
   'kochi-racecourse': 'nar-kochi-youtube-live-2026',
   'saga-racecourse': 'nar-saga-youtube-live-2026',
 };
-
 const liveDetectorIdFor = (record: TimetableMeetingRow) => {
   if (record.authority_id === 'jra') return 'jra-youtube-live-2026';
-  if (record.authority_id === 'banei-tokachi' && record.racecourse_id === 'obihiro-racecourse') {
-    return 'banei-youtube-live-2026';
-  }
-  if (record.authority_id === 'nar-local-government-racing') {
-    return narLiveDetectorByRacecourseId[record.racecourse_id] ?? '';
-  }
+  if (record.authority_id === 'banei-tokachi' && record.racecourse_id === 'obihiro-racecourse') return 'banei-youtube-live-2026';
+  if (record.authority_id === 'nar-local-government-racing') return narLiveDetectorByRacecourseId[record.racecourse_id] ?? '';
   return '';
 };
-
 const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detailPath}` : detailPath;
-const displayRacecourse = (record: TimetableMeetingRow) =>
-  lang === 'ja' ? jaRacecourseLabelById[record.racecourse_id] ?? record.racecourse_name : record.racecourse_name;
-const displayAuthority = (record: TimetableMeetingRow) =>
-  lang === 'ja' ? jaAuthorityLabelById[record.authority_id] ?? record.authority_label : record.authority_label;
-const displayCountry = (record: TimetableMeetingRow) =>
-  lang === 'ja' ? jaCountryLabelById[record.country_id] ?? record.country_label : record.country_label;
-const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
-  lastCheckedDate: record.last_checked_date ?? null,
-  referenceDate,
-});
+const displayRacecourse = (record: TimetableMeetingRow) => lang === 'ja' ? jaRacecourseLabelById[record.racecourse_id] ?? record.racecourse_name : record.racecourse_name;
+const displayAuthority = (record: TimetableMeetingRow) => lang === 'ja' ? jaAuthorityLabelById[record.authority_id] ?? record.authority_label : record.authority_label;
+const displayCountry = (record: TimetableMeetingRow) => lang === 'ja' ? jaCountryLabelById[record.country_id] ?? record.country_label : record.country_label;
+const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({ lastCheckedDate: record.last_checked_date ?? null, referenceDate });
 const raceTime = (record: TimetableMeetingRow) => {
   if (record.first_race_time_local && record.last_race_time_local) return `${record.first_race_time_local}–${record.last_race_time_local}`;
   if (record.first_race_time_local) return `${record.first_race_time_local}–`;
@@ -127,8 +96,7 @@ const mediaTitle = (record: TimetableMeetingRow) => {
     ? record.live_media.access_note_ja ?? `${record.live_media.provider_label}の公式ライブページ`
     : record.live_media.access_note_en ?? `Official live page from ${record.live_media.provider_label}`;
 };
-const isLiveLikelihoodEligible = (record: TimetableMeetingRow) =>
-  record.live_media !== null &&
+const isMeetingStateEligible = (record: TimetableMeetingRow) =>
   (record.capability_rank === 'A' || record.capability_rank === 'A+') &&
   Boolean(record.first_race_time_local && record.last_race_time_local);
 const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
@@ -150,22 +118,11 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     <div class="timetable-date-groups" data-timetable-date-groups>
       {hasStaleRecords && <p class="meeting-list__stale">{text.staleLegend}</p>}
       {groups.map((group) => (
-        <section
-          class="timetable-date-group"
-          aria-labelledby={`date-${group.date}`}
-          data-calendar-date-group={group.date}
-        >
-          {group.date && (
-            <h2 id={`date-${group.date}`} tabindex="-1">
-              {group.date}
-              <small> · {group.records.length} {text.meetings}</small>
-            </h2>
-          )}
+        <section class="timetable-date-group" aria-labelledby={`date-${group.date}`} data-calendar-date-group={group.date}>
+          {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}<small> · {group.records.length} {text.meetings}</small></h2>}
           <ul class="meeting-list" aria-label={group.date ? `${group.date} meetings` : 'Meetings'}>
             {group.records.map((record) => {
               const racecourse = displayRacecourse(record);
-              const country = displayCountry(record);
-              const authority = displayAuthority(record);
               const liveDetectorId = liveDetectorIdFor(record);
               return (
                 <li
@@ -185,47 +142,24 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                   data-live-platform={record.live_media?.platform ?? ''}
                   data-media-id={record.live_media?.id ?? ''}
                   data-live-detector-id={liveDetectorId}
-                  data-live-likelihood-eligible={String(isLiveLikelihoodEligible(record))}
-                  data-live-state="unknown"
+                  data-meeting-state-eligible={String(isMeetingStateEligible(record))}
+                  data-meeting-state="unknown"
+                  data-stream-state="unknown"
                 >
-                  <div class="meeting-row__identity">
-                    <strong>{racecourse}</strong>
-                  </div>
-                  <p class="meeting-row__system">{country} · {authority}</p>
-                  <p
-                    class="meeting-row__time"
-                    title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`}
-                    data-source-time-label={raceTime(record)}
-                  >
-                    {record.first_race_time_local ? (
-                      <>
-                        <time data-race-time="first">{record.first_race_time_local}</time>
-                        {record.last_race_time_local && (
-                          <>–<time data-race-time="last">{record.last_race_time_local}</time></>
-                        )}
-                      </>
-                    ) : '—'}
+                  <div class="meeting-row__identity"><strong>{racecourse}</strong></div>
+                  <p class="meeting-row__system">{displayCountry(record)} · {displayAuthority(record)}</p>
+                  <p class="meeting-row__time" title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`} data-source-time-label={raceTime(record)}>
+                    {record.first_race_time_local ? <><time data-race-time="first">{record.first_race_time_local}</time>{record.last_race_time_local && <>–<time data-race-time="last">{record.last_race_time_local}</time></>}</> : '—'}
                   </p>
-                  <span class={`meeting-row__rank meeting-row__rank--${record.capability_rank.replace('+', 'plus')}`} title={`${lang === 'ja' ? '公開ランク' : 'Public rank'} ${record.capability_rank}`}>
-                    {record.capability_rank}
-                  </span>
+                  <span class={`meeting-row__rank meeting-row__rank--${record.capability_rank.replace('+', 'plus')}`} title={`${lang === 'ja' ? '公開ランク' : 'Public rank'} ${record.capability_rank}`}>{record.capability_rank}</span>
                   <div class="meeting-row__links">
-                    {record.live_media && (
-                      <>
-                        <span class="meeting-row__live-badge" data-live-badge hidden>{text.liveBadge}</span>
-                        <span class="meeting-row__likely-live-badge" data-live-likely-badge hidden>{text.likelyLiveBadge}</span>
-                        <a
-                          href={record.live_media.landing_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={mediaTitle(record)}
-                          data-live-link
-                          data-live-default-href={record.live_media.landing_url}
-                        >
-                          {text.officialLive}
-                        </a>
-                      </>
-                    )}
+                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--upcoming" data-meeting-upcoming-badge hidden>{text.meetingUpcoming}</span>
+                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--running" data-meeting-running-badge hidden>{text.meetingRunning}</span>
+                    <span class="meeting-row__meeting-badge meeting-row__meeting-badge--ended" data-meeting-ended-badge hidden>{text.meetingEnded}</span>
+                    {record.live_media && <>
+                      <span class="meeting-row__stream-live-badge" data-stream-live-badge hidden>{text.streamLive}</span>
+                      <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialLive}</a>
+                    </>}
                     {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
                     <a href={record.official_source_url} target="_blank" rel="noopener noreferrer">{text.official}</a>
                   </div>
@@ -236,86 +170,44 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         </section>
       ))}
     </div>
-  ) : (
-    <p>{emptyLabel}</p>
-  )}
+  ) : <p>{emptyLabel}</p>}
 </div>
 
 <script>
   const isTimeZoneSupported = (timeZone) => {
     if (!timeZone) return false;
-    try {
-      new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
-      return true;
-    } catch {
-      return false;
-    }
+    try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0)); return true; } catch { return false; }
   };
-
-  const dateParts = (instant, timeZone) => {
-    const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hourCycle: 'h23',
-    }).formatToParts(instant);
-    return Object.fromEntries(parts
-      .filter((part) => part.type !== 'literal')
-      .map((part) => [part.type, part.value]));
-  };
-
+  const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+  }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
   const localDateTimeToInstant = (dateText, timeText, timeZone) => {
     const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
     const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
     if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
-    const targetUtc = Date.UTC(
-      Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]),
-      Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0'),
-    );
+    const targetUtc = Date.UTC(Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]), Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0'));
     let guess = targetUtc;
     for (let pass = 0; pass < 4; pass += 1) {
       const parts = dateParts(new Date(guess), timeZone);
-      const representedUtc = Date.UTC(
-        Number(parts.year), Number(parts.month) - 1, Number(parts.day),
-        Number(parts.hour), Number(parts.minute), Number(parts.second),
-      );
+      const representedUtc = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
       const correction = targetUtc - representedUtc;
       guess += correction;
       if (correction === 0) break;
     }
     return new Date(guess);
   };
-
   const formatProjectedDate = (instant, timeZone) => {
     const parts = dateParts(instant, timeZone);
     return `${parts.year}-${parts.month}-${parts.day}`;
   };
-
-  const formatProjectedTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
-    timeZone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).format(instant);
-
+  const formatProjectedTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(instant);
   const populateTimeZones = (select) => {
-    const supportedValuesOf = Intl.supportedValuesOf;
-    const zones = typeof supportedValuesOf === 'function'
-      ? supportedValuesOf.call(Intl, 'timeZone')
+    const zones = typeof Intl.supportedValuesOf === 'function'
+      ? Intl.supportedValuesOf('timeZone')
       : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
     const values = Array.from(new Set(['UTC', ...zones]));
-    select.replaceChildren(...values.map((zone) => {
-      const option = document.createElement('option');
-      option.value = zone;
-      option.textContent = zone;
-      return option;
-    }));
+    select.replaceChildren(...values.map((zone) => { const option = document.createElement('option'); option.value = zone; option.textContent = zone; return option; }));
   };
-
   const propagateTimeZoneToLinks = (root, timeZone) => {
     root.querySelectorAll('a[href]').forEach((anchor) => {
       const rawHref = anchor.getAttribute('href');
@@ -326,36 +218,58 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       anchor.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
     });
   };
-
+  const setMeetingState = (row, now = Date.now()) => {
+    if (!(row instanceof HTMLElement) || row.dataset.meetingStateEligible !== 'true') {
+      if (row instanceof HTMLElement) row.dataset.meetingState = 'unknown';
+      return;
+    }
+    const sourceDate = row.dataset.sourceDate || '';
+    const sourceTimeZone = row.dataset.sourceTimezone || '';
+    const firstTime = row.dataset.firstRaceTime || '';
+    const lastTime = row.dataset.lastRaceTime || '';
+    const start = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
+    const rawEnd = localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone);
+    if (!start || !rawEnd) { row.dataset.meetingState = 'unknown'; return; }
+    let endMs = rawEnd.getTime();
+    if (endMs < start.getTime()) endMs += 86_400_000;
+    row.dataset.sortStart = String(start.getTime());
+    const state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended';
+    row.dataset.meetingState = state;
+    const upcoming = row.querySelector('[data-meeting-upcoming-badge]');
+    const running = row.querySelector('[data-meeting-running-badge]');
+    const ended = row.querySelector('[data-meeting-ended-badge]');
+    if (upcoming instanceof HTMLElement) upcoming.hidden = state !== 'upcoming';
+    if (running instanceof HTMLElement) running.hidden = state !== 'running';
+    if (ended instanceof HTMLElement) ended.hidden = state !== 'ended';
+  };
+  const rowSort = (left, right) => {
+    const leftStart = Number(left.dataset.sortStart || Number.POSITIVE_INFINITY);
+    const rightStart = Number(right.dataset.sortStart || Number.POSITIVE_INFINITY);
+    if (leftStart !== rightStart) return leftStart - rightStart;
+    const venue = (left.dataset.racecourse || '').localeCompare(right.dataset.racecourse || '');
+    if (venue !== 0) return venue;
+    return (left.dataset.meetingId || '').localeCompare(right.dataset.meetingId || '');
+  };
   const projectRoot = (root, timeZone) => {
     const rows = Array.from(root.querySelectorAll('[data-calendar-meeting-row]'));
-    const lang = root.dataset.lang === 'ja' ? 'ja' : 'en';
-
+    const uiLang = root.dataset.lang === 'ja' ? 'ja' : 'en';
     rows.forEach((row) => {
       if (!(row instanceof HTMLElement)) return;
       const sourceDate = row.dataset.sourceDate || '';
       const sourceTimeZone = row.dataset.sourceTimezone || '';
       const firstTime = row.dataset.firstRaceTime || '';
       const lastTime = row.dataset.lastRaceTime || '';
-      let projectedDate = sourceDate;
-
       const firstInstant = firstTime ? localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone) : null;
-      const lastInstant = lastTime ? localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone) : null;
-      if (firstInstant) projectedDate = formatProjectedDate(firstInstant, timeZone);
-      row.dataset.date = projectedDate;
-
+      let lastInstant = lastTime ? localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone) : null;
+      if (firstInstant && lastInstant && lastInstant.getTime() < firstInstant.getTime()) lastInstant = new Date(lastInstant.getTime() + 86_400_000);
+      row.dataset.date = firstInstant ? formatProjectedDate(firstInstant, timeZone) : sourceDate;
+      if (firstInstant) row.dataset.sortStart = String(firstInstant.getTime()); else delete row.dataset.sortStart;
       const firstElement = row.querySelector('[data-race-time="first"]');
-      if (firstElement && firstInstant) {
-        firstElement.textContent = formatProjectedTime(firstInstant, timeZone);
-        firstElement.setAttribute('datetime', firstInstant.toISOString());
-      }
+      if (firstElement && firstInstant) { firstElement.textContent = formatProjectedTime(firstInstant, timeZone); firstElement.setAttribute('datetime', firstInstant.toISOString()); }
       const lastElement = row.querySelector('[data-race-time="last"]');
-      if (lastElement && lastInstant) {
-        lastElement.textContent = formatProjectedTime(lastInstant, timeZone);
-        lastElement.setAttribute('datetime', lastInstant.toISOString());
-      }
+      if (lastElement && lastInstant) { lastElement.textContent = formatProjectedTime(lastInstant, timeZone); lastElement.setAttribute('datetime', lastInstant.toISOString()); }
+      setMeetingState(row);
     });
-
     const groupsContainer = root.querySelector('[data-timetable-date-groups]');
     if (groupsContainer) {
       groupsContainer.querySelectorAll('.timetable-date-group').forEach((section) => section.remove());
@@ -367,7 +281,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         grouped.get(date).push(row);
       });
       Array.from(grouped.keys()).sort().forEach((date) => {
-        const dayRows = grouped.get(date);
+        const dayRows = grouped.get(date).sort(rowSort);
         const section = document.createElement('section');
         section.className = 'timetable-date-group';
         section.dataset.calendarDateGroup = date;
@@ -377,7 +291,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         heading.tabIndex = -1;
         heading.append(document.createTextNode(date));
         const small = document.createElement('small');
-        small.textContent = ` · ${dayRows.length} ${lang === 'ja' ? '開催' : 'meetings'}`;
+        small.textContent = ` · ${dayRows.length} ${uiLang === 'ja' ? '開催' : 'meetings'}`;
         heading.append(small);
         const list = document.createElement('ul');
         list.className = 'meeting-list';
@@ -387,22 +301,19 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         groupsContainer.append(section);
       });
     }
-
     const status = root.querySelector('[data-display-timezone-status]');
     if (status) status.textContent = timeZone;
     propagateTimeZoneToLinks(root, timeZone);
+    window.dispatchEvent(new CustomEvent('whr:meetingstatechange'));
     window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: { timeZone } }));
   };
-
   document.querySelectorAll('[data-display-timezone-root]').forEach((root) => {
     const select = root.querySelector('[data-display-timezone-select]');
     if (!(select instanceof HTMLSelectElement)) return;
     populateTimeZones(select);
     const requested = new URL(window.location.href).searchParams.get('tz');
     const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const initial = isTimeZoneSupported(requested)
-      ? requested
-      : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+    const initial = isTimeZoneSupported(requested) ? requested : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
     select.value = initial;
     projectRoot(root, initial);
     select.addEventListener('change', () => {
@@ -412,6 +323,10 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
       projectRoot(root, selected);
     });
+    window.setInterval(() => {
+      root.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => setMeetingState(row));
+      window.dispatchEvent(new CustomEvent('whr:meetingstatechange'));
+    }, 60_000);
   });
 </script>
 
@@ -420,59 +335,32 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   .timezone-control { align-items: end; display: flex; flex-wrap: wrap; gap: 0.5rem 0.8rem; }
   .timezone-control label { display: grid; font-size: 0.82rem; gap: 0.2rem; }
   .timezone-control select { max-width: min(24rem, 80vw); padding: 0.38rem 0.5rem; }
-  .timezone-control output { font-size: 0.82rem; opacity: 0.72; }
+  .timezone-control output, .meeting-list__stale { font-size: 0.82rem; opacity: 0.72; }
+  .meeting-list__stale { margin: 0; }
   .timetable-date-groups { display: grid; gap: 1.35rem; }
   .timetable-date-group h2 { margin-block-end: 0.45rem; }
   .timetable-date-group h2 small { font-size: 0.72rem; font-weight: 500; }
-  .meeting-list__stale { font-size: 0.82rem; margin: 0; }
   .meeting-list { display: grid; list-style: none; margin: 0; padding: 0; }
-  .meeting-row {
-    align-items: center;
-    border-block-end: 1px solid rgba(0, 0, 0, 0.12);
-    display: grid;
-    gap: 0.35rem 0.7rem;
-    grid-template-columns: minmax(12rem, 1.45fr) minmax(10rem, 1fr) minmax(7rem, 0.65fr) 3rem minmax(13rem, auto);
-    padding: 0.48rem 0.55rem;
-    transition: background-color 160ms ease, box-shadow 160ms ease;
-  }
-  .meeting-row[data-live-state='live'] {
-    background: #fff0f0;
-    box-shadow: inset 0.25rem 0 0 #c40000;
-  }
-  .meeting-row[data-live-state='likely'] {
-    background: #fff9e8;
-    box-shadow: inset 0.25rem 0 0 #a56a00;
-  }
+  .meeting-row { align-items: center; border-block-end: 1px solid rgba(0,0,0,.12); display: grid; gap: .35rem .7rem; grid-template-columns: minmax(12rem,1.45fr) minmax(10rem,1fr) minmax(7rem,.65fr) 3rem minmax(13rem,auto); padding: .48rem .55rem; transition: background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease; }
+  .meeting-row[data-meeting-state='running'] { background: #edf8f4; box-shadow: inset .25rem 0 0 #16785a; }
+  .meeting-row[data-meeting-state='ended'] { background: #f3f3f3; opacity: .58; }
+  .meeting-row[data-stream-state='live'] { box-shadow: inset .25rem 0 0 #c40000; }
+  .meeting-row[data-stream-state='live'][data-meeting-state='ended'] { opacity: .82; }
   .meeting-row[hidden], .timetable-date-group[hidden] { display: none; }
   .meeting-row__identity, .meeting-row__system, .meeting-row__time { min-width: 0; }
-  .meeting-row[data-live-state='live'] .meeting-row__identity strong { color: #9d0000; }
-  .meeting-row[data-live-state='likely'] .meeting-row__identity strong { color: #765000; }
-  .meeting-row__system, .meeting-row__time { font-size: 0.82rem; margin: 0; }
-  .meeting-row__rank { border: 1px solid var(--whr-color-border); border-radius: 999px; font-size: 0.74rem; font-weight: 700; justify-self: start; padding: 0.1rem 0.42rem; }
-  .meeting-row__links { align-items: center; display: flex; flex-wrap: wrap; font-size: 0.8rem; gap: 0.25rem 0.65rem; justify-content: flex-end; white-space: nowrap; }
-  .meeting-row__live-badge,
-  .meeting-row__likely-live-badge {
-    border-radius: 999px;
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    padding: 0.16rem 0.42rem;
-  }
-  .meeting-row__live-badge { background: #c40000; }
-  .meeting-row__likely-live-badge { background: #9a6500; }
-  .meeting-row__live-badge[hidden], .meeting-row__likely-live-badge[hidden] { display: none; }
-  .meeting-row[data-live-state='live'] [data-live-link] {
-    color: #a40000;
-    font-weight: 800;
-    text-decoration-thickness: 2px;
-  }
-  .meeting-row[data-live-state='likely'] [data-live-link] {
-    color: #765000;
-    font-weight: 700;
-  }
+  .meeting-row[data-meeting-state='running'] .meeting-row__identity strong { color: #0c6349; }
+  .meeting-row__system, .meeting-row__time { font-size: .82rem; margin: 0; }
+  .meeting-row__rank { border: 1px solid var(--whr-color-border); border-radius: 999px; font-size: .74rem; font-weight: 700; justify-self: start; padding: .1rem .42rem; }
+  .meeting-row__links { align-items: center; display: flex; flex-wrap: wrap; font-size: .8rem; gap: .25rem .65rem; justify-content: flex-end; white-space: nowrap; }
+  .meeting-row__meeting-badge, .meeting-row__stream-live-badge { border-radius: 999px; font-size: .7rem; font-weight: 800; padding: .16rem .42rem; }
+  .meeting-row__meeting-badge--upcoming { border: 1px solid var(--whr-color-border); }
+  .meeting-row__meeting-badge--running { background: #16785a; color: #fff; }
+  .meeting-row__meeting-badge--ended { background: #666; color: #fff; }
+  .meeting-row__stream-live-badge { background: #c40000; color: #fff; letter-spacing: .02em; }
+  .meeting-row__meeting-badge[hidden], .meeting-row__stream-live-badge[hidden] { display: none; }
+  .meeting-row[data-stream-state='live'] [data-live-link] { color: #a40000; font-weight: 800; text-decoration-thickness: 2px; }
   @media (max-width: 760px) {
-    .meeting-row { align-items: start; grid-template-columns: 1fr auto; padding: 0.62rem 0.35rem; }
+    .meeting-row { align-items: start; grid-template-columns: 1fr auto; padding: .62rem .35rem; }
     .meeting-row__system, .meeting-row__time { grid-column: 1; }
     .meeting-row__rank { grid-column: 2; grid-row: 1; }
     .meeting-row__links { grid-column: 1 / -1; justify-content: flex-start; }
