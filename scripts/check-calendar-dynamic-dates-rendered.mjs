@@ -28,8 +28,13 @@ function readHtml(relativePath) {
   return html;
 }
 
-function countMeetingRows(html) {
-  return (html.match(/<li\b[^>]*\bdata-calendar-meeting-row\b[^>]*>/g) ?? []).length;
+function extractMeetingRows(html) {
+  const tags = html.match(/<li\b[^>]*\bdata-calendar-meeting-row\b[^>]*>/g) ?? [];
+  const attribute = (tag, name) => new RegExp(`\\b${name}="([^"]*)"`).exec(tag)?.[1] ?? '';
+  return tags.map((tag) => ({
+    meetingId: attribute(tag, 'data-meeting-id'),
+    sourceDate: attribute(tag, 'data-source-date'),
+  }));
 }
 
 const pages = {
@@ -48,15 +53,19 @@ const state = evaluateCalendarDataState({ records, generatedAt: publicData.gener
 const windowRecords = filterRecordsForWindow(records, context.windowStart, context.windowEndExclusive);
 const todayRecords = filterRecordsForDate(records, context.today);
 const tomorrowRecords = filterRecordsForDate(records, context.tomorrow);
+const calendarCandidateStart = addCalendarDays(context.windowStart, -2);
+const calendarCandidateEndExclusive = addCalendarDays(context.windowEndExclusive, 2);
+const dayCandidateStart = addCalendarDays(context.today, -2);
+const dayCandidateEndExclusive = addCalendarDays(context.today, 4);
 const calendarCandidates = filterRecordsForWindow(
   records,
-  addCalendarDays(context.windowStart, -2),
-  addCalendarDays(context.windowEndExclusive, 2),
+  calendarCandidateStart,
+  calendarCandidateEndExclusive,
 );
 const dayCandidates = filterRecordsForWindow(
   records,
-  addCalendarDays(context.today, -2),
-  addCalendarDays(context.today, 4),
+  dayCandidateStart,
+  dayCandidateEndExclusive,
 );
 const fixedCalendarHeadings = [
   /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
@@ -88,16 +97,30 @@ if (!pages.tomorrowEn.includes(context.tomorrow) || !pages.tomorrowJa.includes(c
   fail(`Tomorrow pages do not show build-reference date ${context.tomorrow}.`);
 }
 
-for (const [name, html, expected] of [
-  ['calendarEn', pages.calendarEn, calendarCandidates.length],
-  ['calendarJa', pages.calendarJa, calendarCandidates.length],
-  ['todayEn', pages.todayEn, dayCandidates.length],
-  ['todayJa', pages.todayJa, dayCandidates.length],
-  ['tomorrowEn', pages.tomorrowEn, dayCandidates.length],
-  ['tomorrowJa', pages.tomorrowJa, dayCandidates.length],
+for (const [name, html, canonicalCandidates, candidateStart, candidateEndExclusive] of [
+  ['calendarEn', pages.calendarEn, calendarCandidates, calendarCandidateStart, calendarCandidateEndExclusive],
+  ['calendarJa', pages.calendarJa, calendarCandidates, calendarCandidateStart, calendarCandidateEndExclusive],
+  ['todayEn', pages.todayEn, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
+  ['todayJa', pages.todayJa, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
+  ['tomorrowEn', pages.tomorrowEn, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
+  ['tomorrowJa', pages.tomorrowJa, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
 ]) {
-  const actual = countMeetingRows(html);
-  if (actual !== expected) fail(`${name} timezone candidate-row count differs: expected ${expected}, got ${actual}.`);
+  const renderedRows = extractMeetingRows(html);
+  const renderedIds = new Set(renderedRows.map((row) => row.meetingId).filter(Boolean));
+  if (renderedRows.length === 0) fail(`${name} renders no timezone candidate rows.`);
+  if (renderedIds.size !== renderedRows.length) {
+    fail(`${name} renders duplicate or missing meeting IDs: rows=${renderedRows.length}, unique_ids=${renderedIds.size}.`);
+  }
+  const malformedRows = renderedRows.filter((row) => !row.meetingId || !/^\d{4}-\d{2}-\d{2}$/.test(row.sourceDate));
+  if (malformedRows.length) fail(`${name} has ${malformedRows.length} candidate rows without a valid meeting ID/source date.`);
+  const outOfWindowRows = renderedRows.filter((row) => row.sourceDate < candidateStart || row.sourceDate >= candidateEndExclusive);
+  if (outOfWindowRows.length) {
+    fail(`${name} has ${outOfWindowRows.length} candidate rows outside ${candidateStart}..${candidateEndExclusive}.`);
+  }
+  const missingCanonical = canonicalCandidates.filter((record) => !renderedIds.has(record.meeting_id));
+  if (missingCanonical.length) {
+    fail(`${name} omits ${missingCanonical.length} canonical candidate rows (${missingCanonical.slice(0, 5).map((record) => record.meeting_id).join(', ')}).`);
+  }
 }
 
 for (const [name, html, scope] of [
@@ -128,10 +151,10 @@ if (errors.length) {
 console.log(`CALENDAR_DYNAMIC_DATES_RENDERED: pass reference_date=${context.today} timezone=${timeZone}`);
 console.log(`DATA_STATUS: ${state.status}`);
 console.log(`WINDOW_MEETINGS: ${windowRecords.length}`);
-console.log(`CALENDAR_CANDIDATES: ${calendarCandidates.length}`);
+console.log(`CALENDAR_CANONICAL_CANDIDATES: ${calendarCandidates.length}`);
 console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
 console.log(`TOMORROW_MEETINGS: ${tomorrowRecords.length}`);
-console.log(`DAY_CANDIDATES: ${dayCandidates.length}`);
+console.log(`DAY_CANONICAL_CANDIDATES: ${dayCandidates.length}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
 console.log('TIMEZONE_PROJECTION_CANDIDATES: pass');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
