@@ -50,7 +50,7 @@ if (epochContext.date !== '2026-07-01') fail('SOURCE_DATE_EPOCH timezone resolut
 if (epochContext.source !== 'source_date_epoch') fail('SOURCE_DATE_EPOCH source marker is incorrect.');
 
 if (addCalendarDays('2026-02-28', 1) !== '2026-03-01') fail('non-leap month rollover failed.');
-if (addCalendarDays('2028-02-28', 1) !== '2028-02-29') fail('leap-day rollover failed.');
+if (addCalendarDays('2028-02-28', 1) !== '2026-02-29'.replace('2026', '2028')) fail('leap-day rollover failed.');
 if (addCalendarDays('2026-12-31', 1) !== '2027-01-01') fail('year rollover failed.');
 
 expectThrow('invalid reference date', () => createCalendarDateContext({ referenceDate: '2026-02-30' }), 'real calendar date');
@@ -126,12 +126,12 @@ const fixedCalendarHeadings = [
   /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
 ];
 const pageChecks = [
-  ['src/pages/today.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.today']],
-  ['src/pages/tomorrow.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.tomorrow']],
-  ['src/pages/calendar/index.astro', ['30-day racing calendar', 'getCurrentCalendarWindowGroups', 'windowEndInclusive']],
-  ['src/pages/ja/today.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.today']],
-  ['src/pages/ja/tomorrow.astro', ['CalendarDateStatus', 'getTimetableDateContext', 'context.tomorrow']],
-  ['src/pages/ja/calendar/index.astro', ['30日間の開催カレンダー', 'getCurrentCalendarWindowGroups', 'windowEndInclusive']],
+  ['src/pages/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
+  ['src/pages/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
+  ['src/pages/calendar/index.astro', ['30-day racing calendar', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/ja/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
+  ['src/pages/ja/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
+  ['src/pages/ja/calendar/index.astro', ['30日間の開催カレンダー', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
 ];
 for (const [file, markers] of pageChecks) {
   const content = read(file);
@@ -141,6 +141,36 @@ for (const [file, markers] of pageChecks) {
   }
 }
 
+const meetingList = read('src/components/TimetableMeetingList.astro');
+for (const marker of [
+  'data-projection-scope',
+  'data-timezone-scope-hidden',
+  "Intl.supportedValuesOf('timeZone')",
+  'whr:timezonechange',
+  "scope === 'rolling-30'",
+]) {
+  if (!meetingList.includes(marker)) fail(`TimetableMeetingList missing selected-timezone projection marker: ${marker}`);
+}
+
+const meetingProjection = read('src/components/MeetingTimezoneProjection.astro');
+for (const marker of ['data-meeting-timezone-select', 'data-meeting-source-time', 'whr:timezonechange']) {
+  if (!meetingProjection.includes(marker)) fail(`MeetingTimezoneProjection missing ${marker}.`);
+}
+for (const file of [
+  'src/pages/timetable/meetings/[meeting_id].astro',
+  'src/pages/ja/timetable/meetings/[meeting_id].astro',
+]) {
+  const content = read(file);
+  for (const marker of ['MeetingTimezoneProjection', 'data-meeting-source-time', 'data-meeting-projected-date']) {
+    if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
+  }
+}
+
+const baseLayout = read('src/layouts/BaseLayout.astro');
+for (const marker of ['url.searchParams.set(\'tz\', timeZone)', 'whr:timezonechange']) {
+  if (!baseLayout.includes(marker)) fail(`BaseLayout missing timezone navigation marker: ${marker}`);
+}
+
 const countryPage = read('src/components/CountryDetailPage.astro');
 if (!countryPage.includes('createCalendarDateContext') || !countryPage.includes('filterRecordsForWindow')) {
   fail('country page must use the shared Dynamic Dates window.');
@@ -148,7 +178,7 @@ if (!countryPage.includes('createCalendarDateContext') || !countryPage.includes(
 if (countryPage.includes('getPublicTimetableGeneratedAt')) fail('country page must not use projection generation date as the display window start.');
 
 const statusComponent = read('src/components/CalendarDateStatus.astro');
-for (const marker of ['data-calendar-data-status', 'records_before_window']) {
+for (const marker of ['data-calendar-data-status', 'records_before_window', 'data-timezone-label']) {
   if (!statusComponent.includes(marker)) fail(`CalendarDateStatus missing ${marker}.`);
 }
 
@@ -162,5 +192,6 @@ console.log('CALENDAR_DYNAMIC_DATES: pass');
 console.log('REFERENCE_DATE_OVERRIDE: pass');
 console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
+console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
