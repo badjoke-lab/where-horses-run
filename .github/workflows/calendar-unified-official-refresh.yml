@@ -20,6 +20,7 @@ on:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
+      - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
@@ -28,11 +29,18 @@ on:
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
       - 'data/static/calendar-reviewed-exclusions.json'
+      - 'data/static/calendar-reviewed-public-observations.json'
+      - 'data/static/banei-2026-09-06-public-detail-v1.json'
+      - 'data/static/banei-2026-09-07-public-detail-v1.json'
+      - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
+      - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
+      - 'data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json'
       - 'src/data/publicationDisplayPolicies.json'
   pull_request:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
+      - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
@@ -41,6 +49,12 @@ on:
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
       - 'data/static/calendar-reviewed-exclusions.json'
+      - 'data/static/calendar-reviewed-public-observations.json'
+      - 'data/static/banei-2026-09-06-public-detail-v1.json'
+      - 'data/static/banei-2026-09-07-public-detail-v1.json'
+      - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
+      - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
+      - 'data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json'
       - 'src/data/publicationDisplayPolicies.json'
 
 permissions:
@@ -63,6 +77,7 @@ jobs:
       - name: Validate unified refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
+          node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/consolidate-official-acquisition-artifacts.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
@@ -112,6 +127,7 @@ jobs:
       - name: Validate production refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
+          node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
@@ -177,6 +193,8 @@ jobs:
             --authority-id=turkiye-jokey-kulubu \
             --racing-system-id=tjk-national-racing-system \
             --timezone=Europe/Istanbul
+      - name: Re-apply frozen reviewed Calendar observations
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
         run: |
           npm install --no-package-lock --no-audit --no-fund
