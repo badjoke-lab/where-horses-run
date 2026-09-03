@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
+import { discoverJraOfficial30d } from './jra-official-30d-discovery.mjs';
 
 function japanToday(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -21,9 +22,16 @@ const canonicalPath = 'data/generated/timetable/canonical/meetings.json';
 const detailsPath = 'data/generated/timetable/canonical/meeting-details.json';
 const publicPath = 'data/generated/timetable/public/meeting-list.json';
 const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+const adapters = {
+  ...japanOfficial30dAdapters,
+  jra: {
+    ...japanOfficial30dAdapters.jra,
+    discover: discoverJraOfficial30d,
+  },
+};
 const result = await runJapanZeroBased30d({
   executionDate,
-  adapters: japanOfficial30dAdapters,
+  adapters,
   loadExisting: () => ({
     canonical: read(canonicalPath).meetings,
     details: read(detailsPath).details,
