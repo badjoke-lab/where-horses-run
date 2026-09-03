@@ -2,12 +2,17 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
-  getCurrentCalendarWindowGroups,
+  getGroupedTimetableMeetingRows,
   getTimetableDateContext,
+  getTimetableMeetingRowsForWindow,
 } from '../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
 const dateContext = getTimetableDateContext();
-const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
+const candidateStart = addCalendarDays(dateContext.windowStart, -2);
+const candidateEndExclusive = addCalendarDays(dateContext.windowEndExclusive, 2);
+const candidateRecords = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const groupedTimetableRecords = getGroupedTimetableMeetingRows(candidateRecords);
 const windowLabel = `${dateContext.windowStart}–${dateContext.windowEndInclusive}`;
 ---
 
@@ -20,14 +25,15 @@ const windowLabel = `${dateContext.windowStart}–${dateContext.windowEndInclusi
     <p class="hero__eyebrow">Current timetable</p>
     <h1 id="page-title">Current 30-day timetable</h1>
     <p class="hero__summary">
-      {windowLabel}. Meetings are grouped by date. Rank controls how much timing detail is shown.
+      <span data-timezone-window-start>{dateContext.windowStart}</span>–<span data-timezone-window-end>{dateContext.windowEndInclusive}</span>. Meetings are grouped by the selected display timezone, <span data-timezone-label>{dateContext.timeZone}</span>. Rank controls how much timing detail is shown.
     </p>
   </section>
 
   <section aria-label={`Current timetable by date for ${windowLabel}`}>
     <TimetableMeetingList
       groups={groupedTimetableRecords}
-      emptyLabel="No timetable meetings are listed in the current 30-day window. Use official source links for final confirmation."
+      scope="rolling-30"
+      emptyLabel="No timetable meetings are listed in the selected 30-day display window. Use official source links for final confirmation."
     />
   </section>
 </BaseLayout>
