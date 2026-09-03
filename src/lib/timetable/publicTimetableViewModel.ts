@@ -107,6 +107,18 @@ const detailOverrideIndex = new Map(
   japanAPlusOverrides.detail_overrides.map((override) => [override.meeting_id, override]),
 );
 
+const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeetingRow>>([
+  [
+    'kra-busan-gyeongnam-racecourse-2026-09-06',
+    {
+      last_race_time_local: '15:45',
+      official_source_url: 'https://race.kra.co.kr/thisweekrace/ThisWeekDetailInfoList.do?Act=01&Sub=2&meet=',
+      last_checked_date: '2026-09-03',
+      source_status: 'verified',
+    },
+  ],
+]);
+
 const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
   {
     meeting_id: 'hkjc-sha-tin-racecourse-2026-09-27',
@@ -272,9 +284,12 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
 
 const generatedPublicMeetingRows = meetingListDataset.meetings.map((meeting) => {
   const override = meetingOverrideIndex.get(meeting.meeting_id);
-  return override && canApplyReviewedOverride(meeting.last_checked_date)
-    ? { ...meeting, ...override }
-    : meeting;
+  const withRankOverride =
+    override && canApplyReviewedOverride(meeting.last_checked_date)
+      ? { ...meeting, ...override }
+      : meeting;
+  const correction = reviewedPublicCorrections.get(meeting.meeting_id);
+  return correction ? { ...withRankOverride, ...correction } : withRankOverride;
 });
 
 const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => meeting.meeting_id));
