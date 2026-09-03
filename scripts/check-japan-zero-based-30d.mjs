@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { assertJapanCompleteness, japan30DayRange, runJapanZeroBased30d } from './timetable/japan-zero-based-30d-core.mjs';
-import { parseJraProgrammePage, parseNarMonthlySchedule, parseNarRaceListPage } from './timetable/japan-official-30d-adapters.mjs';
+import { parseNarMonthlySchedule, parseNarRaceListPage } from './timetable/japan-official-30d-adapters.mjs';
+import { parseJraProgrammePage } from './timetable/jra-programme-parser.mjs';
 import { discoverJraOfficial30d, jraProgrammeUrl } from './timetable/jra-official-30d-discovery.mjs';
 
 const range = japan30DayRange('2026-09-04');
@@ -22,6 +23,21 @@ assert.equal(jraParsed[0].programme_rows[0].race_name, '2歳未勝利');
 assert.equal(jraParsed[0].programme_rows[0].distance_m, 1600);
 assert.equal(jraParsed[0].programme_rows[0].surface, 'Turf');
 assert.equal(jraProgrammeUrl('2026-09-05'), 'https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html');
+
+const specialRaceRows = Array.from({ length: 12 }, (_, index) => {
+  const number = index + 1;
+  const title = number === 12 ? '第61回 札幌2歳ステークス' : `2歳競走${number}`;
+  return `<tr><td>${number}レース</td><td>${title} 1,800（芝）</td><td>${9 + Math.floor(index / 2)}時${String((index % 2) * 30).padStart(2, '0')}分</td></tr>`;
+}).join('');
+const jraSpecialFixture = `<h2>2回札幌5日</h2><table>${specialRaceRows}</table>`;
+const jraSpecialParsed = parseJraProgrammePage(
+  jraSpecialFixture,
+  '2026-09-05',
+  'https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html',
+);
+assert.equal(jraSpecialParsed.length, 1, 'race titles containing a venue name must not split the venue section');
+assert.equal(jraSpecialParsed[0].programme_rows.length, 12);
+assert.equal(jraSpecialParsed[0].programme_rows.at(-1).race_name, '第61回 札幌2歳ステークス');
 
 const jraDiscovery = await discoverJraOfficial30d({
   dates: ['2026-09-04', '2026-09-05', '2026-09-06'],
@@ -62,10 +78,15 @@ const calls = [];
 let narIncompleteAttempts = 0;
 let narPendingAttempts = 0;
 let narLateAttempts = 0;
+const authorityByGroup = {
+  jra: 'jra',
+  nar: 'nar-local-government-racing',
+  banei: 'banei-tokachi',
+};
 const meeting = (group, id, date = '2026-09-04') => ({
   meeting_id: id,
   date,
-  authority_id: group,
+  authority_id: authorityByGroup[group],
   racing_system_id: `japan-${group}-system`,
   racecourse_id: `${group}-course`,
   official_source_url: `https://official.example/${group}`,
@@ -117,11 +138,13 @@ const result = await runJapanZeroBased30d({
   executionDate: '2026-09-04',
   adapters,
   retryDelayMs: 0,
+  checkedAt: '2026-09-04T01:23:45.000Z',
   loadExisting: () => {
     assert.deepEqual(calls.slice(0, 3), ['discover:jra', 'discover:nar', 'discover:banei'], 'existing state read before zero-based enumeration completed');
     return {
       canonical: [{ ...meeting('nar', 'nar-upgrade'), country_id: 'japan', capability_rank: 'C' }],
       public: [{ ...meeting('nar', 'nar-upgrade'), country_id: 'japan', capability_rank: 'C' }],
+      publicDetails: [],
     };
   },
 });
@@ -134,11 +157,39 @@ assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-pendin
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-pending').official_rank, 'C');
 assert.equal(result.canonical.find((row) => row.meeting_id === 'nar-pending').capability_rank, 'C');
 assert.equal(result.public.find((row) => row.meeting_id === 'nar-pending').capability_rank, 'C');
+assert.equal(result.public.find((row) => row.meeting_id === 'nar-pending').detail_path, null);
+assert.equal(result.public.find((row) => row.meeting_id === 'nar-pending').policy_id, 'nar-reviewed-a-plus');
 assert.equal(narLateAttempts, 2, 'scheduled_pending_details must be able to succeed on retry');
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-late').outcome, 'add');
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'new-banei').outcome, 'add');
 assert.equal(result.public.find((row) => row.meeting_id === 'nar-upgrade').capability_rank, 'A+');
 assert.equal(result.details.find((row) => row.meeting_id === 'new-banei').capability_rank, 'A+');
+
+const newJraPublic = result.public.find((row) => row.meeting_id === 'new-jra');
+assert.equal(newJraPublic.effective_public_rank, 'A+');
+assert.equal(newJraPublic.policy_id, 'jra-reviewed-a-plus');
+assert.equal(newJraPublic.source_status, 'verified');
+assert.equal(newJraPublic.official_source_url, 'https://official.example/jra');
+assert.equal(newJraPublic.last_checked_date, '2026-09-04');
+assert.equal(newJraPublic.detail_path, '/timetable/meetings/new-jra/');
+assert.equal(newJraPublic.source_trace, undefined, 'canonical source_trace must not leak into the public meeting list');
+assert.equal(newJraPublic.freshness, undefined, 'canonical freshness object must not leak into the public meeting list');
+
+const newJraDetail = result.publicDetails.find((row) => row.meeting_id === 'new-jra');
+assert.equal(newJraDetail.effective_public_rank, 'A+');
+assert.equal(newJraDetail.show_race_name, true);
+assert.equal(newJraDetail.timetable_rows.length, 2);
+assert.equal(newJraDetail.timetable_rows[0].race_name, 'Race 1');
+assert.equal(newJraDetail.timetable_rows[0].metadata_status, undefined);
+assert.equal(newJraDetail.timetable_rows[0].source_label, undefined);
+
+const publicDetailIds = new Set(result.publicDetails.map((row) => row.meeting_id));
+for (const row of result.public) {
+  if (row.detail_path !== null) {
+    assert.equal(typeof row.detail_path, 'string');
+    assert.ok(publicDetailIds.has(row.meeting_id), `detail_path without public detail: ${row.meeting_id}`);
+  }
+}
 assert.equal(result.complete, true);
 
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'missing' }], [], []), /reconciliation incomplete/);
