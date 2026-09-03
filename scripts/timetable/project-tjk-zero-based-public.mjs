@@ -7,6 +7,7 @@ const CANONICAL_MEETINGS = 'data/generated/timetable/canonical/meetings.json';
 const CANONICAL_DETAILS = 'data/generated/timetable/canonical/meeting-details.json';
 const PUBLIC_MEETINGS = 'data/generated/timetable/public/meeting-list.json';
 const PUBLIC_DETAILS = 'data/generated/timetable/public/meeting-details.json';
+const JAPAN_OVERRIDES = 'data/generated/timetable/public/japan-a-plus-overrides.json';
 
 const reconciliationPath = process.argv[2] ?? 'data/generated/timetable/tjk-zero-based-30d-reconciliation.json';
 const reconciliation = JSON.parse(fs.readFileSync(reconciliationPath, 'utf8'));
@@ -14,6 +15,7 @@ const canonicalMeetings = JSON.parse(fs.readFileSync(CANONICAL_MEETINGS, 'utf8')
 const canonicalDetails = JSON.parse(fs.readFileSync(CANONICAL_DETAILS, 'utf8'));
 const publicMeetings = JSON.parse(fs.readFileSync(PUBLIC_MEETINGS, 'utf8'));
 const publicDetails = JSON.parse(fs.readFileSync(PUBLIC_DETAILS, 'utf8'));
+const japanOverrides = JSON.parse(fs.readFileSync(JAPAN_OVERRIDES, 'utf8'));
 
 if (reconciliation.schema_version !== 'tjk-zero-based-30d-reconciliation-v1' || reconciliation.complete !== true) {
   throw new Error('TJK public projection requires a complete zero-based reconciliation');
@@ -105,9 +107,14 @@ const sortRecords = (records) => records.sort((a, b) => `${a.date}:${a.country_i
 const generatedAt = reconciliation.generated_at;
 fs.writeFileSync(PUBLIC_MEETINGS, `${JSON.stringify({ ...publicMeetings, generated_at: generatedAt, meetings: sortRecords([...publicMeetingMap.values()]) }, null, 2)}\n`);
 fs.writeFileSync(PUBLIC_DETAILS, `${JSON.stringify({ ...publicDetails, generated_at: generatedAt, details: sortRecords([...publicDetailMap.values()]) }, null, 2)}\n`);
+// TJK changes do not alter reviewed Japan A+ override contents. Only align the
+// public-bundle generation timestamp so the existing reviewed override set is
+// validated against the same public detail snapshot during the site build.
+fs.writeFileSync(JAPAN_OVERRIDES, `${JSON.stringify({ ...japanOverrides, generated_at: generatedAt }, null, 2)}\n`);
 
 console.log(JSON.stringify({
   projected_official_meetings: officialIds.size,
   public_detail_count: [...officialIds].filter((id) => publicDetailMap.has(id)).length,
+  japan_override_count_preserved: Array.isArray(japanOverrides.overrides) ? japanOverrides.overrides.length : null,
   generated_at: generatedAt,
 }, null, 2));
