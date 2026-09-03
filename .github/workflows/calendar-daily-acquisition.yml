@@ -10,8 +10,11 @@ on:
       - 'package.json'
       - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/jra-official-30d-discovery.mjs'
+      - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/check-japan-zero-based-30d.mjs'
+      - 'scripts/check-banei-official-30d-discovery.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
@@ -37,8 +40,11 @@ on:
       - 'package.json'
       - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/jra-official-30d-discovery.mjs'
+      - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/check-japan-zero-based-30d.mjs'
+      - 'scripts/check-banei-official-30d-discovery.mjs'
       - 'scripts/timetable/actions-multi-job-core.mjs'
       - 'scripts/timetable/run-calendar-actions-job.mjs'
       - 'scripts/timetable/build-calendar-live-retry-queue.mjs'
@@ -81,10 +87,12 @@ jobs:
       - name: Rebuild and reconcile the Japan official 30-day mother set
         run: node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date="${{ steps.japan-clock.outputs.execution_date }}"
       - name: Validate Japan reconciliation invariants
-        run: node scripts/check-japan-zero-based-30d.mjs
+        run: |
+          node scripts/check-japan-zero-based-30d.mjs
+          node scripts/check-banei-official-30d-discovery.mjs
       - name: Validate generated site state
         run: |
-          npm ci
+          npm install --no-package-lock --no-audit --no-fund
           npm run build
       - name: Persist deterministic canonical and public Japan state
         if: github.ref == 'refs/heads/main'
@@ -119,7 +127,7 @@ jobs:
   smoke:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -129,8 +137,11 @@ jobs:
         run: |
           node --check scripts/timetable/japan-zero-based-30d-core.mjs
           node --check scripts/timetable/japan-official-30d-adapters.mjs
+          node --check scripts/timetable/jra-official-30d-discovery.mjs
+          node --check scripts/timetable/banei-official-30d-discovery.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/check-japan-zero-based-30d.mjs
+          node --check scripts/check-banei-official-30d-discovery.mjs
           node --check scripts/timetable/actions-multi-job-core.mjs
           node --check scripts/timetable/run-calendar-actions-job.mjs
           node --check scripts/timetable/build-calendar-live-retry-queue.mjs
@@ -143,7 +154,13 @@ jobs:
       - name: Validate Due-job Planner contract
         run: node scripts/check-calendar-due-job-planner.mjs
       - name: Validate Japan zero-based 30-day reconciliation
-        run: node scripts/check-japan-zero-based-30d.mjs
+        run: |
+          node scripts/check-japan-zero-based-30d.mjs
+          node scripts/check-banei-official-30d-discovery.mjs
+      - name: Validate site build install path
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          npm run build
       - name: Exercise planner on committed public state
         shell: bash
         run: |
