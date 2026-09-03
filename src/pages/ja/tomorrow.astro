@@ -2,16 +2,24 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import { getTimetableDataState, getTimetableDateContext, getTimetableMeetingRowsForDate } from '../../data/timetableMeetingRows';
+import {
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableProjectionCandidateRows,
+} from '../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
+const projectionCandidates = getTimetableProjectionCandidateRows(
+  context.tomorrow,
+  addCalendarDays(context.tomorrow, 1),
+);
 ---
 
 <BaseLayout
   title={`明日の開催 — ${context.tomorrow} | 競馬どこ？`}
-  description={`${context.tomorrow}の競馬開催情報と、掲載されているレース時刻を確認できます。`}
+  description="選択した表示タイムゾーンで明日に該当する競馬開催情報と、取得済みのレース時刻を確認できます。"
   lang="ja"
   canonicalPath="/ja/tomorrow/"
   alternatePath="/tomorrow/"
@@ -20,7 +28,7 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
     <p class="hero__eyebrow">明日の競馬</p>
     <h1 id="page-title">明日の開催</h1>
     <p class="hero__summary">
-      {context.tomorrow}の開催情報です。掲載されている開催では、確認できた範囲のレース時刻も表示します。
+      下の表示タイムゾーンを選ぶと、明日に含まれる開催、開催日、取得済みのレース時刻をそのタイムゾーンへ変換します。
     </p>
   </section>
 
@@ -28,10 +36,11 @@ const tomorrowRecords = getTimetableMeetingRowsForDate(context.tomorrow);
 
   <section aria-label="明日の開催一覧">
     <TimetableMeetingList
-      records={tomorrowRecords}
+      records={projectionCandidates}
       date={context.tomorrow}
       lang="ja"
-      emptyLabel="明日の開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
+      viewMode="tomorrow"
+      emptyLabel="選択したタイムゾーンで明日に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
     />
   </section>
 </BaseLayout>
