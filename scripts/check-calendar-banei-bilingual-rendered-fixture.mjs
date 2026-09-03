@@ -101,6 +101,11 @@ if (!fs.existsSync(path.join(root, 'node_modules'))) {
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-banei-bilingual-rendered-'));
 const worktree = path.join(tempRoot, 'worktree');
 
+function outputTail(value, limit = 12000) {
+  const text = value ?? '';
+  return text.length > limit ? text.slice(-limit) : text;
+}
+
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
     cwd: options.cwd ?? root,
@@ -109,7 +114,9 @@ function run(command, args, options = {}) {
     env: { ...process.env, ...(options.env ?? {}) },
   });
   if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(' ')} failed\n${result.stdout ?? ''}\n${result.stderr ?? ''}`);
+    throw new Error(
+      `${command} ${args.join(' ')} failed\n--- stdout tail ---\n${outputTail(result.stdout)}\n--- stderr tail ---\n${outputTail(result.stderr)}`,
+    );
   }
   return result;
 }
