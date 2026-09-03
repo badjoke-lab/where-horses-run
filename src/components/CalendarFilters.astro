@@ -1,11 +1,7 @@
 ---
 import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
 
-type Props = {
-  records: TimetableMeetingRow[];
-  lang?: 'en' | 'ja';
-};
-
+type Props = { records: TimetableMeetingRow[]; lang?: 'en' | 'ja' };
 const { records, lang = 'en' } = Astro.props as Props;
 const isJa = lang === 'ja';
 const unique = (values: string[]) => [...new Set(values)].sort((a, b) => a.localeCompare(b));
@@ -18,47 +14,28 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 <section class="calendar-filters card flow" data-calendar-filters aria-label={isJa ? 'カレンダー絞り込み' : 'Calendar filters'}>
   <h2>{isJa ? '開催を絞り込む' : 'Filter meetings'}</h2>
   <div class="section-grid">
+    <label><strong>{isJa ? '競馬場' : 'Racecourse'}</strong><br /><input type="search" data-filter-search placeholder={isJa ? '競馬場を検索…' : 'Search racecourse…'} /></label>
+    <label><strong>{isJa ? '国' : 'Country'}</strong><br /><select data-filter-country><option value="">{isJa ? 'すべて' : 'All'}</option>{countries.map((country) => <option value={country}>{country}</option>)}</select></label>
+    <label><strong>{isJa ? '主催' : 'Authority'}</strong><br /><select data-filter-authority><option value="">{isJa ? 'すべて' : 'All'}</option>{authorities.map((authority) => <option value={authority}>{authority}</option>)}</select></label>
+    <label><strong>{isJa ? '公開ランク' : 'Rank'}</strong><br /><select data-filter-rank><option value="">{isJa ? 'すべて' : 'All'}</option>{ranks.map((rank) => <option value={rank}>{rank}</option>)}</select></label>
     <label>
-      <strong>{isJa ? '競馬場' : 'Racecourse'}</strong><br />
-      <input type="search" data-filter-search placeholder={isJa ? '競馬場を検索…' : 'Search racecourse…'} />
-    </label>
-    <label>
-      <strong>{isJa ? '国' : 'Country'}</strong><br />
-      <select data-filter-country>
+      <strong>{isJa ? '開催状態' : 'Meeting state'}</strong><br />
+      <select data-filter-meeting-state>
         <option value="">{isJa ? 'すべて' : 'All'}</option>
-        {countries.map((country) => <option value={country}>{country}</option>)}
+        <option value="upcoming">{isJa ? '開催前' : 'Upcoming'}</option>
+        <option value="running">{isJa ? '開催中' : 'Racing now'}</option>
+        <option value="ended">{isJa ? '終了' : 'Finished'}</option>
       </select>
     </label>
     <label>
-      <strong>{isJa ? '主催' : 'Authority'}</strong><br />
-      <select data-filter-authority>
+      <strong>{isJa ? '配信' : 'Stream'}</strong><br />
+      <select data-filter-stream>
         <option value="">{isJa ? 'すべて' : 'All'}</option>
-        {authorities.map((authority) => <option value={authority}>{authority}</option>)}
-      </select>
-    </label>
-    <label>
-      <strong>{isJa ? '公開ランク' : 'Rank'}</strong><br />
-      <select data-filter-rank>
-        <option value="">{isJa ? 'すべて' : 'All'}</option>
-        {ranks.map((rank) => <option value={rank}>{rank}</option>)}
-      </select>
-    </label>
-    <label>
-      <strong>{isJa ? 'ライブ' : 'Live'}</strong><br />
-      <select data-filter-live>
-        <option value="">{isJa ? 'すべて' : 'All'}</option>
-        <option value="now" data-live-now-option hidden disabled>{isJa ? 'ライブ中（確認済み）' : 'Live now (verified)'}</option>
-        <option value="likely" data-live-likely-option hidden disabled>{isJa ? 'ライブ中の可能性' : 'Likely live now'}</option>
+        <option value="live" data-stream-live-option hidden disabled>{isJa ? '公式配信中' : 'Official stream live'}</option>
         <option value="available">{isJa ? '公式ライブあり' : 'Official live available'}</option>
       </select>
     </label>
-    <label>
-      <strong>{isJa ? '日付' : 'Date'}</strong><br />
-      <select data-filter-date>
-        <option value="">{isJa ? '30日すべて' : 'All 30 days'}</option>
-        {dates.map((date) => <option value={date}>{date}</option>)}
-      </select>
-    </label>
+    <label><strong>{isJa ? '日付' : 'Date'}</strong><br /><select data-filter-date><option value="">{isJa ? '30日すべて' : 'All 30 days'}</option>{dates.map((date) => <option value={date}>{date}</option>)}</select></label>
   </div>
   <p><button type="button" data-filter-reset>{isJa ? 'リセット' : 'Reset'}</button></p>
   <p aria-live="polite" data-filter-result></p>
@@ -69,58 +46,42 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
     const init = () => {
       const root = document.querySelector('[data-calendar-filters]');
       if (!root || root.dataset.filterReady === 'true') return;
-
       const search = root.querySelector('[data-filter-search]');
       const country = root.querySelector('[data-filter-country]');
       const authority = root.querySelector('[data-filter-authority]');
       const rank = root.querySelector('[data-filter-rank]');
-      const live = root.querySelector('[data-filter-live]');
-      const liveNowOption = root.querySelector('[data-live-now-option]');
-      const liveLikelyOption = root.querySelector('[data-live-likely-option]');
+      const meetingState = root.querySelector('[data-filter-meeting-state]');
+      const stream = root.querySelector('[data-filter-stream]');
+      const streamLiveOption = root.querySelector('[data-stream-live-option]');
       const date = root.querySelector('[data-filter-date]');
       const reset = root.querySelector('[data-filter-reset]');
       const result = root.querySelector('[data-filter-result]');
       const isJa = document.documentElement.lang === 'ja';
-
-      if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) ||
-          !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement) ||
-          !(live instanceof HTMLSelectElement) || !(liveNowOption instanceof HTMLOptionElement) ||
-          !(liveLikelyOption instanceof HTMLOptionElement) || !(date instanceof HTMLSelectElement) ||
-          !(reset instanceof HTMLButtonElement)) return;
+      if (!(search instanceof HTMLInputElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) ||
+          !(rank instanceof HTMLSelectElement) || !(meetingState instanceof HTMLSelectElement) || !(stream instanceof HTMLSelectElement) ||
+          !(streamLiveOption instanceof HTMLOptionElement) || !(date instanceof HTMLSelectElement) || !(reset instanceof HTMLButtonElement)) return;
 
       root.dataset.filterReady = 'true';
       let refreshTimer = null;
       let lastPayload = { statuses: [] };
-
       const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')];
       const groups = () => [...document.querySelectorAll('[data-calendar-date-group]')];
-
-      const setOptionAvailable = (option, available, value) => {
-        option.hidden = !available;
-        option.disabled = !available;
-        if (!available && live.value === value) live.value = '';
-      };
-
       const normalize = (value) => value.trim().toLocaleLowerCase();
 
+      const setStreamFeedAvailable = (available) => {
+        streamLiveOption.hidden = !available;
+        streamLiveOption.disabled = !available;
+        if (!available && stream.value === 'live') stream.value = '';
+      };
       const syncDateOptions = () => {
         const current = date.value;
-        const values = [...new Set(rows()
-          .filter((row) => row instanceof HTMLElement)
-          .map((row) => row.dataset.date || '')
-          .filter(Boolean))].sort();
+        const values = [...new Set(rows().filter((row) => row instanceof HTMLElement).map((row) => row.dataset.date || '').filter(Boolean))].sort();
         const all = document.createElement('option');
         all.value = '';
         all.textContent = isJa ? '30日すべて' : 'All 30 days';
-        date.replaceChildren(all, ...values.map((value) => {
-          const option = document.createElement('option');
-          option.value = value;
-          option.textContent = value;
-          return option;
-        }));
+        date.replaceChildren(all, ...values.map((value) => { const option = document.createElement('option'); option.value = value; option.textContent = value; return option; }));
         if (current && values.includes(current)) date.value = current;
       };
-
       const apply = () => {
         const query = normalize(search.value);
         let visible = 0;
@@ -130,204 +91,94 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             (!country.value || row.dataset.country === country.value) &&
             (!authority.value || row.dataset.authority === authority.value) &&
             (!rank.value || row.dataset.rank === rank.value) &&
+            (!meetingState.value || row.dataset.meetingState === meetingState.value) &&
             (!date.value || row.dataset.date === date.value) &&
-            (!live.value ||
-              (live.value === 'now' && row.dataset.liveState === 'live') ||
-              (live.value === 'likely' && row.dataset.liveState === 'likely') ||
-              (live.value === 'available' && row.dataset.liveAvailable === 'true'));
+            (!stream.value || (stream.value === 'live' && row.dataset.streamState === 'live') || (stream.value === 'available' && row.dataset.liveAvailable === 'true'));
           row.hidden = !matches;
           if (matches) visible += 1;
         }
-
         for (const group of groups()) {
           if (!(group instanceof HTMLElement)) continue;
-          group.hidden = ![...group.querySelectorAll('[data-calendar-meeting-row]')]
-            .some((row) => row instanceof HTMLElement && !row.hidden);
+          group.hidden = ![...group.querySelectorAll('[data-calendar-meeting-row]')].some((row) => row instanceof HTMLElement && !row.hidden);
         }
-
         if (result) result.textContent = isJa ? `${visible}開催を表示` : `${visible} meetings shown`;
       };
-
-      const isTimeZoneSupported = (timeZone) => {
-        if (!timeZone) return false;
-        try {
-          new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
-          return true;
-        } catch {
-          return false;
-        }
-      };
-
-      const dateParts = (instant, timeZone) => Object.fromEntries(
-        new Intl.DateTimeFormat('en-US', {
-          timeZone,
-          year: 'numeric', month: '2-digit', day: '2-digit',
-          hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
-        }).formatToParts(instant)
-          .filter((part) => part.type !== 'literal')
-          .map((part) => [part.type, part.value]),
-      );
-
-      const localDateTimeToInstant = (dateText, timeText, timeZone) => {
-        const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
-        const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
-        if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
-        const targetUtc = Date.UTC(
-          Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]),
-          Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0'),
-        );
-        let guess = targetUtc;
-        for (let pass = 0; pass < 4; pass += 1) {
-          const parts = dateParts(new Date(guess), timeZone);
-          const representedUtc = Date.UTC(
-            Number(parts.year), Number(parts.month) - 1, Number(parts.day),
-            Number(parts.hour), Number(parts.minute), Number(parts.second),
-          );
-          const correction = targetUtc - representedUtc;
-          guess += correction;
-          if (correction === 0) break;
-        }
-        return new Date(guess);
-      };
-
-      const isLikelyLiveBySchedule = (row) => {
-        if (!(row instanceof HTMLElement) || row.dataset.liveLikelihoodEligible !== 'true') return false;
-        const sourceDate = row.dataset.sourceDate || '';
-        const sourceTimeZone = row.dataset.sourceTimezone || '';
-        const firstTime = row.dataset.firstRaceTime || '';
-        const lastTime = row.dataset.lastRaceTime || '';
-        const start = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
-        const rawEnd = localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone);
-        if (!start || !rawEnd) return false;
-        let endMs = rawEnd.getTime();
-        if (endMs < start.getTime()) endMs += 86_400_000;
-        const now = Date.now();
-        return now >= start.getTime() && now <= endMs;
-      };
-
-      const applyLiveStatuses = (payload) => {
+      const applyStreamStatuses = (payload) => {
         const statuses = Array.isArray(payload?.statuses) ? payload.statuses : [];
-        const byDetectorId = new Map(statuses
-          .filter((entry) => entry && typeof entry.detector_id === 'string')
-          .map((entry) => [entry.detector_id, entry]));
-        let hasDetectorState = false;
-        let hasLikelyState = false;
-
+        const byDetectorId = new Map(statuses.filter((entry) => entry && typeof entry.detector_id === 'string').map((entry) => [entry.detector_id, entry]));
         for (const row of rows()) {
           if (!(row instanceof HTMLElement)) continue;
           const detectorId = row.dataset.liveDetectorId || '';
           const entry = byDetectorId.get(detectorId);
-          const rawState = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
-            ? entry.status
-            : 'unknown';
-          const eventState = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
+          const rawState = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline' ? entry.status : 'unknown';
+          const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
           const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
           const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
-          const verifiedState = eventState && !dateMatches ? 'unknown' : rawState;
-          const state = verifiedState === 'unknown' && isLikelyLiveBySchedule(row) ? 'likely' : verifiedState;
-          row.dataset.liveState = state;
-          if (detectorId && rawState !== 'unknown') hasDetectorState = true;
-          if (state === 'likely') hasLikelyState = true;
-
-          const badge = row.querySelector('[data-live-badge]');
+          const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
+          row.dataset.streamState = state;
+          const badge = row.querySelector('[data-stream-live-badge]');
           if (badge instanceof HTMLElement) badge.hidden = state !== 'live';
-          const likelyBadge = row.querySelector('[data-live-likely-badge]');
-          if (likelyBadge instanceof HTMLElement) likelyBadge.hidden = state !== 'likely';
-
           const link = row.querySelector('[data-live-link]');
           if (link instanceof HTMLAnchorElement) {
             const defaultHref = link.dataset.liveDefaultHref || link.href;
-            const videoId = typeof entry?.video_id === 'string' && /^[A-Za-z0-9_-]{11}$/.test(entry.video_id)
-              ? entry.video_id
-              : null;
-            const useWatchPage = dateMatches && videoId && (verifiedState === 'live' || verifiedState === 'upcoming');
+            const videoId = typeof entry?.video_id === 'string' && /^[A-Za-z0-9_-]{11}$/.test(entry.video_id) ? entry.video_id : null;
+            const useWatchPage = dateMatches && videoId && (state === 'live' || state === 'upcoming');
             link.href = useWatchPage ? `https://www.youtube.com/watch?v=${videoId}` : defaultHref;
             link.textContent = isJa ? '公式ライブ ↗' : 'Official live ↗';
           }
         }
-        setOptionAvailable(liveNowOption, hasDetectorState, 'now');
-        setOptionAvailable(liveLikelyOption, hasLikelyState, 'likely');
         apply();
-        return hasDetectorState;
       };
-
       const scheduleRefresh = (delay) => {
         if (refreshTimer !== null) window.clearTimeout(refreshTimer);
-        refreshTimer = window.setTimeout(refreshLiveStatus, delay);
+        refreshTimer = window.setTimeout(refreshStreamStatus, delay);
       };
-
-      const refreshLiveStatus = async () => {
+      const refreshStreamStatus = async () => {
         try {
-          const endpoint = new URL('/api/live-status', location.origin);
-          const response = await fetch(endpoint, { headers: { accept: 'application/json' }, cache: 'no-store' });
+          const response = await fetch(new URL('/api/live-status', location.origin), { headers: { accept: 'application/json' }, cache: 'no-store' });
           if (!response.ok) throw new Error(`live status ${response.status}`);
           const payload = await response.json();
           if (payload?.configured !== true) throw new Error('live status not configured');
           lastPayload = payload;
-          applyLiveStatuses(lastPayload);
+          setStreamFeedAvailable(true);
+          applyStreamStatuses(lastPayload);
           const requestedRefresh = Number(payload?.refresh_after_seconds);
-          const refreshSeconds = Number.isFinite(requestedRefresh)
-            ? Math.min(3600, Math.max(60, requestedRefresh))
-            : 900;
+          const refreshSeconds = Number.isFinite(requestedRefresh) ? Math.min(3600, Math.max(60, requestedRefresh)) : 900;
           scheduleRefresh(refreshSeconds * 1000);
         } catch {
-          setOptionAvailable(liveNowOption, false, 'now');
+          setStreamFeedAvailable(false);
           lastPayload = { statuses: [] };
-          applyLiveStatuses(lastPayload);
+          applyStreamStatuses(lastPayload);
           scheduleRefresh(300_000);
         }
       };
-
-      for (const control of [search, country, authority, rank, live, date]) {
+      for (const control of [search, country, authority, rank, meetingState, stream, date]) {
         control.addEventListener('input', apply);
         control.addEventListener('change', apply);
       }
-
       reset.addEventListener('click', () => {
-        search.value = '';
-        country.value = '';
-        authority.value = '';
-        rank.value = '';
-        live.value = '';
-        date.value = '';
-        const url = new URL(location.href);
-        url.searchParams.delete('date');
-        history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
-        apply();
+        search.value = ''; country.value = ''; authority.value = ''; rank.value = ''; meetingState.value = ''; stream.value = ''; date.value = '';
+        const url = new URL(location.href); url.searchParams.delete('date'); history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`); apply();
       });
-
       document.addEventListener('click', (event) => {
         const target = event.target;
         if (!(target instanceof Element)) return;
         const countryTrigger = target.closest('[data-coverage-filter-country]');
         if (countryTrigger instanceof HTMLElement) {
           country.value = countryTrigger.dataset.coverageFilterCountry || '';
-          if (countryTrigger.dataset.coverageFilterLive) live.value = countryTrigger.dataset.coverageFilterLive;
-          apply();
-          root.scrollIntoView({ block: 'center' });
+          if (countryTrigger.dataset.coverageFilterLive) stream.value = countryTrigger.dataset.coverageFilterLive === 'now' ? 'live' : countryTrigger.dataset.coverageFilterLive;
+          apply(); root.scrollIntoView({ block: 'center' });
         }
       });
-
-      window.addEventListener('whr:timezonechange', () => {
-        syncDateOptions();
-        applyLiveStatuses(lastPayload);
-      });
-
+      window.addEventListener('whr:timezonechange', () => { syncDateOptions(); applyStreamStatuses(lastPayload); });
+      window.addEventListener('whr:meetingstatechange', apply);
       syncDateOptions();
       const requestedDate = new URLSearchParams(location.search).get('date');
       if (requestedDate && [...date.options].some((option) => option.value === requestedDate)) date.value = requestedDate;
-      setOptionAvailable(liveNowOption, false, 'now');
-      setOptionAvailable(liveLikelyOption, false, 'likely');
+      setStreamFeedAvailable(false);
       apply();
-      applyLiveStatuses(lastPayload);
-      refreshLiveStatus();
-      window.setInterval(() => applyLiveStatuses(lastPayload), 60_000);
+      refreshStreamStatus();
     };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init, { once: true });
-    } else {
-      init();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
   })();
 </script>
