@@ -7,19 +7,18 @@ const PUBLIC_CEILING = new Map([
   ['jra', 'A+'],
   ['nar-local-government-racing', 'A+'],
   ['banei-tokachi', 'A+'],
-  ['hkjc', 'A'],
+  ['hkjc', 'A+'],
   ['korea-racing-authority', 'A'],
   ['turkiye-jokey-kulubu', 'A'],
-  ['emirates-racing-authority', 'A'],
+  ['emirates-racing-authority', 'A+'],
 ]);
 const POLICY_ID = new Map([
-  ['jra', 'jra-reviewed-a-plus'],
-  ['nar-local-government-racing', 'nar-reviewed-a-plus'],
-  ['banei-tokachi', 'banei-reviewed-a-plus'],
-  ['hkjc', 'hkjc-reviewed-a'],
-  ['korea-racing-authority', 'kra-reviewed-a'],
+  ['jra', 'japan-jra-a-plus-default'],
+  ['nar-local-government-racing', 'nar-reviewed-a-plus-default'],
+  ['banei-tokachi', 'banei-reviewed-a-plus-default'],
+  ['hkjc', 'hkjc-reviewed-a-plus-default'],
   ['turkiye-jokey-kulubu', 'tjk-reviewed-a'],
-  ['emirates-racing-authority', 'uae-reviewed-a'],
+  ['emirates-racing-authority', 'era-review-a-plus-eligible'],
 ]);
 
 function arg(name, fallback = null) {
@@ -127,8 +126,8 @@ function detailRecord(meeting, record) {
     summary_note: 'Current official rolling-window race programme observation.',
   };
 }
-function publicMeeting(meeting, detail) {
-  const ceiling = PUBLIC_CEILING.get(meeting.authority_id);
+function publicMeeting(meeting, detail, previousPublic = null) {
+  const ceiling = previousPublic?.max_public_rank ?? PUBLIC_CEILING.get(meeting.authority_id);
   if (!ceiling) throw new Error(`missing public ceiling for authority ${meeting.authority_id}`);
   let effective = capRank(meeting.capability_rank, ceiling);
   if (rank(effective) >= rank('A') && (!detail || !detail.timetable_rows.every((row) => row.label && row.post_time_local))) {
@@ -146,19 +145,20 @@ function publicMeeting(meeting, detail) {
     effective_public_rank: effective,
     first_race_time_local: meeting.first_race_time_local ?? null,
     last_race_time_local: meeting.last_race_time_local ?? null,
-    policy_id: POLICY_ID.get(meeting.authority_id) ?? null,
+    policy_id: previousPublic?.policy_id ?? POLICY_ID.get(meeting.authority_id) ?? null,
     source_status: 'verified',
     official_source_url: meeting.source_trace?.official_source_url ?? null,
     last_checked_date: meeting.freshness?.last_checked_date ?? null,
     detail_path: ['A', 'A+'].includes(effective) ? `/timetable/meetings/${meeting.meeting_id}/` : null,
-    show_live_label: false,
-    show_replay_label: false,
+    show_live_label: previousPublic?.show_live_label ?? false,
+    show_replay_label: previousPublic?.show_replay_label ?? false,
   };
 }
-function publicDetail(meeting, detail, listRow) {
+function publicDetail(meeting, detail, listRow, previousPublicDetail = null) {
   if (!detail || !['A', 'A+'].includes(listRow.effective_public_rank)) return null;
   const plus = listRow.effective_public_rank === 'A+';
   return {
+    ...(previousPublicDetail ?? {}),
     meeting_id: meeting.meeting_id,
     country_id: meeting.country_id,
     authority_id: meeting.authority_id,
@@ -176,8 +176,8 @@ function publicDetail(meeting, detail, listRow) {
     show_distance: plus,
     show_surface: plus,
     show_course: plus,
-    show_live_label: false,
-    show_replay_label: false,
+    show_live_label: previousPublicDetail?.show_live_label ?? false,
+    show_replay_label: previousPublicDetail?.show_replay_label ?? false,
     timetable_rows: detail.timetable_rows.map((row) => plus ? row : ({ label: row.label, post_time_local: row.post_time_local })),
   };
 }
@@ -210,15 +210,18 @@ for (const record of records) {
     outcomes.protected_higher_rank += 1;
     continue;
   }
+  const previousPublic = publicById.get(record.meeting_id) ?? null;
+  const previousPublicDetail = publicDetailsById.get(record.meeting_id) ?? null;
   const next = canonicalRecord(record, checkedAt, previous);
   const nextDetail = detailRecord(next, record);
   const unchanged = previous && JSON.stringify({ ...previous, freshness: undefined }) === JSON.stringify({ ...next, freshness: undefined });
   outcomes[previous ? (unchanged ? 'no_op' : 'update') : 'add'] += 1;
   canonicalById.set(next.meeting_id, next);
   if (nextDetail) detailsById.set(next.meeting_id, nextDetail);
-  const listRow = publicMeeting(next, nextDetail ?? detailsById.get(next.meeting_id));
+  const effectiveDetail = nextDetail ?? detailsById.get(next.meeting_id);
+  const listRow = publicMeeting(next, effectiveDetail, previousPublic);
   publicById.set(next.meeting_id, listRow);
-  const detailRow = publicDetail(next, nextDetail ?? detailsById.get(next.meeting_id), listRow);
+  const detailRow = publicDetail(next, effectiveDetail, listRow, previousPublicDetail);
   if (detailRow) publicDetailsById.set(next.meeting_id, detailRow);
   else publicDetailsById.delete(next.meeting_id);
 }
