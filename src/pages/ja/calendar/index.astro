@@ -6,26 +6,33 @@ import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
 import CalendarLivePlayers from '../../../components/CalendarLivePlayers.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
-import { getCurrentCalendarWindowGroups, getTimetableDataState, getTimetableDateContext } from '../../../data/timetableMeetingRows';
+import {
+  getCurrentCalendarWindowGroups,
+  getTimetableDataState,
+  getTimetableDateContext,
+  getTimetableProjectionCandidateGroups,
+} from '../../../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const groupedCalendarRecords = getCurrentCalendarWindowGroups(context);
+void getCurrentCalendarWindowGroups;
+const groupedCalendarRecords = getTimetableProjectionCandidateGroups(context.windowStart, context.windowEndExclusive);
 const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
+const serverReferenceTimeZone = context.timeZone;
 ---
 
 <BaseLayout
   title="30日間の開催カレンダー | 競馬どこ？"
-  description={`${context.windowStart}から${context.windowEndInclusive}までの競馬開催情報を日付別に確認できます。`}
+  description={`${context.windowStart}から${context.windowEndInclusive}までを基準にした30日間の競馬開催情報です。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
 >
-  <section class="hero" aria-labelledby="page-title">
+  <section class="hero" aria-labelledby="page-title" data-server-reference-timezone={serverReferenceTimeZone}>
     <p class="hero__eyebrow">開催カレンダー</p>
     <h1 id="page-title">30日間の開催カレンダー</h1>
     <p class="hero__summary">
-      {context.windowStart}から{context.windowEndInclusive}までの開催を日付別に確認できます。時刻は{context.timeZone}を基準に表示します。
+      下の表示タイムゾーンを選ぶと、開催日と取得済みのレース時刻をそのタイムゾーンへ変換し、30日間の対象範囲も選択したタイムゾーンに合わせます。
     </p>
   </section>
 
@@ -39,6 +46,7 @@ const windowRecords = groupedCalendarRecords.flatMap((group) => group.records);
     <TimetableMeetingList
       groups={groupedCalendarRecords}
       lang="ja"
+      viewMode="window30"
       emptyLabel="この30日間の開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
     />
   </section>
