@@ -37,6 +37,14 @@ function extractMeetingRows(html) {
   }));
 }
 
+function assertSameMeetingIds(leftName, leftHtml, rightName, rightHtml) {
+  const left = extractMeetingRows(leftHtml).map((row) => row.meetingId).filter(Boolean).sort();
+  const right = extractMeetingRows(rightHtml).map((row) => row.meetingId).filter(Boolean).sort();
+  if (left.length !== right.length || left.some((meetingId, index) => meetingId !== right[index])) {
+    fail(`${leftName} and ${rightName} render different meeting-ID candidate sets.`);
+  }
+}
+
 const pages = {
   calendarEn: readHtml('dist/calendar/index.html'),
   calendarJa: readHtml('dist/ja/calendar/index.html'),
@@ -47,6 +55,11 @@ const pages = {
 };
 
 const publicData = JSON.parse(readFileSync(path.join(root, 'data/generated/timetable/public/meeting-list.json'), 'utf8'));
+const publicViewModelSource = readFileSync(path.join(root, 'src/lib/timetable/publicTimetableViewModel.ts'), 'utf8');
+const reviewedExcludedBlock = /const reviewedPublicExcludedMeetingIds = new Set<string>\(\[([\s\S]*?)\]\);/.exec(publicViewModelSource)?.[1] ?? '';
+const reviewedPublicExcludedMeetingIds = new Set(
+  [...reviewedExcludedBlock.matchAll(/['"]([^'"]+)['"]/g)].map((match) => match[1]),
+);
 const context = createCalendarDateContext({ referenceDate, timeZone });
 const records = publicData.meetings ?? [];
 const state = evaluateCalendarDataState({ records, generatedAt: publicData.generated_at, context });
@@ -117,11 +130,17 @@ for (const [name, html, canonicalCandidates, candidateStart, candidateEndExclusi
   if (outOfWindowRows.length) {
     fail(`${name} has ${outOfWindowRows.length} candidate rows outside ${candidateStart}..${candidateEndExclusive}.`);
   }
-  const missingCanonical = canonicalCandidates.filter((record) => !renderedIds.has(record.meeting_id));
+  const missingCanonical = canonicalCandidates.filter(
+    (record) => !renderedIds.has(record.meeting_id) && !reviewedPublicExcludedMeetingIds.has(record.meeting_id),
+  );
   if (missingCanonical.length) {
-    fail(`${name} omits ${missingCanonical.length} canonical candidate rows (${missingCanonical.slice(0, 5).map((record) => record.meeting_id).join(', ')}).`);
+    fail(`${name} omits ${missingCanonical.length} non-excluded canonical candidate rows (${missingCanonical.slice(0, 5).map((record) => record.meeting_id).join(', ')}).`);
   }
 }
+
+assertSameMeetingIds('calendarEn', pages.calendarEn, 'calendarJa', pages.calendarJa);
+assertSameMeetingIds('todayEn', pages.todayEn, 'todayJa', pages.todayJa);
+assertSameMeetingIds('tomorrowEn', pages.tomorrowEn, 'tomorrowJa', pages.tomorrowJa);
 
 for (const [name, html, scope] of [
   ['calendarEn', pages.calendarEn, 'rolling-30'],
@@ -155,6 +174,7 @@ console.log(`CALENDAR_CANONICAL_CANDIDATES: ${calendarCandidates.length}`);
 console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
 console.log(`TOMORROW_MEETINGS: ${tomorrowRecords.length}`);
 console.log(`DAY_CANONICAL_CANDIDATES: ${dayCandidates.length}`);
+console.log(`REVIEWED_PUBLIC_EXCLUSIONS: ${reviewedPublicExcludedMeetingIds.size}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
 console.log('TIMEZONE_PROJECTION_CANDIDATES: pass');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
