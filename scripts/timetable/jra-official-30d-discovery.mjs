@@ -1,4 +1,4 @@
-import { parseJraProgrammePage } from './japan-official-30d-adapters.mjs';
+import { parseJraProgrammePage } from './jra-programme-parser.mjs';
 
 const JRA_HEADERS = {
   'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; public timetable acquisition)',
