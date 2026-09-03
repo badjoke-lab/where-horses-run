@@ -1,6 +1,9 @@
 ---
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import StructuredDataBaseline from '../components/StructuredDataBaseline.astro';
+import { siteData } from '../lib/data';
+import { getPublicTimetableMeetingRowsByCountry } from '../lib/timetable/publicTimetableViewModel';
+import { addCalendarDays, createCalendarDateContext } from '../lib/timetable/calendarDateContext.mjs';
 import '../styles/theme.css';
 import '../styles/base.css';
 import '../styles/layout.css';
@@ -61,6 +64,21 @@ const navigationItems = [
 ];
 const isCurrentNavigationItem = (href: string) =>
   canonicalPathname === href || canonicalPathname.startsWith(href);
+
+const countryPathMatch = /^\/(?:ja\/)?countries\/([^/]+)\/$/.exec(canonicalPathname);
+const countrySlug = countryPathMatch?.[1] ?? null;
+const countryId = countrySlug
+  ? siteData.countries.find((country) => country.slug === countrySlug)?.id ?? null
+  : null;
+const countryDateContext = createCalendarDateContext();
+const countryCandidateStart = addCalendarDays(countryDateContext.windowStart, -2);
+const countryCandidateEndExclusive = addCalendarDays(countryDateContext.windowEndExclusive, 2);
+const countryTimezoneCandidates = countryId
+  ? getPublicTimetableMeetingRowsByCountry(countryId).filter(
+      (meeting) => meeting.date >= countryCandidateStart && meeting.date < countryCandidateEndExclusive,
+    )
+  : [];
+const countryTimezoneCandidatesJson = JSON.stringify(countryTimezoneCandidates).replace(/</g, '\\u003c');
 
 const siteUrl = 'https://whr.badjoke-lab.com';
 const canonicalUrl = `${siteUrl}${canonicalPathname}`;
@@ -211,6 +229,15 @@ const socialImageAlt = isJapanese
       </footer>
     </div>
 
+    {countryId && (
+      <script
+        type="application/json"
+        data-country-timezone-candidates
+        data-country-id={countryId}
+        set:html={countryTimezoneCandidatesJson}
+      ></script>
+    )}
+
     <script is:inline>
       (() => {
         const isTimeZoneSupported = (timeZone) => {
@@ -221,6 +248,60 @@ const socialImageAlt = isJapanese
           } catch {
             return false;
           }
+        };
+        const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+          timeZone,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hourCycle: 'h23',
+        }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+        const localDateTimeToInstant = (dateText, timeText, timeZone) => {
+          const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
+          const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
+          if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
+          const targetUtc = Date.UTC(
+            Number(dateMatch[1]),
+            Number(dateMatch[2]) - 1,
+            Number(dateMatch[3]),
+            Number(timeMatch[1]),
+            Number(timeMatch[2]),
+            Number(timeMatch[3] ?? '0'),
+          );
+          let guess = targetUtc;
+          for (let pass = 0; pass < 4; pass += 1) {
+            const parts = dateParts(new Date(guess), timeZone);
+            const representedUtc = Date.UTC(
+              Number(parts.year),
+              Number(parts.month) - 1,
+              Number(parts.day),
+              Number(parts.hour),
+              Number(parts.minute),
+              Number(parts.second),
+            );
+            const correction = targetUtc - representedUtc;
+            guess += correction;
+            if (correction === 0) break;
+          }
+          return new Date(guess);
+        };
+        const formatProjectedDate = (instant, timeZone) => {
+          const parts = dateParts(instant, timeZone);
+          return `${parts.year}-${parts.month}-${parts.day}`;
+        };
+        const formatProjectedTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
+          timeZone,
+          hour: '2-digit',
+          minute: '2-digit',
+          hourCycle: 'h23',
+        }).format(instant);
+        const addDateDays = (dateText, days) => {
+          const date = new Date(`${dateText}T00:00:00.000Z`);
+          date.setUTCDate(date.getUTCDate() + days);
+          return date.toISOString().slice(0, 10);
         };
         const propagateTimeZone = (timeZone) => {
           if (!isTimeZoneSupported(timeZone)) return;
@@ -250,11 +331,211 @@ const socialImageAlt = isJapanese
             document.querySelectorAll('[data-timezone-window-end]').forEach((node) => { node.textContent = detail.windowEndInclusive; });
           }
         };
+        const populateTimeZones = (select) => {
+          const zones = typeof Intl.supportedValuesOf === 'function'
+            ? Intl.supportedValuesOf('timeZone')
+            : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Seoul', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
+          const values = Array.from(new Set(['UTC', ...zones]));
+          select.replaceChildren(...values.map((zone) => {
+            const option = document.createElement('option');
+            option.value = zone;
+            option.textContent = zone;
+            return option;
+          }));
+        };
+        const localizedRacecourseMap = () => {
+          const names = new Map();
+          document.querySelectorAll('.country-table--racecourses a[href]').forEach((anchor) => {
+            if (!(anchor instanceof HTMLAnchorElement)) return;
+            const match = /\/tracks\/([^/]+)\/?$/.exec(new URL(anchor.href).pathname);
+            if (match) names.set(match[1], anchor.textContent?.trim() || match[1]);
+          });
+          return names;
+        };
+        const authorityLabel = (record, isJa) => {
+          if (record.authority_id === 'jra') return 'JRA';
+          if (record.authority_id === 'nar-local-government-racing') return isJa ? '地方競馬' : 'Local racing';
+          if (record.authority_id === 'banei-tokachi') return isJa ? 'ばんえい' : 'Banei';
+          if (record.authority_id === 'hkjc') return 'HKJC';
+          if (record.authority_id === 'korea-racing-authority') return 'KRA';
+          if (record.authority_id === 'emirates-racing-authority') return 'ERA';
+          if (record.authority_id === 'turkiye-jokey-kulubu') return 'TJK';
+          return record.authority_label || record.authority_id || (isJa ? '未掲載' : 'Not listed');
+        };
+        const projectCountryRecord = (record, timeZone) => {
+          const instant = record.first_race_time_local
+            ? localDateTimeToInstant(record.date, record.first_race_time_local, record.timezone)
+            : null;
+          return {
+            record,
+            instant,
+            projectedDate: instant ? formatProjectedDate(instant, timeZone) : record.date,
+            projectedTime: instant ? formatProjectedTime(instant, timeZone) : null,
+          };
+        };
+        const createCountryTable = (records, timeZone, isJa, showDetails, racecourseNames) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'country-table-wrap';
+          wrap.dataset.countryTimezoneGenerated = 'true';
+          const table = document.createElement('table');
+          table.className = 'country-table';
+          const thead = document.createElement('thead');
+          const headRow = document.createElement('tr');
+          const headers = showDetails
+            ? (isJa ? ['日付', '競馬場', '体系', '開始時刻', 'タイムゾーン', '公式'] : ['Date', 'Racecourse', 'System', 'Start time', 'Timezone', 'Official'])
+            : (isJa ? ['日付', '競馬場'] : ['Date', 'Racecourse']);
+          headers.forEach((label) => {
+            const th = document.createElement('th');
+            th.scope = 'col';
+            th.textContent = label;
+            headRow.append(th);
+          });
+          thead.append(headRow);
+          table.append(thead);
+          const tbody = document.createElement('tbody');
+          records.forEach(({ record, projectedDate, projectedTime }) => {
+            const row = document.createElement('tr');
+            row.dataset.countryTimezoneMeetingRow = 'true';
+            row.dataset.meetingId = record.meeting_id || '';
+            const values = [
+              projectedDate,
+              racecourseNames.get(record.racecourse_id) || record.racecourse_name || record.racecourse_id || (isJa ? '競馬場未確定' : 'Racecourse pending'),
+            ];
+            if (showDetails) {
+              values.push(
+                authorityLabel(record, isJa),
+                projectedTime || (isJa ? '未確認' : 'Not verified'),
+                projectedTime ? timeZone : (record.timezone || (isJa ? '現地時刻を確認' : 'Check local time')),
+              );
+            }
+            values.forEach((value, index) => {
+              const td = document.createElement('td');
+              td.dataset.label = headers[index] || '';
+              td.textContent = value;
+              if (projectedTime && index === 3) {
+                td.title = `${record.date} ${record.first_race_time_local} ${record.timezone}`;
+              }
+              row.append(td);
+            });
+            if (showDetails) {
+              const td = document.createElement('td');
+              td.dataset.label = headers[5];
+              if (record.official_source_url) {
+                const link = document.createElement('a');
+                link.href = record.official_source_url;
+                link.textContent = isJa ? '開く' : 'Open';
+                td.append(link);
+              } else {
+                td.textContent = isJa ? '未掲載' : 'Not listed';
+              }
+              row.append(td);
+            }
+            tbody.append(row);
+          });
+          table.append(tbody);
+          wrap.append(table);
+          return wrap;
+        };
+        const initializeCountryTimezoneProjection = () => {
+          const dataNode = document.querySelector('[data-country-timezone-candidates]');
+          const section = document.querySelector('#upcoming-meetings');
+          if (!(dataNode instanceof HTMLScriptElement) || !(section instanceof HTMLElement)) return;
+          let candidates = [];
+          try {
+            candidates = JSON.parse(dataNode.textContent || '[]');
+          } catch {
+            return;
+          }
+          const isJa = document.documentElement.lang === 'ja';
+          const racecourseNames = localizedRacecourseMap();
+          const control = document.createElement('div');
+          control.className = 'timezone-control';
+          control.dataset.countryTimezoneControl = 'true';
+          const label = document.createElement('label');
+          const labelText = document.createElement('span');
+          labelText.textContent = isJa ? '表示タイムゾーン' : 'Display timezone';
+          const select = document.createElement('select');
+          select.dataset.countryTimezoneSelect = 'true';
+          select.setAttribute('aria-label', labelText.textContent);
+          populateTimeZones(select);
+          label.append(labelText, select);
+          const output = document.createElement('output');
+          output.dataset.countryTimezoneStatus = 'true';
+          control.append(label, output);
+          const intro = section.querySelector('.country-section__intro');
+          intro?.insertAdjacentElement('afterend', control);
+          const requested = new URL(window.location.href).searchParams.get('tz');
+          const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const initial = isTimeZoneSupported(requested)
+            ? requested
+            : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+          const apply = (timeZone, updateHistory) => {
+            const today = formatProjectedDate(new Date(), timeZone);
+            const endExclusive = addDateDays(today, 30);
+            const projected = candidates
+              .map((record) => projectCountryRecord(record, timeZone))
+              .filter((item) => item.projectedDate >= today && item.projectedDate < endExclusive)
+              .sort((left, right) =>
+                left.projectedDate.localeCompare(right.projectedDate)
+                || (left.projectedTime || '99:99').localeCompare(right.projectedTime || '99:99')
+                || String(left.record.meeting_id || '').localeCompare(String(right.record.meeting_id || '')),
+              );
+            section.querySelectorAll('[data-country-timezone-generated], .country-table-wrap, details.country-more, .card.country-card').forEach((node) => {
+              if (node === control || node.contains(control)) return;
+              node.remove();
+            });
+            const showDetails = projected.some(({ record }) => ['A+', 'A', 'B+', 'B'].includes(record.effective_public_rank || record.capability_rank));
+            if (!projected.length) {
+              const empty = document.createElement('div');
+              empty.className = 'card country-card';
+              empty.dataset.countryTimezoneGenerated = 'true';
+              const p = document.createElement('p');
+              p.textContent = isJa
+                ? '選択した表示タイムゾーンの30日間に、確認済み公開開催はありません。最新日程は公式ソースで確認してください。'
+                : 'No reviewed public meeting is listed in the selected 30-day display window. Use official sources for the latest schedule.';
+              empty.append(p);
+              section.append(empty);
+            } else {
+              section.append(createCountryTable(projected.slice(0, 8), timeZone, isJa, showDetails, racecourseNames));
+              if (projected.length > 8) {
+                const details = document.createElement('details');
+                details.className = 'country-more';
+                details.dataset.countryTimezoneGenerated = 'true';
+                const summary = document.createElement('summary');
+                const count = projected.length - 8;
+                summary.textContent = isJa ? `さらに${count}件を表示` : `Show ${count} more meetings`;
+                details.append(summary, createCountryTable(projected.slice(8), timeZone, isJa, showDetails, racecourseNames));
+                section.append(details);
+              }
+            }
+            select.value = timeZone;
+            output.textContent = timeZone;
+            if (updateHistory) {
+              const url = new URL(window.location.href);
+              url.searchParams.set('tz', timeZone);
+              window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+            }
+            window.dispatchEvent(new CustomEvent('whr:timezonechange', {
+              detail: {
+                timeZone,
+                windowStart: today,
+                windowEndInclusive: addDateDays(endExclusive, -1),
+                scope: 'country',
+              },
+            }));
+          };
+          apply(initial, new URL(window.location.href).searchParams.get('tz') !== initial);
+          select.addEventListener('change', () => {
+            const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+            apply(selected, true);
+          });
+        };
         const requested = new URL(window.location.href).searchParams.get('tz');
         if (isTimeZoneSupported(requested)) propagateTimeZone(requested);
         window.addEventListener('whr:timezonechange', (event) => {
           applyProjectionMetadata(event.detail);
         });
+        initializeCountryTimezoneProjection();
       })();
     </script>
   </body>
