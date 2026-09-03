@@ -7,6 +7,38 @@ const POLICY_ID = 'tjk-reviewed-a';
 const ANNUAL_SOURCE_URL = 'https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu';
 const WINDOW_START = '2026-09-03';
 const WINDOW_END_EXCLUSIVE = '2026-10-03';
+const MIZUSAWA_AUTHORITY_ID = 'nar-local-government-racing';
+const MIZUSAWA_SOURCE_URL = 'https://www.iwatekeiba.or.jp/';
+
+const mizusawaReviewedRows = [
+  ['2026-09-06', '12:00', '18:00'],
+  ['2026-09-07', '11:45', '18:15'],
+  ['2026-09-08', '11:45', '18:15'],
+  ['2026-09-13', '11:30', '18:05'],
+  ['2026-09-14', '11:40', '18:05'],
+  ['2026-09-15', '11:30', '18:00'],
+].map(([date, firstRaceTime, lastRaceTime]) => ({
+  meeting_id: `nar-mizusawa-racecourse-${date}`,
+  country_id: 'japan',
+  authority_id: MIZUSAWA_AUTHORITY_ID,
+  racecourse_id: 'mizusawa-racecourse',
+  date,
+  timezone: 'Asia/Tokyo',
+  capability_rank: 'B+',
+  max_public_rank: 'B+',
+  effective_public_rank: 'B+',
+  first_race_time_local: firstRaceTime,
+  last_race_time_local: lastRaceTime,
+  policy_id: 'nar-reviewed-a-plus',
+  source_status: 'verified',
+  official_source_url: MIZUSAWA_SOURCE_URL,
+  last_checked_date: '2026-09-03',
+  detail_path: null,
+  show_live_label: false,
+  show_replay_label: false,
+} as const));
+
+const mizusawaReviewedMeetingIds = new Set(mizusawaReviewedRows.map((meeting) => meeting.meeting_id));
 
 type RankARecord = {
   readonly source_url: string;
@@ -30,15 +62,18 @@ function parseMeetingId(meetingId: string): { racecourseId: string; date: string
 }
 
 export function isTjkSupplementWindowMeeting(meeting: {
+  readonly meeting_id: string;
   readonly authority_id: string;
   readonly date: string;
 }): boolean {
-  return meeting.authority_id === AUTHORITY_ID
-    && meeting.date >= WINDOW_START
-    && meeting.date < WINDOW_END_EXCLUSIVE;
+  return (
+    meeting.authority_id === AUTHORITY_ID
+      && meeting.date >= WINDOW_START
+      && meeting.date < WINDOW_END_EXCLUSIVE
+  ) || mizusawaReviewedMeetingIds.has(meeting.meeting_id);
 }
 
-export const tjkPublicMeetingRows = supplement.meeting_ids.map((meetingId) => {
+const tjkRows = supplement.meeting_ids.map((meetingId) => {
   const { racecourseId, date } = parseMeetingId(meetingId);
   const rankA = supplement.rank_a[meetingId];
   const rank = rankA ? 'A' : 'C';
@@ -64,6 +99,11 @@ export const tjkPublicMeetingRows = supplement.meeting_ids.map((meetingId) => {
     show_replay_label: false,
   } as const;
 });
+
+export const tjkPublicMeetingRows = [
+  ...tjkRows,
+  ...mizusawaReviewedRows,
+] as const;
 
 export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([meetingId, rankA]) => {
   const { racecourseId, date } = parseMeetingId(meetingId);
@@ -94,8 +134,8 @@ export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([m
   } as const;
 });
 
-if (tjkPublicMeetingRows.length !== 63) {
-  throw new Error(`TJK supplement must contain 63 meetings, got ${tjkPublicMeetingRows.length}`);
+if (tjkRows.length !== 63) {
+  throw new Error(`TJK supplement must contain 63 meetings, got ${tjkRows.length}`);
 }
 if (tjkPublicMeetingDetails.length !== 6) {
   throw new Error(`TJK supplement must contain 6 Rank A details, got ${tjkPublicMeetingDetails.length}`);
