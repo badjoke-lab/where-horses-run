@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DisplayTimeZoneSelector from '../../../components/DisplayTimeZoneSelector.astro';
 import {
   getPublicTimetableMeetingDetail,
   getPublicTimetableMeetingRows,
@@ -10,13 +11,9 @@ import { getCountries, getRacecourses } from '../../../lib/data';
 
 export function getStaticPaths() {
   const meetings = getPublicTimetableMeetingRows().filter((meeting) => meeting.detail_path !== null);
-
   return meetings.map((meeting) => ({
     params: { meeting_id: meeting.meeting_id },
-    props: {
-      meeting,
-      detail: getPublicTimetableMeetingDetail(meeting.meeting_id),
-    },
+    props: { meeting, detail: getPublicTimetableMeetingDetail(meeting.meeting_id) },
   }));
 }
 
@@ -26,24 +23,19 @@ interface Props {
 }
 
 const { meeting, detail } = Astro.props;
-
-if (!detail) {
-  throw new Error(`Missing public meeting detail for ${meeting.meeting_id}`);
-}
+if (!detail) throw new Error(`Missing public meeting detail for ${meeting.meeting_id}`);
 
 const displayValue = (value: string | number | null | undefined) => value ?? 'Not displayed';
-const titleCaseId = (value: string) =>
-  value
-    .replace(/-racecourse$/, '')
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
+const titleCaseId = (value: string) => value
+  .replace(/-racecourse$/, '')
+  .split('-')
+  .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+  .join(' ');
 
 const countries = getCountries();
 const racecourses = getRacecourses();
 const country = countries.find((entry) => entry.id === meeting.country_id);
 const track = racecourses.find((entry) => entry.id === meeting.racecourse_id);
-
 const racecourseName = track?.name_en ?? `${titleCaseId(meeting.racecourse_id)} Racecourse`;
 const authorityNameById: Record<string, string> = {
   jra: 'Japan Racing Association',
@@ -51,18 +43,19 @@ const authorityNameById: Record<string, string> = {
   'nar-local-government-racing': 'National Association of Racing',
   'banei-tokachi': 'Banei Tokachi',
   'emirates-racing-authority': 'Emirates Racing Authority',
+  'turkiye-jokey-kulubu': 'Türkiye Jokey Kulübü',
 };
 const countryName = country?.name_en ?? titleCaseId(meeting.country_id);
 const countryPath = country ? `/countries/${country.slug}/` : '/countries/';
 const trackPath = track ? `/tracks/${track.slug}/` : '/tracks/';
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
-
 const pageKind = detail.effective_public_rank === 'A+' ? 'Programme summary' : 'Race timetable';
 const hasRaceRows = detail.timetable_rows.length > 0;
 const hasRaceName = detail.show_race_name && detail.timetable_rows.some((row) => row.race_name);
 const hasDistance = detail.show_distance && detail.timetable_rows.some((row) => row.distance_m !== undefined);
 const hasSurface = detail.show_surface && detail.timetable_rows.some((row) => row.surface);
 const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.course_label);
+const firstPublishedPostTime = detail.timetable_rows[0]?.post_time_local ?? meeting.first_race_time_local ?? '';
 
 const timeCoverageNoteByRank: Record<string, string> = {
   A: 'This public detail page shows race labels and post times only.',
@@ -72,7 +65,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
 
 <BaseLayout
   title={`${racecourseName} ${pageKind.toLowerCase()} | Where Horses Run`}
-  description="Public-safe meeting detail with official-source link and policy-controlled timetable coverage."
+  description="Meeting detail with dates and published post times convertible to the visitor-selected display timezone."
   canonicalPath={`/timetable/meetings/${meeting.meeting_id}/`}
   alternatePath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
 >
@@ -82,12 +75,19 @@ const timeCoverageNoteByRank: Record<string, string> = {
     <a href="/major-countries/current-timetable/">← Current Timetable</a>
   </nav>
 
+  <DisplayTimeZoneSelector />
+
   <section aria-labelledby="page-title">
     <p class="eyebrow">{pageKind}</p>
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-    <p>{meeting.date}</p>
+    <p
+      data-whr-zoned-date
+      data-source-date={meeting.date}
+      data-source-time={firstPublishedPostTime}
+      data-source-timezone={detail.timezone}
+    >{meeting.date}</p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Timezone: {detail.timezone}</p>
+    <p>Venue timezone: {detail.timezone}</p>
     <p>Capability rank: {detail.capability_rank}</p>
     <p>Public rank: {detail.effective_public_rank}</p>
     <p>Publication policy: {detail.policy_id}</p>
@@ -97,6 +97,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
   <section aria-labelledby="coverage-title">
     <h2 id="coverage-title">Time coverage</h2>
     <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
+    <p>Displayed dates and post times use the selected display timezone. Venue timezone remains shown as source context.</p>
     <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
   </section>
 
@@ -120,7 +121,12 @@ const timeCoverageNoteByRank: Record<string, string> = {
             {detail.timetable_rows.map((row) => (
               <tr>
                 <td>{row.label}</td>
-                <td>{row.post_time_local}</td>
+                <td><time
+                  data-whr-zoned-datetime
+                  data-source-date={meeting.date}
+                  data-source-time={row.post_time_local}
+                  data-source-timezone={detail.timezone}
+                >{row.post_time_local}</time></td>
                 {hasRaceName && <td>{displayValue(row.race_name)}</td>}
                 {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
                 {hasSurface && <td>{displayValue(row.surface)}</td>}
@@ -147,43 +153,11 @@ const timeCoverageNoteByRank: Record<string, string> = {
 </BaseLayout>
 
 <style>
-  .detail-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-block-end: 2rem;
-  }
-
-  .eyebrow {
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  section {
-    margin-block-start: 2rem;
-  }
-
-  h1,
-  h2,
-  p {
-    margin-block: 0 0.75rem;
-  }
-
-  .table-scroll {
-    overflow-x: auto;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  th,
-  td {
-    border-bottom: 1px solid var(--whr-color-border);
-    padding: 0.55rem 0.4rem;
-    text-align: left;
-    vertical-align: top;
-  }
+  .detail-nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-block-end: 2rem; }
+  .eyebrow { font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  section { margin-block-start: 2rem; }
+  h1, h2, p { margin-block: 0 0.75rem; }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid var(--whr-color-border); padding: 0.55rem 0.4rem; text-align: left; vertical-align: top; }
 </style>
