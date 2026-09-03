@@ -4,6 +4,7 @@ import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30d } from './jra-official-30d-discovery.mjs';
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
+import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 
 function japanToday(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -51,6 +52,7 @@ const adapters = {
   'nar-standard': {
     ...narStandardAdapter,
     discover: async (context) => (await narStandardAdapter.discover(context)).map(normalizeNarMeetingId),
+    inspect: withSagaOfficialStartFallback(narStandardAdapter.inspect),
   },
   banei: {
     ...japanOfficial30dAdapters.banei,
