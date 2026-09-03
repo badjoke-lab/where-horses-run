@@ -119,6 +119,25 @@ const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeeting
   ],
 ]);
 
+const reviewedPublicDetailCorrections = new Map<string, Partial<PublicTimetableMeetingDetail>>([
+  [
+    'kra-busan-gyeongnam-racecourse-2026-09-06',
+    {
+      official_source_url: 'https://race.kra.co.kr/thisweekrace/ThisWeekDetailInfoList.do?Act=01&Sub=2&meet=',
+      last_checked_date: '2026-09-03',
+      source_status: 'verified',
+      timetable_rows: [
+        { label: 'Race 1', post_time_local: '11:25' },
+        { label: 'Race 2', post_time_local: '12:25' },
+        { label: 'Race 3', post_time_local: '13:15' },
+        { label: 'Race 4', post_time_local: '14:05' },
+        { label: 'Race 5', post_time_local: '14:55' },
+        { label: 'Race 6', post_time_local: '15:45' },
+      ],
+    },
+  ],
+]);
+
 const reviewedPublicExcludedMeetingIds = new Set<string>([
   'era-meydan-racecourse-2026-09-30',
 ]);
@@ -308,9 +327,11 @@ const publicMeetingRows: readonly PublicTimetableMeetingRow[] = [
 const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
   meetingDetailsDataset.details.map((detail) => {
     const override = detailOverrideIndex.get(detail.meeting_id);
-    return override && canApplyReviewedOverride(detail.last_checked_date)
+    const withRankOverride = override && canApplyReviewedOverride(detail.last_checked_date)
       ? { ...detail, ...override }
       : detail;
+    const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
+    return correction ? { ...withRankOverride, ...correction } : withRankOverride;
   });
 
 export function getPublicTimetableGeneratedAt(): string {
