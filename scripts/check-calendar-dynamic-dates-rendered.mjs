@@ -29,7 +29,7 @@ function readHtml(relativePath) {
 }
 
 function countMeetingRows(html) {
-  return (html.match(/<tr\b[^>]*\bdata-calendar-meeting-row\b[^>]*>/g) ?? []).length;
+  return (html.match(/<li\b[^>]*\bdata-calendar-meeting-row\b[^>]*>/g) ?? []).length;
 }
 
 const pages = {
