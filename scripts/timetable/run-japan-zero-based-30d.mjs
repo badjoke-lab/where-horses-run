@@ -3,6 +3,7 @@ import path from 'node:path';
 import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30d } from './jra-official-30d-discovery.mjs';
+import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 
 function japanToday(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -27,6 +28,10 @@ const adapters = {
   jra: {
     ...japanOfficial30dAdapters.jra,
     discover: discoverJraOfficial30d,
+  },
+  banei: {
+    ...japanOfficial30dAdapters.banei,
+    discover: discoverBaneiOfficial30d,
   },
 };
 const result = await runJapanZeroBased30d({
