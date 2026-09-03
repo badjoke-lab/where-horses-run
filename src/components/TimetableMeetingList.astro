@@ -357,7 +357,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   .meeting-list { display: grid; list-style: none; margin: 0; padding: 0; }
   .meeting-row { align-items: center; background: #fff; border-block-end: 1px solid rgba(0,0,0,.12); display: grid; gap: .35rem .7rem; grid-template-columns: minmax(12rem,1.45fr) minmax(10rem,1fr) minmax(7rem,.65fr) 3rem minmax(13rem,auto); padding: .48rem .55rem; transition: background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease; }
   .meeting-row[data-meeting-state='running'] { background: #fff0ef; box-shadow: inset .25rem 0 0 #c40000; }
-  .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='today'] { background: #fff3c4; box-shadow: inset .25rem 0 0 #d18a00; }
+  .meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today'], .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='today'] { background: #fff3c4; box-shadow: inset .25rem 0 0 #d18a00; }
   .meeting-row[data-meeting-state='ended'], .meeting-row[data-meeting-state='unknown'][data-meeting-day-state='past'] { background: #f3f3f3; opacity: .58; }
   .meeting-row[data-stream-state='live'] { box-shadow: inset .25rem 0 0 #c40000; }
   .meeting-row[data-stream-state='live'][data-meeting-state='ended'] { opacity: .82; }
