@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-09-03T18:06:12.272Z",
+  "checked_at": "2026-09-03T21:44:41.916Z",
   "range": {
     "start": "2026-09-04",
     "end_exclusive": "2026-09-07",
@@ -65,7 +65,7 @@
       "outcome": "details_pending",
       "reason": "scheduled_pending_details",
       "official_rank": "C",
-      "public_rank": "C"
+      "public_rank": "B+"
     },
     {
       "meeting_id": "nar-oi-racecourse-2026-09-04",
@@ -101,23 +101,26 @@
     {
       "meeting_id": "nar-kochi-racecourse-2026-09-05",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A",
-      "public_rank": "A"
+      "outcome": "conflict",
+      "reason": "official_rank_regression",
+      "official_rank": "C",
+      "public_rank": "A+"
     },
     {
       "meeting_id": "nar-kochi-racecourse-2026-09-06",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A",
-      "public_rank": "A"
+      "outcome": "conflict",
+      "reason": "official_rank_regression",
+      "official_rank": "C",
+      "public_rank": "A+"
     },
     {
       "meeting_id": "nar-saga-racecourse-2026-09-05",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A",
-      "public_rank": "A"
+      "outcome": "conflict",
+      "reason": "official_rank_regression",
+      "official_rank": "C",
+      "public_rank": "A+"
     },
     {
       "meeting_id": "nar-saga-racecourse-2026-09-06",
@@ -139,7 +142,7 @@
       "outcome": "details_pending",
       "reason": "scheduled_pending_details",
       "official_rank": "C",
-      "public_rank": "C"
+      "public_rank": "A+"
     }
   ],
   "stale_audit": [],
