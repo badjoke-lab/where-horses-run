@@ -42,10 +42,136 @@ export type RacingMediaLink = {
  *
  * Calendar delivery is deliberately link-only. Never add iframe/embed payloads,
  * direct media manifests, expiring/session URLs, unofficial mirrors, or
- * access-control bypasses. A runtime live-status detector may use the optional
- * YouTube channel id, but the Calendar opens only the reviewed landing URL.
+ * access-control bypasses. Runtime live detection may promote a reviewed
+ * official YouTube channel landing route to the current watch page, but never
+ * to a stream manifest or media CDN URL.
  */
 export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
+  {
+    id: 'jra-youtube-live-2026',
+    kind: 'live',
+    scope: 'authority',
+    coverage: 'all_meetings',
+    access: 'geo_restricted',
+    provider: 'authority',
+    provider_label: 'JRA',
+    platform: 'youtube',
+    delivery: 'link',
+    authority_id: 'jra',
+    landing_url: 'https://www.youtube.com/channel/UCj6AKkCWS6FJqf0o5wP45eQ/live',
+    evidence_url: 'https://www.jra.go.jp/tvradio/racelive/',
+    verified_at: '2026-09-03',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
+    youtube_channel_id: 'UCj6AKkCWS6FJqf0o5wP45eQ',
+    access_note_en: 'Official JRA YouTube live route; availability may be region-restricted.',
+    access_note_ja: 'JRA公式YouTubeライブ・地域により視聴制限がある場合があります',
+  },
+  {
+    id: 'nar-monbetsu-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Monbetsu', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['monbetsu-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UC6tQosgNJOmZUGmtkSvI6zA/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UC6tQosgNJOmZUGmtkSvI6zA',
+    access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-iwate-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Iwate Keiba', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['morioka-racecourse', 'mizusawa-racecourse'],
+    landing_url: 'https://www.youtube.com/@IwateKeibaITV/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-urawa-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Urawa', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['urawa-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCdtB0m4BIjadiqV3C0Vi9SQ/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCdtB0m4BIjadiqV3C0Vi9SQ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-funabashi-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Funabashi', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['funabashi-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCfnIcvhLkVVCTd86yemmGnQ/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCfnIcvhLkVVCTd86yemmGnQ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-oi-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Tokyo City Keiba', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['oi-racecourse'],
+    landing_url: 'https://www.youtube.com/@tckkeiba/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-kawasaki-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Kawasaki', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['kawasaki-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCF7v-dGy_jQ_7bOi7oab2PA/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCF7v-dGy_jQ_7bOi7oab2PA', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-kanazawa-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Kanazawa', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['kanazawa-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCMRX5ABMJWPR6aWlyZYeKog/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCMRX5ABMJWPR6aWlyZYeKog', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-kasamatsu-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Kasamatsu', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['kasamatsu-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCmPuLUWCwfAW99ezdCj6ayQ/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCmPuLUWCwfAW99ezdCj6ayQ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-nagoya-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Nagoya', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['nagoya-racecourse'],
+    landing_url: 'https://www.youtube.com/channel/UCuAGB0_QDb68etl8v-JcSzA/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', youtube_channel_id: 'UCuAGB0_QDb68etl8v-JcSzA', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-hyogo-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Sonoda / Himeji', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['sonoda-racecourse', 'himeji-racecourse'],
+    landing_url: 'https://www.youtube.com/@sonodahimejiweb/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-kochi-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Kochi', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['kochi-racecourse'],
+    landing_url: 'https://www.youtube.com/@KeibaOrJp/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'nar-saga-youtube-live-2026',
+    kind: 'live', scope: 'track', coverage: 'all_meetings', access: 'open', provider: 'racecourse', provider_label: 'Saga', platform: 'youtube', delivery: 'link',
+    authority_id: 'nar-local-government-racing', racecourse_ids: ['saga-racecourse'],
+    landing_url: 'https://www.youtube.com/@sagakeibaofficial/live', evidence_url: 'https://www.keiba.go.jp/live/', verified_at: '2026-09-03',
+    label_en: 'Official live', label_ja: '公式ライブ', access_note_en: 'Official YouTube live route listed by NAR.', access_note_ja: 'NAR掲載の公式YouTubeライブ',
+  },
+  {
+    id: 'banei-youtube-live-2026',
+    kind: 'live',
+    scope: 'authority',
+    coverage: 'all_meetings',
+    access: 'open',
+    provider: 'authority',
+    provider_label: 'ばんえい十勝',
+    platform: 'youtube',
+    delivery: 'link',
+    authority_id: 'banei-tokachi',
+    landing_url: 'https://www.youtube.com/channel/UCyjlxPcoYAbpwlr5wjUA_5g/live',
+    evidence_url: 'https://www.banei-keiba.or.jp/',
+    verified_at: '2026-09-02',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
+    youtube_channel_id: 'UCyjlxPcoYAbpwlr5wjUA_5g',
+    access_note_en: 'Free official YouTube live.',
+    access_note_ja: '無料の公式YouTubeライブ',
+  },
   {
     id: 'jra-live-2026',
     kind: 'live',
@@ -60,8 +186,8 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     landing_url: 'https://www.jra.go.jp/tvradio/racelive/',
     evidence_url: 'https://www.jra.go.jp/tvradio/racelive/',
     verified_at: '2026-09-02',
-    label_en: 'Live video',
-    label_ja: 'ライブ映像',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
     access_note_en: 'Free; viewing is limited to Japan.',
     access_note_ja: '無料・日本国内限定',
   },
@@ -79,30 +205,10 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     landing_url: 'https://www.keiba.go.jp/live/',
     evidence_url: 'https://www.keiba.go.jp/live/',
     verified_at: '2026-09-02',
-    label_en: 'Live video',
-    label_ja: 'ライブ映像',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
     access_note_en: 'Free live video for all local racecourses.',
     access_note_ja: '地方競馬全場を無料配信',
-  },
-  {
-    id: 'banei-youtube-live-2026',
-    kind: 'live',
-    scope: 'authority',
-    coverage: 'all_meetings',
-    access: 'open',
-    provider: 'authority',
-    provider_label: 'ばんえい十勝',
-    platform: 'youtube',
-    delivery: 'link',
-    authority_id: 'banei-tokachi',
-    landing_url: 'https://www.youtube.com/channel/UCyjlxPcoYAbpwlr5wjUA_5g/live',
-    evidence_url: 'https://www.banei-keiba.or.jp/',
-    verified_at: '2026-09-02',
-    label_en: 'YouTube Live',
-    label_ja: 'YouTubeライブ',
-    youtube_channel_id: 'UCyjlxPcoYAbpwlr5wjUA_5g',
-    access_note_en: 'Free official YouTube live.',
-    access_note_ja: '無料の公式YouTubeライブ',
   },
   {
     id: 'hkjc-live-2026',
@@ -118,8 +224,8 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     landing_url: 'https://racing.hkjc.com/en-US/index',
     evidence_url: 'https://racing.hkjc.com/en-US/index',
     verified_at: '2026-09-02',
-    label_en: 'Live broadcast',
-    label_ja: 'ライブ中継',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
     access_note_en: 'Use the HKJC Audio and Video → Live Broadcast route; access conditions may vary.',
     access_note_ja: 'HKJCの「Audio and Video → Live Broadcast」から視聴・利用条件は変動する場合があります',
   },
@@ -137,8 +243,8 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     landing_url: 'https://emiratesracing.com/',
     evidence_url: 'https://emiratesracing.com/',
     verified_at: '2026-09-02',
-    label_en: 'Live stream',
-    label_ja: 'ライブ中継',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
     access_note_en: 'The official ERA site exposes a Live stream route; access conditions may vary.',
     access_note_ja: 'ERA公式サイトの「Live stream」から視聴・利用条件は変動する場合があります',
   },
@@ -156,8 +262,8 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     landing_url: 'https://www.tjk.org/EN/YarisSever/Static/page/canli',
     evidence_url: 'https://www.tjk.org/TR/YarisSever/Static/page/canli',
     verified_at: '2026-09-02',
-    label_en: 'Live stream',
-    label_ja: 'ライブ中継',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
     access_note_en: 'TJK TV web live is geo-restricted; availability outside Türkiye is not guaranteed.',
     access_note_ja: 'TJK TVのWebライブは地域制限あり',
   },
@@ -168,7 +274,11 @@ export function getVerifiedLiveMediaForMeeting(input: {
   racecourse_id: string;
 }): RacingMediaLink | null {
   return reviewedRacingMediaLinks.find((record) => {
-    if (record.kind !== 'live' || record.authority_id !== input.authority_id) {
+    if (
+      record.kind !== 'live' ||
+      record.platform !== 'youtube' ||
+      record.authority_id !== input.authority_id
+    ) {
       return false;
     }
 
