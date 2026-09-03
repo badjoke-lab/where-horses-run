@@ -2,12 +2,17 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import {
-  getCurrentCalendarWindowGroups,
+  getGroupedTimetableMeetingRows,
   getTimetableDateContext,
+  getTimetableMeetingRowsForWindow,
 } from '../../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../../lib/timetable/calendarDateContext.mjs';
 
 const dateContext = getTimetableDateContext();
-const groupedTimetableRecords = getCurrentCalendarWindowGroups(dateContext);
+const candidateStart = addCalendarDays(dateContext.windowStart, -2);
+const candidateEndExclusive = addCalendarDays(dateContext.windowEndExclusive, 2);
+const candidateRecords = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const groupedTimetableRecords = getGroupedTimetableMeetingRows(candidateRecords);
 const windowLabel = `${dateContext.windowStart}〜${dateContext.windowEndInclusive}`;
 ---
 
@@ -22,15 +27,16 @@ const windowLabel = `${dateContext.windowStart}〜${dateContext.windowEndInclusi
     <p class="hero__eyebrow">現在のタイムテーブル</p>
     <h1 id="page-title">現在の30日間タイムテーブル</h1>
     <p class="hero__summary">
-      {windowLabel}。開催日ごとに表示し、公開ランクに応じて表示する時刻情報の範囲を制御します。
+      <span data-timezone-window-start>{dateContext.windowStart}</span>〜<span data-timezone-window-end>{dateContext.windowEndInclusive}</span>。選択した表示タイムゾーン <span data-timezone-label>{dateContext.timeZone}</span> を基準に開催日ごとに表示し、公開ランクに応じて表示する時刻情報の範囲を制御します。
     </p>
   </section>
 
   <section aria-label={`${windowLabel}の開催日別タイムテーブル`}>
     <TimetableMeetingList
       groups={groupedTimetableRecords}
+      scope="rolling-30"
       lang="ja"
-      emptyLabel="現在の30日間に公開済みの開催情報はありません。最終確認には公式ソースを使用してください。"
+      emptyLabel="選択した30日間の表示範囲に公開済みの開催情報はありません。最終確認には公式ソースを使用してください。"
     />
   </section>
 </BaseLayout>
