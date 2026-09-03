@@ -6,10 +6,24 @@ const RACECOURSE_ID = 'kawasaki-racecourse';
 const TIMEZONE = 'Asia/Tokyo';
 const POLICY_ID = 'nar-reviewed-a-plus';
 
+type KawasakiReviewedRow = {
+  readonly label: string;
+  readonly post_time_local: string;
+  readonly race_name: string;
+  readonly distance_m: number;
+  readonly surface: string;
+  readonly course_label: string;
+};
+
+type KawasakiReviewedMeeting = {
+  readonly date: string;
+  readonly source_url: string;
+  readonly timetable_rows: readonly KawasakiReviewedRow[];
+};
+
 type KawasakiReviewedData = {
   readonly last_checked_date: string;
-  readonly meetings: readonly { readonly date: string; readonly source_url: string }[];
-  readonly post_times: readonly string[];
+  readonly meetings: readonly KawasakiReviewedMeeting[];
 };
 
 const data = kawasakiReviewedData as KawasakiReviewedData;
@@ -18,7 +32,7 @@ export const kawasakiReviewedMeetingIds = new Set(
   data.meetings.map(({ date }) => `nar-kawasaki-racecourse-${date}`),
 );
 
-export const kawasakiReviewedMeetingRows = data.meetings.map(({ date, source_url }) => {
+export const kawasakiReviewedMeetingRows = data.meetings.map(({ date, source_url, timetable_rows }) => {
   const meetingId = `nar-kawasaki-racecourse-${date}`;
   return {
     meeting_id: meetingId,
@@ -30,8 +44,8 @@ export const kawasakiReviewedMeetingRows = data.meetings.map(({ date, source_url
     capability_rank: 'A+',
     max_public_rank: 'A+',
     effective_public_rank: 'A+',
-    first_race_time_local: data.post_times[0],
-    last_race_time_local: data.post_times.at(-1) ?? null,
+    first_race_time_local: timetable_rows[0]?.post_time_local ?? null,
+    last_race_time_local: timetable_rows.at(-1)?.post_time_local ?? null,
     policy_id: POLICY_ID,
     source_status: 'verified',
     official_source_url: source_url,
@@ -42,7 +56,7 @@ export const kawasakiReviewedMeetingRows = data.meetings.map(({ date, source_url
   } as const;
 });
 
-export const kawasakiReviewedMeetingDetails = data.meetings.map(({ date, source_url }) => {
+export const kawasakiReviewedMeetingDetails = data.meetings.map(({ date, source_url, timetable_rows }) => {
   const meetingId = `nar-kawasaki-racecourse-${date}`;
   return {
     meeting_id: meetingId,
@@ -64,18 +78,20 @@ export const kawasakiReviewedMeetingDetails = data.meetings.map(({ date, source_
     show_course: true,
     show_live_label: false,
     show_replay_label: false,
-    timetable_rows: data.post_times.map((postTime, index) => ({
-      label: `Race ${index + 1}`,
-      post_time_local: postTime,
-      surface: 'dirt',
-      course_label: 'left-handed',
-    })),
+    timetable_rows,
   } as const;
 });
 
 if (kawasakiReviewedMeetingRows.length !== 5) {
   throw new Error(`Kawasaki reviewed supplement must contain 5 meetings, got ${kawasakiReviewedMeetingRows.length}`);
 }
-if (data.post_times.length !== 12) {
-  throw new Error(`Kawasaki reviewed supplement must contain 12 race times, got ${data.post_times.length}`);
+for (const meeting of data.meetings) {
+  if (meeting.timetable_rows.length !== 12) {
+    throw new Error(`Kawasaki ${meeting.date} must contain 12 races, got ${meeting.timetable_rows.length}`);
+  }
+  for (const [index, row] of meeting.timetable_rows.entries()) {
+    if (!row.race_name || !row.distance_m || !row.surface || !row.course_label) {
+      throw new Error(`Kawasaki ${meeting.date} Race ${index + 1} is missing A+ metadata`);
+    }
+  }
 }
