@@ -20,23 +20,27 @@ on:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
+      - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'data/static/calendar-reviewed-exclusions.json'
       - 'src/data/publicationDisplayPolicies.json'
   pull_request:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
+      - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'data/static/calendar-reviewed-exclusions.json'
       - 'src/data/publicationDisplayPolicies.json'
 
 permissions:
@@ -59,6 +63,7 @@ jobs:
       - name: Validate unified refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
+          node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/consolidate-official-acquisition-artifacts.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
@@ -107,6 +112,7 @@ jobs:
       - name: Validate production refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
+          node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
@@ -138,6 +144,13 @@ jobs:
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/tjk.json
+      - name: Enforce reviewed Calendar exclusions
+        run: |
+          node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
