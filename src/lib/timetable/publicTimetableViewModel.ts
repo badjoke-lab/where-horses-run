@@ -128,6 +128,26 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
     show_live_label: false,
     show_replay_label: false,
   },
+  {
+    meeting_id: 'kra-seoul-racecourse-2026-09-13',
+    country_id: 'south-korea',
+    authority_id: 'korea-racing-authority',
+    racecourse_id: 'seoul-racecourse',
+    date: '2026-09-13',
+    timezone: 'Asia/Seoul',
+    capability_rank: 'C',
+    max_public_rank: 'C',
+    effective_public_rank: 'C',
+    first_race_time_local: null,
+    last_race_time_local: null,
+    policy_id: 'kra-reviewed-a',
+    source_status: 'verified',
+    official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=1',
+    last_checked_date: '2026-09-03',
+    detail_path: null,
+    show_live_label: false,
+    show_replay_label: false,
+  },
 ];
 
 const generatedPublicMeetingRows = meetingListDataset.meetings.map((meeting) => {
