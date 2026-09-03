@@ -85,6 +85,8 @@ jobs:
           node --check scripts/timetable/run-uae-era-official-window.mjs
           node --check scripts/timetable/run-kra-official-window.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
+      - name: Exercise reviewed Calendar preservation
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate site build
         run: |
           npm install --no-package-lock --no-audit --no-fund
