@@ -110,6 +110,9 @@ assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-upgrad
 assert.equal(narIncompleteAttempts, 2);
 assert.equal(narPendingAttempts, 3, 'scheduled_pending_details must be retried before becoming details_pending');
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-pending').outcome, 'details_pending');
+assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-pending').official_rank, 'C');
+assert.equal(result.canonical.find((row) => row.meeting_id === 'nar-pending').capability_rank, 'C');
+assert.equal(result.public.find((row) => row.meeting_id === 'nar-pending').capability_rank, 'C');
 assert.equal(narLateAttempts, 2, 'scheduled_pending_details must be able to succeed on retry');
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'nar-late').outcome, 'add');
 assert.equal(result.reconciliations.find((row) => row.meeting_id === 'new-banei').outcome, 'add');
@@ -119,5 +122,6 @@ assert.equal(result.complete, true);
 
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'missing' }], [], []), /reconciliation incomplete/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'duplicate' }], [{ meeting_id: 'duplicate', outcome: 'no_op' }, { meeting_id: 'duplicate', outcome: 'no_op' }], []), /reconciliation incomplete/);
+assert.throws(() => assertJapanCompleteness([{ meeting_id: 'public-missing' }], [{ meeting_id: 'public-missing', outcome: 'details_pending', official_rank: 'C' }], []), /public completeness failed/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'lower' }], [{ meeting_id: 'lower', outcome: 'update', official_rank: 'A+' }], [{ meeting_id: 'lower', capability_rank: 'C' }]), /rank completeness failed/);
 console.log('JAPAN_ZERO_BASED_30D: pass');
