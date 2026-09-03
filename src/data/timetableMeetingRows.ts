@@ -5,6 +5,7 @@ import {
 } from '../lib/timetable/publicTimetableViewModel';
 import { derivePublicCoverageState } from '../lib/timetable/publicCoverageState.mjs';
 import {
+  addCalendarDays,
   createCalendarDateContext,
   evaluateCalendarDataState,
   filterRecordsForDate,
@@ -159,6 +160,23 @@ export function getTimetableMeetingRowsForDate(date: string): TimetableMeetingRo
 
 export function getTimetableMeetingRowsForWindow(startDate: string, endDateExclusive: string): TimetableMeetingRow[] {
   return filterRecordsForWindow(getTimetableMeetingRows(), startDate, endDateExclusive) as TimetableMeetingRow[];
+}
+
+export function getTimetableProjectionCandidateRows(
+  startDate: string,
+  endDateExclusive: string,
+): TimetableMeetingRow[] {
+  return getTimetableMeetingRowsForWindow(
+    addCalendarDays(startDate, -1),
+    addCalendarDays(endDateExclusive, 1),
+  );
+}
+
+export function getTimetableProjectionCandidateGroups(
+  startDate: string,
+  endDateExclusive: string,
+): TimetableMeetingDayGroup[] {
+  return getGroupedTimetableMeetingRows(getTimetableProjectionCandidateRows(startDate, endDateExclusive));
 }
 
 export function getTimetableDateContext() {
