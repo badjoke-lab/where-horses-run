@@ -48,8 +48,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
       <select data-filter-live>
         <option value="">{isJa ? 'すべて' : 'All'}</option>
         <option value="now" data-live-now-option hidden disabled>{isJa ? 'ライブ中' : 'Live now'}</option>
-        <option value="available">{isJa ? '公式ライブ導線あり' : 'Official live link available'}</option>
-        <option value="youtube">YouTube</option>
+        <option value="available">{isJa ? '公式ライブあり' : 'Official live available'}</option>
       </select>
     </label>
     <label>
@@ -110,8 +109,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             (!date.value || row.dataset.date === date.value) &&
             (!live.value ||
               (live.value === 'now' && row.dataset.liveState === 'live') ||
-              (live.value === 'available' && row.dataset.liveAvailable === 'true') ||
-              (live.value === 'youtube' && row.dataset.livePlatform === 'youtube'));
+              (live.value === 'available' && row.dataset.liveAvailable === 'true'));
           row.hidden = !matches;
           if (matches) visible += 1;
         }
@@ -145,12 +143,18 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           row.dataset.liveState = state;
           if (detectorId && rawState !== 'unknown') hasDetectorState = true;
 
+          const badge = row.querySelector('[data-live-badge]');
+          if (badge instanceof HTMLElement) badge.hidden = state !== 'live';
+
           const link = row.querySelector('[data-live-link]');
           if (link instanceof HTMLAnchorElement) {
-            const idleLabel = row.dataset.livePlatform === 'youtube'
-              ? 'YouTube ↗'
-              : (isJa ? 'ライブ ↗' : 'Live stream ↗');
-            link.textContent = state === 'live' ? '● LIVE ↗' : idleLabel;
+            const defaultHref = link.dataset.liveDefaultHref || link.href;
+            const videoId = typeof entry?.video_id === 'string' && /^[A-Za-z0-9_-]{11}$/.test(entry.video_id)
+              ? entry.video_id
+              : null;
+            const useWatchPage = dateMatches && videoId && (state === 'live' || state === 'upcoming');
+            link.href = useWatchPage ? `https://www.youtube.com/watch?v=${videoId}` : defaultHref;
+            link.textContent = isJa ? '公式ライブ ↗' : 'Official live ↗';
           }
         }
         apply();
