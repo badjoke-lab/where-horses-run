@@ -11,6 +11,7 @@ on:
       - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
+      - 'scripts/timetable/jra-programme-parser.mjs'
       - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/check-japan-zero-based-30d.mjs'
@@ -32,6 +33,7 @@ on:
       - 'data/fixtures/calendar-due-job-planner-invalid-cases-v1.json'
       - 'data/generated/timetable/canonical/meetings.json'
       - 'data/generated/timetable/public/meeting-list.json'
+      - 'data/generated/timetable/public/meeting-details.json'
   push:
     branches:
       - main
@@ -41,6 +43,7 @@ on:
       - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
+      - 'scripts/timetable/jra-programme-parser.mjs'
       - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
       - 'scripts/check-japan-zero-based-30d.mjs'
@@ -60,8 +63,6 @@ on:
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/fixtures/calendar-due-job-planner-fixtures-v1.json'
       - 'data/fixtures/calendar-due-job-planner-invalid-cases-v1.json'
-      - 'data/generated/timetable/canonical/meetings.json'
-      - 'data/generated/timetable/public/meeting-list.json'
 
 permissions:
   contents: write
@@ -104,6 +105,7 @@ jobs:
             data/generated/timetable/canonical/meetings.json \
             data/generated/timetable/canonical/meeting-details.json \
             data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json \
             data/generated/timetable/japan-zero-based-30d-reconciliation.json
           if git diff --cached --quiet; then
             echo "No Japan timetable changes to persist."
@@ -123,6 +125,7 @@ jobs:
             data/generated/timetable/canonical/meetings.json
             data/generated/timetable/canonical/meeting-details.json
             data/generated/timetable/public/meeting-list.json
+            data/generated/timetable/public/meeting-details.json
 
   smoke:
     if: github.event_name == 'pull_request'
@@ -138,6 +141,7 @@ jobs:
           node --check scripts/timetable/japan-zero-based-30d-core.mjs
           node --check scripts/timetable/japan-official-30d-adapters.mjs
           node --check scripts/timetable/jra-official-30d-discovery.mjs
+          node --check scripts/timetable/jra-programme-parser.mjs
           node --check scripts/timetable/banei-official-30d-discovery.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
           node --check scripts/check-japan-zero-based-30d.mjs
