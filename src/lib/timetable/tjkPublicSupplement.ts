@@ -1,6 +1,10 @@
 import supplementData from '../../../data/static/tjk-public-timetable-supplement-v1.json';
 import { bhaPublicMeetingRows, isBhaSupplementWindowMeeting } from './bhaPublicSupplement.ts';
 import { hriPublicMeetingRows, isHriSupplementWindowMeeting } from './hriPublicSupplement.ts';
+import {
+  franceGalopPublicMeetingRows,
+  isFranceGalopSupplementWindowMeeting,
+} from './franceGalopPublicSupplement.ts';
 
 const AUTHORITY_ID = 'turkiye-jokey-kulubu';
 const COUNTRY_ID = 'turkey';
@@ -77,6 +81,7 @@ export function isTjkSupplementWindowMeeting(meeting: {
     || mizusawaReviewedMeetingIds.has(meeting.meeting_id)
     || isBhaSupplementWindowMeeting(meeting)
     || isHriSupplementWindowMeeting(meeting)
+    || isFranceGalopSupplementWindowMeeting(meeting)
   );
 }
 
@@ -112,6 +117,7 @@ export const tjkPublicMeetingRows = [
   ...mizusawaReviewedRows,
   ...bhaPublicMeetingRows,
   ...hriPublicMeetingRows,
+  ...franceGalopPublicMeetingRows,
 ] as const;
 
 export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([meetingId, rankA]) => {
