@@ -5,15 +5,15 @@ import {
 } from '../lib/timetable/publicTimetableViewModel';
 import { derivePublicCoverageState } from '../lib/timetable/publicCoverageState.mjs';
 import {
+  reviewedRacingMediaLinks,
+  type RacingMediaLink,
+} from './racingMediaLinks';
+import {
   createCalendarDateContext,
   evaluateCalendarDataState,
   filterRecordsForDate,
   filterRecordsForWindow,
 } from '../lib/timetable/calendarDateContext.mjs';
-import {
-  getVerifiedLiveMediaForMeeting,
-  type RacingMediaLink,
-} from './racingMediaLinks';
 
 export type CalendarRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 export type PublicCoverageStatus =
@@ -100,6 +100,30 @@ const displayAuthority = (authorityId: string) =>
 const displayCountry = (countryId: string) =>
   countryLabelById[countryId] ?? titleCaseId(countryId);
 
+const liveMediaPriority = (record: RacingMediaLink): number => {
+  const platformPriority = record.platform === 'youtube' ? 0 : 100;
+  const scopePriority = record.racecourse_ids ? 0 : 10;
+  return platformPriority + scopePriority;
+};
+
+function getPreferredLiveMediaForMeeting(input: {
+  authority_id: string;
+  racecourse_id: string;
+}): RacingMediaLink | null {
+  const candidates = reviewedRacingMediaLinks
+    .filter((record) => {
+      if (record.kind !== 'live' || record.authority_id !== input.authority_id) return false;
+      return !record.racecourse_ids || record.racecourse_ids.includes(input.racecourse_id);
+    })
+    .sort((left, right) =>
+      liveMediaPriority(left) - liveMediaPriority(right) ||
+      right.verified_at.localeCompare(left.verified_at) ||
+      left.id.localeCompare(right.id),
+    );
+
+  return candidates[0] ?? null;
+}
+
 function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
   const effectiveRank = record.effective_public_rank as CalendarRank;
   const canViewRaceTimetable =
@@ -113,7 +137,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     coverage_status: PublicCoverageStatus;
     public_gap_status: PublicGapStatus;
   };
-  const liveMedia = getVerifiedLiveMediaForMeeting({
+  const liveMedia = getPreferredLiveMediaForMeeting({
     authority_id: record.authority_id,
     racecourse_id: record.racecourse_id,
   });
