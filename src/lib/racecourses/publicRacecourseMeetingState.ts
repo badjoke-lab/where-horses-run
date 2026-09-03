@@ -1,4 +1,4 @@
-import { createCalendarDateContext } from '../timetable/calendarDateContext.mjs';
+import { addCalendarDays, createCalendarDateContext } from '../timetable/calendarDateContext.mjs';
 import {
   getPublicTimetableGeneratedAt,
   getPublicTimetableMeetingRowsByRacecourse,
@@ -17,6 +17,7 @@ export type PublicRacecourseMeetingState = {
   readonly next_meeting_date: string | null;
   readonly next_meetings: readonly PublicTimetableMeetingRow[];
   readonly upcoming_meetings: readonly PublicTimetableMeetingRow[];
+  readonly timezone_candidate_meetings: readonly PublicTimetableMeetingRow[];
 };
 
 const byDateAndId = (left: PublicTimetableMeetingRow, right: PublicTimetableMeetingRow) =>
@@ -30,6 +31,11 @@ export function getPublicRacecourseMeetingState(
   const meetings = [...getPublicTimetableMeetingRowsByRacecourse(racecourseId)].sort(byDateAndId);
   const windowMeetings = meetings.filter(
     (meeting) => meeting.date >= context.windowStart && meeting.date < context.windowEndExclusive,
+  );
+  const candidateStart = addCalendarDays(context.windowStart, -2);
+  const candidateEndExclusive = addCalendarDays(context.windowEndExclusive, 2);
+  const timezoneCandidateMeetings = meetings.filter(
+    (meeting) => meeting.date >= candidateStart && meeting.date < candidateEndExclusive,
   );
   const todayMeetings = windowMeetings.filter((meeting) => meeting.date === context.today);
   const upcomingMeetings = windowMeetings.filter((meeting) => meeting.date > context.today);
@@ -50,5 +56,6 @@ export function getPublicRacecourseMeetingState(
     next_meeting_date: nextMeetingDate,
     next_meetings: nextMeetings,
     upcoming_meetings: upcomingMeetings,
+    timezone_candidate_meetings: timezoneCandidateMeetings,
   };
 }
