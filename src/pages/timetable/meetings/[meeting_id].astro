@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MeetingTimezoneProjection from '../../../components/MeetingTimezoneProjection.astro';
 import {
   getPublicTimetableMeetingDetail,
   getPublicTimetableMeetingRows,
@@ -85,13 +86,15 @@ const timeCoverageNoteByRank: Record<string, string> = {
   <section aria-labelledby="page-title">
     <p class="eyebrow">{pageKind}</p>
     <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-    <p>{meeting.date}</p>
+    <p><span data-meeting-projected-date>{meeting.date}</span></p>
     <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Timezone: {detail.timezone}</p>
+    <p>Venue timezone: {detail.timezone}</p>
+    <p>Display timezone: <strong data-timezone-label>{detail.timezone}</strong></p>
     <p>Capability rank: {detail.capability_rank}</p>
     <p>Public rank: {detail.effective_public_rank}</p>
     <p>Publication policy: {detail.policy_id}</p>
     <p>Source status: {detail.source_status}</p>
+    <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} />
   </section>
 
   <section aria-labelledby="coverage-title">
@@ -109,7 +112,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
           <thead>
             <tr>
               <th>Race</th>
-              <th>Post time</th>
+              <th>Post date &amp; time</th>
               {hasRaceName && <th>Race name</th>}
               {hasDistance && <th>Distance</th>}
               {hasSurface && <th>Surface</th>}
@@ -120,7 +123,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
             {detail.timetable_rows.map((row) => (
               <tr>
                 <td>{row.label}</td>
-                <td>{row.post_time_local}</td>
+                <td><time data-meeting-source-time={row.post_time_local}>{meeting.date} {row.post_time_local}</time></td>
                 {hasRaceName && <td>{displayValue(row.race_name)}</td>}
                 {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
                 {hasSurface && <td>{displayValue(row.surface)}</td>}
