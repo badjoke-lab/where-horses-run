@@ -5,17 +5,17 @@ import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import {
   getTimetableDataState,
   getTimetableDateContext,
-  getTimetableMeetingRowsForDate,
+  getTimetableProjectionCandidateRows,
 } from '../data/timetableMeetingRows';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
-const todayRecords = getTimetableMeetingRowsForDate(context.today);
+const projectionCandidates = getTimetableProjectionCandidateRows(context.today, context.tomorrow);
 ---
 
 <BaseLayout
   title={`Today's racing — ${context.today} | Where Horses Run`}
-  description={`See racing listed for ${context.today}, including available race times and links to official sources.`}
+  description="Today's racing in the visitor-selected display timezone, including available race times and official links."
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
@@ -23,7 +23,7 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
     <p class="hero__eyebrow">Today’s racing</p>
     <h1 id="page-title">Today’s racing</h1>
     <p class="hero__summary">
-      Meetings listed for {context.today}. Available race times are shown where confirmed.
+      Select a display timezone below. Meeting membership, dates and available race times follow that timezone.
     </p>
   </section>
 
@@ -31,9 +31,10 @@ const todayRecords = getTimetableMeetingRowsForDate(context.today);
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
-      records={todayRecords}
+      records={projectionCandidates}
       date={context.today}
-      emptyLabel={`No meetings are currently listed for ${context.today}. Check official sources for the latest information.`}
+      viewMode="today"
+      emptyLabel="No meetings are currently listed for today in the selected timezone. Check official sources for the latest information."
     />
   </section>
 </BaseLayout>
