@@ -96,15 +96,9 @@ const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
 const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;
 
-// The daily zero-based acquisition refreshes the public meeting list independently.
-// Reviewed Japan A+ detail overrides remain pinned to the reviewed detail bundle until
-// that bundle is regenerated. Require those two reviewed artifacts to stay coherent,
-// but do not require the independently refreshed list to share their timestamp.
-if (japanAPlusOverrides.generated_at !== meetingDetailsDataset.generated_at) {
-  throw new Error(
-    'Japan A+ public overrides do not match the reviewed public meeting details generation timestamp.',
-  );
-}
+const overrideSnapshotDate = japanAPlusOverrides.generated_at.slice(0, 10);
+const canApplyReviewedOverride = (lastCheckedDate: string | undefined): boolean =>
+  typeof lastCheckedDate === 'string' && lastCheckedDate <= overrideSnapshotDate;
 
 const meetingOverrideIndex = new Map(
   japanAPlusOverrides.meeting_overrides.map((override) => [override.meeting_id, override]),
@@ -116,14 +110,18 @@ const detailOverrideIndex = new Map(
 const publicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings.map(
   (meeting) => {
     const override = meetingOverrideIndex.get(meeting.meeting_id);
-    return override ? { ...meeting, ...override } : meeting;
+    return override && canApplyReviewedOverride(meeting.last_checked_date)
+      ? { ...meeting, ...override }
+      : meeting;
   },
 );
 
 const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] =
   meetingDetailsDataset.details.map((detail) => {
     const override = detailOverrideIndex.get(detail.meeting_id);
-    return override ? { ...detail, ...override } : detail;
+    return override && canApplyReviewedOverride(detail.last_checked_date)
+      ? { ...detail, ...override }
+      : detail;
   });
 
 export function getPublicTimetableGeneratedAt(): string {

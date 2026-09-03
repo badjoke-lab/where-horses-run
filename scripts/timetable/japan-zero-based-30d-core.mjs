@@ -2,6 +2,12 @@ const RANKS = ['C', 'B', 'B+', 'A', 'A+'];
 export const JAPAN_GROUPS = ['jra', 'nar-standard', 'banei'];
 export const OUTCOMES = ['add', 'update', 'no_op', 'details_pending', 'acquisition_failed', 'conflict'];
 
+const JAPAN_PUBLIC_POLICIES = {
+  jra: 'jra-reviewed-a-plus',
+  'nar-local-government-racing': 'nar-reviewed-a-plus',
+  'banei-tokachi': 'banei-reviewed-a-plus',
+};
+
 function rank(value) {
   const index = RANKS.indexOf(value);
   return index < 0 ? 0 : index;
@@ -121,6 +127,116 @@ function detailRecord(meeting, rows, checkedAt, previous = null) {
   };
 }
 
+function publicPolicyId(authorityId) {
+  const value = JAPAN_PUBLIC_POLICIES[authorityId];
+  if (!value) throw new Error(`missing Japan public display policy for authority: ${authorityId}`);
+  return value;
+}
+
+function rowHasRaceTime(row) {
+  return typeof row?.label === 'string'
+    && row.label.length > 0
+    && typeof row?.post_time_local === 'string'
+    && /^\d{2}:\d{2}$/.test(row.post_time_local);
+}
+
+function rowHasAPlusMetadata(row) {
+  return rowHasRaceTime(row)
+    && typeof row.race_name === 'string'
+    && row.race_name.length > 0
+    && Number.isInteger(row.distance_m)
+    && row.distance_m > 0
+    && typeof row.surface === 'string'
+    && row.surface.length > 0
+    && typeof row.course_label === 'string'
+    && row.course_label.length > 0;
+}
+
+function fallbackMeetingRank(meeting) {
+  if (meeting.first_race_time_local && meeting.last_race_time_local) return 'B+';
+  if (meeting.first_race_time_local) return 'B';
+  return 'C';
+}
+
+function safeEffectivePublicRank(meeting, detail) {
+  const capabilityRank = RANKS.includes(meeting.capability_rank) ? meeting.capability_rank : 'C';
+  if (rank(capabilityRank) < rank('A')) return capabilityRank;
+
+  const rows = Array.isArray(detail?.timetable_rows) ? detail.timetable_rows : [];
+  if (!rows.length || !rows.every(rowHasRaceTime)) return fallbackMeetingRank(meeting);
+  if (capabilityRank === 'A+') return rows.every(rowHasAPlusMetadata) ? 'A+' : 'A';
+  return 'A';
+}
+
+function publicTimetableRows(detail, effectivePublicRank) {
+  const aPlus = effectivePublicRank === 'A+';
+  return detail.timetable_rows.map((row) => {
+    const value = {
+      label: row.label,
+      post_time_local: row.post_time_local,
+    };
+    if (aPlus) {
+      value.race_name = row.race_name;
+      value.distance_m = row.distance_m;
+      value.surface = row.surface;
+      value.course_label = row.course_label;
+    }
+    return value;
+  });
+}
+
+function publicMeetingRecord(meeting, detail) {
+  const effectivePublicRank = safeEffectivePublicRank(meeting, detail);
+  const hasDetail = ['A', 'A+'].includes(effectivePublicRank);
+  return {
+    meeting_id: meeting.meeting_id,
+    country_id: 'japan',
+    authority_id: meeting.authority_id,
+    racecourse_id: meeting.racecourse_id,
+    date: meeting.date,
+    timezone: 'Asia/Tokyo',
+    capability_rank: meeting.capability_rank,
+    max_public_rank: meeting.capability_rank,
+    effective_public_rank: effectivePublicRank,
+    first_race_time_local: meeting.first_race_time_local ?? null,
+    last_race_time_local: meeting.last_race_time_local ?? null,
+    policy_id: publicPolicyId(meeting.authority_id),
+    source_status: meeting.source_trace?.source_status ?? 'verified',
+    official_source_url: meeting.source_trace?.official_source_url ?? null,
+    last_checked_date: meeting.freshness?.last_checked_date ?? null,
+    detail_path: hasDetail ? `/timetable/meetings/${meeting.meeting_id}/` : null,
+    show_live_label: false,
+    show_replay_label: false,
+  };
+}
+
+function publicDetailRecord(meeting, detail, publicMeeting) {
+  if (!['A', 'A+'].includes(publicMeeting.effective_public_rank)) return null;
+  const aPlus = publicMeeting.effective_public_rank === 'A+';
+  return {
+    meeting_id: meeting.meeting_id,
+    country_id: 'japan',
+    authority_id: meeting.authority_id,
+    racecourse_id: meeting.racecourse_id,
+    date: meeting.date,
+    timezone: 'Asia/Tokyo',
+    capability_rank: meeting.capability_rank,
+    max_public_rank: meeting.capability_rank,
+    effective_public_rank: publicMeeting.effective_public_rank,
+    policy_id: publicMeeting.policy_id,
+    official_source_url: publicMeeting.official_source_url,
+    source_status: publicMeeting.source_status,
+    last_checked_date: publicMeeting.last_checked_date,
+    show_race_name: aPlus,
+    show_distance: aPlus,
+    show_surface: aPlus,
+    show_course: aPlus,
+    show_live_label: false,
+    show_replay_label: false,
+    timetable_rows: publicTimetableRows(detail, publicMeeting.effective_public_rank),
+  };
+}
+
 function comparableMeeting(row) {
   if (!row) return null;
   return JSON.stringify({
@@ -207,6 +323,7 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
   const canonicalMap = new Map((existing.canonical ?? []).map((row) => [row.meeting_id, row]));
   const publicMap = new Map((existing.public ?? []).map((row) => [row.meeting_id, row]));
   const details = new Map((existing.details ?? []).map((row) => [row.meeting_id, row]));
+  const publicDetails = new Map((existing.publicDetails ?? []).map((row) => [row.meeting_id, row]));
   const reconciliations = [];
 
   for (const officialMeeting of official) {
@@ -267,6 +384,20 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
     });
   }
 
+  // Serialize every meeting in the current official mother set into the public schema.
+  // Canonical-only fields never leak into the public list, and an A/A+ detail route is
+  // emitted only when a matching safe public detail exists.
+  for (const meetingId of ids) {
+    const canonical = canonicalMap.get(meetingId);
+    if (!canonical) throw new Error(`missing canonical Japan meeting after reconciliation: ${meetingId}`);
+    const canonicalDetail = details.get(meetingId);
+    const publicMeeting = publicMeetingRecord(canonical, canonicalDetail);
+    publicMap.set(meetingId, publicMeeting);
+    const publicDetail = publicDetailRecord(canonical, canonicalDetail, publicMeeting);
+    if (publicDetail) publicDetails.set(meetingId, publicDetail);
+    else publicDetails.delete(meetingId);
+  }
+
   const stale = [...new Map([...(existing.canonical ?? []), ...(existing.public ?? [])].map((row) => [row.meeting_id, row])).values()]
     .filter((row) => row.country_id === 'japan' && range.dates.includes(row.date) && !ids.has(row.meeting_id))
     .map((row) => ({ meeting_id: row.meeting_id, date: row.date, audit: 'canonical_public_only_not_deleted' }));
@@ -284,6 +415,7 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
     canonical: [...canonicalMap.values()],
     public: resultingPublic,
     details: [...details.values()],
+    publicDetails: [...publicDetails.values()],
     complete: true,
     public_rank_lower_than_official: 0,
   };
