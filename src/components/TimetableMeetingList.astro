@@ -116,6 +116,11 @@ const freshnessFor = (record: TimetableMeetingRow) => evaluatePublicFreshness({
   lastCheckedDate: record.last_checked_date ?? null,
   referenceDate,
 });
+const raceTime = (record: TimetableMeetingRow) => {
+  if (record.first_race_time_local && record.last_race_time_local) return `${record.first_race_time_local}–${record.last_race_time_local}`;
+  if (record.first_race_time_local) return `${record.first_race_time_local}–`;
+  return '—';
+};
 const mediaTitle = (record: TimetableMeetingRow) => {
   if (!record.live_media) return undefined;
   return lang === 'ja'
@@ -187,7 +192,11 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                     <strong>{racecourse}</strong>
                   </div>
                   <p class="meeting-row__system">{country} · {authority}</p>
-                  <p class="meeting-row__time" title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`}>
+                  <p
+                    class="meeting-row__time"
+                    title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`}
+                    data-source-time-label={raceTime(record)}
+                  >
                     {record.first_race_time_local ? (
                       <>
                         <time data-race-time="first">{record.first_race_time_local}</time>
