@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Inspect official Kanazawa annual PDF geometry
+      - name: Correlate official Kanazawa annual PDF text and meeting bars
         shell: bash
         run: |
           set -euo pipefail
@@ -33,28 +33,37 @@ jobs:
           const bbox=(m,b)=>{const p=[pt(m,b[0],b[1]),pt(m,b[0],b[3]),pt(m,b[2],b[1]),pt(m,b[2],b[3])];const xs=p.map(v=>v[0]),ys=p.map(v=>v[1]);return [Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)].map(v=>+v.toFixed(2));};
           const data=new Uint8Array(fs.readFileSync('/tmp/kanazawa.pdf'));
           const pdf=await getDocument({data,useWorkerFetch:false,isEvalSupported:false}).promise;
-          const page=await pdf.getPage(1); const ops=await page.getOperatorList();
-          console.log('VIEW', page.view);
+          const page=await pdf.getPage(1);
+          const text=await page.getTextContent();
+          const items=text.items.filter((item)=>item.str?.trim()).map((item)=>({
+            str:item.str.trim(),
+            x:+item.transform[4].toFixed(2),
+            y:+item.transform[5].toFixed(2),
+            w:+Number(item.width??0).toFixed(2),
+            h:+Number(item.height??0).toFixed(2),
+          })).sort((a,b)=>b.y-a.y||a.x-b.x);
+          console.log('TEXT_ITEMS', items.length);
+          for(const row of items) {
+            if (/^(?:[0-9０-９]{1,2}|[0-9０-９]{1,2}\s*月)$/.test(row.str) || /月|県|市|回|金沢/.test(row.str)) console.log('TEXT', JSON.stringify(row));
+          }
+          const ops=await page.getOperatorList();
           const names=new Map(Object.entries(OPS).map(([k,v])=>[v,k]));
-          let ctm=[1,0,0,1,0,0], fill=null, stroke=null, width=null, dash=null; const stack=[];
-          const colored=[];
+          let ctm=[1,0,0,1,0,0], fill=null; const stack=[]; const bars=[];
           for(let i=0;i<ops.fnArray.length;i++){
             const name=names.get(ops.fnArray[i])??String(ops.fnArray[i]); const a=ops.argsArray[i];
-            if(name==='save'){stack.push({ctm:[...ctm],fill,stroke,width,dash});continue;}
-            if(name==='restore'){const s=stack.pop();if(s)({ctm,fill,stroke,width,dash}=s);continue;}
+            if(name==='save'){stack.push({ctm:[...ctm],fill});continue;}
+            if(name==='restore'){const s=stack.pop();if(s)({ctm,fill}=s);continue;}
             if(name==='transform'){ctm=mul(ctm,a);continue;}
             if(name==='setFillRGBColor'){fill=a;continue;}
-            if(name==='setStrokeRGBColor'){stroke=a;continue;}
-            if(name==='setLineWidth'){width=a?.[0]??null;continue;}
-            if(name==='setLineDash'){dash=a;continue;}
             if(name!=='constructPath')continue;
             const raw=a?.[2]; if(!raw||raw.length<4)continue;
             const b=bbox(ctm,Array.from(raw)); const w=b[2]-b[0],h=b[3]-b[1];
-            const color=JSON.stringify(fill??stroke??[]);
-            if(w<2||h<0.4)continue;
-            if(color.includes('#000000')||color.includes('#ffffff')||color==='[]'||color==='null')continue;
-            colored.push({op:i,bbox:b,w:+w.toFixed(2),h:+h.toFixed(2),fill,stroke,width,dash});
+            const color=Array.isArray(fill)&&fill.length===1?fill[0]:null;
+            if(!['#f7c7a7','#b4c6e7'].includes(color)) continue;
+            if(w<20||w>210||h<6||h>30) continue;
+            if(b[0]<40) continue;
+            bars.push({op:i,color,bbox:b,w:+w.toFixed(2),h:+h.toFixed(2)});
           }
-          console.log('COLORED', colored.length);
-          for(const row of colored) console.log(JSON.stringify(row));
+          console.log('MEETING_BAR_CANDIDATES', bars.length);
+          for(const row of bars) console.log('BAR', JSON.stringify(row));
           NODE
