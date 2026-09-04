@@ -19,20 +19,11 @@ const merged = mergeOfficialPositiveEvidence(
 assert.equal(merged.length, 1);
 assert.equal(merged[0].source_id, 'nar-monthly-convene-info');
 assert.equal(merged[0].venue_code, '21');
-assert.throws(() => mergeOfficialPositiveEvidence(
-  [base],
-  [{ ...base, racecourse_id: 'oi-racecourse' }],
-), /identity conflict/);
+assert.throws(() => mergeOfficialPositiveEvidence([base], [{ ...base, racecourse_id: 'oi-racecourse' }]), /identity conflict/);
 
 const required = ['a', 'b'];
-assert.equal(assessMotherSetCompleteness([
-  { source_id: 'a', completeness: 'complete' },
-  { source_id: 'b', completeness: 'complete' },
-], required).complete, true);
-const failed = assessMotherSetCompleteness([
-  { source_id: 'a', completeness: 'complete' },
-  { source_id: 'b', completeness: 'failed' },
-], required);
+assert.equal(assessMotherSetCompleteness([{ source_id: 'a', completeness: 'complete' }, { source_id: 'b', completeness: 'complete' }], required).complete, true);
+const failed = assessMotherSetCompleteness([{ source_id: 'a', completeness: 'complete' }, { source_id: 'b', completeness: 'failed' }], required);
 assert.equal(failed.complete, false);
 assert.deepEqual(failed.incomplete_source_ids, ['b']);
 const missing = assessMotherSetCompleteness([{ source_id: 'a', completeness: 'complete' }], required);
@@ -50,47 +41,27 @@ const sourceRows = [
   { source_id: 'hokkaido-keiba-official-calendar', completeness: 'complete' },
   { source_id: 'kanazawa-keiba-official-calendar', completeness: 'complete' },
   { source_id: 'kochi-keiba-official-calendar', completeness: 'complete' },
+  { source_id: 'saga-keiba-official-calendar', completeness: 'complete' },
 ];
-assert.deepEqual(requiredMotherSetSourcesForMeeting(base), [
-  'nar-monthly-convene-info',
-  'nankankeiba-south-kanto-calendar',
-]);
+assert.deepEqual(requiredMotherSetSourcesForMeeting(base), ['nar-monthly-convene-info', 'nankankeiba-south-kanto-calendar']);
 assert.equal(canReconcileMeetingAbsence(base, sourceRows), true);
-const iwate = {
-  ...base,
-  meeting_id: 'nar-morioka-racecourse-2026-09-07',
-  racecourse_id: 'morioka-racecourse',
-};
-assert.deepEqual(requiredMotherSetSourcesForMeeting(iwate), ['nar-monthly-convene-info', 'iwatekeiba-official-calendar']);
-assert.equal(canReconcileMeetingAbsence(iwate, sourceRows), true);
-assert.equal(canReconcileMeetingAbsence(iwate, sourceRows.map((row) => row.source_id === 'iwatekeiba-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
-const hyogo = { ...base, meeting_id: 'nar-sonoda-racecourse-2026-09-09', racecourse_id: 'sonoda-racecourse' };
-assert.deepEqual(requiredMotherSetSourcesForMeeting(hyogo), ['nar-monthly-convene-info', 'hyogo-urban-keiba-official-calendar']);
-assert.equal(canReconcileMeetingAbsence(hyogo, sourceRows), true);
-assert.equal(canReconcileMeetingAbsence(hyogo, sourceRows.map((row) => row.source_id === 'hyogo-urban-keiba-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
-const tokaiNagoya = { ...base, meeting_id: 'nar-nagoya-racecourse-2026-09-14', racecourse_id: 'nagoya-racecourse' };
-const tokaiKasamatsu = { ...base, meeting_id: 'nar-kasamatsu-racecourse-2026-09-22', racecourse_id: 'kasamatsu-racecourse' };
-for (const tokai of [tokaiNagoya, tokaiKasamatsu]) {
-  assert.deepEqual(requiredMotherSetSourcesForMeeting(tokai), ['nar-monthly-convene-info', 'tokai-region-joint-official-calendar']);
-  assert.equal(canReconcileMeetingAbsence(tokai, sourceRows), true);
-  assert.equal(canReconcileMeetingAbsence(tokai, sourceRows.map((row) => row.source_id === 'tokai-region-joint-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
+
+const cases = [
+  ['iwatekeiba-official-calendar', { ...base, meeting_id: 'nar-morioka-racecourse-2026-09-07', racecourse_id: 'morioka-racecourse' }],
+  ['hyogo-urban-keiba-official-calendar', { ...base, meeting_id: 'nar-sonoda-racecourse-2026-09-09', racecourse_id: 'sonoda-racecourse' }],
+  ['tokai-region-joint-official-calendar', { ...base, meeting_id: 'nar-nagoya-racecourse-2026-09-14', racecourse_id: 'nagoya-racecourse' }],
+  ['tokai-region-joint-official-calendar', { ...base, meeting_id: 'nar-kasamatsu-racecourse-2026-09-22', racecourse_id: 'kasamatsu-racecourse' }],
+  ['hokkaido-keiba-official-calendar', { ...base, meeting_id: 'nar-monbetsu-racecourse-2026-09-08', racecourse_id: 'monbetsu-racecourse' }],
+  ['kanazawa-keiba-official-calendar', { ...base, meeting_id: 'nar-kanazawa-racecourse-2026-09-06', racecourse_id: 'kanazawa-racecourse' }],
+  ['kochi-keiba-official-calendar', { ...base, meeting_id: 'nar-kochi-racecourse-2026-09-05', racecourse_id: 'kochi-racecourse' }],
+  ['saga-keiba-official-calendar', { ...base, meeting_id: 'nar-saga-racecourse-2026-09-05', racecourse_id: 'saga-racecourse' }],
+];
+for (const [sourceId, meeting] of cases) {
+  assert.deepEqual(requiredMotherSetSourcesForMeeting(meeting), ['nar-monthly-convene-info', sourceId]);
+  assert.equal(canReconcileMeetingAbsence(meeting, sourceRows), true);
+  assert.equal(canReconcileMeetingAbsence(meeting, sourceRows.map((row) => row.source_id === sourceId ? { ...row, completeness: 'partial' } : row)), false);
 }
-const hokkaido = { ...base, meeting_id: 'nar-monbetsu-racecourse-2026-09-08', racecourse_id: 'monbetsu-racecourse' };
-assert.deepEqual(requiredMotherSetSourcesForMeeting(hokkaido), ['nar-monthly-convene-info', 'hokkaido-keiba-official-calendar']);
-assert.equal(canReconcileMeetingAbsence(hokkaido, sourceRows), true);
-assert.equal(canReconcileMeetingAbsence(hokkaido, sourceRows.map((row) => row.source_id === 'hokkaido-keiba-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
-const kanazawa = { ...base, meeting_id: 'nar-kanazawa-racecourse-2026-09-06', racecourse_id: 'kanazawa-racecourse' };
-assert.deepEqual(requiredMotherSetSourcesForMeeting(kanazawa), ['nar-monthly-convene-info', 'kanazawa-keiba-official-calendar']);
-assert.equal(canReconcileMeetingAbsence(kanazawa, sourceRows), true);
-assert.equal(canReconcileMeetingAbsence(kanazawa, sourceRows.map((row) => row.source_id === 'kanazawa-keiba-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
-const kochi = { ...base, meeting_id: 'nar-kochi-racecourse-2026-09-05', racecourse_id: 'kochi-racecourse' };
-assert.deepEqual(requiredMotherSetSourcesForMeeting(kochi), ['nar-monthly-convene-info', 'kochi-keiba-official-calendar']);
-assert.equal(canReconcileMeetingAbsence(kochi, sourceRows), true);
-assert.equal(canReconcileMeetingAbsence(kochi, sourceRows.map((row) => row.source_id === 'kochi-keiba-official-calendar' ? { ...row, completeness: 'partial' } : row)), false);
-assert.equal(canReconcileMeetingAbsence({
-  meeting_id: 'jra-nakayama-racecourse-2026-09-12', authority_id: 'jra', racecourse_id: 'nakayama-racecourse',
-}, sourceRows), false);
-assert.equal(canReconcileMeetingAbsence({
-  meeting_id: 'banei-obihiro-racecourse-2026-09-06', authority_id: 'banei-tokachi', racecourse_id: 'obihiro-racecourse',
-}, sourceRows), true);
+assert.equal(requiredMotherSetSourcesForMeeting({ ...base, meeting_id: 'nar-kitami-racecourse-2026-09-05', racecourse_id: 'kitami-racecourse' }), null);
+assert.equal(canReconcileMeetingAbsence({ meeting_id: 'jra-nakayama-racecourse-2026-09-12', authority_id: 'jra', racecourse_id: 'nakayama-racecourse' }, sourceRows), false);
+assert.equal(canReconcileMeetingAbsence({ meeting_id: 'banei-obihiro-racecourse-2026-09-06', authority_id: 'banei-tokachi', racecourse_id: 'obihiro-racecourse' }, sourceRows), true);
 console.log('JAPAN_MOTHER_SET_SAFETY: pass');

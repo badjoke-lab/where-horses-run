@@ -11,7 +11,8 @@
     "japan/nar-local-government-racing/tokai-region-joint-official-calendar",
     "japan/nar-local-government-racing/hokkaido-keiba-official-calendar",
     "japan/nar-local-government-racing/kanazawa-keiba-official-calendar",
-    "japan/nar-local-government-racing/kochi-keiba-official-calendar"
+    "japan/nar-local-government-racing/kochi-keiba-official-calendar",
+    "japan/nar-local-government-racing/saga-keiba-official-calendar"
   ],
   "records": [
     {
@@ -103,6 +104,15 @@
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "banei_specific_review",
       "notes": "Banei Tokachi has an approved A+ system ceiling. Banei terminology and field interpretation remain separate from flat-racing assumptions."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/saga-keiba-official-calendar",
+      "system_id": "japan-nar-system",
+      "capability_rank": "C",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_mother_set_union_v1",
+      "notes": "Saga Keiba's FY2026 annual official schedule PDF is the independent positive mother_set baseline for Saga, with structurally complete published monthly schedule pages contributing newer positive home-meeting evidence. A future monthly 404 is treated as not-yet-published rather than negative evidence. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete, while annual/PDF/monthly structural failures fail closed."
     }
   ]
 }
