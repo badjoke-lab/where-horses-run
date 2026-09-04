@@ -14,39 +14,29 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - name: Resolve September arrow geometry
+      - name: Inspect official Tokai monthly HTML structure
         shell: bash
         run: |
           set -euo pipefail
-          url='https://www.kasamatsu-keiba.com/resources/pdfs/news/2026/1768888484_abd42430844a7f06de8d.pdf'
-          curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o /tmp/tokai.pdf
-          npm install --no-save --no-package-lock --no-audit --no-fund pdfjs-dist@5.4.149 >/dev/null
-          node --input-type=module <<'NODE'
+          for ym in 2026/09 2026/10; do
+            url="https://www.kasamatsu-keiba.com/schedule/$ym"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/${ym//\//-}.html"
+            echo "=== $url bytes=$(wc -c < /tmp/${ym//\//-}.html) ==="
+            node --input-type=module - "/tmp/${ym//\//-}.html" <<'NODE'
           import fs from 'node:fs';
-          import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
-          const mul=(a,b)=>[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
-          const pt=(m,x,y)=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]];
-          const bbox=(m,b)=>{const p=[pt(m,b[0],b[1]),pt(m,b[0],b[3]),pt(m,b[2],b[1]),pt(m,b[2],b[3])];const x=p.map(v=>v[0]),y=p.map(v=>v[1]);return [Math.min(...x),Math.min(...y),Math.max(...x),Math.max(...y)].map(v=>+v.toFixed(2));};
-          const data=new Uint8Array(fs.readFileSync('/tmp/tokai.pdf'));
-          const pdf=await getDocument({data,useWorkerFetch:false,isEvalSupported:false}).promise;
-          const page=await pdf.getPage(1); const ops=await page.getOperatorList();
-          const names=new Map(Object.entries(OPS).map(([k,v])=>[v,k]));
-          let ctm=[1,0,0,1,0,0], lineWidth=null, dash=null, stroke=null, fill=null; const stack=[];
-          for(let i=0;i<ops.fnArray.length;i++){
-            const name=names.get(ops.fnArray[i])??String(ops.fnArray[i]); const a=ops.argsArray[i];
-            if(name==='save'){stack.push({ctm:[...ctm],lineWidth,dash,stroke,fill});continue;}
-            if(name==='restore'){const s=stack.pop();if(s)({ctm,lineWidth,dash,stroke,fill}=s);continue;}
-            if(name==='transform'){ctm=mul(ctm,a);continue;}
-            if(name==='setLineWidth'){lineWidth=a?.[0]??null;continue;}
-            if(name==='setLineDash'){dash=a;continue;}
-            if(name==='setStrokeRGBColor'){stroke=a;continue;}
-            if(name==='setFillRGBColor'){fill=a;continue;}
-            if(name!=='constructPath')continue;
-            const raw=a?.[2]; if(!raw||raw.length<4)continue; const b=bbox(ctm,Array.from(raw));
-            if(b[1]<390||b[3]>425||b[0]<55||b[2]>575)continue;
-            console.log(JSON.stringify({op:i,bbox:b,pathOps:Array.from(a?.[0]??[]),coords:Array.from(a?.[1]??[]).map(v=>+Number(v).toFixed(3)),lineWidth,dash,stroke,fill}));
+          const file = process.argv[2];
+          const html = fs.readFileSync(file, 'utf8');
+          console.log('title=', html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g,' ').trim());
+          const markers = ['笠松 (', '名古屋'];
+          for (const marker of markers) {
+            console.log(`MARKER ${marker} count=${html.split(marker).length - 1}`);
+            let pos = 0;
+            for (let i = 0; i < 8; i += 1) {
+              pos = html.indexOf(marker, pos);
+              if (pos < 0) break;
+              console.log(html.slice(Math.max(0, pos - 700), Math.min(html.length, pos + 500)).replace(/\s+/g, ' '));
+              pos += marker.length;
+            }
           }
           NODE
+          done
