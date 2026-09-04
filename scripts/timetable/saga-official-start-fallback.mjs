@@ -1,5 +1,5 @@
 const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
-const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/';
+const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
 
 const entities = (value) => String(value ?? '')
   .replace(/&nbsp;|&#160;/gi, ' ')
@@ -22,6 +22,7 @@ const lined = (value) => entities(value)
   .trim();
 
 const plain = (value) => lined(value).replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+const asciiDigits = (value) => String(value ?? '').replace(/[０-９]/g, (digit) => String.fromCharCode(digit.charCodeAt(0) - 0xfee0));
 
 function dateSection(text, date) {
   const [year, month, day] = date.split('-');
@@ -70,31 +71,41 @@ export function parseSagaOfficialStartPage(html, date) {
   return rows;
 }
 
-export function parseMonbetsuOfficialRaceInfoPage(html, date) {
-  const text = lined(html);
+export function parseMonbetsuOfficialRaceInfoPage(html, date, expectedRaceNumber = null) {
+  const normalized = asciiDigits(plain(html));
   const [year, month, day] = date.split('-');
-  if (!new RegExp(`${year}年\\s*${Number(month)}月\\s*${Number(day)}日`).test(text)) return [];
+  if (!new RegExp(`${year}年\\s*${Number(month)}月\\s*${Number(day)}日`).test(normalized)) return [];
 
-  const rows = [];
-  for (const match of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
-    const cells = [...match[1].matchAll(/<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi)]
-      .map((cell) => plain(cell[1]));
-    if (cells.length < 6 || !/^\d{1,2}$/.test(cells[0]) || !/^\d{1,2}:\d{2}$/.test(cells[1])) continue;
-    const raceNumber = Number(cells[0]);
-    const distance = cells[5].match(/(\d{3,4})\s*[mｍＭ]/i);
-    rows.push({
-      label: `Race ${raceNumber}`,
-      post_time_local: cells[1],
-      race_name: cells[3] || null,
-      distance_m: distance ? Number(distance[1]) : null,
-      surface: null,
-      course_label: null,
-    });
+  const raceMatch = /第\s*(\d{1,2})\s*競走/.exec(normalized);
+  if (!raceMatch) return [];
+  const raceNumber = Number(raceMatch[1]);
+  if (expectedRaceNumber != null && raceNumber !== expectedRaceNumber) return [];
+
+  const contextStart = Math.max(0, raceMatch.index - 400);
+  const context = normalized.slice(contextStart, raceMatch.index + raceMatch[0].length + 600);
+  const time = /発走時刻[^0-9]{0,24}(\d{1,2})\s*[:：]\s*(\d{2})/.exec(context);
+  if (!time) return [];
+  const distance = /(\d{3,4})\s*[mMｍＭ](?:\s*[（(](外|内)[）)])?/.exec(context);
+
+  return [{
+    label: `Race ${raceNumber}`,
+    post_time_local: `${String(Number(time[1])).padStart(2, '0')}:${time[2]}`,
+    race_name: null,
+    distance_m: distance ? Number(distance[1]) : null,
+    surface: null,
+    course_label: null,
+  }];
+}
+
+function monbetsuRaceNumbers(html) {
+  const numbers = new Set();
+  for (const match of String(html).matchAll(/[?&](?:amp;)?p_rno=(\d{1,3})/gi)) {
+    const value = Number(match[1]);
+    if (value >= 1 && value <= 14) numbers.add(value);
   }
-  const unique = [...new Map(rows.map((row) => [row.label, row])).values()]
-    .sort((left, right) => Number(left.label.slice(5)) - Number(right.label.slice(5)));
-  if (!unique.length || !unique.every((row, index) => row.label === `Race ${index + 1}`)) return [];
-  return unique;
+  const ordered = [...numbers].sort((left, right) => left - right);
+  if (!ordered.length || !ordered.every((number, index) => number === index + 1)) return [];
+  return ordered;
 }
 
 async function decodePage(response, preferred = ['utf-8', 'shift_jis']) {
@@ -117,9 +128,17 @@ async function fetchSagaStartPage(fetchImpl) {
   return { body: await decodePage(response), url: response.url || SAGA_OFFICIAL_START_URL };
 }
 
-async function fetchMonbetsuRaceInfoPage(fetchImpl, date) {
+function monbetsuRaceInfoUrl(date, raceNumber) {
   const url = new URL(MONBETSU_OFFICIAL_RACEINFO_URL);
+  url.searchParams.set('bid', 'nittei');
+  url.searchParams.set('bk_nd', '');
   url.searchParams.set('p_day', date.replaceAll('-', ''));
+  url.searchParams.set('p_rno', String(raceNumber).padStart(3, '0'));
+  return url;
+}
+
+async function fetchMonbetsuRaceInfoPage(fetchImpl, date, raceNumber) {
+  const url = monbetsuRaceInfoUrl(date, raceNumber);
   const response = await fetchImpl(url, {
     redirect: 'follow',
     headers: {
@@ -130,6 +149,25 @@ async function fetchMonbetsuRaceInfoPage(fetchImpl, date) {
   });
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
   return { body: await decodePage(response), url: response.url || url.toString() };
+}
+
+async function collectMonbetsuRaceInfo(fetchImpl, date) {
+  const firstPage = await fetchMonbetsuRaceInfoPage(fetchImpl, date, 1);
+  const firstRows = parseMonbetsuOfficialRaceInfoPage(firstPage.body, date, 1);
+  if (firstRows.length !== 1) return null;
+
+  const raceNumbers = monbetsuRaceNumbers(firstPage.body);
+  if (!raceNumbers.length) return null;
+
+  const rows = [firstRows[0]];
+  for (const raceNumber of raceNumbers.slice(1)) {
+    const page = await fetchMonbetsuRaceInfoPage(fetchImpl, date, raceNumber);
+    const parsed = parseMonbetsuOfficialRaceInfoPage(page.body, date, raceNumber);
+    if (parsed.length !== 1) return null;
+    rows.push(parsed[0]);
+  }
+  if (rows.length !== raceNumbers.length || !rows.every((row, index) => row.label === `Race ${index + 1}`)) return null;
+  return { rows, url: firstPage.url };
 }
 
 function canFallback(primary) {
@@ -165,9 +203,8 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
 
     if (meeting.venue_code === '04') {
       try {
-        const page = await fetchMonbetsuRaceInfoPage(fetchImpl, meeting.date);
-        const rows = parseMonbetsuOfficialRaceInfoPage(page.body, meeting.date);
-        if (rows.length) {
+        const collected = await collectMonbetsuRaceInfo(fetchImpl, meeting.date);
+        if (collected?.rows.length) {
           return {
             status: 'ok',
             meeting: {
@@ -175,8 +212,8 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
               source_id: 'monbetsu-official-raceinfo-fallback',
               source_label: 'ホッカイドウ競馬',
               capability_rank: 'A',
-              timetable_rows: rows,
-              official_source_url: page.url,
+              timetable_rows: collected.rows,
+              official_source_url: collected.url,
             },
           };
         }
