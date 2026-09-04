@@ -6,6 +6,7 @@ import { discoverJraOfficial30dWithCompleteness } from './jra-official-30d-disco
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-discovery.mjs';
 import { discoverIwatekeibaOfficial30d } from './iwatekeiba-official-30d-discovery.mjs';
+import { discoverHyogoOfficial30d } from './hyogo-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -226,7 +227,34 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
-  return mergeOfficialPositiveEvidence(narMeetings, southKanto.meetings ?? [], iwate.meetings ?? []);
+  let hyogo = { meetings: [], completeness: null };
+  const hyogoStartedAt = new Date().toISOString();
+  try {
+    hyogo = await discoverHyogoOfficial30d(context);
+    sourceCompleteness.set('hyogo-urban-keiba-official-calendar', {
+      ...hyogo.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: hyogoStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(hyogo.meetings, 'hyogo-urban-keiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('hyogo-urban-keiba-official-calendar', sourceState({
+      sourceId: 'hyogo-urban-keiba-official-calendar',
+      sourceUrl: 'https://www.sonoda-himeji.jp/schedule/',
+      startedAt: hyogoStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: 'https://www.sonoda-himeji.jp/schedule/', reason: String(error?.message ?? error) }],
+    }));
+  }
+
+  return mergeOfficialPositiveEvidence(
+    narMeetings,
+    southKanto.meetings ?? [],
+    iwate.meetings ?? [],
+    hyogo.meetings ?? [],
+  );
 }
 
 const baseAdapters = {
@@ -303,6 +331,10 @@ const absenceFamilyStatus = {
   iwate: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'iwatekeiba-official-calendar',
+  ]).complete,
+  hyogo: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'hyogo-urban-keiba-official-calendar',
   ]).complete,
   other_nar: false,
 };

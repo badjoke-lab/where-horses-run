@@ -11,6 +11,7 @@ const completeness = [
   { source_id: 'banei-official-schedule', completeness: 'complete' },
   { source_id: 'nankankeiba-south-kanto-calendar', completeness: 'complete' },
   { source_id: 'iwatekeiba-official-calendar', completeness: 'complete' },
+  { source_id: 'hyogo-urban-keiba-official-calendar', completeness: 'complete' },
 ];
 
 const rows = {
@@ -34,6 +35,13 @@ const rows = {
     date: '2026-09-07',
     authority_id: 'nar-local-government-racing',
     racecourse_id: 'morioka-racecourse',
+  },
+  hyogo: {
+    meeting_id: 'nar-sonoda-racecourse-2026-09-09',
+    country_id: 'japan',
+    date: '2026-09-09',
+    authority_id: 'nar-local-government-racing',
+    racecourse_id: 'sonoda-racecourse',
   },
   otherNar: {
     meeting_id: 'nar-kanazawa-racecourse-2026-09-07',
@@ -60,12 +68,17 @@ assert.deepEqual(requiredMotherSetSourcesForMeeting(rows.iwate), [
   'nar-monthly-convene-info',
   'iwatekeiba-official-calendar',
 ]);
+assert.deepEqual(requiredMotherSetSourcesForMeeting(rows.hyogo), [
+  'nar-monthly-convene-info',
+  'hyogo-urban-keiba-official-calendar',
+]);
 assert.equal(requiredMotherSetSourcesForMeeting(rows.otherNar), null);
 assert.deepEqual(requiredMotherSetSourcesForMeeting(rows.banei), ['banei-official-schedule']);
 
 assert.equal(canReconcileMeetingAbsence(rows.jra, completeness), false);
 assert.equal(canReconcileMeetingAbsence(rows.southKanto, completeness), true);
 assert.equal(canReconcileMeetingAbsence(rows.iwate, completeness), true);
+assert.equal(canReconcileMeetingAbsence(rows.hyogo, completeness), true);
 assert.equal(canReconcileMeetingAbsence(rows.otherNar, completeness), false);
 assert.equal(canReconcileMeetingAbsence(rows.banei, completeness), true);
 
@@ -74,6 +87,7 @@ const selection = selectPublicAbsenceReconciliation({
     rows.jra,
     rows.southKanto,
     rows.iwate,
+    rows.hyogo,
     rows.otherNar,
     rows.banei,
     { ...rows.southKanto, meeting_id: 'nar-kawasaki-racecourse-2026-09-08', date: '2026-09-08' },
@@ -88,23 +102,27 @@ assert.deepEqual(selection.removed_meeting_ids, [
   'nar-kawasaki-racecourse-2026-09-07',
   'nar-kawasaki-racecourse-2026-09-08',
   'nar-morioka-racecourse-2026-09-07',
+  'nar-sonoda-racecourse-2026-09-09',
 ]);
 assert.deepEqual(selection.preserved_meeting_ids, [
   'jra-nakayama-racecourse-2026-09-12',
   'nar-kanazawa-racecourse-2026-09-07',
 ]);
 
-const iwatePartial = completeness.map((row) => row.source_id === 'iwatekeiba-official-calendar'
+const hyogoPartial = completeness.map((row) => row.source_id === 'hyogo-urban-keiba-official-calendar'
   ? { ...row, completeness: 'partial' }
   : row);
-assert.equal(canReconcileMeetingAbsence(rows.iwate, iwatePartial), false);
+assert.equal(canReconcileMeetingAbsence(rows.hyogo, hyogoPartial), false);
 const partialSelection = selectPublicAbsenceReconciliation({
-  publicMeetings: [rows.iwate, rows.banei],
+  publicMeetings: [rows.hyogo, rows.iwate, rows.banei],
   officialMeetingIds: [],
-  rangeDates: ['2026-09-06', '2026-09-07'],
-  sourceCompletenessRows: iwatePartial,
+  rangeDates: ['2026-09-06', '2026-09-07', '2026-09-09'],
+  sourceCompletenessRows: hyogoPartial,
 });
-assert.deepEqual(partialSelection.removed_meeting_ids, ['banei-obihiro-racecourse-2026-09-06']);
-assert.deepEqual(partialSelection.preserved_meeting_ids, ['nar-morioka-racecourse-2026-09-07']);
+assert.deepEqual(partialSelection.removed_meeting_ids, [
+  'banei-obihiro-racecourse-2026-09-06',
+  'nar-morioka-racecourse-2026-09-07',
+]);
+assert.deepEqual(partialSelection.preserved_meeting_ids, ['nar-sonoda-racecourse-2026-09-09']);
 
 console.log('JAPAN_PER_FAMILY_ABSENCE_RECONCILIATION: pass');
