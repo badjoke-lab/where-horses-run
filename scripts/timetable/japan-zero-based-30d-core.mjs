@@ -351,7 +351,7 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
         acquisition_group: officialMeeting.acquisition_group,
         outcome: 'conflict',
         reason: 'official_rank_regression',
-        official_rank: 'C',
+        official_rank: normalized.capability_rank,
         public_rank: publicRank,
       });
       continue;

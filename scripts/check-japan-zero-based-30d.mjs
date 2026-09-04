@@ -202,6 +202,63 @@ for (const row of result.public) {
 }
 assert.equal(result.complete, true);
 
+const regressionMeeting = meeting('nar', 'nar-regression');
+const regressionAdapters = {
+  jra: {
+    discover: async () => [],
+    inspect: async () => { throw new Error('JRA inspect must not run for empty discovery'); },
+  },
+  'nar-standard': {
+    discover: async () => [regressionMeeting],
+    inspect: async (value) => ({
+      status: 'ok',
+      meeting: {
+        ...value,
+        capability_rank: 'A',
+        timetable_rows: [
+          { label: 'Race 1', post_time_local: '10:00' },
+          { label: 'Race 2', post_time_local: '16:00' },
+        ],
+      },
+    }),
+  },
+  banei: {
+    discover: async () => [],
+    inspect: async () => { throw new Error('Banei inspect must not run for empty discovery'); },
+  },
+};
+const previousRegression = {
+  ...regressionMeeting,
+  country_id: 'japan',
+  timezone: 'Asia/Tokyo',
+  capability_rank: 'A+',
+  first_race_time_local: '10:00',
+  last_race_time_local: '16:00',
+  source_trace: {
+    source_status: 'verified',
+    official_source_url: regressionMeeting.official_source_url,
+  },
+  freshness: { last_checked_date: '2026-09-03' },
+};
+const regressionResult = await runJapanZeroBased30d({
+  executionDate: '2026-09-04',
+  adapters: regressionAdapters,
+  retryDelayMs: 0,
+  checkedAt: '2026-09-04T02:00:00.000Z',
+  loadExisting: () => ({
+    canonical: [previousRegression],
+    public: [previousRegression],
+    details: [],
+    publicDetails: [],
+  }),
+});
+const regressionRow = regressionResult.reconciliations.find((row) => row.meeting_id === 'nar-regression');
+assert.equal(regressionRow.outcome, 'conflict');
+assert.equal(regressionRow.reason, 'official_rank_regression');
+assert.equal(regressionRow.official_rank, 'A', 'regression reconciliation must report the actually acquired rank');
+assert.equal(regressionRow.public_rank, 'A+');
+assert.equal(regressionResult.canonical.find((row) => row.meeting_id === 'nar-regression').capability_rank, 'A+', 'rank regression must preserve stronger canonical data');
+
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'missing' }], [], []), /reconciliation incomplete/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'duplicate' }], [{ meeting_id: 'duplicate', outcome: 'no_op' }, { meeting_id: 'duplicate', outcome: 'no_op' }], []), /reconciliation incomplete/);
 assert.throws(() => assertJapanCompleteness([{ meeting_id: 'public-missing' }], [{ meeting_id: 'public-missing', outcome: 'details_pending', official_rank: 'C' }], []), /public completeness failed/);
