@@ -6,7 +6,8 @@
     "japan/nar-local-government-racing/nar-monthly-convene-info",
     "japan/banei-tokachi/banei-official-schedule",
     "japan/nar-local-government-racing/nankankeiba-south-kanto-calendar",
-    "japan/nar-local-government-racing/iwatekeiba-official-calendar"
+    "japan/nar-local-government-racing/iwatekeiba-official-calendar",
+    "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar"
   ],
   "records": [
     {
@@ -44,6 +45,15 @@
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "production_mother_set_union_v1",
       "notes": "Iwate Keiba official monthly calendar is an independent mother_set source for Morioka and Mizusawa. Venue blocks are identified by the official Morioka/Mizusawa calendar markers and their bounded date rows. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar",
+      "system_id": "japan-nar-system",
+      "capability_rank": "C",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_mother_set_union_v1",
+      "notes": "Hyogo Prefecture Racing Association's shared Sonoda/Himeji official monthly calendar is an independent mother_set source for Sonoda and Himeji. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete."
     },
     {
       "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
