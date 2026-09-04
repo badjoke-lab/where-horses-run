@@ -8,6 +8,7 @@ import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-disco
 import { discoverIwatekeibaOfficial30d } from './iwatekeiba-official-30d-discovery.mjs';
 import { discoverHyogoOfficial30d } from './hyogo-official-30d-discovery.mjs';
 import { discoverTokaiOfficial30d, TOKAI_OFFICIAL_PDF_URL } from './tokai-official-30d-discovery.mjs';
+import { discoverHokkaidoOfficial30d } from './hokkaido-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -272,12 +273,35 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
+  let hokkaido = { meetings: [], completeness: null };
+  const hokkaidoStartedAt = new Date().toISOString();
+  try {
+    hokkaido = await discoverHokkaidoOfficial30d(context);
+    sourceCompleteness.set('hokkaido-keiba-official-calendar', {
+      ...hokkaido.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: hokkaidoStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(hokkaido.meetings, 'hokkaido-keiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('hokkaido-keiba-official-calendar', sourceState({
+      sourceId: 'hokkaido-keiba-official-calendar',
+      sourceUrl: 'https://www.hokkaidokeiba.net/kaisai/nittei.php',
+      startedAt: hokkaidoStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: 'https://www.hokkaidokeiba.net/kaisai/nittei.php', reason: String(error?.message ?? error) }],
+    }));
+  }
+
   return mergeOfficialPositiveEvidence(
     narMeetings,
     southKanto.meetings ?? [],
     iwate.meetings ?? [],
     hyogo.meetings ?? [],
     tokai.meetings ?? [],
+    hokkaido.meetings ?? [],
   );
 }
 
@@ -363,6 +387,10 @@ const absenceFamilyStatus = {
   tokai: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'tokai-region-joint-official-calendar',
+  ]).complete,
+  hokkaido: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'hokkaido-keiba-official-calendar',
   ]).complete,
   other_nar: false,
 };
