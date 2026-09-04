@@ -11,6 +11,7 @@ import { discoverTokaiOfficial30d, TOKAI_OFFICIAL_PDF_URL } from './tokai-offici
 import { discoverHokkaidoOfficial30d } from './hokkaido-official-30d-discovery.mjs';
 import { discoverKanazawaOfficial30d, KANAZAWA_OFFICIAL_ANNUAL_PDF_URL } from './kanazawa-official-30d-discovery.mjs';
 import { discoverKochiOfficial30d, KOCHI_OFFICIAL_ANNUAL_PDF_URL } from './kochi-official-30d-discovery.mjs';
+import { discoverSagaOfficial30d, SAGA_OFFICIAL_ANNUAL_PDF_URL } from './saga-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -341,6 +342,28 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
+  let saga = { meetings: [], completeness: null };
+  const sagaStartedAt = new Date().toISOString();
+  try {
+    saga = await discoverSagaOfficial30d(context);
+    sourceCompleteness.set('saga-keiba-official-calendar', {
+      ...saga.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: sagaStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(saga.meetings, 'saga-keiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('saga-keiba-official-calendar', sourceState({
+      sourceId: 'saga-keiba-official-calendar',
+      sourceUrl: SAGA_OFFICIAL_ANNUAL_PDF_URL,
+      startedAt: sagaStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: SAGA_OFFICIAL_ANNUAL_PDF_URL, reason: String(error?.message ?? error) }],
+    }));
+  }
+
   return mergeOfficialPositiveEvidence(
     narMeetings,
     southKanto.meetings ?? [],
@@ -350,6 +373,7 @@ async function discoverNarOfficialUnion(context) {
     hokkaido.meetings ?? [],
     kanazawa.meetings ?? [],
     kochi.meetings ?? [],
+    saga.meetings ?? [],
   );
 }
 
@@ -447,6 +471,10 @@ const absenceFamilyStatus = {
   kochi: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'kochi-keiba-official-calendar',
+  ]).complete,
+  saga: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'saga-keiba-official-calendar',
   ]).complete,
   other_nar: false,
 };
