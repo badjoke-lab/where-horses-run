@@ -47,6 +47,7 @@ const sourceRows = [
   { source_id: 'iwatekeiba-official-calendar', completeness: 'complete' },
   { source_id: 'hyogo-urban-keiba-official-calendar', completeness: 'complete' },
   { source_id: 'tokai-region-joint-official-calendar', completeness: 'complete' },
+  { source_id: 'hokkaido-keiba-official-calendar', completeness: 'complete' },
 ];
 assert.deepEqual(requiredMotherSetSourcesForMeeting(base), [
   'nar-monthly-convene-info',
@@ -99,6 +100,19 @@ for (const tokai of [tokaiNagoya, tokaiKasamatsu]) {
     ? { ...row, completeness: 'partial' }
     : row)), false);
 }
+const hokkaido = {
+  ...base,
+  meeting_id: 'nar-monbetsu-racecourse-2026-09-08',
+  racecourse_id: 'monbetsu-racecourse',
+};
+assert.deepEqual(requiredMotherSetSourcesForMeeting(hokkaido), [
+  'nar-monthly-convene-info',
+  'hokkaido-keiba-official-calendar',
+]);
+assert.equal(canReconcileMeetingAbsence(hokkaido, sourceRows), true);
+assert.equal(canReconcileMeetingAbsence(hokkaido, sourceRows.map((row) => row.source_id === 'hokkaido-keiba-official-calendar'
+  ? { ...row, completeness: 'partial' }
+  : row)), false);
 assert.equal(canReconcileMeetingAbsence({
   meeting_id: 'jra-nakayama-racecourse-2026-09-12',
   authority_id: 'jra',
