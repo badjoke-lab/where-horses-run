@@ -26,6 +26,10 @@ function isoDate(year, month, day) {
   return Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value ? null : value;
 }
 
+function daysInMonth(year, month) {
+  return new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
+}
+
 function quarterStartMonth(month) {
   return Math.floor((Number(month) - 1) / 3) * 3 + 1;
 }
@@ -121,6 +125,8 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
   const allowed = new Set(allowedDates);
   const meetings = [];
   const seenVenueRows = new Set();
+  const requiredDays = daysInMonth(year, month);
+  let invalidVenueGrid = false;
   for (const rowMatch of section.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
     const rowCells = cells(rowMatch[0]);
     if (rowCells.length < 2) continue;
@@ -128,8 +134,9 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
     const venueEntry = Object.entries(SOUTH_KANTO_VENUES).find(([name]) => venueCellText === name || venueCellText.includes(name));
     if (!venueEntry) continue;
     const [, venue] = venueEntry;
+    if (seenVenueRows.has(venue.code) || rowCells.length < requiredDays + 1) invalidVenueGrid = true;
     seenVenueRows.add(venue.code);
-    for (let day = 1; day < rowCells.length; day += 1) {
+    for (let day = 1; day <= requiredDays; day += 1) {
       if (!meetingCell(rowCells[day])) continue;
       const date = isoDate(year, month, day);
       if (!date || !allowed.has(date)) continue;
@@ -137,7 +144,7 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
     }
   }
   return {
-    structural_valid: seenVenueRows.size === 4,
+    structural_valid: seenVenueRows.size === 4 && !invalidVenueGrid,
     meetings: [...new Map(meetings.map((row) => [row.meeting_id, row])).values()],
     programme_links: programmeLinks(section, sourceUrl),
   };
@@ -206,9 +213,9 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
       if (!structurallyValid) calendarFailures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
 
       // Programme pages are supplemental positive evidence. The quarter calendar
-      // remains the mother-set classifier when its four venue rows parse
-      // structurally; a broken supplementary programme must not turn a complete
-      // calendar into an absence-reconciliation failure.
+      // remains the mother-set classifier only after every venue row exposes a
+      // complete day grid. A broken supplementary programme must not downgrade
+      // an otherwise complete calendar.
       for (const link of [...new Map(links.map((row) => [row.url, row])).values()]) {
         try {
           const programme = await fetchHtml(link.url, fetchImpl);
