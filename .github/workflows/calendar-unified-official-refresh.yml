@@ -24,6 +24,7 @@ on:
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
@@ -44,6 +45,7 @@ on:
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
@@ -81,6 +83,7 @@ jobs:
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/consolidate-official-acquisition-artifacts.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
+          node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
           node --check scripts/timetable/run-kra-official-window.mjs
@@ -132,6 +135,7 @@ jobs:
           node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
+          node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
           node --check scripts/timetable/run-kra-official-window.mjs
