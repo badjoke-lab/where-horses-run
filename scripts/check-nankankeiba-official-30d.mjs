@@ -82,6 +82,8 @@ const discovered = await discoverNankankeibaOfficial30d({
   fetchImpl: async (url) => new Response(url.includes('/bangumi/') ? programmeFixture : calendarFixture, { status: 200 }),
 });
 assert.equal(discovered.completeness.completeness, 'complete');
+assert.equal(discovered.completeness.failure_count, 0);
+assert.equal(discovered.completeness.supplemental_failure_count, 0);
 assert.equal(discovered.meetings.length, 5);
 assert.deepEqual(discovered.meetings.map((row) => row.meeting_id), [
   'nar-kawasaki-racecourse-2026-09-07',
@@ -91,12 +93,23 @@ assert.deepEqual(discovered.meetings.map((row) => row.meeting_id), [
   'nar-kawasaki-racecourse-2026-09-11',
 ]);
 
-const partial = await discoverNankankeibaOfficial30d({
+const supplementalFailure = await discoverNankankeibaOfficial30d({
   dates: ['2026-09-07', '2026-09-08'],
   fetchImpl: async (url) => url.includes('/bangumi/')
     ? new Response('', { status: 500 })
     : new Response(calendarFixture, { status: 200 }),
 });
-assert.equal(partial.completeness.completeness, 'partial');
-assert.equal(partial.completeness.failure_count, 1);
+assert.equal(supplementalFailure.completeness.completeness, 'complete');
+assert.equal(supplementalFailure.completeness.failure_count, 0);
+assert.equal(supplementalFailure.completeness.supplemental_failure_count, 1);
+assert.equal(supplementalFailure.completeness.supplemental_failures[0].reason, 'HTTP 500: https://www.nankankeiba.com/bangumi/20262107.do');
+
+const brokenCalendar = await discoverNankankeibaOfficial30d({
+  dates: ['2026-09-07', '2026-09-08'],
+  fetchImpl: async (url) => url.includes('/bangumi/')
+    ? new Response(programmeFixture, { status: 200 })
+    : new Response('<h3>9月</h3><table><tr><td>broken</td></tr></table>', { status: 200 }),
+});
+assert.equal(brokenCalendar.completeness.completeness, 'failed');
+assert.equal(brokenCalendar.completeness.failure_count, 1);
 console.log('NANKANKEIBA_OFFICIAL_30D: pass');
