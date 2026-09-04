@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:safe-source-pipeline && npm run validate:safe-source-adapter-interface && npm run validate:live-fetch-probe && npm run validate:timetable-schema-v0 && npm run validate:country-adapter-template && npm run validate:major-country-acquisition-test-matrix && npm run validate:major-country-acquisition-source-groups && npm run validate:major-country-sample-acquisition-fixtures && npm run validate:major-country-sample-acquisition-output-snapshots && npm run validate:major-country-parser-contracts && npm run validate:major-country-sample-extraction-snapshots && npm run validate:major-country-sample-extraction-audit-matrix && npm run validate:authority-source-inventory-schema && npm run validate:timetable-acquisition-route-schema && npm run validate:normalized-timetable-output-schema && npm run validate:japan-zero-based-30d && npm run validate:japan-mother-set-safety && npm run validate:japan-per-family-absence-reconciliation && npm run validate:jra-official-30d-completeness && npm run validate:nankankeiba-official-30d && npm run validate:iwatekeiba-official-30d && npm run validate:hyogo-official-30d && npm run build",
+    "check": "npm run validate:fixtures && npm run validate:fixture-parser && npm run validate:normalizer && npm run validate:source-fetch && npm run validate:safe-source-pipeline && npm run validate:safe-source-adapter-interface && npm run validate:live-fetch-probe && npm run validate:timetable-schema-v0 && npm run validate:country-adapter-template && npm run validate:major-country-acquisition-test-matrix && npm run validate:major-country-acquisition-source-groups && npm run validate:major-country-sample-acquisition-fixtures && npm run validate:major-country-sample-acquisition-output-snapshots && npm run validate:major-country-parser-contracts && npm run validate:major-country-sample-extraction-snapshots && npm run validate:major-country-sample-extraction-audit-matrix && npm run validate:authority-source-inventory-schema && npm run validate:timetable-acquisition-route-schema && npm run validate:normalized-timetable-output-schema && npm run validate:japan-zero-based-30d && npm run validate:japan-mother-set-safety && npm run validate:japan-per-family-absence-reconciliation && npm run validate:jra-official-30d-completeness && npm run validate:nankankeiba-official-30d && npm run validate:iwatekeiba-official-30d && npm run validate:hyogo-official-30d && npm run validate:tokai-official-30d && npm run build",
     "fetch:hkjc-racecards": "node scripts/timetable/fetch-hkjc-racecards.mjs",
     "normalize:hkjc-racecards": "node scripts/timetable/normalize-hkjc-racecards.mjs",
     "refresh:hkjc-racecards": "npm run fetch:hkjc-racecards && npm run normalize:hkjc-racecards",
@@ -42,7 +42,8 @@
     "validate:jra-official-30d-completeness": "node scripts/check-jra-official-30d-completeness.mjs",
     "validate:nankankeiba-official-30d": "node scripts/check-nankankeiba-official-30d.mjs",
     "validate:iwatekeiba-official-30d": "node scripts/check-iwatekeiba-official-30d.mjs",
-    "validate:hyogo-official-30d": "node scripts/check-hyogo-official-30d.mjs"
+    "validate:hyogo-official-30d": "node scripts/check-hyogo-official-30d.mjs",
+    "validate:tokai-official-30d": "node scripts/check-tokai-official-30d.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0"
