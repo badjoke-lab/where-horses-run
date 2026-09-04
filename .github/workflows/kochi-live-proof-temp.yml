@@ -1,0 +1,50 @@
+name: Temporary Kochi official calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/kochi-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install pinned parser dependency
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Inspect official Kochi annual PDF geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          pdf='https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf'
+          curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$pdf" -o /tmp/kochi.pdf
+          echo "PDF bytes=$(wc -c < /tmp/kochi.pdf) sha256=$(sha256sum /tmp/kochi.pdf | awk '{print $1}')"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+          const data = new Uint8Array(fs.readFileSync('/tmp/kochi.pdf'));
+          const pdf = await getDocument({ data, useWorkerFetch:false, isEvalSupported:false }).promise;
+          console.log('PAGES', pdf.numPages);
+          const page = await pdf.getPage(1);
+          const text = await page.getTextContent();
+          const items = text.items.filter((item)=>item.str?.trim()).map((item)=>({
+            str:item.str.trim(),
+            x:+item.transform[4].toFixed(2),
+            y:+item.transform[5].toFixed(2),
+            w:+Number(item.width??0).toFixed(2),
+            h:+Number(item.height??0).toFixed(2),
+          })).sort((a,b)=>b.y-a.y||a.x-b.x);
+          console.log('TEXT_ITEMS', items.length);
+          for (const row of items) {
+            if (/^(?:[0-9０-９]{1,2}|[0-9０-９]{1,2}月|☆|◎)$/.test(row.str) || /9月|10月|令和8年度|開催日程/.test(row.str)) {
+              console.log('TEXT', JSON.stringify(row));
+            }
+          }
+          NODE
