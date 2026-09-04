@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
-import { discoverJraOfficial30d } from './jra-official-30d-discovery.mjs';
+import { discoverJraOfficial30dWithCompleteness } from './jra-official-30d-discovery.mjs';
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
@@ -115,7 +115,7 @@ function sourceState({ sourceId, sourceUrl, startedAt, endedAt, status, count = 
     parsed_detail_count: 0,
     pending_count: 0,
     failure_count: failures.length,
-    source_visible_horizon: selectedDateList.at(-1),
+    source_visible_horizon: status === 'complete' ? selectedDateList.at(-1) : null,
     source_urls: sourceUrl ? [sourceUrl] : [],
     failures,
   };
@@ -144,6 +144,32 @@ async function guardedDiscovery({ sourceId, sourceUrl, discover, context }) {
       endedAt: new Date().toISOString(),
       status: 'failed',
       failures: [{ source_url: sourceUrl, reason: String(error?.message ?? error) }],
+    }));
+    return [];
+  }
+}
+
+async function discoverJraOfficialWithCompleteness(context) {
+  const startedAt = new Date().toISOString();
+  try {
+    const result = await discoverJraOfficial30dWithCompleteness(context);
+    if (!Array.isArray(result?.meetings) || !result?.completeness) throw new Error('JRA discovery completeness result is invalid');
+    recordSourceObservations(result.meetings, 'jra-racing-calendar-programme');
+    sourceCompleteness.set('jra-racing-calendar-programme', {
+      ...result.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: startedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    return result.meetings;
+  } catch (error) {
+    sourceCompleteness.set('jra-racing-calendar-programme', sourceState({
+      sourceId: 'jra-racing-calendar-programme',
+      sourceUrl: 'https://www.jra.go.jp/keiba/calendar/',
+      startedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: 'https://www.jra.go.jp/keiba/calendar/', reason: String(error?.message ?? error) }],
     }));
     return [];
   }
@@ -187,12 +213,7 @@ const baseAdapters = {
   ...japanOfficial30dAdapters,
   jra: {
     ...japanOfficial30dAdapters.jra,
-    discover: (context) => guardedDiscovery({
-      sourceId: 'jra-racing-calendar-programme',
-      sourceUrl: 'https://www.jra.go.jp/keiba/calendar/',
-      discover: discoverJraOfficial30d,
-      context,
-    }),
+    discover: discoverJraOfficialWithCompleteness,
   },
   'nar-standard': {
     ...narStandardAdapter,
