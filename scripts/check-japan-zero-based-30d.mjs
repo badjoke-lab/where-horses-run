@@ -39,23 +39,35 @@ assert.equal(jraSpecialParsed.length, 1, 'race titles containing a venue name mu
 assert.equal(jraSpecialParsed[0].programme_rows.length, 12);
 assert.equal(jraSpecialParsed[0].programme_rows.at(-1).race_name, '第61回 札幌2歳ステークス');
 
+const jraCalendarFixture = [{
+  month: '9',
+  data: [
+    { date: '4', day: '金曜', info: [{ race: [] }] },
+    { date: '5', day: '土曜', info: [{ race: [{ name: '4回中山' }, { name: '4回阪神' }] }] },
+    { date: '6', day: '日曜', info: [{ race: [] }] },
+  ],
+}];
 const jraDiscovery = await discoverJraOfficial30d({
   dates: ['2026-09-04', '2026-09-05', '2026-09-06'],
   delayMs: 0,
   fetchImpl: async (url) => {
-    if (url.endsWith('/0904.html')) return new Response('', { status: 403 });
+    if (url.endsWith('.json')) return new Response(JSON.stringify(jraCalendarFixture), { status: 200 });
     if (url.endsWith('/0905.html')) return new Response(jraFixture, { status: 200 });
     return new Response('', { status: 404 });
   },
 });
 assert.deepEqual(jraDiscovery.map((row) => row.meeting_id), ['jra-nakayama-racecourse-2026-09-05', 'jra-hanshin-racecourse-2026-09-05']);
 await assert.rejects(
-  () => discoverJraOfficial30d({ dates: ['2026-09-04'], delayMs: 0, fetchImpl: async () => new Response('', { status: 403 }) }),
-  /found no programme days/,
+  () => discoverJraOfficial30d({
+    dates: ['2026-09-04'],
+    delayMs: 0,
+    fetchImpl: async () => new Response(JSON.stringify([{ month: '9', data: [{ date: '4', day: '金曜', info: [{ race: [] }] }] }]), { status: 200 }),
+  }),
+  /found no meetings in the requested window/,
 );
 await assert.rejects(
   () => discoverJraOfficial30d({ dates: ['2026-09-05'], delayMs: 0, fetchImpl: async () => new Response('', { status: 500 }) }),
-  /HTTP 500/,
+  /found no meetings in the requested window/,
 );
 
 const monthlyCells = Array.from({ length: 30 }, (_, index) => `<td>${index === 3 ? '☆' : ''}</td>`).join('');
