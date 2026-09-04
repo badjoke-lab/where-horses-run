@@ -181,7 +181,8 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
   const allowed = new Set(dates);
   const sourceUrls = [...new Set(dates.map(nankankeibaQuarterUrl))];
   const meetings = [];
-  const failures = [];
+  const calendarFailures = [];
+  const supplementalFailures = [];
   const pageResults = [];
 
   for (const sourceUrl of sourceUrls) {
@@ -202,32 +203,36 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
         meetings.push(...parsed.meetings);
         links.push(...parsed.programme_links);
       }
-      if (!structurallyValid) failures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
+      if (!structurallyValid) calendarFailures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
 
+      // Programme pages are supplemental positive evidence. The quarter calendar
+      // remains the mother-set classifier when its four venue rows parse
+      // structurally; a broken supplementary programme must not turn a complete
+      // calendar into an absence-reconciliation failure.
       for (const link of [...new Map(links.map((row) => [row.url, row])).values()]) {
         try {
           const programme = await fetchHtml(link.url, fetchImpl);
           const year = Number(link.programme_key.slice(0, 4));
           const programmeDates = parseNankankeibaProgrammeDates(programme.body, year).filter((date) => allowed.has(date));
           if (!programmeDates.length) {
-            failures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
+            supplementalFailures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
             continue;
           }
           for (const date of programmeDates) meetings.push(meetingRow(link.venue, date, programme.url));
         } catch (error) {
-          failures.push({ source_url: link.url, reason: String(error?.message ?? error) });
+          supplementalFailures.push({ source_url: link.url, reason: String(error?.message ?? error) });
         }
       }
       pageResults.push({ source_url: page.url, result: structurallyValid ? 'complete' : 'partial' });
     } catch (error) {
-      failures.push({ source_url: sourceUrl, reason: String(error?.message ?? error) });
+      calendarFailures.push({ source_url: sourceUrl, reason: String(error?.message ?? error) });
       pageResults.push({ source_url: sourceUrl, result: 'failed' });
     }
   }
 
   const deduped = [...new Map(meetings.map((row) => [row.meeting_id, row])).values()].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
   const successfulPages = pageResults.filter((row) => row.result === 'complete').length;
-  const completeness = failures.length === 0 && successfulPages === sourceUrls.length
+  const completeness = calendarFailures.length === 0 && successfulPages === sourceUrls.length
     ? 'complete'
     : successfulPages === 0 ? 'failed' : 'partial';
   return {
@@ -241,10 +246,12 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
       parsed_meeting_count: deduped.length,
       parsed_detail_count: 0,
       pending_count: 0,
-      failure_count: failures.length,
+      failure_count: calendarFailures.length,
+      supplemental_failure_count: supplementalFailures.length,
       source_visible_horizon: dates.at(-1),
       source_urls: sourceUrls,
-      failures,
+      failures: calendarFailures,
+      supplemental_failures: supplementalFailures,
     },
   };
 }
