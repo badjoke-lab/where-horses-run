@@ -1,4 +1,4 @@
-name: Temporary Saga official calendar live proof
+name: Temporary Saga official branch wiring
 
 on:
   pull_request:
@@ -6,55 +6,97 @@ on:
       - '.github/workflows/saga-live-proof-temp.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  inspect:
+  wire:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Install pinned parser dependency
-        run: npm install --no-package-lock --no-audit --no-fund
-      - name: Dump Saga annual calendar rows
+      - name: Apply exact Saga wiring
         shell: bash
         run: |
           set -euo pipefail
-          ua='Mozilla/5.0 (compatible; WhereHorsesRun/1.0)'
-          curl -fsSL --retry 3 --retry-delay 2 -A "$ua" 'https://www.sagakeiba.net/wp-content/uploads/2026/02/R8kaisainittei.pdf' -o /tmp/saga.pdf
-          curl -fsSL --retry 3 --retry-delay 2 -A "$ua" 'https://www.sagakeiba.net/schedule/sch202609/' -o /tmp/saga-202609.html
-          code="$(curl -sSL -o /tmp/saga-202610.html -w '%{http_code}' --retry 3 --retry-delay 2 -A "$ua" 'https://www.sagakeiba.net/schedule/sch202610/')"
-          echo "PDF bytes=$(wc -c < /tmp/saga.pdf) sha256=$(sha256sum /tmp/saga.pdf | awk '{print $1}') OCT_STATUS=$code"
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
-          const normalize=(value)=>String(value??'').replace(/[０-９]/g,(c)=>String(c.charCodeAt(0)-0xfee0)).replace(/[１２３４５６７８９０]/g,(c)=>String(c.charCodeAt(0)-0xfee0)).replace(/\s+/g,'').trim();
-          const data=new Uint8Array(fs.readFileSync('/tmp/saga.pdf'));
-          const pdf=await getDocument({data,useWorkerFetch:false,isEvalSupported:false}).promise;
-          const page=await pdf.getPage(1);
-          const text=await page.getTextContent();
-          const items=text.items.filter((item)=>item.str?.trim()).map((item)=>({str:item.str.trim(),norm:normalize(item.str),x:+item.transform[4].toFixed(2),y:+item.transform[5].toFixed(2),w:+Number(item.width??0).toFixed(2)}));
-          const groups=new Map();
-          for(const item of items){
-            const key=item.y.toFixed(1);
-            const row=groups.get(key)??[]; row.push(item); groups.set(key,row);
+
+          function replaceExact(text, needle, replacement, label, expected = 1) {
+            const count = text.split(needle).length - 1;
+            if (count !== expected) throw new Error(`${label}: expected ${expected} matches, got ${count}`);
+            return text.split(needle).join(replacement);
           }
-          for(const [key,row] of [...groups.entries()].sort((a,b)=>Number(b[0])-Number(a[0]))){
-            row.sort((a,b)=>a.x-b.x);
-            const text=row.map((item)=>item.norm).join(' ');
-            const nums=row.filter((item)=>/^\d{1,2}$/.test(item.norm)).length;
-            const bullets=row.filter((item)=>item.norm==='●').length;
-            if(nums>=20||bullets>0||/月/.test(text)||/令和8年度|開催日程/.test(text)){
-              console.log('PDF_ROW',key,'nums',nums,'bullets',bullets,JSON.stringify(row));
-            }
-          }
-          const html=fs.readFileSync('/tmp/saga-202609.html','utf8');
-          const plain=(value)=>String(value??'').replace(/<!--[\s\S]*?-->/g,' ').replace(/<br\s*\/?>/gi,' | ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
-          const table=html.match(/<table\b[^>]*>[\s\S]*?<\/table>/i)?.[0];
-          const rows=[...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((m)=>[...m[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map((cell)=>plain(cell[1]))).filter((row)=>row.length);
-          const homeIndex=rows[0].findIndex((value)=>/本場/.test(value));
-          console.log('SEP_HOME_DAYS',JSON.stringify(rows.slice(1).filter((row)=>row[homeIndex]==='佐賀').map((row)=>Number(row[0]))));
+
+          const runnerPath = 'scripts/timetable/run-japan-zero-based-30d.mjs';
+          let runner = fs.readFileSync(runnerPath, 'utf8');
+          runner = replaceExact(
+            runner,
+            "import { discoverKochiOfficial30d, KOCHI_OFFICIAL_ANNUAL_PDF_URL } from './kochi-official-30d-discovery.mjs';\nimport { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';",
+            "import { discoverKochiOfficial30d, KOCHI_OFFICIAL_ANNUAL_PDF_URL } from './kochi-official-30d-discovery.mjs';\nimport { discoverSagaOfficial30d, SAGA_OFFICIAL_ANNUAL_PDF_URL } from './saga-official-30d-discovery.mjs';\nimport { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';",
+            'runner import',
+          );
+          runner = replaceExact(
+            runner,
+            "  }\n\n  return mergeOfficialPositiveEvidence(\n    narMeetings,\n    southKanto.meetings ?? [],\n    iwate.meetings ?? [],\n    hyogo.meetings ?? [],\n    tokai.meetings ?? [],\n    hokkaido.meetings ?? [],\n    kanazawa.meetings ?? [],\n    kochi.meetings ?? [],\n  );\n}",
+            "  }\n\n  let saga = { meetings: [], completeness: null };\n  const sagaStartedAt = new Date().toISOString();\n  try {\n    saga = await discoverSagaOfficial30d(context);\n    sourceCompleteness.set('saga-keiba-official-calendar', {\n      ...saga.completeness,\n      requested_window: selectedRange,\n      fetch_started_at: sagaStartedAt,\n      fetch_ended_at: new Date().toISOString(),\n    });\n    recordSourceObservations(saga.meetings, 'saga-keiba-official-calendar');\n  } catch (error) {\n    sourceCompleteness.set('saga-keiba-official-calendar', sourceState({\n      sourceId: 'saga-keiba-official-calendar',\n      sourceUrl: SAGA_OFFICIAL_ANNUAL_PDF_URL,\n      startedAt: sagaStartedAt,\n      endedAt: new Date().toISOString(),\n      status: 'failed',\n      failures: [{ source_url: SAGA_OFFICIAL_ANNUAL_PDF_URL, reason: String(error?.message ?? error) }],\n    }));\n  }\n\n  return mergeOfficialPositiveEvidence(\n    narMeetings,\n    southKanto.meetings ?? [],\n    iwate.meetings ?? [],\n    hyogo.meetings ?? [],\n    tokai.meetings ?? [],\n    hokkaido.meetings ?? [],\n    kanazawa.meetings ?? [],\n    kochi.meetings ?? [],\n    saga.meetings ?? [],\n  );\n}",
+            'runner Saga block',
+          );
+          runner = replaceExact(
+            runner,
+            "  kochi: assessMotherSetCompleteness(completenessRows, [\n    'nar-monthly-convene-info',\n    'kochi-keiba-official-calendar',\n  ]).complete,\n  other_nar: false,",
+            "  kochi: assessMotherSetCompleteness(completenessRows, [\n    'nar-monthly-convene-info',\n    'kochi-keiba-official-calendar',\n  ]).complete,\n  saga: assessMotherSetCompleteness(completenessRows, [\n    'nar-monthly-convene-info',\n    'saga-keiba-official-calendar',\n  ]).complete,\n  other_nar: false,",
+            'runner Saga family status',
+          );
+          fs.writeFileSync(runnerPath, runner);
+
+          const packagePath = 'package.json';
+          const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+          if (pkg.scripts['validate:saga-official-30d']) throw new Error('Saga package script already exists');
+          if (!pkg.scripts.check.includes('npm run validate:kochi-official-30d && npm run build')) throw new Error('package aggregate anchor missing');
+          pkg.scripts.check = pkg.scripts.check.replace('npm run validate:kochi-official-30d && npm run build', 'npm run validate:kochi-official-30d && npm run validate:saga-official-30d && npm run build');
+          pkg.scripts['validate:saga-official-30d'] = 'node scripts/check-saga-official-30d.mjs';
+          fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
+
+          const inventoryPath = 'data/static/authority-source-inventory-japan-v2.json';
+          const inventory = JSON.parse(fs.readFileSync(inventoryPath, 'utf8'));
+          const key = 'japan/nar-local-government-racing/saga-keiba-official-calendar';
+          if (inventory.supersedes_records.includes(key) || inventory.records.some((row) => row.authority_source_key === key)) throw new Error('Saga inventory record already exists');
+          inventory.supersedes_records.push(key);
+          inventory.records.push({
+            authority_source_key: key,
+            system_id: 'japan-nar-system',
+            capability_rank: 'C',
+            source_status: 'verified',
+            adapter_candidate_status: 'candidate',
+            implementation_boundary: 'production_mother_set_union_v1',
+            notes: "Saga Keiba's FY2026 annual official schedule PDF is the independent positive mother_set baseline for Saga, with structurally complete published monthly schedule pages contributing newer positive home-meeting evidence. A future monthly 404 is treated as not-yet-published rather than negative evidence. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete, while annual/PDF/monthly structural failures fail closed.",
+          });
+          fs.writeFileSync(inventoryPath, `${JSON.stringify(inventory, null, 2)}\n`);
+
+          const workflowPath = '.github/workflows/calendar-unified-official-refresh.yml';
+          let workflow = fs.readFileSync(workflowPath, 'utf8');
+          workflow = replaceExact(workflow, "      - 'scripts/timetable/kochi-official-30d-discovery.mjs'\n", "      - 'scripts/timetable/kochi-official-30d-discovery.mjs'\n      - 'scripts/timetable/saga-official-30d-discovery.mjs'\n", 'workflow discovery paths', 2);
+          workflow = replaceExact(workflow, "      - 'scripts/check-kochi-official-30d.mjs'\n", "      - 'scripts/check-kochi-official-30d.mjs'\n      - 'scripts/check-saga-official-30d.mjs'\n", 'workflow check paths', 2);
+          workflow = replaceExact(workflow, "          node --check scripts/timetable/kochi-official-30d-discovery.mjs\n", "          node --check scripts/timetable/kochi-official-30d-discovery.mjs\n          node --check scripts/timetable/saga-official-30d-discovery.mjs\n", 'workflow syntax', 2);
+          workflow = replaceExact(workflow, "          node scripts/check-kochi-official-30d.mjs\n", "          node scripts/check-kochi-official-30d.mjs\n          node scripts/check-saga-official-30d.mjs\n", 'workflow fixtures');
+          fs.writeFileSync(workflowPath, workflow);
           NODE
+          git diff --check
+          git diff -- scripts/timetable/run-japan-zero-based-30d.mjs package.json data/static/authority-source-inventory-japan-v2.json .github/workflows/calendar-unified-official-refresh.yml
+      - name: Commit exact Saga wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/timetable/run-japan-zero-based-30d.mjs package.json data/static/authority-source-inventory-japan-v2.json .github/workflows/calendar-unified-official-refresh.yml
+          git diff --cached --quiet && { echo 'expected Saga wiring diff missing'; exit 1; }
+          git commit -m 'feat: wire Saga official mother-set source'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
