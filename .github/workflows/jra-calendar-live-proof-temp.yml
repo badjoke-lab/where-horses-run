@@ -1,0 +1,40 @@
+name: Temporary JRA calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/jra-calendar-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official JRA September and October calendars
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re, urllib.request
+          for month in ('sep','oct'):
+              url=f'https://www.jra.go.jp/keiba/calendar/{month}.html'
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)','Accept-Language':'ja'})
+              raw=urllib.request.urlopen(req,timeout=20).read()
+              text=raw.decode('shift_jis','replace')
+              print('URL',url,'BYTES',len(raw),'TITLE',re.findall(r'<title[^>]*>(.*?)</title>',text,re.I|re.S)[:1])
+              hrefs=sorted(set(re.findall(r'href=[\"\']([^\"\']*calendar2026[^\"\']+\.html)[\"\']',text,re.I)))
+              print('PROGRAMME_HREF_COUNT',len(hrefs))
+              print('\n'.join(hrefs[:80]))
+              for pattern in (r'0905\.html',r'0907\.html',r'1003\.html',r'1004\.html'):
+                  print('PATTERN',pattern,'COUNT',len(re.findall(pattern,text,re.I)))
+              samples=[]
+              for m in re.finditer(r'calendar2026',text,re.I):
+                  samples.append(re.sub(r'\s+',' ',text[max(0,m.start()-180):m.start()+300]))
+                  if len(samples)>=8: break
+              print('SAMPLES')
+              print('\n---\n'.join(samples))
+          PY
