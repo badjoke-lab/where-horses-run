@@ -1,0 +1,45 @@
+name: Nankankeiba detail live proof temp
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe live Kawasaki programme HTML
+        run: |
+          node --input-type=module <<'NODE'
+          for (const url of [
+            'https://www.nankankeiba.com/program/20260908210702.do',
+            'https://www.nankankeiba.com/program/20260910210704.do',
+          ]) {
+            const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' } });
+            console.log('URL', url, 'STATUS', r.status, 'FINAL', r.url, 'CTYPE', r.headers.get('content-type'));
+            const bytes = await r.arrayBuffer();
+            const html = new TextDecoder('shift_jis').decode(bytes);
+            console.log('LEN', html.length);
+            console.log('DEBA LINKS', [...html.matchAll(/href=["']([^"']*(?:DebaTable|S_DebaTable|program)[^"']*)["']/gi)].slice(0,30).map(m=>m[1]));
+            const text = html
+              .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+              .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+              .replace(/<br\s*\/?>/gi, '\n')
+              .replace(/<\/(?:tr|td|th|div|section|article|p|li|h[1-6]|table)>/gi, '\n')
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/&nbsp;|&#160;/gi, ' ')
+              .replace(/&amp;/gi, '&')
+              .replace(/[\t\u3000 ]+/g, ' ')
+              .replace(/\r/g, '')
+              .replace(/\n\s+/g, '\n')
+              .replace(/\n{2,}/g, '\n')
+              .trim();
+            console.log(text.split('\n').filter(line => /(?:R|発走|距離|ダート|芝|左|右|川崎)/.test(line)).slice(0,180).join('\n'));
+          }
+          NODE
