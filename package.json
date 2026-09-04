@@ -41,7 +41,7 @@
     "validate:japan-per-family-absence-reconciliation": "node scripts/check-japan-per-family-absence-reconciliation.mjs",
     "validate:jra-official-30d-completeness": "node scripts/check-jra-official-30d-completeness.mjs",
     "validate:nankankeiba-official-30d": "node scripts/check-nankankeiba-official-30d.mjs",
-    "validate:nankan-official-programme-fallback": "node scripts/check-nankan-official-programme-fallback.mjs",
+    "validate:nankan-official-programme-fallback": "node --check scripts/timetable/nankan-official-programme-fallback.mjs && node scripts/check-nankan-official-programme-fallback.mjs",
     "validate:iwatekeiba-official-30d": "node scripts/check-iwatekeiba-official-30d.mjs",
     "validate:hyogo-official-30d": "node scripts/check-hyogo-official-30d.mjs",
     "validate:tokai-official-30d": "node scripts/check-tokai-official-30d.mjs",
