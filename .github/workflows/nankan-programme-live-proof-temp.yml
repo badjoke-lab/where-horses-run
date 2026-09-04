@@ -53,11 +53,24 @@ jobs:
               url: result?.meeting?.official_source_url ?? null,
             });
           }
-          console.log(JSON.stringify(results, null, 2));
+          console.log('PROBE_RESULTS', JSON.stringify(results, null, 2));
           const kawasaki = results[0];
           assert.equal(kawasaki.status, 'ok');
           assert.equal(kawasaki.rank, 'A+');
           assert.equal(kawasaki.rows, 12);
           assert.equal(kawasaki.first?.label, 'Race 1');
           assert.equal(kawasaki.last?.label, 'Race 12');
+
+          const response = await fetch(kawasaki.url, { headers: { 'user-agent': 'Mozilla/5.0', 'accept-language': 'ja' } });
+          assert.equal(response.ok, true);
+          const bytes = await response.arrayBuffer();
+          const html = new TextDecoder('shift_jis').decode(bytes);
+          const candidates = [...html.matchAll(/>\s*1R\s*</gi)];
+          console.log('ONE_R_OCCURRENCES', candidates.length);
+          for (const match of candidates.slice(0, 3)) {
+            const index = match.index ?? 0;
+            console.log('ONE_R_MARKUP_BEGIN');
+            console.log(html.slice(Math.max(0, index - 2200), index + 6500));
+            console.log('ONE_R_MARKUP_END');
+          }
           NODE
