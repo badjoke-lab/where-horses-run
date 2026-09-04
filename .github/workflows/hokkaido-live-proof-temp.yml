@@ -14,30 +14,30 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect official Hokkaido calendar structure
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Run live Hokkaido official adapter for current 30-day window
         shell: bash
         run: |
           set -euo pipefail
-          for ym in 202609 202610; do
-            url="https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=$ym"
-            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/$ym.html"
-            echo "=== $url bytes=$(wc -c < /tmp/$ym.html) ==="
-            node --input-type=module - "/tmp/$ym.html" <<'NODE'
-          import fs from 'node:fs';
-          const file = process.argv[2];
-          const bytes = fs.readFileSync(file);
-          const html = new TextDecoder('shift_jis').decode(bytes);
-          const text = html.replace(/\s+/g, ' ');
-          console.log('title=', text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
-          console.log('monbetsu=', (text.match(/門別/g) ?? []).length);
-          let pos = 0;
-          for (let i = 0; i < 16; i += 1) {
-            pos = text.indexOf('門別', pos);
-            if (pos < 0) break;
-            console.log('MONBETSU', text.slice(Math.max(0, pos - 550), Math.min(text.length, pos + 650)));
-            pos += 2;
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { discoverHokkaidoOfficial30d } from './scripts/timetable/hokkaido-official-30d-discovery.mjs';
+          const dates = [];
+          const cursor = new Date('2026-09-04T00:00:00Z');
+          for (let i = 0; i < 30; i += 1) {
+            dates.push(cursor.toISOString().slice(0, 10));
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
           }
-          for (const match of text.matchAll(/<img\b[^>]*(?:alt|title)=["'][^"']*門別[^"']*["'][^>]*>/gi)) console.log('IMG', match[0]);
-          for (const match of text.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,120}?門別/gi)) console.log('LINK', match[1]);
+          const result = await discoverHokkaidoOfficial30d({ dates });
+          console.log(JSON.stringify(result.completeness, null, 2));
+          console.log(JSON.stringify(result.meetings.map((row) => ({ meeting_id: row.meeting_id, marker: row.official_meeting_marker, source: row.official_source_url })), null, 2));
+          assert.equal(result.completeness.completeness, 'complete');
+          assert.equal(result.completeness.failure_count, 0);
+          assert.equal(result.meetings.length, 12);
+          assert.ok(result.meetings.some((row) => row.meeting_id === 'nar-monbetsu-racecourse-2026-09-08'));
+          assert.ok(result.meetings.some((row) => row.meeting_id === 'nar-monbetsu-racecourse-2026-09-30'));
+          assert.ok(result.meetings.some((row) => row.meeting_id === 'nar-monbetsu-racecourse-2026-10-01'));
+          assert.ok(result.meetings.every((row) => row.racecourse_id === 'monbetsu-racecourse' && row.venue_code === '04'));
           NODE
-          done
