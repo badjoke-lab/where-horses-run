@@ -10,6 +10,7 @@ import { discoverHyogoOfficial30d } from './hyogo-official-30d-discovery.mjs';
 import { discoverTokaiOfficial30d, TOKAI_OFFICIAL_PDF_URL } from './tokai-official-30d-discovery.mjs';
 import { discoverHokkaidoOfficial30d } from './hokkaido-official-30d-discovery.mjs';
 import { discoverKanazawaOfficial30d, KANAZAWA_OFFICIAL_ANNUAL_PDF_URL } from './kanazawa-official-30d-discovery.mjs';
+import { discoverKochiOfficial30d, KOCHI_OFFICIAL_ANNUAL_PDF_URL } from './kochi-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -318,6 +319,28 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
+  let kochi = { meetings: [], completeness: null };
+  const kochiStartedAt = new Date().toISOString();
+  try {
+    kochi = await discoverKochiOfficial30d(context);
+    sourceCompleteness.set('kochi-keiba-official-calendar', {
+      ...kochi.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: kochiStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(kochi.meetings, 'kochi-keiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('kochi-keiba-official-calendar', sourceState({
+      sourceId: 'kochi-keiba-official-calendar',
+      sourceUrl: KOCHI_OFFICIAL_ANNUAL_PDF_URL,
+      startedAt: kochiStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: KOCHI_OFFICIAL_ANNUAL_PDF_URL, reason: String(error?.message ?? error) }],
+    }));
+  }
+
   return mergeOfficialPositiveEvidence(
     narMeetings,
     southKanto.meetings ?? [],
@@ -326,6 +349,7 @@ async function discoverNarOfficialUnion(context) {
     tokai.meetings ?? [],
     hokkaido.meetings ?? [],
     kanazawa.meetings ?? [],
+    kochi.meetings ?? [],
   );
 }
 
@@ -419,6 +443,10 @@ const absenceFamilyStatus = {
   kanazawa: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'kanazawa-keiba-official-calendar',
+  ]).complete,
+  kochi: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'kochi-keiba-official-calendar',
   ]).complete,
   other_nar: false,
 };
