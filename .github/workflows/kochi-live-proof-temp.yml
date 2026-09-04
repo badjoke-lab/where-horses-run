@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kochi-live-proof-temp.yml'
+      - 'scripts/timetable/kochi-official-30d-discovery.mjs'
+      - 'package.json'
 
 permissions:
   contents: read
@@ -19,48 +21,39 @@ jobs:
           node-version: 22.12.0
       - name: Install pinned parser dependency
         run: npm install --no-package-lock --no-audit --no-fund
-      - name: Inspect official Kochi annual PDF geometry and current scheduler
+      - name: Run permanent Kochi adapter for current 30-day window
         shell: bash
         run: |
           set -euo pipefail
-          pdf='https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf'
-          curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$pdf" -o /tmp/kochi.pdf
-          echo "PDF bytes=$(wc -c < /tmp/kochi.pdf) sha256=$(sha256sum /tmp/kochi.pdf | awk '{print $1}')"
-          for ym in 202609 202610; do
-            url="https://ns.keiba.or.jp/top/scheduler/scheduler.cgi/scheduler.cgi?date=${ym}"
-            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/kochi-${ym}.html"
-            echo "SCHEDULER ${ym} bytes=$(wc -c < /tmp/kochi-${ym}.html)"
-          done
           node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
-          const data = new Uint8Array(fs.readFileSync('/tmp/kochi.pdf'));
-          const pdf = await getDocument({ data, useWorkerFetch:false, isEvalSupported:false }).promise;
-          const page = await pdf.getPage(1);
-          const text = await page.getTextContent();
-          const items = text.items.filter((item)=>item.str?.trim()).map((item)=>({
-            str:item.str.trim(), x:+item.transform[4].toFixed(2), y:+item.transform[5].toFixed(2),
-            w:+Number(item.width??0).toFixed(2), h:+Number(item.height??0).toFixed(2),
-          })).sort((a,b)=>b.y-a.y||a.x-b.x);
-          for (const row of items) {
-            if (/^(?:9月|10月|☆|◎)$/.test(row.str) && row.y > 300 && row.y < 390) console.log('PDF_TEXT', JSON.stringify(row));
+          import assert from 'node:assert/strict';
+          import { discoverKochiOfficial30d } from './scripts/timetable/kochi-official-30d-discovery.mjs';
+          const dates = [];
+          const cursor = new Date('2026-09-04T00:00:00Z');
+          for (let index = 0; index < 30; index += 1) {
+            dates.push(cursor.toISOString().slice(0, 10));
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
           }
-          const plain=(value)=>String(value).replace(/<br\s*\/?>/gi,' | ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
-          for (const ym of ['202609','202610']) {
-            const html=fs.readFileSync(`/tmp/kochi-${ym}.html`,'utf8');
-            console.log('MONTH_TITLE', ym, html.match(/<h2>([^<]+)<\/h2>/i)?.[1] ?? null);
-            const cells=[];
-            for(const match of html.matchAll(/<td\b[^>]*id=["']calendar_(\d{8})["'][^>]*>([\s\S]*?)<\/td>/gi)){
-              const [,date,body]=match;
-              const text=plain(body);
-              const links=[...body.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].map((m)=>({href:m[1],text:plain(m[2])}));
-              cells.push({date,text,links,raw:body.replace(/\s+/g,' ').trim().slice(0,1500)});
-            }
-            console.log('CELL_COUNT', ym, cells.length);
-            for(const cell of cells){
-              const day=String(Number(cell.date.slice(-2)));
-              const residual=cell.text.replace(new RegExp(`^${day}\\s*`),'').trim();
-              if(residual || cell.links.length) console.log('CELL', JSON.stringify({...cell,residual}));
-            }
-          }
+          const result = await discoverKochiOfficial30d({ dates });
+          console.log(JSON.stringify(result.completeness, null, 2));
+          console.log(JSON.stringify(result.meetings, null, 2));
+          const expected = [
+            'nar-kochi-racecourse-2026-09-05',
+            'nar-kochi-racecourse-2026-09-06',
+            'nar-kochi-racecourse-2026-09-12',
+            'nar-kochi-racecourse-2026-09-13',
+            'nar-kochi-racecourse-2026-09-20',
+            'nar-kochi-racecourse-2026-09-22',
+            'nar-kochi-racecourse-2026-09-26',
+            'nar-kochi-racecourse-2026-09-27',
+            'nar-kochi-racecourse-2026-10-03',
+          ];
+          assert.equal(result.completeness.completeness, 'complete');
+          assert.equal(result.completeness.failure_count, 0);
+          assert.equal(result.completeness.parsed_meeting_count, 9);
+          assert.equal(result.completeness.annual_calendar_bytes, 362689);
+          assert.equal(result.completeness.annual_calendar_sha256, 'e706fde5d4ef7110923d586727900972bf02fc053befbaf48dba4e18fa4b63b3');
+          assert.deepEqual(result.completeness.annual_parsed_months, ['2026-09', '2026-10']);
+          assert.deepEqual(result.meetings.map((row) => row.meeting_id), expected);
+          assert.ok(result.meetings.every((row) => row.venue_code === '31' && row.racecourse_id === 'kochi-racecourse'));
           NODE
