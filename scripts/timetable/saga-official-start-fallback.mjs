@@ -1,3 +1,5 @@
+import { fetchNankanOfficialProgramme } from './nankan-official-programme-fallback.mjs';
+
 const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
 const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
 
@@ -174,14 +176,29 @@ function canFallback(primary) {
   return ['race_number_discovery_incomplete', 'scheduled_pending_details'].includes(primary.status);
 }
 
+function canNankanFallback(primary) {
+  return ['race_number_discovery_incomplete', 'scheduled_pending_details', 'details_pending'].includes(primary?.status);
+}
+
 export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
-  return async (meeting) => {
-    const primary = await baseInspect(meeting);
+  return async (meeting, context) => {
+    const requestFetch = context?.fetchImpl ?? fetchImpl;
+    const primary = await baseInspect(meeting, context);
+
+    if (canNankanFallback(primary) && ['18', '19', '20', '21'].includes(meeting.venue_code)) {
+      try {
+        const nankan = await fetchNankanOfficialProgramme(meeting, { fetchImpl: requestFetch });
+        if (nankan) return nankan;
+      } catch {
+        // Preserve the primary NAR state when South Kanto detail is unavailable or malformed.
+      }
+    }
+
     if (!canFallback(primary)) return primary;
 
     if (meeting.venue_code === '32') {
       try {
-        const page = await fetchSagaStartPage(fetchImpl);
+        const page = await fetchSagaStartPage(requestFetch);
         const rows = parseSagaOfficialStartPage(page.body, meeting.date);
         if (rows.length) {
           return {
@@ -203,7 +220,7 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
 
     if (meeting.venue_code === '04') {
       try {
-        const collected = await collectMonbetsuRaceInfo(fetchImpl, meeting.date);
+        const collected = await collectMonbetsuRaceInfo(requestFetch, meeting.date);
         if (collected?.rows.length) {
           return {
             status: 'ok',

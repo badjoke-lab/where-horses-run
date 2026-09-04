@@ -6,6 +6,7 @@
     "japan/nar-local-government-racing/nar-monthly-convene-info",
     "japan/banei-tokachi/banei-official-schedule",
     "japan/nar-local-government-racing/nankankeiba-south-kanto-calendar",
+    "japan/nar-local-government-racing/nankankeiba-south-kanto-programme",
     "japan/nar-local-government-racing/iwatekeiba-official-calendar",
     "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar",
     "japan/nar-local-government-racing/tokai-region-joint-official-calendar",
@@ -41,6 +42,15 @@
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "production_mother_set_union_v1",
       "notes": "South Kanto 4 Racing official quarterly calendar (nankankeiba.com/calendar/YYYYQQ.do with quarter-start months 01/04/07/10) is the independent mother_set source for Urawa, Funabashi, Oi, and Kawasaki. All four venue rows must expose complete month day grids; calendar fetch/structure failures block absence removal. Linked programme pages are supplemental positive evidence only, so a programme parse failure is retained as a diagnostic but does not downgrade a structurally complete quarter calendar. Positive evidence is unioned with NAR."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/nankankeiba-south-kanto-programme",
+      "system_id": "japan-nar-system",
+      "capability_rank": "A+",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_detail_fallback_v1",
+      "notes": "South Kanto 4 Racing official programme pages are an A+ detail fallback for Urawa, Funabashi, Oi, and Kawasaki when NAR TodayRaceInfo is still pending or structurally incomplete. Race number, post time, distance, and race name are parsed from the official programme list, with the race title taken only from the dedicated title link rather than field-size text. Known South Kanto dirt orientation supplies surface/course metadata. Continuous race numbering is required; unavailable or malformed official programme detail fails closed to the original NAR pending state."
     },
     {
       "authority_source_key": "japan/nar-local-government-racing/iwatekeiba-official-calendar",
