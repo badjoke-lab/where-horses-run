@@ -45,6 +45,14 @@ function withinVerifiedWindow(date) {
   return date >= TOKAI_VERIFIED_WINDOW.start && date <= TOKAI_VERIFIED_WINDOW.end;
 }
 
+export function selectTokaiVerifiedMeetings(dates, sourceUrl = TOKAI_OFFICIAL_PDF_URL) {
+  const allowed = new Set(dates ?? []);
+  return Object.entries(VERIFIED_DATES).flatMap(([venueKey, venueDates]) => venueDates
+      .filter((date) => allowed.has(date))
+      .map((date) => meetingRow(venueKey, date, sourceUrl)))
+    .sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+}
+
 async function fetchPinnedPdf(fetchImpl) {
   const response = await fetchImpl(TOKAI_OFFICIAL_PDF_URL, {
     redirect: 'follow',
@@ -86,25 +94,18 @@ export async function discoverTokaiOfficial30d({ dates, fetchImpl = fetch }) {
     });
   }
 
-  const allowed = new Set(requested);
-  const meetings = source
-    ? Object.entries(VERIFIED_DATES).flatMap(([venueKey, venueDates]) => venueDates
-        .filter((date) => allowed.has(date))
-        .map((date) => meetingRow(venueKey, date, source.url)))
-    : [];
-  const deduped = [...new Map(meetings.map((row) => [row.meeting_id, row])).values()]
-    .sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+  const meetings = source ? selectTokaiVerifiedMeetings(requested, source.url) : [];
   const completeness = failures.length === 0 ? 'complete' : source ? 'partial' : 'failed';
 
   return {
-    meetings: deduped,
+    meetings,
     completeness: {
       source_id: 'tokai-region-joint-official-calendar',
       role: 'mother_set',
       requested_window: { start: requested[0], end: requested.at(-1) },
       result: completeness,
       completeness,
-      parsed_meeting_count: deduped.length,
+      parsed_meeting_count: meetings.length,
       parsed_detail_count: 0,
       pending_count: unsupportedDates.length,
       failure_count: failures.length,
