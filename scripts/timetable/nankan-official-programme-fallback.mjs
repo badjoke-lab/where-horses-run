@@ -19,6 +19,15 @@ function decodeHtml(value) {
     .replace(/&#([0-9]+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)));
 }
 
+function plain(html) {
+  return decodeHtml(html)
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[\s\u3000]+/g, ' ')
+    .trim();
+}
+
 function textify(html) {
   return decodeHtml(html)
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '\n')
@@ -47,62 +56,47 @@ async function get(url, fetchImpl = fetch) {
     error.status = response.status;
     throw error;
   }
+  const finalUrl = new URL(response.url || url);
+  if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'www.nankankeiba.com') {
+    throw new Error(`unexpected nankankeiba redirect: ${finalUrl.toString()}`);
+  }
   const bytes = await response.arrayBuffer();
   const candidates = ['utf-8', 'shift_jis'].map((encoding) => ({
     encoding,
     text: new TextDecoder(encoding).decode(bytes),
   }));
   candidates.sort((a, b) => (b.text.match(/[競馬発走開催番組]/g)?.length ?? 0) - (a.text.match(/[競馬発走開催番組]/g)?.length ?? 0));
-  return { body: candidates[0].text, url: response.url || url };
+  return { body: candidates[0].text, url: finalUrl.toString() };
 }
 
 export function parseNankanProgrammeRows(html) {
-  const lines = textify(html).split('\n').map((value) => value.trim()).filter(Boolean);
   const rows = [];
-  for (let index = 0; index < lines.length; index += 1) {
-    const race = lines[index].match(/^(\d{1,2})R$/i);
-    if (!race) continue;
-    const raceNumber = Number(race[1]);
-    let postTime = null;
-    let distanceM = null;
-    let raceName = null;
-    for (let cursor = index + 1; cursor < Math.min(lines.length, index + 16); cursor += 1) {
-      if (/^\d{1,2}R$/i.test(lines[cursor])) break;
-      const combined = lines[cursor].match(/(\d{1,2}:\d{2})\s+(\d{3,4})\s*[mｍＭ]/i);
-      if (combined) {
-        postTime = combined[1].padStart(5, '0');
-        distanceM = Number(combined[2]);
-        continue;
-      }
-      const time = lines[cursor].match(/^(\d{1,2}:\d{2})$/);
-      if (time && !postTime) {
-        postTime = time[1].padStart(5, '0');
-        continue;
-      }
-      const distance = lines[cursor].match(/^(\d{3,4})\s*[mｍＭ]$/i);
-      if (distance && !distanceM) {
-        distanceM = Number(distance[1]);
-        continue;
-      }
-      if (
-        !raceName
-        && postTime
-        && distanceM
-        && !/^(?:TOPICS|分析|変更|オッズ|着順速報|払戻金一覧|本日の騎乗一覧|SPAT4LOTO|出走表|結果|リプレイ)/.test(lines[cursor])
-      ) {
-        raceName = lines[cursor].replace(/\s+/g, ' ').trim();
-      }
-    }
-    if (postTime && distanceM && raceName) {
-      rows.push({
-        race_number: raceNumber,
-        label: `Race ${raceNumber}`,
-        post_time_local: postTime,
-        race_name: raceName,
-        distance_m: distanceM,
-      });
-    }
+  const itemPattern = /<li\b[^>]*class=["'][^"']*nk23_c-block01__list__item[^"']*["'][^>]*>([\s\S]*?)<\/li>/gi;
+  for (const item of String(html).matchAll(itemPattern)) {
+    const block = item[1];
+    const raceLabel = block.match(/<span\b[^>]*class=["'][^"']*nk23_c-block01__label[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
+    const raceMatch = plain(raceLabel?.[1] ?? '').match(/^(\d{1,2})R$/i);
+    if (!raceMatch) continue;
+
+    const raceNumber = Number(raceMatch[1]);
+    const infoValues = [...block.matchAll(/<span\b[^>]*class=["'][^"']*nk23_c-block01__text(?:\s|["'])[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi)]
+      .map((match) => plain(match[1]));
+    const postTime = infoValues.find((value) => /^\d{1,2}:\d{2}$/.test(value)) ?? null;
+    const distanceValue = infoValues.find((value) => /^\d{3,4}\s*[mｍＭ]$/i.test(value)) ?? null;
+    const titleMatch = block.match(/<a\b[^>]*class=["'][^"']*nk23_c-block01__list__title[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const raceName = plain(titleMatch?.[1] ?? '');
+    const distanceM = distanceValue ? Number(distanceValue.match(/\d{3,4}/)?.[0]) : null;
+
+    if (!postTime || !distanceM || !raceName || /^\d+頭$/.test(raceName)) continue;
+    rows.push({
+      race_number: raceNumber,
+      label: `Race ${raceNumber}`,
+      post_time_local: postTime.padStart(5, '0'),
+      race_name: raceName,
+      distance_m: distanceM,
+    });
   }
+
   return [...new Map(rows.map((row) => [row.race_number, row])).values()].sort((a, b) => a.race_number - b.race_number);
 }
 
@@ -166,7 +160,7 @@ export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch 
         surface: 'Dirt',
         course_label: course,
       })),
-      source_id: 'nankan-official-programme',
+      source_id: 'nankankeiba-south-kanto-programme',
       source_label: '南関東4競馬場',
       official_source_url: programme.url,
     },
