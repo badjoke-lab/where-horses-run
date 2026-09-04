@@ -14,29 +14,25 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect official Tokai monthly HTML structure
+      - name: Run live Tokai official adapter for current 30-day window
         shell: bash
         run: |
           set -euo pipefail
-          for ym in 2026/09 2026/10; do
-            url="https://www.kasamatsu-keiba.com/schedule/$ym"
-            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/${ym//\//-}.html"
-            echo "=== $url bytes=$(wc -c < /tmp/${ym//\//-}.html) ==="
-            node --input-type=module - "/tmp/${ym//\//-}.html" <<'NODE'
-          import fs from 'node:fs';
-          const file = process.argv[2];
-          const html = fs.readFileSync(file, 'utf8');
-          console.log('title=', html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g,' ').trim());
-          const markers = ['笠松 (', '名古屋'];
-          for (const marker of markers) {
-            console.log(`MARKER ${marker} count=${html.split(marker).length - 1}`);
-            let pos = 0;
-            for (let i = 0; i < 8; i += 1) {
-              pos = html.indexOf(marker, pos);
-              if (pos < 0) break;
-              console.log(html.slice(Math.max(0, pos - 700), Math.min(html.length, pos + 500)).replace(/\s+/g, ' '));
-              pos += marker.length;
-            }
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { discoverTokaiOfficial30d } from './scripts/timetable/tokai-official-30d-discovery.mjs';
+          const dates = [];
+          const cursor = new Date('2026-09-04T00:00:00Z');
+          for (let i = 0; i < 30; i += 1) {
+            dates.push(cursor.toISOString().slice(0, 10));
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
           }
+          const result = await discoverTokaiOfficial30d({ dates });
+          console.log(JSON.stringify(result.completeness, null, 2));
+          console.log(JSON.stringify(result.meetings.map((row) => ({ meeting_id: row.meeting_id, source: row.official_source_url })), null, 2));
+          assert.equal(result.completeness.completeness, 'complete');
+          assert.equal(result.completeness.failure_count, 0);
+          assert.equal(result.meetings.length, 19);
+          assert.ok(result.meetings.some((row) => row.meeting_id === 'nar-nagoya-racecourse-2026-10-02'));
+          assert.ok(result.meetings.some((row) => row.meeting_id === 'nar-kasamatsu-racecourse-2026-09-25'));
           NODE
-          done
