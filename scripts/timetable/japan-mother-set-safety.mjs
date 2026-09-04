@@ -3,6 +3,7 @@ export const REQUIRED_JAPAN_MOTHER_SET_SOURCES = [
   'nar-monthly-convene-info',
   'banei-official-schedule',
   'nankankeiba-south-kanto-calendar',
+  'iwatekeiba-official-calendar',
 ];
 
 export const SOUTH_KANTO_RACECOURSE_IDS = new Set([
@@ -10,6 +11,11 @@ export const SOUTH_KANTO_RACECOURSE_IDS = new Set([
   'funabashi-racecourse',
   'oi-racecourse',
   'kawasaki-racecourse',
+]);
+
+export const IWATE_RACECOURSE_IDS = new Set([
+  'morioka-racecourse',
+  'mizusawa-racecourse',
 ]);
 
 function sameMeetingIdentity(left, right) {
@@ -61,6 +67,9 @@ export function requiredMotherSetSourcesForMeeting(row) {
   if (row?.authority_id === 'nar-local-government-racing' || row?.meeting_id?.startsWith('nar-')) {
     if (SOUTH_KANTO_RACECOURSE_IDS.has(row?.racecourse_id)) {
       return ['nar-monthly-convene-info', 'nankankeiba-south-kanto-calendar'];
+    }
+    if (IWATE_RACECOURSE_IDS.has(row?.racecourse_id)) {
+      return ['nar-monthly-convene-info', 'iwatekeiba-official-calendar'];
     }
     // Regional/operator mother-set sources for the remaining NAR venues are not
     // wired yet. Until they are, absence from the national NAR page alone is not
