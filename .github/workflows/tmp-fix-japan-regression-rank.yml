@@ -1,0 +1,54 @@
+name: Temporary Japan regression rank patch
+
+on:
+  push:
+    branches:
+      - fix/report-actual-japan-regression-rank
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/report-actual-japan-regression-rank
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch regression rank reporting and contract
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+
+          const corePath = 'scripts/timetable/japan-zero-based-30d-core.mjs';
+          let core = fs.readFileSync(corePath, 'utf8');
+          const oldCore = `        reason: 'official_rank_regression',\n        official_rank: 'C',\n        public_rank: publicRank,`;
+          const newCore = `        reason: 'official_rank_regression',\n        official_rank: normalized.capability_rank,\n        public_rank: publicRank,`;
+          if (!core.includes(oldCore)) throw new Error('expected regression-rank block not found');
+          core = core.replace(oldCore, newCore);
+          if (core.includes(oldCore)) throw new Error('regression-rank block remained after patch');
+          fs.writeFileSync(corePath, core);
+
+          const testPath = 'scripts/check-japan-zero-based-30d.mjs';
+          let test = fs.readFileSync(testPath, 'utf8');
+          const marker = `assert.equal(result.complete, true);\n`;
+          if (!test.includes(marker)) throw new Error('test insertion marker not found');
+          const block = `assert.equal(result.complete, true);\n\nconst regressionMeeting = meeting('nar', 'nar-regression');\nconst regressionAdapters = {\n  jra: {\n    discover: async () => [],\n    inspect: async () => { throw new Error('JRA inspect must not run for empty discovery'); },\n  },\n  'nar-standard': {\n    discover: async () => [regressionMeeting],\n    inspect: async (value) => ({\n      status: 'ok',\n      meeting: {\n        ...value,\n        capability_rank: 'A',\n        timetable_rows: [\n          { label: 'Race 1', post_time_local: '10:00' },\n          { label: 'Race 2', post_time_local: '16:00' },\n        ],\n      },\n    }),\n  },\n  banei: {\n    discover: async () => [],\n    inspect: async () => { throw new Error('Banei inspect must not run for empty discovery'); },\n  },\n};\nconst previousRegression = {\n  ...regressionMeeting,\n  country_id: 'japan',\n  timezone: 'Asia/Tokyo',\n  capability_rank: 'A+',\n  first_race_time_local: '10:00',\n  last_race_time_local: '16:00',\n  source_trace: {\n    source_status: 'verified',\n    official_source_url: regressionMeeting.official_source_url,\n  },\n  freshness: { last_checked_date: '2026-09-03' },\n};\nconst regressionResult = await runJapanZeroBased30d({\n  executionDate: '2026-09-04',\n  adapters: regressionAdapters,\n  retryDelayMs: 0,\n  checkedAt: '2026-09-04T02:00:00.000Z',\n  loadExisting: () => ({\n    canonical: [previousRegression],\n    public: [previousRegression],\n    details: [],\n    publicDetails: [],\n  }),\n});\nconst regressionRow = regressionResult.reconciliations.find((row) => row.meeting_id === 'nar-regression');\nassert.equal(regressionRow.outcome, 'conflict');\nassert.equal(regressionRow.reason, 'official_rank_regression');\nassert.equal(regressionRow.official_rank, 'A', 'regression reconciliation must report the actually acquired rank');\nassert.equal(regressionRow.public_rank, 'A+');\nassert.equal(regressionResult.canonical.find((row) => row.meeting_id === 'nar-regression').capability_rank, 'A+', 'rank regression must preserve stronger canonical data');\n`;
+          test = test.replace(marker, block);
+          fs.writeFileSync(testPath, test);
+          NODE
+          node scripts/check-japan-zero-based-30d.mjs
+          git diff --check
+      - name: Commit patch and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/tmp-fix-japan-regression-rank.yml
+          git add scripts/timetable/japan-zero-based-30d-core.mjs scripts/check-japan-zero-based-30d.mjs
+          git commit -m "fix: report actual Japan regression rank"
+          git push origin HEAD:fix/report-actual-japan-regression-rank
