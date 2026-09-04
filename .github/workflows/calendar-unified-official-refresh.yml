@@ -19,6 +19,7 @@ on:
       - main
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
+      - 'package.json'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
       - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
@@ -31,6 +32,7 @@ on:
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
       - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
+      - 'scripts/timetable/kanazawa-official-30d-discovery.mjs'
       - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
@@ -44,6 +46,7 @@ on:
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
       - 'scripts/check-hokkaido-official-30d.mjs'
+      - 'scripts/check-kanazawa-official-30d.mjs'
       - 'data/static/authority-source-inventory-japan-v2.json'
       - 'data/static/calendar-reviewed-exclusions.json'
       - 'data/static/calendar-reviewed-public-observations.json'
@@ -56,6 +59,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
+      - 'package.json'
       - 'scripts/timetable/apply-official-rolling-observations.mjs'
       - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
@@ -68,6 +72,7 @@ on:
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
       - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
+      - 'scripts/timetable/kanazawa-official-30d-discovery.mjs'
       - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
@@ -81,6 +86,7 @@ on:
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
       - 'scripts/check-hokkaido-official-30d.mjs'
+      - 'scripts/check-kanazawa-official-30d.mjs'
       - 'data/static/authority-source-inventory-japan-v2.json'
       - 'data/static/calendar-reviewed-exclusions.json'
       - 'data/static/calendar-reviewed-public-observations.json'
@@ -108,6 +114,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
       - name: Validate unified refresh syntax
         run: |
           node --check scripts/timetable/apply-official-rolling-observations.mjs
@@ -122,6 +130,7 @@ jobs:
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
           node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
+          node --check scripts/timetable/kanazawa-official-30d-discovery.mjs
           node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
@@ -137,12 +146,11 @@ jobs:
           node scripts/check-hyogo-official-30d.mjs
           node scripts/check-tokai-official-30d.mjs
           node scripts/check-hokkaido-official-30d.mjs
+          node scripts/check-kanazawa-official-30d.mjs
       - name: Exercise reviewed Calendar preservation
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate site build
-        run: |
-          npm install --no-package-lock --no-audit --no-fund
-          npm run build
+        run: npm run build
       - name: Check diff formatting
         run: git diff --check
 
@@ -157,6 +165,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
       - id: scope
         name: Resolve rolling window scope
         shell: bash
@@ -191,6 +201,7 @@ jobs:
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
           node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
+          node --check scripts/timetable/kanazawa-official-30d-discovery.mjs
           node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
@@ -258,9 +269,7 @@ jobs:
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
-        run: |
-          npm install --no-package-lock --no-audit --no-fund
-          npm run build
+        run: npm run build
       - name: Persist canonical and public rolling state once
         shell: bash
         run: |
