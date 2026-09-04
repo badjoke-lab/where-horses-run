@@ -52,7 +52,7 @@ const bars = [
   bar(10, 30, 30),
 ];
 
-const decoded = decodeKanazawaAnnualScheduleGeometry({ textItems, bars });
+const decoded = decodeKanazawaAnnualScheduleGeometry({ textItems, bars, months: [9, 10] });
 assert.deepEqual(decoded.dates.filter((date) => date.startsWith('2026-09-')), [
   '2026-09-01',
   '2026-09-06',
@@ -105,9 +105,13 @@ assert.throws(
   () => parseKanazawaOfficialMonthlySchedule(monthlyHtml(2026, 9, septemberDays, 30), 2026, 9),
   /day grid invalid/,
 );
+const withoutOctoberMarker = textItems.filter((row) => !(row.x < 40 && row.str === fw(10)));
 assert.throws(
-  () => decodeKanazawaAnnualScheduleGeometry({ textItems: textItems.filter((row) => !(row.x < 40 && row.str === '10')), bars }),
+  () => decodeKanazawaAnnualScheduleGeometry({ textItems: withoutOctoberMarker, bars, months: [9, 10] }),
   /missing month marker: 10/,
+);
+assert.doesNotThrow(
+  () => decodeKanazawaAnnualScheduleGeometry({ textItems: withoutOctoberMarker, bars, months: [9] }),
 );
 
 console.log('KANAZAWA_OFFICIAL_30D: pass');
