@@ -42,6 +42,28 @@ function textify(html) {
     .trim();
 }
 
+function classTokens(attributes) {
+  const match = String(attributes).match(/\bclass\s*=\s*["']([^"']*)["']/i);
+  return new Set((match?.[1] ?? '').split(/\s+/).filter(Boolean));
+}
+
+function elementTextByClass(block, tagName, classToken) {
+  const pattern = new RegExp(`<${tagName}\\b([^>]*)>([\\s\\S]*?)<\\/${tagName}>`, 'gi');
+  for (const match of String(block).matchAll(pattern)) {
+    if (classTokens(match[1]).has(classToken)) return plain(match[2]);
+  }
+  return null;
+}
+
+function elementTextsByClass(block, tagName, classToken) {
+  const values = [];
+  const pattern = new RegExp(`<${tagName}\\b([^>]*)>([\\s\\S]*?)<\\/${tagName}>`, 'gi');
+  for (const match of String(block).matchAll(pattern)) {
+    if (classTokens(match[1]).has(classToken)) values.push(plain(match[2]));
+  }
+  return values;
+}
+
 async function get(url, fetchImpl = fetch) {
   const response = await fetchImpl(url, {
     redirect: 'follow',
@@ -71,20 +93,18 @@ async function get(url, fetchImpl = fetch) {
 
 export function parseNankanProgrammeRows(html) {
   const rows = [];
-  const itemPattern = /<li\b[^>]*class=["'][^"']*nk23_c-block01__list__item[^"']*["'][^>]*>([\s\S]*?)<\/li>/gi;
+  const itemPattern = /<li\b([^>]*)>([\s\S]*?)<\/li>/gi;
   for (const item of String(html).matchAll(itemPattern)) {
-    const block = item[1];
-    const raceLabel = block.match(/<span\b[^>]*class=["'][^"']*nk23_c-block01__label[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
-    const raceMatch = plain(raceLabel?.[1] ?? '').match(/^(\d{1,2})R$/i);
+    if (!classTokens(item[1]).has('nk23_c-block01__list__item')) continue;
+    const block = item[2];
+    const raceMatch = (elementTextByClass(block, 'span', 'nk23_c-block01__label') ?? '').match(/^(\d{1,2})R$/i);
     if (!raceMatch) continue;
 
     const raceNumber = Number(raceMatch[1]);
-    const infoValues = [...block.matchAll(/<span\b[^>]*class=["'][^"']*nk23_c-block01__text(?:\s|["'])[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi)]
-      .map((match) => plain(match[1]));
+    const infoValues = elementTextsByClass(block, 'span', 'nk23_c-block01__text');
     const postTime = infoValues.find((value) => /^\d{1,2}:\d{2}$/.test(value)) ?? null;
     const distanceValue = infoValues.find((value) => /^\d{3,4}\s*[mｍＭ]$/i.test(value)) ?? null;
-    const titleMatch = block.match(/<a\b[^>]*class=["'][^"']*nk23_c-block01__list__title[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
-    const raceName = plain(titleMatch?.[1] ?? '');
+    const raceName = elementTextByClass(block, 'a', 'nk23_c-block01__list__title') ?? '';
     const distanceM = distanceValue ? Number(distanceValue.match(/\d{3,4}/)?.[0]) : null;
 
     if (!postTime || !distanceM || !raceName || /^\d+頭$/.test(raceName)) continue;
