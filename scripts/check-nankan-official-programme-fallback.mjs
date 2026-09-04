@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
   fetchNankanOfficialProgramme,
   parseNankanMeetingDates,
@@ -165,5 +166,11 @@ assert.deepEqual(await unavailable(septemberMeeting), primaryPending, 'unavailab
 const alreadyOk = { status: 'ok', meeting: { ...septemberMeeting, capability_rank: 'A+' } };
 const noOverride = withSagaOfficialStartFallback(async () => alreadyOk, async () => { throw new Error('must not fetch fallback'); });
 assert.equal((await noOverride(septemberMeeting)).status, 'ok');
+
+const reviewedManifest = JSON.parse(await readFile(new URL('../data/static/calendar-reviewed-public-observations.json', import.meta.url), 'utf8'));
+assert.ok(
+  !reviewedManifest.supplements.some((row) => row.path === 'data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json'),
+  'stale Kawasaki 2026-09-07..11 reviewed supplement must not be an active acquisition input',
+);
 
 console.log('NANKAN_OFFICIAL_PROGRAMME_FALLBACK: pass');

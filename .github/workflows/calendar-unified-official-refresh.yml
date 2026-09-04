@@ -28,6 +28,7 @@ on:
       - 'scripts/timetable/japan-mother-set-safety.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/nankan-official-programme-fallback.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
@@ -44,6 +45,7 @@ on:
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
       - 'scripts/check-jra-official-30d-completeness.mjs'
       - 'scripts/check-nankankeiba-official-30d.mjs'
+      - 'scripts/check-nankan-official-programme-fallback.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
@@ -58,7 +60,6 @@ on:
       - 'data/static/banei-2026-09-07-public-detail-v1.json'
       - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
       - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
-      - 'data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json'
       - 'src/data/publicationDisplayPolicies.json'
   pull_request:
     paths:
@@ -72,6 +73,7 @@ on:
       - 'scripts/timetable/japan-mother-set-safety.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/nankan-official-programme-fallback.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
@@ -88,6 +90,7 @@ on:
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
       - 'scripts/check-jra-official-30d-completeness.mjs'
       - 'scripts/check-nankankeiba-official-30d.mjs'
+      - 'scripts/check-nankan-official-programme-fallback.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
@@ -102,7 +105,6 @@ on:
       - 'data/static/banei-2026-09-07-public-detail-v1.json'
       - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
       - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
-      - 'data/static/kawasaki-2026-09-07-through-11-public-detail-v1.json'
       - 'src/data/publicationDisplayPolicies.json'
 
 permissions:
@@ -134,6 +136,7 @@ jobs:
           node --check scripts/timetable/japan-mother-set-safety.mjs
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/nankan-official-programme-fallback.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
@@ -152,6 +155,7 @@ jobs:
           node scripts/check-japan-per-family-absence-reconciliation.mjs
           node scripts/check-jra-official-30d-completeness.mjs
           node scripts/check-nankankeiba-official-30d.mjs
+          node scripts/check-nankan-official-programme-fallback.mjs
           node scripts/check-iwatekeiba-official-30d.mjs
           node scripts/check-hyogo-official-30d.mjs
           node scripts/check-tokai-official-30d.mjs
@@ -209,6 +213,7 @@ jobs:
           node --check scripts/timetable/japan-mother-set-safety.mjs
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/nankan-official-programme-fallback.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
