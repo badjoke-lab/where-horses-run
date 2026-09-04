@@ -18,23 +18,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for ym in 2026-09 2026-10; do
-            url="https://www.kanazawakeiba.com/schedule/$ym/"
-            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/$ym.html"
-            echo "=== $url bytes=$(wc -c < /tmp/$ym.html) ==="
-            node --input-type=module - "/tmp/$ym.html" <<'NODE'
+          for month in 09 10; do
+            url="https://www.kanazawakeiba.com/schedule/?s_year=2026&s_month=$month&mode=honba"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/2026-$month.html"
+            echo "=== $url bytes=$(wc -c < /tmp/2026-$month.html) ==="
+            node --input-type=module - "/tmp/2026-$month.html" "$month" <<'NODE'
           import fs from 'node:fs';
           const file = process.argv[2];
+          const month = process.argv[3];
           const html = fs.readFileSync(file, 'utf8');
+          const table = html.match(/<table\b[^>]*id=["']table_honba["'][^>]*>[\s\S]*?<\/table>/i)?.[0] ?? '';
           const text = html.replace(/\s+/g, ' ');
           console.log('title=', text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
-          console.log('honba=', (text.match(/本場開催/g) ?? []).length);
-          let pos = 0;
-          for (let i = 0; i < 20; i += 1) {
-            pos = text.indexOf('本場開催', pos);
-            if (pos < 0) break;
-            console.log('HONBA', text.slice(Math.max(0, pos - 650), Math.min(text.length, pos + 650)));
-            pos += 4;
+          console.log('table=', Boolean(table), 'honba=', (table.match(/<p\b[^>]*class=["']kanazawa["'][^>]*>\s*本場開催\s*<\/p>/gi) ?? []).length);
+          const dates = [];
+          for (const cell of table.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)) {
+            const body = cell[1];
+            const day = Number(body.match(/<span\b[^>]*class=["']day["'][^>]*>\s*(\d{1,2})/i)?.[1]);
+            if (!day || !/<p\b[^>]*class=["']kanazawa["'][^>]*>\s*本場開催\s*<\/p>/i.test(body)) continue;
+            dates.push(`2026-${month}-${String(day).padStart(2, '0')}`);
           }
+          console.log('DATES', JSON.stringify(dates));
           NODE
           done
