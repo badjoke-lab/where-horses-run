@@ -11,6 +11,7 @@ const ANNUAL_MONTH_ORDER = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
 const ANNUAL_MEETING_COLORS = new Set(['#f7c7a7', '#b4c6e7']);
 const FULLWIDTH_DIGITS = '０１２３４５６７８９';
 const MIN_REQUIRED_DAY_GRID = 28;
+const MIN_ANNUAL_MEETING_BAR_COUNT = 12;
 
 function normalizeDigits(value) {
   return String(value ?? '').replace(/[０-９]/g, (char) => String(FULLWIDTH_DIGITS.indexOf(char)));
@@ -86,6 +87,22 @@ function transformedBoundingBox(matrix, bounds) {
   const xs = points.map((row) => row[0]);
   const ys = points.map((row) => row[1]);
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+}
+
+function normalizePdfColor(value) {
+  if (value == null) return null;
+  const raw = typeof value === 'string'
+    ? [value]
+    : typeof value?.[Symbol.iterator] === 'function' ? Array.from(value) : [];
+  if (raw.length === 1 && typeof raw[0] === 'string') return raw[0].toLowerCase();
+  if (raw.length === 1 && raw[0] != null && typeof raw[0] !== 'number') return normalizePdfColor(raw[0]);
+  if (raw.length !== 3 || raw.some((part) => !Number.isFinite(Number(part)))) return null;
+  const numbers = raw.map(Number);
+  const bytes = numbers.every((part) => part >= 0 && part <= 1)
+    ? numbers.map((part) => Math.round(part * 255))
+    : numbers.map((part) => Math.round(part));
+  if (bytes.some((part) => part < 0 || part > 255)) return null;
+  return `#${bytes.map((part) => part.toString(16).padStart(2, '0')).join('')}`;
 }
 
 function validateRequestedMonths(months) {
@@ -219,7 +236,7 @@ function extractPdfGeometry(page, textContent, operatorList) {
     const bounds = transformedBoundingBox(ctm, Array.from(rawBounds));
     const width = bounds[2] - bounds[0];
     const height = bounds[3] - bounds[1];
-    const color = Array.isArray(fill) && fill.length === 1 ? fill[0] : null;
+    const color = normalizePdfColor(fill);
     if (!ANNUAL_MEETING_COLORS.has(color)) continue;
     if (width < 20 || width > 210 || height < 8 || height > 9) continue;
     bars.push({
@@ -245,10 +262,14 @@ export async function parseKanazawaAnnualPdf(bytes, months = ANNUAL_MONTH_ORDER)
   const page = await document.getPage(1);
   const [textContent, operatorList] = await Promise.all([page.getTextContent(), page.getOperatorList()]);
   const geometry = extractPdfGeometry(page, textContent, operatorList);
+  if (geometry.bars.length < MIN_ANNUAL_MEETING_BAR_COUNT) {
+    throw new Error(`Kanazawa annual PDF official meeting bars missing: ${geometry.bars.length}`);
+  }
   const decoded = decodeKanazawaAnnualScheduleGeometry({ ...geometry, months });
   return {
     ...decoded,
     page_view: geometry.pageView,
+    total_official_bar_count: geometry.bars.length,
   };
 }
 
@@ -306,12 +327,14 @@ async function officialFetch(url, fetchImpl, accept) {
 async function fetchAnnualBaseline(fetchImpl, months) {
   const { response, finalUrl } = await officialFetch(KANAZAWA_OFFICIAL_ANNUAL_PDF_URL, fetchImpl, 'application/pdf');
   const bytes = new Uint8Array(await response.arrayBuffer());
+  const byteLength = bytes.byteLength;
+  const sha256 = crypto.createHash('sha256').update(bytes).digest('hex');
   const parsed = await parseKanazawaAnnualPdf(bytes, months);
   return {
     ...parsed,
     url: finalUrl,
-    bytes: bytes.byteLength,
-    sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+    bytes: byteLength,
+    sha256,
   };
 }
 
@@ -366,23 +389,28 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
       failures.push({ source_url: url, reason: String(error?.message ?? error) });
     }
 
-    const useMonthly = Array.isArray(monthlyDates) && monthlyDates.length > 0;
-    const selected = useMonthly ? monthlyDates : annualMonthDates;
+    const populatedMonthly = Array.isArray(monthlyDates) && monthlyDates.length > 0;
+    const agreesWithAnnual = populatedMonthly ? JSON.stringify(monthlyDates) === JSON.stringify(annualMonthDates) : null;
+    if (populatedMonthly && agreesWithAnnual === false) {
+      failures.push({
+        source_url: url,
+        reason: `kanazawa_monthly_annual_mismatch:${monthKey}`,
+      });
+    }
+    const selected = populatedMonthly ? monthlyDates : annualMonthDates;
     for (const date of selected) {
       if (!requestedSet.has(date)) continue;
       resolvedDates.set(date, {
-        sourceUrl: useMonthly ? finalUrl : (annual?.url ?? KANAZAWA_OFFICIAL_ANNUAL_PDF_URL),
-        basis: useMonthly ? 'monthly_html' : 'annual_pdf',
+        sourceUrl: populatedMonthly ? finalUrl : (annual?.url ?? KANAZAWA_OFFICIAL_ANNUAL_PDF_URL),
+        basis: populatedMonthly ? 'monthly_html' : 'annual_pdf',
       });
     }
     monthlyComparisons.push({
       month: monthKey,
       annual_dates: annualMonthDates,
       monthly_dates: monthlyDates,
-      selected_basis: useMonthly ? 'monthly_html' : 'annual_pdf',
-      agrees_with_annual: Array.isArray(monthlyDates) && monthlyDates.length > 0
-        ? JSON.stringify(monthlyDates) === JSON.stringify(annualMonthDates)
-        : null,
+      selected_basis: populatedMonthly ? 'monthly_html' : 'annual_pdf',
+      agrees_with_annual: agreesWithAnnual,
     });
   }
 
@@ -406,6 +434,7 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
       annual_calendar_sha256: annual?.sha256 ?? null,
       annual_calendar_bytes: annual?.bytes ?? null,
       annual_meeting_count: annual?.dates?.length ?? 0,
+      annual_official_bar_count: annual?.total_official_bar_count ?? 0,
       annual_parsed_months: requestedMonthKeys,
       fiscal_year_window: KANAZAWA_FISCAL_YEAR_WINDOW,
       monthly_comparisons: monthlyComparisons,
