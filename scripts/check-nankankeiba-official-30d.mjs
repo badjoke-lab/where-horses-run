@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+  decodeNankankeibaHtml,
   discoverNankankeibaOfficial30d,
   nankankeibaQuarterUrl,
   parseNankankeibaCalendarMonth,
@@ -8,6 +9,12 @@ import {
 
 assert.equal(nankankeibaQuarterUrl('2026-09-07'), 'https://www.nankankeiba.com/calendar/202607.do');
 assert.equal(nankankeibaQuarterUrl('2026-10-01'), 'https://www.nankankeiba.com/calendar/202610.do');
+const shiftJisFixture = Buffer.concat([
+  Buffer.from('<meta charset="Shift_JIS"><div>'),
+  Buffer.from('89599861', 'hex'),
+  Buffer.from('</div>'),
+]);
+assert.match(decodeNankankeibaHtml(shiftJisFixture), /浦和/);
 
 const blank = () => '<td></td>';
 const venueRow = (name, cells) => `<tr><th><a>${name}競馬</a></th>${cells.join('')}</tr>`;
