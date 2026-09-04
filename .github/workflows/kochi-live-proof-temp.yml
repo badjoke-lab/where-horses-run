@@ -19,13 +19,18 @@ jobs:
           node-version: 22.12.0
       - name: Install pinned parser dependency
         run: npm install --no-package-lock --no-audit --no-fund
-      - name: Inspect official Kochi annual PDF geometry
+      - name: Inspect official Kochi annual PDF geometry and current scheduler
         shell: bash
         run: |
           set -euo pipefail
           pdf='https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf'
           curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$pdf" -o /tmp/kochi.pdf
           echo "PDF bytes=$(wc -c < /tmp/kochi.pdf) sha256=$(sha256sum /tmp/kochi.pdf | awk '{print $1}')"
+          for ym in 202609 202610; do
+            url="https://ns.keiba.or.jp/top/scheduler/scheduler.cgi/scheduler.cgi?date=${ym}"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/kochi-${ym}.html"
+            echo "SCHEDULER ${ym} bytes=$(wc -c < /tmp/kochi-${ym}.html)"
+          done
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
@@ -35,16 +40,19 @@ jobs:
           const page = await pdf.getPage(1);
           const text = await page.getTextContent();
           const items = text.items.filter((item)=>item.str?.trim()).map((item)=>({
-            str:item.str.trim(),
-            x:+item.transform[4].toFixed(2),
-            y:+item.transform[5].toFixed(2),
-            w:+Number(item.width??0).toFixed(2),
-            h:+Number(item.height??0).toFixed(2),
+            str:item.str.trim(), x:+item.transform[4].toFixed(2), y:+item.transform[5].toFixed(2),
+            w:+Number(item.width??0).toFixed(2), h:+Number(item.height??0).toFixed(2),
           })).sort((a,b)=>b.y-a.y||a.x-b.x);
-          console.log('TEXT_ITEMS', items.length);
           for (const row of items) {
-            if (/^(?:[0-9０-９]{1,2}|[0-9０-９]{1,2}月|☆|◎)$/.test(row.str) || /9月|10月|令和8年度|開催日程/.test(row.str)) {
-              console.log('TEXT', JSON.stringify(row));
-            }
+            if (/^(?:9月|10月|☆|◎)$/.test(row.str)) console.log('PDF_TEXT', JSON.stringify(row));
+          }
+          for (const ym of ['202609','202610']) {
+            const bytes=fs.readFileSync(`/tmp/kochi-${ym}.html`);
+            const candidates=['utf-8','shift_jis','euc-jp'].map((enc)=>({enc,text:new TextDecoder(enc).decode(bytes)}));
+            const chosen=candidates.sort((a,b)=>(b.text.match(/高知|競馬|開催/g)?.length??0)-(a.text.match(/高知|競馬|開催/g)?.length??0))[0];
+            console.log('SCHEDULER_ENCODING', ym, chosen.enc);
+            const normalized=chosen.text.replace(/\r/g,'').replace(/>\s*</g,'>\n<');
+            const lines=normalized.split('\n').filter((line)=>/高知|競馬|開催|RaceList|14:|15:|16:|17:|18:|19:|20:|2026/.test(line));
+            for (const line of lines.slice(0,300)) console.log('SCHED', ym, line.slice(0,1000));
           }
           NODE
