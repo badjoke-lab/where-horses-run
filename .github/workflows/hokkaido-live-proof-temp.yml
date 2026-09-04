@@ -1,0 +1,40 @@
+name: Temporary Hokkaido official calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/hokkaido-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official Hokkaido calendar structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ym in 202609 202610; do
+            url="https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=$ym"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/$ym.html"
+            echo "=== $url bytes=$(wc -c < /tmp/$ym.html) ==="
+            node --input-type=module - "/tmp/$ym.html" <<'NODE'
+          import fs from 'node:fs';
+          const file = process.argv[2];
+          const html = fs.readFileSync(file, 'utf8');
+          const text = html.replace(/\s+/g, ' ');
+          console.log('title=', text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
+          console.log('monbetsu=', (text.match(/門別/g) ?? []).length);
+          for (const marker of ['門別11回', '門別12回', '門別13回']) {
+            let pos = text.indexOf(marker);
+            if (pos >= 0) console.log(`MARKER ${marker}:`, text.slice(Math.max(0, pos - 700), Math.min(text.length, pos + 700)));
+          }
+          for (const match of text.matchAll(/href=["']([^"']*(?:RaceList|race)[^"']*)["'][^>]*>[\s\S]{0,100}?門別/gi)) {
+            console.log('LINK', match[1]);
+          }
+          NODE
+          done
