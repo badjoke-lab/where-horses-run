@@ -7,6 +7,7 @@ import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-discovery.mjs';
 import { discoverIwatekeibaOfficial30d } from './iwatekeiba-official-30d-discovery.mjs';
 import { discoverHyogoOfficial30d } from './hyogo-official-30d-discovery.mjs';
+import { discoverTokaiOfficial30d, TOKAI_OFFICIAL_PDF_URL } from './tokai-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -249,11 +250,34 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
+  let tokai = { meetings: [], completeness: null };
+  const tokaiStartedAt = new Date().toISOString();
+  try {
+    tokai = await discoverTokaiOfficial30d(context);
+    sourceCompleteness.set('tokai-region-joint-official-calendar', {
+      ...tokai.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: tokaiStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(tokai.meetings, 'tokai-region-joint-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('tokai-region-joint-official-calendar', sourceState({
+      sourceId: 'tokai-region-joint-official-calendar',
+      sourceUrl: TOKAI_OFFICIAL_PDF_URL,
+      startedAt: tokaiStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: TOKAI_OFFICIAL_PDF_URL, reason: String(error?.message ?? error) }],
+    }));
+  }
+
   return mergeOfficialPositiveEvidence(
     narMeetings,
     southKanto.meetings ?? [],
     iwate.meetings ?? [],
     hyogo.meetings ?? [],
+    tokai.meetings ?? [],
   );
 }
 
@@ -335,6 +359,10 @@ const absenceFamilyStatus = {
   hyogo: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'hyogo-urban-keiba-official-calendar',
+  ]).complete,
+  tokai: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'tokai-region-joint-official-calendar',
   ]).complete,
   other_nar: false,
 };
