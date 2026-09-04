@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-04T09:28:11.695Z",
+  "generated_at": "2026-09-04T09:56:45.947Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -19256,7 +19256,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:27:43.639Z",
+        "generated_at": "2026-09-04T09:56:18.458Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19275,13 +19275,13 @@
         },
         {
           "label": "Race 3",
-          "post_time_local": "18:30",
+          "post_time_local": "14:30",
           "race_name": "3 부경 국6등급 7 9 11 3 부경 국6등급",
           "distance_m": 1300
         },
         {
           "label": "Race 4",
-          "post_time_local": "15:20",
+          "post_time_local": "19:25",
           "race_name": "4 부경 국5등급 3 2 11 4 부경 국5등급",
           "distance_m": 1300
         },
@@ -19300,7 +19300,7 @@
         {
           "label": "Race 7",
           "post_time_local": "18:30",
-          "race_name": "7 부경 2등급 속보1건 성별오픈 연령오픈 핸디캡 R1~80 7 부경 2등급",
+          "race_name": "7 부경 2등급 속보1건 4 10 6 7 부경 2등급",
           "distance_m": 1800
         },
         {
@@ -19968,11 +19968,19 @@
         "source_label": "ばんえい十勝",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "banei-official-monthly-schedule-nar-detail",
+            "role": "mother_set",
+            "source_label": "ばんえい十勝",
+            "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1788188400"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -20116,11 +20124,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -20264,11 +20280,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -20412,11 +20436,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0905.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21112,11 +21144,19 @@
         "source_label": "ばんえい十勝",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "banei-official-monthly-schedule-nar-detail",
+            "role": "mother_set",
+            "source_label": "ばんえい十勝",
+            "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1788188400"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21368,11 +21408,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0906.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21516,11 +21564,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0906.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21664,11 +21720,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0906.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21964,11 +22028,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F09%2F06"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22250,11 +22322,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F06"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22388,11 +22468,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F06"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22830,11 +22918,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F09%2F07"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22978,11 +23074,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F07"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -23126,11 +23230,19 @@
         "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F09%2F08"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -23770,11 +23882,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0912.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -23918,11 +24038,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0912.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24066,11 +24194,19 @@
         "source_label": "佐賀競馬",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F12"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24194,11 +24330,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0913.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24342,11 +24486,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0913.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24490,11 +24642,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0919.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24638,11 +24798,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0919.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24786,11 +24954,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0920.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24934,11 +25110,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0920.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25082,11 +25266,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0921.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25230,11 +25422,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0921.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25378,11 +25578,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0926.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25526,11 +25734,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0926.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25674,11 +25890,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0927.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25822,11 +26046,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0927.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25970,11 +26202,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/10/1003.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -26118,11 +26358,19 @@
         "source_label": "Japan Racing Association",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/10/1003.html"
+          }
+        ]
       },
       "freshness": {
         "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T09:21:39.999Z",
+        "generated_at": "2026-09-04T09:49:31.209Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
