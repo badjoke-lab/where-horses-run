@@ -3,7 +3,9 @@ import {
   fetchNankanOfficialProgramme,
   parseNankanMeetingDates,
   parseNankanMeetingNumber,
+  parseNankanMeetingNumbers,
   parseNankanProgrammeRows,
+  resolveNankanMeetingForDate,
 } from './timetable/nankan-official-programme-fallback.mjs';
 import { withSagaOfficialStartFallback } from './timetable/saga-official-start-fallback.mjs';
 
@@ -19,7 +21,7 @@ const programmeFixture = `
       </p>
     </div>
     <div class="nk23_c-block01__titlebtn">
-      <a href="/syousai/2026090721070101.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">Ｃ３(五)</a>
+      <a href="/syousai/example01.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">Ｃ３(五)</a>
     </div>
   </li>
   <li class="nk23_c-block01__list__item js-mheight-itemele">
@@ -32,7 +34,7 @@ const programmeFixture = `
       </p>
     </div>
     <div class="nk23_c-block01__titlebtn">
-      <a href="/syousai/2026090721070102.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">２歳(六)(ロ)</a>
+      <a href="/syousai/example02.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">２歳(六)(ロ)</a>
     </div>
   </li>
   <li class="nk23_c-block01__list__item js-mheight-itemele">
@@ -45,7 +47,7 @@ const programmeFixture = `
       </p>
     </div>
     <div class="nk23_c-block01__titlebtn">
-      <a href="/syousai/2026090721070103.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">のぞみ賞 ２歳 未格付選定馬</a>
+      <a href="/syousai/example03.do" class="nk23_c-block01__list__title nk23_u-colorlink js-mheight-ele">のぞみ賞 ２歳 未格付選定馬</a>
     </div>
   </li>
 </ul>`;
@@ -60,22 +62,44 @@ assert.ok(rows.every((row) => !/^\d+頭$/.test(row.race_name)), 'horse-count tex
 
 const menuFixture = `
 <a href="/bangumi/20262106.do">川崎6回</a>
-<a href="/bangumi/20262107.do">川崎7回</a>`;
-assert.equal(parseNankanMeetingNumber(menuFixture, '2026', '21'), '07');
+<a href="/bangumi/20262107.do">川崎7回</a>
+<a href="/bangumi/20262108.do">川崎8回</a>`;
+assert.deepEqual(parseNankanMeetingNumbers(menuFixture, '2026', '21'), ['06', '07', '08']);
+assert.equal(parseNankanMeetingNumber(menuFixture, '2026', '21'), '08', 'legacy latest-round helper is not sufficient for date matching');
 
-const bangumiFixture = `
+const bangumi06 = `
+<div>8月3日（月）</div><div>1R</div>
+<div>8月4日（火）</div><div>1R</div>`;
+const bangumi07 = `
 <div>9月7日（月）</div><div>1R</div>
 <div>9月8日（火）</div><div>1R</div>
 <div>9月9日（水）</div><div>1R</div>`;
-assert.deepEqual(parseNankanMeetingDates(bangumiFixture, '2026'), ['2026-09-07', '2026-09-08', '2026-09-09']);
+const bangumi08 = `
+<div>10月12日（月）</div><div>1R</div>
+<div>10月13日（火）</div><div>1R</div>
+<div>10月14日（水）</div><div>1R</div>`;
+assert.deepEqual(parseNankanMeetingDates(bangumi07, '2026'), ['2026-09-07', '2026-09-08', '2026-09-09']);
 
+const requests = [];
 const fetchFixture = async (input) => {
   const url = String(input);
+  requests.push(url);
   if (url.includes('/bangumi_menu/')) return new Response(menuFixture, { status: 200 });
-  if (url.endsWith('/bangumi/20262107.do')) return new Response(bangumiFixture, { status: 200 });
+  if (url.endsWith('/bangumi/20262106.do')) return new Response(bangumi06, { status: 200 });
+  if (url.endsWith('/bangumi/20262107.do')) return new Response(bangumi07, { status: 200 });
+  if (url.endsWith('/bangumi/20262108.do')) return new Response(bangumi08, { status: 200 });
   if (url.endsWith('/program/20260907210701.do')) return new Response(programmeFixture, { status: 200 });
+  if (url.endsWith('/program/20261012210801.do')) return new Response(programmeFixture, { status: 200 });
   return new Response('', { status: 404 });
 };
+
+const septemberResolution = await resolveNankanMeetingForDate(menuFixture, '2026', '21', '2026-09-07', { fetchImpl: fetchFixture });
+assert.equal(septemberResolution?.meetingNumber, '07', 'target date must resolve to round 07 even though round 08 is the latest menu entry');
+assert.equal(septemberResolution?.dayIndex, 0);
+
+const octoberResolution = await resolveNankanMeetingForDate(menuFixture, '2026', '21', '2026-10-12', { fetchImpl: fetchFixture });
+assert.equal(octoberResolution?.meetingNumber, '08', 'later Kawasaki dates must automatically resolve to the later meeting round');
+assert.equal(octoberResolution?.dayIndex, 0);
 
 const meeting = {
   meeting_id: 'nar-kawasaki-racecourse-2026-09-07',
@@ -96,6 +120,11 @@ assert.equal(direct?.meeting.timetable_rows[0].surface, 'Dirt');
 assert.equal(direct?.meeting.timetable_rows[0].course_label, 'Dirt Left-handed');
 assert.equal(direct?.meeting.official_source_url, 'https://www.nankankeiba.com/program/20260907210701.do');
 
+const futureMeeting = { ...meeting, meeting_id: 'nar-kawasaki-racecourse-2026-10-12', date: '2026-10-12' };
+const futureDirect = await fetchNankanOfficialProgramme(futureMeeting, { fetchImpl: fetchFixture });
+assert.equal(futureDirect?.status, 'ok');
+assert.equal(futureDirect?.meeting.official_source_url, 'https://www.nankankeiba.com/program/20261012210801.do');
+
 const primaryPending = { status: 'scheduled_pending_details', reason: 'scheduled_pending_details' };
 const wrapped = withSagaOfficialStartFallback(async () => primaryPending, fetchFixture);
 const rescued = await wrapped(meeting);
@@ -111,5 +140,8 @@ assert.deepEqual(await unavailable(meeting), primaryPending, 'unavailable offici
 const alreadyOk = { status: 'ok', meeting: { ...meeting, capability_rank: 'A+' } };
 const noOverride = withSagaOfficialStartFallback(async () => alreadyOk, async () => { throw new Error('must not fetch fallback'); });
 assert.equal((await noOverride(meeting)).status, 'ok');
+
+assert.ok(requests.some((url) => url.endsWith('/bangumi/20262108.do')), 'resolver must inspect the later round before finding an earlier target date');
+assert.ok(requests.some((url) => url.endsWith('/bangumi/20262107.do')), 'resolver must continue until the target date is found');
 
 console.log('NANKAN_OFFICIAL_PROGRAMME_FALLBACK: pass');
