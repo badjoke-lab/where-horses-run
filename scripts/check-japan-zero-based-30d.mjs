@@ -56,18 +56,16 @@ const jraDiscovery = await discoverJraOfficial30d({
     return new Response('', { status: 404 });
   },
 });
-assert.deepEqual(jraDiscovery.map((row) => row.meeting_id), ['jra-nakayama-racecourse-2026-09-05', 'jra-hanshin-racecourse-2026-09-05']);
-await assert.rejects(
-  () => discoverJraOfficial30d({
-    dates: ['2026-09-04'],
-    delayMs: 0,
-    fetchImpl: async () => new Response(JSON.stringify([{ month: '9', data: [{ date: '4', day: '金曜', info: [{ race: [] }] }] }]), { status: 200 }),
-  }),
-  /found no meetings in the requested window/,
-);
+assert.deepEqual(jraDiscovery.map((row) => row.meeting_id), ['jra-hanshin-racecourse-2026-09-05', 'jra-nakayama-racecourse-2026-09-05']);
+const jraEmptyDiscovery = await discoverJraOfficial30d({
+  dates: ['2026-09-04'],
+  delayMs: 0,
+  fetchImpl: async () => new Response(JSON.stringify([{ month: '9', data: [{ date: '4', day: '金曜', info: [{ race: [] }] }] }]), { status: 200 }),
+});
+assert.deepEqual(jraEmptyDiscovery, []);
 await assert.rejects(
   () => discoverJraOfficial30d({ dates: ['2026-09-05'], delayMs: 0, fetchImpl: async () => new Response('', { status: 500 }) }),
-  /found no meetings in the requested window/,
+  /calendar JSON discovery incomplete/,
 );
 
 const monthlyCells = Array.from({ length: 30 }, (_, index) => `<td>${index === 3 ? '☆' : ''}</td>`).join('');
