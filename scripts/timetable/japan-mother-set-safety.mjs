@@ -75,3 +75,25 @@ export function canReconcileMeetingAbsence(row, sourceCompletenessRows) {
   if (!required?.length) return false;
   return assessMotherSetCompleteness(sourceCompletenessRows, required).complete;
 }
+
+export function selectPublicAbsenceReconciliation({
+  publicMeetings,
+  officialMeetingIds,
+  rangeDates,
+  sourceCompletenessRows,
+}) {
+  const officialIds = officialMeetingIds instanceof Set ? officialMeetingIds : new Set(officialMeetingIds ?? []);
+  const dates = rangeDates instanceof Set ? rangeDates : new Set(rangeDates ?? []);
+  const stale = (publicMeetings ?? []).filter((row) => row?.country_id === 'japan'
+    && dates.has(row.date)
+    && !officialIds.has(row.meeting_id));
+  const removed = [];
+  const preserved = [];
+  for (const row of stale) {
+    (canReconcileMeetingAbsence(row, sourceCompletenessRows) ? removed : preserved).push(row.meeting_id);
+  }
+  return {
+    removed_meeting_ids: [...new Set(removed)].sort(),
+    preserved_meeting_ids: [...new Set(preserved)].sort(),
+  };
+}
