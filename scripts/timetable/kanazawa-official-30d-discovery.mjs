@@ -88,7 +88,16 @@ function transformedBoundingBox(matrix, bounds) {
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
 }
 
-export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars }) {
+function validateRequestedMonths(months) {
+  const requested = [...new Set(months ?? ANNUAL_MONTH_ORDER)];
+  if (!requested.length || requested.some((month) => !ANNUAL_MONTH_ORDER.includes(month))) {
+    throw new Error(`Kanazawa annual PDF requested month set invalid: ${requested.join(',')}`);
+  }
+  return requested.sort((left, right) => ANNUAL_MONTH_ORDER.indexOf(left) - ANNUAL_MONTH_ORDER.indexOf(right));
+}
+
+export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars, months = ANNUAL_MONTH_ORDER }) {
+  const requestedMonths = validateRequestedMonths(months);
   const normalizedText = (textItems ?? []).map((item) => ({
     str: String(item.str ?? '').trim(),
     x: Number(item.x),
@@ -99,7 +108,7 @@ export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars }) {
   const monthMarkers = normalizedText.filter((item) => item.x < 40).map((item) => ({
     ...item,
     month: Number(normalizeDigits(item.str)),
-  })).filter((item) => ANNUAL_MONTH_ORDER.includes(item.month) && normalizedText.some((other) => (
+  })).filter((item) => requestedMonths.includes(item.month) && normalizedText.some((other) => (
     other.str === '月' && other.x < 40 && Math.abs(other.y - (item.y - 13.32)) < 2
   )));
 
@@ -108,13 +117,13 @@ export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars }) {
     if (uniqueMonthMarkers.has(marker.month)) throw new Error(`Kanazawa annual PDF duplicate month marker: ${marker.month}`);
     uniqueMonthMarkers.set(marker.month, marker);
   }
-  for (const month of ANNUAL_MONTH_ORDER) {
+  for (const month of requestedMonths) {
     if (!uniqueMonthMarkers.has(month)) throw new Error(`Kanazawa annual PDF missing month marker: ${month}`);
   }
 
   const output = [];
   const monthDiagnostics = [];
-  for (const month of ANNUAL_MONTH_ORDER) {
+  for (const month of requestedMonths) {
     const year = fiscalYearForMonth(month);
     const marker = uniqueMonthMarkers.get(month);
     const expectedDays = daysInMonth(year, month);
@@ -226,7 +235,7 @@ function extractPdfGeometry(page, textContent, operatorList) {
   return { pageView: page.view, textItems, bars };
 }
 
-export async function parseKanazawaAnnualPdf(bytes) {
+export async function parseKanazawaAnnualPdf(bytes, months = ANNUAL_MONTH_ORDER) {
   const data = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
   if (data.byteLength < 100000 || String.fromCharCode(...data.slice(0, 4)) !== '%PDF') {
     throw new Error(`Kanazawa annual PDF payload invalid: ${data.byteLength} bytes`);
@@ -236,7 +245,7 @@ export async function parseKanazawaAnnualPdf(bytes) {
   const page = await document.getPage(1);
   const [textContent, operatorList] = await Promise.all([page.getTextContent(), page.getOperatorList()]);
   const geometry = extractPdfGeometry(page, textContent, operatorList);
-  const decoded = decodeKanazawaAnnualScheduleGeometry(geometry);
+  const decoded = decodeKanazawaAnnualScheduleGeometry({ ...geometry, months });
   return {
     ...decoded,
     page_view: geometry.pageView,
@@ -294,10 +303,10 @@ async function officialFetch(url, fetchImpl, accept) {
   return { response, finalUrl: finalUrl.toString() };
 }
 
-async function fetchAnnualBaseline(fetchImpl) {
+async function fetchAnnualBaseline(fetchImpl, months) {
   const { response, finalUrl } = await officialFetch(KANAZAWA_OFFICIAL_ANNUAL_PDF_URL, fetchImpl, 'application/pdf');
   const bytes = new Uint8Array(await response.arrayBuffer());
-  const parsed = await parseKanazawaAnnualPdf(bytes);
+  const parsed = await parseKanazawaAnnualPdf(bytes, months);
   return {
     ...parsed,
     url: finalUrl,
@@ -311,6 +320,7 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
   const requested = [...dates].sort();
   const requestedSet = new Set(requested);
   const failures = [];
+  const supportedDates = requested.filter(withinFiscalYear);
   const unsupportedDates = requested.filter((date) => !withinFiscalYear(date));
   if (unsupportedDates.length) {
     failures.push({
@@ -319,9 +329,11 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
     });
   }
 
+  const requestedMonthKeys = monthKeys(supportedDates);
+  const requestedMonths = requestedMonthKeys.map((monthKey) => Number(monthKey.slice(5, 7)));
   let annual = null;
   try {
-    annual = await fetchAnnualBaseline(fetchImpl);
+    annual = await fetchAnnualBaseline(fetchImpl, requestedMonths);
   } catch (error) {
     failures.push({ source_url: KANAZAWA_OFFICIAL_ANNUAL_PDF_URL, reason: String(error?.message ?? error) });
   }
@@ -337,7 +349,7 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
   const resolvedDates = new Map();
   const monthlyUrls = [];
   const monthlyComparisons = [];
-  for (const monthKey of monthKeys(requested.filter(withinFiscalYear))) {
+  for (const monthKey of requestedMonthKeys) {
     const [yearText, monthText] = monthKey.split('-');
     const year = Number(yearText);
     const month = Number(monthText);
@@ -394,6 +406,7 @@ export async function discoverKanazawaOfficial30d({ dates, fetchImpl = fetch }) 
       annual_calendar_sha256: annual?.sha256 ?? null,
       annual_calendar_bytes: annual?.bytes ?? null,
       annual_meeting_count: annual?.dates?.length ?? 0,
+      annual_parsed_months: requestedMonthKeys,
       fiscal_year_window: KANAZAWA_FISCAL_YEAR_WINDOW,
       monthly_comparisons: monthlyComparisons,
       failures,
