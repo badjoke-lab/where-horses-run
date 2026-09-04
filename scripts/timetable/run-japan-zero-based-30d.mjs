@@ -9,6 +9,7 @@ import { discoverIwatekeibaOfficial30d } from './iwatekeiba-official-30d-discove
 import { discoverHyogoOfficial30d } from './hyogo-official-30d-discovery.mjs';
 import { discoverTokaiOfficial30d, TOKAI_OFFICIAL_PDF_URL } from './tokai-official-30d-discovery.mjs';
 import { discoverHokkaidoOfficial30d } from './hokkaido-official-30d-discovery.mjs';
+import { discoverKanazawaOfficial30d, KANAZAWA_OFFICIAL_ANNUAL_PDF_URL } from './kanazawa-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -295,6 +296,28 @@ async function discoverNarOfficialUnion(context) {
     }));
   }
 
+  let kanazawa = { meetings: [], completeness: null };
+  const kanazawaStartedAt = new Date().toISOString();
+  try {
+    kanazawa = await discoverKanazawaOfficial30d(context);
+    sourceCompleteness.set('kanazawa-keiba-official-calendar', {
+      ...kanazawa.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: kanazawaStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(kanazawa.meetings, 'kanazawa-keiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('kanazawa-keiba-official-calendar', sourceState({
+      sourceId: 'kanazawa-keiba-official-calendar',
+      sourceUrl: KANAZAWA_OFFICIAL_ANNUAL_PDF_URL,
+      startedAt: kanazawaStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: KANAZAWA_OFFICIAL_ANNUAL_PDF_URL, reason: String(error?.message ?? error) }],
+    }));
+  }
+
   return mergeOfficialPositiveEvidence(
     narMeetings,
     southKanto.meetings ?? [],
@@ -302,6 +325,7 @@ async function discoverNarOfficialUnion(context) {
     hyogo.meetings ?? [],
     tokai.meetings ?? [],
     hokkaido.meetings ?? [],
+    kanazawa.meetings ?? [],
   );
 }
 
@@ -391,6 +415,10 @@ const absenceFamilyStatus = {
   hokkaido: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'hokkaido-keiba-official-calendar',
+  ]).complete,
+  kanazawa: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'kanazawa-keiba-official-calendar',
   ]).complete,
   other_nar: false,
 };
