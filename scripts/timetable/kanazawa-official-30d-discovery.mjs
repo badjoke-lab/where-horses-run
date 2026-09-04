@@ -10,6 +10,7 @@ export const KANAZAWA_OFFICIAL_SCHEDULE_URL = 'https://www.kanazawakeiba.com/sch
 const ANNUAL_MONTH_ORDER = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
 const ANNUAL_MEETING_COLORS = new Set(['#f7c7a7', '#b4c6e7']);
 const FULLWIDTH_DIGITS = '０１２３４５６７８９';
+const MIN_REQUIRED_DAY_GRID = 28;
 
 function normalizeDigits(value) {
   return String(value ?? '').replace(/[０-９]/g, (char) => String(FULLWIDTH_DIGITS.indexOf(char)));
@@ -129,10 +130,12 @@ export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars }) {
     })).sort((a, b) => a.day - b.day);
 
     const uniqueDays = new Map(dayItems.map((item) => [item.day, item]));
-    if (uniqueDays.size !== expectedDays) {
-      throw new Error(`Kanazawa annual PDF day grid invalid for ${year}-${pad2(month)}: expected ${expectedDays}, got ${uniqueDays.size}`);
+    const missingRequired = Array.from({ length: MIN_REQUIRED_DAY_GRID }, (_, index) => index + 1)
+      .filter((day) => !uniqueDays.has(day));
+    if (missingRequired.length) {
+      throw new Error(`Kanazawa annual PDF day grid invalid for ${year}-${pad2(month)}: missing ${missingRequired.join(',')}`);
     }
-    const centers = [...uniqueDays.values()].sort((a, b) => a.day - b.day).map((item) => item.center);
+    const centers = Array.from({ length: MIN_REQUIRED_DAY_GRID }, (_, index) => uniqueDays.get(index + 1).center);
     const step = median(centers.slice(1).map((center, index) => center - centers[index]));
     if (!Number.isFinite(step) || step < 20 || step > 30) throw new Error(`Kanazawa annual PDF day grid spacing invalid for ${year}-${pad2(month)}`);
     const firstBoundary = centers[0] - step / 2;
@@ -159,6 +162,7 @@ export function decodeKanazawaAnnualScheduleGeometry({ textItems, bars }) {
       month,
       bar_count: monthBars.length,
       meeting_count: monthDates.size,
+      printed_day_count: uniqueDays.size,
     });
   }
 
@@ -237,10 +241,6 @@ export async function parseKanazawaAnnualPdf(bytes) {
     ...decoded,
     page_view: geometry.pageView,
   };
-}
-
-function stripTags(value) {
-  return String(value ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 export function parseKanazawaOfficialMonthlySchedule(html, year, month) {
