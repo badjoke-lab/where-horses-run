@@ -5,6 +5,13 @@ export const REQUIRED_JAPAN_MOTHER_SET_SOURCES = [
   'nankankeiba-south-kanto-calendar',
 ];
 
+export const SOUTH_KANTO_RACECOURSE_IDS = new Set([
+  'urawa-racecourse',
+  'funabashi-racecourse',
+  'oi-racecourse',
+  'kawasaki-racecourse',
+]);
+
 function sameMeetingIdentity(left, right) {
   return left.meeting_id === right.meeting_id
     && left.date === right.date
@@ -42,4 +49,29 @@ export function assessMotherSetCompleteness(rows, requiredSourceIds = REQUIRED_J
     missing_source_ids,
     incomplete_source_ids,
   };
+}
+
+export function requiredMotherSetSourcesForMeeting(row) {
+  if (row?.authority_id === 'jra' || row?.meeting_id?.startsWith('jra-')) {
+    return ['jra-racing-calendar-programme'];
+  }
+  if (row?.authority_id === 'banei-tokachi' || row?.meeting_id?.startsWith('banei-')) {
+    return ['banei-official-schedule'];
+  }
+  if (row?.authority_id === 'nar-local-government-racing' || row?.meeting_id?.startsWith('nar-')) {
+    if (SOUTH_KANTO_RACECOURSE_IDS.has(row?.racecourse_id)) {
+      return ['nar-monthly-convene-info', 'nankankeiba-south-kanto-calendar'];
+    }
+    // Regional/operator mother-set sources for the remaining NAR venues are not
+    // wired yet. Until they are, absence from the national NAR page alone is not
+    // sufficient negative evidence to remove an existing public meeting.
+    return null;
+  }
+  return null;
+}
+
+export function canReconcileMeetingAbsence(row, sourceCompletenessRows) {
+  const required = requiredMotherSetSourcesForMeeting(row);
+  if (!required?.length) return false;
+  return assessMotherSetCompleteness(sourceCompletenessRows, required).complete;
 }
