@@ -19,6 +19,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+      - name: Diagnose live South Kanto page bytes
+        run: |
+          node --input-type=module <<'NODE'
+          const url = 'https://www.nankankeiba.com/calendar/202607.do';
+          const response = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' } });
+          const bytes = await response.arrayBuffer();
+          const tokens = ['浦和', '船橋', '大井', '川崎', '9月'];
+          for (const encoding of ['utf-8', 'shift_jis']) {
+            const text = new TextDecoder(encoding).decode(bytes);
+            const counts = Object.fromEntries(tokens.map((token) => [token, text.split(token).length - 1]));
+            console.log(JSON.stringify({ encoding, content_type: response.headers.get('content-type'), counts, sample: text.slice(0, 300) }));
+          }
+          NODE
       - name: Fetch live South Kanto official 30-day window
         run: |
           node --input-type=module <<'NODE'
