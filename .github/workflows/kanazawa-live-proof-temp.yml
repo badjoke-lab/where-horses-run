@@ -1,0 +1,40 @@
+name: Temporary Kanazawa official calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/kanazawa-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official Kanazawa schedule structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ym in 2026-09 2026-10; do
+            url="https://www.kanazawakeiba.com/schedule/$ym/"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/$ym.html"
+            echo "=== $url bytes=$(wc -c < /tmp/$ym.html) ==="
+            node --input-type=module - "/tmp/$ym.html" <<'NODE'
+          import fs from 'node:fs';
+          const file = process.argv[2];
+          const html = fs.readFileSync(file, 'utf8');
+          const text = html.replace(/\s+/g, ' ');
+          console.log('title=', text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
+          console.log('honba=', (text.match(/本場開催/g) ?? []).length);
+          let pos = 0;
+          for (let i = 0; i < 20; i += 1) {
+            pos = text.indexOf('本場開催', pos);
+            if (pos < 0) break;
+            console.log('HONBA', text.slice(Math.max(0, pos - 650), Math.min(text.length, pos + 650)));
+            pos += 4;
+          }
+          NODE
+          done
