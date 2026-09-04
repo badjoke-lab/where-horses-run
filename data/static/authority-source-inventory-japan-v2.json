@@ -9,7 +9,8 @@
     "japan/nar-local-government-racing/iwatekeiba-official-calendar",
     "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar",
     "japan/nar-local-government-racing/tokai-region-joint-official-calendar",
-    "japan/nar-local-government-racing/hokkaido-keiba-official-calendar"
+    "japan/nar-local-government-racing/hokkaido-keiba-official-calendar",
+    "japan/nar-local-government-racing/kanazawa-keiba-official-calendar"
   ],
   "records": [
     {
@@ -74,6 +75,15 @@
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "production_mother_set_union_v1",
       "notes": "Hokkaido Keiba's official monthly calendar is an independent mother_set source for Monbetsu. The Shift_JIS calendar is parsed only from tr.hokkaidokeiba current-month day cells, and a meeting requires the official Hokkaido Keiba logo plus a direct 門別N回M日 marker. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete, while malformed or incomplete month structure fails closed."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/kanazawa-keiba-official-calendar",
+      "system_id": "japan-nar-system",
+      "capability_rank": "C",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_mother_set_union_v1",
+      "notes": "Kanazawa Keiba's FY2026 official annual PDF is parsed as a vector calendar: the 12 fiscal-month day grids are matched to the official prefectural/municipal meeting-color bars to recover exact meeting dates. Official monthly table_honba pages supersede the annual baseline when populated and are otherwise cross-checked without treating an unpopulated future page as negative evidence. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete, and PDF/month structure failures fail closed."
     },
     {
       "authority_source_key": "japan/banei-tokachi/banei-official-schedule",
