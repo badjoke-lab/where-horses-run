@@ -14,7 +14,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect official Tokai joint schedule PDF
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Inspect official Tokai joint schedule PDF with Node coordinates
         shell: bash
         run: |
           set -euo pipefail
@@ -22,14 +25,34 @@ jobs:
           curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o /tmp/tokai.pdf
           echo "bytes=$(wc -c < /tmp/tokai.pdf)"
           echo "sha256=$(sha256sum /tmp/tokai.pdf | awk '{print $1}')"
-          file /tmp/tokai.pdf
-          if command -v pdftotext >/dev/null 2>&1; then
-            echo "PDFTOTEXT=$(command -v pdftotext)"
-            pdftotext -layout /tmp/tokai.pdf /tmp/tokai.txt
-            sed -n '1,160p' /tmp/tokai.txt
-            pdftotext -bbox-layout /tmp/tokai.pdf /tmp/tokai-bbox.html
-            echo '--- bbox sample around 9月 ---'
-            grep -n -C 8 '9' /tmp/tokai-bbox.html | head -160 || true
-          else
-            echo 'PDFTOTEXT=missing'
-          fi
+          npm install --no-save --no-package-lock --no-audit --no-fund pdfjs-dist@5.4.149 >/dev/null
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+          const data = new Uint8Array(fs.readFileSync('/tmp/tokai.pdf'));
+          const pdf = await getDocument({ data, useWorkerFetch: false, isEvalSupported: false }).promise;
+          console.log(`pages=${pdf.numPages}`);
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({ scale: 1 });
+          console.log(`viewport=${viewport.width}x${viewport.height}`);
+          const content = await page.getTextContent();
+          const items = content.items.filter((item) => item.str?.trim()).map((item) => ({
+            str: item.str.trim(),
+            x: Number(item.transform[4].toFixed(2)),
+            y: Number(item.transform[5].toFixed(2)),
+            w: Number(item.width.toFixed(2)),
+            h: Number(item.height.toFixed(2)),
+          }));
+          console.log(`items=${items.length}`);
+          const rows = [];
+          for (const item of [...items].sort((a,b) => b.y-a.y || a.x-b.x)) {
+            let row = rows.find((candidate) => Math.abs(candidate.y - item.y) < 1.5);
+            if (!row) { row = { y: item.y, items: [] }; rows.push(row); }
+            row.items.push(item);
+          }
+          rows.sort((a,b) => b.y-a.y);
+          for (const [index,row] of rows.entries()) {
+            row.items.sort((a,b) => a.x-b.x);
+            console.log(`ROW ${index} y=${row.y.toFixed(2)} :: ${row.items.map((i)=>`${i.str}@${i.x}`).join(' | ')}`);
+          }
+          NODE
