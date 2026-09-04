@@ -1,0 +1,35 @@
+name: Temporary Tokai joint-calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/tokai-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official Tokai joint schedule PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://www.kasamatsu-keiba.com/resources/pdfs/news/2026/1768888484_abd42430844a7f06de8d.pdf'
+          curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o /tmp/tokai.pdf
+          echo "bytes=$(wc -c < /tmp/tokai.pdf)"
+          echo "sha256=$(sha256sum /tmp/tokai.pdf | awk '{print $1}')"
+          file /tmp/tokai.pdf
+          if command -v pdftotext >/dev/null 2>&1; then
+            echo "PDFTOTEXT=$(command -v pdftotext)"
+            pdftotext -layout /tmp/tokai.pdf /tmp/tokai.txt
+            sed -n '1,160p' /tmp/tokai.txt
+            pdftotext -bbox-layout /tmp/tokai.pdf /tmp/tokai-bbox.html
+            echo '--- bbox sample around 9月 ---'
+            grep -n -C 8 '9' /tmp/tokai-bbox.html | head -160 || true
+          else
+            echo 'PDFTOTEXT=missing'
+          fi
