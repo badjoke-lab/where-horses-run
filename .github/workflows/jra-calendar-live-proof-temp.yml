@@ -14,40 +14,35 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect official JRA calendar JSON contract
+      - name: Prove official JRA monthly calendar JSON meetings
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, re, urllib.request
+          import json, urllib.request
           ua={'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)','Accept-Language':'ja'}
-          def get(url):
+          def get_json(url):
               req=urllib.request.Request(url,headers=ua)
-              return urllib.request.urlopen(req,timeout=20).read()
-          js=get('https://www.jra.go.jp/keiba/common/calendar/cal.js?version=2026').decode('shift_jis','replace')
-          for token in ('cur_YM_JSON','targetJSON','setJSON','setting.json','active.json'):
-              print('TOKEN',token)
-              for m in list(re.finditer(re.escape(token),js,re.I))[:12]:
-                  print(re.sub(r'\s+',' ',js[max(0,m.start()-500):m.start()+900]))
-          for url in (
-              'https://www.jra.go.jp/keiba/common/calendar/json/setting.json',
-              'https://www.jra.go.jp/keiba/common/calendar/json/active.json',
-          ):
-              try:
-                  raw=get(url)
-                  print('JSON_URL',url,'BYTES',len(raw))
-                  print(raw.decode('utf-8','replace')[:12000])
-              except Exception as exc:
-                  print('JSON_FAIL',url,repr(exc))
-          candidates=[]
-          for prefix in ('202609','2609','09','sep','2026_09','2026-09'):
-              for suffix in ('.json','/active.json','_active.json'):
-                  candidates.append('https://www.jra.go.jp/keiba/common/calendar/json/'+prefix+suffix)
-          for url in candidates:
-              try:
-                  raw=get(url)
-                  print('CANDIDATE_OK',url,'BYTES',len(raw),raw[:500])
-              except Exception as exc:
-                  code=getattr(exc,'code',None)
-                  if code not in (403,404): print('CANDIDATE_FAIL',url,repr(exc))
+              return json.loads(urllib.request.urlopen(req,timeout=20).read().decode('utf-8'))
+          total=[]
+          for ym in ('202609','202610'):
+              url=f'https://www.jra.go.jp/keiba/common/calendar/json/{ym}.json'
+              data=get_json(url)
+              print('MONTH',ym,'ROOT_TYPE',type(data).__name__,'ROOT_LEN',len(data))
+              print('ROOT_KEYS',list(data[0].keys()) if data and isinstance(data[0],dict) else None)
+              entries=[]
+              for root in data:
+                  for day in root.get('data',[]):
+                      races=[]
+                      for info in day.get('info',[]):
+                          for race in info.get('race',[]):
+                              name=race.get('name')
+                              if name: races.append(name)
+                      entries.append((str(day.get('date')), races, day))
+              for date,races,day in entries:
+                  print('DAY',ym+date.zfill(2),'RACES',races,'KEYS',list(day.keys()))
+                  if races: total.extend((ym+date.zfill(2),name) for name in races)
+              print('ENTRY_COUNT',len(entries),'RACING_DAY_COUNT',sum(bool(r) for _,r,_ in entries),'RACE_MARKERS',sum(len(r) for _,r,_ in entries))
+          print('TOTAL_RACE_MARKERS',len(total))
+          print('TOTAL',total)
           PY
