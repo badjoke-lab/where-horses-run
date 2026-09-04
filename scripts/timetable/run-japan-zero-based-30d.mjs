@@ -8,6 +8,7 @@ import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-disco
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
+  canReconcileMeetingAbsence,
   mergeOfficialPositiveEvidence,
   REQUIRED_JAPAN_MOTHER_SET_SOURCES,
 } from './japan-mother-set-safety.mjs';
@@ -34,10 +35,6 @@ function normalizeNarMeetingId(meeting) {
 
 function isInvalidMombetsuAlias(row) {
   return row?.racecourse_id === 'mombetsu-racecourse' || row?.meeting_id?.startsWith('nar-mombetsu-racecourse-');
-}
-
-function keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates) {
-  return !(row?.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id));
 }
 
 function dateRange(start, days) {
@@ -261,6 +258,27 @@ const motherSetComplete = motherSetAssessment.complete;
 const runComplete = result.complete === true && motherSetComplete;
 const officialIds = new Set(result.reconciliations.map((row) => row.meeting_id));
 const rangeDates = scope === 'near' ? selectedDates : new Set(result.range.dates);
+const isAbsentPublicMeeting = (row) => row?.country_id === 'japan'
+  && rangeDates.has(row.date)
+  && !officialIds.has(row.meeting_id);
+const stalePublicCandidates = result.public.filter(isAbsentPublicMeeting);
+const removedStalePublic = stalePublicCandidates
+  .filter((row) => canReconcileMeetingAbsence(row, completenessRows))
+  .map((row) => row.meeting_id);
+const removedStaleSet = new Set(removedStalePublic);
+const preservedStalePublic = stalePublicCandidates
+  .filter((row) => !removedStaleSet.has(row.meeting_id))
+  .map((row) => row.meeting_id);
+const absenceFamilyStatus = {
+  jra: assessMotherSetCompleteness(completenessRows, ['jra-racing-calendar-programme']).complete,
+  banei: assessMotherSetCompleteness(completenessRows, ['banei-official-schedule']).complete,
+  south_kanto: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'nankankeiba-south-kanto-calendar',
+  ]).complete,
+  other_nar: false,
+};
+const absenceReconciliationApplied = Object.values(absenceFamilyStatus).some(Boolean);
 const attachObservations = (row) => {
   const observations = sourceObservations.get(row.meeting_id);
   if (!observations?.length) return row;
@@ -274,24 +292,17 @@ const attachObservations = (row) => {
 };
 const canonical = result.canonical.filter((row) => !isInvalidMombetsuAlias(row)).map(attachObservations);
 const details = result.details.filter((row) => !isInvalidMombetsuAlias(row));
-const publicMeetings = result.public.filter((row) => !isInvalidMombetsuAlias(row) && (!runComplete || keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates)));
-const publicDetails = result.publicDetails.filter((row) => !isInvalidMombetsuAlias(row) && (!runComplete || keepOutsideCurrentUnofficialJapan(row, officialIds, rangeDates)));
-const remainingUnexpectedPublic = runComplete
-  ? publicMeetings.filter((row) => row.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id))
-  : [];
-if (remainingUnexpectedPublic.length) {
-  throw new Error(`Japan public mother set contains non-official ${scope} meetings: ${remainingUnexpectedPublic.map((row) => row.meeting_id).join(', ')}`);
+const publicMeetings = result.public.filter((row) => !isInvalidMombetsuAlias(row) && !removedStaleSet.has(row.meeting_id));
+const publicDetails = result.publicDetails.filter((row) => !isInvalidMombetsuAlias(row) && !removedStaleSet.has(row.meeting_id));
+const remainingReconcilablePublic = publicMeetings.filter((row) => isAbsentPublicMeeting(row) && canReconcileMeetingAbsence(row, completenessRows));
+if (remainingReconcilablePublic.length) {
+  throw new Error(`Japan public mother set retains reconcilable absent ${scope} meetings: ${remainingReconcilablePublic.map((row) => row.meeting_id).join(', ')}`);
 }
 const missingOfficialPublic = [...officialIds].filter((meetingId) => !publicMeetings.some((row) => row.meeting_id === meetingId));
 if (missingOfficialPublic.length) {
   throw new Error(`Japan public mother set is missing official meetings: ${missingOfficialPublic.join(', ')}`);
 }
 const removedInvalidAliases = result.canonical.filter(isInvalidMombetsuAlias).map((row) => row.meeting_id);
-const removedStalePublic = runComplete
-  ? result.public
-    .filter((row) => row.country_id === 'japan' && rangeDates.has(row.date) && !officialIds.has(row.meeting_id))
-    .map((row) => row.meeting_id)
-  : [];
 const visibleStaleAudit = result.stale_audit.filter((row) => rangeDates.has(row.date));
 const reconciliations = result.reconciliations.map((row) => ({
   ...row,
@@ -316,7 +327,9 @@ write(output, {
   source_completeness: completenessRows,
   mother_set_complete: motherSetComplete,
   mother_set_completeness_assessment: motherSetAssessment,
-  absence_reconciliation_applied: runComplete,
+  absence_reconciliation_mode: 'per_family',
+  absence_reconciliation_families: absenceFamilyStatus,
+  absence_reconciliation_applied: absenceReconciliationApplied,
   complete: runComplete,
   canonical: undefined,
   public: undefined,
@@ -324,12 +337,13 @@ write(output, {
   publicDetails: undefined,
   stale_audit: visibleStaleAudit.map((row) => ({
     ...row,
-    audit: removedStalePublic.includes(row.meeting_id)
+    audit: removedStaleSet.has(row.meeting_id)
       ? 'canonical_only_public_removed'
-      : runComplete ? row.audit : 'public_preserved_incomplete_mother_set',
+      : isAbsentPublicMeeting(row) ? 'public_preserved_incomplete_mother_set' : row.audit,
   })),
   removed_invalid_aliases: removedInvalidAliases,
   removed_stale_public: removedStalePublic,
+  preserved_stale_public: preservedStalePublic,
 });
 const outcomes = Object.fromEntries(reconciliations.map((row) => row.outcome).reduce((map, outcome) => map.set(outcome, (map.get(outcome) ?? 0) + 1), new Map()));
 console.log(JSON.stringify({
@@ -341,10 +355,13 @@ console.log(JSON.stringify({
   source_completeness: Object.fromEntries(completenessRows.map((row) => [row.source_id, row.completeness])),
   mother_set_complete: motherSetComplete,
   mother_set_completeness_assessment: motherSetAssessment,
-  absence_reconciliation_applied: runComplete,
+  absence_reconciliation_mode: 'per_family',
+  absence_reconciliation_families: absenceFamilyStatus,
+  absence_reconciliation_applied: absenceReconciliationApplied,
   outcomes,
   removed_invalid_aliases: removedInvalidAliases.length,
   removed_stale_public: removedStalePublic.length,
+  preserved_stale_public: preservedStalePublic.length,
   complete: runComplete,
   public_rank_lower_than_official: result.public_rank_lower_than_official,
 }));
