@@ -17,90 +17,36 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Resolve official Tokai joint schedule PDF geometry
+      - name: Resolve September arrow geometry
         shell: bash
         run: |
           set -euo pipefail
           url='https://www.kasamatsu-keiba.com/resources/pdfs/news/2026/1768888484_abd42430844a7f06de8d.pdf'
           curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o /tmp/tokai.pdf
-          echo "bytes=$(wc -c < /tmp/tokai.pdf)"
-          echo "sha256=$(sha256sum /tmp/tokai.pdf | awk '{print $1}')"
           npm install --no-save --no-package-lock --no-audit --no-fund pdfjs-dist@5.4.149 >/dev/null
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
-
-          const mul = (a, b) => [
-            a[0] * b[0] + a[2] * b[1],
-            a[1] * b[0] + a[3] * b[1],
-            a[0] * b[2] + a[2] * b[3],
-            a[1] * b[2] + a[3] * b[3],
-            a[0] * b[4] + a[2] * b[5] + a[4],
-            a[1] * b[4] + a[3] * b[5] + a[5],
-          ];
-          const point = (m, x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
-          const box = (m, bbox) => {
-            const [x0, y0, x1, y1] = bbox;
-            const pts = [point(m, x0, y0), point(m, x0, y1), point(m, x1, y0), point(m, x1, y1)];
-            const xs = pts.map((p) => p[0]);
-            const ys = pts.map((p) => p[1]);
-            return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
-          };
-          const roundBox = (b) => b.map((v) => Number(v.toFixed(2)));
-
-          const data = new Uint8Array(fs.readFileSync('/tmp/tokai.pdf'));
-          const pdf = await getDocument({ data, useWorkerFetch: false, isEvalSupported: false }).promise;
-          const page = await pdf.getPage(1);
-          const opList = await page.getOperatorList();
-          const names = new Map(Object.entries(OPS).map(([name, value]) => [value, name]));
-
-          let ctm = [1, 0, 0, 1, 0, 0];
-          const stack = [];
-          let lineWidth = null;
-          let strokeRgb = null;
-          let fillRgb = null;
-          const candidates = [];
-          for (let i = 0; i < opList.fnArray.length; i += 1) {
-            const name = names.get(opList.fnArray[i]) ?? String(opList.fnArray[i]);
-            const args = opList.argsArray[i];
-            if (name === 'save') {
-              stack.push({ ctm: [...ctm], lineWidth, strokeRgb, fillRgb });
-              continue;
-            }
-            if (name === 'restore') {
-              const state = stack.pop();
-              if (state) ({ ctm, lineWidth, strokeRgb, fillRgb } = state);
-              continue;
-            }
-            if (name === 'transform') {
-              ctm = mul(ctm, args);
-              continue;
-            }
-            if (name === 'setLineWidth') { lineWidth = args?.[0] ?? null; continue; }
-            if (name === 'setStrokeRGBColor') { strokeRgb = args; continue; }
-            if (name === 'setFillRGBColor') { fillRgb = args; continue; }
-            if (name !== 'constructPath') continue;
-            const rawBbox = args?.[2];
-            if (!rawBbox || typeof rawBbox.length !== 'number' || rawBbox.length < 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
-            const width = b[2] - b[0];
-            const height = b[3] - b[1];
-            // Ignore the calendar grid and tiny glyph fragments. Meeting arrows and
-            // their endpoint/label shapes are compact horizontal vector objects.
-            if (b[0] < 45 || b[2] > 595 || b[1] < 70 || b[3] > 790) continue;
-            if (width < 4 || width > 150 || height < 0.2 || height > 25) continue;
-            candidates.push({
-              op: i,
-              bbox: roundBox(b),
-              width: Number(width.toFixed(2)),
-              height: Number(height.toFixed(2)),
-              lineWidth,
-              strokeRgb,
-              fillRgb,
-            });
-          }
-          console.log(`CANDIDATES=${candidates.length}`);
-          for (const row of candidates.sort((a, b) => b.bbox[1] - a.bbox[1] || a.bbox[0] - b.bbox[0])) {
-            console.log(JSON.stringify(row));
+          const mul=(a,b)=>[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
+          const pt=(m,x,y)=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]];
+          const bbox=(m,b)=>{const p=[pt(m,b[0],b[1]),pt(m,b[0],b[3]),pt(m,b[2],b[1]),pt(m,b[2],b[3])];const x=p.map(v=>v[0]),y=p.map(v=>v[1]);return [Math.min(...x),Math.min(...y),Math.max(...x),Math.max(...y)].map(v=>+v.toFixed(2));};
+          const data=new Uint8Array(fs.readFileSync('/tmp/tokai.pdf'));
+          const pdf=await getDocument({data,useWorkerFetch:false,isEvalSupported:false}).promise;
+          const page=await pdf.getPage(1); const ops=await page.getOperatorList();
+          const names=new Map(Object.entries(OPS).map(([k,v])=>[v,k]));
+          let ctm=[1,0,0,1,0,0], lineWidth=null, dash=null, stroke=null, fill=null; const stack=[];
+          for(let i=0;i<ops.fnArray.length;i++){
+            const name=names.get(ops.fnArray[i])??String(ops.fnArray[i]); const a=ops.argsArray[i];
+            if(name==='save'){stack.push({ctm:[...ctm],lineWidth,dash,stroke,fill});continue;}
+            if(name==='restore'){const s=stack.pop();if(s)({ctm,lineWidth,dash,stroke,fill}=s);continue;}
+            if(name==='transform'){ctm=mul(ctm,a);continue;}
+            if(name==='setLineWidth'){lineWidth=a?.[0]??null;continue;}
+            if(name==='setLineDash'){dash=a;continue;}
+            if(name==='setStrokeRGBColor'){stroke=a;continue;}
+            if(name==='setFillRGBColor'){fill=a;continue;}
+            if(name!=='constructPath')continue;
+            const raw=a?.[2]; if(!raw||raw.length<4)continue; const b=bbox(ctm,Array.from(raw));
+            if(b[1]<390||b[3]>425||b[0]<55||b[2]>575)continue;
+            console.log(JSON.stringify({op:i,bbox:b,pathOps:Array.from(a?.[0]??[]),coords:Array.from(a?.[1]??[]).map(v=>+Number(v).toFixed(3)),lineWidth,dash,stroke,fill}));
           }
           NODE
