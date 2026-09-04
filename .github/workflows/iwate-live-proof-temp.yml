@@ -1,0 +1,49 @@
+name: Temporary Iwate live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/iwate-live-proof-temp.yml'
+      - 'scripts/timetable/iwate-official-30d-discovery.mjs'
+      - 'scripts/check-iwate-official-30d.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Inspect live Iwate official calendar HTML
+        run: |
+          node --input-type=module <<'NODE'
+          const urls = [
+            'https://www.iwatekeiba.or.jp/calendar/2026_09',
+            'https://www.iwatekeiba.or.jp/calendar/2026_10',
+            'https://www.iwatekeiba.or.jp/',
+          ];
+          const tokens = ['9月6日', '9月7日', '9月8日', '10月4日', '10月5日', '盛岡', '水沢', '09/06'];
+          for (const url of urls) {
+            const response = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' } });
+            const bytes = await response.arrayBuffer();
+            const text = new TextDecoder('utf-8').decode(bytes);
+            console.log(`URL=${url} status=${response.status} content-type=${response.headers.get('content-type')} bytes=${bytes.byteLength}`);
+            console.log(`meta=${text.match(/<meta[^>]+charset[^>]+>/i)?.[0] ?? 'none'}`);
+            for (const token of tokens) {
+              let from = 0;
+              let hit = 0;
+              while ((from = text.indexOf(token, from)) !== -1 && hit < 3) {
+                const start = Math.max(0, from - 500);
+                const end = Math.min(text.length, from + token.length + 900);
+                console.log(`TOKEN=${token} HIT=${hit + 1}\n${text.slice(start, end).replace(/\s+/g, ' ')}`);
+                from += token.length;
+                hit += 1;
+              }
+            }
+          }
+          NODE
