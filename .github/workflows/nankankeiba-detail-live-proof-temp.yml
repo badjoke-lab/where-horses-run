@@ -1,6 +1,11 @@
 name: Nankankeiba detail live proof temp
 
 on:
+  push:
+    branches:
+      - fix/nankankeiba-dynamic-detail
+    paths:
+      - '.github/workflows/nankankeiba-detail-live-proof-temp.yml'
   workflow_dispatch:
 
 permissions:
