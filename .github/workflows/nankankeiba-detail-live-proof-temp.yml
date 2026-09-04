@@ -19,30 +19,35 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Probe live South Kanto links and race rows
+      - name: Run permanent South Kanto fallback contract
+        run: node scripts/check-nankan-official-programme-fallback.mjs
+      - name: Prove live Kawasaki five-day detail acquisition through production functions
         run: |
           node --input-type=module <<'NODE'
-          const fetchSj = async (url) => {
-            const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' } });
-            console.log('URL', url, 'STATUS', r.status, 'FINAL', r.url);
-            return new TextDecoder('shift_jis').decode(await r.arrayBuffer());
-          };
-          const bangumiUrl = 'https://www.nankankeiba.com/bangumi/20262107.do';
-          const bangumi = await fetchSj(bangumiUrl);
-          console.log('PROGRAM LINKS', [...new Set([...bangumi.matchAll(/href=["']([^"']*\/program\/\d{14}\.do[^"']*)["']/gi)].map(m => new URL(m[1], bangumiUrl).toString()))]);
-          for (const marker of ['9月7日', '9月8日', '9月9日', '9月10日', '9月11日']) {
-            const i = bangumi.indexOf(marker);
-            console.log('BANGUMI MARKER', marker, 'INDEX', i);
-            if (i >= 0) console.log(bangumi.slice(Math.max(0, i - 500), i + 1000).replace(/\s+/g, ' '));
-          }
-          for (const url of [
-            'https://www.nankankeiba.com/program/20260908210702.do',
-            'https://www.nankankeiba.com/program/20260910210704.do',
-          ]) {
-            const html = await fetchSj(url);
-            const rows = [...html.matchAll(/<li\b[^>]*class=["'][^"']*nk23_c-block01__list__item[^"']*["'][^>]*>([\s\S]*?)<\/li>/gi)].map(m => m[1]);
-            console.log('ROW COUNT', url, rows.length);
-            console.log('FIRST ROW', rows[0]?.replace(/\s+/g, ' '));
-            console.log('LAST ROW', rows.at(-1)?.replace(/\s+/g, ' '));
+          import assert from 'node:assert/strict';
+          import { discoverNankankeibaOfficial30d } from './scripts/timetable/nankankeiba-official-30d-discovery.mjs';
+          import { fetchNankanOfficialProgramme } from './scripts/timetable/nankan-official-programme-fallback.mjs';
+
+          const dates = ['2026-09-07', '2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11'];
+          const discovered = await discoverNankankeibaOfficial30d({ dates });
+          assert.equal(discovered.completeness.result, 'complete');
+          const kawasaki = discovered.meetings.filter((row) => row.racecourse_id === 'kawasaki-racecourse');
+          assert.deepEqual(kawasaki.map((row) => row.date), dates);
+          assert.ok(kawasaki.every((row) => /^https:\/\/www\.nankankeiba\.com\/program\/\d{14}\.do$/.test(row.nankankeiba_program_url ?? '')));
+
+          for (const meeting of kawasaki) {
+            const result = await fetchNankanOfficialProgramme(meeting);
+            assert.equal(result?.status, 'ok', `${meeting.date} must acquire official race detail`);
+            assert.equal(result.meeting.capability_rank, 'A+');
+            assert.equal(result.meeting.timetable_rows.length, 12, `${meeting.date} must have 12 races`);
+            assert.ok(result.meeting.timetable_rows.every((row) => row.post_time_local && row.race_name && row.distance_m && row.surface === 'Dirt'));
+            console.log(JSON.stringify({
+              date: meeting.date,
+              programme: meeting.nankankeiba_program_url,
+              source: result.meeting.official_source_url,
+              races: result.meeting.timetable_rows.length,
+              first: result.meeting.timetable_rows[0],
+              last: result.meeting.timetable_rows.at(-1),
+            }));
           }
           NODE
