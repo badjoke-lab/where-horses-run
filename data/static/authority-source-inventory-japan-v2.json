@@ -1,10 +1,11 @@
 {
   "schema_version": "authority-source-inventory-japan-v2",
-  "approved_at": "2026-07-02",
+  "approved_at": "2026-09-04",
   "supersedes_records": [
     "japan/jra/jra-programme",
     "japan/nar-local-government-racing/nar-monthly-convene-info",
-    "japan/banei-tokachi/banei-official-schedule"
+    "japan/banei-tokachi/banei-official-schedule",
+    "japan/nar-local-government-racing/nankankeiba-south-kanto-calendar"
   ],
   "records": [
     {
@@ -23,7 +24,16 @@
       "source_status": "partial",
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "authority_specific_review",
-      "notes": "NAR and local-government racing have an approved A+ system ceiling. Authority and racecourse routes remain separate and individual meeting output remains evidence-bound."
+      "notes": "NAR and local-government racing have an approved A+ system ceiling. NAR monthly convene info remains the national mother-set source and is unioned with independent regional/operator official positive evidence."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/nankankeiba-south-kanto-calendar",
+      "system_id": "japan-nar-system",
+      "capability_rank": "C",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_mother_set_union_v1",
+      "notes": "South Kanto 4 Racing official quarterly calendar (nankankeiba.com/calendar/YYYYQQ.do with quarter-start months 01/04/07/10) is an independent mother_set source for Urawa, Funabashi, Oi, and Kawasaki. Positive evidence is unioned with NAR; source failure must block absence-based public removal."
     },
     {
       "authority_source_key": "japan/banei-tokachi/banei-official-schedule",

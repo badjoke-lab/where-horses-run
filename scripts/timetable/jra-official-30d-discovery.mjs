@@ -26,33 +26,67 @@ async function fetchProgramme(date, fetchImpl) {
     headers: JRA_HEADERS,
   });
 
-  // JRA returns HTTP 403 for guessed calendar dates that have no daily programme.
-  // The same GitHub-hosted runner returns HTTP 200 for an existing programme page.
+  // JRA returns HTTP 403/404 for guessed dates with no accessible daily programme.
+  // That is not reliable negative evidence: it may mean a genuine non-racing date
+  // or a future programme that is not published yet. Keep it unclassified.
   if (response.status === 403 || response.status === 404) return { status: 'not_published', url };
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
 
   const body = decodeHtml(await response.arrayBuffer());
   const meetings = parseJraProgrammePage(body, date, response.url || url);
   if (!meetings.length) throw new Error(`JRA programme page parsed zero meetings: ${url}`);
-  return { status: 'ok', meetings };
+  return { status: 'ok', meetings, url: response.url || url };
 }
 
-export async function discoverJraOfficial30d({ dates, fetchImpl = fetch, delayMs = 80 }) {
+export async function discoverJraOfficial30dWithCompleteness({ dates, fetchImpl = fetch, delayMs = 80 }) {
   const found = [];
-  let successfulProgrammeDays = 0;
+  const successfulDates = [];
+  const notPublishedDates = [];
 
   for (const date of dates) {
     const result = await fetchProgramme(date, fetchImpl);
     if (result.status === 'ok') {
-      successfulProgrammeDays += 1;
+      successfulDates.push(date);
       found.push(...result.meetings);
+    } else if (result.status === 'not_published') {
+      notPublishedDates.push(date);
     }
     if (delayMs) await sleep(delayMs);
   }
 
-  if (!successfulProgrammeDays) {
+  if (!successfulDates.length) {
     throw new Error('JRA official 30-day discovery found no programme days; refusing to treat blanket 403/404 responses as an empty schedule');
   }
 
-  return [...new Map(found.map((meeting) => [meeting.meeting_id, meeting])).values()];
+  const meetings = [...new Map(found.map((meeting) => [meeting.meeting_id, meeting])).values()];
+  const sourceVisibleHorizon = successfulDates.at(-1);
+  const requestedHorizon = dates.at(-1);
+  // A daily programme URL can positively prove a meeting but cannot prove that a
+  // 403/404 date is a non-racing date. Therefore absence reconciliation is allowed
+  // only when every requested date was positively classified by this source.
+  const completeness = notPublishedDates.length === 0 ? 'complete' : 'partial';
+  return {
+    meetings,
+    completeness: {
+      source_id: 'jra-racing-calendar-programme',
+      role: 'mother_set',
+      requested_window: { start: dates[0], end: requestedHorizon },
+      result: completeness,
+      completeness,
+      parsed_meeting_count: meetings.length,
+      parsed_detail_count: 0,
+      pending_count: notPublishedDates.length,
+      failure_count: 0,
+      not_published_count: notPublishedDates.length,
+      not_published_dates: notPublishedDates,
+      successful_programme_dates: successfulDates,
+      source_visible_horizon: sourceVisibleHorizon,
+      source_urls: dates.map(jraProgrammeUrl),
+      failures: [],
+    },
+  };
+}
+
+export async function discoverJraOfficial30d(options) {
+  return (await discoverJraOfficial30dWithCompleteness(options)).meetings;
 }

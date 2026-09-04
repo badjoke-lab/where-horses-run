@@ -164,7 +164,7 @@ for (const phrase of ['workflow_dispatch:', 'reviewed_input_base64', 'contents: 
   if (!operatorWorkflow.includes(phrase)) fail(`HKJC detail operator workflow missing ${phrase}.`);
 }
 const scheduleWorkflow = readText(schedule.evidence_ref);
-for (const phrase of ['schedule:', 'run-current-lower-rank-best-available.mjs', '--system=hkjc', 'canonical_write', 'public_write']) {
+for (const phrase of ['schedule:', 'run-hkjc-official-window.mjs', 'apply-official-rolling-observations.mjs', '--authority-id=hkjc', 'git push origin HEAD:main']) {
   if (!scheduleWorkflow.includes(phrase)) fail(`HKJC schedule workflow missing ${phrase}.`);
 }
 
