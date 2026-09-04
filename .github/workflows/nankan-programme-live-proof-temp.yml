@@ -1,0 +1,63 @@
+name: Temporary Nankan programme live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/nankan-programme-live-proof-temp.yml'
+      - 'scripts/timetable/nankan-official-programme-fallback.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Prove South Kanto official programme fallback live
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { fetchNankanOfficialProgramme } from './scripts/timetable/nankan-official-programme-fallback.mjs';
+
+          const probes = [
+            ['2026-09-07', 'kawasaki-racecourse'],
+            ['2026-09-14', 'oi-racecourse'],
+            ['2026-09-22', 'urawa-racecourse'],
+            ['2026-09-28', 'funabashi-racecourse'],
+          ];
+          const results = [];
+          for (const [date, racecourse_id] of probes) {
+            const meeting = {
+              meeting_id: `nar-${racecourse_id}-${date}`,
+              date,
+              authority_id: 'nar-local-government-racing',
+              racing_system_id: 'japan-nar-system',
+              racecourse_id,
+            };
+            const result = await fetchNankanOfficialProgramme(meeting);
+            results.push({
+              date,
+              racecourse_id,
+              status: result?.status ?? null,
+              rank: result?.meeting?.capability_rank ?? null,
+              rows: result?.meeting?.timetable_rows?.length ?? 0,
+              first: result?.meeting?.timetable_rows?.[0] ?? null,
+              last: result?.meeting?.timetable_rows?.at(-1) ?? null,
+              url: result?.meeting?.official_source_url ?? null,
+            });
+          }
+          console.log(JSON.stringify(results, null, 2));
+          const kawasaki = results[0];
+          assert.equal(kawasaki.status, 'ok');
+          assert.equal(kawasaki.rank, 'A+');
+          assert.equal(kawasaki.rows, 12);
+          assert.equal(kawasaki.first?.label, 'Race 1');
+          assert.equal(kawasaki.last?.label, 'Race 12');
+          NODE
