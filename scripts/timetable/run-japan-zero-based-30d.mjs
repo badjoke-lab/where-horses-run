@@ -5,6 +5,7 @@ import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30dWithCompleteness } from './jra-official-30d-discovery.mjs';
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
 import { discoverNankankeibaOfficial30d } from './nankankeiba-official-30d-discovery.mjs';
+import { discoverIwatekeibaOfficial30d } from './iwatekeiba-official-30d-discovery.mjs';
 import { withSagaOfficialStartFallback } from './saga-official-start-fallback.mjs';
 import {
   assessMotherSetCompleteness,
@@ -182,29 +183,50 @@ async function discoverNarOfficialUnion(context) {
   });
 
   let southKanto = { meetings: [], completeness: null };
-  const startedAt = new Date().toISOString();
+  const southKantoStartedAt = new Date().toISOString();
   try {
     southKanto = await discoverNankankeibaOfficial30d(context);
-    const state = {
+    sourceCompleteness.set('nankankeiba-south-kanto-calendar', {
       ...southKanto.completeness,
       requested_window: selectedRange,
-      fetch_started_at: startedAt,
+      fetch_started_at: southKantoStartedAt,
       fetch_ended_at: new Date().toISOString(),
-    };
-    sourceCompleteness.set('nankankeiba-south-kanto-calendar', state);
+    });
     recordSourceObservations(southKanto.meetings, 'nankankeiba-south-kanto-calendar');
   } catch (error) {
     sourceCompleteness.set('nankankeiba-south-kanto-calendar', sourceState({
       sourceId: 'nankankeiba-south-kanto-calendar',
       sourceUrl: 'https://www.nankankeiba.com/calendar/',
-      startedAt,
+      startedAt: southKantoStartedAt,
       endedAt: new Date().toISOString(),
       status: 'failed',
       failures: [{ source_url: 'https://www.nankankeiba.com/calendar/', reason: String(error?.message ?? error) }],
     }));
   }
 
-  return mergeOfficialPositiveEvidence(narMeetings, southKanto.meetings ?? []);
+  let iwate = { meetings: [], completeness: null };
+  const iwateStartedAt = new Date().toISOString();
+  try {
+    iwate = await discoverIwatekeibaOfficial30d(context);
+    sourceCompleteness.set('iwatekeiba-official-calendar', {
+      ...iwate.completeness,
+      requested_window: selectedRange,
+      fetch_started_at: iwateStartedAt,
+      fetch_ended_at: new Date().toISOString(),
+    });
+    recordSourceObservations(iwate.meetings, 'iwatekeiba-official-calendar');
+  } catch (error) {
+    sourceCompleteness.set('iwatekeiba-official-calendar', sourceState({
+      sourceId: 'iwatekeiba-official-calendar',
+      sourceUrl: 'https://www.iwatekeiba.or.jp/calendar/',
+      startedAt: iwateStartedAt,
+      endedAt: new Date().toISOString(),
+      status: 'failed',
+      failures: [{ source_url: 'https://www.iwatekeiba.or.jp/calendar/', reason: String(error?.message ?? error) }],
+    }));
+  }
+
+  return mergeOfficialPositiveEvidence(narMeetings, southKanto.meetings ?? [], iwate.meetings ?? []);
 }
 
 const baseAdapters = {
@@ -277,6 +299,10 @@ const absenceFamilyStatus = {
   south_kanto: assessMotherSetCompleteness(completenessRows, [
     'nar-monthly-convene-info',
     'nankankeiba-south-kanto-calendar',
+  ]).complete,
+  iwate: assessMotherSetCompleteness(completenessRows, [
+    'nar-monthly-convene-info',
+    'iwatekeiba-official-calendar',
   ]).complete,
   other_nar: false,
 };
