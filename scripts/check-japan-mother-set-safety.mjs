@@ -45,6 +45,7 @@ const sourceRows = [
   { source_id: 'banei-official-schedule', completeness: 'complete' },
   { source_id: 'nankankeiba-south-kanto-calendar', completeness: 'complete' },
   { source_id: 'iwatekeiba-official-calendar', completeness: 'complete' },
+  { source_id: 'hyogo-urban-keiba-official-calendar', completeness: 'complete' },
 ];
 assert.deepEqual(requiredMotherSetSourcesForMeeting(base), [
   'nar-monthly-convene-info',
@@ -62,6 +63,19 @@ assert.deepEqual(requiredMotherSetSourcesForMeeting(iwate), [
 ]);
 assert.equal(canReconcileMeetingAbsence(iwate, sourceRows), true);
 assert.equal(canReconcileMeetingAbsence(iwate, sourceRows.map((row) => row.source_id === 'iwatekeiba-official-calendar'
+  ? { ...row, completeness: 'partial' }
+  : row)), false);
+const hyogo = {
+  ...base,
+  meeting_id: 'nar-sonoda-racecourse-2026-09-09',
+  racecourse_id: 'sonoda-racecourse',
+};
+assert.deepEqual(requiredMotherSetSourcesForMeeting(hyogo), [
+  'nar-monthly-convene-info',
+  'hyogo-urban-keiba-official-calendar',
+]);
+assert.equal(canReconcileMeetingAbsence(hyogo, sourceRows), true);
+assert.equal(canReconcileMeetingAbsence(hyogo, sourceRows.map((row) => row.source_id === 'hyogo-urban-keiba-official-calendar'
   ? { ...row, completeness: 'partial' }
   : row)), false);
 assert.equal(canReconcileMeetingAbsence({
