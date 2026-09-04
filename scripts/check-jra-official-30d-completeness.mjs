@@ -58,6 +58,28 @@ assert.equal(programmeUnavailable.completeness.failure_count, 0);
 assert.equal(programmeUnavailable.completeness.programme_not_published_count, 1);
 assert.deepEqual(programmeUnavailable.completeness.programme_not_published_dates, ['2026-09-12']);
 
+const emptyCalendar = [{
+  month: '9',
+  data: [
+    { date: '14', day: '月曜', info: [{ race: [] }] },
+    { date: '15', day: '火曜', info: [{ race: [] }] },
+    { date: '16', day: '水曜', info: [{ race: [] }] },
+  ],
+}];
+const emptyWindow = await discoverJraOfficial30dWithCompleteness({
+  dates: ['2026-09-14', '2026-09-15', '2026-09-16'],
+  delayMs: 0,
+  fetchImpl: async (url) => {
+    assert.ok(url.endsWith('202609.json'), `unexpected programme fetch in empty window: ${url}`);
+    return new Response(JSON.stringify(emptyCalendar), { status: 200 });
+  },
+});
+assert.deepEqual(emptyWindow.meetings, []);
+assert.equal(emptyWindow.completeness.completeness, 'complete');
+assert.equal(emptyWindow.completeness.failure_count, 0);
+assert.equal(emptyWindow.completeness.parsed_meeting_count, 0);
+assert.deepEqual(emptyWindow.completeness.programme_source_urls, []);
+
 const octoberCalendar = [{
   month: '10',
   data: [{ date: '3', day: '土曜', info: [{ race: [{ name: '4回東京' }, { name: '4回京都' }] }] }],
@@ -93,7 +115,7 @@ await assert.rejects(
     delayMs: 0,
     fetchImpl: async () => new Response(JSON.stringify([{ month: '9', data: 'broken' }]), { status: 200 }),
   }),
-  /found no meetings in the requested window/,
+  /calendar JSON discovery incomplete/,
 );
 
 console.log('JRA_OFFICIAL_30D_COMPLETENESS: pass');
