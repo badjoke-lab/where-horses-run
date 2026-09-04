@@ -91,6 +91,17 @@ async function get(url, fetchImpl = fetch) {
   return { body: candidates[0].text, url: finalUrl.toString() };
 }
 
+async function getCached(url, fetchImpl, cache) {
+  if (!cache) return get(url, fetchImpl);
+  if (!cache.has(url)) {
+    cache.set(url, get(url, fetchImpl).catch((error) => {
+      cache.delete(url);
+      throw error;
+    }));
+  }
+  return cache.get(url);
+}
+
 export function parseNankanProgrammeRows(html) {
   const rows = [];
   const itemPattern = /<li\b([^>]*)>([\s\S]*?)<\/li>/gi;
@@ -124,10 +135,13 @@ function venueCode(meeting) {
   return Object.entries(NANKAN_VENUES).find(([, value]) => value.racecourse_id === meeting.racecourse_id)?.[0] ?? null;
 }
 
-export function parseNankanMeetingNumber(menuHtml, year, code) {
+export function parseNankanMeetingNumbers(menuHtml, year, code) {
   const pattern = new RegExp(`(?:href=["'][^"']*)?bangumi\\/${year}${code}(\\d{2})\\.do`, 'gi');
-  const matches = [...String(menuHtml).matchAll(pattern)].map((match) => match[1]);
-  return matches.at(-1) ?? null;
+  return [...new Set([...String(menuHtml).matchAll(pattern)].map((match) => match[1]))];
+}
+
+export function parseNankanMeetingNumber(menuHtml, year, code) {
+  return parseNankanMeetingNumbers(menuHtml, year, code).at(-1) ?? null;
 }
 
 export function parseNankanMeetingDates(bangumiHtml, year) {
@@ -144,25 +158,40 @@ export function parseNankanMeetingDates(bangumiHtml, year) {
   return dates;
 }
 
-export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch } = {}) {
+export async function resolveNankanMeetingForDate(menuHtml, year, code, targetDate, { fetchImpl = fetch, cache = null } = {}) {
+  const meetingNumbers = parseNankanMeetingNumbers(menuHtml, year, code);
+  for (const meetingNumber of [...meetingNumbers].reverse()) {
+    const bangumiUrl = `https://www.nankankeiba.com/bangumi/${year}${code}${meetingNumber}.do`;
+    let bangumi;
+    try {
+      bangumi = await getCached(bangumiUrl, fetchImpl, cache);
+    } catch (error) {
+      if (error.status === 404) continue;
+      throw error;
+    }
+    const dates = parseNankanMeetingDates(bangumi.body, year);
+    const dayIndex = dates.indexOf(targetDate);
+    if (dayIndex >= 0) {
+      return { meetingNumber, dayIndex, dates, officialSourceUrl: bangumi.url };
+    }
+  }
+  return null;
+}
+
+export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch, cache = null } = {}) {
   const code = venueCode(meeting);
   if (!code) return null;
   const year = meeting.date.slice(0, 4);
-  const menu = await get(MENU_URL, fetchImpl);
-  const meetingNumber = parseNankanMeetingNumber(menu.body, year, code);
-  if (!meetingNumber) return null;
+  const menu = await getCached(MENU_URL, fetchImpl, cache);
+  const resolution = await resolveNankanMeetingForDate(menu.body, year, code, meeting.date, { fetchImpl, cache });
+  if (!resolution) return null;
 
-  const bangumiUrl = `https://www.nankankeiba.com/bangumi/${year}${code}${meetingNumber}.do`;
-  const bangumi = await get(bangumiUrl, fetchImpl);
-  const dates = parseNankanMeetingDates(bangumi.body, year);
-  const dayIndex = dates.indexOf(meeting.date);
-  if (dayIndex < 0) return null;
-
+  const { meetingNumber, dayIndex } = resolution;
   const dayNumber = String(dayIndex + 1).padStart(2, '0');
   const programUrl = `https://www.nankankeiba.com/program/${meeting.date.replaceAll('-', '')}${code}${meetingNumber}${dayNumber}.do`;
   let programme;
   try {
-    programme = await get(programUrl, fetchImpl);
+    programme = await getCached(programUrl, fetchImpl, cache);
   } catch (error) {
     if (error.status === 404) return null;
     throw error;
@@ -188,12 +217,13 @@ export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch 
 }
 
 export function withNankanOfficialProgrammeFallback(baseInspect) {
+  const cache = new Map();
   return async (meeting, context) => {
     const primary = await baseInspect(meeting, context);
     if (!['scheduled_pending_details', 'details_pending'].includes(primary?.status)) return primary;
     if (!venueCode(meeting)) return primary;
     try {
-      return (await fetchNankanOfficialProgramme(meeting, { fetchImpl: context?.fetchImpl ?? fetch })) ?? primary;
+      return (await fetchNankanOfficialProgramme(meeting, { fetchImpl: context?.fetchImpl ?? fetch, cache })) ?? primary;
     } catch {
       return primary;
     }
