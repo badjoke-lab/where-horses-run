@@ -50,7 +50,8 @@ jobs:
           assert.equal(result.completeness.completeness, 'complete');
           assert.equal(result.completeness.failure_count, 0);
           assert.deepEqual(result.meetings.map((row) => row.meeting_id), expected);
-          assert.ok(result.completeness.annual_meeting_count > 80);
+          assert.deepEqual(result.completeness.annual_parsed_months, ['2026-09', '2026-10']);
+          assert.equal(result.completeness.annual_meeting_count, 20);
           const september = result.completeness.monthly_comparisons.find((row) => row.month === '2026-09');
           const october = result.completeness.monthly_comparisons.find((row) => row.month === '2026-10');
           assert.equal(september?.agrees_with_annual, true);
