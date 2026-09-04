@@ -7,7 +7,8 @@
     "japan/banei-tokachi/banei-official-schedule",
     "japan/nar-local-government-racing/nankankeiba-south-kanto-calendar",
     "japan/nar-local-government-racing/iwatekeiba-official-calendar",
-    "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar"
+    "japan/nar-local-government-racing/hyogo-urban-keiba-official-calendar",
+    "japan/nar-local-government-racing/tokai-region-joint-official-calendar"
   ],
   "records": [
     {
@@ -54,6 +55,15 @@
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "production_mother_set_union_v1",
       "notes": "Hyogo Prefecture Racing Association's shared Sonoda/Himeji official monthly calendar is an independent mother_set source for Sonoda and Himeji. Positive evidence is unioned with NAR; absence removal requires both NAR monthly convene info and this source to be complete."
+    },
+    {
+      "authority_source_key": "japan/nar-local-government-racing/tokai-region-joint-official-calendar",
+      "system_id": "japan-nar-system",
+      "capability_rank": "C",
+      "source_status": "verified",
+      "adapter_candidate_status": "candidate",
+      "implementation_boundary": "production_mother_set_union_v1",
+      "notes": "The FY2026 Tokai district joint annual official calendar plus Kasamatsu Keiba's official monthly schedule pages are an independent mother_set path for Nagoya and Kasamatsu. The annual PDF is fetched as the fiscal-year joint baseline and the monthly official HTML supplies exact dated code-23/code-24 meeting links for the rolling window. Positive evidence is unioned with NAR; malformed or unavailable official pages block absence removal, and dates outside the FY2026 boundary fail closed until the next fiscal-year source is registered."
     },
     {
       "authority_source_key": "japan/banei-tokachi/banei-official-schedule",

@@ -12,6 +12,7 @@ const completeness = [
   { source_id: 'nankankeiba-south-kanto-calendar', completeness: 'complete' },
   { source_id: 'iwatekeiba-official-calendar', completeness: 'complete' },
   { source_id: 'hyogo-urban-keiba-official-calendar', completeness: 'complete' },
+  { source_id: 'tokai-region-joint-official-calendar', completeness: 'complete' },
 ];
 
 const rows = {
@@ -43,6 +44,20 @@ const rows = {
     authority_id: 'nar-local-government-racing',
     racecourse_id: 'sonoda-racecourse',
   },
+  tokaiNagoya: {
+    meeting_id: 'nar-nagoya-racecourse-2026-09-14',
+    country_id: 'japan',
+    date: '2026-09-14',
+    authority_id: 'nar-local-government-racing',
+    racecourse_id: 'nagoya-racecourse',
+  },
+  tokaiKasamatsu: {
+    meeting_id: 'nar-kasamatsu-racecourse-2026-09-22',
+    country_id: 'japan',
+    date: '2026-09-22',
+    authority_id: 'nar-local-government-racing',
+    racecourse_id: 'kasamatsu-racecourse',
+  },
   otherNar: {
     meeting_id: 'nar-kanazawa-racecourse-2026-09-07',
     country_id: 'japan',
@@ -72,6 +87,12 @@ assert.deepEqual(requiredMotherSetSourcesForMeeting(rows.hyogo), [
   'nar-monthly-convene-info',
   'hyogo-urban-keiba-official-calendar',
 ]);
+for (const tokai of [rows.tokaiNagoya, rows.tokaiKasamatsu]) {
+  assert.deepEqual(requiredMotherSetSourcesForMeeting(tokai), [
+    'nar-monthly-convene-info',
+    'tokai-region-joint-official-calendar',
+  ]);
+}
 assert.equal(requiredMotherSetSourcesForMeeting(rows.otherNar), null);
 assert.deepEqual(requiredMotherSetSourcesForMeeting(rows.banei), ['banei-official-schedule']);
 
@@ -79,6 +100,8 @@ assert.equal(canReconcileMeetingAbsence(rows.jra, completeness), false);
 assert.equal(canReconcileMeetingAbsence(rows.southKanto, completeness), true);
 assert.equal(canReconcileMeetingAbsence(rows.iwate, completeness), true);
 assert.equal(canReconcileMeetingAbsence(rows.hyogo, completeness), true);
+assert.equal(canReconcileMeetingAbsence(rows.tokaiNagoya, completeness), true);
+assert.equal(canReconcileMeetingAbsence(rows.tokaiKasamatsu, completeness), true);
 assert.equal(canReconcileMeetingAbsence(rows.otherNar, completeness), false);
 assert.equal(canReconcileMeetingAbsence(rows.banei, completeness), true);
 
@@ -88,20 +111,24 @@ const selection = selectPublicAbsenceReconciliation({
     rows.southKanto,
     rows.iwate,
     rows.hyogo,
+    rows.tokaiNagoya,
+    rows.tokaiKasamatsu,
     rows.otherNar,
     rows.banei,
     { ...rows.southKanto, meeting_id: 'nar-kawasaki-racecourse-2026-09-08', date: '2026-09-08' },
     { ...rows.southKanto, meeting_id: 'nar-kawasaki-racecourse-2026-09-09', date: '2026-09-09' },
   ],
   officialMeetingIds: new Set(['nar-kawasaki-racecourse-2026-09-09']),
-  rangeDates: new Set(['2026-09-06', '2026-09-07', '2026-09-08', '2026-09-09', '2026-09-12']),
+  rangeDates: new Set(['2026-09-06', '2026-09-07', '2026-09-08', '2026-09-09', '2026-09-12', '2026-09-14', '2026-09-22']),
   sourceCompletenessRows: completeness,
 });
 assert.deepEqual(selection.removed_meeting_ids, [
   'banei-obihiro-racecourse-2026-09-06',
+  'nar-kasamatsu-racecourse-2026-09-22',
   'nar-kawasaki-racecourse-2026-09-07',
   'nar-kawasaki-racecourse-2026-09-08',
   'nar-morioka-racecourse-2026-09-07',
+  'nar-nagoya-racecourse-2026-09-14',
   'nar-sonoda-racecourse-2026-09-09',
 ]);
 assert.deepEqual(selection.preserved_meeting_ids, [
@@ -124,5 +151,22 @@ assert.deepEqual(partialSelection.removed_meeting_ids, [
   'nar-morioka-racecourse-2026-09-07',
 ]);
 assert.deepEqual(partialSelection.preserved_meeting_ids, ['nar-sonoda-racecourse-2026-09-09']);
+
+const tokaiPartial = completeness.map((row) => row.source_id === 'tokai-region-joint-official-calendar'
+  ? { ...row, completeness: 'partial' }
+  : row);
+assert.equal(canReconcileMeetingAbsence(rows.tokaiNagoya, tokaiPartial), false);
+assert.equal(canReconcileMeetingAbsence(rows.tokaiKasamatsu, tokaiPartial), false);
+const tokaiPartialSelection = selectPublicAbsenceReconciliation({
+  publicMeetings: [rows.tokaiNagoya, rows.tokaiKasamatsu, rows.iwate],
+  officialMeetingIds: [],
+  rangeDates: ['2026-09-07', '2026-09-14', '2026-09-22'],
+  sourceCompletenessRows: tokaiPartial,
+});
+assert.deepEqual(tokaiPartialSelection.removed_meeting_ids, ['nar-morioka-racecourse-2026-09-07']);
+assert.deepEqual(tokaiPartialSelection.preserved_meeting_ids, [
+  'nar-kasamatsu-racecourse-2026-09-22',
+  'nar-nagoya-racecourse-2026-09-14',
+]);
 
 console.log('JAPAN_PER_FAMILY_ABSENCE_RECONCILIATION: pass');
