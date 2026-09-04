@@ -1,0 +1,40 @@
+name: Temporary South Kanto live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/nankankeiba-live-proof-temp.yml'
+      - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
+      - 'scripts/check-nankankeiba-official-30d.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Fetch live South Kanto official 30-day window
+        run: |
+          node --input-type=module <<'NODE'
+          import { discoverNankankeibaOfficial30d } from './scripts/timetable/nankankeiba-official-30d-discovery.mjs';
+          const dates = [];
+          const cursor = new Date('2026-09-04T00:00:00Z');
+          for (let i = 0; i < 30; i += 1) {
+            dates.push(cursor.toISOString().slice(0, 10));
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
+          }
+          const result = await discoverNankankeibaOfficial30d({ dates });
+          console.log(JSON.stringify({
+            completeness: result.completeness,
+            meeting_count: result.meetings.length,
+            meetings: result.meetings.map(({ meeting_id, date, official_source_url }) => ({ meeting_id, date, official_source_url })),
+          }, null, 2));
+          if (result.completeness.completeness !== 'complete') process.exit(1);
+          if (result.meetings.length === 0) process.exit(1);
+          NODE
