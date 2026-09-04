@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
-import { assessMotherSetCompleteness, mergeOfficialPositiveEvidence } from './timetable/japan-mother-set-safety.mjs';
+import {
+  assessMotherSetCompleteness,
+  canReconcileMeetingAbsence,
+  mergeOfficialPositiveEvidence,
+  requiredMotherSetSourcesForMeeting,
+} from './timetable/japan-mother-set-safety.mjs';
 
 const base = {
   meeting_id: 'nar-kawasaki-racecourse-2026-09-07',
@@ -33,4 +38,31 @@ assert.deepEqual(failed.incomplete_source_ids, ['b']);
 const missing = assessMotherSetCompleteness([{ source_id: 'a', completeness: 'complete' }], required);
 assert.equal(missing.complete, false);
 assert.deepEqual(missing.missing_source_ids, ['b']);
+
+const sourceRows = [
+  { source_id: 'jra-racing-calendar-programme', completeness: 'partial' },
+  { source_id: 'nar-monthly-convene-info', completeness: 'complete' },
+  { source_id: 'banei-official-schedule', completeness: 'complete' },
+  { source_id: 'nankankeiba-south-kanto-calendar', completeness: 'complete' },
+];
+assert.deepEqual(requiredMotherSetSourcesForMeeting(base), [
+  'nar-monthly-convene-info',
+  'nankankeiba-south-kanto-calendar',
+]);
+assert.equal(canReconcileMeetingAbsence(base, sourceRows), true);
+assert.equal(canReconcileMeetingAbsence({
+  ...base,
+  meeting_id: 'nar-morioka-racecourse-2026-09-07',
+  racecourse_id: 'morioka-racecourse',
+}, sourceRows), false);
+assert.equal(canReconcileMeetingAbsence({
+  meeting_id: 'jra-nakayama-racecourse-2026-09-12',
+  authority_id: 'jra',
+  racecourse_id: 'nakayama-racecourse',
+}, sourceRows), false);
+assert.equal(canReconcileMeetingAbsence({
+  meeting_id: 'banei-obihiro-racecourse-2026-09-06',
+  authority_id: 'banei-tokachi',
+  racecourse_id: 'obihiro-racecourse',
+}, sourceRows), true);
 console.log('JAPAN_MOTHER_SET_SAFETY: pass');
