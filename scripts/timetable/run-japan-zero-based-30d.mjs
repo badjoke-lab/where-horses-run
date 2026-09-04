@@ -11,6 +11,7 @@ import {
   canReconcileMeetingAbsence,
   mergeOfficialPositiveEvidence,
   REQUIRED_JAPAN_MOTHER_SET_SOURCES,
+  selectPublicAbsenceReconciliation,
 } from './japan-mother-set-safety.mjs';
 
 function japanToday(now = new Date()) {
@@ -261,14 +262,15 @@ const rangeDates = scope === 'near' ? selectedDates : new Set(result.range.dates
 const isAbsentPublicMeeting = (row) => row?.country_id === 'japan'
   && rangeDates.has(row.date)
   && !officialIds.has(row.meeting_id);
-const stalePublicCandidates = result.public.filter(isAbsentPublicMeeting);
-const removedStalePublic = stalePublicCandidates
-  .filter((row) => canReconcileMeetingAbsence(row, completenessRows))
-  .map((row) => row.meeting_id);
+const absenceSelection = selectPublicAbsenceReconciliation({
+  publicMeetings: result.public,
+  officialMeetingIds: officialIds,
+  rangeDates,
+  sourceCompletenessRows: completenessRows,
+});
+const removedStalePublic = absenceSelection.removed_meeting_ids;
+const preservedStalePublic = absenceSelection.preserved_meeting_ids;
 const removedStaleSet = new Set(removedStalePublic);
-const preservedStalePublic = stalePublicCandidates
-  .filter((row) => !removedStaleSet.has(row.meeting_id))
-  .map((row) => row.meeting_id);
 const absenceFamilyStatus = {
   jra: assessMotherSetCompleteness(completenessRows, ['jra-racing-calendar-programme']).complete,
   banei: assessMotherSetCompleteness(completenessRows, ['banei-official-schedule']).complete,
