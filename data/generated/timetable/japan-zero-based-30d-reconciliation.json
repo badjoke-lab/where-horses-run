@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-09-04T09:49:31.209Z",
+  "checked_at": "2026-09-04T10:02:00.080Z",
   "range": {
     "start": "2026-09-04",
     "end_exclusive": "2026-10-04",
@@ -2462,8 +2462,8 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/10/1003.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-04T09:49:31.209Z",
-      "fetch_ended_at": "2026-09-04T09:49:51.894Z"
+      "fetch_started_at": "2026-09-04T10:02:00.080Z",
+      "fetch_ended_at": "2026-09-04T10:02:16.642Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
@@ -2504,8 +2504,8 @@
           "2026-10-03"
         ]
       },
-      "fetch_started_at": "2026-09-04T09:49:51.894Z",
-      "fetch_ended_at": "2026-09-04T09:49:53.649Z",
+      "fetch_started_at": "2026-09-04T10:02:16.642Z",
+      "fetch_ended_at": "2026-09-04T10:02:18.542Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 102,
@@ -2557,8 +2557,8 @@
           "2026-10-03"
         ]
       },
-      "fetch_started_at": "2026-09-04T09:49:55.275Z",
-      "fetch_ended_at": "2026-09-04T09:49:58.456Z",
+      "fetch_started_at": "2026-09-04T10:02:19.749Z",
+      "fetch_ended_at": "2026-09-04T10:02:21.813Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 12,
@@ -2622,8 +2622,8 @@
         "https://www.nankankeiba.com/calendar/202610.do"
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-04T09:49:53.649Z",
-      "fetch_ended_at": "2026-09-04T09:49:55.274Z"
+      "fetch_started_at": "2026-09-04T10:02:18.542Z",
+      "fetch_ended_at": "2026-09-04T10:02:19.748Z"
     }
   ],
   "mother_set_complete": false,
@@ -2634,7 +2634,15 @@
       "jra-racing-calendar-programme"
     ]
   },
-  "absence_reconciliation_applied": false,
+  "absence_reconciliation_mode": "per_family",
+  "absence_reconciliation_families": {
+    "jra": false,
+    "banei": true,
+    "south_kanto": true,
+    "other_nar": false
+  },
+  "absence_reconciliation_applied": true,
   "removed_invalid_aliases": [],
-  "removed_stale_public": []
+  "removed_stale_public": [],
+  "preserved_stale_public": []
 }
