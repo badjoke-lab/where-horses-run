@@ -182,8 +182,12 @@ export async function discoverJraOfficial30dWithCompleteness({ dates, fetchImpl 
 
   const calendarComplete = calendarFailures.length === 0 && calendarDiagnostics.length === calendarUrls.length
     && calendarDiagnostics.every((row) => row.structural_valid === true);
-  if (!calendarMeetings.length) {
-    throw new Error('JRA official calendar JSON discovery found no meetings in the requested window');
+  // A structurally complete official calendar may legitimately prove that a short
+  // requested window contains no JRA meetings. That empty set is authoritative
+  // negative evidence, not a discovery failure. Only an incomplete calendar with
+  // no positive meeting evidence remains a hard failure.
+  if (!calendarMeetings.length && !calendarComplete) {
+    throw new Error('JRA official calendar JSON discovery incomplete with no meetings in the requested window');
   }
 
   const meetingMap = new Map(calendarMeetings.map((meeting) => [meeting.meeting_id, meeting]));
