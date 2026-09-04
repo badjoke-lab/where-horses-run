@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kanazawa-live-proof-temp.yml'
+      - 'scripts/timetable/kanazawa-official-30d-discovery.mjs'
+      - 'package.json'
 
 permissions:
   contents: read
@@ -17,53 +19,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Correlate official Kanazawa annual PDF text and meeting bars
+      - name: Install pinned parser dependency
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Run permanent Kanazawa adapter for current 30-day window
         shell: bash
         run: |
           set -euo pipefail
-          pdf='https://www.kanazawakeiba.com/wp-content/uploads/2026/01/R8nenkan.pdf'
-          curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$pdf" -o /tmp/kanazawa.pdf
-          echo "PDF bytes=$(wc -c < /tmp/kanazawa.pdf) sha256=$(sha256sum /tmp/kanazawa.pdf | awk '{print $1}')"
-          npm install --no-save --no-package-lock --no-audit --no-fund pdfjs-dist@5.4.149 >/dev/null
           node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
-          const mul=(a,b)=>[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
-          const pt=(m,x,y)=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]];
-          const bbox=(m,b)=>{const p=[pt(m,b[0],b[1]),pt(m,b[0],b[3]),pt(m,b[2],b[1]),pt(m,b[2],b[3])];const xs=p.map(v=>v[0]),ys=p.map(v=>v[1]);return [Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)].map(v=>+v.toFixed(2));};
-          const data=new Uint8Array(fs.readFileSync('/tmp/kanazawa.pdf'));
-          const pdf=await getDocument({data,useWorkerFetch:false,isEvalSupported:false}).promise;
-          const page=await pdf.getPage(1);
-          const text=await page.getTextContent();
-          const items=text.items.filter((item)=>item.str?.trim()).map((item)=>({
-            str:item.str.trim(),
-            x:+item.transform[4].toFixed(2),
-            y:+item.transform[5].toFixed(2),
-            w:+Number(item.width??0).toFixed(2),
-            h:+Number(item.height??0).toFixed(2),
-          })).sort((a,b)=>b.y-a.y||a.x-b.x);
-          console.log('TEXT_ITEMS', items.length);
-          for(const row of items) {
-            if (/^(?:[0-9０-９]{1,2}|[0-9０-９]{1,2}\s*月)$/.test(row.str) || /月|県|市|回|金沢/.test(row.str)) console.log('TEXT', JSON.stringify(row));
+          import assert from 'node:assert/strict';
+          import { discoverKanazawaOfficial30d } from './scripts/timetable/kanazawa-official-30d-discovery.mjs';
+          const dates = [];
+          const cursor = new Date('2026-09-04T00:00:00Z');
+          for (let index = 0; index < 30; index += 1) {
+            dates.push(cursor.toISOString().slice(0, 10));
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
           }
-          const ops=await page.getOperatorList();
-          const names=new Map(Object.entries(OPS).map(([k,v])=>[v,k]));
-          let ctm=[1,0,0,1,0,0], fill=null; const stack=[]; const bars=[];
-          for(let i=0;i<ops.fnArray.length;i++){
-            const name=names.get(ops.fnArray[i])??String(ops.fnArray[i]); const a=ops.argsArray[i];
-            if(name==='save'){stack.push({ctm:[...ctm],fill});continue;}
-            if(name==='restore'){const s=stack.pop();if(s)({ctm,fill}=s);continue;}
-            if(name==='transform'){ctm=mul(ctm,a);continue;}
-            if(name==='setFillRGBColor'){fill=a;continue;}
-            if(name!=='constructPath')continue;
-            const raw=a?.[2]; if(!raw||raw.length<4)continue;
-            const b=bbox(ctm,Array.from(raw)); const w=b[2]-b[0],h=b[3]-b[1];
-            const color=Array.isArray(fill)&&fill.length===1?fill[0]:null;
-            if(!['#f7c7a7','#b4c6e7'].includes(color)) continue;
-            if(w<20||w>210||h<6||h>30) continue;
-            if(b[0]<40) continue;
-            bars.push({op:i,color,bbox:b,w:+w.toFixed(2),h:+h.toFixed(2)});
-          }
-          console.log('MEETING_BAR_CANDIDATES', bars.length);
-          for(const row of bars) console.log('BAR', JSON.stringify(row));
+          const result = await discoverKanazawaOfficial30d({ dates });
+          console.log(JSON.stringify(result.completeness, null, 2));
+          console.log(JSON.stringify(result.meetings, null, 2));
+          const expected = [
+            'nar-kanazawa-racecourse-2026-09-06',
+            'nar-kanazawa-racecourse-2026-09-08',
+            'nar-kanazawa-racecourse-2026-09-13',
+            'nar-kanazawa-racecourse-2026-09-15',
+            'nar-kanazawa-racecourse-2026-09-21',
+            'nar-kanazawa-racecourse-2026-09-22',
+            'nar-kanazawa-racecourse-2026-09-28',
+            'nar-kanazawa-racecourse-2026-09-29',
+          ];
+          assert.equal(result.completeness.completeness, 'complete');
+          assert.equal(result.completeness.failure_count, 0);
+          assert.deepEqual(result.meetings.map((row) => row.meeting_id), expected);
+          assert.ok(result.completeness.annual_meeting_count > 80);
+          const september = result.completeness.monthly_comparisons.find((row) => row.month === '2026-09');
+          const october = result.completeness.monthly_comparisons.find((row) => row.month === '2026-10');
+          assert.equal(september?.agrees_with_annual, true);
+          assert.equal(september?.selected_basis, 'monthly_html');
+          assert.deepEqual(october?.monthly_dates, []);
+          assert.equal(october?.selected_basis, 'annual_pdf');
+          assert.ok(result.meetings.every((row) => row.venue_code === '22' && row.racecourse_id === 'kanazawa-racecourse'));
           NODE
