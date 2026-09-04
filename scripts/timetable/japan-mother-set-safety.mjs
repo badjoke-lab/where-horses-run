@@ -9,6 +9,7 @@ export const REQUIRED_JAPAN_MOTHER_SET_SOURCES = [
   'hokkaido-keiba-official-calendar',
   'kanazawa-keiba-official-calendar',
   'kochi-keiba-official-calendar',
+  'saga-keiba-official-calendar',
 ];
 
 export const SOUTH_KANTO_RACECOURSE_IDS = new Set([
@@ -43,6 +44,10 @@ export const KANAZAWA_RACECOURSE_IDS = new Set([
 
 export const KOCHI_RACECOURSE_IDS = new Set([
   'kochi-racecourse',
+]);
+
+export const SAGA_RACECOURSE_IDS = new Set([
+  'saga-racecourse',
 ]);
 
 function sameMeetingIdentity(left, right) {
@@ -113,9 +118,11 @@ export function requiredMotherSetSourcesForMeeting(row) {
     if (KOCHI_RACECOURSE_IDS.has(row?.racecourse_id)) {
       return ['nar-monthly-convene-info', 'kochi-keiba-official-calendar'];
     }
-    // Regional/operator mother-set sources for the remaining NAR venues are not
-    // wired yet. Until they are, absence from the national NAR page alone is not
-    // sufficient negative evidence to remove an existing public meeting.
+    if (SAGA_RACECOURSE_IDS.has(row?.racecourse_id)) {
+      return ['nar-monthly-convene-info', 'saga-keiba-official-calendar'];
+    }
+    // Unrecognized/historical NAR venue identities remain fail-closed. Absence from
+    // the national NAR page alone is never sufficient negative publication evidence.
     return null;
   }
   return null;
