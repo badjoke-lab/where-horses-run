@@ -25,16 +25,19 @@ jobs:
             node --input-type=module - "/tmp/$ym.html" <<'NODE'
           import fs from 'node:fs';
           const file = process.argv[2];
-          const html = fs.readFileSync(file, 'utf8');
+          const bytes = fs.readFileSync(file);
+          const html = new TextDecoder('shift_jis').decode(bytes);
           const text = html.replace(/\s+/g, ' ');
           console.log('title=', text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]);
           console.log('monbetsu=', (text.match(/門別/g) ?? []).length);
-          for (const marker of ['門別11回', '門別12回', '門別13回']) {
-            let pos = text.indexOf(marker);
-            if (pos >= 0) console.log(`MARKER ${marker}:`, text.slice(Math.max(0, pos - 700), Math.min(text.length, pos + 700)));
+          let pos = 0;
+          for (let i = 0; i < 16; i += 1) {
+            pos = text.indexOf('門別', pos);
+            if (pos < 0) break;
+            console.log('MONBETSU', text.slice(Math.max(0, pos - 550), Math.min(text.length, pos + 650)));
+            pos += 2;
           }
-          for (const match of text.matchAll(/href=["']([^"']*(?:RaceList|race)[^"']*)["'][^>]*>[\s\S]{0,100}?門別/gi)) {
-            console.log('LINK', match[1]);
-          }
+          for (const match of text.matchAll(/<img\b[^>]*(?:alt|title)=["'][^"']*門別[^"']*["'][^>]*>/gi)) console.log('IMG', match[0]);
+          for (const match of text.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,120}?門別/gi)) console.log('LINK', match[1]);
           NODE
           done
