@@ -28,6 +28,7 @@ on:
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
@@ -38,6 +39,7 @@ on:
       - 'scripts/check-jra-official-30d-completeness.mjs'
       - 'scripts/check-nankankeiba-official-30d.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
+      - 'scripts/check-hyogo-official-30d.mjs'
       - 'data/static/authority-source-inventory-japan-v2.json'
       - 'data/static/calendar-reviewed-exclusions.json'
       - 'data/static/calendar-reviewed-public-observations.json'
@@ -59,6 +61,7 @@ on:
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/saga-official-start-fallback.mjs'
       - 'scripts/timetable/run-hkjc-official-window.mjs'
       - 'scripts/timetable/run-uae-era-official-window.mjs'
@@ -69,6 +72,7 @@ on:
       - 'scripts/check-jra-official-30d-completeness.mjs'
       - 'scripts/check-nankankeiba-official-30d.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
+      - 'scripts/check-hyogo-official-30d.mjs'
       - 'data/static/authority-source-inventory-japan-v2.json'
       - 'data/static/calendar-reviewed-exclusions.json'
       - 'data/static/calendar-reviewed-public-observations.json'
@@ -107,6 +111,7 @@ jobs:
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
@@ -119,6 +124,7 @@ jobs:
           node scripts/check-jra-official-30d-completeness.mjs
           node scripts/check-nankankeiba-official-30d.mjs
           node scripts/check-iwatekeiba-official-30d.mjs
+          node scripts/check-hyogo-official-30d.mjs
       - name: Exercise reviewed Calendar preservation
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate site build
@@ -170,6 +176,7 @@ jobs:
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/saga-official-start-fallback.mjs
           node --check scripts/timetable/run-hkjc-official-window.mjs
           node --check scripts/timetable/run-uae-era-official-window.mjs
