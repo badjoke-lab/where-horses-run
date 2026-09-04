@@ -1,8 +1,8 @@
 const SOUTH_KANTO_VENUES = {
-  '浦和': { slug: 'urawa', code: '18' },
-  '船橋': { slug: 'funabashi', code: '19' },
-  '大井': { slug: 'oi', code: '20' },
-  '川崎': { slug: 'kawasaki', code: '21' },
+  '浦和': { slug: 'urawa', code: '18', course_label: 'Dirt Left-handed' },
+  '船橋': { slug: 'funabashi', code: '19', course_label: 'Dirt Left-handed' },
+  '大井': { slug: 'oi', code: '20', course_label: 'Dirt Right-handed' },
+  '川崎': { slug: 'kawasaki', code: '21', course_label: 'Dirt Left-handed' },
 };
 const VENUE_BY_CODE = Object.fromEntries(Object.entries(SOUTH_KANTO_VENUES).map(([name, value]) => [value.code, { name, ...value }]));
 
@@ -38,6 +38,15 @@ export function nankankeibaQuarterUrl(date) {
   const [year, month] = String(date).split('-').map(Number);
   const quarter = String(quarterStartMonth(month)).padStart(2, '0');
   return `https://www.nankankeiba.com/calendar/${year}${quarter}.do`;
+}
+
+export function nankankeibaProgramUrl(date, programmeKey, dayNumber, baseUrl = 'https://www.nankankeiba.com/') {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date))) throw new Error(`invalid nankankeiba programme date: ${date}`);
+  if (!/^\d{8}$/.test(String(programmeKey))) throw new Error(`invalid nankankeiba programme key: ${programmeKey}`);
+  const venueAndMeeting = String(programmeKey).slice(4);
+  const day = String(Number(dayNumber)).padStart(2, '0');
+  if (!/^\d{2}$/.test(day) || Number(day) < 1) throw new Error(`invalid nankankeiba programme day: ${dayNumber}`);
+  return new URL(`/program/${date.replaceAll('-', '')}${venueAndMeeting}${day}.do`, baseUrl).toString();
 }
 
 export function decodeNankankeibaHtml(bytes, contentType = '') {
@@ -105,7 +114,7 @@ function programmeLinks(section, baseUrl) {
   return [...new Map(values.map((row) => [row.url, row])).values()];
 }
 
-function meetingRow(venue, date, officialSourceUrl) {
+function meetingRow(venue, date, officialSourceUrl, detailSourceUrl = null) {
   return {
     meeting_id: `nar-${venue.slug}-racecourse-${date}`,
     date,
@@ -116,6 +125,7 @@ function meetingRow(venue, date, officialSourceUrl) {
     source_id: 'nankankeiba-south-kanto-calendar',
     source_label: '南関東4競馬場',
     official_source_url: officialSourceUrl,
+    ...(detailSourceUrl ? { nankankeiba_program_url: detailSourceUrl } : {}),
   };
 }
 
@@ -161,6 +171,31 @@ export function parseNankankeibaProgrammeDates(html, year) {
     if (date) dates.push(date);
   }
   return [...new Set(dates)];
+}
+
+export function parseNankankeibaProgramPage(html, venueCode) {
+  const venue = VENUE_BY_CODE[String(venueCode).padStart(2, '0')];
+  if (!venue) return [];
+  const rows = [];
+  for (const match of String(html).matchAll(/<li\b[^>]*class=["'][^"']*nk23_c-block01__list__item[^"']*["'][^>]*>([\s\S]*?)<\/li>/gi)) {
+    const block = match[1];
+    const raceNumber = Number(block.match(/nk23_c-block01__label[^>]*>\s*(\d{1,2})R\s*</i)?.[1]);
+    const values = [...block.matchAll(/nk23_c-block01__text[^>]*>\s*([^<]+)\s*</gi)].map((item) => plain(item[1]));
+    const time = values.find((value) => /^\d{1,2}:\d{2}$/.test(value));
+    const distance = values.find((value) => /^\d{3,4}\s*m$/i.test(value));
+    const title = block.match(/nk23_c-block01__list__title[^>]*>([\s\S]*?)<\/h3>/i)?.[1];
+    if (!raceNumber || !time || !distance || !title) continue;
+    rows.push({
+      race_number: raceNumber,
+      label: `Race ${raceNumber}`,
+      post_time_local: time.replace(/^(\d):/, '0$1:'),
+      race_name: plain(title),
+      distance_m: Number(distance.match(/\d{3,4}/)?.[0]),
+      surface: 'Dirt',
+      course_label: venue.course_label,
+    });
+  }
+  return [...new Map(rows.map((row) => [row.race_number, row])).values()].sort((a, b) => a.race_number - b.race_number);
 }
 
 async function fetchHtml(url, fetchImpl) {
@@ -212,20 +247,25 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
       }
       if (!structurallyValid) calendarFailures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
 
-      // Programme pages are supplemental positive evidence. The quarter calendar
-      // remains the mother-set classifier only after every venue row exposes a
-      // complete day grid. A broken supplementary programme must not downgrade
-      // an otherwise complete calendar.
+      // Programme pages are supplemental positive evidence. They also expose the
+      // ordered meeting-day dates needed to derive the per-day /program/ URL.
+      // The quarter calendar remains the mother-set classifier, so a broken
+      // supplementary programme must not downgrade an otherwise complete calendar.
       for (const link of [...new Map(links.map((row) => [row.url, row])).values()]) {
         try {
           const programme = await fetchHtml(link.url, fetchImpl);
           const year = Number(link.programme_key.slice(0, 4));
-          const programmeDates = parseNankankeibaProgrammeDates(programme.body, year).filter((date) => allowed.has(date));
-          if (!programmeDates.length) {
+          const programmeDays = parseNankankeibaProgrammeDates(programme.body, year)
+            .map((date, index) => ({ date, day_number: index + 1 }))
+            .filter((row) => allowed.has(row.date));
+          if (!programmeDays.length) {
             supplementalFailures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
             continue;
           }
-          for (const date of programmeDates) meetings.push(meetingRow(link.venue, date, programme.url));
+          for (const row of programmeDays) {
+            const detailUrl = nankankeibaProgramUrl(row.date, link.programme_key, row.day_number, programme.url);
+            meetings.push(meetingRow(link.venue, row.date, programme.url, detailUrl));
+          }
         } catch (error) {
           supplementalFailures.push({ source_url: link.url, reason: String(error?.message ?? error) });
         }

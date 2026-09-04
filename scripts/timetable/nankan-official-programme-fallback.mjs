@@ -104,7 +104,9 @@ export function parseNankanProgrammeRows(html) {
     const infoValues = elementTextsByClass(block, 'span', 'nk23_c-block01__text');
     const postTime = infoValues.find((value) => /^\d{1,2}:\d{2}$/.test(value)) ?? null;
     const distanceValue = infoValues.find((value) => /^\d{3,4}\s*[mｍＭ]$/i.test(value)) ?? null;
-    const raceName = elementTextByClass(block, 'a', 'nk23_c-block01__list__title') ?? '';
+    const raceName = elementTextByClass(block, 'a', 'nk23_c-block01__list__title')
+      ?? elementTextByClass(block, 'h3', 'nk23_c-block01__list__title')
+      ?? '';
     const distanceM = distanceValue ? Number(distanceValue.match(/\d{3,4}/)?.[0]) : null;
 
     if (!postTime || !distanceM || !raceName || /^\d+頭$/.test(raceName)) continue;
@@ -124,10 +126,13 @@ function venueCode(meeting) {
   return Object.entries(NANKAN_VENUES).find(([, value]) => value.racecourse_id === meeting.racecourse_id)?.[0] ?? null;
 }
 
-export function parseNankanMeetingNumber(menuHtml, year, code) {
+export function parseNankanMeetingNumbers(menuHtml, year, code) {
   const pattern = new RegExp(`(?:href=["'][^"']*)?bangumi\\/${year}${code}(\\d{2})\\.do`, 'gi');
-  const matches = [...String(menuHtml).matchAll(pattern)].map((match) => match[1]);
-  return matches.at(-1) ?? null;
+  return [...new Set([...String(menuHtml).matchAll(pattern)].map((match) => match[1]))];
+}
+
+export function parseNankanMeetingNumber(menuHtml, year, code) {
+  return parseNankanMeetingNumbers(menuHtml, year, code).at(-1) ?? null;
 }
 
 export function parseNankanMeetingDates(bangumiHtml, year) {
@@ -144,29 +149,47 @@ export function parseNankanMeetingDates(bangumiHtml, year) {
   return dates;
 }
 
-export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch } = {}) {
-  const code = venueCode(meeting);
-  if (!code) return null;
+function directProgrammeUrl(meeting) {
+  const value = meeting?.nankankeiba_program_url;
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'https:' || url.hostname !== 'www.nankankeiba.com' || !/^\/program\/\d{14}\.do$/.test(url.pathname)) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+async function findProgrammeByMeetingDate(meeting, code, fetchImpl) {
   const year = meeting.date.slice(0, 4);
   const menu = await get(MENU_URL, fetchImpl);
-  const meetingNumber = parseNankanMeetingNumber(menu.body, year, code);
-  if (!meetingNumber) return null;
-
-  const bangumiUrl = `https://www.nankankeiba.com/bangumi/${year}${code}${meetingNumber}.do`;
-  const bangumi = await get(bangumiUrl, fetchImpl);
-  const dates = parseNankanMeetingDates(bangumi.body, year);
-  const dayIndex = dates.indexOf(meeting.date);
-  if (dayIndex < 0) return null;
-
-  const dayNumber = String(dayIndex + 1).padStart(2, '0');
-  const programUrl = `https://www.nankankeiba.com/program/${meeting.date.replaceAll('-', '')}${code}${meetingNumber}${dayNumber}.do`;
-  let programme;
-  try {
-    programme = await get(programUrl, fetchImpl);
-  } catch (error) {
-    if (error.status === 404) return null;
-    throw error;
+  const meetingNumbers = parseNankanMeetingNumbers(menu.body, year, code);
+  for (const meetingNumber of meetingNumbers) {
+    const bangumiUrl = `https://www.nankankeiba.com/bangumi/${year}${code}${meetingNumber}.do`;
+    let bangumi;
+    try {
+      bangumi = await get(bangumiUrl, fetchImpl);
+    } catch (error) {
+      if (error.status === 404) continue;
+      throw error;
+    }
+    const dates = parseNankanMeetingDates(bangumi.body, year);
+    const dayIndex = dates.indexOf(meeting.date);
+    if (dayIndex < 0) continue;
+    const dayNumber = String(dayIndex + 1).padStart(2, '0');
+    const programUrl = `https://www.nankankeiba.com/program/${meeting.date.replaceAll('-', '')}${code}${meetingNumber}${dayNumber}.do`;
+    try {
+      return await get(programUrl, fetchImpl);
+    } catch (error) {
+      if (error.status === 404) return null;
+      throw error;
+    }
   }
+  return null;
+}
+
+function resultForProgramme(meeting, code, programme) {
   const rows = parseNankanProgrammeRows(programme.body);
   if (!rows.length || !rows.every((row, index) => row.race_number === index + 1)) return null;
   const course = NANKAN_VENUES[code].course_label;
@@ -185,6 +208,25 @@ export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch 
       official_source_url: programme.url,
     },
   };
+}
+
+export async function fetchNankanOfficialProgramme(meeting, { fetchImpl = fetch } = {}) {
+  const code = venueCode(meeting);
+  if (!code) return null;
+
+  const directUrl = directProgrammeUrl(meeting);
+  if (directUrl) {
+    try {
+      const programme = await get(directUrl, fetchImpl);
+      const directResult = resultForProgramme(meeting, code, programme);
+      if (directResult) return directResult;
+    } catch (error) {
+      if (error.status !== 404) throw error;
+    }
+  }
+
+  const programme = await findProgrammeByMeetingDate(meeting, code, fetchImpl);
+  return programme ? resultForProgramme(meeting, code, programme) : null;
 }
 
 export function withNankanOfficialProgrammeFallback(baseInspect) {
